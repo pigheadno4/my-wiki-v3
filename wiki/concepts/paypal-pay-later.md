@@ -1,0 +1,81 @@
+---
+title: "PayPal Pay Later"
+type: concept
+category: technology
+tags: [paypal, pay-later, pay-in-4, pay-monthly, bnpl, installments, messaging, us]
+---
+
+## PayPal Pay Later
+
+PayPal's buy now, pay later (BNPL) product suite. Merchants receive full payment at checkout; buyers pay in installments. Available in multiple countries — US offerings documented here.
+
+## Products by Country
+
+| Country | Product | Payments | Schedule | Purchase range | APR |
+| ------- | ------- | -------- | -------- | -------------- | --- |
+| US | Pay in 4 | 4 | Biweekly | $30–$1,500 USD | None |
+| US | Pay Monthly | 3/6/12/24 | Monthly | $49–$10,000 USD | 9.99–35.99% |
+| AU | Pay in 4 | 4 | Biweekly (1st at checkout) | AUD $1–$1,999.99 | None |
+| CA | Pay in 4 | 4 | Biweekly (1st at checkout) | CAD $30–$1,500 | None |
+| FR | Pay in 4 | 4 | Monthly over 90 days (1st at checkout) | €30–€2,000 EUR | None |
+| DE | PayPal Ratenzahlung | 3/6/12/24 | Monthly | €99–€10,000 EUR | None |
+| DE | Pay in 30 | 1 | Single payment within 30 days | €1–€2,000 EUR | None |
+| IT | Pay in 3 | 3 | Monthly | €30–€2,000 EUR | None |
+| IT | Pay in installments | 6/12/24 | Monthly | €120–€5,000 EUR | None |
+| ES | Pay in 3 | 3 | Monthly | €30–€2,000 EUR | None |
+| ES | Pay in installments | 6/12/24 | Monthly | €120–€5,000 EUR | None |
+| UK | Pay in 3 | 3 | Monthly | £20–£3,000 GBP | None |
+| UK | PayPal Credit | Revolving | Revolving | ≥£99 for 0% promo | 0% for 4 months; then standard rate |
+
+US Pay Monthly lender: WebBank. US Pay in 4: PayPal NMLS #910457.
+
+Country differences:
+
+- AU: lower minimum ($1 vs $30 US), higher maximum ($1,999.99 vs $1,500), first payment at checkout
+- CA: same range as US but CAD; first payment at checkout; requires bilingual support (`locale=en_CA`/`fr_CA`); stricter — cannot host own Pay Later content
+- FR: higher cap (€2,000); payments monthly over 90 days (not biweekly); first payment at checkout
+- DE: widest product set — Ratenzahlung (analogous to US Pay Monthly, up to €10K) + Pay in 30 (unique deferred single payment, buyer pays full amount within 30 days)
+- IT + ES: identical product set — **Pay in 3** (not Pay in 4) + Pay in installments (6/12/24 months, up to €5,000)
+- UK: **limited availability**; only GBP country; Pay in 3 (£20–£3,000, highest cap among Pay in 3 countries) + PayPal Credit (revolving, 0% for 4 months on ≥£99)
+
+## Key Mechanics
+
+- Merchant paid upfront in full — no installment risk to merchant
+- No late fees to buyers (Pay in 4)
+- Dynamic messaging — shows offer based on cart contents
+- Multiple placement points: product pages, cart, checkout
+
+## Eligibility (US)
+
+- US merchant + US-facing website + USD only
+- Business Account required
+- One-time payment integrations only
+- **Not eligible**: Reference Transactions, Recurring Payments, Website Payments Standard
+
+## Integration
+
+Add `messages` to `components` in the JS SDK script tag: `components=messages,buttons`.
+
+**5 placements** with two layout styles:
+
+| Placement | `data-pp-placement` | Layout |
+| --------- | ------------------- | ------ |
+| Product page | `product` | `text` (logo-type, color, size) |
+| Cart | `cart` | `text` |
+| Checkout | `payment` | `text` |
+| Home page | `home` | `flex` (banner, ratio 8x1 or 20x1) |
+| Category page | `category` | `flex` |
+
+Key attributes: `data-pp-message`, `data-pp-amount`, `data-pp-placement`, `data-pp-style-layout`.
+
+## Available Countries (beyond US)
+
+Pay Later offerings differ by country — Australia, France, Germany, Italy, Spain, UK each have their own products. Check the Expanded Checkout eligibility page for which countries support Pay Later.
+
+## Relevant Companies
+
+- [[paypal]] — PayPal company overview
+
+## Sources
+
+- [[source-paypal-pay-later]] — Pay Later by country (US, AU, CA, FR, DE): product tables, purchase ranges, eligibility, bilingual support (CA)

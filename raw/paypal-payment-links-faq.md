@@ -1,0 +1,163 @@
+<!-- Source URL: https://docs.paypal.ai/payments/faq -->
+<!-- Fetched: 2026-04-16 -->
+
+> ## Documentation Index
+>
+> Fetch the complete documentation index at: https://docs.paypal.ai/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Frequently asked questions
+
+Find answers to common questions about Payment Links and Buttons, including configuration, customization, testing, and supported features.
+
+## What’s the difference between payment links and buttons?
+
+Payment links collect payments by sharing a URL with customers. Best for accepting in-person or contactless payments without building a website.
+
+Payment buttons collect payments directly from your website by adding button code to your page’s HTML. Best for selling a specific product or service with a direct payment option on your website.
+
+## Do payment links and buttons support a manually added locale?
+
+Yes. By default, payment links and buttons use the customer’s browser settings to determine the language and locale. You can override the locale for payment links and button code by appending `locale.x` and `country.x` as query parameters. Any custom text you enter during configuration does not get translated.
+
+See the [JavaScript SDK script configuration](https://developer.paypal.com/sdk/js/configuration/#link-locale) for supported locale codes.
+
+Example payment link:\
+`https://www.paypal.com/ncp/payment/F3YMU2ZGT49XX?locale.x=ja_JP&country.x=JP`
+
+Example script tag:
+
+```html theme={null}
+<script src="...&currency=USD&locale.x=ja_JP&country.x=JP"></script>
+```
+
+## Can I use webhooks with payment links and buttons?
+
+Yes. To enable webhooks:
+
+1. Sign in to the Developer Dashboard with your merchant account.
+2. Switch to **Live**.
+3. Select **Apps and Credentials**.
+4. Scroll down and select **Manage webhooks**.
+5. Add your webhook callback URL and choose the events you want to receive, such as checkout and payment events.
+
+You can repeat these steps in the sandbox by switching the environment from Live to Sandbox in the top-right corner.
+
+## Can I hide labels for the Add to Cart button?
+
+Yes. You can hide all text and labels around the button to fit your site’s visual design. This does not change how PayPal processes the transaction, which still uses the hosted button ID configuration. If you hide labels, make sure your button type does not require customer input, such as changing quantity.
+
+Example CSS to hide surrounding fields (replace `<hostedButtonID>` with your actual ID):
+
+```xml theme={null}
+<style>
+  #paypal-form-fields-container-<hostedButtonID> .item-header {
+    display: none !important;
+  }
+  #paypal-form-fields-container-<hostedButtonID> .carousel-container {
+    display: none !important;
+  }
+</style>
+```
+
+Use this approach only when the button does not require customer selections or input.
+
+## Where can I test my payment links and buttons?
+
+You can test payment links and buttons in the sandbox at:
+`https://www.sandbox.paypal.com/us/home`.
+
+## How do I test Venmo in the sandbox?
+
+Pay with Venmo is not currently available in the sandbox. To test Venmo, you must test in the live environment.
+
+## Do payment links and buttons support IPN (Instant Payment Notification)?
+
+Yes. Payment links and buttons support IPN.
+
+To open IPN settings:
+
+1. Go to your [account settings](http://www.paypal.com/businessmanage/account/accountAccess).
+2. Select **Notifications** to see a list of alerts.
+3. Select **Update for Instant payment notifications** to open your [IPN settings](https://www.paypal.com/merchantnotification/ipn/preference).
+4. Enter your Notification URL and select **Receive IPN messages (Enabled)**.
+5. Select **Save**.
+
+## When a customer returns to my site, what purchase information does PayPal send?
+
+Payment links and buttons support Payment Data Transfer (PDT) variables. You receive PDT data when you turn on **Auto Return** in your payment links and buttons configuration. PDT lets PayPal send transaction details to your return URL after checkout.
+
+## Can I override payment links and buttons to use my account shipping settings?
+
+No. Payment links and buttons do not honor the bulk shipping settings override in your account shipping preferences. The shipping option in your account profile does not apply to payment links or buttons.
+
+## I updated the product details. Do I need to update the button code?
+
+Usually no. The button uses configuration stored on PayPal servers. After you save your changes in your PayPal account, you do not need to update the button code on your site.
+
+**Exception:** If you change the product’s currency code, you must replace the existing button code with the updated code.
+
+## Why is there a client ID in the code?
+
+The client ID identifies your PayPal account in the integration. Do not edit or remove it. Use it exactly as provided in the button code.
+
+## Can I hide labels generated by the payment links and button code?
+
+Yes. You can hide specific text and labels around the button. This does not change how PayPal processes the transaction, which still uses your configured hosted button ID. Only hide labels when your button type does not require customer input. If you hide fields that collect required data, such as quantity or item selection, the transaction can fail.
+
+Example: Hide the price label for a specific hosted button (replace `<HostedButton_ID>` with your actual ID):
+
+```xml theme={null}
+<style>
+  #paypal-form-fields-container-<HostedButton_ID> #price-label {
+    display: none !important;
+  }
+</style>
+```
+
+Hide multiple labels, such as product name and price:
+
+```xml theme={null}
+<style>
+  #paypal-form-fields-container-<HostedButton_ID> #price-label,
+  #paypal-form-fields-container-<HostedButton_ID> #desc-label {
+    display: none !important;
+  }
+</style>
+```
+
+Hide all text fields around the button for a specific hosted button:
+
+```xml theme={null}
+<style>
+  #paypal-form-fields-container-<HostedButton_ID> {
+    display: none !important;
+  }
+</style>
+```
+
+Use the full-hide approach only when your button does not require any customer selections or input.
+
+## Do payment links support subscriptions?
+
+No. Payment links support one-time payments only.
+
+## Are payment links PCI compliant?
+
+Yes. Payment links securely process payments in compliance with Payment Card Industry (PCI) standards.
+
+## Can I customize the checkout branding?
+
+Yes. You can customize certain elements of your checkout experience, such as your business name, logo, and brand colors. The level of customization can vary by checkout type. See [Customize checkout and buttons](/payments/customize-checkout) for more information.
+
+## Can I use payment links internationally?
+
+Yes. You can use payment links to accept payments from customers in many countries and regions. Availability can vary by market.
+
+## Do payment links expire?
+
+No. Currently, we do not support single-use payment links or link expiration.
+
+## Can I generate payment links through an API?
+
+Yes. You can generate payment links programmatically by using PayPal APIs. This lets you create and manage links at scale and integrate payment link creation into your own systems or workflows. See Use [API to create a payment link](/payments/pay-links-buttons-api) for more information.

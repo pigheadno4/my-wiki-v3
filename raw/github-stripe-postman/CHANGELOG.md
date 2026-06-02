@@ -1,0 +1,35 @@
+#CHANGELOG
+
+## Changelog
+## 2024-04-15
+* Add support for `balances` and `payouts_list` on `AccountSession#create.components` and `AccountSession.components`
+* Change `AccountSession.components.payment_details.features.destination_on_behalf_of_charge_management` and `AccountSession.components.payments.features.destination_on_behalf_of_charge_management` to be required
+* Change type of `Dispute.payment_method_details.card` from `nullable(DisputePaymentMethodDetailsCard)` to `DisputePaymentMethodDetailsCard`
+* Change `Dispute.payment_method_details.card` to be optional
+* Remove support for `config` on `Forwarding.Request#create` and `Forwarding.Request`
+* Add support for `swish` on `PaymentMethodConfiguration#create`, `PaymentMethodConfiguration#update`, and `PaymentMethodConfiguration`
+
+## 2024-04-13
+* Add support for new resource `Entitlements.ActiveEntitlementSummary`
+* Change `Billing.MeterEvent#create.timestamp` to be optional
+* Add support for new value `entitlements.active_entitlement_summary.updated` on enum `Event.type`
+* Add support for new value `entitlements.active_entitlement_summary.updated` on enums `WebhookEndpoint#create.enabled_events[]` and `WebhookEndpoint#update.enabled_events[]`
+
+## 2024-04-11
+* Add support for `account_management` and `notification_banner` on `AccountSession#create.components` and `AccountSession.components`
+* Add support for `external_account_collection` on `AccountSession#create.components.account_onboarding.features` and `AccountSession.components.account_onboarding.features`
+* Add support for new values `billing_policy_remote_function_response_invalid`, `billing_policy_remote_function_timeout`, `billing_policy_remote_function_unexpected_status_code`, and `billing_policy_remote_function_unreachable` on enums `Invoice.last_finalization_error.code`, `PaymentIntent.last_payment_error.code`, `SetupAttempt.setup_error.code`, `SetupIntent.last_setup_error.code`, and `StripeError.code`
+* Change `Billing.MeterEventAdjustment#create.cancel.identifier` and `Billing.MeterEventAdjustment#create.cancel` to be optional
+* Change `Billing.MeterEventAdjustment#create.type` to be required
+* Change type of `Billing.MeterEventAdjustment.cancel` from `BillingMeterResourceBillingMeterEventAdjustmentCancel` to `nullable(BillingMeterResourceBillingMeterEventAdjustmentCancel)`
+* Add support for `amazon_pay` on `Charge.payment_method_details`, `Checkout.Session#create.payment_method_options`, `Checkout.Session.payment_method_options`, `ConfirmationToken.payment_method_preview`, `ConfirmationToken.testHelpers#create.payment_method_data`, `PaymentIntent#confirm.payment_method_data`, `PaymentIntent#confirm.payment_method_options`, `PaymentIntent#create.payment_method_data`, `PaymentIntent#create.payment_method_options`, `PaymentIntent#update.payment_method_data`, `PaymentIntent#update.payment_method_options`, `PaymentIntent.payment_method_options`, `PaymentMethod#create`, `PaymentMethodConfiguration#create`, `PaymentMethodConfiguration#update`, `PaymentMethodConfiguration`, `PaymentMethod`, `Refund.destination_details`, `SetupIntent#confirm.payment_method_data`, `SetupIntent#confirm.payment_method_options`, `SetupIntent#create.payment_method_data`, `SetupIntent#create.payment_method_options`, `SetupIntent#update.payment_method_data`, `SetupIntent#update.payment_method_options`, and `SetupIntent.payment_method_options`
+* Add support for new value `ownership` on enums `Checkout.Session#create.payment_method_options.us_bank_account.financial_connections.prefetch[]`, `Checkout.Session.payment_method_options.us_bank_account.financial_connections.prefetch[]`, `Invoice#create.payment_settings.payment_method_options.us_bank_account.financial_connections.prefetch[]`, `Invoice#update.payment_settings.payment_method_options.us_bank_account.financial_connections.prefetch[]`, `Invoice.payment_settings.payment_method_options.us_bank_account.financial_connections.prefetch[]`, `PaymentIntent#confirm.payment_method_options.us_bank_account.financial_connections.prefetch[]`, `PaymentIntent#create.payment_method_options.us_bank_account.financial_connections.prefetch[]`, `PaymentIntent#update.payment_method_options.us_bank_account.financial_connections.prefetch[]`, `PaymentIntent.payment_method_options.us_bank_account.financial_connections.prefetch[]`, `SetupIntent#confirm.payment_method_options.us_bank_account.financial_connections.prefetch[]`, `SetupIntent#create.payment_method_options.us_bank_account.financial_connections.prefetch[]`, `SetupIntent#update.payment_method_options.us_bank_account.financial_connections.prefetch[]`, `SetupIntent.payment_method_options.us_bank_account.financial_connections.prefetch[]`, `Subscription#create.payment_settings.payment_method_options.us_bank_account.financial_connections.prefetch[]`, `Subscription#update.payment_settings.payment_method_options.us_bank_account.financial_connections.prefetch[]`, and `Subscription.payment_settings.payment_method_options.us_bank_account.financial_connections.prefetch[]`
+* Add support for new value `amazon_pay` on enum `Checkout.Session#create.payment_method_types[]`
+* Add support for new values `bh_vat`, `kz_bin`, `ng_tin`, and `om_vat` on enums `Checkout.Session.customer_details.tax_ids[].type`, `Invoice.customer_tax_ids[].type`, `Tax.Calculation.customer_details.tax_ids[].type`, `Tax.Transaction.customer_details.tax_ids[].type`, and `TaxId.type`
+* Add support for new value `amazon_pay` on enums `ConfirmationToken.testHelpers#create.payment_method_data.type`, `PaymentIntent#confirm.payment_method_data.type`, `PaymentIntent#create.payment_method_data.type`, `PaymentIntent#update.payment_method_data.type`, `SetupIntent#confirm.payment_method_data.type`, `SetupIntent#create.payment_method_data.type`, and `SetupIntent#update.payment_method_data.type`
+* Add support for new value `amazon_pay` on enums `ConfirmationToken.payment_method_preview.type` and `PaymentMethod.type`
+* Add support for new values `bh_vat`, `kz_bin`, `ng_tin`, and `om_vat` on enums `Customer#create.tax_id_data[].type`, `Invoice#upcoming.customer_details.tax_ids[].type`, `Invoice#upcomingLines.customer_details.tax_ids[].type`, `Tax.Calculation#create.customer_details.tax_ids[].type`, and `TaxId#create.type`
+* Add support for new value `amazon_pay` on enums `Customer#list_payment_methods.type`, `PaymentMethod#create.type`, and `PaymentMethod#list.type`
+* Add support for `next_refresh_available_at` on `FinancialConnections.Account.ownership_refresh`
+* Add support for new value `ownership` on enums `Invoice.payment_settings.payment_method_options.us_bank_account.financial_connections.permissions[]` and `Subscription.payment_settings.payment_method_options.us_bank_account.financial_connections.permissions[]`
+* Add support for `capture_method` on `PaymentIntent#confirm.payment_method_options.revolut_pay`, `PaymentIntent#create.payment_method_options.revolut_pay`, `PaymentIntent#update.payment_method_options.revolut_pay`, and `PaymentIntent.payment_method_options.revolut_pay`

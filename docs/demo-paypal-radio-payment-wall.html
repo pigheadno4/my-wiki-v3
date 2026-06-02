@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PayPal Radio Button Payment Wall Demo</title>
+
+  <!--
+    SETUP:
+    1. For sandbox: keep client-id=test and buyer-country=US as-is
+       Or replace client-id=test with your own sandbox client ID from:
+       https://developer.paypal.com/dashboard/applications/sandbox
+    2. Open this file in a browser (or serve via a local server)
+    3. Scope: non-US merchant account targeting US buyers (cross-border)
+
+    GOING LIVE:
+    - Replace client-id=test with your production client ID
+    - REMOVE buyer-country=US — sandbox-only parameter, not valid in production
+  -->
+  <script
+    src="https://www.paypal.com/sdk/js?client-id=test&buyer-country=US&components=messages,buttons,funding-eligibility,marks&currency=USD&enable-funding=paylater"
+  ></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
+    .checkout-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+      padding: 32px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 28px;
+    }
+
+    /* ── Order summary ── */
+    .order-summary {
+      background: #f9f9f9;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .order-summary .item { font-size: 14px; color: #333; }
+    .order-summary .price { font-size: 18px; font-weight: 700; }
+
+    /* ── Payment wall ── */
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #999;
+      margin-bottom: 12px;
+    }
+
+    .payment-wall {
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .payment-row {
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .payment-row:last-child { border-bottom: none; }
+
+    /* radio label row */
+    .payment-row label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .payment-row label:hover { background: #fafafa; }
+
+    .payment-row input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #0070ba;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .mark-container {
+      width: 36px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .label-text { font-size: 15px; font-weight: 500; flex: 1; }
+
+    /* inline message next to paylater label */
+    .label-message {
+      font-size: 12px;
+      color: #555;
+      white-space: nowrap;
+    }
+
+    /* button panel */
+    .payment-panel {
+      display: none;
+      padding: 0 16px 16px 46px;
+    }
+
+    .panel-message {
+      margin-top: 10px;
+      font-size: 12px;
+    }
+
+    /* ── Loading / empty states ── */
+    .loading-row {
+      padding: 14px 16px;
+      font-size: 14px;
+      color: #aaa;
+      font-style: italic;
+    }
+
+    /* ── Pay button ── */
+    .pay-btn-wrap { margin-top: 24px; }
+  </style>
+</head>
+<body>
+<div class="checkout-card">
+  <h1>Complete your order</h1>
+  <p class="subtitle">Demo — non-US merchant / US buyers (cross-border)</p>
+
+  <!-- Order summary -->
+  <div class="order-summary">
+    <span class="item">Demo Product × 1</span>
+    <span class="price">$150.00</span>
+  </div>
+
+  <!-- Payment wall -->
+  <div class="section-title">Pay with</div>
+  <div class="payment-wall" id="payment-wall">
+    <div class="loading-row" id="loading-msg">Checking payment options…</div>
+
+    <!-- ── PayPal row ── -->
+    <div id="row-paypal" class="payment-row" style="display:none;">
+      <label>
+        <input type="radio" name="payment-method" value="paypal" />
+        <span class="mark-container" id="mark-paypal"></span>
+        <span class="label-text">PayPal</span>
+      </label>
+      <div id="panel-paypal" class="payment-panel">
+        <div id="button-paypal"></div>
+      </div>
+    </div>
+
+    <!-- ── Pay Later row ── -->
+    <div id="row-paylater" class="payment-row" style="display:none;">
+      <label>
+        <input type="radio" name="payment-method" value="paylater" />
+        <span class="mark-container" id="mark-paylater"></span>
+        <span class="label-text">Pay Later</span>
+        <!-- Inline message alongside label — non-US merchant needs buyercountry -->
+        <span class="label-message">
+          <div
+            data-pp-message
+            data-pp-placement="payment"
+            data-pp-amount="150.00"
+            data-pp-buyercountry="US"
+            data-pp-style-layout="text"
+            data-pp-style-logo-type="none"
+            data-pp-style-text-color="black"
+            data-pp-style-text-size="12"
+          ></div>
+        </span>
+      </label>
+      <div id="panel-paylater" class="payment-panel">
+        <div id="button-paylater"></div>
+        <!-- Message below button, coordinated with the Pay Later button -->
+        <div class="panel-message">
+          <div
+            data-pp-message
+            data-pp-placement="payment"
+            data-pp-amount="150.00"
+            data-pp-buyercountry="US"
+            data-pp-contextualcomponents="PAY_LATER_BUTTON"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No eligible options fallback -->
+    <div id="row-none" class="loading-row" style="display:none;">
+      No PayPal payment options available for this session.
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var AMOUNT = '150.00';
+  var eligibleCount = 0;
+
+  // ── Shared order logic ────────────────────────────────────────────────────
+  function createOrder(data, actions) {
+    return actions.order.create({
+      purchase_units: [{
+        amount: { currency_code: 'USD', value: AMOUNT }
+      }]
+    });
+  }
+
+  function onApprove(data, actions) {
+    return actions.order.capture().then(function (details) {
+      alert('Payment captured! Transaction ID: ' + details.id);
+    });
+  }
+
+  function onError(err) {
+    console.error('PayPal error:', err);
+    alert('Something went wrong. Check console for details.');
+  }
+
+  // ── Radio toggle: show/hide panels ───────────────────────────────────────
+  function bindRadioToggle(value, panelId) {
+    document.querySelectorAll('input[name="payment-method"]')
+      .forEach(function (radio) {
+        radio.addEventListener('change', function () {
+          document.querySelectorAll('.payment-panel')
+            .forEach(function (panel) { panel.style.display = 'none'; });
+          if (this.value === value) {
+            document.getElementById(panelId).style.display = 'block';
+          }
+        });
+      });
+  }
+
+  // ── After all checks: clear loader, show fallback if nothing eligible ─────
+  function finalise() {
+    document.getElementById('loading-msg').style.display = 'none';
+    if (eligibleCount === 0) {
+      document.getElementById('row-none').style.display = 'block';
+    } else {
+      // Pre-select first eligible row
+      var firstRadio = document.querySelector(
+        '.payment-row:not([style*="display: none"]) input[type="radio"]'
+      );
+      if (firstRadio) {
+        firstRadio.checked = true;
+        firstRadio.dispatchEvent(new Event('change'));
+      }
+    }
+  }
+
+  // ── PayPal button (gold) ──────────────────────────────────────────────────
+  var paypalButton = paypal.Buttons({
+    fundingSource: paypal.FUNDING.PAYPAL,
+    style: { color: 'gold', shape: 'rect', layout: 'vertical' },
+    createOrder: createOrder,
+    onApprove: onApprove,
+    onError: onError
+  });
+
+  // ── Pay Later button (blue) ───────────────────────────────────────────────
+  var payLaterButton = paypal.Buttons({
+    fundingSource: paypal.FUNDING.PAYLATER,
+    style: { color: 'blue', shape: 'rect', layout: 'vertical' },
+    createOrder: createOrder,
+    onApprove: onApprove,
+    onError: onError
+  });
+
+  // ── Eligibility checks (synchronous after SDK loads) ─────────────────────
+  if (paypalButton.isEligible()) {
+    eligibleCount++;
+    document.getElementById('row-paypal').style.display = 'block';
+    paypal.Marks({ fundingSource: paypal.FUNDING.PAYPAL }).render('#mark-paypal');
+    paypalButton.render('#button-paypal');
+    bindRadioToggle('paypal', 'panel-paypal');
+  }
+
+  if (payLaterButton.isEligible()) {
+    eligibleCount++;
+    document.getElementById('row-paylater').style.display = 'block';
+    paypal.Marks({ fundingSource: paypal.FUNDING.PAYLATER }).render('#mark-paylater');
+    payLaterButton.render('#button-paylater');
+    bindRadioToggle('paylater', 'panel-paylater');
+  }
+
+  finalise();
+})();
+</script>
+</body>
+</html>

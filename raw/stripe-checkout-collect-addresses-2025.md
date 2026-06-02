@@ -1,0 +1,116 @@
+<!-- Source: Stripe Checkout — Collect physical addresses -->
+<!-- Fetched: 2026-04-20 -->
+
+# Collect physical addresses
+
+Learn how to collect billing and shipping addresses.
+
+# Hosted page
+
+> This is a Hosted page for when payment-ui is stripe-hosted. View the full page at https://docs.stripe.com/payments/collect-addresses?payment-ui=stripe-hosted.
+
+You can collect billing and shipping addresses from your customers during checkout.
+
+## Collect a billing address
+
+By default, a Checkout Session only collects a customer’s billing address when necessary (for example, to calculate tax). To always collect a billing address, set `billing_address_collection` to `required` when you [create a Checkout Session](https://docs.stripe.com/api/checkout/sessions/create.md).
+
+```node
+// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+// Find your keys at https://dashboard.stripe.com/apikeys.
+const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+
+const session = await stripe.checkout.sessions.create({
+  billing_address_collection: "required",
+  automatic_tax: {
+    enabled: true,
+  },
+  mode: "payment",
+  success_url: "https://example.com/success",
+});
+```
+
+## Collect a shipping address
+
+To collect a customer’s shipping address in Checkout, pass the `shipping_address_collection` parameter when you [create a Checkout Session](https://docs.stripe.com/api/checkout/sessions/create.md). When you collect a shipping address, you must also specify which countries to allow shipping to. Configure the `allowed_countries` property with an array of [two-letter ISO country codes](https://www.nationsonline.org/oneworld/country_code_list.htm).
+
+```node
+// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+// Find your keys at https://dashboard.stripe.com/apikeys.
+const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+
+const session = await stripe.checkout.sessions.create({
+  billing_address_collection: "required",
+  shipping_address_collection: {
+    allowed_countries: ["US", "CA"],
+  },
+  automatic_tax: {
+    enabled: true,
+  },
+  mode: "payment",
+  success_url: "https://example.com/success",
+});
+```
+
+When the customer completes the session, the [Checkout Session](https://docs.stripe.com/api/checkout/sessions/object.md) object saves the collected shipping address on the `shipping_details` property and includes it in the payload of the `checkout.session.completed` _webhook_ (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests). You can also see shipping information in the Dashboard on the payment details page.
+
+## See also
+
+- [Charge for shipping](https://docs.stripe.com/payments/during-payment/charge-shipping.md)
+- [Collect phone numbers](https://docs.stripe.com/payments/checkout/phone-numbers.md)
+
+# Embedded Page
+
+> This is a Embedded Page for when payment-ui is embedded-form. View the full page at https://docs.stripe.com/payments/collect-addresses?payment-ui=embedded-form.
+
+You can collect billing and shipping addresses from your customers during checkout.
+
+## Collect a billing address
+
+By default, a Checkout Session only collects a customer’s billing address when necessary (for example, to calculate tax). To always collect a billing address, set `billing_address_collection` to `required` when you [create a Checkout Session](https://docs.stripe.com/api/checkout/sessions/create.md).
+
+```node
+// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+// Find your keys at https://dashboard.stripe.com/apikeys.
+const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+
+const session = await stripe.checkout.sessions.create({
+  billing_address_collection: "required",
+  automatic_tax: {
+    enabled: true,
+  },
+  mode: "payment",
+  ui_mode: "embedded_page",
+  return_url: "https://example.com/return",
+});
+```
+
+## Collect a shipping address
+
+To collect a customer’s shipping address in Checkout, pass the `shipping_address_collection` parameter when you [create a Checkout Session](https://docs.stripe.com/api/checkout/sessions/create.md). When you collect a shipping address, you must also specify which countries to allow shipping to. Configure the `allowed_countries` property with an array of [two-letter ISO country codes](https://www.nationsonline.org/oneworld/country_code_list.htm).
+
+```node
+// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+// Find your keys at https://dashboard.stripe.com/apikeys.
+const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+
+const session = await stripe.checkout.sessions.create({
+  billing_address_collection: "required",
+  shipping_address_collection: {
+    allowed_countries: ["US", "CA"],
+  },
+  automatic_tax: {
+    enabled: true,
+  },
+  mode: "payment",
+  ui_mode: "embedded_page",
+  return_url: "https://example.com/return",
+});
+```
+
+When the customer completes the session, the [Checkout Session](https://docs.stripe.com/api/checkout/sessions/object.md) object saves the collected shipping address on the `shipping_details` property and includes it in the payload of the `checkout.session.completed` _webhook_ (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests). You can also see shipping information in the Dashboard on the payment details page.
+
+## See also
+
+- [Charge for shipping](https://docs.stripe.com/payments/during-payment/charge-shipping.md)
+- [Collect phone numbers](https://docs.stripe.com/payments/checkout/phone-numbers.md)
