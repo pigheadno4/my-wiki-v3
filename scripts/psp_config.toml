@@ -1,0 +1,67 @@
+# PSP registry for fetch_psp.py
+#
+# Each PSP is a [<psp>] table plus one or more [[<psp>.discovery]] sources.
+# Add a new PSP (Airwallex, Braintree, …) by appending a table + discovery block —
+# nothing else in the codebase or rules hardcodes the PSP set.
+#
+# Fields:
+#   host        : doc host (informational / slug sanity)
+#   raw_prefix  : raw files are named raw/<raw_prefix>-<slug>-YYYY-MM-DD.md
+#   md_rule     : how to get the markdown URL. "append-.md" = add .md to the page URL.
+#
+# Per discovery source ([[<psp>.discovery]]):
+#   name             : label (used for --section scoping and logs)
+#   url              : the llms.txt / llms-full.txt URL
+#   kind             : "llms.txt" (index of links) | "llms-full.txt" (concatenated corpus)
+#   has_full_corpus  : whether a separate llms-full.txt exists for this source
+#   full_corpus_url  : that URL (optional)
+#   url_fixups       : list of [pattern, replacement] applied to every link before fetching
+
+# ─────────────────────────────────────────── Stripe
+[stripe]
+host = "docs.stripe.com"
+raw_prefix = "stripe"
+md_rule = "append-.md"
+
+[[stripe.discovery]]
+name = "docs"
+url = "https://docs.stripe.com/llms.txt"
+kind = "llms.txt"
+has_full_corpus = false
+url_fixups = []
+
+# ─────────────────────────────────────────── PayPal  (docs.paypal.ai, NOT developer.paypal.com)
+[paypal]
+host = "docs.paypal.ai"
+raw_prefix = "paypal"
+md_rule = "append-.md"
+
+[[paypal.discovery]]
+name = "docs"
+url = "https://docs.paypal.ai/llms.txt"
+kind = "llms.txt"
+has_full_corpus = false
+url_fixups = []
+
+# ─────────────────────────────────────────── Adyen  (TWO discovery files)
+[adyen]
+host = "docs.adyen.com"
+raw_prefix = "adyen"
+md_rule = "append-.md"
+
+[[adyen.discovery]]
+name = "docs"
+url = "https://docs.adyen.com/llms.txt"
+kind = "llms.txt"
+has_full_corpus = true
+full_corpus_url = "https://docs.adyen.com/llms-full.txt"
+url_fixups = []
+
+[[adyen.discovery]]
+name = "api-explorer"
+url = "https://docs.adyen.com/api-explorer/llms.txt"
+kind = "llms.txt"
+has_full_corpus = false
+# Confirmed in smoke testing: API Explorer links carry a duplicated path segment
+# (/api-explorer/api-explorer/) that 404s as written. Collapse it before fetching.
+url_fixups = [["/api-explorer/api-explorer/", "/api-explorer/"]]

@@ -1,0 +1,131 @@
+# Rule: Ingest a raw file → wiki pages
+
+> This rule governs turning **one** raw file into wiki pages. You arrived here from the CLAUDE.md Workflow Index. Collection (manual or PSP-bulk) happens first; this rule is the shared back end both pipelines converge on.
+
+## 🛑 ONE SOURCE AT A TIME — NEVER BATCH
+
+> Ingest exactly **one raw file per cycle**. Before writing any wiki page you MUST `Read` the **full** raw file end-to-end — never from a partial read, a summary, or several raw files in parallel. Complete one source's entire cycle (concept audit → source → company → concept → comparison → contradiction check → index → log) and mark its todos done **before** starting the next source.
+
+This is the single most important rule. Batching produces shallow summaries, missed details, and malformed pages. It was confirmed in smoke testing: **no batch, process one by one, read the full raw content, then ingest.**
+
+## MANDATORY setup
+
+> Use `TodoWrite` to create **one todo item per step below** before starting any work. Mark each item completed as you finish it — never batch completions. The **concept audit (step 2) must be completed and marked done before any other page is created.**
+
+1. **Read the full raw file.** Open the entire raw file (for GitHub stubs, read the stub + the relevant saved excerpts per `github-repos.md`). Do not summarize from a partial read.
+   - **Grounding gate:** before writing anything, extract **3–5 verbatim quotes** (with their location in the raw file) that the summary will rest on. This forces grounding and cuts hallucination — especially important on cheaper models.
+
+## Phase 2 — Wiki ingest (after Phase 1 raw file is approved)
+
+2. **Concept audit (FIRST, MANDATORY).** Scan `wiki/concepts/` for any existing page covering the same topic as the source.
+   - If a related concept page exists: update it now with new facts from the source. Do not defer.
+   - If no concept page exists for a major new product or topic area: create one now, before moving to step 3.
+   - Use the decision table below to decide whether a new concept page is warranted.
+3. **Source summary page** in `wiki/sources/` (filename `source-<slug>.md`, **not** dated):
+   - New source page → include `raw_files:` in frontmatter with the dated raw filename.
+   - Adding to an existing source page (e.g., a re-collected/changed version, or a 2nd raw file on the same topic) → prepend the new dated raw filename to the existing `raw_files:` list (**newest first**), and add the new content/delta to the body.
+4. **Company pages** in `wiki/companies/` — create or update. Update `source_count`.
+5. **Concept pages** in `wiki/concepts/` — create or update per the decision table.
+6. **Comparison pages** in `wiki/comparisons/` — only if the source **substantively compares** two or more companies (pricing differences, feature comparisons, migration guides). A passing mention of multiple companies does not warrant one.
+7. **Contradiction check** — compare against existing wiki content; flag with a `> [!warning] Contradiction` callout on both pages.
+8. **Update the index** — add/update entries in the **per-PSP index** `wiki/<psp>-index.md` for PSP-specific pages, and in the **root** `wiki/index.md` for cross-cutting pages (comparisons, analyses, generic concepts). See `lint.md` for the split rule.
+9. **Append an entry to `wiki/log.md`.**
+10. **Self-check** — run `python scripts/validate_wiki.py <the pages you touched>` and fix anything it flags (missing frontmatter fields, `raw_files:` that don't exist, unresolved wikilinks, leftover placeholders).
+
+### Concept page decision table
+
+| Situation | Action |
+| --- | --- |
+| New topic area — first source on this subject | Always create a concept page |
+| New PayPal/Stripe/Adyen (or other PSP) product not yet in `wiki/concepts/` | Create a concept page |
+| Supplementary page — 2nd+ source on an already-covered topic | Update the existing concept page instead |
+| Thin content — setup guides, test values, troubleshooting, error code tables | Skip concept page; update existing one only if new concrete facts emerge |
+
+**Naming reminder**: prefix platform-specific concepts with the company slug (e.g., `paypal-vault.md`). Generic industry concepts need no prefix (e.g., `disputes.md`, `agentic-commerce.md`). Ask: "does this concept exist independently of one platform?" If yes, no prefix. If 3+ source pages exist on a topic with no concept page, that is a gap — create the concept page. **Generic concept pages link to platform-specific implementations, they do not duplicate them** — e.g., `disputes.md` explains the concept and links to `[[source-paypal-disputes-api]]`; it does not re-list all 9 PayPal endpoints.
+
+## Copy-paste templates
+
+> Fill the blanks — do not paraphrase the structure. (Templates make output reliable across models.)
+
+**Source page frontmatter:**
+
+```yaml
+---
+title: "<source title>"
+type: source
+date_ingested: <YYYY-MM-DD>
+original_format: <article | paper | report | transcript | notes | webpage | github-repo | image>
+raw_files:
+  - "<slug>-<YYYY-MM-DD>.md"
+tags: [<tag>, <tag>]
+---
+```
+
+**Source page body skeleton:**
+
+```markdown
+## Overview
+<2–4 sentences: what this source is and why it matters>
+
+## Key takeaways
+- <takeaway grounded in a quote you extracted>
+- <takeaway>
+
+## Details
+<structured detail: products, parameters, limits, flows — grounded in the raw file>
+
+## Related
+- Companies: [[<company>]]
+- Concepts: [[<concept>]]
+
+## Raw Sources
+- [[<slug>-<YYYY-MM-DD>]] — <one-line description>
+```
+
+## Worked example (raw excerpt → finished page)
+
+**Raw excerpt** (`raw/stripe-payment-intents-2026-06-02.md`):
+> "A PaymentIntent transitions through statuses: `requires_payment_method`, `requires_confirmation`, `requires_action`, `processing`, `succeeded`. Use the `client_secret` to complete the payment on the client."
+
+**Finished `wiki/sources/source-stripe-payment-intents.md`:**
+
+```markdown
+---
+title: "Stripe PaymentIntents API"
+type: source
+date_ingested: 2026-06-02
+original_format: webpage
+raw_files:
+  - "stripe-payment-intents-2026-06-02.md"
+tags: [stripe, payment-intents, checkout]
+---
+
+## Overview
+The PaymentIntents API tracks a payment's lifecycle on Stripe from creation to completion.
+
+## Key takeaways
+- A PaymentIntent moves through statuses: `requires_payment_method` → `requires_confirmation` → `requires_action` → `processing` → `succeeded`.
+- The `client_secret` completes the payment client-side.
+
+## Related
+- Companies: [[stripe]]
+- Concepts: [[stripe-payment-intents]]
+
+## Raw Sources
+- [[stripe-payment-intents-2026-06-02]] — verbatim docs page
+```
+
+## Task → model routing (cost-efficient, quality-preserving)
+
+When using cheaper models (DeepSeek/GLM) for volume, route by judgment level:
+
+| Task | Judgment level | Model tier |
+| --- | --- | --- |
+| Bulk source-page summaries (templated) | low — fill a template from one raw file | **cheap model OK** |
+| Frontmatter / index/log line edits | low — mechanical | **cheap model OK** |
+| Concept page synthesis / merging | high — cross-source judgment | **strong model** |
+| Contradiction detection | high — cross-page reasoning | **strong model** |
+| Comparison / analysis pages | high — multi-source synthesis | **strong model** |
+| Lint triage (what to fix, staleness) | high — judgment | **strong model** |
+
+Regardless of model, **every output must pass `scripts/validate_wiki.py`** — that deterministic guardrail is what keeps quality high when a cheaper model misses a field or a link.
