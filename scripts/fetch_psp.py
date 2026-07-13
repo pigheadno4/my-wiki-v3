@@ -24,12 +24,21 @@ from __future__ import annotations
 import argparse
 import datetime as _dt
 import difflib
+import hashlib
 import json
 import re
 import sys
 import time
+import urllib.error
 import urllib.request
+from collections import Counter
 from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+from urllib.parse import urlsplit
+
+from collection_discovery import DiscoveryRecord, reconcile_metronome
+from collection_reporting import render_status, validate_terminal_counts, write_jsonl
+from collection_versions import classify_candidate, latest_prior, next_target, source_body
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "raw"
@@ -41,6 +50,7 @@ UA = "wiki-fetch-psp/1.0 (+payments knowledge base; respectful crawl)"
 LINK_RE = re.compile(r"\[[^\]]*\]\((https?://[^)\s]+\.md)\)")
 HEADER_LINE_RE = re.compile(r"^\s*<!--\s*(Source URL|Fetched):.*-->\s*$")
 TODAY = _dt.date.today().isoformat()
+RETRYABLE = {408, 425, 429, 500, 501, 502, 503, 504}
 
 
 def load_config() -> dict:
@@ -130,7 +140,7 @@ def strip_header(content: str) -> str:
     return "\n".join(lines).strip()
 
 
-def latest_prior(prefix: str, slug: str) -> Path | None:
+def latest_flat_prior(prefix: str, slug: str) -> Optional[Path]:
     base = f"{prefix}-{slug}"
     dated = sorted(RAW.glob(f"{base}-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].md"))
     if dated:
@@ -139,8 +149,19 @@ def latest_prior(prefix: str, slug: str) -> Path | None:
     return undated if undated.exists() else None
 
 
-def make_raw(url: str, body: str) -> str:
-    return f"<!-- Source URL: {url} -->\n<!-- Fetched: {TODAY} -->\n\n{body}\n"
+def make_raw(
+    url: str,
+    body: str,
+    discovery: str = "llms.txt",
+    collection_date: str = TODAY,
+) -> str:
+    return (
+        "<!-- Source URL: " + url + " -->\n"
+        "<!-- Fetched: " + collection_date + " -->\n"
+        "<!-- Discovery: " + discovery + " -->\n\n"
+        + body.rstrip()
+        + "\n"
+    )
 
 
 def collect_source(psp: str, cfg: dict, source: dict, limit: int | None, dry_run: bool,
@@ -172,7 +193,7 @@ def collect_source(psp: str, cfg: dict, source: dict, limit: int | None, dry_run
             continue
 
         staged = make_raw(url, body)
-        prior = latest_prior(prefix, slug)
+        prior = latest_flat_prior(prefix, slug)
         target = RAW / f"{prefix}-{slug}-{TODAY}.md"
 
         if prior is not None and strip_header(prior.read_text(encoding="utf-8")) == strip_header(staged):
@@ -194,6 +215,253 @@ def collect_source(psp: str, cfg: dict, source: dict, limit: int | None, dry_run
             ))
             results["changed"].append((target.name, prior.name, diff))
         time.sleep(0.3)  # be polite
+
+
+def relative_page_path(url: str) -> Path:
+    path = urlsplit(url).path
+    if path.endswith(".md"):
+        path = path[:-3]
+    clean = path.strip("/") or "index"
+    return Path(clean + ".md")
+
+
+def is_retryable_status(status: int, attempt: int) -> bool:
+    if status == 403:
+        return attempt == 1
+    return status in RETRYABLE
+
+
+def build_metronome_inventory(llms_text: str, sitemap_text: str) -> List[DiscoveryRecord]:
+    return reconcile_metronome(llms_text, sitemap_text)
+
+
+def fetch_with_retry(
+    url: str,
+    max_attempts: int = 3,
+) -> Tuple[Optional[str], List[Dict[str, object]]]:
+    attempts = []
+    for attempt in range(1, max_attempts + 1):
+        try:
+            body = http_get(url)
+            attempts.append({"attempt": attempt, "status": 200})
+            return body, attempts
+        except urllib.error.HTTPError as exc:
+            attempts.append({"attempt": attempt, "status": exc.code, "error": str(exc)})
+            if not is_retryable_status(exc.code, attempt) or attempt == max_attempts:
+                return None, attempts
+        except (TimeoutError, urllib.error.URLError) as exc:
+            attempts.append({"attempt": attempt, "status": None, "error": str(exc)})
+            if attempt == max_attempts:
+                return None, attempts
+        time.sleep(2 ** attempt)
+    return None, attempts
+
+
+def render_metronome_manifest(events: List[Dict[str, object]], run_id: str) -> str:
+    counts = Counter(str(event.get("state")) for event in events)
+    lines = ["# Metronome collection manifest - " + run_id, ""]
+    for state in sorted(counts):
+        lines.append("- " + state + ": " + str(counts[state]))
+    failures = [event for event in events if event.get("state") == "failed"]
+    if failures:
+        lines += ["", "## Failures", ""]
+        for event in failures:
+            lines.append("- " + str(event.get("url")) + " - " + str(event.get("last_error", "")))
+    lines += ["", "Collection stops here. Ingest requires a separate user action.", ""]
+    return "\n".join(lines)
+
+
+def _write_page_diff(
+    tracking: Path,
+    relative: Path,
+    collection_date: str,
+    previous_path: Path,
+    previous: str,
+    target: Path,
+    candidate: str,
+) -> Path:
+    diff_name = "-".join(relative.with_suffix("").parts) + "-" + collection_date + ".diff"
+    diff_path = tracking / "diffs" / diff_name
+    diff_path.parent.mkdir(parents=True, exist_ok=True)
+    diff_path.write_text(
+        "\n".join(
+            difflib.unified_diff(
+                source_body(previous).splitlines(),
+                source_body(candidate).splitlines(),
+                fromfile=str(previous_path.relative_to(ROOT)),
+                tofile=str(target.relative_to(ROOT)),
+                lineterm="",
+            )
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    return diff_path
+
+
+def _next_artifact_target(artifact_root: Path, stem: str, collection_date: str) -> Path:
+    target = artifact_root / (stem + "-" + collection_date + ".json")
+    revision = 2
+    while target.exists():
+        target = artifact_root / (
+            stem + "-" + collection_date + "-r" + str(revision) + ".json"
+        )
+        revision += 1
+    return target
+
+
+def collect_metronome(
+    cfg: Dict[str, object],
+    limit: Optional[int],
+    dry_run: bool,
+    collection_date: str,
+    run_id: str,
+) -> List[Dict[str, object]]:
+    discovery_sources = cfg["discovery"]
+    discovery = {
+        str(source["name"]): http_get(str(source["url"]))
+        for source in discovery_sources
+    }
+    inventory = build_metronome_inventory(discovery["llms"], discovery["sitemap"])
+    selected = [record for record in inventory if record.selected and record.kind == "page"]
+    artifacts = [
+        record for record in inventory if record.selected and record.kind == "artifact"
+    ]
+    if limit is not None:
+        selected = selected[:limit]
+    if dry_run:
+        for record in selected:
+            print(record.fetch_url)
+        print("selected-pages=" + str(len(selected)))
+        print("selected-artifacts=" + str(len(artifacts)))
+        return []
+
+    raw_root = ROOT / str(cfg["raw_root"])
+    tracking = ROOT / "tracking" / "collections" / "metronome"
+    discovery_dir = raw_root / "_discovery" / collection_date
+    discovery_dir.mkdir(parents=True, exist_ok=True)
+    (discovery_dir / "llms.txt").write_text(discovery["llms"], encoding="utf-8")
+    (discovery_dir / "sitemap.xml").write_text(discovery["sitemap"], encoding="utf-8")
+
+    events = []
+    for record in selected:
+        body, attempts = fetch_with_retry(record.fetch_url)
+        event = record.to_dict()
+        event["url"] = record.canonical_url
+        event["attempts"] = attempts
+        if body is None:
+            event["state"] = "failed"
+            event["last_error"] = attempts[-1].get("error", "fetch failed")
+            events.append(event)
+            continue
+        relative = relative_page_path(record.fetch_url)
+        previous_path = latest_prior(raw_root, relative)
+        previous = previous_path.read_text(encoding="utf-8") if previous_path else None
+        raw_body = make_raw(record.fetch_url, body, "llms.txt,sitemap.xml", collection_date)
+        classification = classify_candidate(previous, raw_body)
+        if classification == "unchanged":
+            event["state"] = "unchanged"
+            event["previous_raw"] = str(previous_path.relative_to(ROOT))
+            events.append(event)
+            continue
+        target = next_target(raw_root, relative, collection_date)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(raw_body, encoding="utf-8")
+        event["state"] = "collected-" + classification
+        event["new_raw"] = str(target.relative_to(ROOT))
+        event["content_sha256"] = hashlib.sha256(body.encode("utf-8")).hexdigest()
+        if classification == "changed":
+            diff_path = _write_page_diff(
+                tracking,
+                relative,
+                collection_date,
+                previous_path,
+                previous,
+                target,
+                raw_body,
+            )
+            event["diff_file"] = str(diff_path.relative_to(ROOT))
+        events.append(event)
+        time.sleep(0.3)
+
+    artifact_root = raw_root / "_artifacts"
+    artifact_root.mkdir(parents=True, exist_ok=True)
+    for record in artifacts:
+        body, attempts = fetch_with_retry(record.fetch_url)
+        event = record.to_dict()
+        event["url"] = record.canonical_url
+        event["attempts"] = attempts
+        if body is None:
+            event["state"] = "failed"
+            event["last_error"] = attempts[-1].get("error", "fetch failed")
+            events.append(event)
+            continue
+        stem = Path(urlsplit(record.fetch_url).path).stem.replace(".", "-")
+        previous_files = sorted(artifact_root.glob(stem + "-*.json"))
+        previous_path = previous_files[-1] if previous_files else None
+        previous_body = previous_path.read_text(encoding="utf-8") if previous_path else None
+        if previous_body == body:
+            event["state"] = "unchanged"
+            event["previous_raw"] = str(previous_path.relative_to(ROOT))
+            events.append(event)
+            continue
+        target = _next_artifact_target(artifact_root, stem, collection_date)
+        target.write_text(body, encoding="utf-8")
+        event["state"] = "collected-new" if previous_path is None else "collected-changed"
+        event["new_raw"] = str(target.relative_to(ROOT))
+        event["content_sha256"] = hashlib.sha256(body.encode("utf-8")).hexdigest()
+        if previous_path is not None:
+            diff_path = tracking / "diffs" / (stem + "-" + collection_date + ".diff")
+            diff_path.parent.mkdir(parents=True, exist_ok=True)
+            diff_path.write_text(
+                "\n".join(
+                    difflib.unified_diff(
+                        previous_body.splitlines(),
+                        body.splitlines(),
+                        fromfile=str(previous_path.relative_to(ROOT)),
+                        tofile=str(target.relative_to(ROOT)),
+                        lineterm="",
+                    )
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            event["diff_file"] = str(diff_path.relative_to(ROOT))
+        events.append(event)
+
+    validate_terminal_counts(events)
+    run_path = tracking / "runs" / (run_id + ".jsonl")
+    write_jsonl(run_path, events)
+    latest_by_url = {event["url"]: event for event in events}
+    inventory_payload = []
+    for record in inventory:
+        item = record.to_dict()
+        event = latest_by_url.get(record.canonical_url)
+        if event:
+            item["collection_state"] = event["state"]
+            item["local_path"] = event.get("new_raw") or event.get("previous_raw")
+        else:
+            item["collection_state"] = "not-in-run"
+            item["local_path"] = None
+        inventory_payload.append(item)
+    tracking.mkdir(parents=True, exist_ok=True)
+    (tracking / "inventory-current.json").write_text(
+        json.dumps(inventory_payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (tracking / "collection-status.md").write_text(
+        render_status("metronome", inventory_payload, events),
+        encoding="utf-8",
+    )
+    manifest_path = tracking / "runs" / (run_id + "-manifest.md")
+    manifest_path.write_text(
+        render_metronome_manifest(events, run_id),
+        encoding="utf-8",
+    )
+    print("run-record=" + str(run_path.relative_to(ROOT)))
+    print("manifest=" + str(manifest_path.relative_to(ROOT)))
+    print("Collection is complete. Ingest requires a separate user action.")
+    return events
 
 
 def write_manifest(psp: str, results: dict) -> Path:
@@ -230,6 +498,12 @@ def main() -> int:
         sys.exit(f"unknown PSP '{args.psp}'. Known: {', '.join(k for k in config)}")
     cfg = config[args.psp]
     sources = cfg.get("discovery", [])
+    if args.psp == "metronome":
+        if args.source:
+            sys.exit("Metronome collection requires both llms and sitemap discovery sources")
+        run_id = _dt.datetime.now().strftime("%Y-%m-%dT%H%M%S")
+        collect_metronome(cfg, args.limit, args.dry_run, TODAY, run_id)
+        return 0
     if args.source:
         sources = [s for s in sources if s["name"] == args.source]
         if not sources:
