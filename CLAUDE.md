@@ -22,23 +22,32 @@ my-wiki/
 │   ├── psp/                   # one file per PSP — host, discovery file, .md rule, url fixups
 │   │   ├── stripe.md
 │   │   ├── paypal.md
-│   │   └── adyen.md
+│   │   ├── adyen.md
+│   │   └── metronome.md
 │   ├── github-repos.md        # GitHub repo ingest (stub + detail dir + deep-dive fallback)
 │   ├── ingest.md              # raw → wiki pages (NO-BATCH, concept-audit-first, templates)
 │   ├── lint.md                # wiki health, orphan ingest queue, validate_wiki.py
 │   └── query-and-synthesis.md # answer queries → comparison/analysis filing
 ├── scripts/           # automation
 │   ├── fetch_psp.py           # PSP doc fetcher (staging, diff, dating, manifest)
+│   ├── collection_discovery.py # multi-source discovery reconciliation
+│   ├── collection_versions.py # immutable nested raw version comparison
+│   ├── collection_reporting.py # run records and generated monitor
 │   ├── psp_config.toml        # PSP registry (extensible: add a row per new PSP)
 │   └── validate_wiki.py       # deterministic guardrail (frontmatter/links/placeholders)
 ├── raw/               # immutable source documents (verbatim, never modified or summarized)
 │   ├── assets/                # downloaded images/video referenced by sources
+│   ├── metronome/             # provider capsule preserving documentation paths
 │   ├── <slug>-YYYY-MM-DD.md   # dated raw file (new files carry a collection date)
 │   ├── <repo-slug>.md         # GitHub repo stub file — lint anchor + metadata
 │   └── <repo-slug>/           # GitHub repo key excerpts
+├── tracking/
+│   └── collections/           # generated inventories, run records, diffs, and status
 ├── wiki/              # LLM-generated pages (you own this layer)
 │   ├── index.md               # ROOT catalog: PSP list + comparisons + analyses + generic concepts + overview
 │   ├── <psp>-index.md         # per-PSP catalog: that PSP's sources + company + platform concepts
+│   ├── metronome-index.md      # Metronome provider capsule catalog
+│   ├── metronome-log.md        # Metronome collection and ingest history
 │   ├── log.md                 # chronological operation log
 │   ├── overview.md            # high-level payments industry overview
 │   ├── companies/             # one page per company

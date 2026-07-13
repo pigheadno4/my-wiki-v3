@@ -29,7 +29,7 @@ Behaviour (implemented in `fetch_psp.py`, configured per PSP in `scripts/psp_con
 
 1. Read the PSP's discovery file per config (`llms.txt`, or `llms-full.txt` if `has_full_corpus`).
 2. **Apply `url_fixups`** — correct known malformed links before fetching. Example confirmed in smoke testing: a duplicated path segment like `/api-explorer/api-explorer/` must collapse to `/api-explorer/`. Every fixup applied is logged so re-runs are auditable.
-3. For each target page: fetch the `.md` variant, slugify the URL path → `raw/<psp>-<slug>-YYYY-MM-DD.md`, and prepend:
+3. For each target page, fetch the `.md` variant. Flat-layout providers slugify the URL path into `raw/<psp>-<slug>-YYYY-MM-DD.md`; provider capsules preserve the URL hierarchy beneath their configured `raw_root`. Prepend:
    ```html
    <!-- Source URL: https://<host>/<path> -->
    <!-- Fetched: YYYY-MM-DD -->
@@ -39,6 +39,8 @@ Behaviour (implemented in `fetch_psp.py`, configured per PSP in `scripts/psp_con
    - **changed** → promote to `raw/` and add to the round manifest with the stored diff;
    - **brand-new** → promote and mark "new".
 5. **Idempotent / immutable**: never overwrites an accepted raw file. Only a *staged* file is ever discarded. Re-runs are safe and only surface real changes.
+
+Providers may use either flat raw filenames or a configured nested `raw_root`. When a provider has multiple discovery formats, reconcile them into one canonical inventory before fetching. Each selected URL must reach a terminal collection state, and aggregate status is written only after per-run records reconcile.
 
 ## Retention
 
@@ -68,3 +70,4 @@ Nothing else in the rules hardcodes the PSP set.
 - The fetcher's job ends at "files staged/promoted + manifest written + user pinged."
 - Ingest is a **separate, human-kicked-off, one-at-a-time** activity (`ingest.md`).
 - Never let a collection run flow straight into batch ingest — that violates the NO-BATCH rule and produces shallow pages.
+- For providers with a smoke-test gate, stop after the limited run and request approval before collecting the full corpus. A successful smoke test does not authorize ingest.
