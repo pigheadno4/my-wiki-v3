@@ -35,6 +35,18 @@ Find raw files with no reference in any wiki source page. This is the primary me
 - Action: user approves per-file, then execute. Run the full ingest workflow **one source at a time** per `ingest.md` for each new source.
 - Example: `raw/stripe-connect-overview-2026-06-02.md` has no reference → propose creating a new source page, or linking to existing `source-stripe-platform-guide.md` if it covers the same topic.
 
+#### Nested provider capsules
+
+The legacy scan above covers top-level raw files. Provider capsules with path-preserving nested raw trees require their provider-aware deterministic checker.
+
+For Metronome, run:
+
+```bash
+python3 scripts/validate_metronome_capsule.py
+```
+
+The command recursively reconciles `raw/metronome/` against `wiki/sources/metronome/`. Pending orphan paths are the expected ingest queue and do not make the command fail. Duplicate canonical URLs, missing raw versions, disagreement between `raw_files:` and `## Raw Sources`, index drift, or an incorrect company `source_count` are structural errors and return a nonzero exit code.
+
 ### b. Accuracy spot-checks
 
 For key source pages, compare summaries against their raw files to verify correctness.
