@@ -36,6 +36,9 @@ class ReportingTests(unittest.TestCase):
         status = render_status("metronome", [], events)
         self.assertIn("# Metronome Collection Status", status)
         self.assertIn("| failed | 1 |", status)
+        self.assertFalse(status.endswith("\n\n"))
+        empty_status = render_status("metronome", [], [])
+        self.assertFalse(empty_status.endswith("\n\n"))
 
 
 if __name__ == "__main__":

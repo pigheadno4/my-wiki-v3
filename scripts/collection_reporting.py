@@ -60,4 +60,4 @@ def render_status(
             lines.append(
                 "- " + str(event.get("url")) + " - " + str(event.get("last_error", ""))
             )
-    return "\n".join(lines) + "\n"
+    return "\n".join(lines).rstrip() + "\n"
