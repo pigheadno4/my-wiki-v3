@@ -51,6 +51,17 @@ class FetchPspTests(unittest.TestCase):
         self.assertIn("- failed: 1", text)
         self.assertIn("https://example.test/fail", text)
 
+    def test_artifact_lookup_does_not_cross_matching_stems(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            expected = root / "openapi-2026-07-13.json"
+            expected.write_text("main", encoding="utf-8")
+            (root / "openapi-plans-2026-07-13.json").write_text("plans", encoding="utf-8")
+            self.assertEqual(
+                fetch_psp.latest_artifact_prior(root, "openapi"),
+                expected,
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

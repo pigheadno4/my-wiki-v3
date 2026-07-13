@@ -307,6 +307,18 @@ def _next_artifact_target(artifact_root: Path, stem: str, collection_date: str) 
             stem + "-" + collection_date + "-r" + str(revision) + ".json"
         )
         revision += 1
+
+
+def latest_artifact_prior(artifact_root: Path, stem: str) -> Optional[Path]:
+    pattern = re.compile(
+        "^" + re.escape(stem) + r"-(\d{4}-\d{2}-\d{2})(?:-r(\d+))?\.json$"
+    )
+    candidates = []
+    for path in artifact_root.glob(stem + "-*.json"):
+        match = pattern.match(path.name)
+        if match:
+            candidates.append((match.group(1), int(match.group(2) or "1"), path))
+    return sorted(candidates)[-1][2] if candidates else None
     return target
 
 
@@ -397,8 +409,7 @@ def collect_metronome(
             events.append(event)
             continue
         stem = Path(urlsplit(record.fetch_url).path).stem.replace(".", "-")
-        previous_files = sorted(artifact_root.glob(stem + "-*.json"))
-        previous_path = previous_files[-1] if previous_files else None
+        previous_path = latest_artifact_prior(artifact_root, stem)
         previous_body = previous_path.read_text(encoding="utf-8") if previous_path else None
         if previous_body == body:
             event["state"] = "unchanged"
