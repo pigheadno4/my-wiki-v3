@@ -4,6 +4,7 @@
 
 | State | Count |
 | --- | ---: |
+| collected-new | 222 |
 | unchanged | 5 |
 
 ## Discovery reconciliation
