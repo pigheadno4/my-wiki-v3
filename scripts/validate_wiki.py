@@ -31,6 +31,7 @@ REQUIRED = {
     "concept": ["title", "type", "category", "tags"],
     "comparison": ["title", "type", "dimension", "date_created", "tags"],
     "analysis": ["title", "type", "date_created", "tags"],
+    "log": ["title", "type", "tags"],
 }
 PLACEHOLDER_RE = re.compile(r"\[TODO\]|\bTBD\b|\bFIXME\b|<placeholder>|FILL IN", re.IGNORECASE)
 WIKILINK_RE = re.compile(r"\[\[([^\]|#]+)(?:[#|][^\]]*)?\]\]")

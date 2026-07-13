@@ -62,6 +62,30 @@ class NestedRawLinkTests(unittest.TestCase):
 
             self.assertEqual([], errors)
 
+    def test_provider_log_is_a_valid_page_type(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            raw = root / "raw"
+            wiki = root / "wiki"
+            log = wiki / "metronome-log.md"
+            raw.mkdir()
+            wiki.mkdir()
+            log.write_text(
+                "---\n"
+                'title: "Metronome Log"\n'
+                "type: log\n"
+                "tags: [metronome, operations]\n"
+                "---\n\n"
+                "## 2026-07-13\n\nCollection completed.\n",
+                encoding="utf-8",
+            )
+
+            with patch.multiple(validate_wiki, ROOT=root, RAW=raw, WIKI=wiki):
+                errors = []
+                validate_wiki.check_file(log, validate_wiki.build_link_index(), errors)
+
+            self.assertEqual([], errors)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -6,6 +6,11 @@
 
 - [[stripe]]
 
+## Related platforms
+
+- [[metronome-index]] — independent provider capsule for Metronome documentation
+- [[metronome]] — Metronome company and platform page
+
 ## Sources
 
 - [[source-stripe-api-tour]] — Stripe API tour: PaymentIntent lifecycle, Charge, retry rule, Events/webhooks, 5 integration paths (webpage, 2026-04-19)
