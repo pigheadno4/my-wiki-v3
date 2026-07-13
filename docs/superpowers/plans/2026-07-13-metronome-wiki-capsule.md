@@ -31,21 +31,21 @@
 - Consumes: existing `build_link_index()` and `check_file()` behavior.
 - Produces: `build_link_index()` entries for both raw basenames and repository-relative extensionless raw paths such as `raw/metronome/guides/get-started/home-2026-07-13`.
 
-- [ ] **Step 1: Write failing nested-link tests**
+- [x] **Step 1: Write failing nested-link tests**
 
 Add tests that patch `RAW` and `WIKI` to temporary directories, create a nested raw file, and assert the link index contains both `home-2026-07-13` and `raw/metronome/guides/home-2026-07-13`. Add a source-page check using `[[raw/metronome/guides/home-2026-07-13|snapshot]]` and assert no unresolved-link error.
 
-- [ ] **Step 2: Run the focused test and confirm failure**
+- [x] **Step 2: Run the focused test and confirm failure**
 
 Run: `python3 -m unittest tests.test_validate_wiki -v`
 
 Expected: FAIL because `build_link_index()` currently scans only top-level raw Markdown files and directories.
 
-- [ ] **Step 3: Implement recursive raw-link indexing**
+- [x] **Step 3: Implement recursive raw-link indexing**
 
 Change `build_link_index()` to recurse through `RAW.rglob("*.md")`. For every raw Markdown file, add its basename stem and its extensionless path relative to `ROOT`, using POSIX separators. Preserve existing wiki basename behavior and top-level raw-directory targets.
 
-- [ ] **Step 4: Run focused and full tests**
+- [x] **Step 4: Run focused and full tests**
 
 Run:
 
@@ -56,7 +56,7 @@ python3 -m unittest discover -s tests -v
 
 Expected: all tests pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/validate_wiki.py tests/test_validate_wiki.py
@@ -76,7 +76,7 @@ git commit -m "feat: validate nested raw wikilinks"
 - Consumes: `split_frontmatter()` and `parse_frontmatter()` from `scripts/validate_wiki.py`, collected Markdown under `raw/metronome/`, source summaries under `wiki/sources/metronome/`, `wiki/metronome-index.md`, `wiki/metronome-log.md`, and `wiki/companies/metronome.md`.
 - Produces: `CapsuleReport`, `inspect_capsule(root: Path) -> CapsuleReport`, `validate_capsule(report: CapsuleReport) -> list[str]`, and a CLI that prints reconciled counts plus orphan paths and exits nonzero only for structural errors.
 
-- [ ] **Step 1: Write failing reconciliation tests**
+- [x] **Step 1: Write failing reconciliation tests**
 
 Create temporary capsule fixtures covering:
 
@@ -88,13 +88,13 @@ Create temporary capsule fixtures covering:
 - a company `source_count` that differs from the number of Metronome source pages;
 - a source path listed in the index that does not exist.
 
-- [ ] **Step 2: Run the focused test and confirm failure**
+- [x] **Step 2: Run the focused test and confirm failure**
 
 Run: `python3 -m unittest tests.test_metronome_capsule -v`
 
 Expected: FAIL because the capsule inspection module does not exist.
 
-- [ ] **Step 3: Implement capsule inspection**
+- [x] **Step 3: Implement capsule inspection**
 
 In `scripts/metronome_capsule.py`:
 
@@ -115,7 +115,7 @@ Metronome capsule: <raw> raw, <sources> sources, <orphans> pending ingest
 
 Then print structural errors, or print every orphan path under a `Pending ingest:` heading. Return `1` for structural errors and `0` when the capsule is structurally sound even if pending raw files remain.
 
-- [ ] **Step 4: Run focused and full tests**
+- [x] **Step 4: Run focused and full tests**
 
 Run:
 
@@ -126,7 +126,7 @@ python3 -m unittest discover -s tests -v
 
 Expected: all tests pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/metronome_capsule.py scripts/validate_metronome_capsule.py tests/test_metronome_capsule.py
@@ -151,11 +151,11 @@ git commit -m "feat: validate metronome capsule state"
 - Consumes: the completed collection status and run manifest.
 - Produces: provider routing pages that clearly distinguish `225 collected` from `0 ingested`, plus empty tracked source/concept ownership roots.
 
-- [ ] **Step 1: Add the `log` page schema**
+- [x] **Step 1: Add the `log` page schema**
 
 Add `"log": ["title", "type", "tags"]` to `REQUIRED` in `scripts/validate_wiki.py` so provider logs are validated rather than silently excluded.
 
-- [ ] **Step 2: Create the Metronome index**
+- [x] **Step 2: Create the Metronome index**
 
 Create `wiki/metronome-index.md` as the canonical provider router with:
 
@@ -166,17 +166,17 @@ Create `wiki/metronome-index.md` as the canonical provider router with:
 - relationship links to `[[stripe]]`, `[[stripe-index]]`, and `[[metronome-log]]`;
 - Markdown links to collection status and the latest collection manifest.
 
-- [ ] **Step 3: Create the company and provider log pages**
+- [x] **Step 3: Create the company and provider log pages**
 
 Create `wiki/companies/metronome.md` with valid company frontmatter and `source_count: 0`. Keep the body limited to capsule status, relationship routing, and the explicit statement that provider capabilities will be populated from source summaries during ingest.
 
 Create `wiki/metronome-log.md` with valid log frontmatter and a newest-first `2026-07-13` collection entry recording 225 pages, 2 OpenAPI artifacts, 222 new items, 5 unchanged items, 17 sitemap-only pages, and zero failures. Link to operational evidence with ordinary relative Markdown links.
 
-- [ ] **Step 4: Create provider ownership roots and navigation links**
+- [x] **Step 4: Create provider ownership roots and navigation links**
 
 Track empty `wiki/sources/metronome/` and `wiki/concepts/metronome/` using `.gitkeep`. Add Metronome to `wiki/index.md` under PSP indexes and Companies. Add a concise `## Related platforms` section near the top of `wiki/stripe-index.md` linking only to `[[metronome-index]]` and `[[metronome]]`, without duplicating source or concept catalogs.
 
-- [ ] **Step 5: Validate the new capsule**
+- [x] **Step 5: Validate the new capsule**
 
 Run:
 
@@ -188,7 +188,7 @@ python3 -m unittest discover -s tests -v
 
 Expected: focused wiki validation passes; capsule validation reports 225 raw, 0 sources, 225 pending ingest and exits zero; all tests pass.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add scripts/validate_wiki.py wiki/index.md wiki/stripe-index.md wiki/metronome-index.md wiki/metronome-log.md wiki/companies/metronome.md wiki/sources/metronome/.gitkeep wiki/concepts/metronome/.gitkeep
@@ -207,15 +207,15 @@ git commit -m "docs: create metronome wiki capsule"
 - Consumes: `scripts/validate_metronome_capsule.py`.
 - Produces: operator instructions that make nested Metronome orphan reporting reproducible without changing the serial ingest rule.
 
-- [ ] **Step 1: Document provider-aware orphan validation**
+- [x] **Step 1: Document provider-aware orphan validation**
 
 In `rules/lint.md`, preserve the existing top-level legacy orphan procedure and add a nested-provider subsection directing operators to run `python3 scripts/validate_metronome_capsule.py` for Metronome. State that pending orphans are expected before ingest and structural mismatches are errors.
 
-- [ ] **Step 2: Add the capsule validation command to the provider profile**
+- [x] **Step 2: Add the capsule validation command to the provider profile**
 
 In `rules/psp/metronome.md`, add a post-collection/pre-ingest command block for `python3 scripts/validate_metronome_capsule.py` and state that collection never updates source pages or starts ingest.
 
-- [ ] **Step 3: Run final verification**
+- [x] **Step 3: Run final verification**
 
 Run:
 
@@ -229,13 +229,13 @@ git diff --check
 
 Also run `python3 scripts/validate_wiki.py` across the existing wiki and confirm that any nonzero result contains only the 17 previously recorded unrelated issues.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add rules/lint.md rules/psp/metronome.md
 git commit -m "docs: add metronome capsule validation workflow"
 ```
 
-- [ ] **Step 5: Report and stop before ingest**
+- [x] **Step 5: Report and stop before ingest**
 
 Report capsule paths, deterministic counts, test results, the unchanged pre-existing validator issue count, and commit IDs. Do not benchmark models or ingest a source until the user explicitly requests the ingest pilot.
