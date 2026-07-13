@@ -79,8 +79,9 @@ def build_link_index() -> set[str]:
     names: set[str] = set()
     for p in WIKI.rglob("*.md"):
         names.add(p.stem)
-    for p in RAW.glob("*.md"):
+    for p in RAW.rglob("*.md"):
         names.add(p.stem)
+        names.add(p.relative_to(ROOT).with_suffix("").as_posix())
     for p in RAW.glob("*/"):  # repo detail dirs are valid link targets too
         names.add(p.name.rstrip("/"))
     return names
