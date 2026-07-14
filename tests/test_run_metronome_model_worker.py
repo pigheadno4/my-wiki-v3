@@ -14,6 +14,7 @@ if str(SCRIPTS) not in sys.path:
 from run_metronome_model_worker import (  # noqa: E402
     build_codex_command,
     build_page_profile,
+    repair_raw_link,
     repair_quote_bounds,
     run_worker,
 )
@@ -97,6 +98,7 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         self.assertEqual("read-only", command[command.index("-s") + 1])
         self.assertEqual("/tmp/minimal", command[command.index("-C") + 1])
         self.assertIn("--skip-git-repo-check", command)
+        self.assertIn("--ignore-user-config", command)
 
     def test_page_profile_covers_headings_and_conditional_hints(self):
         profile = build_page_profile("# Alpha\n## Beta\nrequired when enabled\n")
@@ -116,6 +118,16 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         output = {"grounding_quotes": [{"line_start": 9, "line_end": 9, "text": "same"}]}
 
         self.assertEqual(0, repair_quote_bounds("same\nother\nsame\n", output))
+
+    def test_raw_link_target_is_repaired_without_changing_label(self):
+        job = self.valid_job()
+        output = {"proposed_raw_link": "[[raw/metronome/wrong|dated snapshot]]"}
+
+        self.assertTrue(repair_raw_link(job, output))
+        self.assertEqual(
+            "[[raw/metronome/guides/home|dated snapshot]]",
+            output["proposed_raw_link"],
+        )
 
     def test_retry_receipt_sums_usage_and_keeps_rejected_reason(self):
         root, job_path, job = self.make_root()
@@ -137,6 +149,7 @@ class ModelWorkerRunnerTests(unittest.TestCase):
 
         self.assertEqual(0, result)
         self.assertEqual(2, len(calls))
+        self.assertEqual(900, calls[0][1]["timeout"])
         self.assertNotEqual(root, calls[0][1]["cwd"])
         self.assertEqual([True, True], staged_files)
         receipt = json.loads((root / job["artifact_dir"] / "model-worker-receipt.json").read_text())

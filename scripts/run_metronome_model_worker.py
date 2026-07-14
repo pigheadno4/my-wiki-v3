@@ -25,6 +25,7 @@ SCHEMA_PATH = Path("tracking/ingest/metronome/pilot/schemas/model-output-v3.sche
 PROMPT_PATH = Path("tracking/ingest/metronome/pilot/prompts/source-summary-v3.md")
 HEADING_RE = re.compile(r"^#{1,6}\s+(.+?)\s*$")
 METHOD_RE = re.compile(r"\b(GET|POST|PUT|PATCH|DELETE)\s+(/\S+)", re.IGNORECASE)
+RAW_LINK_RE = re.compile(r"^\[\[([^|\]]+)\|([^\]]+)\]\]$")
 RESPONSE_RE = re.compile(r"\b([1-5][0-9]{2})\b")
 CONDITIONAL_RE = re.compile(r"\b(if|when|unless|only if|mutually exclusive|one of)\b", re.IGNORECASE)
 GATE_RE = re.compile(r"\b(beta|preview|allowlist|feature flag|enabled for|contact metronome)\b", re.IGNORECASE)
@@ -104,6 +105,7 @@ def build_codex_command(
         "read-only",
         "--ephemeral",
         "--skip-git-repo-check",
+        "--ignore-user-config",
         "--output-schema",
         str(schema_path),
         "--json",
@@ -165,6 +167,26 @@ def repair_quote_bounds(raw_text: str, output: Dict[str, Any]) -> int:
     return repaired
 
 
+def repair_raw_link(job: Dict[str, Any], output: Dict[str, Any]) -> bool:
+    raw_link = output.get("proposed_raw_link")
+    match = RAW_LINK_RE.match(raw_link) if isinstance(raw_link, str) else None
+    if not match:
+        return False
+    expected_target = str(job["raw_path"])
+    if expected_target.endswith(".md"):
+        expected_target = expected_target[:-3]
+    if match.group(1) == expected_target:
+        return False
+    output["proposed_raw_link"] = f"[[{expected_target}|{match.group(2)}]]"
+    return True
+
+
+def _text(value: Any) -> str:
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return value or ""
+
+
 def _write_json(path: Path, payload: Dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
@@ -195,6 +217,7 @@ def run_worker(
     attempt_records: List[Dict[str, Any]] = []
     usages: List[Optional[Dict[str, Any]]] = []
     total_quote_repairs = 0
+    total_raw_link_repairs = 0
     last_result: Any = None
     last_attempt_dir: Optional[Path] = None
     last_output: Optional[Dict[str, Any]] = None
@@ -215,7 +238,21 @@ def run_worker(
                 job["model"],
                 job["reasoning_effort"],
             )
-            result = runner(command, capture_output=True, text=True, cwd=staged_cwd)
+            try:
+                result = runner(
+                    command,
+                    capture_output=True,
+                    text=True,
+                    cwd=staged_cwd,
+                    timeout=int(job.get("timeout_seconds", 900)),
+                )
+            except subprocess.TimeoutExpired as exc:
+                result = subprocess.CompletedProcess(
+                    command,
+                    124,
+                    stdout=_text(exc.stdout),
+                    stderr=_text(exc.stderr) + "\nworker attempt timed out",
+                )
             last_result = result
             last_attempt_dir = attempt_dir
             events_path = attempt_dir / "events.jsonl"
@@ -239,6 +276,8 @@ def run_worker(
                     else:
                         output = loaded
                         total_quote_repairs += repair_quote_bounds(raw_text, output)
+                        if repair_raw_link(job, output):
+                            total_raw_link_repairs += 1
                         _write_json(output_path, output)
                         errors.extend(validate_model_output(root, job, output))
                 except json.JSONDecodeError as exc:
@@ -292,6 +331,7 @@ def run_worker(
                     "cumulative_token_usage": cumulative,
                     "token_usage_unavailable_reason": None if cumulative is not None else "Codex event stream omitted usage.",
                     "quote_line_repairs": total_quote_repairs,
+                    "raw_link_repairs": total_raw_link_repairs,
                     "page_profile": profile,
                 }
                 _write_json(artifact_dir / "model-worker-receipt.json", receipt)
@@ -327,6 +367,7 @@ def run_worker(
         "cumulative_token_usage": cumulative,
         "token_usage_unavailable_reason": None if cumulative is not None else "Codex event stream omitted usage.",
         "quote_line_repairs": total_quote_repairs,
+        "raw_link_repairs": total_raw_link_repairs,
         "page_profile": profile,
     }
     _write_json(artifact_dir / "model-worker-receipt.json", failed)
