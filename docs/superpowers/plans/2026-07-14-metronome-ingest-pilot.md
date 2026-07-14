@@ -36,7 +36,7 @@
 - Consumes: immutable raw files under `raw/metronome/` and repository-relative write-set paths.
 - Produces: `load_json(path: Path) -> dict`, `validate_job(root: Path, job: dict) -> list[str]`, `validate_receipt(root: Path, job: dict, receipt: dict) -> list[str]`, and a CLI accepting `--job` plus optional `--receipt`.
 
-- [ ] **Step 1: Write failing validation tests**
+- [x] **Step 1: Write failing validation tests**
 
 Cover these behaviors with temporary repositories:
 
@@ -47,17 +47,17 @@ Cover these behaviors with temporary repositories:
 - successful receipts require a worker commit, passing validation commands, actual model provider/model, and approved review status;
 - missing token usage is allowed only when recorded as `null` with a reason.
 
-- [ ] **Step 2: Run the focused test and confirm failure**
+- [x] **Step 2: Run the focused test and confirm failure**
 
 Run: `python3 -m unittest tests.test_metronome_ingest_pilot -v`
 
 Expected: import failure because `metronome_ingest_pilot` does not exist.
 
-- [ ] **Step 3: Implement minimal validators and CLI**
+- [x] **Step 3: Implement minimal validators and CLI**
 
 Use Python 3.9-compatible dictionaries and lists. Validate raw quote text with `splitlines()` and `"\n".join(lines[start - 1:end])`. Keep schema validation deterministic and return all errors instead of stopping at the first one. The CLI prints `job: valid` and, when supplied, `receipt: valid`; otherwise it prints each error and exits `1`.
 
-- [ ] **Step 4: Create the representative benchmark manifest**
+- [x] **Step 4: Create the representative benchmark manifest**
 
 Record these five immutable inputs with categories and line counts:
 
@@ -71,11 +71,11 @@ Record these five immutable inputs with categories and line counts:
 
 Add evaluation dimensions: quote accuracy, unsupported claims, raw-link correctness, focused-validator pass rate, capsule-validator pass rate after coordinator finalization, coordinator repair minutes, elapsed seconds, turns, input/output tokens when available, and cost when available. Record the changed-page case as deferred with the reason `no canonical URL currently has two retained raw versions`.
 
-- [ ] **Step 5: Create the baseline job**
+- [x] **Step 5: Create the baseline job**
 
 Use job ID `pilot-home-baseline`, canonical URL `https://docs.metronome.com/guides/get-started/home`, raw path `raw/metronome/guides/get-started/home-2026-07-13.md`, source output `wiki/sources/metronome/source-metronome-guides-get-started-home.md`, concept lease `wiki/concepts/metronome/metronome-usage-based-billing.md`, and role `strong_baseline`. Allow only those two wiki paths for the worker; forbid company, provider index/log, root index/log, generic concepts, comparisons, and all raw paths.
 
-- [ ] **Step 6: Run tests and commit**
+- [x] **Step 6: Run tests and commit**
 
 Run:
 
@@ -106,11 +106,11 @@ git commit -m "feat: define metronome ingest pilot contract"
 - Consumes: a benchmark-set raw path and the source-page contract from the approved design.
 - Produces: a read-only prompt that requests a fact packet rather than repository edits, plus a dated no-cost readiness record.
 
-- [ ] **Step 1: Write the benchmark prompt**
+- [x] **Step 1: Write the benchmark prompt**
 
 Require the candidate model to read one complete raw file and return JSON containing: canonical URL, 3–5 exact quotes with line locations, overview, takeaways, structured details, suggested tags, concept targets, unsupported-claim self-check, and proposed path-qualified raw link. Explicitly forbid repository edits, external facts, batch reading, company/index/log changes, and claims not supported by the assigned raw file.
 
-- [ ] **Step 2: Locate the benchmark binary and run only the no-cost dry run**
+- [x] **Step 2: Locate the benchmark binary and run only the no-cost dry run**
 
 Run:
 
@@ -122,7 +122,7 @@ BIN="$HOME/.agents/skills/gstack/bin/gstack-model-benchmark"
 
 Record adapter availability and remediation hints in `adapter-readiness.md`. State that the gstack adapter set does not cover DeepSeek or MiniMax and that no paid benchmark was run.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add tracking/ingest/metronome/pilot/prompts/source-summary-benchmark.md tracking/ingest/metronome/pilot/adapter-readiness.md
@@ -143,27 +143,27 @@ git commit -m "docs: add metronome model benchmark prompt"
 - Consumes: `pilot-home-baseline.json` and the complete raw page.
 - Produces: one grounded source summary and one leased platform concept; no shared coordinator files.
 
-- [ ] **Step 1: Create the worker worktree and verify baseline tests**
+- [x] **Step 1: Create the worker worktree and verify baseline tests**
 
 Create branch `codex/metronome-pilot-home-worker` under `.worktrees/metronome-pilot-home-worker`, verify `.worktrees/` is ignored, and run `python3 -m unittest discover -s tests -v`.
 
-- [ ] **Step 2: Read the full raw file and extract grounding quotes**
+- [x] **Step 2: Read the full raw file and extract grounding quotes**
 
-Read all 140 lines with line numbers. Record 3–5 exact quotes covering the platform problem, event-driven billing flow, pricing model objects, and downstream invoice/reporting outcomes. Do not write wiki content until the full read and concept audit are complete.
+Read all 140 lines with line numbers. Record 3–5 exact quotes covering the getting-started routes, the four pricing and packaging patterns, and downstream invoice/reporting navigation. Do not infer event ingestion or object-model details from this landing page, and do not write wiki content until the full read and concept audit are complete.
 
-- [ ] **Step 3: Complete the concept audit first**
+- [x] **Step 3: Complete the concept audit first**
 
 Search all existing concept pages for the same topic. Because this is the first Metronome platform source, create `metronome-usage-based-billing.md` with concept frontmatter, a source-grounded definition, the documented workflow, relationships to [[metronome]] and [[stripe]], open questions explicitly limited by the single source, and a `## Sources` link to the new source page.
 
-- [ ] **Step 4: Create the source page**
+- [x] **Step 4: Create the source page**
 
 Use the exact source contract: `date_ingested: 2026-07-14`, canonical URL from the job, `original_format: webpage`, the one path relative to `raw/`, tags `[metronome, usage-based-billing, getting-started]`, all six required body sections, a concise initial change-history entry, links to the company and leased concept, and `[[raw/metronome/guides/get-started/home-2026-07-13|2026-07-13 snapshot - initial collection]]`.
 
-- [ ] **Step 5: Validate write ownership and content**
+- [x] **Step 5: Validate write ownership and content**
 
 Run focused wiki validation on the source and concept. Compare `git diff --name-only` against the job's allowed write paths. Run the full test suite. Do not run the capsule validator in the worker because coordinator-owned index/count updates have not occurred yet.
 
-- [ ] **Step 6: Commit worker output**
+- [x] **Step 6: Commit worker output**
 
 ```bash
 git add wiki/concepts/metronome/metronome-usage-based-billing.md wiki/sources/metronome/source-metronome-guides-get-started-home.md
@@ -181,25 +181,26 @@ Record the resulting commit hash for the coordinator receipt.
 - Modify: `wiki/companies/metronome.md`
 - Modify: `wiki/metronome-index.md`
 - Modify: `wiki/metronome-log.md`
+- Modify: `wiki/index.md`
 - Merge from worker: source and concept files from Task 3
 
 **Interfaces:**
 - Consumes: reviewed worker commit, job contract, grounding quotes, focused validation results, and actual runtime model identity when available.
 - Produces: approved receipt and coordinator-owned query routing/count updates.
 
-- [ ] **Step 1: Review and merge the worker commit**
+- [x] **Step 1: Review and merge the worker commit**
 
 Verify the worker diff touches exactly its two allowed wiki files, read both files completely, compare every factual claim to the raw page, and fast-forward or cherry-pick only after the review passes.
 
-- [ ] **Step 2: Write the final receipt**
+- [x] **Step 2: Write the final receipt**
 
 Record the exact job/source/raw identity, successful status, 3–5 grounding quotes and locations, worker commit, the two worker files, proposed and completed shared updates, all validation commands/results, logical role `strong_baseline`, actual current model provider/model when exposed by the runtime, token usage or `null` plus an availability reason, elapsed time when available, and review status `approved` with coordinator notes.
 
-- [ ] **Step 3: Update coordinator-owned wiki pages**
+- [x] **Step 3: Update coordinator-owned wiki pages**
 
 Set company `source_count` to `1` and replace the empty-capsule language only with claims grounded in the baseline source. Update the Metronome index to `1` ingested and `224` pending, link the new source and concept, and preserve the planned taxonomy for the remaining concepts. Prepend a `2026-07-14` ingest entry to the provider log with the source, concept, worker role, receipt path, and validation result.
 
-- [ ] **Step 4: Validate the complete cycle**
+- [x] **Step 4: Validate the complete cycle**
 
 Run:
 
@@ -212,7 +213,7 @@ python3 -m unittest discover -s tests -v
 
 Expected: job and receipt valid; focused wiki validation passes; capsule reports 225 raw, 1 source, 224 pending ingest; all tests pass.
 
-- [ ] **Step 5: Commit coordinator finalization**
+- [x] **Step 5: Commit coordinator finalization**
 
 ```bash
 git add tracking/ingest/metronome/pilot/receipts/pilot-home-baseline.json wiki/companies/metronome.md wiki/metronome-index.md wiki/metronome-log.md
@@ -230,14 +231,14 @@ git commit -m "docs: finalize metronome baseline ingest"
 - Consumes: all pilot commits.
 - Produces: a verified local `main` state and a clear paid-benchmark decision point.
 
-- [ ] **Step 1: Mark completed plan checkboxes and run final verification**
+- [x] **Step 1: Mark completed plan checkboxes and run final verification**
 
 Run the full tests, Python compilation, job/receipt validation, focused wiki validation, capsule validation, and `git diff --check`. Run the full wiki validator and confirm any remaining failures are the same unrelated pre-existing issues.
 
-- [ ] **Step 2: Merge locally and verify on `main`**
+- [x] **Step 2: Merge locally and verify on `main`**
 
 Use a local fast-forward merge without pull or push, rerun the full tests and capsule validator, then remove the temporary worktree and feature branches.
 
-- [ ] **Step 3: Stop before paid model runs or parallel scale-out**
+- [x] **Step 3: Stop before paid model runs or parallel scale-out**
 
 Report the baseline quality evidence, adapter readiness, remaining 224-page queue, receipts, and commits. Request the provider choice before any paid Claude/GPT/Gemini benchmark. Note that DeepSeek/MiniMax require a separate compatible adapter or runtime configuration before they can be benchmarked.
