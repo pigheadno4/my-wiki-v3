@@ -88,6 +88,8 @@ class LunaWorkerRunnerTests(unittest.TestCase):
         self.assertEqual(
             [
                 "codex",
+                "-a",
+                "never",
                 "exec",
                 "-m",
                 "gpt-5.6-luna",
@@ -95,8 +97,6 @@ class LunaWorkerRunnerTests(unittest.TestCase):
                 'model_reasoning_effort="high"',
                 "-s",
                 "read-only",
-                "-a",
-                "never",
                 "--ephemeral",
                 "--output-schema",
                 str(schema),

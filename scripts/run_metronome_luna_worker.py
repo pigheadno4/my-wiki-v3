@@ -52,6 +52,8 @@ def build_codex_command(
 ) -> List[str]:
     return [
         "codex",
+        "-a",
+        "never",
         "exec",
         "-m",
         LUNA_MODEL,
@@ -59,8 +61,6 @@ def build_codex_command(
         f'model_reasoning_effort="{LUNA_REASONING_EFFORT}"',
         "-s",
         "read-only",
-        "-a",
-        "never",
         "--ephemeral",
         "--output-schema",
         str(schema_path),
