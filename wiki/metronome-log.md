@@ -6,6 +6,15 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-07-14 — Luna/Sol pilot: developer SDK walkthrough
+
+- Ingested: [[source-metronome-guides-get-started-developer-sdks]] from the complete 944-line guide.
+- Concept audit: created [[metronome-event-ingestion]], [[metronome-billable-metrics]], [[metronome-products-and-rate-cards]], and [[metronome-customers-and-contracts]] from the planned taxonomy; no separate SDK concept was warranted.
+- Luna result: passed on attempt 1 with five exact quotes and a correct raw deep-dive link.
+- Sol review: restored the 34-day event window, the future-event metric boundary, pricing/effective-period rules, and two language-example caveats; no external platform contradiction was found.
+- Coverage after finalization: 3 source summaries ingested and 222 documentation pages pending.
+- Evidence: [worker run](../tracking/ingest/metronome/pilot/runs/pilot-developer-sdks-luna/) and [final receipt](../tracking/ingest/metronome/pilot/receipts/pilot-developer-sdks-luna-final.json).
+
 ## 2026-07-14 — Luna/Sol pilot: invoicing overview
 
 - Ingested: [[source-metronome-guides-invoices-overview]] from the complete 31-line overview.

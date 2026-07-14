@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 2 |
-| Documentation pages pending ingest | 223 |
+| Source summaries ingested | 3 |
+| Documentation pages pending ingest | 222 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -24,21 +24,22 @@ Operational evidence:
 ## Sources
 
 - [[source-metronome-guides-get-started-home]] — documentation entry point, getting-started routes, and four pricing/packaging models
+- [[source-metronome-guides-get-started-developer-sdks]] — SDK installation and an introductory event-to-invoice implementation path
 - [[source-metronome-guides-invoices-overview]] — Stripe, marketplace, and ERP invoicing options
 
 ## Concepts
 
 - [[metronome-usage-based-billing]] — pay as you go, enterprise commitments, subscriptions with usage, and prepaid credits
 - [[metronome-invoicing]] — native Stripe, marketplace, and ERP invoicing paths
+- [[metronome-event-ingestion]] — usage-event fields, limits, idempotency, and matching boundary
+- [[metronome-billable-metrics]] — filters, aggregation operations, grouping, and creation-time behavior
+- [[metronome-products-and-rate-cards]] — product presentation, quantity conversion, and effective rates
+- [[metronome-customers-and-contracts]] — ingest aliases, commercial terms, and draft-invoice activation
 
 ## Planned concept taxonomy
 
 Additional concept pages will be created only when grounded source summaries are ingested:
 
-- `metronome-event-ingestion.md`
-- `metronome-billable-metrics.md`
-- `metronome-products-and-rate-cards.md`
-- `metronome-customers-and-contracts.md`
 - `metronome-credits-and-commits.md`
 - `metronome-alerts-and-notifications.md`
 - `metronome-reporting-and-analytics.md`
