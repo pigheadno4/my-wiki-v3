@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Metronome Luna source draft",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "job_id",
+    "raw_path",
+    "canonical_url",
+    "title",
+    "grounding_quotes",
+    "overview",
+    "key_takeaways",
+    "details",
+    "suggested_tags",
+    "suggested_metronome_concepts",
+    "proposed_raw_link",
+    "unsupported_claim_self_check"
+  ],
+  "properties": {
+    "job_id": {"type": "string", "minLength": 1},
+    "raw_path": {"type": "string", "pattern": "^raw/metronome/.+\\.md$"},
+    "canonical_url": {"type": "string", "pattern": "^https://docs\\.metronome\\.com/"},
+    "title": {"type": "string", "minLength": 1},
+    "grounding_quotes": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["line_start", "line_end", "text", "supports"],
+        "properties": {
+          "line_start": {"type": "integer", "minimum": 1},
+          "line_end": {"type": "integer", "minimum": 1},
+          "text": {"type": "string", "minLength": 1},
+          "supports": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "overview": {"type": "string", "minLength": 1},
+    "key_takeaways": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "details": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["heading", "facts"],
+        "properties": {
+          "heading": {"type": "string", "minLength": 1},
+          "facts": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "minLength": 1}
+          }
+        }
+      }
+    },
+    "suggested_tags": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "suggested_metronome_concepts": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^metronome-[a-z0-9-]+$"}
+    },
+    "proposed_raw_link": {"type": "string", "pattern": "^\\[\\[raw/metronome/.+\\|.+\\]\\]$"},
+    "unsupported_claim_self_check": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  }
+}

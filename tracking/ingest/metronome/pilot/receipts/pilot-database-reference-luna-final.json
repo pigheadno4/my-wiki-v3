@@ -1,0 +1,72 @@
+{
+  "schema_version": 2,
+  "job_id": "pilot-database-reference-luna",
+  "provider": "metronome",
+  "canonical_url": "https://docs.metronome.com/guides/reporting-insights/data-export/database-reference",
+  "raw_path": "raw/metronome/guides/reporting-insights/data-export/database-reference-2026-07-13.md",
+  "source_page": "wiki/sources/metronome/source-metronome-guides-reporting-insights-data-export-database-reference.md",
+  "mode": "real_ingest",
+  "worker_receipt": "tracking/ingest/metronome/pilot/runs/pilot-database-reference-luna/luna-worker-receipt.json",
+  "luna_draft": "tracking/ingest/metronome/pilot/runs/pilot-database-reference-luna/luna-source-draft.md",
+  "final_status": "approved_with_repairs",
+  "repairs": [
+    {
+      "category": "structure",
+      "description": "Replaced the mostly domain-list summary with a table-family navigation map and explicit finalized, draft-snapshot, breakdown-snapshot, effective-time, and version-selection guidance."
+    },
+    {
+      "category": "omission",
+      "description": "Elevated the global warning that all columns may appear nullable because of the export methodology and distinguished it from field-level business optionality."
+    },
+    {
+      "category": "omission",
+      "description": "Added the narrow contracts_commits scope and the need to follow table-specific time/version selection rules rather than assuming one current row per object ID."
+    },
+    {
+      "category": "wording",
+      "description": "Changed the Luna claim that payment data is in Private Beta to the source's narrower statement: the note in the Payments section says Metronome invoicing is currently in Private Beta."
+    },
+    {
+      "category": "taxonomy",
+      "description": "Created the planned metronome-reporting-and-analytics concept for cross-source warehouse grain, snapshot, nullability, and query guidance."
+    }
+  ],
+  "coordinator_repair_minutes": 14,
+  "concepts_updated": [
+    "wiki/concepts/metronome/metronome-reporting-and-analytics.md"
+  ],
+  "contradictions": [],
+  "shared_files_updated": [
+    "wiki/companies/metronome.md",
+    "wiki/metronome-index.md",
+    "wiki/metronome-log.md"
+  ],
+  "validation": [
+    {
+      "command": "python3 scripts/validate_metronome_ingest.py --job tracking/ingest/metronome/pilot/jobs/pilot-database-reference-luna.json --luna-output tracking/ingest/metronome/pilot/runs/pilot-database-reference-luna/luna-output.json --worker-receipt tracking/ingest/metronome/pilot/runs/pilot-database-reference-luna/luna-worker-receipt.json --final-receipt tracking/ingest/metronome/pilot/receipts/pilot-database-reference-luna-final.json",
+      "passed": true
+    },
+    {
+      "command": "python3 scripts/validate_wiki.py wiki/sources/metronome/source-metronome-guides-reporting-insights-data-export-database-reference.md wiki/concepts/metronome/metronome-reporting-and-analytics.md wiki/companies/metronome.md wiki/metronome-log.md",
+      "passed": true
+    },
+    {
+      "command": "python3 scripts/validate_metronome_capsule.py",
+      "passed": true
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "passed": true
+    },
+    {
+      "command": "git diff --check",
+      "passed": true
+    }
+  ],
+  "review": {
+    "reviewer": "sol-coordinator",
+    "model": "gpt-5.6-sol",
+    "status": "approved",
+    "notes": "Read all 1,600 raw lines and the complete Luna output, draft, and receipt. Luna correctly covered the major table families, deduplicated-event semantics, invoice snapshot behavior, contract breadth, payments, alerts, and the nullable-column warning. Sol improved query usefulness through grain and record-selection guidance, corrected the Private Beta scope, and kept the source explicitly non-exhaustive with a raw deep-dive link."
+  }
+}

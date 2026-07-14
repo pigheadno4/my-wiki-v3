@@ -8,6 +8,7 @@ Read the assigned Metronome raw Markdown file completely, from the first line th
 
 The coordinator will provide:
 
+- `job_id`: the immutable pilot job identifier
 - `raw_path`: one path from `tracking/ingest/metronome/pilot/benchmark-set.json`
 - `canonical_url`: the canonical documentation URL represented by that raw file
 
@@ -15,8 +16,10 @@ The coordinator will provide:
 
 ```json
 {
+  "job_id": "pilot-job-id",
   "raw_path": "repository-relative raw path",
   "canonical_url": "https://docs.metronome.com/...",
+  "title": "Concise source-page title",
   "grounding_quotes": [
     {
       "line_start": 1,
@@ -48,6 +51,10 @@ The coordinator will provide:
 - Use only Metronome-specific concept suggestions; do not create generic cross-provider concepts in this task.
 - The raw link must be path-qualified and omit the `.md` extension inside the wikilink target.
 - Put any claim you cannot support in `unsupported_claim_self_check`; do not include it in the overview, takeaways, or details.
+
+The JSON is a draft artifact, not a canonical wiki page. The coordinator performs the concept audit and decides whether to promote or repair it.
+
+When the coordinator supplies deterministic validation errors, correct only those errors while re-reading the assigned raw file. Do not copy or infer facts from the error messages.
 
 ## Prohibited actions
 

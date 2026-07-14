@@ -1,0 +1,84 @@
+{
+  "schema_version": 2,
+  "job_id": "pilot-developer-sdks-luna",
+  "provider": "metronome",
+  "canonical_url": "https://docs.metronome.com/guides/get-started/developer-sdks",
+  "raw_path": "raw/metronome/guides/get-started/developer-sdks-2026-07-13.md",
+  "source_page": "wiki/sources/metronome/source-metronome-guides-get-started-developer-sdks.md",
+  "mode": "real_ingest",
+  "worker_receipt": "tracking/ingest/metronome/pilot/runs/pilot-developer-sdks-luna/luna-worker-receipt.json",
+  "luna_draft": "tracking/ingest/metronome/pilot/runs/pilot-developer-sdks-luna/luna-source-draft.md",
+  "final_status": "approved_with_repairs",
+  "repairs": [
+    {
+      "category": "omission",
+      "description": "Restored the documented 34-day event timestamp window and the rule that billable metrics match only events sent after metric creation."
+    },
+    {
+      "category": "omission",
+      "description": "Added product types, entitlement behavior, flat versus tiered rates, USD denomination, and rate effective-period controls needed to make the pricing stage query-useful."
+    },
+    {
+      "category": "omission",
+      "description": "Added the Ruby client-variable mismatch and cross-language contract-start-date mismatch so readers do not infer unsupported SDK differences from illustrative snippets."
+    },
+    {
+      "category": "structure",
+      "description": "Reorganized the happy-path workflow into event, metric, customer, pricing, and contract stages with an explicit boundary separating the introductory walkthrough from exhaustive API and lifecycle reference."
+    },
+    {
+      "category": "taxonomy",
+      "description": "Mapped the guide to four planned domain concepts—event ingestion, billable metrics, products and rate cards, and customers and contracts—rather than creating a generic SDK concept."
+    }
+  ],
+  "coordinator_repair_minutes": 18,
+  "concepts_updated": [
+    "wiki/concepts/metronome/metronome-event-ingestion.md",
+    "wiki/concepts/metronome/metronome-billable-metrics.md",
+    "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+    "wiki/concepts/metronome/metronome-customers-and-contracts.md"
+  ],
+  "contradictions": [
+    {
+      "scope": "source_examples",
+      "description": "The Ruby setup names the client metronome but later Ruby examples call client; the canonical source records this as a sample caveat."
+    },
+    {
+      "scope": "source_examples",
+      "description": "The Go contract example starts on 2024-09-01 while Python, Node.js, and Ruby use 2024-08-01; the canonical source treats the timestamps as illustrative rather than language-specific behavior."
+    }
+  ],
+  "shared_files_updated": [
+    "wiki/companies/metronome.md",
+    "wiki/metronome-index.md",
+    "wiki/metronome-log.md"
+  ],
+  "validation": [
+    {
+      "command": "python3 scripts/validate_metronome_ingest.py --job tracking/ingest/metronome/pilot/jobs/pilot-developer-sdks-luna.json --luna-output tracking/ingest/metronome/pilot/runs/pilot-developer-sdks-luna/luna-output.json --worker-receipt tracking/ingest/metronome/pilot/runs/pilot-developer-sdks-luna/luna-worker-receipt.json --final-receipt tracking/ingest/metronome/pilot/receipts/pilot-developer-sdks-luna-final.json",
+      "passed": true
+    },
+    {
+      "command": "python3 scripts/validate_wiki.py wiki/sources/metronome/source-metronome-guides-get-started-developer-sdks.md wiki/concepts/metronome/metronome-event-ingestion.md wiki/concepts/metronome/metronome-billable-metrics.md wiki/concepts/metronome/metronome-products-and-rate-cards.md wiki/concepts/metronome/metronome-customers-and-contracts.md wiki/companies/metronome.md wiki/metronome-log.md",
+      "passed": true
+    },
+    {
+      "command": "python3 scripts/validate_metronome_capsule.py",
+      "passed": true
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "passed": true
+    },
+    {
+      "command": "git diff --check",
+      "passed": true
+    }
+  ],
+  "review": {
+    "reviewer": "sol-coordinator",
+    "model": "gpt-5.6-sol",
+    "status": "approved",
+    "notes": "Read all 944 raw lines and the complete Luna output, draft, and worker receipt. Luna accurately captured the six-stage flow, SDK languages, client setup, major SDK features, ingestion batch limit and idempotency, metric operations, aliases, and draft-invoice update behavior. Sol added material lifecycle and pricing details, preserved two code-example inconsistencies as caveats, completed the concept audit before creating the source, and found no unsupported claim in the promoted page."
+  }
+}

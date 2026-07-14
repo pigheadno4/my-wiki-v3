@@ -1,0 +1,62 @@
+{
+  "schema_version": 2,
+  "job_id": "pilot-home-luna-shadow",
+  "provider": "metronome",
+  "canonical_url": "https://docs.metronome.com/guides/get-started/home",
+  "raw_path": "raw/metronome/guides/get-started/home-2026-07-13.md",
+  "source_page": "wiki/sources/metronome/source-metronome-guides-get-started-home.md",
+  "mode": "shadow",
+  "worker_receipt": "tracking/ingest/metronome/pilot/runs/pilot-home-luna-shadow/luna-worker-receipt.json",
+  "luna_draft": "tracking/ingest/metronome/pilot/runs/pilot-home-luna-shadow/luna-source-draft.md",
+  "final_status": "approved_with_repairs",
+  "repairs": [
+    {
+      "category": "omission",
+      "description": "The Luna draft would need the How Metronome works and Plan your billing architecture routes added so the top getting-started navigation is complete rather than representing only the quickstart route."
+    },
+    {
+      "category": "omission",
+      "description": "The subscriptions-with-usage model would need promotion into the key takeaways; Luna mentioned it only in Details while giving the other three pricing patterns takeaway-level treatment."
+    },
+    {
+      "category": "structure",
+      "description": "The draft would need the baseline's explicit scope boundary stating that this navigation page does not define schemas, event-ingestion behavior, calculation rules, or invoice lifecycle mechanics."
+    },
+    {
+      "category": "taxonomy",
+      "description": "The four proposed pricing-pattern concepts would need consolidation into the existing metronome-usage-based-billing umbrella because the landing page does not justify four independent concept pages."
+    },
+    {
+      "category": "wording",
+      "description": "The generic title Metronome Docs would need a descriptive source title so future retrieval can distinguish this landing page from the full documentation corpus."
+    }
+  ],
+  "coordinator_repair_minutes": 5,
+  "concepts_updated": [],
+  "contradictions": [],
+  "shared_files_updated": [],
+  "validation": [
+    {
+      "command": "python3 scripts/validate_metronome_ingest.py --job tracking/ingest/metronome/pilot/jobs/pilot-home-luna-shadow.json --luna-output tracking/ingest/metronome/pilot/runs/pilot-home-luna-shadow/luna-output.json --worker-receipt tracking/ingest/metronome/pilot/runs/pilot-home-luna-shadow/luna-worker-receipt.json --final-receipt tracking/ingest/metronome/pilot/receipts/pilot-home-luna-shadow-final.json",
+      "passed": true
+    },
+    {
+      "command": "python3 scripts/validate_metronome_capsule.py",
+      "passed": true
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "passed": true
+    },
+    {
+      "command": "git diff --check",
+      "passed": true
+    }
+  ],
+  "review": {
+    "reviewer": "sol-coordinator",
+    "model": "gpt-5.6-sol",
+    "status": "approved",
+    "notes": "Read all 140 raw lines, both Luna attempts, the accepted output and draft, and the existing source, concept, and baseline receipt. Luna is factually grounded with a useful raw link and covers all four pricing patterns across the draft, but the strong baseline is materially better for navigation completeness, emphasis, scope boundaries, title specificity, and concept consolidation. Attempt 1 failed only because its fifth quote's line range omitted the closing span line; attempt 2 passed exact-line validation. No canonical or shared file was changed."
+  }
+}

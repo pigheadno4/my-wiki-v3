@@ -37,7 +37,7 @@
 - Consumes: existing schema-version-1 strong-baseline jobs and receipts plus new Luna job/output/worker/final receipt dictionaries.
 - Produces: `validate_luna_output(root, job, output) -> list[str]`, `render_luna_draft(job, output, ingest_date) -> str`, `validate_worker_receipt(root, job, receipt) -> list[str]`, and `validate_final_receipt(root, job, receipt) -> list[str]` while preserving `validate_receipt` compatibility.
 
-- [ ] **Step 1: Write failing Luna job and output tests**
+- [x] **Step 1: Write failing Luna job and output tests**
 
 Add fixtures and tests with these exact boundaries:
 
@@ -88,7 +88,7 @@ def valid_luna_output(self, job):
 
 Test that schema-version-2 Luna jobs require `mode`, `artifact_dir`, role `cheap_ingester`, an artifact directory matching the job ID, and a write set containing only that directory. Test that output identity must match the job, quotes must exactly match raw lines, tags must include `metronome`, concepts must start with `metronome-`, the raw link target must equal the raw path without `.md`, and unsupported claims make the output invalid.
 
-- [ ] **Step 2: Run the focused tests and confirm failure**
+- [x] **Step 2: Run the focused tests and confirm failure**
 
 Run:
 
@@ -98,7 +98,7 @@ python3 -m unittest tests.test_metronome_ingest_pilot -v
 
 Expected: import errors for the new validation and rendering functions or assertion failures because schema-version-2 jobs are not supported.
 
-- [ ] **Step 3: Implement backward-compatible Luna validation**
+- [x] **Step 3: Implement backward-compatible Luna validation**
 
 Add these constants and public functions:
 
@@ -133,7 +133,7 @@ def validate_luna_output(root: Path, job: Dict[str, Any], output: Dict[str, Any]
 
 Extract existing quote checking into `_validate_quotes(...)` so baseline receipt behavior stays unchanged. Branch `validate_job` on `schema_version == 2`: validate the Luna fields and do not require `concept_leases`; retain the current schema-version-1 path without changes.
 
-- [ ] **Step 4: Implement deterministic draft rendering**
+- [x] **Step 4: Implement deterministic draft rendering**
 
 Render the accepted Luna substance without adding facts:
 
@@ -172,13 +172,13 @@ def render_luna_draft(job: Dict[str, Any], output: Dict[str, Any], ingest_date: 
 
 Test exact frontmatter, raw path relative to `raw/`, required headings, and path-qualified raw link.
 
-- [ ] **Step 5: Implement worker and final receipt validation**
+- [x] **Step 5: Implement worker and final receipt validation**
 
 Require worker receipts to contain job identity, model `gpt-5.6-luna`, reasoning `high`, attempt count `1` or `2`, timestamps, elapsed seconds, process exit code, output/draft/log paths inside the artifact directory, deterministic checks, and token usage or an unavailability reason. Require final receipts to reference the worker receipt, classify mode as `shadow` or `real_ingest`, list repairs and repair minutes, list concepts/shared files, include validation commands, and carry a Sol decision of `approved`, `approved_with_repairs`, or `rejected`.
 
 Keep `validate_receipt` as the schema-version-1 baseline validator; expose the new validators separately so the existing receipt remains valid.
 
-- [ ] **Step 6: Extend the CLI and verify both generations**
+- [x] **Step 6: Extend the CLI and verify both generations**
 
 Add mutually independent options:
 
@@ -200,7 +200,7 @@ python3 -m unittest discover -s tests -v
 
 Expected: the old job/receipt and every test pass.
 
-- [ ] **Step 7: Commit the contract extension**
+- [x] **Step 7: Commit the contract extension**
 
 ```bash
 git add scripts/metronome_ingest_pilot.py scripts/validate_metronome_ingest.py tests/test_metronome_ingest_pilot.py
@@ -221,7 +221,7 @@ git commit -m "feat: add luna ingest artifact contracts"
 - Consumes: one schema-version-2 Luna job and the immutable assigned raw file.
 - Produces: `build_prompt(template, job, validation_errors=None) -> str`, `build_codex_command(root, schema_path, output_path, prompt) -> list[str]`, and `run_worker(root, job_path, ingest_date) -> int` with at most two model attempts.
 
-- [ ] **Step 1: Write failing command, success, and retry tests**
+- [x] **Step 1: Write failing command, success, and retry tests**
 
 Mock `subprocess.run` and assert the command contains exactly:
 
@@ -243,7 +243,7 @@ Mock `subprocess.run` and assert the command contains exactly:
 
 Test that a valid first output writes one accepted output, draft, worker receipt, and attempt log. Test that an invalid first output triggers exactly one second call whose prompt contains the deterministic errors. Test that a second invalid result returns exit code `1`, preserves both attempts, and writes a failed receipt without a draft.
 
-- [ ] **Step 2: Run the runner tests and confirm failure**
+- [x] **Step 2: Run the runner tests and confirm failure**
 
 Run:
 
@@ -253,11 +253,11 @@ python3 -m unittest tests.test_run_metronome_luna_worker -v
 
 Expected: import failure because `run_metronome_luna_worker.py` does not exist.
 
-- [ ] **Step 3: Create the strict output schema**
+- [x] **Step 3: Create the strict output schema**
 
 Define a JSON object with `additionalProperties: false`. Require `job_id`, `raw_path`, `canonical_url`, `title`, `grounding_quotes`, `overview`, `key_takeaways`, `details`, `suggested_tags`, `suggested_metronome_concepts`, `proposed_raw_link`, and `unsupported_claim_self_check`. Constrain grounding quotes to 3-5 items; every quote requires integer `line_start`, integer `line_end`, string `text`, and string `supports`. Require at least one takeaway, one detail section, and one tag.
 
-- [ ] **Step 4: Update the prompt contract**
+- [x] **Step 4: Update the prompt contract**
 
 Add `job_id` and `title` to the required JSON shape. State that the output is a draft artifact, not a canonical wiki page; Luna must not edit files or concepts. Preserve the full-file, exact-quote, no-web, one-source, and raw-link rules. Add this retry clause:
 
@@ -265,13 +265,13 @@ Add `job_id` and `title` to the required JSON shape. State that the output is a 
 When the coordinator supplies deterministic validation errors, correct only those errors while re-reading the assigned raw file. Do not copy or infer facts from the error messages.
 ```
 
-- [ ] **Step 5: Implement the runner with immutable attempt evidence**
+- [x] **Step 5: Implement the runner with immutable attempt evidence**
 
 Create `attempt-1/` and, only if needed, `attempt-2/` under the job artifact directory. For each attempt, capture Codex JSONL stdout as `events.jsonl`, stderr as `stderr.log`, exit code, timestamps, and the model's last message as `output.json`. Validate the output before rendering. Copy the accepted output to `luna-output.json`, render `luna-source-draft.md`, and write `luna-worker-receipt.json` with runtime metadata.
 
 Use `subprocess.run(..., capture_output=True, text=True, cwd=root)` without `shell=True`. Do not log environment variables or authentication material.
 
-- [ ] **Step 6: Run the runner tests and full suite**
+- [x] **Step 6: Run the runner tests and full suite**
 
 ```bash
 python3 -m unittest tests.test_run_metronome_luna_worker -v
@@ -281,7 +281,7 @@ python3 -m py_compile scripts/metronome_ingest_pilot.py scripts/validate_metrono
 
 Expected: all tests and compilation pass without a real model call.
 
-- [ ] **Step 7: Commit the Luna runner**
+- [x] **Step 7: Commit the Luna runner**
 
 ```bash
 git add scripts/run_metronome_luna_worker.py tests/test_run_metronome_luna_worker.py tracking/ingest/metronome/pilot/schemas/luna-output.schema.json tracking/ingest/metronome/pilot/prompts/source-summary-benchmark.md
@@ -304,7 +304,7 @@ git commit -m "feat: add structured metronome luna runner"
 - Consumes: the approved five-case benchmark and schema-version-2 Luna job contract.
 - Produces: five ordered, validated jobs with disjoint artifact directories and exact target source paths.
 
-- [ ] **Step 1: Create the five exact job identities**
+- [x] **Step 1: Create the five exact job identities**
 
 Use these values:
 
@@ -318,11 +318,11 @@ Use these values:
 
 Each artifact directory is `tracking/ingest/metronome/pilot/runs/<job-id>`. Each allowed write path contains only that directory. Forbid all `raw/` and `wiki/` prefixes. Set role `cheap_ingester`, model provider `openai`, model `gpt-5.6-luna`, and reasoning effort `high`.
 
-- [ ] **Step 2: Add job IDs and behavior to the benchmark manifest**
+- [x] **Step 2: Add job IDs and behavior to the benchmark manifest**
 
 Preserve categories, paths, line counts, and evaluation dimensions. Add `job_id`, `mode`, and `target_source_page` to each case so the manifest remains the ordered source of truth.
 
-- [ ] **Step 3: Validate all jobs without model calls**
+- [x] **Step 3: Validate all jobs without model calls**
 
 ```bash
 python3 scripts/validate_metronome_ingest.py --job tracking/ingest/metronome/pilot/jobs/pilot-invoices-overview-luna.json
@@ -334,7 +334,7 @@ python3 scripts/validate_metronome_ingest.py --job tracking/ingest/metronome/pil
 
 Expected: each command prints `job: valid`.
 
-- [ ] **Step 4: Commit the job queue**
+- [x] **Step 4: Commit the job queue**
 
 ```bash
 git add tracking/ingest/metronome/pilot/benchmark-set.json tracking/ingest/metronome/pilot/jobs/pilot-*-luna*.json
@@ -358,11 +358,11 @@ git commit -m "docs: define metronome luna pilot jobs"
 - Consumes: the complete 31-line raw page and the validated Luna job.
 - Produces: the first Luna evidence set, one Sol-approved canonical source, concept/shared updates, and coverage `2 sources / 223 pending`.
 
-- [ ] **Step 1: Create the isolated worker worktree**
+- [x] **Step 1: Create the isolated worker worktree**
 
 Create `.worktrees/metronome-pilot-invoices-luna` on branch `codex/metronome-pilot-invoices-luna`. Verify `.worktrees/` is ignored and the full tests pass before the model call.
 
-- [ ] **Step 2: Run Luna once with automatic validation retry**
+- [x] **Step 2: Run Luna once with automatic validation retry**
 
 ```bash
 python3 scripts/run_metronome_luna_worker.py --job tracking/ingest/metronome/pilot/jobs/pilot-invoices-overview-luna.json --ingest-date 2026-07-14
@@ -370,23 +370,23 @@ python3 scripts/run_metronome_luna_worker.py --job tracking/ingest/metronome/pil
 
 Expected: exit `0`; accepted output, draft, receipt, and one or two attempt directories exist only under the job run directory.
 
-- [ ] **Step 3: Validate Luna evidence and write ownership**
+- [x] **Step 3: Validate Luna evidence and write ownership**
 
 Run the pilot validator with `--luna-output` and `--worker-receipt`. Compare the worktree diff against the single allowed artifact directory. Reject any raw or wiki edit.
 
-- [ ] **Step 4: Perform the Sol concept audit before canonical writing**
+- [x] **Step 4: Perform the Sol concept audit before canonical writing**
 
 Read the 31-line raw file, Luna output, draft, all existing Metronome source pages, and relevant concepts. Create or update `metronome-invoicing.md` first, grounded only in this page and existing approved sources. Record whether Luna omitted or overstated Stripe invoicing, marketplace invoicing, ERP invoicing, distribution channels, or optionality.
 
-- [ ] **Step 5: Promote and review the canonical source page**
+- [x] **Step 5: Promote and review the canonical source page**
 
 Create the target source page from the Luna draft. Replace the draft-only Related placeholder with actual company/concept links. Verify every claim against the complete raw page, record every Sol repair by category, and preserve the path-qualified raw link.
 
-- [ ] **Step 6: Finalize shared state and receipt**
+- [x] **Step 6: Finalize shared state and receipt**
 
 Set company coverage to `2`, index coverage to `2 ingested / 223 pending`, add source/concept links, prepend a provider-log entry, and write the Sol final receipt with repair minutes and commands.
 
-- [ ] **Step 7: Validate and commit the complete cycle**
+- [x] **Step 7: Validate and commit the complete cycle**
 
 Run final receipt validation, focused wiki validation, capsule validation expecting `225 raw, 2 sources, 223 pending ingest`, the full test suite, and `git diff --check`. Commit evidence and approved wiki updates as:
 
@@ -410,11 +410,11 @@ Remove the worker worktree only after the commit is integrated locally.
 - Consumes: the complete 140-line raw page and the existing strong baseline source/receipt.
 - Produces: a Luna shadow artifact and Sol comparison receipt while coverage remains `2 sources / 223 pending`.
 
-- [ ] **Step 1: Create `.worktrees/metronome-pilot-home-luna-shadow`**
+- [x] **Step 1: Create `.worktrees/metronome-pilot-home-luna-shadow`**
 
 Use branch `codex/metronome-pilot-home-luna-shadow`, confirm a clean baseline except `CLAUDE copy.md`, and run tests.
 
-- [ ] **Step 2: Run the Luna shadow job**
+- [x] **Step 2: Run the Luna shadow job**
 
 ```bash
 python3 scripts/run_metronome_luna_worker.py --job tracking/ingest/metronome/pilot/jobs/pilot-home-luna-shadow.json --ingest-date 2026-07-14
@@ -422,15 +422,15 @@ python3 scripts/run_metronome_luna_worker.py --job tracking/ingest/metronome/pil
 
 Expected: valid run artifacts with no wiki changes.
 
-- [ ] **Step 3: Compare Luna with the strong baseline**
+- [x] **Step 3: Compare Luna with the strong baseline**
 
 Sol reads the raw page, Luna artifacts, existing canonical source, concept, and `pilot-home-baseline.json`. Record missed routes, unsupported additions, emphasis differences, structural differences, and the edits that would have been required. Do not alter the baseline page or shared files.
 
-- [ ] **Step 4: Write and validate the shadow final receipt**
+- [x] **Step 4: Write and validate the shadow final receipt**
 
 Use mode `shadow`, an empty canonical write set, comparison repairs, repair minutes, and an approval or rejection decision. Run worker/final receipt validation, capsule validation expecting `2 / 223`, tests, and diff checks.
 
-- [ ] **Step 5: Commit and remove the shadow worktree**
+- [x] **Step 5: Commit and remove the shadow worktree**
 
 ```bash
 git commit -m "docs: record metronome luna baseline comparison"
@@ -451,11 +451,11 @@ git commit -m "docs: record metronome luna baseline comparison"
 - Consumes: the complete 944-line SDK guide.
 - Produces: one canonical SDK source plus justified concept/shared updates and coverage `3 sources / 222 pending`.
 
-- [ ] **Step 1: Create `.worktrees/metronome-pilot-developer-sdks-luna` and verify tests**
+- [x] **Step 1: Create `.worktrees/metronome-pilot-developer-sdks-luna` and verify tests**
 
 Use branch `codex/metronome-pilot-developer-sdks-luna`.
 
-- [ ] **Step 2: Run and validate Luna**
+- [x] **Step 2: Run and validate Luna**
 
 ```bash
 python3 scripts/run_metronome_luna_worker.py --job tracking/ingest/metronome/pilot/jobs/pilot-developer-sdks-luna.json --ingest-date 2026-07-14
@@ -463,15 +463,15 @@ python3 scripts/run_metronome_luna_worker.py --job tracking/ingest/metronome/pil
 
 Validate exact quotes, full identity, raw link, attempt evidence, and write boundaries.
 
-- [ ] **Step 3: Perform the Sol concept audit first**
+- [x] **Step 3: Perform the Sol concept audit first**
 
 Read all 944 raw lines and the complete Luna artifacts. Audit planned Metronome concepts before writing the source. Create or update only concepts directly supported by the page; keep language examples and SDK mechanics on the source page when they do not justify a new concept.
 
-- [ ] **Step 4: Finalize source, contradictions, shared state, and receipt**
+- [x] **Step 4: Finalize source, contradictions, shared state, and receipt**
 
 Check installation/configuration, usage events, billable metrics, customers, contracts, invoices, language parity, code caveats, and any limits stated by the raw page. Record omissions and repairs. Update coverage to `3 / 222` only after approval.
 
-- [ ] **Step 5: Validate, commit, and remove the worktree**
+- [x] **Step 5: Validate, commit, and remove the worktree**
 
 Require final receipt validation, focused wiki validation, capsule `225 / 3 / 222`, tests, compilation, and diff checks. Commit:
 
@@ -494,11 +494,11 @@ git commit -m "docs: complete metronome luna sdk pilot"
 - Consumes: the complete 1,600-line database reference.
 - Produces: a query-useful schema summary without pretending to reproduce the full reference, plus coverage `4 sources / 221 pending`.
 
-- [ ] **Step 1: Create `.worktrees/metronome-pilot-database-reference-luna` and verify tests**
+- [x] **Step 1: Create `.worktrees/metronome-pilot-database-reference-luna` and verify tests**
 
 Use branch `codex/metronome-pilot-database-reference-luna`.
 
-- [ ] **Step 2: Run and validate Luna**
+- [x] **Step 2: Run and validate Luna**
 
 ```bash
 python3 scripts/run_metronome_luna_worker.py --job tracking/ingest/metronome/pilot/jobs/pilot-database-reference-luna.json --ingest-date 2026-07-14
@@ -506,15 +506,15 @@ python3 scripts/run_metronome_luna_worker.py --job tracking/ingest/metronome/pil
 
 Reject summaries that turn selected table examples into an exhaustive claim or omit the all-columns-nullable warning when it is materially relevant.
 
-- [ ] **Step 3: Perform Sol audit and canonical finalization**
+- [x] **Step 3: Perform Sol audit and canonical finalization**
 
 Read all 1,600 lines. Create or update the reporting concept first. Ensure the canonical source explains export purpose, schema-navigation strategy, important global cautions, representative table families, and the raw deep-dive path. Record table-family omissions separately from critical omissions.
 
-- [ ] **Step 4: Finalize receipt and shared coverage**
+- [x] **Step 4: Finalize receipt and shared coverage**
 
 Record factual/omission/taxonomy repairs and repair minutes. Update coverage to `4 / 221`, source/concept navigation, company knowledge status, and provider log only after approval.
 
-- [ ] **Step 5: Validate, commit, and remove the worktree**
+- [x] **Step 5: Validate, commit, and remove the worktree**
 
 Require final receipt validation, focused wiki validation, capsule `225 / 4 / 221`, tests, compilation, and diff checks. Commit:
 
@@ -537,11 +537,11 @@ git commit -m "docs: complete metronome luna database pilot"
 - Consumes: the complete 4,561-line create-contract API reference.
 - Produces: a precise, navigable endpoint summary with raw fallback and coverage `5 sources / 220 pending`.
 
-- [ ] **Step 1: Create `.worktrees/metronome-pilot-create-contract-luna` and verify tests**
+- [x] **Step 1: Create `.worktrees/metronome-pilot-create-contract-luna` and verify tests**
 
 Use branch `codex/metronome-pilot-create-contract-luna`.
 
-- [ ] **Step 2: Run and validate Luna**
+- [x] **Step 2: Run and validate Luna**
 
 ```bash
 python3 scripts/run_metronome_luna_worker.py --job tracking/ingest/metronome/pilot/jobs/pilot-create-contract-luna.json --ingest-date 2026-07-14
@@ -549,15 +549,15 @@ python3 scripts/run_metronome_luna_worker.py --job tracking/ingest/metronome/pil
 
 Require exact quotes and a path-qualified raw link; validators alone do not establish field completeness.
 
-- [ ] **Step 3: Perform Sol concept and API accuracy review**
+- [x] **Step 3: Perform Sol concept and API accuracy review**
 
 Read all 4,561 lines and audit concepts before creating the source. Verify endpoint purpose, use cases, key request sections, nested structures, response/error coverage, and which details remain delegated to the raw reference. Reject invented required fields, defaults, limits, or lifecycle behavior.
 
-- [ ] **Step 4: Finalize source, shared state, and receipt**
+- [x] **Step 4: Finalize source, shared state, and receipt**
 
 Create or update the customer/contracts concept first, then finalize the source. Record critical and non-critical omissions separately. Update coverage to `5 / 220` only after every validation passes.
 
-- [ ] **Step 5: Validate, commit, and remove the worktree**
+- [x] **Step 5: Validate, commit, and remove the worktree**
 
 Require final receipt validation, focused wiki validation, capsule `225 / 5 / 220`, tests, compilation, and diff checks. Commit:
 
@@ -579,11 +579,11 @@ git commit -m "docs: complete metronome luna contract api pilot"
 - Consumes: all five raw files, Luna artifacts, worker receipts, Sol-finalized pages, final receipts, strong baseline, and quality gates.
 - Produces: an independent read-only assessment, coordinator-verified final report, and one of `scale`, `scale_with_changes`, or `do_not_scale`.
 
-- [ ] **Step 1: Verify all five cases are closed before delegation**
+- [x] **Step 1: Verify all five cases are closed before delegation**
 
 Run every job/output/worker/final receipt validator, capsule validation, full tests, Python compilation, and `git diff --check`. Confirm there are five run directories and five final Luna-pilot receipts, including the shadow case.
 
-- [ ] **Step 2: Spawn one read-only review sub-agent**
+- [x] **Step 2: Spawn one read-only review sub-agent**
 
 Give the sub-agent this bounded assignment:
 
@@ -593,11 +593,11 @@ Review the completed Metronome GPT-5.6 Luna five-page pilot. Do not edit files. 
 
 Wait for the sub-agent to finish before writing the final recommendation.
 
-- [ ] **Step 3: Verify the review against repository evidence**
+- [x] **Step 3: Verify the review against repository evidence**
 
 The Sol coordinator checks every actionable reviewer claim against the cited raw/output/source/receipt files. Preserve disagreements explicitly instead of silently rewriting the independent conclusion.
 
-- [ ] **Step 4: Write the durable pilot report**
+- [x] **Step 4: Write the durable pilot report**
 
 Include these exact sections:
 
@@ -618,7 +618,7 @@ Include these exact sections:
 
 Report per-case attempts, status, quote accuracy, unsupported claims, critical omissions, repair categories/minutes, validators, token/cost data or unavailability reasons, independent findings, and final decision.
 
-- [ ] **Step 5: Update operational navigation and run final verification**
+- [x] **Step 5: Update operational navigation and run final verification**
 
 Prepend a Metronome log entry linking the report and final decision. Confirm the index and company `source_count` match the capsule validator. Run:
 
@@ -631,13 +631,13 @@ git diff --check
 
 Expected if all real-ingest cases pass: `225 raw, 5 sources, 220 pending ingest`; all tests and compilation pass.
 
-- [ ] **Step 6: Commit the final report and completed plan**
+- [x] **Step 6: Commit the final report and completed plan**
 
 ```bash
 git add tracking/ingest/metronome/pilot/luna-sol-five-page-pilot-report.md wiki/metronome-log.md wiki/metronome-index.md docs/superpowers/plans/2026-07-14-metronome-luna-sol-five-page-pilot.md
 git commit -m "docs: conclude metronome luna ingest pilot"
 ```
 
-- [ ] **Step 7: Share both review perspectives with the user**
+- [x] **Step 7: Share both review perspectives with the user**
 
 Report the independent sub-agent recommendation, the Sol coordinator recommendation, any disagreement, measured repair burden, failed cases, and the exact conditions for processing the remaining 220-page queue. Do not begin scale-out without a new user decision.

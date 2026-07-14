@@ -2,12 +2,12 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 1
+source_count: 5
 ---
 
 ## Overview
 
-Metronome is maintained as an independent provider capsule related to [[stripe]]. Its documentation landing page organizes pricing and packaging guidance around pay-as-you-go billing, enterprise commitments, subscriptions with usage, and prepaid credits.
+Metronome is maintained as an independent provider capsule related to [[stripe]]. Its documentation covers usage-based pricing and packaging, an SDK-driven event-to-invoice workflow, and invoicing options spanning Stripe, cloud marketplaces, and ERP workflows.
 
 ## Documented billing models
 
@@ -16,17 +16,42 @@ Metronome is maintained as an independent provider capsule related to [[stripe]]
 - Hybrid subscriptions combine recurring revenue with usage-based components.
 - Prepaid credit models allow upfront purchases, with auto-recharge or gated access after depletion.
 
-The current source is a navigation overview. Detailed APIs, object models, event handling, and calculation rules require dedicated sources.
+The documentation home is a navigation overview. The SDK walkthrough adds an introductory implementation path, while complete API schemas and lifecycle rules still require dedicated references.
+
+## SDK usage-billing workflow
+
+- Python, Node.js, Ruby, and Go SDKs demonstrate a common event-to-invoice flow.
+- Event ingestion uses transaction IDs for deduplication and can associate application identifiers with customers through ingest aliases.
+- Billable metrics filter and aggregate events; products and rate cards turn those measurements into prices.
+- Customer contracts apply the rate card and produce draft invoices that update with usage.
+
+The create-contract API adds package or rate-card selection, commits and credits, pricing overrides, subscriptions, scheduled charges, usage routing, threshold billing, provider configuration, and customer hierarchy. Only customer ID and contract start are unconditionally required at the top level; nested requirements depend on the selected structures.
+
+## Invoicing options
+
+- Native Stripe invoicing can use Stripe Tax, dunning, and other Stripe product-suite capabilities.
+- Marketplace invoicing automates metering and invoice creation for AWS, Azure, and GCP.
+- ERP invoicing includes out-of-the-box and custom integrations for collection, book-closing, and revenue workflows.
+
+## Reporting and data export
+
+- Warehouse exports cover raw events, customers, invoices, contracts, pricing, packages, payments, alerts, and metadata.
+- Finalized invoice rows, daily draft snapshots, and invoice-breakdown snapshots have distinct grains and update behavior.
+- Exported columns may all appear nullable because of the export methodology, so warehouse types alone do not establish business optionality.
 
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 1
-- Documentation pages pending ingest: 224
+- Ingested source summaries: 5
+- Documentation pages pending ingest: 220
 
 ## Sources
 
 - [[source-metronome-guides-get-started-home]] — documentation entry point and four pricing/packaging routes
+- [[source-metronome-guides-get-started-developer-sdks]] — SDK setup and introductory event-to-invoice workflow
+- [[source-metronome-guides-invoices-overview]] — Stripe, marketplace, and ERP invoicing options
+- [[source-metronome-guides-reporting-insights-data-export-database-reference]] — warehouse schema families, grains, and query cautions
+- [[source-metronome-api-reference-contracts-create-a-contract]] — contract creation request families and conditional rules
 
 ## Related
 
@@ -34,3 +59,9 @@ The current source is a navigation overview. Detailed APIs, object models, event
 - [[metronome-log]] — collection and future ingest history
 - [[stripe-index]] — related Stripe catalog
 - [[metronome-usage-based-billing]] — platform-specific billing concept
+- [[metronome-invoicing]] — platform-specific invoicing options
+- [[metronome-event-ingestion]] — usage-event contract and deduplication
+- [[metronome-billable-metrics]] — event matching, aggregation, and grouping
+- [[metronome-products-and-rate-cards]] — product presentation and effective pricing
+- [[metronome-customers-and-contracts]] — customer aliases, commercial terms, and invoice activation
+- [[metronome-reporting-and-analytics]] — warehouse exports, snapshot grains, and query cautions
