@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-14
 
-**Status:** Approved design, pending written-spec review
+**Status:** Approved design
 
 **Scope:** Recurring collection, version tracking, comparison preparation, and serial ingest for PSP GitHub repositories
 
@@ -97,7 +97,8 @@ tracking/github/
     |       +-- packet.json
     |       +-- ingest-packet.md
     |       +-- changed-files.txt
-    |       `-- source-diff.patch
+    |       +-- source-diff.patch
+    |       `-- state-events.jsonl
     `-- comparisons/
         `-- <from-ref>-to-<to-ref>/
             +-- comparison.json
@@ -213,9 +214,10 @@ python scripts/collect_github_repos.py collect --repo paypal/paypal-js
 python scripts/collect_github_repos.py compare --repo paypal/paypal-js --from v9 --to latest
 python scripts/collect_github_repos.py prepare --repo paypal/paypal-js --ref latest
 python scripts/collect_github_repos.py status
+python scripts/collect_github_repos.py packet-state --repo paypal/paypal-js --packet <packet-id> --from awaiting-review --to approved
 ```
 
-`collect` checks upstream state and writes accepted snapshots plus run records. `compare` resolves two versions and writes a derived comparison packet. `prepare` regenerates one ingest packet from an existing snapshot without ingesting it. `status` regenerates dashboards from machine-readable records.
+`collect` checks upstream state and writes accepted snapshots plus run records. `compare` resolves two versions and writes a derived comparison packet. `prepare` regenerates one ingest packet from an existing snapshot without ingesting it. `status` regenerates dashboards from machine-readable records. `packet-state` validates one explicit lifecycle transition and appends it to the packet's event history.
 
 ## Collection Data Flow
 
