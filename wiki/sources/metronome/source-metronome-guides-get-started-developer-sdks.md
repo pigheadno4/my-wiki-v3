@@ -60,11 +60,13 @@ A contract applies the rate card to the customer. It can use list prices directl
 
 - The Ruby client is initialized as `metronome`, while later Ruby snippets call `client`; readers should normalize the client variable or consult the linked SDK repository.
 - Python, Node.js, and Ruby create the sample contract at `2024-08-01`, while the Go snippet uses `2024-09-01`. Treat these as illustrative timestamps rather than language-specific contract behavior.
+- The Node.js rate-card example creates through `client.V1.contracts` but adds a rate through `client.contracts` without `V1`; confirm the current namespace in the linked SDK repository.
+- Python, Node.js, and Ruby pass `group_keys` when creating the example metric, while the Go snippet omits it even though the prose describes grouping by `user_id`.
 - The page demonstrates one happy-path object chain. It does not establish complete SDK parity, error semantics, contract amendments, invoice-state transitions, or every field accepted by the referenced APIs.
 
 ## Change history
 
-- 2026-07-14: Initial ingest from the 2026-07-13 collection snapshot; Sol added lifecycle boundaries, pricing details, and code-example caveats after reviewing the Luna draft.
+- 2026-07-14: Initial ingest from the 2026-07-13 collection snapshot; Sol added lifecycle boundaries and pricing details, then the independent pilot review added two more cross-language example caveats.
 
 ## Related
 

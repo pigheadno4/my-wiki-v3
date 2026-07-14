@@ -62,13 +62,15 @@ Each subscription requires `subscription_rate`, `collection_schedule`, and `pror
 
 Spend and prepaid-balance threshold configurations have their own required enablement, amount, commit, and payment-gate fields. Hierarchy inputs can select the payer and whether child statements consolidate or remain separate; exact parent/child requirements live in the nested schemas.
 
+The descriptive prose calls the prepaid trigger `prepaid_balance_configuration`, while `CreateContractPayload` names the field `prepaid_balance_threshold_configuration`. This source follows the request schema name.
+
 ## Lifecycle and scope
 
 The prose points to separate edit and edit-history endpoints after creation and says customers may have concurrent contracts routed by usage filters. This page does not define those endpoints' request/response contracts. Likewise, its large response schema and ledger unions are reference material, not evidence that every optional request family is required or available to every client.
 
 ## Change history
 
-- 2026-07-14: Initial ingest from the 2026-07-13 collection snapshot; Sol added package restrictions, feature-gating, conditional subscription rules, response-list caveat, and immutable consolidation behavior after reviewing the Luna draft.
+- 2026-07-14: Initial ingest from the 2026-07-13 collection snapshot; Sol added package restrictions, feature-gating, conditional subscription rules, response-list caveat, immutable consolidation behavior, and an explicit prose/schema naming caveat.
 
 ## Related
 
