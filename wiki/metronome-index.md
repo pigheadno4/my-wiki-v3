@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 3 |
-| Documentation pages pending ingest | 222 |
+| Source summaries ingested | 4 |
+| Documentation pages pending ingest | 221 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -26,6 +26,7 @@ Operational evidence:
 - [[source-metronome-guides-get-started-home]] — documentation entry point, getting-started routes, and four pricing/packaging models
 - [[source-metronome-guides-get-started-developer-sdks]] — SDK installation and an introductory event-to-invoice implementation path
 - [[source-metronome-guides-invoices-overview]] — Stripe, marketplace, and ERP invoicing options
+- [[source-metronome-guides-reporting-insights-data-export-database-reference]] — warehouse schema navigation, snapshot grains, and query cautions
 
 ## Concepts
 
@@ -35,6 +36,7 @@ Operational evidence:
 - [[metronome-billable-metrics]] — filters, aggregation operations, grouping, and creation-time behavior
 - [[metronome-products-and-rate-cards]] — product presentation, quantity conversion, and effective rates
 - [[metronome-customers-and-contracts]] — ingest aliases, commercial terms, and draft-invoice activation
+- [[metronome-reporting-and-analytics]] — exported table families, row grains, and nullability/version cautions
 
 ## Planned concept taxonomy
 
@@ -42,7 +44,6 @@ Additional concept pages will be created only when grounded source summaries are
 
 - `metronome-credits-and-commits.md`
 - `metronome-alerts-and-notifications.md`
-- `metronome-reporting-and-analytics.md`
 - `metronome-integrations.md`
 
 ## Related platforms

@@ -6,6 +6,15 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-07-14 — Luna/Sol pilot: data-export database reference
+
+- Ingested: [[source-metronome-guides-reporting-insights-data-export-database-reference]] from the complete 1,600-line schema reference.
+- Concept audit: created [[metronome-reporting-and-analytics]] before promoting the canonical source.
+- Luna result: passed on attempt 1 with four exact quotes and a correct raw deep-dive link.
+- Sol review: elevated the all-columns-nullable warning, added row-grain and time/version navigation, clarified the commits-table scope, and narrowed the Private Beta wording to the note's actual invoicing statement.
+- Coverage after finalization: 4 source summaries ingested and 221 documentation pages pending.
+- Evidence: [worker run](../tracking/ingest/metronome/pilot/runs/pilot-database-reference-luna/) and [final receipt](../tracking/ingest/metronome/pilot/receipts/pilot-database-reference-luna-final.json).
+
 ## 2026-07-14 — Luna/Sol pilot: developer SDK walkthrough
 
 - Ingested: [[source-metronome-guides-get-started-developer-sdks]] from the complete 944-line guide.

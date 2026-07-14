@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 3
+source_count: 4
 ---
 
 ## Overview
@@ -31,17 +31,24 @@ The documentation home is a navigation overview. The SDK walkthrough adds an int
 - Marketplace invoicing automates metering and invoice creation for AWS, Azure, and GCP.
 - ERP invoicing includes out-of-the-box and custom integrations for collection, book-closing, and revenue workflows.
 
+## Reporting and data export
+
+- Warehouse exports cover raw events, customers, invoices, contracts, pricing, packages, payments, alerts, and metadata.
+- Finalized invoice rows, daily draft snapshots, and invoice-breakdown snapshots have distinct grains and update behavior.
+- Exported columns may all appear nullable because of the export methodology, so warehouse types alone do not establish business optionality.
+
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 3
-- Documentation pages pending ingest: 222
+- Ingested source summaries: 4
+- Documentation pages pending ingest: 221
 
 ## Sources
 
 - [[source-metronome-guides-get-started-home]] — documentation entry point and four pricing/packaging routes
 - [[source-metronome-guides-get-started-developer-sdks]] — SDK setup and introductory event-to-invoice workflow
 - [[source-metronome-guides-invoices-overview]] — Stripe, marketplace, and ERP invoicing options
+- [[source-metronome-guides-reporting-insights-data-export-database-reference]] — warehouse schema families, grains, and query cautions
 
 ## Related
 
@@ -54,3 +61,4 @@ The documentation home is a navigation overview. The SDK walkthrough adds an int
 - [[metronome-billable-metrics]] — event matching, aggregation, and grouping
 - [[metronome-products-and-rate-cards]] — product presentation and effective pricing
 - [[metronome-customers-and-contracts]] — customer aliases, commercial terms, and invoice activation
+- [[metronome-reporting-and-analytics]] — warehouse exports, snapshot grains, and query cautions
