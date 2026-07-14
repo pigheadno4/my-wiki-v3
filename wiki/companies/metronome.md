@@ -2,12 +2,12 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 1
+source_count: 2
 ---
 
 ## Overview
 
-Metronome is maintained as an independent provider capsule related to [[stripe]]. Its documentation landing page organizes pricing and packaging guidance around pay-as-you-go billing, enterprise commitments, subscriptions with usage, and prepaid credits.
+Metronome is maintained as an independent provider capsule related to [[stripe]]. Its documentation covers usage-based pricing and packaging along with invoicing options spanning Stripe, cloud marketplaces, and ERP workflows.
 
 ## Documented billing models
 
@@ -18,15 +18,22 @@ Metronome is maintained as an independent provider capsule related to [[stripe]]
 
 The current source is a navigation overview. Detailed APIs, object models, event handling, and calculation rules require dedicated sources.
 
+## Invoicing options
+
+- Native Stripe invoicing can use Stripe Tax, dunning, and other Stripe product-suite capabilities.
+- Marketplace invoicing automates metering and invoice creation for AWS, Azure, and GCP.
+- ERP invoicing includes out-of-the-box and custom integrations for collection, book-closing, and revenue workflows.
+
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 1
-- Documentation pages pending ingest: 224
+- Ingested source summaries: 2
+- Documentation pages pending ingest: 223
 
 ## Sources
 
 - [[source-metronome-guides-get-started-home]] — documentation entry point and four pricing/packaging routes
+- [[source-metronome-guides-invoices-overview]] — Stripe, marketplace, and ERP invoicing options
 
 ## Related
 
@@ -34,3 +41,4 @@ The current source is a navigation overview. Detailed APIs, object models, event
 - [[metronome-log]] — collection and future ingest history
 - [[stripe-index]] — related Stripe catalog
 - [[metronome-usage-based-billing]] — platform-specific billing concept
+- [[metronome-invoicing]] — platform-specific invoicing options

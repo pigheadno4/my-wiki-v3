@@ -6,6 +6,15 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-07-14 — Luna/Sol pilot: invoicing overview
+
+- Ingested: [[source-metronome-guides-invoices-overview]] from the complete 31-line overview.
+- Concept: created [[metronome-invoicing]] after the mandatory concept audit.
+- Luna result: attempt 1 failed exact-line grounding after using unsupported invoice-state content; attempt 2 passed with five exact quotes.
+- Sol review: consolidated four proposed sub-concepts into one planned invoicing concept and tightened the ASC 606 wording; no contradiction was found.
+- Coverage after finalization: 2 source summaries ingested and 223 documentation pages pending.
+- Evidence: [worker run](../tracking/ingest/metronome/pilot/runs/pilot-invoices-overview-luna/) and [final receipt](../tracking/ingest/metronome/pilot/receipts/pilot-invoices-overview-luna-final.json).
+
 ## 2026-07-14 — Strong-model baseline ingest
 
 - Ingested: [[source-metronome-guides-get-started-home]] from the complete 140-line documentation landing page.

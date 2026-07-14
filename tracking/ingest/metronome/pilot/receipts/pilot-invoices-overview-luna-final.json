@@ -1,0 +1,60 @@
+{
+  "schema_version": 2,
+  "job_id": "pilot-invoices-overview-luna",
+  "provider": "metronome",
+  "canonical_url": "https://docs.metronome.com/guides/invoices/overview",
+  "raw_path": "raw/metronome/guides/invoices/overview-2026-07-13.md",
+  "source_page": "wiki/sources/metronome/source-metronome-guides-invoices-overview.md",
+  "mode": "real_ingest",
+  "worker_receipt": "tracking/ingest/metronome/pilot/runs/pilot-invoices-overview-luna/luna-worker-receipt.json",
+  "luna_draft": "tracking/ingest/metronome/pilot/runs/pilot-invoices-overview-luna/luna-source-draft.md",
+  "final_status": "approved_with_repairs",
+  "repairs": [
+    {
+      "category": "taxonomy",
+      "description": "Consolidated four proposed invoicing sub-concepts into the planned metronome-invoicing concept because the overview does not justify independent concept pages."
+    },
+    {
+      "category": "wording",
+      "description": "Changed the ASC 606 takeaway to state only that the source mentions the guidelines, avoiding a broader compliance claim."
+    },
+    {
+      "category": "structure",
+      "description": "Replaced the draft concept placeholder with approved company, concept, usage-billing, and Stripe links."
+    }
+  ],
+  "coordinator_repair_minutes": 6,
+  "concepts_updated": [
+    "wiki/concepts/metronome/metronome-invoicing.md"
+  ],
+  "contradictions": [],
+  "shared_files_updated": [
+    "wiki/companies/metronome.md",
+    "wiki/metronome-index.md",
+    "wiki/metronome-log.md"
+  ],
+  "validation": [
+    {
+      "command": "python3 scripts/validate_metronome_ingest.py --job tracking/ingest/metronome/pilot/jobs/pilot-invoices-overview-luna.json --luna-output tracking/ingest/metronome/pilot/runs/pilot-invoices-overview-luna/luna-output.json --worker-receipt tracking/ingest/metronome/pilot/runs/pilot-invoices-overview-luna/luna-worker-receipt.json --final-receipt tracking/ingest/metronome/pilot/receipts/pilot-invoices-overview-luna-final.json",
+      "passed": true
+    },
+    {
+      "command": "python3 scripts/validate_wiki.py wiki/sources/metronome/source-metronome-guides-invoices-overview.md wiki/concepts/metronome/metronome-invoicing.md wiki/companies/metronome.md wiki/metronome-log.md",
+      "passed": true
+    },
+    {
+      "command": "python3 scripts/validate_metronome_capsule.py",
+      "passed": true
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "passed": true
+    }
+  ],
+  "review": {
+    "reviewer": "sol-coordinator",
+    "model": "gpt-5.6-sol",
+    "status": "approved",
+    "notes": "Read all 31 raw lines and both Luna attempts. Attempt 2 covers all three invoicing paths and the option-selection message without unsupported canonical claims; the source remains explicit about overview-level scope."
+  }
+}
