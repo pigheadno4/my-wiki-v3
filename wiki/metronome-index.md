@@ -1,6 +1,6 @@
 # Metronome Index
 
-> Canonical router for the Metronome provider capsule. Collection is complete; documentation ingest has not started.
+> Canonical router for the Metronome provider capsule. Collection is complete; the controlled ingest pilot is underway.
 
 ## Company
 
@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 0 |
-| Documentation pages pending ingest | 225 |
+| Source summaries ingested | 1 |
+| Documentation pages pending ingest | 224 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -23,13 +23,16 @@ Operational evidence:
 
 ## Sources
 
-No source summaries have been ingested. Raw documentation pages are not listed here as if they were wiki sources.
+- [[source-metronome-guides-get-started-home]] — documentation entry point, getting-started routes, and four pricing/packaging models
+
+## Concepts
+
+- [[metronome-usage-based-billing]] — pay as you go, enterprise commitments, subscriptions with usage, and prepaid credits
 
 ## Planned concept taxonomy
 
-Concept pages will be created only when grounded source summaries are ingested:
+Additional concept pages will be created only when grounded source summaries are ingested:
 
-- `metronome-usage-based-billing.md`
 - `metronome-event-ingestion.md`
 - `metronome-billable-metrics.md`
 - `metronome-products-and-rate-cards.md`
@@ -48,3 +51,4 @@ Concept pages will be created only when grounded source summaries are ingested:
 ## Operations
 
 - [[metronome-log]] — collection and future ingest history
+- [Pilot benchmark and receipts](../tracking/ingest/metronome/pilot/)

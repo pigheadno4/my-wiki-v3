@@ -4,7 +4,16 @@ type: log
 tags: [metronome, usage-based-billing, operations]
 ---
 
-Newest entries appear first. Detailed per-attempt evidence remains under `tracking/collections/metronome/`.
+Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
+
+## 2026-07-14 — Strong-model baseline ingest
+
+- Ingested: [[source-metronome-guides-get-started-home]] from the complete 140-line documentation landing page.
+- Concept: created [[metronome-usage-based-billing]] after the mandatory concept audit.
+- Worker role: `strong_baseline`; worker commit `e9a90d0` touched only its leased source and concept files.
+- Coverage after finalization: 1 source summary ingested and 224 documentation pages pending.
+- Validation: exact grounding quotes, write ownership, focused wiki validation, capsule reconciliation, and the full test suite passed.
+- Receipt: [pilot-home-baseline.json](../tracking/ingest/metronome/pilot/receipts/pilot-home-baseline.json).
 
 ## 2026-07-13 — Initial English documentation collection
 

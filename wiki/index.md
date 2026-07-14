@@ -16,7 +16,7 @@
 
 - [[paypal]] — PayPal: payment platform, JS SDK, Venmo, Orders API
 - [[stripe]] — Stripe: developer-first payment APIs, PaymentIntents, Checkout, Subscriptions, Elements
-- [[metronome]] — Stripe-owned usage-based billing provider capsule; collection complete, ingest pending
+- [[metronome]] — Stripe-owned usage-based billing provider capsule; collection complete, controlled ingest pilot underway
 
 ## Comparisons
 
