@@ -12,8 +12,14 @@ COMMIT_RE = re.compile(r"^[0-9a-f]{7,40}$")
 RAW_LINK_RE = re.compile(r"^\[\[([^|\]]+)\|[^\]]+\]\]$")
 LUNA_MODEL = "gpt-5.6-luna"
 SOL_MODEL = "gpt-5.6-sol"
+TERRA_MODEL = "gpt-5.6-terra"
 LUNA_REASONING_EFFORT = "high"
+TERRA_REASONING_EFFORT = "medium"
 LUNA_RUN_ROOT = "tracking/ingest/metronome/pilot/runs/"
+MODEL_PROFILES = {
+    LUNA_MODEL: LUNA_REASONING_EFFORT,
+    TERRA_MODEL: TERRA_REASONING_EFFORT,
+}
 
 
 def load_json(path: Path) -> Dict[str, Any]:
@@ -74,6 +80,8 @@ def _validate_validation_results(validation: Any, prefix: str) -> List[str]:
 
 
 def validate_job(root: Path, job: Dict[str, Any]) -> List[str]:
+    if job.get("schema_version") == 3:
+        return _validate_model_job(root, job)
     if job.get("schema_version") == 2:
         return _validate_luna_job(root, job)
     errors = _missing(
@@ -126,6 +134,63 @@ def validate_job(root: Path, job: Dict[str, Any]) -> List[str]:
     for path in sorted(allowed):
         if any(path.startswith(str(prefix)) for prefix in prefixes):
             errors.append(f"job: allowed path is under a forbidden prefix: {path}")
+    return errors
+
+
+def _validate_model_job(root: Path, job: Dict[str, Any]) -> List[str]:
+    errors = _missing(
+        job,
+        [
+            "schema_version",
+            "job_id",
+            "provider",
+            "mode",
+            "canonical_url",
+            "raw_path",
+            "source_page",
+            "artifact_dir",
+            "role",
+            "model_provider",
+            "model",
+            "reasoning_effort",
+            "allowed_write_paths",
+            "forbidden_write_paths",
+            "forbidden_write_prefixes",
+        ],
+        "job",
+    )
+    if job.get("provider") != "metronome":
+        errors.append("job: provider must be metronome")
+    if job.get("mode") not in ("real_ingest", "shadow"):
+        errors.append("job: mode must be real_ingest or shadow")
+    if job.get("role") != "cheap_ingester":
+        errors.append("job: role must be cheap_ingester")
+    if job.get("model_provider") != "openai":
+        errors.append("job: model_provider must be openai")
+    model = job.get("model")
+    if model not in MODEL_PROFILES or job.get("reasoning_effort") != MODEL_PROFILES.get(model):
+        errors.append("job: unsupported model/reasoning pair")
+
+    raw_path = str(job.get("raw_path", ""))
+    if raw_path and not raw_path.startswith("raw/metronome/"):
+        errors.append("job: raw_path must stay inside raw/metronome/")
+    if raw_path and not (root / raw_path).is_file():
+        errors.append(f"job: raw_path does not exist: {raw_path}")
+    source_page = str(job.get("source_page", ""))
+    if source_page and not source_page.startswith("wiki/sources/metronome/"):
+        errors.append("job: source_page must stay inside wiki/sources/metronome/")
+
+    artifact_dir = str(job.get("artifact_dir", ""))
+    expected_dir = f"{LUNA_RUN_ROOT}{job.get('job_id', '')}"
+    if artifact_dir and artifact_dir != expected_dir:
+        errors.append("job: artifact_dir must match the job ID under the model run root")
+    if job.get("allowed_write_paths", []) != [artifact_dir]:
+        errors.append("job: allowed_write_paths must contain only artifact_dir")
+    if artifact_dir in set(job.get("forbidden_write_paths", [])):
+        errors.append("job: allowed and forbidden write paths overlap")
+    prefixes = set(job.get("forbidden_write_prefixes", []))
+    if "raw/" not in prefixes or "wiki/" not in prefixes:
+        errors.append("job: model jobs must forbid raw/ and wiki/ prefixes")
     return errors
 
 
@@ -304,6 +369,147 @@ def validate_luna_output(
     return errors
 
 
+def _evidence_errors(items: Any, quote_ids: set, prefix: str) -> List[str]:
+    errors: List[str] = []
+    if not isinstance(items, list):
+        return [f"{prefix}: must be a list"]
+    for index, item in enumerate(items, 1):
+        if not isinstance(item, dict) or not item.get("text"):
+            errors.append(f"{prefix}: item {index} text is required")
+            continue
+        evidence_ids = item.get("evidence_quote_ids")
+        if not isinstance(evidence_ids, list) or not evidence_ids:
+            errors.append(f"{prefix}: item {index} requires evidence_quote_ids")
+            continue
+        for quote_id in evidence_ids:
+            if quote_id not in quote_ids:
+                errors.append(
+                    f"{prefix}: item {index} cites undefined grounding quote {quote_id}"
+                )
+    return errors
+
+
+def validate_model_output(
+    root: Path, job: Dict[str, Any], output: Dict[str, Any]
+) -> List[str]:
+    required = [
+        "job_id",
+        "raw_path",
+        "canonical_url",
+        "title",
+        "grounding_quotes",
+        "overview",
+        "overview_evidence_quote_ids",
+        "key_takeaways",
+        "details",
+        "sections_covered",
+        "scope_boundaries",
+        "conditional_requirements",
+        "feature_gates",
+        "internal_inconsistencies",
+        "material_omissions",
+        "suggested_tags",
+        "suggested_metronome_concepts",
+        "proposed_raw_link",
+        "unsupported_claim_self_check",
+    ]
+    errors = [
+        f"model output: {field} is required" for field in required if field not in output
+    ]
+    errors.extend(
+        _missing(
+            output,
+            [
+                "job_id",
+                "raw_path",
+                "canonical_url",
+                "title",
+                "grounding_quotes",
+                "overview",
+                "overview_evidence_quote_ids",
+                "key_takeaways",
+                "details",
+                "sections_covered",
+                "suggested_tags",
+                "proposed_raw_link",
+            ],
+            "model output",
+        )
+    )
+    for field in ("job_id", "raw_path", "canonical_url"):
+        if output.get(field) != job.get(field):
+            errors.append(f"model output: {field} does not match job")
+    errors.extend(
+        _validate_quotes(root, job, output.get("grounding_quotes", []), "model output")
+    )
+
+    quote_ids: set = set()
+    for index, quote in enumerate(output.get("grounding_quotes", []), 1):
+        quote_id = quote.get("id") if isinstance(quote, dict) else None
+        if not quote_id:
+            errors.append(f"model output: grounding quote {index} id is required")
+        elif quote_id in quote_ids:
+            errors.append(f"model output: grounding quote id is duplicated: {quote_id}")
+        else:
+            quote_ids.add(quote_id)
+
+    overview_ids = output.get("overview_evidence_quote_ids")
+    if not isinstance(overview_ids, list) or not overview_ids:
+        errors.append("model output: overview_evidence_quote_ids is required")
+    else:
+        for quote_id in overview_ids:
+            if quote_id not in quote_ids:
+                errors.append(
+                    f"model output: overview cites undefined grounding quote {quote_id}"
+                )
+    errors.extend(
+        _evidence_errors(output.get("key_takeaways"), quote_ids, "model output: key_takeaways")
+    )
+    details = output.get("details")
+    if not isinstance(details, list) or not details:
+        errors.append("model output: details must be a nonempty list")
+    else:
+        for index, section in enumerate(details, 1):
+            if not isinstance(section, dict) or not section.get("heading"):
+                errors.append(f"model output: detail section {index} heading is required")
+                continue
+            errors.extend(
+                _evidence_errors(
+                    section.get("facts"), quote_ids, f"model output: detail section {index} facts"
+                )
+            )
+    for field in (
+        "scope_boundaries",
+        "conditional_requirements",
+        "feature_gates",
+        "internal_inconsistencies",
+    ):
+        errors.extend(_evidence_errors(output.get(field), quote_ids, f"model output: {field}"))
+    for field in ("sections_covered", "material_omissions"):
+        if not isinstance(output.get(field), list):
+            errors.append(f"model output: {field} must be a list")
+
+    tags = output.get("suggested_tags", [])
+    if not isinstance(tags, list) or "metronome" not in tags:
+        errors.append("model output: suggested_tags must include metronome")
+    concepts = output.get("suggested_metronome_concepts", [])
+    if not isinstance(concepts, list) or any(
+        not str(item).startswith("metronome-") for item in concepts
+    ):
+        errors.append("model output: concepts must use metronome-prefixed slugs")
+    expected_target = str(job.get("raw_path", ""))
+    if expected_target.endswith(".md"):
+        expected_target = expected_target[:-3]
+    match = RAW_LINK_RE.match(str(output.get("proposed_raw_link", "")))
+    if not match or match.group(1) != expected_target:
+        errors.append(
+            "model output: proposed_raw_link must target the assigned raw file without .md"
+        )
+    if output.get("unsupported_claim_self_check") not in ([], None):
+        errors.append("model output: unsupported_claim_self_check must be empty for acceptance")
+    return errors
+
+
 def render_luna_draft(
     job: Dict[str, Any], output: Dict[str, Any], ingest_date: str
 ) -> str:
@@ -330,6 +536,47 @@ def render_luna_draft(
         f"## Details\n\n{details}\n\n"
         "## Change history\n\n"
         f"- {ingest_date}: Luna pilot draft from the assigned raw snapshot.\n\n"
+        "## Related\n\n"
+        "- Company: [[metronome]]\n"
+        "- Concepts: coordinator concept audit required before promotion.\n\n"
+        "## Raw Sources\n\n"
+        f"- {output['proposed_raw_link']}\n"
+    )
+
+
+def render_model_draft(
+    job: Dict[str, Any], output: Dict[str, Any], ingest_date: str
+) -> str:
+    tags = ", ".join(str(item) for item in output["suggested_tags"])
+    takeaways = "\n".join(
+        f"- {item['text']} [{', '.join(item['evidence_quote_ids'])}]"
+        for item in output["key_takeaways"]
+    )
+    detail_blocks = []
+    for section in output["details"]:
+        facts = "\n".join(
+            f"- {fact['text']} [{', '.join(fact['evidence_quote_ids'])}]"
+            for fact in section["facts"]
+        )
+        detail_blocks.append(f"### {section['heading']}\n\n{facts}")
+    details = "\n\n".join(detail_blocks)
+    return (
+        "---\n"
+        f"title: \"{output['title']}\"\n"
+        "type: source\n"
+        f"date_ingested: {ingest_date}\n"
+        f"canonical_url: \"{job['canonical_url']}\"\n"
+        "original_format: webpage\n"
+        "raw_files:\n"
+        f"  - \"{job['raw_path'][4:]}\"\n"
+        f"tags: [{tags}]\n"
+        "---\n\n"
+        f"## Overview\n\n{output['overview']} "
+        f"[{', '.join(output['overview_evidence_quote_ids'])}]\n\n"
+        f"## Key takeaways\n\n{takeaways}\n\n"
+        f"## Details\n\n{details}\n\n"
+        "## Change history\n\n"
+        f"- {ingest_date}: {job['model']} comparison-pilot draft from the assigned raw snapshot.\n\n"
         "## Related\n\n"
         "- Company: [[metronome]]\n"
         "- Concepts: coordinator concept audit required before promotion.\n\n"
@@ -390,10 +637,16 @@ def validate_worker_receipt(
         errors.append("worker receipt: invalid status")
     if receipt.get("model_provider") != "openai":
         errors.append("worker receipt: model_provider must be openai")
-    if receipt.get("model") != LUNA_MODEL:
-        errors.append(f"worker receipt: model must be {LUNA_MODEL}")
-    if receipt.get("reasoning_effort") != LUNA_REASONING_EFFORT:
-        errors.append(f"worker receipt: reasoning_effort must be {LUNA_REASONING_EFFORT}")
+    if job.get("schema_version") == 3:
+        if receipt.get("model") != job.get("model"):
+            errors.append("worker receipt: model does not match job")
+        if receipt.get("reasoning_effort") != job.get("reasoning_effort"):
+            errors.append("worker receipt: reasoning_effort does not match job")
+    else:
+        if receipt.get("model") != LUNA_MODEL:
+            errors.append(f"worker receipt: model must be {LUNA_MODEL}")
+        if receipt.get("reasoning_effort") != LUNA_REASONING_EFFORT:
+            errors.append(f"worker receipt: reasoning_effort must be {LUNA_REASONING_EFFORT}")
     if receipt.get("attempt_count") not in (1, 2):
         errors.append("worker receipt: attempt_count must be 1 or 2")
     artifact_dir = str(job.get("artifact_dir", ""))
@@ -425,12 +678,46 @@ def validate_worker_receipt(
         errors.extend(
             _validate_validation_results(receipt.get("validation", []), "worker receipt")
         )
+    if job.get("schema_version") == 3:
+        attempts = receipt.get("attempts")
+        if not isinstance(attempts, list) or len(attempts) != receipt.get("attempt_count"):
+            errors.append("worker receipt: attempts must match attempt_count")
+        else:
+            for index, attempt in enumerate(attempts, 1):
+                if not isinstance(attempt, dict) or attempt.get("attempt") != index:
+                    errors.append(f"worker receipt: attempt {index} identity is invalid")
+                    continue
+                for field in (
+                    "status",
+                    "process_exit_code",
+                    "validation_errors",
+                    "output_path",
+                    "events_path",
+                    "stderr_path",
+                ):
+                    if field not in attempt:
+                        errors.append(f"worker receipt: attempt {index} {field} is required")
+                errors.extend(
+                    _validate_artifact_paths(
+                        attempt,
+                        ("output_path", "events_path", "stderr_path"),
+                        artifact_dir,
+                        f"worker receipt: attempt {index}",
+                    )
+                )
+        if receipt.get("cumulative_token_usage") is None and not receipt.get(
+            "token_usage_unavailable_reason"
+        ):
+            errors.append(
+                "worker receipt: null cumulative_token_usage requires token_usage_unavailable_reason"
+            )
     return errors
 
 
 def validate_final_receipt(
     root: Path, job: Dict[str, Any], receipt: Dict[str, Any]
 ) -> List[str]:
+    draft_field = "model_draft" if job.get("schema_version") == 3 else "luna_draft"
     errors = _missing(
         receipt,
         [
@@ -442,7 +729,7 @@ def validate_final_receipt(
             "source_page",
             "mode",
             "worker_receipt",
-            "luna_draft",
+            draft_field,
             "final_status",
             "coordinator_repair_minutes",
             "validation",
@@ -469,7 +756,7 @@ def validate_final_receipt(
     errors.extend(
         _validate_artifact_paths(
             receipt,
-            ("worker_receipt", "luna_draft"),
+            ("worker_receipt", draft_field),
             artifact_dir,
             "final receipt",
         )

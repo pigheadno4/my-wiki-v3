@@ -8,6 +8,7 @@ from metronome_ingest_pilot import (
     validate_final_receipt,
     validate_job,
     validate_luna_output,
+    validate_model_output,
     validate_receipt,
     validate_worker_receipt,
 )
@@ -21,6 +22,7 @@ def main() -> int:
     parser.add_argument("--job", required=True)
     parser.add_argument("--receipt")
     parser.add_argument("--luna-output")
+    parser.add_argument("--model-output")
     parser.add_argument("--worker-receipt")
     parser.add_argument("--final-receipt")
     args = parser.parse_args()
@@ -45,6 +47,7 @@ def main() -> int:
 
     for path, validator, label in (
         (args.luna_output, validate_luna_output, "luna output"),
+        (args.model_output, validate_model_output, "model output"),
         (args.worker_receipt, validate_worker_receipt, "worker receipt"),
         (args.final_receipt, validate_final_receipt, "final receipt"),
     ):
