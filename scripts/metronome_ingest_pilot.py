@@ -381,7 +381,6 @@ def validate_worker_receipt(
             "output_path",
             "events_path",
             "stderr_path",
-            "grounding_quotes",
             "validation",
         ],
         "worker receipt",
@@ -406,9 +405,12 @@ def validate_worker_receipt(
             "worker receipt",
         )
     )
-    errors.extend(
-        _validate_quotes(root, job, receipt.get("grounding_quotes", []), "worker receipt")
-    )
+    if receipt.get("status") == "success" or receipt.get("grounding_quotes"):
+        errors.extend(
+            _validate_quotes(
+                root, job, receipt.get("grounding_quotes", []), "worker receipt"
+            )
+        )
     if receipt.get("token_usage") is None and not receipt.get(
         "token_usage_unavailable_reason"
     ):

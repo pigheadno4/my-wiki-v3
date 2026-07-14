@@ -334,6 +334,20 @@ class MetronomeIngestPilotTests(unittest.TestCase):
         self.assertTrue(any("model must be gpt-5.6-luna" in error for error in errors))
         self.assertTrue(any("output_path must stay inside artifact_dir" in error for error in errors))
 
+    def test_failed_worker_receipt_may_preserve_no_valid_quotes(self):
+        root = self.make_root()
+        job = self.valid_luna_job()
+        receipt = self.valid_worker_receipt(job)
+        receipt["status"] = "failed"
+        receipt["attempt_count"] = 2
+        receipt["grounding_quotes"] = []
+        receipt["draft_path"] = None
+        receipt["validation"] = [
+            {"command": "validate_luna_output", "passed": False, "errors": ["invalid JSON"]}
+        ]
+
+        self.assertEqual([], validate_worker_receipt(root, job, receipt))
+
     def test_final_receipt_requires_sol_review_and_passing_validation(self):
         root = self.make_root()
         job = self.valid_luna_job()
