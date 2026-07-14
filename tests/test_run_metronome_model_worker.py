@@ -96,6 +96,7 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         self.assertIn('model_reasoning_effort="medium"', command)
         self.assertEqual("read-only", command[command.index("-s") + 1])
         self.assertEqual("/tmp/minimal", command[command.index("-C") + 1])
+        self.assertIn("--skip-git-repo-check", command)
 
     def test_page_profile_covers_headings_and_conditional_hints(self):
         profile = build_page_profile("# Alpha\n## Beta\nrequired when enabled\n")

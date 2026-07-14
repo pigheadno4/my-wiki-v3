@@ -103,6 +103,7 @@ def build_codex_command(
         "-s",
         "read-only",
         "--ephemeral",
+        "--skip-git-repo-check",
         "--output-schema",
         str(schema_path),
         "--json",
