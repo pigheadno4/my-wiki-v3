@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 4 |
-| Documentation pages pending ingest | 221 |
+| Source summaries ingested | 5 |
+| Documentation pages pending ingest | 220 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -27,6 +27,7 @@ Operational evidence:
 - [[source-metronome-guides-get-started-developer-sdks]] — SDK installation and an introductory event-to-invoice implementation path
 - [[source-metronome-guides-invoices-overview]] — Stripe, marketplace, and ERP invoicing options
 - [[source-metronome-guides-reporting-insights-data-export-database-reference]] — warehouse schema navigation, snapshot grains, and query cautions
+- [[source-metronome-api-reference-contracts-create-a-contract]] — create endpoint, nested request families, conditional requirements, and response boundary
 
 ## Concepts
 

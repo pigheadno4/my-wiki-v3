@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 4
+source_count: 5
 ---
 
 ## Overview
@@ -25,6 +25,8 @@ The documentation home is a navigation overview. The SDK walkthrough adds an int
 - Billable metrics filter and aggregate events; products and rate cards turn those measurements into prices.
 - Customer contracts apply the rate card and produce draft invoices that update with usage.
 
+The create-contract API adds package or rate-card selection, commits and credits, pricing overrides, subscriptions, scheduled charges, usage routing, threshold billing, provider configuration, and customer hierarchy. Only customer ID and contract start are unconditionally required at the top level; nested requirements depend on the selected structures.
+
 ## Invoicing options
 
 - Native Stripe invoicing can use Stripe Tax, dunning, and other Stripe product-suite capabilities.
@@ -40,8 +42,8 @@ The documentation home is a navigation overview. The SDK walkthrough adds an int
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 4
-- Documentation pages pending ingest: 221
+- Ingested source summaries: 5
+- Documentation pages pending ingest: 220
 
 ## Sources
 
@@ -49,6 +51,7 @@ The documentation home is a navigation overview. The SDK walkthrough adds an int
 - [[source-metronome-guides-get-started-developer-sdks]] — SDK setup and introductory event-to-invoice workflow
 - [[source-metronome-guides-invoices-overview]] — Stripe, marketplace, and ERP invoicing options
 - [[source-metronome-guides-reporting-insights-data-export-database-reference]] — warehouse schema families, grains, and query cautions
+- [[source-metronome-api-reference-contracts-create-a-contract]] — contract creation request families and conditional rules
 
 ## Related
 

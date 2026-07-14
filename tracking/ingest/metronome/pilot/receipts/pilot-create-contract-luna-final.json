@@ -1,0 +1,81 @@
+{
+  "schema_version": 2,
+  "job_id": "pilot-create-contract-luna",
+  "provider": "metronome",
+  "canonical_url": "https://docs.metronome.com/api-reference/contracts/create-a-contract",
+  "raw_path": "raw/metronome/api-reference/contracts/create-a-contract-2026-07-13.md",
+  "source_page": "wiki/sources/metronome/source-metronome-api-reference-contracts-create-a-contract.md",
+  "mode": "real_ingest",
+  "worker_receipt": "tracking/ingest/metronome/pilot/runs/pilot-create-contract-luna/luna-worker-receipt.json",
+  "luna_draft": "tracking/ingest/metronome/pilot/runs/pilot-create-contract-luna/luna-source-draft.md",
+  "final_status": "approved_with_repairs",
+  "repairs": [
+    {
+      "category": "omission",
+      "description": "Added package_id's restricted allowed-field mode, package_alias mutual exclusion, and the boundary that some fields are account-configuration or feature-flag dependent."
+    },
+    {
+      "category": "omission",
+      "description": "Added conditional subscription quantity requirements: quantity-only requires initial_quantity while seat-based requires seat_config and compatible grouping."
+    },
+    {
+      "category": "omission",
+      "description": "Added the documented immutability of scheduled_charges_on_usage_invoices after contract creation and clarified usage-statement custom-anchor and historical-import behavior."
+    },
+    {
+      "category": "structure",
+      "description": "Reframed the 4,561-line OpenAPI page as a request-family map with nested conditional rules instead of implying that the optional structures are a single flat or universally available contract model."
+    },
+    {
+      "category": "wording",
+      "description": "Recorded that uniqueness_key documents a 409 failure even though the operation response block lists only 200, 400, and 404, avoiding the claim that 409 is present in that response block."
+    }
+  ],
+  "coordinator_repair_minutes": 16,
+  "concepts_updated": [
+    "wiki/concepts/metronome/metronome-customers-and-contracts.md"
+  ],
+  "contradictions": [
+    {
+      "scope": "source_schema",
+      "description": "The uniqueness_key component says reuse fails with 409, but the operation response block lists only 200, 400, and 404; the canonical source preserves both facts."
+    },
+    {
+      "scope": "source_naming",
+      "description": "Endpoint prose calls the prepaid trigger prepaid_balance_configuration, while CreateContractPayload names prepaid_balance_threshold_configuration; the canonical source follows the schema name."
+    }
+  ],
+  "shared_files_updated": [
+    "wiki/companies/metronome.md",
+    "wiki/metronome-index.md",
+    "wiki/metronome-log.md"
+  ],
+  "validation": [
+    {
+      "command": "python3 scripts/validate_metronome_ingest.py --job tracking/ingest/metronome/pilot/jobs/pilot-create-contract-luna.json --luna-output tracking/ingest/metronome/pilot/runs/pilot-create-contract-luna/luna-output.json --worker-receipt tracking/ingest/metronome/pilot/runs/pilot-create-contract-luna/luna-worker-receipt.json --final-receipt tracking/ingest/metronome/pilot/receipts/pilot-create-contract-luna-final.json",
+      "passed": true
+    },
+    {
+      "command": "python3 scripts/validate_wiki.py wiki/sources/metronome/source-metronome-api-reference-contracts-create-a-contract.md wiki/concepts/metronome/metronome-customers-and-contracts.md wiki/companies/metronome.md wiki/metronome-log.md",
+      "passed": true
+    },
+    {
+      "command": "python3 scripts/validate_metronome_capsule.py",
+      "passed": true
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "passed": true
+    },
+    {
+      "command": "git diff --check",
+      "passed": true
+    }
+  ],
+  "review": {
+    "reviewer": "sol-coordinator",
+    "model": "gpt-5.6-sol",
+    "status": "approved",
+    "notes": "Reviewed the complete 4,561-line raw endpoint, Luna output, draft, and receipt, including the full schema inventory and request definitions. Luna correctly identified endpoint identity, required top-level fields, major optional families, term semantics, commits/credits, overrides, subscriptions, thresholds, hierarchy, lifecycle links, and uniqueness behavior. Sol added material package, availability, conditional, immutability, and response-boundary details and preserved two internal documentation mismatches without turning them into unsupported platform claims."
+  }
+}
