@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import stat
 import tempfile
 from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
@@ -72,6 +73,13 @@ class SnapshotRecord:
     staging_path: Path
     target_path: Path
     files: Tuple[SnapshotFile, ...]
+    repository_url: str = ""
+    company: str = ""
+    repo_type: str = ""
+    release_notes_source_url: Optional[str] = None
+    release_notes_published_at: Optional[str] = None
+    staging_device: Optional[int] = None
+    staging_inode: Optional[int] = None
 
 
 def select_key_files(
@@ -156,30 +164,37 @@ def build_snapshot(
     revision, target_path = _target_path(config, ref, raw_root, collection_date, capture_kind)
     staging_root.mkdir(parents=True, exist_ok=True)
     staging_path = Path(tempfile.mkdtemp(prefix="snapshot-", dir=str(staging_root)))
+    staging_stat = _staging_stat(staging_path)
     files_root = staging_path / "files"
     snapshot_files: List[SnapshotFile] = []
     copied_total = 0
 
     try:
         for source in selection.selected:
-            relative = source.relative_to(repo_root).as_posix()
+            try:
+                relative = source.relative_to(repo_root).as_posix()
+            except ValueError as error:
+                raise SnapshotError("selected file is no longer contained in checkout") from error
+            if not _is_safe_relative_path(relative):
+                raise SnapshotError("selected file is no longer contained in checkout")
             destination = files_root / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
             _require_contained(destination, files_root, "snapshot destination")
-            shutil.copyfile(str(source), str(destination))
-            content = destination.read_bytes()
-            if len(content) > config.max_file_bytes:
-                raise SnapshotError("copied file exceeds per-file byte limit: " + relative)
-            if copied_total + len(content) > config.max_snapshot_bytes:
-                raise SnapshotError("copied files exceed total snapshot byte limit: " + relative)
-            if b"\0" in content[:8192]:
+            sha256, size, is_binary = _copy_checkout_file(
+                repo_root,
+                relative,
+                destination,
+                config.max_file_bytes,
+                config.max_snapshot_bytes - copied_total,
+            )
+            if is_binary:
                 raise SnapshotError("copied file has binary content: " + relative)
-            copied_total += len(content)
+            copied_total += size
             snapshot_files.append(
                 SnapshotFile(
                     path=relative,
-                    sha256=hashlib.sha256(content).hexdigest(),
-                    size=len(content),
+                    sha256=sha256,
+                    size=size,
                     purpose=_purpose_for_path(config, repo_root, source),
                 )
             )
@@ -193,6 +208,13 @@ def build_snapshot(
             staging_path=staging_path,
             target_path=target_path,
             files=tuple(sorted(snapshot_files, key=lambda item: item.path)),
+            repository_url=config.url,
+            company=config.company,
+            repo_type=config.repo_type,
+            release_notes_source_url=(release_notes.source_url if release_notes is not None else None),
+            release_notes_published_at=(release_notes.published_at if release_notes is not None else None),
+            staging_device=staging_stat.st_dev,
+            staging_inode=staging_stat.st_ino,
         )
         metadata = _snapshot_metadata(config, record, prior_snapshot, selection.excluded, release_notes)
         if release_notes is not None:
@@ -200,13 +222,16 @@ def build_snapshot(
         _write_manifest(staging_path, metadata)
         return record
     except Exception:
-        _clean_staging(staging_path)
+        _clean_staging_path(staging_path, staging_stat)
         raise
 
 
 def validate_staged_snapshot(record: SnapshotRecord) -> List[str]:
     """Return deterministic integrity failures for a staged snapshot."""
     errors: List[str] = []
+    staging_error = _staging_identity_error(record)
+    if staging_error is not None:
+        return [staging_error]
     staging_path = record.staging_path
     manifest_path = staging_path / "snapshot.md"
     files_root = staging_path / "files"
@@ -228,7 +253,7 @@ def validate_staged_snapshot(record: SnapshotRecord) -> List[str]:
     _validate_identity(metadata, record, errors)
     manifest_files = _validate_manifest_files(metadata, record, errors)
     _validate_copied_files(files_root, manifest_files, errors)
-    _validate_release_notes(staging_path, metadata, errors)
+    _validate_release_notes(staging_path, metadata, record, errors)
     return errors
 
 
@@ -236,52 +261,52 @@ def promote_snapshot(record: SnapshotRecord) -> Path:
     """Validate and atomically promote a staged snapshot without overwriting evidence."""
     snapshot_root = record.target_path.parent
     lock_path = snapshot_root / _LOCK_NAME
-    lock_created = False
+    lock_identity: Optional[Tuple[int, int]] = None
     try:
         snapshot_root.mkdir(parents=True, exist_ok=True)
         try:
             descriptor = os.open(str(lock_path), os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
         except FileExistsError as error:
-            _clean_staging(record.staging_path)
+            _clean_staging(record)
             raise SnapshotError("promotion lock already exists: " + str(lock_path)) from error
         try:
+            lock_stat = os.fstat(descriptor)
+            lock_identity = (lock_stat.st_dev, lock_stat.st_ino)
             os.write(descriptor, str(os.getpid()).encode("ascii"))
         finally:
             os.close(descriptor)
-        lock_created = True
 
         existing = _existing_canonical(record)
         if existing is not None:
-            _clean_staging(record.staging_path)
+            _clean_staging(record)
             return existing
 
         active_record = record
         if active_record.capture_kind == "supplement":
             active_record = _allocate_supplement(active_record)
-        if active_record.target_path.exists():
-            _clean_staging(active_record.staging_path)
+        if _path_exists_or_is_symlink(active_record.target_path):
             raise SnapshotError("snapshot target already exists: " + str(active_record.target_path))
 
         errors = validate_staged_snapshot(active_record)
         if errors:
-            _clean_staging(active_record.staging_path)
             raise SnapshotError("invalid staged snapshot:\n- " + "\n- ".join(errors))
+        staging_error = _staging_identity_error(active_record)
+        if staging_error is not None:
+            raise SnapshotError(staging_error)
         active_record.target_path.parent.mkdir(parents=True, exist_ok=True)
         if active_record.staging_path.parent.stat().st_dev != active_record.target_path.parent.stat().st_dev:
-            _clean_staging(active_record.staging_path)
             raise SnapshotError("staging and target must share a filesystem")
         try:
             active_record.staging_path.replace(active_record.target_path)
         except OSError as error:
-            _clean_staging(active_record.staging_path)
             raise SnapshotError("could not promote snapshot: " + str(error)) from error
         return active_record.target_path
+    except Exception:
+        _clean_staging(record)
+        raise
     finally:
-        if lock_created:
-            try:
-                lock_path.unlink()
-            except FileNotFoundError:
-                pass
+        if lock_identity is not None:
+            _remove_owned_lock(lock_path, lock_identity)
 
 
 def _candidate_groups(
@@ -469,18 +494,18 @@ def _snapshot_metadata(
     if release_notes is not None:
         release_metadata = {
             "path": "release-notes.md",
-            "source_url": release_notes.source_url,
-            "published_at": release_notes.published_at,
+            "source_url": record.release_notes_source_url,
+            "published_at": record.release_notes_published_at,
             "sha256": hashlib.sha256(release_notes.content).hexdigest(),
             "size": len(release_notes.content),
         }
     return {
         "format_version": _MANIFEST_VERSION,
         "repository": {
-            "url": config.url,
+            "url": record.repository_url,
             "id": record.repo_id,
-            "company": config.company,
-            "type": config.repo_type,
+            "company": record.company,
+            "type": record.repo_type,
         },
         "ref": {
             "kind": record.ref.ref_kind,
@@ -622,7 +647,10 @@ def _validate_no_symlinks_or_diffs(staging_path: Path, errors: List[str]) -> Non
 def _validate_identity(metadata: dict, record: SnapshotRecord, errors: List[str]) -> None:
     expected = {
         "format_version": _MANIFEST_VERSION,
+        "repository.url": record.repository_url,
         "repository.id": record.repo_id,
+        "repository.company": record.company,
+        "repository.type": record.repo_type,
         "ref.kind": record.ref.ref_kind,
         "ref.name": record.ref.ref_name,
         "ref.sha": record.ref.sha,
@@ -742,10 +770,17 @@ def _validate_copied_files(
             errors.append("copied file is not listed: " + path)
 
 
-def _validate_release_notes(staging_path: Path, metadata: dict, errors: List[str]) -> None:
+def _validate_release_notes(
+    staging_path: Path, metadata: dict, record: SnapshotRecord, errors: List[str]
+) -> None:
     release_metadata = metadata.get("release_notes")
     release_path = staging_path / "release-notes.md"
     if release_metadata is None:
+        if (
+            record.release_notes_source_url is not None
+            or record.release_notes_published_at is not None
+        ):
+            errors.append("metadata mismatch for release_notes")
         if release_path.exists() or release_path.is_symlink():
             errors.append("release notes are present without manifest metadata")
         return
@@ -762,6 +797,10 @@ def _validate_release_notes(staging_path: Path, metadata: dict, errors: List[str
         release_metadata.get("published_at"), str
     ):
         errors.append("release notes source metadata is malformed")
+    if release_metadata.get("source_url") != record.release_notes_source_url:
+        errors.append("metadata mismatch for release_notes.source_url")
+    if release_metadata.get("published_at") != record.release_notes_published_at:
+        errors.append("metadata mismatch for release_notes.published_at")
     if not release_path.is_file() or release_path.is_symlink():
         errors.append("release-notes.md is missing")
         return
@@ -835,6 +874,170 @@ def _require_contained(path: Path, root: Path, label: str) -> None:
         raise SnapshotError(label + " escapes its root") from error
 
 
-def _clean_staging(staging_path: Path) -> None:
-    if staging_path.exists() and not staging_path.is_symlink():
-        shutil.rmtree(str(staging_path), ignore_errors=True)
+def _copy_checkout_file(
+    repo_root: Path,
+    relative: str,
+    destination: Path,
+    max_file_bytes: int,
+    remaining_total_bytes: int,
+) -> Tuple[str, int, bool]:
+    """Copy one regular checkout file through no-follow descriptors only."""
+    source_descriptor = _open_checkout_regular_file(repo_root, relative)
+    destination_descriptor = None
+    digest = hashlib.sha256()
+    copied = 0
+    preview = b""
+    try:
+        destination_descriptor = os.open(
+            str(destination),
+            os.O_WRONLY | os.O_CREAT | os.O_EXCL | _no_follow_flag(),
+            0o600,
+        )
+        while True:
+            chunk = os.read(source_descriptor, 64 * 1024)
+            if not chunk:
+                break
+            copied += len(chunk)
+            if copied > max_file_bytes:
+                raise SnapshotError("copied file exceeds per-file byte limit: " + relative)
+            if copied > remaining_total_bytes:
+                raise SnapshotError("copied files exceed total snapshot byte limit: " + relative)
+            if len(preview) < 8192:
+                preview += chunk[: 8192 - len(preview)]
+            _write_all(destination_descriptor, chunk)
+            digest.update(chunk)
+        source_stat = os.fstat(source_descriptor)
+        if not stat.S_ISREG(source_stat.st_mode):
+            raise SnapshotError("selected file is not a regular file: " + relative)
+        return digest.hexdigest(), copied, b"\0" in preview
+    finally:
+        if destination_descriptor is not None:
+            os.close(destination_descriptor)
+        os.close(source_descriptor)
+
+
+def _open_checkout_regular_file(repo_root: Path, relative: str) -> int:
+    if not _is_safe_relative_path(relative):
+        raise SnapshotError("selected file is not a safe checkout path")
+    if os.open not in os.supports_dir_fd:
+        raise SnapshotError("descriptor-relative checkout traversal is unavailable")
+    directory_flag = getattr(os, "O_DIRECTORY", None)
+    if directory_flag is None:
+        raise SnapshotError("no-follow directory traversal is unavailable")
+
+    root_descriptor = os.open(str(repo_root), os.O_RDONLY | directory_flag | _no_follow_flag())
+    current_descriptor = root_descriptor
+    try:
+        root_stat = os.fstat(root_descriptor)
+        if not stat.S_ISDIR(root_stat.st_mode):
+            raise SnapshotError("checkout root is not a directory")
+        parts = Path(relative).parts
+        for index, part in enumerate(parts):
+            flags = os.O_RDONLY | _no_follow_flag()
+            if index < len(parts) - 1:
+                flags |= directory_flag
+            next_descriptor = os.open(part, flags, dir_fd=current_descriptor)
+            os.close(current_descriptor)
+            current_descriptor = next_descriptor
+        source_stat = os.fstat(current_descriptor)
+        if not stat.S_ISREG(source_stat.st_mode):
+            raise SnapshotError("selected file is not a regular file: " + relative)
+        return current_descriptor
+    except OSError as error:
+        os.close(current_descriptor)
+        raise SnapshotError("no-follow checkout traversal rejected selected file: " + relative) from error
+    except Exception:
+        os.close(current_descriptor)
+        raise
+
+
+def _no_follow_flag() -> int:
+    flag = getattr(os, "O_NOFOLLOW", None)
+    if flag is None:
+        raise SnapshotError("no-follow file opening is unavailable")
+    return flag
+
+
+def _write_all(descriptor: int, content: bytes) -> None:
+    offset = 0
+    while offset < len(content):
+        written = os.write(descriptor, content[offset:])
+        if written <= 0:
+            raise OSError("could not write snapshot file")
+        offset += written
+
+
+def _staging_stat(staging_path: Path) -> os.stat_result:
+    try:
+        staging_stat = os.lstat(str(staging_path))
+    except OSError as error:
+        raise SnapshotError("staged directory is missing") from error
+    if not stat.S_ISDIR(staging_stat.st_mode) or stat.S_ISLNK(staging_stat.st_mode):
+        raise SnapshotError("staged directory is not a real directory")
+    return staging_stat
+
+
+def _staging_identity_error(record: SnapshotRecord) -> Optional[str]:
+    if record.staging_device is None or record.staging_inode is None:
+        return "staged directory identity is unavailable"
+    try:
+        directory_flag = getattr(os, "O_DIRECTORY", None)
+        if directory_flag is None:
+            return "no-follow staged directory validation is unavailable"
+        descriptor = os.open(
+            str(record.staging_path), os.O_RDONLY | directory_flag | _no_follow_flag()
+        )
+    except (OSError, SnapshotError):
+        return "staged directory is missing or no longer original"
+    try:
+        staging_stat = os.fstat(descriptor)
+        if (
+            not stat.S_ISDIR(staging_stat.st_mode)
+            or (staging_stat.st_dev, staging_stat.st_ino)
+            != (record.staging_device, record.staging_inode)
+        ):
+            return "staged directory is a symlink or no longer original"
+        return None
+    finally:
+        os.close(descriptor)
+
+
+def _path_exists_or_is_symlink(path: Path) -> bool:
+    return path.exists() or path.is_symlink()
+
+
+def _remove_owned_lock(lock_path: Path, identity: Tuple[int, int]) -> None:
+    try:
+        lock_stat = os.lstat(str(lock_path))
+    except FileNotFoundError:
+        return
+    if (lock_stat.st_dev, lock_stat.st_ino) != identity:
+        return
+    try:
+        os.unlink(str(lock_path))
+    except FileNotFoundError:
+        pass
+
+
+def _clean_staging(record: SnapshotRecord) -> None:
+    if record.staging_device is None or record.staging_inode is None:
+        return
+    _clean_staging_path(record.staging_path, (record.staging_device, record.staging_inode))
+
+
+def _clean_staging_path(staging_path: Path, expected: object) -> None:
+    try:
+        staging_stat = os.lstat(str(staging_path))
+    except FileNotFoundError:
+        return
+    if hasattr(expected, "st_dev") and hasattr(expected, "st_ino"):
+        expected_identity = (expected.st_dev, expected.st_ino)
+    else:
+        expected_identity = expected
+    if (
+        not stat.S_ISDIR(staging_stat.st_mode)
+        or stat.S_ISLNK(staging_stat.st_mode)
+        or (staging_stat.st_dev, staging_stat.st_ino) != expected_identity
+    ):
+        return
+    shutil.rmtree(str(staging_path), ignore_errors=True)

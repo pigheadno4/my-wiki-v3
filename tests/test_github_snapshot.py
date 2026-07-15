@@ -1,5 +1,6 @@
 import hashlib
 import json
+import shutil
 import sys
 import tempfile
 import unittest
@@ -12,6 +13,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from github_git import ResolvedRef  # noqa: E402
 from github_releases import ReleaseNotesEvidence  # noqa: E402
 from github_registry import RepoConfig  # noqa: E402
+import github_snapshot  # noqa: E402
 from github_snapshot import (  # noqa: E402
     SnapshotError,
     build_snapshot,
@@ -373,11 +375,14 @@ class GitHubSnapshotTests(unittest.TestCase):
 
     def test_build_enforces_limits_against_copied_bytes(self):
         self.write("README.md", b"small\n")
+        original_select = github_snapshot.select_key_files
 
-        def copy_larger_bytes(source, destination):
-            Path(destination).write_bytes(b"x" * 9)
+        def select_then_grow(*args, **kwargs):
+            selection = original_select(*args, **kwargs)
+            self.write("README.md", b"x" * 9)
+            return selection
 
-        with mock.patch("github_snapshot.shutil.copyfile", side_effect=copy_larger_bytes):
+        with mock.patch("github_snapshot.select_key_files", side_effect=select_then_grow):
             with self.assertRaisesRegex(SnapshotError, "per-file byte limit"):
                 build_snapshot(
                     self.config(max_file_bytes=8),
@@ -388,6 +393,138 @@ class GitHubSnapshotTests(unittest.TestCase):
                     "2026-07-14",
                 )
         self.assertEqual([], list(self.staging_root.glob("snapshot-*")))
+
+    def test_build_rejects_selected_file_swapped_to_outside_symlink(self):
+        self.write("README.md", b"checkout evidence\n")
+        outside = self.root / "outside.txt"
+        outside.write_bytes(b"outside evidence\n")
+        original_select = github_snapshot.select_key_files
+
+        def select_then_swap(*args, **kwargs):
+            selection = original_select(*args, **kwargs)
+            (self.repo / "README.md").unlink()
+            (self.repo / "README.md").symlink_to(outside)
+            return selection
+
+        with mock.patch("github_snapshot.select_key_files", side_effect=select_then_swap):
+            with self.assertRaisesRegex(SnapshotError, "contained|symlink|no-follow"):
+                build_snapshot(
+                    self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+                )
+
+        self.assertEqual([], list(self.staging_root.glob("snapshot-*")))
+
+    def test_promotion_rejects_staging_path_swapped_after_validation(self):
+        self.write("README.md", b"snapshot\n")
+        record = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+        original_staging = record.staging_path.with_name(record.staging_path.name + "-original")
+        outside_staging = self.root / "outside-staging"
+        shutil.copytree(record.staging_path, outside_staging)
+        original_validate = github_snapshot.validate_staged_snapshot
+
+        def validate_then_swap(active_record):
+            errors = original_validate(active_record)
+            active_record.staging_path.rename(original_staging)
+            active_record.staging_path.symlink_to(outside_staging, target_is_directory=True)
+            return errors
+
+        with mock.patch("github_snapshot.validate_staged_snapshot", side_effect=validate_then_swap):
+            with self.assertRaisesRegex(SnapshotError, "staged directory"):
+                promote_snapshot(record)
+
+        self.assertTrue(record.staging_path.is_symlink())
+        self.assertTrue(original_staging.is_dir())
+        self.assertFalse(record.target_path.exists())
+
+    def test_validation_rejects_repository_provenance_tampering(self):
+        self.write("README.md", b"snapshot\n")
+        replacements = (
+            ('"url": "https://github.com/paypal/paypal-js"', '"url": "https://github.com/attacker/repo"', "repository.url"),
+            ('"company": "paypal"', '"company": "attacker"', "repository.company"),
+            ('"type": "web-sdk"', '"type": "malicious-sdk"', "repository.type"),
+        )
+
+        for original, tampered, field in replacements:
+            with self.subTest(field=field):
+                record = build_snapshot(
+                    self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+                )
+                manifest_path = record.staging_path / "snapshot.md"
+                manifest_path.write_text(
+                    manifest_path.read_text(encoding="utf-8").replace(original, tampered, 1),
+                    encoding="utf-8",
+                )
+
+                errors = validate_staged_snapshot(record)
+
+                self.assertTrue(any("metadata mismatch for " + field in error for error in errors))
+
+    def test_validation_rejects_release_note_provenance_tampering(self):
+        self.write("README.md", b"snapshot\n")
+        evidence = ReleaseNotesEvidence(
+            "https://api.github.test/release", "2026-07-14T00:00:00Z", b"notes\n"
+        )
+        replacements = (
+            ('"source_url": "https://api.github.test/release"', '"source_url": "https://attacker.test/release"', "release_notes.source_url"),
+            ('"published_at": "2026-07-14T00:00:00Z"', '"published_at": "2020-01-01T00:00:00Z"', "release_notes.published_at"),
+        )
+
+        for original, tampered, field in replacements:
+            with self.subTest(field=field):
+                record = build_snapshot(
+                    self.config(),
+                    self.ref,
+                    self.repo,
+                    self.raw_root,
+                    self.staging_root,
+                    "2026-07-14",
+                    release_notes=evidence,
+                )
+                manifest_path = record.staging_path / "snapshot.md"
+                manifest_path.write_text(
+                    manifest_path.read_text(encoding="utf-8").replace(original, tampered, 1),
+                    encoding="utf-8",
+                )
+
+                errors = validate_staged_snapshot(record)
+
+                self.assertTrue(any("metadata mismatch for " + field in error for error in errors))
+
+    def test_lock_write_failure_removes_owned_lock_and_staging(self):
+        self.write("README.md", b"snapshot\n")
+        record = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+
+        with mock.patch("github_snapshot.os.write", side_effect=OSError("write failed")):
+            with self.assertRaisesRegex(OSError, "write failed"):
+                promote_snapshot(record)
+
+        self.assertFalse(self.promotion_lock(record).exists())
+        self.assertFalse(record.staging_path.exists())
+
+    def test_lock_cleanup_preserves_replacement_lock_path(self):
+        self.write("README.md", b"snapshot\n")
+        record = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+        lock = self.promotion_lock(record)
+
+        def replace_lock_then_fail(_active_record):
+            lock.unlink()
+            lock.write_text("foreign", encoding="utf-8")
+            return ["forced validation failure"]
+
+        with mock.patch(
+            "github_snapshot.validate_staged_snapshot", side_effect=replace_lock_then_fail
+        ):
+            with self.assertRaisesRegex(SnapshotError, "invalid staged snapshot"):
+                promote_snapshot(record)
+
+        self.assertEqual("foreign", lock.read_text(encoding="utf-8"))
+        self.assertFalse(record.staging_path.exists())
 
     def test_lock_collision_preserves_foreign_lock_and_cleans_staging(self):
         self.write("README.md", b"snapshot\n")
