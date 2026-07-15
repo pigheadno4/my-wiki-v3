@@ -168,6 +168,37 @@ class GitHubReleasesTests(unittest.TestCase):
             ("9.0.0+build.1", "9.0.0+build.2"), tuple(item.version for item in future)
         )
 
+    def test_build_metadata_selectors_require_the_exact_release_identity(self):
+        plain_candidates = self._candidates("9.0.0+build.1", "9.0.0+build.2")
+        package_candidates = (
+            ReleaseCandidate(
+                "@scope/widget",
+                "9.0.0+build.1",
+                "@scope/widget@9.0.0+build.1",
+                "object-build.1",
+                "commit-build.1",
+                False,
+            ),
+            ReleaseCandidate(
+                "@scope/widget",
+                "9.0.0+build.2",
+                "@scope/widget@9.0.0+build.2",
+                "object-build.2",
+                "commit-build.2",
+                False,
+            ),
+        )
+
+        plain_selected = select_release_candidates(
+            self._track(selector="v9.0.0+build.1"), plain_candidates
+        )
+        package_selected = select_release_candidates(
+            self._track(selector="package:@scope/widget@9.0.0+build.1"), package_candidates
+        )
+
+        self.assertEqual(("9.0.0+build.1",), tuple(item.version for item in plain_selected))
+        self.assertEqual(("9.0.0+build.1",), tuple(item.version for item in package_selected))
+
     def test_pins_require_the_exact_build_metadata_identity(self):
         candidates = self._candidates("9.0.0+build.1")
 
@@ -180,6 +211,35 @@ class GitHubReleasesTests(unittest.TestCase):
             self._track(pinned_versions=("9.0.0+build.1",)), candidates
         )
         self.assertEqual(("9.0.0+build.1",), tuple(item.version for item in selected))
+
+    def test_minor_baselines_include_available_existing_versions(self):
+        selected = select_release_candidates(
+            self._track(backfill="minor-baselines"),
+            self._candidates("9.0.0", "9.0.1", "9.0.2"),
+            existing_versions=("9.0.1",),
+        )
+
+        self.assertEqual(("9.0.0", "9.0.1", "9.0.2"), tuple(item.version for item in selected))
+
+    def test_semantic_aliases_on_the_same_commit_deduplicate(self):
+        aliases = (
+            ReleaseCandidate("", "9.0.0", "v9.0.0", "tag-a", "commit-shared", False),
+            ReleaseCandidate("", "v9.0.0", "9.0.0", "tag-b", "commit-shared", False),
+        )
+
+        selected = select_release_candidates(self._track(selector="v9.0.0"), aliases)
+
+        self.assertEqual(1, len(selected))
+        self.assertEqual("commit-shared", selected[0].commit_sha)
+
+    def test_semantic_aliases_on_different_commits_raise_release_evidence_conflict(self):
+        aliases = (
+            ReleaseCandidate("", "9.0.0", "v9.0.0", "tag-a", "commit-a", False),
+            ReleaseCandidate("", "v9.0.0", "9.0.0", "tag-b", "commit-b", False),
+        )
+
+        with self.assertRaisesRegex(ReleaseSelectionError, "release-evidence conflict.*9.0.0"):
+            select_release_candidates(self._track(selector="v9.0.0"), aliases)
 
     def test_invalid_mode_and_missing_pin_fail_without_weakening_retention(self):
         with self.assertRaisesRegex(ReleaseSelectionError, "mode"):
@@ -268,6 +328,33 @@ class GitHubReleasesTests(unittest.TestCase):
             messages.append(str(raised.exception))
 
         self.assertEqual(messages[0], messages[1])
+
+    def test_discovery_rejects_malformed_rows_and_invalid_object_ids(self):
+        rows = {
+            "missing tab": "a" * 40 + " refs/tags/v9.0.0\n",
+            "non-tag ref": "a" * 40 + "\trefs/heads/main\n",
+            "empty tag": "a" * 40 + "\trefs/tags/\n",
+            "empty object ID": "\trefs/tags/v9.0.0\n",
+            "invalid object ID": "not-a-sha\trefs/tags/v9.0.0\n",
+        }
+
+        for name, output in rows.items():
+            with self.subTest(name=name), mock.patch(
+                "github_releases.github_git.run_git", return_value=output
+            ):
+                with self.assertRaisesRegex(ReleaseSelectionError, "malformed ls-remote tag metadata"):
+                    discover_release_candidates(self.config, self.clone, self._track())
+
+    def test_discovery_accepts_sha1_and_sha256_object_ids(self):
+        output = (
+            "a" * 40 + "\trefs/tags/v9.0.0\n"
+            + "b" * 64 + "\trefs/tags/v9.1.0\n"
+        )
+
+        with mock.patch("github_releases.github_git.run_git", return_value=output):
+            candidates = discover_release_candidates(self.config, self.clone, self._track())
+
+        self.assertEqual(("9.0.0", "9.1.0"), tuple(item.version for item in candidates))
 
     def test_discovery_rejects_incomplete_matching_package_tags(self):
         output = "a" * 40 + "\trefs/tags/@scope/widget@9.0\n"

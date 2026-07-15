@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from functools import cmp_to_key
 import json
 from pathlib import Path
+import re
 from typing import Callable, Dict, Optional, Sequence, Tuple
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote
@@ -12,6 +13,9 @@ from urllib.request import Request, urlopen
 import github_git
 from github_registry import RepoConfig, VersionTrack
 from github_versions import SemanticVersion, compare_semver, matches_semver, parse_package_tag, parse_semver
+
+
+_GIT_OBJECT_ID = re.compile(r"^(?:[0-9A-Fa-f]{40}|[0-9A-Fa-f]{64})$")
 
 
 class ReleaseSelectionError(ValueError):
@@ -53,7 +57,9 @@ def discover_release_candidates(
         if parsed_package is not None:
             package, raw_version = parsed_package
             version = parse_semver(raw_version)
-            if package_name is None and _matches(version, target, track.include_prerelease):
+            if package_name is None and _matches_version(
+                raw_version, version, target, track
+            ):
                 matching_packages.add(package)
             if package_name is None or package != package_name:
                 continue
@@ -71,7 +77,7 @@ def discover_release_candidates(
                     "incomplete release tag " + tag + " matching selector " + track.selector
                 )
             continue
-        if not _matches(version, target, track.include_prerelease):
+        if not _matches_version(raw_version, version, target, track):
             continue
         candidates.append(
             ReleaseCandidate(
@@ -105,7 +111,7 @@ def select_release_candidates(
     eligible = _deduplicated_candidates(
         candidate
         for candidate in candidates
-        if _candidate_matches_track(candidate, package_name, target, track.include_prerelease)
+        if _candidate_matches_track(candidate, package_name, target, track)
     )
     pinned = _pinned_candidates(track, eligible)
 
@@ -138,6 +144,10 @@ def select_release_candidates(
         selected[_version_key(candidate.version)] = candidate
     for candidate in pinned:
         selected[_version_key(candidate.version)] = candidate
+    existing = _version_keys(existing_versions)
+    for candidate in eligible:
+        if _version_key(candidate.version) in existing:
+            selected[_version_key(candidate.version)] = candidate
     return tuple(sorted(selected.values(), key=cmp_to_key(_compare_candidates)))
 
 
@@ -214,17 +224,31 @@ def _remote_tag_metadata(clone_path: Path) -> Tuple[Dict[str, str], Dict[str, st
     object_rows: Dict[str, list] = {}
     peeled_rows: Dict[str, list] = {}
     output = github_git.run_git(["ls-remote", "--tags", "origin"], clone_path)
-    for line in output.splitlines():
-        sha, separator, ref = line.partition("\t")
-        if not separator or not ref.startswith("refs/tags/"):
+    errors = []
+    for line_number, line in enumerate(output.splitlines(), 1):
+        if line.count("\t") != 1:
+            errors.append("malformed row " + str(line_number) + ": expected object ID and tag ref")
+            continue
+        sha, ref = line.split("\t")
+        if _GIT_OBJECT_ID.fullmatch(sha) is None:
+            errors.append("malformed row " + str(line_number) + ": invalid object ID " + repr(sha))
+            continue
+        if not ref.startswith("refs/tags/"):
+            errors.append("malformed row " + str(line_number) + ": expected tag ref " + repr(ref))
             continue
         name = ref[len("refs/tags/"):]
+        if not name:
+            errors.append("malformed row " + str(line_number) + ": empty tag name")
+            continue
         if name.endswith("^{}"):
-            peeled_rows.setdefault(name[:-3], []).append(sha)
+            tag = name[:-3]
+            if not tag:
+                errors.append("malformed row " + str(line_number) + ": empty peeled tag name")
+                continue
+            peeled_rows.setdefault(tag, []).append(sha)
         else:
             object_rows.setdefault(name, []).append(sha)
 
-    errors = []
     for tag, rows in sorted(object_rows.items()):
         if len(rows) > 1:
             ref = "refs/tags/" + tag
@@ -254,13 +278,13 @@ def _candidate_matches_track(
     candidate: ReleaseCandidate,
     package_name: Optional[str],
     target: SemanticVersion,
-    include_prerelease: bool,
+    track: VersionTrack,
 ) -> bool:
     if package_name is not None and candidate.package != package_name:
         return False
     if package_name is None and candidate.package:
         return False
-    return _matches(parse_semver(candidate.version), target, include_prerelease)
+    return _matches_version(candidate.version, parse_semver(candidate.version), target, track)
 
 
 def _matches(
@@ -271,6 +295,15 @@ def _matches(
         and candidate.is_exact
         and matches_semver(candidate, target, include_prerelease)
     )
+
+
+def _matches_version(
+    raw_version: str, candidate: Optional[SemanticVersion], target: SemanticVersion, track: VersionTrack
+) -> bool:
+    if not _matches(candidate, target, track.include_prerelease):
+        return False
+    identity = _selector_identity(track)
+    return identity is None or _normalized_version(raw_version) == identity
 
 
 def _matches_incomplete(
@@ -305,12 +338,26 @@ def _pinned_candidates(
 
 
 def _deduplicated_candidates(candidates: Sequence[ReleaseCandidate]) -> Tuple[ReleaseCandidate, ...]:
-    selected: Dict[Tuple[object, ...], ReleaseCandidate] = {}
+    grouped: Dict[Tuple[object, ...], list] = {}
     for candidate in candidates:
         key = _version_key(candidate.version)
-        prior = selected.get(key)
-        if prior is None or _candidate_identity(candidate) < _candidate_identity(prior):
-            selected[key] = candidate
+        grouped.setdefault(key, []).append(candidate)
+
+    conflicts = []
+    selected = {}
+    for aliases in grouped.values():
+        commit_shas = sorted({candidate.commit_sha for candidate in aliases})
+        if len(commit_shas) > 1:
+            conflicts.append(
+                "release-evidence conflict for version "
+                + _normalized_version(aliases[0].version)
+                + ": aliases resolve to different commit SHAs "
+                + ", ".join(commit_shas)
+            )
+            continue
+        selected[_version_key(aliases[0].version)] = min(aliases, key=_candidate_identity)
+    if conflicts:
+        raise ReleaseSelectionError("; ".join(sorted(conflicts)))
     return tuple(sorted(selected.values(), key=cmp_to_key(_compare_candidates)))
 
 
@@ -360,6 +407,17 @@ def _candidate_identity(candidate: ReleaseCandidate) -> Tuple[str, str, str, str
 
 def _normalized_version(value: str) -> str:
     return value[1:] if value.startswith("v") else value
+
+
+def _selector_identity(track: VersionTrack) -> Optional[str]:
+    if track.selector.startswith("package:"):
+        parsed = parse_package_tag(track.selector[8:])
+        if parsed is None:
+            return None
+        value = parsed[1]
+    else:
+        value = track.selector
+    return _normalized_version(value) if "+" in value else None
 
 
 def _release_url(config: RepoConfig, tag: str) -> str:
