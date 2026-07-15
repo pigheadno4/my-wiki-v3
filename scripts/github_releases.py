@@ -53,7 +53,7 @@ def discover_release_candidates(
         if parsed_package is not None:
             package, raw_version = parsed_package
             version = parse_semver(raw_version)
-            if _matches(version, target, track.include_prerelease):
+            if package_name is None and _matches(version, target, track.include_prerelease):
                 matching_packages.add(package)
             if package_name is None or package != package_name:
                 continue
@@ -63,6 +63,14 @@ def discover_release_candidates(
             raw_version = tag
             version = parse_semver(raw_version)
 
+        if version is None:
+            continue
+        if not version.is_exact:
+            if version.major == target.major:
+                raise ReleaseSelectionError(
+                    "incomplete release tag " + tag + " matching selector " + track.selector
+                )
+            continue
         if not _matches(version, target, track.include_prerelease):
             continue
         candidates.append(
@@ -153,27 +161,27 @@ def fetch_release_notes(
     try:
         response = open_request(request)
     except HTTPError as error:
-        if error.code == 404:
-            return None
-        raise _evidence_error(config, candidate, "GitHub HTTP " + str(error.code)) from error
+        try:
+            if error.code == 404:
+                return None
+            raise _evidence_error(config, candidate, "GitHub HTTP " + str(error.code)) from error
+        finally:
+            error.close()
     except (URLError, OSError) as error:
         raise _evidence_error(config, candidate, "GitHub request failed: " + str(error)) from error
 
     try:
-        status = response.getcode() if hasattr(response, "getcode") else None
-        if status == 404:
-            return None
-        if status is not None and status >= 400:
-            raise _evidence_error(config, candidate, "GitHub HTTP " + str(status))
-        payload = response.read()
+        with response as opened_response:
+            status = opened_response.getcode() if hasattr(opened_response, "getcode") else None
+            if status == 404:
+                return None
+            if status is not None and status >= 400:
+                raise _evidence_error(config, candidate, "GitHub HTTP " + str(status))
+            payload = opened_response.read()
     except ReleaseEvidenceError:
         raise
     except (OSError, ValueError) as error:
         raise _evidence_error(config, candidate, "could not read GitHub response: " + str(error)) from error
-    finally:
-        close = getattr(response, "close", None)
-        if callable(close):
-            close()
 
     if not isinstance(payload, bytes):
         raise _evidence_error(config, candidate, "GitHub response body was not bytes")
@@ -203,8 +211,8 @@ def _track_scope(track: VersionTrack) -> Tuple[Optional[str], SemanticVersion]:
 
 
 def _remote_tag_metadata(clone_path: Path) -> Tuple[Dict[str, str], Dict[str, str]]:
-    objects: Dict[str, str] = {}
-    peeled: Dict[str, str] = {}
+    object_rows: Dict[str, list] = {}
+    peeled_rows: Dict[str, list] = {}
     output = github_git.run_git(["ls-remote", "--tags", "origin"], clone_path)
     for line in output.splitlines():
         sha, separator, ref = line.partition("\t")
@@ -212,10 +220,34 @@ def _remote_tag_metadata(clone_path: Path) -> Tuple[Dict[str, str], Dict[str, st
             continue
         name = ref[len("refs/tags/"):]
         if name.endswith("^{}"):
-            peeled[name[:-3]] = sha
+            peeled_rows.setdefault(name[:-3], []).append(sha)
         else:
-            objects[name] = sha
-    return objects, peeled
+            object_rows.setdefault(name, []).append(sha)
+
+    errors = []
+    for tag, rows in sorted(object_rows.items()):
+        if len(rows) > 1:
+            ref = "refs/tags/" + tag
+            if len(set(rows)) == 1:
+                errors.append("duplicate direct row for " + ref)
+            else:
+                errors.append("conflicting direct rows for " + ref)
+    for tag, rows in sorted(peeled_rows.items()):
+        ref = "refs/tags/" + tag + "^{}"
+        if tag not in object_rows:
+            errors.append("orphan peeled row for " + ref)
+        elif len(rows) > 1:
+            if len(set(rows)) == 1:
+                errors.append("duplicate peeled row for " + ref)
+            else:
+                errors.append("conflicting peeled rows for " + ref)
+    if errors:
+        raise ReleaseSelectionError("malformed ls-remote tag metadata: " + "; ".join(sorted(errors)))
+
+    return (
+        {tag: rows[0] for tag, rows in object_rows.items()},
+        {tag: rows[0] for tag, rows in peeled_rows.items()},
+    )
 
 
 def _candidate_matches_track(
@@ -269,13 +301,15 @@ def _version_keys(versions: Sequence[str]) -> set:
 
 
 def _version_key(value: str) -> Tuple[object, ...]:
-    version = _parsed_version(value)
+    normalized = _normalized_version(value)
+    version = _parsed_version(normalized)
     return (
         version.major,
         version.minor,
         version.patch,
         version.prerelease is None,
         version.prerelease or (),
+        normalized.partition("+")[2],
     )
 
 

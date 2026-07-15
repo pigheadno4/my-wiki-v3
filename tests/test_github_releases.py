@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from urllib.error import HTTPError
 
 
@@ -52,6 +53,20 @@ class FakeResponse:
     def __init__(self, content, status=200):
         self.content = content
         self.status = status
+        self.entered = False
+        self.exited = False
+        self.closed = False
+
+    def __enter__(self):
+        self.entered = True
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.exited = True
+        self.close()
+
+    def close(self):
+        self.closed = True
 
     def read(self):
         return self.content
@@ -139,6 +154,33 @@ class GitHubReleasesTests(unittest.TestCase):
 
         self.assertEqual((), selected)
 
+    def test_build_metadata_versions_keep_distinct_release_identities(self):
+        candidates = self._candidates("9.0.0", "9.0.0+build.1", "9.0.0+build.2")
+
+        retained = select_release_candidates(self._track(), candidates)
+        future = select_release_candidates(self._track(), candidates, ("9.0.0",), "future")
+
+        self.assertEqual(
+            ("9.0.0", "9.0.0+build.1", "9.0.0+build.2"),
+            tuple(item.version for item in retained),
+        )
+        self.assertEqual(
+            ("9.0.0+build.1", "9.0.0+build.2"), tuple(item.version for item in future)
+        )
+
+    def test_pins_require_the_exact_build_metadata_identity(self):
+        candidates = self._candidates("9.0.0+build.1")
+
+        with self.assertRaisesRegex(ReleaseSelectionError, "9.0.0"):
+            select_release_candidates(
+                self._track(pinned_versions=("9.0.0",)), candidates
+            )
+
+        selected = select_release_candidates(
+            self._track(pinned_versions=("9.0.0+build.1",)), candidates
+        )
+        self.assertEqual(("9.0.0+build.1",), tuple(item.version for item in selected))
+
     def test_invalid_mode_and_missing_pin_fail_without_weakening_retention(self):
         with self.assertRaisesRegex(ReleaseSelectionError, "mode"):
             select_release_candidates(self._track(), self._candidates("9.0.0"), mode="other")
@@ -177,24 +219,97 @@ class GitHubReleasesTests(unittest.TestCase):
         with self.assertRaisesRegex(ReleaseSelectionError, "package-scoped"):
             discover_release_candidates(self.config, self.clone, self._track())
 
-    def test_discovery_ignores_incomplete_semantic_tags(self):
-        commit_file(self.repo, "README.md", "one\n", "initial")
-        tag(self.repo, "v9")
-        tag(self.repo, "v9.0")
-        tag(self.repo, "v9.0.0")
-        self._publish_and_clone()
+    def test_discovery_rejects_duplicate_and_conflicting_remote_tag_rows(self):
+        rows = {
+            "duplicate direct": (
+                "a" * 40 + "\trefs/tags/v9.0.0\n"
+                + "a" * 40 + "\trefs/tags/v9.0.0\n",
+                "duplicate direct row.*refs/tags/v9.0.0",
+            ),
+            "duplicate peeled": (
+                "a" * 40 + "\trefs/tags/v9.0.0\n"
+                + "b" * 40 + "\trefs/tags/v9.0.0^{}\n"
+                + "b" * 40 + "\trefs/tags/v9.0.0^{}\n",
+                "duplicate peeled row.*refs/tags/v9\\.0\\.0\\^\\{\\}",
+            ),
+            "conflicting direct": (
+                "a" * 40 + "\trefs/tags/v9.0.0\n"
+                + "b" * 40 + "\trefs/tags/v9.0.0\n",
+                "conflicting direct rows.*refs/tags/v9.0.0",
+            ),
+        }
 
-        candidates = discover_release_candidates(self.config, self.clone, self._track())
+        for name, (output, message) in rows.items():
+            with self.subTest(name=name), mock.patch(
+                "github_releases.github_git.run_git", return_value=output
+            ):
+                with self.assertRaisesRegex(ReleaseSelectionError, message):
+                    discover_release_candidates(self.config, self.clone, self._track())
+
+    def test_discovery_rejects_orphan_peeled_remote_tag_rows(self):
+        output = "a" * 40 + "\trefs/tags/v9.0.0^{}\n"
+
+        with mock.patch("github_releases.github_git.run_git", return_value=output):
+            with self.assertRaisesRegex(
+                ReleaseSelectionError, "orphan peeled row.*refs/tags/v9\\.0\\.0\\^\\{\\}"
+            ):
+                discover_release_candidates(self.config, self.clone, self._track())
+
+    def test_discovery_reports_malformed_remote_rows_independently_of_input_order(self):
+        direct = "a" * 40 + "\trefs/tags/v9.0.0\n"
+        duplicate = "a" * 40 + "\trefs/tags/v9.0.0\n"
+        orphan = "b" * 40 + "\trefs/tags/v8.0.0^{}\n"
+
+        messages = []
+        for output in (direct + duplicate + orphan, orphan + duplicate + direct):
+            with mock.patch("github_releases.github_git.run_git", return_value=output):
+                with self.assertRaises(ReleaseSelectionError) as raised:
+                    discover_release_candidates(self.config, self.clone, self._track())
+            messages.append(str(raised.exception))
+
+        self.assertEqual(messages[0], messages[1])
+
+    def test_discovery_rejects_incomplete_matching_package_tags(self):
+        output = "a" * 40 + "\trefs/tags/@scope/widget@9.0\n"
+
+        with mock.patch("github_releases.github_git.run_git", return_value=output):
+            with self.assertRaisesRegex(
+                ReleaseSelectionError, "incomplete release tag @scope/widget@9.0"
+            ):
+                discover_release_candidates(
+                    self.config, self.clone, self._track(selector="package:@scope/widget@9")
+                )
+
+    def test_discovery_rejects_incomplete_matching_plain_tags(self):
+        output = "a" * 40 + "\trefs/tags/v9.0\n"
+
+        with mock.patch("github_releases.github_git.run_git", return_value=output):
+            with self.assertRaisesRegex(ReleaseSelectionError, "incomplete release tag v9.0"):
+                discover_release_candidates(self.config, self.clone, self._track())
+
+    def test_discovery_ignores_incomplete_tags_outside_the_selected_package_namespace(self):
+        output = (
+            "a" * 40 + "\trefs/tags/@scope/other@9.0\n"
+            + "b" * 40 + "\trefs/tags/@scope/widget@9.0.0\n"
+        )
+
+        with mock.patch("github_releases.github_git.run_git", return_value=output):
+            candidates = discover_release_candidates(
+                self.config, self.clone, self._track(selector="package:@scope/widget@9")
+            )
 
         self.assertEqual(("9.0.0",), tuple(item.version for item in candidates))
 
     def test_fetch_release_notes_preserves_utf8_body_and_required_headers(self):
         candidate = self._candidates("9.0.0")[0]
         received = []
+        response = FakeResponse(
+            json.dumps({"published_at": "2026-07-15T12:00:00Z", "body": "A cafe \u2615"}).encode("utf-8")
+        )
 
         def opener(request):
             received.append(request)
-            return FakeResponse(json.dumps({"published_at": "2026-07-15T12:00:00Z", "body": "A cafe \u2615"}).encode("utf-8"))
+            return response
 
         evidence = fetch_release_notes(self.config, candidate, token="secret", opener=opener)
 
@@ -209,23 +324,36 @@ class GitHubReleasesTests(unittest.TestCase):
         self.assertEqual("application/vnd.github+json", received[0].get_header("Accept"))
         self.assertEqual("Bearer secret", received[0].get_header("Authorization"))
         self.assertIn("github", received[0].get_header("User-agent").lower())
+        self.assertTrue(response.entered)
+        self.assertTrue(response.exited)
+        self.assertTrue(response.closed)
 
     def test_fetch_release_notes_returns_none_for_404(self):
         candidate = self._candidates("9.0.0")[0]
+        response = FakeResponse(b"")
+        error = HTTPError("https://api.github.test", 404, "not found", None, response)
 
         def opener(request):
-            raise HTTPError(request.full_url, 404, "not found", None, None)
+            raise error
 
-        self.assertIsNone(fetch_release_notes(self.config, candidate, opener=opener))
+        with mock.patch.object(error, "close", wraps=error.close) as close:
+            self.assertIsNone(fetch_release_notes(self.config, candidate, opener=opener))
+        close.assert_called_once_with()
+        self.assertTrue(response.closed)
 
     def test_fetch_release_notes_surfaces_context_for_http_and_payload_failures(self):
         candidate = self._candidates("9.0.0")[0]
+        response = FakeResponse(b"")
+        error = HTTPError("https://api.github.test", 429, "rate limited", None, response)
 
         def rate_limited(request):
-            raise HTTPError(request.full_url, 429, "rate limited", None, None)
+            raise error
 
-        with self.assertRaisesRegex(ReleaseEvidenceError, "acme/widgets.*v9.0.0"):
-            fetch_release_notes(self.config, candidate, opener=rate_limited)
+        with mock.patch.object(error, "close", wraps=error.close) as close:
+            with self.assertRaisesRegex(ReleaseEvidenceError, "acme/widgets.*v9.0.0"):
+                fetch_release_notes(self.config, candidate, opener=rate_limited)
+        close.assert_called_once_with()
+        self.assertTrue(response.closed)
         with self.assertRaisesRegex(ReleaseEvidenceError, "malformed"):
             fetch_release_notes(self.config, candidate, opener=lambda request: FakeResponse(b"{"))
         with self.assertRaisesRegex(ReleaseEvidenceError, "body"):
