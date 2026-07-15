@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import tempfile
@@ -200,6 +201,17 @@ def _write_json(path: Path, payload: Dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+def prepare_minimal_codex_home(target: Path) -> Path:
+    target.mkdir(parents=True, exist_ok=True)
+    source = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex")))
+    for name in ("auth.json", "models_cache.json", "installation_id", "version.json"):
+        source_path = source / name
+        target_path = target / name
+        if source_path.is_file() and not target_path.exists():
+            target_path.symlink_to(source_path)
+    return target
+
+
 def run_worker(
     root: Path,
     job_path: Path,
@@ -234,6 +246,9 @@ def run_worker(
     with tempfile.TemporaryDirectory(prefix=f"metronome-{job['job_id']}-") as tmp:
         staged_cwd = Path(tmp)
         (staged_cwd / "raw.md").write_text(raw_text, encoding="utf-8")
+        minimal_codex_home = prepare_minimal_codex_home(staged_cwd / "codex-home")
+        worker_env = os.environ.copy()
+        worker_env["CODEX_HOME"] = str(minimal_codex_home)
         for attempt in (1, 2):
             attempt_dir = artifact_dir / f"attempt-{attempt}"
             attempt_dir.mkdir(parents=True, exist_ok=True)
@@ -254,6 +269,7 @@ def run_worker(
                     text=True,
                     cwd=staged_cwd,
                     timeout=int(job.get("timeout_seconds", 900)),
+                    env=worker_env,
                 )
             except subprocess.TimeoutExpired as exc:
                 result = subprocess.CompletedProcess(
@@ -306,6 +322,9 @@ def run_worker(
                     "token_usage": usage,
                 }
             )
+            if result.returncode == 124:
+                validation_errors = errors
+                break
             if not errors and output is not None:
                 last_output = output
                 accepted_output = artifact_dir / "model-output.json"
@@ -360,7 +379,7 @@ def run_worker(
         "model_provider": job["model_provider"],
         "model": job["model"],
         "reasoning_effort": job["reasoning_effort"],
-        "attempt_count": 2,
+        "attempt_count": len(attempt_records),
         "attempts": attempt_records,
         "started_at": started_at,
         "finished_at": utc_now(),

@@ -1,4 +1,5 @@
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -155,6 +156,8 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         self.assertEqual(900, calls[0][1]["timeout"])
         self.assertNotEqual(root, calls[0][1]["cwd"])
         self.assertEqual([True, True], staged_files)
+        self.assertNotEqual(str(Path.home() / ".codex"), calls[0][1]["env"]["CODEX_HOME"])
+        self.assertFalse((Path(calls[0][1]["env"]["CODEX_HOME"]) / "skills").exists())
         receipt = json.loads((root / job["artifact_dir"] / "model-worker-receipt.json").read_text())
         self.assertEqual({"input_tokens": 300, "output_tokens": 30}, receipt["cumulative_token_usage"])
         self.assertIn("undefined grounding quote", receipt["attempts"][0]["retry_reason"])
@@ -180,6 +183,22 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         self.assertEqual(1, len(calls))
         receipt = json.loads((root / job["artifact_dir"] / "model-worker-receipt.json").read_text())
         self.assertEqual(1, receipt["quote_line_repairs"])
+
+    def test_process_timeout_fails_fast_without_second_attempt(self):
+        root, job_path, job = self.make_root()
+        calls = []
+
+        def fake_runner(command, **kwargs):
+            calls.append(command)
+            raise subprocess.TimeoutExpired(command, kwargs["timeout"])
+
+        result = run_worker(root, job_path, "2026-07-15", runner=fake_runner)
+
+        self.assertEqual(1, result)
+        self.assertEqual(1, len(calls))
+        receipt = json.loads((root / job["artifact_dir"] / "model-worker-receipt.json").read_text())
+        self.assertEqual(1, receipt["attempt_count"])
+        self.assertEqual(124, receipt["process_exit_code"])
 
 
 if __name__ == "__main__":
