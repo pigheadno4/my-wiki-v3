@@ -7,7 +7,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from github_registry import RepoConfig, load_registry, select_repos, validate_registry  # noqa: E402
+from github_registry import (  # noqa: E402
+    RepoConfig,
+    VersionTrack,
+    load_registry,
+    select_repos,
+    validate_registry,
+)
 from toml_compat import load_toml  # noqa: E402
 
 
@@ -136,8 +142,96 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual((), repo.exclude_paths)
         self.assertEqual(1048576, repo.max_file_bytes)
         self.assertEqual(10485760, repo.max_snapshot_bytes)
+        self.assertEqual((), repo.version_tracks)
         with self.assertRaises(dataclasses.FrozenInstanceError):
             repo.enabled = False
+
+    def test_registry_loads_immutable_nested_version_tracks_in_order(self):
+        path = self.write_registry(
+            '[[repos]]\n'
+            'id = "paypal/paypal-js"\n'
+            'company = "paypal"\n'
+            'url = "https://github.com/paypal/paypal-js"\n'
+            'enabled = true\n'
+            'repo_type = "web-sdk"\n'
+            'priority = "tier1"\n'
+            'track = "releases-and-default-branch"\n'
+            'version_strategy = "monorepo-packages"\n'
+            '[[repos.version_tracks]]\n'
+            'selector = "package:@scope/name@10"\n'
+            'backfill = "all-stable"\n'
+            'future = "all-stable"\n'
+            '[[repos.version_tracks]]\n'
+            'selector = "v9"\n'
+            'backfill = "minor-baselines"\n'
+            'future = "none"\n'
+            'include_prerelease = true\n'
+            'pinned_versions = ["9.0.1", "9.2.0-rc.1"]\n'
+        )
+
+        repo = load_registry(path)[0]
+
+        self.assertEqual(
+            (
+                VersionTrack("package:@scope/name@10", "all-stable", "all-stable"),
+                VersionTrack("v9", "minor-baselines", "none", True, ("9.0.1", "9.2.0-rc.1")),
+            ),
+            repo.version_tracks,
+        )
+        with self.assertRaises(dataclasses.FrozenInstanceError):
+            repo.version_tracks[0].future = "all-stable"
+
+    def test_registry_rejects_invalid_nested_version_track_values(self):
+        base = (
+            '[[repos]]\n'
+            'id = "paypal/paypal-js"\n'
+            'company = "paypal"\n'
+            'url = "https://github.com/paypal/paypal-js"\n'
+            'enabled = true\n'
+            'repo_type = "web-sdk"\n'
+            'priority = "tier1"\n'
+            'track = "releases-and-default-branch"\n'
+            'version_strategy = "monorepo-packages"\n'
+            '[[repos.version_tracks]]\n'
+        )
+        invalid_tracks = (
+            'selector = "v10"\nbackfill = "unknown"\nfuture = "none"\n',
+            'selector = "v10"\nbackfill = "none"\nfuture = "unknown"\n',
+            'selector = ""\nbackfill = "none"\nfuture = "none"\n',
+            'selector = "tag:v10"\nbackfill = "none"\nfuture = "none"\n',
+            'selector = "v10"\nbackfill = "none"\nfuture = "none"\ninclude_prerelease = "false"\n',
+            'selector = "v10"\nbackfill = "none"\nfuture = "none"\npinned_versions = ["10"]\n',
+            'selector = "v10"\nbackfill = "none"\nfuture = "none"\nunknown = "value"\n',
+        )
+
+        for invalid_track in invalid_tracks:
+            with self.subTest(invalid_track=invalid_track):
+                with self.assertRaises(ValueError):
+                    load_registry(self.write_registry(base + invalid_track))
+
+    def test_registry_rejects_duplicate_version_track_selectors(self):
+        path = self.write_registry(
+            '[[repos]]\n'
+            'id = "paypal/paypal-js"\n'
+            'company = "paypal"\n'
+            'url = "https://github.com/paypal/paypal-js"\n'
+            'enabled = true\n'
+            'repo_type = "web-sdk"\n'
+            'priority = "tier1"\n'
+            'track = "releases-and-default-branch"\n'
+            'version_strategy = "monorepo-packages"\n'
+            '[[repos.version_tracks]]\n'
+            'selector = "v10"\n'
+            'backfill = "none"\n'
+            'future = "none"\n'
+            '[[repos.version_tracks]]\n'
+            'selector = "v10"\n'
+            'backfill = "none"\n'
+            'future = "none"\n'
+        )
+
+        with self.assertRaisesRegex(ValueError, "duplicate selector"):
+            load_registry(path)
 
     def test_registry_rejects_duplicate_ids_and_mutable_state(self):
         repos = (self.repo(), self.repo())

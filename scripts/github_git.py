@@ -8,13 +8,10 @@ import subprocess
 from typing import Dict, Iterable, Optional, Sequence, Tuple
 
 from github_registry import RepoConfig
+from github_versions import SemanticVersion, compare_semver, matches_semver, parse_package_tag, parse_semver
 
 
 _ERROR_STDERR_LIMIT = 1000
-_SEMVER = re.compile(
-    r"^v?(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:-([0-9A-Za-z][0-9A-Za-z.-]*))?$"
-)
-_SCOPED_PACKAGE = re.compile(r"^@[^/@]+/[^@/]+$")
 _LFS_FILTER = re.compile(r"(?:^|\s)filter\s*=\s*lfs(?:\s|$)", re.IGNORECASE)
 
 
@@ -55,22 +52,6 @@ class RepoInspection:
     packages: Tuple[str, ...]
     has_submodules: bool
     has_lfs: bool
-
-
-@dataclass(frozen=True)
-class _SemanticVersion:
-    major: int
-    minor: Optional[int]
-    patch: Optional[int]
-    prerelease: Optional[Tuple[str, ...]]
-
-    @property
-    def is_exact(self) -> bool:
-        return self.minor is not None and self.patch is not None
-
-    @property
-    def normalized_numbers(self) -> Tuple[int, int, int]:
-        return self.major, self.minor or 0, self.patch or 0
 
 
 def run_git(args: Sequence[str], cwd: Optional[Path] = None) -> str:
@@ -210,22 +191,23 @@ def resolve_ref(config: RepoConfig, inspection: RepoInspection, selector: str) -
                 for ref in inspection.refs
                 if ref.ref_kind == "package-version" and ref.ref_name.startswith(package_name + "@")
             ),
-            _semver_parts(version),
+            parse_semver(version),
             selector,
         )
 
-    target = _semver_parts(selector)
+    target = parse_semver(selector)
     if target is None:
         raise RefResolutionError("missing selector " + selector)
     candidates = tuple(
         ref
         for ref in inspection.refs
-        if ref.ref_kind in ("tag", "package-version") and _matches_semver(_semver_parts(ref.version), target)
+        if ref.ref_kind in ("tag", "package-version")
+        and _matches_semver(parse_semver(ref.version), target)
     )
     package_names = {
-        _package_tag(ref.ref_name)[0]
+        parse_package_tag(ref.ref_name)[0]
         for ref in candidates
-        if ref.ref_kind == "package-version" and _package_tag(ref.ref_name) is not None
+        if ref.ref_kind == "package-version" and parse_package_tag(ref.ref_name) is not None
     }
     if len(package_names) > 1:
         raise RefResolutionError("ambiguous selector " + selector)
@@ -285,7 +267,7 @@ def _has_lfs_declarations(clone_path: Path, treeish: str, tracked_paths: Iterabl
 
 
 def _tag_ref(repo_id: str, name: str, sha: str, aliases: Tuple[str, ...], commit_time: str) -> ResolvedRef:
-    package = _package_tag(name)
+    package = parse_package_tag(name)
     if package is not None:
         _, version = package
         return ResolvedRef(
@@ -298,7 +280,7 @@ def _tag_ref(repo_id: str, name: str, sha: str, aliases: Tuple[str, ...], commit
             upstream_commit_time=commit_time,
             release_published_at=None,
         )
-    parsed = _semver_parts(name)
+    parsed = parse_semver(name)
     version = name[1:] if parsed is not None and name.startswith("v") else name
     return ResolvedRef(
         repo_id=repo_id,
@@ -319,33 +301,11 @@ def _aliases_by_sha(tag_shas: Dict[str, str]) -> Dict[str, Tuple[str, ...]]:
     return {sha: tuple(sorted(names)) for sha, names in aliases.items()}
 
 
-def _package_tag(name: str) -> Optional[Tuple[str, str]]:
-    if not name.startswith("@"):
-        return None
-    package_name, separator, version = name.rpartition("@")
-    if not separator or not _SCOPED_PACKAGE.fullmatch(package_name) or _semver_parts(version) is None:
-        return None
-    return package_name, version
-
-
 def _package_selector(value: str) -> Tuple[str, str]:
-    package = _package_tag(value)
+    package = parse_package_tag(value)
     if package is None:
         raise RefResolutionError("package selector must include a scoped package namespace")
     return package
-
-
-def _semver_parts(value: str) -> Optional[_SemanticVersion]:
-    match = _SEMVER.fullmatch(value)
-    if match is None:
-        return None
-    prerelease = match.group(4)
-    return _SemanticVersion(
-        major=int(match.group(1)),
-        minor=int(match.group(2)) if match.group(2) is not None else None,
-        patch=int(match.group(3)) if match.group(3) is not None else None,
-        prerelease=tuple(prerelease.split(".")) if prerelease is not None else None,
-    )
 
 
 def _is_full_object_id(value: str) -> bool:
@@ -378,9 +338,9 @@ def _fetch_refspec(selector: str, tag_names: Optional[Tuple[str, ...]]) -> Tuple
         return "", ""
     if selector.startswith("package:"):
         package_name, version = _package_selector(selector[8:])
-        name = _select_remote_tag_name(tag_names, _semver_parts(version), selector, package_name)
+        name = _select_remote_tag_name(tag_names, parse_semver(version), selector, package_name)
     else:
-        target = _semver_parts(selector)
+        target = parse_semver(selector)
         if target is None:
             raise RefResolutionError("missing selector " + selector)
         name = _select_remote_tag_name(tag_names, target, selector, None)
@@ -388,7 +348,7 @@ def _fetch_refspec(selector: str, tag_names: Optional[Tuple[str, ...]]) -> Tuple
 
 
 def _selector_needs_tag_metadata(selector: str) -> bool:
-    return selector.startswith("package:") or _semver_parts(selector) is not None
+    return selector.startswith("package:") or parse_semver(selector) is not None
 
 
 def _remote_tag_names(clone_path: Path) -> Tuple[str, ...]:
@@ -402,7 +362,7 @@ def _remote_tag_names(clone_path: Path) -> Tuple[str, ...]:
 
 def _select_remote_tag_name(
     tag_names: Sequence[str],
-    target: Optional[_SemanticVersion],
+    target: Optional[SemanticVersion],
     selector: str,
     package_name: Optional[str],
 ) -> str:
@@ -411,15 +371,15 @@ def _select_remote_tag_name(
     candidates = []
     package_names = set()
     for name in tag_names:
-        package = _package_tag(name)
+        package = parse_package_tag(name)
         if package_name is not None:
             if package is None or package[0] != package_name:
                 continue
-            version = _semver_parts(package[1])
+            version = parse_semver(package[1])
         elif package is not None:
-            version = _semver_parts(package[1])
+            version = parse_semver(package[1])
         else:
-            version = _semver_parts(name)
+            version = parse_semver(name)
         if _matches_semver(version, target):
             candidates.append((name, version))
             if package_name is None and package is not None:
@@ -430,28 +390,20 @@ def _select_remote_tag_name(
 
 
 def _matches_semver(
-    candidate: Optional[_SemanticVersion], target: _SemanticVersion
+    candidate: Optional[SemanticVersion], target: SemanticVersion
 ) -> bool:
-    if candidate is None or candidate.major != target.major:
-        return False
-    if target.minor is not None and candidate.normalized_numbers[1] != target.minor:
-        return False
-    if target.patch is not None and candidate.normalized_numbers[2] != target.patch:
-        return False
-    if target.prerelease is not None:
-        return candidate.prerelease == target.prerelease
-    return not target.is_exact or candidate.prerelease is None
+    return candidate is not None and matches_semver(candidate, target)
 
 
 def _select_semver_ref(
-    candidates: Iterable[ResolvedRef], target: Optional[_SemanticVersion], selector: str
+    candidates: Iterable[ResolvedRef], target: Optional[SemanticVersion], selector: str
 ) -> ResolvedRef:
     if target is None:
         raise RefResolutionError("missing selector " + selector)
     matches = [
-        (ref, _semver_parts(ref.version))
+        (ref, parse_semver(ref.version))
         for ref in candidates
-        if _matches_semver(_semver_parts(ref.version), target)
+        if _matches_semver(parse_semver(ref.version), target)
     ]
     if target.is_exact:
         return _one((ref for ref, _ in matches), selector)
@@ -460,8 +412,8 @@ def _select_semver_ref(
 
 
 def _select_semver_name(
-    candidates: Sequence[Tuple[str, Optional[_SemanticVersion]]],
-    target: _SemanticVersion,
+    candidates: Sequence[Tuple[str, Optional[SemanticVersion]]],
+    target: SemanticVersion,
     selector: str,
 ) -> str:
     matches = [(name, version) for name, version in candidates if _matches_semver(version, target)]
@@ -476,7 +428,7 @@ def _select_semver_name(
     return _one_name([(name, version) for name, version in matches if version == best_version], selector)
 
 
-def _one_name(candidates: Sequence[Tuple[str, Optional[_SemanticVersion]]], selector: str) -> str:
+def _one_name(candidates: Sequence[Tuple[str, Optional[SemanticVersion]]], selector: str) -> str:
     if not candidates:
         raise RefResolutionError("missing selector " + selector)
     if len(candidates) != 1:
@@ -485,34 +437,8 @@ def _one_name(candidates: Sequence[Tuple[str, Optional[_SemanticVersion]]], sele
 
 
 def _compare_semver(
-    left: Optional[_SemanticVersion], right: Optional[_SemanticVersion]
+    left: Optional[SemanticVersion], right: Optional[SemanticVersion]
 ) -> int:
     if left is None or right is None:
         raise ValueError("semantic version comparison requires parsed versions")
-    if left.normalized_numbers < right.normalized_numbers:
-        return -1
-    if left.normalized_numbers > right.normalized_numbers:
-        return 1
-    if left.prerelease is None and right.prerelease is None:
-        return 0
-    if left.prerelease is None:
-        return 1
-    if right.prerelease is None:
-        return -1
-    for left_identifier, right_identifier in zip(left.prerelease, right.prerelease):
-        if left_identifier == right_identifier:
-            continue
-        left_numeric = left_identifier.isdigit()
-        right_numeric = right_identifier.isdigit()
-        if left_numeric and right_numeric:
-            return -1 if int(left_identifier) < int(right_identifier) else 1
-        if left_numeric:
-            return -1
-        if right_numeric:
-            return 1
-        return -1 if left_identifier < right_identifier else 1
-    if len(left.prerelease) < len(right.prerelease):
-        return -1
-    if len(left.prerelease) > len(right.prerelease):
-        return 1
-    return 0
+    return compare_semver(left, right)

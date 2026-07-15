@@ -5,12 +5,15 @@ from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple
 from urllib.parse import urlsplit
 
+from github_versions import parse_package_tag, parse_semver
 from toml_compat import load_toml
 
 
 PRIORITIES = {"tier1", "tier2", "tier3"}
 TRACKS = {"default-branch", "releases-and-default-branch"}
 VERSION_STRATEGIES = {"monorepo-packages", "semver-tags", "github-release", "commit"}
+BACKFILL_POLICIES = {"all-stable", "minor-baselines", "none"}
+FUTURE_POLICIES = {"all-stable", "none"}
 MUTABLE_STATE_KEYS = {
     "latest_version",
     "latest_sha",
@@ -40,7 +43,19 @@ OPTIONAL_KEYS = {
     "exclude_paths",
     "max_file_bytes",
     "max_snapshot_bytes",
+    "version_tracks",
 }
+VERSION_TRACK_REQUIRED_KEYS = {"selector", "backfill", "future"}
+VERSION_TRACK_OPTIONAL_KEYS = {"include_prerelease", "pinned_versions"}
+
+
+@dataclass(frozen=True)
+class VersionTrack:
+    selector: str
+    backfill: str
+    future: str
+    include_prerelease: bool = False
+    pinned_versions: Tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -59,6 +74,7 @@ class RepoConfig:
     exclude_paths: Tuple[str, ...] = ()
     max_file_bytes: int = 1048576
     max_snapshot_bytes: int = 10485760
+    version_tracks: Tuple[VersionTrack, ...] = ()
 
 
 def load_registry(path: Path) -> Tuple[RepoConfig, ...]:
@@ -126,6 +142,7 @@ def validate_registry(repos: Sequence[RepoConfig]) -> List[str]:
             errors.append(prefix + " collection_frequency must not be empty")
         if repo.max_file_bytes <= 0 or repo.max_snapshot_bytes <= 0:
             errors.append(prefix + " byte limits must be positive")
+        errors.extend(_version_track_errors(repo.version_tracks, prefix))
 
     return errors
 
@@ -173,7 +190,136 @@ def _config_from_row(row: Dict[str, object], index: int) -> RepoConfig:
         exclude_paths=_optional_strings(row, "exclude_paths", index),
         max_file_bytes=_optional_positive_int(row, "max_file_bytes", 1048576, index),
         max_snapshot_bytes=_optional_positive_int(row, "max_snapshot_bytes", 10485760, index),
+        version_tracks=_version_tracks(row.get("version_tracks", []), index),
     )
+
+
+def _version_tracks(value: object, index: int) -> Tuple[VersionTrack, ...]:
+    if not isinstance(value, list):
+        raise ValueError("registry row " + str(index) + " version_tracks must be an array of tables")
+    tracks = []
+    for track_index, track in enumerate(value, 1):
+        if not isinstance(track, dict):
+            raise ValueError(
+                "registry row " + str(index) + " version track " + str(track_index) + " must be a table"
+            )
+        keys = set(track)
+        unexpected = sorted(keys - VERSION_TRACK_REQUIRED_KEYS - VERSION_TRACK_OPTIONAL_KEYS)
+        if unexpected:
+            raise ValueError(
+                "registry row " + str(index) + " version track " + str(track_index)
+                + " contains unknown key " + unexpected[0]
+            )
+        missing = sorted(VERSION_TRACK_REQUIRED_KEYS - keys)
+        if missing:
+            raise ValueError(
+                "registry row " + str(index) + " version track " + str(track_index)
+                + " missing required key " + missing[0]
+            )
+        selector = _version_track_selector(track["selector"], index, track_index)
+        backfill = _version_track_policy(track["backfill"], BACKFILL_POLICIES, "backfill", index, track_index)
+        future = _version_track_policy(track["future"], FUTURE_POLICIES, "future", index, track_index)
+        include_prerelease = track.get("include_prerelease", False)
+        if not isinstance(include_prerelease, bool):
+            raise ValueError(
+                "registry row " + str(index) + " version track " + str(track_index)
+                + " include_prerelease must be a boolean"
+            )
+        pinned_versions = _pinned_versions(track.get("pinned_versions", []), index, track_index)
+        tracks.append(VersionTrack(selector, backfill, future, include_prerelease, pinned_versions))
+    errors = _version_track_errors(tuple(tracks), "registry row " + str(index))
+    if errors:
+        raise ValueError(errors[0])
+    return tuple(tracks)
+
+
+def _version_track_selector(value: object, index: int, track_index: int) -> str:
+    if not isinstance(value, str) or not value:
+        raise ValueError(
+            "registry row " + str(index) + " version track " + str(track_index)
+            + " selector must be a non-empty semantic selector"
+        )
+    if value.startswith("package:"):
+        parsed = parse_package_tag(value[8:])
+    else:
+        parsed = parse_semver(value)
+    if parsed is None:
+        raise ValueError(
+            "registry row " + str(index) + " version track " + str(track_index)
+            + " selector must be a package-scoped or plain semantic selector"
+        )
+    return value
+
+
+def _version_track_policy(
+    value: object, policies: set, key: str, index: int, track_index: int
+) -> str:
+    if not isinstance(value, str) or value not in policies:
+        raise ValueError(
+            "registry row " + str(index) + " version track " + str(track_index)
+            + " has unknown " + key + " policy " + str(value)
+        )
+    return value
+
+
+def _pinned_versions(value: object, index: int, track_index: int) -> Tuple[str, ...]:
+    if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+        raise ValueError(
+            "registry row " + str(index) + " version track " + str(track_index)
+            + " pinned_versions must be an array of strings"
+        )
+    if any((parsed := parse_semver(item)) is None or not parsed.is_exact for item in value):
+        raise ValueError(
+            "registry row " + str(index) + " version track " + str(track_index)
+            + " pinned_versions must contain exact semantic versions"
+        )
+    return tuple(value)
+
+
+def _version_track_errors(tracks: object, prefix: str) -> List[str]:
+    if not isinstance(tracks, tuple):
+        return [prefix + " version_tracks must be a tuple"]
+    errors = []
+    selectors = set()
+    for index, track in enumerate(tracks, 1):
+        track_prefix = prefix + " version track " + str(index)
+        if not isinstance(track, VersionTrack):
+            errors.append(track_prefix + " must be a VersionTrack")
+            continue
+        try:
+            _version_track_selector(track.selector, 0, index)
+        except ValueError as error:
+            errors.append(str(error).replace("registry row 0 ", track_prefix + " "))
+        if track.backfill not in BACKFILL_POLICIES:
+            errors.append(track_prefix + " has unknown backfill policy " + track.backfill)
+        if track.future not in FUTURE_POLICIES:
+            errors.append(track_prefix + " has unknown future policy " + track.future)
+        if not isinstance(track.include_prerelease, bool):
+            errors.append(track_prefix + " include_prerelease must be a boolean")
+        if not isinstance(track.pinned_versions, tuple):
+            errors.append(track_prefix + " pinned_versions must be a tuple")
+        elif any(
+            not isinstance(version, str)
+            or (parsed := parse_semver(version)) is None
+            or not parsed.is_exact
+            for version in track.pinned_versions
+        ):
+            errors.append(track_prefix + " pinned_versions must contain exact semantic versions")
+        selector_key = _version_track_key(track.selector)
+        if selector_key in selectors:
+            errors.append(track_prefix + " has duplicate selector " + track.selector)
+        selectors.add(selector_key)
+    return errors
+
+
+def _version_track_key(selector: str) -> Tuple[object, ...]:
+    if selector.startswith("package:"):
+        package = parse_package_tag(selector[8:])
+        if package is not None:
+            version = parse_semver(package[1])
+            return ("package", package[0], version)
+    version = parse_semver(selector)
+    return ("tag", version)
 
 
 def _required_string(row: Dict[str, object], key: str, index: int) -> str:

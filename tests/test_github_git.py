@@ -96,16 +96,14 @@ class GitResolutionTests(unittest.TestCase):
         self.assertEqual("v9.2.0", resolved.ref_name)
         self.assertEqual(stable_sha, resolved.sha)
 
-    def test_major_selector_compares_numeric_prerelease_identifiers(self):
+    def test_major_selector_excludes_prereleases_when_no_stable_tag_exists(self):
         commit_file(self.repo, "README.md", "candidate 2\n", "candidate 2")
         tag(self.repo, "v9.2.0-rc.2")
-        expected_sha = commit_file(self.repo, "README.md", "candidate 10\n", "candidate 10")
+        commit_file(self.repo, "README.md", "candidate 10\n", "candidate 10")
         tag(self.repo, "v9.2.0-rc.10")
 
-        resolved = resolve_ref(self.config(), self.inspection(), "v9")
-
-        self.assertEqual("v9.2.0-rc.10", resolved.ref_name)
-        self.assertEqual(expected_sha, resolved.sha)
+        with self.assertRaisesRegex(RefResolutionError, "missing selector v9"):
+            resolve_ref(self.config(), self.inspection(), "v9")
 
     def test_same_sha_tags_are_sorted_aliases(self):
         sha = commit_file(self.repo, "README.md", "one\n", "initial")
