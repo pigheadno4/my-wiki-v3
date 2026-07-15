@@ -1,6 +1,6 @@
 # GitHub Release Retention and Changelog Design
 
-**Status:** Approved in discussion; written review pending
+**Status:** Approved
 **Date:** 2026-07-15
 **Extends:** `2026-07-14-github-repository-collection-design.md`
 
@@ -55,7 +55,7 @@ future = "all-stable"
 include_prerelease = false
 ```
 
-The PayPal package namespace is not assumed from the repository name. Task 9 dry-run discovery must determine whether a line belongs to `@paypal/react-paypal-js`, `@paypal/paypal-js`, or another package before committing exact selectors.
+The PayPal package namespace is not assumed from the repository name. Task 11 dry-run discovery must determine whether a line belongs to `@paypal/react-paypal-js`, `@paypal/paypal-js`, or another package before committing exact selectors.
 
 Allowed backfill policies are:
 
@@ -219,12 +219,13 @@ Network-dependent PayPal verification remains outside the default unit suite.
 
 Before resuming implementation, update the existing plan so:
 
-- Task 3 excludes prereleases from major selectors by default;
-- Task 4 accepts `changed_paths` and completes archive-safety remediation;
-- Task 5 packets include release-note and changelog evidence links;
-- Task 6 CLI enumerates configured version tracks and future releases;
-- Task 7 validates release retention and source-ledger evidence;
-- Task 8 proves multi-release behavior locally; and
-- Tasks 9-10 apply the hybrid PayPal JS policy and serial release ingest.
+- Task 4 adds shared version semantics and registry release tracks;
+- Task 5 discovers retained releases and exact available release notes;
+- Task 6 accepts `changed_paths` and completes archive-safety remediation;
+- Task 7 packets include release-note and changelog evidence links;
+- Task 8 CLI enumerates configured version tracks and future releases;
+- Task 9 validates release retention and source-ledger evidence;
+- Task 10 proves multi-release behavior locally; and
+- Tasks 11-12 apply the hybrid PayPal JS policy and serial release ingest.
 
-The Task 9 hard user gate remains unchanged.
+The live-pilot hard user gate remains unchanged.
