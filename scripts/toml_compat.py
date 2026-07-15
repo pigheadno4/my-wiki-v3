@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Set
 
 
 def load_toml(path: Path) -> Dict[str, object]:
@@ -24,6 +24,7 @@ def _load_toml_subset(path: Path) -> Dict[str, object]:
     pending: List[str] = []
     pending_line = 0
     bracket_depth = 0
+    declared_tables: Set[int] = set()
 
     for current_line, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
         line = _strip_comment(raw).strip()
@@ -43,7 +44,7 @@ def _load_toml_subset(path: Path) -> Dict[str, object]:
         else:
             line_number = current_line
             if line.startswith("[") and "=" not in line:
-                context = _set_table(root, line, path, line_number)
+                context = _set_table(root, line, path, line_number, declared_tables)
                 continue
 
         if "=" not in line:
@@ -61,6 +62,8 @@ def _load_toml_subset(path: Path) -> Dict[str, object]:
             pending = [line]
             pending_line = line_number
             continue
+        if key in context:
+            raise _source_error(path, line_number, "duplicate key " + key)
         context[key] = _parse_value(value, path, line_number)
 
     if pending:
@@ -101,12 +104,27 @@ def _bracket_delta(value: str) -> int:
     return depth
 
 
-def _set_table(root: Dict[str, object], header: str, path: Path, line_number: int) -> Dict[str, object]:
-    is_array = header.startswith("[[") and header.endswith("]]" )
-    is_table = header.startswith("[") and header.endswith("]")
-    if not is_table or (header.startswith("[[") != header.endswith("]]")):
+def _set_table(
+    root: Dict[str, object],
+    header: str,
+    path: Path,
+    line_number: int,
+    declared_tables: Set[int],
+) -> Dict[str, object]:
+    if header.startswith("[["):
+        is_array = True
+        if not header.endswith("]]"):
+            raise _source_error(path, line_number, "malformed table header")
+        name = header[2:-2]
+    elif header.startswith("["):
+        is_array = False
+        if not header.endswith("]"):
+            raise _source_error(path, line_number, "malformed table header")
+        name = header[1:-1]
+    else:
         raise _source_error(path, line_number, "malformed table header")
-    name = header[2:-2] if is_array else header[1:-1]
+    if "[" in name or "]" in name:
+        raise _source_error(path, line_number, "malformed table header")
     keys = [key.strip() for key in name.split(".")]
     if not keys or any(not key for key in keys):
         raise _source_error(path, line_number, "malformed table header")
@@ -135,6 +153,9 @@ def _set_table(root: Dict[str, object], header: str, path: Path, line_number: in
     table = context.setdefault(final_key, {})
     if not isinstance(table, dict):
         raise _source_error(path, line_number, "table conflicts with value")
+    if id(table) in declared_tables:
+        raise _source_error(path, line_number, "duplicate table " + name)
+    declared_tables.add(id(table))
     return table
 
 
@@ -143,7 +164,9 @@ def _parse_value(value: str, path: Path, line_number: int) -> object:
         return json.loads(_remove_trailing_array_commas(value))
     except json.JSONDecodeError as error:
         raise _source_error(
-            path, line_number, "invalid JSON-compatible value: " + error.msg
+            path,
+            line_number + error.lineno - 1,
+            "invalid JSON-compatible value: " + error.msg,
         ) from error
 
 
