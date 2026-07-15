@@ -250,3 +250,58 @@ d4f9fcc fix: enforce github release evidence identity
 None. A standalone `py_compile` check could not write to the macOS Python
 cache under the sandbox, but the requested focused and full unittest commands
 compiled and passed.
+
+---
+
+## Disabled Release Track Fix Evidence (2026-07-15)
+
+### Root Cause
+
+`select_release_candidates` constructed and validated the historical eligible
+set, including pins, before dispatching on `backfill` or `future`. Therefore a
+disabled release track could fail on an unavailable historical pin instead of
+returning its required empty selection. Active `minor-baselines` also silently
+omitted an unavailable version already referenced by the version index.
+
+### RED
+
+Added strict regressions for disabled `backfill="none"` and `future="none"`
+tracks carrying unavailable historical pins and existing versions, plus an
+active `minor-baselines` regression for an unavailable existing version.
+Before the production change, the focused suite failed in the expected paths:
+
+```text
+python3 -m unittest tests.test_github_releases -v
+Ran 33 tests in 1.494s
+FAILED (failures=1, errors=2)
+```
+
+### GREEN
+
+Disabled modes now return before selector, candidate, pin, or existing-version
+validation. Active historical backfill still validates required pins, and
+`minor-baselines` now rejects unavailable existing versions instead of silently
+dropping them. Future selection remains independent of historical pins.
+
+```text
+python3 -m unittest tests.test_github_releases -v
+Ran 33 tests in 1.577s
+OK
+
+python3 -m unittest discover -s tests -v
+Ran 136 tests in 5.257s
+OK
+
+git diff --check
+exit 0
+```
+
+### Code and Test Commit
+
+```text
+76d8dea70cff92870d61aed6e6a7ee36fdd94f49 fix: short circuit disabled github release tracks
+```
+
+### Concerns
+
+None.
