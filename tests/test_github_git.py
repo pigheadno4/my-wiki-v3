@@ -85,6 +85,29 @@ class GitResolutionTests(unittest.TestCase):
         self.assertEqual(prerelease_sha, resolved.sha)
         self.assertNotEqual(stable_sha, resolved.sha)
 
+    def test_exact_selector_does_not_match_an_incomplete_candidate(self):
+        commit_file(self.repo, "README.md", "partial\n", "partial")
+        tag(self.repo, "v1.2")
+
+        with self.assertRaisesRegex(RefResolutionError, "missing selector v1.2.0"):
+            resolve_ref(self.config(), self.inspection(), "v1.2.0")
+
+    def test_exact_prerelease_selector_does_not_match_an_incomplete_candidate(self):
+        commit_file(self.repo, "README.md", "partial prerelease\n", "partial prerelease")
+        tag(self.repo, "v1.2-rc.1")
+
+        with self.assertRaisesRegex(RefResolutionError, "missing selector v1.2.0-rc.1"):
+            resolve_ref(self.config(), self.inspection(), "v1.2.0-rc.1")
+
+    def test_exact_selector_rejects_ambiguous_build_metadata_tags(self):
+        commit_file(self.repo, "README.md", "first build\n", "first build")
+        tag(self.repo, "v1.2.3+build.1")
+        commit_file(self.repo, "README.md", "second build\n", "second build")
+        tag(self.repo, "v1.2.3+build.2")
+
+        with self.assertRaisesRegex(RefResolutionError, "ambiguous selector v1.2.3"):
+            resolve_ref(self.config(), self.inspection(), "v1.2.3")
+
     def test_major_selector_prefers_stable_over_the_same_version_prerelease(self):
         commit_file(self.repo, "README.md", "candidate\n", "candidate")
         tag(self.repo, "v9.2.0-rc.1")

@@ -199,6 +199,7 @@ class RegistryTests(unittest.TestCase):
             'selector = "v10"\nbackfill = "none"\nfuture = "unknown"\n',
             'selector = ""\nbackfill = "none"\nfuture = "none"\n',
             'selector = "tag:v10"\nbackfill = "none"\nfuture = "none"\n',
+            'selector = "v1.2-beta"\nbackfill = "none"\nfuture = "none"\n',
             'selector = "v10"\nbackfill = "none"\nfuture = "none"\ninclude_prerelease = "false"\n',
             'selector = "v10"\nbackfill = "none"\nfuture = "none"\npinned_versions = ["10"]\n',
             'selector = "v10"\nbackfill = "none"\nfuture = "none"\nunknown = "value"\n',

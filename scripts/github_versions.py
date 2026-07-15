@@ -5,8 +5,17 @@ import re
 from typing import Optional, Tuple
 
 
+_NUMERIC_IDENTIFIER = r"(?:0|[1-9][0-9]*)"
+_PRERELEASE_IDENTIFIER = (
+    r"(?:" + _NUMERIC_IDENTIFIER + r"|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)"
+)
+_BUILD_IDENTIFIER = r"[0-9A-Za-z-]+"
 _SEMVER = re.compile(
-    r"^v?(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:-([0-9A-Za-z][0-9A-Za-z.-]*))?$"
+    r"^v?(" + _NUMERIC_IDENTIFIER + r")"
+    r"(?:\.((?:" + _NUMERIC_IDENTIFIER + r")))?"
+    r"(?:\.((?:" + _NUMERIC_IDENTIFIER + r")))?"
+    r"(?:-((?:" + _PRERELEASE_IDENTIFIER + r")(?:\.(?:" + _PRERELEASE_IDENTIFIER + r"))*))?"
+    r"(?:\+((?:" + _BUILD_IDENTIFIER + r")(?:\.(?:" + _BUILD_IDENTIFIER + r"))*))?$"
 )
 _SCOPED_PACKAGE = re.compile(r"^@[^/@]+/[^@/]+$")
 
@@ -28,6 +37,8 @@ def parse_semver(value: str) -> Optional[SemanticVersion]:
     prerelease = match.group(4)
     minor = int(match.group(2)) if match.group(2) is not None else None
     patch = int(match.group(3)) if match.group(3) is not None else None
+    if (prerelease is not None or match.group(5) is not None) and patch is None:
+        return None
     return SemanticVersion(
         major=int(match.group(1)),
         minor=minor,
@@ -74,16 +85,20 @@ def matches_semver(
     candidate: SemanticVersion, target: SemanticVersion, include_prerelease: bool = False
 ) -> bool:
     """Return whether a candidate matches a selector's version line."""
+    if target.is_exact:
+        return (
+            candidate.is_exact
+            and candidate.major == target.major
+            and candidate.minor == target.minor
+            and candidate.patch == target.patch
+            and candidate.prerelease == target.prerelease
+        )
     if candidate.major != target.major:
         return False
-    if target.minor is not None and (candidate.minor or 0) != target.minor:
+    if target.minor is not None and candidate.minor != target.minor:
         return False
-    if target.patch is not None and (candidate.patch or 0) != target.patch:
+    if target.patch is not None and candidate.patch != target.patch:
         return False
-    if target.prerelease is not None:
-        return candidate.prerelease == target.prerelease
-    if target.is_exact:
-        return candidate.prerelease is None
     return include_prerelease or candidate.prerelease is None
 
 
