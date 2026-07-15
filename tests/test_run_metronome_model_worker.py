@@ -98,7 +98,10 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         self.assertEqual("read-only", command[command.index("-s") + 1])
         self.assertEqual("/tmp/minimal", command[command.index("-C") + 1])
         self.assertIn("--skip-git-repo-check", command)
-        self.assertIn("--ignore-user-config", command)
+        self.assertNotIn("--ignore-user-config", command)
+        for feature in ("plugins", "remote_plugin", "apps", "hooks", "memories"):
+            positions = [index for index, value in enumerate(command) if value == "--disable"]
+            self.assertTrue(any(command[index + 1] == feature for index in positions))
 
     def test_page_profile_covers_headings_and_conditional_hints(self):
         profile = build_page_profile("# Alpha\n## Beta\nrequired when enabled\n")
