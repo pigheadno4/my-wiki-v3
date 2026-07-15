@@ -57,6 +57,22 @@ class RepoInspection:
     has_lfs: bool
 
 
+@dataclass(frozen=True)
+class _SemanticVersion:
+    major: int
+    minor: Optional[int]
+    patch: Optional[int]
+    prerelease: Optional[Tuple[str, ...]]
+
+    @property
+    def is_exact(self) -> bool:
+        return self.minor is not None and self.patch is not None
+
+    @property
+    def normalized_numbers(self) -> Tuple[int, int, int]:
+        return self.major, self.minor or 0, self.patch or 0
+
+
 def run_git(args: Sequence[str], cwd: Optional[Path] = None) -> str:
     """Run Git without a shell and return its stripped standard output."""
     command = ["git"] + list(args)
@@ -75,7 +91,25 @@ def run_git(args: Sequence[str], cwd: Optional[Path] = None) -> str:
 
 def clone_repository(config: RepoConfig, destination: Path) -> None:
     """Create the required partial no-checkout clone for later exact resolution."""
-    run_git(["clone", "--filter=blob:none", "--no-checkout", config.url, str(destination)])
+    run_git(
+        ["clone", "--filter=blob:none", "--no-checkout", "--no-tags", config.url, str(destination)]
+    )
+
+
+def fetch_required_refs(config: RepoConfig, clone_path: Path, selectors: Sequence[str]) -> None:
+    """Fetch only the remote refs and objects required to resolve selectors."""
+    tag_names = None
+    fetched = set()
+    for selector in selectors:
+        if tag_names is None and _selector_needs_tag_metadata(selector):
+            tag_names = _remote_tag_names(clone_path)
+        source, destination = _fetch_refspec(selector, tag_names)
+        if source == "":
+            continue
+        refspec = source + ":" + destination
+        if refspec not in fetched:
+            run_git(["fetch", "--no-tags", "origin", refspec], clone_path)
+            fetched.add(refspec)
 
 
 def inspect_repository(config: RepoConfig, clone_path: Path) -> RepoInspection:
@@ -84,12 +118,15 @@ def inspect_repository(config: RepoConfig, clone_path: Path) -> RepoInspection:
     if not default_branch:
         raise GitCommandError(["symbolic-ref", "--short", "HEAD"], 1, "repository HEAD has no branch")
 
+    default_sha = run_git(["rev-parse", default_branch + "^{commit}"], clone_path)
     tracked_paths = tuple(
-        path for path in run_git(["ls-files", "-z"], clone_path).split("\0") if path
+        path
+        for path in run_git(["ls-tree", "-r", "-z", "--name-only", default_sha], clone_path).split("\0")
+        if path
     )
-    packages = _discover_packages(clone_path, tracked_paths)
-    has_submodules = _has_submodules(clone_path, tracked_paths)
-    has_lfs = _has_lfs_declarations(clone_path, tracked_paths)
+    packages = _discover_packages(clone_path, default_sha, tracked_paths)
+    has_submodules = _has_submodules(clone_path, default_sha, tracked_paths)
+    has_lfs = _has_lfs_declarations(clone_path, default_sha, tracked_paths)
 
     tag_names = tuple(
         name
@@ -110,7 +147,6 @@ def inspect_repository(config: RepoConfig, clone_path: Path) -> RepoInspection:
             commit_times[sha] = run_git(["show", "-s", "--format=%cI", sha], clone_path)
         return commit_times[sha]
 
-    default_sha = run_git(["rev-parse", default_branch + "^{commit}"], clone_path)
     branch_ref = ResolvedRef(
         repo_id=config.id,
         ref_kind="branch",
@@ -168,29 +204,32 @@ def resolve_ref(config: RepoConfig, inspection: RepoInspection, selector: str) -
         return _resolve_commit(config, inspection, selector[7:])
     if selector.startswith("package:"):
         package_name, version = _package_selector(selector[8:])
-        target = _semver_parts(version)
-        return _one(
+        return _select_semver_ref(
             (
                 ref
                 for ref in inspection.refs
-                if ref.ref_kind == "package-version"
-                and ref.ref_name.startswith(package_name + "@")
-                and _semver_parts(ref.version) == target
+                if ref.ref_kind == "package-version" and ref.ref_name.startswith(package_name + "@")
             ),
+            _semver_parts(version),
             selector,
         )
 
     target = _semver_parts(selector)
     if target is None:
         raise RefResolutionError("missing selector " + selector)
-    return _one(
-        (
-            ref
-            for ref in inspection.refs
-            if ref.ref_kind in ("tag", "package-version") and _semver_parts(ref.version) == target
-        ),
-        selector,
+    candidates = tuple(
+        ref
+        for ref in inspection.refs
+        if ref.ref_kind in ("tag", "package-version") and _matches_semver(_semver_parts(ref.version), target)
     )
+    package_names = {
+        _package_tag(ref.ref_name)[0]
+        for ref in candidates
+        if ref.ref_kind == "package-version" and _package_tag(ref.ref_name) is not None
+    }
+    if len(package_names) > 1:
+        raise RefResolutionError("ambiguous selector " + selector)
+    return _select_semver_ref(candidates, target, selector)
 
 
 def _resolve_commit(config: RepoConfig, inspection: RepoInspection, value: str) -> ResolvedRef:
@@ -213,13 +252,13 @@ def _resolve_commit(config: RepoConfig, inspection: RepoInspection, value: str) 
     )
 
 
-def _discover_packages(clone_path: Path, tracked_paths: Iterable[str]) -> Tuple[str, ...]:
+def _discover_packages(clone_path: Path, treeish: str, tracked_paths: Iterable[str]) -> Tuple[str, ...]:
     names = set()
     for path in tracked_paths:
         if Path(path).name != "package.json":
             continue
         try:
-            data = json.loads(run_git(["show", "HEAD:" + path], clone_path))
+            data = json.loads(run_git(["show", treeish + ":" + path], clone_path))
         except (GitCommandError, ValueError):
             continue
         name = data.get("name") if isinstance(data, dict) else None
@@ -228,18 +267,18 @@ def _discover_packages(clone_path: Path, tracked_paths: Iterable[str]) -> Tuple[
     return tuple(sorted(names))
 
 
-def _has_submodules(clone_path: Path, tracked_paths: Iterable[str]) -> bool:
+def _has_submodules(clone_path: Path, treeish: str, tracked_paths: Iterable[str]) -> bool:
     if ".gitmodules" in tracked_paths:
         return True
-    entries = run_git(["ls-files", "--stage", "-z"], clone_path).split("\0")
+    entries = run_git(["ls-tree", "-r", "-z", treeish], clone_path).split("\0")
     return any(entry.startswith("160000 ") for entry in entries if entry)
 
 
-def _has_lfs_declarations(clone_path: Path, tracked_paths: Iterable[str]) -> bool:
+def _has_lfs_declarations(clone_path: Path, treeish: str, tracked_paths: Iterable[str]) -> bool:
     for path in tracked_paths:
         if Path(path).name != ".gitattributes":
             continue
-        attributes = run_git(["show", "HEAD:" + path], clone_path)
+        attributes = run_git(["show", treeish + ":" + path], clone_path)
         if _LFS_FILTER.search(attributes):
             return True
     return False
@@ -296,11 +335,17 @@ def _package_selector(value: str) -> Tuple[str, str]:
     return package
 
 
-def _semver_parts(value: str) -> Optional[Tuple[int, int, int]]:
+def _semver_parts(value: str) -> Optional[_SemanticVersion]:
     match = _SEMVER.fullmatch(value)
     if match is None:
         return None
-    return int(match.group(1)), int(match.group(2) or 0), int(match.group(3) or 0)
+    prerelease = match.group(4)
+    return _SemanticVersion(
+        major=int(match.group(1)),
+        minor=int(match.group(2)) if match.group(2) is not None else None,
+        patch=int(match.group(3)) if match.group(3) is not None else None,
+        prerelease=tuple(prerelease.split(".")) if prerelease is not None else None,
+    )
 
 
 def _is_full_object_id(value: str) -> bool:
@@ -314,3 +359,160 @@ def _one(candidates: Iterable[ResolvedRef], selector: str) -> ResolvedRef:
     if len(matches) != 1:
         raise RefResolutionError("ambiguous selector " + selector)
     return matches[0]
+
+
+def _fetch_refspec(selector: str, tag_names: Optional[Tuple[str, ...]]) -> Tuple[str, str]:
+    if selector == "default-branch":
+        return "", ""
+    if selector.startswith("tag:"):
+        name = selector[4:]
+        if not name:
+            raise RefResolutionError("missing selector " + selector)
+        return "refs/tags/" + name, "refs/tags/" + name
+    if selector.startswith("commit:"):
+        sha = selector[7:]
+        if not _is_full_object_id(sha):
+            raise RefResolutionError("commit selector must use an exact full SHA")
+        return sha, "refs/github-collection/commits/" + sha.lower()
+    if tag_names is None:
+        return "", ""
+    if selector.startswith("package:"):
+        package_name, version = _package_selector(selector[8:])
+        name = _select_remote_tag_name(tag_names, _semver_parts(version), selector, package_name)
+    else:
+        target = _semver_parts(selector)
+        if target is None:
+            raise RefResolutionError("missing selector " + selector)
+        name = _select_remote_tag_name(tag_names, target, selector, None)
+    return "refs/tags/" + name, "refs/tags/" + name
+
+
+def _selector_needs_tag_metadata(selector: str) -> bool:
+    return selector.startswith("package:") or _semver_parts(selector) is not None
+
+
+def _remote_tag_names(clone_path: Path) -> Tuple[str, ...]:
+    names = set()
+    for line in run_git(["ls-remote", "--tags", "origin"], clone_path).splitlines():
+        _, separator, ref_name = line.partition("\t")
+        if separator and ref_name.startswith("refs/tags/") and not ref_name.endswith("^{}"):
+            names.add(ref_name[len("refs/tags/"):])
+    return tuple(sorted(names))
+
+
+def _select_remote_tag_name(
+    tag_names: Sequence[str],
+    target: Optional[_SemanticVersion],
+    selector: str,
+    package_name: Optional[str],
+) -> str:
+    if target is None:
+        raise RefResolutionError("missing selector " + selector)
+    candidates = []
+    package_names = set()
+    for name in tag_names:
+        package = _package_tag(name)
+        if package_name is not None:
+            if package is None or package[0] != package_name:
+                continue
+            version = _semver_parts(package[1])
+        elif package is not None:
+            version = _semver_parts(package[1])
+        else:
+            version = _semver_parts(name)
+        if _matches_semver(version, target):
+            candidates.append((name, version))
+            if package_name is None and package is not None:
+                package_names.add(package[0])
+    if package_name is None and len(package_names) > 1:
+        raise RefResolutionError("ambiguous selector " + selector)
+    return _select_semver_name(candidates, target, selector)
+
+
+def _matches_semver(
+    candidate: Optional[_SemanticVersion], target: _SemanticVersion
+) -> bool:
+    if candidate is None or candidate.major != target.major:
+        return False
+    if target.minor is not None and candidate.normalized_numbers[1] != target.minor:
+        return False
+    if target.patch is not None and candidate.normalized_numbers[2] != target.patch:
+        return False
+    if target.prerelease is not None:
+        return candidate.prerelease == target.prerelease
+    return not target.is_exact or candidate.prerelease is None
+
+
+def _select_semver_ref(
+    candidates: Iterable[ResolvedRef], target: Optional[_SemanticVersion], selector: str
+) -> ResolvedRef:
+    if target is None:
+        raise RefResolutionError("missing selector " + selector)
+    matches = [
+        (ref, _semver_parts(ref.version))
+        for ref in candidates
+        if _matches_semver(_semver_parts(ref.version), target)
+    ]
+    if target.is_exact:
+        return _one((ref for ref, _ in matches), selector)
+    selected = _select_semver_name([(ref.ref_name, version) for ref, version in matches], target, selector)
+    return _one((ref for ref, _ in matches if ref.ref_name == selected), selector)
+
+
+def _select_semver_name(
+    candidates: Sequence[Tuple[str, Optional[_SemanticVersion]]],
+    target: _SemanticVersion,
+    selector: str,
+) -> str:
+    matches = [(name, version) for name, version in candidates if _matches_semver(version, target)]
+    if not matches:
+        raise RefResolutionError("missing selector " + selector)
+    if target.is_exact:
+        return _one_name(matches, selector)
+    best_version = matches[0][1]
+    for _, version in matches[1:]:
+        if _compare_semver(version, best_version) > 0:
+            best_version = version
+    return _one_name([(name, version) for name, version in matches if version == best_version], selector)
+
+
+def _one_name(candidates: Sequence[Tuple[str, Optional[_SemanticVersion]]], selector: str) -> str:
+    if not candidates:
+        raise RefResolutionError("missing selector " + selector)
+    if len(candidates) != 1:
+        raise RefResolutionError("ambiguous selector " + selector)
+    return candidates[0][0]
+
+
+def _compare_semver(
+    left: Optional[_SemanticVersion], right: Optional[_SemanticVersion]
+) -> int:
+    if left is None or right is None:
+        raise ValueError("semantic version comparison requires parsed versions")
+    if left.normalized_numbers < right.normalized_numbers:
+        return -1
+    if left.normalized_numbers > right.normalized_numbers:
+        return 1
+    if left.prerelease is None and right.prerelease is None:
+        return 0
+    if left.prerelease is None:
+        return 1
+    if right.prerelease is None:
+        return -1
+    for left_identifier, right_identifier in zip(left.prerelease, right.prerelease):
+        if left_identifier == right_identifier:
+            continue
+        left_numeric = left_identifier.isdigit()
+        right_numeric = right_identifier.isdigit()
+        if left_numeric and right_numeric:
+            return -1 if int(left_identifier) < int(right_identifier) else 1
+        if left_numeric:
+            return -1
+        if right_numeric:
+            return 1
+        return -1 if left_identifier < right_identifier else 1
+    if len(left.prerelease) < len(right.prerelease):
+        return -1
+    if len(left.prerelease) > len(right.prerelease):
+        return 1
+    return 0

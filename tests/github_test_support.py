@@ -36,6 +36,10 @@ def tag(repo: Path, name: str) -> None:
     _git(["tag", name], cwd=repo)
 
 
+def annotated_tag(repo: Path, name: str) -> None:
+    _git(["tag", "-a", name, "-m", "annotated " + name], cwd=repo)
+
+
 def add_submodule_marker(repo: Path, relative: str) -> None:
     marker = repo / ".gitmodules"
     marker.write_text(

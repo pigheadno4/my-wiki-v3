@@ -1,7 +1,9 @@
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
+import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -10,12 +12,19 @@ from github_git import (  # noqa: E402
     GitCommandError,
     RefResolutionError,
     clone_repository,
+    fetch_required_refs,
     inspect_repository,
     resolve_ref,
     run_git,
 )
 from github_registry import RepoConfig  # noqa: E402
-from tests.github_test_support import add_submodule_marker, commit_file, create_git_repo, tag  # noqa: E402
+from tests.github_test_support import (  # noqa: E402
+    add_submodule_marker,
+    annotated_tag,
+    commit_file,
+    create_git_repo,
+    tag,
+)
 
 
 class GitResolutionTests(unittest.TestCase):
@@ -63,6 +72,40 @@ class GitResolutionTests(unittest.TestCase):
         self.assertEqual("v1.2.3", resolved.ref_name)
         self.assertEqual("1.2.3", resolved.version)
         self.assertEqual(sha, resolved.sha)
+
+    def test_exact_prerelease_selector_does_not_resolve_the_stable_tag(self):
+        prerelease_sha = commit_file(self.repo, "README.md", "candidate\n", "candidate")
+        tag(self.repo, "v1.0.0-rc.1")
+        stable_sha = commit_file(self.repo, "README.md", "stable\n", "stable")
+        tag(self.repo, "v1.0.0")
+
+        resolved = resolve_ref(self.config(), self.inspection(), "v1.0.0-rc.1")
+
+        self.assertEqual("v1.0.0-rc.1", resolved.ref_name)
+        self.assertEqual(prerelease_sha, resolved.sha)
+        self.assertNotEqual(stable_sha, resolved.sha)
+
+    def test_major_selector_prefers_stable_over_the_same_version_prerelease(self):
+        commit_file(self.repo, "README.md", "candidate\n", "candidate")
+        tag(self.repo, "v9.2.0-rc.1")
+        stable_sha = commit_file(self.repo, "README.md", "stable\n", "stable")
+        tag(self.repo, "v9.2.0")
+
+        resolved = resolve_ref(self.config(), self.inspection(), "v9")
+
+        self.assertEqual("v9.2.0", resolved.ref_name)
+        self.assertEqual(stable_sha, resolved.sha)
+
+    def test_major_selector_compares_numeric_prerelease_identifiers(self):
+        commit_file(self.repo, "README.md", "candidate 2\n", "candidate 2")
+        tag(self.repo, "v9.2.0-rc.2")
+        expected_sha = commit_file(self.repo, "README.md", "candidate 10\n", "candidate 10")
+        tag(self.repo, "v9.2.0-rc.10")
+
+        resolved = resolve_ref(self.config(), self.inspection(), "v9")
+
+        self.assertEqual("v9.2.0-rc.10", resolved.ref_name)
+        self.assertEqual(expected_sha, resolved.sha)
 
     def test_same_sha_tags_are_sorted_aliases(self):
         sha = commit_file(self.repo, "README.md", "one\n", "initial")
@@ -170,6 +213,60 @@ class GitResolutionTests(unittest.TestCase):
         self.assertEqual("main", run_git(["symbolic-ref", "--short", "HEAD"], destination))
         self.assertFalse((destination / "README.md").exists())
 
+    def test_clone_fetch_inspect_and_resolve_selected_local_remote_refs(self):
+        historical_sha = commit_file(self.repo, "README.md", "historical\n", "historical")
+        annotated_tag(self.repo, "v1.0.0")
+        commit_file(
+            self.repo,
+            "packages/widget/package.json",
+            '{"name": "@scope/widget", "version": "9.1.0"}\n',
+            "add package",
+        )
+        commit_file(
+            self.repo,
+            ".gitattributes",
+            "*.bin filter=lfs diff=lfs merge=lfs -text\n",
+            "declare lfs",
+        )
+        add_submodule_marker(self.repo, "vendor/dependency")
+        tag(self.repo, "@scope/widget@9.1.0")
+        tag(self.repo, "v99.0.0")
+        destination = self.root / "clone"
+        config = self.config(version_strategy="monorepo-packages")
+
+        clone_repository(config, destination)
+        fetch_required_refs(
+            config,
+            destination,
+            ("tag:v1.0.0", "package:@scope/widget@9", "commit:" + historical_sha),
+        )
+        inspection = inspect_repository(config, destination)
+
+        self.assertFalse((destination / "README.md").exists())
+        self.assertEqual("", run_git(["ls-files"], destination))
+        self.assertEqual(("@scope/widget",), inspection.packages)
+        self.assertTrue(inspection.has_submodules)
+        self.assertTrue(inspection.has_lfs)
+        self.assertEqual(
+            ("@scope/widget@9.1.0", "v1.0.0"),
+            tuple(
+                name
+                for name in run_git(
+                    ["for-each-ref", "--format=%(refname:strip=2)", "refs/tags"], destination
+                ).splitlines()
+                if name
+            ),
+        )
+        self.assertEqual(
+            historical_sha,
+            resolve_ref(config, inspection, "commit:" + historical_sha).sha,
+        )
+        self.assertEqual("v1.0.0", resolve_ref(config, inspection, "tag:v1.0.0").ref_name)
+        self.assertEqual(
+            "@scope/widget@9.1.0",
+            resolve_ref(config, inspection, "package:@scope/widget@9").ref_name,
+        )
+
     def test_git_errors_are_actionable_and_bounded(self):
         commit_file(self.repo, "README.md", "one\n", "initial")
 
@@ -180,6 +277,18 @@ class GitResolutionTests(unittest.TestCase):
         self.assertIn("git rev-parse --verify missing-ref", message)
         self.assertIn("exit", message)
         self.assertLess(len(message), 1400)
+
+    def test_git_command_error_truncates_stderr_beyond_one_thousand_characters(self):
+        stderr = "x" * 1001
+        error = subprocess.CalledProcessError(1, ["git", "status"], stderr=stderr)
+
+        with mock.patch("github_git.subprocess.run", side_effect=error):
+            with self.assertRaises(GitCommandError) as raised:
+                run_git(["status"], self.repo)
+
+        message = str(raised.exception)
+        self.assertEqual("x" * 1000 + "...", message.rsplit(": ", 1)[1])
+        self.assertNotIn(stderr, message)
 
 
 if __name__ == "__main__":

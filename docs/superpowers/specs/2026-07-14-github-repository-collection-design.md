@@ -205,6 +205,8 @@ The system collects selected current state and explicitly requested historical r
 
 One CLI provides a stable entry point while focused Python modules own registry parsing, Git operations, snapshot preparation, comparison, and reporting. The implementation remains Python 3.9 compatible.
 
+`scripts/github_git.py` keeps clone and fetch responsibilities separate: `clone_repository(config, destination) -> None` creates a `--filter=blob:none --no-checkout --no-tags` clone, and `fetch_required_refs(config, clone_path, selectors) -> None` resolves only the supplied selectors. It may list remote tag metadata for package or major-line selectors, but fetches only the selected tag refspecs or exact commit objects; it never downloads all remote ref objects. `inspect_repository` reads the default commit tree rather than the empty index, so package manifests, submodule entries, and tracked `.gitattributes` declarations remain discoverable without a checkout.
+
 Expected commands are:
 
 ```bash
@@ -224,20 +226,21 @@ python scripts/collect_github_repos.py packet-state --repo paypal/paypal-js --pa
 For every selected repository, the collector:
 
 1. Validates the registry row.
-2. Clones or fetches into a temporary directory outside `raw/`.
-3. Detects the default branch, releases, tags, package versions, submodules, and Git LFS usage.
-4. Resolves the requested ref to an exact commit SHA.
-5. Looks up that SHA in the generated version index.
-6. Marks an existing SHA as unchanged and creates no raw copy.
-7. For a new SHA, classifies the work as a baseline or a change from the selected prior snapshot.
-8. Selects candidate key files using registry paths plus deterministic defaults.
-9. Applies path, type, and size safety limits.
-10. Writes the snapshot into staging.
-11. Validates snapshot identity, file hashes, manifest coverage, and write boundaries.
-12. Atomically promotes the validated snapshot to `raw/`.
-13. Generates the baseline or delta ingest packet under `tracking/`.
-14. Appends the run event and regenerates status views.
-15. Removes the temporary clone.
+2. Creates a temporary `--no-checkout --no-tags` clone outside `raw/`.
+3. Lists remote tag metadata only when a package or major-line selector requires it, then fetches only the selected tag refspecs or exact commit objects.
+4. Inspects the default commit tree to detect the default branch, tags, package versions, submodules, and Git LFS usage without populating the working tree.
+5. Resolves the requested ref to an exact commit SHA.
+6. Looks up that SHA in the generated version index.
+7. Marks an existing SHA as unchanged and creates no raw copy.
+8. For a new SHA, classifies the work as a baseline or a change from the selected prior snapshot.
+9. Selects candidate key files using registry paths plus deterministic defaults.
+10. Applies path, type, and size safety limits.
+11. Writes the snapshot into staging.
+12. Validates snapshot identity, file hashes, manifest coverage, and write boundaries.
+13. Atomically promotes the validated snapshot to `raw/`.
+14. Generates the baseline or delta ingest packet under `tracking/`.
+15. Appends the run event and regenerates status views.
+16. Removes the temporary clone.
 
 The collector stops after manifest creation and a terminal summary. In an interactive run, that summary is the user notification. External email, chat, or scheduled-task notifications require a separately approved automation and are not implicit in this design.
 

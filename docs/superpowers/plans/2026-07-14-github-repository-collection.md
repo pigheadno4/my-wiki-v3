@@ -39,7 +39,7 @@
 | `scripts/toml_compat.py` | Python 3.9-compatible TOML loading shared by PSP and GitHub registries. |
 | `scripts/github_registry.py` | Registry dataclasses, validation, defaults, and selection. |
 | `tracking/github/repo-registry.toml` | Human-maintained complete repository inventory and collection intent. |
-| `scripts/github_git.py` | Git subprocess wrapper, repository inspection, and exact ref resolution. |
+| `scripts/github_git.py` | Git subprocess wrapper, selector-scoped ref fetching, repository inspection, and exact ref resolution. |
 | `scripts/github_snapshot.py` | Key-file policy, hashes, snapshot naming, staging, validation, and immutable promotion. |
 | `scripts/github_packets.py` | Version index, baseline packets, delta packets, and explicit comparison packets. |
 | `scripts/github_reporting.py` | Collection states, packet states, JSONL events, and generated dashboards. |
@@ -283,7 +283,7 @@ git commit -m "feat: add github repository registry"
 
 **Interfaces:**
 - Consumes: `RepoConfig`, a temporary clone path, and a selector such as `default-branch`, `tag:v9.1.0`, `commit:<sha>`, or `package:@scope/name@9`.
-- Produces: `run_git(args, cwd=None) -> str`, `clone_repository(config, destination) -> None`, `inspect_repository(config, clone_path) -> RepoInspection`, and `resolve_ref(config, inspection, selector) -> ResolvedRef`.
+- Produces: `run_git(args, cwd=None) -> str`, `clone_repository(config, destination) -> None`, `fetch_required_refs(config: RepoConfig, clone_path: Path, selectors: Sequence[str]) -> None`, `inspect_repository(config, clone_path) -> RepoInspection`, and `resolve_ref(config, inspection, selector) -> ResolvedRef`.
 
 - [ ] **Step 1: Write the local Git fixture builder**
 
@@ -370,7 +370,7 @@ Use argument lists with `subprocess.run(check=True, text=True, capture_output=Tr
 
 - [ ] **Step 5: Implement exact strategy resolution**
 
-Parse semantic versions with a small numeric tuple parser that accepts an optional leading `v` and prerelease suffix. Package selectors must include a package namespace. Sort aliases before returning them. Clone with `git clone --filter=blob:none --no-checkout`, then fetch only required refs before checkout.
+Parse semantic versions with numeric and prerelease identifiers, preserving SemVer precedence: a stable version sorts above its prereleases and numeric prerelease identifiers compare numerically. Exact prerelease selectors match only that prerelease. Package selectors must include a package namespace. Sort aliases before returning them. Clone with `git clone --filter=blob:none --no-checkout --no-tags`; `fetch_required_refs` may list remote tag metadata to resolve package or major selectors, then fetches only the selected tag refspecs or exact commit objects and never downloads all ref objects.
 
 - [ ] **Step 6: Run tests and commit**
 
