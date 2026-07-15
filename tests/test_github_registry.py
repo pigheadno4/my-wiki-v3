@@ -11,6 +11,81 @@ from github_registry import RepoConfig, load_registry, select_repos, validate_re
 from toml_compat import load_toml  # noqa: E402
 
 
+APPENDIX_A_INVENTORY = (
+    ('paypal/paypal-messaging-components', 'https://github.com/paypal/paypal-messaging-components', 'web-component', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('paypal/paypal-checkout-components', 'https://github.com/paypal/paypal-checkout-components', 'web-component', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('paypal/paypal-android', 'https://github.com/paypal/paypal-android', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('paypal/paypal-sdk-release', 'https://github.com/paypal/paypal-sdk-release', 'release-index', 'tier2', 'github-release', False, 'releases-and-default-branch', 'monthly'),
+    ('paypal/paypal-js', 'https://github.com/paypal/paypal-js', 'web-sdk', 'tier1', 'monorepo-packages', True, 'releases-and-default-branch', 'weekly'),
+    ('paypal/paypal-ios', 'https://github.com/paypal/paypal-ios', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('paypal/postman-collections', 'https://github.com/paypal/postman-collections', 'api-collection', 'tier2', 'commit', False, 'default-branch', 'monthly'),
+    ('paypal/paypal-typescript-server-sdk', 'https://github.com/paypal/PayPal-TypeScript-Server-SDK', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('paypal/paypal-php-server-sdk', 'https://github.com/paypal/PayPal-PHP-Server-SDK', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('paypal/paypal-messages-ios', 'https://github.com/paypal/paypal-messages-ios', 'messaging-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('paypal/paypal-messages-android', 'https://github.com/paypal/paypal-messages-android', 'messaging-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('paypal/paypal-sdk-logos', 'https://github.com/paypal/paypal-sdk-logos', 'assets', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
+    ('paypal/paypal-rest-api-specifications', 'https://github.com/paypal/paypal-rest-api-specifications', 'api-specification', 'tier1', 'commit', False, 'default-branch', 'monthly'),
+    ('paypal-examples/v6-web-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-sample-integration', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
+    ('paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
+    ('paypal-examples/paypal-android-sdk-demo-app', 'https://github.com/paypal-examples/paypal-android-sdk-demo-app', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
+    ('paypal-examples/paypal-sdk-server-side-integration', 'https://github.com/paypal-examples/paypal-sdk-server-side-integration', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
+    ('paypal-examples/paypal-ios-sdk-demo-app', 'https://github.com/paypal-examples/paypal-ios-sdk-demo-app', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
+    ('braintree/braintree_android', 'https://github.com/braintree/braintree_android', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('braintree/braintree_ios', 'https://github.com/braintree/braintree_ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
+    ('braintree/web-sdk-github-actions', 'https://github.com/braintree/web-sdk-github-actions', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
+    ('braintree/mobile-sdk-tooling', 'https://github.com/braintree/mobile-sdk-tooling', 'tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
+    ('braintree/graphql-api', 'https://github.com/braintree/graphql-api', 'api-specification', 'tier1', 'commit', False, 'default-branch', 'monthly'),
+    ('braintree/credit-card-type', 'https://github.com/braintree/credit-card-type', 'utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('braintree/braintree-web', 'https://github.com/braintree/braintree-web', 'web-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('braintree/uuid', 'https://github.com/braintree/uuid', 'utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('braintree/popup-bridge-ios', 'https://github.com/braintree/popup-bridge-ios', 'mobile-utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('braintree/restricted-input', 'https://github.com/braintree/restricted-input', 'web-utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('braintree/braintree-web-drop-in', 'https://github.com/braintree/braintree-web-drop-in', 'drop-in', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('braintree/popup-bridge-android', 'https://github.com/braintree/popup-bridge-android', 'mobile-utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('braintree/braintree_php', 'https://github.com/braintree/braintree_php', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('braintree/braintree_ruby', 'https://github.com/braintree/braintree_ruby', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('braintree/braintree_node', 'https://github.com/braintree/braintree_node', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('braintree/braintree-ios-drop-in', 'https://github.com/braintree/braintree-ios-drop-in', 'drop-in', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('braintree/braintree-android-drop-in', 'https://github.com/braintree/braintree-android-drop-in', 'drop-in', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('stripe/stripe-ios', 'https://github.com/stripe/stripe-ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
+    ('stripe/stripe-apps', 'https://github.com/stripe/stripe-apps', 'developer-platform', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('stripe/stripe-cli', 'https://github.com/stripe/stripe-cli', 'cli', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('stripe/stripe-android', 'https://github.com/stripe/stripe-android', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('stripe/link-cli', 'https://github.com/stripe/link-cli', 'cli', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('stripe/stripe-react-native', 'https://github.com/stripe/stripe-react-native', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('stripe/stripe-ios-spm', 'https://github.com/stripe/stripe-ios-spm', 'release-mirror', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
+    ('stripe/stripe-php', 'https://github.com/stripe/stripe-php', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('stripe/stripe-node', 'https://github.com/stripe/stripe-node', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('stripe/stripe-js', 'https://github.com/stripe/stripe-js', 'web-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('stripe/sync-engine', 'https://github.com/stripe/sync-engine', 'tooling', 'tier2', 'commit', False, 'default-branch', 'monthly'),
+    ('stripe/react-stripe-js', 'https://github.com/stripe/react-stripe-js', 'web-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('stripe/stripe-terminal-ios', 'https://github.com/stripe/stripe-terminal-ios', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('stripe/stripe-terminal-android', 'https://github.com/stripe/stripe-terminal-android', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('stripe/ai', 'https://github.com/stripe/ai', 'developer-tooling', 'tier2', 'commit', False, 'default-branch', 'monthly'),
+    ('metronome-industries/metronome-node', 'https://github.com/Metronome-Industries/metronome-node', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('metronome-industries/ai', 'https://github.com/Metronome-Industries/ai', 'developer-tooling', 'tier2', 'commit', False, 'default-branch', 'monthly'),
+    ('metronome-industries/ai-eval', 'https://github.com/Metronome-Industries/ai-eval', 'evaluation-tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
+    ('metronome-industries/mintlify-docs', 'https://github.com/Metronome-Industries/mintlify-docs', 'docs-source', 'tier2', 'commit', False, 'default-branch', 'monthly'),
+    ('metronome-industries/terraform-provider-metronome', 'https://github.com/Metronome-Industries/terraform-provider-metronome', 'terraform-provider', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('adyen/adyen-node-api-library', 'https://github.com/Adyen/adyen-node-api-library', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('adyen/adyen-react-native', 'https://github.com/Adyen/adyen-react-native', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('adyen/adyen-web', 'https://github.com/Adyen/adyen-web', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
+    ('adyen/adyen-android', 'https://github.com/Adyen/adyen-android', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('adyen/adyen-ios', 'https://github.com/Adyen/adyen-ios', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('adyen/adyen-magento2', 'https://github.com/Adyen/adyen-magento2', 'commerce-plugin', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('adyen/adyen-pos-mobile-ios', 'https://github.com/Adyen/adyen-pos-mobile-ios', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('adyen/adyen-pos-mobile-ios-test', 'https://github.com/Adyen/adyen-pos-mobile-ios-test', 'test-tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
+    ('adyen/adyen-postman', 'https://github.com/Adyen/adyen-postman', 'api-collection', 'tier2', 'commit', False, 'default-branch', 'monthly'),
+    ('adyen/adyen-php-api-library', 'https://github.com/Adyen/adyen-php-api-library', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('adyen/adyen-sdk-automation', 'https://github.com/Adyen/adyen-sdk-automation', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
+    ('adyen/release-automation-action', 'https://github.com/Adyen/release-automation-action', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
+    ('adyen/adyen-3ds2-ios-swift', 'https://github.com/Adyen/adyen-3ds2-ios-swift', 'authentication-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('adyen/adyen-wechatpay-ios', 'https://github.com/Adyen/adyen-wechatpay-ios', 'payment-method-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('adyen/adyen-3ds2-android', 'https://github.com/Adyen/adyen-3ds2-android', 'authentication-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('adyen/adyen-3ds2-ios', 'https://github.com/Adyen/adyen-3ds2-ios', 'authentication-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+)
+
+
 class RegistryTests(unittest.TestCase):
     def write_registry(self, text):
         directory = tempfile.TemporaryDirectory()
@@ -116,21 +191,23 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual((disabled,), select_repos(repos, company="stripe", enabled_only=False))
         self.assertEqual((disabled,), select_repos(repos, repo_id="stripe/stripe-ios", enabled_only=False))
 
-    def test_full_inventory_has_71_rows_and_five_enabled_pilots(self):
+    def test_registry_matches_appendix_a_inventory_and_collection_cadence(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
 
-        self.assertEqual(71, len(repos))
-        self.assertEqual(5, len(select_repos(repos, enabled_only=True)))
-        self.assertEqual(
-            {
-                "paypal/paypal-js",
-                "paypal-examples/v6-web-sdk-sample-integration",
-                "braintree/braintree_ios",
-                "stripe/stripe-ios",
-                "adyen/adyen-web",
-            },
-            {repo.id for repo in select_repos(repos)},
+        actual = tuple(
+            (
+                repo.id,
+                repo.url,
+                repo.repo_type,
+                repo.priority,
+                repo.version_strategy,
+                repo.enabled,
+                repo.track,
+                repo.collection_frequency,
+            )
+            for repo in repos
         )
+        self.assertEqual(APPENDIX_A_INVENTORY, actual)
 
 
 if __name__ == "__main__":
