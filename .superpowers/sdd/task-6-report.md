@@ -25,3 +25,11 @@
 - Checkout copies now use component-by-component descriptor traversal with `O_NOFOLLOW`, regular-file verification, copied-byte limits, and exact streamed hashes.
 - `SnapshotRecord` carries trusted repository and release-note provenance plus staged-directory device/inode identity; validation rejects tampered provenance and swapped staged roots.
 - Promotion records the lock descriptor identity before writing and removes a lock only when its pathname still resolves to that same inode; write, validation, target, and replacement failures clean only the original staging directory.
+
+## Promotion Safety Amendment Evidence
+
+- RED: `python3 -m unittest tests.test_github_snapshot -v` ran 31 tests with 8 expected failures before the production change: stable lock retention, advisory-lock contention, lock symlink rejection, collector-private parent checks, descriptor-relative replacement, and release-note byte plus manifest tampering.
+- GREEN: `python3 -m unittest tests.test_github_snapshot -v` passed 31 tests; `python3 -m unittest discover -s tests -v` passed 158 tests; `git diff --check` passed.
+- Promotion requires collector-owned, non-group/world-writable staging and snapshot parents, opens every parent path component without following symlinks, and keeps a stable regular `.promotion.lock` protected by `fcntl.flock` for canonical lookup, supplement allocation, validation, target checks, and descriptor-relative `os.replace`.
+- `SnapshotRecord` now binds the exact release-note SHA-256 and byte size; validation reads staged content through no-follow descriptors and rejects altered note bytes even if the staged JSON manifest is altered to match.
+- Lock contention, lock-file symlinks, unsafe parents, target collisions, staged identity mismatches, validation failures, and replacement failures preserve existing evidence and clean only the current operation's original staging directory. The lock pathname is never deleted.
