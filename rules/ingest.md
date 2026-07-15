@@ -4,14 +4,15 @@
 
 ## 🛑 ONE SOURCE AT A TIME — NEVER BATCH
 
-> Ingest exactly **one raw file per cycle**. Before writing any wiki page you MUST `Read` the **full** raw file end-to-end — never from a partial read, a summary, or several raw files in parallel. Complete one source's entire cycle (concept audit → source → company → concept → comparison → contradiction check → index → log) and mark its todos done **before** starting the next source.
+> Ingest exactly **one source unit per cycle**. For normal sources, the source unit is exactly one raw file. Before writing any wiki page you MUST `Read` the **full** source unit end-to-end — never from a partial read, a summary, or several source units in parallel. Complete one source unit's entire cycle (concept audit → source → company → concept → comparison → contradiction check → index → log) and mark its todos done **before** starting the next source unit.
 
 This is the single most important rule. Batching produces shallow summaries, missed details, and malformed pages. It was confirmed in smoke testing: **no batch, process one by one, read the full raw content, then ingest.**
 
-For GitHub, one source cycle means one approved baseline, delta, or comparison
-packet. Read the packet, every referenced snapshot manifest, and every file in
-its required reading set in full before writing wiki content. Do not claim to
-have read the whole upstream repository.
+For GitHub, the source unit is exactly one approved baseline, delta, or
+comparison packet, which may reference multiple raw files. Read the packet,
+every referenced snapshot manifest, and every file in its required reading set
+in full before writing wiki content. Do not claim to have read the whole
+upstream repository.
 
 ## MANDATORY setup
 
@@ -29,6 +30,7 @@ have read the whole upstream repository.
 3. **Source summary page** in `wiki/sources/` (filename `source-<slug>.md`, **not** dated):
    - New source page → include `raw_files:` in frontmatter with the dated raw filename.
    - Adding to an existing source page (e.g., a re-collected/changed version, or a 2nd raw file on the same topic) → prepend the new dated raw filename to the existing `raw_files:` list (**newest first**), and add the new content/delta to the body.
+   - GitHub source page → list each nested snapshot manifest as its root-relative path under `raw/` in `raw_files:` (for example, `github/paypal/paypal-js/snapshots/2026-07-14-v10.2.0-a1b2c3d/snapshot.md`, newest first). In `## Raw Sources`, link to the same manifest with a path-qualified wikilink from the repository root (for example, `[[raw/github/paypal/paypal-js/snapshots/2026-07-14-v10.2.0-a1b2c3d/snapshot|latest snapshot]]`); do not use a dated flat filename or an unqualified `[[snapshot]]` link.
 4. **Company pages** in `wiki/companies/` — create or update. Update `source_count`.
 5. **Concept pages** in `wiki/concepts/` — create or update per the decision table.
 6. **Comparison pages** in `wiki/comparisons/` — only if the source **substantively compares** two or more companies (pricing differences, feature comparisons, migration guides). A passing mention of multiple companies does not warrant one.
