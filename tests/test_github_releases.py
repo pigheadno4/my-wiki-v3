@@ -280,12 +280,51 @@ class GitHubReleasesTests(unittest.TestCase):
                     self.config, self.clone, self._track(selector="package:@scope/widget@9")
                 )
 
-    def test_discovery_rejects_incomplete_matching_plain_tags(self):
-        output = "a" * 40 + "\trefs/tags/v9.0\n"
+    def test_discovery_rejects_incomplete_major_plain_tags(self):
+        for tag_name in ("v9", "v9.0"):
+            output = "a" * 40 + "\trefs/tags/" + tag_name + "\n"
 
-        with mock.patch("github_releases.github_git.run_git", return_value=output):
-            with self.assertRaisesRegex(ReleaseSelectionError, "incomplete release tag v9.0"):
-                discover_release_candidates(self.config, self.clone, self._track())
+            with self.subTest(tag_name=tag_name), mock.patch(
+                "github_releases.github_git.run_git", return_value=output
+            ):
+                with self.assertRaisesRegex(
+                    ReleaseSelectionError, "incomplete release tag " + tag_name
+                ):
+                    discover_release_candidates(self.config, self.clone, self._track())
+
+    def test_discovery_scopes_incomplete_plain_tags_to_minor_selector(self):
+        unrelated = "a" * 40 + "\trefs/tags/v9.0\n"
+        matching = "b" * 40 + "\trefs/tags/v9.1\n"
+
+        with mock.patch("github_releases.github_git.run_git", return_value=unrelated):
+            self.assertEqual(
+                (),
+                discover_release_candidates(
+                    self.config, self.clone, self._track(selector="v9.1")
+                ),
+            )
+        with mock.patch("github_releases.github_git.run_git", return_value=matching):
+            with self.assertRaisesRegex(ReleaseSelectionError, "incomplete release tag v9.1"):
+                discover_release_candidates(
+                    self.config, self.clone, self._track(selector="v9.1")
+                )
+
+    def test_discovery_incomplete_plain_tag_error_is_input_order_independent(self):
+        tags = (
+            "a" * 40 + "\trefs/tags/v9.0\n",
+            "b" * 40 + "\trefs/tags/v9.1\n",
+        )
+        messages = []
+
+        for output in ("".join(tags), "".join(reversed(tags))):
+            with mock.patch("github_releases.github_git.run_git", return_value=output):
+                with self.assertRaises(ReleaseSelectionError) as raised:
+                    discover_release_candidates(
+                        self.config, self.clone, self._track(selector="v9.1")
+                    )
+            messages.append(str(raised.exception))
+
+        self.assertEqual(messages, ["incomplete release tag v9.1 matching selector v9.1"] * 2)
 
     def test_discovery_ignores_incomplete_tags_outside_the_selected_package_namespace(self):
         output = (
@@ -299,6 +338,60 @@ class GitHubReleasesTests(unittest.TestCase):
             )
 
         self.assertEqual(("9.0.0",), tuple(item.version for item in candidates))
+
+    def test_discovery_scopes_incomplete_package_tags_to_minor_selector(self):
+        output = (
+            "a" * 40 + "\trefs/tags/@scope/widget@9.0\n"
+            + "b" * 40 + "\trefs/tags/@scope/other@9.1\n"
+        )
+
+        with mock.patch("github_releases.github_git.run_git", return_value=output):
+            self.assertEqual(
+                (),
+                discover_release_candidates(
+                    self.config,
+                    self.clone,
+                    self._track(selector="package:@scope/widget@9.1"),
+                ),
+            )
+
+        matching = "c" * 40 + "\trefs/tags/@scope/widget@9.1\n"
+        with mock.patch("github_releases.github_git.run_git", return_value=matching):
+            with self.assertRaisesRegex(
+                ReleaseSelectionError, "incomplete release tag @scope/widget@9.1"
+            ):
+                discover_release_candidates(
+                    self.config,
+                    self.clone,
+                    self._track(selector="package:@scope/widget@9.1"),
+                )
+
+    def test_discovery_incomplete_package_tag_error_is_input_order_independent(self):
+        tags = (
+            "a" * 40 + "\trefs/tags/@scope/widget@9.0\n",
+            "b" * 40 + "\trefs/tags/@scope/other@9.1\n",
+            "c" * 40 + "\trefs/tags/@scope/widget@9.1\n",
+        )
+        messages = []
+
+        for output in ("".join(tags), "".join(reversed(tags))):
+            with mock.patch("github_releases.github_git.run_git", return_value=output):
+                with self.assertRaises(ReleaseSelectionError) as raised:
+                    discover_release_candidates(
+                        self.config,
+                        self.clone,
+                        self._track(selector="package:@scope/widget@9.1"),
+                    )
+            messages.append(str(raised.exception))
+
+        self.assertEqual(
+            messages,
+            [
+                "incomplete release tag @scope/widget@9.1 matching selector "
+                "package:@scope/widget@9.1"
+            ]
+            * 2,
+        )
 
     def test_fetch_release_notes_preserves_utf8_body_and_required_headers(self):
         candidate = self._candidates("9.0.0")[0]

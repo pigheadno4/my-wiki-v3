@@ -66,7 +66,7 @@ def discover_release_candidates(
         if version is None:
             continue
         if not version.is_exact:
-            if version.major == target.major:
+            if _matches_incomplete(version, target, track.include_prerelease):
                 raise ReleaseSelectionError(
                     "incomplete release tag " + tag + " matching selector " + track.selector
                 )
@@ -271,6 +271,20 @@ def _matches(
         and candidate.is_exact
         and matches_semver(candidate, target, include_prerelease)
     )
+
+
+def _matches_incomplete(
+    candidate: Optional[SemanticVersion], target: SemanticVersion, include_prerelease: bool
+) -> bool:
+    if candidate is None or candidate.is_exact or candidate.major != target.major:
+        return False
+    if target.minor is not None and candidate.minor != target.minor:
+        return False
+    if target.patch is not None and candidate.patch != target.patch:
+        return False
+    if target.prerelease is not None and candidate.prerelease != target.prerelease:
+        return False
+    return include_prerelease or candidate.prerelease is None
 
 
 def _pinned_candidates(
