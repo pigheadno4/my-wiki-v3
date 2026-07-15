@@ -96,6 +96,38 @@ raw/github/<company>/<repo>/snapshots/<snapshot-id>/
 
 `release-notes.md` contains exact upstream GitHub release-note content when available. A repository-owned changelog remains byte-for-byte at its repository-relative path under `files/`. Absence of either artifact is recorded in `snapshot.md`; the collector never fabricates upstream release notes.
 
+### Promotion Safety Amendment
+
+**Approved:** 2026-07-15
+
+Portable Python 3.9 cannot atomically compare-and-delete an `O_EXCL` lock
+pathname or prove that a directory pathname still names a previously opened
+inode during `Path.replace()`. Snapshot promotion therefore uses an explicit
+collector-private filesystem boundary:
+
+- the staging and repository snapshot parent directories must be owned by the
+  collector user and must not be group- or world-writable;
+- the collector opens those parents without following symlinks and performs
+  validation and promotion relative to their directory descriptors;
+- one stable `.promotion.lock` file is retained per repository and protected
+  with `fcntl.flock(LOCK_EX | LOCK_NB)` for the complete transaction;
+- lock release is descriptor close, not pathname deletion;
+- canonical identity rechecks, supplement allocation, target-absence checks,
+  staged-directory identity checks, validation, and same-filesystem promotion
+  all occur while the advisory lock is held; and
+- an unsafe parent, lock-file symlink, lock contention, identity mismatch,
+  target collision, or cross-filesystem move fails without promotion.
+
+This boundary serializes cooperating collectors and prevents untrusted
+group/world writers from entering the promotion namespace. It does not claim
+protection from a malicious process running as the same collector user and
+ignoring the advisory lock.
+
+`SnapshotRecord` is also the trusted in-memory validation contract. It carries
+repository provenance, release-note provenance, and the exact release-note
+content hash and size. Validation compares the JSON manifest and staged bytes
+to those trusted values before promotion.
+
 Generated summaries, changelog deltas, changed-file lists, and patches remain under `tracking/github/`. They are navigation and review aids, not authoritative evidence.
 
 To make changed public entrypoints and examples reachable during snapshot construction, the snapshot builder contract adds a backward-compatible final parameter:
@@ -208,7 +240,9 @@ Deterministic local tests must cover:
 - one snapshot for same-SHA aliases;
 - default branch differing from the latest release;
 - changelog and release-note preservation;
+- release-note content and provenance tampering;
 - absent release evidence;
+- unsafe promotion-parent permissions and advisory-lock contention;
 - periodic discovery of one new patch release;
 - rewritten or deleted tag reporting; and
 - one packet per new release with no automatic ingest transition.

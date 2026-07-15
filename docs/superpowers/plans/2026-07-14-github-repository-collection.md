@@ -624,7 +624,7 @@ def test_release_notes_are_exact_top_level_evidence(self):
     self.assertEqual(b"# Exact notes\n", (record.staging_path / "release-notes.md").read_bytes())
 ```
 
-Also cover a filename containing `|`, unexpected top-level files, `.diff` rejection, manifest metadata tampering, copied-byte limit changes, lock collision, concurrent supplement allocation, and staging cleanup after validation or promotion failure.
+Also cover a filename containing `|`, unexpected top-level files, `.diff` rejection, manifest metadata tampering, copied-byte limit changes, advisory-lock contention, concurrent supplement allocation, unsafe promotion-parent permissions, and staging cleanup after validation or promotion failure.
 
 - [ ] **Step 2: Run tests to verify the remediation is RED**
 
@@ -640,7 +640,7 @@ Resolve every candidate and require `candidate.relative_to(repo_root.resolve())`
 
 - [ ] **Step 4: Make `snapshot.md` the structured integrity authority**
 
-Keep the existing records:
+Keep the existing record fields:
 
 ```python
 @dataclass(frozen=True)
@@ -668,15 +668,38 @@ class SnapshotRecord:
     files: Tuple[SnapshotFile, ...]
 ```
 
+`SnapshotRecord` may add immutable trusted fields for repository provenance,
+release-note provenance, exact release-note SHA-256/size, and staged-directory
+device/inode identity. Validation must compare the manifest and staged bytes
+against those record values; changing both `release-notes.md` and its manifest
+entry must still fail.
+
 Render one versioned JSON metadata block inside `snapshot.md`, followed by human-readable saved/excluded Markdown tables. JSON is the parsing authority and safely represents valid filenames such as `docs/a|b.md`; escape Markdown table cells for display. The JSON records complete identity metadata, saved file paths/hashes/sizes/purposes, exclusions, release-note source metadata or explicit absence, and prior snapshot.
 
 Validation parses JSON from `snapshot.md`, compares identity fields with the record, and hashes every listed file against manifest values. It rejects duplicate entries, missing or unlisted files, any top-level entry except `snapshot.md`, optional `release-notes.md`, and `files/`, and any `.patch` or `.diff` anywhere under staging. `release-notes.md` bytes are included in manifest integrity data without altering the upstream content.
 
-- [ ] **Step 5: Promote with a no-clobber repository lock**
+- [ ] **Step 5: Promote inside a collector-private advisory-lock boundary**
 
-Create an exclusive per-repository promotion lock with `os.open(..., os.O_CREAT | os.O_EXCL)`. Hold it while rechecking canonical SHA identity, selecting the next supplement `-rN`, checking target absence, validating, and calling same-filesystem `Path.replace()`. A lock collision fails explicitly; it never breaks or steals a lock. Always remove the current operation's lock and staging directory after validation, target, cross-device, or replacement failure. Never remove a target or lock the current process did not create.
+Require the staging and repository snapshot parent directories to be owned by
+the collector user and not group- or world-writable. Open them without
+following symlinks and use descriptor-relative operations. Keep one stable
+regular `.promotion.lock` file per repository, acquire
+`fcntl.flock(LOCK_EX | LOCK_NB)` for the full transaction, and release it by
+closing the descriptor; never delete the lock pathname.
+
+While holding the lock, recheck canonical SHA identity, select the next
+supplement `-rN`, check target absence, validate the staged-directory identity
+and manifest, verify the source and target parents share a filesystem, and
+promote with descriptor-relative `os.replace()`. Lock contention, unsafe
+permissions, symlinks, identity mismatch, target collision, or cross-filesystem
+promotion fails explicitly. Always clean only the current operation's staging
+directory after failure, and never remove an existing target.
 
 Canonical recollection still returns the existing snapshot unchanged. Supplements choose the next free revision while holding the lock and record `capture_kind = "supplement"`.
+
+The guarantee covers cooperating collectors inside the collector-private
+namespace. It does not claim protection from a malicious process running as the
+same collector user and ignoring the advisory lock.
 
 - [ ] **Step 6: Run focused and full tests**
 
