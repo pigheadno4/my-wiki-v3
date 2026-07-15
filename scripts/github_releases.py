@@ -278,11 +278,15 @@ def _matches_incomplete(
 ) -> bool:
     if candidate is None or candidate.is_exact or candidate.major != target.major:
         return False
-    if target.minor is not None and candidate.minor != target.minor:
+    if candidate.minor is not None and target.minor is not None and candidate.minor != target.minor:
         return False
-    if target.patch is not None and candidate.patch != target.patch:
+    if candidate.patch is not None and target.patch is not None and candidate.patch != target.patch:
         return False
-    if target.prerelease is not None and candidate.prerelease != target.prerelease:
+    if (
+        candidate.prerelease is not None
+        and target.prerelease is not None
+        and candidate.prerelease != target.prerelease
+    ):
         return False
     return include_prerelease or candidate.prerelease is None
 

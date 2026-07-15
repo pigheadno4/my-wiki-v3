@@ -309,6 +309,15 @@ class GitHubReleasesTests(unittest.TestCase):
                     self.config, self.clone, self._track(selector="v9.1")
                 )
 
+    def test_discovery_rejects_incomplete_major_tag_for_minor_plain_selector(self):
+        output = "a" * 40 + "\trefs/tags/v9\n"
+
+        with mock.patch("github_releases.github_git.run_git", return_value=output):
+            with self.assertRaisesRegex(ReleaseSelectionError, "incomplete release tag v9"):
+                discover_release_candidates(
+                    self.config, self.clone, self._track(selector="v9.1")
+                )
+
     def test_discovery_incomplete_plain_tag_error_is_input_order_independent(self):
         tags = (
             "a" * 40 + "\trefs/tags/v9.0\n",
@@ -359,6 +368,19 @@ class GitHubReleasesTests(unittest.TestCase):
         with mock.patch("github_releases.github_git.run_git", return_value=matching):
             with self.assertRaisesRegex(
                 ReleaseSelectionError, "incomplete release tag @scope/widget@9.1"
+            ):
+                discover_release_candidates(
+                    self.config,
+                    self.clone,
+                    self._track(selector="package:@scope/widget@9.1"),
+                )
+
+    def test_discovery_rejects_incomplete_package_major_tag_for_minor_selector(self):
+        output = "a" * 40 + "\trefs/tags/@scope/widget@9\n"
+
+        with mock.patch("github_releases.github_git.run_git", return_value=output):
+            with self.assertRaisesRegex(
+                ReleaseSelectionError, "incomplete release tag @scope/widget@9"
             ):
                 discover_release_candidates(
                     self.config,
