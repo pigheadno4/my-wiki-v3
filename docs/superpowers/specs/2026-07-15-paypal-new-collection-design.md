@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-15
 
-**Status:** Approved design, awaiting written specification review
+**Status:** Approved
 
 **Scope:** Discovery, immutable raw collection, progress reporting, and comparison preparation for the upgraded documentation at `developer.paypal.com`
 
