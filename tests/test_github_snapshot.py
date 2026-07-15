@@ -1,5 +1,8 @@
+from dataclasses import replace
+import fcntl
 import hashlib
 import json
+import os
 import shutil
 import sys
 import tempfile
@@ -76,6 +79,15 @@ class GitHubSnapshotTests(unittest.TestCase):
 
     def promotion_lock(self, record):
         return record.target_path.parent / ".promotion.lock"
+
+    def write_manifest_metadata(self, record, metadata):
+        manifest_path = record.staging_path / "snapshot.md"
+        manifest = manifest_path.read_text(encoding="utf-8")
+        original = json.dumps(self.manifest_metadata(record), indent=2, sort_keys=True)
+        manifest_path.write_text(
+            manifest.replace(original, json.dumps(metadata, indent=2, sort_keys=True)),
+            encoding="utf-8",
+        )
 
     def test_select_key_files_uses_sorted_policy_and_excludes_unreadable_candidates(self):
         self.write("README.md", b"readme\n")
@@ -373,6 +385,32 @@ class GitHubSnapshotTests(unittest.TestCase):
         self.assertTrue(any("listed more than once" in error for error in errors))
         self.assertTrue(any("release notes hash mismatch" in error for error in errors))
 
+    def test_validation_rejects_release_note_bytes_and_manifest_changed_together(self):
+        evidence = ReleaseNotesEvidence(
+            "https://api.github.test/release", "2026-07-14T00:00:00Z", b"notes\n"
+        )
+        self.write("README.md", b"snapshot\n")
+        record = build_snapshot(
+            self.config(),
+            self.ref,
+            self.repo,
+            self.raw_root,
+            self.staging_root,
+            "2026-07-14",
+            release_notes=evidence,
+        )
+        changed = b"attacker-controlled notes\n"
+        (record.staging_path / "release-notes.md").write_bytes(changed)
+        metadata = self.manifest_metadata(record)
+        metadata["release_notes"]["sha256"] = hashlib.sha256(changed).hexdigest()
+        metadata["release_notes"]["size"] = len(changed)
+        self.write_manifest_metadata(record, metadata)
+
+        errors = validate_staged_snapshot(record)
+
+        self.assertTrue(any("release_notes.sha256" in error for error in errors))
+        self.assertTrue(any("release_notes.size" in error for error in errors))
+
     def test_build_enforces_limits_against_copied_bytes(self):
         self.write("README.md", b"small\n")
         original_select = github_snapshot.select_key_files
@@ -492,53 +530,87 @@ class GitHubSnapshotTests(unittest.TestCase):
 
                 self.assertTrue(any("metadata mismatch for " + field in error for error in errors))
 
-    def test_lock_write_failure_removes_owned_lock_and_staging(self):
+    def test_stable_lock_is_retained_and_reused_after_success(self):
         self.write("README.md", b"snapshot\n")
         record = build_snapshot(
             self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
         )
 
-        with mock.patch("github_snapshot.os.write", side_effect=OSError("write failed")):
-            with self.assertRaisesRegex(OSError, "write failed"):
-                promote_snapshot(record)
+        promoted = promote_snapshot(record)
+        lock = self.promotion_lock(record)
+        recollection = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
 
-        self.assertFalse(self.promotion_lock(record).exists())
-        self.assertFalse(record.staging_path.exists())
+        self.assertTrue(lock.is_file())
+        self.assertFalse(lock.is_symlink())
+        self.assertEqual(promoted, promote_snapshot(recollection))
+        self.assertTrue(lock.exists())
 
-    def test_lock_cleanup_preserves_replacement_lock_path(self):
+    def test_promotion_rejects_lock_file_symlink_and_cleans_staging(self):
         self.write("README.md", b"snapshot\n")
         record = build_snapshot(
             self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
         )
         lock = self.promotion_lock(record)
+        outside = self.root / "outside-lock"
+        outside.write_text("foreign", encoding="utf-8")
+        lock.parent.mkdir(parents=True)
+        lock.symlink_to(outside)
 
-        def replace_lock_then_fail(_active_record):
-            lock.unlink()
-            lock.write_text("foreign", encoding="utf-8")
-            return ["forced validation failure"]
+        with self.assertRaisesRegex(SnapshotError, "lock file.*symlink"):
+            promote_snapshot(record)
 
-        with mock.patch(
-            "github_snapshot.validate_staged_snapshot", side_effect=replace_lock_then_fail
-        ):
-            with self.assertRaisesRegex(SnapshotError, "invalid staged snapshot"):
-                promote_snapshot(record)
-
-        self.assertEqual("foreign", lock.read_text(encoding="utf-8"))
+        self.assertTrue(lock.is_symlink())
+        self.assertEqual("foreign", outside.read_text(encoding="utf-8"))
         self.assertFalse(record.staging_path.exists())
 
-    def test_lock_collision_preserves_foreign_lock_and_cleans_staging(self):
+    def test_lock_contention_preserves_stable_lock_and_cleans_staging(self):
         self.write("README.md", b"snapshot\n")
         record = build_snapshot(
             self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
         )
         lock = self.promotion_lock(record)
         lock.parent.mkdir(parents=True)
-        lock.write_text("foreign", encoding="utf-8")
-
-        with self.assertRaisesRegex(SnapshotError, "promotion lock already exists"):
-            promote_snapshot(record)
+        descriptor = os.open(str(lock), os.O_RDWR | os.O_CREAT, 0o600)
+        fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        try:
+            with self.assertRaisesRegex(SnapshotError, "promotion lock is already held"):
+                promote_snapshot(record)
+        finally:
+            fcntl.flock(descriptor, fcntl.LOCK_UN)
+            os.close(descriptor)
 
         self.assertTrue(lock.exists())
+        self.assertFalse(record.staging_path.exists())
+
+    def test_promotion_rejects_group_writable_staging_parent(self):
+        self.write("README.md", b"snapshot\n")
+        record = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+        record.staging_path.parent.chmod(0o770)
+        try:
+            with self.assertRaisesRegex(SnapshotError, "staging parent is not collector-private"):
+                promote_snapshot(record)
+        finally:
+            record.staging_path.parent.chmod(0o700)
+
+        self.assertFalse(record.staging_path.exists())
+
+    def test_promotion_rejects_world_writable_snapshot_parent(self):
+        self.write("README.md", b"snapshot\n")
+        record = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+        record.target_path.parent.mkdir(parents=True)
+        record.target_path.parent.chmod(0o777)
+        try:
+            with self.assertRaisesRegex(SnapshotError, "snapshot parent is not collector-private"):
+                promote_snapshot(record)
+        finally:
+            record.target_path.parent.chmod(0o700)
+
         self.assertFalse(record.staging_path.exists())
 
     def test_concurrent_supplements_allocate_distinct_revisions_while_locked(self):
@@ -570,7 +642,7 @@ class GitHubSnapshotTests(unittest.TestCase):
         second_manifest = (second_path / "snapshot.md").read_text(encoding="utf-8")
         self.assertIn('"capture_revision": 2', second_manifest)
 
-    def test_failed_validation_or_target_collision_cleans_current_staging_and_lock(self):
+    def test_failed_validation_or_target_collision_cleans_current_staging_and_keeps_lock(self):
         self.write("README.md", b"snapshot\n")
         invalid = build_snapshot(
             self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
@@ -581,7 +653,7 @@ class GitHubSnapshotTests(unittest.TestCase):
             promote_snapshot(invalid)
 
         self.assertFalse(invalid.staging_path.exists())
-        self.assertFalse(self.promotion_lock(invalid).exists())
+        self.assertTrue(self.promotion_lock(invalid).exists())
 
         collision = build_snapshot(
             self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
@@ -591,18 +663,31 @@ class GitHubSnapshotTests(unittest.TestCase):
             promote_snapshot(collision)
         self.assertFalse(collision.staging_path.exists())
 
-    def test_replace_failure_cleans_current_staging_and_lock(self):
+    def test_descriptor_relative_replace_failure_cleans_current_staging_and_keeps_lock(self):
         self.write("README.md", b"snapshot\n")
         record = build_snapshot(
             self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
         )
 
-        with mock.patch.object(Path, "replace", side_effect=OSError("cross-device failure")):
+        with mock.patch("github_snapshot.os.replace", side_effect=OSError("cross-device failure")):
             with self.assertRaisesRegex(SnapshotError, "could not promote snapshot"):
                 promote_snapshot(record)
 
         self.assertFalse(record.staging_path.exists())
-        self.assertFalse(self.promotion_lock(record).exists())
+        self.assertTrue(self.promotion_lock(record).exists())
+
+    def test_promotion_rejects_staged_identity_mismatch_without_removing_replacement(self):
+        self.write("README.md", b"snapshot\n")
+        record = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+        replacement = replace(record, staging_inode=record.staging_inode + 1)
+
+        with self.assertRaisesRegex(SnapshotError, "staged directory"):
+            promote_snapshot(replacement)
+
+        self.assertTrue(record.staging_path.exists())
+        self.assertFalse(record.target_path.exists())
 
 
 if __name__ == "__main__":

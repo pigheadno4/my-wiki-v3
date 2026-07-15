@@ -1,6 +1,7 @@
 """Immutable, curated raw snapshots for checked-out GitHub repositories."""
 
 from dataclasses import dataclass, replace
+import fcntl
 import fnmatch
 import hashlib
 import json
@@ -78,6 +79,8 @@ class SnapshotRecord:
     repo_type: str = ""
     release_notes_source_url: Optional[str] = None
     release_notes_published_at: Optional[str] = None
+    release_notes_sha256: Optional[str] = None
+    release_notes_size: Optional[int] = None
     staging_device: Optional[int] = None
     staging_inode: Optional[int] = None
 
@@ -213,6 +216,12 @@ def build_snapshot(
             repo_type=config.repo_type,
             release_notes_source_url=(release_notes.source_url if release_notes is not None else None),
             release_notes_published_at=(release_notes.published_at if release_notes is not None else None),
+            release_notes_sha256=(
+                hashlib.sha256(release_notes.content).hexdigest()
+                if release_notes is not None
+                else None
+            ),
+            release_notes_size=(len(release_notes.content) if release_notes is not None else None),
             staging_device=staging_stat.st_dev,
             staging_inode=staging_stat.st_ino,
         )
@@ -228,85 +237,124 @@ def build_snapshot(
 
 def validate_staged_snapshot(record: SnapshotRecord) -> List[str]:
     """Return deterministic integrity failures for a staged snapshot."""
-    errors: List[str] = []
-    staging_error = _staging_identity_error(record)
-    if staging_error is not None:
-        return [staging_error]
-    staging_path = record.staging_path
-    manifest_path = staging_path / "snapshot.md"
-    files_root = staging_path / "files"
-    if not manifest_path.is_file() or manifest_path.is_symlink():
-        return ["snapshot.md is missing"]
-    if not files_root.is_dir() or files_root.is_symlink():
-        return ["files directory is missing"]
-
+    parent_descriptor: Optional[int] = None
+    staging_descriptor: Optional[int] = None
     try:
-        manifest = manifest_path.read_text(encoding="utf-8")
+        parent_descriptor = _open_directory_path_nofollow(record.staging_path.parent)
+        staging_descriptor = _open_staged_directory(record, parent_descriptor)
+        return _validate_staged_snapshot_descriptor(record, staging_descriptor)
+    except SnapshotError as error:
+        return [str(error)]
+    except OSError:
+        return ["staged directory is missing or no longer original"]
+    finally:
+        if staging_descriptor is not None:
+            os.close(staging_descriptor)
+        if parent_descriptor is not None:
+            os.close(parent_descriptor)
+
+
+def _validate_staged_snapshot_descriptor(record: SnapshotRecord, staging_descriptor: int) -> List[str]:
+    """Validate staged bytes and manifest relative to an opened directory."""
+    errors: List[str] = []
+    try:
+        manifest_bytes = _read_regular_file(staging_descriptor, "snapshot.md")
+    except SnapshotError:
+        return ["snapshot.md is missing"]
+    try:
+        manifest = manifest_bytes.decode("utf-8")
     except UnicodeDecodeError:
         return ["snapshot.md is not UTF-8"]
-    metadata, metadata_error = _read_metadata(manifest)
-    if metadata_error is not None:
-        return [metadata_error]
+    try:
+        files_descriptor = os.open(
+            "files",
+            os.O_RDONLY | _directory_flag() | _no_follow_flag(),
+            dir_fd=staging_descriptor,
+        )
+    except OSError:
+        return ["files directory is missing"]
+    try:
+        metadata, metadata_error = _read_metadata(manifest)
+        if metadata_error is not None:
+            return [metadata_error]
 
-    _validate_top_level(staging_path, metadata, errors)
-    _validate_no_symlinks_or_diffs(staging_path, errors)
-    _validate_identity(metadata, record, errors)
-    manifest_files = _validate_manifest_files(metadata, record, errors)
-    _validate_copied_files(files_root, manifest_files, errors)
-    _validate_release_notes(staging_path, metadata, record, errors)
-    return errors
+        _validate_top_level_descriptor(staging_descriptor, metadata, errors)
+        _validate_no_symlinks_or_diffs_descriptor(staging_descriptor, "", errors)
+        _validate_identity(metadata, record, errors)
+        manifest_files = _validate_manifest_files(metadata, record, errors)
+        _validate_copied_files_descriptor(files_descriptor, manifest_files, errors)
+        _validate_release_notes_descriptor(staging_descriptor, metadata, record, errors)
+        return errors
+    finally:
+        os.close(files_descriptor)
 
 
 def promote_snapshot(record: SnapshotRecord) -> Path:
-    """Validate and atomically promote a staged snapshot without overwriting evidence."""
+    """Promote through collector-private parents under a stable advisory lock."""
     snapshot_root = record.target_path.parent
-    lock_path = snapshot_root / _LOCK_NAME
-    lock_identity: Optional[Tuple[int, int]] = None
+    staging_parent_descriptor: Optional[int] = None
+    snapshot_root_descriptor: Optional[int] = None
+    lock_descriptor: Optional[int] = None
     try:
         snapshot_root.mkdir(parents=True, exist_ok=True)
+        staging_parent_descriptor = _open_collector_private_directory(
+            record.staging_path.parent, "staging parent"
+        )
+        snapshot_root_descriptor = _open_collector_private_directory(
+            snapshot_root, "snapshot parent"
+        )
+        lock_descriptor = _open_promotion_lock(snapshot_root_descriptor)
         try:
-            descriptor = os.open(str(lock_path), os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
-        except FileExistsError as error:
-            _clean_staging(record)
-            raise SnapshotError("promotion lock already exists: " + str(lock_path)) from error
-        try:
-            lock_stat = os.fstat(descriptor)
-            lock_identity = (lock_stat.st_dev, lock_stat.st_ino)
-            os.write(descriptor, str(os.getpid()).encode("ascii"))
-        finally:
-            os.close(descriptor)
+            fcntl.flock(lock_descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as error:
+            raise SnapshotError("promotion lock is already held") from error
 
-        existing = _existing_canonical(record)
+        existing = _existing_canonical(record, snapshot_root_descriptor)
         if existing is not None:
             _clean_staging(record)
             return existing
 
         active_record = record
         if active_record.capture_kind == "supplement":
-            active_record = _allocate_supplement(active_record)
-        if _path_exists_or_is_symlink(active_record.target_path):
+            active_record = _allocate_supplement(active_record, snapshot_root_descriptor)
+        target_name = active_record.target_path.name
+        if _directory_entry_exists(snapshot_root_descriptor, target_name):
             raise SnapshotError("snapshot target already exists: " + str(active_record.target_path))
 
         errors = validate_staged_snapshot(active_record)
         if errors:
             raise SnapshotError("invalid staged snapshot:\n- " + "\n- ".join(errors))
-        staging_error = _staging_identity_error(active_record)
-        if staging_error is not None:
-            raise SnapshotError(staging_error)
-        active_record.target_path.parent.mkdir(parents=True, exist_ok=True)
-        if active_record.staging_path.parent.stat().st_dev != active_record.target_path.parent.stat().st_dev:
-            raise SnapshotError("staging and target must share a filesystem")
+        staging_descriptor = _open_staged_directory(active_record, staging_parent_descriptor)
         try:
-            active_record.staging_path.replace(active_record.target_path)
-        except OSError as error:
-            raise SnapshotError("could not promote snapshot: " + str(error)) from error
+            if os.fstat(staging_parent_descriptor).st_dev != os.fstat(snapshot_root_descriptor).st_dev:
+                raise SnapshotError("staging and target must share a filesystem")
+            if _directory_entry_exists(snapshot_root_descriptor, target_name):
+                raise SnapshotError("snapshot target already exists: " + str(active_record.target_path))
+            try:
+                os.replace(
+                    active_record.staging_path.name,
+                    target_name,
+                    src_dir_fd=staging_parent_descriptor,
+                    dst_dir_fd=snapshot_root_descriptor,
+                )
+            except OSError as error:
+                raise SnapshotError("could not promote snapshot: " + str(error)) from error
+        finally:
+            os.close(staging_descriptor)
         return active_record.target_path
     except Exception:
         _clean_staging(record)
         raise
     finally:
-        if lock_identity is not None:
-            _remove_owned_lock(lock_path, lock_identity)
+        if lock_descriptor is not None:
+            try:
+                fcntl.flock(lock_descriptor, fcntl.LOCK_UN)
+            finally:
+                os.close(lock_descriptor)
+        if snapshot_root_descriptor is not None:
+            os.close(snapshot_root_descriptor)
+        if staging_parent_descriptor is not None:
+            os.close(staging_parent_descriptor)
 
 
 def _candidate_groups(
@@ -496,8 +544,8 @@ def _snapshot_metadata(
             "path": "release-notes.md",
             "source_url": record.release_notes_source_url,
             "published_at": record.release_notes_published_at,
-            "sha256": hashlib.sha256(release_notes.content).hexdigest(),
-            "size": len(release_notes.content),
+            "sha256": record.release_notes_sha256,
+            "size": record.release_notes_size,
         }
     return {
         "format_version": _MANIFEST_VERSION,
@@ -623,25 +671,51 @@ def _no_duplicate_keys(pairs: Sequence[Tuple[str, object]]) -> dict:
     return value
 
 
-def _validate_top_level(staging_path: Path, metadata: dict, errors: List[str]) -> None:
+def _validate_top_level_descriptor(
+    staging_descriptor: int, metadata: dict, errors: List[str]
+) -> None:
     release_metadata = metadata.get("release_notes")
     allowed = {"snapshot.md", "files"}
     if release_metadata is not None:
         allowed.add("release-notes.md")
-    for entry in sorted(staging_path.iterdir(), key=lambda item: item.name):
-        if entry.name not in allowed:
-            errors.append("unexpected top-level entry: " + entry.name)
+    for name in sorted(os.listdir(staging_descriptor)):
+        if name not in allowed:
+            errors.append("unexpected top-level entry: " + name)
 
 
-def _validate_no_symlinks_or_diffs(staging_path: Path, errors: List[str]) -> None:
-    for parent, directories, filenames in os.walk(str(staging_path), followlinks=False):
-        for name in sorted(directories + filenames):
-            path = Path(parent) / name
-            relative = path.relative_to(staging_path).as_posix()
-            if path.is_symlink():
-                errors.append("symlink is not allowed in staged snapshot: " + relative)
-            if path.suffix.lower() in (".patch", ".diff"):
-                errors.append("generated " + path.suffix.lower() + " is not allowed in raw snapshot: " + relative)
+def _validate_no_symlinks_or_diffs_descriptor(
+    directory_descriptor: int, prefix: str, errors: List[str]
+) -> None:
+    for name in sorted(os.listdir(directory_descriptor)):
+        relative = prefix + name
+        try:
+            entry_stat = os.stat(name, dir_fd=directory_descriptor, follow_symlinks=False)
+        except OSError:
+            errors.append("staged entry could not be inspected: " + relative)
+            continue
+        if stat.S_ISLNK(entry_stat.st_mode):
+            errors.append("symlink is not allowed in staged snapshot: " + relative)
+            continue
+        if Path(name).suffix.lower() in (".patch", ".diff"):
+            errors.append(
+                "generated " + Path(name).suffix.lower() + " is not allowed in raw snapshot: " + relative
+            )
+        if stat.S_ISDIR(entry_stat.st_mode):
+            try:
+                child_descriptor = os.open(
+                    name,
+                    os.O_RDONLY | _directory_flag() | _no_follow_flag(),
+                    dir_fd=directory_descriptor,
+                )
+            except OSError:
+                errors.append("staged directory could not be opened: " + relative)
+                continue
+            try:
+                _validate_no_symlinks_or_diffs_descriptor(
+                    child_descriptor, relative + "/", errors
+                )
+            finally:
+                os.close(child_descriptor)
 
 
 def _validate_identity(metadata: dict, record: SnapshotRecord, errors: List[str]) -> None:
@@ -744,23 +818,15 @@ def _validate_manifest_files(
     return manifest_files
 
 
-def _validate_copied_files(
-    files_root: Path, manifest_files: Dict[str, SnapshotFile], errors: List[str]
+def _validate_copied_files_descriptor(
+    files_descriptor: int, manifest_files: Dict[str, SnapshotFile], errors: List[str]
 ) -> None:
-    actual_files: Dict[str, Path] = {}
-    for parent, _, filenames in os.walk(str(files_root), followlinks=False):
-        for name in sorted(filenames):
-            path = Path(parent) / name
-            if path.is_symlink():
-                continue
-            relative = path.relative_to(files_root).as_posix()
-            actual_files[relative] = path
+    actual_files = _staged_regular_files(files_descriptor, "", errors)
     for path, item in manifest_files.items():
-        copied = actual_files.get(path)
-        if copied is None:
+        content = actual_files.get(path)
+        if content is None:
             errors.append("listed file is missing: " + path)
             continue
-        content = copied.read_bytes()
         if len(content) != item.size:
             errors.append("size mismatch: " + path)
         if hashlib.sha256(content).hexdigest() != item.sha256:
@@ -770,18 +836,56 @@ def _validate_copied_files(
             errors.append("copied file is not listed: " + path)
 
 
-def _validate_release_notes(
-    staging_path: Path, metadata: dict, record: SnapshotRecord, errors: List[str]
+def _staged_regular_files(
+    directory_descriptor: int, prefix: str, errors: List[str]
+) -> Dict[str, bytes]:
+    files: Dict[str, bytes] = {}
+    for name in sorted(os.listdir(directory_descriptor)):
+        relative = prefix + name
+        try:
+            entry_stat = os.stat(name, dir_fd=directory_descriptor, follow_symlinks=False)
+        except OSError:
+            errors.append("staged file could not be inspected: " + relative)
+            continue
+        if stat.S_ISREG(entry_stat.st_mode):
+            try:
+                files[relative] = _read_regular_file(directory_descriptor, name)
+            except SnapshotError:
+                errors.append("staged file could not be read: " + relative)
+            continue
+        if stat.S_ISDIR(entry_stat.st_mode):
+            try:
+                child_descriptor = os.open(
+                    name,
+                    os.O_RDONLY | _directory_flag() | _no_follow_flag(),
+                    dir_fd=directory_descriptor,
+                )
+            except OSError:
+                errors.append("staged directory could not be opened: " + relative)
+                continue
+            try:
+                files.update(_staged_regular_files(child_descriptor, relative + "/", errors))
+            finally:
+                os.close(child_descriptor)
+            continue
+        if not stat.S_ISLNK(entry_stat.st_mode):
+            errors.append("staged file is not regular: " + relative)
+    return files
+
+
+def _validate_release_notes_descriptor(
+    staging_descriptor: int, metadata: dict, record: SnapshotRecord, errors: List[str]
 ) -> None:
     release_metadata = metadata.get("release_notes")
-    release_path = staging_path / "release-notes.md"
     if release_metadata is None:
         if (
             record.release_notes_source_url is not None
             or record.release_notes_published_at is not None
+            or record.release_notes_sha256 is not None
+            or record.release_notes_size is not None
         ):
             errors.append("metadata mismatch for release_notes")
-        if release_path.exists() or release_path.is_symlink():
+        if _directory_entry_exists(staging_descriptor, "release-notes.md"):
             errors.append("release notes are present without manifest metadata")
         return
     if not isinstance(release_metadata, dict):
@@ -801,10 +905,19 @@ def _validate_release_notes(
         errors.append("metadata mismatch for release_notes.source_url")
     if release_metadata.get("published_at") != record.release_notes_published_at:
         errors.append("metadata mismatch for release_notes.published_at")
-    if not release_path.is_file() or release_path.is_symlink():
+    if release_metadata.get("sha256") != record.release_notes_sha256:
+        errors.append("metadata mismatch for release_notes.sha256")
+    if release_metadata.get("size") != record.release_notes_size:
+        errors.append("metadata mismatch for release_notes.size")
+    try:
+        content = _read_regular_file(staging_descriptor, "release-notes.md")
+    except SnapshotError:
         errors.append("release-notes.md is missing")
         return
-    content = release_path.read_bytes()
+    if record.release_notes_size != len(content):
+        errors.append("trusted release notes size mismatch")
+    if record.release_notes_sha256 != hashlib.sha256(content).hexdigest():
+        errors.append("trusted release notes hash mismatch")
     if release_metadata.get("size") != len(content):
         errors.append("release notes size mismatch")
     if release_metadata.get("sha256") != hashlib.sha256(content).hexdigest():
@@ -816,10 +929,34 @@ def _is_safe_relative_path(path: str) -> bool:
     return bool(path) and not candidate.is_absolute() and ".." not in candidate.parts and candidate.as_posix() == path
 
 
-def _existing_canonical(record: SnapshotRecord) -> Optional[Path]:
+def _existing_canonical(
+    record: SnapshotRecord, snapshot_root_descriptor: Optional[int] = None
+) -> Optional[Path]:
     if record.capture_kind != "canonical":
         return None
     snapshot_root = record.target_path.parent
+    if snapshot_root_descriptor is not None:
+        for name in sorted(os.listdir(snapshot_root_descriptor)):
+            if name == _LOCK_NAME:
+                continue
+            try:
+                directory_descriptor = os.open(
+                    name,
+                    os.O_RDONLY | _directory_flag() | _no_follow_flag(),
+                    dir_fd=snapshot_root_descriptor,
+                )
+            except OSError:
+                continue
+            try:
+                manifest = _read_regular_file(directory_descriptor, "snapshot.md").decode("utf-8")
+            except (OSError, UnicodeDecodeError, SnapshotError):
+                os.close(directory_descriptor)
+                continue
+            os.close(directory_descriptor)
+            metadata, error = _read_metadata(manifest)
+            if _matches_canonical_identity(metadata, error, record):
+                return snapshot_root / name
+        return None
     if not snapshot_root.is_dir():
         return None
     for manifest_path in sorted(snapshot_root.glob("*/snapshot.md")):
@@ -829,26 +966,40 @@ def _existing_canonical(record: SnapshotRecord) -> Optional[Path]:
             continue
         if error is not None or metadata is None:
             continue
-        repository, repository_found = _metadata_value(metadata, "repository.id")
-        sha, sha_found = _metadata_value(metadata, "ref.sha")
-        capture_kind, kind_found = _metadata_value(metadata, "capture_kind")
-        if (
-            repository_found
-            and sha_found
-            and kind_found
-            and repository == record.repo_id
-            and sha == record.ref.sha
-            and capture_kind == "canonical"
-        ):
+        if _matches_canonical_identity(metadata, error, record):
             return manifest_path.parent
     return None
 
 
-def _allocate_supplement(record: SnapshotRecord) -> SnapshotRecord:
+def _matches_canonical_identity(
+    metadata: Optional[dict], metadata_error: Optional[str], record: SnapshotRecord
+) -> bool:
+    if metadata is None or metadata_error is not None:
+        return False
+    repository, repository_found = _metadata_value(metadata, "repository.id")
+    sha, sha_found = _metadata_value(metadata, "ref.sha")
+    capture_kind, kind_found = _metadata_value(metadata, "capture_kind")
+    return (
+        repository_found
+        and sha_found
+        and kind_found
+        and repository == record.repo_id
+        and sha == record.ref.sha
+        and capture_kind == "canonical"
+    )
+
+
+def _allocate_supplement(
+    record: SnapshotRecord, snapshot_root_descriptor: Optional[int] = None
+) -> SnapshotRecord:
     snapshot_root = record.target_path.parent
     base = _SUPPLEMENT_SUFFIX.sub("", record.target_path.name)
     revision = 1
-    while (snapshot_root / (base + "-r" + str(revision))).exists():
+    while (
+        _directory_entry_exists(snapshot_root_descriptor, base + "-r" + str(revision))
+        if snapshot_root_descriptor is not None
+        else _path_exists_or_is_symlink(snapshot_root / (base + "-r" + str(revision)))
+    ):
         revision += 1
     updated = replace(
         record,
@@ -958,6 +1109,116 @@ def _no_follow_flag() -> int:
     return flag
 
 
+def _directory_flag() -> int:
+    flag = getattr(os, "O_DIRECTORY", None)
+    if flag is None:
+        raise SnapshotError("no-follow directory traversal is unavailable")
+    return flag
+
+
+def _open_collector_private_directory(path: Path, label: str) -> int:
+    """Open a collector namespace directory and reject shared writable parents."""
+    try:
+        descriptor = _open_directory_path_nofollow(path)
+    except OSError as error:
+        raise SnapshotError(label + " cannot be opened without following symlinks") from error
+    directory_stat = os.fstat(descriptor)
+    if (
+        not stat.S_ISDIR(directory_stat.st_mode)
+        or directory_stat.st_uid != os.geteuid()
+        or directory_stat.st_mode & (stat.S_IWGRP | stat.S_IWOTH)
+    ):
+        os.close(descriptor)
+        raise SnapshotError(label + " is not collector-private")
+    return descriptor
+
+
+def _open_directory_path_nofollow(path: Path) -> int:
+    """Open every absolute path component through no-follow directory descriptors."""
+    absolute = path.absolute()
+    if not absolute.is_absolute():
+        raise SnapshotError("directory path must be absolute")
+    descriptor = os.open("/", os.O_RDONLY | _directory_flag())
+    try:
+        for part in absolute.parts[1:]:
+            next_descriptor = os.open(
+                part,
+                os.O_RDONLY | _directory_flag() | _no_follow_flag(),
+                dir_fd=descriptor,
+            )
+            os.close(descriptor)
+            descriptor = next_descriptor
+        return descriptor
+    except Exception:
+        os.close(descriptor)
+        raise
+
+
+def _open_promotion_lock(snapshot_root_descriptor: int) -> int:
+    try:
+        descriptor = os.open(
+            _LOCK_NAME,
+            os.O_RDWR | os.O_CREAT | _no_follow_flag(),
+            0o600,
+            dir_fd=snapshot_root_descriptor,
+        )
+    except OSError as error:
+        raise SnapshotError("promotion lock file is a symlink or cannot be opened") from error
+    lock_stat = os.fstat(descriptor)
+    if not stat.S_ISREG(lock_stat.st_mode):
+        os.close(descriptor)
+        raise SnapshotError("promotion lock file is not a regular file or is a symlink")
+    return descriptor
+
+
+def _open_staged_directory(record: SnapshotRecord, staging_parent_descriptor: int) -> int:
+    try:
+        descriptor = os.open(
+            record.staging_path.name,
+            os.O_RDONLY | _directory_flag() | _no_follow_flag(),
+            dir_fd=staging_parent_descriptor,
+        )
+    except OSError as error:
+        raise SnapshotError("staged directory is missing or no longer original") from error
+    staging_stat = os.fstat(descriptor)
+    if (
+        not stat.S_ISDIR(staging_stat.st_mode)
+        or record.staging_device is None
+        or record.staging_inode is None
+        or (staging_stat.st_dev, staging_stat.st_ino)
+        != (record.staging_device, record.staging_inode)
+    ):
+        os.close(descriptor)
+        raise SnapshotError("staged directory is a symlink or no longer original")
+    return descriptor
+
+
+def _directory_entry_exists(directory_descriptor: int, name: str) -> bool:
+    try:
+        os.stat(name, dir_fd=directory_descriptor, follow_symlinks=False)
+    except FileNotFoundError:
+        return False
+    return True
+
+
+def _read_regular_file(directory_descriptor: int, name: str) -> bytes:
+    try:
+        descriptor = os.open(name, os.O_RDONLY | _no_follow_flag(), dir_fd=directory_descriptor)
+    except OSError as error:
+        raise SnapshotError("required staged file is missing or is a symlink: " + name) from error
+    try:
+        if not stat.S_ISREG(os.fstat(descriptor).st_mode):
+            raise SnapshotError("required staged file is not regular: " + name)
+        chunks = []
+        while True:
+            chunk = os.read(descriptor, 64 * 1024)
+            if not chunk:
+                return b"".join(chunks)
+            chunks.append(chunk)
+    finally:
+        os.close(descriptor)
+
+
 def _write_all(descriptor: int, content: bytes) -> None:
     offset = 0
     while offset < len(content):
@@ -977,46 +1238,8 @@ def _staging_stat(staging_path: Path) -> os.stat_result:
     return staging_stat
 
 
-def _staging_identity_error(record: SnapshotRecord) -> Optional[str]:
-    if record.staging_device is None or record.staging_inode is None:
-        return "staged directory identity is unavailable"
-    try:
-        directory_flag = getattr(os, "O_DIRECTORY", None)
-        if directory_flag is None:
-            return "no-follow staged directory validation is unavailable"
-        descriptor = os.open(
-            str(record.staging_path), os.O_RDONLY | directory_flag | _no_follow_flag()
-        )
-    except (OSError, SnapshotError):
-        return "staged directory is missing or no longer original"
-    try:
-        staging_stat = os.fstat(descriptor)
-        if (
-            not stat.S_ISDIR(staging_stat.st_mode)
-            or (staging_stat.st_dev, staging_stat.st_ino)
-            != (record.staging_device, record.staging_inode)
-        ):
-            return "staged directory is a symlink or no longer original"
-        return None
-    finally:
-        os.close(descriptor)
-
-
 def _path_exists_or_is_symlink(path: Path) -> bool:
     return path.exists() or path.is_symlink()
-
-
-def _remove_owned_lock(lock_path: Path, identity: Tuple[int, int]) -> None:
-    try:
-        lock_stat = os.lstat(str(lock_path))
-    except FileNotFoundError:
-        return
-    if (lock_stat.st_dev, lock_stat.st_ino) != identity:
-        return
-    try:
-        os.unlink(str(lock_path))
-    except FileNotFoundError:
-        pass
 
 
 def _clean_staging(record: SnapshotRecord) -> None:
