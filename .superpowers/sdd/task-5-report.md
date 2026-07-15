@@ -200,3 +200,53 @@ edcaacd6ddab4fcc7de001068ab854076fed1409 fix: reject matching incomplete release
 ### Concerns
 
 None.
+
+## Final Review Fix Evidence (2026-07-15)
+
+### RED
+
+Added regressions for build-qualified plain/package selectors, available
+historical versions, same-SHA and divergent-SHA aliases, and malformed
+`ls-remote` rows. Before the production change, the focused suite failed in
+the intended review areas:
+
+```text
+python3 -m unittest tests.test_github_releases -v
+Ran 29 tests in 1.381s
+FAILED (failures=8)
+```
+
+### GREEN
+
+- Build-qualified selectors now require the exact build identity, while
+  unqualified exact selectors retain SemVer precedence behavior.
+- Minor baselines include every available, in-scope `existing_versions` entry.
+- Semantic aliases deduplicate only when their commit SHAs agree; divergent
+  evidence raises an explicit release-evidence conflict.
+- Every `ls-remote --tags` row is validated, including 40-hex SHA-1 and
+  64-hex SHA-256 acceptance.
+
+```text
+python3 -m unittest tests.test_github_releases -v
+Ran 30 tests in 1.353s
+OK
+
+python3 -m unittest discover -s tests -v
+Ran 133 tests in 4.783s
+OK
+
+git diff --check
+exit 0
+```
+
+### Commit
+
+```text
+d4f9fcc fix: enforce github release evidence identity
+```
+
+### Concerns
+
+None. A standalone `py_compile` check could not write to the macOS Python
+cache under the sandbox, but the requested focused and full unittest commands
+compiled and passed.
