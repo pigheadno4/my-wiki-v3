@@ -147,3 +147,56 @@ exit 0
 ### Commit
 
 Commit message: `fix: scope incomplete github release tags`.
+
+## Final Incomplete-Major Fix Evidence (2026-07-15)
+
+### Root Cause
+
+The incomplete-tag predicate compared selector components even when the
+incomplete candidate did not provide them. As a result, `v9` and
+`@scope/widget@9` were incorrectly ignored by `v9.1` selectors because their
+missing minor component was treated as unequal.
+
+### RED
+
+Added focused plain and package regressions before the implementation change.
+The focused suite failed only because the matching incomplete-major candidates
+did not raise:
+
+```text
+python3 -m unittest tests.test_github_releases -v
+Ran 24 tests in 1.256s
+FAILED (failures=2)
+```
+
+### GREEN
+
+`_matches_incomplete` now compares only candidate components that are present,
+preserving the selector's existing wildcard behavior. Thus `v9` matches
+`v9.1`, while `v9.0` differs on its supplied minor component and is ignored.
+The package path has the same behavior within the selected package namespace;
+other namespaces remain ignored. Existing input-order, major-only, and
+minor-scoped regressions remain green.
+
+```text
+python3 -m unittest tests.test_github_releases -v
+Ran 24 tests in 1.189s
+OK
+
+python3 -m unittest discover -s tests -v
+Ran 127 tests in 4.677s
+OK
+
+git diff --check
+exit 0
+```
+
+### Commit
+
+```text
+edcaacd6ddab4fcc7de001068ab854076fed1409 fix: reject matching incomplete release majors
+```
+
+### Concerns
+
+None.
