@@ -1,13 +1,16 @@
 import hashlib
+import json
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from github_git import ResolvedRef  # noqa: E402
+from github_releases import ReleaseNotesEvidence  # noqa: E402
 from github_registry import RepoConfig  # noqa: E402
 from github_snapshot import (  # noqa: E402
     SnapshotError,
@@ -62,6 +65,15 @@ class GitHubSnapshotTests(unittest.TestCase):
         path = self.repo / relative
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(content)
+
+    def manifest_metadata(self, record):
+        manifest = (record.staging_path / "snapshot.md").read_text(encoding="utf-8")
+        start = manifest.index("```json\n") + len("```json\n")
+        end = manifest.index("\n```", start)
+        return json.loads(manifest[start:end])
+
+    def promotion_lock(self, record):
+        return record.target_path.parent / ".promotion.lock"
 
     def test_select_key_files_uses_sorted_policy_and_excludes_unreadable_candidates(self):
         self.write("README.md", b"readme\n")
@@ -176,14 +188,14 @@ class GitHubSnapshotTests(unittest.TestCase):
         manifest_path = record.staging_path / "snapshot.md"
         manifest_path.write_text(
             manifest_path.read_text(encoding="utf-8").replace(
-                "| Repository URL | https://github.com/paypal/paypal-js |\n", ""
+                '"url": "https://github.com/paypal/paypal-js"', '"url": ""'
             ),
             encoding="utf-8",
         )
 
         errors = validate_staged_snapshot(record)
 
-        self.assertTrue(any("missing required metadata: Repository URL" in error for error in errors))
+        self.assertTrue(any("metadata mismatch" in error for error in errors))
 
     def test_existing_target_without_matching_accepted_snapshot_is_rejected(self):
         self.write("README.md", b"snapshot\n")
@@ -233,6 +245,227 @@ class GitHubSnapshotTests(unittest.TestCase):
                 self.root / "staging",
                 "2026-07-14",
             )
+
+    def test_changed_public_path_reaches_built_snapshot(self):
+        self.write("src/public.js", b"export const value = 1;\n")
+
+        record = build_snapshot(
+            self.config(),
+            self.ref,
+            self.repo,
+            self.raw_root,
+            self.staging_root,
+            "2026-07-14",
+            changed_paths=("src/public.js",),
+        )
+
+        self.assertTrue((record.staging_path / "files/src/public.js").exists())
+
+    def test_symlink_and_parent_traversal_never_leave_checkout(self):
+        outside = self.repo.parent / "secret.txt"
+        outside.write_text("secret", encoding="utf-8")
+        (self.repo / "README.md").symlink_to(outside)
+
+        result = select_key_files(
+            self.config(key_paths=("../secret.txt",)),
+            self.repo,
+            changed_paths=("/tmp/secret.txt", "../secret.txt"),
+        )
+
+        self.assertEqual((), result.selected)
+        self.assertTrue(any(reason == "outside-checkout" for _, reason in result.excluded))
+        self.assertTrue(any(reason == "symlink is not allowed" for _, reason in result.excluded))
+
+    def test_release_notes_are_exact_top_level_evidence(self):
+        evidence = ReleaseNotesEvidence(
+            "https://api.github.test/release", "2026-07-14T00:00:00Z", b"# Exact notes\n"
+        )
+        self.write("README.md", b"snapshot\n")
+
+        record = build_snapshot(
+            self.config(),
+            self.ref,
+            self.repo,
+            self.raw_root,
+            self.staging_root,
+            "2026-07-14",
+            release_notes=evidence,
+        )
+
+        self.assertEqual(b"# Exact notes\n", (record.staging_path / "release-notes.md").read_bytes())
+        metadata = self.manifest_metadata(record)
+        self.assertEqual("https://api.github.test/release", metadata["release_notes"]["source_url"])
+        self.assertEqual([], validate_staged_snapshot(record))
+
+    def test_manifest_json_is_authoritative_and_escapes_pipe_filename_for_markdown(self):
+        self.write("docs/a|b.md", b"content\n")
+
+        record = build_snapshot(
+            self.config(key_paths=("docs/a|b.md",)),
+            self.ref,
+            self.repo,
+            self.raw_root,
+            self.staging_root,
+            "2026-07-14",
+        )
+
+        manifest = (record.staging_path / "snapshot.md").read_text(encoding="utf-8")
+        self.assertEqual("docs/a|b.md", self.manifest_metadata(record)["files"][0]["path"])
+        self.assertIn("docs/a\\|b.md", manifest)
+        self.assertEqual([], validate_staged_snapshot(record))
+
+    def test_validation_rejects_manifest_metadata_tampering(self):
+        self.write("README.md", b"snapshot\n")
+        record = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+        manifest_path = record.staging_path / "snapshot.md"
+        manifest_path.write_text(
+            manifest_path.read_text(encoding="utf-8").replace(self.ref.sha, "f" * len(self.ref.sha)),
+            encoding="utf-8",
+        )
+
+        errors = validate_staged_snapshot(record)
+
+        self.assertTrue(any("metadata mismatch" in error for error in errors))
+
+    def test_validation_rejects_unexpected_top_level_entries_and_diffs(self):
+        self.write("README.md", b"snapshot\n")
+        record = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+        (record.staging_path / "unexpected.txt").write_text("unexpected\n", encoding="utf-8")
+        (record.staging_path / "files" / "generated.diff").write_text("diff\n", encoding="utf-8")
+
+        errors = validate_staged_snapshot(record)
+
+        self.assertTrue(any("unexpected top-level entry" in error for error in errors))
+        self.assertTrue(any(".diff" in error for error in errors))
+
+    def test_validation_rejects_duplicate_metadata_and_tampered_release_notes(self):
+        evidence = ReleaseNotesEvidence("https://api.github.test/release", "2026-07-14T00:00:00Z", b"notes\n")
+        self.write("README.md", b"snapshot\n")
+        record = build_snapshot(
+            self.config(),
+            self.ref,
+            self.repo,
+            self.raw_root,
+            self.staging_root,
+            "2026-07-14",
+            release_notes=evidence,
+        )
+        (record.staging_path / "release-notes.md").write_bytes(b"changed\n")
+        manifest_path = record.staging_path / "snapshot.md"
+        metadata = self.manifest_metadata(record)
+        metadata["files"].append(metadata["files"][0])
+        manifest_path.write_text(
+            manifest_path.read_text(encoding="utf-8").replace(
+                json.dumps(self.manifest_metadata(record), indent=2, sort_keys=True),
+                json.dumps(metadata, indent=2, sort_keys=True),
+            ),
+            encoding="utf-8",
+        )
+
+        errors = validate_staged_snapshot(record)
+
+        self.assertTrue(any("listed more than once" in error for error in errors))
+        self.assertTrue(any("release notes hash mismatch" in error for error in errors))
+
+    def test_build_enforces_limits_against_copied_bytes(self):
+        self.write("README.md", b"small\n")
+
+        def copy_larger_bytes(source, destination):
+            Path(destination).write_bytes(b"x" * 9)
+
+        with mock.patch("github_snapshot.shutil.copyfile", side_effect=copy_larger_bytes):
+            with self.assertRaisesRegex(SnapshotError, "per-file byte limit"):
+                build_snapshot(
+                    self.config(max_file_bytes=8),
+                    self.ref,
+                    self.repo,
+                    self.raw_root,
+                    self.staging_root,
+                    "2026-07-14",
+                )
+        self.assertEqual([], list(self.staging_root.glob("snapshot-*")))
+
+    def test_lock_collision_preserves_foreign_lock_and_cleans_staging(self):
+        self.write("README.md", b"snapshot\n")
+        record = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+        lock = self.promotion_lock(record)
+        lock.parent.mkdir(parents=True)
+        lock.write_text("foreign", encoding="utf-8")
+
+        with self.assertRaisesRegex(SnapshotError, "promotion lock already exists"):
+            promote_snapshot(record)
+
+        self.assertTrue(lock.exists())
+        self.assertFalse(record.staging_path.exists())
+
+    def test_concurrent_supplements_allocate_distinct_revisions_while_locked(self):
+        self.write("README.md", b"snapshot\n")
+        first = build_snapshot(
+            self.config(),
+            self.ref,
+            self.repo,
+            self.raw_root,
+            self.staging_root,
+            "2026-07-14",
+            capture_kind="supplement",
+        )
+        second = build_snapshot(
+            self.config(),
+            self.ref,
+            self.repo,
+            self.raw_root,
+            self.staging_root,
+            "2026-07-14",
+            capture_kind="supplement",
+        )
+
+        first_path = promote_snapshot(first)
+        second_path = promote_snapshot(second)
+
+        self.assertTrue(first_path.name.endswith("-r1"))
+        self.assertTrue(second_path.name.endswith("-r2"))
+        second_manifest = (second_path / "snapshot.md").read_text(encoding="utf-8")
+        self.assertIn('"capture_revision": 2', second_manifest)
+
+    def test_failed_validation_or_target_collision_cleans_current_staging_and_lock(self):
+        self.write("README.md", b"snapshot\n")
+        invalid = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+        (invalid.staging_path / "files" / "README.md").write_bytes(b"tampered\n")
+
+        with self.assertRaisesRegex(SnapshotError, "invalid staged snapshot"):
+            promote_snapshot(invalid)
+
+        self.assertFalse(invalid.staging_path.exists())
+        self.assertFalse(self.promotion_lock(invalid).exists())
+
+        collision = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+        collision.target_path.mkdir(parents=True)
+        with self.assertRaisesRegex(SnapshotError, "target already exists"):
+            promote_snapshot(collision)
+        self.assertFalse(collision.staging_path.exists())
+
+    def test_replace_failure_cleans_current_staging_and_lock(self):
+        self.write("README.md", b"snapshot\n")
+        record = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+
+        with mock.patch.object(Path, "replace", side_effect=OSError("cross-device failure")):
+            with self.assertRaisesRegex(SnapshotError, "could not promote snapshot"):
+                promote_snapshot(record)
+
+        self.assertFalse(record.staging_path.exists())
+        self.assertFalse(self.promotion_lock(record).exists())
 
 
 if __name__ == "__main__":
