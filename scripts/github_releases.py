@@ -107,24 +107,25 @@ def select_release_candidates(
     """Apply a network-free, deterministic retention policy to release candidates."""
     if mode not in ("backfill", "future"):
         raise ReleaseSelectionError("unknown release selection mode " + mode)
+    if mode == "backfill" and track.backfill == "none":
+        return ()
+    if mode == "future" and track.future == "none":
+        return ()
+
     package_name, target = _track_scope(track)
     eligible = _deduplicated_candidates(
         candidate
         for candidate in candidates
         if _candidate_matches_track(candidate, package_name, target, track)
     )
-    pinned = _pinned_candidates(track, eligible)
 
     if mode == "future":
-        if track.future == "none":
-            return ()
         if track.future != "all-stable":
             raise ReleaseSelectionError("unknown future policy " + track.future)
         existing = _version_keys(existing_versions)
         return tuple(candidate for candidate in eligible if _version_key(candidate.version) not in existing)
 
-    if track.backfill == "none":
-        return ()
+    pinned = _pinned_candidates(track, eligible)
     if track.backfill == "all-stable":
         return eligible
     if track.backfill != "minor-baselines":
@@ -144,10 +145,8 @@ def select_release_candidates(
         selected[_version_key(candidate.version)] = candidate
     for candidate in pinned:
         selected[_version_key(candidate.version)] = candidate
-    existing = _version_keys(existing_versions)
-    for candidate in eligible:
-        if _version_key(candidate.version) in existing:
-            selected[_version_key(candidate.version)] = candidate
+    for candidate in _existing_candidates(track, existing_versions, eligible):
+        selected[_version_key(candidate.version)] = candidate
     return tuple(sorted(selected.values(), key=cmp_to_key(_compare_candidates)))
 
 
@@ -333,6 +332,21 @@ def _pinned_candidates(
         match = next((candidate for candidate in candidates if _version_key(candidate.version) == key), None)
         if match is None:
             raise ReleaseSelectionError("missing pinned version " + pinned + " for " + track.selector)
+        selected.append(match)
+    return tuple(selected)
+
+
+def _existing_candidates(
+    track: VersionTrack,
+    existing_versions: Sequence[str],
+    candidates: Sequence[ReleaseCandidate],
+) -> Tuple[ReleaseCandidate, ...]:
+    selected = []
+    for existing in existing_versions:
+        key = _version_key(existing)
+        match = next((candidate for candidate in candidates if _version_key(candidate.version) == key), None)
+        if match is None:
+            raise ReleaseSelectionError("missing existing version " + existing + " for " + track.selector)
         selected.append(match)
     return tuple(selected)
 

@@ -154,6 +154,25 @@ class GitHubReleasesTests(unittest.TestCase):
 
         self.assertEqual((), selected)
 
+    def test_disabled_backfill_skips_unavailable_historical_pins_and_existing_versions(self):
+        selected = select_release_candidates(
+            self._track(backfill="none", pinned_versions=("9.0.1",)),
+            self._candidates("9.0.0"),
+            existing_versions=("9.0.2",),
+        )
+
+        self.assertEqual((), selected)
+
+    def test_disabled_future_skips_unavailable_historical_pins_and_existing_versions(self):
+        selected = select_release_candidates(
+            self._track(future="none", pinned_versions=("9.0.1",)),
+            self._candidates("9.0.0"),
+            existing_versions=("9.0.2",),
+            mode="future",
+        )
+
+        self.assertEqual((), selected)
+
     def test_build_metadata_versions_keep_distinct_release_identities(self):
         candidates = self._candidates("9.0.0", "9.0.0+build.1", "9.0.0+build.2")
 
@@ -220,6 +239,14 @@ class GitHubReleasesTests(unittest.TestCase):
         )
 
         self.assertEqual(("9.0.0", "9.0.1", "9.0.2"), tuple(item.version for item in selected))
+
+    def test_minor_baselines_reject_unavailable_existing_versions(self):
+        with self.assertRaisesRegex(ReleaseSelectionError, "9.0.1"):
+            select_release_candidates(
+                self._track(backfill="minor-baselines"),
+                self._candidates("9.0.0"),
+                existing_versions=("9.0.1",),
+            )
 
     def test_semantic_aliases_on_the_same_commit_deduplicate(self):
         aliases = (
