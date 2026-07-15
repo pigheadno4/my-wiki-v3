@@ -8,11 +8,16 @@
 
 This is the single most important rule. Batching produces shallow summaries, missed details, and malformed pages. It was confirmed in smoke testing: **no batch, process one by one, read the full raw content, then ingest.**
 
+For GitHub, one source cycle means one approved baseline, delta, or comparison
+packet. Read the packet, every referenced snapshot manifest, and every file in
+its required reading set in full before writing wiki content. Do not claim to
+have read the whole upstream repository.
+
 ## MANDATORY setup
 
 > Use `TodoWrite` to create **one todo item per step below** before starting any work. Mark each item completed as you finish it — never batch completions. The **concept audit (step 2) must be completed and marked done before any other page is created.**
 
-1. **Read the full raw file.** Open the entire raw file (for GitHub stubs, read the stub + the relevant saved excerpts per `github-repos.md`). Do not summarize from a partial read.
+1. **Read the full raw file.** Open the entire raw file. For GitHub, read the approved packet, every referenced snapshot manifest, and every required raw file per `github-repos.md`. Do not summarize from a partial read.
    - **Grounding gate:** before writing anything, extract **3–5 verbatim quotes** (with their location in the raw file) that the summary will rest on. This forces grounding and cuts hallucination — especially important on cheaper models.
 
 ## Phase 2 — Wiki ingest (after Phase 1 raw file is approved)

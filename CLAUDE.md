@@ -24,7 +24,7 @@ my-wiki/
 │   │   ├── paypal.md
 │   │   ├── adyen.md
 │   │   └── metronome.md
-│   ├── github-repos.md        # GitHub repo ingest (stub + detail dir + deep-dive fallback)
+│   ├── github-repos.md        # versioned GitHub repository collection and packet ingest workflow
 │   ├── ingest.md              # raw → wiki pages (NO-BATCH, concept-audit-first, templates)
 │   ├── lint.md                # wiki health, orphan ingest queue, validate_wiki.py
 │   └── query-and-synthesis.md # answer queries → comparison/analysis filing
@@ -33,16 +33,23 @@ my-wiki/
 │   ├── collection_discovery.py # multi-source discovery reconciliation
 │   ├── collection_versions.py # immutable nested raw version comparison
 │   ├── collection_reporting.py # run records and generated monitor
+│   ├── collect_github_repos.py # GitHub collection, comparison, packet, and status CLI
 │   ├── psp_config.toml        # PSP registry (extensible: add a row per new PSP)
+│   ├── validate_github_collection.py # GitHub snapshot, packet, and status validator
 │   └── validate_wiki.py       # deterministic guardrail (frontmatter/links/placeholders)
 ├── raw/               # immutable source documents (verbatim, never modified or summarized)
 │   ├── assets/                # downloaded images/video referenced by sources
 │   ├── metronome/             # provider capsule preserving documentation paths
 │   ├── <slug>-YYYY-MM-DD.md   # dated raw file (new files carry a collection date)
-│   ├── <repo-slug>.md         # GitHub repo stub file — lint anchor + metadata
-│   └── <repo-slug>/           # GitHub repo key excerpts
+│   └── github/                # immutable GitHub snapshots, grouped by company and repository
+│       └── <company>/<repo>/snapshots/<capture-id>/
+│           ├── snapshot.md    # repository-owned snapshot manifest
+│           └── files/         # exact selected upstream files
 ├── tracking/
-│   └── collections/           # generated inventories, run records, diffs, and status
+│   ├── collections/           # generated inventories, run records, diffs, and status
+│   └── github/                # repo-registry plus generated GitHub runs, packets, diffs, and status
+│       ├── repo-registry.toml # human-maintained collection intent
+│       └── repos/<company>/<repo>/
 ├── wiki/              # LLM-generated pages (you own this layer)
 │   ├── index.md               # ROOT catalog: PSP list + comparisons + analyses + generic concepts + overview
 │   ├── <psp>-index.md         # per-PSP catalog: that PSP's sources + company + platform concepts
@@ -54,7 +61,9 @@ my-wiki/
 │   ├── concepts/              # industry concepts, regulations, trends
 │   ├── comparisons/           # side-by-side company comparisons
 │   ├── analyses/              # filed query results and syntheses
+│   │   └── <company>/github/  # company-first GitHub version analyses
 │   └── sources/               # source summary pages
+│       └── <company>/github/  # company-first stable GitHub source pages
 └── llm-wiki-idea.md   # reference — the pattern this wiki follows
 ```
 
@@ -180,6 +189,7 @@ tags: [<relevant tags>]
 - **New raw files carry a collection date**: `raw/<slug>-YYYY-MM-DD.md`. The pre-existing undated files are the baseline and migrate to dated naming naturally when re-collected.
 - Always create the raw file(s) **before** the source summary.
 - `raw_files:` lists filenames relative to `raw/`, newest dated version first.
+- GitHub evidence uses immutable snapshots under `raw/github/<company>/<repo>/snapshots/`; the snapshot manifest and exact upstream files stay in `raw/`, while generated diffs, summaries, status, and packets stay in `tracking/github/`.
 
 ## Workflow Index
 
@@ -189,7 +199,8 @@ tags: [<relevant tags>]
 | --- | --- | --- |
 | Collect raw content (manual) | user pastes text, gives a URL, or attaches images | `rules/raw-collection.md` |
 | Collect raw content (PSP bulk) | grabbing many pages from a PSP's docs (Stripe/PayPal/Adyen/…) | `rules/psp-collection.md` + `rules/psp/<psp>.md` |
-| Ingest a GitHub repo | a repo URL, or an orphan `raw/<repo-slug>.md` / `raw/<repo-slug>/` | `rules/github-repos.md` |
+| Collect or prepare a GitHub repository | registry row, repository URL, snapshot, or packet | `rules/github-repos.md` |
+| Ingest an approved GitHub packet | one approved baseline, delta, or comparison packet | `rules/github-repos.md` + `rules/ingest.md` |
 | **Ingest a raw file → wiki pages** | any raw file ready to become wiki pages | `rules/ingest.md` ⚠️ **ONE SOURCE AT A TIME — NEVER BATCH** |
 | Lint the wiki | periodic health check, orphan sweep, accuracy/staleness | `rules/lint.md` |
 | Answer / compare / analyze | a question, comparison, or cross-cutting synthesis | `rules/query-and-synthesis.md` |

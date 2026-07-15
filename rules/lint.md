@@ -27,8 +27,8 @@ Raw files are NEVER modified — they are immutable source documents.
 
 Find raw files with no reference in any wiki source page. This is the primary mechanism for catching files added directly to `raw/` — **including everything the PSP fetcher drops in** (see `psp-collection.md`).
 
-- How: list all **top-level files** in `raw/` (i.e., `raw/*.md` — not files inside subdirectories or `raw/assets/`). For each, search `wiki/sources/` for its filename in `raw_files:` frontmatter. If not found anywhere, it's an orphan. This works uniformly for all source types and for dated filenames — GitHub repo stub files are detected the same way.
-- Also check for orphan **subdirectories** in `raw/` that lack a corresponding stub file (e.g., `raw/github-stripe-node/` exists but `raw/github-stripe-node.md` does not) — these need the stub file created first, then linked via ingest.
+- How: list all **top-level files** in `raw/` (i.e., `raw/*.md` — not files inside subdirectories or `raw/assets/`). For each, search `wiki/sources/` for its filename in `raw_files:` frontmatter. If not found anywhere, it's an orphan. This covers dated raw files and legacy flat GitHub stubs.
+- Also check legacy detail subdirectories in `raw/` that lack their corresponding legacy stub file (e.g., `raw/github-stripe-node/` exists but `raw/github-stripe-node.md` does not). New nested GitHub snapshots under `raw/github/` are validated separately below.
 - Triage: present all orphan raw files as a numbered list. For each, propose one of:
   - **Link**: attach to an existing related source page (prepend to `raw_files:` newest-first + add content to the page body).
   - **New**: create a new source page via the ingest workflow.
@@ -46,6 +46,16 @@ python3 scripts/validate_metronome_capsule.py
 ```
 
 The command recursively reconciles `raw/metronome/` against `wiki/sources/metronome/`. Pending orphan paths are the expected ingest queue and do not make the command fail. Duplicate canonical URLs, missing raw versions, disagreement between `raw_files:` and `## Raw Sources`, index drift, or an incorrect company `source_count` are structural errors and return a nonzero exit code.
+
+#### Nested GitHub repository snapshots
+
+For GitHub repository evidence and generated tracking state, run:
+
+```bash
+python3 scripts/validate_github_collection.py
+```
+
+The command validates `raw/github/` immutable snapshots and `tracking/github/` generated registry state, packets, indexes, and dashboards. It checks nested orphan snapshots, raw/tracking boundaries, manifest coverage, source-page identity, newest-first snapshot anchors, and packet/status agreement. Awaiting-review packets are the expected GitHub ingest queue; structural contract errors return a nonzero exit code.
 
 ### b. Accuracy spot-checks
 

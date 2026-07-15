@@ -497,6 +497,10 @@ Integration smoke tests use one small public pilot repository only after fixture
 
 Validator tests cover nested `raw_files:` paths, path-qualified `snapshot.md` wikilinks, orphan snapshot detection, source-page identity, newest-first snapshot ordering, and agreement between packet state and dashboards.
 
+## Workflow State
+
+This remains an **Approved design**. Task 1 locks the repository workflow contracts in the root routing and standalone rules; it does not imply that registry, collector, packet, validator, or migration implementation is complete.
+
 ## Implementation Sequence
 
 1. Update the root directory map and keep `rules/github-repos.md` as the standalone GitHub workflow.
