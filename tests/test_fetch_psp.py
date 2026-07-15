@@ -11,6 +11,14 @@ import fetch_psp  # noqa: E402
 
 
 class FetchPspTests(unittest.TestCase):
+    def test_load_config_uses_shared_toml_loader(self):
+        expected = {"stripe": {"host": "docs.stripe.com"}}
+
+        with patch("fetch_psp.load_toml", return_value=expected) as load_toml:
+            self.assertIs(expected, fetch_psp.load_config())
+
+        load_toml.assert_called_once_with(fetch_psp.CONFIG)
+
     def test_metronome_relative_page_path(self):
         self.assertEqual(
             fetch_psp.relative_page_path(
