@@ -66,10 +66,10 @@ Expected successful coverage after all five cycles: 10 source summaries ingested
 - Consumes: version-3 job validator and the fixed corpus above.
 - Produces: reproducible Luna/high jobs whose only allowed write path is their own run directory.
 
-- [ ] Create one `real_ingest` Luna/high job for each fixed-corpus page with exact canonical URL, raw path, source target, artifact directory, and forbidden shared files.
-- [ ] Record fixed order, page type, acceptance gates, 900-second fail-fast limit, and the rule that no later cycle starts before the current canonical commit.
-- [ ] Validate every job with `python3 scripts/validate_metronome_ingest.py --job <path>`.
-- [ ] Commit with message `docs: define luna expansion jobs`.
+- [x] Create one `real_ingest` Luna/high job for each fixed-corpus page with exact canonical URL, raw path, source target, artifact directory, and forbidden shared files.
+- [x] Record fixed order, page type, acceptance gates, 900-second fail-fast limit, and the rule that no later cycle starts before the current canonical commit.
+- [x] Validate every job with `python3 scripts/validate_metronome_ingest.py --job <path>`.
+- [x] Commit with message `docs: define luna expansion jobs`.
 
 ### Task 3: Cycle 1 - ASC 606 Revenue Recognition
 
@@ -78,12 +78,14 @@ Expected successful coverage after all five cycles: 10 source summaries ingested
 - Create: `wiki/sources/metronome/source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition.md`
 - Update as required: `wiki/concepts/metronome/*.md`, `wiki/companies/metronome.md`, `wiki/metronome-index.md`, `wiki/metronome-log.md`, `wiki/log.md`
 
-- [ ] Read all 555 raw lines and record 3-5 exact grounding quotes.
-- [ ] Complete and record the concept audit before creating the source.
-- [ ] Run the Luna worker and preserve its receipt, output, and draft.
-- [ ] Have Sol review every material section, correct taxonomy and claims, check contradictions, and promote only the approved canonical page.
-- [ ] Validate touched pages, the final receipt, and capsule reconciliation at 6 ingested / 219 pending.
-- [ ] Commit the complete cycle.
+**Outcome:** Luna failed the fixed 900-second throughput gate without producing structured output. The validated failure evidence is committed as `030647d`; Sol correctly promoted nothing and coverage remains 5 ingested / 220 pending.
+
+- [x] Read all 555 raw lines and record candidate grounding regions.
+- [x] Complete the concept audit; identify `revenue-recognition` as a generic concept gap, but defer creation because there is no accepted source draft.
+- [x] Run the Luna worker and preserve its separate sandbox-preflight and real 900-second timeout receipts.
+- [x] Confirm no model output or draft exists, so Sol review and canonical promotion are not applicable.
+- [x] Validate the failed worker receipt and capsule reconciliation at 5 ingested / 220 pending.
+- [x] Commit and independently review the no-promotion failure cycle.
 
 ### Task 4: Cycle 2 - Enterprise Commit
 
