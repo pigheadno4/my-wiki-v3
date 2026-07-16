@@ -173,6 +173,7 @@ def build_snapshot(
     staging_path = Path(tempfile.mkdtemp(prefix="snapshot-", dir=str(staging_root)))
     staging_stat = _staging_stat(staging_path)
     files_root = staging_path / "files"
+    files_root.mkdir(parents=True, exist_ok=True)
     snapshot_files: List[SnapshotFile] = []
     copied_total = 0
 

@@ -311,6 +311,45 @@ class GitHubSnapshotTests(unittest.TestCase):
         self.assertEqual("https://api.github.test/release", metadata["release_notes"]["source_url"])
         self.assertEqual([], validate_staged_snapshot(record))
 
+    def test_empty_selection_creates_files_directory_and_promotes(self):
+        record = build_snapshot(
+            self.config(key_paths=("missing.md",)),
+            self.ref,
+            self.repo,
+            self.raw_root,
+            self.staging_root,
+            "2026-07-14",
+        )
+
+        self.assertEqual((), record.files)
+        self.assertTrue((record.staging_path / "files").is_dir())
+        self.assertEqual([], validate_staged_snapshot(record))
+        promoted = promote_snapshot(record)
+        self.assertTrue((promoted / "files").is_dir())
+        self.assertEqual([], list((promoted / "files").iterdir()))
+
+    def test_release_notes_only_capture_validates_promotes_and_preserves_exact_bytes(self):
+        evidence = ReleaseNotesEvidence(
+            "https://api.github.test/release", "2026-07-14T00:00:00Z", b"# Exact notes\n| raw |\n"
+        )
+        record = build_snapshot(
+            self.config(key_paths=("missing.md",)),
+            self.ref,
+            self.repo,
+            self.raw_root,
+            self.staging_root,
+            "2026-07-14",
+            release_notes=evidence,
+        )
+
+        self.assertEqual((), record.files)
+        self.assertTrue((record.staging_path / "files").is_dir())
+        self.assertEqual(evidence.content, (record.staging_path / "release-notes.md").read_bytes())
+        self.assertEqual([], validate_staged_snapshot(record))
+        promoted = promote_snapshot(record)
+        self.assertEqual(evidence.content, (promoted / "release-notes.md").read_bytes())
+        self.assertTrue((promoted / "files").is_dir())
+
     def test_manifest_json_is_authoritative_and_escapes_pipe_filename_for_markdown(self):
         self.write("docs/a|b.md", b"content\n")
 
