@@ -1,0 +1,256 @@
+{
+  "job_id": "pilot-luna-design-usage-events-shadow",
+  "raw_path": "raw/metronome/guides/events/design-usage-events-2026-07-13.md",
+  "canonical_url": "https://docs.metronome.com/guides/events/design-usage-events",
+  "title": "Design usage events",
+  "grounding_quotes": [
+    {
+      "id": "q1",
+      "line_start": 11,
+      "line_end": 17,
+      "text": "Success with Metronome depends on the data you provide, so it's important to properly design your usage events. Follow these three principles:\n\n* Work backward from what you *need*\n* Work forward from what you *have*\n* Maximize your flexibility\n\nThis guide uses a hypothetical scenario where you're a developer at a Content Delivery Network (CDN) and you've been tasked with integrating your system into Metronome to support usage-based billing.",
+      "supports": "Overview, the three design principles, and the hypothetical CDN usage-based billing context."
+    },
+    {
+      "id": "q2",
+      "line_start": 21,
+      "line_end": 39,
+      "text": "Start with your existing requirements or an ideal invoice and work backward from there. In the case of a CDN, your company charges customers based on their monthly data usage. However, the exact pricing details are unknown. This is fine as pricing can be applied and adjusted later as long as the required metrics are in place.\n\nAn additional consideration is that your customer support team wants to take advantage of Metronome as a real-time data platform to notify customers when there's an unusual spike in traffic for their sites.\n\nFor both invoicing and notifications, you need to measure data transfer, so the bare minimum usage event looks like:\n\n```json theme={null}\n{  \n  \"event_type\": \"transfer\",  \n  \"properties\": {  \n    \"bytes\": \"1234\",  \n  },  \n  \"transaction_id\": \"...\",  \n  \"customer_id\": \"...\",  \n  \"timestamp\": \"...\"  \n}\n```\n\nThis supports a billable metric like \"sum of `bytes` for all events of type `transfer` (for a given customer, for a given billing period).\"",
+      "supports": "Backward design, deferred pricing, notification needs, the minimum event fields, and the example billable metric."
+    },
+    {
+      "id": "q3",
+      "line_start": 45,
+      "line_end": 52,
+      "text": "* **When to send events** Your system could track total data transfer internally and send an incremental per-customer summary to Metronome. Or you could send Metronome an event every time a web page is served. Both options provide the same invoicing ability at the end of each month, which route you choose depends upon your needs.\n* **What data to include** There's a lot more information to potentially include in usage events. For example, you could include which data center served the page, what domain was hosted, the type of file, or even what URL was accessed. None of this is immediately necessary for invoicing, but it could be useful for your own records.\n\nThe timing and content of usage events are often heavily influenced by what is available in your existing system. At your hypothetical CDN company, imagine that you perform global log aggregation with Apache Flume. In this case, there's a central data store with detailed access logs available, making it easy to send those log messages to Metronome in the form of individual usage events as they arrive.\n\nNow imagine that you don't have such global aggregation. Instead, each data center keeps its own independent log and sends hourly summaries back to the central data store, broken down by domain. Each data center must send usage events directly to Metronome, but unfortunately the code there doesn't have access to the customer database, so the data center can't determine what `customer_id` to fill in for each event. In this case, the hourly summaries are probably the best option. From the central location, it's easy to look up the owner of each domain and provide the appropriate `customer_id`.\n\nBefore deciding to send the hourly summaries, you check back with the customer support team about those traffic spike notifications they wanted. They assure you that the hourly cadence is fast enough for the notifications they want to send.",
+      "supports": "Event timing and content choices, existing-system constraints, hourly summaries, customer ID lookup, and notification cadence."
+    },
+    {
+      "id": "q4",
+      "line_start": 56,
+      "line_end": 78,
+      "text": "Business needs evolve over time. Rather than attempting to anticipate all future requirements, focus on creating a flexible system that can easily adapt to changes.\n\nIn Metronome, flexibility is maximized when you **send as much data as possible**. Metronome's stream pipeline can handle high event throughput, and irrelevant data is discarded during processing. This means there's no downside to sending information that isn't going to be used right away.\n\nThere is, however, a big upside to sending extra information. Suppose that your hypothetical CDN company starts getting feedback from customers that they don't understand their bills. Many customers are responsible for more than one domain and would like to be able to see how much each domain is contributing to their total usage. As the assigned developer, your executives ask you to fix this.\n\nIf your usage event didn't include the domain, you'd need to go back to your code and add it. But you chose to send as much data as possible, so it's already there:\n\n```json theme={null}\n{  \n  \"event_type\": \"transfer\",  \n  \"properties\": {  \n    \"domain\": \"www.example.com\",  \n    \"data_center\": \"US-WEST-3\",  \n    \"bytes\": \"12345789\",  \n  },  \n  \"transaction_id\": \"...\",  \n  \"customer_id\": \"...\",  \n  \"timestamp\": \"...\"  \n}\n```\n\nAll you need to do is query the Metronome API for usage data grouped by `domain`. And your customers are happy with the new breakdown on their invoices.",
+      "supports": "Flexibility strategy, extra event data, the domain breakdown example, and grouping usage data by domain."
+    },
+    {
+      "id": "q5",
+      "line_start": 80,
+      "line_end": 88,
+      "text": "As time passes and your customer base grows, the finance team discovers a worrisome problem. Your company has been billing customers based on their total data transfer, but your bandwidth costs are different in different parts of the world. In some cases, you're actually losing money by undercharging for data transfer in certain regions.\n\nAs before, if your usage events didn't include information about where the data transfer occurred, you'd have to go back into your code and add it. But because you already decided to send as much data as possible, there's a `data_center` field that will work. Billable metrics in Metronome can filter usage events in a variety of ways, so you are able to use a mapping of data center names to regions to define a new billable metric for each region. Going forward, you can bill based on those new metrics, where you can set individual prices for each region.\n\n<Warning>\n  **BILLABLE METRICS ARE NOT RETROACTIVE**\n\n  Metronome operates on streams; changes you make only affect future data collection and aggregation. New billable metrics cannot be applied to historical data.\n</Warning>",
+      "supports": "Regional billing through data-center fields and the non-retroactivity warning for billable metrics."
+    }
+  ],
+  "overview": "This guide explains how to design Metronome usage events for usage-based billing, using a hypothetical CDN integration and three principles: work backward from needs, work forward from available data, and maximize flexibility.",
+  "overview_evidence_quote_ids": [
+    "q1"
+  ],
+  "key_takeaways": [
+    {
+      "text": "Design usage events by starting from existing requirements or an ideal invoice; pricing can be applied or adjusted later if the required metrics are present.",
+      "evidence_quote_ids": [
+        "q2"
+      ]
+    },
+    {
+      "text": "For invoicing and traffic-spike notifications, the minimum event measures data transfer and includes event type, bytes, transaction ID, customer ID, and timestamp.",
+      "evidence_quote_ids": [
+        "q2"
+      ]
+    },
+    {
+      "text": "Choose event timing and content according to business needs and available system data; incremental summaries and per-page events can provide the same monthly invoicing ability.",
+      "evidence_quote_ids": [
+        "q3"
+      ]
+    },
+    {
+      "text": "Send as much data as possible so later invoice breakdowns and regional pricing can use fields such as domain and data_center.",
+      "evidence_quote_ids": [
+        "q4",
+        "q5"
+      ]
+    },
+    {
+      "text": "Billable metrics are stream-based and are not retroactive; changes affect future collection and aggregation only.",
+      "evidence_quote_ids": [
+        "q5"
+      ]
+    }
+  ],
+  "details": [
+    {
+      "heading": "Design usage events",
+      "facts": [
+        {
+          "text": "The guide frames usage-event design as important because Metronome success depends on the data provided, and it applies the discussion to a hypothetical CDN integration for usage-based billing.",
+          "evidence_quote_ids": [
+            "q1"
+          ]
+        },
+        {
+          "text": "The guide establishes three principles: work backward from what is needed, work forward from what is available, and maximize flexibility.",
+          "evidence_quote_ids": [
+            "q1"
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Work backward from what you need​",
+      "facts": [
+        {
+          "text": "Start from existing requirements or an ideal invoice. Exact pricing may be unknown initially and can be applied or adjusted later if required metrics are in place.",
+          "evidence_quote_ids": [
+            "q2"
+          ]
+        },
+        {
+          "text": "The CDN example needs data transfer for both invoicing and unusual-traffic notifications.",
+          "evidence_quote_ids": [
+            "q2"
+          ]
+        },
+        {
+          "text": "The bare-minimum example contains event_type, a bytes property, transaction_id, customer_id, and timestamp, and supports summing bytes for transfer events by customer and billing period.",
+          "evidence_quote_ids": [
+            "q2"
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Work forward from what you have​",
+      "facts": [
+        {
+          "text": "Consider available data and how it may support future needs, including event timing and additional contextual fields such as data center, domain, file type, and URL.",
+          "evidence_quote_ids": [
+            "q3"
+          ]
+        },
+        {
+          "text": "Sending incremental per-customer summaries or sending an event for every served page can provide the same month-end invoicing ability; the choice depends on needs.",
+          "evidence_quote_ids": [
+            "q3"
+          ]
+        },
+        {
+          "text": "Existing-system architecture influences timing and content: centralized Apache Flume logs support individual events as logs arrive, while independent data-center logs without customer-database access favor hourly domain summaries with central customer lookup.",
+          "evidence_quote_ids": [
+            "q3"
+          ]
+        },
+        {
+          "text": "The hypothetical customer-support team confirms that an hourly cadence is fast enough for its desired traffic-spike notifications.",
+          "evidence_quote_ids": [
+            "q3"
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Maximize your flexibility​",
+      "facts": [
+        {
+          "text": "Because business needs evolve, the guide recommends creating a flexible system that can adapt rather than attempting to anticipate every future requirement.",
+          "evidence_quote_ids": [
+            "q4"
+          ]
+        },
+        {
+          "text": "Metronome flexibility is maximized by sending as much data as possible; the stream pipeline handles high throughput and discards irrelevant data during processing.",
+          "evidence_quote_ids": [
+            "q4"
+          ]
+        },
+        {
+          "text": "Including domain enables querying Metronome usage data grouped by domain for invoice breakdowns.",
+          "evidence_quote_ids": [
+            "q4"
+          ]
+        },
+        {
+          "text": "Including data_center enables filtering usage events, mapping data centers to regions, defining regional billable metrics, and setting individual regional prices.",
+          "evidence_quote_ids": [
+            "q5"
+          ]
+        },
+        {
+          "text": "New billable metrics cannot be applied to historical data because stream changes affect only future data collection and aggregation.",
+          "evidence_quote_ids": [
+            "q5"
+          ]
+        }
+      ]
+    }
+  ],
+  "sections_covered": [
+    "Design usage events",
+    "Work backward from what you need​",
+    "Work forward from what you have​",
+    "Maximize your flexibility​"
+  ],
+  "scope_boundaries": [
+    {
+      "text": "The guide illustrates its recommendations through a hypothetical CDN integration scenario focused on usage-based billing and related notifications.",
+      "evidence_quote_ids": [
+        "q1",
+        "q2"
+      ]
+    }
+  ],
+  "conditional_requirements": [
+    {
+      "text": "Pricing can be applied or adjusted later only when the required metrics are in place.",
+      "evidence_quote_ids": [
+        "q2"
+      ]
+    },
+    {
+      "text": "Supporting both invoicing and notifications requires measuring data transfer; the example minimum event includes event_type, bytes, transaction_id, customer_id, and timestamp.",
+      "evidence_quote_ids": [
+        "q2"
+      ]
+    },
+    {
+      "text": "The choice between incremental summaries and per-page events depends on the system's needs, although both support the same month-end invoicing ability.",
+      "evidence_quote_ids": [
+        "q3"
+      ]
+    },
+    {
+      "text": "When data centers lack access to the customer database and global aggregation is unavailable, hourly domain summaries with central customer lookup are presented as the best option in the example.",
+      "evidence_quote_ids": [
+        "q3"
+      ]
+    },
+    {
+      "text": "The hourly summary cadence is acceptable for notifications because customer support confirms it is fast enough for the desired notifications.",
+      "evidence_quote_ids": [
+        "q3"
+      ]
+    },
+    {
+      "text": "If domain or data-center information is omitted, later invoice breakdowns or regional pricing require returning to the code to add that information.",
+      "evidence_quote_ids": [
+        "q4",
+        "q5"
+      ]
+    }
+  ],
+  "feature_gates": [],
+  "internal_inconsistencies": [],
+  "material_omissions": [],
+  "suggested_tags": [
+    "Metronome",
+    "usage events",
+    "usage-based billing",
+    "billable metrics"
+  ],
+  "suggested_metronome_concepts": [
+    "metronome-usage-events",
+    "metronome-billable-metrics",
+    "metronome-stream-pipeline"
+  ],
+  "proposed_raw_link": "[[raw/metronome/guides/events/design-usage-events-2026-07-13|Design usage events]]",
+  "unsupported_claim_self_check": []
+}
