@@ -2,7 +2,9 @@
 
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
+import fcntl
 import json
+import os
 from pathlib import Path
 import sys
 import tempfile
@@ -20,7 +22,11 @@ from github_git import RepoInspection, ResolvedRef  # noqa: E402
 from github_packets import PacketError, PacketRecord, VersionEntry, VersionIndex  # noqa: E402
 from github_registry import RepoConfig, VersionTrack  # noqa: E402
 from github_releases import ReleaseCandidate, ReleaseNotesEvidence  # noqa: E402
-from github_snapshot import SnapshotRecord  # noqa: E402
+from github_snapshot import (  # noqa: E402
+    SnapshotPromotionResult,
+    SnapshotPromotionToken,
+    SnapshotRecord,
+)
 
 
 class CollectGitHubReposTests(unittest.TestCase):
@@ -380,7 +386,8 @@ class CollectGitHubReposTests(unittest.TestCase):
         ), mock.patch("collect_github_repos.run_git"), mock.patch(
             "collect_github_repos.load_version_index", return_value=index
         ), mock.patch("collect_github_repos.build_snapshot", side_effect=fake_build), mock.patch(
-            "collect_github_repos.promote_snapshot", side_effect=lambda record: record.target_path
+            "collect_github_repos.promote_snapshot_with_result",
+            side_effect=lambda record: SnapshotPromotionResult(record.target_path, False, None),
         ), mock.patch("collect_github_repos.build_baseline_packet", side_effect=fake_packet), mock.patch(
             "collect_github_repos.build_delta_packet",
             side_effect=lambda config, prior, current, repo_root, packet_root: fake_packet(
@@ -414,7 +421,8 @@ class CollectGitHubReposTests(unittest.TestCase):
         ), mock.patch("collect_github_repos.run_git"), mock.patch(
             "collect_github_repos.load_version_index", return_value=VersionIndex(config.id, ())
         ), mock.patch("collect_github_repos.build_snapshot", side_effect=fake_build), mock.patch(
-            "collect_github_repos.promote_snapshot", side_effect=ValueError("injected promotion failure")
+            "collect_github_repos.promote_snapshot_with_result",
+            side_effect=ValueError("injected promotion failure"),
         ):
             result = collect_one(self.root, config, ("default-branch",))
 
@@ -424,11 +432,19 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertEqual(1, len(terminals))
         self.assertIn("injected promotion failure", terminals[0]["error"])
 
-    def test_packet_failure_rolls_back_new_snapshot_and_absent_version_index(self):
+    def test_packet_failure_rolls_back_owned_snapshot_after_index_and_under_collection_lock(self):
         config = self.config()
         ref = ResolvedRef(config.id, "branch", "main", "a" * 40, "main", (), "2026-07-16T00:00:00Z", None)
         inspection = RepoInspection("main", (ref,), (), False, False)
-        target = self.root / "raw" / "github" / "paypal" / "paypal-js" / "snapshots" / "main-aaaaaaa"
+        target = (
+            self.root
+            / "raw"
+            / "github"
+            / "paypal"
+            / "paypal-js"
+            / "snapshots"
+            / "main-aaaaaaa"
+        ).resolve()
 
         def fake_build(*args, **kwargs):
             staging = self.root / "raw" / "github" / ".staging" / "injected"
@@ -447,11 +463,116 @@ class CollectGitHubReposTests(unittest.TestCase):
                 repo_type=config.repo_type,
             )
 
-        def fake_promote(record):
-            record.target_path.mkdir(parents=True)
-            shutil_target = record.staging_path
-            shutil_target.rmdir()
-            return record.target_path
+        lock_checks = []
+
+        def assert_collection_lock(label):
+            lock = (
+                self.root
+                / "tracking"
+                / "github"
+                / "repos"
+                / "paypal"
+                / "paypal-js"
+                / ".collection.lock"
+            )
+            descriptor = os.open(str(lock), os.O_RDWR)
+            try:
+                with self.assertRaises(BlockingIOError):
+                    fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            finally:
+                os.close(descriptor)
+            lock_checks.append(label)
+
+        def load_index(*args):
+            assert_collection_lock("index-load")
+            return VersionIndex(config.id, ())
+
+        def fail_packet(*args):
+            assert_collection_lock("packet")
+            raise PacketError("injected packet failure")
+
+        real_rollback = collect_github_repos.rollback_promoted_snapshot
+
+        def rollback(token):
+            assert_collection_lock("rollback")
+            return real_rollback(token)
+
+        with mock.patch("collect_github_repos.clone_repository", side_effect=self.fake_clone), mock.patch(
+            "collect_github_repos.fetch_required_refs"
+        ), mock.patch("collect_github_repos.inspect_repository", return_value=inspection), mock.patch(
+            "collect_github_repos.resolve_ref", return_value=ref
+        ), mock.patch("collect_github_repos.run_git"), mock.patch(
+            "collect_github_repos.load_version_index", side_effect=load_index
+        ), mock.patch("collect_github_repos.build_snapshot", side_effect=fake_build), mock.patch(
+            "collect_github_repos.promote_snapshot_with_result", side_effect=self.fake_owned_promotion
+        ), mock.patch(
+            "collect_github_repos.build_baseline_packet",
+            side_effect=fail_packet,
+        ), mock.patch(
+            "collect_github_repos.rollback_promoted_snapshot", side_effect=rollback
+        ):
+            result = collect_one(self.root, config, ("default-branch",))
+
+        index_path = (
+            self.root
+            / "tracking"
+            / "github"
+            / "repos"
+            / "paypal"
+            / "paypal-js"
+            / "version-index.json"
+        ).resolve()
+        self.assertEqual("failed", result.state)
+        self.assertFalse(target.exists())
+        self.assertFalse(index_path.exists())
+        self.assertEqual(["index-load", "packet", "rollback"], lock_checks)
+
+    def test_index_rollback_failure_preserves_snapshot_and_referencing_index(self):
+        config = self.config()
+        ref = ResolvedRef(config.id, "branch", "main", "a" * 40, "main", (), "2026-07-16T00:00:00Z", None)
+        inspection = RepoInspection("main", (ref,), (), False, False)
+        target = (
+            self.root
+            / "raw"
+            / "github"
+            / "paypal"
+            / "paypal-js"
+            / "snapshots"
+            / "main-aaaaaaa"
+        ).resolve()
+        index_path = (
+            self.root
+            / "tracking"
+            / "github"
+            / "repos"
+            / "paypal"
+            / "paypal-js"
+            / "version-index.json"
+        ).resolve()
+
+        def fake_build(*args, **kwargs):
+            staging = self.root / "raw" / "github" / ".staging" / "rollback-failure"
+            staging.mkdir(parents=True)
+            return SnapshotRecord(
+                config.id,
+                ref,
+                "canonical",
+                0,
+                "2026-07-16",
+                staging,
+                target,
+                (),
+                repository_url=config.url,
+                company=config.company,
+                repo_type=config.repo_type,
+            )
+
+        real_unlink = Path.unlink
+
+        def fail_index_removal(path, *args, **kwargs):
+            if path == index_path:
+                raise OSError("injected index rollback failure")
+            return real_unlink(path, *args, **kwargs)
 
         with mock.patch("collect_github_repos.clone_repository", side_effect=self.fake_clone), mock.patch(
             "collect_github_repos.fetch_required_refs"
@@ -459,16 +580,21 @@ class CollectGitHubReposTests(unittest.TestCase):
             "collect_github_repos.resolve_ref", return_value=ref
         ), mock.patch("collect_github_repos.run_git"), mock.patch(
             "collect_github_repos.build_snapshot", side_effect=fake_build
-        ), mock.patch("collect_github_repos.promote_snapshot", side_effect=fake_promote), mock.patch(
+        ), mock.patch(
+            "collect_github_repos.promote_snapshot_with_result", side_effect=self.fake_owned_promotion
+        ), mock.patch(
             "collect_github_repos.build_baseline_packet",
             side_effect=PacketError("injected packet failure"),
-        ):
+        ), mock.patch.object(Path, "unlink", new=fail_index_removal):
             result = collect_one(self.root, config, ("default-branch",))
 
-        index_path = self.root / "tracking" / "github" / "repos" / "paypal" / "paypal-js" / "version-index.json"
+        index = collect_github_repos.load_version_index(index_path, config)
+        failures = [event for event in result.events if event.get("state") == "failed"]
         self.assertEqual("failed", result.state)
-        self.assertFalse(target.exists())
-        self.assertFalse(index_path.exists())
+        self.assertTrue(target.is_dir())
+        self.assertEqual(1, len(index.versions))
+        self.assertTrue(index.versions[0].snapshot_path.endswith("/main-aaaaaaa"))
+        self.assertIn("version index rollback failed", failures[0]["error"])
 
     def test_new_release_alias_on_existing_sha_archives_notes_in_one_supplement_and_packet(self):
         track = VersionTrack("v1", "all-stable", "all-stable")
@@ -671,6 +797,56 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertTrue((tracking / "collection-status.md").is_file())
         self.assertTrue((tracking / "ingest-status.md").is_file())
 
+    def test_status_allows_repository_local_duplicate_packet_ids_with_distinct_states(self):
+        paypal = self.packet("baseline-shared")
+        stripe = replace(
+            paypal,
+            repo_id="stripe/stripe-ios",
+            directory=(
+                self.root
+                / "tracking"
+                / "github"
+                / "repos"
+                / "stripe"
+                / "stripe-ios"
+                / "packets"
+                / paypal.packet_id
+            ),
+        )
+        self.write_packet(paypal)
+        self.write_packet(stripe)
+        for packet, state in ((paypal, "approved"), (stripe, "rejected")):
+            (packet.directory / "state-events.jsonl").write_text(
+                json.dumps(
+                    {"packet_id": packet.packet_id, "state": "awaiting-review"},
+                    sort_keys=True,
+                )
+                + "\n"
+                + json.dumps(
+                    {
+                        "from_state": "awaiting-review",
+                        "packet_id": packet.packet_id,
+                        "state": state,
+                    },
+                    sort_keys=True,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+        status = collect_github_repos.regenerate_status(self.root)
+
+        packet_states = {
+            (row["repo_id"], row["packet_id"]): row["state"] for row in status["packets"]
+        }
+        self.assertEqual("approved", packet_states[(paypal.repo_id, paypal.packet_id)])
+        self.assertEqual("rejected", packet_states[(stripe.repo_id, stripe.packet_id)])
+        markdown = (self.root / "tracking" / "github" / "ingest-status.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("| paypal/paypal-js | baseline-shared | baseline |", markdown)
+        self.assertIn("| stripe/stripe-ios | baseline-shared | baseline |", markdown)
+
     def packet(self, packet_id="baseline-1.0.0-aaaaaaa"):
         directory = self.root / "tracking" / "github" / "repos" / "paypal" / "paypal-js" / "packets" / packet_id
         return PacketRecord(
@@ -745,6 +921,20 @@ class CollectGitHubReposTests(unittest.TestCase):
 
     def fake_clone(self, config, destination):
         destination.mkdir(parents=True)
+
+    def fake_owned_promotion(self, record):
+        record.target_path.mkdir(parents=True)
+        record.staging_path.rmdir()
+        target_stat = record.target_path.stat()
+        return SnapshotPromotionResult(
+            record.target_path,
+            True,
+            SnapshotPromotionToken(
+                record.target_path,
+                target_stat.st_dev,
+                target_stat.st_ino,
+            ),
+        )
 
 
 if __name__ == "__main__":

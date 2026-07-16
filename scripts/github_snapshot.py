@@ -85,6 +85,20 @@ class SnapshotRecord:
     staging_inode: Optional[int] = None
 
 
+@dataclass(frozen=True)
+class SnapshotPromotionToken:
+    target_path: Path
+    target_device: int
+    target_inode: int
+
+
+@dataclass(frozen=True)
+class SnapshotPromotionResult:
+    path: Path
+    created: bool
+    rollback_token: Optional[SnapshotPromotionToken]
+
+
 def select_key_files(
     config: RepoConfig, repo_root: Path, changed_paths: Sequence[str] = ()
 ) -> SelectionResult:
@@ -296,6 +310,11 @@ def _validate_staged_snapshot_descriptor(record: SnapshotRecord, staging_descrip
 
 
 def promote_snapshot(record: SnapshotRecord) -> Path:
+    """Promote one snapshot and preserve the historical Path return contract."""
+    return promote_snapshot_with_result(record).path
+
+
+def promote_snapshot_with_result(record: SnapshotRecord) -> SnapshotPromotionResult:
     """Promote through collector-private parents under a stable advisory lock."""
     snapshot_root = record.target_path.parent
     staging_parent_descriptor: Optional[int] = None
@@ -318,7 +337,7 @@ def promote_snapshot(record: SnapshotRecord) -> Path:
         existing = _existing_canonical(record, snapshot_root_descriptor)
         if existing is not None:
             _clean_staging(record)
-            return existing
+            return SnapshotPromotionResult(existing, False, None)
 
         active_record = record
         if active_record.capture_kind == "supplement":
@@ -345,9 +364,15 @@ def promote_snapshot(record: SnapshotRecord) -> Path:
                 )
             except OSError as error:
                 raise SnapshotError("could not promote snapshot: " + str(error)) from error
+            promoted_stat = os.fstat(staging_descriptor)
         finally:
             os.close(staging_descriptor)
-        return active_record.target_path
+        token = SnapshotPromotionToken(
+            target_path=active_record.target_path,
+            target_device=promoted_stat.st_dev,
+            target_inode=promoted_stat.st_ino,
+        )
+        return SnapshotPromotionResult(active_record.target_path, True, token)
     except Exception:
         _clean_staging(record)
         raise
@@ -358,6 +383,76 @@ def promote_snapshot(record: SnapshotRecord) -> Path:
             os.close(snapshot_root_descriptor)
         if staging_parent_descriptor is not None:
             os.close(staging_parent_descriptor)
+
+
+def rollback_promoted_snapshot(token: SnapshotPromotionToken) -> bool:
+    """Remove only the exact directory created by an owned promotion token."""
+    if not isinstance(token, SnapshotPromotionToken):
+        raise SnapshotError("snapshot rollback requires an owned promotion token")
+    target_path = token.target_path.absolute()
+    if target_path.name in ("", ".", ".."):
+        raise SnapshotError("snapshot rollback target is invalid")
+
+    snapshot_root_descriptor: Optional[int] = None
+    lock_descriptor: Optional[int] = None
+    target_descriptor: Optional[int] = None
+    try:
+        snapshot_root_descriptor = _open_collector_private_directory(
+            target_path.parent, "snapshot parent"
+        )
+        lock_descriptor = _open_promotion_lock(snapshot_root_descriptor)
+        try:
+            fcntl.flock(lock_descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as error:
+            raise SnapshotError("promotion lock is already held") from error
+        try:
+            target_descriptor = os.open(
+                target_path.name,
+                os.O_RDONLY | _directory_flag() | _no_follow_flag(),
+                dir_fd=snapshot_root_descriptor,
+            )
+        except FileNotFoundError:
+            return False
+        except OSError as error:
+            raise SnapshotError(
+                "rollback target no longer names the promoted snapshot"
+            ) from error
+
+        target_stat = os.fstat(target_descriptor)
+        expected_identity = (token.target_device, token.target_inode)
+        if (
+            not stat.S_ISDIR(target_stat.st_mode)
+            or (target_stat.st_dev, target_stat.st_ino) != expected_identity
+        ):
+            raise SnapshotError("rollback target no longer names the promoted snapshot")
+
+        _remove_directory_contents_descriptor(target_descriptor)
+        os.close(target_descriptor)
+        target_descriptor = None
+        try:
+            current_stat = os.stat(
+                target_path.name,
+                dir_fd=snapshot_root_descriptor,
+                follow_symlinks=False,
+            )
+        except OSError as error:
+            raise SnapshotError(
+                "rollback target no longer names the promoted snapshot"
+            ) from error
+        if (
+            not stat.S_ISDIR(current_stat.st_mode)
+            or (current_stat.st_dev, current_stat.st_ino) != expected_identity
+        ):
+            raise SnapshotError("rollback target no longer names the promoted snapshot")
+        os.rmdir(target_path.name, dir_fd=snapshot_root_descriptor)
+        return True
+    finally:
+        if target_descriptor is not None:
+            os.close(target_descriptor)
+        if lock_descriptor is not None:
+            os.close(lock_descriptor)
+        if snapshot_root_descriptor is not None:
+            os.close(snapshot_root_descriptor)
 
 
 def _candidate_groups(
@@ -1413,6 +1508,24 @@ def _directory_entry_exists(directory_descriptor: int, name: str) -> bool:
     except FileNotFoundError:
         return False
     return True
+
+
+def _remove_directory_contents_descriptor(directory_descriptor: int) -> None:
+    for name in sorted(os.listdir(directory_descriptor)):
+        entry_stat = os.stat(name, dir_fd=directory_descriptor, follow_symlinks=False)
+        if stat.S_ISDIR(entry_stat.st_mode):
+            child_descriptor = os.open(
+                name,
+                os.O_RDONLY | _directory_flag() | _no_follow_flag(),
+                dir_fd=directory_descriptor,
+            )
+            try:
+                _remove_directory_contents_descriptor(child_descriptor)
+            finally:
+                os.close(child_descriptor)
+            os.rmdir(name, dir_fd=directory_descriptor)
+        else:
+            os.unlink(name, dir_fd=directory_descriptor)
 
 
 def _read_regular_file(directory_descriptor: int, name: str) -> bytes:

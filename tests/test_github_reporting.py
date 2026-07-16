@@ -1,5 +1,6 @@
 """Tests for GitHub collection and ingest state reporting."""
 
+from dataclasses import replace
 import json
 from pathlib import Path
 import sys
@@ -18,6 +19,7 @@ from github_reporting import (  # noqa: E402
     CollectionReconciliationError,
     StateTransitionError,
     append_event,
+    packet_state_key,
     render_collection_status,
     render_ingest_status,
     transition_packet,
@@ -183,13 +185,34 @@ class GitHubReportingTests(unittest.TestCase):
         packet = self.packet()
         original = dict(vars(packet))
 
-        status = render_ingest_status((packet,), {packet.packet_id: "approved"})
+        status = render_ingest_status(
+            (packet,), {packet_state_key(packet.repo_id, packet.packet_id): "approved"}
+        )
 
         self.assertIn("# GitHub Ingest Status", status)
         self.assertIn(packet.packet_id, status)
         self.assertIn("baseline", status)
         self.assertIn("approved", status)
         self.assertEqual(original, vars(packet))
+
+    def test_ingest_status_scopes_duplicate_packet_ids_to_their_repositories(self):
+        paypal = self.packet("baseline-shared")
+        stripe = replace(
+            paypal,
+            repo_id="stripe/stripe-ios",
+            directory=Path("tracking/github/repos/stripe/stripe-ios/packets/baseline-shared"),
+        )
+        states = {
+            packet_state_key(paypal.repo_id, paypal.packet_id): "approved",
+            packet_state_key(stripe.repo_id, stripe.packet_id): "rejected",
+        }
+
+        status = render_ingest_status((paypal, stripe), states)
+
+        self.assertIn("| paypal/paypal-js | baseline-shared | baseline |", status)
+        self.assertIn("| stripe/stripe-ios | baseline-shared | baseline |", status)
+        self.assertIn("| approved |", status)
+        self.assertIn("| rejected |", status)
 
     def test_reporting_events_remain_json_serializable(self):
         event = {"repo_id": "paypal/paypal-js", "selector": "v1", "state": "unchanged"}

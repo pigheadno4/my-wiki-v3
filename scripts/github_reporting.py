@@ -99,6 +99,11 @@ def validate_packet_history(
     return current
 
 
+def packet_state_key(repo_id: str, packet_id: str) -> str:
+    """Return a collision-free string key for one repository-local packet ID."""
+    return json.dumps((repo_id, packet_id), separators=(",", ":"))
+
+
 def render_collection_status(
     repos: Sequence[RepoConfig], events: Sequence[Mapping[str, object]]
 ) -> str:
@@ -166,7 +171,10 @@ def render_ingest_status(
                     packet.packet_type,
                     packet.from_snapshot or "-",
                     packet.to_snapshot,
-                    states.get(packet.packet_id, packet.initial_state),
+                    states.get(
+                        packet_state_key(packet.repo_id, packet.packet_id),
+                        packet.initial_state,
+                    ),
                 )
             )
             + " |"

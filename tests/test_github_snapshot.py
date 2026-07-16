@@ -21,6 +21,8 @@ from github_snapshot import (  # noqa: E402
     SnapshotError,
     build_snapshot,
     promote_snapshot,
+    promote_snapshot_with_result,
+    rollback_promoted_snapshot,
     select_key_files,
     validate_staged_snapshot,
 )
@@ -246,6 +248,54 @@ class GitHubSnapshotTests(unittest.TestCase):
         self.assertEqual(1, supplement.capture_revision)
         self.assertTrue(supplement.target_path.name.endswith("-r1"))
         self.assertEqual(supplement.target_path, promote_snapshot(supplement))
+
+    def test_promotion_result_marks_a_concurrent_winner_target_as_reused(self):
+        self.write("README.md", b"snapshot\n")
+        winner = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+        follower = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+
+        winner_result = promote_snapshot_with_result(winner)
+        follower_result = promote_snapshot_with_result(follower)
+
+        self.assertTrue(winner_result.created)
+        self.assertIsNotNone(winner_result.rollback_token)
+        self.assertFalse(follower_result.created)
+        self.assertIsNone(follower_result.rollback_token)
+        self.assertEqual(winner_result.path, follower_result.path)
+
+    def test_owned_promotion_token_removes_the_exact_created_target(self):
+        self.write("README.md", b"snapshot\n")
+        record = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+        result = promote_snapshot_with_result(record)
+
+        self.assertTrue(rollback_promoted_snapshot(result.rollback_token))
+
+        self.assertFalse(result.path.exists())
+        self.assertTrue(self.promotion_lock(record).is_file())
+
+    def test_owned_promotion_token_preserves_a_replaced_target(self):
+        self.write("README.md", b"snapshot\n")
+        record = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+        result = promote_snapshot_with_result(record)
+        original = result.path.with_name(result.path.name + "-original")
+        result.path.rename(original)
+        result.path.mkdir()
+        marker = result.path / "foreign.txt"
+        marker.write_text("foreign\n", encoding="utf-8")
+
+        with self.assertRaisesRegex(SnapshotError, "no longer names the promoted snapshot"):
+            rollback_promoted_snapshot(result.rollback_token)
+
+        self.assertEqual("foreign\n", marker.read_text(encoding="utf-8"))
+        self.assertTrue(original.is_dir())
 
     def test_build_rejects_staging_outside_raw_github_staging(self):
         self.write("README.md", b"snapshot\n")

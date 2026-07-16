@@ -3,6 +3,7 @@
 import argparse
 from dataclasses import dataclass, replace
 from datetime import date, datetime, timezone
+import fcntl
 import json
 import os
 from pathlib import Path
@@ -47,19 +48,28 @@ from github_reporting import (
     CollectionReconciliationError,
     StateTransitionError,
     append_event,
+    packet_state_key,
     render_collection_status,
     render_ingest_status,
     transition_packet,
     validate_collection_run,
     validate_packet_history,
 )
-from github_snapshot import SnapshotFile, SnapshotRecord, build_snapshot, promote_snapshot
+from github_snapshot import (
+    SnapshotFile,
+    SnapshotPromotionResult,
+    SnapshotRecord,
+    build_snapshot,
+    promote_snapshot_with_result,
+    rollback_promoted_snapshot,
+)
 from github_versions import matches_semver, parse_package_tag, parse_semver
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 _SAFE_PACKET_ID = re.compile(r"^[A-Za-z0-9._-]+$")
 _FULL_SHA = re.compile(r"^(?:[0-9A-Fa-f]{40}|[0-9A-Fa-f]{64})$")
+_COLLECTION_LOCK = ".collection.lock"
 
 
 class CollectionUsageError(ValueError):
@@ -116,7 +126,10 @@ def collect_one(
             selected_targets.append(selector)
             emit(_selected_event(config.id, selector, dry_run))
 
+    collection_lock: Optional[Tuple[int, int]] = None
     try:
+        if not dry_run:
+            collection_lock = _acquire_repository_collection_lock(root, config)
         index = load_version_index(index_path, config)
         with tempfile.TemporaryDirectory(prefix="wiki-github-") as temporary:
             clone_path = Path(temporary) / "repository"
@@ -214,6 +227,9 @@ def collect_one(
                     dry_run=dry_run,
                 )
             )
+    finally:
+        if collection_lock is not None:
+            _release_repository_collection_lock(collection_lock)
 
     try:
         validate_collection_run(events)
@@ -314,7 +330,10 @@ def regenerate_status(
             "packet_id": packet.packet_id,
             "packet_type": packet.packet_type,
             "repo_id": packet.repo_id,
-            "state": states.get(packet.packet_id, packet.initial_state),
+            "state": states.get(
+                packet_state_key(packet.repo_id, packet.packet_id),
+                packet.initial_state,
+            ),
         }
         for packet in sorted(packets, key=lambda item: (item.repo_id, item.packet_id))
     ]
@@ -457,9 +476,9 @@ def _collect_resolved_ref(
     staging_root = raw_root / ".staging"
     record = None
     packet = None
-    promoted_new = False
+    promotion: Optional[SnapshotPromotionResult] = None
     index_existed = index_path.exists()
-    index_saved = False
+    index_write_attempted = False
     try:
         record = build_snapshot(
             config,
@@ -472,13 +491,11 @@ def _collect_resolved_ref(
             release_notes=release_notes,
             changed_paths=changed_paths,
         )
-        target_existed = record.target_path.exists()
-        promoted = promote_snapshot(record)
-        promoted_new = promoted == record.target_path and not target_existed
-        record = replace(record, target_path=promoted)
+        promotion = promote_snapshot_with_result(record)
+        record = replace(record, target_path=promotion.path)
         updated = record_snapshot(index, record)
+        index_write_attempted = True
         save_version_index(index_path, updated)
-        index_saved = True
         packet_root = _packet_root(root, config)
         if prior is None:
             packet = build_baseline_packet(config, record, packet_root)
@@ -487,17 +504,17 @@ def _collect_resolved_ref(
             packet = build_delta_packet(config, prior, record, clone_path, packet_root)
             state = "collected-change"
         return state, packet, updated
-    except Exception:
-        if index_saved:
-            try:
-                if index_existed:
-                    save_version_index(index_path, index)
-                else:
-                    index_path.unlink()
-            except Exception:
-                pass
-        if promoted_new and record is not None and record.target_path.is_dir():
-            shutil.rmtree(record.target_path, ignore_errors=True)
+    except Exception as operation_error:
+        try:
+            _rollback_collection_transaction(
+                index_path,
+                index,
+                index_existed,
+                index_write_attempted,
+                promotion,
+            )
+        except Exception as rollback_error:
+            raise rollback_error from operation_error
         raise
     finally:
         if record is not None and record.staging_path.exists() and not record.staging_path.is_symlink():
@@ -588,9 +605,9 @@ def _collect_release_alias(
     release_notes: object,
 ) -> Tuple[str, Optional[PacketRecord], VersionIndex]:
     record = None
-    promoted_new = False
+    promotion: Optional[SnapshotPromotionResult] = None
     index_existed = index_path.exists()
-    index_saved = False
+    index_write_attempted = False
     try:
         run_git(["checkout", "--detach", ref.sha], clone_path)
         if release_notes is not None:
@@ -606,15 +623,14 @@ def _collect_release_alias(
                 capture_kind="supplement",
                 release_notes=release_notes,
             )
-            promoted = promote_snapshot(record)
-            promoted_new = True
-            record = replace(record, target_path=promoted)
+            promotion = promote_snapshot_with_result(record)
+            record = replace(record, target_path=promotion.path)
         else:
             record = _alias_snapshot(root, config, existing, ref)
 
         updated = record_snapshot(index, record)
+        index_write_attempted = True
         save_version_index(index_path, updated)
-        index_saved = True
         packet_root = _packet_root(root, config)
         if prior is None:
             packet = build_baseline_packet(config, record, packet_root)
@@ -624,21 +640,52 @@ def _collect_release_alias(
             packet = build_delta_packet(config, prior, record, clone_path, packet_root)
             state = "collected-change"
         return state, packet, updated
-    except Exception:
-        if index_saved:
-            try:
-                if index_existed:
-                    save_version_index(index_path, index)
-                else:
-                    index_path.unlink()
-            except Exception:
-                pass
-        if promoted_new and record is not None and record.target_path.is_dir():
-            shutil.rmtree(record.target_path, ignore_errors=True)
+    except Exception as operation_error:
+        try:
+            _rollback_collection_transaction(
+                index_path,
+                index,
+                index_existed,
+                index_write_attempted,
+                promotion,
+            )
+        except Exception as rollback_error:
+            raise rollback_error from operation_error
         raise
     finally:
         if record is not None and record.staging_path.exists() and not record.staging_path.is_symlink():
             shutil.rmtree(record.staging_path, ignore_errors=True)
+
+
+def _rollback_collection_transaction(
+    index_path: Path,
+    prior_index: VersionIndex,
+    index_existed: bool,
+    index_write_attempted: bool,
+    promotion: Optional[SnapshotPromotionResult],
+) -> None:
+    if index_write_attempted:
+        try:
+            if index_existed:
+                save_version_index(index_path, prior_index)
+            else:
+                try:
+                    index_path.unlink()
+                except FileNotFoundError:
+                    pass
+        except Exception as error:
+            raise CollectionCommandError(
+                "version index rollback failed: " + _bounded_error(error)
+            ) from error
+
+    if promotion is None or promotion.rollback_token is None:
+        return
+    try:
+        rollback_promoted_snapshot(promotion.rollback_token)
+    except Exception as error:
+        raise CollectionCommandError(
+            "snapshot rollback failed: " + _bounded_error(error)
+        ) from error
 
 
 def _selected_event(repo_id: str, selector: str, dry_run: bool) -> Mapping[str, object]:
@@ -844,10 +891,13 @@ def _load_packet_contracts(
                     )
                 finally:
                     os.close(packet_descriptor)
-                if packet.packet_id in states:
-                    raise CollectionCommandError("duplicate packet ID " + packet.packet_id)
+                state_key = packet_state_key(packet.repo_id, packet.packet_id)
+                if state_key in states:
+                    raise CollectionCommandError(
+                        "duplicate packet ID " + packet.packet_id + " for " + packet.repo_id
+                    )
                 packets.append(packet)
-                states[packet.packet_id] = state
+                states[state_key] = state
     return tuple(packets), states
 
 
@@ -981,6 +1031,57 @@ def _no_follow_flag() -> int:
     if flag is None:
         raise CollectionCommandError("no-follow opening is unavailable")
     return flag
+
+
+def _acquire_repository_collection_lock(
+    root: Path, config: RepoConfig
+) -> Tuple[int, int]:
+    repository_root = _repo_tracking_root(root, config).absolute()
+    repository_root.mkdir(parents=True, exist_ok=True)
+    root_descriptor: Optional[int] = None
+    lock_descriptor: Optional[int] = None
+    try:
+        root_descriptor = _open_directory_path_nofollow(repository_root)
+        lock_descriptor = os.open(
+            _COLLECTION_LOCK,
+            os.O_RDWR | os.O_CREAT | _no_follow_flag(),
+            0o600,
+            dir_fd=root_descriptor,
+        )
+        if not stat.S_ISREG(os.fstat(lock_descriptor).st_mode):
+            raise CollectionCommandError("repository collection lock is not a regular file")
+        fcntl.flock(lock_descriptor, fcntl.LOCK_EX)
+        return root_descriptor, lock_descriptor
+    except Exception:
+        if lock_descriptor is not None:
+            os.close(lock_descriptor)
+        if root_descriptor is not None:
+            os.close(root_descriptor)
+        raise
+
+
+def _release_repository_collection_lock(descriptors: Tuple[int, int]) -> None:
+    root_descriptor, lock_descriptor = descriptors
+    os.close(lock_descriptor)
+    os.close(root_descriptor)
+
+
+def _open_directory_path_nofollow(path: Path) -> int:
+    absolute = path.absolute()
+    descriptor = os.open("/", os.O_RDONLY | _directory_flag())
+    try:
+        for part in absolute.parts[1:]:
+            next_descriptor = os.open(
+                part,
+                os.O_RDONLY | _directory_flag() | _no_follow_flag(),
+                dir_fd=descriptor,
+            )
+            os.close(descriptor)
+            descriptor = next_descriptor
+        return descriptor
+    except Exception:
+        os.close(descriptor)
+        raise
 
 
 def _read_jsonl(path: Path, ignore_invalid: bool = False) -> List[Mapping[str, object]]:
