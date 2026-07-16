@@ -70,6 +70,35 @@ def transition_packet(current: str, requested: str) -> str:
     return requested
 
 
+def validate_packet_history(
+    packet_id: str,
+    initial_state: str,
+    events: Sequence[Mapping[str, object]],
+) -> str:
+    """Validate one complete packet history and return its current state."""
+    if initial_state != "awaiting-review":
+        raise StateTransitionError("packet initial state must be awaiting-review")
+    if not events:
+        raise StateTransitionError("packet has no initial state event")
+    if dict(events[0]) != {"packet_id": packet_id, "state": "awaiting-review"}:
+        raise StateTransitionError("packet initial state event is invalid")
+
+    current = initial_state
+    for event in events[1:]:
+        if set(event) != {"from_state", "packet_id", "state"}:
+            raise StateTransitionError("packet transition event has an invalid shape")
+        if (
+            type(event.get("from_state")) is not str
+            or type(event.get("packet_id")) is not str
+            or type(event.get("state")) is not str
+            or event["packet_id"] != packet_id
+            or event["from_state"] != current
+        ):
+            raise StateTransitionError("packet transition event does not match its history")
+        current = transition_packet(current, str(event["state"]))
+    return current
+
+
 def render_collection_status(
     repos: Sequence[RepoConfig], events: Sequence[Mapping[str, object]]
 ) -> str:

@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import stat
 import sys
 import tempfile
 from typing import Dict, List, Mapping, Optional, Sequence, Tuple
@@ -29,6 +30,7 @@ from github_packets import (
     build_comparison_packet,
     build_delta_packet,
     load_version_index,
+    packet_transaction,
     record_snapshot,
     save_version_index,
     select_prior,
@@ -42,7 +44,6 @@ from github_releases import (
 )
 from github_reporting import (
     COLLECTION_TERMINAL,
-    PACKET_TRANSITIONS,
     CollectionReconciliationError,
     StateTransitionError,
     append_event,
@@ -50,6 +51,7 @@ from github_reporting import (
     render_ingest_status,
     transition_packet,
     validate_collection_run,
+    validate_packet_history,
 )
 from github_snapshot import SnapshotFile, SnapshotRecord, build_snapshot, promote_snapshot
 from github_versions import matches_semver, parse_package_tag, parse_semver
@@ -115,7 +117,7 @@ def collect_one(
             emit(_selected_event(config.id, selector, dry_run))
 
     try:
-        index = load_version_index(index_path, config.id)
+        index = load_version_index(index_path, config)
         with tempfile.TemporaryDirectory(prefix="wiki-github-") as temporary:
             clone_path = Path(temporary) / "repository"
             clone_repository(config, clone_path)
@@ -166,6 +168,7 @@ def collect_one(
                         index,
                         index_path,
                         evidence,
+                        candidate is not None,
                         dry_run,
                     )
                     if packet is not None:
@@ -239,7 +242,7 @@ def compare_one(
     if collection.state in ("failed", "retry-pending"):
         raise CollectionCommandError("could not collect comparison endpoints for " + config.id)
 
-    index = load_version_index(_version_index_path(root, config), config.id)
+    index = load_version_index(_version_index_path(root, config), config)
     with tempfile.TemporaryDirectory(prefix="wiki-github-") as temporary:
         clone_path = Path(temporary) / "repository"
         clone_repository(config, clone_path)
@@ -259,7 +262,7 @@ def compare_one(
 def prepare_one(root: Path, config: RepoConfig, selector: str) -> PacketRecord:
     """Regenerate one packet from an existing indexed snapshot without collection."""
     normalized = _normalize_selector(selector)
-    index = load_version_index(_version_index_path(root, config), config.id)
+    index = load_version_index(_version_index_path(root, config), config)
     with tempfile.TemporaryDirectory(prefix="wiki-github-") as temporary:
         clone_path = Path(temporary) / "repository"
         clone_repository(config, clone_path)
@@ -286,7 +289,7 @@ def regenerate_status(
     root = root.resolve()
     registry = tuple(repos) if repos is not None else load_registry(_registry_path(root))
     events = _load_collection_events(root)
-    packets, states = _load_packet_contracts(root)
+    packets, states = _load_packet_contracts(root, registry)
     repository_rows = []
     latest_events: Dict[str, Mapping[str, object]] = {}
     for event in events:
@@ -294,7 +297,7 @@ def regenerate_status(
         if isinstance(repo_id, str) and event.get("state") in COLLECTION_TERMINAL:
             latest_events[repo_id] = event
     for config in registry:
-        index = load_version_index(_version_index_path(root, config), config.id)
+        index = load_version_index(_version_index_path(root, config), config)
         repository_rows.append(
             {
                 "company": config.company,
@@ -414,6 +417,7 @@ def _collect_resolved_ref(
     index: VersionIndex,
     index_path: Path,
     release_notes: object,
+    release_target: bool,
     dry_run: bool,
 ) -> Tuple[str, Optional[PacketRecord], VersionIndex]:
     existing = _entry_for_sha(index, ref.sha)
@@ -423,6 +427,20 @@ def _collect_resolved_ref(
             return "unchanged", None, index
         return ("collected-change" if prior is not None else "collected-baseline"), None, index
     if existing is not None:
+        release_name = selector[4:] if selector.startswith("tag:") else ""
+        known_refs = {existing.ref_name}.union(existing.aliases)
+        if release_target and release_name and release_name not in known_refs:
+            return _collect_release_alias(
+                root,
+                config,
+                clone_path,
+                ref,
+                index,
+                index_path,
+                existing,
+                prior,
+                release_notes,
+            )
         merged = record_snapshot(index, _alias_snapshot(root, config, existing, ref))
         if merged != index:
             save_version_index(index_path, merged)
@@ -531,13 +549,96 @@ def _existing_versions_for_track(
     target = parse_semver(selector_version)
     if target is None:
         return ()
-    return tuple(
-        entry.version
-        for entry in index.versions
-        if entry.package == package_name
-        and (parsed := parse_semver(entry.version)) is not None
-        and matches_semver(parsed, target, track.include_prerelease)
-    )
+    versions = []
+    for entry in index.versions:
+        references = (entry.ref_name,) + entry.aliases
+        if package_name:
+            candidates = [
+                parsed[1]
+                for parsed in (parse_package_tag(reference) for reference in references)
+                if parsed is not None and parsed[0] == package_name
+            ]
+            if entry.package == package_name:
+                candidates.append(entry.version)
+        else:
+            candidates = [
+                reference
+                for reference in references
+                if parse_package_tag(reference) is None
+            ]
+        for candidate in candidates:
+            parsed = parse_semver(candidate)
+            if parsed is not None and matches_semver(
+                parsed, target, track.include_prerelease
+            ):
+                normalized = candidate[1:] if candidate.startswith("v") else candidate
+                versions.append(normalized)
+    return tuple(_deduplicated(versions))
+
+
+def _collect_release_alias(
+    root: Path,
+    config: RepoConfig,
+    clone_path: Path,
+    ref: ResolvedRef,
+    index: VersionIndex,
+    index_path: Path,
+    existing: VersionEntry,
+    prior: Optional[VersionEntry],
+    release_notes: object,
+) -> Tuple[str, Optional[PacketRecord], VersionIndex]:
+    record = None
+    promoted_new = False
+    index_existed = index_path.exists()
+    index_saved = False
+    try:
+        run_git(["checkout", "--detach", ref.sha], clone_path)
+        if release_notes is not None:
+            raw_root = root / "raw" / "github"
+            record = build_snapshot(
+                config,
+                ref,
+                clone_path,
+                raw_root,
+                raw_root / ".staging",
+                date.today().isoformat(),
+                prior_snapshot=existing.snapshot_path,
+                capture_kind="supplement",
+                release_notes=release_notes,
+            )
+            promoted = promote_snapshot(record)
+            promoted_new = True
+            record = replace(record, target_path=promoted)
+        else:
+            record = _alias_snapshot(root, config, existing, ref)
+
+        updated = record_snapshot(index, record)
+        save_version_index(index_path, updated)
+        index_saved = True
+        packet_root = _packet_root(root, config)
+        if prior is None:
+            packet = build_baseline_packet(config, record, packet_root)
+            state = "collected-baseline"
+        else:
+            fetch_required_refs(config, clone_path, ("commit:" + prior.sha,))
+            packet = build_delta_packet(config, prior, record, clone_path, packet_root)
+            state = "collected-change"
+        return state, packet, updated
+    except Exception:
+        if index_saved:
+            try:
+                if index_existed:
+                    save_version_index(index_path, index)
+                else:
+                    index_path.unlink()
+            except Exception:
+                pass
+        if promoted_new and record is not None and record.target_path.is_dir():
+            shutil.rmtree(record.target_path, ignore_errors=True)
+        raise
+    finally:
+        if record is not None and record.staging_path.exists() and not record.staging_path.is_symlink():
+            shutil.rmtree(record.staging_path, ignore_errors=True)
 
 
 def _selected_event(repo_id: str, selector: str, dry_run: bool) -> Mapping[str, object]:
@@ -678,38 +779,32 @@ def _change_packet_state(
 ) -> None:
     if _SAFE_PACKET_ID.fullmatch(packet_id) is None:
         raise CollectionUsageError("packet ID is invalid")
-    directory = _packet_root(root, config) / packet_id
-    contract_path = directory / "packet.json"
-    events_path = directory / "state-events.jsonl"
-    contract = _read_json_object(contract_path)
-    if contract.get("packet_id") != packet_id or contract.get("repo_id") != config.id:
-        raise CollectionUsageError("packet contract does not match the request")
-    events = _read_jsonl(events_path)
-    if not events:
-        raise CollectionCommandError("packet has no initial state event")
-    initial_state = contract.get("initial_state")
-    first = events[0]
-    if (
-        initial_state not in PACKET_TRANSITIONS
-        or first.get("packet_id") != packet_id
-        or first.get("state") != initial_state
-    ):
-        raise CollectionCommandError("packet initial state history is invalid")
-    latest = str(initial_state)
-    for event in events[1:]:
-        requested_state = event.get("state")
-        if event.get("packet_id") != packet_id or not isinstance(requested_state, str):
-            raise CollectionCommandError("packet state history is invalid")
+    packet_root = _packet_root(root, config)
+    with packet_transaction(config, packet_root) as packet_root_descriptor:
+        packet_descriptor = _open_packet_directory(packet_root_descriptor, packet_id)
         try:
-            latest = transition_packet(latest, requested_state)
-        except StateTransitionError as error:
-            raise CollectionCommandError("packet state history is invalid: " + str(error)) from error
-    if latest != expected:
-        raise StateTransitionError(
-            "packet current state is " + str(latest) + ", not requested --from " + expected
-        )
-    state = transition_packet(expected, requested)
-    append_event(events_path, {"from_state": expected, "packet_id": packet_id, "state": state})
+            contract = _read_packet_json_object(packet_descriptor, "packet.json")
+            if contract.get("packet_id") != packet_id or contract.get("repo_id") != config.id:
+                raise CollectionUsageError("packet contract does not match the request")
+            initial_state = contract.get("initial_state")
+            if not isinstance(initial_state, str):
+                raise CollectionCommandError("packet contract has an invalid initial state")
+            events = _read_packet_jsonl(packet_descriptor, "state-events.jsonl")
+            try:
+                latest = validate_packet_history(packet_id, initial_state, events)
+            except StateTransitionError as error:
+                raise CollectionCommandError("packet state history is invalid: " + str(error)) from error
+            if latest != expected:
+                raise StateTransitionError(
+                    "packet current state is " + latest + ", not requested --from " + expected
+                )
+            state = transition_packet(expected, requested)
+            _append_packet_event(
+                packet_descriptor,
+                {"from_state": expected, "packet_id": packet_id, "state": state},
+            )
+        finally:
+            os.close(packet_descriptor)
 
 
 def _load_collection_events(root: Path) -> Tuple[Mapping[str, object], ...]:
@@ -724,55 +819,168 @@ def _load_collection_events(root: Path) -> Tuple[Mapping[str, object], ...]:
 
 def _load_packet_contracts(
     root: Path,
+    repos: Sequence[RepoConfig],
 ) -> Tuple[Tuple[PacketRecord, ...], Mapping[str, str]]:
     packets = []
     states = {}
-    pattern = root / "tracking" / "github" / "repos"
-    if not pattern.is_dir():
-        return (), states
-    for contract_path in sorted(pattern.glob("*/*/packets/*/packet.json")):
-        try:
-            value = _read_json_object(contract_path)
-            packet = PacketRecord(
-                packet_id=str(value["packet_id"]),
-                repo_id=str(value["repo_id"]),
-                packet_type=str(value["packet_type"]),
-                from_snapshot=str(value.get("from_snapshot", "")),
-                to_snapshot=str(value["to_snapshot"]),
-                required_reading=tuple(str(item) for item in value.get("required_reading", [])),
-                changed_files=tuple(str(item) for item in value.get("changed_files", [])),
-                initial_state=str(value["initial_state"]),
-                directory=contract_path.parent,
-            )
-        except (KeyError, OSError, UnicodeDecodeError, ValueError, json.JSONDecodeError):
+    for config in repos:
+        packet_root = _packet_root(root, config)
+        if not packet_root.exists() and not packet_root.is_symlink():
             continue
-        packets.append(packet)
-        states[packet.packet_id] = _latest_valid_packet_state(packet)
+        with packet_transaction(config, packet_root) as packet_root_descriptor:
+            names = sorted(
+                name for name in os.listdir(packet_root_descriptor) if name != ".packet.lock"
+            )
+            for packet_id in names:
+                packet_descriptor = _open_packet_directory(packet_root_descriptor, packet_id)
+                try:
+                    value = _read_packet_json_object(packet_descriptor, "packet.json")
+                    packet = _packet_record_from_contract(
+                        value, config, packet_id, packet_root / packet_id
+                    )
+                    events = _read_packet_jsonl(packet_descriptor, "state-events.jsonl")
+                    state = validate_packet_history(
+                        packet.packet_id, packet.initial_state, events
+                    )
+                finally:
+                    os.close(packet_descriptor)
+                if packet.packet_id in states:
+                    raise CollectionCommandError("duplicate packet ID " + packet.packet_id)
+                packets.append(packet)
+                states[packet.packet_id] = state
     return tuple(packets), states
 
 
-def _latest_valid_packet_state(packet: PacketRecord) -> str:
-    state = packet.initial_state
-    for index, event in enumerate(
-        _read_jsonl(packet.directory / "state-events.jsonl", ignore_invalid=True)
+def _packet_record_from_contract(
+    value: Mapping[str, object],
+    config: RepoConfig,
+    packet_id: str,
+    directory: Path,
+) -> PacketRecord:
+    scalar_fields = (
+        "packet_id",
+        "repo_id",
+        "packet_type",
+        "from_snapshot",
+        "to_snapshot",
+        "initial_state",
+    )
+    if any(type(value.get(field)) is not str for field in scalar_fields):
+        raise CollectionCommandError("packet contract has invalid scalar fields")
+    required = value.get("required_reading")
+    changed = value.get("changed_files")
+    if (
+        type(required) is not list
+        or type(changed) is not list
+        or any(type(item) is not str for item in required + changed)
+        or value["packet_id"] != packet_id
+        or value["repo_id"] != config.id
+        or value["initial_state"] != "awaiting-review"
     ):
-        requested = event.get("state")
-        if index == 0 and requested == state:
-            continue
-        if not isinstance(requested, str):
-            continue
-        try:
-            state = transition_packet(state, requested)
-        except StateTransitionError:
-            continue
-    return state
+        raise CollectionCommandError("packet contract does not match its namespace")
+    return PacketRecord(
+        packet_id=packet_id,
+        repo_id=config.id,
+        packet_type=str(value["packet_type"]),
+        from_snapshot=str(value["from_snapshot"]),
+        to_snapshot=str(value["to_snapshot"]),
+        required_reading=tuple(required),
+        changed_files=tuple(changed),
+        initial_state="awaiting-review",
+        directory=directory,
+    )
 
 
-def _read_json_object(path: Path) -> Mapping[str, object]:
-    value = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(value, dict):
-        raise ValueError("JSON contract is not an object")
+def _open_packet_directory(packet_root_descriptor: int, packet_id: str) -> int:
+    if _SAFE_PACKET_ID.fullmatch(packet_id) is None:
+        raise CollectionCommandError("packet directory name is invalid")
+    flags = os.O_RDONLY | _directory_flag() | _no_follow_flag()
+    try:
+        return os.open(packet_id, flags, dir_fd=packet_root_descriptor)
+    except OSError as error:
+        raise CollectionCommandError("packet directory is not safe") from error
+
+
+def _read_packet_json_object(directory_descriptor: int, name: str) -> Mapping[str, object]:
+    value = _load_json_strict(_read_packet_text(directory_descriptor, name))
+    if type(value) is not dict:
+        raise CollectionCommandError(name + " is not a JSON object")
     return value
+
+
+def _read_packet_jsonl(directory_descriptor: int, name: str) -> List[Mapping[str, object]]:
+    events = []
+    for line in _read_packet_text(directory_descriptor, name).splitlines():
+        value = _load_json_strict(line)
+        if type(value) is not dict:
+            raise CollectionCommandError(name + " contains a non-object event")
+        events.append(value)
+    return events
+
+
+def _read_packet_text(directory_descriptor: int, name: str) -> str:
+    try:
+        descriptor = os.open(
+            name, os.O_RDONLY | _no_follow_flag(), dir_fd=directory_descriptor
+        )
+    except OSError as error:
+        raise CollectionCommandError("packet file is not safe: " + name) from error
+    try:
+        if not stat.S_ISREG(os.fstat(descriptor).st_mode):
+            raise CollectionCommandError("packet file is not regular: " + name)
+        with os.fdopen(descriptor, "r", encoding="utf-8") as handle:
+            descriptor = -1
+            return handle.read()
+    except (OSError, UnicodeDecodeError) as error:
+        raise CollectionCommandError("packet file could not be read: " + name) from error
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+
+
+def _append_packet_event(directory_descriptor: int, event: Mapping[str, object]) -> None:
+    try:
+        descriptor = os.open(
+            "state-events.jsonl",
+            os.O_WRONLY | os.O_APPEND | _no_follow_flag(),
+            dir_fd=directory_descriptor,
+        )
+    except OSError as error:
+        raise CollectionCommandError("packet state history is not safe") from error
+    try:
+        if not stat.S_ISREG(os.fstat(descriptor).st_mode):
+            raise CollectionCommandError("packet state history is not regular")
+        payload = (json.dumps(dict(event), sort_keys=True) + "\n").encode("utf-8")
+        if os.write(descriptor, payload) != len(payload):
+            raise CollectionCommandError("packet state event append was incomplete")
+    finally:
+        os.close(descriptor)
+
+
+def _load_json_strict(text: str) -> object:
+    def reject_duplicates(pairs: Sequence[Tuple[str, object]]) -> dict:
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError("duplicate JSON key " + key)
+            result[key] = value
+        return result
+
+    return json.loads(text, object_pairs_hook=reject_duplicates)
+
+
+def _directory_flag() -> int:
+    flag = getattr(os, "O_DIRECTORY", None)
+    if flag is None:
+        raise CollectionCommandError("directory-only opening is unavailable")
+    return flag
+
+
+def _no_follow_flag() -> int:
+    flag = getattr(os, "O_NOFOLLOW", None)
+    if flag is None:
+        raise CollectionCommandError("no-follow opening is unavailable")
+    return flag
 
 
 def _read_jsonl(path: Path, ignore_invalid: bool = False) -> List[Mapping[str, object]]:

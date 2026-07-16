@@ -195,14 +195,14 @@ class GitHubPacketTests(unittest.TestCase):
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(json.dumps(document), encoding="utf-8")
                 with self.assertRaises(PacketError):
-                    load_version_index(path, "acme/widgets")
+                    load_version_index(path, self.config)
 
         path.write_text(
             '{"repo_id":"acme/widgets","repo_id":"other/widgets","versions":[]}',
             encoding="utf-8",
         )
         with self.assertRaises(PacketError):
-            load_version_index(path, "acme/widgets")
+            load_version_index(path, self.config)
 
     def test_load_version_index_rejects_evidence_paths_outside_or_through_symlink(self):
         path = self.version_index_path()
@@ -222,7 +222,7 @@ class GitHubPacketTests(unittest.TestCase):
                     path.parent.mkdir(parents=True, exist_ok=True)
                     path.write_text(json.dumps(document), encoding="utf-8")
                     with self.assertRaises(PacketError):
-                        load_version_index(path, "acme/widgets")
+                        load_version_index(path, self.config)
 
         evidence_root = self.root / "raw" / "github" / "acme" / "widgets"
         evidence_root.mkdir(parents=True)
@@ -234,7 +234,7 @@ class GitHubPacketTests(unittest.TestCase):
         )
         path.write_text(json.dumps(document), encoding="utf-8")
         with self.assertRaises(PacketError):
-            load_version_index(path, "acme/widgets")
+            load_version_index(path, self.config)
 
     def test_packet_root_must_be_tracking_github_without_raw_or_symlink_escape(self):
         raw_packet_root = self.root / "raw" / "github" / "packets"
@@ -287,6 +287,46 @@ class GitHubPacketTests(unittest.TestCase):
                 self.assertTrue(
                     all(path.startswith("raw/github/acme/widgets/") for path in packet.required_reading)
                 )
+
+    def test_packet_evidence_uses_raw_company_and_repo_name_not_tracking_owner(self):
+        config = RepoConfig(
+            id="paypal-examples/example-checkout",
+            company="paypal",
+            url="https://github.com/paypal-examples/example-checkout",
+            enabled=True,
+            repo_type="sample-app",
+            priority="tier1",
+            track="default-branch",
+            version_strategy="commit",
+        )
+        ref = ResolvedRef(
+            config.id, "branch", "main", "a" * 40, "main", (),
+            "2026-07-16T00:00:00Z", None,
+        )
+        snapshot = self.snapshot(
+            "a" * 40,
+            package="",
+            repo_id=config.id,
+            ref=ref,
+            company=config.company,
+            repository_url=config.url,
+            target_path=self.root / "raw" / "github" / "paypal" / "example-checkout" / "snapshots" / "main-aaaaaaa",
+            release_notes_source_url=None,
+            release_notes_published_at=None,
+            release_notes_sha256=None,
+            release_notes_size=None,
+        )
+        packet_root = (
+            self.root / "tracking" / "github" / "repos" / "paypal-examples"
+            / "example-checkout" / "packets"
+        )
+
+        packet = build_baseline_packet(config, snapshot, packet_root)
+
+        self.assertTrue(packet.directory.is_dir())
+        self.assertTrue(
+            all(path.startswith("raw/github/paypal/example-checkout/") for path in packet.required_reading)
+        )
 
     def test_packet_retry_reuses_valid_artifacts_without_resetting_state_events(self):
         record = self.snapshot("a" * 40)
@@ -356,6 +396,10 @@ class GitHubPacketTests(unittest.TestCase):
                 SnapshotFile("CHANGELOG.md", "f" * 64, 1, "repository changelog"),
                 SnapshotFile("docs/CHANGELOG-v1.md", "d" * 64, 1, "repository changelog"),
             ),
+            release_notes_source_url=None,
+            release_notes_published_at=None,
+            release_notes_sha256=None,
+            release_notes_size=None,
         )
 
         updated = record_snapshot(index, supplement)
@@ -363,6 +407,9 @@ class GitHubPacketTests(unittest.TestCase):
         self.assertEqual(1, len(updated.versions))
         self.assertEqual(("stable", "v1.0.0"), updated.versions[0].aliases)
         self.assertEqual(3, len(updated.versions[0].changelog_paths))
+        path = self.version_index_path()
+        save_version_index(path, updated)
+        self.assertEqual(updated, load_version_index(path, self.config))
 
     def test_version_index_json_round_trips_with_stable_order_and_newline(self):
         index = record_snapshot(self.empty_index(), self.snapshot("b" * 40, "1.2.0"))
@@ -374,7 +421,7 @@ class GitHubPacketTests(unittest.TestCase):
         text = path.read_text(encoding="utf-8")
         self.assertTrue(text.endswith("\n"))
         self.assertEqual(["repo_id", "versions"], list(json.loads(text)))
-        self.assertEqual(index, load_version_index(path, "acme/widgets"))
+        self.assertEqual(index, load_version_index(path, self.config))
 
     def test_delta_packet_records_add_modify_rename_and_deletion_with_raw_evidence(self):
         prior_record, current_record = self.release_snapshots()

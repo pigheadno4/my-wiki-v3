@@ -1,10 +1,12 @@
 """Tests for the public GitHub collection CLI and orchestration."""
 
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 import json
 from pathlib import Path
 import sys
 import tempfile
+import threading
 import unittest
 from unittest import mock
 
@@ -17,7 +19,7 @@ from collect_github_repos import CollectionResult, collect_one, main  # noqa: E4
 from github_git import RepoInspection, ResolvedRef  # noqa: E402
 from github_packets import PacketError, PacketRecord, VersionEntry, VersionIndex  # noqa: E402
 from github_registry import RepoConfig, VersionTrack  # noqa: E402
-from github_releases import ReleaseCandidate  # noqa: E402
+from github_releases import ReleaseCandidate, ReleaseNotesEvidence  # noqa: E402
 from github_snapshot import SnapshotRecord  # noqa: E402
 
 
@@ -294,6 +296,48 @@ class CollectGitHubReposTests(unittest.TestCase):
             tuple(candidate.version for candidate, _ in selected),
         )
 
+    def test_future_discovery_recognizes_matching_canonical_refs_and_aliases(self):
+        package_track = VersionTrack("package:@scope/widgets@10", "none", "all-stable")
+        plain_track = VersionTrack("v10", "none", "all-stable")
+        index = VersionIndex(
+            "acme/widgets",
+            (
+                VersionEntry(
+                    "tag", "v10.1.0", "10.1.0", "a" * 40,
+                    ("@scope/widgets@10.1.0", "v10.1.0"),
+                    "raw/github/acme/widgets/snapshots/10.1.0", "2026-07-16",
+                    "@scope/widgets", "canonical", "", (),
+                ),
+                VersionEntry(
+                    "package-version", "@scope/widgets@10.2.0", "10.2.0", "b" * 40,
+                    ("@scope/widgets@10.2.0", "v10.2.0"),
+                    "raw/github/acme/widgets/snapshots/10.2.0", "2026-07-16",
+                    "@scope/widgets", "canonical", "", (),
+                ),
+                VersionEntry(
+                    "package-version", "@other/widgets@10.3.0", "10.3.0", "c" * 40,
+                    ("@other/widgets@10.3.0",),
+                    "raw/github/acme/widgets/snapshots/10.3.0", "2026-07-16",
+                    "@other/widgets", "canonical", "", (),
+                ),
+                VersionEntry(
+                    "tag", "v9.9.0", "9.9.0", "d" * 40,
+                    ("@scope/widgets@9.9.0", "v9.9.0"),
+                    "raw/github/acme/widgets/snapshots/9.9.0", "2026-07-16",
+                    "@scope/widgets", "canonical", "", (),
+                ),
+            ),
+        )
+
+        self.assertEqual(
+            ("10.1.0", "10.2.0"),
+            collect_github_repos._existing_versions_for_track(index, package_track),
+        )
+        self.assertEqual(
+            ("10.1.0", "10.2.0"),
+            collect_github_repos._existing_versions_for_track(index, plain_track),
+        )
+
     def test_release_mode_creates_at_most_one_packet_and_terminal_event_per_release(self):
         track = VersionTrack("v10", "all-stable", "all-stable")
         config = self.config(version_tracks=(track,))
@@ -426,6 +470,95 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertFalse(target.exists())
         self.assertFalse(index_path.exists())
 
+    def test_new_release_alias_on_existing_sha_archives_notes_in_one_supplement_and_packet(self):
+        track = VersionTrack("v1", "all-stable", "all-stable")
+        config = self.config(version_tracks=(track,))
+        first = self.candidate("1.0.0")
+        second = self.candidate("1.1.0")
+        second = replace(second, object_sha=first.object_sha, commit_sha=first.commit_sha)
+        first_ref = self.ref(first)
+        second_ref = replace(
+            self.ref(second),
+            sha=first_ref.sha,
+            aliases=(second.tag,),
+        )
+        notes = ReleaseNotesEvidence(
+            "https://api.github.test/releases/v1.1.0",
+            "2026-07-16T00:00:00Z",
+            b"# Exact 1.1.0 notes\n",
+        )
+
+        with mock.patch("collect_github_repos.clone_repository", side_effect=self.fake_clone), mock.patch(
+            "collect_github_repos.discover_release_candidates", return_value=(first,)
+        ), mock.patch("collect_github_repos.fetch_required_refs"), mock.patch(
+            "collect_github_repos.inspect_repository", return_value=RepoInspection("main", (first_ref,), (), False, False)
+        ), mock.patch("collect_github_repos.resolve_ref", return_value=first_ref), mock.patch(
+            "collect_github_repos.fetch_release_notes", return_value=None
+        ), mock.patch("collect_github_repos.run_git"):
+            initial = collect_one(self.root, config, release_mode="backfill")
+
+        self.assertEqual(1, len(initial.packet_ids))
+        canonical = next(
+            path for path in (self.root / "raw" / "github" / "paypal" / "paypal-js" / "snapshots").iterdir()
+            if path.name != ".promotion.lock"
+        )
+        canonical_manifest = (canonical / "snapshot.md").read_bytes()
+
+        with mock.patch("collect_github_repos.clone_repository", side_effect=self.fake_clone), mock.patch(
+            "collect_github_repos.discover_release_candidates", return_value=(first, second)
+        ), mock.patch("collect_github_repos.fetch_required_refs"), mock.patch(
+            "collect_github_repos.inspect_repository", return_value=RepoInspection("main", (first_ref, second_ref), (), False, False)
+        ), mock.patch("collect_github_repos.resolve_ref", return_value=second_ref), mock.patch(
+            "collect_github_repos.fetch_release_notes", return_value=notes
+        ), mock.patch("collect_github_repos.run_git"):
+            collected = collect_one(self.root, config, release_mode="future")
+
+        snapshots = sorted(
+            path for path in canonical.parent.iterdir() if path.name != ".promotion.lock"
+        )
+        self.assertEqual("collected-baseline", collected.state)
+        self.assertEqual(1, len(collected.packet_ids))
+        self.assertEqual(2, len(snapshots))
+        self.assertEqual(canonical_manifest, (canonical / "snapshot.md").read_bytes())
+        supplement = next(path for path in snapshots if path != canonical)
+        self.assertEqual(notes.content, (supplement / "release-notes.md").read_bytes())
+        index = collect_github_repos.load_version_index(
+            collect_github_repos._version_index_path(self.root, config), config
+        )
+        self.assertEqual(1, len(index.versions))
+        self.assertEqual(("v1.0.0", "v1.1.0"), index.versions[0].aliases)
+        self.assertTrue(index.versions[0].release_notes_path.endswith("/release-notes.md"))
+
+    def test_enabled_owner_company_split_collects_raw_and_tracking_namespaces(self):
+        config = self.config(
+            id="paypal-examples/example-checkout",
+            company="paypal",
+            url="https://github.com/paypal-examples/example-checkout",
+            enabled=True,
+        )
+        ref = ResolvedRef(
+            config.id, "branch", "main", "a" * 40, "main", (),
+            "2026-07-16T00:00:00Z", None,
+        )
+
+        with mock.patch("collect_github_repos.clone_repository", side_effect=self.fake_clone), mock.patch(
+            "collect_github_repos.fetch_required_refs"
+        ), mock.patch(
+            "collect_github_repos.inspect_repository", return_value=RepoInspection("main", (ref,), (), False, False)
+        ), mock.patch("collect_github_repos.resolve_ref", return_value=ref), mock.patch(
+            "collect_github_repos.run_git"
+        ):
+            result = collect_one(self.root, config, ("default-branch",))
+
+        self.assertEqual("collected-baseline", result.state)
+        self.assertEqual(1, len(result.packet_ids))
+        self.assertTrue(
+            any((self.root / "raw" / "github" / "paypal" / "example-checkout" / "snapshots").iterdir())
+        )
+        self.assertTrue(
+            (self.root / "tracking" / "github" / "repos" / "paypal-examples" / "example-checkout" / "packets" / result.packet_ids[0]).is_dir()
+        )
+
     def test_index_load_failure_still_records_one_terminal_event_for_explicit_ref(self):
         config = self.config()
 
@@ -467,6 +600,66 @@ class CollectGitHubReposTests(unittest.TestCase):
 
         self.assertEqual(1, code)
         self.assertEqual(before, events_path.read_bytes())
+
+    def test_packet_state_serializes_identical_concurrent_transitions(self):
+        packet = self.packet()
+        self.write_packet(packet)
+        barrier = threading.Barrier(2)
+        real_append = collect_github_repos.append_event
+
+        def racing_append(path, event):
+            barrier.wait(timeout=5)
+            real_append(path, event)
+
+        def transition():
+            try:
+                collect_github_repos._change_packet_state(
+                    self.root, self.config(), packet.packet_id, "awaiting-review", "approved"
+                )
+            except Exception as error:
+                return type(error).__name__
+            return "ok"
+
+        with mock.patch.object(collect_github_repos, "append_event", side_effect=racing_append):
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                outcomes = tuple(executor.map(lambda _: transition(), range(2)))
+
+        self.assertEqual(1, outcomes.count("ok"))
+        self.assertEqual(2, len((packet.directory / "state-events.jsonl").read_text().splitlines()))
+
+    def test_packet_state_rejects_symlink_escape_without_writing(self):
+        packet = self.packet()
+        outside = self.root / "outside-packet"
+        escaped = replace(packet, directory=outside)
+        self.write_packet(escaped)
+        packet.directory.parent.mkdir(parents=True, exist_ok=True)
+        packet.directory.symlink_to(outside, target_is_directory=True)
+        events = outside / "state-events.jsonl"
+        before = events.read_bytes()
+
+        with self.assertRaises(Exception):
+            collect_github_repos._change_packet_state(
+                self.root, self.config(), packet.packet_id, "awaiting-review", "approved"
+            )
+
+        self.assertEqual(before, events.read_bytes())
+
+    def test_status_rejects_foreign_packet_history_instead_of_projecting_it(self):
+        packet = self.packet()
+        self.write_packet(packet)
+        events = packet.directory / "state-events.jsonl"
+        events.write_text(
+            events.read_text(encoding="utf-8")
+            + json.dumps(
+                {"from_state": "awaiting-review", "packet_id": "foreign", "state": "approved"},
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        with self.assertRaises(Exception):
+            collect_github_repos.regenerate_status(self.root)
 
     def test_status_regeneration_writes_json_and_both_markdown_dashboards(self):
         with mock.patch.object(collect_github_repos, "PROJECT_ROOT", self.root):

@@ -22,6 +22,7 @@ from github_reporting import (  # noqa: E402
     render_ingest_status,
     transition_packet,
     validate_collection_run,
+    validate_packet_history,
 )
 
 
@@ -98,6 +99,37 @@ class GitHubReportingTests(unittest.TestCase):
             with self.subTest(current=current, requested=requested):
                 with self.assertRaises(StateTransitionError):
                     transition_packet(current, requested)
+
+    def test_packet_history_validator_requires_exact_legal_history(self):
+        packet_id = "baseline-1.0.0-aaaaaaa"
+        events = (
+            {"packet_id": packet_id, "state": "awaiting-review"},
+            {"from_state": "awaiting-review", "packet_id": packet_id, "state": "approved"},
+            {"from_state": "approved", "packet_id": packet_id, "state": "ingesting"},
+        )
+
+        self.assertEqual(
+            "ingesting",
+            validate_packet_history(packet_id, "awaiting-review", events),
+        )
+
+    def test_packet_history_validator_rejects_foreign_illegal_or_malformed_events(self):
+        packet_id = "baseline-1.0.0-aaaaaaa"
+        initial = {"packet_id": packet_id, "state": "awaiting-review"}
+        invalid_histories = (
+            (),
+            ({"packet_id": packet_id, "state": "approved"},),
+            (initial, {"from_state": "awaiting-review", "packet_id": "foreign", "state": "approved"}),
+            (initial, {"from_state": "approved", "packet_id": packet_id, "state": "ingesting"}),
+            (initial, {"packet_id": packet_id, "state": "approved"}),
+            (initial, {"from_state": "awaiting-review", "packet_id": packet_id, "state": "ingesting"}),
+            (initial, {"from_state": "awaiting-review", "packet_id": packet_id, "state": "approved", "extra": True}),
+        )
+
+        for events in invalid_histories:
+            with self.subTest(events=events):
+                with self.assertRaises(StateTransitionError):
+                    validate_packet_history(packet_id, "awaiting-review", events)
 
     def test_collection_reconciliation_requires_one_terminal_per_selected_repo_ref(self):
         events = (

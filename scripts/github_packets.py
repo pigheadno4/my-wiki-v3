@@ -1,5 +1,6 @@
 """Deterministic version indexes and review-only GitHub ingest packets."""
 
+from contextlib import contextmanager
 from dataclasses import dataclass, replace
 from datetime import datetime
 import fcntl
@@ -13,7 +14,7 @@ import shutil
 import stat
 import subprocess
 import tempfile
-from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Dict, Iterable, Iterator, List, Optional, Sequence, Tuple
 
 from github_git import ResolvedRef
 from github_registry import RepoConfig
@@ -104,8 +105,9 @@ class PacketRecord:
     directory: Path
 
 
-def load_version_index(path: Path, repo_id: str) -> VersionIndex:
+def load_version_index(path: Path, config: RepoConfig) -> VersionIndex:
     """Load one repository's generated index or return its empty initial state."""
+    repo_id = config.id
     if not path.exists():
         return VersionIndex(repo_id, ())
     try:
@@ -119,7 +121,7 @@ def load_version_index(path: Path, repo_id: str) -> VersionIndex:
     versions_data = data["versions"]
     if type(versions_data) is not list:
         raise PacketError("version index versions must be a list")
-    evidence_root = _evidence_root_from_index(path, repo_id)
+    evidence_root = _evidence_root_from_index(path, config)
     entries = tuple(_entry_from_json(item, evidence_root) for item in versions_data)
     if len({entry.sha for entry in entries}) != len(entries):
         raise PacketError("version index contains more than one entry for a SHA")
@@ -198,7 +200,7 @@ def build_baseline_packet(
     """Generate an awaiting-review baseline packet for one immutable snapshot."""
     _require_snapshot_config(config, current)
     entry = _entry_from_snapshot(current)
-    _require_entry_evidence(config, entry, packet_root)
+    _require_entry_evidence(config, entry, packet_root, allow_supplement=True)
     packet_id = "baseline-" + _safe_part(entry.version) + "-" + entry.sha[:7]
     required_reading = _required_reading((entry,), ())
     return _write_packet(
@@ -226,7 +228,7 @@ def build_delta_packet(
     _require_entry_config(config, prior)
     current_entry = _entry_from_snapshot(current)
     _require_entry_evidence(config, prior, packet_root)
-    _require_entry_evidence(config, current_entry, packet_root)
+    _require_entry_evidence(config, current_entry, packet_root, allow_supplement=True)
     selected_paths = _selected_paths(
         config, _entry_file_paths(config, prior, packet_root), _snapshot_file_paths(current)
     )
@@ -316,7 +318,7 @@ def _merge_snapshot_evidence(entry: VersionEntry, snapshot: SnapshotRecord) -> V
     return replace(
         entry,
         aliases=tuple(sorted(set(entry.aliases).union(supplement.aliases))),
-        release_notes_path=entry.release_notes_path or supplement.release_notes_path,
+        release_notes_path=supplement.release_notes_path or entry.release_notes_path,
         changelog_paths=tuple(sorted(set(entry.changelog_paths).union(supplement.changelog_paths))),
     )
 
@@ -502,7 +504,7 @@ def _entry_file_paths(
     config: RepoConfig, entry: VersionEntry, packet_root: Path
 ) -> Tuple[str, ...]:
     manifest = _absolute_evidence_path(
-        entry.snapshot_path + "/snapshot.md", packet_root, config.id
+        entry.snapshot_path + "/snapshot.md", packet_root, config
     )
     try:
         text = manifest.read_text(encoding="utf-8")
@@ -709,12 +711,14 @@ def _evidence_path(path: Path) -> str:
     return path.as_posix()
 
 
-def _absolute_evidence_path(path: str, packet_root: Path, repo_id: str) -> Path:
-    evidence_root = _evidence_root_from_packet_root(packet_root, repo_id)
+def _absolute_evidence_path(path: str, packet_root: Path, config: RepoConfig) -> Path:
+    evidence_root = _evidence_root_from_packet_root(packet_root, config)
     return _safe_evidence_path(path, evidence_root)
 
 
-def _validate_entry(entry: VersionEntry, evidence_root: Path) -> None:
+def _validate_entry(
+    entry: VersionEntry, evidence_root: Path, allow_supplement: bool = False
+) -> None:
     if entry.ref_kind not in _REF_KINDS:
         raise PacketError("version index entry has an invalid reference kind")
     if _SHA.fullmatch(entry.sha) is None:
@@ -723,7 +727,8 @@ def _validate_entry(entry: VersionEntry, evidence_root: Path) -> None:
         raise PacketError("version index entry has an invalid reference name")
     if not _valid_date(entry.collection_date):
         raise PacketError("version index entry has an invalid collection date")
-    if entry.capture_kind != "canonical":
+    allowed_capture_kinds = {"canonical", "supplement"} if allow_supplement else {"canonical"}
+    if entry.capture_kind not in allowed_capture_kinds:
         raise PacketError("version index entry must retain a canonical snapshot")
     package_from_ref = parse_package_tag(entry.ref_name)
     if entry.ref_kind == "package-version":
@@ -759,11 +764,15 @@ def _validate_entry(entry: VersionEntry, evidence_root: Path) -> None:
     expected_snapshot_root = evidence_root / "snapshots"
     _require_contained(snapshot_path, expected_snapshot_root, "snapshot path")
     if release_notes is not None:
-        _require_contained(release_notes, snapshot_path, "release notes path")
-        if release_notes.name != "release-notes.md":
+        _require_contained(release_notes, expected_snapshot_root, "release notes path")
+        relative = release_notes.relative_to(expected_snapshot_root)
+        if len(relative.parts) != 2 or relative.parts[1] != "release-notes.md":
             raise PacketError("version index entry release notes path is invalid")
     for changelog in changelogs:
-        _require_contained(changelog, snapshot_path / "files", "changelog path")
+        _require_contained(changelog, expected_snapshot_root, "changelog path")
+        relative = changelog.relative_to(expected_snapshot_root)
+        if len(relative.parts) < 3 or relative.parts[1] != "files":
+            raise PacketError("version index entry changelog path is invalid")
 
 
 def _valid_ref_name(value: str) -> bool:
@@ -798,12 +807,33 @@ def _valid_date(value: str) -> bool:
     return True
 
 
-def _evidence_root_from_index(index_path: Path, repo_id: str) -> Path:
-    return _repository_root_from_tracking_path(index_path, "version-index.json", repo_id) / "raw" / "github" / Path(repo_id)
+def _evidence_root_from_index(index_path: Path, config: RepoConfig) -> Path:
+    repository_root = _repository_root_from_tracking_path(
+        index_path, "version-index.json", config.id
+    )
+    return repository_root / "raw" / "github" / _raw_repository_namespace(config)
 
 
-def _evidence_root_from_packet_root(packet_root: Path, repo_id: str) -> Path:
-    return _repository_root_from_tracking_path(packet_root, None, repo_id) / "raw" / "github" / Path(repo_id)
+def _evidence_root_from_packet_root(packet_root: Path, config: RepoConfig) -> Path:
+    repository_root = _repository_root_from_tracking_path(packet_root, None, config.id)
+    return repository_root / "raw" / "github" / _raw_repository_namespace(config)
+
+
+def _raw_repository_namespace(config: RepoConfig) -> Path:
+    repo_id = Path(config.id)
+    company = Path(config.company)
+    if (
+        repo_id.is_absolute()
+        or repo_id.as_posix() != config.id
+        or len(repo_id.parts) != 2
+        or any(part in ("", ".", "..") for part in repo_id.parts)
+        or company.is_absolute()
+        or company.as_posix() != config.company
+        or len(company.parts) != 1
+        or company.parts[0] in ("", ".", "..")
+    ):
+        raise PacketError("repository evidence namespace is invalid")
+    return company / repo_id.parts[1]
 
 
 def _repository_root_from_tracking_path(
@@ -893,9 +923,47 @@ def _require_packet_root(packet_root: Path, repo_id: str) -> Path:
     return packet_root.absolute()
 
 
-def _require_entry_evidence(config: RepoConfig, entry: VersionEntry, packet_root: Path) -> None:
-    evidence_root = _evidence_root_from_packet_root(packet_root, config.id)
-    _validate_entry(entry, evidence_root)
+def _require_exact_packet_root(packet_root: Path, config: RepoConfig) -> Path:
+    repository_root = _repository_root_from_tracking_path(packet_root, None, config.id)
+    expected = (
+        repository_root / "tracking" / "github" / "repos" / Path(config.id) / "packets"
+    )
+    lexical = packet_root.absolute()
+    if lexical != expected:
+        raise PacketError("packet transaction requires the exact packets namespace")
+    if not lexical.is_dir() or lexical.is_symlink():
+        raise PacketError("packet root is not a regular directory")
+    return lexical
+
+
+def _require_entry_evidence(
+    config: RepoConfig,
+    entry: VersionEntry,
+    packet_root: Path,
+    allow_supplement: bool = False,
+) -> None:
+    evidence_root = _evidence_root_from_packet_root(packet_root, config)
+    _validate_entry(entry, evidence_root, allow_supplement=allow_supplement)
+
+
+@contextmanager
+def packet_transaction(config: RepoConfig, packet_root: Path) -> Iterator[int]:
+    """Lock and open the exact packet namespace without following symlinks."""
+    packet_root = _require_exact_packet_root(packet_root, config)
+    root_descriptor: Optional[int] = None
+    lock_descriptor: Optional[int] = None
+    try:
+        root_descriptor = os.open(
+            str(packet_root), os.O_RDONLY | _directory_flag() | _no_follow_flag()
+        )
+        lock_descriptor = _open_packet_lock_at(root_descriptor)
+        fcntl.flock(lock_descriptor, fcntl.LOCK_EX)
+        yield root_descriptor
+    finally:
+        if lock_descriptor is not None:
+            os.close(lock_descriptor)
+        if root_descriptor is not None:
+            os.close(root_descriptor)
 
 
 def _open_packet_lock(packet_root: Path) -> int:
@@ -911,6 +979,34 @@ def _open_packet_lock(packet_root: Path) -> int:
         os.close(descriptor)
         raise PacketError("packet publication lock is not a regular file")
     return descriptor
+
+
+def _open_packet_lock_at(packet_root_descriptor: int) -> int:
+    flags = os.O_CREAT | os.O_RDWR | _no_follow_flag()
+    try:
+        descriptor = os.open(
+            _PACKET_LOCK, flags, 0o600, dir_fd=packet_root_descriptor
+        )
+    except OSError as error:
+        raise PacketError("could not open packet publication lock") from error
+    if not stat.S_ISREG(os.fstat(descriptor).st_mode):
+        os.close(descriptor)
+        raise PacketError("packet publication lock is not a regular file")
+    return descriptor
+
+
+def _directory_flag() -> int:
+    flag = getattr(os, "O_DIRECTORY", None)
+    if flag is None:
+        raise PacketError("directory-only opening is unavailable")
+    return flag
+
+
+def _no_follow_flag() -> int:
+    flag = getattr(os, "O_NOFOLLOW", None)
+    if flag is None:
+        raise PacketError("no-follow opening is unavailable")
+    return flag
 
 
 def _validate_existing_packet(
