@@ -193,9 +193,22 @@ def repair_raw_link(job: Dict[str, Any], output: Dict[str, Any]) -> bool:
 
 def repair_mandatory_tags(output: Dict[str, Any]) -> int:
     tags = output.get("suggested_tags")
-    if not isinstance(tags, list) or "metronome" in tags:
+    if not isinstance(tags, list):
         return 0
-    output["suggested_tags"] = ["metronome"] + tags
+    normalized: List[str] = []
+    seen = set()
+    for tag in tags:
+        value = str(tag)
+        key = value.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        normalized.append("metronome" if key == "metronome" else value)
+    if "metronome" not in seen:
+        normalized.insert(0, "metronome")
+    if normalized == tags:
+        return 0
+    output["suggested_tags"] = normalized
     return 1
 
 

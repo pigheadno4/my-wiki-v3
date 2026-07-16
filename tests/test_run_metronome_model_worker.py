@@ -136,7 +136,7 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         )
 
     def test_mandatory_metronome_tag_is_repaired_locally(self):
-        output = {"suggested_tags": ["events"]}
+        output = {"suggested_tags": ["Metronome", "events", "EVENTS"]}
 
         self.assertEqual(1, repair_mandatory_tags(output))
         self.assertEqual(["metronome", "events"], output["suggested_tags"])
