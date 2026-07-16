@@ -16,7 +16,7 @@
 - `snapshot.md` carries one versioned JSON metadata block as the integrity authority; Markdown tables are escaped display only.
 - The manifest records repository/ref identity, saved hashes and sizes, exclusions, explicit release-note absence or source metadata, and prior snapshot. Exact `release-notes.md` bytes are hashed in that metadata.
 - Selection rejects absolute/traversal paths and symlinks. Staging enforces destination containment, validates copied-byte limits after copying, and rejects symlinks, unlisted files, unexpected top-level entries, and patch or diff files.
-- Promotion uses an exclusive per-repository `.promotion.lock`; canonical SHA lookup and supplement `-rN` allocation occur while locked. Current-operation staging and locks are cleaned on validation, target, filesystem, and replacement failures without removing foreign locks or targets.
+- Promotion uses an exclusive per-repository `.promotion.lock`; canonical SHA lookup and supplement `-rN` allocation occur while locked. Current-operation staging is cleaned on validation, target, filesystem, and replacement failures; the stable lock pathname is retained and never deleted.
 
 ## Integrity Fix Evidence
 
@@ -24,7 +24,7 @@
 - GREEN: `python3 -m unittest tests.test_github_snapshot -v` passed 27 tests; `python3 -m unittest discover -s tests -v` passed 154 tests; `git diff --check` passed.
 - Checkout copies now use component-by-component descriptor traversal with `O_NOFOLLOW`, regular-file verification, copied-byte limits, and exact streamed hashes.
 - `SnapshotRecord` carries trusted repository and release-note provenance plus staged-directory device/inode identity; validation rejects tampered provenance and swapped staged roots.
-- Promotion records the lock descriptor identity before writing and removes a lock only when its pathname still resolves to that same inode; write, validation, target, and replacement failures clean only the original staging directory.
+- This evidence described a temporary-lock deletion strategy that was superseded by the final promotion amendment. The final contract retains one stable regular `.promotion.lock` per repository and releases its advisory flock only by closing its descriptor; write, validation, target, and replacement failures clean only the original staging directory.
 
 ## Promotion Safety Amendment Evidence
 
@@ -33,3 +33,11 @@
 - Promotion requires collector-owned, non-group/world-writable staging and snapshot parents, opens every parent path component without following symlinks, and keeps a stable regular `.promotion.lock` protected by `fcntl.flock` for canonical lookup, supplement allocation, validation, target checks, and descriptor-relative `os.replace`.
 - `SnapshotRecord` now binds the exact release-note SHA-256 and byte size; validation reads staged content through no-follow descriptors and rejects altered note bytes even if the staged JSON manifest is altered to match.
 - Lock contention, lock-file symlinks, unsafe parents, target collisions, staged identity mismatches, validation failures, and replacement failures preserve existing evidence and clean only the current operation's original staging directory. The lock pathname is never deleted.
+
+## Final Review Fix Evidence
+
+- RED: `python3 -m unittest tests.test_github_snapshot -v` ran 37 tests with 6 expected failures before the final implementation change. The failures covered missing or boolean `format_version`, malformed or duplicate excluded entries, boolean file and release sizes, and leaf and parent checkout swaps after containment.
+- GREEN: `python3 -m unittest tests.test_github_snapshot -v` passed 37 tests; `python3 -m unittest discover -s tests -v` passed 164 tests; `git diff --check` passed before this documentation-only evidence update.
+- JSON validation now requires the complete authoritative schema with exact built-in types, rejects unknown keys and duplicate JSON keys, and validates saved and excluded entry shapes before trusting identity, release, or copied-file evidence.
+- Checkout enumeration, candidate size inspection, binary detection, and copying use no-follow descriptor traversal. Deterministic leaf and parent-component swap tests prove outside bytes are neither selected nor copied.
+- The stable `.promotion.lock` is released only when its descriptor closes; there is no explicit `LOCK_UN` or lock-path deletion. A failed promotion leaves the stable lock reusable by the next promotion.
