@@ -89,10 +89,14 @@ Expected successful coverage after all five cycles: 10 source summaries ingested
 
 ### Task 4: Cycle 2 - Enterprise Commit
 
-- [ ] Read all 267 raw lines and finish the concept audit before source creation.
-- [ ] Run Luna, then have Sol verify commit logic, timing, drawdown, rollover, limits, and scope boundaries.
-- [ ] Promote the corrected source with its raw backlink; update required concept/company/index/log files and final receipt.
-- [ ] Validate and reconcile at 7 ingested / 218 pending, then commit the complete cycle.
+**Outcome:** Luna failed the fixed 900-second throughput gate without producing structured output. The validated failure evidence is committed as `e51dc89`; independent review approved no promotion and coverage remains 5 ingested / 220 pending.
+
+- [x] Read all 267 raw lines and finish the concept audit before source creation.
+- [x] Run Luna once; preserve the validated 900-second timeout receipt with no output or draft.
+- [x] Confirm Sol review and canonical promotion are not applicable because no evidence draft exists.
+- [x] Independently verify no raw/wiki changes and reconcile unchanged coverage at 5 ingested / 220 pending.
+
+> Cycles 3-5 are suspended until the Luna runtime is redesigned and revalidated. Two consecutive expansion pages timed out at the runtime layer without producing output.
 
 ### Task 5: Cycle 3 - Stripe Invoice Integration
 
