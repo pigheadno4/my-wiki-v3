@@ -343,6 +343,95 @@ class GitHubSnapshotTests(unittest.TestCase):
 
         self.assertTrue(any("metadata mismatch" in error for error in errors))
 
+    def test_validation_requires_format_version_with_an_exact_integer_type(self):
+        self.write("README.md", b"snapshot\n")
+        record = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+
+        missing = self.manifest_metadata(record)
+        missing.pop("format_version")
+        self.write_manifest_metadata(record, missing)
+
+        errors = validate_staged_snapshot(record)
+
+        self.assertTrue(any("format_version" in error for error in errors))
+
+        boolean = self.manifest_metadata(record)
+        boolean["format_version"] = True
+        self.write_manifest_metadata(record, boolean)
+
+        errors = validate_staged_snapshot(record)
+
+        self.assertTrue(any("format_version" in error for error in errors))
+
+    def test_validation_rejects_malformed_or_duplicate_excluded_entries(self):
+        self.write("README.md", b"snapshot\n")
+        record = build_snapshot(
+            self.config(key_paths=("missing.md",)),
+            self.ref,
+            self.repo,
+            self.raw_root,
+            self.staging_root,
+            "2026-07-14",
+        )
+
+        malformed = self.manifest_metadata(record)
+        malformed["excluded"] = [{"path": "missing.md", "reason": True}]
+        self.write_manifest_metadata(record, malformed)
+
+        errors = validate_staged_snapshot(record)
+
+        self.assertTrue(any("excluded" in error and "malformed" in error for error in errors))
+
+        record = build_snapshot(
+            self.config(key_paths=("missing.md",)),
+            self.ref,
+            self.repo,
+            self.raw_root,
+            self.staging_root,
+            "2026-07-14",
+        )
+        duplicate = self.manifest_metadata(record)
+        duplicate["excluded"].append(dict(duplicate["excluded"][0]))
+        self.write_manifest_metadata(record, duplicate)
+
+        errors = validate_staged_snapshot(record)
+
+        self.assertTrue(any("excluded entry listed more than once" in error for error in errors))
+
+    def test_validation_rejects_boolean_sizes_and_wrong_identity_or_release_types(self):
+        self.write("README.md", b"snapshot\n")
+        evidence = ReleaseNotesEvidence(
+            "https://api.github.test/release", "2026-07-14T00:00:00Z", b"notes\n"
+        )
+        cases = (
+            (lambda metadata: metadata["files"][0].update(size=True), "saved file metadata"),
+            (lambda metadata: metadata["release_notes"].update(size=True), "release notes metadata"),
+            (lambda metadata: metadata["repository"].pop("id"), "repository.id"),
+            (lambda metadata: metadata["ref"].update(sha=7), "ref.sha"),
+            (lambda metadata: metadata["release_notes"].update(published_at=None), "release_notes"),
+        )
+
+        for mutate, expected in cases:
+            with self.subTest(expected=expected):
+                record = build_snapshot(
+                    self.config(),
+                    self.ref,
+                    self.repo,
+                    self.raw_root,
+                    self.staging_root,
+                    "2026-07-14",
+                    release_notes=evidence,
+                )
+                metadata = self.manifest_metadata(record)
+                mutate(metadata)
+                self.write_manifest_metadata(record, metadata)
+
+                errors = validate_staged_snapshot(record)
+
+                self.assertTrue(any(expected in error for error in errors))
+
     def test_validation_rejects_unexpected_top_level_entries_and_diffs(self):
         self.write("README.md", b"snapshot\n")
         record = build_snapshot(
@@ -451,6 +540,42 @@ class GitHubSnapshotTests(unittest.TestCase):
                 )
 
         self.assertEqual([], list(self.staging_root.glob("snapshot-*")))
+
+    def test_selection_rejects_leaf_swap_after_containment_before_reading_outside_bytes(self):
+        self.write("README.md", b"checkout evidence\n")
+        outside = self.root / "outside.txt"
+        outside.write_bytes(b"outside evidence\n")
+        original_exclusion = github_snapshot._exclusion_reason
+
+        def swap_after_containment(*args, **kwargs):
+            (self.repo / "README.md").unlink()
+            (self.repo / "README.md").symlink_to(outside)
+            return original_exclusion(*args, **kwargs)
+
+        with mock.patch("github_snapshot._exclusion_reason", side_effect=swap_after_containment):
+            result = select_key_files(self.config(), self.repo)
+
+        self.assertEqual((), result.selected)
+        self.assertTrue(any(path == "README.md" for path, _ in result.excluded))
+
+    def test_selection_rejects_parent_swap_after_containment_before_reading_outside_bytes(self):
+        self.write("docs/README.md", b"checkout evidence\n")
+        outside = self.root / "outside"
+        outside.mkdir()
+        (outside / "README.md").write_bytes(b"outside evidence\n")
+        original_exclusion = github_snapshot._exclusion_reason
+
+        def swap_parent_after_containment(*args, **kwargs):
+            docs = self.repo / "docs"
+            docs.rename(self.repo / "docs-original")
+            docs.symlink_to(outside, target_is_directory=True)
+            return original_exclusion(*args, **kwargs)
+
+        with mock.patch("github_snapshot._exclusion_reason", side_effect=swap_parent_after_containment):
+            result = select_key_files(self.config(), self.repo)
+
+        self.assertEqual((), result.selected)
+        self.assertTrue(any(path == "docs/README.md" for path, _ in result.excluded))
 
     def test_promotion_rejects_staging_path_swapped_after_validation(self):
         self.write("README.md", b"snapshot\n")
@@ -662,6 +787,23 @@ class GitHubSnapshotTests(unittest.TestCase):
         with self.assertRaisesRegex(SnapshotError, "target already exists"):
             promote_snapshot(collision)
         self.assertFalse(collision.staging_path.exists())
+
+    def test_stable_lock_is_reusable_after_failed_promotion(self):
+        self.write("README.md", b"snapshot\n")
+        invalid = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+        (invalid.staging_path / "files" / "README.md").write_bytes(b"tampered\n")
+
+        with self.assertRaisesRegex(SnapshotError, "invalid staged snapshot"):
+            promote_snapshot(invalid)
+
+        retry = build_snapshot(
+            self.config(), self.ref, self.repo, self.raw_root, self.staging_root, "2026-07-14"
+        )
+
+        self.assertEqual(retry.target_path, promote_snapshot(retry))
+        self.assertTrue(self.promotion_lock(retry).is_file())
 
     def test_descriptor_relative_replace_failure_cleans_current_staging_and_keeps_lock(self):
         self.write("README.md", b"snapshot\n")

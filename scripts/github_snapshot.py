@@ -11,7 +11,7 @@ import re
 import shutil
 import stat
 import tempfile
-from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Dict, List, Optional, Sequence, Tuple
 
 from github_git import ResolvedRef
 from github_registry import RepoConfig
@@ -89,7 +89,7 @@ def select_key_files(
     config: RepoConfig, repo_root: Path, changed_paths: Sequence[str] = ()
 ) -> SelectionResult:
     """Select readable evidence files in a deterministic, bounded order."""
-    repo_root = repo_root.resolve()
+    repo_root = repo_root.absolute()
     candidates, excluded_items = _candidate_groups(config, repo_root, changed_paths)
     selected: List[Path] = []
     excluded: Dict[str, str] = dict(excluded_items)
@@ -110,14 +110,18 @@ def select_key_files(
                 excluded[relative] = reason
                 continue
             try:
-                size = path.stat().st_size
-            except OSError:
-                excluded[relative] = "candidate could not be read"
+                size, is_binary = _checkout_file_summary(repo_root, relative)
+            except SnapshotError as error:
+                excluded[relative] = (
+                    "symlink is not allowed"
+                    if str(error).startswith("symlink is not allowed:")
+                    else "candidate could not be read safely"
+                )
                 continue
             if size > config.max_file_bytes:
                 excluded[relative] = "exceeds per-file byte limit"
                 continue
-            if _is_binary(path):
+            if is_binary:
                 excluded[relative] = "binary content detected"
                 continue
             if total_bytes + size > config.max_snapshot_bytes:
@@ -162,7 +166,7 @@ def build_snapshot(
     except ValueError as error:
         raise SnapshotError("staging must live under raw/github/.staging") from error
 
-    repo_root = repo_root.resolve()
+    repo_root = repo_root.absolute()
     selection = select_key_files(config, repo_root, changed_paths)
     revision, target_path = _target_path(config, ref, raw_root, collection_date, capture_kind)
     staging_root.mkdir(parents=True, exist_ok=True)
@@ -198,7 +202,7 @@ def build_snapshot(
                     path=relative,
                     sha256=sha256,
                     size=size,
-                    purpose=_purpose_for_path(config, repo_root, source),
+                    purpose=_purpose_for_relative(config, relative),
                 )
             )
 
@@ -278,6 +282,7 @@ def _validate_staged_snapshot_descriptor(record: SnapshotRecord, staging_descrip
         if metadata_error is not None:
             return [metadata_error]
 
+        _validate_metadata_schema(metadata, errors)
         _validate_top_level_descriptor(staging_descriptor, metadata, errors)
         _validate_no_symlinks_or_diffs_descriptor(staging_descriptor, "", errors)
         _validate_identity(metadata, record, errors)
@@ -347,10 +352,7 @@ def promote_snapshot(record: SnapshotRecord) -> Path:
         raise
     finally:
         if lock_descriptor is not None:
-            try:
-                fcntl.flock(lock_descriptor, fcntl.LOCK_UN)
-            finally:
-                os.close(lock_descriptor)
+            os.close(lock_descriptor)
         if snapshot_root_descriptor is not None:
             os.close(snapshot_root_descriptor)
         if staging_parent_descriptor is not None:
@@ -367,17 +369,21 @@ def _candidate_groups(
         if reason is not None:
             excluded.append((key_path, reason))
             continue
-        if not candidate.exists() and not candidate.is_symlink():
+        relative = candidate.relative_to(repo_root).as_posix()
+        try:
+            candidate_kind = _checkout_entry_kind(repo_root, relative)
+        except SnapshotError:
+            excluded.append((key_path, "configured key path could not be read safely"))
+            continue
+        if candidate_kind is None:
             excluded.append((key_path, "configured key path is missing"))
             continue
-        explicit.extend(_expand_path(candidate))
+        if stat.S_ISDIR(candidate_kind):
+            explicit.extend(repo_root / item for item in _checkout_file_paths(repo_root, relative))
+        else:
+            explicit.append(candidate)
 
-    all_files = tuple(
-        sorted(
-            (path for path in repo_root.rglob("*") if path.is_file() or path.is_symlink()),
-            key=lambda item: item.as_posix(),
-        )
-    )
+    all_files = tuple(repo_root / item for item in _checkout_file_paths(repo_root))
     defaults = [
         path
         for path in all_files
@@ -390,13 +396,19 @@ def _candidate_groups(
         if reason is not None:
             excluded.append((changed_path, reason))
             continue
-        if not candidate.exists() and not candidate.is_symlink():
+        relative = candidate.relative_to(repo_root).as_posix()
+        try:
+            candidate_kind = _checkout_entry_kind(repo_root, relative)
+        except SnapshotError:
+            excluded.append((changed_path, "changed path could not be read safely"))
+            continue
+        if candidate_kind is None:
             excluded.append((changed_path, "changed path is missing"))
             continue
         relative, containment_reason = _candidate_relative(candidate, repo_root)
-        if containment_reason is not None:
+        if containment_reason is not None or stat.S_ISLNK(candidate_kind):
             changed.append(candidate)
-        elif candidate.is_file() and _is_changed_public_path(Path(relative)):
+        elif stat.S_ISREG(candidate_kind) and _is_changed_public_path(Path(relative)):
             changed.append(candidate)
     return (
         tuple(sorted(set(explicit), key=lambda item: item.as_posix())),
@@ -412,10 +424,55 @@ def _requested_path(repo_root: Path, requested: str) -> Tuple[Path, Optional[str
     return repo_root / raw, None
 
 
-def _expand_path(path: Path) -> Iterable[Path]:
-    if path.is_file() or path.is_symlink():
-        return (path,)
-    return tuple(item for item in path.rglob("*") if item.is_file() or item.is_symlink())
+def _checkout_file_paths(repo_root: Path, relative: str = "") -> Tuple[str, ...]:
+    """List checkout regular files and symlinks without following any component."""
+    descriptor = _open_checkout_directory(repo_root, relative)
+    try:
+        return tuple(_checkout_file_paths_from_descriptor(descriptor, Path(relative)))
+    finally:
+        os.close(descriptor)
+
+
+def _checkout_file_paths_from_descriptor(directory_descriptor: int, prefix: Path) -> List[str]:
+    paths: List[str] = []
+    for name in sorted(os.listdir(directory_descriptor)):
+        relative = prefix / name
+        try:
+            entry_stat = os.stat(name, dir_fd=directory_descriptor, follow_symlinks=False)
+        except OSError:
+            continue
+        if stat.S_ISDIR(entry_stat.st_mode):
+            try:
+                child_descriptor = os.open(
+                    name,
+                    os.O_RDONLY | _directory_flag() | _no_follow_flag(),
+                    dir_fd=directory_descriptor,
+                )
+            except OSError:
+                continue
+            try:
+                paths.extend(_checkout_file_paths_from_descriptor(child_descriptor, relative))
+            finally:
+                os.close(child_descriptor)
+        elif stat.S_ISREG(entry_stat.st_mode) or stat.S_ISLNK(entry_stat.st_mode):
+            paths.append(relative.as_posix())
+    return paths
+
+
+def _checkout_entry_kind(repo_root: Path, relative: str) -> Optional[int]:
+    if not _is_safe_relative_path(relative):
+        raise SnapshotError("selected file is not a safe checkout path")
+    parent = Path(relative).parent
+    descriptor = _open_checkout_directory(repo_root, "" if parent == Path(".") else parent.as_posix())
+    try:
+        try:
+            return os.stat(Path(relative).name, dir_fd=descriptor, follow_symlinks=False).st_mode
+        except FileNotFoundError:
+            return None
+        except OSError as error:
+            raise SnapshotError("checkout entry could not be inspected: " + relative) from error
+    finally:
+        os.close(descriptor)
 
 
 def _candidate_relative(path: Path, repo_root: Path) -> Tuple[Optional[str], Optional[str]]:
@@ -423,26 +480,10 @@ def _candidate_relative(path: Path, repo_root: Path) -> Tuple[Optional[str], Opt
         lexical_relative = path.relative_to(repo_root)
     except ValueError:
         return None, "outside-checkout"
-    if _has_symlink_component(path, repo_root):
-        return lexical_relative.as_posix(), "symlink is not allowed"
-    try:
-        resolved_relative = path.resolve().relative_to(repo_root)
-    except ValueError:
-        return lexical_relative.as_posix(), "outside-checkout"
-    return resolved_relative.as_posix(), None
-
-
-def _has_symlink_component(path: Path, root: Path) -> bool:
-    try:
-        relative = path.relative_to(root)
-    except ValueError:
-        return False
-    current = root
-    for part in relative.parts:
-        current = current / part
-        if current.is_symlink():
-            return True
-    return False
+    relative = lexical_relative.as_posix()
+    if not _is_safe_relative_path(relative):
+        return relative, "outside-checkout"
+    return relative, None
 
 
 def _is_default_path(relative: Path) -> bool:
@@ -486,16 +527,7 @@ def _exclusion_reason(config: RepoConfig, path: Path, relative: str) -> Optional
     return None
 
 
-def _is_binary(path: Path) -> bool:
-    try:
-        with path.open("rb") as source:
-            return b"\0" in source.read(8192)
-    except OSError:
-        return True
-
-
-def _purpose_for_path(config: RepoConfig, repo_root: Path, path: Path) -> str:
-    relative = path.relative_to(repo_root).as_posix()
+def _purpose_for_relative(config: RepoConfig, relative: str) -> str:
     for key_path in config.key_paths:
         requested = Path(key_path)
         if requested.is_absolute() or ".." in requested.parts:
@@ -503,7 +535,7 @@ def _purpose_for_path(config: RepoConfig, repo_root: Path, path: Path) -> str:
         key = requested.as_posix().strip("/")
         if relative == key or relative.startswith(key + "/"):
             return "registry key path"
-    if _is_default_path(path.relative_to(repo_root)):
+    if _is_default_path(Path(relative)):
         return "default repository documentation"
     return "changed public entrypoint or example"
 
@@ -669,6 +701,142 @@ def _no_duplicate_keys(pairs: Sequence[Tuple[str, object]]) -> dict:
             raise ValueError("duplicate JSON key " + key)
         value[key] = item
     return value
+
+
+def _validate_metadata_schema(metadata: dict, errors: List[str]) -> None:
+    """Require the complete, typed JSON authority before comparing trusted values."""
+    _validate_object_fields(
+        metadata,
+        "metadata",
+        {
+            "format_version",
+            "repository",
+            "ref",
+            "capture_kind",
+            "capture_revision",
+            "collection_date",
+            "prior_snapshot",
+            "files",
+            "excluded",
+            "release_notes",
+        },
+        errors,
+    )
+    _validate_exact_type(metadata, "format_version", int, errors)
+    _validate_exact_type(metadata, "capture_kind", str, errors)
+    _validate_exact_type(metadata, "capture_revision", int, errors)
+    _validate_exact_type(metadata, "collection_date", str, errors)
+    _validate_optional_string(metadata, "prior_snapshot", errors)
+
+    repository = metadata.get("repository")
+    if _validate_object_fields(repository, "repository", {"url", "id", "company", "type"}, errors):
+        for field in ("url", "id", "company", "type"):
+            _validate_exact_type(repository, field, str, errors, "repository.")
+
+    ref = metadata.get("ref")
+    if _validate_object_fields(
+        ref,
+        "ref",
+        {"kind", "name", "sha", "version", "aliases", "upstream_commit_time", "release_published_at"},
+        errors,
+    ):
+        for field in ("kind", "name", "sha", "version", "upstream_commit_time"):
+            _validate_exact_type(ref, field, str, errors, "ref.")
+        _validate_optional_string(ref, "release_published_at", errors, "ref.")
+        aliases = ref.get("aliases")
+        if type(aliases) is not list or any(type(item) is not str for item in aliases):
+            errors.append("ref.aliases must be a list of strings")
+
+    _validate_file_entries(metadata.get("files"), errors)
+    _validate_excluded_entries(metadata.get("excluded"), errors)
+    _validate_release_notes_schema(metadata.get("release_notes"), errors)
+
+
+def _validate_object_fields(
+    value: object, label: str, required: set, errors: List[str]
+) -> bool:
+    if type(value) is not dict:
+        errors.append(label + " metadata must be an object")
+        return False
+    for field in sorted(required - set(value)):
+        errors.append("missing required metadata: " + label + "." + field)
+    for field in sorted(set(value) - required):
+        errors.append("unexpected metadata field: " + label + "." + field)
+    return set(value) == required
+
+
+def _validate_exact_type(
+    value: dict, field: str, expected_type: type, errors: List[str], prefix: str = ""
+) -> None:
+    if field in value and type(value[field]) is not expected_type:
+        errors.append(prefix + field + " has an invalid type")
+
+
+def _validate_optional_string(
+    value: dict, field: str, errors: List[str], prefix: str = ""
+) -> None:
+    if field in value and value[field] is not None and type(value[field]) is not str:
+        errors.append(prefix + field + " has an invalid type")
+
+
+def _validate_file_entries(entries: object, errors: List[str]) -> None:
+    if type(entries) is not list:
+        errors.append("saved files metadata is malformed")
+        return
+    seen = set()
+    for entry in entries:
+        if not _validate_object_fields(entry, "saved file", {"path", "sha256", "size", "purpose"}, errors):
+            errors.append("saved file metadata is malformed")
+            continue
+        if (
+            type(entry["path"]) is not str
+            or type(entry["sha256"]) is not str
+            or type(entry["size"]) is not int
+            or type(entry["purpose"]) is not str
+        ):
+            errors.append("saved file metadata is malformed")
+            continue
+        if entry["path"] in seen:
+            errors.append("saved file listed more than once: " + entry["path"])
+        seen.add(entry["path"])
+
+
+def _validate_excluded_entries(entries: object, errors: List[str]) -> None:
+    if type(entries) is not list:
+        errors.append("excluded metadata is malformed")
+        return
+    seen = set()
+    for entry in entries:
+        if not _validate_object_fields(entry, "excluded entry", {"path", "reason"}, errors):
+            errors.append("excluded metadata is malformed")
+            continue
+        if type(entry["path"]) is not str or type(entry["reason"]) is not str:
+            errors.append("excluded metadata is malformed")
+            continue
+        if entry["path"] in seen:
+            errors.append("excluded entry listed more than once: " + entry["path"])
+        seen.add(entry["path"])
+
+
+def _validate_release_notes_schema(release_notes: object, errors: List[str]) -> None:
+    if release_notes is None:
+        return
+    if not _validate_object_fields(
+        release_notes,
+        "release_notes",
+        {"path", "source_url", "published_at", "sha256", "size"},
+        errors,
+    ):
+        errors.append("release notes metadata is malformed")
+        return
+    if (
+        type(release_notes["path"]) is not str
+        or type(release_notes["source_url"]) is not str
+        or type(release_notes["published_at"]) is not str
+        or type(release_notes["sha256"]) is not str
+        or type(release_notes["size"]) is not int
+    ):
+        errors.append("release notes metadata is malformed")
 
 
 def _validate_top_level_descriptor(
@@ -976,6 +1144,10 @@ def _matches_canonical_identity(
 ) -> bool:
     if metadata is None or metadata_error is not None:
         return False
+    schema_errors: List[str] = []
+    _validate_metadata_schema(metadata, schema_errors)
+    if schema_errors:
+        return False
     repository, repository_found = _metadata_value(metadata, "repository.id")
     sha, sha_found = _metadata_value(metadata, "ref.sha")
     capture_kind, kind_found = _metadata_value(metadata, "capture_kind")
@@ -1067,6 +1239,19 @@ def _copy_checkout_file(
         os.close(source_descriptor)
 
 
+def _checkout_file_summary(repo_root: Path, relative: str) -> Tuple[int, bool]:
+    """Read candidate attributes through the same no-follow checkout contract as copying."""
+    if stat.S_ISLNK(_checkout_entry_kind(repo_root, relative) or 0):
+        raise SnapshotError("symlink is not allowed: " + relative)
+    descriptor = _open_checkout_regular_file(repo_root, relative)
+    try:
+        size = os.fstat(descriptor).st_size
+        preview = os.read(descriptor, 8192)
+        return size, b"\0" in preview
+    finally:
+        os.close(descriptor)
+
+
 def _open_checkout_regular_file(repo_root: Path, relative: str) -> int:
     if not _is_safe_relative_path(relative):
         raise SnapshotError("selected file is not a safe checkout path")
@@ -1099,6 +1284,34 @@ def _open_checkout_regular_file(repo_root: Path, relative: str) -> int:
         raise SnapshotError("no-follow checkout traversal rejected selected file: " + relative) from error
     except Exception:
         os.close(current_descriptor)
+        raise
+
+
+def _open_checkout_directory(repo_root: Path, relative: str = "") -> int:
+    if relative and not _is_safe_relative_path(relative):
+        raise SnapshotError("selected file is not a safe checkout path")
+    directory_flag = _directory_flag()
+    try:
+        descriptor = os.open(str(repo_root), os.O_RDONLY | directory_flag | _no_follow_flag())
+    except OSError as error:
+        raise SnapshotError("checkout root cannot be opened without following symlinks") from error
+    try:
+        if not stat.S_ISDIR(os.fstat(descriptor).st_mode):
+            raise SnapshotError("checkout root is not a directory")
+        for part in Path(relative).parts:
+            next_descriptor = os.open(
+                part,
+                os.O_RDONLY | directory_flag | _no_follow_flag(),
+                dir_fd=descriptor,
+            )
+            os.close(descriptor)
+            descriptor = next_descriptor
+        return descriptor
+    except OSError as error:
+        os.close(descriptor)
+        raise SnapshotError("no-follow checkout traversal rejected selected path: " + relative) from error
+    except Exception:
+        os.close(descriptor)
         raise
 
 
