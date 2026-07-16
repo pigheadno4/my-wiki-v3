@@ -560,6 +560,27 @@ class GitHubSnapshotTests(unittest.TestCase):
                 )
         self.assertEqual([], list(self.staging_root.glob("snapshot-*")))
 
+    def test_build_cleans_staging_when_files_directory_creation_fails(self):
+        original_mkdir = Path.mkdir
+
+        def fail_files_directory(path, *args, **kwargs):
+            if path.name == "files" and path.parent.name.startswith("snapshot-"):
+                raise OSError("required files directory failure")
+            return original_mkdir(path, *args, **kwargs)
+
+        with mock.patch.object(Path, "mkdir", new=fail_files_directory):
+            with self.assertRaisesRegex(OSError, "required files directory failure"):
+                build_snapshot(
+                    self.config(),
+                    self.ref,
+                    self.repo,
+                    self.raw_root,
+                    self.staging_root,
+                    "2026-07-14",
+                )
+
+        self.assertEqual([], list(self.staging_root.glob("snapshot-*")))
+
     def test_build_rejects_selected_file_swapped_to_outside_symlink(self):
         self.write("README.md", b"checkout evidence\n")
         outside = self.root / "outside.txt"
