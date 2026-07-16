@@ -164,3 +164,24 @@ They must not transition a packet out of `awaiting-review` automatically.
   for both cases, then the ref validator was tightened to reject `@`, leading
   dot/slash components, repeated slashes, and nested `.lock` components.
   Focused tests remained 15/15 and the full suite remained 182/182.
+
+## Final Repository Ownership Boundary
+
+### RED
+
+- Added a focused regression covering foreign repository namespaces, reordered
+  and repeated tracking fragments, canonical packet roots, safe descendants,
+  and evidence paths bound to `acme/widgets`.
+- The pre-fix run failed in five unsafe-root cases because packet validation
+  accepted any descendant of `tracking/github`.
+
+### GREEN
+
+- Packet roots now require the exact
+  `tracking/github/repos/<company>/<repo>/` namespace for the supplied
+  `config.id`, reject ambiguous nested workspaces and repeated repository
+  fragments, and continue to accept the repository namespace plus descendants.
+- Evidence-root derivation uses the single validated workspace and the same
+  `config.id`; no packet is written for a foreign or malformed namespace.
+- Verification: focused packet tests `16/16` passed; full suite `183/183`
+  passed; `git diff --check` passed with no output.
