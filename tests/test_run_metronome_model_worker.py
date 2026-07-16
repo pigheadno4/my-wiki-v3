@@ -15,6 +15,8 @@ if str(SCRIPTS) not in sys.path:
 from run_metronome_model_worker import (  # noqa: E402
     build_codex_command,
     build_page_profile,
+    recover_attempt,
+    repair_mandatory_tags,
     repair_raw_link,
     repair_quote_bounds,
     run_worker,
@@ -133,6 +135,13 @@ class ModelWorkerRunnerTests(unittest.TestCase):
             output["proposed_raw_link"],
         )
 
+    def test_mandatory_metronome_tag_is_repaired_locally(self):
+        output = {"suggested_tags": ["events"]}
+
+        self.assertEqual(1, repair_mandatory_tags(output))
+        self.assertEqual(["metronome", "events"], output["suggested_tags"])
+        self.assertEqual(0, repair_mandatory_tags(output))
+
     def test_retry_receipt_sums_usage_and_keeps_rejected_reason(self):
         root, job_path, job = self.make_root()
         calls = []
@@ -199,6 +208,58 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         receipt = json.loads((root / job["artifact_dir"] / "model-worker-receipt.json").read_text())
         self.assertEqual(1, receipt["attempt_count"])
         self.assertEqual(124, receipt["process_exit_code"])
+
+    def test_recover_attempt_accepts_prior_output_after_deterministic_tag_repair(self):
+        root, job_path, job = self.make_root()
+        artifact_dir = root / job["artifact_dir"]
+        attempt_dir = artifact_dir / "attempt-1"
+        attempt_dir.mkdir(parents=True)
+        output = self.valid_output(job)
+        output["suggested_tags"] = ["events"]
+        (attempt_dir / "output.json").write_text(json.dumps(output), encoding="utf-8")
+        (attempt_dir / "events.jsonl").write_text("", encoding="utf-8")
+        (attempt_dir / "stderr.log").write_text("", encoding="utf-8")
+        receipt = {
+            "schema_version": 3,
+            "job_id": job["job_id"],
+            "provider": job["provider"],
+            "canonical_url": job["canonical_url"],
+            "raw_path": job["raw_path"],
+            "source_page": job["source_page"],
+            "status": "failed",
+            "model_provider": job["model_provider"],
+            "model": job["model"],
+            "reasoning_effort": job["reasoning_effort"],
+            "attempt_count": 1,
+            "attempts": [{
+                "attempt": 1, "status": "rejected", "process_exit_code": 0,
+                "validation_errors": ["model output: suggested_tags must include metronome"],
+                "retry_reason": "model output: suggested_tags must include metronome",
+                "output_path": f"{job['artifact_dir']}/attempt-1/output.json",
+                "events_path": f"{job['artifact_dir']}/attempt-1/events.jsonl",
+                "stderr_path": f"{job['artifact_dir']}/attempt-1/stderr.log",
+                "token_usage": {"input_tokens": 10, "output_tokens": 2},
+            }],
+            "started_at": "2026-07-16T00:00:00Z", "finished_at": "2026-07-16T00:01:00Z",
+            "elapsed_seconds": 60, "process_exit_code": 1,
+            "output_path": f"{job['artifact_dir']}/attempt-1/output.json", "draft_path": None,
+            "events_path": f"{job['artifact_dir']}/attempt-1/events.jsonl",
+            "stderr_path": f"{job['artifact_dir']}/attempt-1/stderr.log",
+            "grounding_quotes": [], "validation": [], "token_usage": None,
+            "cumulative_token_usage": {"input_tokens": 10, "output_tokens": 2},
+            "token_usage_unavailable_reason": None, "quote_line_repairs": 0,
+            "raw_link_repairs": 0,
+        }
+        (artifact_dir / "model-worker-receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
+
+        result = recover_attempt(root, job_path, "2026-07-16", 1)
+
+        self.assertEqual(0, result)
+        recovered = json.loads((artifact_dir / "model-worker-receipt.json").read_text())
+        self.assertEqual("success", recovered["status"])
+        self.assertEqual(1, recovered["recovered_from_attempt"])
+        self.assertEqual(1, recovered["mandatory_tag_repairs"])
+        self.assertTrue((artifact_dir / "model-source-draft.md").is_file())
 
 
 if __name__ == "__main__":

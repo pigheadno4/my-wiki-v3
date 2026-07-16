@@ -191,6 +191,14 @@ def repair_raw_link(job: Dict[str, Any], output: Dict[str, Any]) -> bool:
     return True
 
 
+def repair_mandatory_tags(output: Dict[str, Any]) -> int:
+    tags = output.get("suggested_tags")
+    if not isinstance(tags, list) or "metronome" in tags:
+        return 0
+    output["suggested_tags"] = ["metronome"] + tags
+    return 1
+
+
 def _text(value: Any) -> str:
     if isinstance(value, bytes):
         return value.decode("utf-8", errors="replace")
@@ -210,6 +218,82 @@ def prepare_minimal_codex_home(target: Path) -> Path:
         if source_path.is_file() and not target_path.exists():
             target_path.symlink_to(source_path)
     return target
+
+
+def recover_attempt(
+    root: Path, job_path: Path, ingest_date: str, attempt: int
+) -> int:
+    job_file = job_path if job_path.is_absolute() else root / job_path
+    job = load_json(job_file)
+    job_errors = validate_job(root, job)
+    if job_errors:
+        for error in job_errors:
+            print(error)
+        return 1
+    artifact_dir = root / job["artifact_dir"]
+    receipt_path = artifact_dir / "model-worker-receipt.json"
+    output_path = artifact_dir / f"attempt-{attempt}" / "output.json"
+    if not receipt_path.is_file() or not output_path.is_file():
+        print("recovery requires an existing worker receipt and attempt output")
+        return 1
+    receipt = load_json(receipt_path)
+    output = load_json(output_path)
+    raw_text = (root / job["raw_path"]).read_text(encoding="utf-8")
+    quote_repairs = repair_quote_bounds(raw_text, output)
+    raw_link_repairs = 1 if repair_raw_link(job, output) else 0
+    tag_repairs = repair_mandatory_tags(output)
+    errors = validate_model_output(root, job, output)
+    if errors:
+        for error in errors:
+            print(error)
+        return 1
+    records = receipt.get("attempts", [])
+    record = next(
+        (item for item in records if isinstance(item, dict) and item.get("attempt") == attempt),
+        None,
+    )
+    if record is None or record.get("process_exit_code") != 0:
+        print("recovery requires a completed model attempt with process_exit_code 0")
+        return 1
+    accepted_output = artifact_dir / "model-output.json"
+    draft_path = artifact_dir / "model-source-draft.md"
+    _write_json(accepted_output, output)
+    draft_path.write_text(render_model_draft(job, output, ingest_date), encoding="utf-8")
+    record["validation_errors_before_recovery"] = record.get("validation_errors", [])
+    record["retry_reason_before_recovery"] = record.get("retry_reason")
+    record["status"] = "accepted_after_deterministic_repair"
+    record["validation_errors"] = []
+    record["retry_reason"] = None
+    receipt.update(
+        {
+            "status": "success",
+            "process_exit_code": 0,
+            "output_path": accepted_output.relative_to(root).as_posix(),
+            "draft_path": draft_path.relative_to(root).as_posix(),
+            "events_path": record["events_path"],
+            "stderr_path": record["stderr_path"],
+            "grounding_quotes": output["grounding_quotes"],
+            "validation": [
+                {"command": "recover_attempt_validate_model_output", "passed": True}
+            ],
+            "token_usage": record.get("token_usage"),
+            "token_usage_unavailable_reason": (
+                None
+                if record.get("token_usage") is not None
+                else "Recovered attempt event stream omitted usage."
+            ),
+            "quote_line_repairs": receipt.get("quote_line_repairs", 0)
+            + quote_repairs,
+            "raw_link_repairs": receipt.get("raw_link_repairs", 0)
+            + raw_link_repairs,
+            "mandatory_tag_repairs": receipt.get("mandatory_tag_repairs", 0)
+            + tag_repairs,
+            "recovered_from_attempt": attempt,
+            "recovery_finished_at": utc_now(),
+        }
+    )
+    _write_json(receipt_path, receipt)
+    return 0
 
 
 def run_worker(
@@ -239,6 +323,7 @@ def run_worker(
     usages: List[Optional[Dict[str, Any]]] = []
     total_quote_repairs = 0
     total_raw_link_repairs = 0
+    total_tag_repairs = 0
     last_result: Any = None
     last_attempt_dir: Optional[Path] = None
     last_output: Optional[Dict[str, Any]] = None
@@ -303,6 +388,7 @@ def run_worker(
                         total_quote_repairs += repair_quote_bounds(raw_text, output)
                         if repair_raw_link(job, output):
                             total_raw_link_repairs += 1
+                        total_tag_repairs += repair_mandatory_tags(output)
                         _write_json(output_path, output)
                         errors.extend(validate_model_output(root, job, output))
                 except json.JSONDecodeError as exc:
@@ -360,6 +446,7 @@ def run_worker(
                     "token_usage_unavailable_reason": None if cumulative is not None else "Codex event stream omitted usage.",
                     "quote_line_repairs": total_quote_repairs,
                     "raw_link_repairs": total_raw_link_repairs,
+                    "mandatory_tag_repairs": total_tag_repairs,
                     "page_profile": profile,
                 }
                 _write_json(artifact_dir / "model-worker-receipt.json", receipt)
@@ -396,6 +483,7 @@ def run_worker(
         "token_usage_unavailable_reason": None if cumulative is not None else "Codex event stream omitted usage.",
         "quote_line_repairs": total_quote_repairs,
         "raw_link_repairs": total_raw_link_repairs,
+        "mandatory_tag_repairs": total_tag_repairs,
         "page_profile": profile,
     }
     _write_json(artifact_dir / "model-worker-receipt.json", failed)
@@ -406,7 +494,10 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--job", required=True)
     parser.add_argument("--ingest-date", required=True)
+    parser.add_argument("--recover-attempt", type=int)
     args = parser.parse_args()
+    if args.recover_attempt:
+        return recover_attempt(ROOT, Path(args.job), args.ingest_date, args.recover_attempt)
     return run_worker(ROOT, Path(args.job), args.ingest_date)
 
 
