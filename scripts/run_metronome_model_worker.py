@@ -198,12 +198,11 @@ def repair_mandatory_tags(output: Dict[str, Any]) -> int:
     normalized: List[str] = []
     seen = set()
     for tag in tags:
-        value = str(tag)
-        key = value.lower()
-        if key in seen:
+        value = re.sub(r"[^a-z0-9]+", "-", str(tag).strip().lower()).strip("-")
+        if not value or value in seen:
             continue
-        seen.add(key)
-        normalized.append("metronome" if key == "metronome" else value)
+        seen.add(value)
+        normalized.append(value)
     if "metronome" not in seen:
         normalized.insert(0, "metronome")
     if normalized == tags:
@@ -325,6 +324,10 @@ def run_worker(
 
     raw_text = (root / job["raw_path"]).read_text(encoding="utf-8")
     profile = build_page_profile(raw_text)
+    concept_dir = root / "wiki/concepts/metronome"
+    profile["existing_metronome_concept_slugs"] = sorted(
+        path.stem for path in concept_dir.glob("*.md") if path.is_file()
+    )
     artifact_dir = root / job["artifact_dir"]
     artifact_dir.mkdir(parents=True, exist_ok=True)
     template = (root / PROMPT_PATH).read_text(encoding="utf-8")

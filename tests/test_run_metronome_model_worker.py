@@ -135,11 +135,22 @@ class ModelWorkerRunnerTests(unittest.TestCase):
             output["proposed_raw_link"],
         )
 
-    def test_mandatory_metronome_tag_is_repaired_locally(self):
-        output = {"suggested_tags": ["Metronome", "events", "EVENTS"]}
+    def test_tags_are_repaired_to_unique_lowercase_kebab_case(self):
+        output = {
+            "suggested_tags": [
+                "Usage Events",
+                "usage_events",
+                "USAGE-EVENTS",
+                "",
+                "Invoices & Credits!",
+            ]
+        }
 
         self.assertEqual(1, repair_mandatory_tags(output))
-        self.assertEqual(["metronome", "events"], output["suggested_tags"])
+        self.assertEqual(
+            ["metronome", "usage-events", "invoices-credits"],
+            output["suggested_tags"],
+        )
         self.assertEqual(0, repair_mandatory_tags(output))
 
     def test_retry_receipt_sums_usage_and_keeps_rejected_reason(self):

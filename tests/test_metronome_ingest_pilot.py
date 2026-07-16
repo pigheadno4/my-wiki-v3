@@ -30,6 +30,9 @@ class MetronomeIngestPilotTests(unittest.TestCase):
         raw = root / "raw" / "metronome" / "guides" / "home.md"
         raw.parent.mkdir(parents=True)
         raw.write_text("alpha\nbeta\ngamma\ndelta\n", encoding="utf-8")
+        concepts = root / "wiki" / "concepts" / "metronome"
+        concepts.mkdir(parents=True)
+        (concepts / "metronome-event-ingestion.md").write_text("---\n", encoding="utf-8")
         return root
 
     def valid_job(self):
@@ -393,6 +396,36 @@ class MetronomeIngestPilotTests(unittest.TestCase):
         output["details"][0]["facts"][0]["evidence_quote_ids"] = ["missing"]
         errors = validate_model_output(root, job, output)
         self.assertTrue(any("undefined grounding quote" in error for error in errors))
+
+    def test_model_output_rejects_noncanonical_tags(self):
+        root = self.make_root()
+        job = self.valid_model_job()
+        output = self.valid_model_output(job)
+        output["suggested_tags"] = ["metronome", "Usage Events", "usage_events", ""]
+
+        errors = validate_model_output(root, job, output)
+
+        self.assertTrue(any("lowercase kebab-case" in error for error in errors))
+        self.assertTrue(any("unique nonempty" in error for error in errors))
+
+    def test_model_output_reports_unknown_metronome_concepts_for_sol(self):
+        root = self.make_root()
+        job = self.valid_model_job()
+        output = self.valid_model_output(job)
+        output["suggested_metronome_concepts"] = [
+            "metronome-event-ingestion",
+            "metronome-unknown-concept",
+        ]
+
+        errors = validate_model_output(root, job, output)
+
+        self.assertTrue(
+            any(
+                "unknown existing Metronome concept for Sol review: metronome-unknown-concept"
+                in error
+                for error in errors
+            )
+        )
 
     def test_render_model_draft_preserves_evidence_and_raw_link(self):
         job = self.valid_model_job()

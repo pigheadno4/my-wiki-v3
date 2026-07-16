@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Sequence
 
 COMMIT_RE = re.compile(r"^[0-9a-f]{7,40}$")
 RAW_LINK_RE = re.compile(r"^\[\[([^|\]]+)\|[^\]]+\]\]$")
+TAG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 LUNA_MODEL = "gpt-5.6-luna"
 SOL_MODEL = "gpt-5.6-sol"
 TERRA_MODEL = "gpt-5.6-terra"
@@ -492,11 +493,26 @@ def validate_model_output(
     tags = output.get("suggested_tags", [])
     if not isinstance(tags, list) or "metronome" not in tags:
         errors.append("model output: suggested_tags must include metronome")
+    if isinstance(tags, list):
+        if any(not isinstance(tag, str) or not TAG_RE.fullmatch(tag) for tag in tags):
+            errors.append("model output: suggested_tags must use lowercase kebab-case")
+        if any(not tag for tag in tags) or len(tags) != len(set(tags)):
+            errors.append("model output: suggested_tags must be unique nonempty values")
     concepts = output.get("suggested_metronome_concepts", [])
     if not isinstance(concepts, list) or any(
         not str(item).startswith("metronome-") for item in concepts
     ):
         errors.append("model output: concepts must use metronome-prefixed slugs")
+    if isinstance(concepts, list):
+        concept_dir = root / "wiki/concepts/metronome"
+        existing_concepts = {
+            path.stem for path in concept_dir.glob("*.md") if path.is_file()
+        }
+        for concept in sorted(set(str(item) for item in concepts) - existing_concepts):
+            errors.append(
+                "model output: unknown existing Metronome concept for Sol review: "
+                f"{concept}"
+            )
     expected_target = str(job.get("raw_path", ""))
     if expected_target.endswith(".md"):
         expected_target = expected_target[:-3]
