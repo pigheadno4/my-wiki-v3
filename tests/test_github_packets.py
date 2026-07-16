@@ -6,6 +6,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,6 +14,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from github_git import ResolvedRef  # noqa: E402
 from github_packets import (  # noqa: E402
+    PacketError,
     VersionIndex,
     build_baseline_packet,
     build_comparison_packet,
@@ -136,6 +138,154 @@ class GitHubPacketTests(unittest.TestCase):
         self.assertEqual("@scope/widgets", prior.package)
         self.assertEqual("1.0.0", prior.version)
 
+    def test_multi_package_sha_retains_each_alias_namespace_for_prior_selection(self):
+        first = self.snapshot(
+            "a" * 40,
+            "1.0.0",
+            aliases=("@scope-a/widgets@1.0.0", "@scope-b/widgets@1.0.0"),
+            package="@scope-a/widgets",
+        )
+        index = record_snapshot(self.empty_index(), first)
+        current = self.snapshot("b" * 40, "2.0.0", package="@scope-b/widgets").ref
+
+        prior = select_prior(index, current)
+
+        self.assertIsNotNone(prior)
+        self.assertEqual("a" * 40, prior.sha)
+
+    def test_load_version_index_rejects_unknown_or_malformed_schema(self):
+        path = self.version_index_path()
+        valid = self.version_index_json()
+        cases = {
+            "unknown top-level key": {**valid, "unexpected": True},
+            "missing versions": {"repo_id": "acme/widgets"},
+            "boolean version list": {"repo_id": "acme/widgets", "versions": True},
+            "unknown entry key": self.entry_with(valid, unexpected="value"),
+            "missing entry key": self.entry_without(valid, "version"),
+            "boolean scalar": self.entry_with(valid, capture_revision=True),
+            "malformed sha": self.entry_with(valid, sha="a" * 39),
+            "malformed ref": self.entry_with(valid, ref_kind="package-version", ref_name="bad tag"),
+            "malformed branch ref": self.entry_with(
+                valid, ref_kind="branch", ref_name="@", version="@", package=""
+            ),
+            "malformed version": self.entry_with(valid, version="not-a-version"),
+            "duplicate aliases": self.entry_with(
+                valid, aliases=["@scope/widgets@1.0.0", "@scope/widgets@1.0.0"]
+            ),
+            "unsorted aliases": self.entry_with(
+                valid, aliases=["z", "@scope/widgets@1.0.0"]
+            ),
+            "malformed alias": self.entry_with(valid, aliases=["@"]),
+            "duplicate changelog": self.entry_with(
+                valid,
+                changelog_paths=[
+                    "raw/github/acme/widgets/snapshots/v1/files/CHANGELOG.md",
+                    "raw/github/acme/widgets/snapshots/v1/files/CHANGELOG.md",
+                ],
+            ),
+            "conflicting sha entries": {
+                "repo_id": "acme/widgets",
+                "versions": [valid["versions"][0], valid["versions"][0]],
+            },
+            "repo mismatch": {**valid, "repo_id": "other/widgets"},
+        }
+
+        for label, document in cases.items():
+            with self.subTest(label=label):
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(json.dumps(document), encoding="utf-8")
+                with self.assertRaises(PacketError):
+                    load_version_index(path, "acme/widgets")
+
+        path.write_text(
+            '{"repo_id":"acme/widgets","repo_id":"other/widgets","versions":[]}',
+            encoding="utf-8",
+        )
+        with self.assertRaises(PacketError):
+            load_version_index(path, "acme/widgets")
+
+    def test_load_version_index_rejects_evidence_paths_outside_or_through_symlink(self):
+        path = self.version_index_path()
+        valid = self.version_index_json()
+        unsafe_paths = (
+            "/tmp/outside",
+            "../raw/github/acme/widgets/snapshots/v1",
+            "raw/github/acme/other/snapshots/v1",
+        )
+        for field in ("snapshot_path", "release_notes_path", "changelog_paths"):
+            for unsafe_path in unsafe_paths:
+                with self.subTest(field=field, path=unsafe_path):
+                    updates = {field: unsafe_path}
+                    if field == "changelog_paths":
+                        updates[field] = [unsafe_path]
+                    document = self.entry_with(valid, **updates)
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_text(json.dumps(document), encoding="utf-8")
+                    with self.assertRaises(PacketError):
+                        load_version_index(path, "acme/widgets")
+
+        evidence_root = self.root / "raw" / "github" / "acme" / "widgets"
+        evidence_root.mkdir(parents=True)
+        outside = self.root / "outside"
+        outside.mkdir()
+        (evidence_root / "snapshots").symlink_to(outside, target_is_directory=True)
+        document = self.entry_with(
+            valid, snapshot_path="raw/github/acme/widgets/snapshots/v1"
+        )
+        path.write_text(json.dumps(document), encoding="utf-8")
+        with self.assertRaises(PacketError):
+            load_version_index(path, "acme/widgets")
+
+    def test_packet_root_must_be_tracking_github_without_raw_or_symlink_escape(self):
+        raw_packet_root = self.root / "raw" / "github" / "packets"
+        with self.assertRaises(PacketError):
+            build_baseline_packet(self.config, self.snapshot("a" * 40), raw_packet_root)
+        self.assertFalse(raw_packet_root.exists())
+
+        outside = self.root / "outside"
+        outside.mkdir()
+        symlink_root = self.root / "tracking" / "github"
+        symlink_root.parent.mkdir(parents=True)
+        symlink_root.symlink_to(outside, target_is_directory=True)
+        escaped_packet_root = symlink_root / "repos" / "acme" / "widgets" / "packets"
+        with self.assertRaises(PacketError):
+            build_baseline_packet(self.config, self.snapshot("b" * 40), escaped_packet_root)
+        self.assertFalse(any(outside.iterdir()))
+
+    def test_packet_retry_reuses_valid_artifacts_without_resetting_state_events(self):
+        record = self.snapshot("a" * 40)
+        packet = build_baseline_packet(self.config, record, self.packet_root)
+        events = packet.directory / "state-events.jsonl"
+        approved = json.dumps({"packet_id": packet.packet_id, "state": "approved"}) + "\n"
+        events.write_text(events.read_text(encoding="utf-8") + approved, encoding="utf-8")
+
+        retried = build_baseline_packet(self.config, record, self.packet_root)
+
+        self.assertEqual(packet, retried)
+        self.assertTrue(events.read_text(encoding="utf-8").endswith(approved))
+
+    def test_packet_write_failure_cleans_temporary_sibling_without_publishing_packet(self):
+        record = self.snapshot("a" * 40)
+
+        with mock.patch("github_packets._write_text_atomic", side_effect=OSError("injected")):
+            with self.assertRaises(OSError):
+                build_baseline_packet(self.config, record, self.packet_root)
+
+        self.assertFalse((self.packet_root / "baseline-1.0.0-aaaaaaa").exists())
+        if self.packet_root.exists():
+            self.assertEqual((".packet.lock",), tuple(sorted(path.name for path in self.packet_root.iterdir())))
+
+    def test_conflicting_existing_packet_fails_without_overwrite(self):
+        record = self.snapshot("a" * 40)
+        packet = build_baseline_packet(self.config, record, self.packet_root)
+        packet_json = packet.directory / "packet.json"
+        packet_json.write_text("{}\n", encoding="utf-8")
+
+        with self.assertRaises(PacketError):
+            build_baseline_packet(self.config, record, self.packet_root)
+
+        self.assertEqual("{}\n", packet_json.read_text(encoding="utf-8"))
+
     def test_branch_prior_selection_uses_previous_capture_on_the_same_branch(self):
         first = self.snapshot("a" * 40, package="")
         first = SnapshotRecord(
@@ -257,6 +407,41 @@ class GitHubPacketTests(unittest.TestCase):
         tag(self.repo, "@scope/widgets@1.1.0")
         current_record = self.build_promoted_snapshot(current_sha, "1.1.0", "# Notes 1.1.0\n")
         return prior_record, current_record
+
+    def version_index_path(self):
+        return self.root / "tracking" / "github" / "repos" / "acme" / "widgets" / "version-index.json"
+
+    def version_index_json(self):
+        return {
+            "repo_id": "acme/widgets",
+            "versions": [
+                {
+                    "aliases": ["@scope/widgets@1.0.0"],
+                    "capture_kind": "canonical",
+                    "changelog_paths": [
+                        "raw/github/acme/widgets/snapshots/v1/files/CHANGELOG.md"
+                    ],
+                    "collection_date": "2026-07-15",
+                    "package": "@scope/widgets",
+                    "ref_kind": "package-version",
+                    "ref_name": "@scope/widgets@1.0.0",
+                    "release_notes_path": "raw/github/acme/widgets/snapshots/v1/release-notes.md",
+                    "sha": "a" * 40,
+                    "snapshot_path": "raw/github/acme/widgets/snapshots/v1",
+                    "version": "1.0.0",
+                }
+            ],
+        }
+
+    def entry_with(self, document, **updates):
+        result = dict(document)
+        result["versions"] = [dict(document["versions"][0], **updates)]
+        return result
+
+    def entry_without(self, document, field):
+        entry = dict(document["versions"][0])
+        del entry[field]
+        return {"repo_id": document["repo_id"], "versions": [entry]}
 
     def build_promoted_snapshot(self, sha, version, release_notes):
         ref = ResolvedRef(
