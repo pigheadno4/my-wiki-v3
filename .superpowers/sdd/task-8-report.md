@@ -153,3 +153,64 @@ exit 0
 Task 9 remains responsible for repository-wide validation, and Task 11 remains
 the hard user-gated live PayPal pilot. The Task 8 owner/company namespace
 boundary is resolved.
+
+## Final Transaction and Reporting Remediation
+
+Code and tests commit: `4426f56` (`fix: make github collection rollback ownership safe`)
+
+### RED
+
+The snapshot ownership API was specified before implementation. The focused
+snapshot run failed at import because `promote_snapshot_with_result` and
+`rollback_promoted_snapshot` did not exist.
+
+The collector/reporting regressions were then added before their production
+changes:
+
+```text
+python3 -m unittest tests.test_github_reporting tests.test_collect_github_repos -v
+Ran 26 tests
+FAILED (errors=6)
+```
+
+The failures covered the missing promotion result and rollback interfaces, the
+missing repository collection lock, and global rejection of equal packet IDs
+from different repositories. A subsequent 38-test run retained two expected
+rollback fixture failures until macOS `/var` aliases were canonicalized to
+their `/private/var` filesystem identities.
+
+### GREEN
+
+```text
+python3 -m unittest tests.test_github_snapshot tests.test_github_reporting tests.test_collect_github_repos -v
+Ran 81 tests in 0.305s
+OK
+
+python3 -m unittest discover -s tests -v
+Ran 225 tests in 6.978s
+OK
+
+git diff --check
+exit 0
+```
+
+### Corrected Contracts
+
+- `promote_snapshot(record) -> Path` remains compatible. The collector uses a
+  promotion result whose created/reused decision is made while the stable
+  promotion lock is held; only created results carry rollback tokens.
+- A rollback token binds the exact target path, device, and inode. Rollback
+  reacquires the stable repository promotion lock, verifies that identity, and
+  removes content descriptor-relatively. Reused, replaced, missing, or foreign
+  targets are never deleted as owned snapshots.
+- One stable no-follow `.collection.lock` serializes non-dry-run collection for
+  each `config.id`. The focused regression observes it held during version-index
+  load, packet publication, and rollback. Dry-run remains zero-mutation.
+- Failure recovery restores or removes the prior version index before snapshot
+  cleanup. Index rollback failure is surfaced, skips snapshot deletion, and
+  leaves the updated index and referenced snapshot together. Snapshot rollback
+  failures are also surfaced rather than swallowed.
+- Packet lifecycle mappings now use deterministic repository-plus-packet keys.
+  Equal packet IDs in PayPal and Stripe repositories retain independent states
+  in both `status.json` and ingest Markdown; duplicate IDs within one repository
+  remain invalid.
