@@ -80,17 +80,76 @@ exit 0
   failures exit 1, and CLI or registry misuse exits 2.
 - Default tests mock Git/GitHub operations and do not contact the network.
 
+## Integration Remediation
+
+Integration fix commit: `b6d3b6b` (`fix: reconcile github collection state and evidence`)
+
+### RED
+
+The owned reporting, collector, and packet tests were extended before the
+implementation changes. The first focused run reproduced every integration
+finding:
+
+```text
+python3 -m unittest tests.test_github_reporting tests.test_collect_github_repos tests.test_github_packets -v
+Ran 41 tests in 1.513s
+FAILED (failures=6, errors=27)
+```
+
+The failures showed that both concurrent transitions succeeded, a symlinked
+packet directory was followed, foreign history was projected, same-SHA release
+aliases returned `unchanged`, future discovery missed alias representations,
+and owner/company evidence paths were rejected. A second focused RED test
+proved that supplemental changelog evidence could not round-trip through the
+version index.
+
+### GREEN
+
+```text
+python3 -m unittest tests.test_github_reporting tests.test_collect_github_repos tests.test_github_packets -v
+Ran 52 tests in 1.500s
+OK
+
+python3 -m unittest discover -s tests -v
+Ran 219 tests in 6.926s
+OK
+
+git diff --check
+exit 0
+```
+
+### Corrected Contracts
+
+- Packet transitions open the exact
+  `tracking/github/repos/<config.id>/packets` namespace without following
+  symlinks and hold the stable packet lock across strict history read, current
+  state validation, and append. Concurrent identical transitions serialize, so
+  only one succeeds.
+- `validate_packet_history` is the single strict history validator used by both
+  transitions and status reconstruction. It requires an exact
+  `awaiting-review` initial event, matching packet identity and `from_state`,
+  exact event shapes, and legal transitions; invalid history aborts status
+  generation rather than being skipped.
+- A newly observed release alias on an indexed SHA creates an immutable
+  supplement when exact GitHub notes are available, retains one canonical
+  version entry for the SHA, merges aliases and supplemental evidence, and
+  creates one independent awaiting-review packet without changing canonical raw
+  bytes.
+- Future discovery recognizes matching versions represented by canonical refs,
+  aliases, or the entry package identity for package and plain tracks. It still
+  enforces package namespace, selected major, and prerelease policy, so unrelated
+  packages are excluded and indexed releases are not repeatedly selected.
+- Tracking identity remains GitHub owner/repository from `config.id`. Raw
+  evidence validation now receives `RepoConfig` and derives
+  `raw/github/<config.company>/<repo-name>/`. The enabled PayPal examples-style
+  regression proves collection and packet generation across the split
+  namespaces without network access.
+- Existing dry-run zero-mutation, terminal-event reconciliation, snapshot/index
+  rollback, Python 3.9 compatibility, and Task 7 packet publication hardening
+  remain covered by the focused and full suites.
+
 ## Remaining Boundary
 
-Task 8 provides orchestration and monitoring. Task 9 remains responsible for
-repository-wide validation, and Task 11 remains the hard user-gated live PayPal
-pilot.
-
-The existing Task 7 packet/evidence path validation derives its namespace from
-the owner portion of `config.id`, while snapshot routing derives it from
-`config.company`. The enabled registry row
-`paypal-examples/v6-web-sdk-sample-integration` uses company `paypal`, so its
-snapshot path and Task 7 packet expectation differ. Task 8 detects the packet
-failure and rolls back its new snapshot/index, but collection of that row cannot
-complete until the pre-existing namespace contract is aligned outside Task 8's
-owned files.
+Task 9 remains responsible for repository-wide validation, and Task 11 remains
+the hard user-gated live PayPal pilot. The Task 8 owner/company namespace
+boundary is resolved.
