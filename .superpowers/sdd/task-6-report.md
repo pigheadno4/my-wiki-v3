@@ -41,3 +41,9 @@
 - JSON validation now requires the complete authoritative schema with exact built-in types, rejects unknown keys and duplicate JSON keys, and validates saved and excluded entry shapes before trusting identity, release, or copied-file evidence.
 - Checkout enumeration, candidate size inspection, binary detection, and copying use no-follow descriptor traversal. Deterministic leaf and parent-component swap tests prove outside bytes are neither selected nor copied.
 - The stable `.promotion.lock` is released only when its descriptor closes; there is no explicit `LOCK_UN` or lock-path deletion. A failed promotion leaves the stable lock reusable by the next promotion.
+
+## Empty Snapshot Fix Evidence
+
+- RED: focused Task 6 run executed 39 tests with 2 expected failures for empty-selection and release-notes-only snapshots because `files/` was missing.
+- GREEN: `build_snapshot` now creates the required empty `files/` directory before copying; focused tests passed 39/39, the full suite passed 166/166, and `git diff --check` passed.
+- Regression coverage validates and promotes an empty selection, and validates and promotes a release-notes-only capture while preserving the exact release-note bytes.
