@@ -817,29 +817,44 @@ def _repository_root_from_tracking_path(
         raise PacketError("tracking path contains parent traversal")
     if required_name is not None and lexical.name != required_name:
         raise PacketError("version index path has an invalid filename")
-    for ancestor in (lexical,) + tuple(lexical.parents):
-        if ancestor.name == "github" and ancestor.parent.name == "tracking":
-            repository_root = ancestor.parent.parent
-            expected = repository_root / "tracking" / "github"
-            if ancestor != expected:
-                continue
-            expected_relative = (
-                Path("repos") / owner_repo if required_name is not None else Path()
-            )
-            if required_name is not None and lexical != ancestor / expected_relative / required_name:
-                raise PacketError("version index is outside its repository tracking namespace")
-            if required_name is None:
-                try:
-                    lexical.relative_to(ancestor)
-                except ValueError as error:
-                    raise PacketError("packet root is outside tracking/github") from error
-            _require_no_symlink_components(repository_root, lexical)
-            try:
-                lexical.resolve().relative_to(ancestor.resolve())
-            except ValueError as error:
-                raise PacketError("tracking path escapes through a symlink") from error
-            return repository_root
-    raise PacketError("path must live under tracking/github")
+    tracking_roots = tuple(
+        ancestor
+        for ancestor in (lexical,) + tuple(lexical.parents)
+        if ancestor.name == "github"
+        and ancestor.parent.name == "tracking"
+        and ancestor == ancestor.parent.parent / "tracking" / "github"
+    )
+    if len(tracking_roots) != 1:
+        raise PacketError("path must identify one tracking/github workspace")
+    ancestor = tracking_roots[0]
+    repository_root = ancestor.parent.parent
+    expected_namespace = ancestor / "repos" / owner_repo
+    if required_name is not None:
+        if lexical != expected_namespace / required_name:
+            raise PacketError("version index is outside its repository tracking namespace")
+    else:
+        try:
+            relative = lexical.relative_to(expected_namespace)
+        except ValueError as error:
+            raise PacketError("packet root is outside its repository tracking namespace") from error
+        if _repeats_repository_namespace(relative, owner_repo):
+            raise PacketError("packet root repeats its repository tracking namespace")
+    _require_no_symlink_components(repository_root, lexical)
+    try:
+        lexical.resolve().relative_to(ancestor.resolve())
+    except ValueError as error:
+        raise PacketError("tracking path escapes through a symlink") from error
+    return repository_root
+
+
+def _repeats_repository_namespace(relative: Path, owner_repo: Path) -> bool:
+    parts = relative.parts
+    markers = (owner_repo.parts, ("repos",) + owner_repo.parts)
+    return any(
+        tuple(parts[index : index + len(marker)]) == marker
+        for marker in markers
+        for index in range(len(parts) - len(marker) + 1)
+    )
 
 
 def _safe_evidence_path(path: str, evidence_root: Path) -> Path:

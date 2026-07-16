@@ -252,6 +252,42 @@ class GitHubPacketTests(unittest.TestCase):
             build_baseline_packet(self.config, self.snapshot("b" * 40), escaped_packet_root)
         self.assertFalse(any(outside.iterdir()))
 
+    def test_packet_root_must_match_configured_repository_namespace(self):
+        invalid_roots = (
+            self.root / "tracking" / "github" / "repos" / "other-company" / "other-repo" / "packets",
+            self.root / "tracking" / "github" / "repos" / "acme" / "other-repo" / "packets",
+            self.root / "tracking" / "github" / "acme" / "widgets" / "packets",
+            self.root / "tracking" / "github" / "repos" / "acme" / "widgets" / "repos" / "acme" / "widgets" / "packets",
+            self.root / "tracking" / "github" / "repos" / "acme" / "widgets" / "tracking" / "github" / "repos" / "acme" / "widgets" / "packets",
+        )
+        invalid_shas = ("a", "b", "c", "d", "e")
+        for sha_prefix, packet_root in zip(invalid_shas, invalid_roots):
+            with self.subTest(packet_root=packet_root):
+                with self.assertRaises(PacketError):
+                    build_baseline_packet(
+                        self.config,
+                        self.snapshot(sha_prefix * 40),
+                        packet_root,
+                    )
+
+        valid_roots = (
+            self.root / "tracking" / "github" / "repos" / "acme" / "widgets",
+            self.root / "tracking" / "github" / "repos" / "acme" / "widgets" / "packets",
+            self.root / "tracking" / "github" / "repos" / "acme" / "widgets" / "packets" / "review",
+        )
+        valid_shas = ("f", "0", "1")
+        for sha_prefix, packet_root in zip(valid_shas, valid_roots):
+            with self.subTest(packet_root=packet_root):
+                packet = build_baseline_packet(
+                    self.config,
+                    self.snapshot(sha_prefix * 40),
+                    packet_root,
+                )
+                self.assertTrue(packet.directory.is_dir())
+                self.assertTrue(
+                    all(path.startswith("raw/github/acme/widgets/") for path in packet.required_reading)
+                )
+
     def test_packet_retry_reuses_valid_artifacts_without_resetting_state_events(self):
         record = self.snapshot("a" * 40)
         packet = build_baseline_packet(self.config, record, self.packet_root)
