@@ -47,3 +47,9 @@
 - RED: focused Task 6 run executed 39 tests with 2 expected failures for empty-selection and release-notes-only snapshots because `files/` was missing.
 - GREEN: `build_snapshot` now creates the required empty `files/` directory before copying; focused tests passed 39/39, the full suite passed 166/166, and `git diff --check` passed.
 - Regression coverage validates and promotes an empty selection, and validates and promotes a release-notes-only capture while preserving the exact release-note bytes.
+
+## Final Task 6 Cleanup Edge Evidence
+
+- RED: the deterministic mkdir-failure regression test ran alone and failed because one newly created `snapshot-*` staging directory remained after required `files/` creation raised `OSError`.
+- GREEN: `files/` creation now runs inside the existing `build_snapshot` cleanup boundary; focused snapshot tests passed 40/40, the full suite passed 167/167, and `git diff --check` passed.
+- Empty-selection behavior is unchanged: the required `files/` directory is still created unconditionally inside the protected block and is validated and promoted by the existing regression coverage.
