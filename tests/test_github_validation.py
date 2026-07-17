@@ -12,7 +12,8 @@ SCRIPTS = ROOT / "scripts"
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
-from github_packets import PacketRecord  # noqa: E402
+from github_git import ResolvedRef  # noqa: E402
+from github_packets import PacketRecord, build_baseline_packet  # noqa: E402
 from github_registry import load_registry  # noqa: E402
 from github_reporting import (  # noqa: E402
     packet_state_key,
@@ -20,6 +21,7 @@ from github_reporting import (  # noqa: E402
     render_ingest_status,
 )
 from github_validation import inspect_github, validate_github  # noqa: E402
+from github_snapshot import SnapshotFile, SnapshotRecord  # noqa: E402
 
 
 class GitHubValidationTests(unittest.TestCase):
@@ -195,40 +197,71 @@ class GitHubValidationTests(unittest.TestCase):
         path = self.root / "tracking/github/repos/paypal/paypal-js/version-index.json"
         return path, json.loads(path.read_text(encoding="utf-8"))["versions"]
 
+    def set_version_track(self, selector, include_prerelease):
+        path = self.root / "tracking/github/repo-registry.toml"
+        text = path.read_text(encoding="utf-8")
+        text = text.replace(
+            'selector = "package:@paypal/paypal-js@10"',
+            'selector = "' + selector + '"',
+        )
+        text = text.replace(
+            "include_prerelease = false",
+            "include_prerelease = " + ("true" if include_prerelease else "false"),
+        )
+        path.write_text(text, encoding="utf-8")
+
     def write_packet(self, version, sha, snapshot, state):
-        packet_id = "baseline-" + version + "-" + sha[:7]
-        directory = (
-            self.root
-            / "tracking/github/repos/paypal/paypal-js/packets"
-            / packet_id
-        )
-        directory.mkdir(parents=True, exist_ok=True)
         snapshot_path = snapshot.as_posix()
-        required = (
-            snapshot_path + "/snapshot.md",
-            snapshot_path + "/release-notes.md",
-            snapshot_path + "/files/CHANGELOG.md",
+        snapshot_directory = self.root / snapshot
+        manifest_path, metadata = self.read_manifest(snapshot)
+        del manifest_path
+        release_notes = metadata["release_notes"]
+        snapshot_stat = snapshot_directory.stat()
+        record = SnapshotRecord(
+            repo_id="paypal/paypal-js",
+            ref=ResolvedRef(
+                repo_id="paypal/paypal-js",
+                ref_kind=metadata["ref"]["kind"],
+                ref_name=metadata["ref"]["name"],
+                sha=sha,
+                version=version,
+                aliases=tuple(metadata["ref"]["aliases"]),
+                upstream_commit_time=metadata["ref"]["upstream_commit_time"],
+                release_published_at=metadata["ref"]["release_published_at"],
+            ),
+            capture_kind=metadata["capture_kind"],
+            capture_revision=metadata["capture_revision"],
+            collection_date=metadata["collection_date"],
+            staging_path=snapshot_directory,
+            target_path=snapshot_directory,
+            files=tuple(
+                SnapshotFile(
+                    path=item["path"],
+                    sha256=item["sha256"],
+                    size=item["size"],
+                    purpose=item["purpose"],
+                )
+                for item in metadata["files"]
+            ),
+            repository_url=metadata["repository"]["url"],
+            company=metadata["repository"]["company"],
+            repo_type=metadata["repository"]["type"],
+            release_notes_source_url=release_notes["source_url"],
+            release_notes_published_at=release_notes["published_at"],
+            release_notes_sha256=release_notes["sha256"],
+            release_notes_size=release_notes["size"],
+            staging_device=snapshot_stat.st_dev,
+            staging_inode=snapshot_stat.st_ino,
         )
-        entry = self.version_entry(version, sha, snapshot)
-        contract = {
-            "changed_files": [],
-            "from": None,
-            "from_snapshot": "",
-            "initial_state": "awaiting-review",
-            "packet_id": packet_id,
-            "packet_type": "baseline",
-            "repo_id": "paypal/paypal-js",
-            "required_reading": list(required),
-            "to": entry,
-            "to_snapshot": snapshot_path,
-        }
-        (directory / "packet.json").write_text(
-            json.dumps(contract, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        config = load_registry(
+            self.root / "tracking/github/repo-registry.toml"
+        )[0]
+        packet = build_baseline_packet(
+            config,
+            record,
+            self.root / "tracking/github/repos/paypal/paypal-js/packets",
         )
-        (directory / "ingest-packet.md").write_text("# GitHub ingest packet\n", encoding="utf-8")
-        (directory / "changed-files.txt").write_text("\n", encoding="utf-8")
-        (directory / "source-diff.patch").write_text("\n", encoding="utf-8")
-        history = [{"packet_id": packet_id, "state": "awaiting-review"}]
+        history = [{"packet_id": packet.packet_id, "state": "awaiting-review"}]
         transitions = {
             "approved": (("awaiting-review", "approved"),),
             "ingesting": (("awaiting-review", "approved"), ("approved", "ingesting")),
@@ -241,23 +274,17 @@ class GitHubValidationTests(unittest.TestCase):
         }
         for from_state, to_state in transitions.get(state, ()):
             history.append(
-                {"from_state": from_state, "packet_id": packet_id, "state": to_state}
+                {
+                    "from_state": from_state,
+                    "packet_id": packet.packet_id,
+                    "state": to_state,
+                }
             )
-        (directory / "state-events.jsonl").write_text(
+        (packet.directory / "state-events.jsonl").write_text(
             "".join(json.dumps(event, sort_keys=True) + "\n" for event in history),
             encoding="utf-8",
         )
-        return PacketRecord(
-            packet_id=packet_id,
-            repo_id="paypal/paypal-js",
-            packet_type="baseline",
-            from_snapshot="",
-            to_snapshot=snapshot_path,
-            required_reading=required,
-            changed_files=(),
-            initial_state="awaiting-review",
-            directory=directory,
-        )
+        return packet
 
     def write_collection_events(self, version, sha, packet_id):
         selector = "tag:@paypal/paypal-js@" + version
@@ -415,6 +442,66 @@ class GitHubValidationTests(unittest.TestCase):
 
     def test_supplement_for_existing_canonical_sha_is_valid(self):
         self.make_valid_tree()
+        supplement = self.write_snapshot(
+            "10.1.5",
+            "a" * 40,
+            "2026-07-16",
+            capture_kind="supplement",
+            capture_revision=1,
+            suffix="-r1",
+        )
+        index_path, entries = self.read_version_entries()
+        del index_path
+        entries[0]["release_notes_path"] = supplement.as_posix() + "/release-notes.md"
+        entries[0]["changelog_paths"] = sorted(
+            entries[0]["changelog_paths"]
+            + [supplement.as_posix() + "/files/CHANGELOG.md"]
+        )
+        self.write_version_index(tuple(entries))
+
+        report = inspect_github(self.root)
+
+        self.assertEqual(2, len(report.snapshot_paths))
+        self.assertEqual([], validate_github(report))
+
+    def test_supplement_directory_requires_matching_revision_suffix(self):
+        self.make_valid_tree()
+        self.write_snapshot(
+            "10.1.5",
+            "a" * 40,
+            "2026-07-16",
+            capture_kind="supplement",
+            capture_revision=2,
+            suffix="-r1",
+        )
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(
+            any("supplement revision disagrees with directory suffix" in error for error in errors),
+            errors,
+        )
+
+    def test_supplement_directory_requires_r_suffix(self):
+        self.make_valid_tree()
+        self.write_snapshot(
+            "10.1.5",
+            "a" * 40,
+            "2026-07-16",
+            capture_kind="supplement",
+            capture_revision=1,
+            suffix="-supplement",
+        )
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(
+            any("supplement directory must end in -rN" in error for error in errors),
+            errors,
+        )
+
+    def test_supplement_revision_is_unique_per_canonical_sha(self):
+        self.make_valid_tree()
         self.write_snapshot(
             "10.1.5",
             "a" * 40,
@@ -423,11 +510,18 @@ class GitHubValidationTests(unittest.TestCase):
             capture_revision=1,
             suffix="-r1",
         )
+        self.write_snapshot(
+            "10.1.5",
+            "a" * 40,
+            "2026-07-17",
+            capture_kind="supplement",
+            capture_revision=1,
+            suffix="-r1",
+        )
 
-        report = inspect_github(self.root)
+        errors = validate_github(inspect_github(self.root))
 
-        self.assertEqual(2, len(report.snapshot_paths))
-        self.assertEqual([], validate_github(report))
+        self.assertTrue(any("duplicate supplement revision 1" in error for error in errors), errors)
 
     def test_missing_required_reading_file_is_rejected(self):
         self.make_valid_tree()
@@ -477,6 +571,204 @@ class GitHubValidationTests(unittest.TestCase):
 
         self.assertTrue(any("invalid packet state" in error for error in errors), errors)
 
+    def test_packet_directory_rejects_unexpected_real_directory(self):
+        self.make_valid_tree()
+        packet = next(self.root.glob("tracking/github/repos/*/*/packets/*"))
+        (packet / "unexpected").mkdir()
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("packet has an invalid file set" in error for error in errors), errors)
+
+    def test_packet_type_must_be_producer_supported(self):
+        self.make_valid_tree()
+        contract_path = next(self.root.glob("tracking/github/repos/*/*/packets/*/packet.json"))
+        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+        contract["packet_type"] = "summary"
+        contract_path.write_text(json.dumps(contract, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("unsupported packet type" in error for error in errors), errors)
+
+    def test_packet_endpoint_must_equal_full_index_entry(self):
+        self.make_valid_tree()
+        contract_path = next(self.root.glob("tracking/github/repos/*/*/packets/*/packet.json"))
+        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+        contract["to"]["aliases"] = ["forged@10.1.5"]
+        contract_path.write_text(json.dumps(contract, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("packet endpoint disagrees with version index" in error for error in errors), errors)
+
+    def test_baseline_packet_must_not_have_from_endpoint(self):
+        self.make_valid_tree()
+        contract_path = next(self.root.glob("tracking/github/repos/*/*/packets/*/packet.json"))
+        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+        contract["from"] = contract["to"]
+        contract["from_snapshot"] = contract["to_snapshot"]
+        contract_path.write_text(json.dumps(contract, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("baseline packet has a from endpoint" in error for error in errors), errors)
+
+    def test_packet_changed_files_must_be_safe_name_status_records(self):
+        self.make_valid_tree()
+        packet = next(self.root.glob("tracking/github/repos/*/*/packets/*"))
+        contract_path = packet / "packet.json"
+        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+        contract["changed_files"] = ["M\t../../outside.md"]
+        contract_path.write_text(json.dumps(contract, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        (packet / "changed-files.txt").write_text("M\t../../outside.md\n", encoding="utf-8")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("unsafe changed file" in error for error in errors), errors)
+
+    def test_baseline_packet_must_not_have_changed_files(self):
+        self.make_valid_tree()
+        packet = next(self.root.glob("tracking/github/repos/*/*/packets/*"))
+        contract_path = packet / "packet.json"
+        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+        contract["changed_files"] = ["M\tREADME.md"]
+        contract_path.write_text(json.dumps(contract, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        (packet / "changed-files.txt").write_text("M\tREADME.md\n", encoding="utf-8")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("baseline packet has changed files" in error for error in errors), errors)
+
+    def test_changed_files_text_must_equal_packet_contract(self):
+        self.make_valid_tree()
+        packet = next(self.root.glob("tracking/github/repos/*/*/packets/*"))
+        (packet / "changed-files.txt").write_text("M\tREADME.md\n", encoding="utf-8")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("changed-files.txt disagrees with packet contract" in error for error in errors), errors)
+
+    def test_packet_required_reading_is_exact_and_deterministic(self):
+        self.make_valid_tree()
+        contract_path = next(self.root.glob("tracking/github/repos/*/*/packets/*/packet.json"))
+        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+        contract["required_reading"] = list(reversed(contract["required_reading"]))
+        contract_path.write_text(json.dumps(contract, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("required reading disagrees with producer contract" in error for error in errors), errors)
+
+    def test_delta_required_reading_includes_changed_snapshot_evidence(self):
+        self.make_valid_tree()
+        prior = self.write_snapshot("10.0.0", "b" * 40, "2026-07-01")
+        index_path, entries = self.read_version_entries()
+        del index_path
+        prior_entry = self.version_entry("10.0.0", "b" * 40, prior)
+        entries.append(prior_entry)
+        self.write_version_index(tuple(entries))
+        contract_path = next(self.root.glob("tracking/github/repos/*/*/packets/*/packet.json"))
+        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+        contract["packet_type"] = "delta"
+        contract["from"] = prior_entry
+        contract["from_snapshot"] = prior.as_posix()
+        contract["changed_files"] = ["M\tREADME.md"]
+        contract["required_reading"] = [
+            prior.as_posix() + "/snapshot.md",
+            contract["to_snapshot"] + "/snapshot.md",
+            prior.as_posix() + "/release-notes.md",
+            contract["to"]["release_notes_path"],
+            prior.as_posix() + "/files/CHANGELOG.md",
+            contract["to"]["changelog_paths"][0],
+        ]
+        contract_path.write_text(json.dumps(contract, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        (contract_path.parent / "changed-files.txt").write_text("M\tREADME.md\n", encoding="utf-8")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("required reading disagrees with producer contract" in error for error in errors), errors)
+
+    def test_packet_markdown_must_equal_producer_rendering(self):
+        self.make_valid_tree()
+        packet = next(self.root.glob("tracking/github/repos/*/*/packets/*"))
+        (packet / "ingest-packet.md").write_text("# GitHub ingest packet\n", encoding="utf-8")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("ingest-packet.md disagrees with packet contract" in error for error in errors), errors)
+
+    def test_baseline_packet_patch_must_be_empty(self):
+        self.make_valid_tree()
+        packet = next(self.root.glob("tracking/github/repos/*/*/packets/*"))
+        (packet / "source-diff.patch").write_text("forged patch\n", encoding="utf-8")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("baseline source-diff.patch must be empty" in error for error in errors), errors)
+
+    def test_collection_run_missing_terminal_is_rejected(self):
+        self.make_valid_tree()
+        run = self.root / "tracking/github/runs/test.jsonl"
+        events = [
+            json.loads(line)
+            for line in run.read_text(encoding="utf-8").splitlines()
+        ]
+        run.write_text(json.dumps(events[0], sort_keys=True) + "\n", encoding="utf-8")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("must have exactly one terminal event; found 0" in error for error in errors), errors)
+
+    def test_collection_run_duplicate_terminal_is_rejected(self):
+        self.make_valid_tree()
+        run = self.root / "tracking/github/runs/test.jsonl"
+        events = [
+            json.loads(line)
+            for line in run.read_text(encoding="utf-8").splitlines()
+        ]
+        run.write_text(
+            "".join(json.dumps(event, sort_keys=True) + "\n" for event in events + [events[-1]]),
+            encoding="utf-8",
+        )
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("must have exactly one terminal event; found 2" in error for error in errors), errors)
+
+    def test_unregistered_tracking_repository_namespace_is_rejected(self):
+        self.make_valid_tree()
+        orphan = self.root / "tracking/github/repos/acme/widgets/version-index.json"
+        orphan.parent.mkdir(parents=True)
+        orphan.write_text('{"repo_id":"acme/widgets","versions":[]}\n', encoding="utf-8")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("tracking repository is not registered" in error for error in errors), errors)
+
+    @unittest.skipUnless(hasattr(os, "symlink"), "symlinks are unavailable")
+    def test_symlinked_tracking_repository_namespace_is_rejected(self):
+        self.make_valid_tree()
+        owner = self.root / "tracking/github/repos/acme"
+        outside = self.root / "outside-tracking"
+        outside.mkdir()
+        owner.parent.mkdir(parents=True, exist_ok=True)
+        owner.symlink_to(outside, target_is_directory=True)
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("tracking/github/repos/acme: unsafe symlink" in error for error in errors), errors)
+
+    def test_unsafe_nested_tracking_artifact_is_rejected(self):
+        self.make_valid_tree()
+        nested = self.root / "tracking/github/repos/paypal/paypal-js/orphan/version-index.json"
+        nested.parent.mkdir(parents=True)
+        nested.write_text('{"repo_id":"paypal/paypal-js","versions":[]}\n', encoding="utf-8")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("unexpected tracking repository entry" in error for error in errors), errors)
+
     def test_source_raw_files_are_newest_first(self):
         self.make_valid_tree()
         older = self.write_snapshot("10.0.0", "b" * 40, "2026-07-01")
@@ -509,6 +801,131 @@ class GitHubValidationTests(unittest.TestCase):
         self.assertTrue(any(link.endswith("/release-notes") for link in links), links)
         self.assertEqual([], validate_github(report))
 
+    def test_source_release_ledger_requires_one_row_per_declared_release(self):
+        self.make_valid_tree()
+        source = next(self.root.glob("wiki/sources/*/github/*.md"))
+        text = source.read_text(encoding="utf-8")
+        row = next(line for line in text.splitlines() if line.startswith("| 10.1.5 |"))
+        source.write_text(text.replace(row + "\n", ""), encoding="utf-8")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("release snapshot must have exactly one ledger row" in error for error in errors), errors)
+
+    def test_source_release_ledger_version_must_match_snapshot(self):
+        self.make_valid_tree()
+        source = next(self.root.glob("wiki/sources/*/github/*.md"))
+        source.write_text(
+            source.read_text(encoding="utf-8").replace("| 10.1.5 |", "| 10.1.4 |"),
+            encoding="utf-8",
+        )
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("ledger version disagrees with snapshot" in error for error in errors), errors)
+
+    def test_source_release_ledger_changelog_must_match_manifest(self):
+        self.make_valid_tree()
+        source = next(self.root.glob("wiki/sources/*/github/*.md"))
+        text = source.read_text(encoding="utf-8")
+        snapshot = next(self.root.glob("raw/github/*/*/snapshots/*")).relative_to(self.root).as_posix()
+        text = text.replace(
+            "[[" + snapshot + "/files/CHANGELOG|changelog]]",
+            "[[" + snapshot + "/release-notes|changelog]]",
+        )
+        source.write_text(text, encoding="utf-8")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("ledger changelog disagrees with snapshot manifest" in error for error in errors), errors)
+
+    def test_source_release_ledger_cannot_claim_available_notes_absent(self):
+        self.make_valid_tree()
+        source = next(self.root.glob("wiki/sources/*/github/*.md"))
+        text = source.read_text(encoding="utf-8")
+        snapshot = next(self.root.glob("raw/github/*/*/snapshots/*")).relative_to(self.root).as_posix()
+        text = text.replace(
+            "[[" + snapshot + "/release-notes|release notes]]",
+            "absent from immutable snapshot",
+        )
+        source.write_text(text, encoding="utf-8")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("ledger release notes disagree with snapshot manifest" in error for error in errors), errors)
+
+    def test_source_release_notes_absence_is_allowed_when_manifest_is_explicit(self):
+        self.make_valid_tree()
+        snapshot = next(self.root.glob("raw/github/*/*/snapshots/*"))
+        manifest_path, metadata = self.read_manifest(snapshot.relative_to(self.root))
+        metadata["release_notes"] = None
+        (snapshot / "release-notes.md").unlink()
+        self.write_manifest(manifest_path.parent, metadata)
+        index_path, entries = self.read_version_entries()
+        del index_path
+        entries[0]["release_notes_path"] = ""
+        self.write_version_index(tuple(entries))
+        source = next(self.root.glob("wiki/sources/*/github/*.md"))
+        snapshot_path = snapshot.relative_to(self.root).as_posix()
+        source.write_text(
+            source.read_text(encoding="utf-8").replace(
+                "[[" + snapshot_path + "/release-notes|release notes]]",
+                "absent from immutable snapshot",
+            ),
+            encoding="utf-8",
+        )
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertFalse(
+            any("ledger release notes" in error for error in errors),
+            errors,
+        )
+
+    def test_source_release_ledger_order_must_match_raw_files(self):
+        self.make_valid_tree()
+        older = self.write_snapshot("10.0.0", "b" * 40, "2026-07-01")
+        index_path, entries = self.read_version_entries()
+        del index_path
+        entries.append(self.version_entry("10.0.0", "b" * 40, older))
+        self.write_version_index(tuple(entries))
+        latest = next(self.root.glob("raw/github/*/*/snapshots/2026-07-15-*"))
+        source = self.write_source((latest, older))
+        text = source.read_text(encoding="utf-8")
+        older_path = older.as_posix()
+        older_row = (
+            "| 10.0.0 | [["
+            + older_path
+            + "/snapshot|snapshot]] | [["
+            + older_path
+            + "/files/CHANGELOG|changelog]] | [["
+            + older_path
+            + "/release-notes|release notes]] |\n"
+        )
+        latest_row = next(line for line in text.splitlines() if line.startswith("| 10.1.5 |")) + "\n"
+        text = text.replace(latest_row, older_row + latest_row)
+        source.write_text(text, encoding="utf-8")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("ledger row order disagrees with raw_files" in error for error in errors), errors)
+
+    def test_source_rejects_cross_repository_raw_link(self):
+        self.make_valid_tree()
+        source = next(self.root.glob("wiki/sources/*/github/*.md"))
+        foreign = self.root / "raw/github/paypal/other/snapshots/foreign/snapshot.md"
+        foreign.parent.mkdir(parents=True)
+        foreign.write_text("foreign\n", encoding="utf-8")
+        source.write_text(
+            source.read_text(encoding="utf-8")
+            + "\n- [[raw/github/paypal/other/snapshots/foreign/snapshot|foreign]]\n",
+            encoding="utf-8",
+        )
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("cross-repository raw link" in error for error in errors), errors)
+
     def test_status_disagreement_is_rejected(self):
         self.make_valid_tree()
         path = self.root / "tracking/github/status.json"
@@ -525,6 +942,82 @@ class GitHubValidationTests(unittest.TestCase):
 
         self.assertTrue(
             any("prerelease in stable-only track" in error for error in validate_github(report))
+        )
+
+    def test_exact_package_prerelease_selector_allows_exact_prerelease(self):
+        self.make_valid_tree(index_version="10.2.0-beta.1")
+        self.set_version_track(
+            "package:@paypal/paypal-js@10.2.0-beta.1", include_prerelease=False
+        )
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertFalse(any("prerelease in stable-only track" in error for error in errors), errors)
+
+    def test_wrong_package_exact_prerelease_selector_does_not_allow_prerelease(self):
+        self.make_valid_tree(index_version="10.2.0-beta.1")
+        self.set_version_track(
+            "package:@paypal/react-paypal-js@10.2.0-beta.1",
+            include_prerelease=False,
+        )
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("prerelease in stable-only track" in error for error in errors), errors)
+
+    def test_include_prerelease_track_allows_matching_prerelease(self):
+        self.make_valid_tree(index_version="10.2.0-beta.1")
+        self.set_version_track(
+            "package:@paypal/paypal-js@10", include_prerelease=True
+        )
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertFalse(any("prerelease in stable-only track" in error for error in errors), errors)
+
+    def test_index_changelog_paths_must_equal_snapshot_manifest_evidence(self):
+        self.make_valid_tree()
+        index_path, entries = self.read_version_entries()
+        entries[0]["changelog_paths"] = []
+        self.write_version_index(tuple(entries))
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(
+            any("index release evidence disagrees with snapshot manifest" in error for error in errors),
+            errors,
+        )
+
+    def test_index_release_notes_path_must_equal_explicit_manifest_absence(self):
+        self.make_valid_tree()
+        snapshot = next(self.root.glob("raw/github/*/*/snapshots/*"))
+        manifest_path, metadata = self.read_manifest(snapshot.relative_to(self.root))
+        metadata["release_notes"] = None
+        (snapshot / "release-notes.md").unlink()
+        self.write_manifest(manifest_path.parent, metadata)
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(
+            any("index release evidence disagrees with snapshot manifest" in error for error in errors),
+            errors,
+        )
+
+    def test_index_release_evidence_cannot_point_at_another_snapshot(self):
+        self.make_valid_tree()
+        other = self.write_snapshot("10.0.0", "b" * 40, "2026-07-01")
+        index_path, entries = self.read_version_entries()
+        del index_path
+        entries[0]["release_notes_path"] = other.as_posix() + "/release-notes.md"
+        entries[0]["changelog_paths"] = [other.as_posix() + "/files/CHANGELOG.md"]
+        entries.append(self.version_entry("10.0.0", "b" * 40, other))
+        self.write_version_index(tuple(entries))
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(
+            any("index release evidence disagrees with snapshot manifest" in error for error in errors),
+            errors,
         )
 
     def test_retained_snapshot_missing_from_version_index_is_rejected(self):

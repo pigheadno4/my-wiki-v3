@@ -6,18 +6,32 @@ from dataclasses import dataclass
 import json
 import os
 from pathlib import Path
+import re
 import stat
 from typing import Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
 from github_git import ResolvedRef
-from github_packets import PacketRecord, VersionIndex, load_version_index
+from github_packets import (
+    PacketError,
+    PacketRecord,
+    VersionEntry,
+    VersionIndex,
+    _changed_evidence_paths,
+    _entry_from_json,
+    _evidence_root_from_packet_root,
+    _render_packet_markdown,
+    _required_reading,
+    load_version_index,
+)
 from github_registry import RepoConfig, VersionTrack, load_registry
 from github_reporting import (
     COLLECTION_TERMINAL,
+    CollectionReconciliationError,
     StateTransitionError,
     packet_state_key,
     render_collection_status,
     render_ingest_status,
+    validate_collection_run,
     validate_packet_history,
 )
 from github_snapshot import (
@@ -27,7 +41,7 @@ from github_snapshot import (
     _validate_metadata_schema,
     validate_staged_snapshot,
 )
-from github_versions import matches_semver, parse_package_tag, parse_semver
+from github_versions import SemanticVersion, matches_semver, parse_package_tag, parse_semver
 from validate_wiki import WIKILINK_RE, parse_frontmatter, split_frontmatter
 
 
@@ -50,6 +64,9 @@ _PACKET_KEYS = {
     "to",
     "to_snapshot",
 }
+_SUPPLEMENT_SUFFIX = re.compile(r"-r([0-9]+)$")
+_CHANGED_STATUS = re.compile(r"^(?:[ADMTUXB]|[RC][0-9]{0,3})$")
+_PACKET_TYPES = {"baseline", "comparison", "delta"}
 
 
 @dataclass(frozen=True)
@@ -67,6 +84,9 @@ class SnapshotInspection:
     relative_path: str
     repo_id: str
     company: str
+    aliases: Tuple[str, ...]
+    ref_name: str
+    package: str
     version: str
     sha: str
     ref_kind: str
@@ -100,8 +120,20 @@ class PacketInspection:
     path: Path
     record: PacketRecord
     current_state: str
+    from_entry: Optional[VersionEntry]
+    to_entry: VersionEntry
     to_sha: str
     to_version: str
+
+
+@dataclass(frozen=True)
+class ReleaseLedgerRow:
+    version: str
+    snapshot_link: str
+    changelog_links: Tuple[str, ...]
+    release_notes_links: Tuple[str, ...]
+    changelog_absent: bool
+    release_notes_absent: bool
 
 
 @dataclass(frozen=True)
@@ -110,6 +142,7 @@ class SourceRecord:
     repo_id: str
     raw_files: Tuple[str, ...]
     evidence_links: Tuple[str, ...]
+    release_ledger: Tuple[ReleaseLedgerRow, ...]
 
 
 @dataclass(frozen=True)
@@ -117,6 +150,12 @@ class DashboardRecord:
     path: Path
     kind: str
     content: object
+
+
+@dataclass(frozen=True)
+class CollectionRunInspection:
+    path: Path
+    events: Tuple[Mapping[str, object], ...]
 
 
 @dataclass(frozen=True)
@@ -134,6 +173,7 @@ class GitHubReport:
     repositories: Tuple[RepoConfig, ...]
     snapshots: Tuple[SnapshotInspection, ...]
     packets: Tuple[PacketInspection, ...]
+    collection_runs: Tuple[CollectionRunInspection, ...]
     collection_events: Tuple[Mapping[str, object], ...]
 
 
@@ -160,10 +200,14 @@ def inspect_github(root: Path) -> GitHubReport:
     snapshots, release_records = _inspect_snapshots(
         root, configs_by_namespace, errors
     )
+    _inspect_tracking_repository_namespaces(root, repositories, errors)
     version_indexes = _inspect_version_indexes(root, repositories, errors)
     packets = _inspect_packets(root, repositories, errors)
-    collection_events = _inspect_collection_events(root, errors)
-    sources = _inspect_sources(root, snapshots, errors)
+    collection_runs = _inspect_collection_runs(root, errors)
+    collection_events = tuple(
+        event for run in collection_runs for event in run.events
+    )
+    sources = _inspect_sources(root, snapshots, release_records, errors)
     dashboards = _inspect_dashboards(root, errors)
     pending = tuple(
         packet.record.packet_id
@@ -184,6 +228,7 @@ def inspect_github(root: Path) -> GitHubReport:
         repositories=repositories,
         snapshots=snapshots,
         packets=packets,
+        collection_runs=collection_runs,
         collection_events=collection_events,
     )
 
@@ -192,6 +237,7 @@ def validate_github(report: GitHubReport) -> List[str]:
     """Return all structural and release-retention errors in one report."""
     errors = list(report.inspection_errors)
     _validate_snapshot_identities(report, errors)
+    _validate_collection_runs(report, errors)
     _validate_version_indexes(report, errors)
     _validate_packets(report, errors)
     _validate_sources(report, errors)
@@ -363,6 +409,9 @@ def _inspect_snapshot(
             relative_path=relative_snapshot,
             repo_id=repository["id"],
             company=repository["company"],
+            aliases=tuple(ref["aliases"]),
+            ref_name=ref["name"],
+            package=_snapshot_package(ref["name"], ref["aliases"]),
             version=ref["version"],
             sha=ref["sha"],
             ref_kind=ref["kind"],
@@ -445,6 +494,87 @@ def _inspect_version_indexes(
     return tuple(records)
 
 
+def _inspect_tracking_repository_namespaces(
+    root: Path, repositories: Sequence[RepoConfig], errors: List[str]
+) -> None:
+    repos_root = root / "tracking/github/repos"
+    if not repos_root.exists() and not repos_root.is_symlink():
+        return
+    if not _safe_directory(root, repos_root):
+        errors.append(_rel(root, repos_root) + ": unsafe symlink or non-directory")
+        return
+    registered = {tuple(Path(repo.id).parts) for repo in repositories}
+    try:
+        owners = sorted(os.scandir(repos_root), key=lambda item: item.name)
+    except OSError:
+        errors.append(_rel(root, repos_root) + ": tracking repositories could not be inspected")
+        return
+    for owner in owners:
+        owner_path = Path(owner.path)
+        if owner.is_symlink():
+            errors.append(_rel(root, owner_path) + ": unsafe symlink")
+            continue
+        if not owner.is_dir(follow_symlinks=False):
+            errors.append(_rel(root, owner_path) + ": unexpected tracking owner entry")
+            continue
+        try:
+            repo_entries = sorted(os.scandir(owner_path), key=lambda item: item.name)
+        except OSError:
+            errors.append(_rel(root, owner_path) + ": tracking owner could not be inspected")
+            continue
+        for repo_entry in repo_entries:
+            repo_path = Path(repo_entry.path)
+            if repo_entry.is_symlink():
+                errors.append(_rel(root, repo_path) + ": unsafe symlink")
+                continue
+            if not repo_entry.is_dir(follow_symlinks=False):
+                errors.append(_rel(root, repo_path) + ": unexpected tracking repository entry")
+                continue
+            if (owner.name, repo_entry.name) not in registered:
+                errors.append(_rel(root, repo_path) + ": tracking repository is not registered")
+            _inspect_tracking_repository_entries(root, repo_path, errors)
+
+
+def _inspect_tracking_repository_entries(
+    root: Path, repository: Path, errors: List[str]
+) -> None:
+    try:
+        entries = sorted(os.scandir(repository), key=lambda item: item.name)
+    except OSError:
+        errors.append(_rel(root, repository) + ": tracking repository could not be inspected")
+        return
+    for entry in entries:
+        path = Path(entry.path)
+        if entry.is_symlink():
+            errors.append(_rel(root, path) + ": unsafe symlink")
+        elif entry.name == "version-index.json" and entry.is_file(follow_symlinks=False):
+            continue
+        elif entry.name == "packets" and entry.is_dir(follow_symlinks=False):
+            _inspect_packet_namespace_entries(root, path, errors)
+        else:
+            errors.append(_rel(root, path) + ": unexpected tracking repository entry")
+
+
+def _inspect_packet_namespace_entries(
+    root: Path, packet_root: Path, errors: List[str]
+) -> None:
+    try:
+        entries = sorted(os.scandir(packet_root), key=lambda item: item.name)
+    except OSError:
+        errors.append(_rel(root, packet_root) + ": packet namespace could not be inspected")
+        return
+    for entry in entries:
+        path = Path(entry.path)
+        if entry.is_symlink():
+            errors.append(_rel(root, path) + ": unsafe symlink")
+        elif entry.is_dir(follow_symlinks=False):
+            continue
+        elif entry.name == ".packet.lock" and entry.is_file(follow_symlinks=False):
+            continue
+        else:
+            errors.append(_rel(root, path) + ": unexpected packet namespace entry")
+
+
 def _inspect_packets(
     root: Path, repositories: Sequence[RepoConfig], errors: List[str]
 ) -> Tuple[PacketInspection, ...]:
@@ -472,7 +602,6 @@ def _inspect_packet(
         names = {
             entry.name
             for entry in os.scandir(directory)
-            if entry.is_file(follow_symlinks=False) or entry.is_symlink()
         }
     except OSError:
         errors.append(label + ": packet directory could not be inspected")
@@ -511,6 +640,32 @@ def _inspect_packet(
     ):
         errors.append(label + ": packet contract does not match its namespace")
         return None
+    packet_type = contract["packet_type"]
+    if packet_type not in _PACKET_TYPES:
+        errors.append(label + ": unsupported packet type " + packet_type)
+    try:
+        evidence_root = _evidence_root_from_packet_root(directory.parent, repo)
+        from_entry = (
+            None
+            if contract["from"] is None
+            else _entry_from_json(contract["from"], evidence_root)
+        )
+        to_entry = _entry_from_json(contract["to"], evidence_root)
+    except (PacketError, TypeError) as error:
+        errors.append(label + ": invalid packet endpoint: " + str(error))
+        return None
+    if packet_type == "baseline":
+        if from_entry is not None or contract["from_snapshot"]:
+            errors.append(label + ": baseline packet has a from endpoint")
+    elif from_entry is None or not contract["from_snapshot"]:
+        errors.append(label + ": non-baseline packet is missing its from endpoint")
+    if (
+        (from_entry is not None and contract["from_snapshot"] != from_entry.snapshot_path)
+        or contract["to_snapshot"] != to_entry.snapshot_path
+    ):
+        errors.append(label + ": packet endpoint snapshot fields disagree")
+    if from_entry is not None and from_entry.sha == to_entry.sha:
+        errors.append(label + ": packet endpoints must identify different SHAs")
     record = PacketRecord(
         packet_id=contract["packet_id"],
         repo_id=contract["repo_id"],
@@ -522,6 +677,42 @@ def _inspect_packet(
         initial_state=contract["initial_state"],
         directory=directory,
     )
+    for changed_file in record.changed_files:
+        if not _valid_changed_file(changed_file):
+            errors.append(label + ": unsafe changed file: " + changed_file)
+    if len(set(record.changed_files)) != len(record.changed_files):
+        errors.append(label + ": changed files contain duplicates")
+    if packet_type == "baseline" and record.changed_files:
+        errors.append(label + ": baseline packet has changed files")
+    endpoint_entries = (
+        (to_entry,) if from_entry is None else (from_entry, to_entry)
+    )
+    changed_evidence = (
+        ()
+        if from_entry is None
+        else _changed_evidence_paths(from_entry, to_entry, record.changed_files)
+    )
+    expected_reading = _required_reading(endpoint_entries, changed_evidence)
+    if record.required_reading != expected_reading:
+        errors.append(label + ": required reading disagrees with producer contract")
+    try:
+        changed_text = _safe_read_text(root, directory / "changed-files.txt")
+        packet_markdown = _safe_read_text(root, directory / "ingest-packet.md")
+        source_diff = _safe_read_text(root, directory / "source-diff.patch")
+    except ValueError as error:
+        errors.append(label + ": packet generated file is unsafe: " + str(error))
+        changed_text = ""
+        packet_markdown = ""
+        source_diff = ""
+    expected_changed_text = "\n".join(record.changed_files) + "\n"
+    if changed_text != expected_changed_text:
+        errors.append(label + ": changed-files.txt disagrees with packet contract")
+    if packet_markdown != _render_packet_markdown(record, from_entry, to_entry):
+        errors.append(label + ": ingest-packet.md disagrees with packet contract")
+    if packet_type == "baseline" and source_diff != "\n":
+        errors.append(label + ": baseline source-diff.patch must be empty")
+    elif source_diff and not source_diff.endswith("\n"):
+        errors.append(label + ": source-diff.patch is not newline terminated")
     try:
         events = tuple(
             _require_json_object(_load_json_strict(line), "packet state event")
@@ -545,35 +736,27 @@ def _inspect_packet(
         if not _safe_regular_file(root, candidate):
             errors.append(label + ": required reading is missing or unsafe: " + path)
 
-    target = contract.get("to")
-    to_sha = ""
-    to_version = ""
-    if type(target) is not dict:
-        errors.append(label + ": packet target entry is invalid")
-    else:
-        if type(target.get("sha")) is str:
-            to_sha = target["sha"]
-        if type(target.get("version")) is str:
-            to_version = target["version"]
     return PacketInspection(
         path=directory,
         record=record,
         current_state=current_state,
-        to_sha=to_sha,
-        to_version=to_version,
+        from_entry=from_entry,
+        to_entry=to_entry,
+        to_sha=to_entry.sha,
+        to_version=to_entry.version,
     )
 
 
-def _inspect_collection_events(
+def _inspect_collection_runs(
     root: Path, errors: List[str]
-) -> Tuple[Mapping[str, object], ...]:
+) -> Tuple[CollectionRunInspection, ...]:
     runs = root / "tracking/github/runs"
     if not runs.exists() and not runs.is_symlink():
         return ()
     if not _safe_directory(root, runs):
         errors.append(_rel(root, runs) + ": collection runs namespace is unsafe")
         return ()
-    events: List[Mapping[str, object]] = []
+    runs_found: List[CollectionRunInspection] = []
     try:
         entries = sorted(os.scandir(runs), key=lambda item: item.name)
     except OSError:
@@ -587,17 +770,22 @@ def _inspect_collection_events(
         if path.suffix != ".jsonl":
             continue
         try:
-            for line in _safe_read_text(root, path).splitlines():
-                events.append(
+            events = tuple(
                     _require_json_object(_load_json_strict(line), "collection event")
-                )
+                    for line in _safe_read_text(root, path).splitlines()
+            )
         except (ValueError, json.JSONDecodeError) as error:
             errors.append(_rel(root, path) + ": invalid collection event: " + str(error))
-    return tuple(events)
+            continue
+        runs_found.append(CollectionRunInspection(path=path, events=events))
+    return tuple(runs_found)
 
 
 def _inspect_sources(
-    root: Path, snapshots: Sequence[SnapshotInspection], errors: List[str]
+    root: Path,
+    snapshots: Sequence[SnapshotInspection],
+    release_records: Sequence[ReleaseEvidenceRecord],
+    errors: List[str],
 ) -> Tuple[SourceRecord, ...]:
     source_root = root / "wiki/sources"
     if not source_root.is_dir():
@@ -623,7 +811,14 @@ def _inspect_sources(
                 continue
             if path.suffix != ".md":
                 continue
-            record = _inspect_source(root, path, company.name, snapshot_map, errors)
+            record = _inspect_source(
+                root,
+                path,
+                company.name,
+                snapshot_map,
+                {item.snapshot_path: item for item in release_records},
+                errors,
+            )
             if record is not None:
                 records.append(record)
     return tuple(records)
@@ -634,6 +829,7 @@ def _inspect_source(
     path: Path,
     company: str,
     snapshots: Mapping[str, SnapshotInspection],
+    release_records: Mapping[str, ReleaseEvidenceRecord],
     errors: List[str],
 ) -> Optional[SourceRecord]:
     label = _rel(root, path)
@@ -679,6 +875,12 @@ def _inspect_source(
     links = tuple(
         target.strip().rstrip("\\").strip() for target in WIKILINK_RE.findall(body)
     )
+    repository_prefix = ""
+    if len(repo_ids) == 1:
+        repo_id = next(iter(repo_ids))
+        repository_prefix = (
+            "raw/github/" + company + "/" + Path(repo_id).name + "/"
+        )
     for target in links:
         if target in ("snapshot", "CHANGELOG", "release-notes") and snapshot_records:
             errors.append(
@@ -686,6 +888,8 @@ def _inspect_source(
             )
         if not target.startswith("raw/github/"):
             continue
+        if repository_prefix and not target.startswith(repository_prefix):
+            errors.append(label + ": cross-repository raw link: " + target)
         candidate = _safe_workspace_relative(
             root, target + ("" if target.endswith(".md") else ".md")
         )
@@ -705,12 +909,203 @@ def _inspect_source(
                 + ": raw_files snapshot has no path-qualified wikilink: "
                 + raw_file
             )
+    ledger = _parse_release_ledger(body, label, errors)
+    _validate_source_release_ledger(
+        label, snapshot_records, release_records, ledger, errors
+    )
     return SourceRecord(
         path=path,
         repo_id=next(iter(repo_ids)) if len(repo_ids) == 1 else "",
         raw_files=tuple(item for item in raw_files if isinstance(item, str)),
         evidence_links=links,
+        release_ledger=ledger,
     )
+
+
+def _parse_release_ledger(
+    body: str, label: str, errors: List[str]
+) -> Tuple[ReleaseLedgerRow, ...]:
+    lines = body.splitlines()
+    heading = next(
+        (index for index, line in enumerate(lines) if line.strip().lower() == "## release history"),
+        None,
+    )
+    if heading is None:
+        return ()
+    header_index = next(
+        (
+            index
+            for index in range(heading + 1, len(lines))
+            if lines[index].strip()
+        ),
+        None,
+    )
+    if header_index is None or not lines[header_index].lstrip().startswith("|"):
+        errors.append(label + ": release ledger table is missing")
+        return ()
+    headers = [cell.strip().lower() for cell in _markdown_table_cells(lines[header_index])]
+    required = ("version", "snapshot", "changelog", "release notes")
+    if any(name not in headers for name in required):
+        errors.append(label + ": release ledger has invalid columns")
+        return ()
+    indexes = {name: headers.index(name) for name in required}
+    rows: List[ReleaseLedgerRow] = []
+    for line in lines[header_index + 1 :]:
+        stripped = line.strip()
+        if not stripped:
+            if rows:
+                break
+            continue
+        if not stripped.startswith("|"):
+            if rows or stripped.startswith("## "):
+                break
+            continue
+        cells = _markdown_table_cells(line)
+        if cells and all(set(cell.strip()) <= {"-", ":"} for cell in cells):
+            continue
+        if len(cells) <= max(indexes.values()):
+            errors.append(label + ": release ledger row is malformed")
+            continue
+        snapshot_links = _cell_links(cells[indexes["snapshot"]])
+        if len(snapshot_links) != 1:
+            errors.append(label + ": release ledger row must have one snapshot link")
+        changelog_cell = cells[indexes["changelog"]]
+        release_notes_cell = cells[indexes["release notes"]]
+        rows.append(
+            ReleaseLedgerRow(
+                version=cells[indexes["version"]].strip().strip("`"),
+                snapshot_link=snapshot_links[0] if len(snapshot_links) == 1 else "",
+                changelog_links=_cell_links(changelog_cell),
+                release_notes_links=_cell_links(release_notes_cell),
+                changelog_absent=_explicit_absence(changelog_cell),
+                release_notes_absent=_explicit_absence(release_notes_cell),
+            )
+        )
+    return tuple(rows)
+
+
+def _markdown_table_cells(line: str) -> List[str]:
+    content = line.strip()
+    if content.startswith("|"):
+        content = content[1:]
+    if content.endswith("|"):
+        content = content[:-1]
+    cells = []
+    current = []
+    link_depth = 0
+    index = 0
+    while index < len(content):
+        pair = content[index : index + 2]
+        if pair == "[[":
+            link_depth += 1
+            current.extend(pair)
+            index += 2
+            continue
+        if pair == "]]" and link_depth:
+            link_depth -= 1
+            current.extend(pair)
+            index += 2
+            continue
+        if content[index] == "|" and link_depth == 0:
+            cells.append("".join(current).strip())
+            current = []
+        else:
+            current.append(content[index])
+        index += 1
+    cells.append("".join(current).strip())
+    return cells
+
+
+def _cell_links(cell: str) -> Tuple[str, ...]:
+    return tuple(
+        _normalize_evidence_link(target.strip().rstrip("\\").strip())
+        for target in WIKILINK_RE.findall(cell)
+    )
+
+
+def _normalize_evidence_link(target: str) -> str:
+    return target[:-3] if target.endswith(".md") else target
+
+
+def _explicit_absence(cell: str) -> bool:
+    return re.search(r"\babsent\b", cell, re.IGNORECASE) is not None
+
+
+def _validate_source_release_ledger(
+    label: str,
+    snapshots: Sequence[SnapshotInspection],
+    release_records: Mapping[str, ReleaseEvidenceRecord],
+    rows: Sequence[ReleaseLedgerRow],
+    errors: List[str],
+) -> None:
+    releases = [
+        snapshot
+        for snapshot in snapshots
+        if snapshot.ref_kind in ("package-version", "tag")
+    ]
+    expected_order = [
+        snapshot.relative_path + "/snapshot" for snapshot in releases
+    ]
+    actual_order = [row.snapshot_link for row in rows]
+    if actual_order != expected_order and set(actual_order) == set(expected_order):
+        errors.append(label + ": ledger row order disagrees with raw_files")
+    rows_by_snapshot: Dict[str, List[ReleaseLedgerRow]] = {}
+    for row in rows:
+        rows_by_snapshot.setdefault(row.snapshot_link, []).append(row)
+    for snapshot in releases:
+        snapshot_link = snapshot.relative_path + "/snapshot"
+        matching = rows_by_snapshot.get(snapshot_link, ())
+        if len(matching) != 1:
+            errors.append(
+                label
+                + ": release snapshot must have exactly one ledger row: "
+                + snapshot.relative_path
+            )
+            continue
+        row = matching[0]
+        if row.version != snapshot.version:
+            errors.append(label + ": ledger version disagrees with snapshot")
+        evidence = release_records.get(snapshot.relative_path)
+        if evidence is None:
+            continue
+        expected_changelogs = tuple(
+            _normalize_evidence_link(path) for path in evidence.changelog_paths
+        )
+        if expected_changelogs:
+            if row.changelog_links != expected_changelogs or row.changelog_absent:
+                errors.append(
+                    label + ": ledger changelog disagrees with snapshot manifest"
+                )
+        elif (
+            row.changelog_links
+            or not row.changelog_absent
+            or not evidence.changelog_absence_explicit
+        ):
+            errors.append(label + ": ledger changelog absence is not explicit")
+        expected_release_notes = (
+            (_normalize_evidence_link(evidence.release_notes_path),)
+            if evidence.release_notes_path
+            else ()
+        )
+        if expected_release_notes:
+            if (
+                row.release_notes_links != expected_release_notes
+                or row.release_notes_absent
+            ):
+                errors.append(
+                    label
+                    + ": ledger release notes disagree with snapshot manifest"
+                )
+        elif (
+            row.release_notes_links
+            or not row.release_notes_absent
+            or not evidence.release_notes_explicit
+        ):
+            errors.append(label + ": ledger release notes absence is not explicit")
+    expected_set = set(expected_order)
+    for row in rows:
+        if row.snapshot_link not in expected_set:
+            errors.append(label + ": release ledger row is not declared in raw_files")
 
 
 def _inspect_dashboards(
@@ -753,6 +1148,16 @@ def _validate_snapshot_identities(report: GitHubReport, errors: List[str]) -> No
                 errors.append(
                     snapshot.relative_path + ": supplement revision must be positive"
                 )
+            suffix = _SUPPLEMENT_SUFFIX.search(snapshot.path.name)
+            if suffix is None:
+                errors.append(
+                    snapshot.relative_path + ": supplement directory must end in -rN"
+                )
+            elif int(suffix.group(1)) != snapshot.capture_revision:
+                errors.append(
+                    snapshot.relative_path
+                    + ": supplement revision disagrees with directory suffix"
+                )
         else:
             errors.append(snapshot.relative_path + ": invalid capture kind")
     for (repo_id, sha), snapshots in sorted(canonical_by_key.items()):
@@ -768,11 +1173,37 @@ def _validate_snapshot_identities(report: GitHubReport, errors: List[str]) -> No
             errors.append(
                 key[0] + " " + key[1] + ": supplement has no unique canonical snapshot"
             )
+        revisions: Dict[int, List[SnapshotInspection]] = {}
+        for supplement in supplements:
+            revisions.setdefault(supplement.capture_revision, []).append(supplement)
+        for revision, captures in sorted(revisions.items()):
+            if len(captures) > 1:
+                errors.append(
+                    key[0]
+                    + " "
+                    + key[1]
+                    + ": duplicate supplement revision "
+                    + str(revision)
+                )
+
+
+def _validate_collection_runs(report: GitHubReport, errors: List[str]) -> None:
+    for run in report.collection_runs:
+        try:
+            validate_collection_run(run.events)
+        except CollectionReconciliationError as error:
+            errors.append(_rel(report.root, run.path) + ": " + str(error))
 
 
 def _validate_version_indexes(report: GitHubReport, errors: List[str]) -> None:
     indexes = {record.repo.id: record for record in report.version_indexes}
     snapshots_by_path = {item.relative_path: item for item in report.snapshots}
+    release_records_by_path = {
+        item.snapshot_path: item for item in report.release_evidence_records
+    }
+    snapshots_by_sha: Dict[Tuple[str, str], List[SnapshotInspection]] = {}
+    for item in report.snapshots:
+        snapshots_by_sha.setdefault((item.repo_id, item.sha), []).append(item)
     canonical = [
         item for item in report.snapshots if item.capture_kind == "canonical"
     ]
@@ -807,6 +1238,31 @@ def _validate_version_indexes(report: GitHubReport, errors: List[str]) -> None:
                     + entry.version
                     + ": index disagrees with snapshot"
                 )
+            related = sorted(
+                snapshots_by_sha.get((record.repo.id, entry.sha), ()),
+                key=lambda item: item.capture_revision,
+            )
+            related_evidence = [
+                release_records_by_path[item.relative_path]
+                for item in related
+                if item.relative_path in release_records_by_path
+            ]
+            expected_release_notes = ""
+            expected_changelogs = set()
+            for evidence in related_evidence:
+                if evidence.release_notes_path:
+                    expected_release_notes = evidence.release_notes_path
+                expected_changelogs.update(evidence.changelog_paths)
+            if (
+                entry.release_notes_path != expected_release_notes
+                or tuple(entry.changelog_paths) != tuple(sorted(expected_changelogs))
+            ):
+                errors.append(
+                    record.repo.id
+                    + " "
+                    + entry.version
+                    + ": index release evidence disagrees with snapshot manifest"
+                )
             for evidence in (entry.release_notes_path,) + tuple(
                 entry.changelog_paths
             ):
@@ -819,39 +1275,66 @@ def _validate_version_indexes(report: GitHubReport, errors: List[str]) -> None:
                         + entry.version
                         + ": indexed release evidence is missing"
                     )
-            for track in record.repo.version_tracks:
-                if _entry_matches_track(entry.package, entry.version, track):
-                    parsed = parse_semver(entry.version)
-                    if (
-                        parsed is not None
-                        and parsed.prerelease
-                        and not track.include_prerelease
-                    ):
-                        errors.append(
-                            record.repo.id
-                            + " "
-                            + entry.version
-                            + ": prerelease in stable-only track "
-                            + track.selector
-                        )
+            parsed = parse_semver(entry.version)
+            if (
+                parsed is not None
+                and parsed.prerelease
+                and not _prerelease_entry_allowed(entry.package, parsed, record.repo.version_tracks)
+            ):
+                selector = (
+                    record.repo.version_tracks[0].selector
+                    if record.repo.version_tracks
+                    else "<no configured selector>"
+                )
+                errors.append(
+                    record.repo.id
+                    + " "
+                    + entry.version
+                    + ": prerelease in stable-only track "
+                    + selector
+                )
 
 
-def _entry_matches_track(package: str, version: str, track: VersionTrack) -> bool:
-    selector = track.selector
-    candidate = parse_semver(version)
-    if candidate is None:
-        return False
-    if selector.startswith("package:"):
-        parsed = parse_package_tag(selector[8:])
-        if parsed is None or parsed[0] != package:
-            return False
-        target = parse_semver(parsed[1])
-    else:
-        target = parse_semver(selector)
-    return (
-        target is not None
-        and matches_semver(candidate, target, include_prerelease=True)
-    )
+def _snapshot_package(ref_name: str, aliases: Sequence[str]) -> str:
+    direct = parse_package_tag(ref_name)
+    if direct is not None:
+        return direct[0]
+    packages = {
+        parsed[0]
+        for parsed in (parse_package_tag(value) for value in aliases)
+        if parsed is not None
+    }
+    return next(iter(packages)) if len(packages) == 1 else ""
+
+
+def _prerelease_entry_allowed(
+    package: str, candidate: SemanticVersion, tracks: Sequence[VersionTrack]
+) -> bool:
+    for track in tracks:
+        selector = track.selector
+        if selector.startswith("package:"):
+            parsed_package = parse_package_tag(selector[8:])
+            if parsed_package is None:
+                continue
+            selector_package, selector_version = parsed_package
+            if selector_package != package:
+                continue
+            target = parse_semver(selector_version)
+        else:
+            if package:
+                continue
+            target = parse_semver(selector)
+        if target is None:
+            continue
+        if target.prerelease:
+            if target.is_exact and matches_semver(candidate, target, include_prerelease=True):
+                return True
+            continue
+        if track.include_prerelease and matches_semver(
+            candidate, target, include_prerelease=True
+        ):
+            return True
+    return False
 
 
 def _validate_packets(report: GitHubReport, errors: List[str]) -> None:
@@ -868,27 +1351,60 @@ def _validate_packets(report: GitHubReport, errors: List[str]) -> None:
     }
     for packet in report.packets:
         record = packet.record
+        label = _rel(report.root, packet.path)
+        for endpoint in tuple(
+            item for item in (packet.from_entry, packet.to_entry) if item is not None
+        ):
+            indexed_entry = indexed.get((record.repo_id, endpoint.sha))
+            if indexed_entry is None:
+                errors.append(label + ": packet endpoint is missing from version index")
+            elif (
+                indexed_entry.ref_kind != endpoint.ref_kind
+                or indexed_entry.ref_name != endpoint.ref_name
+                or indexed_entry.version != endpoint.version
+                or indexed_entry.package != endpoint.package
+            ):
+                errors.append(label + ": packet endpoint disagrees with version index")
+            endpoint_snapshot = snapshots.get(endpoint.snapshot_path)
+            if endpoint_snapshot is None:
+                errors.append(label + ": packet endpoint snapshot is missing")
+            elif (
+                endpoint_snapshot.repo_id != record.repo_id
+                or endpoint_snapshot.sha != endpoint.sha
+                or endpoint_snapshot.version != endpoint.version
+                or endpoint_snapshot.ref_kind != endpoint.ref_kind
+                or endpoint_snapshot.ref_name != endpoint.ref_name
+                or endpoint_snapshot.package != endpoint.package
+                or endpoint_snapshot.aliases != endpoint.aliases
+                or endpoint_snapshot.collection_date != endpoint.collection_date
+                or endpoint_snapshot.capture_kind != endpoint.capture_kind
+                or endpoint_snapshot.release_notes_path
+                != endpoint.release_notes_path
+                or endpoint_snapshot.changelog_paths != endpoint.changelog_paths
+            ):
+                errors.append(
+                    label
+                    + ": packet endpoint disagrees with version index or snapshot manifest"
+                )
         target = snapshots.get(record.to_snapshot)
         if target is None:
             errors.append(
-                _rel(report.root, packet.path) + ": packet target snapshot is missing"
+                label + ": packet target snapshot is missing"
             )
         elif target.sha != packet.to_sha:
             errors.append(
-                _rel(report.root, packet.path)
-                + ": packet target disagrees with snapshot"
+                label + ": packet target disagrees with snapshot"
             )
         if packet.to_sha and (record.repo_id, packet.to_sha) not in indexed:
             errors.append(
-                _rel(report.root, packet.path) + ": packet target is missing from index"
+                label + ": packet target is missing from index"
             )
         if packet.current_state == "ingested" and target is not None:
             source = sources_by_repo.get(record.repo_id)
             raw_file = target.relative_path[4:] + "/snapshot.md"
             if source is None or raw_file not in source.raw_files:
                 errors.append(
-                    _rel(report.root, packet.path)
-                    + ": ingested packet is absent from source raw_files"
+                    label + ": ingested packet is absent from source raw_files"
                 )
 
 
@@ -1045,6 +1561,26 @@ def _safe_directories(
         elif entry.is_dir(follow_symlinks=False):
             result.append(child)
     return tuple(result)
+
+
+def _valid_changed_file(value: str) -> bool:
+    fields = value.split("\t")
+    if not fields or _CHANGED_STATUS.fullmatch(fields[0]) is None:
+        return False
+    expected_fields = 3 if fields[0].startswith(("R", "C")) else 2
+    if len(fields) != expected_fields:
+        return False
+    return all(_safe_upstream_path(path) for path in fields[1:])
+
+
+def _safe_upstream_path(value: str) -> bool:
+    path = Path(value)
+    return (
+        bool(value)
+        and not path.is_absolute()
+        and ".." not in path.parts
+        and path.as_posix() == value
+    )
 
 
 def _safe_workspace_relative(root: Path, value: str) -> Optional[Path]:
