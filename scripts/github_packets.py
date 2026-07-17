@@ -125,8 +125,12 @@ def load_version_index(path: Path, config: RepoConfig) -> VersionIndex:
     entries = tuple(_entry_from_json(item, evidence_root) for item in versions_data)
     if len({entry.sha for entry in entries}) != len(entries):
         raise PacketError("version index contains more than one entry for a SHA")
-    identities = {(entry.ref_kind, entry.ref_name) for entry in entries}
-    if len(identities) != len(entries):
+    immutable_identities = {
+        (entry.ref_kind, entry.ref_name)
+        for entry in entries
+        if entry.ref_kind != "branch"
+    }
+    if len(immutable_identities) != sum(entry.ref_kind != "branch" for entry in entries):
         raise PacketError("version index contains conflicting reference entries")
     if tuple(sorted(entries, key=_entry_key)) != entries:
         raise PacketError("version index entries are not in deterministic order")

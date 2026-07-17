@@ -18,7 +18,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import collect_github_repos  # noqa: E402
 from collect_github_repos import CollectionResult, collect_one, main  # noqa: E402
-from github_git import RepoInspection, ResolvedRef  # noqa: E402
+from github_git import RepoInspection, ResolvedRef, run_git  # noqa: E402
 from github_packets import PacketError, PacketRecord, VersionEntry, VersionIndex  # noqa: E402
 from github_registry import RepoConfig, VersionTrack  # noqa: E402
 from github_releases import ReleaseCandidate, ReleaseNotesEvidence  # noqa: E402
@@ -27,6 +27,7 @@ from github_snapshot import (  # noqa: E402
     SnapshotPromotionToken,
     SnapshotRecord,
 )
+from tests.github_test_support import commit_file, create_git_repo, tag  # noqa: E402
 
 
 class CollectGitHubReposTests(unittest.TestCase):
@@ -852,6 +853,165 @@ class CollectGitHubReposTests(unittest.TestCase):
         )
         self.assertIn("| paypal/paypal-js | baseline-shared | baseline |", markdown)
         self.assertIn("| stripe/stripe-ios | baseline-shared | baseline |", markdown)
+
+    def test_local_end_to_end_baseline_unchanged_change_and_compare(self):
+        upstream = create_git_repo(self.root)
+        config = self.local_config(str(upstream), key_paths=("README.md", "docs"))
+        commit_file(upstream, "README.md", "first\n", "first")
+        first_sha = commit_file(upstream, "obsolete.md", "obsolete\n", "obsolete")
+
+        first = collect_one(self.root, config, ("default-branch",))
+        unchanged = collect_one(self.root, config, ("default-branch",))
+
+        (upstream / "docs").mkdir()
+        (upstream / "docs" / "new.md").write_text("new\n", encoding="utf-8")
+        run_git(["rm", "README.md"], upstream)
+        run_git(["mv", "obsolete.md", "docs/renamed.md"], upstream)
+        run_git(["add", "docs/new.md"], upstream)
+        run_git(["commit", "-m", "replace repository files"], upstream)
+        second_sha = run_git(["rev-parse", "HEAD"], upstream)
+
+        second = collect_one(self.root, config, ("default-branch",))
+        endpoints = collect_one(self.root, config, (first_sha, second_sha))
+        self.assertEqual("unchanged", endpoints.state, endpoints.events)
+        comparison = collect_github_repos.compare_one(self.root, config, first_sha, second_sha)
+
+        self.assertEqual("collected-baseline", first.state)
+        self.assertEqual("unchanged", unchanged.state)
+        self.assertEqual("collected-change", second.state)
+        self.assertEqual("comparison", comparison.packet_type)
+        snapshots = [
+            path
+            for path in (self.root / "raw/github/test/demo/snapshots").iterdir()
+            if path.name != ".promotion.lock"
+        ]
+        self.assertEqual(2, len(snapshots))
+
+        packet_id = first.packet_ids[0]
+        collect_github_repos._change_packet_state(
+            self.root, config, packet_id, "awaiting-review", "approved"
+        )
+        collect_github_repos._change_packet_state(
+            self.root, config, packet_id, "approved", "ingesting"
+        )
+        collect_github_repos._change_packet_state(
+            self.root, config, packet_id, "ingesting", "ingested"
+        )
+        packet_events = [
+            json.loads(line)
+            for line in (
+                self.root
+                / "tracking/github/repos/test/demo/packets"
+                / packet_id
+                / "state-events.jsonl"
+            ).read_text(encoding="utf-8").splitlines()
+        ]
+        self.assertEqual(
+            ("awaiting-review", "approved", "ingesting", "ingested"),
+            tuple(event["state"] for event in packet_events),
+        )
+
+    def test_local_release_backfill_and_future_patch(self):
+        upstream = create_git_repo(self.root)
+        config = self.local_config(
+            str(upstream),
+            version_strategy="monorepo-packages",
+            key_paths=("CHANGELOG.md", "packages/widget/package.json"),
+            version_tracks=(VersionTrack("v10", "all-stable", "all-stable"),),
+        )
+        release_notes = {}
+
+        def add_release(version, aliases=()):
+            changelog = ("# " + version + "\n").encode("utf-8")
+            commit_file(
+                upstream,
+                "CHANGELOG.md",
+                changelog.decode("utf-8"),
+                "release " + version,
+            )
+            for name in ("v" + version,) + tuple(aliases):
+                tag(upstream, name)
+                release_notes[name] = ("notes " + version + "\n").encode("utf-8")
+            return changelog
+
+        commit_file(
+            upstream,
+            "packages/widget/package.json",
+            '{"name":"@acme/widget"}\n',
+            "add monorepo package",
+        )
+        changelogs = {
+            "10.0.0": add_release("10.0.0", aliases=("10.0.0",)),
+            "10.1.3": add_release("10.1.3"),
+            "10.1.5": add_release("10.1.5"),
+        }
+        add_release("10.2.0-beta.1")
+
+        def release_evidence(_, candidate, token=None):
+            return ReleaseNotesEvidence(
+                "https://api.github.test/releases/" + candidate.tag,
+                "2026-07-17T00:00:00Z",
+                release_notes[candidate.tag],
+            )
+
+        with mock.patch("collect_github_repos.fetch_release_notes", side_effect=release_evidence):
+            backfill = collect_one(self.root, config, release_mode="backfill")
+        self.assertEqual(("10.0.0", "10.1.3", "10.1.5"), backfill.versions)
+        self.assertEqual(3, len(backfill.packet_ids))
+        self.assertFalse(any("beta" in version for version in backfill.versions))
+
+        index = collect_github_repos.load_version_index(
+            collect_github_repos._version_index_path(self.root, config), config
+        )
+        self.assertEqual(3, len(index.versions))
+        snapshots = [
+            path
+            for path in (self.root / "raw/github/test/demo/snapshots").iterdir()
+            if path.name != ".promotion.lock"
+        ]
+        self.assertEqual(3, len(snapshots))
+        for entry in index.versions:
+            snapshot = self.root / entry.snapshot_path
+            self.assertEqual(changelogs[entry.version], (snapshot / "files/CHANGELOG.md").read_bytes())
+            self.assertEqual(
+                release_notes["v" + entry.version], (snapshot / "release-notes.md").read_bytes()
+            )
+            packet = next(
+                path
+                for path in (self.root / "tracking/github/repos/test/demo/packets").iterdir()
+                if path.is_dir() and entry.sha[:7] in path.name
+            )
+            state = json.loads((packet / "state-events.jsonl").read_text(encoding="utf-8"))
+            self.assertEqual("awaiting-review", state["state"])
+
+        with mock.patch("collect_github_repos.fetch_release_notes", side_effect=release_evidence):
+            unchanged = collect_one(self.root, config, release_mode="backfill")
+        self.assertEqual((), unchanged.packet_ids)
+
+        changelogs["10.1.6"] = add_release("10.1.6")
+        with mock.patch("collect_github_repos.fetch_release_notes", side_effect=release_evidence):
+            future = collect_one(self.root, config, release_mode="future")
+        self.assertEqual(("10.1.6",), future.versions)
+        self.assertEqual(1, len(future.packet_ids))
+
+        default_sha = commit_file(upstream, "README.md", "default branch only\n", "default branch")
+        default_branch = collect_one(self.root, config, ("default-branch",))
+        self.assertEqual("collected-baseline", default_branch.state)
+        index = collect_github_repos.load_version_index(
+            collect_github_repos._version_index_path(self.root, config), config
+        )
+        default_entry = next(entry for entry in index.versions if entry.sha == default_sha)
+        latest_release = next(entry for entry in index.versions if entry.version == "10.1.6")
+        self.assertEqual("branch", default_entry.ref_kind)
+        self.assertNotEqual(default_entry.snapshot_path, latest_release.snapshot_path)
+
+    def local_config(self, url, **overrides):
+        return self.config(
+            id="test/demo",
+            company="test",
+            url=url,
+            **overrides
+        )
 
     def packet(self, packet_id="baseline-1.0.0-aaaaaaa"):
         directory = self.root / "tracking" / "github" / "repos" / "paypal" / "paypal-js" / "packets" / packet_id
