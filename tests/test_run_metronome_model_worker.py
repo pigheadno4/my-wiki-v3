@@ -1,9 +1,11 @@
 import json
 import os
+import signal
 import subprocess
 import sys
 import tempfile
 import threading
+import time
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
@@ -24,7 +26,9 @@ from run_metronome_model_worker import (  # noqa: E402
     run_worker,
 )
 from metronome_model_runtime import (  # noqa: E402
+    job_lock,
     resolve_run_dir,
+    terminate_process_group,
     validate_run_id,
     write_json_atomic,
 )
@@ -165,6 +169,111 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         for invalid in ("", "Terra-20260717", "terra_20260717", "terra--20260717"):
             with self.assertRaises(ValueError):
                 validate_run_id(invalid)
+
+    def test_job_lock_is_shared_across_worktrees_but_not_jobs(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        common_git_dir = Path(tmp.name) / "repository.git"
+        worktree_a = Path(tmp.name) / "worktree-a"
+        worktree_b = Path(tmp.name) / "worktree-b"
+        worktree_a.mkdir()
+        worktree_b.mkdir()
+
+        with job_lock(common_git_dir, "metronome", "terra-home"):
+            script = (
+                "import sys\n"
+                "from pathlib import Path\n"
+                f"sys.path.insert(0, {str(SCRIPTS)!r})\n"
+                "from metronome_model_runtime import job_lock\n"
+                "with job_lock(Path(sys.argv[1]), 'metronome', sys.argv[2]):\n"
+                "    pass\n"
+            )
+            duplicate = subprocess.run(
+                [sys.executable, "-c", script, str(common_git_dir), "terra-home"],
+                cwd=worktree_b,
+                capture_output=True,
+                text=True,
+            )
+            unrelated = subprocess.run(
+                [sys.executable, "-c", script, str(common_git_dir), "terra-other"],
+                cwd=worktree_b,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertNotEqual(worktree_a, worktree_b)
+        self.assertNotEqual(0, duplicate.returncode)
+        self.assertIn("already locked", duplicate.stderr)
+        self.assertEqual(0, unrelated.returncode)
+
+        self.assertTrue((common_git_dir / "metronome-model-locks").is_dir())
+
+    def test_job_lock_is_kernel_released_without_deleting_its_lock_file(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        common_git_dir = Path(tmp.name) / "repository.git"
+
+        with job_lock(common_git_dir, "metronome", "terra-home") as lock_path:
+            self.assertTrue(lock_path.is_file())
+        self.assertTrue(lock_path.is_file())
+        with job_lock(common_git_dir, "metronome", "terra-home"):
+            pass
+        self.assertTrue(lock_path.is_file())
+
+    def test_timeout_cleanup_terms_then_kills_the_whole_process_group(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        child_pid_path = Path(tmp.name) / "child.pid"
+        child_code = (
+            "import signal, time; "
+            "signal.signal(signal.SIGTERM, signal.SIG_IGN); "
+            "time.sleep(30)"
+        )
+        parent_code = (
+            "import pathlib, signal, subprocess, sys, time; "
+            "signal.signal(signal.SIGTERM, signal.SIG_IGN); "
+            "child = subprocess.Popen([sys.executable, '-c', sys.argv[2]]); "
+            "pathlib.Path(sys.argv[1]).write_text(str(child.pid), encoding='utf-8'); "
+            "time.sleep(30)"
+        )
+        process = subprocess.Popen(
+            [sys.executable, "-c", parent_code, str(child_pid_path), child_code],
+            start_new_session=True,
+        )
+        self.addCleanup(
+            lambda: terminate_process_group(process, grace_seconds=0.01)
+            if process.poll() is None
+            else None
+        )
+        deadline = time.monotonic() + 2
+        while not child_pid_path.is_file() and time.monotonic() < deadline:
+            time.sleep(0.01)
+        self.assertTrue(child_pid_path.is_file())
+        child_pid = int(child_pid_path.read_text(encoding="utf-8"))
+
+        def force_group_cleanup():
+            try:
+                os.killpg(os.getpgid(child_pid), signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+
+        self.addCleanup(force_group_cleanup)
+
+        termination = terminate_process_group(process, grace_seconds=0.05)
+
+        self.assertEqual("SIGTERM", termination["signal"])
+        self.assertEqual("killed", termination["grace_outcome"])
+        self.assertEqual("SIGKILL", termination["escalation_signal"])
+        self.assertIsNotNone(termination["final_return_code"])
+        deadline = time.monotonic() + 2
+        while time.monotonic() < deadline:
+            try:
+                os.kill(child_pid, 0)
+            except ProcessLookupError:
+                break
+            time.sleep(0.02)
+        else:
+            self.fail("process-group cleanup left a descendant alive")
 
     def test_existing_diagnostic_run_is_rejected_before_runner_invocation(self):
         root, job_path, job = self.make_root()

@@ -22,9 +22,11 @@ from metronome_ingest_pilot import (
     validate_model_output,
 )
 from metronome_model_runtime import (
+    job_lock,
     normalized_output_path,
     raw_output_path,
     resolve_run_dir,
+    terminate_process_group,
     validate_run_id,
     write_json_atomic,
 )
@@ -241,6 +243,49 @@ def prepare_minimal_codex_home(target: Path) -> Path:
     return target
 
 
+def common_git_dir(root: Path) -> Path:
+    """Resolve the shared Git directory used by every linked worktree."""
+    try:
+        output = subprocess.check_output(
+            ["git", "-C", str(root), "rev-parse", "--git-common-dir"],
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+    except (OSError, subprocess.CalledProcessError):
+        # Deterministic unit roots are not Git repositories. Production roots
+        # always take the shared-Git path above.
+        return root / ".git"
+    path = Path(output)
+    return path if path.is_absolute() else root / path
+
+
+def run_process_in_new_group(
+    command: List[str], *, cwd: Path, timeout: int, env: Dict[str, str]
+) -> tuple:
+    """Run one worker command, cleaning up its complete process group on timeout."""
+    process = subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        cwd=cwd,
+        env=env,
+        start_new_session=True,
+    )
+    try:
+        stdout, stderr = process.communicate(timeout=timeout)
+        return subprocess.CompletedProcess(command, process.returncode, stdout, stderr), None
+    except subprocess.TimeoutExpired:
+        termination = terminate_process_group(process)
+        stdout, stderr = process.communicate()
+        message = "worker attempt timed out"
+        stderr = f"{stderr}\n{message}" if stderr else message
+        return (
+            subprocess.CompletedProcess(command, process.returncode, stdout, stderr),
+            termination,
+        )
+
+
 def recover_attempt(
     root: Path, job_path: Path, ingest_date: str, attempt: int
 ) -> int:
@@ -317,11 +362,11 @@ def recover_attempt(
     return 0
 
 
-def run_worker(
+def _run_worker_unlocked(
     root: Path,
     job_path: Path,
     ingest_date: str,
-    runner: Callable[..., Any] = subprocess.run,
+    runner: Optional[Callable[..., Any]] = None,
     run_id: Optional[str] = None,
 ) -> int:
     job_file = job_path if job_path.is_absolute() else root / job_path
@@ -370,6 +415,7 @@ def run_worker(
     last_output: Optional[Dict[str, Any]] = None
     last_raw_output_path: Optional[Path] = None
     last_normalized_path: Optional[Path] = None
+    last_termination: Optional[Dict[str, Any]] = None
 
     with tempfile.TemporaryDirectory(prefix=f"metronome-{job['job_id']}-") as tmp:
         staged_cwd = Path(tmp)
@@ -395,15 +441,24 @@ def run_worker(
                 job["model"],
                 job["reasoning_effort"],
             )
+            termination: Optional[Dict[str, Any]] = None
             try:
-                result = runner(
-                    command,
-                    capture_output=True,
-                    text=True,
-                    cwd=staged_cwd,
-                    timeout=int(job.get("timeout_seconds", 900)),
-                    env=worker_env,
-                )
+                if runner is None:
+                    result, termination = run_process_in_new_group(
+                        command,
+                        cwd=staged_cwd,
+                        timeout=int(job.get("timeout_seconds", 900)),
+                        env=worker_env,
+                    )
+                else:
+                    result = runner(
+                        command,
+                        capture_output=True,
+                        text=True,
+                        cwd=staged_cwd,
+                        timeout=int(job.get("timeout_seconds", 900)),
+                        env=worker_env,
+                    )
             except subprocess.TimeoutExpired as exc:
                 result = subprocess.CompletedProcess(
                     command,
@@ -411,6 +466,13 @@ def run_worker(
                     stdout=_text(exc.stdout),
                     stderr=_text(exc.stderr) + "\nworker attempt timed out",
                 )
+                termination = {
+                    "signal": None,
+                    "grace_seconds": None,
+                    "grace_outcome": "runner_timeout",
+                    "escalation_signal": None,
+                    "final_return_code": 124,
+                }
             last_result = result
             last_attempt_dir = attempt_dir
             written_raw_output_path = output_path if output_path.is_file() else None
@@ -470,9 +532,12 @@ def run_worker(
                     if written_normalized_path is not None
                     else None
                 )
+            if diagnostic:
+                attempt_record["termination"] = termination
             attempt_records.append(attempt_record)
             last_raw_output_path = written_raw_output_path
             last_normalized_path = written_normalized_path
+            last_termination = termination
             if result.returncode == 124:
                 validation_errors = errors
                 break
@@ -524,6 +589,7 @@ def run_worker(
                 if run_id is not None:
                     receipt["run_id"] = run_id
                     receipt["normalized_output_path"] = accepted_output.relative_to(root).as_posix()
+                    receipt["termination"] = last_termination
                     write_json_atomic(artifact_dir / "model-worker-receipt.json", receipt)
                 else:
                     _write_json(artifact_dir / "model-worker-receipt.json", receipt)
@@ -573,6 +639,7 @@ def run_worker(
     }
     if run_id is not None:
         failed["run_id"] = run_id
+        failed["termination"] = last_termination
         failed["normalized_output_path"] = (
             last_normalized_path.relative_to(root).as_posix()
             if last_normalized_path is not None
@@ -582,6 +649,32 @@ def run_worker(
     else:
         _write_json(artifact_dir / "model-worker-receipt.json", failed)
     return 1
+
+
+def run_worker(
+    root: Path,
+    job_path: Path,
+    ingest_date: str,
+    runner: Optional[Callable[..., Any]] = None,
+    run_id: Optional[str] = None,
+) -> int:
+    """Run one job, serializing diagnostic executions across Git worktrees."""
+    if run_id is None:
+        return _run_worker_unlocked(root, job_path, ingest_date, runner=runner)
+    try:
+        run_id = validate_run_id(run_id)
+        job = load_json(job_path if job_path.is_absolute() else root / job_path)
+        provider = str(job["provider"])
+        job_id = str(job["job_id"])
+    except (KeyError, ValueError) as exc:
+        print(exc)
+        return 1
+    try:
+        with job_lock(common_git_dir(root), provider, job_id):
+            return _run_worker_unlocked(root, job_path, ingest_date, runner=runner, run_id=run_id)
+    except RuntimeError as exc:
+        print(exc)
+        return 1
 
 
 def main() -> int:

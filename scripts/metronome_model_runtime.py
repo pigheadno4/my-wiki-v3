@@ -1,14 +1,21 @@
 """Immutable artifact helpers for Metronome model-worker diagnostics."""
 from __future__ import annotations
 
+import contextlib
+import fcntl
+import hashlib
 import json
 import os
 import re
+import signal
+import subprocess
+import time
 from pathlib import Path
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Iterator, Tuple
 
 
 RUN_ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+LOCK_KEY_RE = re.compile(r"[^a-z0-9]+")
 
 
 def validate_run_id(value: str) -> str:
@@ -34,6 +41,74 @@ def normalized_output_path(attempt_dir: Path) -> Path:
 def output_paths(attempt_dir: Path) -> Tuple[Path, Path]:
     """Return separate immutable raw and deterministic-normalized output paths."""
     return raw_output_path(attempt_dir), normalized_output_path(attempt_dir)
+
+
+def _lock_key(provider: str, job_id: str) -> str:
+    """Return a path-safe, collision-resistant key for one provider job."""
+    identity = f"{provider}\0{job_id}"
+    label = LOCK_KEY_RE.sub("-", f"{provider}-{job_id}".lower()).strip("-")
+    label = label[:80] or "job"
+    digest = hashlib.sha256(identity.encode("utf-8")).hexdigest()[:16]
+    return f"{label}-{digest}.lock"
+
+
+@contextlib.contextmanager
+def job_lock(common_git_dir: Path, provider: str, job_id: str) -> Iterator[Path]:
+    """Hold a non-blocking, kernel-managed lock for a provider job."""
+    lock_dir = Path(common_git_dir) / "metronome-model-locks"
+    lock_dir.mkdir(parents=True, exist_ok=True)
+    lock_path = lock_dir / _lock_key(provider, job_id)
+    handle = lock_path.open("a+", encoding="utf-8")
+    try:
+        try:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as exc:
+            raise RuntimeError(f"model job already locked: {provider}/{job_id}") from exc
+        yield lock_path
+    finally:
+        try:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+        finally:
+            handle.close()
+
+
+def terminate_process_group(
+    process: subprocess.Popen[Any], grace_seconds: float = 5.0
+) -> Dict[str, Any]:
+    """Terminate a session-leading process and every descendant in its group."""
+    metadata: Dict[str, Any] = {
+        "signal": "SIGTERM",
+        "grace_seconds": grace_seconds,
+        "grace_outcome": "already_exited",
+        "escalation_signal": None,
+        "final_return_code": process.poll(),
+    }
+    if process.poll() is not None:
+        return metadata
+    try:
+        process_group = os.getpgid(process.pid)
+    except ProcessLookupError:
+        return metadata
+    try:
+        os.killpg(process_group, signal.SIGTERM)
+    except ProcessLookupError:
+        metadata["grace_outcome"] = "already_exited"
+    else:
+        # Waiting out the grace period rather than merely waiting for the
+        # parent avoids leaving an inherited child alive after its parent has
+        # already exited from TERM.
+        time.sleep(max(0.0, grace_seconds))
+        metadata["escalation_signal"] = "SIGKILL"
+        try:
+            os.killpg(process_group, signal.SIGKILL)
+        except ProcessLookupError:
+            metadata["grace_outcome"] = "terminated"
+            metadata["escalation_signal"] = None
+        else:
+            metadata["grace_outcome"] = "killed"
+    process.wait()
+    metadata["final_return_code"] = process.returncode
+    return metadata
 
 
 def write_json_atomic(path: Path, payload: Dict[str, Any]) -> None:
