@@ -14,7 +14,7 @@ import signal
 import subprocess
 import time
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
 
 
 RUN_ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
@@ -37,6 +37,7 @@ class AttemptExecution:
     truncated_line_count: int
     token_usage: Optional[Dict[str, Any]]
     termination: Optional[Dict[str, Any]]
+    time_to_first_model_event_seconds: Optional[float] = None
 
 
 def _utc_now() -> str:
@@ -75,11 +76,13 @@ def analyze_event_stream(data: bytes) -> Tuple[int, int, Optional[Dict[str, Any]
 
 def _consume_stdout_lines(
     buffer: bytearray,
-) -> Tuple[int, Optional[Dict[str, Any]], bool]:
+    model_event_classifier: Optional[Callable[[Dict[str, Any]], bool]] = None,
+) -> Tuple[int, Optional[Dict[str, Any]], bool, Optional[Dict[str, Any]]]:
     """Remove and parse complete lines from a streaming stdout buffer."""
     parsed = 0
     usage: Optional[Dict[str, Any]] = None
     parsed_any = False
+    first_model_event: Optional[Dict[str, Any]] = None
     while True:
         newline = buffer.find(b"\n")
         if newline < 0:
@@ -94,10 +97,17 @@ def _consume_stdout_lines(
             continue
         parsed += 1
         parsed_any = True
+        if (
+            first_model_event is None
+            and model_event_classifier is not None
+            and isinstance(item, dict)
+            and model_event_classifier(item)
+        ):
+            first_model_event = item
         candidate = item.get("usage") if isinstance(item, dict) else None
         if isinstance(candidate, dict):
             usage = candidate
-    return parsed, usage, parsed_any
+    return parsed, usage, parsed_any, first_model_event
 
 
 def _process_group_exists(process_group: int) -> bool:
@@ -136,6 +146,8 @@ def run_streaming_process(
     stdin_bytes: Optional[bytes] = None,
     termination_grace_seconds: float = 5.0,
     pipe_cleanup_seconds: float = 1.0,
+    model_event_classifier: Optional[Callable[[Dict[str, Any]], bool]] = None,
+    absolute_deadline: Optional[float] = None,
 ) -> AttemptExecution:
     """Stream a process's binary output to durable attempt files with bounded memory."""
     attempt_dir.mkdir(parents=True, exist_ok=True)
@@ -176,10 +188,13 @@ def run_streaming_process(
     parsed_event_count = 0
     usage: Optional[Dict[str, Any]] = None
     first_stdout_event: Optional[float] = None
+    first_model_event: Optional[float] = None
     first_stderr_byte: Optional[float] = None
     termination: Optional[Dict[str, Any]] = None
     timed_out = False
     timeout_deadline = started_clock + max(0.0, timeout)
+    if absolute_deadline is not None:
+        timeout_deadline = min(timeout_deadline, absolute_deadline)
     grace_deadline: Optional[float] = None
     cleanup_deadline: Optional[float] = None
     term_sent = False
@@ -277,7 +292,14 @@ def run_streaming_process(
                         events_handle.write(chunk)
                         stdout_bytes += len(chunk)
                         stdout_buffer.extend(chunk)
-                        count, candidate_usage, parsed_any = _consume_stdout_lines(stdout_buffer)
+                        (
+                            count,
+                            candidate_usage,
+                            parsed_any,
+                            model_event,
+                        ) = _consume_stdout_lines(
+                            stdout_buffer, model_event_classifier=model_event_classifier
+                        )
                         parsed_event_count += count
                         if candidate_usage is not None:
                             usage = candidate_usage
@@ -287,6 +309,18 @@ def run_streaming_process(
                                 progress_path,
                                 "first_stdout_event",
                                 elapsed_seconds=round(observed, 6),
+                            )
+                        if model_event is not None and first_model_event is None:
+                            first_model_event = observed
+                            item = model_event.get("item")
+                            append_progress_event(
+                                progress_path,
+                                "first_model_event",
+                                elapsed_seconds=round(observed, 6),
+                                event_type=model_event.get("type"),
+                                item_type=(
+                                    item.get("type") if isinstance(item, dict) else None
+                                ),
                             )
                     else:
                         stderr_handle.write(chunk)
@@ -341,6 +375,9 @@ def run_streaming_process(
         truncated_line_count=1 if stdout_buffer else 0,
         token_usage=usage,
         termination=termination,
+        time_to_first_model_event_seconds=(
+            round(first_model_event, 6) if first_model_event is not None else None
+        ),
     )
 
 

@@ -201,11 +201,15 @@ def build_runtime_metadata(
     codex_executable: str,
     timeout_seconds: int,
     env: Dict[str, str],
+    deadline_monotonic: Optional[float] = None,
 ) -> Dict[str, Any]:
     """Hash the exact runtime inputs and identify the selected CLI executable."""
     resolved = shutil.which(codex_executable, path=env.get("PATH"))
     executable_path = Path(resolved or codex_executable).expanduser().resolve()
     executable_bytes = executable_path.read_bytes()
+    version_timeout = 10.0
+    if deadline_monotonic is not None:
+        version_timeout = min(version_timeout, max(0.001, deadline_monotonic - time.monotonic()))
     version = subprocess.run(
         [str(executable_path), "--version"],
         cwd=executable_path.parent,
@@ -214,7 +218,7 @@ def build_runtime_metadata(
         stderr=subprocess.PIPE,
         text=True,
         check=True,
-        timeout=10,
+        timeout=version_timeout,
     ).stdout.strip()
     return {
         "sha256": {

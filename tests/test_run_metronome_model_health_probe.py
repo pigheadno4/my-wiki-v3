@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 import signal
@@ -25,6 +26,16 @@ from run_metronome_model_health_probe import (  # noqa: E402
 
 
 class ModelHealthProbeTests(unittest.TestCase):
+    class FakeClock:
+        def __init__(self):
+            self.value = 0.0
+
+        def __call__(self):
+            return self.value
+
+        def advance(self, seconds):
+            self.value += seconds
+
     def make_root(self):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
@@ -64,7 +75,7 @@ class ModelHealthProbeTests(unittest.TestCase):
 
     @staticmethod
     def execution(*, latency=0.2, elapsed=0.3, returncode=0, termination=None):
-        return AttemptExecution(
+        execution = AttemptExecution(
             returncode=returncode,
             started_at="2026-07-17T00:00:00Z",
             finished_at="2026-07-17T00:00:01Z",
@@ -78,9 +89,20 @@ class ModelHealthProbeTests(unittest.TestCase):
             token_usage={"input_tokens": 1, "output_tokens": 1},
             termination=termination,
         )
+        execution.time_to_first_model_event_seconds = latency
+        return execution
 
-    def fake_executor(self, output, execution=None, captured=None):
+    def fake_executor(self, output, execution=None, captured=None, events=None):
         execution = execution or self.execution()
+        events = events or [
+            {"type": "thread.started"},
+            {"type": "turn.started"},
+            {
+                "type": "item.completed",
+                "item": {"type": "agent_message", "text": output},
+                "usage": execution.token_usage,
+            },
+        ]
 
         def run(command, **kwargs):
             if captured is not None:
@@ -90,19 +112,74 @@ class ModelHealthProbeTests(unittest.TestCase):
             attempt_dir.mkdir(parents=True, exist_ok=True)
             for name in ("events.jsonl", "stderr.log", "progress.jsonl"):
                 (attempt_dir / name).touch()
+            events_bytes = "".join(
+                json.dumps(event) + "\n" for event in events
+            ).encode("utf-8")
+            (attempt_dir / "events.jsonl").write_bytes(events_bytes)
+            execution.streamed_stdout_bytes = len(events_bytes)
+            execution.parsed_event_count = len(events)
+            execution.truncated_line_count = 0
+            execution.token_usage = next(
+                (
+                    event["usage"]
+                    for event in reversed(events)
+                    if isinstance(event.get("usage"), dict)
+                ),
+                None,
+            )
             Path(command[command.index("-o") + 1]).write_text(output, encoding="utf-8")
             return execution
 
         return run
 
     def receipt(self, root, run_id):
-        path = (
+        return json.loads(self.receipt_path(root, run_id).read_text(encoding="utf-8"))
+
+    @staticmethod
+    def receipt_path(root, run_id):
+        return (
             root
             / "tracking/ingest/metronome/pilot/diagnostics/health-probes"
             / run_id
             / "model-health-probe-receipt.json"
         )
-        return json.loads(path.read_text(encoding="utf-8"))
+
+    def real_metadata_provider(self, root, timeout=60):
+        executable = root / "fake-codex"
+        executable.write_bytes(b"deterministic fake codex")
+
+        def provider(**kwargs):
+            self.assertEqual(timeout, kwargs["timeout_seconds"])
+            return {
+                "sha256": {
+                    "raw_text": hashlib.sha256(kwargs["raw_bytes"]).hexdigest(),
+                    "prompt_template": hashlib.sha256(
+                        kwargs["prompt_template_bytes"]
+                    ).hexdigest(),
+                    "rendered_prompt": hashlib.sha256(
+                        kwargs["rendered_prompt"].encode("utf-8")
+                    ).hexdigest(),
+                    "output_schema": hashlib.sha256(
+                        kwargs["schema_path"].read_bytes()
+                    ).hexdigest(),
+                    "codex_executable": hashlib.sha256(executable.read_bytes()).hexdigest(),
+                },
+                "codex_executable": str(executable),
+                "codex_cli_version": "codex-cli deterministic",
+                "timeout_seconds": timeout,
+            }
+
+        return provider
+
+    def make_passing_probe(self, root, run_id="luna-gate"):
+        result = run_health_probe(
+            root,
+            run_id,
+            executor=self.fake_executor('{"status":"ok"}'),
+            runtime_metadata_provider=self.real_metadata_provider(root),
+        )
+        self.assertEqual(0, result)
+        return self.receipt_path(root, run_id)
 
     def test_probe_enforces_60_second_total_cap(self):
         root = self.make_root()
@@ -136,6 +213,41 @@ class ModelHealthProbeTests(unittest.TestCase):
         self.assertEqual(30, FIRST_MODEL_EVENT_LIMIT_SECONDS)
         self.assertEqual("failed", receipt["status"])
         self.assertFalse(receipt["first_model_event_within_limit"])
+
+    def test_lifecycle_events_do_not_satisfy_the_model_activity_gate(self):
+        root = self.make_root()
+        result = run_health_probe(
+            root,
+            "luna-lifecycle-only",
+            executor=self.fake_executor(
+                '{"status":"ok"}',
+                execution=self.execution(latency=0.01),
+                events=[{"type": "thread.started"}, {"type": "turn.started"}],
+            ),
+            runtime_metadata_provider=lambda **_kwargs: self.complete_metadata(),
+        )
+
+        receipt = self.receipt(root, "luna-lifecycle-only")
+        self.assertEqual(1, result)
+        self.assertIsNone(receipt["first_model_event_latency_seconds"])
+        self.assertFalse(receipt["first_model_event_within_limit"])
+
+    def test_actual_model_item_uses_its_own_latency_not_first_stdout_latency(self):
+        root = self.make_root()
+        execution = self.execution(latency=0.01)
+        execution.time_to_first_model_event_seconds = 0.75
+
+        result = run_health_probe(
+            root,
+            "luna-model-latency",
+            executor=self.fake_executor('{"status":"ok"}', execution=execution),
+            runtime_metadata_provider=lambda **_kwargs: self.complete_metadata(),
+        )
+
+        receipt = self.receipt(root, "luna-model-latency")
+        self.assertEqual(0, result)
+        self.assertEqual(0.01, receipt["time_to_first_stdout_event_seconds"])
+        self.assertEqual(0.75, receipt["first_model_event_latency_seconds"])
 
     def test_probe_accepts_only_the_valid_tiny_terminal_json(self):
         root = self.make_root()
@@ -289,7 +401,8 @@ class ModelHealthProbeTests(unittest.TestCase):
 
     def test_failed_probe_prevents_enterprise_ab_launch(self):
         root = self.make_root()
-        receipt_path = root / "failed-probe.json"
+        receipt_path = self.receipt_path(root, "failed-probe")
+        receipt_path.parent.mkdir(parents=True)
         receipt_path.write_text(
             json.dumps(
                 {
@@ -306,9 +419,235 @@ class ModelHealthProbeTests(unittest.TestCase):
         launches = []
 
         with self.assertRaisesRegex(HealthProbeGateError, "enterprise A/B remains suspended"):
-            launch_enterprise_ab_if_probe_passes(receipt_path, lambda: launches.append(True))
+            launch_enterprise_ab_if_probe_passes(
+                root, "failed-probe", lambda: launches.append(True)
+            )
 
         self.assertEqual([], launches)
+
+    def test_gate_ignores_caller_selected_receipt_outside_diagnostics_tree(self):
+        root = self.make_root()
+        rogue = root / "rogue-receipt.json"
+        rogue.write_text(
+            json.dumps(
+                {
+                    "diagnostic_type": "model_health_probe",
+                    "status": "passed",
+                    "within_total_timeout": True,
+                    "terminal_json_valid": True,
+                    "first_model_event_within_limit": True,
+                    "runtime_metadata_complete": True,
+                    "process_cleanup_passed": True,
+                }
+            ),
+            encoding="utf-8",
+        )
+        launches = []
+
+        with self.assertRaises(HealthProbeGateError):
+            launch_enterprise_ab_if_probe_passes(
+                root, "missing-expected-run", lambda: launches.append(True)
+            )
+
+        self.assertEqual([], launches)
+
+    def test_gate_recomputes_facts_instead_of_trusting_pass_booleans(self):
+        root = self.make_root()
+        receipt_path = self.make_passing_probe(root, "luna-forged-summary")
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        receipt.update(
+            {
+                "status": "passed",
+                "within_total_timeout": True,
+                "terminal_json_valid": True,
+                "first_model_event_within_limit": True,
+                "runtime_metadata_complete": True,
+                "process_cleanup_passed": True,
+                "model": "gpt-5.6-terra",
+                "process_exit_code": 1,
+                "failures": ["forged receipt ignored this failure"],
+                "canonical_coverage_eligible": True,
+            }
+        )
+        receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+        launches = []
+
+        with self.assertRaises(HealthProbeGateError):
+            launch_enterprise_ab_if_probe_passes(
+                root, "luna-forged-summary", lambda: launches.append(True)
+            )
+
+        self.assertEqual([], launches)
+
+    def test_gate_rejects_artifact_and_provenance_tampering(self):
+        root = self.make_root()
+        receipt_path = self.make_passing_probe(root, "luna-tampered-artifact")
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        raw_output = root / receipt["output_path"]
+        raw_output.write_text('{"status":"tampered"}', encoding="utf-8")
+
+        with self.assertRaises(HealthProbeGateError):
+            launch_enterprise_ab_if_probe_passes(
+                root, "luna-tampered-artifact", lambda: None
+            )
+
+    def test_gate_rejects_run_id_mismatch_and_leftover_tmp_receipt(self):
+        root = self.make_root()
+        receipt_path = self.make_passing_probe(root, "luna-atomic-gate")
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        receipt["run_id"] = "different-run"
+        receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+        receipt_path.with_name(f"{receipt_path.name}.tmp").write_text(
+            "incomplete", encoding="utf-8"
+        )
+
+        with self.assertRaises(HealthProbeGateError):
+            launch_enterprise_ab_if_probe_passes(root, "luna-atomic-gate", lambda: None)
+
+    def test_gate_launches_only_after_recomputing_a_valid_expected_run(self):
+        root = self.make_root()
+        self.make_passing_probe(root, "luna-valid-gate")
+        launches = []
+
+        result = launch_enterprise_ab_if_probe_passes(
+            root, "luna-valid-gate", lambda: launches.append("launched") or 17
+        )
+
+        self.assertEqual(17, result)
+        self.assertEqual(["launched"], launches)
+
+    def test_missing_prompt_after_run_claim_publishes_terminal_failure_receipt(self):
+        root = self.make_root()
+        (
+            root / "tracking/ingest/metronome/pilot/prompts/model-health-probe.md"
+        ).unlink()
+
+        result = run_health_probe(
+            root,
+            "luna-missing-prompt",
+            executor=lambda *_args, **_kwargs: self.fail("executor must not launch"),
+            runtime_metadata_provider=lambda **_kwargs: self.fail(
+                "metadata preflight must not run"
+            ),
+        )
+
+        receipt_path = self.receipt_path(root, "luna-missing-prompt")
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        self.assertEqual(1, result)
+        self.assertEqual("failed", receipt["status"])
+        self.assertTrue(any("setup failed" in item for item in receipt["failures"]))
+        self.assertFalse(receipt_path.with_name(f"{receipt_path.name}.tmp").exists())
+
+    def test_codex_home_setup_failure_after_claim_publishes_terminal_receipt(self):
+        root = self.make_root()
+
+        with patch(
+            "run_metronome_model_health_probe.prepare_minimal_codex_home",
+            side_effect=OSError("home unavailable"),
+        ):
+            result = run_health_probe(
+                root,
+                "luna-home-failure",
+                executor=lambda *_args, **_kwargs: self.fail("executor must not launch"),
+                runtime_metadata_provider=lambda **_kwargs: self.fail(
+                    "metadata preflight must not run"
+                ),
+            )
+
+        receipt = self.receipt(root, "luna-home-failure")
+        self.assertEqual(1, result)
+        self.assertEqual("failed", receipt["status"])
+        self.assertIsNone(receipt["process_exit_code"])
+        self.assertTrue(any("home unavailable" in item for item in receipt["failures"]))
+
+    def test_metadata_and_process_share_one_absolute_monotonic_deadline(self):
+        root = self.make_root()
+        clock = self.FakeClock()
+        observed = {}
+
+        def metadata_provider(**kwargs):
+            observed["metadata_deadline"] = kwargs.get("deadline_monotonic")
+            clock.advance(2)
+            return self.complete_metadata()
+
+        def executor(command, **kwargs):
+            observed["process_deadline"] = kwargs.get("absolute_deadline")
+            clock.advance(3)
+            return self.fake_executor('{"status":"ok"}')(command, **kwargs)
+
+        with patch("run_metronome_model_health_probe.time.monotonic", side_effect=clock):
+            result = run_health_probe(
+                root,
+                "luna-one-deadline",
+                executor=executor,
+                runtime_metadata_provider=metadata_provider,
+            )
+
+        receipt = self.receipt(root, "luna-one-deadline")
+        self.assertEqual(0, result)
+        self.assertEqual(60.0, observed["metadata_deadline"])
+        self.assertEqual(observed["metadata_deadline"], observed["process_deadline"])
+        self.assertEqual(60.0, receipt["deadline_monotonic"])
+        self.assertTrue(receipt["receipt_published_within_deadline"])
+
+    def test_receipt_publication_crossing_deadline_is_truthful_terminal_failure(self):
+        root = self.make_root()
+        clock = self.FakeClock()
+        real_atomic_write = __import__(
+            "run_metronome_model_health_probe"
+        ).write_json_atomic
+
+        def slow_receipt_write(path, payload):
+            real_atomic_write(path, payload)
+            if Path(path).name == "model-health-probe-receipt.json":
+                clock.advance(0.3)
+
+        with patch("run_metronome_model_health_probe.time.monotonic", side_effect=clock), patch(
+            "run_metronome_model_health_probe.write_json_atomic",
+            side_effect=slow_receipt_write,
+        ):
+            result = run_health_probe(
+                root,
+                "luna-late-publication",
+                executor=self.fake_executor('{"status":"ok"}'),
+                runtime_metadata_provider=lambda **_kwargs: self.complete_metadata(0.2),
+                total_timeout_seconds=0.2,
+            )
+
+        receipt = self.receipt(root, "luna-late-publication")
+        self.assertEqual(1, result)
+        self.assertEqual("failed", receipt["status"])
+        self.assertFalse(receipt["receipt_published_within_deadline"])
+        self.assertTrue(any("deadline" in item for item in receipt["failures"]))
+
+    def test_normalization_failure_after_claim_still_publishes_failed_receipt(self):
+        root = self.make_root()
+        real_atomic_write = __import__(
+            "run_metronome_model_health_probe"
+        ).write_json_atomic
+
+        def fail_normalization(path, payload):
+            if Path(path).name == "model-output.normalized.json":
+                raise OSError("normalization storage failed")
+            real_atomic_write(path, payload)
+
+        with patch(
+            "run_metronome_model_health_probe.write_json_atomic",
+            side_effect=fail_normalization,
+        ):
+            result = run_health_probe(
+                root,
+                "luna-normalization-failure",
+                executor=self.fake_executor('{"status":"ok"}'),
+                runtime_metadata_provider=lambda **_kwargs: self.complete_metadata(),
+            )
+
+        receipt = self.receipt(root, "luna-normalization-failure")
+        self.assertEqual(1, result)
+        self.assertEqual("failed", receipt["status"])
+        self.assertTrue(
+            any("normalization storage failed" in item for item in receipt["failures"])
+        )
 
     def test_repository_prompt_schema_and_manifest_keep_probe_diagnostic_only(self):
         prompt = (

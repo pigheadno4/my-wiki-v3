@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import tempfile
@@ -13,6 +14,7 @@ from typing import Any, Callable, Dict, Optional, TypeVar
 
 from metronome_model_runtime import (
     AttemptExecution,
+    analyze_event_stream,
     append_progress_event,
     job_lock,
     normalized_output_path,
@@ -60,6 +62,38 @@ class HealthProbeGateError(RuntimeError):
 
 def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def is_model_activity_event(event: Dict[str, Any]) -> bool:
+    """Classify model-produced items while excluding runtime lifecycle chatter."""
+    if event.get("type") not in {"item.started", "item.updated", "item.completed"}:
+        return False
+    item = event.get("item")
+    return isinstance(item, dict) and item.get("type") not in (None, "error")
+
+
+def _read_jsonl(path: Path) -> list:
+    records = []
+    try:
+        lines = path.read_bytes().splitlines()
+    except OSError:
+        return records
+    for line in lines:
+        try:
+            record = json.loads(line.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            continue
+        if isinstance(record, dict):
+            records.append(record)
+    return records
+
+
+def _events_contain_model_activity(path: Path) -> bool:
+    return any(is_model_activity_event(record) for record in _read_jsonl(path))
+
+
+def _sha256_path(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _metadata_is_complete(metadata: Optional[Dict[str, Any]], timeout: float) -> bool:
@@ -125,9 +159,6 @@ def run_health_probe(
 
     prompt_path = root / PROMPT_PATH
     schema_path = root / SCHEMA_PATH
-    prompt_bytes = prompt_path.read_bytes()
-    prompt = prompt_bytes.decode("utf-8")
-    schema_path.read_bytes()
     probe_dir = root / PROBE_ROOT / run_id
 
     with job_lock(common_git_dir(root), "metronome", "model-health-probe"):
@@ -147,26 +178,32 @@ def run_health_probe(
 
         started_at = _utc_now()
         started_clock = time.monotonic()
+        deadline_monotonic = started_clock + total_timeout_seconds
         execution: Optional[AttemptExecution] = None
         runtime_metadata: Optional[Dict[str, Any]] = None
         preflight_error: Optional[str] = None
+        prompt_bytes = b""
+        prompt = ""
         raw_path = raw_output_path(attempt_dir)
         normalized_path = normalized_output_path(attempt_dir)
 
-        with tempfile.TemporaryDirectory(prefix=f"metronome-health-{run_id}-") as tmp:
-            staged_cwd = Path(tmp)
-            minimal_codex_home = prepare_minimal_codex_home(staged_cwd / "codex-home")
-            probe_env = os.environ.copy()
-            probe_env["CODEX_HOME"] = str(minimal_codex_home)
-            command = build_codex_command(
-                staged_cwd,
-                schema_path,
-                raw_path,
-                prompt,
-                MODEL,
-                REASONING_EFFORT,
-            )
-            try:
+        try:
+            prompt_bytes = prompt_path.read_bytes()
+            prompt = prompt_bytes.decode("utf-8")
+            schema_path.read_bytes()
+            with tempfile.TemporaryDirectory(prefix=f"metronome-health-{run_id}-") as tmp:
+                staged_cwd = Path(tmp)
+                minimal_codex_home = prepare_minimal_codex_home(staged_cwd / "codex-home")
+                probe_env = os.environ.copy()
+                probe_env["CODEX_HOME"] = str(minimal_codex_home)
+                command = build_codex_command(
+                    staged_cwd,
+                    schema_path,
+                    raw_path,
+                    prompt,
+                    MODEL,
+                    REASONING_EFFORT,
+                )
                 runtime_metadata = runtime_metadata_provider(
                     raw_bytes=b"",
                     prompt_template_bytes=prompt_bytes,
@@ -175,16 +212,14 @@ def run_health_probe(
                     codex_executable=command[0],
                     timeout_seconds=total_timeout_seconds,
                     env=probe_env,
+                    deadline_monotonic=deadline_monotonic,
                 )
-            except Exception as exc:  # pragma: no cover - host-specific preflight failures
-                preflight_error = f"runtime metadata preflight failed: {exc}"
-
-            elapsed_before_process = time.monotonic() - started_clock
-            cleanup_budget = min(
-                PROCESS_CLEANUP_BUDGET_SECONDS, total_timeout_seconds / 4
-            )
-            process_timeout = total_timeout_seconds - elapsed_before_process - cleanup_budget
-            if preflight_error is None and process_timeout > 0:
+                cleanup_budget = min(
+                    PROCESS_CLEANUP_BUDGET_SECONDS, total_timeout_seconds / 4
+                )
+                process_timeout = deadline_monotonic - time.monotonic() - cleanup_budget
+                if process_timeout <= 0:
+                    raise TimeoutError("health probe total cap exhausted before model launch")
                 try:
                     execution = executor(
                         command,
@@ -192,20 +227,37 @@ def run_health_probe(
                         timeout=process_timeout,
                         env=probe_env,
                         attempt_dir=attempt_dir,
+                        model_event_classifier=is_model_activity_event,
+                        absolute_deadline=deadline_monotonic,
                     )
-                except Exception as exc:  # pragma: no cover - host-specific launch failures
-                    preflight_error = f"probe process launch failed: {exc}"
-            elif preflight_error is None:
-                preflight_error = "health probe total cap exhausted before model launch"
+                except Exception as exc:
+                    raise RuntimeError(f"probe process launch failed: {exc}") from exc
+        except Exception as exc:
+            preflight_error = f"health probe setup failed: {exc}"
 
         terminal_json_valid = _terminal_json_is_valid(raw_path)
         if terminal_json_valid:
-            write_json_atomic(
-                normalized_path,
-                json.loads(raw_path.read_text(encoding="utf-8")),
-            )
-        first_event_latency = (
+            try:
+                write_json_atomic(
+                    normalized_path,
+                    json.loads(raw_path.read_text(encoding="utf-8")),
+                )
+            except Exception as exc:
+                preflight_error = f"health probe normalization failed: {exc}"
+                terminal_json_valid = False
+        first_stdout_latency = (
             execution.time_to_first_stdout_event_seconds if execution is not None else None
+        )
+        first_event_latency = (
+            getattr(execution, "time_to_first_model_event_seconds", None)
+            if execution is not None and _events_contain_model_activity(events_path)
+            else None
+        )
+        append_progress_event(
+            progress_path,
+            "model_activity_classified",
+            observed=first_event_latency is not None,
+            elapsed_seconds=first_event_latency,
         )
         first_event_within_limit = (
             first_event_latency is not None
@@ -220,7 +272,7 @@ def run_health_probe(
             wall_elapsed,
             execution.elapsed_seconds if execution is not None else 0.0,
         )
-        within_total_timeout = total_elapsed <= total_timeout_seconds
+        within_total_timeout = time.monotonic() <= deadline_monotonic
         process_exit_code = execution.returncode if execution is not None else None
 
         failures = []
@@ -246,6 +298,14 @@ def run_health_probe(
             passed=passed,
             error_count=len(failures),
         )
+        artifact_hashes = {
+            "events": _sha256_path(events_path),
+            "stderr": _sha256_path(stderr_path),
+            "raw_output": _sha256_path(raw_path) if raw_path.is_file() else None,
+            "normalized_output": (
+                _sha256_path(normalized_path) if normalized_path.is_file() else None
+            ),
+        }
         receipt = {
             "schema_version": 1,
             "diagnostic_type": "model_health_probe",
@@ -261,12 +321,15 @@ def run_health_probe(
             "attempt_finished_at": execution.finished_at if execution else None,
             "attempt_elapsed_seconds": execution.elapsed_seconds if execution else None,
             "total_timeout_seconds": total_timeout_seconds,
+            "deadline_monotonic": deadline_monotonic,
             "total_elapsed_seconds": round(total_elapsed, 6),
             "within_total_timeout": within_total_timeout,
+            "receipt_published_within_deadline": time.monotonic() <= deadline_monotonic,
             "first_model_event_limit_seconds": FIRST_MODEL_EVENT_LIMIT_SECONDS,
             "first_model_event_latency_seconds": first_event_latency,
             "first_model_event_within_limit": first_event_within_limit,
-            "time_to_first_stdout_event_seconds": first_event_latency,
+            "time_to_first_stdout_event_seconds": first_stdout_latency,
+            "time_to_first_model_event_seconds": first_event_latency,
             "time_to_first_stderr_byte_seconds": (
                 execution.time_to_first_stderr_byte_seconds if execution else None
             ),
@@ -279,6 +342,7 @@ def run_health_probe(
             },
             "process_exit_code": process_exit_code,
             "runtime_metadata": runtime_metadata,
+            "artifact_sha256": artifact_hashes,
             "termination": execution.termination if execution is not None else None,
             "streamed_stdout_bytes": (
                 execution.streamed_stdout_bytes if execution is not None else 0
@@ -300,41 +364,197 @@ def run_health_probe(
             "canonical_coverage_eligible": False,
         }
         receipt_path = probe_dir / "model-health-probe-receipt.json"
-        write_json_atomic(receipt_path, receipt)
+        try:
+            write_json_atomic(receipt_path, receipt)
+        except Exception as exc:
+            receipt["status"] = "failed"
+            receipt["receipt_published_within_deadline"] = False
+            receipt["within_total_timeout"] = False
+            receipt["failures"].append(f"initial receipt publication failed: {exc}")
+            write_json_atomic(receipt_path, receipt)
+        if time.monotonic() > deadline_monotonic:
+            receipt["status"] = "failed"
+            receipt["receipt_published_within_deadline"] = False
+            receipt["within_total_timeout"] = False
+            if not any("deadline" in failure for failure in receipt["failures"]):
+                receipt["failures"].append(
+                    "health probe receipt publication exceeded the absolute deadline"
+                )
+            write_json_atomic(receipt_path, receipt)
+            passed = False
         append_progress_event(progress_path, "receipt_published")
         return 0 if passed else 1
 
 
-def _load_passing_probe_receipt(receipt_path: Path) -> Dict[str, Any]:
+def _reject_gate(reason: str) -> None:
+    raise HealthProbeGateError(f"enterprise A/B remains suspended: {reason}")
+
+
+def _load_passing_probe_receipt(root: Path, run_id: str) -> Dict[str, Any]:
+    root = Path(root).resolve()
     try:
-        receipt = json.loads(Path(receipt_path).read_text(encoding="utf-8"))
+        run_id = validate_run_id(run_id)
+    except ValueError as exc:
+        raise HealthProbeGateError(
+            "enterprise A/B remains suspended: invalid health probe run ID"
+        ) from exc
+    probe_dir = root / PROBE_ROOT / run_id
+    attempt_dir = probe_dir / "attempt-1"
+    receipt_path = probe_dir / "model-health-probe-receipt.json"
+    receipt_tmp = receipt_path.with_name(f"{receipt_path.name}.tmp")
+    if (
+        not probe_dir.is_dir()
+        or probe_dir.is_symlink()
+        or not attempt_dir.is_dir()
+        or attempt_dir.is_symlink()
+        or not receipt_path.is_file()
+        or receipt_path.is_symlink()
+        or receipt_tmp.exists()
+    ):
+        _reject_gate("expected immutable health probe receipt is incomplete")
+    try:
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         raise HealthProbeGateError(
             "enterprise A/B remains suspended: health probe receipt is unavailable or invalid"
         ) from exc
-    required = {
+    if not isinstance(receipt, dict):
+        _reject_gate("health probe receipt must be one JSON object")
+
+    expected_paths = {
+        "output_path": _relative(raw_output_path(attempt_dir), root),
+        "normalized_output_path": _relative(normalized_output_path(attempt_dir), root),
+        "events_path": _relative(attempt_dir / "events.jsonl", root),
+        "stderr_path": _relative(attempt_dir / "stderr.log", root),
+        "progress_path": _relative(attempt_dir / "progress.jsonl", root),
+    }
+    if any(receipt.get(key) != value for key, value in expected_paths.items()):
+        _reject_gate("receipt artifact paths do not match the expected immutable run")
+    artifact_paths = {
+        key: root / value for key, value in expected_paths.items()
+    }
+    if any(
+        not path.is_file() or path.is_symlink() or path.with_name(f"{path.name}.tmp").exists()
+        for path in artifact_paths.values()
+    ):
+        _reject_gate("health probe artifacts are missing, linked, or incomplete")
+
+    raw_path = artifact_paths["output_path"]
+    normalized_path = artifact_paths["normalized_output_path"]
+    events_path = artifact_paths["events_path"]
+    stderr_path = artifact_paths["stderr_path"]
+    progress_path = artifact_paths["progress_path"]
+    if not _terminal_json_is_valid(raw_path) or not _terminal_json_is_valid(normalized_path):
+        _reject_gate("terminal probe JSON is invalid")
+
+    recorded_hashes = receipt.get("artifact_sha256")
+    recomputed_hashes = {
+        "events": _sha256_path(events_path),
+        "stderr": _sha256_path(stderr_path),
+        "raw_output": _sha256_path(raw_path),
+        "normalized_output": _sha256_path(normalized_path),
+    }
+    if recorded_hashes != recomputed_hashes:
+        _reject_gate("health probe artifact hashes do not reconcile")
+
+    events_bytes = events_path.read_bytes()
+    parsed_count, truncated_count, usage = analyze_event_stream(events_bytes)
+    if (
+        receipt.get("streamed_stdout_bytes") != len(events_bytes)
+        or receipt.get("streamed_stderr_bytes") != stderr_path.stat().st_size
+        or receipt.get("parsed_event_count") != parsed_count
+        or receipt.get("truncated_line_count") != truncated_count
+        or receipt.get("token_usage") != usage
+        or not _events_contain_model_activity(events_path)
+    ):
+        _reject_gate("event-stream accounting or model activity does not reconcile")
+
+    progress = _read_jsonl(progress_path)
+    classified = [item for item in progress if item.get("event") == "model_activity_classified"]
+    if (
+        not progress
+        or progress[-1].get("event") != "receipt_published"
+        or len(classified) != 1
+        or classified[0].get("observed") is not True
+    ):
+        _reject_gate("receipt publication or model-activity progress is incomplete")
+    model_latency = classified[0].get("elapsed_seconds")
+    stdout_latency = receipt.get("time_to_first_stdout_event_seconds")
+    total_elapsed = receipt.get("total_elapsed_seconds")
+    attempt_elapsed = receipt.get("attempt_elapsed_seconds")
+    if not all(
+        isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0
+        for value in (model_latency, stdout_latency, total_elapsed, attempt_elapsed)
+    ):
+        _reject_gate("probe latency or elapsed accounting is invalid")
+    if (
+        model_latency > FIRST_MODEL_EVENT_LIMIT_SECONDS
+        or stdout_latency > model_latency
+        or attempt_elapsed > total_elapsed
+        or total_elapsed > TOTAL_TIMEOUT_SECONDS
+        or receipt.get("first_model_event_latency_seconds") != model_latency
+        or receipt.get("time_to_first_model_event_seconds") != model_latency
+    ):
+        _reject_gate("probe latency or elapsed gates do not reconcile")
+
+    metadata = receipt.get("runtime_metadata")
+    if not _metadata_is_complete(metadata, TOTAL_TIMEOUT_SECONDS):
+        _reject_gate("runtime metadata is incomplete")
+    assert isinstance(metadata, dict)
+    hashes = metadata["sha256"]
+    prompt_path = root / PROMPT_PATH
+    schema_path = root / SCHEMA_PATH
+    executable_path = Path(metadata["codex_executable"])
+    if not executable_path.is_file():
+        _reject_gate("recorded Codex executable is unavailable")
+    expected_runtime_hashes = {
+        "raw_text": hashlib.sha256(b"").hexdigest(),
+        "prompt_template": _sha256_path(prompt_path),
+        "rendered_prompt": _sha256_path(prompt_path),
+        "output_schema": _sha256_path(schema_path),
+        "codex_executable": _sha256_path(executable_path),
+    }
+    if hashes != expected_runtime_hashes:
+        _reject_gate("runtime input or executable provenance does not reconcile")
+
+    required_values = {
+        "schema_version": 1,
         "diagnostic_type": "model_health_probe",
+        "run_id": run_id,
         "status": "passed",
+        "model_provider": "openai",
+        "model": MODEL,
+        "reasoning_effort": REASONING_EFFORT,
+        "input_mode": "fixed-prompt",
+        "total_timeout_seconds": TOTAL_TIMEOUT_SECONDS,
+        "first_model_event_limit_seconds": FIRST_MODEL_EVENT_LIMIT_SECONDS,
+        "process_exit_code": 0,
+        "failures": [],
+        "canonical_coverage_eligible": False,
+        "termination": None,
+    }
+    if any(receipt.get(key) != value for key, value in required_values.items()):
+        _reject_gate("receipt identity, exit, failure, or scope facts do not reconcile")
+    cleanup = receipt.get("process_cleanup")
+    if cleanup != {"passed": True, "termination": None}:
+        _reject_gate("process cleanup facts do not reconcile")
+    recomputed_summaries = {
         "within_total_timeout": True,
         "terminal_json_valid": True,
         "first_model_event_within_limit": True,
         "runtime_metadata_complete": True,
         "process_cleanup_passed": True,
     }
-    if not isinstance(receipt, dict) or any(
-        receipt.get(key) != value for key, value in required.items()
-    ):
-        raise HealthProbeGateError(
-            "enterprise A/B remains suspended: a passing health probe is required"
-        )
+    if any(receipt.get(key) != value for key, value in recomputed_summaries.items()):
+        _reject_gate("receipt summary fields disagree with recomputed gate facts")
     return receipt
 
 
 def launch_enterprise_ab_if_probe_passes(
-    receipt_path: Path, launcher: Callable[[], T]
+    root: Path, run_id: str, launcher: Callable[[], T]
 ) -> T:
     """Enforce the health gate before calling a separately supplied orchestrator."""
-    _load_passing_probe_receipt(receipt_path)
+    _load_passing_probe_receipt(root, run_id)
     return launcher()
 
 
