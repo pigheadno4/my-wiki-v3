@@ -1,4 +1,5 @@
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -20,6 +21,11 @@ from run_metronome_model_worker import (  # noqa: E402
     repair_raw_link,
     repair_quote_bounds,
     run_worker,
+)
+from metronome_model_runtime import (  # noqa: E402
+    resolve_run_dir,
+    validate_run_id,
+    write_json_atomic,
 )
 
 
@@ -152,6 +158,88 @@ class ModelWorkerRunnerTests(unittest.TestCase):
             output["suggested_tags"],
         )
         self.assertEqual(0, repair_mandatory_tags(output))
+
+    def test_diagnostic_run_ids_require_lowercase_kebab_case(self):
+        self.assertEqual("terra-20260717", validate_run_id("terra-20260717"))
+        for invalid in ("", "Terra-20260717", "terra_20260717", "terra--20260717"):
+            with self.assertRaises(ValueError):
+                validate_run_id(invalid)
+
+    def test_existing_diagnostic_run_is_rejected_before_runner_invocation(self):
+        root, job_path, job = self.make_root()
+        run_dir = resolve_run_dir(root, job, "terra-20260717")
+        run_dir.mkdir(parents=True)
+        calls = []
+
+        def fake_runner(*args, **kwargs):
+            calls.append((args, kwargs))
+            raise AssertionError("runner must not be invoked")
+
+        self.assertEqual(
+            1,
+            run_worker(root, job_path, "2026-07-17", runner=fake_runner, run_id="terra-20260717"),
+        )
+        self.assertEqual([], calls)
+
+    def test_legacy_worker_keeps_direct_job_artifact_layout(self):
+        root, job_path, job = self.make_root()
+
+        def fake_runner(command, **kwargs):
+            Path(command[command.index("-o") + 1]).write_text(
+                json.dumps(self.valid_output(job)), encoding="utf-8"
+            )
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+        self.assertEqual(0, run_worker(root, job_path, "2026-07-17", runner=fake_runner))
+        artifact_dir = root / job["artifact_dir"]
+        self.assertTrue((artifact_dir / "model-output.json").is_file())
+        self.assertTrue((artifact_dir / "model-worker-receipt.json").is_file())
+        self.assertFalse(any(artifact_dir.glob("terra-20260717")))
+
+    def test_diagnostic_repair_preserves_raw_output_and_writes_normalized_output(self):
+        root, job_path, job = self.make_root()
+        raw_payload = self.valid_output(job)
+        raw_payload["proposed_raw_link"] = "[[raw/metronome/wrong|snapshot]]"
+
+        def fake_runner(command, **kwargs):
+            Path(command[command.index("-o") + 1]).write_text(
+                json.dumps(raw_payload), encoding="utf-8"
+            )
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+        run_id = "terra-20260717"
+        self.assertEqual(
+            0,
+            run_worker(root, job_path, "2026-07-17", runner=fake_runner, run_id=run_id),
+        )
+        attempt_dir = resolve_run_dir(root, job, run_id) / "attempt-1"
+        raw_path = attempt_dir / "model-output.raw.json"
+        normalized_path = attempt_dir / "model-output.normalized.json"
+        self.assertEqual(raw_payload, json.loads(raw_path.read_text(encoding="utf-8")))
+        normalized = json.loads(normalized_path.read_text(encoding="utf-8"))
+        self.assertEqual("[[raw/metronome/guides/home|snapshot]]", normalized["proposed_raw_link"])
+        self.assertNotEqual(raw_path.read_bytes(), normalized_path.read_bytes())
+
+    def test_atomic_receipt_is_tmp_until_replace_publishes_final_file(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        receipt_path = Path(tmp.name) / "model-worker-receipt.json"
+        observed = []
+        original_replace = os.replace
+
+        def observing_replace(source, destination):
+            observed.append((Path(source).read_text(encoding="utf-8"), Path(destination).exists()))
+            self.assertTrue(Path(source).name.endswith(".tmp"))
+            self.assertFalse(Path(destination).exists())
+            original_replace(source, destination)
+
+        from unittest.mock import patch
+        with patch("metronome_model_runtime.os.replace", side_effect=observing_replace):
+            write_json_atomic(receipt_path, {"status": "success"})
+
+        self.assertEqual(1, len(observed))
+        self.assertFalse((Path(tmp.name) / "model-worker-receipt.json.tmp").exists())
+        self.assertEqual({"status": "success"}, json.loads(receipt_path.read_text(encoding="utf-8")))
 
     def test_retry_receipt_sums_usage_and_keeps_rejected_reason(self):
         root, job_path, job = self.make_root()

@@ -427,6 +427,28 @@ class MetronomeIngestPilotTests(unittest.TestCase):
             )
         )
 
+    def test_diagnostic_worker_receipt_requires_distinct_raw_and_normalized_outputs(self):
+        root = self.make_root()
+        job = self.valid_model_job()
+        receipt = self.valid_model_worker_receipt(job)
+        run_dir = f"{job['artifact_dir']}/terra-20260717"
+        receipt["run_id"] = "terra-20260717"
+        receipt["output_path"] = f"{run_dir}/model-output.normalized.json"
+        receipt["attempts"][0]["output_path"] = f"{run_dir}/attempt-1/model-output.raw.json"
+        receipt["attempts"][0]["normalized_output_path"] = (
+            f"{run_dir}/attempt-1/model-output.normalized.json"
+        )
+        receipt["events_path"] = f"{run_dir}/attempt-1/events.jsonl"
+        receipt["stderr_path"] = f"{run_dir}/attempt-1/stderr.log"
+        receipt["draft_path"] = f"{run_dir}/model-source-draft.md"
+
+        self.assertEqual([], validate_worker_receipt(root, job, receipt))
+
+        receipt["attempts"][0]["normalized_output_path"] = receipt["attempts"][0]["output_path"]
+        errors = validate_worker_receipt(root, job, receipt)
+
+        self.assertTrue(any("raw and normalized output paths must differ" in error for error in errors))
+
     def test_render_model_draft_preserves_evidence_and_raw_link(self):
         job = self.valid_model_job()
         rendered = render_model_draft(job, self.valid_model_output(job), "2026-07-14")

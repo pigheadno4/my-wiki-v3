@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import os
 import re
+import shutil
 import subprocess
 import tempfile
 import time
@@ -18,6 +20,13 @@ from metronome_ingest_pilot import (
     render_model_draft,
     validate_job,
     validate_model_output,
+)
+from metronome_model_runtime import (
+    normalized_output_path,
+    raw_output_path,
+    resolve_run_dir,
+    validate_run_id,
+    write_json_atomic,
 )
 
 
@@ -313,6 +322,7 @@ def run_worker(
     job_path: Path,
     ingest_date: str,
     runner: Callable[..., Any] = subprocess.run,
+    run_id: Optional[str] = None,
 ) -> int:
     job_file = job_path if job_path.is_absolute() else root / job_path
     job = load_json(job_file)
@@ -328,7 +338,19 @@ def run_worker(
     profile["existing_metronome_concept_slugs"] = sorted(
         path.stem for path in concept_dir.glob("*.md") if path.is_file()
     )
-    artifact_dir = root / job["artifact_dir"]
+    diagnostic = run_id is not None
+    if diagnostic:
+        try:
+            run_id = validate_run_id(run_id)
+        except ValueError as exc:
+            print(exc)
+            return 1
+        artifact_dir = resolve_run_dir(root, job, run_id)
+        if artifact_dir.exists():
+            print(f"diagnostic run directory already exists: {artifact_dir}")
+            return 1
+    else:
+        artifact_dir = root / job["artifact_dir"]
     artifact_dir.mkdir(parents=True, exist_ok=True)
     template = (root / PROMPT_PATH).read_text(encoding="utf-8")
     schema_path = root / SCHEMA_PATH
@@ -353,7 +375,12 @@ def run_worker(
         for attempt in (1, 2):
             attempt_dir = artifact_dir / f"attempt-{attempt}"
             attempt_dir.mkdir(parents=True, exist_ok=True)
-            output_path = attempt_dir / "output.json"
+            if diagnostic:
+                output_path = raw_output_path(attempt_dir)
+                normalized_path = normalized_output_path(attempt_dir)
+            else:
+                output_path = attempt_dir / "output.json"
+                normalized_path = None
             prompt = build_prompt(template, job, profile, validation_errors)
             command = build_codex_command(
                 staged_cwd,
@@ -400,19 +427,21 @@ def run_worker(
                     if not isinstance(loaded, dict):
                         errors.append("model output must be one JSON object")
                     else:
-                        output = loaded
+                        output = copy.deepcopy(loaded)
                         total_quote_repairs += repair_quote_bounds(raw_text, output)
                         if repair_raw_link(job, output):
                             total_raw_link_repairs += 1
                         total_tag_repairs += repair_mandatory_tags(output)
-                        _write_json(output_path, output)
+                        if normalized_path is None:
+                            _write_json(output_path, output)
+                        else:
+                            write_json_atomic(normalized_path, output)
                         errors.extend(validate_model_output(root, job, output))
                 except json.JSONDecodeError as exc:
                     errors.append(f"model output is invalid JSON: {exc.msg}")
 
             status = "accepted" if not errors and output is not None else "rejected"
-            attempt_records.append(
-                {
+            attempt_record = {
                     "attempt": attempt,
                     "status": status,
                     "process_exit_code": result.returncode,
@@ -423,15 +452,24 @@ def run_worker(
                     "stderr_path": stderr_path.relative_to(root).as_posix(),
                     "token_usage": usage,
                 }
-            )
+            if normalized_path is not None:
+                attempt_record["normalized_output_path"] = normalized_path.relative_to(root).as_posix()
+            attempt_records.append(attempt_record)
             if result.returncode == 124:
                 validation_errors = errors
                 break
             if not errors and output is not None:
                 last_output = output
-                accepted_output = artifact_dir / "model-output.json"
+                accepted_output = (
+                    artifact_dir / "model-output.normalized.json"
+                    if diagnostic
+                    else artifact_dir / "model-output.json"
+                )
                 draft_path = artifact_dir / "model-source-draft.md"
-                _write_json(accepted_output, output)
+                if normalized_path is None:
+                    _write_json(accepted_output, output)
+                else:
+                    shutil.copyfile(normalized_path, accepted_output)
                 draft_path.write_text(render_model_draft(job, output, ingest_date), encoding="utf-8")
                 cumulative = sum_token_usage(usages)
                 receipt = {
@@ -465,7 +503,11 @@ def run_worker(
                     "mandatory_tag_repairs": total_tag_repairs,
                     "page_profile": profile,
                 }
-                _write_json(artifact_dir / "model-worker-receipt.json", receipt)
+                if run_id is not None:
+                    receipt["run_id"] = run_id
+                    write_json_atomic(artifact_dir / "model-worker-receipt.json", receipt)
+                else:
+                    _write_json(artifact_dir / "model-worker-receipt.json", receipt)
                 return 0
             validation_errors = errors
 
@@ -502,7 +544,11 @@ def run_worker(
         "mandatory_tag_repairs": total_tag_repairs,
         "page_profile": profile,
     }
-    _write_json(artifact_dir / "model-worker-receipt.json", failed)
+    if run_id is not None:
+        failed["run_id"] = run_id
+        write_json_atomic(artifact_dir / "model-worker-receipt.json", failed)
+    else:
+        _write_json(artifact_dir / "model-worker-receipt.json", failed)
     return 1
 
 
@@ -510,11 +556,14 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--job", required=True)
     parser.add_argument("--ingest-date", required=True)
+    parser.add_argument("--run-id")
     parser.add_argument("--recover-attempt", type=int)
     args = parser.parse_args()
     if args.recover_attempt:
         return recover_attempt(ROOT, Path(args.job), args.ingest_date, args.recover_attempt)
-    return run_worker(ROOT, Path(args.job), args.ingest_date)
+    if not args.run_id:
+        parser.error("--run-id is required for live diagnostic execution")
+    return run_worker(ROOT, Path(args.job), args.ingest_date, run_id=args.run_id)
 
 
 if __name__ == "__main__":

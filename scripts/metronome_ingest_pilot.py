@@ -721,6 +721,25 @@ def validate_worker_receipt(
                         f"worker receipt: attempt {index}",
                     )
                 )
+                if receipt.get("run_id") is not None:
+                    normalized_path = attempt.get("normalized_output_path")
+                    if not normalized_path:
+                        errors.append(
+                            f"worker receipt: attempt {index} normalized_output_path is required"
+                        )
+                    elif normalized_path == attempt.get("output_path"):
+                        errors.append(
+                            f"worker receipt: attempt {index} raw and normalized output paths must differ"
+                        )
+                    else:
+                        errors.extend(
+                            _validate_artifact_paths(
+                                attempt,
+                                ("normalized_output_path",),
+                                artifact_dir,
+                                f"worker receipt: attempt {index}",
+                            )
+                        )
         if receipt.get("cumulative_token_usage") is None and not receipt.get(
             "token_usage_unavailable_reason"
         ):
