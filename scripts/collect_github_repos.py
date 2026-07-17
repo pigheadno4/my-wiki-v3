@@ -74,7 +74,11 @@ _COLLECTION_LOCK = ".collection.lock"
 
 def is_valid_packet_id(packet_id: object) -> bool:
     """Return whether a packet ID is safe for packet directory operations."""
-    return isinstance(packet_id, str) and _SAFE_PACKET_ID.fullmatch(packet_id) is not None
+    return (
+        isinstance(packet_id, str)
+        and packet_id not in {".", ".."}
+        and _SAFE_PACKET_ID.fullmatch(packet_id) is not None
+    )
 
 
 class CollectionUsageError(ValueError):

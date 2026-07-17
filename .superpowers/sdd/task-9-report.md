@@ -172,3 +172,62 @@ python3 -m unittest discover -s tests -v
 Ran 278 tests in 7.585s
 OK
 ```
+
+## 2026-07-17 Packet-ID Navigation Remediation
+
+### Fix
+
+The shared `collect_github_repos.is_valid_packet_id()` contract now rejects
+`.` and `..` in addition to malformed IDs such as `invalid packet id`. This
+same helper remains imported by `github_validation`, so packet inspection and
+the descriptor-relative packet-state boundary use one rule.
+
+The direct packet-state regressions seed a valid-looking packet contract and
+state history at the exact directory selected by each navigation ID. They
+assert rejection, unchanged `state-events.jsonl` bytes, and that
+`packet_transaction` is never entered. The malformed-space-ID validator
+regression remains in place, and a direct validator contract regression covers
+both navigation IDs.
+
+An audit found no duplicate packet-ID predicate: the packet-state entry point
+and `_open_packet_directory()` both call the shared helper, and
+`github_validation` imports it directly.
+
+### RED
+
+```text
+python3 -m unittest tests.test_collect_github_repos.CollectGitHubReposTests.test_packet_state_rejects_current_directory_id_before_access_or_mutation tests.test_collect_github_repos.CollectGitHubReposTests.test_packet_state_rejects_parent_directory_id_before_access_or_mutation tests.test_github_validation.GitHubValidationTests.test_validator_packet_id_contract_rejects_directory_navigation_names -v
+test_packet_state_rejects_current_directory_id_before_access_or_mutation (tests.test_collect_github_repos.CollectGitHubReposTests) ... FAIL
+test_packet_state_rejects_parent_directory_id_before_access_or_mutation (tests.test_collect_github_repos.CollectGitHubReposTests) ... FAIL
+test_validator_packet_id_contract_rejects_directory_navigation_names (tests.test_github_validation.GitHubValidationTests) ... FAIL
+
+Ran 3 tests in 0.008s
+
+FAILED (failures=3)
+```
+
+Both packet-state tests failed with `AssertionError: CollectionUsageError not
+raised`; the validator test failed because `is_valid_packet_id(".")` returned
+`True`.
+
+### GREEN
+
+```text
+python3 -m unittest tests.test_collect_github_repos.CollectGitHubReposTests.test_packet_state_rejects_current_directory_id_before_access_or_mutation tests.test_collect_github_repos.CollectGitHubReposTests.test_packet_state_rejects_parent_directory_id_before_access_or_mutation tests.test_github_validation.GitHubValidationTests.test_validator_packet_id_contract_rejects_directory_navigation_names -v
+Ran 3 tests in 0.007s
+OK
+
+python3 -m unittest tests.test_collect_github_repos tests.test_github_validation tests.test_validate_wiki -v
+Ran 84 tests in 1.041s
+OK
+
+python3 scripts/validate_github_collection.py
+validate_github_collection: OK (0 snapshots, 0 pending packets, no structural errors)
+
+python3 -m unittest discover -s tests -v
+Ran 281 tests in 7.481s
+OK
+
+git diff --check
+exit 0
+```

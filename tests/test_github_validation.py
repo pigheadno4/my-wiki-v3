@@ -20,6 +20,7 @@ from github_reporting import (  # noqa: E402
     render_collection_status,
     render_ingest_status,
 )
+import github_validation  # noqa: E402
 from github_validation import inspect_github, validate_github  # noqa: E402
 from github_snapshot import SnapshotFile, SnapshotRecord  # noqa: E402
 
@@ -473,6 +474,10 @@ class GitHubValidationTests(unittest.TestCase):
         errors = validate_github(inspect_github(self.root))
 
         self.assertTrue(any("packet ID is invalid" in error for error in errors), errors)
+
+    def test_validator_packet_id_contract_rejects_directory_navigation_names(self):
+        self.assertFalse(github_validation.is_valid_packet_id("."))
+        self.assertFalse(github_validation.is_valid_packet_id(".."))
 
     def test_bad_snapshot_hash_is_rejected(self):
         self.make_valid_tree()

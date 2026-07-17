@@ -727,6 +727,12 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertEqual(1, code)
         self.assertEqual(before, events_path.read_bytes())
 
+    def test_packet_state_rejects_current_directory_id_before_access_or_mutation(self):
+        self.assert_packet_state_rejects_navigation_id(".")
+
+    def test_packet_state_rejects_parent_directory_id_before_access_or_mutation(self):
+        self.assert_packet_state_rejects_navigation_id("..")
+
     def test_packet_state_serializes_identical_concurrent_transitions(self):
         packet = self.packet()
         self.write_packet(packet)
@@ -886,6 +892,28 @@ class CollectGitHubReposTests(unittest.TestCase):
             json.dumps({"packet_id": packet.packet_id, "state": "awaiting-review"}, sort_keys=True) + "\n",
             encoding="utf-8",
         )
+
+    def assert_packet_state_rejects_navigation_id(self, packet_id):
+        packet_root = self.root / "tracking" / "github" / "repos" / "paypal" / "paypal-js" / "packets"
+        target_directory = packet_root if packet_id == "." else packet_root.parent
+        packet = replace(self.packet(packet_id), directory=target_directory)
+        self.write_packet(packet)
+        packet_root.mkdir(exist_ok=True)
+        events_path = target_directory / "state-events.jsonl"
+        before = events_path.read_bytes()
+
+        with self.assertRaises(collect_github_repos.CollectionUsageError):
+            collect_github_repos._change_packet_state(
+                self.root, self.config(), packet_id, "awaiting-review", "approved"
+            )
+
+        self.assertEqual(before, events_path.read_bytes())
+        with mock.patch.object(collect_github_repos, "packet_transaction") as transaction:
+            with self.assertRaises(collect_github_repos.CollectionUsageError):
+                collect_github_repos._change_packet_state(
+                    self.root, self.config(), packet_id, "awaiting-review", "approved"
+                )
+        transaction.assert_not_called()
 
     def candidate(self, version, prerelease=False):
         tag = "v" + version
