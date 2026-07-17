@@ -1,4 +1,5 @@
 import json
+import hashlib
 import os
 import signal
 import subprocess
@@ -17,6 +18,7 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from run_metronome_model_worker import (  # noqa: E402
+    build_runtime_metadata,
     build_codex_command,
     build_page_profile,
     common_git_dir,
@@ -24,6 +26,7 @@ from run_metronome_model_worker import (  # noqa: E402
     repair_mandatory_tags,
     repair_raw_link,
     repair_quote_bounds,
+    run_process_in_new_group,
     run_worker,
 )
 from metronome_model_runtime import (  # noqa: E402
@@ -178,6 +181,210 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         for invalid in ("", "Terra-20260717", "terra_20260717", "terra--20260717"):
             with self.assertRaises(ValueError):
                 validate_run_id(invalid)
+
+    def test_streaming_attempt_files_are_visible_before_process_exit(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        root = Path(tmp.name)
+        attempt_dir = root / "attempt-1"
+        release_path = root / "release"
+        command = [
+            sys.executable,
+            "-c",
+            (
+                "import os, pathlib, sys, time\n"
+                "os.write(sys.stdout.fileno(), b'{\"type\":\"thread.started\"}\\n')\n"
+                "os.write(sys.stderr.fileno(), b'booting\\n')\n"
+                "release = pathlib.Path(sys.argv[1])\n"
+                "deadline = time.monotonic() + 5\n"
+                "while not release.exists() and time.monotonic() < deadline:\n"
+                "    time.sleep(0.01)\n"
+            ),
+            str(release_path),
+        ]
+        result_box = []
+
+        thread = threading.Thread(
+            target=lambda: result_box.append(
+                run_process_in_new_group(
+                    command,
+                    cwd=root,
+                    timeout=5,
+                    env=os.environ.copy(),
+                    attempt_dir=attempt_dir,
+                )
+            )
+        )
+        thread.start()
+        self.addCleanup(lambda: release_path.touch(exist_ok=True))
+        deadline = time.monotonic() + 2
+        while time.monotonic() < deadline:
+            if (
+                (attempt_dir / "events.jsonl").read_bytes()
+                if (attempt_dir / "events.jsonl").is_file()
+                else b""
+            ) and (
+                (attempt_dir / "stderr.log").read_bytes()
+                if (attempt_dir / "stderr.log").is_file()
+                else b""
+            ) and (attempt_dir / "progress.jsonl").is_file():
+                break
+            time.sleep(0.01)
+
+        self.assertTrue(thread.is_alive(), "fake process exited before live files were observed")
+        self.assertEqual(
+            b'{"type":"thread.started"}\n',
+            (attempt_dir / "events.jsonl").read_bytes(),
+        )
+        self.assertEqual(b"booting\n", (attempt_dir / "stderr.log").read_bytes())
+        progress = [
+            json.loads(line)
+            for line in (attempt_dir / "progress.jsonl").read_text(encoding="utf-8").splitlines()
+        ]
+        self.assertIn("process_started", [item["event"] for item in progress])
+        self.assertIn("first_stdout_event", [item["event"] for item in progress])
+        self.assertIn("first_stderr_byte", [item["event"] for item in progress])
+
+        release_path.touch()
+        thread.join(timeout=2)
+        self.assertFalse(thread.is_alive())
+        self.assertEqual(0, result_box[0].returncode)
+
+    def test_streaming_attempt_accounts_for_events_bytes_usage_and_truncated_final_line(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        root = Path(tmp.name)
+        attempt_dir = root / "attempt-1"
+        complete = b'{"type":"thread.started"}\n{"usage":{"input_tokens":3,"output_tokens":2}}\n'
+        truncated = b'{"type":"turn.completed"'
+        stderr = b"warning: \xff\n"
+        command = [
+            sys.executable,
+            "-c",
+            (
+                "import os, sys, time; time.sleep(0.02); "
+                f"os.write(sys.stdout.fileno(), {complete + truncated!r}); "
+                f"os.write(sys.stderr.fileno(), {stderr!r})"
+            ),
+        ]
+
+        result = run_process_in_new_group(
+            command,
+            cwd=root,
+            timeout=2,
+            env=os.environ.copy(),
+            attempt_dir=attempt_dir,
+        )
+
+        self.assertEqual(0, result.returncode)
+        self.assertEqual(len(complete + truncated), result.streamed_stdout_bytes)
+        self.assertEqual(len(stderr), result.streamed_stderr_bytes)
+        self.assertEqual(2, result.parsed_event_count)
+        self.assertEqual(1, result.truncated_line_count)
+        self.assertGreaterEqual(result.time_to_first_stdout_event_seconds, 0)
+        self.assertLessEqual(result.time_to_first_stdout_event_seconds, result.elapsed_seconds)
+        self.assertGreaterEqual(result.time_to_first_stderr_byte_seconds, 0)
+        self.assertLessEqual(result.time_to_first_stderr_byte_seconds, result.elapsed_seconds)
+        self.assertEqual({"input_tokens": 3, "output_tokens": 2}, result.token_usage)
+        self.assertEqual(complete + truncated, (attempt_dir / "events.jsonl").read_bytes())
+        self.assertEqual(stderr, (attempt_dir / "stderr.log").read_bytes())
+
+    def test_runtime_metadata_hashes_all_inputs_and_records_version_and_timeout(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        root = Path(tmp.name)
+        executable = root / "fake-codex"
+        executable_bytes = b"#!/bin/sh\nprintf 'codex-cli test-version\\n'\n"
+        executable.write_bytes(executable_bytes)
+        executable.chmod(0o755)
+        schema_path = root / "schema.json"
+        schema_bytes = b'{"type":"object"}\n'
+        schema_path.write_bytes(schema_bytes)
+        raw_bytes = b"raw evidence\n"
+        template_bytes = b"template {{ job }}\n"
+        rendered_prompt = "rendered prompt\n"
+
+        metadata = build_runtime_metadata(
+            raw_bytes=raw_bytes,
+            prompt_template_bytes=template_bytes,
+            rendered_prompt=rendered_prompt,
+            schema_path=schema_path,
+            codex_executable=str(executable),
+            timeout_seconds=37,
+            env=os.environ.copy(),
+        )
+
+        self.assertEqual(
+            {
+                "raw_text": hashlib.sha256(raw_bytes).hexdigest(),
+                "prompt_template": hashlib.sha256(template_bytes).hexdigest(),
+                "rendered_prompt": hashlib.sha256(rendered_prompt.encode("utf-8")).hexdigest(),
+                "output_schema": hashlib.sha256(schema_bytes).hexdigest(),
+                "codex_executable": hashlib.sha256(executable_bytes).hexdigest(),
+            },
+            metadata["sha256"],
+        )
+        self.assertEqual(str(executable.resolve()), metadata["codex_executable"])
+        self.assertEqual("codex-cli test-version", metadata["codex_cli_version"])
+        self.assertEqual(37, metadata["timeout_seconds"])
+
+    def test_diagnostic_receipt_includes_streaming_lifecycle_and_runtime_metadata(self):
+        root, job_path, job = self.make_root()
+        stdout_text = '{"usage":{"input_tokens":3}}\n{"partial":'
+        metadata = {
+            "sha256": {
+                "raw_text": "a",
+                "prompt_template": "b",
+                "rendered_prompt": "c",
+                "output_schema": "d",
+                "codex_executable": "e",
+            },
+            "codex_executable": "/fake/codex",
+            "codex_cli_version": "codex-cli test",
+            "timeout_seconds": 900,
+        }
+
+        def fake_runner(command, **kwargs):
+            Path(command[command.index("-o") + 1]).write_text(
+                json.dumps(self.valid_output(job)), encoding="utf-8"
+            )
+            return SimpleNamespace(
+                returncode=0,
+                stdout=stdout_text,
+                stderr="warning",
+            )
+
+        from unittest.mock import patch
+        with patch(
+            "run_metronome_model_worker.build_runtime_metadata",
+            return_value=metadata,
+        ):
+            self.assertEqual(
+                0,
+                run_worker(
+                    root,
+                    job_path,
+                    "2026-07-17",
+                    runner=fake_runner,
+                    run_id="terra-streaming",
+                ),
+            )
+
+        run_dir = resolve_run_dir(root, job, "terra-streaming")
+        receipt = json.loads((run_dir / "model-worker-receipt.json").read_text(encoding="utf-8"))
+        attempt = receipt["attempts"][0]
+        self.assertEqual(metadata, attempt["runtime_metadata"])
+        self.assertEqual(metadata, receipt["runtime_metadata"])
+        self.assertEqual(1, attempt["parsed_event_count"])
+        self.assertEqual(1, attempt["truncated_line_count"])
+        self.assertEqual(len(stdout_text.encode("utf-8")), attempt["streamed_stdout_bytes"])
+        progress = [
+            json.loads(line)
+            for line in (run_dir / "attempt-1/progress.jsonl").read_text(encoding="utf-8").splitlines()
+        ]
+        self.assertIn("lock_acquired", [item["event"] for item in progress])
+        self.assertIn("validation_completed", [item["event"] for item in progress])
+        self.assertIn("receipt_published", [item["event"] for item in progress])
 
     def test_job_lock_is_shared_across_worktrees_but_not_jobs(self):
         tmp = tempfile.TemporaryDirectory()

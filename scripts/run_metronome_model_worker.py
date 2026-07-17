@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import json
 import os
 import re
@@ -22,11 +23,15 @@ from metronome_ingest_pilot import (
     validate_model_output,
 )
 from metronome_model_runtime import (
+    AttemptExecution,
+    analyze_event_stream,
+    append_progress_event,
     job_lock,
     normalized_output_path,
     raw_output_path,
     resolve_run_dir,
     terminate_process_group,
+    run_streaming_process,
     validate_run_id,
     write_json_atomic,
 )
@@ -136,6 +141,48 @@ def build_codex_command(
         str(cwd),
         prompt,
     ]
+
+
+def _sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def build_runtime_metadata(
+    *,
+    raw_bytes: bytes,
+    prompt_template_bytes: bytes,
+    rendered_prompt: str,
+    schema_path: Path,
+    codex_executable: str,
+    timeout_seconds: int,
+    env: Dict[str, str],
+) -> Dict[str, Any]:
+    """Hash the exact runtime inputs and identify the selected CLI executable."""
+    resolved = shutil.which(codex_executable, path=env.get("PATH"))
+    executable_path = Path(resolved or codex_executable).expanduser().resolve()
+    executable_bytes = executable_path.read_bytes()
+    version = subprocess.run(
+        [str(executable_path), "--version"],
+        cwd=executable_path.parent,
+        env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        check=True,
+        timeout=10,
+    ).stdout.strip()
+    return {
+        "sha256": {
+            "raw_text": _sha256_bytes(raw_bytes),
+            "prompt_template": _sha256_bytes(prompt_template_bytes),
+            "rendered_prompt": _sha256_bytes(rendered_prompt.encode("utf-8")),
+            "output_schema": _sha256_bytes(schema_path.read_bytes()),
+            "codex_executable": _sha256_bytes(executable_bytes),
+        },
+        "codex_executable": str(executable_path),
+        "codex_cli_version": version,
+        "timeout_seconds": timeout_seconds,
+    }
 
 
 def extract_token_usage(events: str) -> Optional[Dict[str, Any]]:
@@ -260,30 +307,81 @@ def common_git_dir(root: Path) -> Path:
 
 
 def run_process_in_new_group(
-    command: List[str], *, cwd: Path, timeout: int, env: Dict[str, str]
-) -> tuple:
-    """Run one worker command, cleaning up its complete process group on timeout."""
-    process = subprocess.Popen(
+    command: List[str],
+    *,
+    cwd: Path,
+    timeout: int,
+    env: Dict[str, str],
+    attempt_dir: Path,
+) -> AttemptExecution:
+    """Run one worker command with selector-based binary output streaming."""
+    return run_streaming_process(
         command,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
         cwd=cwd,
+        timeout=timeout,
         env=env,
-        start_new_session=True,
+        attempt_dir=attempt_dir,
+        terminator=terminate_process_group,
     )
-    try:
-        stdout, stderr = process.communicate(timeout=timeout)
-        return subprocess.CompletedProcess(command, process.returncode, stdout, stderr), None
-    except subprocess.TimeoutExpired:
-        termination = terminate_process_group(process)
-        stdout, stderr = process.communicate()
-        message = "worker attempt timed out"
-        stderr = f"{stderr}\n{message}" if stderr else message
-        return (
-            subprocess.CompletedProcess(command, 124, stdout, stderr),
-            termination,
-        )
+
+
+def _buffered_attempt_execution(
+    result: Any,
+    attempt_dir: Path,
+    *,
+    started_at: str,
+    started_clock: float,
+    termination: Optional[Dict[str, Any]],
+) -> AttemptExecution:
+    """Adapt injected deterministic runners to the live-attempt accounting shape."""
+    events_path = attempt_dir / "events.jsonl"
+    stderr_path = attempt_dir / "stderr.log"
+    progress_path = attempt_dir / "progress.jsonl"
+    stdout_bytes = _text(result.stdout).encode("utf-8")
+    stderr_bytes = _text(result.stderr).encode("utf-8")
+    events_path.write_bytes(stdout_bytes)
+    stderr_path.write_bytes(stderr_bytes)
+    parsed_count, truncated_count, usage = analyze_event_stream(stdout_bytes)
+    elapsed = time.monotonic() - started_clock
+    if parsed_count:
+        append_progress_event(progress_path, "first_stdout_event", elapsed_seconds=0.0)
+    if stderr_bytes:
+        append_progress_event(progress_path, "first_stderr_byte", elapsed_seconds=0.0)
+    append_progress_event(
+        progress_path,
+        "process_exited",
+        process_return_code=result.returncode,
+        logical_return_code=result.returncode,
+        injected_runner=True,
+    )
+    return AttemptExecution(
+        returncode=int(result.returncode),
+        started_at=started_at,
+        finished_at=utc_now(),
+        elapsed_seconds=round(elapsed, 6),
+        time_to_first_stdout_event_seconds=0.0 if parsed_count else None,
+        time_to_first_stderr_byte_seconds=0.0 if stderr_bytes else None,
+        streamed_stdout_bytes=len(stdout_bytes),
+        streamed_stderr_bytes=len(stderr_bytes),
+        parsed_event_count=parsed_count,
+        truncated_line_count=truncated_count,
+        token_usage=usage,
+        termination=termination,
+    )
+
+
+def _execution_accounting(execution: AttemptExecution) -> Dict[str, Any]:
+    return {
+        "attempt_started_at": execution.started_at,
+        "attempt_finished_at": execution.finished_at,
+        "attempt_elapsed_seconds": execution.elapsed_seconds,
+        "time_to_first_stdout_event_seconds": execution.time_to_first_stdout_event_seconds,
+        "time_to_first_stderr_byte_seconds": execution.time_to_first_stderr_byte_seconds,
+        "streamed_stdout_bytes": execution.streamed_stdout_bytes,
+        "streamed_stderr_bytes": execution.streamed_stderr_bytes,
+        "parsed_event_count": execution.parsed_event_count,
+        "truncated_line_count": execution.truncated_line_count,
+    }
 
 
 def recover_attempt(
@@ -368,6 +466,7 @@ def _run_worker_unlocked(
     ingest_date: str,
     runner: Optional[Callable[..., Any]] = None,
     run_id: Optional[str] = None,
+    lock_acquired_at: Optional[str] = None,
 ) -> int:
     job_file = job_path if job_path.is_absolute() else root / job_path
     job = load_json(job_file)
@@ -377,7 +476,8 @@ def _run_worker_unlocked(
             print(error)
         return 1
 
-    raw_text = (root / job["raw_path"]).read_text(encoding="utf-8")
+    raw_bytes = (root / job["raw_path"]).read_bytes()
+    raw_text = raw_bytes.decode("utf-8")
     profile = build_page_profile(raw_text)
     concept_dir = root / "wiki/concepts/metronome"
     profile["existing_metronome_concept_slugs"] = sorted(
@@ -400,7 +500,8 @@ def _run_worker_unlocked(
     else:
         artifact_dir = root / job["artifact_dir"]
         artifact_dir.mkdir(parents=True, exist_ok=True)
-    template = (root / PROMPT_PATH).read_text(encoding="utf-8")
+    template_bytes = (root / PROMPT_PATH).read_bytes()
+    template = template_bytes.decode("utf-8")
     schema_path = root / SCHEMA_PATH
     started_at = utc_now()
     started_clock = time.monotonic()
@@ -416,6 +517,8 @@ def _run_worker_unlocked(
     last_raw_output_path: Optional[Path] = None
     last_normalized_path: Optional[Path] = None
     last_termination: Optional[Dict[str, Any]] = None
+    last_execution: Optional[AttemptExecution] = None
+    last_runtime_metadata: Optional[Dict[str, Any]] = None
 
     with tempfile.TemporaryDirectory(prefix=f"metronome-{job['job_id']}-") as tmp:
         staged_cwd = Path(tmp)
@@ -433,6 +536,7 @@ def _run_worker_unlocked(
                 output_path = attempt_dir / "output.json"
                 normalized_path = None
             prompt = build_prompt(template, job, profile, validation_errors)
+            timeout_seconds = int(job.get("timeout_seconds", 900))
             command = build_codex_command(
                 staged_cwd,
                 schema_path,
@@ -442,25 +546,53 @@ def _run_worker_unlocked(
                 job["reasoning_effort"],
             )
             termination: Optional[Dict[str, Any]] = None
+            progress_path = attempt_dir / "progress.jsonl"
+            if diagnostic:
+                append_progress_event(
+                    progress_path,
+                    "lock_acquired",
+                    acquired_at=lock_acquired_at or started_at,
+                )
+                runtime_metadata = build_runtime_metadata(
+                    raw_bytes=raw_bytes,
+                    prompt_template_bytes=template_bytes,
+                    rendered_prompt=prompt,
+                    schema_path=schema_path,
+                    codex_executable=command[0],
+                    timeout_seconds=timeout_seconds,
+                    env=worker_env,
+                )
+            else:
+                runtime_metadata = None
+            attempt_started_at = utc_now()
+            attempt_started_clock = time.monotonic()
             try:
                 if runner is None:
-                    result, termination = run_process_in_new_group(
+                    execution = run_process_in_new_group(
                         command,
                         cwd=staged_cwd,
-                        timeout=int(job.get("timeout_seconds", 900)),
+                        timeout=timeout_seconds,
                         env=worker_env,
+                        attempt_dir=attempt_dir,
                     )
+                    termination = execution.termination
                 else:
-                    result = runner(
+                    append_progress_event(
+                        progress_path,
+                        "process_started",
+                        pid=None,
+                        injected_runner=True,
+                    )
+                    buffered_result = runner(
                         command,
                         capture_output=True,
                         text=True,
                         cwd=staged_cwd,
-                        timeout=int(job.get("timeout_seconds", 900)),
+                        timeout=timeout_seconds,
                         env=worker_env,
                     )
             except subprocess.TimeoutExpired as exc:
-                result = subprocess.CompletedProcess(
+                buffered_result = subprocess.CompletedProcess(
                     command,
                     124,
                     stdout=_text(exc.stdout),
@@ -473,14 +605,21 @@ def _run_worker_unlocked(
                     "escalation_signal": None,
                     "final_return_code": 124,
                 }
-            last_result = result
+            if runner is not None:
+                execution = _buffered_attempt_execution(
+                    buffered_result,
+                    attempt_dir,
+                    started_at=attempt_started_at,
+                    started_clock=attempt_started_clock,
+                    termination=termination,
+                )
+            result = execution
+            last_result = execution
             last_attempt_dir = attempt_dir
             written_raw_output_path = output_path if output_path.is_file() else None
             events_path = attempt_dir / "events.jsonl"
             stderr_path = attempt_dir / "stderr.log"
-            events_path.write_text(result.stdout or "", encoding="utf-8")
-            stderr_path.write_text(result.stderr or "", encoding="utf-8")
-            usage = extract_token_usage(result.stdout or "")
+            usage = execution.token_usage
             usages.append(usage)
 
             errors: List[str] = []
@@ -511,6 +650,12 @@ def _run_worker_unlocked(
                     errors.append(f"model output is invalid JSON: {exc.msg}")
 
             status = "accepted" if not errors and output is not None else "rejected"
+            append_progress_event(
+                progress_path,
+                "validation_completed",
+                passed=not errors and output is not None,
+                error_count=len(errors),
+            )
             attempt_record = {
                     "attempt": attempt,
                     "status": status,
@@ -524,6 +669,7 @@ def _run_worker_unlocked(
                     ),
                     "events_path": events_path.relative_to(root).as_posix(),
                     "stderr_path": stderr_path.relative_to(root).as_posix(),
+                    "progress_path": progress_path.relative_to(root).as_posix(),
                     "token_usage": usage,
                 }
             if normalized_path is not None:
@@ -534,10 +680,14 @@ def _run_worker_unlocked(
                 )
             if diagnostic:
                 attempt_record["termination"] = termination
+                attempt_record["runtime_metadata"] = runtime_metadata
+                attempt_record.update(_execution_accounting(execution))
             attempt_records.append(attempt_record)
             last_raw_output_path = written_raw_output_path
             last_normalized_path = written_normalized_path
             last_termination = termination
+            last_execution = execution
+            last_runtime_metadata = runtime_metadata
             if termination is not None or result.returncode == 124:
                 validation_errors = errors
                 break
@@ -590,7 +740,11 @@ def _run_worker_unlocked(
                     receipt["run_id"] = run_id
                     receipt["normalized_output_path"] = accepted_output.relative_to(root).as_posix()
                     receipt["termination"] = last_termination
+                    receipt["progress_path"] = progress_path.relative_to(root).as_posix()
+                    receipt["runtime_metadata"] = last_runtime_metadata
+                    receipt.update(_execution_accounting(execution))
                     write_json_atomic(artifact_dir / "model-worker-receipt.json", receipt)
+                    append_progress_event(progress_path, "receipt_published")
                 else:
                     _write_json(artifact_dir / "model-worker-receipt.json", receipt)
                 return 0
@@ -638,14 +792,21 @@ def _run_worker_unlocked(
         "page_profile": profile,
     }
     if run_id is not None:
+        assert last_execution is not None
         failed["run_id"] = run_id
         failed["termination"] = last_termination
+        failed["progress_path"] = (
+            last_attempt_dir / "progress.jsonl"
+        ).relative_to(root).as_posix()
+        failed["runtime_metadata"] = last_runtime_metadata
+        failed.update(_execution_accounting(last_execution))
         failed["normalized_output_path"] = (
             last_normalized_path.relative_to(root).as_posix()
             if last_normalized_path is not None
             else None
         )
         write_json_atomic(artifact_dir / "model-worker-receipt.json", failed)
+        append_progress_event(last_attempt_dir / "progress.jsonl", "receipt_published")
     else:
         _write_json(artifact_dir / "model-worker-receipt.json", failed)
     return 1
@@ -671,7 +832,14 @@ def run_worker(
         return 1
     try:
         with job_lock(common_git_dir(root), provider, job_id):
-            return _run_worker_unlocked(root, job_path, ingest_date, runner=runner, run_id=run_id)
+            return _run_worker_unlocked(
+                root,
+                job_path,
+                ingest_date,
+                runner=runner,
+                run_id=run_id,
+                lock_acquired_at=utc_now(),
+            )
     except RuntimeError as exc:
         print(exc)
         return 1
