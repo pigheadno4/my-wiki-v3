@@ -41,8 +41,11 @@ _LOCK_FILENAMES = {
     "yarn.lock",
 }
 _SAFE_PART = re.compile(r"[^A-Za-z0-9._-]+")
+_SAFE_PACKET_ID = re.compile(r"^[A-Za-z0-9._-]+$")
 _SHA = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
 _DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+PACKET_ID_MAX_BYTES = 200
+_PACKET_ENDPOINT_LABEL_MAX_BYTES = 32
 _INDEX_KEYS = {"branch_observations", "capture_order", "repo_id", "versions"}
 _CAPTURE_ORDER_INDEX_KEYS = {"capture_order", "repo_id", "versions"}
 _LEGACY_INDEX_KEYS = {"repo_id", "versions"}
@@ -72,6 +75,16 @@ _PACKET_LOCK = ".packet.lock"
 
 class PacketError(ValueError):
     """A version index or generated packet cannot be made safely."""
+
+
+def is_valid_packet_id(packet_id: object) -> bool:
+    """Return whether a packet ID is portable and safe as one path component."""
+    return (
+        isinstance(packet_id, str)
+        and packet_id not in {".", ".."}
+        and _SAFE_PACKET_ID.fullmatch(packet_id) is not None
+        and len(packet_id.encode("ascii")) <= PACKET_ID_MAX_BYTES
+    )
 
 
 @dataclass(frozen=True)
@@ -402,7 +415,7 @@ def build_baseline_packet(
     """Generate an awaiting-review baseline packet for one immutable snapshot."""
     entry = _current_entry(config, current)
     _require_entry_evidence(config, entry, packet_root, allow_supplement=True)
-    packet_id = "baseline-" + _packet_identity_part(entry) + "-" + entry.sha[:7]
+    packet_id = build_packet_id("baseline", None, entry)
     required_reading = _required_reading((entry,), ())
     return _write_packet(
         config,
@@ -442,7 +455,7 @@ def build_delta_packet(
         (prior, current_entry),
         _changed_evidence_paths(prior, current_entry, changed_files),
     )
-    packet_id = _packet_id("delta", prior, current_entry)
+    packet_id = build_packet_id("delta", prior, current_entry)
     return _write_packet(
         config,
         packet_root,
@@ -477,7 +490,7 @@ def build_comparison_packet(
     reading = _required_reading(
         (prior, current), _changed_evidence_paths(prior, current, changed_files)
     )
-    packet_id = _packet_id("comparison", prior, current)
+    packet_id = build_packet_id("comparison", prior, current)
     return _write_packet(
         config,
         packet_root,
@@ -937,6 +950,8 @@ def _write_packet(
     changed_files: Sequence[str],
     source_diff: str,
 ) -> PacketRecord:
+    if not is_valid_packet_id(packet_id):
+        raise PacketError("packet ID is invalid")
     packet_root = _require_packet_root(packet_root, config.id)
     packet_root.mkdir(parents=True, exist_ok=True)
     packet_root = _require_packet_root(packet_root, config.id)
@@ -1056,38 +1071,58 @@ def _render_packet_markdown(
     return "\n".join(lines) + "\n"
 
 
-def _packet_id(packet_type: str, prior: VersionEntry, current: VersionEntry) -> str:
-    return (
-        packet_type
-        + "-"
-        + _packet_identity_part(prior)
-        + "-"
-        + prior.sha[:7]
-        + "-to-"
-        + _packet_identity_part(current)
-        + "-"
-        + current.sha[:7]
-    )
+def build_packet_id(
+    packet_type: str, prior: Optional[VersionEntry], current: VersionEntry
+) -> str:
+    """Build one bounded, deterministic ID from the full packet identity."""
+    identity = {
+        "from": _packet_endpoint_identity(prior) if prior is not None else None,
+        "packet_type": packet_type,
+        "to": _packet_endpoint_identity(current),
+    }
+    digest = hashlib.sha256(
+        json.dumps(identity, ensure_ascii=True, separators=(",", ":"), sort_keys=True).encode(
+            "ascii"
+        )
+    ).hexdigest()
+    readable = [packet_type]
+    if prior is not None:
+        readable.append(_packet_endpoint_label(prior))
+        readable.append("to")
+    readable.append(_packet_endpoint_label(current))
+    prefix = "-".join(readable)
+    prefix_limit = PACKET_ID_MAX_BYTES - len(digest) - 1
+    prefix = prefix[:prefix_limit].rstrip("-.") or packet_type
+    packet_id = prefix + "-" + digest
+    if not is_valid_packet_id(packet_id):
+        raise PacketError("generated packet ID is invalid")
+    return packet_id
 
 
 def _packet_release_identity(entry: VersionEntry) -> str:
     return (entry.package + "@" if entry.package else "") + entry.version
 
 
-def _packet_identity_part(entry: VersionEntry) -> str:
+def _packet_endpoint_identity(entry: VersionEntry) -> dict:
+    return {
+        "aliases": list(entry.aliases),
+        "package": entry.package,
+        "ref_kind": entry.ref_kind,
+        "ref_name": entry.ref_name,
+        "sha": entry.sha,
+        "snapshot_path": entry.snapshot_path,
+        "version": entry.version,
+    }
+
+
+def _packet_endpoint_label(entry: VersionEntry) -> str:
     if entry.ref_kind in ("package-version", "tag"):
-        identity = ("release",) + _semantic_release_identity(entry)
         label = _packet_release_identity(entry)
     elif entry.ref_kind == "branch":
-        identity = ("branch", entry.ref_name)
         label = entry.ref_name
     else:
-        identity = (entry.ref_kind, entry.ref_name)
         label = entry.version
-    digest = hashlib.sha256(
-        json.dumps(identity, ensure_ascii=True, separators=(",", ":")).encode("ascii")
-    ).hexdigest()
-    return _safe_part(label)[:80].rstrip("-.") + "-" + digest
+    return _safe_part(label)[:_PACKET_ENDPOINT_LABEL_MAX_BYTES].rstrip("-.") or "ref"
 
 
 def _safe_part(value: str) -> str:

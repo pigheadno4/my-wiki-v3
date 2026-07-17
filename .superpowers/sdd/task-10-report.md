@@ -73,3 +73,31 @@
 - No public GitHub endpoint was contacted. E2E tests use temporary local Git repositories and mocked release-note responses whose stored bytes are asserted.
 - Production dashboards remain unchanged because the production collection is empty and their deterministic projection did not change.
 - Live collection and Task 11 were not started.
+
+## 2026-07-18 Final Fix
+
+### RED
+
+- `python3 -m unittest tests.test_collect_github_repos.CollectGitHubReposTests.test_local_future_audits_force_moved_retained_releases_without_republication -v`
+  - Result before the fix: `Ran 1 test in 0.895s` and `FAILED (failures=2)`.
+  - Both the regular-tag and package-scoped cases reported `unchanged` after a force move because future selection filtered the retained identity before resolving its current SHA.
+- `python3 -m unittest tests.test_github_packets.GitHubPacketTests.test_long_packet_ids_are_bounded_deterministic_and_publishable -v`
+  - Result before the fix: `Ran 1 test in 0.057s` and `ERROR` with `OSError: [Errno 63] File name too long` while publishing a delta packet directory.
+
+### Final GREEN
+
+- Future-mode collection now resolves every retained candidate selected by an `all-stable` future track. It fetches and archives release notes only for a new release identity; unchanged and moved retained identities are audited without a success packet or raw re-publication.
+- A force-moved regular tag and a force-moved package release tag each produce a reconciled failed terminal while preserving the prior index bytes, snapshot names, packet names, and validator-clean state.
+- Packet generation uses one shared 200-byte ASCII component limit for baseline, delta, and comparison IDs. Every ID has a readable bounded prefix and a SHA-256 digest of the full untruncated packet identity; state transitions and validation use the same predicate.
+- `PYTHONPYCACHEPREFIX=/tmp/wiki-v2-pycache python3 -m unittest tests.test_collect_github_repos.CollectGitHubReposTests.test_local_release_backfill_and_future_patch tests.test_collect_github_repos.CollectGitHubReposTests.test_local_future_audits_force_moved_retained_releases_without_republication -v`
+  - Result: `Ran 2 tests in 2.956s` and `OK`. The original future-patch E2E asserts that only `v10.1.6` fetches release notes.
+- `PYTHONPYCACHEPREFIX=/tmp/wiki-v2-pycache python3 -m unittest tests.test_github_packets.GitHubPacketTests.test_long_packet_ids_are_bounded_deterministic_and_publishable -v`
+  - Result: `Ran 1 test in 0.070s` and `OK`. It covers long package and branch identities across baseline, delta, and comparison packets, repeatability, uniqueness, byte bound, validator acceptance, and directory creation.
+- `PYTHONPYCACHEPREFIX=/tmp/wiki-v2-pycache python3 -m unittest tests.test_github_releases tests.test_github_snapshot tests.test_github_packets tests.test_collect_github_repos tests.test_github_validation -v`
+  - Result: `Ran 193 tests in 10.901s` and `OK`.
+- The two original Task 10 local E2Es, five recovery-edge E2Es, and the new future-audit regression
+  - Result: `Ran 8 tests in 6.283s` and `OK`.
+- `PYTHONPYCACHEPREFIX=/tmp/wiki-v2-pycache python3 -m unittest discover -s tests -v`
+  - Result: `Ran 301 tests in 14.495s` and `OK`.
+- `python3 scripts/validate_github_collection.py`
+  - Result: `validate_github_collection: OK (0 snapshots, 0 pending packets, no structural errors)`.

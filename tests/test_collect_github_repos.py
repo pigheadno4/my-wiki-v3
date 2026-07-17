@@ -639,7 +639,12 @@ class CollectGitHubReposTests(unittest.TestCase):
             "collect_github_repos.discover_release_candidates", return_value=(first, second)
         ), mock.patch("collect_github_repos.fetch_required_refs"), mock.patch(
             "collect_github_repos.inspect_repository", return_value=RepoInspection("main", (first_ref, second_ref), (), False, False)
-        ), mock.patch("collect_github_repos.resolve_ref", return_value=second_ref), mock.patch(
+        ), mock.patch(
+            "collect_github_repos.resolve_ref",
+            side_effect=lambda config, inspection, selector: next(
+                ref for ref in inspection.refs if ref.ref_name == selector[4:]
+            ),
+        ), mock.patch(
             "collect_github_repos.fetch_release_notes", return_value=notes
         ), mock.patch("collect_github_repos.run_git"):
             collected = collect_one(self.root, config, release_mode="future")
@@ -700,6 +705,88 @@ class CollectGitHubReposTests(unittest.TestCase):
         with mock.patch("github_validation.load_registry", return_value=(config,)):
             report = github_validation.inspect_github(self.root)
         self.assertEqual([], github_validation.validate_github(report))
+
+    def test_local_future_audits_force_moved_retained_releases_without_republication(self):
+        cases = (
+            ("tag", "v1.0.0", VersionTrack("v1", "all-stable", "all-stable")),
+            (
+                "package",
+                "@acme/widget@1.0.0",
+                VersionTrack(
+                    "package:@acme/widget@1", "all-stable", "all-stable"
+                ),
+            ),
+        )
+
+        for kind, tag_name, track in cases:
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                registry = root / "tracking/github/repo-registry.toml"
+                registry.parent.mkdir(parents=True)
+                registry.write_text("\n", encoding="utf-8")
+                upstream = create_git_repo(root)
+                config = self.local_config(
+                    str(upstream),
+                    key_paths=("CHANGELOG.md",),
+                    version_tracks=(track,),
+                )
+                first_sha = commit_file(
+                    upstream, "CHANGELOG.md", "# 1.0.0\n", "release 1.0.0"
+                )
+                tag(upstream, tag_name)
+
+                with mock.patch(
+                    "collect_github_repos.fetch_release_notes", return_value=None
+                ), mock.patch(
+                    "github_releases.urlopen",
+                    side_effect=AssertionError("network access"),
+                ):
+                    initial = collect_one(root, config, release_mode="backfill")
+
+                index_path = collect_github_repos._version_index_path(root, config)
+                snapshots_root = root / "raw/github/test/demo/snapshots"
+                packets_root = root / "tracking/github/repos/test/demo/packets"
+                before_index = index_path.read_bytes()
+                before_snapshots = tuple(sorted(path.name for path in snapshots_root.iterdir()))
+                before_packets = tuple(sorted(path.name for path in packets_root.iterdir()))
+
+                moved_sha = commit_file(
+                    upstream, "CHANGELOG.md", "# moved\n", "move retained release"
+                )
+                run_git(["tag", "-f", tag_name], upstream)
+
+                with mock.patch(
+                    "collect_github_repos.fetch_release_notes",
+                    side_effect=AssertionError("unchanged and moved releases must not fetch notes"),
+                ), mock.patch(
+                    "github_releases.urlopen",
+                    side_effect=AssertionError("network access"),
+                ):
+                    future = collect_one(root, config, release_mode="future")
+
+                self.assertEqual("collected-baseline", initial.state)
+                self.assertNotEqual(first_sha, moved_sha)
+                self.assertEqual("failed", future.state)
+                self.assertEqual((), future.versions)
+                self.assertEqual((), future.packet_ids)
+                terminal = next(
+                    event for event in future.events if event.get("state") == "failed"
+                )
+                self.assertEqual("tag:" + tag_name, terminal["selector"])
+                self.assertIn("immutable reference", terminal["error"])
+                self.assertEqual(before_index, index_path.read_bytes())
+                self.assertEqual(
+                    before_snapshots,
+                    tuple(sorted(path.name for path in snapshots_root.iterdir())),
+                )
+                self.assertEqual(
+                    before_packets,
+                    tuple(sorted(path.name for path in packets_root.iterdir())),
+                )
+                collect_github_repos.regenerate_status(root, (config,))
+                with mock.patch("github_validation.load_registry", return_value=(config,)):
+                    report = github_validation.inspect_github(root)
+                self.assertEqual([], github_validation.validate_github(report))
 
     def test_enabled_owner_company_split_collects_raw_and_tracking_namespaces(self):
         config = self.config(
@@ -1290,12 +1377,22 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertEqual((), unchanged.packet_ids)
 
         changelogs["10.1.6"] = add_release("10.1.6")
-        with mock.patch("collect_github_repos.fetch_release_notes", side_effect=release_evidence), mock.patch(
+        future_note_tags = []
+
+        def future_release_evidence(config, candidate, token=None):
+            future_note_tags.append(candidate.tag)
+            return release_evidence(config, candidate, token)
+
+        with mock.patch(
+            "collect_github_repos.fetch_release_notes",
+            side_effect=future_release_evidence,
+        ), mock.patch(
             "github_releases.urlopen", side_effect=AssertionError("network access")
         ):
             future = collect_one(self.root, config, release_mode="future")
         self.assertEqual(("10.1.6",), future.versions)
         self.assertEqual(1, len(future.packet_ids))
+        self.assertEqual(("v10.1.6",), tuple(future_note_tags))
 
         default_sha = commit_file(upstream, "README.md", "default branch only\n", "default branch")
         with mock.patch(

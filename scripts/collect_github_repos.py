@@ -31,6 +31,7 @@ from github_packets import (
     build_comparison_packet,
     build_delta_packet,
     load_version_index,
+    is_valid_packet_id,
     packet_transaction,
     record_snapshot,
     save_version_index,
@@ -66,18 +67,8 @@ from github_versions import matches_semver, parse_package_tag, parse_semver
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-_SAFE_PACKET_ID = re.compile(r"^[A-Za-z0-9._-]+$")
 _FULL_SHA = re.compile(r"^(?:[0-9A-Fa-f]{40}|[0-9A-Fa-f]{64})$")
 _COLLECTION_LOCK = ".collection.lock"
-
-
-def is_valid_packet_id(packet_id: object) -> bool:
-    """Return whether a packet ID is safe for packet directory operations."""
-    return (
-        isinstance(packet_id, str)
-        and packet_id not in {".", ".."}
-        and _SAFE_PACKET_ID.fullmatch(packet_id) is not None
-    )
 
 
 class CollectionUsageError(ValueError):
@@ -161,7 +152,8 @@ def collect_one(
                     emit(_terminal_event(config.id, selector, "failed", error=error, dry_run=dry_run))
                 for candidate, selector in release_pairs:
                     selected_targets.append(selector)
-                    versions.append(candidate.version)
+                    if release_mode != "future":
+                        versions.append(candidate.version)
                     emit(_selected_event(config.id, selector, dry_run))
 
             requested = explicit or tuple(selector for _, selector in release_pairs)
@@ -221,7 +213,10 @@ def collect_one(
                         ref = resolve_ref(config, inspection, selector)
                         ref = replace(ref, aliases=tuple(sorted(set(candidate.aliases))))
                         evidence = None
-                        if not dry_run:
+                        if not dry_run and (
+                            release_mode != "future"
+                            or _matching_release_entry(index, ref) is None
+                        ):
                             evidence = fetch_release_notes(
                                 config, candidate, token=os.environ.get("GITHUB_TOKEN")
                             )
@@ -267,6 +262,8 @@ def collect_one(
                     for selector, ref, state, packet in outcomes:
                         if packet is not None:
                             packet_ids.append(packet.packet_id)
+                            if release_mode == "future":
+                                versions.append(ref.version)
                         emit(
                             _terminal_event(
                                 config.id,
@@ -606,7 +603,9 @@ def _select_releases(
             retained = select_release_candidates(
                 track,
                 candidates,
-                _existing_versions_for_track(index, track),
+                ()
+                if mode == "future"
+                else _existing_versions_for_track(index, track),
                 mode,
             )
         except Exception as error:

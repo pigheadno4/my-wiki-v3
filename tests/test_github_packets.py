@@ -13,7 +13,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from github_git import ResolvedRef  # noqa: E402
+from collect_github_repos import is_valid_packet_id  # noqa: E402
 from github_packets import (  # noqa: E402
+    PACKET_ID_MAX_BYTES,
     PacketError,
     VersionIndex,
     build_baseline_packet,
@@ -162,6 +164,98 @@ class GitHubPacketTests(unittest.TestCase):
         self.assertNotEqual(first_packet.packet_id, second_packet.packet_id)
         self.assertTrue(first_packet.directory.is_dir())
         self.assertTrue(second_packet.directory.is_dir())
+
+    def test_long_packet_ids_are_bounded_deterministic_and_publishable(self):
+        long_package = "@scope/" + "widget-" * 60 + "one"
+        nearby_package = "@scope/" + "widget-" * 60 + "two"
+        long_branch = "release/" + "candidate-" * 60 + "one"
+
+        package_snapshot = self.snapshot(
+            "a" * 40,
+            package=long_package,
+            target_path=self.raw_root / "acme/widgets/snapshots/long-package",
+        )
+        nearby_snapshot = self.snapshot(
+            "b" * 40,
+            package=nearby_package,
+            target_path=self.raw_root / "acme/widgets/snapshots/nearby-package",
+        )
+        branch_ref = ResolvedRef(
+            "acme/widgets",
+            "branch",
+            long_branch,
+            "c" * 40,
+            long_branch,
+            (),
+            "2026-07-16T00:00:00+00:00",
+            None,
+        )
+        branch_snapshot = SnapshotRecord(
+            **dict(
+                vars(
+                    self.snapshot(
+                        "c" * 40,
+                        package="",
+                        target_path=self.raw_root / "acme/widgets/snapshots/long-branch",
+                        release_notes_source_url=None,
+                        release_notes_published_at=None,
+                        release_notes_sha256=None,
+                        release_notes_size=None,
+                    )
+                ),
+                ref=branch_ref,
+            )
+        )
+
+        for snapshot in (package_snapshot, nearby_snapshot, branch_snapshot):
+            snapshot.target_path.mkdir(parents=True)
+            (snapshot.target_path / "snapshot.md").write_text("snapshot\n", encoding="utf-8")
+            (snapshot.target_path / "files").mkdir()
+            (snapshot.target_path / "files/CHANGELOG.md").write_text(
+                "log\n", encoding="utf-8"
+            )
+            if snapshot.ref.ref_kind != "branch":
+                (snapshot.target_path / "release-notes.md").write_text(
+                    "notes\n", encoding="utf-8"
+                )
+
+        index = record_snapshot(self.empty_index(), package_snapshot)
+        prior = index.versions[0]
+        current = record_snapshot(index, branch_snapshot).versions[1]
+        with mock.patch("github_packets._git_delta", return_value=((), "")):
+            baseline = build_baseline_packet(self.config, package_snapshot, self.packet_root)
+            nearby = build_baseline_packet(self.config, nearby_snapshot, self.packet_root)
+            delta = build_delta_packet(
+                self.config, prior, current, self.repo, self.packet_root
+            )
+            comparison = build_comparison_packet(
+                self.config, prior, current, self.repo, self.packet_root
+            )
+            repeated = (
+                build_baseline_packet(self.config, package_snapshot, self.packet_root),
+                build_delta_packet(self.config, prior, current, self.repo, self.packet_root),
+                build_comparison_packet(
+                    self.config, prior, current, self.repo, self.packet_root
+                ),
+            )
+
+        packets = (baseline, nearby, delta, comparison)
+        self.assertEqual(
+            (baseline.packet_id, delta.packet_id, comparison.packet_id),
+            tuple(packet.packet_id for packet in repeated),
+        )
+        self.assertEqual(4, len({packet.packet_id for packet in packets}))
+        self.assertTrue(all(packet.directory.is_dir() for packet in packets))
+        self.assertTrue(all(packet.packet_id.isascii() for packet in packets))
+        self.assertTrue(all(is_valid_packet_id(packet.packet_id) for packet in packets))
+        self.assertTrue(
+            all(
+                len(packet.packet_id.encode("ascii")) <= PACKET_ID_MAX_BYTES
+                for packet in packets
+            )
+        )
+        self.assertLess(PACKET_ID_MAX_BYTES, 255)
+        self.assertFalse(is_valid_packet_id("x" * (PACKET_ID_MAX_BYTES + 1)))
 
     def test_record_snapshot_rejects_force_moved_immutable_identity(self):
         first = record_snapshot(self.empty_index(), self.snapshot("a" * 40, package=""))
