@@ -133,6 +133,7 @@ def run_streaming_process(
     timeout: int,
     env: Dict[str, str],
     attempt_dir: Path,
+    stdin_bytes: Optional[bytes] = None,
     termination_grace_seconds: float = 5.0,
     pipe_cleanup_seconds: float = 1.0,
 ) -> AttemptExecution:
@@ -149,6 +150,7 @@ def run_streaming_process(
     started_clock = time.monotonic()
     process = subprocess.Popen(
         command,
+        stdin=subprocess.PIPE if stdin_bytes is not None else None,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=False,
@@ -164,6 +166,10 @@ def run_streaming_process(
     selector = selectors.DefaultSelector()
     selector.register(process.stdout, selectors.EVENT_READ, "stdout")
     selector.register(process.stderr, selectors.EVENT_READ, "stderr")
+    stdin_buffer = memoryview(stdin_bytes) if stdin_bytes is not None else None
+    if stdin_buffer is not None:
+        assert process.stdin is not None
+        selector.register(process.stdin, selectors.EVENT_WRITE, "stdin")
     stdout_buffer = bytearray()
     stdout_bytes = 0
     stderr_bytes = 0
@@ -251,6 +257,16 @@ def run_streaming_process(
                     time.sleep(select_timeout)
                 for key, _mask in selected:
                     stream = key.fileobj
+                    if key.data == "stdin":
+                        try:
+                            written = os.write(stream.fileno(), stdin_buffer[:65536])
+                        except BrokenPipeError:
+                            written = len(stdin_buffer)
+                        stdin_buffer = stdin_buffer[written:]
+                        if not stdin_buffer:
+                            selector.unregister(stream)
+                            stream.close()
+                        continue
                     chunk = os.read(stream.fileno(), 65536)
                     if not chunk:
                         selector.unregister(stream)

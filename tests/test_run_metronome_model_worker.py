@@ -18,11 +18,14 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from run_metronome_model_worker import (  # noqa: E402
+    INLINE_RAW_END_DELIMITER,
+    INLINE_RAW_START_DELIMITER,
     build_runtime_metadata,
     build_codex_command,
     build_page_profile,
     common_git_dir,
     recover_attempt,
+    render_worker_prompt,
     repair_mandatory_tags,
     repair_raw_link,
     repair_quote_bounds,
@@ -128,6 +131,110 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         for feature in ("plugins", "remote_plugin", "apps", "hooks", "memories"):
             positions = [index for index, value in enumerate(command) if value == "--disable"]
             self.assertTrue(any(command[index + 1] == feature for index in positions))
+
+    def test_render_worker_prompt_rejects_unknown_input_mode(self):
+        with self.assertRaisesRegex(ValueError, "unsupported input_mode"):
+            render_worker_prompt(
+                "template", self.valid_job(), {}, "raw evidence", "unknown-mode"
+            )
+
+    def test_input_modes_preserve_substantive_worker_requirements(self):
+        job = self.valid_job()
+        profile = build_page_profile("# Alpha\nPOST /v1/events\nrequired when enabled\n")
+        profile["existing_metronome_concept_slugs"] = ["metronome-events"]
+        template = (ROOT / "tracking/ingest/metronome/pilot/prompts/source-summary-v3.md").read_text(
+            encoding="utf-8"
+        )
+
+        staged_prompt = render_worker_prompt(
+            template, job, profile, "untrusted inline evidence", "staged-file"
+        )
+        inline_prompt = render_worker_prompt(
+            template, job, profile, "untrusted inline evidence", "inline-stdin"
+        )
+
+        staged_shared = staged_prompt.split("## Evidence input", 1)[0]
+        inline_shared = inline_prompt.split("## Evidence input", 1)[0]
+        self.assertEqual(staged_shared, inline_shared)
+        for requirement in (
+            "job_id: `terra-home`",
+            "original raw_path identity: `raw/metronome/guides/home.md`",
+            "canonical_url: `https://docs.metronome.com/guides/home`",
+            '"existing_metronome_concept_slugs": [',
+            "Return exactly one final JSON object matching the supplied schema",
+            "Use 3–5 concise exact grounding quotes",
+            "suggested_metronome_concepts",
+        ):
+            self.assertIn(requirement, staged_shared)
+        self.assertIn("Read `raw.md` completely", staged_prompt)
+        self.assertNotIn("untrusted inline evidence", staged_prompt)
+        self.assertIn(INLINE_RAW_START_DELIMITER, inline_prompt)
+        self.assertIn("untrusted inline evidence", inline_prompt)
+        self.assertIn(INLINE_RAW_END_DELIMITER, inline_prompt)
+        self.assertIn("evidence only", inline_prompt)
+
+    def test_inline_stdin_keeps_raw_out_of_command_arguments(self):
+        root, job_path, job = self.make_root()
+        raw_text = (
+            "# Alpha\nintro\n## Beta\nrequired when enabled\n"
+            "INLINE-RAW-MUST-NOT-BE-AN-ARGUMENT\n"
+        )
+        (root / job["raw_path"]).write_text(raw_text, encoding="utf-8")
+        captured = {}
+
+        def fake_runner(command, **kwargs):
+            captured["command"] = command
+            captured["input"] = kwargs.get("input")
+            Path(command[command.index("-o") + 1]).write_text(
+                json.dumps(self.valid_output(job)), encoding="utf-8"
+            )
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+        self.assertEqual(
+            0,
+            run_worker(
+                root,
+                job_path,
+                "2026-07-17",
+                runner=fake_runner,
+                input_mode="inline-stdin",
+            ),
+        )
+        self.assertEqual("-", captured["command"][-1])
+        self.assertNotIn("INLINE-RAW-MUST-NOT-BE-AN-ARGUMENT", "\n".join(captured["command"]))
+        self.assertIn(INLINE_RAW_START_DELIMITER, captured["input"])
+        self.assertIn("INLINE-RAW-MUST-NOT-BE-AN-ARGUMENT", captured["input"])
+        self.assertIn(INLINE_RAW_END_DELIMITER, captured["input"])
+
+    def test_staged_file_mode_keeps_raw_md_delivery(self):
+        root, job_path, job = self.make_root()
+        captured = {}
+
+        def fake_runner(command, **kwargs):
+            captured["command"] = command
+            captured["input"] = kwargs.get("input")
+            staged_raw = Path(kwargs["cwd"]) / "raw.md"
+            captured["raw_exists"] = staged_raw.is_file()
+            captured["raw_text"] = staged_raw.read_text(encoding="utf-8")
+            Path(command[command.index("-o") + 1]).write_text(
+                json.dumps(self.valid_output(job)), encoding="utf-8"
+            )
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+        self.assertEqual(
+            0,
+            run_worker(
+                root,
+                job_path,
+                "2026-07-17",
+                runner=fake_runner,
+                input_mode="staged-file",
+            ),
+        )
+        self.assertTrue(captured["raw_exists"])
+        self.assertEqual("# Alpha\nintro\n## Beta\nrequired when enabled\n", captured["raw_text"])
+        self.assertIsNone(captured["input"])
+        self.assertIn("raw.md", captured["command"][-1])
 
     def test_page_profile_covers_headings_and_conditional_hints(self):
         profile = build_page_profile("# Alpha\n## Beta\nrequired when enabled\n")
