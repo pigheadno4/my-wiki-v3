@@ -297,6 +297,7 @@ def run_health_probe(
             "validation_completed",
             passed=passed,
             error_count=len(failures),
+            total_elapsed_seconds=round(total_elapsed, 6),
         )
         artifact_hashes = {
             "events": _sha256_path(events_path),
@@ -471,27 +472,53 @@ def _load_passing_probe_receipt(root: Path, run_id: str) -> Dict[str, Any]:
 
     progress = _read_jsonl(progress_path)
     classified = [item for item in progress if item.get("event") == "model_activity_classified"]
+    runtime_model_events = [
+        item for item in progress if item.get("event") == "first_model_event"
+    ]
+    process_started = [item for item in progress if item.get("event") == "process_started"]
+    process_exited = [item for item in progress if item.get("event") == "process_exited"]
+    validations = [
+        item for item in progress if item.get("event") == "validation_completed"
+    ]
     if (
         not progress
         or progress[-1].get("event") != "receipt_published"
         or len(classified) != 1
+        or len(runtime_model_events) != 1
+        or len(process_started) != 1
+        or len(process_exited) != 1
+        or len(validations) != 1
         or classified[0].get("observed") is not True
     ):
         _reject_gate("receipt publication or model-activity progress is incomplete")
     model_latency = classified[0].get("elapsed_seconds")
+    runtime_model_latency = runtime_model_events[0].get("elapsed_seconds")
     stdout_latency = receipt.get("time_to_first_stdout_event_seconds")
     total_elapsed = receipt.get("total_elapsed_seconds")
     attempt_elapsed = receipt.get("attempt_elapsed_seconds")
     if not all(
         isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0
-        for value in (model_latency, stdout_latency, total_elapsed, attempt_elapsed)
+        for value in (
+            model_latency,
+            runtime_model_latency,
+            stdout_latency,
+            total_elapsed,
+            attempt_elapsed,
+        )
     ):
         _reject_gate("probe latency or elapsed accounting is invalid")
     if (
         model_latency > FIRST_MODEL_EVENT_LIMIT_SECONDS
+        or runtime_model_latency != model_latency
         or stdout_latency > model_latency
         or attempt_elapsed > total_elapsed
         or total_elapsed > TOTAL_TIMEOUT_SECONDS
+        or process_exited[0].get("elapsed_seconds") != attempt_elapsed
+        or validations[0].get("total_elapsed_seconds") != total_elapsed
+        or process_exited[0].get("logical_return_code") != 0
+        or process_exited[0].get("process_return_code") != 0
+        or validations[0].get("passed") is not True
+        or validations[0].get("error_count") != 0
         or receipt.get("first_model_event_latency_seconds") != model_latency
         or receipt.get("time_to_first_model_event_seconds") != model_latency
     ):
@@ -532,6 +559,7 @@ def _load_passing_probe_receipt(root: Path, run_id: str) -> Dict[str, Any]:
         "failures": [],
         "canonical_coverage_eligible": False,
         "termination": None,
+        "receipt_published_within_deadline": True,
     }
     if any(receipt.get(key) != value for key, value in required_values.items()):
         _reject_gate("receipt identity, exit, failure, or scope facts do not reconcile")

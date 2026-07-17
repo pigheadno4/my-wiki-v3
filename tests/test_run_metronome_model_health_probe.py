@@ -116,6 +116,25 @@ class ModelHealthProbeTests(unittest.TestCase):
                 json.dumps(event) + "\n" for event in events
             ).encode("utf-8")
             (attempt_dir / "events.jsonl").write_bytes(events_bytes)
+            progress_records = [
+                {"event": "process_started", "pid": 12345},
+                {
+                    "event": "first_model_event",
+                    "elapsed_seconds": execution.time_to_first_model_event_seconds,
+                    "event_type": "item.completed",
+                    "item_type": "agent_message",
+                },
+                {
+                    "event": "process_exited",
+                    "process_return_code": execution.returncode,
+                    "logical_return_code": execution.returncode,
+                    "elapsed_seconds": execution.elapsed_seconds,
+                },
+            ]
+            (attempt_dir / "progress.jsonl").write_text(
+                "".join(json.dumps(record) + "\n" for record in progress_records),
+                encoding="utf-8",
+            )
             execution.streamed_stdout_bytes = len(events_bytes)
             execution.parsed_event_count = len(events)
             execution.truncated_line_count = 0
@@ -478,6 +497,39 @@ class ModelHealthProbeTests(unittest.TestCase):
             )
 
         self.assertEqual([], launches)
+
+    def test_gate_rejects_receipt_published_after_deadline(self):
+        root = self.make_root()
+        receipt_path = self.make_passing_probe(root, "luna-late-receipt-gate")
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        receipt["receipt_published_within_deadline"] = False
+        receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+
+        with self.assertRaises(HealthProbeGateError):
+            launch_enterprise_ab_if_probe_passes(
+                root, "luna-late-receipt-gate", lambda: self.fail("must not launch")
+            )
+
+    def test_gate_rejects_forged_model_and_process_timing_progress(self):
+        root = self.make_root()
+        self.make_passing_probe(root, "luna-forged-runtime-timing")
+        progress_path = (
+            root
+            / "tracking/ingest/metronome/pilot/diagnostics/health-probes"
+            / "luna-forged-runtime-timing/attempt-1/progress.jsonl"
+        )
+        records = [json.loads(line) for line in progress_path.read_text().splitlines()]
+        for record in records:
+            if record.get("event") == "first_model_event":
+                record["elapsed_seconds"] = 45.0
+        progress_path.write_text(
+            "".join(json.dumps(record) + "\n" for record in records), encoding="utf-8"
+        )
+
+        with self.assertRaises(HealthProbeGateError):
+            launch_enterprise_ab_if_probe_passes(
+                root, "luna-forged-runtime-timing", lambda: self.fail("must not launch")
+            )
 
     def test_gate_rejects_artifact_and_provenance_tampering(self):
         root = self.make_root()

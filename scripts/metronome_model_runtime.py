@@ -353,6 +353,7 @@ def run_streaming_process(
         "process_exited",
         process_return_code=process.returncode,
         logical_return_code=returncode,
+        elapsed_seconds=round(elapsed_seconds, 6),
     )
     if termination is not None:
         termination["final_return_code"] = process.returncode
