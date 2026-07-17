@@ -16,6 +16,19 @@ Evaluate GPT-5.6 Luna with high reasoning as the evidence-extraction tier on fiv
 
 Every job uses schema version 3, mode `real_ingest`, model `gpt-5.6-luna`, and reasoning effort `high`.
 
+## Diagnostic Health Probe Gate
+
+The enterprise A/B remains suspended unless a new immutable Luna/high health probe passes
+all gates in its atomic `model-health-probe-receipt.json`: a first model event within
+30 seconds, valid tiny terminal JSON within the 60-second total cap, complete runtime
+metadata, and complete process cleanup. Orchestration must call the receipt gate in
+`scripts/run_metronome_model_health_probe.py` before invoking any enterprise A/B
+launcher. A failed, missing, incomplete, or non-atomic receipt blocks launch.
+
+The probe writes only beneath
+`tracking/ingest/metronome/pilot/diagnostics/health-probes/<run-id>/` and never participates in canonical coverage. It does not authorize cycles 3–5, source promotion,
+or any write beneath `raw/` or `wiki/`.
+
 ## Isolation and Serial Execution
 
 - A Luna worker may write only to `tracking/ingest/metronome/pilot/runs/<job-id>/` for its assigned job.
