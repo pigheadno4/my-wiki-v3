@@ -345,13 +345,16 @@ def run_worker(
         except ValueError as exc:
             print(exc)
             return 1
+        (root / job["artifact_dir"]).mkdir(parents=True, exist_ok=True)
         artifact_dir = resolve_run_dir(root, job, run_id)
-        if artifact_dir.exists():
+        try:
+            artifact_dir.mkdir(parents=False, exist_ok=False)
+        except FileExistsError:
             print(f"diagnostic run directory already exists: {artifact_dir}")
             return 1
     else:
         artifact_dir = root / job["artifact_dir"]
-    artifact_dir.mkdir(parents=True, exist_ok=True)
+        artifact_dir.mkdir(parents=True, exist_ok=True)
     template = (root / PROMPT_PATH).read_text(encoding="utf-8")
     schema_path = root / SCHEMA_PATH
     started_at = utc_now()
@@ -365,6 +368,8 @@ def run_worker(
     last_result: Any = None
     last_attempt_dir: Optional[Path] = None
     last_output: Optional[Dict[str, Any]] = None
+    last_raw_output_path: Optional[Path] = None
+    last_normalized_path: Optional[Path] = None
 
     with tempfile.TemporaryDirectory(prefix=f"metronome-{job['job_id']}-") as tmp:
         staged_cwd = Path(tmp)
@@ -408,6 +413,7 @@ def run_worker(
                 )
             last_result = result
             last_attempt_dir = attempt_dir
+            written_raw_output_path = output_path if output_path.is_file() else None
             events_path = attempt_dir / "events.jsonl"
             stderr_path = attempt_dir / "stderr.log"
             events_path.write_text(result.stdout or "", encoding="utf-8")
@@ -417,6 +423,7 @@ def run_worker(
 
             errors: List[str] = []
             output: Optional[Dict[str, Any]] = None
+            written_normalized_path: Optional[Path] = None
             if result.returncode != 0:
                 errors.append(f"codex process exited with {result.returncode}")
             if not output_path.is_file():
@@ -436,6 +443,7 @@ def run_worker(
                             _write_json(output_path, output)
                         else:
                             write_json_atomic(normalized_path, output)
+                            written_normalized_path = normalized_path
                         errors.extend(validate_model_output(root, job, output))
                 except json.JSONDecodeError as exc:
                     errors.append(f"model output is invalid JSON: {exc.msg}")
@@ -447,14 +455,24 @@ def run_worker(
                     "process_exit_code": result.returncode,
                     "validation_errors": errors,
                     "retry_reason": "; ".join(errors) if errors else None,
-                    "output_path": output_path.relative_to(root).as_posix(),
+                    "output_path": (
+                        written_raw_output_path.relative_to(root).as_posix()
+                        if diagnostic and written_raw_output_path is not None
+                        else (None if diagnostic else output_path.relative_to(root).as_posix())
+                    ),
                     "events_path": events_path.relative_to(root).as_posix(),
                     "stderr_path": stderr_path.relative_to(root).as_posix(),
                     "token_usage": usage,
                 }
             if normalized_path is not None:
-                attempt_record["normalized_output_path"] = normalized_path.relative_to(root).as_posix()
+                attempt_record["normalized_output_path"] = (
+                    written_normalized_path.relative_to(root).as_posix()
+                    if written_normalized_path is not None
+                    else None
+                )
             attempt_records.append(attempt_record)
+            last_raw_output_path = written_raw_output_path
+            last_normalized_path = written_normalized_path
             if result.returncode == 124:
                 validation_errors = errors
                 break
@@ -505,6 +523,7 @@ def run_worker(
                 }
                 if run_id is not None:
                     receipt["run_id"] = run_id
+                    receipt["normalized_output_path"] = accepted_output.relative_to(root).as_posix()
                     write_json_atomic(artifact_dir / "model-worker-receipt.json", receipt)
                 else:
                     _write_json(artifact_dir / "model-worker-receipt.json", receipt)
@@ -530,7 +549,15 @@ def run_worker(
         "finished_at": utc_now(),
         "elapsed_seconds": round(time.monotonic() - started_clock, 3),
         "process_exit_code": last_result.returncode,
-        "output_path": (last_attempt_dir / "output.json").relative_to(root).as_posix(),
+        "output_path": (
+            last_raw_output_path.relative_to(root).as_posix()
+            if diagnostic and last_raw_output_path is not None
+            else (
+                None
+                if diagnostic
+                else (last_attempt_dir / "output.json").relative_to(root).as_posix()
+            )
+        ),
         "draft_path": None,
         "events_path": (last_attempt_dir / "events.jsonl").relative_to(root).as_posix(),
         "stderr_path": (last_attempt_dir / "stderr.log").relative_to(root).as_posix(),
@@ -546,6 +573,11 @@ def run_worker(
     }
     if run_id is not None:
         failed["run_id"] = run_id
+        failed["normalized_output_path"] = (
+            last_normalized_path.relative_to(root).as_posix()
+            if last_normalized_path is not None
+            else None
+        )
         write_json_atomic(artifact_dir / "model-worker-receipt.json", failed)
     else:
         _write_json(artifact_dir / "model-worker-receipt.json", failed)

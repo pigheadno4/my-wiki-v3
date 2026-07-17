@@ -434,6 +434,7 @@ class MetronomeIngestPilotTests(unittest.TestCase):
         run_dir = f"{job['artifact_dir']}/terra-20260717"
         receipt["run_id"] = "terra-20260717"
         receipt["output_path"] = f"{run_dir}/model-output.normalized.json"
+        receipt["normalized_output_path"] = receipt["output_path"]
         receipt["attempts"][0]["output_path"] = f"{run_dir}/attempt-1/model-output.raw.json"
         receipt["attempts"][0]["normalized_output_path"] = (
             f"{run_dir}/attempt-1/model-output.normalized.json"
@@ -448,6 +449,59 @@ class MetronomeIngestPilotTests(unittest.TestCase):
         errors = validate_worker_receipt(root, job, receipt)
 
         self.assertTrue(any("raw and normalized output paths must differ" in error for error in errors))
+
+    def test_failed_diagnostic_receipt_requires_raw_output_and_existing_normalized_path(self):
+        root = self.make_root()
+        job = self.valid_model_job()
+        receipt = self.valid_model_worker_receipt(job)
+        run_dir = f"{job['artifact_dir']}/terra-20260717"
+        receipt.update({
+            "run_id": "terra-20260717",
+            "status": "failed",
+            "process_exit_code": 1,
+            "output_path": f"{run_dir}/attempt-1/model-output.raw.json",
+            "normalized_output_path": f"{run_dir}/attempt-1/model-output.normalized.json",
+            "draft_path": None,
+            "events_path": f"{run_dir}/attempt-1/events.jsonl",
+            "stderr_path": f"{run_dir}/attempt-1/stderr.log",
+        })
+        receipt["attempts"][0].update({
+            "output_path": f"{run_dir}/attempt-1/model-output.raw.json",
+            "normalized_output_path": f"{run_dir}/attempt-1/model-output.normalized.json",
+            "events_path": f"{run_dir}/attempt-1/events.jsonl",
+            "stderr_path": f"{run_dir}/attempt-1/stderr.log",
+        })
+
+        self.assertEqual([], validate_worker_receipt(root, job, receipt))
+
+        receipt["output_path"] = f"{run_dir}/attempt-1/output.json"
+        errors = validate_worker_receipt(root, job, receipt)
+
+        self.assertTrue(any("failed diagnostic output_path must reference model-output.raw.json" in error for error in errors))
+
+    def test_failed_diagnostic_receipt_accepts_null_paths_when_no_output_exists(self):
+        root = self.make_root()
+        job = self.valid_model_job()
+        receipt = self.valid_model_worker_receipt(job)
+        run_dir = f"{job['artifact_dir']}/terra-20260717"
+        receipt.update({
+            "run_id": "terra-20260717",
+            "status": "failed",
+            "process_exit_code": 1,
+            "output_path": None,
+            "normalized_output_path": None,
+            "draft_path": None,
+            "events_path": f"{run_dir}/attempt-1/events.jsonl",
+            "stderr_path": f"{run_dir}/attempt-1/stderr.log",
+        })
+        receipt["attempts"][0].update({
+            "output_path": None,
+            "normalized_output_path": None,
+            "events_path": f"{run_dir}/attempt-1/events.jsonl",
+            "stderr_path": f"{run_dir}/attempt-1/stderr.log",
+        })
+
+        self.assertEqual([], validate_worker_receipt(root, job, receipt))
 
     def test_render_model_draft_preserves_evidence_and_raw_link(self):
         job = self.valid_model_job()

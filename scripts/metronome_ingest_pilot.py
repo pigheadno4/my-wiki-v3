@@ -641,13 +641,19 @@ def validate_worker_receipt(
             "finished_at",
             "elapsed_seconds",
             "process_exit_code",
-            "output_path",
             "events_path",
             "stderr_path",
             "validation",
         ],
         "worker receipt",
     )
+    diagnostic_failure = (
+        receipt.get("run_id") is not None and receipt.get("status") != "success"
+    )
+    if "output_path" not in receipt or (
+        receipt.get("output_path") in (None, "") and not diagnostic_failure
+    ):
+        errors.append("worker receipt: output_path is required")
     errors.extend(_validate_identity(job, receipt, "worker receipt"))
     if receipt.get("status") not in ("success", "retryable_failure", "failed"):
         errors.append("worker receipt: invalid status")
@@ -707,12 +713,20 @@ def validate_worker_receipt(
                     "status",
                     "process_exit_code",
                     "validation_errors",
-                    "output_path",
                     "events_path",
                     "stderr_path",
                 ):
                     if field not in attempt:
                         errors.append(f"worker receipt: attempt {index} {field} is required")
+                if "output_path" not in attempt or (
+                    attempt.get("output_path") in (None, "")
+                    and receipt.get("run_id") is None
+                ):
+                    errors.append(f"worker receipt: attempt {index} output_path is required")
+                if receipt.get("run_id") is not None and "normalized_output_path" not in attempt:
+                    errors.append(
+                        f"worker receipt: attempt {index} normalized_output_path is required"
+                    )
                 errors.extend(
                     _validate_artifact_paths(
                         attempt,
@@ -723,15 +737,25 @@ def validate_worker_receipt(
                 )
                 if receipt.get("run_id") is not None:
                     normalized_path = attempt.get("normalized_output_path")
-                    if not normalized_path:
+                    if attempt.get("output_path") is not None and not str(
+                        attempt.get("output_path")
+                    ).endswith("model-output.raw.json"):
                         errors.append(
-                            f"worker receipt: attempt {index} normalized_output_path is required"
+                            f"worker receipt: attempt {index} diagnostic output_path must reference model-output.raw.json"
                         )
-                    elif normalized_path == attempt.get("output_path"):
+                    if normalized_path is not None and normalized_path == attempt.get("output_path"):
                         errors.append(
                             f"worker receipt: attempt {index} raw and normalized output paths must differ"
                         )
-                    else:
+                    elif normalized_path is not None:
+                        if attempt.get("output_path") is None:
+                            errors.append(
+                                f"worker receipt: attempt {index} normalized_output_path requires raw output_path"
+                            )
+                        if not str(normalized_path).endswith("model-output.normalized.json"):
+                            errors.append(
+                                f"worker receipt: attempt {index} normalized_output_path must reference model-output.normalized.json"
+                            )
                         errors.extend(
                             _validate_artifact_paths(
                                 attempt,
@@ -740,6 +764,31 @@ def validate_worker_receipt(
                                 f"worker receipt: attempt {index}",
                             )
                         )
+        if receipt.get("run_id") is not None:
+            if "normalized_output_path" not in receipt:
+                errors.append("worker receipt: diagnostic normalized_output_path is required")
+            normalized_path = receipt.get("normalized_output_path")
+            if normalized_path is not None:
+                errors.extend(
+                    _validate_artifact_paths(
+                        receipt,
+                        ("normalized_output_path",),
+                        artifact_dir,
+                        "worker receipt",
+                    )
+                )
+                if not str(normalized_path).endswith("model-output.normalized.json"):
+                    errors.append(
+                        "worker receipt: diagnostic normalized_output_path must reference model-output.normalized.json"
+                    )
+            if receipt.get("status") != "success" and receipt.get(
+                "output_path"
+            ) is not None and not str(receipt.get("output_path")).endswith(
+                "model-output.raw.json"
+            ):
+                errors.append(
+                    "worker receipt: failed diagnostic output_path must reference model-output.raw.json"
+                )
         if receipt.get("cumulative_token_usage") is None and not receipt.get(
             "token_usage_unavailable_reason"
         ):

@@ -3,6 +3,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
@@ -181,6 +182,43 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         )
         self.assertEqual([], calls)
 
+    def test_concurrent_diagnostic_claims_start_exactly_one_runner(self):
+        root, job_path, job = self.make_root()
+        run_id = "terra-20260717"
+        target = resolve_run_dir(root, job, run_id)
+        original_exists = Path.exists
+        barrier = threading.Barrier(2)
+        runner_calls = []
+        results = []
+
+        def race_boundary_exists(path):
+            if path == target:
+                barrier.wait(timeout=2)
+                return False
+            return original_exists(path)
+
+        def fake_runner(*args, **kwargs):
+            runner_calls.append(args)
+            raise subprocess.TimeoutExpired(args[0], kwargs["timeout"])
+
+        def invoke():
+            results.append(
+                run_worker(root, job_path, "2026-07-17", runner=fake_runner, run_id=run_id)
+            )
+
+        from unittest.mock import patch
+        with patch("run_metronome_model_worker.Path.exists", new=race_boundary_exists):
+            threads = [threading.Thread(target=invoke) for _ in range(2)]
+            for thread in threads:
+                thread.start()
+            for thread in threads:
+                thread.join(timeout=5)
+
+        self.assertEqual([False, False], [thread.is_alive() for thread in threads])
+        self.assertEqual(2, len(results))
+        self.assertEqual(1, len(runner_calls))
+        self.assertTrue(target.is_dir())
+
     def test_legacy_worker_keeps_direct_job_artifact_layout(self):
         root, job_path, job = self.make_root()
 
@@ -219,6 +257,49 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         normalized = json.loads(normalized_path.read_text(encoding="utf-8"))
         self.assertEqual("[[raw/metronome/guides/home|snapshot]]", normalized["proposed_raw_link"])
         self.assertNotEqual(raw_path.read_bytes(), normalized_path.read_bytes())
+
+    def test_failed_diagnostic_receipt_references_existing_raw_and_normalized_outputs(self):
+        root, job_path, job = self.make_root()
+
+        def fake_runner(command, **kwargs):
+            Path(command[command.index("-o") + 1]).write_text(
+                json.dumps(self.valid_output(job)), encoding="utf-8"
+            )
+            return SimpleNamespace(returncode=1, stdout="", stderr="failed")
+
+        run_id = "terra-20260717"
+        self.assertEqual(
+            1,
+            run_worker(root, job_path, "2026-07-17", runner=fake_runner, run_id=run_id),
+        )
+        run_dir = resolve_run_dir(root, job, run_id)
+        receipt = json.loads((run_dir / "model-worker-receipt.json").read_text(encoding="utf-8"))
+
+        self.assertEqual("failed", receipt["status"])
+        self.assertTrue(receipt["output_path"].endswith("attempt-2/model-output.raw.json"))
+        self.assertTrue(receipt["normalized_output_path"].endswith("attempt-2/model-output.normalized.json"))
+        self.assertTrue((root / receipt["output_path"]).is_file())
+        self.assertTrue((root / receipt["normalized_output_path"]).is_file())
+
+    def test_failed_diagnostic_receipt_uses_null_paths_when_no_output_exists(self):
+        root, job_path, _job = self.make_root()
+
+        def fake_runner(command, **kwargs):
+            return SimpleNamespace(returncode=1, stdout="", stderr="failed")
+
+        self.assertEqual(
+            1,
+            run_worker(root, job_path, "2026-07-17", runner=fake_runner, run_id="terra-20260717"),
+        )
+        receipt_path = (
+            resolve_run_dir(root, _job, "terra-20260717") / "model-worker-receipt.json"
+        )
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+
+        self.assertIsNone(receipt["output_path"])
+        self.assertIsNone(receipt["normalized_output_path"])
+        self.assertIsNone(receipt["attempts"][-1]["output_path"])
+        self.assertIsNone(receipt["attempts"][-1]["normalized_output_path"])
 
     def test_atomic_receipt_is_tmp_until_replace_publishes_final_file(self):
         tmp = tempfile.TemporaryDirectory()
