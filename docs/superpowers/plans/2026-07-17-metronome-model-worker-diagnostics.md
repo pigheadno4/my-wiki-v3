@@ -128,6 +128,20 @@
 - [x] Run exactly one Luna/high health probe with a unique 2026-07-18 run ID and the fixed 60-second cap.
 - [x] Validate its terminal receipt, hashes, event stream, progress lifecycle, and process cleanup.
 - [x] Record PASS only if first event is within 30 seconds and valid terminal JSON arrives within 60 seconds; otherwise record FAIL and keep enterprise A/B suspended.
-- [ ] Commit the immutable probe evidence and decision.
-- [ ] Generate a whole-task diff package and dispatch a GPT-5.6 Sol ultra-effort reviewer with a default-decline mandate.
-- [ ] Do not run enterprise A/B unless that reviewer returns APPROVE or CONDITIONAL APPROVAL with no Critical or Important finding.
+- [x] Commit the immutable probe evidence and decision.
+- [x] Generate a whole-task diff package and dispatch a GPT-5.6 Sol ultra-effort reviewer with a default-decline mandate.
+- [x] Do not run enterprise A/B unless that reviewer returns APPROVE or CONDITIONAL APPROVAL with no Critical or Important finding.
+
+### Final Review Remediation
+
+The first whole-task Sol review returned `DECLINE`. All Critical and Important findings
+were treated as blockers; the failed live probe remained immutable and enterprise A/B
+remained suspended throughout remediation.
+
+- [x] Enforce resolved containment and reject traversal, symlink, hardlink, and temporary-file receipt escapes (`36764c5`).
+- [x] Require and reconcile complete diagnostic receipt evidence (`36764c5`).
+- [x] Clean the captured process group after interruption even when its leader already exited (`5815e24`, `d4a843e`).
+- [x] Gate the actual enterprise worker API and CLI through an explicit immutable job registry and strict passing-probe verification (`e924ee0`).
+- [x] Publish atomic failed worker receipts for all post-claim failures and preserve interrupt propagation (`e924ee0`).
+- [x] Snapshot prospective prompt/schema inputs and record runner/Git provenance plus terminal artifact manifests without rewriting historical evidence (`e924ee0`).
+- [ ] Obtain a fresh GPT-5.6 Sol ultra-effort default-decline verdict over the remediated branch.
