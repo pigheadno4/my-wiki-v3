@@ -167,18 +167,51 @@ def run_health_probe(
         except FileExistsError as exc:
             raise RuntimeError(f"health probe run directory already exists: {probe_dir}") from exc
 
-        attempt_dir = probe_dir / "attempt-1"
-        attempt_dir.mkdir()
-        events_path = attempt_dir / "events.jsonl"
-        stderr_path = attempt_dir / "stderr.log"
-        progress_path = attempt_dir / "progress.jsonl"
-        for path in (events_path, stderr_path, progress_path):
-            path.touch()
-        append_progress_event(progress_path, "lock_acquired")
-
         started_at = _utc_now()
         started_clock = time.monotonic()
         deadline_monotonic = started_clock + total_timeout_seconds
+        receipt_path = probe_dir / "model-health-probe-receipt.json"
+        attempt_dir = probe_dir / "attempt-1"
+        events_path = attempt_dir / "events.jsonl"
+        stderr_path = attempt_dir / "stderr.log"
+        progress_path = attempt_dir / "progress.jsonl"
+        try:
+            attempt_dir.mkdir()
+            for path in (events_path, stderr_path, progress_path):
+                path.touch()
+            append_progress_event(progress_path, "lock_acquired")
+        except Exception as exc:
+            failure_receipt = {
+                "schema_version": 1,
+                "diagnostic_type": "model_health_probe",
+                "run_id": run_id,
+                "status": "failed",
+                "model_provider": "openai",
+                "model": MODEL,
+                "reasoning_effort": REASONING_EFFORT,
+                "input_mode": "fixed-prompt",
+                "started_at": started_at,
+                "finished_at": _utc_now(),
+                "total_timeout_seconds": total_timeout_seconds,
+                "deadline_monotonic": deadline_monotonic,
+                "total_elapsed_seconds": round(time.monotonic() - started_clock, 6),
+                "within_total_timeout": time.monotonic() <= deadline_monotonic,
+                "receipt_published_within_deadline": time.monotonic()
+                <= deadline_monotonic,
+                "process_exit_code": None,
+                "runtime_metadata": None,
+                "artifact_sha256": {},
+                "output_path": None,
+                "normalized_output_path": None,
+                "events_path": None,
+                "stderr_path": None,
+                "progress_path": None,
+                "failures": [f"health probe bootstrap failed: {exc}"],
+                "canonical_coverage_eligible": False,
+            }
+            write_json_atomic(receipt_path, failure_receipt)
+            return 1
+
         execution: Optional[AttemptExecution] = None
         runtime_metadata: Optional[Dict[str, Any]] = None
         preflight_error: Optional[str] = None
@@ -364,7 +397,6 @@ def run_health_probe(
             "failures": failures,
             "canonical_coverage_eligible": False,
         }
-        receipt_path = probe_dir / "model-health-probe-receipt.json"
         try:
             write_json_atomic(receipt_path, receipt)
         except Exception as exc:

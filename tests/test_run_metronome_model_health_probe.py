@@ -590,6 +590,46 @@ class ModelHealthProbeTests(unittest.TestCase):
         self.assertTrue(any("setup failed" in item for item in receipt["failures"]))
         self.assertFalse(receipt_path.with_name(f"{receipt_path.name}.tmp").exists())
 
+    def test_attempt_directory_creation_race_publishes_terminal_failure_receipt(self):
+        root = self.make_root()
+        run_id = "luna-attempt-race"
+        probe_dir = (
+            root
+            / "tracking/ingest/metronome/pilot/diagnostics/health-probes"
+            / run_id
+        )
+        real_mkdir = Path.mkdir
+
+        def racing_mkdir(path, *args, **kwargs):
+            if Path(path).name == "attempt-1":
+                raise FileExistsError("simulated attempt-1 creation race")
+            return real_mkdir(path, *args, **kwargs)
+
+        with patch.object(
+            type(probe_dir), "mkdir", autospec=True, side_effect=racing_mkdir
+        ):
+            result = run_health_probe(
+                root,
+                run_id,
+                executor=lambda *_args, **_kwargs: self.fail("executor must not launch"),
+                runtime_metadata_provider=lambda **_kwargs: self.fail(
+                    "metadata preflight must not run"
+                ),
+            )
+
+        receipt = self.receipt(root, run_id)
+        self.assertEqual(1, result)
+        self.assertEqual("failed", receipt["status"])
+        self.assertTrue(
+            any("bootstrap failed" in item for item in receipt["failures"]),
+            receipt["failures"],
+        )
+        self.assertFalse(
+            self.receipt_path(root, run_id)
+            .with_name("model-health-probe-receipt.json.tmp")
+            .exists()
+        )
+
     def test_codex_home_setup_failure_after_claim_publishes_terminal_receipt(self):
         root = self.make_root()
 
