@@ -417,7 +417,11 @@ class GitHubValidationTests(unittest.TestCase):
 
     def test_producer_packet_rejects_id_that_packet_state_cannot_transition(self):
         self.make_valid_tree()
-        packet_directory = next(self.root.glob("tracking/github/repos/*/*/packets/*"))
+        packet_directory = next(
+            path
+            for path in self.root.glob("tracking/github/repos/*/*/packets/*")
+            if path.is_dir()
+        )
         contract_path = packet_directory / "packet.json"
         contract = json.loads(contract_path.read_text(encoding="utf-8"))
         original_packet_id = contract["packet_id"]
@@ -638,7 +642,11 @@ class GitHubValidationTests(unittest.TestCase):
 
     def test_packet_directory_rejects_unexpected_real_directory(self):
         self.make_valid_tree()
-        packet = next(self.root.glob("tracking/github/repos/*/*/packets/*"))
+        packet = next(
+            path
+            for path in self.root.glob("tracking/github/repos/*/*/packets/*")
+            if path.is_dir()
+        )
         (packet / "unexpected").mkdir()
 
         errors = validate_github(inspect_github(self.root))
@@ -660,12 +668,76 @@ class GitHubValidationTests(unittest.TestCase):
         self.make_valid_tree()
         contract_path = next(self.root.glob("tracking/github/repos/*/*/packets/*/packet.json"))
         contract = json.loads(contract_path.read_text(encoding="utf-8"))
-        contract["to"]["aliases"] = ["forged@10.1.5"]
+        contract["to"]["release_notes_path"] = ""
         contract_path.write_text(json.dumps(contract, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
         errors = validate_github(inspect_github(self.root))
 
         self.assertTrue(any("packet endpoint disagrees with version index" in error for error in errors), errors)
+
+    def test_source_ledger_distinguishes_package_scopes_sharing_version(self):
+        snapshot_path = "raw/github/paypal/paypal-js/snapshots/shared"
+        snapshot = github_validation.SnapshotInspection(
+            path=self.root / snapshot_path,
+            relative_path=snapshot_path,
+            repo_id="paypal/paypal-js",
+            company="paypal",
+            aliases=(),
+            ref_name="@scope/one@1.0.0",
+            package="@scope/one",
+            version="1.0.0",
+            sha="a" * 40,
+            ref_kind="package-version",
+            capture_kind="canonical",
+            capture_revision=0,
+            collection_date="2026-07-15",
+            changelog_paths=(snapshot_path + "/files/CHANGELOG.md",),
+            release_notes_path="",
+        )
+
+        def release(package):
+            return github_validation.ReleaseEvidenceRecord(
+                snapshot_path=snapshot_path,
+                repo_id="paypal/paypal-js",
+                ref_kind="package-version",
+                ref_name=package + "@1.0.0",
+                aliases=(),
+                package=package,
+                version="1.0.0",
+                sha="a" * 40,
+                collection_date="2026-07-15",
+                capture_kind="canonical",
+                capture_revision=0,
+                changelog_paths=(snapshot_path + "/files/CHANGELOG.md",),
+                release_notes_path=(
+                    snapshot_path
+                    + "/release-notes/"
+                    + package.replace("/", "-")
+                    + ".md"
+                ),
+                changelog_absence_explicit=True,
+                release_notes_explicit=True,
+            )
+
+        releases = (release("@scope/one"), release("@scope/two"))
+        rows = tuple(
+            github_validation.ReleaseLedgerRow(
+                version=item.ref_name,
+                snapshot_link=snapshot_path + "/snapshot",
+                changelog_links=(snapshot_path + "/files/CHANGELOG",),
+                release_notes_links=(item.release_notes_path[:-3],),
+                changelog_absent=False,
+                release_notes_absent=False,
+            )
+            for item in releases
+        )
+        errors = []
+
+        github_validation._validate_source_release_ledger(
+            "source", (snapshot,), {snapshot_path: releases}, rows, errors
+        )
+
+        self.assertEqual([], errors)
 
     def test_baseline_packet_must_not_have_from_endpoint(self):
         self.make_valid_tree()
@@ -681,7 +753,11 @@ class GitHubValidationTests(unittest.TestCase):
 
     def test_packet_changed_files_must_be_safe_name_status_records(self):
         self.make_valid_tree()
-        packet = next(self.root.glob("tracking/github/repos/*/*/packets/*"))
+        packet = next(
+            path
+            for path in self.root.glob("tracking/github/repos/*/*/packets/*")
+            if path.is_dir()
+        )
         contract_path = packet / "packet.json"
         contract = json.loads(contract_path.read_text(encoding="utf-8"))
         contract["changed_files"] = ["M\t../../outside.md"]
@@ -694,7 +770,11 @@ class GitHubValidationTests(unittest.TestCase):
 
     def test_baseline_packet_must_not_have_changed_files(self):
         self.make_valid_tree()
-        packet = next(self.root.glob("tracking/github/repos/*/*/packets/*"))
+        packet = next(
+            path
+            for path in self.root.glob("tracking/github/repos/*/*/packets/*")
+            if path.is_dir()
+        )
         contract_path = packet / "packet.json"
         contract = json.loads(contract_path.read_text(encoding="utf-8"))
         contract["changed_files"] = ["M\tREADME.md"]
@@ -707,7 +787,11 @@ class GitHubValidationTests(unittest.TestCase):
 
     def test_changed_files_text_must_equal_packet_contract(self):
         self.make_valid_tree()
-        packet = next(self.root.glob("tracking/github/repos/*/*/packets/*"))
+        packet = next(
+            path
+            for path in self.root.glob("tracking/github/repos/*/*/packets/*")
+            if path.is_dir()
+        )
         (packet / "changed-files.txt").write_text("M\tREADME.md\n", encoding="utf-8")
 
         errors = validate_github(inspect_github(self.root))
@@ -756,7 +840,11 @@ class GitHubValidationTests(unittest.TestCase):
 
     def test_packet_markdown_must_equal_producer_rendering(self):
         self.make_valid_tree()
-        packet = next(self.root.glob("tracking/github/repos/*/*/packets/*"))
+        packet = next(
+            path
+            for path in self.root.glob("tracking/github/repos/*/*/packets/*")
+            if path.is_dir()
+        )
         (packet / "ingest-packet.md").write_text("# GitHub ingest packet\n", encoding="utf-8")
 
         errors = validate_github(inspect_github(self.root))
@@ -765,7 +853,11 @@ class GitHubValidationTests(unittest.TestCase):
 
     def test_baseline_packet_patch_must_be_empty(self):
         self.make_valid_tree()
-        packet = next(self.root.glob("tracking/github/repos/*/*/packets/*"))
+        packet = next(
+            path
+            for path in self.root.glob("tracking/github/repos/*/*/packets/*")
+            if path.is_dir()
+        )
         (packet / "source-diff.patch").write_text("forged patch\n", encoding="utf-8")
 
         errors = validate_github(inspect_github(self.root))
@@ -1106,7 +1198,11 @@ class GitHubValidationTests(unittest.TestCase):
 
     def test_newly_collected_release_requires_exactly_one_packet(self):
         self.make_valid_tree()
-        packet = next(self.root.glob("tracking/github/repos/*/*/packets/*"))
+        packet = next(
+            path
+            for path in self.root.glob("tracking/github/repos/*/*/packets/*")
+            if path.is_dir()
+        )
         for child in packet.iterdir():
             child.unlink()
         packet.rmdir()

@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import collect_github_repos  # noqa: E402
+import github_validation  # noqa: E402
 from collect_github_repos import CollectionResult, collect_one, main  # noqa: E402
 from github_git import RepoInspection, ResolvedRef, run_git  # noqa: E402
 from github_packets import PacketError, PacketRecord, VersionEntry, VersionIndex  # noqa: E402
@@ -27,7 +28,7 @@ from github_snapshot import (  # noqa: E402
     SnapshotPromotionToken,
     SnapshotRecord,
 )
-from tests.github_test_support import commit_file, create_git_repo, tag  # noqa: E402
+from tests.github_test_support import annotated_tag, commit_file, create_git_repo, tag  # noqa: E402
 
 
 class CollectGitHubReposTests(unittest.TestCase):
@@ -374,7 +375,7 @@ class CollectGitHubReposTests(unittest.TestCase):
         packet_calls = []
 
         def fake_packet(config, current, packet_root):
-            packet = self.packet("baseline-" + current.ref.version)
+            packet = self.packet("baseline-" + current.version)
             packet_calls.append(packet)
             return replace(packet, directory=packet_root / packet.packet_id)
 
@@ -599,7 +600,10 @@ class CollectGitHubReposTests(unittest.TestCase):
 
     def test_new_release_alias_on_existing_sha_archives_notes_in_one_supplement_and_packet(self):
         track = VersionTrack("v1", "all-stable", "all-stable")
-        config = self.config(version_tracks=(track,))
+        config = self.config(
+            version_tracks=(track,),
+            key_paths=("CHANGELOG.md",),
+        )
         first = self.candidate("1.0.0")
         second = self.candidate("1.1.0")
         second = replace(second, object_sha=first.object_sha, commit_sha=first.commit_sha)
@@ -652,9 +656,50 @@ class CollectGitHubReposTests(unittest.TestCase):
         index = collect_github_repos.load_version_index(
             collect_github_repos._version_index_path(self.root, config), config
         )
-        self.assertEqual(1, len(index.versions))
-        self.assertEqual(("v1.0.0", "v1.1.0"), index.versions[0].aliases)
-        self.assertTrue(index.versions[0].release_notes_path.endswith("/release-notes.md"))
+        self.assertEqual(("1.0.0", "1.1.0"), tuple(entry.version for entry in index.versions))
+        first_entry, second_entry = index.versions
+        self.assertEqual(("v1.0.0",), first_entry.aliases)
+        self.assertEqual(("v1.1.0",), second_entry.aliases)
+        self.assertEqual(first_entry.snapshot_path, second_entry.snapshot_path)
+        self.assertTrue(second_entry.release_notes_path.endswith("/release-notes.md"))
+        collect_github_repos.regenerate_status(self.root, (config,))
+        with mock.patch("github_validation.load_registry", return_value=(config,)):
+            report = github_validation.inspect_github(self.root)
+        self.assertEqual([], github_validation.validate_github(report))
+
+    def test_force_moved_tag_fails_before_index_or_packet_publication(self):
+        upstream = create_git_repo(self.root)
+        config = self.local_config(str(upstream), key_paths=("CHANGELOG.md",))
+        first_sha = commit_file(upstream, "CHANGELOG.md", "# 1.0.0\n", "release 1.0.0")
+        tag(upstream, "v1.0.0")
+
+        first = collect_one(self.root, config, ("tag:v1.0.0",))
+        collect_github_repos.regenerate_status(self.root, (config,))
+        index_path = collect_github_repos._version_index_path(self.root, config)
+        snapshots_root = self.root / "raw/github/test/demo/snapshots"
+        packets_root = self.root / "tracking/github/repos/test/demo/packets"
+        before_index = index_path.read_bytes()
+        before_snapshots = tuple(sorted(path.name for path in snapshots_root.iterdir()))
+        before_packets = tuple(sorted(path.name for path in packets_root.iterdir()))
+
+        moved_sha = commit_file(upstream, "CHANGELOG.md", "# moved\n", "move release tag")
+        run_git(["tag", "-f", "v1.0.0"], upstream)
+        failed = collect_one(self.root, config, ("tag:v1.0.0",))
+        collect_github_repos.regenerate_status(self.root, (config,))
+
+        self.assertEqual("collected-baseline", first.state)
+        self.assertNotEqual(first_sha, moved_sha)
+        self.assertEqual("failed", failed.state)
+        self.assertIn(
+            "immutable reference",
+            next(event["error"] for event in failed.events if event.get("state") == "failed"),
+        )
+        self.assertEqual(before_index, index_path.read_bytes())
+        self.assertEqual(before_snapshots, tuple(sorted(path.name for path in snapshots_root.iterdir())))
+        self.assertEqual(before_packets, tuple(sorted(path.name for path in packets_root.iterdir())))
+        with mock.patch("github_validation.load_registry", return_value=(config,)):
+            report = github_validation.inspect_github(self.root)
+        self.assertEqual([], github_validation.validate_github(report))
 
     def test_enabled_owner_company_split_collects_raw_and_tracking_namespaces(self):
         config = self.config(
@@ -951,6 +996,210 @@ class CollectGitHubReposTests(unittest.TestCase):
             ("awaiting-review", "approved", "ingesting", "ingested"),
             tuple(event["state"] for event in packet_events),
         )
+
+    def test_local_branch_reversion_compares_next_capture_from_reobserved_head(self):
+        upstream = create_git_repo(self.root)
+        config = self.local_config(str(upstream), key_paths=("README.md",))
+        sha_a = commit_file(upstream, "README.md", "A\n", "A")
+        collect_one(self.root, config, ("default-branch",))
+        sha_b = commit_file(upstream, "README.md", "B\n", "B")
+        collect_one(self.root, config, ("default-branch",))
+
+        run_git(["reset", "--hard", sha_a], upstream)
+        reversion = collect_one(self.root, config, ("default-branch",))
+        sha_c = commit_file(upstream, "README.md", "C\n", "C")
+        current = collect_one(self.root, config, ("default-branch",))
+
+        contract = json.loads(
+            (
+                self.root
+                / "tracking/github/repos/test/demo/packets"
+                / current.packet_ids[0]
+                / "packet.json"
+            ).read_text(encoding="utf-8")
+        )
+        index = collect_github_repos.load_version_index(
+            collect_github_repos._version_index_path(self.root, config), config
+        )
+
+        self.assertEqual("unchanged", reversion.state)
+        self.assertEqual("collected-change", current.state)
+        self.assertEqual(sha_a, contract["from"]["sha"])
+        self.assertEqual(sha_c, contract["to"]["sha"])
+        self.assertNotEqual(sha_b, contract["from"]["sha"])
+        self.assertEqual(
+            (sha_a, sha_b, sha_a, sha_c),
+            tuple(
+                item.sha
+                for item in index.branch_observations
+                if item.ref_name == "main"
+            ),
+        )
+        collect_github_repos.regenerate_status(self.root, (config,))
+        with mock.patch("github_validation.load_registry", return_value=(config,)):
+            report = github_validation.inspect_github(self.root)
+        self.assertEqual([], github_validation.validate_github(report))
+
+    def test_local_same_sha_distinct_versions_and_aliases_keep_exact_notes(self):
+        upstream = create_git_repo(self.root)
+        config = self.local_config(
+            str(upstream),
+            key_paths=("CHANGELOG.md",),
+            version_tracks=(VersionTrack("v1", "all-stable", "all-stable"),),
+        )
+        shared_sha = commit_file(upstream, "CHANGELOG.md", "# shared\n", "shared releases")
+        tag(upstream, "v1.0.0")
+        annotated_tag(upstream, "1.0.0")
+        annotated_tag(upstream, "v1.1.0")
+        notes = {
+            "1.0.0": b"notes owned by annotated 1.0.0\n",
+            "v1.1.0": b"notes owned by annotated v1.1.0\n",
+        }
+
+        def release_evidence(_, candidate, token=None):
+            return ReleaseNotesEvidence(
+                "https://api.github.test/releases/" + candidate.tag,
+                "2026-07-17T00:00:00Z",
+                notes[candidate.tag],
+            )
+
+        with mock.patch(
+            "collect_github_repos.fetch_release_notes", side_effect=release_evidence
+        ), mock.patch("github_releases.urlopen", side_effect=AssertionError("network access")):
+            result = collect_one(self.root, config, release_mode="backfill")
+
+        index = collect_github_repos.load_version_index(
+            collect_github_repos._version_index_path(self.root, config), config
+        )
+        snapshots = [
+            path
+            for path in (self.root / "raw/github/test/demo/snapshots").iterdir()
+            if path.name != ".promotion.lock"
+        ]
+        packets = [
+            path
+            for path in (self.root / "tracking/github/repos/test/demo/packets").iterdir()
+            if path.is_dir()
+        ]
+
+        self.assertEqual(("1.0.0", "1.1.0"), result.versions)
+        self.assertEqual(2, len(result.packet_ids))
+        self.assertEqual(1, len(snapshots))
+        self.assertEqual(2, len(index.versions))
+        self.assertEqual({shared_sha}, {entry.sha for entry in index.versions})
+        self.assertEqual(2, len(packets))
+        first = next(entry for entry in index.versions if entry.version == "1.0.0")
+        self.assertEqual("1.0.0", first.ref_name)
+        self.assertEqual(("1.0.0", "v1.0.0"), first.aliases)
+        for entry in index.versions:
+            self.assertEqual(
+                notes[entry.ref_name], (self.root / entry.release_notes_path).read_bytes()
+            )
+        metadata = collect_github_repos._snapshot_metadata(snapshots[0] / "snapshot.md")
+        self.assertEqual(
+            ["1.0.0", "v1.1.0"],
+            [item["ref"]["name"] for item in metadata["release_evidence"]],
+        )
+        collect_github_repos.regenerate_status(self.root, (config,))
+        with mock.patch("github_validation.load_registry", return_value=(config,)):
+            report = github_validation.inspect_github(self.root)
+        self.assertEqual([], github_validation.validate_github(report))
+
+    def test_local_same_sha_package_scopes_keep_one_packet_per_release(self):
+        upstream = create_git_repo(self.root)
+        config = self.local_config(
+            str(upstream),
+            version_strategy="monorepo-packages",
+            key_paths=("CHANGELOG.md",),
+            version_tracks=(
+                VersionTrack("package:@scope/one@1", "all-stable", "all-stable"),
+                VersionTrack("package:@scope/two@1", "all-stable", "all-stable"),
+            ),
+        )
+        shared_sha = commit_file(upstream, "CHANGELOG.md", "# packages\n", "package releases")
+        annotated_tag(upstream, "@scope/one@1.0.0")
+        tag(upstream, "@scope/two@1.0.0")
+
+        def release_evidence(_, candidate, token=None):
+            return ReleaseNotesEvidence(
+                "https://api.github.test/releases/" + candidate.tag,
+                "2026-07-17T00:00:00Z",
+                ("notes for " + candidate.package + "\n").encode("utf-8"),
+            )
+
+        with mock.patch(
+            "collect_github_repos.fetch_release_notes", side_effect=release_evidence
+        ), mock.patch("github_releases.urlopen", side_effect=AssertionError("network access")):
+            result = collect_one(self.root, config, release_mode="backfill")
+
+        index = collect_github_repos.load_version_index(
+            collect_github_repos._version_index_path(self.root, config), config
+        )
+        snapshots = [
+            path
+            for path in (self.root / "raw/github/test/demo/snapshots").iterdir()
+            if path.name != ".promotion.lock"
+        ]
+
+        self.assertEqual(2, len(result.packet_ids))
+        self.assertEqual(1, len(snapshots))
+        self.assertEqual({shared_sha}, {entry.sha for entry in index.versions})
+        self.assertEqual(
+            ("@scope/one", "@scope/two"),
+            tuple(entry.package for entry in index.versions),
+        )
+        self.assertEqual(
+            2,
+            len(
+                [
+                    path
+                    for path in (self.root / "tracking/github/repos/test/demo/packets").iterdir()
+                    if path.is_dir()
+                ]
+            ),
+        )
+        collect_github_repos.regenerate_status(self.root, (config,))
+        with mock.patch("github_validation.load_registry", return_value=(config,)):
+            report = github_validation.inspect_github(self.root)
+        self.assertEqual([], github_validation.validate_github(report))
+
+    def test_same_sha_group_packet_failure_rolls_back_all_publication(self):
+        upstream = create_git_repo(self.root)
+        config = self.local_config(
+            str(upstream),
+            key_paths=("CHANGELOG.md",),
+            version_tracks=(VersionTrack("v1", "all-stable", "all-stable"),),
+        )
+        commit_file(upstream, "CHANGELOG.md", "# shared\n", "shared releases")
+        annotated_tag(upstream, "v1.0.0")
+        annotated_tag(upstream, "v1.1.0")
+        real_builder = collect_github_repos.build_baseline_packet
+        calls = []
+
+        def fail_second(*args):
+            calls.append(args[1].version)
+            if len(calls) == 2:
+                raise PacketError("injected grouped packet failure")
+            return real_builder(*args)
+
+        with mock.patch(
+            "collect_github_repos.fetch_release_notes", return_value=None
+        ), mock.patch(
+            "collect_github_repos.build_baseline_packet", side_effect=fail_second
+        ), mock.patch("github_releases.urlopen", side_effect=AssertionError("network access")):
+            result = collect_one(self.root, config, release_mode="backfill")
+
+        snapshots_root = self.root / "raw/github/test/demo/snapshots"
+        packets_root = self.root / "tracking/github/repos/test/demo/packets"
+        index_path = collect_github_repos._version_index_path(self.root, config)
+        self.assertEqual("failed", result.state)
+        self.assertEqual([], [path for path in snapshots_root.iterdir() if path.is_dir()])
+        self.assertEqual([], [path for path in packets_root.iterdir() if path.is_dir()])
+        self.assertFalse(index_path.exists())
+        collect_github_repos.regenerate_status(self.root, (config,))
+        with mock.patch("github_validation.load_registry", return_value=(config,)):
+            report = github_validation.inspect_github(self.root)
+        self.assertEqual([], github_validation.validate_github(report))
 
     def test_local_release_backfill_and_future_patch(self):
         upstream = create_git_repo(self.root)

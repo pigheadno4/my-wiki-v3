@@ -361,6 +361,58 @@ class GitHubSnapshotTests(unittest.TestCase):
         self.assertEqual("https://api.github.test/release", metadata["release_notes"]["source_url"])
         self.assertEqual([], validate_staged_snapshot(record))
 
+    def test_one_canonical_snapshot_preserves_multiple_release_note_owners(self):
+        first_ref = replace(
+            self.ref,
+            ref_kind="tag",
+            ref_name="v10.1.0",
+            version="10.1.0",
+            aliases=("10.1.0", "v10.1.0"),
+        )
+        second_ref = replace(
+            self.ref,
+            ref_kind="tag",
+            ref_name="v10.2.0",
+            version="10.2.0",
+            aliases=("v10.2.0",),
+        )
+        first_notes = ReleaseNotesEvidence(
+            "https://api.github.test/releases/v10.1.0",
+            "2026-07-14T00:00:00Z",
+            b"# Exact 10.1.0 notes\n",
+        )
+        second_notes = ReleaseNotesEvidence(
+            "https://api.github.test/releases/v10.2.0",
+            "2026-07-15T00:00:00Z",
+            b"# Exact 10.2.0 notes\n",
+        )
+        self.write("README.md", b"snapshot\n")
+
+        record = build_snapshot(
+            self.config(),
+            first_ref,
+            self.repo,
+            self.raw_root,
+            self.staging_root,
+            "2026-07-15",
+            release_targets=((first_ref, first_notes), (second_ref, second_notes)),
+        )
+
+        self.assertEqual(2, len(record.release_evidence))
+        self.assertEqual(
+            ("v10.1.0", "v10.2.0"),
+            tuple(item.ref.ref_name for item in record.release_evidence),
+        )
+        for item, expected in zip(record.release_evidence, (first_notes, second_notes)):
+            self.assertEqual(expected.content, (record.staging_path / item.path).read_bytes())
+            self.assertEqual(expected.source_url, item.source_url)
+        metadata = self.manifest_metadata(record)
+        self.assertEqual(
+            ["v10.1.0", "v10.2.0"],
+            [item["ref"]["name"] for item in metadata["release_evidence"]],
+        )
+        self.assertEqual([], validate_staged_snapshot(record))
+
     def test_empty_selection_creates_files_directory_and_promotes(self):
         record = build_snapshot(
             self.config(key_paths=("missing.md",)),

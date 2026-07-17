@@ -6,6 +6,7 @@ from datetime import datetime
 import fcntl
 from functools import cmp_to_key
 import fnmatch
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -18,7 +19,7 @@ from typing import Dict, Iterable, Iterator, List, Optional, Sequence, Tuple
 
 from github_git import ResolvedRef
 from github_registry import RepoConfig
-from github_snapshot import SnapshotRecord
+from github_snapshot import SnapshotRecord, SnapshotReleaseEvidence
 from github_versions import compare_semver, parse_package_tag, parse_semver
 
 
@@ -42,7 +43,8 @@ _LOCK_FILENAMES = {
 _SAFE_PART = re.compile(r"[^A-Za-z0-9._-]+")
 _SHA = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
 _DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-_INDEX_KEYS = {"capture_order", "repo_id", "versions"}
+_INDEX_KEYS = {"branch_observations", "capture_order", "repo_id", "versions"}
+_CAPTURE_ORDER_INDEX_KEYS = {"capture_order", "repo_id", "versions"}
 _LEGACY_INDEX_KEYS = {"repo_id", "versions"}
 _ENTRY_KEYS = {
     "aliases",
@@ -88,10 +90,17 @@ class VersionEntry:
 
 
 @dataclass(frozen=True)
+class BranchObservation:
+    ref_name: str
+    sha: str
+
+
+@dataclass(frozen=True)
 class VersionIndex:
     repo_id: str
     versions: Tuple[VersionEntry, ...]
     capture_order: Tuple[str, ...] = ()
+    branch_observations: Tuple[BranchObservation, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -116,7 +125,11 @@ def load_version_index(path: Path, config: RepoConfig) -> VersionIndex:
         data = _load_json(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeDecodeError, ValueError, json.JSONDecodeError) as error:
         raise PacketError("invalid version index " + str(path)) from error
-    if type(data) is not dict or set(data) not in (_INDEX_KEYS, _LEGACY_INDEX_KEYS):
+    if type(data) is not dict or set(data) not in (
+        _INDEX_KEYS,
+        _CAPTURE_ORDER_INDEX_KEYS,
+        _LEGACY_INDEX_KEYS,
+    ):
         raise PacketError("version index has an invalid schema")
     if type(data["repo_id"]) is not str or data["repo_id"] != repo_id:
         raise PacketError("version index repository does not match " + repo_id)
@@ -125,18 +138,10 @@ def load_version_index(path: Path, config: RepoConfig) -> VersionIndex:
         raise PacketError("version index versions must be a list")
     evidence_root = _evidence_root_from_index(path, config)
     entries = tuple(_entry_from_json(item, evidence_root) for item in versions_data)
-    if len({entry.sha for entry in entries}) != len(entries):
-        raise PacketError("version index contains more than one entry for a SHA")
-    immutable_identities = {
-        (entry.ref_kind, entry.ref_name)
-        for entry in entries
-        if entry.ref_kind != "branch"
-    }
-    if len(immutable_identities) != sum(entry.ref_kind != "branch" for entry in entries):
-        raise PacketError("version index contains conflicting reference entries")
+    _validate_index_entry_identities(entries)
     if tuple(sorted(entries, key=_entry_key)) != entries:
         raise PacketError("version index entries are not in deterministic order")
-    capture_order = data.get("capture_order", [entry.sha for entry in entries])
+    capture_order = data.get("capture_order", list(_legacy_capture_order(entries)))
     if (
         type(capture_order) is not list
         or any(type(sha) is not str for sha in capture_order)
@@ -144,12 +149,23 @@ def load_version_index(path: Path, config: RepoConfig) -> VersionIndex:
         or set(capture_order) != {entry.sha for entry in entries}
     ):
         raise PacketError("version index capture_order must contain every SHA exactly once")
-    return VersionIndex(repo_id, entries, tuple(capture_order))
+    observations = (
+        _branch_observations_from_json(data["branch_observations"], entries)
+        if "branch_observations" in data
+        else _infer_legacy_branch_observations(entries)
+    )
+    return VersionIndex(repo_id, entries, tuple(capture_order), observations)
 
 
 def save_version_index(path: Path, index: VersionIndex) -> None:
     """Atomically replace deterministic JSON generated state for one repository."""
+    _validate_index_entry_identities(index.versions)
+    _validate_branch_observations(index.branch_observations, index.versions)
     data = {
+        "branch_observations": [
+            {"ref_name": item.ref_name, "sha": item.sha}
+            for item in index.branch_observations
+        ],
         "capture_order": list(_capture_order(index)),
         "repo_id": index.repo_id,
         "versions": [_entry_to_json(entry) for entry in sorted(index.versions, key=_entry_key)],
@@ -157,28 +173,187 @@ def save_version_index(path: Path, index: VersionIndex) -> None:
     _write_json_atomic(path, data)
 
 
+def _validate_index_entry_identities(entries: Sequence[VersionEntry]) -> None:
+    snapshots: Dict[str, set] = {}
+    immutable_owners: Dict[str, Tuple[str, Tuple[str, str]]] = {}
+    release_identities = set()
+    branch_identities = set()
+    commit_identities = set()
+    for entry in entries:
+        snapshots.setdefault(entry.sha, set()).add(entry.snapshot_path)
+        if len(snapshots[entry.sha]) > 1:
+            raise PacketError("version index maps one SHA to multiple canonical snapshots")
+        if entry.ref_kind == "branch":
+            identity = (entry.ref_name, entry.sha)
+            if identity in branch_identities:
+                raise PacketError("version index contains duplicate branch capture entries")
+            branch_identities.add(identity)
+            continue
+        if entry.ref_kind in ("package-version", "tag"):
+            semantic = _semantic_release_identity(entry)
+            identity = (semantic, entry.sha)
+            if identity in release_identities:
+                raise PacketError("version index contains duplicate retained release identities")
+            release_identities.add(identity)
+        else:
+            identity = (entry.ref_kind, entry.ref_name)
+            if identity in commit_identities:
+                raise PacketError("version index contains conflicting reference entries")
+            commit_identities.add(identity)
+            semantic = (entry.ref_kind, entry.ref_name)
+        for name in sorted(_immutable_names(entry)):
+            owner = immutable_owners.get(name)
+            current = (entry.sha, semantic)
+            if owner is not None and owner != current:
+                raise PacketError("version index contains conflicting reference entries")
+            immutable_owners[name] = current
+
+
+def _legacy_capture_order(entries: Sequence[VersionEntry]) -> Tuple[str, ...]:
+    order = []
+    seen = set()
+    for entry in entries:
+        if entry.sha not in seen:
+            seen.add(entry.sha)
+            order.append(entry.sha)
+    return tuple(order)
+
+
+def _branch_observations_from_json(
+    value: object, entries: Sequence[VersionEntry]
+) -> Tuple[BranchObservation, ...]:
+    if type(value) is not list:
+        raise PacketError("version index branch_observations must be a list")
+    branch_entries = {
+        (entry.ref_name, entry.sha)
+        for entry in entries
+        if entry.ref_kind == "branch"
+    }
+    observations = []
+    heads: Dict[str, str] = {}
+    for item in value:
+        if (
+            type(item) is not dict
+            or set(item) != {"ref_name", "sha"}
+            or type(item["ref_name"]) is not str
+            or type(item["sha"]) is not str
+            or not _valid_ref_name(item["ref_name"])
+            or _SHA.fullmatch(item["sha"]) is None
+        ):
+            raise PacketError("version index branch observation has an invalid schema")
+        identity = (item["ref_name"], item["sha"])
+        if identity not in branch_entries:
+            raise PacketError("version index branch observation has no matching capture")
+        if heads.get(item["ref_name"]) == item["sha"]:
+            raise PacketError("version index branch observations contain a redundant head")
+        heads[item["ref_name"]] = item["sha"]
+        observations.append(BranchObservation(*identity))
+    if branch_entries - {(item.ref_name, item.sha) for item in observations}:
+        raise PacketError("version index branch capture has no observation")
+    return tuple(observations)
+
+
+def _validate_branch_observations(
+    observations: Sequence[BranchObservation], entries: Sequence[VersionEntry]
+) -> None:
+    _branch_observations_from_json(
+        [
+            {"ref_name": item.ref_name, "sha": item.sha}
+            for item in observations
+        ],
+        entries,
+    )
+
+
+def _infer_legacy_branch_observations(
+    entries: Sequence[VersionEntry],
+) -> Tuple[BranchObservation, ...]:
+    by_branch: Dict[str, List[VersionEntry]] = {}
+    for entry in entries:
+        if entry.ref_kind == "branch":
+            by_branch.setdefault(entry.ref_name, []).append(entry)
+    ordered = []
+    for ref_name, history in sorted(by_branch.items()):
+        dates = [entry.collection_date for entry in history]
+        if len(history) > 1 and len(set(dates)) != len(dates):
+            raise PacketError(
+                "ambiguous legacy branch history for "
+                + ref_name
+                + "; explicit migration is required"
+            )
+        ordered.extend(
+            (entry.collection_date, ref_name, entry.sha)
+            for entry in sorted(history, key=lambda item: item.collection_date)
+        )
+    return tuple(
+        BranchObservation(ref_name, sha)
+        for _, ref_name, sha in sorted(ordered)
+    )
+
+
 def record_snapshot(index: VersionIndex, snapshot: SnapshotRecord) -> VersionIndex:
-    """Record one canonical SHA, merging aliases and supplemental evidence in place."""
+    """Record one capture, retained ref identity, and changed branch head."""
     if index.repo_id != snapshot.repo_id or snapshot.ref.repo_id != snapshot.repo_id:
         raise PacketError("snapshot repository does not match version index")
 
-    existing = next((entry for entry in index.versions if entry.sha == snapshot.ref.sha), None)
+    updated = index
+    for incoming in _entries_from_snapshot(snapshot):
+        updated = _record_snapshot_entry(updated, snapshot, incoming)
+    return updated
+
+
+def _record_snapshot_entry(
+    index: VersionIndex, snapshot: SnapshotRecord, incoming: VersionEntry
+) -> VersionIndex:
+
+    _require_unmoved_immutable_identity(index, incoming)
+    same_sha = tuple(entry for entry in index.versions if entry.sha == snapshot.ref.sha)
+    existing = _matching_identity_entry(same_sha, incoming)
+    canonical = next((entry for entry in same_sha if entry.capture_kind == "canonical"), None)
+
     if snapshot.capture_kind == "supplement":
-        if existing is None:
+        if canonical is None:
             return index
-        merged = _merge_snapshot_evidence(existing, snapshot)
-        return _replace_entry(index, existing.sha, merged)
+        if existing is None:
+            incoming = replace(
+                incoming,
+                snapshot_path=canonical.snapshot_path,
+                collection_date=canonical.collection_date,
+                capture_kind="canonical",
+                changelog_paths=tuple(
+                    sorted(set(canonical.changelog_paths).union(incoming.changelog_paths))
+                ),
+            )
+            updated = _append_entry(index, incoming)
+        else:
+            updated = _replace_identity_entry(
+                index, existing, _merge_snapshot_evidence(existing, snapshot, incoming)
+            )
+        return _record_branch_observation(updated, incoming)
     if snapshot.capture_kind != "canonical":
         raise PacketError("snapshot capture_kind must be canonical or supplement")
-    if existing is not None:
-        return _replace_entry(index, existing.sha, _merge_snapshot_evidence(existing, snapshot))
 
-    entry = _entry_from_snapshot(snapshot)
-    return VersionIndex(
-        index.repo_id,
-        tuple(sorted(index.versions + (entry,), key=_entry_key)),
-        _capture_order(index) + (entry.sha,),
-    )
+    if existing is not None:
+        updated = _replace_identity_entry(
+            index, existing, _merge_snapshot_evidence(existing, snapshot, incoming)
+        )
+        return _record_branch_observation(updated, incoming)
+
+    if canonical is not None:
+        incoming = replace(
+            incoming,
+            snapshot_path=canonical.snapshot_path,
+            collection_date=canonical.collection_date,
+            capture_kind="canonical",
+            changelog_paths=tuple(
+                sorted(set(canonical.changelog_paths).union(incoming.changelog_paths))
+            ),
+        )
+
+    updated = _append_entry(index, incoming)
+    if canonical is None:
+        updated = replace(updated, capture_order=_capture_order(index) + (incoming.sha,))
+    return _record_branch_observation(updated, incoming)
 
 
 def select_prior(index: VersionIndex, ref: ResolvedRef) -> Optional[VersionEntry]:
@@ -187,12 +362,20 @@ def select_prior(index: VersionIndex, ref: ResolvedRef) -> Optional[VersionEntry
         raise PacketError("resolved reference repository does not match version index")
     candidates = [entry for entry in index.versions if entry.sha != ref.sha]
     if ref.ref_kind == "branch":
-        compatible = [
-            entry
-            for entry in candidates
-            if entry.ref_kind == "branch" and entry.ref_name == ref.ref_name
-        ]
-        return _latest_owned_capture(index, compatible)
+        for observation in reversed(index.branch_observations):
+            if observation.ref_name != ref.ref_name:
+                continue
+            return next(
+                (
+                    entry
+                    for entry in index.versions
+                    if entry.ref_kind == "branch"
+                    and entry.ref_name == observation.ref_name
+                    and entry.sha == observation.sha
+                ),
+                None,
+            )
+        return None
 
     packages = _selection_packages(ref)
     if packages:
@@ -214,13 +397,12 @@ def select_prior(index: VersionIndex, ref: ResolvedRef) -> Optional[VersionEntry
 
 
 def build_baseline_packet(
-    config: RepoConfig, current: SnapshotRecord, packet_root: Path
+    config: RepoConfig, current: object, packet_root: Path
 ) -> PacketRecord:
     """Generate an awaiting-review baseline packet for one immutable snapshot."""
-    _require_snapshot_config(config, current)
-    entry = _entry_from_snapshot(current)
+    entry = _current_entry(config, current)
     _require_entry_evidence(config, entry, packet_root, allow_supplement=True)
-    packet_id = "baseline-" + _safe_part(entry.version) + "-" + entry.sha[:7]
+    packet_id = "baseline-" + _packet_identity_part(entry) + "-" + entry.sha[:7]
     required_reading = _required_reading((entry,), ())
     return _write_packet(
         config,
@@ -238,20 +420,24 @@ def build_baseline_packet(
 def build_delta_packet(
     config: RepoConfig,
     prior: VersionEntry,
-    current: SnapshotRecord,
+    current: object,
     repo_root: Path,
     packet_root: Path,
 ) -> PacketRecord:
     """Generate an awaiting-review delta packet from a local Git checkout."""
-    _require_snapshot_config(config, current)
     _require_entry_config(config, prior)
-    current_entry = _entry_from_snapshot(current)
+    current_entry = _current_entry(config, current)
     _require_entry_evidence(config, prior, packet_root)
     _require_entry_evidence(config, current_entry, packet_root, allow_supplement=True)
-    selected_paths = _selected_paths(
-        config, _entry_file_paths(config, prior, packet_root), _snapshot_file_paths(current)
+    current_paths = (
+        _entry_file_paths(config, current_entry, packet_root)
+        if isinstance(current, VersionEntry)
+        else _snapshot_file_paths(current)
     )
-    changed_files, source_diff = _git_delta(repo_root, prior.sha, current.ref.sha, selected_paths)
+    selected_paths = _selected_paths(
+        config, _entry_file_paths(config, prior, packet_root), current_paths
+    )
+    changed_files, source_diff = _git_delta(repo_root, prior.sha, current_entry.sha, selected_paths)
     reading = _required_reading(
         (prior, current_entry),
         _changed_evidence_paths(prior, current_entry, changed_files),
@@ -306,6 +492,42 @@ def build_comparison_packet(
 
 
 def _entry_from_snapshot(snapshot: SnapshotRecord) -> VersionEntry:
+    if snapshot.release_evidence:
+        return _entry_from_release_evidence(snapshot, snapshot.release_evidence[0])
+    release_notes_path = snapshot.release_notes_path
+    if not release_notes_path and snapshot.release_notes_source_url is not None:
+        release_notes_path = "release-notes.md"
+    return _entry_from_ref(snapshot, snapshot.ref, release_notes_path)
+
+
+def _current_entry(config: RepoConfig, current: object) -> VersionEntry:
+    if isinstance(current, VersionEntry):
+        _require_entry_config(config, current)
+        return current
+    if isinstance(current, SnapshotRecord):
+        _require_snapshot_config(config, current)
+        return _entry_from_snapshot(current)
+    raise PacketError("packet current endpoint has an invalid type")
+
+
+def _entries_from_snapshot(snapshot: SnapshotRecord) -> Tuple[VersionEntry, ...]:
+    if snapshot.release_evidence:
+        return tuple(
+            _entry_from_release_evidence(snapshot, item)
+            for item in snapshot.release_evidence
+        )
+    return (_entry_from_snapshot(snapshot),)
+
+
+def _entry_from_release_evidence(
+    snapshot: SnapshotRecord, evidence: SnapshotReleaseEvidence
+) -> VersionEntry:
+    return _entry_from_ref(snapshot, evidence.ref, evidence.path)
+
+
+def _entry_from_ref(
+    snapshot: SnapshotRecord, ref: ResolvedRef, release_notes_relative_path: str
+) -> VersionEntry:
     snapshot_path = _evidence_path(snapshot.target_path)
     changelogs = tuple(
         sorted(
@@ -315,38 +537,161 @@ def _entry_from_snapshot(snapshot: SnapshotRecord) -> VersionEntry:
         )
     )
     release_notes_path = ""
-    if snapshot.release_notes_source_url is not None:
-        release_notes_path = _evidence_path(snapshot.target_path / "release-notes.md")
+    if release_notes_relative_path:
+        release_notes_path = _evidence_path(
+            snapshot.target_path / release_notes_relative_path
+        )
     return VersionEntry(
-        ref_kind=snapshot.ref.ref_kind,
-        ref_name=snapshot.ref.ref_name,
-        version=snapshot.ref.version,
-        sha=snapshot.ref.sha,
-        aliases=tuple(sorted(set(snapshot.ref.aliases))),
+        ref_kind=ref.ref_kind,
+        ref_name=ref.ref_name,
+        version=ref.version,
+        sha=ref.sha,
+        aliases=tuple(sorted(set(ref.aliases))),
         snapshot_path=snapshot_path,
         collection_date=snapshot.collection_date,
-        package=_package_for_ref(snapshot.ref),
+        package=_package_for_ref(ref),
         capture_kind=snapshot.capture_kind,
         release_notes_path=release_notes_path,
         changelog_paths=changelogs,
     )
 
 
-def _merge_snapshot_evidence(entry: VersionEntry, snapshot: SnapshotRecord) -> VersionEntry:
-    supplement = _entry_from_snapshot(snapshot)
+def _merge_snapshot_evidence(
+    entry: VersionEntry,
+    snapshot: SnapshotRecord,
+    supplement: Optional[VersionEntry] = None,
+) -> VersionEntry:
+    supplement = supplement or _entry_from_snapshot(snapshot)
+    aliases = set(entry.aliases).union(supplement.aliases)
+    if supplement.ref_name != entry.ref_name:
+        aliases.add(supplement.ref_name)
     return replace(
         entry,
-        aliases=tuple(sorted(set(entry.aliases).union(supplement.aliases))),
+        aliases=tuple(sorted(aliases)),
         release_notes_path=supplement.release_notes_path or entry.release_notes_path,
         changelog_paths=tuple(sorted(set(entry.changelog_paths).union(supplement.changelog_paths))),
     )
 
 
-def _replace_entry(index: VersionIndex, sha: str, updated: VersionEntry) -> VersionIndex:
+def _append_entry(index: VersionIndex, entry: VersionEntry) -> VersionIndex:
     return VersionIndex(
         index.repo_id,
-        tuple(sorted((updated if entry.sha == sha else entry for entry in index.versions), key=_entry_key)),
+        tuple(sorted(index.versions + (entry,), key=_entry_key)),
         _capture_order(index),
+        index.branch_observations,
+    )
+
+
+def _replace_identity_entry(
+    index: VersionIndex, existing: VersionEntry, updated: VersionEntry
+) -> VersionIndex:
+    return VersionIndex(
+        index.repo_id,
+        tuple(
+            sorted(
+                (updated if entry == existing else entry for entry in index.versions),
+                key=_entry_key,
+            )
+        ),
+        _capture_order(index),
+        index.branch_observations,
+    )
+
+
+def _matching_identity_entry(
+    entries: Sequence[VersionEntry], incoming: VersionEntry
+) -> Optional[VersionEntry]:
+    if incoming.ref_kind == "branch":
+        return next(
+            (
+                entry
+                for entry in entries
+                if entry.ref_kind == "branch" and entry.ref_name == incoming.ref_name
+            ),
+            None,
+        )
+    if incoming.ref_kind in ("package-version", "tag"):
+        identity = _semantic_release_identity(incoming)
+        return next(
+            (
+                entry
+                for entry in entries
+                if entry.ref_kind in ("package-version", "tag")
+                and _semantic_release_identity(entry) == identity
+            ),
+            None,
+        )
+    return next(
+        (
+            entry
+            for entry in entries
+            if entry.ref_kind == incoming.ref_kind
+            and entry.ref_name == incoming.ref_name
+        ),
+        None,
+    )
+
+
+def _semantic_release_identity(entry: VersionEntry) -> Tuple[str, str]:
+    return (entry.package, entry.version[1:] if entry.version.startswith("v") else entry.version)
+
+
+def _immutable_names(entry: VersionEntry) -> set:
+    if entry.ref_kind == "branch":
+        return set()
+    return {entry.ref_name}.union(entry.aliases)
+
+
+def _require_unmoved_immutable_identity(
+    index: VersionIndex, incoming: VersionEntry
+) -> None:
+    incoming_names = _immutable_names(incoming)
+    if not incoming_names:
+        return
+    for existing in index.versions:
+        if existing.sha == incoming.sha or existing.ref_kind == "branch":
+            continue
+        if (
+            incoming.ref_kind in ("package-version", "tag")
+            and existing.ref_kind in ("package-version", "tag")
+            and _semantic_release_identity(existing)
+            == _semantic_release_identity(incoming)
+        ):
+            raise PacketError(
+                "immutable reference or release identity "
+                + _packet_release_identity(incoming)
+                + " is already owned by SHA "
+                + existing.sha
+            )
+        conflict = sorted(incoming_names.intersection(_immutable_names(existing)))
+        if conflict:
+            raise PacketError(
+                "immutable reference "
+                + conflict[0]
+                + " is already owned by SHA "
+                + existing.sha
+            )
+
+
+def _record_branch_observation(
+    index: VersionIndex, entry: VersionEntry
+) -> VersionIndex:
+    if entry.ref_kind != "branch":
+        return index
+    current = next(
+        (
+            item
+            for item in reversed(index.branch_observations)
+            if item.ref_name == entry.ref_name
+        ),
+        None,
+    )
+    if current is not None and current.sha == entry.sha:
+        return index
+    return replace(
+        index,
+        branch_observations=index.branch_observations
+        + (BranchObservation(entry.ref_name, entry.sha),),
     )
 
 
@@ -372,19 +717,10 @@ def _latest_capture(entries: Sequence[VersionEntry]) -> Optional[VersionEntry]:
     return max(entries, key=lambda entry: (entry.collection_date, entry.snapshot_path, entry.sha))
 
 
-def _latest_owned_capture(
-    index: VersionIndex, entries: Sequence[VersionEntry]
-) -> Optional[VersionEntry]:
-    if not entries:
-        return None
-    positions = {sha: position for position, sha in enumerate(_capture_order(index))}
-    return max(entries, key=lambda entry: positions[entry.sha])
-
-
 def _capture_order(index: VersionIndex) -> Tuple[str, ...]:
     if index.capture_order:
         return index.capture_order
-    return tuple(entry.sha for entry in index.versions)
+    return _legacy_capture_order(index.versions)
 
 
 def _package_for_ref(ref: ResolvedRef) -> str:
@@ -724,14 +1060,34 @@ def _packet_id(packet_type: str, prior: VersionEntry, current: VersionEntry) -> 
     return (
         packet_type
         + "-"
-        + _safe_part(prior.version)
+        + _packet_identity_part(prior)
         + "-"
         + prior.sha[:7]
         + "-to-"
-        + _safe_part(current.version)
+        + _packet_identity_part(current)
         + "-"
         + current.sha[:7]
     )
+
+
+def _packet_release_identity(entry: VersionEntry) -> str:
+    return (entry.package + "@" if entry.package else "") + entry.version
+
+
+def _packet_identity_part(entry: VersionEntry) -> str:
+    if entry.ref_kind in ("package-version", "tag"):
+        identity = ("release",) + _semantic_release_identity(entry)
+        label = _packet_release_identity(entry)
+    elif entry.ref_kind == "branch":
+        identity = ("branch", entry.ref_name)
+        label = entry.ref_name
+    else:
+        identity = (entry.ref_kind, entry.ref_name)
+        label = entry.version
+    digest = hashlib.sha256(
+        json.dumps(identity, ensure_ascii=True, separators=(",", ":")).encode("ascii")
+    ).hexdigest()
+    return _safe_part(label)[:80].rstrip("-.") + "-" + digest
 
 
 def _safe_part(value: str) -> str:
@@ -801,7 +1157,15 @@ def _validate_entry(
     if release_notes is not None:
         _require_contained(release_notes, expected_snapshot_root, "release notes path")
         relative = release_notes.relative_to(expected_snapshot_root)
-        if len(relative.parts) != 2 or relative.parts[1] != "release-notes.md":
+        if (
+            len(relative.parts) < 2
+            or relative.name != "release-notes.md"
+            and not (
+                len(relative.parts) >= 3
+                and relative.parts[1] == "release-notes"
+                and relative.suffix == ".md"
+            )
+        ):
             raise PacketError("version index entry release notes path is invalid")
     for changelog in changelogs:
         _require_contained(changelog, expected_snapshot_root, "changelog path")

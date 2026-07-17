@@ -107,6 +107,71 @@ class GitHubPacketTests(unittest.TestCase):
         self.assertEqual(1, len(second.versions))
         self.assertEqual(("stable", "v1"), second.versions[0].aliases)
 
+    def test_same_sha_distinct_versions_keep_release_rows_and_one_capture(self):
+        first_record = self.snapshot("a" * 40, "1.0.0", package="")
+        second_record = self.snapshot(
+            "a" * 40,
+            "1.1.0",
+            package="",
+            target_path=first_record.target_path,
+            release_notes_source_url="https://api.github.test/releases/1.1.0",
+        )
+
+        index = record_snapshot(self.empty_index(), first_record)
+        index = record_snapshot(index, second_record)
+
+        self.assertEqual(("1.0.0", "1.1.0"), tuple(entry.version for entry in index.versions))
+        self.assertEqual(("a" * 40,), index.capture_order)
+        self.assertEqual(1, len({entry.snapshot_path for entry in index.versions}))
+
+    def test_same_sha_package_scopes_keep_distinct_release_rows(self):
+        first_record = self.snapshot("a" * 40, package="@scope/one")
+        second_record = self.snapshot(
+            "a" * 40,
+            package="@scope/two",
+            target_path=first_record.target_path,
+            release_notes_source_url="https://api.github.test/releases/scope-two",
+        )
+
+        index = record_snapshot(self.empty_index(), first_record)
+        index = record_snapshot(index, second_record)
+
+        self.assertEqual(
+            ("@scope/one", "@scope/two"),
+            tuple(entry.package for entry in index.versions),
+        )
+        self.assertEqual(1, len({entry.snapshot_path for entry in index.versions}))
+
+    def test_packet_ids_do_not_collide_when_package_labels_sanitize_identically(self):
+        first = self.snapshot("a" * 40, package="@scope/a-b")
+        second = self.snapshot(
+            "a" * 40,
+            package="@scope-a/b",
+            target_path=first.target_path,
+            release_notes_source_url="https://api.github.test/releases/scope-a",
+        )
+        first.target_path.mkdir(parents=True)
+        (first.target_path / "snapshot.md").write_text("snapshot\n", encoding="utf-8")
+        (first.target_path / "release-notes.md").write_text("notes\n", encoding="utf-8")
+        (first.target_path / "files").mkdir()
+        (first.target_path / "files/CHANGELOG.md").write_text("log\n", encoding="utf-8")
+
+        first_packet = build_baseline_packet(self.config, first, self.packet_root)
+        second_packet = build_baseline_packet(self.config, second, self.packet_root)
+
+        self.assertNotEqual(first_packet.packet_id, second_packet.packet_id)
+        self.assertTrue(first_packet.directory.is_dir())
+        self.assertTrue(second_packet.directory.is_dir())
+
+    def test_record_snapshot_rejects_force_moved_immutable_identity(self):
+        first = record_snapshot(self.empty_index(), self.snapshot("a" * 40, package=""))
+        moved = self.snapshot("b" * 40, package="")
+
+        with self.assertRaisesRegex(PacketError, "immutable reference.*1.0.0"):
+            record_snapshot(first, moved)
+
+        self.assertEqual(("a" * 40,), tuple(entry.sha for entry in first.versions))
+
     def test_package_namespace_prior_selection_uses_highest_compatible_version(self):
         index = record_snapshot(self.empty_index(), self.snapshot("a" * 40, "1.0.0"))
         index = record_snapshot(index, self.snapshot("b" * 40, "1.2.0"))
@@ -272,6 +337,48 @@ class GitHubPacketTests(unittest.TestCase):
                 path.write_text(json.dumps(current), encoding="utf-8")
                 with self.assertRaisesRegex(PacketError, "capture_order"):
                     load_version_index(path, self.config)
+
+    def test_legacy_branch_history_uses_distinct_dates_and_rejects_same_day_ambiguity(self):
+        path = self.version_index_path()
+        path.parent.mkdir(parents=True, exist_ok=True)
+        base = self.version_index_json()["versions"][0]
+
+        def branch_entry(sha, collection_date):
+            return dict(
+                base,
+                aliases=[],
+                changelog_paths=[],
+                collection_date=collection_date,
+                package="",
+                ref_kind="branch",
+                ref_name="main",
+                release_notes_path="",
+                sha=sha,
+                snapshot_path="raw/github/acme/widgets/snapshots/main-" + sha[:7],
+                version="main",
+            )
+
+        older = branch_entry("f" * 40, "2026-07-14")
+        newer = branch_entry("a" * 40, "2026-07-15")
+        path.write_text(
+            json.dumps({"repo_id": "acme/widgets", "versions": [newer, older]}),
+            encoding="utf-8",
+        )
+
+        loaded = load_version_index(path, self.config)
+
+        self.assertEqual(
+            (("main", "f" * 40), ("main", "a" * 40)),
+            tuple((item.ref_name, item.sha) for item in loaded.branch_observations),
+        )
+
+        same_day = dict(older, collection_date="2026-07-15")
+        path.write_text(
+            json.dumps({"repo_id": "acme/widgets", "versions": [newer, same_day]}),
+            encoding="utf-8",
+        )
+        with self.assertRaisesRegex(PacketError, "ambiguous legacy branch history"):
+            load_version_index(path, self.config)
 
     def test_packet_root_must_be_tracking_github_without_raw_or_symlink_escape(self):
         raw_packet_root = self.root / "raw" / "github" / "packets"
@@ -464,6 +571,54 @@ class GitHubPacketTests(unittest.TestCase):
         self.assertEqual("a" * 40, contract["from"]["sha"])
         self.assertEqual("b" * 40, contract["to"]["sha"])
 
+    def test_branch_observations_preserve_reversion_and_independent_branch_heads(self):
+        def branch_snapshot(branch, sha):
+            record = self.snapshot(sha, package="")
+            return SnapshotRecord(
+                **dict(
+                    vars(record),
+                    ref=ResolvedRef(
+                        "acme/widgets",
+                        "branch",
+                        branch,
+                        sha,
+                        branch,
+                        (),
+                        "2026-07-15T00:00:00+00:00",
+                        None,
+                    ),
+                    target_path=(
+                        self.raw_root
+                        / "acme/widgets/snapshots"
+                        / (branch + "-" + sha[:7])
+                    ),
+                )
+            )
+
+        index = self.empty_index()
+        for branch, sha in (
+            ("main", "a" * 40),
+            ("main", "b" * 40),
+            ("release", "d" * 40),
+            ("main", "a" * 40),
+        ):
+            index = record_snapshot(index, branch_snapshot(branch, sha))
+
+        main_current = branch_snapshot("main", "c" * 40).ref
+        release_current = branch_snapshot("release", "e" * 40).ref
+
+        self.assertEqual("a" * 40, select_prior(index, main_current).sha)
+        self.assertEqual("d" * 40, select_prior(index, release_current).sha)
+        self.assertEqual(
+            (
+                ("main", "a" * 40),
+                ("main", "b" * 40),
+                ("release", "d" * 40),
+                ("main", "a" * 40),
+            ),
+            tuple((item.ref_name, item.sha) for item in index.branch_observations),
+        )
+
     def test_supplement_updates_evidence_without_creating_another_version(self):
         canonical = self.snapshot("a" * 40, aliases=("v1.0.0",))
         index = record_snapshot(self.empty_index(), canonical)
@@ -501,7 +656,10 @@ class GitHubPacketTests(unittest.TestCase):
 
         text = path.read_text(encoding="utf-8")
         self.assertTrue(text.endswith("\n"))
-        self.assertEqual(["capture_order", "repo_id", "versions"], list(json.loads(text)))
+        self.assertEqual(
+            ["branch_observations", "capture_order", "repo_id", "versions"],
+            list(json.loads(text)),
+        )
         self.assertEqual(index, load_version_index(path, self.config))
 
     def test_delta_packet_records_add_modify_rename_and_deletion_with_raw_evidence(self):

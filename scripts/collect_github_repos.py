@@ -56,7 +56,6 @@ from github_reporting import (
     validate_packet_history,
 )
 from github_snapshot import (
-    SnapshotFile,
     SnapshotPromotionResult,
     SnapshotRecord,
     build_snapshot,
@@ -96,6 +95,13 @@ class CollectionResult:
     versions: Tuple[str, ...]
     packet_ids: Tuple[str, ...]
     events: Tuple[Mapping[str, object], ...]
+
+
+@dataclass(frozen=True)
+class _OwnedPacket:
+    path: Path
+    device: int
+    inode: int
 
 
 def collect_one(
@@ -169,56 +175,108 @@ def collect_one(
                 by_selector = {selector: candidate for candidate, selector in release_pairs}
                 work = [(by_selector[selector], selector) for selector in requested]
 
-            for candidate, selector in work:
-                try:
-                    ref = resolve_ref(config, inspection, selector)
-                    evidence = None
-                    if candidate is not None and not dry_run:
-                        ref = replace(
-                            ref,
-                            aliases=tuple(sorted(set(ref.aliases).union(candidate.aliases))),
-                        )
-                        evidence = fetch_release_notes(
-                            config, candidate, token=os.environ.get("GITHUB_TOKEN")
-                        )
-                        if evidence is not None:
-                            ref = replace(ref, release_published_at=evidence.published_at)
-                    if candidate is None:
+            if explicit:
+                for candidate, selector in work:
+                    try:
+                        ref = resolve_ref(config, inspection, selector)
                         versions.append(ref.version)
-                    state, packet, index = _collect_resolved_ref(
-                        root,
-                        config,
-                        clone_path,
-                        ref,
-                        selector,
-                        index,
-                        index_path,
-                        evidence,
-                        candidate is not None,
-                        dry_run,
-                    )
-                    if packet is not None:
-                        packet_ids.append(packet.packet_id)
-                    emit(
-                        _terminal_event(
-                            config.id,
+                        state, packet, index = _collect_resolved_ref(
+                            root,
+                            config,
+                            clone_path,
+                            ref,
                             selector,
-                            state,
-                            ref=ref,
-                            packet_id=packet.packet_id if packet is not None else "",
-                            dry_run=dry_run,
+                            index,
+                            index_path,
+                            None,
+                            False,
+                            dry_run,
                         )
-                    )
-                except Exception as error:  # one terminal event per selected ref is mandatory
-                    emit(
-                        _terminal_event(
-                            config.id,
-                            selector,
-                            "failed",
-                            error=_bounded_error(error),
-                            dry_run=dry_run,
+                        if packet is not None:
+                            packet_ids.append(packet.packet_id)
+                        emit(
+                            _terminal_event(
+                                config.id,
+                                selector,
+                                state,
+                                ref=ref,
+                                packet_id=packet.packet_id if packet is not None else "",
+                                dry_run=dry_run,
+                            )
                         )
-                    )
+                    except Exception as error:
+                        emit(
+                            _terminal_event(
+                                config.id,
+                                selector,
+                                "failed",
+                                error=_bounded_error(error),
+                                dry_run=dry_run,
+                            )
+                        )
+            else:
+                resolved_releases = []
+                for candidate, selector in work:
+                    try:
+                        ref = resolve_ref(config, inspection, selector)
+                        ref = replace(ref, aliases=tuple(sorted(set(candidate.aliases))))
+                        evidence = None
+                        if not dry_run:
+                            evidence = fetch_release_notes(
+                                config, candidate, token=os.environ.get("GITHUB_TOKEN")
+                            )
+                            if evidence is not None:
+                                ref = replace(
+                                    ref, release_published_at=evidence.published_at
+                                )
+                        resolved_releases.append((candidate, selector, ref, evidence))
+                    except Exception as error:
+                        emit(
+                            _terminal_event(
+                                config.id,
+                                selector,
+                                "failed",
+                                error=_bounded_error(error),
+                                dry_run=dry_run,
+                            )
+                        )
+
+                for group in _release_groups(resolved_releases):
+                    try:
+                        outcomes, index = _collect_release_group(
+                            root,
+                            config,
+                            clone_path,
+                            group,
+                            index,
+                            index_path,
+                            dry_run,
+                        )
+                    except Exception as error:
+                        for _, selector, _, _ in group:
+                            emit(
+                                _terminal_event(
+                                    config.id,
+                                    selector,
+                                    "failed",
+                                    error=_bounded_error(error),
+                                    dry_run=dry_run,
+                                )
+                            )
+                        continue
+                    for selector, ref, state, packet in outcomes:
+                        if packet is not None:
+                            packet_ids.append(packet.packet_id)
+                        emit(
+                            _terminal_event(
+                                config.id,
+                                selector,
+                                state,
+                                ref=ref,
+                                packet_id=packet.packet_id if packet is not None else "",
+                                dry_run=dry_run,
+                            )
+                        )
     except Exception as error:
         unresolved = [
             selector
@@ -279,8 +337,8 @@ def compare_one(
         inspection = inspect_repository(config, clone_path)
         from_ref = resolve_ref(config, inspection, normalized[0])
         to_ref = resolve_ref(config, inspection, normalized[1])
-        prior = _entry_for_sha(index, from_ref.sha)
-        current = _entry_for_sha(index, to_ref.sha)
+        prior = _entry_for_ref(index, from_ref)
+        current = _entry_for_ref(index, to_ref)
         if prior is None or current is None:
             raise CollectionCommandError("comparison endpoints are absent from the version index")
         return build_comparison_packet(
@@ -298,16 +356,15 @@ def prepare_one(root: Path, config: RepoConfig, selector: str) -> PacketRecord:
         fetch_required_refs(config, clone_path, (normalized,))
         inspection = inspect_repository(config, clone_path)
         ref = resolve_ref(config, inspection, normalized)
-        entry = _entry_for_sha(index, ref.sha)
+        entry = _entry_for_ref(index, ref)
         if entry is None:
             raise CollectionUsageError("requested ref is not present in the version index")
-        current = _snapshot_from_entry(root, config, entry)
-        prior = select_prior(index, current.ref)
+        prior = select_prior(index, ref)
         if prior is None:
-            return build_baseline_packet(config, current, _packet_root(root, config))
+            return build_baseline_packet(config, entry, _packet_root(root, config))
         fetch_required_refs(config, clone_path, ("commit:" + prior.sha,))
         return build_delta_packet(
-            config, prior, current, clone_path, _packet_root(root, config)
+            config, prior, entry, clone_path, _packet_root(root, config)
         )
 
 
@@ -459,9 +516,8 @@ def _collect_resolved_ref(
             return "unchanged", None, index
         return ("collected-change" if prior is not None else "collected-baseline"), None, index
     if existing is not None:
-        release_name = selector[4:] if selector.startswith("tag:") else ""
-        known_refs = {existing.ref_name}.union(existing.aliases)
-        if release_target and release_name and release_name not in known_refs:
+        matching_release = _matching_release_entry(index, ref)
+        if ref.ref_kind in ("package-version", "tag") and matching_release is None:
             return _collect_release_alias(
                 root,
                 config,
@@ -504,6 +560,7 @@ def _collect_resolved_ref(
             release_notes=release_notes,
             changed_paths=changed_paths,
         )
+        updated = record_snapshot(index, record)
         promotion = promote_snapshot_with_result(record)
         record = replace(record, target_path=promotion.path)
         updated = record_snapshot(index, record)
@@ -606,6 +663,192 @@ def _existing_versions_for_track(
     return tuple(_deduplicated(versions))
 
 
+def _release_groups(
+    releases: Sequence[Tuple[ReleaseCandidate, str, ResolvedRef, object]],
+) -> Tuple[Tuple[Tuple[ReleaseCandidate, str, ResolvedRef, object], ...], ...]:
+    groups: Dict[str, List[Tuple[ReleaseCandidate, str, ResolvedRef, object]]] = {}
+    order = []
+    for item in releases:
+        sha = item[2].sha
+        if sha not in groups:
+            groups[sha] = []
+            order.append(sha)
+        groups[sha].append(item)
+    return tuple(tuple(groups[sha]) for sha in order)
+
+
+def _collect_release_group(
+    root: Path,
+    config: RepoConfig,
+    clone_path: Path,
+    group: Sequence[Tuple[ReleaseCandidate, str, ResolvedRef, object]],
+    index: VersionIndex,
+    index_path: Path,
+    dry_run: bool,
+) -> Tuple[
+    Tuple[Tuple[str, ResolvedRef, str, Optional[PacketRecord]], ...],
+    VersionIndex,
+]:
+    if not group:
+        return (), index
+    if len({item[2].sha for item in group}) != 1:
+        raise CollectionCommandError("release group contains more than one SHA")
+
+    existing_by_identity = {
+        _release_identity(entry.package, entry.version): entry
+        for entry in index.versions
+        if entry.ref_kind in ("package-version", "tag")
+    }
+    new_items = [
+        item
+        for item in group
+        if (
+            _release_identity_for_ref(item[2]) not in existing_by_identity
+            or existing_by_identity[_release_identity_for_ref(item[2])].sha
+            != item[2].sha
+        )
+    ]
+    if dry_run:
+        outcomes = []
+        for _, selector, ref, _ in group:
+            if (
+                _release_identity_for_ref(ref) in existing_by_identity
+                and existing_by_identity[_release_identity_for_ref(ref)].sha == ref.sha
+            ):
+                state = "unchanged"
+            else:
+                state = "collected-change" if select_prior(index, ref) else "collected-baseline"
+            outcomes.append((selector, ref, state, None))
+        return tuple(outcomes), index
+
+    if not new_items:
+        updated = index
+        for _, _, ref, _ in group:
+            owner = _entry_for_sha(updated, ref.sha)
+            if owner is None:
+                raise CollectionCommandError("known release SHA is absent from the version index")
+            updated = record_snapshot(updated, _alias_snapshot(root, config, owner, ref))
+        if updated != index:
+            save_version_index(index_path, updated)
+        return tuple((selector, ref, "unchanged", None) for _, selector, ref, _ in group), updated
+
+    run_git(["checkout", "--detach", group[0][2].sha], clone_path)
+    priors = {
+        _release_identity_for_ref(ref): select_prior(index, ref)
+        for _, _, ref, _ in new_items
+    }
+    changed_paths = set()
+    for prior in priors.values():
+        if prior is None:
+            continue
+        fetch_required_refs(config, clone_path, ("commit:" + prior.sha,))
+        changed_paths.update(
+            line
+            for line in run_git(
+                ["diff", "--name-only", prior.sha, group[0][2].sha], clone_path
+            ).splitlines()
+            if line
+        )
+
+    raw_root = root / "raw/github"
+    canonical = _entry_for_sha(index, group[0][2].sha)
+    capture_kind = "supplement" if canonical is not None else "canonical"
+    primary_ref = new_items[0][2]
+    record = None
+    promotion: Optional[SnapshotPromotionResult] = None
+    owned_packets: List[_OwnedPacket] = []
+    index_existed = index_path.exists()
+    index_write_attempted = False
+    packet_root = _packet_root(root, config)
+    try:
+        record = build_snapshot(
+            config,
+            primary_ref,
+            clone_path,
+            raw_root,
+            raw_root / ".staging",
+            date.today().isoformat(),
+            prior_snapshot=(
+                canonical.snapshot_path
+                if canonical is not None
+                else next(
+                    (
+                        prior.snapshot_path
+                        for prior in priors.values()
+                        if prior is not None
+                    ),
+                    None,
+                )
+            ),
+            capture_kind=capture_kind,
+            changed_paths=tuple(sorted(changed_paths)),
+            release_targets=tuple((ref, evidence) for _, _, ref, evidence in new_items),
+        )
+
+        # Mutation validation precedes every raw, index, and packet publication.
+        record_snapshot(index, record)
+        promotion = promote_snapshot_with_result(record)
+        record = replace(record, target_path=promotion.path)
+        updated = record_snapshot(index, record)
+        for _, _, ref, _ in group:
+            if _release_identity_for_ref(ref) in existing_by_identity:
+                owner = _entry_for_sha(updated, ref.sha)
+                if owner is None:
+                    raise CollectionCommandError("release SHA is absent after snapshot mutation")
+                updated = record_snapshot(
+                    updated, _alias_snapshot(root, config, owner, ref)
+                )
+        index_write_attempted = True
+        save_version_index(index_path, updated)
+
+        packets: Dict[Tuple[str, str], Tuple[str, PacketRecord]] = {}
+        for _, _, ref, _ in new_items:
+            identity = _release_identity_for_ref(ref)
+            current = _matching_release_entry(updated, ref)
+            if current is None:
+                raise CollectionCommandError("new release identity is absent after mutation")
+            before = _packet_directory_names(packet_root)
+            prior = priors[identity]
+            if prior is None:
+                packet = build_baseline_packet(config, current, packet_root)
+                state = "collected-baseline"
+            else:
+                packet = build_delta_packet(config, prior, current, clone_path, packet_root)
+                state = "collected-change"
+            if packet.packet_id not in before and packet.directory.is_dir():
+                packet_stat = packet.directory.stat()
+                owned_packets.append(
+                    _OwnedPacket(packet.directory, packet_stat.st_dev, packet_stat.st_ino)
+                )
+            packets[identity] = (state, packet)
+
+        outcomes = []
+        for _, selector, ref, _ in group:
+            result = packets.get(_release_identity_for_ref(ref))
+            outcomes.append(
+                (selector, ref, result[0], result[1])
+                if result is not None
+                else (selector, ref, "unchanged", None)
+            )
+        return tuple(outcomes), updated
+    except Exception as operation_error:
+        try:
+            _rollback_owned_packets(config, packet_root, owned_packets)
+            _rollback_collection_transaction(
+                index_path,
+                index,
+                index_existed,
+                index_write_attempted,
+                promotion,
+            )
+        except Exception as rollback_error:
+            raise rollback_error from operation_error
+        raise
+    finally:
+        if record is not None and record.staging_path.exists() and not record.staging_path.is_symlink():
+            shutil.rmtree(record.staging_path, ignore_errors=True)
+
+
 def _collect_release_alias(
     root: Path,
     config: RepoConfig,
@@ -623,7 +866,7 @@ def _collect_release_alias(
     index_write_attempted = False
     try:
         run_git(["checkout", "--detach", ref.sha], clone_path)
-        if release_notes is not None:
+        if release_notes is not None or _matching_release_entry(index, ref) is None:
             raw_root = root / "raw" / "github"
             record = build_snapshot(
                 config,
@@ -634,8 +877,9 @@ def _collect_release_alias(
                 date.today().isoformat(),
                 prior_snapshot=existing.snapshot_path,
                 capture_kind="supplement",
-                release_notes=release_notes,
+                release_targets=((ref, release_notes),),
             )
+            record_snapshot(index, record)
             promotion = promote_snapshot_with_result(record)
             record = replace(record, target_path=promotion.path)
         else:
@@ -645,12 +889,15 @@ def _collect_release_alias(
         index_write_attempted = True
         save_version_index(index_path, updated)
         packet_root = _packet_root(root, config)
+        current = _matching_release_entry(updated, ref)
+        if current is None:
+            raise CollectionCommandError("new release identity is absent after mutation")
         if prior is None:
-            packet = build_baseline_packet(config, record, packet_root)
+            packet = build_baseline_packet(config, current, packet_root)
             state = "collected-baseline"
         else:
             fetch_required_refs(config, clone_path, ("commit:" + prior.sha,))
-            packet = build_delta_packet(config, prior, record, clone_path, packet_root)
+            packet = build_delta_packet(config, prior, current, clone_path, packet_root)
             state = "collected-change"
         return state, packet, updated
     except Exception as operation_error:
@@ -699,6 +946,38 @@ def _rollback_collection_transaction(
         raise CollectionCommandError(
             "snapshot rollback failed: " + _bounded_error(error)
         ) from error
+
+
+def _packet_directory_names(packet_root: Path) -> set:
+    if not packet_root.is_dir():
+        return set()
+    return {
+        path.name
+        for path in packet_root.iterdir()
+        if path.is_dir() and not path.is_symlink()
+    }
+
+
+def _rollback_owned_packets(
+    config: RepoConfig, packet_root: Path, tokens: Sequence[_OwnedPacket]
+) -> None:
+    if not tokens:
+        return
+    with packet_transaction(config, packet_root):
+        for token in reversed(tokens):
+            try:
+                current = os.stat(token.path, follow_symlinks=False)
+            except FileNotFoundError:
+                continue
+            if (
+                token.path.is_symlink()
+                or not stat.S_ISDIR(current.st_mode)
+                or (current.st_dev, current.st_ino) != (token.device, token.inode)
+            ):
+                raise CollectionCommandError(
+                    "packet rollback target no longer names the published packet"
+                )
+            shutil.rmtree(token.path)
 
 
 def _selected_event(repo_id: str, selector: str, dry_run: bool) -> Mapping[str, object]:
@@ -756,6 +1035,66 @@ def _entry_for_sha(index: VersionIndex, sha: str) -> Optional[VersionEntry]:
     return next((entry for entry in index.versions if entry.sha == sha), None)
 
 
+def _release_identity(package: str, version: str) -> Tuple[str, str]:
+    return package, version[1:] if version.startswith("v") else version
+
+
+def _release_identity_for_ref(ref: ResolvedRef) -> Tuple[str, str]:
+    direct = parse_package_tag(ref.ref_name)
+    if direct is not None:
+        package = direct[0]
+    else:
+        packages = {
+            parsed[0]
+            for parsed in (parse_package_tag(alias) for alias in ref.aliases)
+            if parsed is not None
+        }
+        package = next(iter(packages)) if len(packages) == 1 else ""
+    return _release_identity(package, ref.version)
+
+
+def _matching_release_entry(
+    index: VersionIndex, ref: ResolvedRef
+) -> Optional[VersionEntry]:
+    identity = _release_identity_for_ref(ref)
+    return next(
+        (
+            entry
+            for entry in index.versions
+            if entry.ref_kind in ("package-version", "tag")
+            and _release_identity(entry.package, entry.version) == identity
+        ),
+        None,
+    )
+
+
+def _entry_for_ref(index: VersionIndex, ref: ResolvedRef) -> Optional[VersionEntry]:
+    if ref.ref_kind in ("package-version", "tag"):
+        matching = _matching_release_entry(index, ref)
+        return matching if matching is not None and matching.sha == ref.sha else None
+    if ref.ref_kind == "branch":
+        return next(
+            (
+                entry
+                for entry in index.versions
+                if entry.ref_kind == "branch"
+                and entry.ref_name == ref.ref_name
+                and entry.sha == ref.sha
+            ),
+            None,
+        )
+    return next(
+        (
+            entry
+            for entry in index.versions
+            if entry.ref_kind == ref.ref_kind
+            and entry.ref_name == ref.ref_name
+            and entry.sha == ref.sha
+        ),
+        None,
+    )
+
+
 def _alias_snapshot(
     root: Path, config: RepoConfig, entry: VersionEntry, ref: ResolvedRef
 ) -> SnapshotRecord:
@@ -772,51 +1111,6 @@ def _alias_snapshot(
         repository_url=config.url,
         company=config.company,
         repo_type=config.repo_type,
-    )
-
-
-def _snapshot_from_entry(root: Path, config: RepoConfig, entry: VersionEntry) -> SnapshotRecord:
-    target = root / entry.snapshot_path
-    metadata = _snapshot_metadata(target / "snapshot.md")
-    ref_data = metadata.get("ref", {})
-    files_data = metadata.get("files", [])
-    files = tuple(
-        SnapshotFile(item["path"], item["sha256"], item["size"], item["purpose"])
-        for item in files_data
-        if isinstance(item, dict)
-        and isinstance(item.get("path"), str)
-        and isinstance(item.get("sha256"), str)
-        and type(item.get("size")) is int
-        and isinstance(item.get("purpose"), str)
-    )
-    ref = ResolvedRef(
-        config.id,
-        entry.ref_kind,
-        entry.ref_name,
-        entry.sha,
-        entry.version,
-        entry.aliases,
-        str(ref_data.get("upstream_commit_time", "")),
-        ref_data.get("release_published_at") if isinstance(ref_data.get("release_published_at"), str) else None,
-    )
-    release = metadata.get("release_notes")
-    release = release if isinstance(release, dict) else {}
-    return SnapshotRecord(
-        config.id,
-        ref,
-        "canonical",
-        0,
-        entry.collection_date,
-        target,
-        target,
-        files,
-        repository_url=config.url,
-        company=config.company,
-        repo_type=config.repo_type,
-        release_notes_source_url=release.get("source_url"),
-        release_notes_published_at=release.get("published_at"),
-        release_notes_sha256=release.get("sha256"),
-        release_notes_size=release.get("size"),
     )
 
 

@@ -16,6 +16,7 @@ from typing import Dict, List, Optional, Sequence, Tuple
 from github_git import ResolvedRef
 from github_registry import RepoConfig
 from github_releases import ReleaseNotesEvidence
+from github_versions import parse_package_tag
 
 
 _DEFAULT_EXCLUDED_PARTS = {
@@ -41,7 +42,7 @@ _PUBLIC_ENTRYPOINTS = {"index", "main", "public"}
 _SAFE_CAPTURE_PART = re.compile(r"[^A-Za-z0-9._-]+")
 _SUPPLEMENT_SUFFIX = re.compile(r"-r[0-9]+$")
 _METADATA_MARKER = "<!-- github-snapshot-metadata-v1 -->"
-_MANIFEST_VERSION = 1
+_MANIFEST_VERSION = 2
 _LOCK_NAME = ".promotion.lock"
 
 
@@ -55,6 +56,16 @@ class SnapshotFile:
     sha256: str
     size: int
     purpose: str
+
+
+@dataclass(frozen=True)
+class SnapshotReleaseEvidence:
+    ref: ResolvedRef
+    path: str
+    source_url: Optional[str]
+    published_at: Optional[str]
+    sha256: Optional[str]
+    size: Optional[int]
 
 
 @dataclass(frozen=True)
@@ -83,6 +94,9 @@ class SnapshotRecord:
     release_notes_size: Optional[int] = None
     staging_device: Optional[int] = None
     staging_inode: Optional[int] = None
+    release_notes_path: str = ""
+    release_evidence: Tuple[SnapshotReleaseEvidence, ...] = ()
+    format_version: int = _MANIFEST_VERSION
 
 
 @dataclass(frozen=True)
@@ -163,6 +177,9 @@ def build_snapshot(
     capture_kind: str = "canonical",
     release_notes: Optional[ReleaseNotesEvidence] = None,
     changed_paths: Sequence[str] = (),
+    release_targets: Sequence[
+        Tuple[ResolvedRef, Optional[ReleaseNotesEvidence]]
+    ] = (),
 ) -> SnapshotRecord:
     """Stage an immutable snapshot below ``raw/github/.staging``."""
     if ref.repo_id != config.id:
@@ -171,6 +188,8 @@ def build_snapshot(
         raise SnapshotError("capture_kind must be canonical or supplement")
     if release_notes is not None and not isinstance(release_notes.content, bytes):
         raise SnapshotError("release notes content must be bytes")
+    if release_notes is not None and release_targets:
+        raise SnapshotError("release_notes and release_targets are mutually exclusive")
 
     raw_root = raw_root.resolve()
     staging_root = staging_root.resolve()
@@ -221,6 +240,8 @@ def build_snapshot(
                 )
             )
 
+        release_items = _prepare_release_evidence(ref, release_notes, release_targets)
+        primary_release = release_items[0][0] if release_items else None
         record = SnapshotRecord(
             repo_id=config.id,
             ref=ref,
@@ -233,20 +254,23 @@ def build_snapshot(
             repository_url=config.url,
             company=config.company,
             repo_type=config.repo_type,
-            release_notes_source_url=(release_notes.source_url if release_notes is not None else None),
-            release_notes_published_at=(release_notes.published_at if release_notes is not None else None),
-            release_notes_sha256=(
-                hashlib.sha256(release_notes.content).hexdigest()
-                if release_notes is not None
-                else None
-            ),
-            release_notes_size=(len(release_notes.content) if release_notes is not None else None),
+            release_notes_source_url=(primary_release.source_url if primary_release else None),
+            release_notes_published_at=(primary_release.published_at if primary_release else None),
+            release_notes_sha256=(primary_release.sha256 if primary_release else None),
+            release_notes_size=(primary_release.size if primary_release else None),
             staging_device=staging_stat.st_dev,
             staging_inode=staging_stat.st_ino,
+            release_notes_path=(primary_release.path if primary_release else ""),
+            release_evidence=tuple(item for item, _ in release_items),
         )
-        metadata = _snapshot_metadata(config, record, prior_snapshot, selection.excluded, release_notes)
-        if release_notes is not None:
-            (staging_path / "release-notes.md").write_bytes(release_notes.content)
+        metadata = _snapshot_metadata(config, record, prior_snapshot, selection.excluded)
+        for item, evidence in release_items:
+            if evidence is None:
+                continue
+            destination = staging_path / item.path
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            _require_contained(destination, staging_path, "release notes destination")
+            destination.write_bytes(evidence.content)
         _write_manifest(staging_path, metadata)
         return record
     except Exception:
@@ -659,22 +683,121 @@ def _safe_capture_part(value: str) -> str:
     return cleaned or "ref"
 
 
+def _prepare_release_evidence(
+    ref: ResolvedRef,
+    release_notes: Optional[ReleaseNotesEvidence],
+    release_targets: Sequence[Tuple[ResolvedRef, Optional[ReleaseNotesEvidence]]],
+) -> Tuple[Tuple[SnapshotReleaseEvidence, Optional[ReleaseNotesEvidence]], ...]:
+    targets = tuple(release_targets)
+    if not targets and ref.ref_kind in ("package-version", "tag"):
+        targets = ((ref, release_notes),)
+    if not targets:
+        return ()
+    ordered = sorted(targets, key=lambda item: _release_ref_key(item[0]))
+    identities = set()
+    result = []
+    multiple = len(ordered) > 1
+    for release_ref, evidence in ordered:
+        if (
+            release_ref.repo_id != ref.repo_id
+            or release_ref.sha != ref.sha
+            or release_ref.ref_kind not in ("package-version", "tag")
+        ):
+            raise SnapshotError("release target does not belong to the snapshot SHA")
+        identity = _release_identity(release_ref)
+        if identity in identities:
+            raise SnapshotError("release target is listed more than once")
+        identities.add(identity)
+        if evidence is not None and not isinstance(evidence.content, bytes):
+            raise SnapshotError("release notes content must be bytes")
+        path = ""
+        if evidence is not None:
+            if multiple:
+                digest = hashlib.sha256(release_ref.ref_name.encode("utf-8")).hexdigest()[:8]
+                path = (
+                    "release-notes/"
+                    + _safe_capture_part(release_ref.ref_name)
+                    + "-"
+                    + digest
+                    + ".md"
+                )
+            else:
+                path = "release-notes.md"
+        result.append(
+            (
+                SnapshotReleaseEvidence(
+                    ref=release_ref,
+                    path=path,
+                    source_url=evidence.source_url if evidence is not None else None,
+                    published_at=evidence.published_at if evidence is not None else None,
+                    sha256=(
+                        hashlib.sha256(evidence.content).hexdigest()
+                        if evidence is not None
+                        else None
+                    ),
+                    size=len(evidence.content) if evidence is not None else None,
+                ),
+                evidence,
+            )
+        )
+    return tuple(result)
+
+
+def _release_ref_key(ref: ResolvedRef) -> Tuple[str, str, str, str]:
+    package, version = _release_identity(ref)
+    return (package, version, ref.ref_name, ref.sha)
+
+
+def _release_identity(ref: ResolvedRef) -> Tuple[str, str]:
+    parsed = parse_package_tag(ref.ref_name)
+    if parsed is None:
+        parsed_aliases = {
+            item
+            for item in (parse_package_tag(alias) for alias in ref.aliases)
+            if item is not None
+        }
+        package = next(iter(parsed_aliases))[0] if len(parsed_aliases) == 1 else ""
+    else:
+        package = parsed[0]
+    version = ref.version[1:] if ref.version.startswith("v") else ref.version
+    return package, version
+
+
+def _release_note_metadata(item: SnapshotReleaseEvidence) -> Optional[dict]:
+    if not item.path:
+        return None
+    return {
+        "path": item.path,
+        "source_url": item.source_url,
+        "published_at": item.published_at,
+        "sha256": item.sha256,
+        "size": item.size,
+    }
+
+
+def _release_ref_metadata(ref: ResolvedRef) -> dict:
+    return {
+        "kind": ref.ref_kind,
+        "name": ref.ref_name,
+        "sha": ref.sha,
+        "version": ref.version,
+        "aliases": list(ref.aliases),
+        "upstream_commit_time": ref.upstream_commit_time,
+        "release_published_at": ref.release_published_at,
+    }
+
+
 def _snapshot_metadata(
     config: RepoConfig,
     record: SnapshotRecord,
     prior_snapshot: Optional[str],
     excluded: Sequence[Tuple[str, str]],
-    release_notes: Optional[ReleaseNotesEvidence],
 ) -> dict:
-    release_metadata = None
-    if release_notes is not None:
-        release_metadata = {
-            "path": "release-notes.md",
-            "source_url": record.release_notes_source_url,
-            "published_at": record.release_notes_published_at,
-            "sha256": record.release_notes_sha256,
-            "size": record.release_notes_size,
-        }
+    release_metadata = (
+        _release_note_metadata(record.release_evidence[0])
+        if record.release_evidence
+        else None
+    )
     return {
         "format_version": _MANIFEST_VERSION,
         "repository": {
@@ -707,6 +830,13 @@ def _snapshot_metadata(
         ],
         "excluded": [{"path": path, "reason": reason} for path, reason in excluded],
         "release_notes": release_metadata,
+        "release_evidence": [
+            {
+                "ref": _release_ref_metadata(item.ref),
+                "release_notes": _release_note_metadata(item),
+            }
+            for item in record.release_evidence
+        ],
     }
 
 
@@ -801,21 +931,25 @@ def _no_duplicate_keys(pairs: Sequence[Tuple[str, object]]) -> dict:
 
 def _validate_metadata_schema(metadata: dict, errors: List[str]) -> None:
     """Require the complete, typed JSON authority before comparing trusted values."""
+    format_version = metadata.get("format_version")
+    top_level_fields = {
+        "format_version",
+        "repository",
+        "ref",
+        "capture_kind",
+        "capture_revision",
+        "collection_date",
+        "prior_snapshot",
+        "files",
+        "excluded",
+        "release_notes",
+    }
+    if format_version == 2:
+        top_level_fields.add("release_evidence")
     _validate_object_fields(
         metadata,
         "metadata",
-        {
-            "format_version",
-            "repository",
-            "ref",
-            "capture_kind",
-            "capture_revision",
-            "collection_date",
-            "prior_snapshot",
-            "files",
-            "excluded",
-            "release_notes",
-        },
+        top_level_fields,
         errors,
     )
     _validate_exact_type(metadata, "format_version", int, errors)
@@ -846,6 +980,91 @@ def _validate_metadata_schema(metadata: dict, errors: List[str]) -> None:
     _validate_file_entries(metadata.get("files"), errors)
     _validate_excluded_entries(metadata.get("excluded"), errors)
     _validate_release_notes_schema(metadata.get("release_notes"), errors)
+    if format_version == 2:
+        _validate_release_evidence_schema(metadata.get("release_evidence"), errors)
+    elif format_version != 1:
+        errors.append("unsupported snapshot format version")
+
+
+def _validate_release_evidence_schema(value: object, errors: List[str]) -> None:
+    if type(value) is not list:
+        errors.append("release evidence metadata is malformed")
+        return
+    identities = set()
+    paths = set()
+    keys = []
+    for item in value:
+        if not _validate_object_fields(
+            item, "release evidence", {"ref", "release_notes"}, errors
+        ):
+            errors.append("release evidence metadata is malformed")
+            continue
+        ref = item["ref"]
+        if _validate_object_fields(
+            ref,
+            "release evidence ref",
+            {
+                "kind",
+                "name",
+                "sha",
+                "version",
+                "aliases",
+                "upstream_commit_time",
+                "release_published_at",
+            },
+            errors,
+        ):
+            for field in ("kind", "name", "sha", "version", "upstream_commit_time"):
+                _validate_exact_type(ref, field, str, errors, "release evidence ref.")
+            _validate_optional_string(
+                ref, "release_published_at", errors, "release evidence ref."
+            )
+            aliases = ref.get("aliases")
+            if type(aliases) is not list or any(type(alias) is not str for alias in aliases):
+                errors.append("release evidence ref.aliases must be a list of strings")
+            identity_ref = ResolvedRef(
+                repo_id="schema",
+                ref_kind=str(ref.get("kind", "")),
+                ref_name=str(ref.get("name", "")),
+                sha=str(ref.get("sha", "")),
+                version=str(ref.get("version", "")),
+                aliases=tuple(ref.get("aliases", ()))
+                if type(ref.get("aliases")) is list
+                else (),
+                upstream_commit_time=str(ref.get("upstream_commit_time", "")),
+                release_published_at=ref.get("release_published_at")
+                if type(ref.get("release_published_at")) is str
+                else None,
+            )
+            identity = _release_identity(identity_ref)
+            if identity in identities:
+                errors.append("release evidence identity is listed more than once")
+            identities.add(identity)
+            keys.append(_release_ref_key(identity_ref))
+        _validate_release_notes_schema(item["release_notes"], errors)
+        notes = item["release_notes"]
+        if isinstance(notes, dict):
+            path = notes.get("path")
+            if path in paths:
+                errors.append("release evidence path is listed more than once")
+            paths.add(path)
+            if not isinstance(path, str) or not _valid_release_notes_path(path):
+                errors.append("release notes metadata path is invalid")
+    if keys != sorted(keys):
+        errors.append("release evidence is not in deterministic order")
+
+
+def _valid_release_notes_path(path: str) -> bool:
+    candidate = Path(path)
+    return (
+        _is_safe_relative_path(path)
+        and candidate.suffix == ".md"
+        and (
+            path == "release-notes.md"
+            or len(candidate.parts) == 2
+            and candidate.parts[0] == "release-notes"
+        )
+    )
 
 
 def _validate_object_fields(
@@ -941,7 +1160,14 @@ def _validate_top_level_descriptor(
     release_metadata = metadata.get("release_notes")
     allowed = {"snapshot.md", "files"}
     if release_metadata is not None:
-        allowed.add("release-notes.md")
+        path = release_metadata.get("path") if isinstance(release_metadata, dict) else None
+        if isinstance(path, str) and _is_safe_relative_path(path):
+            allowed.add(Path(path).parts[0])
+    for item in metadata.get("release_evidence", ()):
+        notes = item.get("release_notes") if isinstance(item, dict) else None
+        path = notes.get("path") if isinstance(notes, dict) else None
+        if isinstance(path, str) and _is_safe_relative_path(path):
+            allowed.add(Path(path).parts[0])
     for name in sorted(os.listdir(staging_descriptor)):
         if name not in allowed:
             errors.append("unexpected top-level entry: " + name)
@@ -984,7 +1210,7 @@ def _validate_no_symlinks_or_diffs_descriptor(
 
 def _validate_identity(metadata: dict, record: SnapshotRecord, errors: List[str]) -> None:
     expected = {
-        "format_version": _MANIFEST_VERSION,
+        "format_version": record.format_version,
         "repository.url": record.repository_url,
         "repository.id": record.repo_id,
         "repository.company": record.company,
@@ -1020,6 +1246,8 @@ def _validate_identity(metadata: dict, record: SnapshotRecord, errors: List[str]
         "excluded",
         "release_notes",
     )
+    if record.format_version == 2:
+        required = required + ("release_evidence",)
     for field in required:
         actual, found = _metadata_value(metadata, field)
         if not found:
@@ -1032,6 +1260,16 @@ def _validate_identity(metadata: dict, record: SnapshotRecord, errors: List[str]
         actual, found = _metadata_value(metadata, field)
         if found and (not isinstance(actual, str) or not actual):
             errors.append("metadata mismatch for " + field)
+    if record.format_version == 2:
+        expected_release_evidence = [
+            {
+                "ref": _release_ref_metadata(item.ref),
+                "release_notes": _release_note_metadata(item),
+            }
+            for item in record.release_evidence
+        ]
+        if metadata.get("release_evidence") != expected_release_evidence:
+            errors.append("metadata mismatch for release_evidence")
 
 
 def _metadata_value(metadata: dict, field: str) -> Tuple[object, bool]:
@@ -1140,6 +1378,9 @@ def _staged_regular_files(
 def _validate_release_notes_descriptor(
     staging_descriptor: int, metadata: dict, record: SnapshotRecord, errors: List[str]
 ) -> None:
+    if record.format_version == 2:
+        _validate_release_evidence_descriptor(staging_descriptor, metadata, record, errors)
+        return
     release_metadata = metadata.get("release_notes")
     if release_metadata is None:
         if (
@@ -1186,6 +1427,97 @@ def _validate_release_notes_descriptor(
         errors.append("release notes size mismatch")
     if release_metadata.get("sha256") != hashlib.sha256(content).hexdigest():
         errors.append("release notes hash mismatch")
+
+
+def _validate_release_evidence_descriptor(
+    staging_descriptor: int,
+    metadata: dict,
+    record: SnapshotRecord,
+    errors: List[str],
+) -> None:
+    release_items = metadata.get("release_evidence")
+    if not isinstance(release_items, list):
+        errors.append("release evidence metadata is malformed")
+        return
+    expected_items = [
+        {
+            "ref": _release_ref_metadata(item.ref),
+            "release_notes": _release_note_metadata(item),
+        }
+        for item in record.release_evidence
+    ]
+    if release_items != expected_items:
+        errors.append("metadata mismatch for release_evidence")
+    for actual, expected in zip(release_items, expected_items):
+        actual_notes = actual.get("release_notes") if isinstance(actual, dict) else None
+        expected_notes = expected["release_notes"]
+        if isinstance(actual_notes, dict) and isinstance(expected_notes, dict):
+            for field in ("source_url", "published_at", "sha256", "size"):
+                if actual_notes.get(field) != expected_notes.get(field):
+                    errors.append("metadata mismatch for release_notes." + field)
+    expected_primary = (
+        expected_items[0]["release_notes"] if expected_items else None
+    )
+    if metadata.get("release_notes") != expected_primary:
+        errors.append("metadata mismatch for release_notes")
+    primary = record.release_evidence[0] if record.release_evidence else None
+    manifest_primary = metadata.get("release_notes")
+    trusted_primary = {
+        "source_url": record.release_notes_source_url,
+        "published_at": record.release_notes_published_at,
+        "sha256": record.release_notes_sha256,
+        "size": record.release_notes_size,
+    }
+    if primary is None:
+        if any(value is not None for value in trusted_primary.values()):
+            errors.append("metadata mismatch for release_notes")
+    else:
+        actual_primary = manifest_primary if isinstance(manifest_primary, dict) else {}
+        for field, expected in trusted_primary.items():
+            if actual_primary.get(field) != expected:
+                errors.append("metadata mismatch for release_notes." + field)
+    for item in record.release_evidence:
+        if not item.path:
+            if any(
+                value is not None
+                for value in (item.source_url, item.published_at, item.sha256, item.size)
+            ):
+                errors.append("metadata mismatch for release evidence absence")
+            continue
+        if not _is_safe_relative_path(item.path):
+            errors.append("release notes metadata path is invalid")
+            continue
+        try:
+            content = _read_regular_file_path(staging_descriptor, item.path)
+        except SnapshotError:
+            errors.append(item.path + " is missing")
+            continue
+        if item.size != len(content):
+            errors.append("trusted release notes size mismatch: " + item.path)
+        if item.sha256 != hashlib.sha256(content).hexdigest():
+            errors.append("trusted release notes hash mismatch: " + item.path)
+
+
+def _read_regular_file_path(directory_descriptor: int, path: str) -> bytes:
+    parts = Path(path).parts
+    if not parts or not _is_safe_relative_path(path):
+        raise SnapshotError("release notes path is invalid")
+    descriptors = []
+    current = directory_descriptor
+    try:
+        for part in parts[:-1]:
+            current = os.open(
+                part,
+                os.O_RDONLY | _directory_flag() | _no_follow_flag(),
+                dir_fd=current,
+            )
+            descriptors.append(current)
+        return _read_regular_file(current, parts[-1])
+    except OSError as error:
+        raise SnapshotError("release notes path is missing") from error
+    finally:
+        for descriptor in reversed(descriptors):
+            os.close(descriptor)
 
 
 def _is_safe_relative_path(path: str) -> bool:

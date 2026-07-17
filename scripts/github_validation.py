@@ -38,6 +38,7 @@ from github_reporting import (
 from github_snapshot import (
     SnapshotFile,
     SnapshotRecord,
+    SnapshotReleaseEvidence,
     _read_metadata,
     _validate_metadata_schema,
     validate_staged_snapshot,
@@ -102,7 +103,15 @@ class SnapshotInspection:
 class ReleaseEvidenceRecord:
     snapshot_path: str
     repo_id: str
+    ref_kind: str
+    ref_name: str
+    aliases: Tuple[str, ...]
+    package: str
     version: str
+    sha: str
+    collection_date: str
+    capture_kind: str
+    capture_revision: int
     changelog_paths: Tuple[str, ...]
     release_notes_path: str
     changelog_absence_explicit: bool
@@ -286,9 +295,16 @@ def _inspect_snapshots(
                 if inspected is None:
                     continue
                 snapshots.append(inspected[0])
-                releases.append(inspected[1])
+                releases.extend(inspected[1])
     snapshots.sort(key=lambda item: item.relative_path)
-    releases.sort(key=lambda item: item.snapshot_path)
+    releases.sort(
+        key=lambda item: (
+            item.snapshot_path,
+            item.package,
+            item.version,
+            item.ref_name,
+        )
+    )
     return tuple(snapshots), tuple(releases)
 
 
@@ -297,7 +313,7 @@ def _inspect_snapshot(
     snapshot_path: Path,
     config: Optional[RepoConfig],
     errors: List[str],
-) -> Optional[Tuple[SnapshotInspection, ReleaseEvidenceRecord]]:
+) -> Optional[Tuple[SnapshotInspection, Tuple[ReleaseEvidenceRecord, ...]]]:
     manifest_path = snapshot_path / "snapshot.md"
     label = _rel(root, manifest_path)
     try:
@@ -320,6 +336,15 @@ def _inspect_snapshot(
     repository = metadata["repository"]
     ref = metadata["ref"]
     release_notes = metadata["release_notes"]
+    release_evidence = tuple(
+        _snapshot_release_evidence(repository["id"], item)
+        for item in metadata.get("release_evidence", [])
+    )
+    for item in release_evidence:
+        if item.ref.sha != ref["sha"] or item.ref.repo_id != repository["id"]:
+            errors.append(label + ": release evidence does not belong to snapshot SHA")
+        if item.ref.ref_kind not in ("package-version", "tag"):
+            errors.append(label + ": release evidence has a mutable reference kind")
     snapshot_stat = os.stat(snapshot_path, follow_symlinks=False)
     files = tuple(
         SnapshotFile(
@@ -363,6 +388,9 @@ def _inspect_snapshot(
         release_notes_size=(release_notes["size"] if release_notes is not None else None),
         staging_device=snapshot_stat.st_dev,
         staging_inode=snapshot_stat.st_ino,
+        release_notes_path=(release_notes["path"] if release_notes is not None else ""),
+        release_evidence=release_evidence,
+        format_version=metadata["format_version"],
     )
     errors.extend(label + ": " + error for error in validate_staged_snapshot(record))
 
@@ -392,7 +420,9 @@ def _inspect_snapshot(
         if Path(item.path).name.lower().startswith("changelog")
     )
     release_path = (
-        relative_snapshot + "/release-notes.md" if release_notes is not None else ""
+        relative_snapshot + "/" + release_notes["path"]
+        if release_notes is not None
+        else ""
     )
     explicit_changelog_absence = any(
         isinstance(item, dict)
@@ -401,8 +431,22 @@ def _inspect_snapshot(
         and bool(item.get("reason"))
         for item in metadata["excluded"]
     )
-    is_release = ref["kind"] in ("package-version", "tag")
-    if is_release and not changelogs and not explicit_changelog_absence:
+    if metadata["format_version"] == 2:
+        evidence_items = release_evidence
+    elif ref["kind"] in ("package-version", "tag"):
+        evidence_items = (
+            SnapshotReleaseEvidence(
+                ref=record.ref,
+                path=record.release_notes_path,
+                source_url=record.release_notes_source_url,
+                published_at=record.release_notes_published_at,
+                sha256=record.release_notes_sha256,
+                size=record.release_notes_size,
+            ),
+        )
+    else:
+        evidence_items = ()
+    if evidence_items and not changelogs and not explicit_changelog_absence:
         errors.append(label + ": release evidence is not explicit for changelog absence")
     return (
         SnapshotInspection(
@@ -422,15 +466,54 @@ def _inspect_snapshot(
             changelog_paths=changelogs,
             release_notes_path=release_path,
         ),
-        ReleaseEvidenceRecord(
-            snapshot_path=relative_snapshot,
-            repo_id=repository["id"],
-            version=ref["version"],
-            changelog_paths=changelogs,
-            release_notes_path=release_path,
-            changelog_absence_explicit=bool(changelogs or explicit_changelog_absence),
-            release_notes_explicit="release_notes" in metadata,
+        tuple(
+            ReleaseEvidenceRecord(
+                snapshot_path=relative_snapshot,
+                repo_id=repository["id"],
+                ref_kind=item.ref.ref_kind,
+                ref_name=item.ref.ref_name,
+                aliases=item.ref.aliases,
+                package=_snapshot_package(item.ref.ref_name, item.ref.aliases),
+                version=item.ref.version,
+                sha=item.ref.sha,
+                collection_date=metadata["collection_date"],
+                capture_kind=metadata["capture_kind"],
+                capture_revision=metadata["capture_revision"],
+                changelog_paths=changelogs,
+                release_notes_path=(
+                    relative_snapshot + "/" + item.path if item.path else ""
+                ),
+                changelog_absence_explicit=bool(
+                    changelogs or explicit_changelog_absence
+                ),
+                release_notes_explicit=True,
+            )
+            for item in evidence_items
         ),
+    )
+
+
+def _snapshot_release_evidence(
+    repo_id: str, item: Mapping[str, object]
+) -> SnapshotReleaseEvidence:
+    ref = item["ref"]
+    notes = item["release_notes"]
+    return SnapshotReleaseEvidence(
+        ref=ResolvedRef(
+            repo_id=repo_id,
+            ref_kind=ref["kind"],
+            ref_name=ref["name"],
+            sha=ref["sha"],
+            version=ref["version"],
+            aliases=tuple(ref["aliases"]),
+            upstream_commit_time=ref["upstream_commit_time"],
+            release_published_at=ref["release_published_at"],
+        ),
+        path=notes["path"] if notes is not None else "",
+        source_url=notes["source_url"] if notes is not None else None,
+        published_at=notes["published_at"] if notes is not None else None,
+        sha256=notes["sha256"] if notes is not None else None,
+        size=notes["size"] if notes is not None else None,
     )
 
 
@@ -549,6 +632,8 @@ def _inspect_tracking_repository_entries(
         if entry.is_symlink():
             errors.append(_rel(root, path) + ": unsafe symlink")
         elif entry.name == "version-index.json" and entry.is_file(follow_symlinks=False):
+            continue
+        elif entry.name == ".collection.lock" and entry.is_file(follow_symlinks=False):
             continue
         elif entry.name == "packets" and entry.is_dir(follow_symlinks=False):
             _inspect_packet_namespace_entries(root, path, errors)
@@ -819,7 +904,7 @@ def _inspect_sources(
                 path,
                 company.name,
                 snapshot_map,
-                {item.snapshot_path: item for item in release_records},
+                _release_records_by_snapshot(release_records),
                 errors,
             )
             if record is not None:
@@ -832,7 +917,7 @@ def _inspect_source(
     path: Path,
     company: str,
     snapshots: Mapping[str, SnapshotInspection],
-    release_records: Mapping[str, ReleaseEvidenceRecord],
+    release_records: Mapping[str, Tuple[ReleaseEvidenceRecord, ...]],
     errors: List[str],
 ) -> Optional[SourceRecord]:
     label = _rel(root, path)
@@ -1037,40 +1122,48 @@ def _explicit_absence(cell: str) -> bool:
 def _validate_source_release_ledger(
     label: str,
     snapshots: Sequence[SnapshotInspection],
-    release_records: Mapping[str, ReleaseEvidenceRecord],
+    release_records: Mapping[str, Tuple[ReleaseEvidenceRecord, ...]],
     rows: Sequence[ReleaseLedgerRow],
     errors: List[str],
 ) -> None:
-    releases = [
-        snapshot
-        for snapshot in snapshots
-        if snapshot.ref_kind in ("package-version", "tag")
-    ]
-    expected_order = [
-        snapshot.relative_path + "/snapshot" for snapshot in releases
-    ]
+    releases = []
+    seen_identities = set()
+    for snapshot in snapshots:
+        for evidence in release_records.get(snapshot.relative_path, ()):
+            identity = _release_evidence_identity(evidence)
+            if identity in seen_identities:
+                continue
+            seen_identities.add(identity)
+            releases.append(evidence)
+    expected_order = [item.snapshot_path + "/snapshot" for item in releases]
     actual_order = [row.snapshot_link for row in rows]
     if actual_order != expected_order and set(actual_order) == set(expected_order):
         errors.append(label + ": ledger row order disagrees with raw_files")
     rows_by_snapshot: Dict[str, List[ReleaseLedgerRow]] = {}
     for row in rows:
         rows_by_snapshot.setdefault(row.snapshot_link, []).append(row)
-    for snapshot in releases:
-        snapshot_link = snapshot.relative_path + "/snapshot"
-        matching = rows_by_snapshot.get(snapshot_link, ())
+    for evidence in releases:
+        snapshot_link = evidence.snapshot_path + "/snapshot"
+        snapshot_rows = rows_by_snapshot.get(snapshot_link, ())
+        snapshot_releases = tuple(
+            item for item in releases if item.snapshot_path == evidence.snapshot_path
+        )
+        matching = tuple(
+            row
+            for row in snapshot_rows
+            if _ledger_release_matches(row, evidence, snapshot_releases)
+        )
         if len(matching) != 1:
-            errors.append(
-                label
-                + ": release snapshot must have exactly one ledger row: "
-                + snapshot.relative_path
-            )
+            if snapshot_rows:
+                errors.append(label + ": ledger version disagrees with snapshot")
+            else:
+                errors.append(
+                    label
+                    + ": release snapshot must have exactly one ledger row: "
+                    + evidence.snapshot_path
+                )
             continue
         row = matching[0]
-        if row.version != snapshot.version:
-            errors.append(label + ": ledger version disagrees with snapshot")
-        evidence = release_records.get(snapshot.relative_path)
-        if evidence is None:
-            continue
         expected_changelogs = tuple(
             _normalize_evidence_link(path) for path in evidence.changelog_paths
         )
@@ -1109,6 +1202,44 @@ def _validate_source_release_ledger(
     for row in rows:
         if row.snapshot_link not in expected_set:
             errors.append(label + ": release ledger row is not declared in raw_files")
+
+
+def _release_records_by_snapshot(
+    records: Sequence[ReleaseEvidenceRecord],
+) -> Dict[str, Tuple[ReleaseEvidenceRecord, ...]]:
+    grouped: Dict[str, List[ReleaseEvidenceRecord]] = {}
+    for item in records:
+        grouped.setdefault(item.snapshot_path, []).append(item)
+    return {path: tuple(items) for path, items in grouped.items()}
+
+
+def _release_evidence_identity(item: ReleaseEvidenceRecord) -> Tuple[str, str]:
+    return item.package, item.version[1:] if item.version.startswith("v") else item.version
+
+
+def _ledger_release_identity(row: ReleaseLedgerRow) -> Tuple[str, str]:
+    package_tag = parse_package_tag(row.version)
+    if package_tag is None:
+        return "", row.version[1:] if row.version.startswith("v") else row.version
+    package, version = package_tag
+    return package, version[1:] if version.startswith("v") else version
+
+
+def _ledger_release_matches(
+    row: ReleaseLedgerRow,
+    evidence: ReleaseEvidenceRecord,
+    snapshot_releases: Sequence[ReleaseEvidenceRecord],
+) -> bool:
+    row_package, row_version = _ledger_release_identity(row)
+    evidence_package, evidence_version = _release_evidence_identity(evidence)
+    if row_version != evidence_version:
+        return False
+    if row_package:
+        return row_package == evidence_package
+    return sum(
+        _release_evidence_identity(item)[1] == evidence_version
+        for item in snapshot_releases
+    ) == 1
 
 
 def _inspect_dashboards(
@@ -1201,9 +1332,6 @@ def _validate_collection_runs(report: GitHubReport, errors: List[str]) -> None:
 def _validate_version_indexes(report: GitHubReport, errors: List[str]) -> None:
     indexes = {record.repo.id: record for record in report.version_indexes}
     snapshots_by_path = {item.relative_path: item for item in report.snapshots}
-    release_records_by_path = {
-        item.snapshot_path: item for item in report.release_evidence_records
-    }
     snapshots_by_sha: Dict[Tuple[str, str], List[SnapshotInspection]] = {}
     for item in report.snapshots:
         snapshots_by_sha.setdefault((item.repo_id, item.sha), []).append(item)
@@ -1219,7 +1347,7 @@ def _validate_version_indexes(report: GitHubReport, errors: List[str]) -> None:
             if entry.sha == snapshot.sha
             and entry.snapshot_path == snapshot.relative_path
         ]
-        if len(found) != 1:
+        if not found:
             errors.append(
                 snapshot.repo_id
                 + " "
@@ -1234,28 +1362,32 @@ def _validate_version_indexes(report: GitHubReport, errors: List[str]) -> None:
                     record.repo.id + " " + entry.version + ": index snapshot is missing"
                 )
                 continue
-            if snapshot.sha != entry.sha or snapshot.version != entry.version:
+            if (
+                snapshot.sha != entry.sha
+                or snapshot.capture_kind != "canonical"
+                or snapshot.collection_date != entry.collection_date
+            ):
                 errors.append(
                     record.repo.id
                     + " "
                     + entry.version
                     + ": index disagrees with snapshot"
                 )
-            related = sorted(
-                snapshots_by_sha.get((record.repo.id, entry.sha), ()),
-                key=lambda item: item.capture_revision,
-            )
-            related_evidence = [
-                release_records_by_path[item.relative_path]
-                for item in related
-                if item.relative_path in release_records_by_path
-            ]
             expected_release_notes = ""
-            expected_changelogs = set()
-            for evidence in related_evidence:
-                if evidence.release_notes_path:
+            expected_changelogs = set(snapshot.changelog_paths)
+            if entry.ref_kind in ("package-version", "tag"):
+                evidence = _latest_release_evidence(report, record.repo.id, entry)
+                if evidence is None:
+                    errors.append(
+                        record.repo.id
+                        + " "
+                        + entry.version
+                        + ": retained release identity is absent from snapshot manifests"
+                    )
+                elif evidence.release_notes_path:
                     expected_release_notes = evidence.release_notes_path
-                expected_changelogs.update(evidence.changelog_paths)
+                if evidence is not None:
+                    expected_changelogs.update(evidence.changelog_paths)
             if (
                 entry.release_notes_path != expected_release_notes
                 or tuple(entry.changelog_paths) != tuple(sorted(expected_changelogs))
@@ -1296,6 +1428,46 @@ def _validate_version_indexes(report: GitHubReport, errors: List[str]) -> None:
                     + ": prerelease in stable-only track "
                     + selector
                 )
+    for evidence in report.release_evidence_records:
+        record = indexes.get(evidence.repo_id)
+        if record is None or not any(
+            entry.sha == evidence.sha
+            and entry.ref_kind in ("package-version", "tag")
+            and _entry_release_identity(entry) == _release_evidence_identity(evidence)
+            for entry in record.index.versions
+        ):
+            errors.append(
+                evidence.repo_id
+                + " "
+                + evidence.version
+                + ": snapshot release evidence is absent from version index"
+            )
+
+
+def _entry_release_identity(entry: VersionEntry) -> Tuple[str, str]:
+    return entry.package, entry.version[1:] if entry.version.startswith("v") else entry.version
+
+
+def _latest_release_evidence(
+    report: GitHubReport, repo_id: str, entry: VersionEntry
+) -> Optional[ReleaseEvidenceRecord]:
+    matching = [
+        item
+        for item in report.release_evidence_records
+        if item.repo_id == repo_id
+        and item.sha == entry.sha
+        and _release_evidence_identity(item) == _entry_release_identity(entry)
+    ]
+    if not matching:
+        return None
+    return max(
+        matching,
+        key=lambda item: (
+            item.capture_revision,
+            item.collection_date,
+            item.snapshot_path,
+        ),
+    )
 
 
 def _snapshot_package(ref_name: str, aliases: Sequence[str]) -> str:
@@ -1343,7 +1515,7 @@ def _prerelease_entry_allowed(
 def _validate_packets(report: GitHubReport, errors: List[str]) -> None:
     snapshots = {item.relative_path: item for item in report.snapshots}
     indexed = {
-        (record.repo.id, entry.sha): entry
+        (record.repo.id, _version_entry_identity(entry)): entry
         for record in report.version_indexes
         for entry in record.index.versions
     }
@@ -1358,14 +1530,16 @@ def _validate_packets(report: GitHubReport, errors: List[str]) -> None:
         for endpoint in tuple(
             item for item in (packet.from_entry, packet.to_entry) if item is not None
         ):
-            indexed_entry = indexed.get((record.repo_id, endpoint.sha))
+            indexed_entry = indexed.get(
+                (record.repo_id, _version_entry_identity(endpoint))
+            )
             if indexed_entry is None:
                 errors.append(label + ": packet endpoint is missing from version index")
-            elif (
-                indexed_entry.ref_kind != endpoint.ref_kind
-                or indexed_entry.ref_name != endpoint.ref_name
-                or indexed_entry.version != endpoint.version
-                or indexed_entry.package != endpoint.package
+            elif not _packet_endpoint_matches_index(
+                indexed_entry,
+                endpoint,
+                record.repo_id,
+                report.release_evidence_records,
             ):
                 errors.append(label + ": packet endpoint disagrees with version index")
             endpoint_snapshot = snapshots.get(endpoint.snapshot_path)
@@ -1374,16 +1548,8 @@ def _validate_packets(report: GitHubReport, errors: List[str]) -> None:
             elif (
                 endpoint_snapshot.repo_id != record.repo_id
                 or endpoint_snapshot.sha != endpoint.sha
-                or endpoint_snapshot.version != endpoint.version
-                or endpoint_snapshot.ref_kind != endpoint.ref_kind
-                or endpoint_snapshot.ref_name != endpoint.ref_name
-                or endpoint_snapshot.package != endpoint.package
-                or endpoint_snapshot.aliases != endpoint.aliases
                 or endpoint_snapshot.collection_date != endpoint.collection_date
-                or endpoint_snapshot.capture_kind != endpoint.capture_kind
-                or endpoint_snapshot.release_notes_path
-                != endpoint.release_notes_path
-                or endpoint_snapshot.changelog_paths != endpoint.changelog_paths
+                or endpoint_snapshot.capture_kind != "canonical"
             ):
                 errors.append(
                     label
@@ -1398,7 +1564,11 @@ def _validate_packets(report: GitHubReport, errors: List[str]) -> None:
             errors.append(
                 label + ": packet target disagrees with snapshot"
             )
-        if packet.to_sha and (record.repo_id, packet.to_sha) not in indexed:
+        if (
+            packet.to_sha
+            and (record.repo_id, _version_entry_identity(packet.to_entry))
+            not in indexed
+        ):
             errors.append(
                 label + ": packet target is missing from index"
             )
@@ -1409,6 +1579,64 @@ def _validate_packets(report: GitHubReport, errors: List[str]) -> None:
                 errors.append(
                     label + ": ingested packet is absent from source raw_files"
                 )
+
+
+def _version_entry_identity(entry: VersionEntry) -> Tuple[str, ...]:
+    if entry.ref_kind in ("package-version", "tag"):
+        package, version = _entry_release_identity(entry)
+        return "release", package, version
+    if entry.ref_kind == "branch":
+        return "branch", entry.ref_name, entry.sha
+    return entry.ref_kind, entry.ref_name
+
+
+def _packet_endpoint_matches_index(
+    indexed_entry: VersionEntry,
+    endpoint: VersionEntry,
+    repo_id: str,
+    release_records: Sequence[ReleaseEvidenceRecord],
+) -> bool:
+    """Reconcile immutable packet evidence with the current retained entry."""
+    known_names = {indexed_entry.ref_name}.union(indexed_entry.aliases)
+    static_matches = (
+        indexed_entry.ref_kind == endpoint.ref_kind
+        and indexed_entry.version == endpoint.version
+        and indexed_entry.sha == endpoint.sha
+        and indexed_entry.snapshot_path == endpoint.snapshot_path
+        and indexed_entry.collection_date == endpoint.collection_date
+        and indexed_entry.package == endpoint.package
+        and indexed_entry.capture_kind == endpoint.capture_kind
+        and endpoint.ref_name in known_names
+        and set(endpoint.aliases).issubset(known_names)
+    )
+    if not static_matches:
+        return False
+    if endpoint.ref_kind not in ("package-version", "tag"):
+        return (
+            indexed_entry.release_notes_path == endpoint.release_notes_path
+            and indexed_entry.changelog_paths == endpoint.changelog_paths
+        )
+    identity = _entry_release_identity(endpoint)
+    evidence = [
+        item
+        for item in release_records
+        if item.repo_id == repo_id
+        and item.sha == endpoint.sha
+        and _release_evidence_identity(item) == identity
+    ]
+    if not evidence:
+        return False
+    return (
+        endpoint.release_notes_path
+        in {item.release_notes_path for item in evidence}
+        and set(endpoint.changelog_paths).issubset(
+            {
+                path
+                for item in evidence
+                for path in item.changelog_paths
+            }
+        )
+    )
 
 
 def _validate_sources(report: GitHubReport, errors: List[str]) -> None:
@@ -1443,10 +1671,12 @@ def _validate_release_collection_packets(
             continue
         if parse_semver(version) is None:
             continue
+        packet_id = event.get("packet_id")
         matching = [
             packet
             for packet in report.packets
             if packet.record.repo_id == repo_id
+            and packet.record.packet_id == packet_id
             and packet.to_sha == sha
             and packet.to_version == version
         ]
@@ -1459,7 +1689,6 @@ def _validate_release_collection_packets(
                 + str(len(matching))
             )
             continue
-        packet_id = event.get("packet_id")
         if packet_id != matching[0].record.packet_id:
             errors.append(
                 repo_id
