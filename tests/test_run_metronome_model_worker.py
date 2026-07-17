@@ -24,6 +24,7 @@ from run_metronome_model_worker import (  # noqa: E402
     build_codex_command,
     build_page_profile,
     common_git_dir,
+    main as worker_main,
     recover_attempt,
     render_worker_prompt,
     repair_mandatory_tags,
@@ -115,6 +116,44 @@ class ModelWorkerRunnerTests(unittest.TestCase):
             "proposed_raw_link": "[[raw/metronome/guides/home|snapshot]]",
             "unsupported_claim_self_check": [],
         }
+
+    def register_enterprise_job(self, root, job_path, job):
+        """Register one exact immutable job manifest as enterprise A/B scope."""
+        registry_path = (
+            root
+            / "tracking/ingest/metronome/pilot/enterprise-diagnostic-jobs.json"
+        )
+        registry_path.parent.mkdir(parents=True, exist_ok=True)
+        registry_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "registry_type": "metronome_enterprise_diagnostic_jobs",
+                    "enterprise_jobs": [
+                        {
+                            "job_id": job["job_id"],
+                            "job_path": job_path.relative_to(root).as_posix(),
+                            "job_sha256": hashlib.sha256(job_path.read_bytes()).hexdigest(),
+                        }
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+
+    def make_enterprise_job(self, root, job_path, job):
+        job["job_id"] = "pilot-luna-enterprise-commit"
+        job["artifact_dir"] = (
+            "tracking/ingest/metronome/pilot/runs/pilot-luna-enterprise-commit"
+        )
+        job["allowed_write_paths"] = [job["artifact_dir"]]
+        job_path = (
+            root
+            / "tracking/ingest/metronome/pilot/jobs/pilot-luna-enterprise-commit.json"
+        )
+        job_path.write_text(json.dumps(job), encoding="utf-8")
+        self.register_enterprise_job(root, job_path, job)
+        return job_path, job
 
     def test_command_uses_job_model_reasoning_read_only_and_minimal_cwd(self):
         command = build_codex_command(
@@ -592,6 +631,288 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         self.assertIn("lock_acquired", [item["event"] for item in progress])
         self.assertIn("validation_completed", [item["event"] for item in progress])
         self.assertIn("receipt_published", [item["event"] for item in progress])
+
+    def test_diagnostic_run_snapshots_inputs_and_honestly_hashes_terminal_receipt(self):
+        root, job_path, job = self.make_root()
+        captured = {}
+
+        def fake_runner(command, **kwargs):
+            captured["command"] = command
+            captured["kwargs"] = kwargs
+            Path(command[command.index("-o") + 1]).write_text(
+                json.dumps(self.valid_output(job)), encoding="utf-8"
+            )
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+        self.assertEqual(
+            0,
+            run_worker(
+                root,
+                job_path,
+                "2026-07-18",
+                runner=fake_runner,
+                run_id="terra-provenance",
+            ),
+        )
+
+        run_dir = resolve_run_dir(root, job, "terra-provenance")
+        receipt_path = run_dir / "model-worker-receipt.json"
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        provenance = receipt["provenance"]
+        template_snapshot = root / provenance["prompt_template_snapshot_path"]
+        schema_snapshot = root / provenance["output_schema_snapshot_path"]
+        prompt_snapshot = root / provenance["attempt_prompt_snapshot_paths"]["1"]
+        self.assertEqual(
+            (root / "tracking/ingest/metronome/pilot/prompts/source-summary-v3.md").read_bytes(),
+            template_snapshot.read_bytes(),
+        )
+        self.assertEqual(
+            (root / "tracking/ingest/metronome/pilot/schemas/model-output-v3.schema.json").read_bytes(),
+            schema_snapshot.read_bytes(),
+        )
+        self.assertEqual(str(schema_snapshot), captured["command"][captured["command"].index("--output-schema") + 1])
+        self.assertEqual(prompt_snapshot.read_text(encoding="utf-8"), captured["command"][-1])
+        self.assertEqual(
+            hashlib.sha256((ROOT / "scripts/run_metronome_model_worker.py").read_bytes()).hexdigest(),
+            provenance["runner_script_sha256"]["scripts/run_metronome_model_worker.py"],
+        )
+        self.assertIn("commit", provenance["git"])
+        self.assertIn("dirty", provenance["git"])
+
+        manifest_path = root / receipt["terminal_manifest"]["path"]
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertNotIn(receipt["terminal_manifest"]["path"], manifest["sha256"])
+        self.assertEqual(
+            hashlib.sha256(receipt_path.read_bytes()).hexdigest(),
+            manifest["sha256"][receipt_path.relative_to(root).as_posix()],
+        )
+        for artifact in (
+            "attempt-1/progress.jsonl",
+            "attempt-1/events.jsonl",
+            "attempt-1/stderr.log",
+            "attempt-1/model-output.raw.json",
+            "attempt-1/model-output.normalized.json",
+            "model-output.normalized.json",
+        ):
+            path = run_dir / artifact
+            self.assertEqual(
+                hashlib.sha256(path.read_bytes()).hexdigest(),
+                manifest["sha256"][path.relative_to(root).as_posix()],
+            )
+
+    def test_enterprise_direct_run_requires_a_passing_health_probe_run_id(self):
+        root, job_path, job = self.make_root()
+        job_path, job = self.make_enterprise_job(root, job_path, job)
+        launches = []
+
+        def fake_runner(*_args, **_kwargs):
+            launches.append(True)
+            raise AssertionError("enterprise runner must not launch without a passing probe")
+
+        self.assertEqual(
+            1,
+            run_worker(
+                root,
+                job_path,
+                "2026-07-18",
+                runner=fake_runner,
+                run_id="enterprise-no-probe",
+            ),
+        )
+        self.assertEqual(
+            1,
+            run_worker(
+                root,
+                job_path,
+                "2026-07-18",
+                runner=fake_runner,
+                run_id="enterprise-missing-probe",
+                health_probe_run_id="missing-probe",
+            ),
+        )
+        self.assertEqual([], launches)
+        self.assertFalse(
+            resolve_run_dir(root, job, "enterprise-no-probe").exists()
+        )
+        self.assertFalse(
+            resolve_run_dir(root, job, "enterprise-missing-probe").exists()
+        )
+
+    def test_enterprise_cli_blocks_a_failed_live_probe_receipt_before_model_launch(self):
+        root, job_path, job = self.make_root()
+        job_path, job = self.make_enterprise_job(root, job_path, job)
+        failed_receipt = (
+            root
+            / "tracking/ingest/metronome/pilot/diagnostics/health-probes/failed-live"
+            / "model-health-probe-receipt.json"
+        )
+        failed_receipt.parent.mkdir(parents=True)
+        failed_receipt.write_text(
+            json.dumps({"status": "failed", "run_id": "failed-live"}),
+            encoding="utf-8",
+        )
+
+        from unittest.mock import patch
+
+        with patch("run_metronome_model_worker.ROOT", root), patch.object(
+            sys,
+            "argv",
+            [
+                "run_metronome_model_worker.py",
+                "--job",
+                job_path.relative_to(root).as_posix(),
+                "--ingest-date",
+                "2026-07-18",
+                "--run-id",
+                "enterprise-cli",
+                "--health-probe-run-id",
+                "failed-live",
+            ],
+        ), patch(
+            "run_metronome_model_worker.run_process_in_new_group",
+            side_effect=AssertionError("failed probe must block the exact CLI path"),
+        ):
+            self.assertEqual(1, worker_main())
+
+        self.assertFalse(resolve_run_dir(root, job, "enterprise-cli").exists())
+
+    def test_nonenterprise_diagnostic_does_not_require_an_enterprise_probe(self):
+        root, job_path, job = self.make_root()
+
+        def fake_runner(command, **_kwargs):
+            Path(command[command.index("-o") + 1]).write_text(
+                json.dumps(self.valid_output(job)), encoding="utf-8"
+            )
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+        self.assertEqual(
+            0,
+            run_worker(
+                root,
+                job_path,
+                "2026-07-18",
+                runner=fake_runner,
+                run_id="nonenterprise-diagnostic",
+            ),
+        )
+
+    def test_post_claim_setup_failure_publishes_atomic_failed_receipt(self):
+        root, job_path, job = self.make_root()
+
+        from unittest.mock import patch
+
+        with patch(
+            "run_metronome_model_worker.prepare_minimal_codex_home",
+            side_effect=OSError("home setup exploded"),
+        ):
+            self.assertEqual(
+                1,
+                run_worker(root, job_path, "2026-07-18", run_id="setup-failure"),
+            )
+
+        receipt_path = resolve_run_dir(root, job, "setup-failure") / "model-worker-receipt.json"
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        self.assertEqual("failed", receipt["status"])
+        self.assertTrue(any("home setup exploded" in item for item in receipt["failures"]))
+        self.assertFalse(receipt_path.with_name(f"{receipt_path.name}.tmp").exists())
+
+    def test_post_claim_metadata_process_and_late_failures_publish_failed_receipts(self):
+        failure_modes = (
+            (
+                "metadata-failure",
+                lambda _job: None,
+                {"runtime_metadata_provider": lambda **_kwargs: (_ for _ in ()).throw(OSError("metadata exploded"))},
+                "metadata exploded",
+            ),
+            (
+                "process-failure",
+                lambda *_args, **_kwargs: (_ for _ in ()).throw(OSError("process exploded")),
+                {},
+                "process exploded",
+            ),
+        )
+        for run_id, runner, kwargs, expected in failure_modes:
+            with self.subTest(run_id=run_id):
+                root, job_path, job = self.make_root()
+                self.assertEqual(
+                    1,
+                    run_worker(
+                        root,
+                        job_path,
+                        "2026-07-18",
+                        runner=runner,
+                        run_id=run_id,
+                        **kwargs,
+                    ),
+                )
+                receipt = json.loads(
+                    (
+                        resolve_run_dir(root, job, run_id) / "model-worker-receipt.json"
+                    ).read_text(encoding="utf-8")
+                )
+                self.assertEqual("failed", receipt["status"])
+                self.assertTrue(any(expected in item for item in receipt["failures"]))
+
+        root, job_path, job = self.make_root()
+
+        def fake_runner(command, **_kwargs):
+            Path(command[command.index("-o") + 1]).write_text(
+                json.dumps(self.valid_output(job)), encoding="utf-8"
+            )
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+        from run_metronome_model_worker import append_progress_event as real_append
+        from unittest.mock import patch
+
+        def fail_after_receipt_write(path, event, **kwargs):
+            if event == "receipt_published":
+                raise OSError("late progress exploded")
+            return real_append(path, event, **kwargs)
+
+        with patch(
+            "run_metronome_model_worker.append_progress_event",
+            side_effect=fail_after_receipt_write,
+        ):
+            self.assertEqual(
+                1,
+                run_worker(
+                    root,
+                    job_path,
+                    "2026-07-18",
+                    runner=fake_runner,
+                    run_id="late-failure",
+                ),
+            )
+        receipt = json.loads(
+            (
+                resolve_run_dir(root, job, "late-failure") / "model-worker-receipt.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual("failed", receipt["status"])
+        self.assertTrue(any("late progress exploded" in item for item in receipt["failures"]))
+
+    def test_post_claim_interrupt_is_receipted_then_propagated(self):
+        root, job_path, job = self.make_root()
+
+        def interrupted_runner(*_args, **_kwargs):
+            raise KeyboardInterrupt("stop")
+
+        with self.assertRaises(KeyboardInterrupt):
+            run_worker(
+                root,
+                job_path,
+                "2026-07-18",
+                runner=interrupted_runner,
+                run_id="interrupt-failure",
+            )
+        receipt = json.loads(
+            (
+                resolve_run_dir(root, job, "interrupt-failure")
+                / "model-worker-receipt.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual("failed", receipt["status"])
+        self.assertTrue(any("stop" in item for item in receipt["failures"]))
 
     def test_injected_runner_uses_metadata_provider_without_real_codex_or_path(self):
         root, job_path, job = self.make_root()

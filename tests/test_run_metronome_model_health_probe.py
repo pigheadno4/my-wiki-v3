@@ -293,6 +293,65 @@ class ModelHealthProbeTests(unittest.TestCase):
         self.assertEqual(1, invalid_result)
         self.assertFalse(invalid_receipt["terminal_json_valid"])
 
+    def test_probe_snapshots_inputs_and_honestly_hashes_terminal_receipt(self):
+        root = self.make_root()
+        captured = {}
+        self.assertEqual(
+            0,
+            run_health_probe(
+                root,
+                "luna-provenance",
+                executor=self.fake_executor('{"status":"ok"}', captured=captured),
+                runtime_metadata_provider=self.real_metadata_provider(root),
+            ),
+        )
+
+        receipt_path = self.receipt_path(root, "luna-provenance")
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        probe_dir = receipt_path.parent
+        provenance = receipt["provenance"]
+        prompt_snapshot = root / provenance["prompt_template_snapshot_path"]
+        schema_snapshot = root / provenance["output_schema_snapshot_path"]
+        rendered_prompt_snapshot = root / provenance["rendered_prompt_snapshot_path"]
+        self.assertEqual(
+            (root / "tracking/ingest/metronome/pilot/prompts/model-health-probe.md").read_bytes(),
+            prompt_snapshot.read_bytes(),
+        )
+        self.assertEqual(
+            (root / "tracking/ingest/metronome/pilot/schemas/model-health-probe.schema.json").read_bytes(),
+            schema_snapshot.read_bytes(),
+        )
+        self.assertEqual(
+            rendered_prompt_snapshot.read_text(encoding="utf-8"), captured["command"][-1]
+        )
+        self.assertEqual(
+            str(schema_snapshot.resolve()),
+            captured["command"][captured["command"].index("--output-schema") + 1],
+        )
+        self.assertIn("scripts/run_metronome_model_health_probe.py", provenance["runner_script_sha256"])
+        self.assertIn("commit", provenance["git"])
+        self.assertIn("dirty", provenance["git"])
+
+        manifest_path = root / receipt["terminal_manifest"]["path"]
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertNotIn(receipt["terminal_manifest"]["path"], manifest["sha256"])
+        self.assertEqual(
+            hashlib.sha256(receipt_path.read_bytes()).hexdigest(),
+            manifest["sha256"][receipt_path.relative_to(root).as_posix()],
+        )
+        for artifact in (
+            "attempt-1/progress.jsonl",
+            "attempt-1/events.jsonl",
+            "attempt-1/stderr.log",
+            "attempt-1/model-output.raw.json",
+            "attempt-1/model-output.normalized.json",
+        ):
+            path = probe_dir / artifact
+            self.assertEqual(
+                hashlib.sha256(path.read_bytes()).hexdigest(),
+                manifest["sha256"][path.relative_to(root).as_posix()],
+            )
+
     def test_probe_requires_complete_runtime_metadata(self):
         root = self.make_root()
         incomplete = self.complete_metadata()

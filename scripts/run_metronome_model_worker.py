@@ -49,6 +49,15 @@ GATE_RE = re.compile(r"\b(beta|preview|allowlist|feature flag|enabled for|contac
 INPUT_MODES = frozenset(("staged-file", "inline-stdin"))
 INLINE_RAW_START_DELIMITER = "<<<UNTRUSTED_RAW_EVIDENCE_START>>>"
 INLINE_RAW_END_DELIMITER = "<<<UNTRUSTED_RAW_EVIDENCE_END>>>"
+ENTERPRISE_JOB_REGISTRY_PATH = Path(
+    "tracking/ingest/metronome/pilot/enterprise-diagnostic-jobs.json"
+)
+TERMINAL_MANIFEST_NAME = "terminal-artifact-manifest.json"
+RUNNER_SCRIPT_PATHS = (
+    Path(__file__).resolve(),
+    Path(__file__).resolve().with_name("metronome_model_runtime.py"),
+    Path(__file__).resolve().with_name("metronome_ingest_pilot.py"),
+)
 
 
 def utc_now() -> str:
@@ -353,6 +362,207 @@ def _write_json(path: Path, payload: Dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+def _write_bytes_atomic(path: Path, data: bytes) -> None:
+    """Atomically publish an immutable diagnostic snapshot."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary_path = path.with_name(f"{path.name}.tmp")
+    try:
+        temporary_path.write_bytes(data)
+        os.replace(temporary_path, path)
+    finally:
+        if temporary_path.exists():
+            temporary_path.unlink()
+
+
+def _relative_to_root(path: Path, root: Path) -> str:
+    return path.relative_to(root).as_posix()
+
+
+def _git_provenance(root: Path) -> Dict[str, Any]:
+    """Record the revision and dirty state without making a temporary test root fatal."""
+    try:
+        commit = subprocess.check_output(
+            ["git", "-C", str(root), "rev-parse", "HEAD"],
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+        status = subprocess.check_output(
+            ["git", "-C", str(root), "status", "--porcelain=v1", "-z"],
+            stderr=subprocess.DEVNULL,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return {
+            "commit": None,
+            "dirty": None,
+            "dirty_status_sha256": None,
+            "unavailable_reason": "root is not a readable Git worktree",
+        }
+    return {
+        "commit": commit,
+        "dirty": bool(status),
+        "dirty_status_sha256": _sha256_bytes(status),
+        "unavailable_reason": None,
+    }
+
+
+def _snapshot_diagnostic_provenance(
+    root: Path,
+    artifact_dir: Path,
+    prompt_source_path: Path,
+    schema_source_path: Path,
+) -> Dict[str, Any]:
+    """Copy the exact worker inputs before any diagnostic process can start."""
+    provenance_dir = artifact_dir / "provenance"
+    prompt_snapshot = provenance_dir / "prompt-template.md"
+    schema_snapshot = provenance_dir / "output-schema.json"
+    _write_bytes_atomic(prompt_snapshot, prompt_source_path.read_bytes())
+    _write_bytes_atomic(schema_snapshot, schema_source_path.read_bytes())
+    runner_hashes = {
+        _relative_to_root(path, ROOT): _sha256_bytes(path.read_bytes())
+        for path in RUNNER_SCRIPT_PATHS
+    }
+    return {
+        "prompt_template_snapshot_path": _relative_to_root(prompt_snapshot, root),
+        "output_schema_snapshot_path": _relative_to_root(schema_snapshot, root),
+        "attempt_prompt_snapshot_paths": {},
+        "runner_script_sha256": runner_hashes,
+        "git": _git_provenance(root),
+    }
+
+
+def _snapshot_attempt_prompt(
+    root: Path,
+    artifact_dir: Path,
+    provenance: Dict[str, Any],
+    attempt: int,
+    prompt: str,
+) -> str:
+    path = artifact_dir / "provenance" / f"attempt-{attempt}-prompt.md"
+    _write_bytes_atomic(path, prompt.encode("utf-8"))
+    relative_path = _relative_to_root(path, root)
+    provenance["attempt_prompt_snapshot_paths"][str(attempt)] = relative_path
+    return relative_path
+
+
+def _write_terminal_manifest(
+    root: Path, artifact_dir: Path, receipt_name: str = "model-worker-receipt.json"
+) -> Path:
+    """Hash every terminal artifact except the manifest itself (the honest self-reference boundary)."""
+    manifest_path = artifact_dir / TERMINAL_MANIFEST_NAME
+    entries = {}
+    for path in sorted(artifact_dir.rglob("*")):
+        if (
+            not path.is_file()
+            or path.is_symlink()
+            or path == manifest_path
+            or path.name.endswith(".tmp")
+        ):
+            continue
+        entries[_relative_to_root(path, root)] = _sha256_bytes(path.read_bytes())
+    payload = {
+        "schema_version": 1,
+        "sha256": entries,
+        "not_covered_due_to_self_reference": _relative_to_root(manifest_path, root),
+        "receipt_sha256_covered": _relative_to_root(
+            artifact_dir / receipt_name, root
+        )
+        in entries,
+    }
+    write_json_atomic(manifest_path, payload)
+    return manifest_path
+
+
+def _publish_diagnostic_receipt(
+    root: Path,
+    artifact_dir: Path,
+    receipt: Dict[str, Any],
+    progress_path: Optional[Path],
+) -> None:
+    """Publish receipt then a non-circular terminal hash manifest for this run."""
+    manifest_path = artifact_dir / TERMINAL_MANIFEST_NAME
+    receipt["terminal_manifest"] = {
+        "path": _relative_to_root(manifest_path, root),
+        "integrity_model": (
+            "The terminal manifest hashes the final receipt and all other terminal artifacts; "
+            "it intentionally does not hash itself."
+        ),
+    }
+    if progress_path is not None:
+        append_progress_event(progress_path, "receipt_published")
+    write_json_atomic(artifact_dir / "model-worker-receipt.json", receipt)
+    _write_terminal_manifest(root, artifact_dir)
+
+
+def _load_enterprise_job_registry(root: Path) -> Dict[str, Dict[str, str]]:
+    """Load the explicit enterprise scope; job names alone never imply the gate."""
+    path = root / ENTERPRISE_JOB_REGISTRY_PATH
+    if not path.is_file() or path.is_symlink():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError("enterprise diagnostic registry is unavailable or invalid") from exc
+    jobs = payload.get("enterprise_jobs") if isinstance(payload, dict) else None
+    if (
+        not isinstance(payload, dict)
+        or payload.get("schema_version") != 1
+        or payload.get("registry_type") != "metronome_enterprise_diagnostic_jobs"
+        or not isinstance(jobs, list)
+    ):
+        raise RuntimeError("enterprise diagnostic registry has an invalid schema")
+    entries: Dict[str, Dict[str, str]] = {}
+    for entry in jobs:
+        if (
+            not isinstance(entry, dict)
+            or set(entry) != {"job_id", "job_path", "job_sha256"}
+            or not all(isinstance(entry.get(key), str) and entry[key] for key in entry)
+            or len(entry["job_sha256"]) != 64
+            or any(character not in "0123456789abcdef" for character in entry["job_sha256"])
+        ):
+            raise RuntimeError("enterprise diagnostic registry has an invalid job entry")
+        if entry["job_id"] in entries:
+            raise RuntimeError("enterprise diagnostic registry repeats a job ID")
+        entries[entry["job_id"]] = entry
+    return entries
+
+
+def _enterprise_job_requires_probe(root: Path, job_path: Path, job: Dict[str, Any]) -> bool:
+    entries = _load_enterprise_job_registry(root)
+    job_id = job.get("job_id")
+    if not isinstance(job_id, str) or job_id not in entries:
+        return False
+    entry = entries[job_id]
+    try:
+        actual_path = _relative_to_root(job_path.resolve(), root.resolve())
+    except ValueError as exc:
+        raise RuntimeError("enterprise job manifest must be contained by the repository root") from exc
+    if (
+        entry["job_path"] != actual_path
+        or _sha256_bytes(job_path.read_bytes()) != entry["job_sha256"]
+    ):
+        raise RuntimeError("enterprise job does not match its immutable registry entry")
+    return True
+
+
+def _enforce_enterprise_health_probe(
+    root: Path,
+    job_path: Path,
+    job: Dict[str, Any],
+    run_id: Optional[str],
+    health_probe_run_id: Optional[str],
+) -> None:
+    if not _enterprise_job_requires_probe(root, job_path, job):
+        return
+    if run_id is None or not health_probe_run_id:
+        raise RuntimeError(
+            "enterprise diagnostic requires --run-id and --health-probe-run-id"
+        )
+    # Import here to avoid the health-probe module's intentional worker utility imports.
+    from run_metronome_model_health_probe import _load_passing_probe_receipt
+
+    _load_passing_probe_receipt(root, health_probe_run_id)
+
+
 def prepare_minimal_codex_home(target: Path) -> Path:
     target.mkdir(parents=True, exist_ok=True)
     source = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex")))
@@ -535,6 +745,79 @@ def recover_attempt(
     return 0
 
 
+def _unhandled_worker_failure_receipt(state: Dict[str, Any], exc: BaseException) -> int:
+    """Atomically replace any partial terminal receipt after a claimed diagnostic fails."""
+    root = state["root"]
+    artifact_dir = state["artifact_dir"]
+    job = state["job"]
+    last_attempt_dir = state.get("last_attempt_dir")
+    relative = (
+        lambda path: _relative_to_root(path, root) if isinstance(path, Path) and path.is_file() else None
+    )
+    now = utc_now()
+    receipt = {
+        "schema_version": 3,
+        "job_id": job["job_id"],
+        "provider": job["provider"],
+        "canonical_url": job["canonical_url"],
+        "raw_path": job["raw_path"],
+        "source_page": job["source_page"],
+        "status": "failed",
+        "model_provider": job["model_provider"],
+        "model": job["model"],
+        "reasoning_effort": job["reasoning_effort"],
+        "input_mode": state["input_mode"],
+        "run_id": state["run_id"],
+        "attempt_count": len(state.get("attempt_records", [])),
+        "attempts": state.get("attempt_records", []),
+        "started_at": state["started_at"],
+        "finished_at": now,
+        "elapsed_seconds": round(time.monotonic() - state["started_clock"], 3),
+        "process_exit_code": None,
+        "output_path": relative(state.get("last_raw_output_path")),
+        "normalized_output_path": relative(state.get("last_normalized_path")),
+        "draft_path": None,
+        "events_path": relative(
+            last_attempt_dir / "events.jsonl" if isinstance(last_attempt_dir, Path) else None
+        ),
+        "stderr_path": relative(
+            last_attempt_dir / "stderr.log" if isinstance(last_attempt_dir, Path) else None
+        ),
+        "progress_path": relative(
+            last_attempt_dir / "progress.jsonl" if isinstance(last_attempt_dir, Path) else None
+        ),
+        "grounding_quotes": [],
+        "validation": [
+            {
+                "command": "post_claim_exception_boundary",
+                "passed": False,
+                "errors": [f"unhandled post-claim worker failure: {exc}"],
+            }
+        ],
+        "token_usage": None,
+        "cumulative_token_usage": sum_token_usage(state.get("usages", [])),
+        "token_usage_unavailable_reason": "Worker did not finish normal execution accounting.",
+        "quote_line_repairs": state.get("total_quote_repairs", 0),
+        "raw_link_repairs": state.get("total_raw_link_repairs", 0),
+        "mandatory_tag_repairs": state.get("total_tag_repairs", 0),
+        "page_profile": state.get("profile", {}),
+        "runtime_metadata": state.get("last_runtime_metadata"),
+        "termination": state.get("last_termination"),
+        "failures": [f"unhandled post-claim worker failure: {exc}"],
+        "provenance": state.get("provenance", {"status": "incomplete"}),
+    }
+    progress_path = (
+        last_attempt_dir / "progress.jsonl" if isinstance(last_attempt_dir, Path) else None
+    )
+    try:
+        _publish_diagnostic_receipt(root, artifact_dir, receipt, progress_path)
+    except Exception:
+        # The primary requirement is an atomic failed receipt; do not let a manifest or
+        # progress-write error hide it after the run directory has been claimed.
+        write_json_atomic(artifact_dir / "model-worker-receipt.json", receipt)
+    return 1
+
+
 def _run_worker_unlocked(
     root: Path,
     job_path: Path,
@@ -544,6 +827,7 @@ def _run_worker_unlocked(
     lock_acquired_at: Optional[str] = None,
     runtime_metadata_provider: Optional[Callable[..., Dict[str, Any]]] = None,
     input_mode: str = "staged-file",
+    claim_state: Optional[Dict[str, Any]] = None,
 ) -> int:
     try:
         input_mode = validate_input_mode(input_mode)
@@ -572,6 +856,9 @@ def _run_worker_unlocked(
         path.stem for path in concept_dir.glob("*.md") if path.is_file()
     )
     diagnostic = run_id is not None
+    started_at: Optional[str] = None
+    started_clock: Optional[float] = None
+    provenance: Optional[Dict[str, Any]] = None
     if diagnostic:
         try:
             run_id = validate_run_id(run_id)
@@ -585,14 +872,42 @@ def _run_worker_unlocked(
         except FileExistsError:
             print(f"diagnostic run directory already exists: {artifact_dir}")
             return 1
+        started_at = utc_now()
+        started_clock = time.monotonic()
+        if claim_state is not None:
+            claim_state.update(
+                {
+                    "claimed": True,
+                    "root": root,
+                    "artifact_dir": artifact_dir,
+                    "job": job,
+                    "run_id": run_id,
+                    "input_mode": input_mode,
+                    "started_at": started_at,
+                    "started_clock": started_clock,
+                }
+            )
     else:
         artifact_dir = root / job["artifact_dir"]
         artifact_dir.mkdir(parents=True, exist_ok=True)
-    template_bytes = (root / PROMPT_PATH).read_bytes()
+    prompt_source_path = root / PROMPT_PATH
+    schema_source_path = root / SCHEMA_PATH
+    if diagnostic:
+        provenance = _snapshot_diagnostic_provenance(
+            root, artifact_dir, prompt_source_path, schema_source_path
+        )
+        template_path = root / provenance["prompt_template_snapshot_path"]
+        schema_path = root / provenance["output_schema_snapshot_path"]
+        if claim_state is not None:
+            claim_state["provenance"] = provenance
+    else:
+        template_path = prompt_source_path
+        schema_path = schema_source_path
+    template_bytes = template_path.read_bytes()
     template = template_bytes.decode("utf-8")
-    schema_path = root / SCHEMA_PATH
-    started_at = utc_now()
-    started_clock = time.monotonic()
+    if started_at is None or started_clock is None:
+        started_at = utc_now()
+        started_clock = time.monotonic()
     validation_errors: Optional[List[str]] = None
     attempt_records: List[Dict[str, Any]] = []
     usages: List[Optional[Dict[str, Any]]] = []
@@ -607,6 +922,17 @@ def _run_worker_unlocked(
     last_termination: Optional[Dict[str, Any]] = None
     last_execution: Optional[AttemptExecution] = None
     last_runtime_metadata: Optional[Dict[str, Any]] = None
+    if claim_state is not None and diagnostic:
+        claim_state.update(
+            {
+                "profile": profile,
+                "attempt_records": attempt_records,
+                "usages": usages,
+                "total_quote_repairs": total_quote_repairs,
+                "total_raw_link_repairs": total_raw_link_repairs,
+                "total_tag_repairs": total_tag_repairs,
+            }
+        )
 
     with tempfile.TemporaryDirectory(prefix=f"metronome-{job['job_id']}-") as tmp:
         staged_cwd = Path(tmp)
@@ -627,6 +953,12 @@ def _run_worker_unlocked(
             prompt = render_worker_prompt(
                 template, job, profile, raw_text, input_mode, validation_errors
             )
+            if diagnostic:
+                assert provenance is not None
+                prompt_snapshot_path = _snapshot_attempt_prompt(
+                    root, artifact_dir, provenance, attempt, prompt
+                )
+                prompt = (root / prompt_snapshot_path).read_text(encoding="utf-8")
             stdin_bytes = prompt.encode("utf-8") if input_mode == "inline-stdin" else None
             timeout_seconds = int(job.get("timeout_seconds", 900))
             command = build_codex_command(
@@ -640,6 +972,8 @@ def _run_worker_unlocked(
             )
             termination: Optional[Dict[str, Any]] = None
             progress_path = attempt_dir / "progress.jsonl"
+            if claim_state is not None and diagnostic:
+                claim_state["last_attempt_dir"] = attempt_dir
             if diagnostic:
                 append_progress_event(
                     progress_path,
@@ -790,6 +1124,18 @@ def _run_worker_unlocked(
             last_termination = termination
             last_execution = execution
             last_runtime_metadata = runtime_metadata
+            if claim_state is not None and diagnostic:
+                claim_state.update(
+                    {
+                        "last_raw_output_path": last_raw_output_path,
+                        "last_normalized_path": last_normalized_path,
+                        "last_termination": last_termination,
+                        "last_runtime_metadata": last_runtime_metadata,
+                        "total_quote_repairs": total_quote_repairs,
+                        "total_raw_link_repairs": total_raw_link_repairs,
+                        "total_tag_repairs": total_tag_repairs,
+                    }
+                )
             if termination is not None or result.returncode == 124:
                 validation_errors = errors
                 break
@@ -845,9 +1191,9 @@ def _run_worker_unlocked(
                     receipt["termination"] = last_termination
                     receipt["progress_path"] = progress_path.relative_to(root).as_posix()
                     receipt["runtime_metadata"] = last_runtime_metadata
+                    receipt["provenance"] = provenance
                     receipt.update(_execution_accounting(execution))
-                    write_json_atomic(artifact_dir / "model-worker-receipt.json", receipt)
-                    append_progress_event(progress_path, "receipt_published")
+                    _publish_diagnostic_receipt(root, artifact_dir, receipt, progress_path)
                 else:
                     _write_json(artifact_dir / "model-worker-receipt.json", receipt)
                 return 0
@@ -903,14 +1249,16 @@ def _run_worker_unlocked(
             last_attempt_dir / "progress.jsonl"
         ).relative_to(root).as_posix()
         failed["runtime_metadata"] = last_runtime_metadata
+        failed["provenance"] = provenance
         failed.update(_execution_accounting(last_execution))
         failed["normalized_output_path"] = (
             last_normalized_path.relative_to(root).as_posix()
             if last_normalized_path is not None
             else None
         )
-        write_json_atomic(artifact_dir / "model-worker-receipt.json", failed)
-        append_progress_event(last_attempt_dir / "progress.jsonl", "receipt_published")
+        _publish_diagnostic_receipt(
+            root, artifact_dir, failed, last_attempt_dir / "progress.jsonl"
+        )
     else:
         _write_json(artifact_dir / "model-worker-receipt.json", failed)
     return 1
@@ -924,11 +1272,21 @@ def run_worker(
     run_id: Optional[str] = None,
     runtime_metadata_provider: Optional[Callable[..., Dict[str, Any]]] = None,
     input_mode: str = "staged-file",
+    health_probe_run_id: Optional[str] = None,
 ) -> int:
     """Run one job, serializing diagnostic executions across Git worktrees."""
     try:
         input_mode = validate_input_mode(input_mode)
     except ValueError as exc:
+        print(exc)
+        return 1
+    job_file = job_path if job_path.is_absolute() else root / job_path
+    try:
+        job = load_json(job_file)
+        _enforce_enterprise_health_probe(
+            root, job_file, job, run_id, health_probe_run_id
+        )
+    except RuntimeError as exc:
         print(exc)
         return 1
     if run_id is None:
@@ -937,7 +1295,6 @@ def run_worker(
         )
     try:
         run_id = validate_run_id(run_id)
-        job = load_json(job_path if job_path.is_absolute() else root / job_path)
         provider = str(job["provider"])
         job_id = str(job["job_id"])
     except (KeyError, ValueError) as exc:
@@ -945,16 +1302,26 @@ def run_worker(
         return 1
     try:
         with job_lock(common_git_dir(root), provider, job_id):
-            return _run_worker_unlocked(
-                root,
-                job_path,
-                ingest_date,
-                runner=runner,
-                run_id=run_id,
-                lock_acquired_at=utc_now(),
-                runtime_metadata_provider=runtime_metadata_provider,
-                input_mode=input_mode,
-            )
+            claim_state: Dict[str, Any] = {}
+            try:
+                return _run_worker_unlocked(
+                    root,
+                    job_path,
+                    ingest_date,
+                    runner=runner,
+                    run_id=run_id,
+                    lock_acquired_at=utc_now(),
+                    runtime_metadata_provider=runtime_metadata_provider,
+                    input_mode=input_mode,
+                    claim_state=claim_state,
+                )
+            except BaseException as exc:
+                if not claim_state.get("claimed"):
+                    raise
+                result = _unhandled_worker_failure_receipt(claim_state, exc)
+                if isinstance(exc, (KeyboardInterrupt, SystemExit)):
+                    raise
+                return result
     except RuntimeError as exc:
         print(exc)
         return 1
@@ -965,6 +1332,7 @@ def main() -> int:
     parser.add_argument("--job", required=True)
     parser.add_argument("--ingest-date", required=True)
     parser.add_argument("--run-id")
+    parser.add_argument("--health-probe-run-id")
     parser.add_argument("--input-mode", choices=sorted(INPUT_MODES), default="staged-file")
     parser.add_argument("--recover-attempt", type=int)
     args = parser.parse_args()
@@ -978,6 +1346,7 @@ def main() -> int:
         args.ingest_date,
         run_id=args.run_id,
         input_mode=args.input_mode,
+        health_probe_run_id=args.health_probe_run_id,
     )
 
 

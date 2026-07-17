@@ -29,6 +29,11 @@ The probe writes only beneath
 `tracking/ingest/metronome/pilot/diagnostics/health-probes/<run-id>/` and never participates in canonical coverage. It does not authorize cycles 3–5, source promotion,
 or any write beneath `raw/` or `wiki/`.
 
+The enterprise A/B job identity is the explicit immutable registry in
+`enterprise-diagnostic-jobs.json`, not a job-name heuristic. Direct worker and CLI
+execution of a listed job must supply `--health-probe-run-id <passing-run-id>`; the
+worker revalidates that receipt before it claims a run or launches a model process.
+
 ## Isolation and Serial Execution
 
 - A Luna worker may write only to `tracking/ingest/metronome/pilot/runs/<job-id>/` for its assigned job.

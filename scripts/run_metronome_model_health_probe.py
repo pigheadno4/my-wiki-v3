@@ -24,6 +24,9 @@ from metronome_model_runtime import (
     write_json_atomic,
 )
 from run_metronome_model_worker import (
+    _git_provenance,
+    _write_bytes_atomic,
+    _write_terminal_manifest,
     build_codex_command,
     build_runtime_metadata,
     common_git_dir,
@@ -52,6 +55,12 @@ RUNTIME_HASH_KEYS = frozenset(
         "output_schema",
         "codex_executable",
     )
+)
+TERMINAL_MANIFEST_NAME = "terminal-artifact-manifest.json"
+RUNNER_SCRIPT_PATHS = (
+    Path(__file__).resolve(),
+    Path(__file__).resolve().with_name("metronome_model_runtime.py"),
+    Path(__file__).resolve().with_name("run_metronome_model_worker.py"),
 )
 T = TypeVar("T")
 
@@ -143,6 +152,58 @@ def _relative(path: Path, root: Path) -> str:
     return path.relative_to(root).as_posix()
 
 
+def _snapshot_probe_provenance(
+    root: Path, probe_dir: Path, prompt_path: Path, schema_path: Path
+) -> Dict[str, Any]:
+    """Snapshot the probe's exact prompt and schema before model setup begins."""
+    provenance_dir = probe_dir / "provenance"
+    prompt_snapshot = provenance_dir / "prompt-template.md"
+    schema_snapshot = provenance_dir / "output-schema.json"
+    _write_bytes_atomic(prompt_snapshot, prompt_path.read_bytes())
+    _write_bytes_atomic(schema_snapshot, schema_path.read_bytes())
+    return {
+        "prompt_template_snapshot_path": _relative(prompt_snapshot, root),
+        "output_schema_snapshot_path": _relative(schema_snapshot, root),
+        "rendered_prompt_snapshot_path": None,
+        "runner_script_sha256": {
+            path.relative_to(ROOT).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in RUNNER_SCRIPT_PATHS
+        },
+        "git": _git_provenance(root),
+    }
+
+
+def _snapshot_rendered_probe_prompt(
+    root: Path, probe_dir: Path, provenance: Dict[str, Any], prompt: str
+) -> str:
+    path = probe_dir / "provenance" / "rendered-prompt.md"
+    _write_bytes_atomic(path, prompt.encode("utf-8"))
+    relative_path = _relative(path, root)
+    provenance["rendered_prompt_snapshot_path"] = relative_path
+    return relative_path
+
+
+def _publish_probe_receipt(
+    root: Path,
+    probe_dir: Path,
+    receipt_path: Path,
+    receipt: Dict[str, Any],
+    progress_path: Optional[Path],
+) -> None:
+    manifest_path = probe_dir / TERMINAL_MANIFEST_NAME
+    receipt["terminal_manifest"] = {
+        "path": _relative(manifest_path, root),
+        "integrity_model": (
+            "The terminal manifest hashes the final receipt and all other terminal artifacts; "
+            "it intentionally does not hash itself."
+        ),
+    }
+    if progress_path is not None:
+        append_progress_event(progress_path, "receipt_published")
+    write_json_atomic(receipt_path, receipt)
+    _write_terminal_manifest(root, probe_dir, receipt_path.name)
+
+
 def _unhandled_failure_receipt(state: Dict[str, Any], exc: BaseException) -> int:
     """Publish the terminal fallback for any failure after this process claimed a run."""
     now = time.monotonic()
@@ -171,10 +232,20 @@ def _unhandled_failure_receipt(state: Dict[str, Any], exc: BaseException) -> int
         "events_path": None,
         "stderr_path": None,
         "progress_path": None,
-        "failures": [f"unhandled post-claim health probe failure: {exc}"],
+        "failures": [f"unhandled post-claim health probe setup failed: {exc}"],
         "canonical_coverage_eligible": False,
+        "provenance": state.get("provenance", {"status": "incomplete"}),
     }
-    write_json_atomic(state["receipt_path"], receipt)
+    try:
+        _publish_probe_receipt(
+            state["root"],
+            state["probe_dir"],
+            state["receipt_path"],
+            receipt,
+            state.get("progress_path"),
+        )
+    except Exception:
+        write_json_atomic(state["receipt_path"], receipt)
     return 1
 
 
@@ -238,14 +309,21 @@ def _run_health_probe_impl(
         claim_state.update(
             {
                 "claimed": True,
+                "root": root,
+                "probe_dir": probe_dir,
                 "run_id": run_id,
                 "started_at": started_at,
                 "started_clock": started_clock,
                 "deadline_monotonic": deadline_monotonic,
                 "total_timeout_seconds": total_timeout_seconds,
                 "receipt_path": receipt_path,
+                "progress_path": None,
             }
         )
+        provenance = _snapshot_probe_provenance(root, probe_dir, prompt_path, schema_path)
+        claim_state["provenance"] = provenance
+        prompt_snapshot_path = root / provenance["prompt_template_snapshot_path"]
+        schema_snapshot_path = root / provenance["output_schema_snapshot_path"]
         attempt_dir = probe_dir / "attempt-1"
         events_path = attempt_dir / "events.jsonl"
         stderr_path = attempt_dir / "stderr.log"
@@ -255,6 +333,7 @@ def _run_health_probe_impl(
             for path in (events_path, stderr_path, progress_path):
                 path.touch()
             append_progress_event(progress_path, "lock_acquired")
+            claim_state["progress_path"] = progress_path
         except Exception as exc:
             failure_receipt = {
                 "schema_version": 1,
@@ -283,8 +362,9 @@ def _run_health_probe_impl(
                 "progress_path": None,
                 "failures": [f"health probe bootstrap failed: {exc}"],
                 "canonical_coverage_eligible": False,
+                "provenance": provenance,
             }
-            write_json_atomic(receipt_path, failure_receipt)
+            _publish_probe_receipt(root, probe_dir, receipt_path, failure_receipt, None)
             return 1
 
         execution: Optional[AttemptExecution] = None
@@ -296,9 +376,13 @@ def _run_health_probe_impl(
         normalized_path = normalized_output_path(attempt_dir)
 
         try:
-            prompt_bytes = prompt_path.read_bytes()
+            prompt_bytes = prompt_snapshot_path.read_bytes()
             prompt = prompt_bytes.decode("utf-8")
-            schema_path.read_bytes()
+            _snapshot_rendered_probe_prompt(root, probe_dir, provenance, prompt)
+            prompt = (
+                root / provenance["rendered_prompt_snapshot_path"]
+            ).read_text(encoding="utf-8")
+            schema_snapshot_path.read_bytes()
             with tempfile.TemporaryDirectory(prefix=f"metronome-health-{run_id}-") as tmp:
                 staged_cwd = Path(tmp)
                 minimal_codex_home = prepare_minimal_codex_home(staged_cwd / "codex-home")
@@ -306,7 +390,7 @@ def _run_health_probe_impl(
                 probe_env["CODEX_HOME"] = str(minimal_codex_home)
                 command = build_codex_command(
                     staged_cwd,
-                    schema_path,
+                    schema_snapshot_path,
                     raw_path,
                     prompt,
                     MODEL,
@@ -316,7 +400,7 @@ def _run_health_probe_impl(
                     raw_bytes=b"",
                     prompt_template_bytes=prompt_bytes,
                     rendered_prompt=prompt,
-                    schema_path=schema_path,
+                    schema_path=schema_snapshot_path,
                     codex_executable=command[0],
                     timeout_seconds=total_timeout_seconds,
                     env=probe_env,
@@ -471,15 +555,20 @@ def _run_health_probe_impl(
             "progress_path": _relative(progress_path, root),
             "failures": failures,
             "canonical_coverage_eligible": False,
+            "provenance": provenance,
         }
         try:
-            write_json_atomic(receipt_path, receipt)
+            _publish_probe_receipt(
+                root, probe_dir, receipt_path, receipt, progress_path
+            )
         except Exception as exc:
             receipt["status"] = "failed"
             receipt["receipt_published_within_deadline"] = False
             receipt["within_total_timeout"] = False
             receipt["failures"].append(f"initial receipt publication failed: {exc}")
-            write_json_atomic(receipt_path, receipt)
+            _publish_probe_receipt(
+                root, probe_dir, receipt_path, receipt, None
+            )
         if time.monotonic() > deadline_monotonic:
             receipt["status"] = "failed"
             receipt["receipt_published_within_deadline"] = False
@@ -488,9 +577,10 @@ def _run_health_probe_impl(
                 receipt["failures"].append(
                     "health probe receipt publication exceeded the absolute deadline"
                 )
-            write_json_atomic(receipt_path, receipt)
+            _publish_probe_receipt(
+                root, probe_dir, receipt_path, receipt, None
+            )
             passed = False
-        append_progress_event(progress_path, "receipt_published")
         return 0 if passed else 1
 
 
@@ -554,6 +644,76 @@ def _load_passing_probe_receipt(root: Path, run_id: str) -> Dict[str, Any]:
     progress_path = artifact_paths["progress_path"]
     if not _terminal_json_is_valid(raw_path) or not _terminal_json_is_valid(normalized_path):
         _reject_gate("terminal probe JSON is invalid")
+
+    provenance = receipt.get("provenance")
+    if not isinstance(provenance, dict):
+        _reject_gate("probe provenance is incomplete")
+    expected_provenance_paths = {
+        "prompt_template_snapshot_path": _relative(
+            probe_dir / "provenance" / "prompt-template.md", root
+        ),
+        "output_schema_snapshot_path": _relative(
+            probe_dir / "provenance" / "output-schema.json", root
+        ),
+        "rendered_prompt_snapshot_path": _relative(
+            probe_dir / "provenance" / "rendered-prompt.md", root
+        ),
+    }
+    if any(provenance.get(key) != value for key, value in expected_provenance_paths.items()):
+        _reject_gate("probe provenance paths do not match the immutable run")
+    provenance_paths = {
+        key: root / value for key, value in expected_provenance_paths.items()
+    }
+    if any(
+        not path.is_file() or path.is_symlink() or path.with_name(f"{path.name}.tmp").exists()
+        for path in provenance_paths.values()
+    ):
+        _reject_gate("probe provenance snapshots are missing, linked, or incomplete")
+    expected_runner_hashes = {
+        path.relative_to(ROOT).as_posix(): _sha256_path(path)
+        for path in RUNNER_SCRIPT_PATHS
+    }
+    if provenance.get("runner_script_sha256") != expected_runner_hashes:
+        _reject_gate("probe runner-script provenance does not reconcile")
+    git_provenance = provenance.get("git")
+    if (
+        not isinstance(git_provenance, dict)
+        or set(git_provenance)
+        != {"commit", "dirty", "dirty_status_sha256", "unavailable_reason"}
+    ):
+        _reject_gate("probe Git provenance is incomplete")
+
+    manifest_path = probe_dir / TERMINAL_MANIFEST_NAME
+    manifest_record = receipt.get("terminal_manifest")
+    if (
+        not manifest_path.is_file()
+        or manifest_path.is_symlink()
+        or manifest_path.with_name(f"{manifest_path.name}.tmp").exists()
+        or not isinstance(manifest_record, dict)
+        or manifest_record.get("path") != _relative(manifest_path, root)
+    ):
+        _reject_gate("terminal probe manifest is incomplete")
+    try:
+        terminal_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        _reject_gate("terminal probe manifest is invalid")
+    expected_manifest_hashes = {}
+    for path in sorted(probe_dir.rglob("*")):
+        if (
+            not path.is_file()
+            or path.is_symlink()
+            or path == manifest_path
+            or path.name.endswith(".tmp")
+        ):
+            continue
+        expected_manifest_hashes[_relative(path, root)] = _sha256_path(path)
+    if terminal_manifest != {
+        "schema_version": 1,
+        "sha256": expected_manifest_hashes,
+        "not_covered_due_to_self_reference": _relative(manifest_path, root),
+        "receipt_sha256_covered": True,
+    }:
+        _reject_gate("terminal probe manifest hashes do not reconcile")
 
     recorded_hashes = receipt.get("artifact_sha256")
     recomputed_hashes = {
@@ -636,15 +796,16 @@ def _load_passing_probe_receipt(root: Path, run_id: str) -> Dict[str, Any]:
         _reject_gate("runtime metadata is incomplete")
     assert isinstance(metadata, dict)
     hashes = metadata["sha256"]
-    prompt_path = root / PROMPT_PATH
-    schema_path = root / SCHEMA_PATH
+    prompt_path = provenance_paths["prompt_template_snapshot_path"]
+    rendered_prompt_path = provenance_paths["rendered_prompt_snapshot_path"]
+    schema_path = provenance_paths["output_schema_snapshot_path"]
     executable_path = Path(metadata["codex_executable"])
     if not executable_path.is_file():
         _reject_gate("recorded Codex executable is unavailable")
     expected_runtime_hashes = {
         "raw_text": hashlib.sha256(b"").hexdigest(),
         "prompt_template": _sha256_path(prompt_path),
-        "rendered_prompt": _sha256_path(prompt_path),
+        "rendered_prompt": _sha256_path(rendered_prompt_path),
         "output_schema": _sha256_path(schema_path),
         "codex_executable": _sha256_path(executable_path),
     }
