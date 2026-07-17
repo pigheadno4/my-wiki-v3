@@ -10,6 +10,7 @@ import re
 import stat
 from typing import Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
+from collect_github_repos import is_valid_packet_id
 from github_git import ResolvedRef
 from github_packets import (
     PacketError,
@@ -640,6 +641,8 @@ def _inspect_packet(
     ):
         errors.append(label + ": packet contract does not match its namespace")
         return None
+    if not is_valid_packet_id(contract["packet_id"]):
+        errors.append(label + ": packet ID is invalid")
     packet_type = contract["packet_type"]
     if packet_type not in _PACKET_TYPES:
         errors.append(label + ": unsupported packet type " + packet_type)

@@ -132,3 +132,43 @@ Validation remains deterministic, Python 3.9 compatible, no-follow, and
 network-free. The worktree still has no live GitHub snapshots or packets, so
 live multi-release evidence remains the Task 10/11 gate rather than Task 9
 evidence.
+
+## 2026-07-17 Packet-ID Contract Fix
+
+### Fix
+
+`collect_github_repos.is_valid_packet_id()` is now the shared packet-directory
+contract for both packet-state operations and `github_validation`. The
+validator rejects a reconciled packet whose ID cannot be transitioned by the
+CLI. The regression starts from the `build_baseline_packet` fixture, renames
+the packet to `invalid packet id`, and reconciles its contract, generated
+Markdown, state history, collection run, and dashboards before validating it.
+
+### RED
+
+```text
+python3 -m unittest tests.test_github_validation.GitHubValidationTests.test_producer_packet_rejects_id_that_packet_state_cannot_transition -v
+Ran 1 test in 0.027s
+FAILED (failures=1)
+
+AssertionError: False is not true : []
+```
+
+### GREEN
+
+```text
+python3 -m unittest tests.test_github_validation.GitHubValidationTests.test_producer_packet_rejects_id_that_packet_state_cannot_transition -v
+Ran 1 test in 0.026s
+OK
+
+python3 -m unittest tests.test_github_validation tests.test_validate_wiki -v
+Ran 56 tests in 0.903s
+OK
+
+python3 scripts/validate_github_collection.py
+validate_github_collection: OK (0 snapshots, 0 pending packets, no structural errors)
+
+python3 -m unittest discover -s tests -v
+Ran 278 tests in 7.585s
+OK
+```

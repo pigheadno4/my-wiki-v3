@@ -414,6 +414,66 @@ class GitHubValidationTests(unittest.TestCase):
         self.assertEqual(1, len(report.pending_packets))
         self.assertEqual([], validate_github(report))
 
+    def test_producer_packet_rejects_id_that_packet_state_cannot_transition(self):
+        self.make_valid_tree()
+        packet_directory = next(self.root.glob("tracking/github/repos/*/*/packets/*"))
+        contract_path = packet_directory / "packet.json"
+        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+        original_packet_id = contract["packet_id"]
+        invalid_packet_id = "invalid packet id"
+        invalid_directory = packet_directory.with_name(invalid_packet_id)
+        packet_directory.rename(invalid_directory)
+        contract["packet_id"] = invalid_packet_id
+        (invalid_directory / "packet.json").write_text(
+            json.dumps(contract, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        markdown_path = invalid_directory / "ingest-packet.md"
+        markdown_path.write_text(
+            markdown_path.read_text(encoding="utf-8").replace(
+                original_packet_id, invalid_packet_id
+            ),
+            encoding="utf-8",
+        )
+
+        history_path = invalid_directory / "state-events.jsonl"
+        history = [
+            dict(json.loads(line), packet_id=invalid_packet_id)
+            for line in history_path.read_text(encoding="utf-8").splitlines()
+        ]
+        history_path.write_text(
+            "".join(json.dumps(event, sort_keys=True) + "\n" for event in history),
+            encoding="utf-8",
+        )
+        events_path = self.root / "tracking/github/runs/test.jsonl"
+        events = [
+            dict(event, packet_id=invalid_packet_id)
+            if event.get("packet_id") == original_packet_id
+            else event
+            for event in (
+                json.loads(line) for line in events_path.read_text(encoding="utf-8").splitlines()
+            )
+        ]
+        events_path.write_text(
+            "".join(json.dumps(event, sort_keys=True) + "\n" for event in events),
+            encoding="utf-8",
+        )
+        packet = PacketRecord(
+            packet_id=invalid_packet_id,
+            repo_id=contract["repo_id"],
+            packet_type=contract["packet_type"],
+            from_snapshot=contract["from_snapshot"],
+            to_snapshot=contract["to_snapshot"],
+            required_reading=tuple(contract["required_reading"]),
+            changed_files=tuple(contract["changed_files"]),
+            initial_state=contract["initial_state"],
+            directory=invalid_directory,
+        )
+        self.write_dashboards(events, (packet,), {invalid_packet_id: "awaiting-review"})
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("packet ID is invalid" in error for error in errors), errors)
+
     def test_bad_snapshot_hash_is_rejected(self):
         self.make_valid_tree()
         changelog = next(self.root.glob("raw/github/*/*/snapshots/*/files/CHANGELOG.md"))

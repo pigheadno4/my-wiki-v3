@@ -72,6 +72,11 @@ _FULL_SHA = re.compile(r"^(?:[0-9A-Fa-f]{40}|[0-9A-Fa-f]{64})$")
 _COLLECTION_LOCK = ".collection.lock"
 
 
+def is_valid_packet_id(packet_id: object) -> bool:
+    """Return whether a packet ID is safe for packet directory operations."""
+    return isinstance(packet_id, str) and _SAFE_PACKET_ID.fullmatch(packet_id) is not None
+
+
 class CollectionUsageError(ValueError):
     """The CLI or direct orchestration request is not well formed."""
 
@@ -824,7 +829,7 @@ def _change_packet_state(
     expected: str,
     requested: str,
 ) -> None:
-    if _SAFE_PACKET_ID.fullmatch(packet_id) is None:
+    if not is_valid_packet_id(packet_id):
         raise CollectionUsageError("packet ID is invalid")
     packet_root = _packet_root(root, config)
     with packet_transaction(config, packet_root) as packet_root_descriptor:
@@ -942,7 +947,7 @@ def _packet_record_from_contract(
 
 
 def _open_packet_directory(packet_root_descriptor: int, packet_id: str) -> int:
-    if _SAFE_PACKET_ID.fullmatch(packet_id) is None:
+    if not is_valid_packet_id(packet_id):
         raise CollectionCommandError("packet directory name is invalid")
     flags = os.O_RDONLY | _directory_flag() | _no_follow_flag()
     try:
