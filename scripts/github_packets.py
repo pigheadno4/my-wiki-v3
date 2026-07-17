@@ -42,7 +42,8 @@ _LOCK_FILENAMES = {
 _SAFE_PART = re.compile(r"[^A-Za-z0-9._-]+")
 _SHA = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
 _DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-_INDEX_KEYS = {"repo_id", "versions"}
+_INDEX_KEYS = {"capture_order", "repo_id", "versions"}
+_LEGACY_INDEX_KEYS = {"repo_id", "versions"}
 _ENTRY_KEYS = {
     "aliases",
     "capture_kind",
@@ -90,6 +91,7 @@ class VersionEntry:
 class VersionIndex:
     repo_id: str
     versions: Tuple[VersionEntry, ...]
+    capture_order: Tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -114,7 +116,7 @@ def load_version_index(path: Path, config: RepoConfig) -> VersionIndex:
         data = _load_json(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeDecodeError, ValueError, json.JSONDecodeError) as error:
         raise PacketError("invalid version index " + str(path)) from error
-    if type(data) is not dict or set(data) != _INDEX_KEYS:
+    if type(data) is not dict or set(data) not in (_INDEX_KEYS, _LEGACY_INDEX_KEYS):
         raise PacketError("version index has an invalid schema")
     if type(data["repo_id"]) is not str or data["repo_id"] != repo_id:
         raise PacketError("version index repository does not match " + repo_id)
@@ -134,12 +136,21 @@ def load_version_index(path: Path, config: RepoConfig) -> VersionIndex:
         raise PacketError("version index contains conflicting reference entries")
     if tuple(sorted(entries, key=_entry_key)) != entries:
         raise PacketError("version index entries are not in deterministic order")
-    return VersionIndex(repo_id, entries)
+    capture_order = data.get("capture_order", [entry.sha for entry in entries])
+    if (
+        type(capture_order) is not list
+        or any(type(sha) is not str for sha in capture_order)
+        or len(set(capture_order)) != len(capture_order)
+        or set(capture_order) != {entry.sha for entry in entries}
+    ):
+        raise PacketError("version index capture_order must contain every SHA exactly once")
+    return VersionIndex(repo_id, entries, tuple(capture_order))
 
 
 def save_version_index(path: Path, index: VersionIndex) -> None:
     """Atomically replace deterministic JSON generated state for one repository."""
     data = {
+        "capture_order": list(_capture_order(index)),
         "repo_id": index.repo_id,
         "versions": [_entry_to_json(entry) for entry in sorted(index.versions, key=_entry_key)],
     }
@@ -163,7 +174,11 @@ def record_snapshot(index: VersionIndex, snapshot: SnapshotRecord) -> VersionInd
         return _replace_entry(index, existing.sha, _merge_snapshot_evidence(existing, snapshot))
 
     entry = _entry_from_snapshot(snapshot)
-    return VersionIndex(index.repo_id, tuple(sorted(index.versions + (entry,), key=_entry_key)))
+    return VersionIndex(
+        index.repo_id,
+        tuple(sorted(index.versions + (entry,), key=_entry_key)),
+        _capture_order(index) + (entry.sha,),
+    )
 
 
 def select_prior(index: VersionIndex, ref: ResolvedRef) -> Optional[VersionEntry]:
@@ -177,7 +192,7 @@ def select_prior(index: VersionIndex, ref: ResolvedRef) -> Optional[VersionEntry
             for entry in candidates
             if entry.ref_kind == "branch" and entry.ref_name == ref.ref_name
         ]
-        return _latest_capture(compatible)
+        return _latest_owned_capture(index, compatible)
 
     packages = _selection_packages(ref)
     if packages:
@@ -331,6 +346,7 @@ def _replace_entry(index: VersionIndex, sha: str, updated: VersionEntry) -> Vers
     return VersionIndex(
         index.repo_id,
         tuple(sorted((updated if entry.sha == sha else entry for entry in index.versions), key=_entry_key)),
+        _capture_order(index),
     )
 
 
@@ -354,6 +370,21 @@ def _latest_capture(entries: Sequence[VersionEntry]) -> Optional[VersionEntry]:
     if not entries:
         return None
     return max(entries, key=lambda entry: (entry.collection_date, entry.snapshot_path, entry.sha))
+
+
+def _latest_owned_capture(
+    index: VersionIndex, entries: Sequence[VersionEntry]
+) -> Optional[VersionEntry]:
+    if not entries:
+        return None
+    positions = {sha: position for position, sha in enumerate(_capture_order(index))}
+    return max(entries, key=lambda entry: positions[entry.sha])
+
+
+def _capture_order(index: VersionIndex) -> Tuple[str, ...]:
+    if index.capture_order:
+        return index.capture_order
+    return tuple(entry.sha for entry in index.versions)
 
 
 def _package_for_ref(ref: ResolvedRef) -> str:

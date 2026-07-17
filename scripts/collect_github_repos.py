@@ -174,6 +174,10 @@ def collect_one(
                     ref = resolve_ref(config, inspection, selector)
                     evidence = None
                     if candidate is not None and not dry_run:
+                        ref = replace(
+                            ref,
+                            aliases=tuple(sorted(set(ref.aliases).union(candidate.aliases))),
+                        )
                         evidence = fetch_release_notes(
                             config, candidate, token=os.environ.get("GITHUB_TOKEN")
                         )

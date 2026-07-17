@@ -1,6 +1,6 @@
 """Deterministic GitHub release discovery and release-note evidence retrieval."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from functools import cmp_to_key
 import json
 from pathlib import Path
@@ -34,6 +34,7 @@ class ReleaseCandidate:
     object_sha: str
     commit_sha: str
     prerelease: bool
+    aliases: Tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -369,7 +370,11 @@ def _deduplicated_candidates(candidates: Sequence[ReleaseCandidate]) -> Tuple[Re
                 + ", ".join(commit_shas)
             )
             continue
-        selected[_version_key(aliases[0].version)] = min(aliases, key=_candidate_identity)
+        retained = min(aliases, key=_candidate_identity)
+        selected[_version_key(aliases[0].version)] = replace(
+            retained,
+            aliases=tuple(sorted({candidate.tag for candidate in aliases})),
+        )
     if conflicts:
         raise ReleaseSelectionError("; ".join(sorted(conflicts)))
     return tuple(sorted(selected.values(), key=cmp_to_key(_compare_candidates)))

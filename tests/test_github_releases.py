@@ -257,7 +257,9 @@ class GitHubReleasesTests(unittest.TestCase):
         selected = select_release_candidates(self._track(selector="v9.0.0"), aliases)
 
         self.assertEqual(1, len(selected))
+        self.assertEqual("9.0.0", selected[0].tag)
         self.assertEqual("commit-shared", selected[0].commit_sha)
+        self.assertEqual(("9.0.0", "v9.0.0"), selected[0].aliases)
 
     def test_semantic_aliases_on_different_commits_raise_release_evidence_conflict(self):
         aliases = (

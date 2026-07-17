@@ -856,12 +856,17 @@ class CollectGitHubReposTests(unittest.TestCase):
 
     def test_local_end_to_end_baseline_unchanged_change_and_compare(self):
         upstream = create_git_repo(self.root)
-        config = self.local_config(str(upstream), key_paths=("README.md", "docs"))
+        config = self.local_config(
+            str(upstream), key_paths=("README.md", "obsolete.md", "docs")
+        )
         commit_file(upstream, "README.md", "first\n", "first")
         first_sha = commit_file(upstream, "obsolete.md", "obsolete\n", "obsolete")
 
-        first = collect_one(self.root, config, ("default-branch",))
-        unchanged = collect_one(self.root, config, ("default-branch",))
+        with mock.patch(
+            "github_releases.urlopen", side_effect=AssertionError("network access")
+        ):
+            first = collect_one(self.root, config, ("default-branch",))
+            unchanged = collect_one(self.root, config, ("default-branch",))
 
         (upstream / "docs").mkdir()
         (upstream / "docs" / "new.md").write_text("new\n", encoding="utf-8")
@@ -871,8 +876,11 @@ class CollectGitHubReposTests(unittest.TestCase):
         run_git(["commit", "-m", "replace repository files"], upstream)
         second_sha = run_git(["rev-parse", "HEAD"], upstream)
 
-        second = collect_one(self.root, config, ("default-branch",))
-        endpoints = collect_one(self.root, config, (first_sha, second_sha))
+        with mock.patch(
+            "github_releases.urlopen", side_effect=AssertionError("network access")
+        ):
+            second = collect_one(self.root, config, ("default-branch",))
+            endpoints = collect_one(self.root, config, (first_sha, second_sha))
         self.assertEqual("unchanged", endpoints.state, endpoints.events)
         comparison = collect_github_repos.compare_one(self.root, config, first_sha, second_sha)
 
@@ -886,6 +894,39 @@ class CollectGitHubReposTests(unittest.TestCase):
             if path.name != ".promotion.lock"
         ]
         self.assertEqual(2, len(snapshots))
+
+        index = collect_github_repos.load_version_index(
+            collect_github_repos._version_index_path(self.root, config), config
+        )
+        first_entry = next(entry for entry in index.versions if entry.sha == first_sha)
+        second_entry = next(entry for entry in index.versions if entry.sha == second_sha)
+        expected_changes = (
+            "D\tREADME.md",
+            "A\tdocs/new.md",
+            "R100\tobsolete.md\tdocs/renamed.md",
+        )
+        delta_packet = json.loads(
+            (
+                self.root
+                / "tracking/github/repos/test/demo/packets"
+                / second.packet_ids[0]
+                / "packet.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(first_entry.snapshot_path, delta_packet["from_snapshot"])
+        self.assertEqual(second_entry.snapshot_path, delta_packet["to_snapshot"])
+        self.assertEqual(first_sha, delta_packet["from"]["sha"])
+        self.assertEqual(second_sha, delta_packet["to"]["sha"])
+        self.assertEqual(expected_changes, tuple(delta_packet["changed_files"]))
+
+        comparison_data = json.loads(
+            (comparison.directory / "packet.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(first_entry.snapshot_path, comparison.from_snapshot)
+        self.assertEqual(second_entry.snapshot_path, comparison.to_snapshot)
+        self.assertEqual(first_sha, comparison_data["from"]["sha"])
+        self.assertEqual(second_sha, comparison_data["to"]["sha"])
+        self.assertEqual(expected_changes, comparison.changed_files)
 
         packet_id = first.packet_ids[0]
         collect_github_repos._change_packet_state(
@@ -916,7 +957,7 @@ class CollectGitHubReposTests(unittest.TestCase):
         config = self.local_config(
             str(upstream),
             version_strategy="monorepo-packages",
-            key_paths=("CHANGELOG.md", "packages/widget/package.json"),
+            key_paths=("CHANGELOG.md", "README.md", "packages/widget/package.json"),
             version_tracks=(VersionTrack("v10", "all-stable", "all-stable"),),
         )
         release_notes = {}
@@ -931,7 +972,7 @@ class CollectGitHubReposTests(unittest.TestCase):
             )
             for name in ("v" + version,) + tuple(aliases):
                 tag(upstream, name)
-                release_notes[name] = ("notes " + version + "\n").encode("utf-8")
+                release_notes[name] = ("notes owned by " + name + "\n").encode("utf-8")
             return changelog
 
         commit_file(
@@ -954,7 +995,9 @@ class CollectGitHubReposTests(unittest.TestCase):
                 release_notes[candidate.tag],
             )
 
-        with mock.patch("collect_github_repos.fetch_release_notes", side_effect=release_evidence):
+        with mock.patch("collect_github_repos.fetch_release_notes", side_effect=release_evidence), mock.patch(
+            "github_releases.urlopen", side_effect=AssertionError("network access")
+        ):
             backfill = collect_one(self.root, config, release_mode="backfill")
         self.assertEqual(("10.0.0", "10.1.3", "10.1.5"), backfill.versions)
         self.assertEqual(3, len(backfill.packet_ids))
@@ -974,28 +1017,42 @@ class CollectGitHubReposTests(unittest.TestCase):
             snapshot = self.root / entry.snapshot_path
             self.assertEqual(changelogs[entry.version], (snapshot / "files/CHANGELOG.md").read_bytes())
             self.assertEqual(
-                release_notes["v" + entry.version], (snapshot / "release-notes.md").read_bytes()
+                b'{"name":"@acme/widget"}\n',
+                (snapshot / "files/packages/widget/package.json").read_bytes(),
             )
-            packet = next(
-                path
-                for path in (self.root / "tracking/github/repos/test/demo/packets").iterdir()
-                if path.is_dir() and entry.sha[:7] in path.name
+            self.assertEqual(
+                release_notes[entry.ref_name], (snapshot / "release-notes.md").read_bytes()
             )
-            state = json.loads((packet / "state-events.jsonl").read_text(encoding="utf-8"))
-            self.assertEqual("awaiting-review", state["state"])
+            metadata = collect_github_repos._snapshot_metadata(snapshot / "snapshot.md")
+            self.assertEqual(list(entry.aliases), metadata["ref"]["aliases"])
+            self.assertEqual(
+                "https://api.github.test/releases/" + entry.ref_name,
+                metadata["release_notes"]["source_url"],
+            )
 
-        with mock.patch("collect_github_repos.fetch_release_notes", side_effect=release_evidence):
+        alias_entry = next(entry for entry in index.versions if entry.version == "10.0.0")
+        self.assertEqual("10.0.0", alias_entry.ref_name)
+        self.assertEqual(("10.0.0", "v10.0.0"), alias_entry.aliases)
+
+        with mock.patch("collect_github_repos.fetch_release_notes", side_effect=release_evidence), mock.patch(
+            "github_releases.urlopen", side_effect=AssertionError("network access")
+        ):
             unchanged = collect_one(self.root, config, release_mode="backfill")
         self.assertEqual((), unchanged.packet_ids)
 
         changelogs["10.1.6"] = add_release("10.1.6")
-        with mock.patch("collect_github_repos.fetch_release_notes", side_effect=release_evidence):
+        with mock.patch("collect_github_repos.fetch_release_notes", side_effect=release_evidence), mock.patch(
+            "github_releases.urlopen", side_effect=AssertionError("network access")
+        ):
             future = collect_one(self.root, config, release_mode="future")
         self.assertEqual(("10.1.6",), future.versions)
         self.assertEqual(1, len(future.packet_ids))
 
         default_sha = commit_file(upstream, "README.md", "default branch only\n", "default branch")
-        default_branch = collect_one(self.root, config, ("default-branch",))
+        with mock.patch(
+            "github_releases.urlopen", side_effect=AssertionError("network access")
+        ):
+            default_branch = collect_one(self.root, config, ("default-branch",))
         self.assertEqual("collected-baseline", default_branch.state)
         index = collect_github_repos.load_version_index(
             collect_github_repos._version_index_path(self.root, config), config
@@ -1004,6 +1061,60 @@ class CollectGitHubReposTests(unittest.TestCase):
         latest_release = next(entry for entry in index.versions if entry.version == "10.1.6")
         self.assertEqual("branch", default_entry.ref_kind)
         self.assertNotEqual(default_entry.snapshot_path, latest_release.snapshot_path)
+
+        snapshots = [
+            path
+            for path in (self.root / "raw/github/test/demo/snapshots").iterdir()
+            if path.name != ".promotion.lock"
+        ]
+        packets = [
+            path
+            for path in (self.root / "tracking/github/repos/test/demo/packets").iterdir()
+            if path.is_dir()
+        ]
+        self.assertEqual(5, len(index.versions))
+        self.assertEqual(5, len(snapshots))
+        self.assertEqual(5, len(packets))
+
+        packet_by_sha = {}
+        for packet in packets:
+            contract = json.loads((packet / "packet.json").read_text(encoding="utf-8"))
+            state_events = [
+                json.loads(line)
+                for line in (packet / "state-events.jsonl").read_text(
+                    encoding="utf-8"
+                ).splitlines()
+            ]
+            self.assertEqual("awaiting-review", contract["initial_state"])
+            self.assertEqual(("awaiting-review",), tuple(row["state"] for row in state_events))
+            packet_by_sha[contract["to"]["sha"]] = contract
+
+        self.assertEqual({entry.sha for entry in index.versions}, set(packet_by_sha))
+        for entry in index.versions:
+            snapshot = self.root / entry.snapshot_path
+            contract = packet_by_sha[entry.sha]
+            metadata = collect_github_repos._snapshot_metadata(snapshot / "snapshot.md")
+            self.assertEqual(entry.snapshot_path, contract["to_snapshot"])
+            self.assertEqual(list(entry.aliases), contract["to"]["aliases"])
+            self.assertEqual(list(entry.aliases), metadata["ref"]["aliases"])
+            self.assertEqual(
+                b'{"name":"@acme/widget"}\n',
+                (snapshot / "files/packages/widget/package.json").read_bytes(),
+            )
+            expected_changelog = changelogs.get(entry.version, changelogs["10.1.6"])
+            self.assertEqual(
+                expected_changelog, (snapshot / "files/CHANGELOG.md").read_bytes()
+            )
+            if entry.ref_kind == "branch":
+                self.assertIsNone(metadata["release_notes"])
+                self.assertEqual("", entry.release_notes_path)
+                self.assertEqual(
+                    b"default branch only\n", (snapshot / "files/README.md").read_bytes()
+                )
+            else:
+                self.assertEqual(
+                    release_notes[entry.ref_name], (snapshot / "release-notes.md").read_bytes()
+                )
 
     def local_config(self, url, **overrides):
         return self.config(

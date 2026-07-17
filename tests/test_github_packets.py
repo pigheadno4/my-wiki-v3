@@ -236,6 +236,43 @@ class GitHubPacketTests(unittest.TestCase):
         with self.assertRaises(PacketError):
             load_version_index(path, self.config)
 
+    def test_load_version_index_rejects_duplicate_immutable_ref_identity(self):
+        document = self.version_index_json()
+        duplicate = dict(
+            document["versions"][0],
+            sha="b" * 40,
+            snapshot_path="raw/github/acme/widgets/snapshots/v2",
+            release_notes_path="raw/github/acme/widgets/snapshots/v2/release-notes.md",
+            changelog_paths=[
+                "raw/github/acme/widgets/snapshots/v2/files/CHANGELOG.md"
+            ],
+        )
+        document["versions"].append(duplicate)
+        path = self.version_index_path()
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(document), encoding="utf-8")
+
+        with self.assertRaisesRegex(PacketError, "conflicting reference entries"):
+            load_version_index(path, self.config)
+
+    def test_version_index_capture_order_is_complete_unique_and_legacy_compatible(self):
+        path = self.version_index_path()
+        path.parent.mkdir(parents=True, exist_ok=True)
+        legacy = self.version_index_json()
+        path.write_text(json.dumps(legacy), encoding="utf-8")
+
+        loaded = load_version_index(path, self.config)
+
+        self.assertEqual(("a" * 40,), loaded.capture_order)
+        save_version_index(path, loaded)
+        self.assertEqual(loaded, load_version_index(path, self.config))
+        for invalid in ([], ["a" * 40, "a" * 40], ["b" * 40]):
+            with self.subTest(capture_order=invalid):
+                current = dict(legacy, capture_order=invalid)
+                path.write_text(json.dumps(current), encoding="utf-8")
+                with self.assertRaisesRegex(PacketError, "capture_order"):
+                    load_version_index(path, self.config)
+
     def test_packet_root_must_be_tracking_github_without_raw_or_symlink_escape(self):
         raw_packet_root = self.root / "raw" / "github" / "packets"
         with self.assertRaises(PacketError):
@@ -383,6 +420,50 @@ class GitHubPacketTests(unittest.TestCase):
         self.assertIsNotNone(prior)
         self.assertEqual("a" * 40, prior.sha)
 
+    def test_branch_prior_selection_uses_immediately_preceding_same_day_capture(self):
+        def branch_snapshot(sha):
+            record = self.snapshot(sha, package="")
+            return SnapshotRecord(
+                **dict(
+                    vars(record),
+                    ref=ResolvedRef(
+                        "acme/widgets",
+                        "branch",
+                        "main",
+                        sha,
+                        "main",
+                        (),
+                        "2026-07-15T00:00:00+00:00",
+                        None,
+                    ),
+                    collection_date="2026-07-15",
+                    target_path=(
+                        self.raw_root
+                        / "acme/widgets/snapshots"
+                        / ("2026-07-15-main-" + sha[:7])
+                    ),
+                )
+            )
+
+        index = record_snapshot(self.empty_index(), branch_snapshot("f" * 40))
+        index = record_snapshot(index, branch_snapshot("a" * 40))
+        current_record = branch_snapshot("b" * 40)
+
+        prior = select_prior(index, current_record.ref)
+        with mock.patch("github_packets._git_delta", return_value=((), "")):
+            packet = build_delta_packet(
+                self.config, prior, current_record, self.repo, self.packet_root
+            )
+        contract = json.loads(
+            (packet.directory / "packet.json").read_text(encoding="utf-8")
+        )
+
+        self.assertIsNotNone(prior)
+        self.assertEqual("a" * 40, prior.sha)
+        self.assertEqual(prior.snapshot_path, packet.from_snapshot)
+        self.assertEqual("a" * 40, contract["from"]["sha"])
+        self.assertEqual("b" * 40, contract["to"]["sha"])
+
     def test_supplement_updates_evidence_without_creating_another_version(self):
         canonical = self.snapshot("a" * 40, aliases=("v1.0.0",))
         index = record_snapshot(self.empty_index(), canonical)
@@ -420,7 +501,7 @@ class GitHubPacketTests(unittest.TestCase):
 
         text = path.read_text(encoding="utf-8")
         self.assertTrue(text.endswith("\n"))
-        self.assertEqual(["repo_id", "versions"], list(json.loads(text)))
+        self.assertEqual(["capture_order", "repo_id", "versions"], list(json.loads(text)))
         self.assertEqual(index, load_version_index(path, self.config))
 
     def test_delta_packet_records_add_modify_rename_and_deletion_with_raw_evidence(self):
