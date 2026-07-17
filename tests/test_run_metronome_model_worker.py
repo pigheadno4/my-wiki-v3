@@ -19,6 +19,7 @@ if str(SCRIPTS) not in sys.path:
 from run_metronome_model_worker import (  # noqa: E402
     build_codex_command,
     build_page_profile,
+    common_git_dir,
     recover_attempt,
     repair_mandatory_tags,
     repair_raw_link,
@@ -32,6 +33,14 @@ from metronome_model_runtime import (  # noqa: E402
     validate_run_id,
     write_json_atomic,
 )
+
+
+def _pid_is_alive(pid):
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    return True
 
 
 class ModelWorkerRunnerTests(unittest.TestCase):
@@ -173,13 +182,23 @@ class ModelWorkerRunnerTests(unittest.TestCase):
     def test_job_lock_is_shared_across_worktrees_but_not_jobs(self):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
-        common_git_dir = Path(tmp.name) / "repository.git"
+        shared_git_dir = Path(tmp.name) / "repository.git"
         worktree_a = Path(tmp.name) / "worktree-a"
         worktree_b = Path(tmp.name) / "worktree-b"
         worktree_a.mkdir()
         worktree_b.mkdir()
 
-        with job_lock(common_git_dir, "metronome", "terra-home"):
+        from unittest.mock import patch
+        with patch(
+            "run_metronome_model_worker.subprocess.check_output",
+            side_effect=[f"{shared_git_dir}\n", f"{shared_git_dir}\n"],
+        ):
+            resolved_a = common_git_dir(worktree_a)
+            resolved_b = common_git_dir(worktree_b)
+
+        self.assertEqual(shared_git_dir, resolved_a)
+        self.assertEqual(resolved_a, resolved_b)
+        with job_lock(resolved_a, "metronome", "terra-home"):
             script = (
                 "import sys\n"
                 "from pathlib import Path\n"
@@ -189,13 +208,13 @@ class ModelWorkerRunnerTests(unittest.TestCase):
                 "    pass\n"
             )
             duplicate = subprocess.run(
-                [sys.executable, "-c", script, str(common_git_dir), "terra-home"],
+                [sys.executable, "-c", script, str(resolved_b), "terra-home"],
                 cwd=worktree_b,
                 capture_output=True,
                 text=True,
             )
             unrelated = subprocess.run(
-                [sys.executable, "-c", script, str(common_git_dir), "terra-other"],
+                [sys.executable, "-c", script, str(resolved_b), "terra-other"],
                 cwd=worktree_b,
                 capture_output=True,
                 text=True,
@@ -206,7 +225,7 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         self.assertIn("already locked", duplicate.stderr)
         self.assertEqual(0, unrelated.returncode)
 
-        self.assertTrue((common_git_dir / "metronome-model-locks").is_dir())
+        self.assertTrue((shared_git_dir / "metronome-model-locks").is_dir())
 
     def test_job_lock_is_kernel_released_without_deleting_its_lock_file(self):
         tmp = tempfile.TemporaryDirectory()
@@ -274,6 +293,81 @@ class ModelWorkerRunnerTests(unittest.TestCase):
             time.sleep(0.02)
         else:
             self.fail("process-group cleanup left a descendant alive")
+
+    def test_term_honoring_process_group_finishes_during_grace(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        child_pid_path = Path(tmp.name) / "child.pid"
+        parent_code = (
+            "import pathlib, subprocess, sys, time; "
+            "child = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(30)']); "
+            "pathlib.Path(sys.argv[1]).write_text(str(child.pid), encoding='utf-8'); "
+            "time.sleep(30)"
+        )
+        process = subprocess.Popen(
+            [sys.executable, "-c", parent_code, str(child_pid_path)],
+            start_new_session=True,
+        )
+        self.addCleanup(
+            lambda: terminate_process_group(process, grace_seconds=0.01)
+            if process.poll() is None
+            else None
+        )
+        deadline = time.monotonic() + 2
+        while not child_pid_path.is_file() and time.monotonic() < deadline:
+            time.sleep(0.01)
+        self.assertTrue(child_pid_path.is_file())
+        child_pid = int(child_pid_path.read_text(encoding="utf-8"))
+
+        self.addCleanup(
+            lambda: os.kill(child_pid, signal.SIGKILL)
+            if _pid_is_alive(child_pid)
+            else None
+        )
+
+        termination = terminate_process_group(process, grace_seconds=0.05)
+
+        self.assertEqual("terminated", termination["grace_outcome"])
+        self.assertIsNone(termination["escalation_signal"])
+        self.assertIsNotNone(termination["final_return_code"])
+        deadline = time.monotonic() + 2
+        while time.monotonic() < deadline:
+            try:
+                os.kill(child_pid, 0)
+            except ProcessLookupError:
+                break
+            time.sleep(0.02)
+        else:
+            self.fail("TERM-honoring cleanup left a descendant alive")
+
+    def test_live_timeout_is_logical_124_and_does_not_retry(self):
+        root, job_path, job = self.make_root()
+        job["timeout_seconds"] = 1
+        job_path.write_text(json.dumps(job), encoding="utf-8")
+        command = [
+            sys.executable,
+            "-c",
+            "import signal, time; signal.signal(signal.SIGTERM, signal.SIG_IGN); time.sleep(30)",
+        ]
+
+        from unittest.mock import patch
+        with patch("run_metronome_model_worker.build_codex_command", return_value=command), patch(
+            "run_metronome_model_worker.terminate_process_group",
+            side_effect=lambda process: terminate_process_group(process, grace_seconds=0.05),
+        ):
+            self.assertEqual(
+                1,
+                run_worker(root, job_path, "2026-07-17", run_id="terra-timeout"),
+            )
+
+        receipt_path = resolve_run_dir(root, job, "terra-timeout") / "model-worker-receipt.json"
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        self.assertEqual("failed", receipt["status"])
+        self.assertEqual(1, receipt["attempt_count"])
+        self.assertEqual(124, receipt["process_exit_code"])
+        self.assertEqual(124, receipt["attempts"][0]["process_exit_code"])
+        self.assertEqual("killed", receipt["termination"]["grace_outcome"])
+        self.assertLess(receipt["termination"]["final_return_code"], 0)
 
     def test_existing_diagnostic_run_is_rejected_before_runner_invocation(self):
         root, job_path, job = self.make_root()

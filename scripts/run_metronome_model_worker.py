@@ -281,7 +281,7 @@ def run_process_in_new_group(
         message = "worker attempt timed out"
         stderr = f"{stderr}\n{message}" if stderr else message
         return (
-            subprocess.CompletedProcess(command, process.returncode, stdout, stderr),
+            subprocess.CompletedProcess(command, 124, stdout, stderr),
             termination,
         )
 
@@ -538,7 +538,7 @@ def _run_worker_unlocked(
             last_raw_output_path = written_raw_output_path
             last_normalized_path = written_normalized_path
             last_termination = termination
-            if result.returncode == 124:
+            if termination is not None or result.returncode == 124:
                 validation_errors = errors
                 break
             if not errors and output is not None:

@@ -91,22 +91,40 @@ def terminate_process_group(
         return metadata
     try:
         os.killpg(process_group, signal.SIGTERM)
-    except ProcessLookupError:
+    except (PermissionError, ProcessLookupError):
         metadata["grace_outcome"] = "already_exited"
     else:
-        # Waiting out the grace period rather than merely waiting for the
-        # parent avoids leaving an inherited child alive after its parent has
-        # already exited from TERM.
-        time.sleep(max(0.0, grace_seconds))
-        metadata["escalation_signal"] = "SIGKILL"
-        try:
-            os.killpg(process_group, signal.SIGKILL)
-        except ProcessLookupError:
-            metadata["grace_outcome"] = "terminated"
-            metadata["escalation_signal"] = None
-        else:
-            metadata["grace_outcome"] = "killed"
-    process.wait()
+        deadline = time.monotonic() + max(0.0, grace_seconds)
+        while True:
+            if process.poll() is None:
+                try:
+                    process.wait(timeout=min(0.05, max(0.0, deadline - time.monotonic())))
+                except subprocess.TimeoutExpired:
+                    pass
+            try:
+                os.killpg(process_group, 0)
+            except ProcessLookupError:
+                metadata["grace_outcome"] = "terminated"
+                break
+            except PermissionError:
+                # Some sandboxes report a dead/reaped group as EPERM. Once the
+                # leader is reaped, do not convert that zombie-only state into
+                # an inaccurate KILL outcome.
+                if process.poll() is not None:
+                    metadata["grace_outcome"] = "terminated"
+                    break
+            if time.monotonic() >= deadline:
+                metadata["escalation_signal"] = "SIGKILL"
+                try:
+                    os.killpg(process_group, signal.SIGKILL)
+                except (PermissionError, ProcessLookupError):
+                    metadata["grace_outcome"] = "terminated"
+                    metadata["escalation_signal"] = None
+                else:
+                    metadata["grace_outcome"] = "killed"
+                break
+    if process.poll() is None:
+        process.wait()
     metadata["final_return_code"] = process.returncode
     return metadata
 
