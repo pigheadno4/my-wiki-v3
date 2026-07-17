@@ -630,6 +630,37 @@ class ModelHealthProbeTests(unittest.TestCase):
             .exists()
         )
 
+    def test_late_progress_failure_uses_outer_terminal_receipt_boundary(self):
+        root = self.make_root()
+        run_id = "luna-progress-failure"
+        real_append = __import__(
+            "run_metronome_model_health_probe"
+        ).append_progress_event
+
+        def fail_classification(path, event, **details):
+            if event == "model_activity_classified":
+                raise OSError("progress storage interrupted")
+            return real_append(path, event, **details)
+
+        with patch(
+            "run_metronome_model_health_probe.append_progress_event",
+            side_effect=fail_classification,
+        ):
+            result = run_health_probe(
+                root,
+                run_id,
+                executor=self.fake_executor('{"status":"ok"}'),
+                runtime_metadata_provider=lambda **_kwargs: self.complete_metadata(),
+            )
+
+        receipt = self.receipt(root, run_id)
+        self.assertEqual(1, result)
+        self.assertEqual("failed", receipt["status"])
+        self.assertTrue(
+            any("progress storage interrupted" in item for item in receipt["failures"])
+        )
+        self.assertFalse(receipt["canonical_coverage_eligible"])
+
     def test_codex_home_setup_failure_after_claim_publishes_terminal_receipt(self):
         root = self.make_root()
 

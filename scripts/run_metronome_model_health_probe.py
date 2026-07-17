@@ -143,6 +143,41 @@ def _relative(path: Path, root: Path) -> str:
     return path.relative_to(root).as_posix()
 
 
+def _unhandled_failure_receipt(state: Dict[str, Any], exc: BaseException) -> int:
+    """Publish the terminal fallback for any failure after this process claimed a run."""
+    now = time.monotonic()
+    deadline = state["deadline_monotonic"]
+    receipt = {
+        "schema_version": 1,
+        "diagnostic_type": "model_health_probe",
+        "run_id": state["run_id"],
+        "status": "failed",
+        "model_provider": "openai",
+        "model": MODEL,
+        "reasoning_effort": REASONING_EFFORT,
+        "input_mode": "fixed-prompt",
+        "started_at": state["started_at"],
+        "finished_at": _utc_now(),
+        "total_timeout_seconds": state["total_timeout_seconds"],
+        "deadline_monotonic": deadline,
+        "total_elapsed_seconds": round(now - state["started_clock"], 6),
+        "within_total_timeout": now <= deadline,
+        "receipt_published_within_deadline": now <= deadline,
+        "process_exit_code": None,
+        "runtime_metadata": None,
+        "artifact_sha256": {},
+        "output_path": None,
+        "normalized_output_path": None,
+        "events_path": None,
+        "stderr_path": None,
+        "progress_path": None,
+        "failures": [f"unhandled post-claim health probe failure: {exc}"],
+        "canonical_coverage_eligible": False,
+    }
+    write_json_atomic(state["receipt_path"], receipt)
+    return 1
+
+
 def run_health_probe(
     root: Path,
     run_id: str,
@@ -150,6 +185,35 @@ def run_health_probe(
     executor: Callable[..., AttemptExecution] = run_streaming_process,
     runtime_metadata_provider: Callable[..., Dict[str, Any]] = build_runtime_metadata,
     total_timeout_seconds: float = TOTAL_TIMEOUT_SECONDS,
+) -> int:
+    """Run a probe with one fail-closed boundary around the claimed lifecycle."""
+    claim_state: Dict[str, Any] = {}
+    try:
+        return _run_health_probe_impl(
+            root,
+            run_id,
+            executor=executor,
+            runtime_metadata_provider=runtime_metadata_provider,
+            total_timeout_seconds=total_timeout_seconds,
+            claim_state=claim_state,
+        )
+    except BaseException as exc:
+        if not claim_state.get("claimed"):
+            raise
+        result = _unhandled_failure_receipt(claim_state, exc)
+        if isinstance(exc, (KeyboardInterrupt, SystemExit)):
+            raise
+        return result
+
+
+def _run_health_probe_impl(
+    root: Path,
+    run_id: str,
+    *,
+    executor: Callable[..., AttemptExecution],
+    runtime_metadata_provider: Callable[..., Dict[str, Any]],
+    total_timeout_seconds: float,
+    claim_state: Dict[str, Any],
 ) -> int:
     """Run one immutable, diagnostic-only probe and atomically publish its receipt."""
     root = Path(root).resolve()
@@ -171,6 +235,17 @@ def run_health_probe(
         started_clock = time.monotonic()
         deadline_monotonic = started_clock + total_timeout_seconds
         receipt_path = probe_dir / "model-health-probe-receipt.json"
+        claim_state.update(
+            {
+                "claimed": True,
+                "run_id": run_id,
+                "started_at": started_at,
+                "started_clock": started_clock,
+                "deadline_monotonic": deadline_monotonic,
+                "total_timeout_seconds": total_timeout_seconds,
+                "receipt_path": receipt_path,
+            }
+        )
         attempt_dir = probe_dir / "attempt-1"
         events_path = attempt_dir / "events.jsonl"
         stderr_path = attempt_dir / "stderr.log"
