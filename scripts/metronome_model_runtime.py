@@ -340,6 +340,8 @@ def run_streaming_process(
             append_progress_event(progress_path, "kill_sent")
         raise
     finally:
+        if selector.get_map():
+            _close_selected_streams(selector)
         selector.close()
 
     if process.poll() is None:
