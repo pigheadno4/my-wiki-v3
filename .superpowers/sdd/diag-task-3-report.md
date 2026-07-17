@@ -91,3 +91,64 @@ no paths.
 None for Task 3. Runtime metadata intentionally describes the existing fixed
 staged-file behavior without adding the Task 4 input-mode interface. The Task
 5 health probe and any live Codex diagnostic execution remain unimplemented.
+
+## Fix Review: Timeout State Machine and Metadata Injection
+
+### Review findings addressed
+
+1. Streaming completion now requires the session process group, its
+   descendants, and both inherited output pipes to resolve. The timeout clock
+   remains authoritative after the process-group leader exits. A real
+   regression process exits its leader while a child keeps both inherited
+   pipes open; the attempt now returns logical `124` within the bounded
+   tolerance and leaves no child alive.
+2. Timeout cleanup is selector-integrated. At the deadline the executor sends
+   TERM, continues draining both pipes during the grace period, sends KILL only
+   if the process group is still alive after grace, continues draining after
+   termination, and applies a bounded final pipe cleanup. A real TERM handler
+   writes 256 KiB—well above pipe capacity—and the test proves every byte is
+   preserved with `grace_outcome: terminated` and no KILL escalation.
+3. Diagnostic calls with an injected runner accept a
+   `runtime_metadata_provider`. Live execution always uses the real executable
+   probe. Injected deterministic execution either uses its supplied provider or
+   records host-CLI metadata as unavailable while still hashing the raw,
+   template, rendered prompt, and schema inputs. The regression runs with an
+   empty `PATH` and a real-probe function that raises if called.
+
+### RED evidence
+
+The three review regressions failed against commit `e94c4c0`:
+
+- the leader-exit case returned `0` instead of logical `124` after waiting for
+  the inherited-pipe child;
+- the blocking TERM path preserved only 65,536 of 262,144 emitted bytes and
+  escalated instead of draining;
+- `run_worker()` rejected the new `runtime_metadata_provider` argument.
+
+### GREEN evidence
+
+The three focused regressions pass in 0.247 seconds. Compatibility and full
+verification results:
+
+```text
+PYTHONPYCACHEPREFIX=/tmp/wiki-v2-pycache python3 -m unittest \
+  tests.test_run_metronome_model_worker tests.test_metronome_ingest_pilot -v
+# 54 tests passed
+
+PYTHONPYCACHEPREFIX=/tmp/wiki-v2-pycache python3 -m unittest discover -s tests -v
+# 84 tests passed
+
+PYTHONPYCACHEPREFIX=/tmp/wiki-v2-pycache python3 -m py_compile \
+  scripts/metronome_model_runtime.py scripts/run_metronome_model_worker.py
+git diff --check
+```
+
+Compilation and diff checks passed. The protected-path check again reported no
+changes under `raw/metronome`, `wiki`, historical run artifacts, or diagnostic
+evidence directories.
+
+### Concerns
+
+None. The five-second production grace remains unchanged; the selector now
+uses that grace without pausing output drainage. Input modes and health probes
+remain outside Task 3.

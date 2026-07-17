@@ -185,6 +185,31 @@ def build_runtime_metadata(
     }
 
 
+def _build_injected_runtime_metadata(
+    *,
+    raw_bytes: bytes,
+    prompt_template_bytes: bytes,
+    rendered_prompt: str,
+    schema_path: Path,
+    timeout_seconds: int,
+    **_ignored: Any,
+) -> Dict[str, Any]:
+    """Describe deterministic injected attempts without inspecting a host CLI."""
+    return {
+        "sha256": {
+            "raw_text": _sha256_bytes(raw_bytes),
+            "prompt_template": _sha256_bytes(prompt_template_bytes),
+            "rendered_prompt": _sha256_bytes(rendered_prompt.encode("utf-8")),
+            "output_schema": _sha256_bytes(schema_path.read_bytes()),
+            "codex_executable": None,
+        },
+        "codex_executable": None,
+        "codex_cli_version": None,
+        "timeout_seconds": timeout_seconds,
+        "metadata_unavailable_reason": "Attempt used an injected deterministic runner.",
+    }
+
+
 def extract_token_usage(events: str) -> Optional[Dict[str, Any]]:
     usage: Optional[Dict[str, Any]] = None
     for line in events.splitlines():
@@ -321,7 +346,6 @@ def run_process_in_new_group(
         timeout=timeout,
         env=env,
         attempt_dir=attempt_dir,
-        terminator=terminate_process_group,
     )
 
 
@@ -467,6 +491,7 @@ def _run_worker_unlocked(
     runner: Optional[Callable[..., Any]] = None,
     run_id: Optional[str] = None,
     lock_acquired_at: Optional[str] = None,
+    runtime_metadata_provider: Optional[Callable[..., Dict[str, Any]]] = None,
 ) -> int:
     job_file = job_path if job_path.is_absolute() else root / job_path
     job = load_json(job_file)
@@ -553,7 +578,12 @@ def _run_worker_unlocked(
                     "lock_acquired",
                     acquired_at=lock_acquired_at or started_at,
                 )
-                runtime_metadata = build_runtime_metadata(
+                metadata_provider = (
+                    build_runtime_metadata
+                    if runner is None
+                    else runtime_metadata_provider or _build_injected_runtime_metadata
+                )
+                runtime_metadata = metadata_provider(
                     raw_bytes=raw_bytes,
                     prompt_template_bytes=template_bytes,
                     rendered_prompt=prompt,
@@ -818,6 +848,7 @@ def run_worker(
     ingest_date: str,
     runner: Optional[Callable[..., Any]] = None,
     run_id: Optional[str] = None,
+    runtime_metadata_provider: Optional[Callable[..., Dict[str, Any]]] = None,
 ) -> int:
     """Run one job, serializing diagnostic executions across Git worktrees."""
     if run_id is None:
@@ -839,6 +870,7 @@ def run_worker(
                 runner=runner,
                 run_id=run_id,
                 lock_acquired_at=utc_now(),
+                runtime_metadata_provider=runtime_metadata_provider,
             )
     except RuntimeError as exc:
         print(exc)

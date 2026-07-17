@@ -289,6 +289,78 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         self.assertEqual(complete + truncated, (attempt_dir / "events.jsonl").read_bytes())
         self.assertEqual(stderr, (attempt_dir / "stderr.log").read_bytes())
 
+    def test_timeout_survives_leader_exit_and_kills_child_holding_inherited_pipes(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        root = Path(tmp.name)
+        child_pid_path = root / "child.pid"
+        parent_code = (
+            "import pathlib, subprocess, sys; "
+            "child = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(2)']); "
+            "pathlib.Path(sys.argv[1]).write_text(str(child.pid), encoding='utf-8')"
+        )
+        started = time.monotonic()
+
+        result = run_process_in_new_group(
+            [sys.executable, "-c", parent_code, str(child_pid_path)],
+            cwd=root,
+            timeout=0.1,
+            env=os.environ.copy(),
+            attempt_dir=root / "attempt-1",
+        )
+        elapsed = time.monotonic() - started
+        child_pid = int(child_pid_path.read_text(encoding="utf-8"))
+        self.addCleanup(
+            lambda: os.kill(child_pid, signal.SIGKILL)
+            if _pid_is_alive(child_pid)
+            else None
+        )
+
+        self.assertEqual(124, result.returncode)
+        self.assertLess(elapsed, 1.0)
+        deadline = time.monotonic() + 1
+        while _pid_is_alive(child_pid) and time.monotonic() < deadline:
+            time.sleep(0.01)
+        self.assertFalse(_pid_is_alive(child_pid), "timeout left inherited-pipe child alive")
+        self.assertIsNotNone(result.termination)
+
+    def test_term_handler_output_larger_than_pipe_capacity_is_drained_without_kill(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        root = Path(tmp.name)
+        payload_size = 256 * 1024
+        child_code = (
+            "import os, signal, sys, time\n"
+            f"payload = b'x' * {payload_size}\n"
+            "def handle_term(_signal, _frame):\n"
+            "    offset = 0\n"
+            "    while offset < len(payload):\n"
+            "        offset += os.write(sys.stdout.fileno(), payload[offset:])\n"
+            "    raise SystemExit(0)\n"
+            "signal.signal(signal.SIGTERM, handle_term)\n"
+            "while True:\n"
+            "    time.sleep(1)\n"
+        )
+
+        from unittest.mock import patch
+        with patch(
+            "run_metronome_model_worker.terminate_process_group",
+            side_effect=lambda process: terminate_process_group(process, grace_seconds=0.2),
+        ):
+            result = run_process_in_new_group(
+                [sys.executable, "-c", child_code],
+                cwd=root,
+                timeout=0.1,
+                env=os.environ.copy(),
+                attempt_dir=root / "attempt-1",
+            )
+
+        self.assertEqual(124, result.returncode)
+        self.assertEqual(payload_size, result.streamed_stdout_bytes)
+        self.assertEqual(b"x" * payload_size, (root / "attempt-1/events.jsonl").read_bytes())
+        self.assertEqual("terminated", result.termination["grace_outcome"])
+        self.assertIsNone(result.termination["escalation_signal"])
+
     def test_runtime_metadata_hashes_all_inputs_and_records_version_and_timeout(self):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
@@ -354,21 +426,17 @@ class ModelWorkerRunnerTests(unittest.TestCase):
                 stderr="warning",
             )
 
-        from unittest.mock import patch
-        with patch(
-            "run_metronome_model_worker.build_runtime_metadata",
-            return_value=metadata,
-        ):
-            self.assertEqual(
-                0,
-                run_worker(
-                    root,
-                    job_path,
-                    "2026-07-17",
-                    runner=fake_runner,
-                    run_id="terra-streaming",
-                ),
-            )
+        self.assertEqual(
+            0,
+            run_worker(
+                root,
+                job_path,
+                "2026-07-17",
+                runner=fake_runner,
+                run_id="terra-streaming",
+                runtime_metadata_provider=lambda **_kwargs: metadata,
+            ),
+        )
 
         run_dir = resolve_run_dir(root, job, "terra-streaming")
         receipt = json.loads((run_dir / "model-worker-receipt.json").read_text(encoding="utf-8"))
@@ -385,6 +453,58 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         self.assertIn("lock_acquired", [item["event"] for item in progress])
         self.assertIn("validation_completed", [item["event"] for item in progress])
         self.assertIn("receipt_published", [item["event"] for item in progress])
+
+    def test_injected_runner_uses_metadata_provider_without_real_codex_or_path(self):
+        root, job_path, job = self.make_root()
+        metadata = {
+            "sha256": {
+                "raw_text": "a",
+                "prompt_template": "b",
+                "rendered_prompt": "c",
+                "output_schema": "d",
+                "codex_executable": "e",
+            },
+            "codex_executable": "/deterministic/fake-codex",
+            "codex_cli_version": "codex-cli deterministic",
+            "timeout_seconds": 900,
+        }
+        provider_calls = []
+
+        def metadata_provider(**kwargs):
+            provider_calls.append(kwargs)
+            return metadata
+
+        def fake_runner(command, **_kwargs):
+            Path(command[command.index("-o") + 1]).write_text(
+                json.dumps(self.valid_output(job)), encoding="utf-8"
+            )
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+        from unittest.mock import patch
+        with patch.dict(os.environ, {"PATH": ""}), patch(
+            "run_metronome_model_worker.build_runtime_metadata",
+            side_effect=AssertionError("injected runner must not probe real Codex"),
+        ):
+            self.assertEqual(
+                0,
+                run_worker(
+                    root,
+                    job_path,
+                    "2026-07-17",
+                    runner=fake_runner,
+                    run_id="terra-injected",
+                    runtime_metadata_provider=metadata_provider,
+                ),
+            )
+
+        self.assertEqual(1, len(provider_calls))
+        receipt = json.loads(
+            (
+                resolve_run_dir(root, job, "terra-injected")
+                / "model-worker-receipt.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(metadata, receipt["runtime_metadata"])
 
     def test_job_lock_is_shared_across_worktrees_but_not_jobs(self):
         tmp = tempfile.TemporaryDirectory()

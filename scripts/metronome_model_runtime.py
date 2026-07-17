@@ -14,7 +14,7 @@ import signal
 import subprocess
 import time
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Dict, Iterator, List, Optional, Tuple
 
 
 RUN_ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
@@ -100,6 +100,32 @@ def _consume_stdout_lines(
     return parsed, usage, parsed_any
 
 
+def _process_group_exists(process_group: int) -> bool:
+    try:
+        os.killpg(process_group, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+
+
+def _signal_process_group(process_group: int, sent_signal: signal.Signals) -> bool:
+    try:
+        os.killpg(process_group, sent_signal)
+    except (PermissionError, ProcessLookupError):
+        return False
+    return True
+
+
+def _close_selected_streams(selector: selectors.BaseSelector) -> None:
+    for key in list(selector.get_map().values()):
+        try:
+            selector.unregister(key.fileobj)
+        finally:
+            key.fileobj.close()
+
+
 def run_streaming_process(
     command: List[str],
     *,
@@ -107,7 +133,8 @@ def run_streaming_process(
     timeout: int,
     env: Dict[str, str],
     attempt_dir: Path,
-    terminator: Optional[Callable[[subprocess.Popen[Any]], Dict[str, Any]]] = None,
+    termination_grace_seconds: float = 5.0,
+    pipe_cleanup_seconds: float = 1.0,
 ) -> AttemptExecution:
     """Stream a process's binary output to durable attempt files with bounded memory."""
     attempt_dir.mkdir(parents=True, exist_ok=True)
@@ -130,6 +157,7 @@ def run_streaming_process(
         env=env,
         start_new_session=True,
     )
+    process_group = process.pid
     append_progress_event(progress_path, "process_started", pid=process.pid)
     assert process.stdout is not None and process.stderr is not None
 
@@ -145,29 +173,83 @@ def run_streaming_process(
     first_stderr_byte: Optional[float] = None
     termination: Optional[Dict[str, Any]] = None
     timed_out = False
-    terminate = terminator or terminate_process_group
+    timeout_deadline = started_clock + max(0.0, timeout)
+    grace_deadline: Optional[float] = None
+    cleanup_deadline: Optional[float] = None
+    term_sent = False
+    forced_pipe_close = False
 
     try:
         with events_path.open("ab", buffering=0) as events_handle, stderr_path.open(
             "ab", buffering=0
         ) as stderr_handle:
-            while selector.get_map():
-                elapsed = time.monotonic() - started_clock
-                if not timed_out and process.poll() is None and elapsed >= timeout:
+            while True:
+                now = time.monotonic()
+                leader_return_code = process.poll()
+                group_alive = _process_group_exists(process_group)
+                if not selector.get_map() and leader_return_code is not None and not group_alive:
+                    if termination is not None and termination["grace_outcome"] == "pending":
+                        termination["grace_outcome"] = "terminated"
+                    break
+
+                if not timed_out and now >= timeout_deadline:
                     timed_out = True
                     append_progress_event(progress_path, "timeout_initiated")
-                    append_progress_event(progress_path, "term_sent")
-                    termination = terminate(process)
-                    if termination.get("escalation_signal") == "SIGKILL":
-                        append_progress_event(progress_path, "kill_sent")
+                    term_sent = _signal_process_group(process_group, signal.SIGTERM)
+                    if term_sent:
+                        append_progress_event(progress_path, "term_sent")
+                    termination = {
+                        "signal": "SIGTERM",
+                        "grace_seconds": termination_grace_seconds,
+                        "grace_outcome": "pending" if term_sent else "already_exited",
+                        "escalation_signal": None,
+                        "final_return_code": leader_return_code,
+                        "pipe_cleanup_seconds": pipe_cleanup_seconds,
+                        "pipe_cleanup_outcome": "pending",
+                    }
+                    grace_deadline = now + max(0.0, termination_grace_seconds)
+                    cleanup_deadline = grace_deadline + max(0.0, pipe_cleanup_seconds)
 
-                if process.poll() is not None:
-                    select_timeout = 0.05
-                elif timed_out:
-                    select_timeout = 0.05
+                if timed_out:
+                    assert termination is not None
+                    group_alive = _process_group_exists(process_group)
+                    if not group_alive and termination["grace_outcome"] == "pending":
+                        termination["grace_outcome"] = "terminated"
+                    elif (
+                        group_alive
+                        and termination["escalation_signal"] is None
+                        and grace_deadline is not None
+                        and now >= grace_deadline
+                    ):
+                        if _signal_process_group(process_group, signal.SIGKILL):
+                            termination["grace_outcome"] = "killed"
+                            termination["escalation_signal"] = "SIGKILL"
+                            append_progress_event(progress_path, "kill_sent")
+                        else:
+                            termination["grace_outcome"] = "terminated"
+                    if (
+                        cleanup_deadline is not None
+                        and now >= cleanup_deadline
+                        and selector.get_map()
+                    ):
+                        _close_selected_streams(selector)
+                        forced_pipe_close = True
+                        termination["pipe_cleanup_outcome"] = "forced_close"
+
+                deadlines = [timeout_deadline] if not timed_out else []
+                if timed_out and termination is not None:
+                    if termination["escalation_signal"] is None and grace_deadline is not None:
+                        deadlines.append(grace_deadline)
+                    if cleanup_deadline is not None:
+                        deadlines.append(cleanup_deadline)
+                if deadlines:
+                    select_timeout = min(0.05, max(0.0, min(deadlines) - now))
                 else:
-                    select_timeout = min(0.05, max(0.0, timeout - elapsed))
-                for key, _mask in selector.select(select_timeout):
+                    select_timeout = 0.05
+                selected = selector.select(select_timeout) if selector.get_map() else []
+                if not selected and not selector.get_map():
+                    time.sleep(select_timeout)
+                for key, _mask in selected:
                     stream = key.fileobj
                     chunk = os.read(stream.fileno(), 65536)
                     if not chunk:
@@ -204,7 +286,7 @@ def run_streaming_process(
         if process.poll() is None:
             append_progress_event(progress_path, "interruption_initiated")
             append_progress_event(progress_path, "term_sent")
-            termination = terminate(process)
+            termination = terminate_process_group(process)
             if termination.get("escalation_signal") == "SIGKILL":
                 append_progress_event(progress_path, "kill_sent")
         raise
@@ -222,6 +304,10 @@ def run_streaming_process(
         process_return_code=process.returncode,
         logical_return_code=returncode,
     )
+    if termination is not None:
+        termination["final_return_code"] = process.returncode
+        if not forced_pipe_close:
+            termination["pipe_cleanup_outcome"] = "eof"
     return AttemptExecution(
         returncode=returncode,
         started_at=started_at,
