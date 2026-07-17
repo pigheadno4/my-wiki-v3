@@ -333,12 +333,11 @@ def run_streaming_process(
                                 elapsed_seconds=round(observed, 6),
                             )
     except BaseException:
-        if process.poll() is None:
-            append_progress_event(progress_path, "interruption_initiated")
-            append_progress_event(progress_path, "term_sent")
-            termination = terminate_process_group(process)
-            if termination.get("escalation_signal") == "SIGKILL":
-                append_progress_event(progress_path, "kill_sent")
+        append_progress_event(progress_path, "interruption_initiated")
+        append_progress_event(progress_path, "term_sent")
+        termination = terminate_process_group(process, process_group=process_group)
+        if termination.get("escalation_signal") == "SIGKILL":
+            append_progress_event(progress_path, "kill_sent")
         raise
     finally:
         selector.close()
@@ -437,7 +436,10 @@ def job_lock(common_git_dir: Path, provider: str, job_id: str) -> Iterator[Path]
 
 
 def terminate_process_group(
-    process: subprocess.Popen[Any], grace_seconds: float = 5.0
+    process: subprocess.Popen[Any],
+    grace_seconds: float = 5.0,
+    *,
+    process_group: Optional[int] = None,
 ) -> Dict[str, Any]:
     """Terminate a session-leading process and every descendant in its group."""
     metadata: Dict[str, Any] = {
@@ -447,12 +449,7 @@ def terminate_process_group(
         "escalation_signal": None,
         "final_return_code": process.poll(),
     }
-    if process.poll() is not None:
-        return metadata
-    try:
-        process_group = os.getpgid(process.pid)
-    except ProcessLookupError:
-        return metadata
+    process_group = process.pid if process_group is None else process_group
     try:
         os.killpg(process_group, signal.SIGTERM)
     except (PermissionError, ProcessLookupError):
