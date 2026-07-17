@@ -1,3 +1,6 @@
+import hashlib
+import json
+import os
 import sys
 import tempfile
 import unittest
@@ -273,6 +276,86 @@ class MetronomeIngestPilotTests(unittest.TestCase):
             "token_usage_unavailable_reason": None,
         }
 
+    def materialize_diagnostic_receipt(self, root, job, receipt, run_id="terra-20260717"):
+        """Add the immutable artifacts and accounting a diagnostic receipt must prove."""
+        run_dir = root / job["artifact_dir"] / run_id
+        attempt_dir = run_dir / "attempt-1"
+        attempt_dir.mkdir(parents=True)
+        events = b'{"type":"thread.started"}\n'
+        stderr = b"warning"
+        progress = "\n".join(
+            json.dumps({"timestamp": "2026-07-14T00:00:00Z", "event": event})
+            for event in (
+                "lock_acquired",
+                "process_started",
+                "validation_completed",
+                "receipt_published",
+            )
+        ) + "\n"
+        (attempt_dir / "events.jsonl").write_bytes(events)
+        (attempt_dir / "stderr.log").write_bytes(stderr)
+        (attempt_dir / "progress.jsonl").write_text(progress, encoding="utf-8")
+        (attempt_dir / "model-output.raw.json").write_text("{}\n", encoding="utf-8")
+        (attempt_dir / "model-output.normalized.json").write_text("{}\n", encoding="utf-8")
+        (run_dir / "model-output.normalized.json").write_text("{}\n", encoding="utf-8")
+        (run_dir / "model-source-draft.md").write_text("draft\n", encoding="utf-8")
+
+        run_path = f"{job['artifact_dir']}/{run_id}"
+        runtime_metadata = {
+            "sha256": {
+                "raw_text": hashlib.sha256(
+                    (root / job["raw_path"]).read_bytes()
+                ).hexdigest(),
+                "prompt_template": "a" * 64,
+                "rendered_prompt": "b" * 64,
+                "output_schema": "c" * 64,
+                "codex_executable": "d" * 64,
+            },
+            "codex_executable": "/usr/local/bin/codex",
+            "codex_cli_version": "codex 1.0.0",
+            "timeout_seconds": 900,
+        }
+        accounting = {
+            "attempt_started_at": "2026-07-14T00:00:00Z",
+            "attempt_finished_at": "2026-07-14T00:00:01Z",
+            "attempt_elapsed_seconds": 1.0,
+            "time_to_first_stdout_event_seconds": 0.0,
+            "time_to_first_stderr_byte_seconds": 0.0,
+            "streamed_stdout_bytes": len(events),
+            "streamed_stderr_bytes": len(stderr),
+            "parsed_event_count": 1,
+            "truncated_line_count": 0,
+        }
+        receipt.update(
+            {
+                "run_id": run_id,
+                "input_mode": "staged-file",
+                "output_path": f"{run_path}/model-output.normalized.json",
+                "normalized_output_path": f"{run_path}/model-output.normalized.json",
+                "draft_path": f"{run_path}/model-source-draft.md",
+                "events_path": f"{run_path}/attempt-1/events.jsonl",
+                "stderr_path": f"{run_path}/attempt-1/stderr.log",
+                "progress_path": f"{run_path}/attempt-1/progress.jsonl",
+                "runtime_metadata": runtime_metadata,
+                "termination": None,
+                **accounting,
+            }
+        )
+        receipt["attempts"][0].update(
+            {
+                "input_mode": "staged-file",
+                "output_path": f"{run_path}/attempt-1/model-output.raw.json",
+                "normalized_output_path": f"{run_path}/attempt-1/model-output.normalized.json",
+                "events_path": f"{run_path}/attempt-1/events.jsonl",
+                "stderr_path": f"{run_path}/attempt-1/stderr.log",
+                "progress_path": f"{run_path}/attempt-1/progress.jsonl",
+                "runtime_metadata": runtime_metadata,
+                "termination": None,
+                **accounting,
+            }
+        )
+        return run_dir
+
     def valid_final_receipt(self, job):
         artifact_dir = job["artifact_dir"]
         return {
@@ -386,6 +469,55 @@ class MetronomeIngestPilotTests(unittest.TestCase):
         wrong = self.valid_model_job("gpt-5.6-terra", "high")
         self.assertTrue(any("model/reasoning pair" in error for error in validate_job(root, wrong)))
 
+    def test_model_job_rejects_unsafe_job_id_and_raw_path_traversal(self):
+        root = self.make_root()
+        job = self.valid_model_job()
+        job["job_id"] = "../outside"
+        job["raw_path"] = "raw/metronome/../outside.md"
+
+        errors = validate_job(root, job)
+
+        self.assertTrue(any("job_id must use lowercase kebab-case" in error for error in errors))
+        self.assertTrue(any("raw_path must not contain traversal" in error for error in errors))
+
+    def test_model_job_rejects_nonstring_job_id_and_raw_path(self):
+        root = self.make_root()
+        job = self.valid_model_job()
+        job["job_id"] = 7
+        job["raw_path"] = 7
+
+        errors = validate_job(root, job)
+
+        self.assertTrue(any("job_id must use lowercase kebab-case" in error for error in errors))
+        self.assertTrue(any("raw_path must be a safe repository-relative path" in error for error in errors))
+
+    def test_model_job_rejects_raw_and_run_root_symlink_escapes(self):
+        root = self.make_root()
+        job = self.valid_model_job()
+        outside = root / "outside"
+        outside.mkdir()
+        escaped_raw = outside / "escaped.md"
+        escaped_raw.write_text("outside\n", encoding="utf-8")
+        (root / "raw" / "metronome" / "escape.md").symlink_to(escaped_raw)
+        job["raw_path"] = "raw/metronome/escape.md"
+
+        raw_errors = validate_job(root, job)
+
+        self.assertTrue(
+            any("raw_path resolves outside raw/metronome" in error for error in raw_errors)
+        )
+
+        job = self.valid_model_job()
+        run_root = root / "tracking" / "ingest" / "metronome" / "pilot" / "runs"
+        run_root.parent.mkdir(parents=True)
+        run_root.symlink_to(outside, target_is_directory=True)
+
+        artifact_errors = validate_job(root, job)
+
+        self.assertTrue(
+            any("artifact_dir resolves outside the model run root" in error for error in artifact_errors)
+        )
+
     def test_model_output_requires_claim_level_evidence_and_coverage_fields(self):
         root = self.make_root()
         job = self.valid_model_job()
@@ -431,17 +563,7 @@ class MetronomeIngestPilotTests(unittest.TestCase):
         root = self.make_root()
         job = self.valid_model_job()
         receipt = self.valid_model_worker_receipt(job)
-        run_dir = f"{job['artifact_dir']}/terra-20260717"
-        receipt["run_id"] = "terra-20260717"
-        receipt["output_path"] = f"{run_dir}/model-output.normalized.json"
-        receipt["normalized_output_path"] = receipt["output_path"]
-        receipt["attempts"][0]["output_path"] = f"{run_dir}/attempt-1/model-output.raw.json"
-        receipt["attempts"][0]["normalized_output_path"] = (
-            f"{run_dir}/attempt-1/model-output.normalized.json"
-        )
-        receipt["events_path"] = f"{run_dir}/attempt-1/events.jsonl"
-        receipt["stderr_path"] = f"{run_dir}/attempt-1/stderr.log"
-        receipt["draft_path"] = f"{run_dir}/model-source-draft.md"
+        self.materialize_diagnostic_receipt(root, job, receipt)
 
         self.assertEqual([], validate_worker_receipt(root, job, receipt))
 
@@ -450,13 +572,109 @@ class MetronomeIngestPilotTests(unittest.TestCase):
 
         self.assertTrue(any("raw and normalized output paths must differ" in error for error in errors))
 
+    def test_diagnostic_receipt_requires_reconciled_runtime_evidence(self):
+        root = self.make_root()
+        job = self.valid_model_job()
+        receipt = self.valid_model_worker_receipt(job)
+        self.materialize_diagnostic_receipt(root, job, receipt)
+
+        receipt.pop("input_mode")
+        receipt.pop("progress_path")
+        receipt.pop("runtime_metadata")
+        receipt.pop("termination")
+        receipt.pop("attempt_elapsed_seconds")
+        receipt["attempts"][0]["streamed_stdout_bytes"] += 1
+
+        errors = validate_worker_receipt(root, job, receipt)
+
+        self.assertTrue(any("diagnostic input_mode is required" in error for error in errors))
+        self.assertTrue(any("diagnostic progress_path is required" in error for error in errors))
+        self.assertTrue(any("diagnostic runtime_metadata is required" in error for error in errors))
+        self.assertTrue(any("diagnostic termination is required" in error for error in errors))
+        self.assertTrue(any("attempt_elapsed_seconds is required" in error for error in errors))
+        self.assertTrue(any("streamed_stdout_bytes does not match events_path" in error for error in errors))
+
+    def test_diagnostic_receipt_rejects_traversal_and_symlink_path_escapes(self):
+        root = self.make_root()
+        job = self.valid_model_job()
+        receipt = self.valid_model_worker_receipt(job)
+        run_dir = self.materialize_diagnostic_receipt(root, job, receipt)
+        receipt["events_path"] = (
+            f"{job['artifact_dir']}/{receipt['run_id']}/../other/events.jsonl"
+        )
+
+        traversal_errors = validate_worker_receipt(root, job, receipt)
+
+        self.assertTrue(
+            any("events_path must not contain traversal" in error for error in traversal_errors)
+        )
+
+        receipt = self.valid_model_worker_receipt(job)
+        run_dir = self.materialize_diagnostic_receipt(root, job, receipt, "terra-symlink")
+        outside = root / "outside-events.jsonl"
+        outside.write_text("{}\n", encoding="utf-8")
+        escaped = run_dir / "events-link.jsonl"
+        escaped.symlink_to(outside)
+        receipt["events_path"] = (
+            f"{job['artifact_dir']}/{receipt['run_id']}/events-link.jsonl"
+        )
+
+        symlink_errors = validate_worker_receipt(root, job, receipt)
+
+        self.assertTrue(
+            any("events_path resolves outside diagnostic run directory" in error for error in symlink_errors)
+        )
+
+    def test_diagnostic_receipt_rejects_missing_artifacts_and_tmp_leftovers(self):
+        root = self.make_root()
+        job = self.valid_model_job()
+        receipt = self.valid_model_worker_receipt(job)
+        run_dir = self.materialize_diagnostic_receipt(root, job, receipt)
+        (run_dir / "model-output.normalized.json").unlink()
+        (run_dir / "model-worker-receipt.json.tmp").write_text("partial", encoding="utf-8")
+
+        errors = validate_worker_receipt(root, job, receipt)
+
+        self.assertTrue(
+            any("output_path must reference an existing regular file" in error for error in errors)
+        )
+        self.assertTrue(any("temporary artifact remains" in error for error in errors))
+
+    def test_diagnostic_receipt_rejects_hardlinked_raw_and_normalized_artifacts(self):
+        root = self.make_root()
+        job = self.valid_model_job()
+        receipt = self.valid_model_worker_receipt(job)
+        run_dir = self.materialize_diagnostic_receipt(root, job, receipt)
+        attempt_dir = run_dir / "attempt-1"
+        normalized = attempt_dir / "model-output.normalized.json"
+        normalized.unlink()
+        os.link(attempt_dir / "model-output.raw.json", normalized)
+
+        errors = validate_worker_receipt(root, job, receipt)
+
+        self.assertTrue(
+            any("raw and normalized output artifacts must be distinct" in error for error in errors)
+        )
+
+    def test_legacy_deterministic_receipt_cannot_claim_diagnostic_runtime_without_run_id(self):
+        root = self.make_root()
+        job = self.valid_model_job()
+        receipt = self.valid_model_worker_receipt(job)
+        receipt["runtime_metadata"] = {"sha256": {}}
+
+        errors = validate_worker_receipt(root, job, receipt)
+
+        self.assertTrue(
+            any("diagnostic runtime fields require run_id" in error for error in errors)
+        )
+
     def test_failed_diagnostic_receipt_requires_raw_output_and_existing_normalized_path(self):
         root = self.make_root()
         job = self.valid_model_job()
         receipt = self.valid_model_worker_receipt(job)
+        self.materialize_diagnostic_receipt(root, job, receipt)
         run_dir = f"{job['artifact_dir']}/terra-20260717"
         receipt.update({
-            "run_id": "terra-20260717",
             "status": "failed",
             "process_exit_code": 1,
             "output_path": f"{run_dir}/attempt-1/model-output.raw.json",
@@ -466,6 +684,9 @@ class MetronomeIngestPilotTests(unittest.TestCase):
             "stderr_path": f"{run_dir}/attempt-1/stderr.log",
         })
         receipt["attempts"][0].update({
+            "status": "rejected",
+            "process_exit_code": 1,
+            "validation_errors": ["process failed"],
             "output_path": f"{run_dir}/attempt-1/model-output.raw.json",
             "normalized_output_path": f"{run_dir}/attempt-1/model-output.normalized.json",
             "events_path": f"{run_dir}/attempt-1/events.jsonl",
@@ -483,9 +704,9 @@ class MetronomeIngestPilotTests(unittest.TestCase):
         root = self.make_root()
         job = self.valid_model_job()
         receipt = self.valid_model_worker_receipt(job)
+        self.materialize_diagnostic_receipt(root, job, receipt)
         run_dir = f"{job['artifact_dir']}/terra-20260717"
         receipt.update({
-            "run_id": "terra-20260717",
             "status": "failed",
             "process_exit_code": 1,
             "output_path": None,
@@ -495,6 +716,9 @@ class MetronomeIngestPilotTests(unittest.TestCase):
             "stderr_path": f"{run_dir}/attempt-1/stderr.log",
         })
         receipt["attempts"][0].update({
+            "status": "rejected",
+            "process_exit_code": 1,
+            "validation_errors": ["process failed"],
             "output_path": None,
             "normalized_output_path": None,
             "events_path": f"{run_dir}/attempt-1/events.jsonl",
@@ -561,7 +785,7 @@ class MetronomeIngestPilotTests(unittest.TestCase):
         receipt["output_path"] = "wiki/source.md"
         errors = validate_worker_receipt(root, job, receipt)
         self.assertTrue(any("model must be gpt-5.6-luna" in error for error in errors))
-        self.assertTrue(any("output_path must stay inside artifact_dir" in error for error in errors))
+        self.assertTrue(any("output_path resolves outside artifact_dir" in error for error in errors))
 
     def test_model_worker_receipt_matches_job_and_accounts_for_attempts(self):
         root = self.make_root()
