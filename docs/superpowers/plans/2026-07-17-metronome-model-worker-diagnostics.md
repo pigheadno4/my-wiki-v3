@@ -37,12 +37,12 @@
 - Produces in `metronome_model_runtime.py`: `validate_run_id(value: str)`, `resolve_run_dir(root, job, run_id)`, `write_json_atomic(path, payload)`, and separate raw/normalized output paths.
 - Preserves: existing `run_worker(root, job_path, ingest_date, runner=...)` compatibility for deterministic legacy tests; live diagnostic CLI execution requires `--run-id`.
 
-- [ ] Add failing tests that reject missing/invalid run IDs in diagnostic mode, reject an existing run directory before invoking the runner, and leave legacy artifact paths untouched.
-- [ ] Add a failing test proving deterministic repair never changes `model-output.raw.json` and writes repaired content only to `model-output.normalized.json`.
-- [ ] Add a failing test that observes a `.tmp` receipt before publication and only the final receipt after `os.replace`.
-- [ ] Run `python3 -m unittest tests.test_run_metronome_model_worker tests.test_metronome_ingest_pilot -v`; verify failures are caused by the missing immutable-run APIs.
-- [ ] Implement the minimal immutable layout and atomic JSON writer using flush, `os.fsync`, and `os.replace`.
-- [ ] Run focused tests and commit `feat: add immutable diagnostic runs`.
+- [x] Add failing tests that reject missing/invalid run IDs in diagnostic mode, reject an existing run directory before invoking the runner, and leave legacy artifact paths untouched.
+- [x] Add a failing test proving deterministic repair never changes `model-output.raw.json` and writes repaired content only to `model-output.normalized.json`.
+- [x] Add a failing test that observes a `.tmp` receipt before publication and only the final receipt after `os.replace`.
+- [x] Run `python3 -m unittest tests.test_run_metronome_model_worker tests.test_metronome_ingest_pilot -v`; verify failures are caused by the missing immutable-run APIs.
+- [x] Implement the minimal immutable layout and atomic JSON writer using flush, `os.fsync`, and `os.replace`.
+- [x] Run focused tests and commit `feat: add immutable diagnostic runs`.
 
 ### Task 2: Cross-worktree Lock and Process-group Cleanup
 
@@ -55,12 +55,12 @@
 - Produces: `job_lock(common_git_dir, provider, job_id)` and `terminate_process_group(process, grace_seconds=5.0)`.
 - Consumes: immutable run directory from Task 1.
 
-- [ ] Add a failing test using two different worktree roots that proves the same job lock is rejected while held and an unrelated job lock succeeds.
-- [ ] Add a failing test proving kernel lock release after normal close without deleting the lock file.
-- [ ] Add a failing child-process test proving timeout sends TERM to the process group, escalates to KILL when needed, and leaves no descendant alive.
-- [ ] Run the focused tests and confirm they fail because locking/process-group lifecycle is absent.
-- [ ] Implement non-blocking `fcntl.flock`, safe lock-key normalization, `start_new_session=True`, TERM/grace/KILL cleanup, and termination metadata.
-- [ ] Run focused tests and commit `feat: make model workers process safe`.
+- [x] Add a failing test using two different worktree roots that proves the same job lock is rejected while held and an unrelated job lock succeeds.
+- [x] Add a failing test proving kernel lock release after normal close without deleting the lock file.
+- [x] Add a failing child-process test proving timeout sends TERM to the process group, escalates to KILL when needed, and leaves no descendant alive.
+- [x] Run the focused tests and confirm they fail because locking/process-group lifecycle is absent.
+- [x] Implement non-blocking `fcntl.flock`, safe lock-key normalization, `start_new_session=True`, TERM/grace/KILL cleanup, and termination metadata.
+- [x] Run focused tests and commit `feat: make model workers process safe`.
 
 ### Task 3: Live Streaming and Runtime Metadata
 
@@ -73,13 +73,13 @@
 - Produces: a Popen-based attempt executor returning return code, timing, byte/event counts, truncation counts, token usage, and termination outcome.
 - Writes: `events.jsonl`, `stderr.log`, and `progress.jsonl` incrementally.
 
-- [ ] Add a failing test that sees stdout, stderr, and progress files before a fake process exits.
-- [ ] Add failing tests for time-to-first-event, streamed bytes, parsed-event count, and truncated-last-line accounting.
-- [ ] Add failing tests for SHA-256 metadata covering raw text, prompt template, rendered prompt, schema, and Codex executable plus CLI version and timeout.
-- [ ] Run focused tests and confirm the streaming/metadata assertions fail.
-- [ ] Implement selector-based binary streaming and timestamped progress events without buffering the whole process output.
-- [ ] Preserve incomplete final JSONL bytes; parsers skip but count the truncated line.
-- [ ] Run focused tests and commit `feat: stream model worker diagnostics`.
+- [x] Add a failing test that sees stdout, stderr, and progress files before a fake process exits.
+- [x] Add failing tests for time-to-first-event, streamed bytes, parsed-event count, and truncated-last-line accounting.
+- [x] Add failing tests for SHA-256 metadata covering raw text, prompt template, rendered prompt, schema, and Codex executable plus CLI version and timeout.
+- [x] Run focused tests and confirm the streaming/metadata assertions fail.
+- [x] Implement selector-based binary streaming and timestamped progress events without buffering the whole process output.
+- [x] Preserve incomplete final JSONL bytes; parsers skip but count the truncated line.
+- [x] Run focused tests and commit `feat: stream model worker diagnostics`.
 
 ### Task 4: Equivalent Input Modes
 
@@ -92,12 +92,12 @@
 - Produces: `render_worker_prompt(..., input_mode)` supporting `staged-file` and `inline-stdin`.
 - Requires: inline raw content passed through stdin between fixed untrusted-data delimiters, never as a command argument.
 
-- [ ] Add failing tests that reject unknown input modes and prove both supported modes contain identical job identity, schema expectations, page profile, concept inventory, and extraction requirements.
-- [ ] Add a failing test proving inline raw text is absent from the command arguments and present only in stdin-delivered prompt content.
-- [ ] Add a failing test proving staged-file mode still creates and references `raw.md`.
-- [ ] Run focused tests and confirm failures are due to the absent input-mode interface.
-- [ ] Implement the two modes and their hashes without changing accepted output semantics.
-- [ ] Run focused tests and commit `feat: add diagnostic input modes`.
+- [x] Add failing tests that reject unknown input modes and prove both supported modes contain identical job identity, schema expectations, page profile, concept inventory, and extraction requirements.
+- [x] Add a failing test proving inline raw text is absent from the command arguments and present only in stdin-delivered prompt content.
+- [x] Add a failing test proving staged-file mode still creates and references `raw.md`.
+- [x] Run focused tests and confirm failures are due to the absent input-mode interface.
+- [x] Implement the two modes and their hashes without changing accepted output semantics.
+- [x] Run focused tests and commit `feat: add diagnostic input modes`.
 
 ### Task 5: Health Probe and Gate
 
@@ -112,12 +112,12 @@
 - Consumes: immutable run lifecycle, lock, streaming, atomic receipt, hashes, and process cleanup from Tasks 1-4.
 - Produces: a diagnostic receipt with `status`, first-event latency, elapsed time, terminal JSON validity, runtime metadata completeness, and process cleanup result.
 
-- [ ] Add failing tests for the 60-second total cap, 30-second first-event gate, valid tiny JSON, complete metadata, atomic receipt, and no surviving process.
-- [ ] Add a failing orchestration test proving a failed health probe prevents enterprise A/B launch.
-- [ ] Run health-probe tests and confirm the command/gate is missing.
-- [ ] Implement the tiny Luna/high probe and document that enterprise A/B remains suspended unless the probe passes.
-- [ ] Run health-probe tests, all worker tests, full unit discovery, compilation, `git diff --check`, and capsule validation.
-- [ ] Commit `feat: add luna health probe gate`.
+- [x] Add failing tests for the 60-second total cap, 30-second first-event gate, valid tiny JSON, complete metadata, atomic receipt, and no surviving process.
+- [x] Add a failing orchestration test proving a failed health probe prevents enterprise A/B launch.
+- [x] Run health-probe tests and confirm the command/gate is missing.
+- [x] Implement the tiny Luna/high probe and document that enterprise A/B remains suspended unless the probe passes.
+- [x] Run health-probe tests, all worker tests, full unit discovery, compilation, `git diff --check`, and capsule validation.
+- [x] Commit `feat: add luna health probe gate`.
 
 ### Task 6: Live Health Probe Evidence
 
@@ -125,9 +125,9 @@
 - Create: one immutable health-probe run under `tracking/ingest/metronome/pilot/diagnostics/health-probes/`
 - Create: `tracking/ingest/metronome/pilot/diagnostics/health-probe-decision.md`
 
-- [ ] Run exactly one Luna/high health probe with a unique 2026-07-17 run ID and the fixed 60-second cap.
-- [ ] Validate its terminal receipt, hashes, event stream, progress lifecycle, and process cleanup.
-- [ ] Record PASS only if first event is within 30 seconds and valid terminal JSON arrives within 60 seconds; otherwise record FAIL and keep enterprise A/B suspended.
+- [x] Run exactly one Luna/high health probe with a unique 2026-07-18 run ID and the fixed 60-second cap.
+- [x] Validate its terminal receipt, hashes, event stream, progress lifecycle, and process cleanup.
+- [x] Record PASS only if first event is within 30 seconds and valid terminal JSON arrives within 60 seconds; otherwise record FAIL and keep enterprise A/B suspended.
 - [ ] Commit the immutable probe evidence and decision.
 - [ ] Generate a whole-task diff package and dispatch a GPT-5.6 Sol ultra-effort reviewer with a default-decline mandate.
 - [ ] Do not run enterprise A/B unless that reviewer returns APPROVE or CONDITIONAL APPROVAL with no Critical or Important finding.

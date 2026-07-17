@@ -788,6 +788,7 @@ class ModelHealthProbeTests(unittest.TestCase):
 
         self.assertIn('{"status":"ok"}', prompt)
         self.assertEqual("ok", schema["properties"]["status"]["const"])
+        self.assertEqual("string", schema["properties"]["status"]["type"])
         self.assertIn("enterprise A/B remains suspended", manifest)
         self.assertIn("never participates in canonical coverage", manifest)
 
