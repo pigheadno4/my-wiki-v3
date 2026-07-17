@@ -90,6 +90,13 @@ def validate_input_mode(input_mode: str) -> str:
     return input_mode
 
 
+def validate_inline_raw_text(raw_text: str) -> None:
+    """Reject raw evidence that could terminate or forge the fixed inline boundary."""
+    for delimiter in (INLINE_RAW_START_DELIMITER, INLINE_RAW_END_DELIMITER):
+        if delimiter in raw_text:
+            raise ValueError("inline-stdin raw evidence contains a reserved delimiter")
+
+
 def render_worker_prompt(
     template: str,
     job: Dict[str, Any],
@@ -100,6 +107,8 @@ def render_worker_prompt(
 ) -> str:
     """Render mode-invariant extraction instructions plus evidence delivery."""
     input_mode = validate_input_mode(input_mode)
+    if input_mode == "inline-stdin":
+        validate_inline_raw_text(raw_text)
     assignment = (
         "\n\n## Assigned job\n\n"
         f"- job_id: `{job['job_id']}`\n"
@@ -547,6 +556,12 @@ def _run_worker_unlocked(
 
     raw_bytes = (root / job["raw_path"]).read_bytes()
     raw_text = raw_bytes.decode("utf-8")
+    if input_mode == "inline-stdin":
+        try:
+            validate_inline_raw_text(raw_text)
+        except ValueError as exc:
+            print(exc)
+            return 1
     profile = build_page_profile(raw_text)
     concept_dir = root / "wiki/concepts/metronome"
     profile["existing_metronome_concept_slugs"] = sorted(

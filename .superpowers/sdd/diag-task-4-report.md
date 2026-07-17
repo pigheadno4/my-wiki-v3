@@ -28,3 +28,9 @@ That was the expected missing-input-mode interface. After implementation, the fo
 ## Follow-up concern
 
 The health-probe gate and any enterprise A/B execution remain explicitly out of scope for this task.
+
+## Fix Review — Inline Delimiter Collisions
+
+Review identified that a raw page containing either fixed inline delimiter could forge an apparent evidence boundary. Inline rendering now rejects either `<<<UNTRUSTED_RAW_EVIDENCE_START>>>` or `<<<UNTRUSTED_RAW_EVIDENCE_END>>>` before diagnostic run-directory creation and before a runner/Codex launch. The renderer applies the same validation for direct callers. Staged-file delivery is unchanged.
+
+Two test-first cases, one for each delimiter, initially failed because the injected runner was reached. They now pass while proving that the runner receives no call and the requested diagnostic run directory does not exist. The deterministic rejection is: `inline-stdin raw evidence contains a reserved delimiter`.

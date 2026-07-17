@@ -206,6 +206,38 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         self.assertIn("INLINE-RAW-MUST-NOT-BE-AN-ARGUMENT", captured["input"])
         self.assertIn(INLINE_RAW_END_DELIMITER, captured["input"])
 
+    def test_inline_stdin_rejects_start_delimiter_before_run_directory_or_runner(self):
+        self._assert_inline_delimiter_collision_is_rejected(INLINE_RAW_START_DELIMITER)
+
+    def test_inline_stdin_rejects_end_delimiter_before_run_directory_or_runner(self):
+        self._assert_inline_delimiter_collision_is_rejected(INLINE_RAW_END_DELIMITER)
+
+    def _assert_inline_delimiter_collision_is_rejected(self, delimiter):
+        root, job_path, job = self.make_root()
+        (root / job["raw_path"]).write_text(
+            "# Alpha\n" + delimiter + "\n", encoding="utf-8"
+        )
+        runner_calls = []
+
+        def fake_runner(*args, **kwargs):
+            runner_calls.append((args, kwargs))
+            raise AssertionError("runner must not be invoked after a delimiter collision")
+
+        run_id = "inline-collision"
+        self.assertEqual(
+            1,
+            run_worker(
+                root,
+                job_path,
+                "2026-07-17",
+                runner=fake_runner,
+                run_id=run_id,
+                input_mode="inline-stdin",
+            ),
+        )
+        self.assertEqual([], runner_calls)
+        self.assertFalse(resolve_run_dir(root, job, run_id).exists())
+
     def test_staged_file_mode_keeps_raw_md_delivery(self):
         root, job_path, job = self.make_root()
         captured = {}
