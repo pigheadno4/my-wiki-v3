@@ -65,8 +65,6 @@
   - Result: `Ran 299 tests in 13.508s` and `OK`.
 - `python3 scripts/validate_github_collection.py`
   - Result: `validate_github_collection: OK (0 snapshots, 0 pending packets, no structural errors)`.
-- `git diff --check`
-  - Result: passed with no output.
 
 ## Boundaries
 
@@ -101,3 +99,25 @@
   - Result: `Ran 301 tests in 14.495s` and `OK`.
 - `python3 scripts/validate_github_collection.py`
   - Result: `validate_github_collection: OK (0 snapshots, 0 pending packets, no structural errors)`.
+
+## 2026-07-18 Packet-ID Compatibility Fix
+
+### RED
+
+- `PYTHONPYCACHEPREFIX=/tmp/wiki-v2-pycache python3 -m unittest tests.test_github_packets.GitHubPacketTests.test_packet_id_predicate_accepts_legacy_path_components_but_rejects_unsafe_names tests.test_collect_github_repos.CollectGitHubReposTests.test_packet_state_transition_accepts_legacy_201_byte_packet_id tests.test_github_validation.GitHubValidationTests.test_legacy_long_packet_and_new_bounded_packet_validate_and_project -v`
+  - Result: `Ran 3 tests in 0.021s` and `FAILED (failures=1, errors=2)`.
+  - The new 201-byte legacy ID was rejected by the packet-state transition and status loader; the packet test also failed to import the new compatibility-bound constant before implementation.
+
+### GREEN
+
+- Packet IDs now use explicit `PACKET_ID_MAX_BYTES = 200` for newly generated IDs and `PACKET_ID_PATH_COMPONENT_MAX_BYTES = 255` for accepted existing path components. ASCII-safe validation still rejects navigation names, separators, whitespace, unsafe characters, non-ASCII names, and names over 255 bytes. Packet publication uses the generated-ID predicate; read, validate, status projection, and state transition use the legacy-compatible predicate.
+- `PYTHONPYCACHEPREFIX=/tmp/wiki-v2-pycache python3 -m unittest tests.test_github_packets.GitHubPacketTests.test_packet_id_predicate_accepts_legacy_path_components_but_rejects_unsafe_names tests.test_collect_github_repos.CollectGitHubReposTests.test_packet_state_transition_accepts_legacy_201_byte_packet_id tests.test_github_validation.GitHubValidationTests.test_legacy_long_packet_and_new_bounded_packet_validate_and_project -v`
+  - Result: `Ran 3 tests in 0.069s` and `OK`.
+- `PYTHONPYCACHEPREFIX=/tmp/wiki-v2-pycache python3 -m unittest tests.test_github_packets tests.test_collect_github_repos tests.test_github_validation tests.test_github_reporting`
+  - Result: `Ran 132 tests in 9.271s` and `OK`.
+- `PYTHONPYCACHEPREFIX=/tmp/wiki-v2-pycache python3 -m unittest discover -s tests`
+  - Result: `Ran 304 tests in 14.660s` and `OK`.
+- `PYTHONPYCACHEPREFIX=/tmp/wiki-v2-pycache python3 scripts/validate_github_collection.py`
+  - Result: `validate_github_collection: OK (0 snapshots, 0 pending packets, no structural errors)`.
+- `git diff --check`
+  - Result: passed with no output.

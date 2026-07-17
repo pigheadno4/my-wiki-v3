@@ -44,7 +44,10 @@ _SAFE_PART = re.compile(r"[^A-Za-z0-9._-]+")
 _SAFE_PACKET_ID = re.compile(r"^[A-Za-z0-9._-]+$")
 _SHA = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
 _DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+# New IDs stay below this bound so readable labels and digests fit portably.
 PACKET_ID_MAX_BYTES = 200
+# Existing packet directories may use the portable filesystem component limit.
+PACKET_ID_PATH_COMPONENT_MAX_BYTES = 255
 _PACKET_ENDPOINT_LABEL_MAX_BYTES = 32
 _INDEX_KEYS = {"branch_observations", "capture_order", "repo_id", "versions"}
 _CAPTURE_ORDER_INDEX_KEYS = {"capture_order", "repo_id", "versions"}
@@ -78,12 +81,22 @@ class PacketError(ValueError):
 
 
 def is_valid_packet_id(packet_id: object) -> bool:
-    """Return whether a packet ID is portable and safe as one path component."""
+    """Return whether an existing packet ID is safe as one path component."""
+    return _is_valid_packet_id(packet_id, PACKET_ID_PATH_COMPONENT_MAX_BYTES)
+
+
+def is_valid_generated_packet_id(packet_id: object) -> bool:
+    """Return whether a newly generated packet ID meets the 200-byte bound."""
+    return _is_valid_packet_id(packet_id, PACKET_ID_MAX_BYTES)
+
+
+def _is_valid_packet_id(packet_id: object, max_bytes: int) -> bool:
     return (
         isinstance(packet_id, str)
         and packet_id not in {".", ".."}
+        and packet_id.isascii()
         and _SAFE_PACKET_ID.fullmatch(packet_id) is not None
-        and len(packet_id.encode("ascii")) <= PACKET_ID_MAX_BYTES
+        and len(packet_id.encode("ascii")) <= max_bytes
     )
 
 
@@ -950,7 +963,7 @@ def _write_packet(
     changed_files: Sequence[str],
     source_diff: str,
 ) -> PacketRecord:
-    if not is_valid_packet_id(packet_id):
+    if not is_valid_generated_packet_id(packet_id):
         raise PacketError("packet ID is invalid")
     packet_root = _require_packet_root(packet_root, config.id)
     packet_root.mkdir(parents=True, exist_ok=True)
@@ -1094,7 +1107,7 @@ def build_packet_id(
     prefix_limit = PACKET_ID_MAX_BYTES - len(digest) - 1
     prefix = prefix[:prefix_limit].rstrip("-.") or packet_type
     packet_id = prefix + "-" + digest
-    if not is_valid_packet_id(packet_id):
+    if not is_valid_generated_packet_id(packet_id):
         raise PacketError("generated packet ID is invalid")
     return packet_id
 

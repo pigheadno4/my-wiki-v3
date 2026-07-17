@@ -1,6 +1,7 @@
 import hashlib
 import json
 import os
+import shutil
 import sys
 import tempfile
 import unittest
@@ -21,6 +22,7 @@ from github_reporting import (  # noqa: E402
     render_ingest_status,
 )
 import github_validation  # noqa: E402
+import collect_github_repos  # noqa: E402
 from github_validation import inspect_github, validate_github  # noqa: E402
 from github_snapshot import SnapshotFile, SnapshotRecord  # noqa: E402
 
@@ -413,6 +415,46 @@ class GitHubValidationTests(unittest.TestCase):
         report = inspect_github(self.make_valid_tree(packet_state="awaiting-review"))
 
         self.assertEqual(1, len(report.pending_packets))
+        self.assertEqual([], validate_github(report))
+
+    def test_legacy_long_packet_and_new_bounded_packet_validate_and_project(self):
+        self.make_valid_tree()
+        packet_directory = next(
+            path
+            for path in self.root.glob("tracking/github/repos/*/*/packets/*")
+            if path.is_dir()
+        )
+        contract_path = packet_directory / "packet.json"
+        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+        original_packet_id = contract["packet_id"]
+        legacy_packet_id = "legacy-" + "x" * (201 - len("legacy-"))
+        legacy_directory = packet_directory.with_name(legacy_packet_id)
+        shutil.copytree(packet_directory, legacy_directory)
+        contract["packet_id"] = legacy_packet_id
+        (legacy_directory / "packet.json").write_text(
+            json.dumps(contract, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        markdown_path = legacy_directory / "ingest-packet.md"
+        markdown_path.write_text(
+            markdown_path.read_text(encoding="utf-8").replace(
+                original_packet_id, legacy_packet_id
+            ),
+            encoding="utf-8",
+        )
+        history_path = legacy_directory / "state-events.jsonl"
+        history_path.write_text(
+            history_path.read_text(encoding="utf-8").replace(original_packet_id, legacy_packet_id),
+            encoding="utf-8",
+        )
+        status = collect_github_repos.regenerate_status(self.root)
+        packet_ids = {row["packet_id"] for row in status["packets"]}
+        self.assertEqual({legacy_packet_id, original_packet_id}, packet_ids)
+        self.assertIn(
+            legacy_packet_id,
+            (self.root / "tracking/github/ingest-status.md").read_text(encoding="utf-8"),
+        )
+
+        report = inspect_github(self.root)
         self.assertEqual([], validate_github(report))
 
     def test_producer_packet_rejects_id_that_packet_state_cannot_transition(self):

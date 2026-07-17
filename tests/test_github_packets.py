@@ -16,11 +16,13 @@ from github_git import ResolvedRef  # noqa: E402
 from collect_github_repos import is_valid_packet_id  # noqa: E402
 from github_packets import (  # noqa: E402
     PACKET_ID_MAX_BYTES,
+    PACKET_ID_PATH_COMPONENT_MAX_BYTES,
     PacketError,
     VersionIndex,
     build_baseline_packet,
     build_comparison_packet,
     build_delta_packet,
+    is_valid_generated_packet_id,
     load_version_index,
     record_snapshot,
     save_version_index,
@@ -254,8 +256,29 @@ class GitHubPacketTests(unittest.TestCase):
                 for packet in packets
             )
         )
-        self.assertLess(PACKET_ID_MAX_BYTES, 255)
-        self.assertFalse(is_valid_packet_id("x" * (PACKET_ID_MAX_BYTES + 1)))
+        self.assertLess(PACKET_ID_MAX_BYTES, PACKET_ID_PATH_COMPONENT_MAX_BYTES)
+        self.assertTrue(is_valid_packet_id("x" * (PACKET_ID_MAX_BYTES + 1)))
+        self.assertFalse(is_valid_generated_packet_id("x" * (PACKET_ID_MAX_BYTES + 1)))
+
+    def test_packet_id_predicate_accepts_legacy_path_components_but_rejects_unsafe_names(self):
+        for size in (201, PACKET_ID_PATH_COMPONENT_MAX_BYTES):
+            packet_id = "legacy-" + "x" * (size - len("legacy-"))
+            with self.subTest(size=size):
+                self.assertTrue(is_valid_packet_id(packet_id))
+                self.assertFalse(is_valid_generated_packet_id(packet_id))
+
+        for packet_id in (
+            "x" * (PACKET_ID_PATH_COMPONENT_MAX_BYTES + 1),
+            ".",
+            "..",
+            "legacy/id",
+            "legacy\\\\id",
+            "legacy id",
+            "legacy\t id",
+            "legacy\u00e9",
+        ):
+            with self.subTest(packet_id=packet_id):
+                self.assertFalse(is_valid_packet_id(packet_id))
 
     def test_record_snapshot_rejects_force_moved_immutable_identity(self):
         first = record_snapshot(self.empty_index(), self.snapshot("a" * 40, package=""))

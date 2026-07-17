@@ -221,6 +221,21 @@ class CollectGitHubReposTests(unittest.TestCase):
         events = [json.loads(line) for line in (packet.directory / "state-events.jsonl").read_text().splitlines()]
         self.assertEqual(("awaiting-review", "approved"), tuple(event["state"] for event in events))
 
+    def test_packet_state_transition_accepts_legacy_201_byte_packet_id(self):
+        packet_id = "legacy-" + "x" * (201 - len("legacy-"))
+        packet = self.packet(packet_id)
+        self.write_packet(packet)
+
+        collect_github_repos._change_packet_state(
+            self.root, self.config(), packet_id, "awaiting-review", "approved"
+        )
+
+        events = [
+            json.loads(line)
+            for line in (packet.directory / "state-events.jsonl").read_text().splitlines()
+        ]
+        self.assertEqual("approved", events[-1]["state"])
+
     def test_collect_cli_returns_one_for_failed_or_unreconciled_result(self):
         def failed(root, config, selectors, release_mode, dry_run):
             target = selectors[0] if selectors else "default-branch"
