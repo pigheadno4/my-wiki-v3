@@ -21,6 +21,20 @@ LUNA_REASONING_EFFORT = "high"
 TERRA_REASONING_EFFORT = "medium"
 LUNA_RUN_ROOT = "tracking/ingest/metronome/pilot/runs/"
 DIAGNOSTIC_INPUT_MODES = frozenset(("staged-file", "inline-stdin"))
+DIAGNOSTIC_RECEIPT_VERSION = 2
+DIAGNOSTIC_FAILURE_STAGES = frozenset(
+    ("setup", "metadata", "process", "validation", "receipt_publication", "interrupt")
+)
+TERMINAL_MANIFEST_NAME = "terminal-artifact-manifest.json"
+TERMINAL_MANIFEST_INTEGRITY_MODEL = (
+    "The terminal manifest hashes the final receipt and all other terminal artifacts; "
+    "it intentionally does not hash itself."
+)
+DIAGNOSTIC_RUNNER_SCRIPTS = (
+    "run_metronome_model_worker.py",
+    "metronome_model_runtime.py",
+    "metronome_ingest_pilot.py",
+)
 DIAGNOSTIC_ACCOUNTING_FIELDS = (
     "attempt_started_at",
     "attempt_finished_at",
@@ -858,7 +872,14 @@ def _validate_streaming_files(
     return errors
 
 
-def _validate_progress_file(root: Path, progress_path: str, artifact_dir: str, prefix: str) -> List[str]:
+def _validate_progress_file(
+    root: Path,
+    progress_path: str,
+    artifact_dir: str,
+    prefix: str,
+    *,
+    required_events: Sequence[str] = (),
+) -> List[str]:
     path, path_errors = _resolve_contained_path(
         root,
         progress_path,
@@ -881,7 +902,7 @@ def _validate_progress_file(root: Path, progress_path: str, artifact_dir: str, p
             errors.append(f"{prefix}: progress_path event at line {line_number} is incomplete")
             continue
         events.add(item["event"])
-    for required in ("lock_acquired", "process_started", "validation_completed", "receipt_published"):
+    for required in required_events:
         if required not in events:
             errors.append(f"{prefix}: progress_path is missing {required} evidence")
     return errors
@@ -938,6 +959,211 @@ def _validate_termination(termination: Any, process_exit_code: Any, prefix: str)
     return errors
 
 
+def _sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _validate_diagnostic_snapshot(
+    root: Path,
+    value: Any,
+    expected: str,
+    diagnostic_dir: str,
+    prefix: str,
+    label: str,
+) -> Tuple[Optional[Path], List[str]]:
+    """Validate one immutable, regular snapshot at its deterministic location."""
+    errors: List[str] = []
+    if value != expected:
+        errors.append(f"{prefix}: {label} snapshot path does not match diagnostic run")
+    path, path_errors = _resolve_contained_path(
+        root,
+        value,
+        root / diagnostic_dir,
+        prefix=prefix,
+        field=f"{label}_snapshot_path",
+        directory_label="diagnostic run directory",
+    )
+    errors.extend(path_errors)
+    if path is None or path_errors:
+        return path, errors
+    lexical = root / str(value)
+    if lexical.is_symlink() or path.is_symlink() or not path.is_file():
+        errors.append(f"{prefix}: {label} snapshot must be an existing regular file")
+    if path.with_name(f"{path.name}.tmp").exists():
+        errors.append(f"{prefix}: {label} snapshot has a temporary sibling")
+    return path, errors
+
+
+def _validate_diagnostic_provenance(
+    root: Path,
+    diagnostic_dir: str,
+    receipt: Dict[str, Any],
+    attempts: Sequence[Dict[str, Any]],
+    prefix: str,
+) -> List[str]:
+    """Recompute the prospective input and runner provenance for a v2 receipt."""
+    errors: List[str] = []
+    provenance = receipt.get("provenance")
+    if not isinstance(provenance, dict):
+        return [f"{prefix}: prospective provenance is required"]
+    if provenance.get("status") == "unavailable":
+        if (
+            set(provenance) != {"status", "unavailable_reason"}
+            or receipt.get("attempt_count") != 0
+            or receipt.get("failure_stage") != "setup"
+            or not isinstance(provenance.get("unavailable_reason"), str)
+            or not provenance.get("unavailable_reason")
+        ):
+            errors.append(f"{prefix}: unavailable provenance contradicts attempted execution")
+        provenance_dir = root / diagnostic_dir / "provenance"
+        if provenance_dir.is_dir() and any(
+            path.is_file() for path in provenance_dir.rglob("*")
+        ):
+            errors.append(f"{prefix}: unavailable provenance must not retain snapshots")
+        return errors
+
+    expected_template = f"{diagnostic_dir}/provenance/prompt-template.md"
+    expected_schema = f"{diagnostic_dir}/provenance/output-schema.json"
+    template_path, template_errors = _validate_diagnostic_snapshot(
+        root,
+        provenance.get("prompt_template_snapshot_path"),
+        expected_template,
+        diagnostic_dir,
+        prefix,
+        "prompt template",
+    )
+    schema_path, schema_errors = _validate_diagnostic_snapshot(
+        root,
+        provenance.get("output_schema_snapshot_path"),
+        expected_schema,
+        diagnostic_dir,
+        prefix,
+        "output schema",
+    )
+    errors.extend(template_errors)
+    errors.extend(schema_errors)
+
+    prompt_paths = provenance.get("attempt_prompt_snapshot_paths")
+    expected_attempt_keys = {str(index) for index in range(1, len(attempts) + 1)}
+    if not isinstance(prompt_paths, dict) or set(prompt_paths) != expected_attempt_keys:
+        errors.append(f"{prefix}: attempt prompt snapshots do not match attempt_count")
+        prompt_paths = {}
+    attempt_prompt_paths: Dict[int, Optional[Path]] = {}
+    for index, attempt in enumerate(attempts, 1):
+        expected = f"{diagnostic_dir}/provenance/attempt-{index}-prompt.md"
+        prompt_path, prompt_errors = _validate_diagnostic_snapshot(
+            root,
+            prompt_paths.get(str(index)),
+            expected,
+            diagnostic_dir,
+            prefix,
+            f"attempt {index} prompt",
+        )
+        errors.extend(prompt_errors)
+        attempt_prompt_paths[index] = prompt_path
+        metadata = attempt.get("runtime_metadata")
+        hashes = metadata.get("sha256") if isinstance(metadata, dict) else None
+        if isinstance(hashes, dict) and prompt_path is not None and prompt_path.is_file():
+            if hashes.get("rendered_prompt") != _sha256_file(prompt_path):
+                errors.append(
+                    f"{prefix}: attempt {index} prompt snapshot hash does not reconcile"
+                )
+
+    records = [receipt, *attempts]
+    if template_path is not None and template_path.is_file():
+        expected_hash = _sha256_file(template_path)
+        for record_index, record in enumerate(records):
+            metadata = record.get("runtime_metadata")
+            hashes = metadata.get("sha256") if isinstance(metadata, dict) else None
+            if isinstance(hashes, dict) and hashes.get("prompt_template") != expected_hash:
+                record_label = "receipt" if record_index == 0 else f"attempt {record_index}"
+                errors.append(
+                    f"{prefix}: {record_label} prompt template snapshot hash does not reconcile"
+                )
+    if schema_path is not None and schema_path.is_file():
+        expected_hash = _sha256_file(schema_path)
+        for record_index, record in enumerate(records):
+            metadata = record.get("runtime_metadata")
+            hashes = metadata.get("sha256") if isinstance(metadata, dict) else None
+            if isinstance(hashes, dict) and hashes.get("output_schema") != expected_hash:
+                record_label = "receipt" if record_index == 0 else f"attempt {record_index}"
+                errors.append(
+                    f"{prefix}: {record_label} output schema snapshot hash does not reconcile"
+                )
+
+    expected_runner_hashes = {
+        f"scripts/{name}": _sha256_file(Path(__file__).resolve().with_name(name))
+        for name in DIAGNOSTIC_RUNNER_SCRIPTS
+    }
+    if provenance.get("runner_script_sha256") != expected_runner_hashes:
+        errors.append(f"{prefix}: runner script hashes do not reconcile")
+    git = provenance.get("git")
+    if not isinstance(git, dict) or set(git) != {
+        "commit",
+        "dirty",
+        "dirty_status_sha256",
+        "unavailable_reason",
+    }:
+        errors.append(f"{prefix}: Git provenance is incomplete")
+    elif git.get("unavailable_reason") is not None:
+        if (
+            not isinstance(git.get("unavailable_reason"), str)
+            or not git.get("unavailable_reason")
+            or any(git.get(field) is not None for field in ("commit", "dirty", "dirty_status_sha256"))
+        ):
+            errors.append(f"{prefix}: unavailable Git provenance is contradictory")
+    elif (
+        not isinstance(git.get("commit"), str)
+        or not COMMIT_RE.fullmatch(git["commit"])
+        or not isinstance(git.get("dirty"), bool)
+        or not isinstance(git.get("dirty_status_sha256"), str)
+        or not SHA256_RE.fullmatch(git["dirty_status_sha256"])
+    ):
+        errors.append(f"{prefix}: Git provenance facts are invalid")
+    return errors
+
+
+def _validate_terminal_manifest(
+    root: Path, diagnostic_dir: str, receipt: Dict[str, Any], prefix: str
+) -> List[str]:
+    """Require an exact terminal file set and hashes, excluding only the manifest itself."""
+    errors: List[str] = []
+    run_dir = root / diagnostic_dir
+    manifest_path = run_dir / TERMINAL_MANIFEST_NAME
+    expected_path = manifest_path.relative_to(root).as_posix()
+    record = receipt.get("terminal_manifest")
+    if (
+        not isinstance(record, dict)
+        or record.get("path") != expected_path
+        or record.get("integrity_model") != TERMINAL_MANIFEST_INTEGRITY_MODEL
+    ):
+        errors.append(f"{prefix}: terminal manifest reference is incomplete")
+    if (
+        not manifest_path.is_file()
+        or manifest_path.is_symlink()
+        or manifest_path.with_name(f"{manifest_path.name}.tmp").exists()
+    ):
+        return [*errors, f"{prefix}: terminal manifest is missing, linked, or incomplete"]
+    try:
+        manifest = load_json(manifest_path)
+    except (OSError, json.JSONDecodeError):
+        return [*errors, f"{prefix}: terminal manifest is invalid"]
+    expected_hashes: Dict[str, str] = {}
+    for path in sorted(run_dir.rglob("*")):
+        if not path.is_file() or path.is_symlink() or path == manifest_path:
+            continue
+        expected_hashes[path.relative_to(root).as_posix()] = _sha256_file(path)
+    expected_manifest = {
+        "schema_version": 1,
+        "sha256": expected_hashes,
+        "not_covered_due_to_self_reference": expected_path,
+        "receipt_sha256_covered": True,
+    }
+    if manifest != expected_manifest:
+        errors.append(f"{prefix}: terminal manifest hashes do not reconcile")
+    return errors
+
+
 def _validate_diagnostic_worker_receipt(
     root: Path, job: Dict[str, Any], receipt: Dict[str, Any]
 ) -> List[str]:
@@ -964,6 +1190,75 @@ def _validate_diagnostic_worker_receipt(
     if run_dir is None:
         return errors
     errors.extend(_validate_diagnostic_artifact_tree(run_dir, "worker receipt"))
+
+    receipt_version = receipt.get("diagnostic_receipt_version")
+    prospective = receipt_version == DIAGNOSTIC_RECEIPT_VERSION
+    if "diagnostic_receipt_version" in receipt and not prospective:
+        errors.append("worker receipt: diagnostic receipt version is unsupported")
+    if prospective and receipt.get("status") == "failed":
+        if receipt.get("failure_stage") not in DIAGNOSTIC_FAILURE_STAGES:
+            errors.append("worker receipt: failed diagnostic receipt requires a valid failure_stage")
+    elif prospective and "failure_stage" in receipt:
+        errors.append("worker receipt: successful diagnostic receipt must not declare failure_stage")
+    attempts_value = receipt.get("attempts")
+    attempts = (
+        [attempt for attempt in attempts_value if isinstance(attempt, dict)]
+        if isinstance(attempts_value, list)
+        else []
+    )
+    if prospective and receipt.get("attempt_count") == 0:
+        if receipt.get("status") != "failed":
+            errors.append("worker receipt: zero-attempt diagnostic receipt must be failed")
+        if receipt.get("failure_stage") not in ("setup", "metadata", "process"):
+            errors.append(
+                "worker receipt: zero-attempt failure_stage must be setup, metadata, or process"
+            )
+        if attempts_value != []:
+            errors.append("worker receipt: zero-attempt diagnostic receipt must use an empty attempts list")
+        for field in (
+            "process_exit_code",
+            "output_path",
+            "normalized_output_path",
+            "draft_path",
+            "events_path",
+            "stderr_path",
+            "runtime_metadata",
+            "termination",
+        ):
+            if receipt.get(field) is not None:
+                errors.append(f"worker receipt: zero-attempt {field} must be null")
+        for field in DIAGNOSTIC_ACCOUNTING_FIELDS:
+            if field in receipt:
+                errors.append(
+                    f"worker receipt: zero-attempt receipt must not fabricate {field}"
+                )
+        errors.extend(
+            _validate_artifact_paths(
+                root,
+                receipt,
+                ("progress_path",),
+                diagnostic_dir,
+                "worker receipt",
+                require_existing_files=True,
+                directory_label="diagnostic run directory",
+            )
+        )
+        if isinstance(receipt.get("progress_path"), str):
+            errors.extend(
+                _validate_progress_file(
+                    root,
+                    receipt["progress_path"],
+                    diagnostic_dir,
+                    "worker receipt",
+                )
+            )
+        errors.extend(
+            _validate_diagnostic_provenance(
+                root, diagnostic_dir, receipt, [], "worker receipt"
+            )
+        )
+        errors.extend(_validate_terminal_manifest(root, diagnostic_dir, receipt, "worker receipt"))
+        return errors
 
     for field in (
         "input_mode",
@@ -1005,12 +1300,28 @@ def _validate_diagnostic_worker_receipt(
         root, receipt, diagnostic_dir, "worker receipt"
     ))
     if isinstance(receipt.get("progress_path"), str):
+        required_progress_events = (
+            ("lock_acquired", "process_started", "validation_completed")
+            if prospective and receipt.get("failure_stage") == "receipt_publication"
+            else ("lock_acquired", "process_started", "validation_completed", "receipt_published")
+        )
         errors.extend(_validate_progress_file(
-            root, receipt["progress_path"], diagnostic_dir, "worker receipt"
+            root,
+            receipt["progress_path"],
+            diagnostic_dir,
+            "worker receipt",
+            required_events=required_progress_events,
         ))
 
-    attempts = receipt.get("attempts")
+    attempts = attempts_value
     if not isinstance(attempts, list) or not attempts:
+        if prospective:
+            errors.extend(
+                _validate_diagnostic_provenance(
+                    root, diagnostic_dir, receipt, [], "worker receipt"
+                )
+            )
+            errors.extend(_validate_terminal_manifest(root, diagnostic_dir, receipt, "worker receipt"))
         return errors
     expected_run_prefix = f"{diagnostic_dir}/"
     for index, attempt in enumerate(attempts, 1):
@@ -1130,6 +1441,17 @@ def _validate_diagnostic_worker_receipt(
         for field in ("output_path", "normalized_output_path"):
             if receipt.get(field) != last_attempt.get(field):
                 errors.append(f"worker receipt: failed diagnostic {field} does not reconcile with final attempt")
+    if prospective:
+        typed_attempts = [attempt for attempt in attempts if isinstance(attempt, dict)]
+        if len(typed_attempts) != len(attempts):
+            errors.append("worker receipt: prospective attempts must all be objects")
+        else:
+            errors.extend(
+                _validate_diagnostic_provenance(
+                    root, diagnostic_dir, receipt, typed_attempts, "worker receipt"
+                )
+            )
+        errors.extend(_validate_terminal_manifest(root, diagnostic_dir, receipt, "worker receipt"))
     return errors
 
 
@@ -1153,14 +1475,15 @@ def validate_worker_receipt(
             "started_at",
             "finished_at",
             "elapsed_seconds",
-            "process_exit_code",
-            "events_path",
-            "stderr_path",
             "validation",
         ],
         "worker receipt",
     )
     diagnostic = "run_id" in receipt
+    prospective_diagnostic = (
+        diagnostic
+        and receipt.get("diagnostic_receipt_version") == DIAGNOSTIC_RECEIPT_VERSION
+    )
     diagnostic_failure = diagnostic and receipt.get("status") != "success"
     if not diagnostic and any(
         field in receipt
@@ -1171,6 +1494,20 @@ def validate_worker_receipt(
         receipt.get("output_path") in (None, "") and not diagnostic_failure
     ):
         errors.append("worker receipt: output_path is required")
+    if not diagnostic:
+        errors.extend(
+            _missing(
+                receipt,
+                ["process_exit_code", "events_path", "stderr_path"],
+                "worker receipt",
+            )
+        )
+    elif receipt.get("attempt_count") != 0:
+        if "process_exit_code" not in receipt:
+            errors.append("worker receipt: process_exit_code is required")
+        for field in ("events_path", "stderr_path"):
+            if receipt.get(field) in (None, ""):
+                errors.append(f"worker receipt: {field} is required after a process attempt")
     errors.extend(_validate_identity(job, receipt, "worker receipt"))
     if receipt.get("status") not in ("success", "retryable_failure", "failed"):
         errors.append("worker receipt: invalid status")
@@ -1186,8 +1523,14 @@ def validate_worker_receipt(
             errors.append(f"worker receipt: model must be {LUNA_MODEL}")
         if receipt.get("reasoning_effort") != LUNA_REASONING_EFFORT:
             errors.append(f"worker receipt: reasoning_effort must be {LUNA_REASONING_EFFORT}")
-    if receipt.get("attempt_count") not in (1, 2):
-        errors.append("worker receipt: attempt_count must be 1 or 2")
+    allowed_attempt_counts = (
+        (0, 1, 2)
+        if prospective_diagnostic and receipt.get("status") == "failed"
+        else (1, 2)
+    )
+    if receipt.get("attempt_count") not in allowed_attempt_counts:
+        allowed = "0, 1, or 2" if 0 in allowed_attempt_counts else "1 or 2"
+        errors.append(f"worker receipt: attempt_count must be {allowed}")
     artifact_dir = str(job.get("artifact_dir", ""))
     errors.extend(
         _validate_artifact_paths(

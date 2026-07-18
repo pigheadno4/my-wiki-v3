@@ -144,4 +144,11 @@ remained suspended throughout remediation.
 - [x] Gate the actual enterprise worker API and CLI through an explicit immutable job registry and strict passing-probe verification (`e924ee0`).
 - [x] Publish atomic failed worker receipts for all post-claim failures and preserve interrupt propagation (`e924ee0`).
 - [x] Snapshot prospective prompt/schema inputs and record runner/Git provenance plus terminal artifact manifests without rewriting historical evidence (`e924ee0`).
-- [ ] Obtain a fresh GPT-5.6 Sol ultra-effort default-decline verdict over the remediated branch.
+- [x] Reject registered enterprise jobs in the legacy Luna API and CLI before mutation or launch.
+- [x] Keep process-group and pipe cleanup protected from initial and interruption progress-log failures.
+- [x] Validate v2 fallback receipts, provenance snapshots, terminal manifests, and partial-stream interruption accounting.
+- [x] Obtain a fresh GPT-5.6 Sol ultra-effort default-decline verdict over the remediated branch.
+
+The final reviewer returned `APPROVE` with high confidence and no remaining material
+findings. This approves the implementation only. Enterprise A/B remains operationally
+suspended until a separately authorized replacement health probe passes every gate.

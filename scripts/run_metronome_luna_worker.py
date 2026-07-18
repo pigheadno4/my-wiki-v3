@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import time
@@ -23,6 +24,10 @@ from metronome_ingest_pilot import (
 ROOT = Path(__file__).resolve().parent.parent
 SCHEMA_PATH = Path("tracking/ingest/metronome/pilot/schemas/luna-output.schema.json")
 PROMPT_PATH = Path("tracking/ingest/metronome/pilot/prompts/source-summary-benchmark.md")
+ENTERPRISE_JOB_REGISTRY_PATH = Path(
+    "tracking/ingest/metronome/pilot/enterprise-diagnostic-jobs.json"
+)
+GUARDED_WORKER_PATH = "scripts/run_metronome_model_worker.py"
 
 
 def utc_now() -> str:
@@ -90,6 +95,62 @@ def _write_json(path: Path, payload: Dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+def _load_enterprise_job_registry(root: Path) -> Dict[str, Dict[str, str]]:
+    """Load explicit enterprise scope; job names alone never trigger this gate."""
+    path = root / ENTERPRISE_JOB_REGISTRY_PATH
+    if not path.is_file() or path.is_symlink():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError("enterprise diagnostic registry is unavailable or invalid") from exc
+    jobs = payload.get("enterprise_jobs") if isinstance(payload, dict) else None
+    if (
+        not isinstance(payload, dict)
+        or payload.get("schema_version") != 1
+        or payload.get("registry_type") != "metronome_enterprise_diagnostic_jobs"
+        or not isinstance(jobs, list)
+    ):
+        raise RuntimeError("enterprise diagnostic registry has an invalid schema")
+    entries: Dict[str, Dict[str, str]] = {}
+    for entry in jobs:
+        if (
+            not isinstance(entry, dict)
+            or set(entry) != {"job_id", "job_path", "job_sha256"}
+            or not all(isinstance(entry.get(key), str) and entry[key] for key in entry)
+            or len(entry["job_sha256"]) != 64
+            or any(character not in "0123456789abcdef" for character in entry["job_sha256"])
+        ):
+            raise RuntimeError("enterprise diagnostic registry has an invalid job entry")
+        if entry["job_id"] in entries:
+            raise RuntimeError("enterprise diagnostic registry repeats a job ID")
+        entries[entry["job_id"]] = entry
+    return entries
+
+
+def _reject_registered_enterprise_job(
+    root: Path, job_path: Path, job: Dict[str, Any]
+) -> None:
+    """Keep registry-listed diagnostics on the guarded worker before any writes."""
+    entries = _load_enterprise_job_registry(root)
+    job_id = job.get("job_id")
+    if not isinstance(job_id, str) or job_id not in entries:
+        return
+    entry = entries[job_id]
+    try:
+        actual_path = job_path.resolve().relative_to(root.resolve()).as_posix()
+    except ValueError as exc:
+        raise RuntimeError("enterprise job manifest must be contained by the repository root") from exc
+    if (
+        entry["job_path"] != actual_path
+        or hashlib.sha256(job_path.read_bytes()).hexdigest() != entry["job_sha256"]
+    ):
+        raise RuntimeError("enterprise job does not match its immutable registry entry")
+    raise RuntimeError(
+        f"registered enterprise diagnostic jobs must use {GUARDED_WORKER_PATH}"
+    )
+
+
 def run_worker(
     root: Path,
     job_path: Path,
@@ -98,6 +159,11 @@ def run_worker(
 ) -> int:
     job_file = job_path if job_path.is_absolute() else root / job_path
     job = load_json(job_file)
+    try:
+        _reject_registered_enterprise_job(root, job_file, job)
+    except RuntimeError as exc:
+        print(exc)
+        return 1
     job_errors = validate_job(root, job)
     if job_errors:
         for error in job_errors:

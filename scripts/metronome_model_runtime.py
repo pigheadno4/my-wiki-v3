@@ -54,6 +54,14 @@ def append_progress_event(path: Path, event: str, **details: Any) -> None:
         handle.flush()
 
 
+def _append_interruption_progress_event(path: Path, event: str, **details: Any) -> None:
+    """Record interruption progress without replacing the interruption itself."""
+    try:
+        append_progress_event(path, event, **details)
+    except BaseException:
+        pass
+
+
 def analyze_event_stream(data: bytes) -> Tuple[int, int, Optional[Dict[str, Any]]]:
     """Parse complete JSONL records while accounting for an incomplete tail."""
     complete_lines = data.split(b"\n")
@@ -136,6 +144,16 @@ def _close_selected_streams(selector: selectors.BaseSelector) -> None:
             key.fileobj.close()
 
 
+def _close_process_streams(process: subprocess.Popen[Any]) -> None:
+    """Best-effort close every pipe created for a started process."""
+    for stream in (process.stdin, process.stdout, process.stderr):
+        if stream is not None:
+            try:
+                stream.close()
+            except BaseException:
+                pass
+
+
 def run_streaming_process(
     command: List[str],
     *,
@@ -171,7 +189,72 @@ def run_streaming_process(
         env=env,
         start_new_session=True,
     )
-    process_group = process.pid
+    try:
+        process_group = process.pid
+        return _run_streaming_process_after_start(
+            process,
+            process_group=process_group,
+            events_path=events_path,
+            stderr_path=stderr_path,
+            progress_path=progress_path,
+            started_at=started_at,
+            started_clock=started_clock,
+            timeout=timeout,
+            stdin_bytes=stdin_bytes,
+            termination_grace_seconds=termination_grace_seconds,
+            pipe_cleanup_seconds=pipe_cleanup_seconds,
+            model_event_classifier=model_event_classifier,
+            absolute_deadline=absolute_deadline,
+        )
+    except BaseException as exc:
+        _append_interruption_progress_event(progress_path, "interruption_initiated")
+        _append_interruption_progress_event(progress_path, "term_sent")
+        termination: Optional[Dict[str, Any]] = None
+        try:
+            termination = terminate_process_group(process, process_group=process.pid)
+        except BaseException:
+            pass
+        _close_process_streams(process)
+        if termination is not None:
+            termination["pipe_cleanup_outcome"] = "forced_close"
+        if termination is not None and termination.get("escalation_signal") == "SIGKILL":
+            _append_interruption_progress_event(progress_path, "kill_sent")
+        if termination is not None:
+            _append_interruption_progress_event(
+                progress_path,
+                "interruption_cleanup_completed",
+                termination=termination,
+            )
+            try:
+                exc.termination = termination
+                exc.process_exit_code = termination.get("final_return_code")
+                exc.returncode = termination.get("final_return_code")
+            except BaseException:
+                # The durable progress event remains available when an unusual
+                # exception type does not allow attached execution metadata.
+                pass
+        raise
+    finally:
+        _close_process_streams(process)
+
+
+def _run_streaming_process_after_start(
+    process: subprocess.Popen[Any],
+    *,
+    process_group: int,
+    events_path: Path,
+    stderr_path: Path,
+    progress_path: Path,
+    started_at: str,
+    started_clock: float,
+    timeout: int,
+    stdin_bytes: Optional[bytes],
+    termination_grace_seconds: float,
+    pipe_cleanup_seconds: float,
+    model_event_classifier: Optional[Callable[[Dict[str, Any]], bool]],
+    absolute_deadline: Optional[float],
+) -> AttemptExecution:
+    """Finish streaming after the caller has created the process group."""
     append_progress_event(progress_path, "process_started", pid=process.pid)
     assert process.stdout is not None and process.stderr is not None
 
@@ -332,13 +415,6 @@ def run_streaming_process(
                                 "first_stderr_byte",
                                 elapsed_seconds=round(observed, 6),
                             )
-    except BaseException:
-        append_progress_event(progress_path, "interruption_initiated")
-        append_progress_event(progress_path, "term_sent")
-        termination = terminate_process_group(process, process_group=process_group)
-        if termination.get("escalation_signal") == "SIGKILL":
-            append_progress_event(progress_path, "kill_sent")
-        raise
     finally:
         if selector.get_map():
             _close_selected_streams(selector)

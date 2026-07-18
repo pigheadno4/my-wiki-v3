@@ -300,15 +300,24 @@ class MetronomeIngestPilotTests(unittest.TestCase):
         (run_dir / "model-output.normalized.json").write_text("{}\n", encoding="utf-8")
         (run_dir / "model-source-draft.md").write_text("draft\n", encoding="utf-8")
 
+        provenance_dir = run_dir / "provenance"
+        provenance_dir.mkdir()
+        prompt_template = b"immutable prompt template\n"
+        output_schema = b'{"type":"object"}\n'
+        rendered_prompt = b"immutable rendered prompt\n"
+        (provenance_dir / "prompt-template.md").write_bytes(prompt_template)
+        (provenance_dir / "output-schema.json").write_bytes(output_schema)
+        (provenance_dir / "attempt-1-prompt.md").write_bytes(rendered_prompt)
+
         run_path = f"{job['artifact_dir']}/{run_id}"
         runtime_metadata = {
             "sha256": {
                 "raw_text": hashlib.sha256(
                     (root / job["raw_path"]).read_bytes()
                 ).hexdigest(),
-                "prompt_template": "a" * 64,
-                "rendered_prompt": "b" * 64,
-                "output_schema": "c" * 64,
+                "prompt_template": hashlib.sha256(prompt_template).hexdigest(),
+                "rendered_prompt": hashlib.sha256(rendered_prompt).hexdigest(),
+                "output_schema": hashlib.sha256(output_schema).hexdigest(),
                 "codex_executable": "d" * 64,
             },
             "codex_executable": "/usr/local/bin/codex",
@@ -329,6 +338,7 @@ class MetronomeIngestPilotTests(unittest.TestCase):
         receipt.update(
             {
                 "run_id": run_id,
+                "diagnostic_receipt_version": 2,
                 "input_mode": "staged-file",
                 "output_path": f"{run_path}/model-output.normalized.json",
                 "normalized_output_path": f"{run_path}/model-output.normalized.json",
@@ -353,6 +363,57 @@ class MetronomeIngestPilotTests(unittest.TestCase):
                 "termination": None,
                 **accounting,
             }
+        )
+        receipt["provenance"] = {
+            "prompt_template_snapshot_path": f"{run_path}/provenance/prompt-template.md",
+            "output_schema_snapshot_path": f"{run_path}/provenance/output-schema.json",
+            "attempt_prompt_snapshot_paths": {
+                "1": f"{run_path}/provenance/attempt-1-prompt.md"
+            },
+            "runner_script_sha256": {
+                f"scripts/{name}": hashlib.sha256(
+                    (SCRIPTS / name).read_bytes()
+                ).hexdigest()
+                for name in (
+                    "run_metronome_model_worker.py",
+                    "metronome_model_runtime.py",
+                    "metronome_ingest_pilot.py",
+                )
+            },
+            "git": {
+                "commit": None,
+                "dirty": None,
+                "dirty_status_sha256": None,
+                "unavailable_reason": "root is not a readable Git worktree",
+            },
+        }
+        manifest_path = run_dir / "terminal-artifact-manifest.json"
+        receipt["terminal_manifest"] = {
+            "path": manifest_path.relative_to(root).as_posix(),
+            "integrity_model": (
+                "The terminal manifest hashes the final receipt and all other terminal artifacts; "
+                "it intentionally does not hash itself."
+            ),
+        }
+        receipt_path = run_dir / "model-worker-receipt.json"
+        receipt_path.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
+        hashes = {
+            path.relative_to(root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in sorted(run_dir.rglob("*"))
+            if path.is_file() and not path.is_symlink() and path != manifest_path
+        }
+        manifest_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "sha256": hashes,
+                    "not_covered_due_to_self_reference": manifest_path.relative_to(root).as_posix(),
+                    "receipt_sha256_covered": True,
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
         )
         return run_dir
 
@@ -594,6 +655,86 @@ class MetronomeIngestPilotTests(unittest.TestCase):
         self.assertTrue(any("attempt_elapsed_seconds is required" in error for error in errors))
         self.assertTrue(any("streamed_stdout_bytes does not match events_path" in error for error in errors))
 
+    def test_diagnostic_receipt_rejects_tampered_provenance_snapshots_and_manifest(self):
+        root = self.make_root()
+        job = self.valid_model_job()
+        receipt = self.valid_model_worker_receipt(job)
+        run_dir = self.materialize_diagnostic_receipt(root, job, receipt)
+
+        self.assertEqual([], validate_worker_receipt(root, job, receipt))
+
+        (run_dir / "provenance" / "prompt-template.md").write_text(
+            "tampered\n", encoding="utf-8"
+        )
+        snapshot_errors = validate_worker_receipt(root, job, receipt)
+        self.assertTrue(
+            any("prompt template snapshot hash does not reconcile" in error for error in snapshot_errors)
+        )
+
+        (run_dir / "provenance" / "prompt-template.md").write_text(
+            "immutable prompt template\n", encoding="utf-8"
+        )
+        manifest = run_dir / "terminal-artifact-manifest.json"
+        manifest.write_text('{"schema_version": 1, "sha256": {}}\n', encoding="utf-8")
+        manifest_errors = validate_worker_receipt(root, job, receipt)
+        self.assertTrue(
+            any("terminal manifest hashes do not reconcile" in error for error in manifest_errors)
+        )
+
+    def test_prospective_receipt_rejects_snapshot_links_temporary_files_and_contradictory_git(self):
+        root = self.make_root()
+        job = self.valid_model_job()
+        receipt = self.valid_model_worker_receipt(job)
+        run_dir = self.materialize_diagnostic_receipt(root, job, receipt)
+        snapshot = run_dir / "provenance" / "prompt-template.md"
+        outside = root / "outside-prompt.md"
+        outside.write_text("outside\n", encoding="utf-8")
+        snapshot.unlink()
+        snapshot.symlink_to(outside)
+
+        link_errors = validate_worker_receipt(root, job, receipt)
+        self.assertTrue(any("diagnostic artifact must not be a symlink" in error for error in link_errors))
+
+        root = self.make_root()
+        job = self.valid_model_job()
+        receipt = self.valid_model_worker_receipt(job)
+        run_dir = self.materialize_diagnostic_receipt(root, job, receipt)
+        (run_dir / "provenance" / "output-schema.json.tmp").write_text(
+            "partial", encoding="utf-8"
+        )
+
+        tmp_errors = validate_worker_receipt(root, job, receipt)
+        self.assertTrue(any("temporary artifact remains" in error for error in tmp_errors))
+
+        root = self.make_root()
+        job = self.valid_model_job()
+        receipt = self.valid_model_worker_receipt(job)
+        self.materialize_diagnostic_receipt(root, job, receipt)
+        receipt["provenance"]["git"] = {
+            "commit": "1" * 40,
+            "dirty": True,
+            "dirty_status_sha256": None,
+            "unavailable_reason": None,
+        }
+
+        git_errors = validate_worker_receipt(root, job, receipt)
+        self.assertTrue(any("Git provenance facts are invalid" in error for error in git_errors))
+
+    def test_legacy_diagnostic_receipts_remain_valid_only_without_a_prospective_version(self):
+        root = self.make_root()
+        job = self.valid_model_job()
+        receipt = self.valid_model_worker_receipt(job)
+        self.materialize_diagnostic_receipt(root, job, receipt)
+        receipt.pop("diagnostic_receipt_version")
+        receipt.pop("provenance")
+        receipt.pop("terminal_manifest")
+
+        self.assertEqual([], validate_worker_receipt(root, job, receipt))
+
+        receipt["diagnostic_receipt_version"] = 99
+        errors = validate_worker_receipt(root, job, receipt)
+        self.assertTrue(any("diagnostic receipt version is unsupported" in error for error in errors))
+
     def test_diagnostic_receipt_rejects_traversal_and_symlink_path_escapes(self):
         root = self.make_root()
         job = self.valid_model_job()
@@ -676,6 +817,7 @@ class MetronomeIngestPilotTests(unittest.TestCase):
         run_dir = f"{job['artifact_dir']}/terra-20260717"
         receipt.update({
             "status": "failed",
+            "failure_stage": "validation",
             "process_exit_code": 1,
             "output_path": f"{run_dir}/attempt-1/model-output.raw.json",
             "normalized_output_path": f"{run_dir}/attempt-1/model-output.normalized.json",
@@ -708,6 +850,7 @@ class MetronomeIngestPilotTests(unittest.TestCase):
         run_dir = f"{job['artifact_dir']}/terra-20260717"
         receipt.update({
             "status": "failed",
+            "failure_stage": "validation",
             "process_exit_code": 1,
             "output_path": None,
             "normalized_output_path": None,

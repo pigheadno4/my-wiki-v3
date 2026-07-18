@@ -40,6 +40,7 @@ from metronome_model_runtime import (  # noqa: E402
     validate_run_id,
     write_json_atomic,
 )
+from metronome_ingest_pilot import validate_worker_receipt  # noqa: E402
 
 
 def _pid_is_alive(pid):
@@ -658,6 +659,7 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         run_dir = resolve_run_dir(root, job, "terra-provenance")
         receipt_path = run_dir / "model-worker-receipt.json"
         receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        self.assertEqual([], validate_worker_receipt(root, job, receipt))
         provenance = receipt["provenance"]
         template_snapshot = root / provenance["prompt_template_snapshot_path"]
         schema_snapshot = root / provenance["output_schema_snapshot_path"]
@@ -813,8 +815,73 @@ class ModelWorkerRunnerTests(unittest.TestCase):
         receipt_path = resolve_run_dir(root, job, "setup-failure") / "model-worker-receipt.json"
         receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
         self.assertEqual("failed", receipt["status"])
+        self.assertEqual("setup", receipt.get("failure_stage"))
+        self.assertEqual(0, receipt["attempt_count"])
+        self.assertEqual([], receipt["attempts"])
+        self.assertIsNone(receipt["runtime_metadata"])
+        self.assertEqual([], validate_worker_receipt(root, job, receipt))
         self.assertTrue(any("home setup exploded" in item for item in receipt["failures"]))
         self.assertFalse(receipt_path.with_name(f"{receipt_path.name}.tmp").exists())
+
+    def test_post_claim_process_launch_failure_keeps_zero_attempt_semantics(self):
+        root, job_path, job = self.make_root()
+
+        from run_metronome_model_worker import _build_injected_runtime_metadata
+        from unittest.mock import patch
+
+        with patch(
+            "run_metronome_model_worker.build_runtime_metadata",
+            side_effect=lambda **kwargs: _build_injected_runtime_metadata(**kwargs),
+        ), patch(
+            "run_metronome_model_worker.run_process_in_new_group",
+            side_effect=OSError("codex launch exploded"),
+        ):
+            self.assertEqual(
+                1,
+                run_worker(root, job_path, "2026-07-18", run_id="process-launch-failure"),
+            )
+
+        receipt = json.loads(
+            (
+                resolve_run_dir(root, job, "process-launch-failure")
+                / "model-worker-receipt.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual("process", receipt["failure_stage"])
+        self.assertEqual(0, receipt["attempt_count"])
+        self.assertEqual({}, receipt["provenance"]["attempt_prompt_snapshot_paths"])
+        self.assertEqual([], validate_worker_receipt(root, job, receipt))
+
+    def test_post_claim_provenance_setup_failure_uses_explicit_unavailable_shape(self):
+        root, job_path, job = self.make_root()
+
+        from unittest.mock import patch
+
+        with patch(
+            "run_metronome_model_worker._snapshot_diagnostic_provenance",
+            side_effect=OSError("snapshot exploded"),
+        ):
+            self.assertEqual(
+                1,
+                run_worker(root, job_path, "2026-07-18", run_id="snapshot-failure"),
+            )
+
+        receipt = json.loads(
+            (
+                resolve_run_dir(root, job, "snapshot-failure")
+                / "model-worker-receipt.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual("setup", receipt["failure_stage"])
+        self.assertEqual(0, receipt["attempt_count"])
+        self.assertEqual(
+            {
+                "status": "unavailable",
+                "unavailable_reason": "provenance snapshot failed after the run was claimed",
+            },
+            receipt["provenance"],
+        )
+        self.assertEqual([], validate_worker_receipt(root, job, receipt))
 
     def test_post_claim_metadata_process_and_late_failures_publish_failed_receipts(self):
         failure_modes = (
@@ -851,6 +918,11 @@ class ModelWorkerRunnerTests(unittest.TestCase):
                     ).read_text(encoding="utf-8")
                 )
                 self.assertEqual("failed", receipt["status"])
+                expected_stage = "metadata" if run_id == "metadata-failure" else "process"
+                expected_attempt_count = 0 if run_id == "metadata-failure" else 1
+                self.assertEqual(expected_stage, receipt["failure_stage"])
+                self.assertEqual(expected_attempt_count, receipt["attempt_count"])
+                self.assertEqual([], validate_worker_receipt(root, job, receipt))
                 self.assertTrue(any(expected in item for item in receipt["failures"]))
 
         root, job_path, job = self.make_root()
@@ -889,6 +961,9 @@ class ModelWorkerRunnerTests(unittest.TestCase):
             ).read_text(encoding="utf-8")
         )
         self.assertEqual("failed", receipt["status"])
+        self.assertEqual("receipt_publication", receipt["failure_stage"])
+        self.assertEqual(1, receipt["attempt_count"])
+        self.assertEqual([], validate_worker_receipt(root, job, receipt))
         self.assertTrue(any("late progress exploded" in item for item in receipt["failures"]))
 
     def test_post_claim_interrupt_is_receipted_then_propagated(self):
@@ -912,7 +987,78 @@ class ModelWorkerRunnerTests(unittest.TestCase):
             ).read_text(encoding="utf-8")
         )
         self.assertEqual("failed", receipt["status"])
+        self.assertEqual("interrupt", receipt.get("failure_stage"))
+        self.assertEqual(1, receipt["attempt_count"])
+        self.assertEqual(1, len(receipt["attempts"]))
+        self.assertEqual([], validate_worker_receipt(root, job, receipt))
         self.assertTrue(any("stop" in item for item in receipt["failures"]))
+
+    def test_inflight_interrupt_preserves_partial_stream_accounting_and_executor_state(self):
+        root, job_path, job = self.make_root()
+        stdout = (
+            b'{"type":"thread.started","usage":{"input_tokens":3,"output_tokens":2}}\n'
+            b'{"partial":'
+        )
+        stderr = b"booting \xff\n"
+        termination = {
+            "signal": "SIGTERM",
+            "grace_seconds": 5.0,
+            "grace_outcome": "terminated",
+            "escalation_signal": None,
+            "final_return_code": -15,
+            "pipe_cleanup_outcome": "eof",
+        }
+
+        def interrupted_runner(command, **_kwargs):
+            attempt_dir = Path(command[command.index("-o") + 1]).parent
+            (attempt_dir / "events.jsonl").write_bytes(stdout)
+            (attempt_dir / "stderr.log").write_bytes(stderr)
+            with (attempt_dir / "progress.jsonl").open("a", encoding="utf-8") as handle:
+                for event in (
+                    {"timestamp": "2026-07-18T00:00:00Z", "event": "first_stdout_event", "elapsed_seconds": 0.125},
+                    {"timestamp": "2026-07-18T00:00:00Z", "event": "first_stderr_byte", "elapsed_seconds": 0.25},
+                    {
+                        "timestamp": "2026-07-18T00:00:00Z",
+                        "event": "process_exited",
+                        "process_return_code": -15,
+                        "logical_return_code": 130,
+                        "elapsed_seconds": 0.3,
+                    },
+                ):
+                    handle.write(json.dumps(event) + "\n")
+            interruption = KeyboardInterrupt("stop after partial stream")
+            interruption.returncode = 130
+            interruption.termination = termination
+            raise interruption
+
+        with self.assertRaisesRegex(KeyboardInterrupt, "stop after partial stream"):
+            run_worker(
+                root,
+                job_path,
+                "2026-07-18",
+                runner=interrupted_runner,
+                run_id="interrupt-partial-stream",
+            )
+
+        run_dir = resolve_run_dir(root, job, "interrupt-partial-stream")
+        receipt = json.loads((run_dir / "model-worker-receipt.json").read_text(encoding="utf-8"))
+        attempt = receipt["attempts"][0]
+        self.assertEqual("interrupt", receipt["failure_stage"])
+        self.assertEqual(stdout, (run_dir / "attempt-1/events.jsonl").read_bytes())
+        self.assertEqual(stderr, (run_dir / "attempt-1/stderr.log").read_bytes())
+        self.assertEqual(130, attempt["process_exit_code"])
+        self.assertEqual(termination, attempt["termination"])
+        self.assertEqual(termination, receipt["termination"])
+        self.assertEqual(len(stdout), attempt["streamed_stdout_bytes"])
+        self.assertEqual(len(stderr), attempt["streamed_stderr_bytes"])
+        self.assertEqual(1, attempt["parsed_event_count"])
+        self.assertEqual(1, attempt["truncated_line_count"])
+        self.assertEqual(0.125, attempt["time_to_first_stdout_event_seconds"])
+        self.assertEqual(0.25, attempt["time_to_first_stderr_byte_seconds"])
+        self.assertGreaterEqual(attempt["attempt_elapsed_seconds"], 0.3)
+        self.assertEqual({"input_tokens": 3, "output_tokens": 2}, receipt["token_usage"])
+        self.assertEqual({"input_tokens": 3, "output_tokens": 2}, receipt["cumulative_token_usage"])
+        self.assertEqual([], validate_worker_receipt(root, job, receipt))
 
     def test_injected_runner_uses_metadata_provider_without_real_codex_or_path(self):
         root, job_path, job = self.make_root()

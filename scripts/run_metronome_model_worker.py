@@ -53,10 +53,25 @@ ENTERPRISE_JOB_REGISTRY_PATH = Path(
     "tracking/ingest/metronome/pilot/enterprise-diagnostic-jobs.json"
 )
 TERMINAL_MANIFEST_NAME = "terminal-artifact-manifest.json"
+TERMINAL_MANIFEST_INTEGRITY_MODEL = (
+    "The terminal manifest hashes the final receipt and all other terminal artifacts; "
+    "it intentionally does not hash itself."
+)
 RUNNER_SCRIPT_PATHS = (
     Path(__file__).resolve(),
     Path(__file__).resolve().with_name("metronome_model_runtime.py"),
     Path(__file__).resolve().with_name("metronome_ingest_pilot.py"),
+)
+DIAGNOSTIC_ACCOUNTING_FIELDS = (
+    "attempt_started_at",
+    "attempt_finished_at",
+    "attempt_elapsed_seconds",
+    "time_to_first_stdout_event_seconds",
+    "time_to_first_stderr_byte_seconds",
+    "streamed_stdout_bytes",
+    "streamed_stderr_bytes",
+    "parsed_event_count",
+    "truncated_line_count",
 )
 
 
@@ -482,15 +497,34 @@ def _publish_diagnostic_receipt(
     manifest_path = artifact_dir / TERMINAL_MANIFEST_NAME
     receipt["terminal_manifest"] = {
         "path": _relative_to_root(manifest_path, root),
-        "integrity_model": (
-            "The terminal manifest hashes the final receipt and all other terminal artifacts; "
-            "it intentionally does not hash itself."
-        ),
+        "integrity_model": TERMINAL_MANIFEST_INTEGRITY_MODEL,
     }
     if progress_path is not None:
         append_progress_event(progress_path, "receipt_published")
     write_json_atomic(artifact_dir / "model-worker-receipt.json", receipt)
     _write_terminal_manifest(root, artifact_dir)
+
+
+def _publish_fallback_diagnostic_receipt(
+    root: Path,
+    artifact_dir: Path,
+    receipt: Dict[str, Any],
+    progress_path: Optional[Path],
+) -> None:
+    """Publish a valid terminal fallback even if a progress append has failed."""
+    try:
+        _publish_diagnostic_receipt(root, artifact_dir, receipt, progress_path)
+        return
+    except Exception:
+        # A failing progress sink must not make the receipt or its terminal manifest
+        # disappear.  The receipt truthfully records the publication-stage failure.
+        manifest_path = artifact_dir / TERMINAL_MANIFEST_NAME
+        receipt["terminal_manifest"] = {
+            "path": _relative_to_root(manifest_path, root),
+            "integrity_model": TERMINAL_MANIFEST_INTEGRITY_MODEL,
+        }
+        write_json_atomic(artifact_dir / "model-worker-receipt.json", receipt)
+        _write_terminal_manifest(root, artifact_dir)
 
 
 def _load_enterprise_job_registry(root: Path) -> Dict[str, Dict[str, str]]:
@@ -669,6 +703,109 @@ def _execution_accounting(execution: AttemptExecution) -> Dict[str, Any]:
     }
 
 
+def _read_progress_events(path: Path) -> List[Dict[str, Any]]:
+    """Read the valid durable progress records without treating a torn tail as truth."""
+    try:
+        payload = path.read_bytes()
+    except OSError:
+        return []
+    events: List[Dict[str, Any]] = []
+    for line in payload.splitlines():
+        try:
+            item = json.loads(line)
+        except (TypeError, ValueError, json.JSONDecodeError):
+            continue
+        if isinstance(item, dict):
+            events.append(item)
+    return events
+
+
+def _progress_elapsed(events: List[Dict[str, Any]], event_name: str) -> Optional[float]:
+    """Return the first recorded nonnegative elapsed time for one lifecycle event."""
+    for event in events:
+        if event.get("event") != event_name:
+            continue
+        value = event.get("elapsed_seconds")
+        if isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0:
+            return float(value)
+    return None
+
+
+def _progress_return_code(events: List[Dict[str, Any]]) -> Optional[int]:
+    """Prefer the worker's logical result code when a durable exit event exists."""
+    for event in reversed(events):
+        if event.get("event") != "process_exited":
+            continue
+        for field in ("logical_return_code", "process_return_code"):
+            value = event.get(field)
+            if isinstance(value, int) and not isinstance(value, bool):
+                return value
+    return None
+
+
+def _progress_termination(events: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+    """Recover a structured cleanup result when the executor durably recorded one."""
+    for event in reversed(events):
+        for field in ("termination", "termination_metadata"):
+            value = event.get(field)
+            if isinstance(value, dict):
+                return copy.deepcopy(value)
+    return None
+
+
+def _exception_execution_value(exc: BaseException, field: str) -> Any:
+    """Read an executor's attached result state without inventing a fallback value."""
+    for source in (
+        exc,
+        getattr(exc, "execution", None),
+        getattr(exc, "attempt_execution", None),
+        getattr(exc, "executor_state", None),
+    ):
+        if isinstance(source, dict) and field in source:
+            return source[field]
+        if source is not None and hasattr(source, field):
+            return getattr(source, field)
+    return None
+
+
+def _exception_return_code(exc: BaseException) -> Optional[int]:
+    for field in ("returncode", "return_code", "process_exit_code"):
+        value = _exception_execution_value(exc, field)
+        if isinstance(value, int) and not isinstance(value, bool):
+            return value
+    return None
+
+
+def _exception_termination(exc: BaseException) -> Optional[Dict[str, Any]]:
+    value = _exception_execution_value(exc, "termination")
+    return copy.deepcopy(value) if isinstance(value, dict) else None
+
+
+def _inflight_attempt_has_durable_start(
+    inflight_attempt: Dict[str, Any], progress_events: List[Dict[str, Any]]
+) -> bool:
+    """Recognize a process attempt from its durable lifecycle or nonempty streams."""
+    if inflight_attempt.get("process_started") is True:
+        return True
+    process_events = {
+        "process_started",
+        "interruption_initiated",
+        "term_sent",
+        "kill_sent",
+        "process_exited",
+    }
+    if any(event.get("event") in process_events for event in progress_events):
+        return True
+    attempt_dir = inflight_attempt["attempt_dir"]
+    for name in ("events.jsonl", "stderr.log"):
+        try:
+            if (attempt_dir / name).stat().st_size > 0:
+                return True
+        except OSError:
+            continue
+    return False
+
+
 def recover_attempt(
     root: Path, job_path: Path, ingest_date: str, attempt: int
 ) -> int:
@@ -751,12 +888,150 @@ def _unhandled_worker_failure_receipt(state: Dict[str, Any], exc: BaseException)
     artifact_dir = state["artifact_dir"]
     job = state["job"]
     last_attempt_dir = state.get("last_attempt_dir")
+    attempts = state.get("attempt_records", [])
+    inflight_attempt = state.get("inflight_attempt")
+    failure_stage = (
+        "interrupt"
+        if isinstance(exc, (KeyboardInterrupt, SystemExit))
+        else state.get("failure_stage", "setup")
+    )
+
+    inflight_progress_events: List[Dict[str, Any]] = []
+    if isinstance(inflight_attempt, dict):
+        inflight_progress_events = _read_progress_events(
+            inflight_attempt["attempt_dir"] / "progress.jsonl"
+        )
+        inflight_attempt["process_started"] = _inflight_attempt_has_durable_start(
+            inflight_attempt, inflight_progress_events
+        )
+    if isinstance(inflight_attempt, dict) and not inflight_attempt.get("process_started"):
+        # The rendered prompt was prepared, but never delivered to a process.  It is
+        # not an attempt artifact, so remove it from the prospective map before the
+        # terminal manifest makes the zero-attempt receipt immutable.
+        provenance = state.get("provenance")
+        if isinstance(provenance, dict):
+            snapshot = artifact_dir / "provenance" / (
+                f"attempt-{inflight_attempt['attempt']}-prompt.md"
+            )
+            if snapshot.is_file() and not snapshot.is_symlink():
+                snapshot.unlink()
+            prompt_paths = provenance.get("attempt_prompt_snapshot_paths")
+            if isinstance(prompt_paths, dict):
+                prompt_paths.pop(str(inflight_attempt["attempt"]), None)
+    if not isinstance(state.get("provenance"), dict):
+        # A snapshot failure can leave one input file behind.  It was never a
+        # complete prospective provenance record, so remove it before publishing
+        # the explicit unavailable-provenance receipt shape.
+        provenance_dir = artifact_dir / "provenance"
+        if provenance_dir.is_dir() and not provenance_dir.is_symlink():
+            for path in provenance_dir.rglob("*"):
+                if path.is_file() and not path.is_symlink():
+                    path.unlink()
+
+    if (
+        isinstance(inflight_attempt, dict)
+        and inflight_attempt.get("process_started") is True
+        and (
+            not attempts
+            or not isinstance(attempts[-1], dict)
+            or attempts[-1].get("attempt") != inflight_attempt["attempt"]
+        )
+    ):
+        attempt_dir = inflight_attempt["attempt_dir"]
+        events_path = attempt_dir / "events.jsonl"
+        stderr_path = attempt_dir / "stderr.log"
+        # The process wrapper may have been interrupted before opening one stream.
+        # Only create a missing stream; existing bytes are the durable source of
+        # truth and must never be replaced by synthetic empty accounting.
+        for path in (events_path, stderr_path):
+            if not path.exists():
+                _write_bytes_atomic(path, b"")
+        progress_path = attempt_dir / "progress.jsonl"
+        try:
+            append_progress_event(
+                progress_path,
+                "validation_completed",
+                passed=False,
+                error_count=1,
+            )
+        except Exception:
+            # The receipt below records a receipt-publication failure if the
+            # progress sink is unavailable; do not pretend the event was written.
+            if failure_stage != "interrupt":
+                failure_stage = "receipt_publication"
+        progress_events = _read_progress_events(progress_path)
+        stdout_bytes = events_path.read_bytes()
+        stderr_bytes = stderr_path.read_bytes()
+        parsed_count, truncated_count, usage = analyze_event_stream(stdout_bytes)
+        first_stdout_event = _progress_elapsed(progress_events, "first_stdout_event")
+        first_stderr_byte = _progress_elapsed(progress_events, "first_stderr_byte")
+        process_exit_code = _progress_return_code(progress_events)
+        if process_exit_code is None:
+            process_exit_code = _exception_return_code(exc)
+        termination = _progress_termination(progress_events) or _exception_termination(exc)
+        if process_exit_code is None and isinstance(termination, dict):
+            final_return_code = termination.get("final_return_code")
+            if isinstance(final_return_code, int) and not isinstance(final_return_code, bool):
+                process_exit_code = final_return_code
+        elapsed_seconds = max(
+            time.monotonic() - inflight_attempt["started_clock"],
+            first_stdout_event or 0.0,
+            first_stderr_byte or 0.0,
+            _progress_elapsed(progress_events, "process_exited") or 0.0,
+        )
+        attempt_finished_at = utc_now()
+        attempt_record = {
+            "attempt": inflight_attempt["attempt"],
+            "input_mode": inflight_attempt["input_mode"],
+            "status": "interrupted_before_result",
+            "process_exit_code": process_exit_code,
+            "validation_errors": [f"unhandled post-claim worker failure: {exc}"],
+            "retry_reason": f"unhandled post-claim worker failure: {exc}",
+            "output_path": (
+                _relative_to_root(raw_output_path(attempt_dir), root)
+                if raw_output_path(attempt_dir).is_file()
+                else None
+            ),
+            "normalized_output_path": (
+                _relative_to_root(normalized_output_path(attempt_dir), root)
+                if normalized_output_path(attempt_dir).is_file()
+                else None
+            ),
+            "events_path": _relative_to_root(events_path, root),
+            "stderr_path": _relative_to_root(stderr_path, root),
+            "progress_path": _relative_to_root(progress_path, root),
+            "token_usage": usage,
+            "runtime_metadata": inflight_attempt["runtime_metadata"],
+            "termination": termination,
+            "attempt_started_at": inflight_attempt["started_at"],
+            "attempt_finished_at": attempt_finished_at,
+            "attempt_elapsed_seconds": round(elapsed_seconds, 6),
+            "time_to_first_stdout_event_seconds": first_stdout_event,
+            "time_to_first_stderr_byte_seconds": first_stderr_byte,
+            "streamed_stdout_bytes": len(stdout_bytes),
+            "streamed_stderr_bytes": len(stderr_bytes),
+            "parsed_event_count": parsed_count,
+            "truncated_line_count": truncated_count,
+        }
+        attempts.append(attempt_record)
+        state.setdefault("usages", []).append(usage)
+        state["last_attempt_dir"] = attempt_dir
+        state["last_runtime_metadata"] = inflight_attempt["runtime_metadata"]
+        state["last_termination"] = termination
+        last_attempt_dir = attempt_dir
+
     relative = (
         lambda path: _relative_to_root(path, root) if isinstance(path, Path) and path.is_file() else None
     )
     now = utc_now()
+    has_attempt = bool(attempts)
+    final_attempt = attempts[-1] if has_attempt and isinstance(attempts[-1], dict) else {}
+    progress_path = (
+        last_attempt_dir / "progress.jsonl" if isinstance(last_attempt_dir, Path) else None
+    )
     receipt = {
         "schema_version": 3,
+        "diagnostic_receipt_version": 2,
         "job_id": job["job_id"],
         "provider": job["provider"],
         "canonical_url": job["canonical_url"],
@@ -768,24 +1043,27 @@ def _unhandled_worker_failure_receipt(state: Dict[str, Any], exc: BaseException)
         "reasoning_effort": job["reasoning_effort"],
         "input_mode": state["input_mode"],
         "run_id": state["run_id"],
-        "attempt_count": len(state.get("attempt_records", [])),
-        "attempts": state.get("attempt_records", []),
+        "failure_stage": failure_stage,
+        "attempt_count": len(attempts),
+        "attempts": attempts,
         "started_at": state["started_at"],
         "finished_at": now,
         "elapsed_seconds": round(time.monotonic() - state["started_clock"], 3),
-        "process_exit_code": None,
-        "output_path": relative(state.get("last_raw_output_path")),
-        "normalized_output_path": relative(state.get("last_normalized_path")),
+        "process_exit_code": final_attempt.get("process_exit_code") if has_attempt else None,
+        "output_path": (
+            final_attempt.get("output_path")
+            if has_attempt
+            else relative(state.get("last_raw_output_path"))
+        ),
+        "normalized_output_path": (
+            final_attempt.get("normalized_output_path")
+            if has_attempt
+            else relative(state.get("last_normalized_path"))
+        ),
         "draft_path": None,
-        "events_path": relative(
-            last_attempt_dir / "events.jsonl" if isinstance(last_attempt_dir, Path) else None
-        ),
-        "stderr_path": relative(
-            last_attempt_dir / "stderr.log" if isinstance(last_attempt_dir, Path) else None
-        ),
-        "progress_path": relative(
-            last_attempt_dir / "progress.jsonl" if isinstance(last_attempt_dir, Path) else None
-        ),
+        "events_path": final_attempt.get("events_path") if has_attempt else None,
+        "stderr_path": final_attempt.get("stderr_path") if has_attempt else None,
+        "progress_path": relative(progress_path),
         "grounding_quotes": [],
         "validation": [
             {
@@ -794,27 +1072,36 @@ def _unhandled_worker_failure_receipt(state: Dict[str, Any], exc: BaseException)
                 "errors": [f"unhandled post-claim worker failure: {exc}"],
             }
         ],
-        "token_usage": None,
+        "token_usage": final_attempt.get("token_usage") if has_attempt else None,
         "cumulative_token_usage": sum_token_usage(state.get("usages", [])),
-        "token_usage_unavailable_reason": "Worker did not finish normal execution accounting.",
+        "token_usage_unavailable_reason": (
+            None
+            if has_attempt and final_attempt.get("token_usage") is not None
+            else "Worker did not finish normal execution accounting."
+        ),
         "quote_line_repairs": state.get("total_quote_repairs", 0),
         "raw_link_repairs": state.get("total_raw_link_repairs", 0),
         "mandatory_tag_repairs": state.get("total_tag_repairs", 0),
         "page_profile": state.get("profile", {}),
-        "runtime_metadata": state.get("last_runtime_metadata"),
-        "termination": state.get("last_termination"),
+        "runtime_metadata": final_attempt.get("runtime_metadata") if has_attempt else None,
+        "termination": final_attempt.get("termination") if has_attempt else None,
         "failures": [f"unhandled post-claim worker failure: {exc}"],
-        "provenance": state.get("provenance", {"status": "incomplete"}),
+        "provenance": state.get(
+            "provenance",
+            {
+                "status": "unavailable",
+                "unavailable_reason": "provenance snapshot failed after the run was claimed",
+            },
+        ),
     }
-    progress_path = (
-        last_attempt_dir / "progress.jsonl" if isinstance(last_attempt_dir, Path) else None
-    )
-    try:
-        _publish_diagnostic_receipt(root, artifact_dir, receipt, progress_path)
-    except Exception:
-        # The primary requirement is an atomic failed receipt; do not let a manifest or
-        # progress-write error hide it after the run directory has been claimed.
-        write_json_atomic(artifact_dir / "model-worker-receipt.json", receipt)
+    if has_attempt:
+        receipt.update(
+            {
+                field: final_attempt.get(field)
+                for field in DIAGNOSTIC_ACCOUNTING_FIELDS
+            }
+        )
+    _publish_fallback_diagnostic_receipt(root, artifact_dir, receipt, progress_path)
     return 1
 
 
@@ -885,6 +1172,7 @@ def _run_worker_unlocked(
                     "input_mode": input_mode,
                     "started_at": started_at,
                     "started_clock": started_clock,
+                    "failure_stage": "setup",
                 }
             )
     else:
@@ -953,23 +1241,7 @@ def _run_worker_unlocked(
             prompt = render_worker_prompt(
                 template, job, profile, raw_text, input_mode, validation_errors
             )
-            if diagnostic:
-                assert provenance is not None
-                prompt_snapshot_path = _snapshot_attempt_prompt(
-                    root, artifact_dir, provenance, attempt, prompt
-                )
-                prompt = (root / prompt_snapshot_path).read_text(encoding="utf-8")
-            stdin_bytes = prompt.encode("utf-8") if input_mode == "inline-stdin" else None
             timeout_seconds = int(job.get("timeout_seconds", 900))
-            command = build_codex_command(
-                staged_cwd,
-                schema_path,
-                output_path,
-                prompt,
-                job["model"],
-                job["reasoning_effort"],
-                input_mode,
-            )
             termination: Optional[Dict[str, Any]] = None
             progress_path = attempt_dir / "progress.jsonl"
             if claim_state is not None and diagnostic:
@@ -985,21 +1257,51 @@ def _run_worker_unlocked(
                     if runner is None
                     else runtime_metadata_provider or _build_injected_runtime_metadata
                 )
+                if claim_state is not None:
+                    claim_state["failure_stage"] = "metadata"
                 runtime_metadata = metadata_provider(
                     raw_bytes=raw_bytes,
                     prompt_template_bytes=template_bytes,
                     rendered_prompt=prompt,
                     schema_path=schema_path,
-                    codex_executable=command[0],
+                    codex_executable="codex",
                     timeout_seconds=timeout_seconds,
                     env=worker_env,
                 )
             else:
                 runtime_metadata = None
+            if diagnostic:
+                assert provenance is not None
+                prompt_snapshot_path = _snapshot_attempt_prompt(
+                    root, artifact_dir, provenance, attempt, prompt
+                )
+                prompt = (root / prompt_snapshot_path).read_text(encoding="utf-8")
+            stdin_bytes = prompt.encode("utf-8") if input_mode == "inline-stdin" else None
+            command = build_codex_command(
+                staged_cwd,
+                schema_path,
+                output_path,
+                prompt,
+                job["model"],
+                job["reasoning_effort"],
+                input_mode,
+            )
             attempt_started_at = utc_now()
             attempt_started_clock = time.monotonic()
+            if claim_state is not None and diagnostic:
+                claim_state["inflight_attempt"] = {
+                    "attempt": attempt,
+                    "attempt_dir": attempt_dir,
+                    "input_mode": input_mode,
+                    "runtime_metadata": runtime_metadata,
+                    "started_at": attempt_started_at,
+                    "started_clock": attempt_started_clock,
+                    "process_started": False,
+                }
             try:
                 if runner is None:
+                    if claim_state is not None and diagnostic:
+                        claim_state["failure_stage"] = "process"
                     execution = run_process_in_new_group(
                         command,
                         cwd=staged_cwd,
@@ -1016,6 +1318,9 @@ def _run_worker_unlocked(
                         pid=None,
                         injected_runner=True,
                     )
+                    if claim_state is not None and diagnostic:
+                        claim_state["failure_stage"] = "process"
+                        claim_state["inflight_attempt"]["process_started"] = True
                     runner_kwargs = {
                         "capture_output": True,
                         "text": True,
@@ -1134,6 +1439,8 @@ def _run_worker_unlocked(
                         "total_quote_repairs": total_quote_repairs,
                         "total_raw_link_repairs": total_raw_link_repairs,
                         "total_tag_repairs": total_tag_repairs,
+                        "inflight_attempt": None,
+                        "failure_stage": "validation",
                     }
                 )
             if termination is not None or result.returncode == 124:
@@ -1186,6 +1493,7 @@ def _run_worker_unlocked(
                     "page_profile": profile,
                 }
                 if run_id is not None:
+                    receipt["diagnostic_receipt_version"] = 2
                     receipt["run_id"] = run_id
                     receipt["normalized_output_path"] = accepted_output.relative_to(root).as_posix()
                     receipt["termination"] = last_termination
@@ -1193,6 +1501,8 @@ def _run_worker_unlocked(
                     receipt["runtime_metadata"] = last_runtime_metadata
                     receipt["provenance"] = provenance
                     receipt.update(_execution_accounting(execution))
+                    if claim_state is not None:
+                        claim_state["failure_stage"] = "receipt_publication"
                     _publish_diagnostic_receipt(root, artifact_dir, receipt, progress_path)
                 else:
                     _write_json(artifact_dir / "model-worker-receipt.json", receipt)
@@ -1242,6 +1552,8 @@ def _run_worker_unlocked(
         "page_profile": profile,
     }
     if run_id is not None:
+        failed["diagnostic_receipt_version"] = 2
+        failed["failure_stage"] = "validation"
         assert last_execution is not None
         failed["run_id"] = run_id
         failed["termination"] = last_termination
@@ -1256,6 +1568,8 @@ def _run_worker_unlocked(
             if last_normalized_path is not None
             else None
         )
+        if claim_state is not None:
+            claim_state["failure_stage"] = "receipt_publication"
         _publish_diagnostic_receipt(
             root, artifact_dir, failed, last_attempt_dir / "progress.jsonl"
         )
