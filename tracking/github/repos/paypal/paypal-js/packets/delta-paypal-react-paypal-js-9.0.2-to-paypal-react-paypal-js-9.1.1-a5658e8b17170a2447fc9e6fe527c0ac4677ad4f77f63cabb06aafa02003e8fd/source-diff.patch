@@ -1,0 +1,212 @@
+diff --git a/packages/paypal-js/CHANGELOG.md b/packages/paypal-js/CHANGELOG.md
+index be09680..3d5c2f2 100644
+--- a/packages/paypal-js/CHANGELOG.md
++++ b/packages/paypal-js/CHANGELOG.md
+@@ -1,5 +1,22 @@
+ # Changelog
+ 
++## 9.6.0
++
++### Minor Changes
++
++- 6dee5e0: Add Google Pay component types to v6 SDK
++- bec655c: Added eligibility API typings for Card Fields and created card fields test file for its types
++
++### Patch Changes
++
++- 3524480: Prevent prototype polluction security risk for sdkBaseUrl destructuring of the prototype change by adding Object.prototype.hasOwnProperty.call()
++
++## 9.5.0
++
++### Minor Changes
++
++- a5d2818: Adding Apple Pay payment component types to v6 SDK
++
+ ## 9.4.1
+ 
+ ### Patch Changes
+diff --git a/packages/paypal-js/package.json b/packages/paypal-js/package.json
+index 5ff9e44..155eebe 100644
+--- a/packages/paypal-js/package.json
++++ b/packages/paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+     "name": "@paypal/paypal-js",
+-    "version": "9.4.1",
++    "version": "9.6.0",
+     "description": "Loading wrapper and TypeScript types for the PayPal JS SDK",
+     "main": "index.js",
+     "module": "dist/esm/paypal-js.js",
+diff --git a/packages/react-paypal-js-storybook/v6/package.json b/packages/react-paypal-js-storybook/v6/package.json
+index cb860fe..779ff51 100644
+--- a/packages/react-paypal-js-storybook/v6/package.json
++++ b/packages/react-paypal-js-storybook/v6/package.json
+@@ -24,7 +24,7 @@
+         "directory": "packages/react-paypal-js-storybook/v6"
+     },
+     "dependencies": {
+-        "@paypal/react-paypal-js": "^9.0.2",
++        "@paypal/react-paypal-js": "^9.1.1",
+         "react": "^19.2.4",
+         "react-dom": "^19.2.4"
+     },
+diff --git a/packages/react-paypal-js-storybook/v6/src/decorators/index.ts b/packages/react-paypal-js-storybook/v6/src/decorators/index.ts
+index 3d14abd..4743cd9 100644
+--- a/packages/react-paypal-js-storybook/v6/src/decorators/index.ts
++++ b/packages/react-paypal-js-storybook/v6/src/decorators/index.ts
+@@ -1 +1,2 @@
+ export { withPayPalProvider } from "./PayPalProviderDecorator";
++export { withPaymentResult } from "./PaymentResultDecorator";
+diff --git a/packages/react-paypal-js/CHANGELOG.md b/packages/react-paypal-js/CHANGELOG.md
+index 3334dcd..e290d05 100644
+--- a/packages/react-paypal-js/CHANGELOG.md
++++ b/packages/react-paypal-js/CHANGELOG.md
+@@ -1,5 +1,28 @@
+ # Changelog
+ 
++## 9.1.1
++
++### Patch Changes
++
++- b2c3c7a: Simplifies deep compare memoize helpers and adds tests.
++- b9a263a: fix link to the live demo in readme
++- Updated dependencies [6dee5e0]
++- Updated dependencies [3524480]
++- Updated dependencies [bec655c]
++    - @paypal/paypal-js@9.6.0
++
++## 9.1.0
++
++### Minor Changes
++
++- fd0fd4c: Add internal error boundary to PayPalButtons component
++
++### Patch Changes
++
++- ee754a1: clarify PayPal SDK versions in readme files
++- Updated dependencies [a5d2818]
++    - @paypal/paypal-js@9.5.0
++
+ ## 9.0.2
+ 
+ ### Patch Changes
+diff --git a/packages/react-paypal-js/README-v8.md b/packages/react-paypal-js/README-PAYPAL-JS-SDK-V5.md
+similarity index 92%
+rename from packages/react-paypal-js/README-v8.md
+rename to packages/react-paypal-js/README-PAYPAL-JS-SDK-V5.md
+index 7d00386..796cfeb 100644
+--- a/packages/react-paypal-js/README-v8.md
++++ b/packages/react-paypal-js/README-PAYPAL-JS-SDK-V5.md
+@@ -1,21 +1,11 @@
+-# react-paypal-js (Legacy v8.x Documentation)
++# react-paypal-js (PayPal JS SDK V5 Documentation)
+ 
+-> **Note:** This documentation is for react-paypal-js versions 8.x and earlier, which use the legacy PayPal JS SDK. For the latest V6 SDK integration (v9.0.0+), see the [main README](./README.md).
++> **Note:** This documentation is for react-paypal-js with the old PayPal JS SDK V5. For the latest V6 SDK integration see the [main README](./README.md).
+ 
+ ---
+ 
+ > React components for the [PayPal JS SDK](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/)
+ 
+-<div class="badges">
+-    <a href="https://github.com/paypal/react-paypal-js/actions?query=workflow%3Avalidate"><img src="https://img.shields.io/github/actions/workflow/status/paypal/react-paypal-js/validate.yml?branch=main&logo=github&style=flat-square" alt="build status"></a>
+-    <a href="https://codecov.io/github/paypal/react-paypal-js/"><img src="https://img.shields.io/codecov/c/github/paypal/react-paypal-js.svg?style=flat-square" alt="coverage"></a>
+-    <a href="https://www.npmjs.com/package/@paypal/react-paypal-js"><img src="https://img.shields.io/npm/v/@paypal/react-paypal-js.svg?style=flat-square" alt="npm version"></a>
+-    <a href="https://bundlephobia.com/result?p=@paypal/react-paypal-js"><img src="https://img.shields.io/bundlephobia/minzip/@paypal/react-paypal-js.svg?style=flat-square" alt="bundle size"></a>
+-    <a href="https://www.npmtrends.com/@paypal/react-paypal-js"><img src="https://img.shields.io/npm/dm/@paypal/react-paypal-js.svg?style=flat-square" alt="npm downloads"></a>
+-    <a href="https://github.com/paypal/react-paypal-js/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/@paypal/react-paypal-js.svg?style=flat-square" alt="apache license"></a>
+-    <a href="https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook"><img src="https://raw.githubusercontent.com/storybooks/brand/master/badge/badge-storybook.svg" alt="storybook"></a>
+-</div>
+-
+ ## Why use react-paypal-js?
+ 
+ ### The Problem
+@@ -228,6 +218,25 @@ export default function App() {
+ 
+ To learn more about other available props, see the [PayPalButtons](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/story/example-paypalbuttons--default) docs.
+ 
++#### Error Handling
++
++The `<PayPalButtons />` component is wrapped in an internal error boundary to prevent unhandled errors from crashing the host application. When an error occurs during rendering or interaction with the PayPal buttons, the error boundary will:
++
++- Log the error to the console via `console.error`
++- Call the `onError` callback (if provided) with the error details including `message`, `name`, `stack`, and `componentStack`
++- Render `null` in place of the buttons to prevent a broken UI
++
++```jsx
++<PayPalButtons
++    createOrder={createOrder}
++    onApprove={onApprove}
++    onError={(err) => {
++        // handle the error, e.g. show a fallback UI or notify the user
++        console.error("PayPalButtons error:", err);
++    }}
++/>
++```
++
+ ### BraintreePayPalButtons
+ 
+ The Braintree SDK can be used with the PayPal JS SDK to render the PayPal Buttons. Read more about this integration in the [Braintree PayPal client-side integration docs](https://developer.paypal.com/braintree/docs/guides/paypal/client-side/javascript/v3). The `<BraintreePayPalButtons />` component is designed for Braintree merchants who want to render the PayPal button.
+diff --git a/packages/react-paypal-js/README.md b/packages/react-paypal-js/README.md
+index 939dac3..7ebb3a2 100644
+--- a/packages/react-paypal-js/README.md
++++ b/packages/react-paypal-js/README.md
+@@ -1,6 +1,6 @@
+ # react-paypal-js
+ 
+-> React components for the [PayPal JS SDK V6](https://docs.paypal.ai/payments/methods/paypal/sdk/js/v6/paypal-checkout)
++> React components for the [PayPal JS SDK](https://docs.paypal.ai/developer/how-to/sdk/js/v6/configuration)
+ 
+ <div class="badges">
+     <a href="https://github.com/paypal/paypal-js/actions/workflows/main.yml"><img src="https://img.shields.io/github/actions/workflow/status/paypal/paypal-js/main.yml?branch=main&logo=github&style=flat-square" alt="build status"></a>
+@@ -13,9 +13,9 @@
+ 
+ ---
+ 
+-> **Using react-paypal-js version 8.x or earlier?**
++> **Are you still using the old PayPal JS SDK V5 SDK?**
+ >
+-> This documentation covers the V6 SDK integration introduced in v9.0.0. For the legacy integration using `PayPalScriptProvider`, `PayPalButtons`, `PayPalHostedFields`, and `BraintreePayPalButtons`, see [README-v8.md](./README-v8.md).
++> This documentation teaches how to use the latest PayPal JS SDK with react. For the integration using PayPal JS SDK V5 with `PayPalScriptProvider`, `PayPalButtons`, `PayPalHostedFields`, and `BraintreePayPalButtons`, see [README-PAYPAL-JS-SDK-V5.md](./README-PAYPAL-JS-SDK-V5.md).
+ 
+ ---
+ 
+@@ -53,7 +53,7 @@ Integrating PayPal into React applications requires careful handling of SDK scri
+ 
+ - [PayPal V6 SDK Documentation](https://docs.paypal.ai/payments/methods/paypal/sdk/js/v6/paypal-checkout)
+ - [React Sample Integration](https://github.com/paypal-examples/v6-web-sdk-sample-integration/tree/main/client/prebuiltPages/react) - Full working example with Node.js backend
+-- [Live Demo](https://v6-web-sdk-sample-integration-server.fly.dev/client/prebuiltPages/react/oneTimePayment/dist/index.html) - Try the sample integration in sandbox mode
++- [Live Demo](https://v6-web-sdk-sample-integration-server.fly.dev/client/prebuiltPages/react/dist/) - Try the sample integration in sandbox mode
+ - [PayPal Server SDK](https://www.npmjs.com/package/@paypal/paypal-server-sdk) - For backend integration
+ - [PayPal Developer Dashboard](https://developer.paypal.com/dashboard/)
+ - [PayPal Sandbox Test Accounts](https://developer.paypal.com/dashboard/accounts)
+@@ -160,7 +160,7 @@ function App() {
+ }
+ ```
+ 
+-Alternative: With Promise-based Token
++Alternative: With Promise-based Client Token
+ 
+ ```tsx
+ function App() {
+diff --git a/packages/react-paypal-js/package.json b/packages/react-paypal-js/package.json
+index f8b1250..255f005 100644
+--- a/packages/react-paypal-js/package.json
++++ b/packages/react-paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+     "name": "@paypal/react-paypal-js",
+-    "version": "9.0.2",
++    "version": "9.1.1",
+     "description": "React components for the PayPal JS SDK",
+     "keywords": [
+         "react",
+@@ -62,7 +62,7 @@
+     },
+     "homepage": "https://paypal.github.io/paypal-js/web-sdk-v6-react-storybook/",
+     "dependencies": {
+-        "@paypal/paypal-js": "^9.4.1",
++        "@paypal/paypal-js": "^9.6.0",
+         "@paypal/sdk-constants": "^1.0.122",
+         "server-only": "^0.0.1"
+     },

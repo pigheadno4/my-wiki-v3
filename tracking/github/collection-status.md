@@ -6,7 +6,7 @@
 | paypal | paypal/paypal-checkout-components | no | tier1 | releases-and-default-branch | - | - | not-collected | - |
 | paypal | paypal/paypal-android | no | tier1 | releases-and-default-branch | - | - | not-collected | - |
 | paypal | paypal/paypal-sdk-release | no | tier2 | releases-and-default-branch | - | - | not-collected | - |
-| paypal | paypal/paypal-js | yes | tier1 | releases-and-default-branch | - | - | not-collected | - |
+| paypal | paypal/paypal-js | yes | tier1 | releases-and-default-branch | main | main | collected-baseline | - |
 | paypal | paypal/paypal-ios | no | tier1 | releases-and-default-branch | - | - | not-collected | - |
 | paypal | paypal/postman-collections | no | tier2 | default-branch | - | - | not-collected | - |
 | paypal | paypal/paypal-typescript-server-sdk | no | tier2 | releases-and-default-branch | - | - | not-collected | - |
@@ -78,4 +78,4 @@
 
 | State | Count |
 | --- | ---: |
-| not-collected | 71 |
+| collected-baseline | 1 |
