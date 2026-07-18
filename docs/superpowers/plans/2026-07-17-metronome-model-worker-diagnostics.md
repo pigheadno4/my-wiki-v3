@@ -150,5 +150,5 @@ remained suspended throughout remediation.
 - [x] Obtain a fresh GPT-5.6 Sol ultra-effort default-decline verdict over the remediated branch.
 
 The final reviewer returned `APPROVE` with high confidence and no remaining material
-findings. This approves the implementation only. Enterprise A/B remains operationally
-suspended until a separately authorized replacement health probe passes every gate.
+findings. Replacement health probe `luna-health-2026-07-18-02` subsequently passed every
+gate. Enterprise A/B was not launched and still requires separate explicit authorization.

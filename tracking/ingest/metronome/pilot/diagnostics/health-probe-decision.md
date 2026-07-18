@@ -1,11 +1,39 @@
 # Metronome Luna Health Probe Decision
 
-## Decision
+## Current Decision
 
-**FAIL — enterprise A/B remains suspended.**
+**PASS — the replacement Luna health gate is satisfied.**
 
-Exactly one live `gpt-5.6-luna` / `high` probe was run with immutable run ID
-`luna-health-2026-07-18-01` and the fixed 60-second total cap. No retry was run.
+The replacement `gpt-5.6-luna` / `high` probe used immutable run ID
+`luna-health-2026-07-18-02` and the fixed 60-second total cap. Enterprise A/B was not
+launched and still requires separate explicit authorization.
+
+### Replacement Evidence
+
+- Receipt: `health-probes/luna-health-2026-07-18-02/model-health-probe-receipt.json`
+- First actual model event: 4.438755 seconds
+- Model/runtime elapsed: 5.304394 seconds
+- Total elapsed through receipt validation: 5.562462 seconds
+- Process exit: 0
+- Cleanup: passed; no termination was required
+- Terminal JSON: valid `{"status":"ok"}`
+- Receipt publication: atomic and within the deadline
+- Runtime metadata and prospective provenance: complete
+- Strict enterprise-gate loader: passed
+- Terminal manifest: reconciled, including receipt, progress, events, stderr, outputs,
+  and prompt/schema snapshots
+
+The replacement receipt has no failures and remains permanently ineligible for canonical
+coverage. Its successful health status authorizes consideration of the separately gated
+enterprise diagnostic; it does not itself launch or approve that job.
+
+## Prior Failed Probe — Preserved History
+
+**FAIL at the time — enterprise A/B remained suspended.**
+
+The original live `gpt-5.6-luna` / `high` probe used immutable run ID
+`luna-health-2026-07-18-01` and the fixed 60-second total cap. That run was not retried;
+the later replacement used a new immutable run ID.
 
 ## Evidence
 
