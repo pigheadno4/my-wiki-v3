@@ -77,7 +77,8 @@ Policy for all tracks: `future = "all-stable"` and `include_prerelease = false`.
 - v9 `minor-baselines`, selected: `9.0.0` (major earliest), `9.0.2` (latest 9.0), `9.1.1` (latest 9.1 and wiki pin), `9.2.0` (latest 9.2), `9.3.0` (latest 9.3 and major latest).
 - v8 `minor-baselines`, selected: `8.5.0` (major earliest/latest 8.5), `8.6.0` (latest 8.6), `8.7.0` (latest 8.7), `8.8.3` (latest 8.8), `8.9.2` (latest 8.9, major latest, and wiki pin).
 - Excluded stable v9 patch releases: `9.0.1`, `9.1.0`.
-- Excluded stable v8 patch releases: `8.8.1`, `8.8.2`, `8.9.0`, `8.9.1`.
+- Excluded stable v8 patch releases: `8.8.0`, `8.8.1`, `8.8.2`, `8.9.0`, `8.9.1`.
+- The retained `packages/react-paypal-js/CHANGELOG.md` in the `main` snapshot records stable `8.8.0` under `## 8.8.0` and `### Minor Changes`. Because v8 uses `minor-baselines`, the selected 8.8.x baseline is the latest stable patch, `8.8.3`, so `8.8.0` is intentionally excluded.
 - Excluded matching prereleases: none exist in the live v8/v9/v10 `@paypal/react-paypal-js` refs; policy would exclude any future prerelease.
 
 The selected set is the deterministic union required by the configured all-stable and minor-baseline policies, including exact audit pins.
@@ -187,4 +188,4 @@ Exact concerns:
 2. Initial sandbox networking failed with `Could not resolve host: github.com`; approved live-network execution succeeded for ref discovery and both collection commands.
 3. Submodule/LFS inspection flags are not persisted by the current collector. The later independent audit clone was denied due to the approval system usage limit, so the committed evidence supports only "no indicator in retained files," not a separately reproducible full-tree capability result.
 4. Secret scanning was a documented local regex heuristic because `gitleaks` is not installed; it found no candidates.
-5. Final staging and commit are blocked by worktree Git-index permissions. The normal `git add` failed with `Unable to create '/Users/tengtao/Development/wiki-v2/.git/worktrees/github-repository-collection/index.lock': Operation not permitted`. The required escalated retry was rejected because the approval system reported its usage limit was exhausted. No indirect workaround was attempted, no files were staged, and no commit was created.
+5. Historical implementer staging was blocked by worktree Git-index permissions. The normal `git add` failed with `Unable to create '/Users/tengtao/Development/wiki-v2/.git/worktrees/github-repository-collection/index.lock': Operation not permitted`, and the required escalated retry was rejected because the approval system reported its usage limit was exhausted. This was subsequently resolved by coordinator staging: commit `f7befcf31a45ec4a17f6ffa8298d672c89472d04` exists with subject `data: collect paypal js version pilot` and contains the collection artifacts and this report. Current state is committed locally; no push or wiki ingest occurred.
