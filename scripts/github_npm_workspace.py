@@ -7,7 +7,7 @@ from typing import Dict, Iterable, List, Mapping, NoReturn, Sequence, Set, Tuple
 
 from github_canonical import safe_policy_path, validate_npm_package_name
 from github_capsule_policy import CAPSULE_ADAPTER, CapsuleConfig
-from github_git_tree import GitBlob, GitTree
+from github_git_tree import GitBlob, GitObjectReadError, GitTree
 
 
 _REGULAR_MODES = frozenset(("100644", "100755"))
@@ -210,6 +210,8 @@ def _read_manifest(
         _review("missing-package-manifest", "package.json is not a regular tracked blob: " + manifest_path)
     try:
         value = tree.read_json(manifest_path, max_bytes=max_bytes)
+    except GitObjectReadError:
+        raise
     except ValueError as error:
         if str(error).startswith("duplicate JSON key:"):
             raise

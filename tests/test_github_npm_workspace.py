@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from github_capsule_policy import CapsuleConfig, PackageOverride  # noqa: E402
-from github_git_tree import GitTree  # noqa: E402
+from github_git_tree import GitObjectReadError, GitTree  # noqa: E402
 from github_npm_workspace import (  # noqa: E402
     DeclaredTarget,
     DependencyEdge,
@@ -169,6 +169,43 @@ class NpmWorkspaceTests(unittest.TestCase):
 
                 self.assertIn(expected_path, str(raised.exception))
                 self.assertLess(len(str(raised.exception)), 600)
+
+    def test_manifest_infrastructure_errors_survive_root_and_child_reads(self):
+        root_tree = self.tree({"package.json": manifest("root")})
+        root_error = GitObjectReadError("root object read failed")
+        with self.subTest(package="root"):
+            with mock.patch.object(root_tree, "read_json", side_effect=root_error):
+                with self.assertRaises(GitObjectReadError) as raised:
+                    resolve_workspace(
+                        root_tree,
+                        self.capsule("root", generated=()),
+                    )
+
+            self.assertIs(root_error, raised.exception)
+
+        child_tree = self.tree(
+            {
+                "package.json": manifest("root", workspaces=["packages/*"]),
+                "packages/child/package.json": manifest("child"),
+            }
+        )
+        child_error = GitObjectReadError("child object read failed")
+        original_read_json = child_tree.read_json
+
+        def read_json(path, max_bytes=None):
+            if path == "packages/child/package.json":
+                raise child_error
+            return original_read_json(path, max_bytes=max_bytes)
+
+        with self.subTest(package="child"):
+            with mock.patch.object(child_tree, "read_json", side_effect=read_json):
+                with self.assertRaises(GitObjectReadError) as raised:
+                    resolve_workspace(
+                        child_tree,
+                        self.capsule("child", generated=()),
+                    )
+
+            self.assertIs(child_error, raised.exception)
 
     def test_single_star_expansion_is_sorted_and_overlaps_deduplicate(self):
         tree = self.tree(
