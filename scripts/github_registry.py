@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple
 from urllib.parse import urlsplit
 
+from github_capsule_policy import CapsuleConfig, SecretAllowlist, parse_capsules, parse_secret_allowlist
 from github_versions import parse_package_tag, parse_semver
 from toml_compat import load_toml
 
@@ -25,6 +26,7 @@ MUTABLE_STATE_KEYS = {
     "ingest_progress",
     "progress",
     "run_results",
+    "policy_hash",
 }
 REQUIRED_KEYS = {
     "id",
@@ -44,6 +46,8 @@ OPTIONAL_KEYS = {
     "max_file_bytes",
     "max_snapshot_bytes",
     "version_tracks",
+    "capsules",
+    "secret_allowlist",
 }
 VERSION_TRACK_REQUIRED_KEYS = {"selector", "backfill", "future"}
 VERSION_TRACK_OPTIONAL_KEYS = {"include_prerelease", "pinned_versions"}
@@ -75,6 +79,8 @@ class RepoConfig:
     max_file_bytes: int = 1048576
     max_snapshot_bytes: int = 10485760
     version_tracks: Tuple[VersionTrack, ...] = ()
+    capsules: Tuple[CapsuleConfig, ...] = ()
+    secret_allowlist: Tuple[SecretAllowlist, ...] = ()
 
 
 def load_registry(path: Path) -> Tuple[RepoConfig, ...]:
@@ -191,6 +197,8 @@ def _config_from_row(row: Dict[str, object], index: int) -> RepoConfig:
         max_file_bytes=_optional_positive_int(row, "max_file_bytes", 1048576, index),
         max_snapshot_bytes=_optional_positive_int(row, "max_snapshot_bytes", 10485760, index),
         version_tracks=_version_tracks(row.get("version_tracks", []), index),
+        capsules=parse_capsules(row.get("capsules", []), index),
+        secret_allowlist=parse_secret_allowlist(row.get("secret_allowlist", []), index),
     )
 
 

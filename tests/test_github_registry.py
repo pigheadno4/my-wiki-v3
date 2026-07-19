@@ -14,6 +14,7 @@ from github_registry import (  # noqa: E402
     select_repos,
     validate_registry,
 )
+from github_capsule_policy import CapsuleConfig, PackageOverride, SecretAllowlist  # noqa: E402
 from toml_compat import load_toml  # noqa: E402
 
 
@@ -143,6 +144,8 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(1048576, repo.max_file_bytes)
         self.assertEqual(10485760, repo.max_snapshot_bytes)
         self.assertEqual((), repo.version_tracks)
+        self.assertEqual((), repo.capsules)
+        self.assertEqual((), repo.secret_allowlist)
         with self.assertRaises(dataclasses.FrozenInstanceError):
             repo.enabled = False
 
@@ -180,6 +183,118 @@ class RegistryTests(unittest.TestCase):
         )
         with self.assertRaises(dataclasses.FrozenInstanceError):
             repo.version_tracks[0].future = "all-stable"
+
+    def test_registry_loads_exact_capsule_policy_and_repository_allowlist(self):
+        path = self.write_registry(
+            '[[repos]]\n'
+            'id = "paypal/paypal-js"\n'
+            'company = "paypal"\n'
+            'url = "https://github.com/paypal/paypal-js"\n'
+            'enabled = true\n'
+            'repo_type = "web-sdk"\n'
+            'priority = "tier1"\n'
+            'track = "releases-and-default-branch"\n'
+            'version_strategy = "monorepo-packages"\n'
+            '[[repos.capsules]]\n'
+            'id = "react-runtime"\n'
+            'adapter = "npm-tracked-source-v1"\n'
+            'focus_packages = ["@scope/z", "@scope/a"]\n'
+            'default_required_roots = ["types", "src"]\n'
+            'default_generated_target_paths = ["index.js", "dist/"]\n'
+            'include_paths = ["extra", "config"]\n'
+            'excluded_categories = ["stories", "tests"]\n'
+            '[[repos.capsules.package_overrides]]\n'
+            'name = "@scope/internal"\n'
+            'required_roots = ["src", "types"]\n'
+            'generated_target_paths = ["dist/"]\n'
+            'include_paths = ["config"]\n'
+            '[[repos.secret_allowlist]]\n'
+            'path = "packages/runtime/src/token.ts"\n'
+            'blob_oid = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"\n'
+            'detector_code = "text-secrets-v1:generic-token"\n'
+        )
+
+        repo = load_registry(path)[0]
+
+        self.assertEqual(
+            CapsuleConfig(
+                "react-runtime",
+                "npm-tracked-source-v1",
+                ("@scope/a", "@scope/z"),
+                default_required_roots=("src", "types"),
+                default_generated_target_paths=("dist/", "index.js"),
+                include_paths=("config", "extra"),
+                excluded_categories=("stories", "tests"),
+                package_overrides=(
+                    PackageOverride("@scope/internal", ("src", "types"), ("dist/",), ("config",)),
+                ),
+            ),
+            repo.capsules[0],
+        )
+        self.assertEqual(
+            (SecretAllowlist("packages/runtime/src/token.ts", "a" * 40, "text-secrets-v1:generic-token"),),
+            repo.secret_allowlist,
+        )
+
+    def test_registry_rejects_invalid_capsule_and_allowlist_policy(self):
+        base = (
+            '[[repos]]\n'
+            'id = "paypal/paypal-js"\n'
+            'company = "paypal"\n'
+            'url = "https://github.com/paypal/paypal-js"\n'
+            'enabled = true\n'
+            'repo_type = "web-sdk"\n'
+            'priority = "tier1"\n'
+            'track = "releases-and-default-branch"\n'
+            'version_strategy = "monorepo-packages"\n'
+        )
+        invalid = (
+            '[[repos.capsules]]\nid = "bad_slug"\nadapter = "npm-tracked-source-v1"\nfocus_packages = ["@scope/runtime"]\n',
+            '[[repos.capsules]]\nid = "runtime"\nadapter = "unknown"\nfocus_packages = ["@scope/runtime"]\n',
+            '[[repos.capsules]]\nid = "runtime"\nadapter = "npm-tracked-source-v1"\nfocus_packages = ["@scope/runtime", "@scope/runtime"]\n',
+            '[[repos.capsules]]\nid = "runtime"\nadapter = "npm-tracked-source-v1"\nfocus_packages = ["@scope/runtime"]\ndefault_required_roots = ["../outside"]\n',
+            '[[repos.capsules]]\nid = "runtime"\nadapter = "npm-tracked-source-v1"\nfocus_packages = ["@scope/runtime"]\ndefault_generated_target_paths = ["dist//"]\n',
+            '[[repos.capsules]]\nid = "runtime"\nadapter = "npm-tracked-source-v1"\nfocus_packages = ["@scope/runtime"]\ndefault_required_roots = ["src"]\ndefault_generated_target_paths = ["src/index.js"]\n',
+            '[[repos.capsules]]\nid = "runtime"\nadapter = "npm-tracked-source-v1"\nfocus_packages = ["@scope/runtime"]\nunknown = "value"\n',
+            '[[repos.capsules]]\nid = "runtime"\nadapter = "npm-tracked-source-v1"\nfocus_packages = ["@scope/runtime"]\n[[repos.capsules.package_overrides]]\nname = "@scope/runtime"\nrequired_roots = ["src"]\ngenerated_target_paths = []\n',
+            '[[repos.secret_allowlist]]\npath = "src\\\\token.ts"\nblob_oid = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"\ndetector_code = "text-secrets-v1:generic-token"\n',
+            '[[repos.secret_allowlist]]\npath = "src/token.ts"\nblob_oid = "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"\ndetector_code = "text-secrets-v1:generic-token"\n',
+        )
+
+        for suffix in invalid:
+            with self.subTest(suffix=suffix):
+                with self.assertRaises(ValueError):
+                    load_registry(self.write_registry(base + suffix))
+
+    def test_registry_rejects_duplicate_capsule_and_allowlist_rows(self):
+        base_capsule = (
+            '[[repos.capsules]]\n'
+            'id = "runtime"\n'
+            'adapter = "npm-tracked-source-v1"\n'
+            'focus_packages = ["@scope/runtime"]\n'
+        )
+        duplicate_allowlist = (
+            '[[repos.secret_allowlist]]\n'
+            'path = "src/token.ts"\n'
+            'blob_oid = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"\n'
+            'detector_code = "text-secrets-v1:generic-token"\n'
+        )
+        base = (
+            '[[repos]]\nid = "paypal/paypal-js"\ncompany = "paypal"\n'
+            'url = "https://github.com/paypal/paypal-js"\nenabled = true\nrepo_type = "web-sdk"\n'
+            'priority = "tier1"\ntrack = "releases-and-default-branch"\nversion_strategy = "monorepo-packages"\n'
+        )
+
+        with self.assertRaisesRegex(ValueError, "duplicate capsule"):
+            load_registry(self.write_registry(base + base_capsule + base_capsule))
+        duplicate_override = (
+            '[[repos.capsules.package_overrides]]\nname = "@scope/internal"\nrequired_roots = ["src"]\n'
+            'generated_target_paths = []\ninclude_paths = []\n'
+        )
+        with self.assertRaisesRegex(ValueError, "duplicate package override"):
+            load_registry(self.write_registry(base + base_capsule + duplicate_override + duplicate_override))
+        with self.assertRaisesRegex(ValueError, "duplicate secret allowlist"):
+            load_registry(self.write_registry(base + duplicate_allowlist + duplicate_allowlist))
 
     def test_registry_rejects_invalid_nested_version_track_values(self):
         base = (
@@ -243,7 +358,7 @@ class RegistryTests(unittest.TestCase):
         self.assertTrue(any("latest_version" in error for error in validate_registry((repo,))))
 
     def test_load_registry_rejects_mutable_state(self):
-        path = self.write_registry(
+        base = (
             '[[repos]]\n'
             'id = "paypal/paypal-js"\n'
             'company = "paypal"\n'
@@ -253,11 +368,16 @@ class RegistryTests(unittest.TestCase):
             'priority = "tier1"\n'
             'track = "releases-and-default-branch"\n'
             'version_strategy = "monorepo-packages"\n'
-            'latest_version = "10.0.0"\n'
         )
 
-        with self.assertRaisesRegex(ValueError, "latest_version"):
-            load_registry(path)
+        for key, value in (
+            ("latest_version", '"10.0.0"'),
+            ("policy_hash", '"a"'),
+            ("ingest_progress", '"reviewed"'),
+        ):
+            with self.subTest(key=key):
+                with self.assertRaisesRegex(ValueError, key):
+                    load_registry(self.write_registry(base + key + " = " + value + "\n"))
 
     def test_registry_rejects_invalid_values_and_repository_identity(self):
         invalid = (
