@@ -267,6 +267,50 @@ class GitTreeTests(unittest.TestCase):
         self.assertNotIn("packages/widget/package.json", message)
         self.assertEqual("1", run.call_args.kwargs["env"]["GIT_NO_REPLACE_OBJECTS"])
 
+    def test_cat_file_os_and_timeout_failures_are_typed_bounded_and_redacted(self):
+        tree = GitTree(self.repo, self.sha)
+        tree.blobs()
+        failures = (
+            OSError(2, "sensitive os detail", "sensitive/os/path"),
+            subprocess.TimeoutExpired(
+                ["git", "cat-file", "sensitive/timeout/path"],
+                1,
+                stderr=b"sensitive timeout stderr",
+            ),
+        )
+
+        for failure in failures:
+            with self.subTest(failure=type(failure).__name__):
+                with mock.patch("github_git_tree.subprocess.run", side_effect=failure):
+                    with self.assertRaises(github_git_tree.GitObjectReadError) as raised:
+                        tree.read_blob("packages/widget/package.json")
+
+                message = str(raised.exception)
+                self.assertLess(len(message), 200)
+                self.assertNotIn("sensitive", message)
+                self.assertNotIn("packages/widget/package.json", message)
+                self.assertIsNone(raised.exception.__cause__)
+
+    def test_commit_verification_os_and_timeout_failures_remain_deterministic_value_errors(self):
+        failures = (
+            OSError(2, "sensitive os detail", "sensitive/os/path"),
+            subprocess.TimeoutExpired(
+                ["git", "rev-parse", "sensitive/timeout/path"],
+                1,
+                stderr=b"sensitive timeout stderr",
+            ),
+        )
+
+        for failure in failures:
+            with self.subTest(failure=type(failure).__name__):
+                with mock.patch("github_git_tree.subprocess.run", side_effect=failure):
+                    with self.assertRaises(ValueError) as raised:
+                        GitTree(self.repo, self.sha).blobs()
+
+                self.assertIs(type(raised.exception), ValueError)
+                self.assertEqual("sha must name an exact commit", str(raised.exception))
+                self.assertIsNone(raised.exception.__cause__)
+
     def test_post_read_size_mismatch_raises_infrastructure_error(self):
         tree = GitTree(self.repo, self.sha)
         tree.blobs()

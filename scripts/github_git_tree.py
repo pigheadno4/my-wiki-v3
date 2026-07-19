@@ -93,8 +93,8 @@ class GitTree:
                 resolved = _run_git_bytes(
                     ["rev-parse", "--verify", self._sha + "^{commit}"], self._repo_root
                 ).strip().decode("ascii")
-            except GitObjectReadError as error:
-                raise ValueError("sha must name an exact commit") from error
+            except GitObjectReadError:
+                raise ValueError("sha must name an exact commit") from None
             self._is_exact_commit = resolved == self._sha
         if not self._is_exact_commit:
             raise ValueError("sha must name an exact commit")
@@ -139,10 +139,8 @@ def _run_git_bytes(args: Sequence[str], cwd: Path) -> bytes:
             capture_output=True,
             env=_git_environment(),
         )
-    except subprocess.CalledProcessError as error:
-        raise GitObjectReadError(
-            "Git object command failed with exit " + str(error.returncode)
-        ) from error
+    except (subprocess.SubprocessError, OSError):
+        raise GitObjectReadError("Git object command failed") from None
     return result.stdout
 
 
