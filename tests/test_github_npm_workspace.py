@@ -62,8 +62,11 @@ class NpmWorkspaceTests(unittest.TestCase):
         self.assertIsInstance(resolution.dependency_edges, tuple)
         self.assertIsInstance(resolution.external_dependencies, tuple)
         self.assertIsInstance(resolution.declared_targets, tuple)
+        self.assertIsInstance(resolution.packages[0].owned_paths, tuple)
         with self.assertRaises(AttributeError):
             resolution.packages[0].reason = "changed"
+        with self.assertRaises(TypeError):
+            resolution.packages[0].owned_paths[0] = "changed"
 
     def test_root_package_is_independent_and_list_and_object_workspaces_are_supported(self):
         fixtures = (
@@ -611,6 +614,96 @@ class NpmWorkspaceTests(unittest.TestCase):
         self.assertEqual(
             {("package.json",), ("src/index.js",)},
             {target.matched_paths for target in child.declared_targets},
+        )
+
+    def test_owned_paths_expose_root_and_child_blobs_without_changing_manifest_files(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(
+                    "root",
+                    workspaces=["packages/*"],
+                    files=["declared-root"],
+                ),
+                "zeta.txt": "z\n",
+                "metadata/space name.json": "{}\n",
+                "metadata/unsafe\\name.json": "{}\n",
+                "alpha.txt": "a\n",
+                "packages/child/package.json": manifest(
+                    "child",
+                    files=["dist", "src"],
+                ),
+                "packages/child/src/index.js": "export {};\n",
+                "packages/child/.metadata.json": "{}\n",
+                "packages/child/unsafe\\metadata.json": "{}\n",
+            }
+        )
+
+        resolution = resolve_workspace(
+            tree,
+            self.capsule("root", "child", generated=()),
+        )
+        root = next(package for package in resolution.packages if package.name == "root")
+        child = next(package for package in resolution.packages if package.name == "child")
+
+        self.assertEqual(("declared-root",), root.files)
+        self.assertEqual(("dist", "src"), child.files)
+        self.assertEqual(
+            (
+                "alpha.txt",
+                "metadata/space name.json",
+                "metadata/unsafe\\name.json",
+                "package.json",
+                "zeta.txt",
+            ),
+            root.owned_paths,
+        )
+        self.assertEqual(
+            (
+                ".metadata.json",
+                "package.json",
+                "src/index.js",
+                "unsafe\\metadata.json",
+            ),
+            child.owned_paths,
+        )
+        self.assertFalse(any(path.startswith("packages/child") for path in root.owned_paths))
+
+    def test_owned_paths_expose_parent_and_nested_child_at_their_deepest_boundaries(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(
+                    "root",
+                    workspaces=["packages/*", "packages/parent/nested/*"],
+                ),
+                "packages/parent/package.json": manifest("parent"),
+                "packages/parent/zeta.txt": "z\n",
+                "packages/parent/alpha.txt": "a\n",
+                "packages/parent/nested/child/package.json": manifest("nested-child"),
+                "packages/parent/nested/child/src/index.js": "export {};\n",
+            }
+        )
+
+        resolution = resolve_workspace(
+            tree,
+            self.capsule("parent", "nested-child", generated=()),
+        )
+        parent = next(package for package in resolution.packages if package.name == "parent")
+        child = next(
+            package
+            for package in resolution.packages
+            if package.name == "nested-child"
+        )
+
+        self.assertEqual(
+            ("alpha.txt", "package.json", "zeta.txt"),
+            parent.owned_paths,
+        )
+        self.assertEqual(
+            ("package.json", "src/index.js"),
+            child.owned_paths,
+        )
+        self.assertFalse(
+            any(path.startswith("nested/child") for path in parent.owned_paths)
         )
 
     def test_one_segment_workspace_is_deeper_than_the_repository_root(self):

@@ -38,6 +38,7 @@ class WorkspacePackage:
     reason: str
     files: Tuple[str, ...] = ()
     tracked_declaration_roots: Tuple[str, ...] = ()
+    owned_paths: Tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -171,12 +172,13 @@ def resolve_workspace(tree: GitTree, capsule: CapsuleConfig) -> WorkspaceResolut
         declared_targets.extend(package_targets)
         output_packages.append(
             WorkspacePackage(
-                package.name,
-                package.path,
-                package.version,
-                reasons[name],
-                package.files,
-                tuple(sorted(declaration_roots)),
+                name=package.name,
+                path=package.path,
+                version=package.version,
+                reason=reasons[name],
+                files=package.files,
+                tracked_declaration_roots=tuple(sorted(declaration_roots)),
+                owned_paths=tuple(sorted(package.blobs)),
             )
         )
 
