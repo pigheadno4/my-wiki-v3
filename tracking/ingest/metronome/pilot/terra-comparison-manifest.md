@@ -18,9 +18,27 @@ Compare GPT-5.6 Terra with the completed GPT-5.6 Luna pilot using five new Engli
 
 All raw paths are rooted at `raw/metronome/`. All worker artifacts are rooted at `tracking/ingest/metronome/pilot/runs/<job-id>/`. Workers forbid writes under `raw/` and `wiki/`.
 
+## Health Probe Gate
+
+All seven jobs above are registered by exact manifest path and SHA-256 in the
+legacy-named `enterprise-diagnostic-jobs.json` registry. The registry also retains the
+historical `pilot-luna-enterprise-commit` job, so it contains eight protected entries in
+total. The filename and schema field names remain unchanged to avoid changing the gated
+worker code solely for terminology.
+
+Every comparison worker invocation must provide both a unique `--run-id` and
+`--health-probe-run-id luna-health-2026-07-19-01`. Before claiming a run directory or
+launching a model, the worker reconciles its own immutable registry entry and revalidates
+the probe's freshness, runner provenance, artifacts, hashes, timing, and terminal receipt.
+A missing, stale, future-dated, tampered, or provenance-mismatched probe blocks that job.
+
+The registry defines protected identity, not permission to batch. This manifest's fixed
+order and the one-source-at-a-time canonical review boundary still control execution.
+
 ## Execution Rules
 
 - Finish the complete Sol-reviewed canonical cycle for one raw page before starting the next raw page.
+- Start only one listed job at a time; never have a coordinator launch all seven jobs automatically.
 - Paired shadows may run before their Terra counterpart but never update wiki coverage.
 - Preserve all attempts and use cumulative, not accepted-attempt-only, token accounting.
 - Repair uniquely locatable quote bounds deterministically; never rerun the whole model for a quote-location-only defect.

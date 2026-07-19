@@ -20,6 +20,7 @@ if str(SCRIPTS) not in sys.path:
 from run_metronome_model_worker import (  # noqa: E402
     INLINE_RAW_END_DELIMITER,
     INLINE_RAW_START_DELIMITER,
+    _enforce_enterprise_health_probe,
     build_runtime_metadata,
     build_codex_command,
     build_page_profile,
@@ -52,6 +53,36 @@ def _pid_is_alive(pid):
 
 
 class ModelWorkerRunnerTests(unittest.TestCase):
+    COMPARISON_JOB_IDS = (
+        "pilot-luna-design-usage-events-shadow",
+        "pilot-terra-design-usage-events",
+        "pilot-terra-enterprise-commit",
+        "pilot-terra-stripe-invoice-integration",
+        "pilot-terra-create-billable-metric",
+        "pilot-luna-edit-contract-shadow",
+        "pilot-terra-edit-contract",
+    )
+
+    def test_all_seven_comparison_jobs_require_health_probe(self):
+        for job_id in self.COMPARISON_JOB_IDS:
+            with self.subTest(job_id=job_id):
+                job_path = (
+                    ROOT / "tracking/ingest/metronome/pilot/jobs" / f"{job_id}.json"
+                )
+                job = json.loads(job_path.read_text(encoding="utf-8"))
+
+                with self.assertRaisesRegex(
+                    RuntimeError,
+                    "requires --run-id and --health-probe-run-id",
+                ):
+                    _enforce_enterprise_health_probe(
+                        ROOT,
+                        job_path,
+                        job,
+                        run_id=None,
+                        health_probe_run_id=None,
+                    )
+
     def make_root(self):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)

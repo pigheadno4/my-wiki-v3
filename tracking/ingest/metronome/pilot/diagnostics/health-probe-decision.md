@@ -26,9 +26,15 @@ separate explicit authorization.
   and prompt/schema snapshots
 
 The receipt remains eligible through `2026-07-20T05:01:48.187031Z`, inclusive, only if
-the gated runner scripts remain unchanged. Every enterprise job must revalidate it before
-claiming work, so a job attempted after that instant—or after another runner change—must
-fail closed. This probe never participates in canonical coverage.
+the gated runner scripts remain unchanged. Every protected comparison job must revalidate
+it before claiming work, so a job attempted after that instant—or after another runner
+change—must fail closed. This probe never participates in canonical coverage.
+
+On 2026-07-19, the immutable diagnostic registry was expanded to protect every job in the
+seven-job Terra comparison while retaining the historical Luna Enterprise job. That
+registry-only change did not alter a gated runner script; the strict loader was rerun and
+the current receipt remained valid. Registry coverage does not authorize or batch-launch
+the comparison jobs.
 
 ## Historical Replacement Pass — Preserved History
 
