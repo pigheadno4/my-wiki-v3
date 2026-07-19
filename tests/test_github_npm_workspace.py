@@ -35,20 +35,23 @@ class NpmWorkspaceTests(unittest.TestCase):
         self.root = Path(self.directory.name)
         self.repo_number = 0
 
-    def tree(self, files):
+    def tree(self, files, max_blob_bytes=None):
         repo_root = self.root / ("repo-" + str(self.repo_number))
         repo_root.mkdir()
         self.repo_number += 1
         repo = create_git_repo(repo_root)
         sha = commit_files(repo, files, "add npm workspace fixture")
-        return GitTree(repo, sha)
+        if max_blob_bytes is None:
+            return GitTree(repo, sha)
+        return GitTree(repo, sha, max_blob_bytes=max_blob_bytes)
 
-    def capsule(self, *focus_packages, generated=("dist/",)):
+    def capsule(self, *focus_packages, generated=("dist/",), max_file_bytes=512000):
         return CapsuleConfig(
             id="workspace-test",
             adapter="npm-tracked-source-v1",
             focus_packages=tuple(focus_packages),
             default_generated_target_paths=tuple(generated),
+            max_file_bytes=max_file_bytes,
         )
 
     def test_public_records_are_frozen_and_resolution_uses_tuples(self):
@@ -88,6 +91,84 @@ class NpmWorkspaceTests(unittest.TestCase):
                     files["packages/child/package.json"] = manifest("child")
                 resolution = resolve_workspace(self.tree(files), self.capsule(focus, generated=()))
                 self.assertEqual((focus,), tuple(item.name for item in resolution.packages))
+
+    def test_capsule_manifest_limit_overrides_constructor_for_root_and_child(self):
+        root_manifest = manifest("root", description="r" * 80)
+        child_root_manifest = manifest("root", workspaces=["packages/*"])
+        child_manifest = manifest("child", description="c" * 120)
+        cases = (
+            (
+                {"package.json": root_manifest},
+                "root",
+                len(root_manifest.encode("utf-8")),
+            ),
+            (
+                {
+                    "package.json": child_root_manifest,
+                    "packages/child/package.json": child_manifest,
+                },
+                "child",
+                max(
+                    len(child_root_manifest.encode("utf-8")),
+                    len(child_manifest.encode("utf-8")),
+                ),
+            ),
+        )
+        for files, focus, policy_limit in cases:
+            with self.subTest(focus=focus):
+                tree = self.tree(files, max_blob_bytes=1)
+
+                resolution = resolve_workspace(
+                    tree,
+                    self.capsule(
+                        focus,
+                        generated=(),
+                        max_file_bytes=policy_limit,
+                    ),
+                )
+
+                self.assertEqual((focus,), tuple(item.name for item in resolution.packages))
+
+    def test_capsule_manifest_limit_rejects_root_and_child_one_byte_over(self):
+        root_manifest = manifest("root", description="r" * 80)
+        child_root_manifest = manifest("root", workspaces=["packages/*"])
+        child_manifest = manifest("child", description="c" * 120)
+        cases = (
+            (
+                {"package.json": root_manifest},
+                "root",
+                len(root_manifest.encode("utf-8")) - 1,
+                "package.json",
+            ),
+            (
+                {
+                    "package.json": child_root_manifest,
+                    "packages/child/package.json": child_manifest,
+                },
+                "child",
+                len(child_manifest.encode("utf-8")) - 1,
+                "packages/child/package.json",
+            ),
+        )
+        for files, focus, policy_limit, expected_path in cases:
+            with self.subTest(focus=focus):
+                tree = self.tree(files, max_blob_bytes=1000000)
+
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "^needs-policy-review:package-manifest-byte-limit",
+                ) as raised:
+                    resolve_workspace(
+                        tree,
+                        self.capsule(
+                            focus,
+                            generated=(),
+                            max_file_bytes=policy_limit,
+                        ),
+                    )
+
+                self.assertIn(expected_path, str(raised.exception))
+                self.assertLess(len(str(raised.exception)), 600)
 
     def test_single_star_expansion_is_sorted_and_overlaps_deduplicate(self):
         tree = self.tree(

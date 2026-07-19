@@ -106,7 +106,12 @@ def resolve_workspace(tree: GitTree, capsule: CapsuleConfig) -> WorkspaceResolut
 
     all_blobs = tree.blobs()
     blobs_by_path = {blob.path: blob for blob in all_blobs}
-    root_manifest = _read_manifest(tree, blobs_by_path, "")
+    root_manifest = _read_manifest(
+        tree,
+        blobs_by_path,
+        "",
+        capsule.max_file_bytes,
+    )
     package_paths = _discover_package_paths(root_manifest, all_blobs)
     owned_blobs, foreign_blobs = _assign_package_blobs(package_paths, blobs_by_path)
     descendant_roots = _relative_descendant_package_roots(package_paths)
@@ -118,6 +123,7 @@ def resolve_workspace(tree: GitTree, capsule: CapsuleConfig) -> WorkspaceResolut
             owned_blobs[path],
             foreign_blobs[path],
             descendant_roots[path],
+            capsule.max_file_bytes,
         )
         for path in package_paths
     )
@@ -190,7 +196,12 @@ def resolve_workspace(tree: GitTree, capsule: CapsuleConfig) -> WorkspaceResolut
     )
 
 
-def _read_manifest(tree: GitTree, blobs_by_path: Mapping[str, GitBlob], package_path: str) -> Mapping[str, object]:
+def _read_manifest(
+    tree: GitTree,
+    blobs_by_path: Mapping[str, GitBlob],
+    package_path: str,
+    max_bytes: int,
+) -> Mapping[str, object]:
     manifest_path = _join(package_path, "package.json")
     blob = blobs_by_path.get(manifest_path)
     if blob is None:
@@ -198,10 +209,15 @@ def _read_manifest(tree: GitTree, blobs_by_path: Mapping[str, GitBlob], package_
     if blob.mode not in _REGULAR_MODES:
         _review("missing-package-manifest", "package.json is not a regular tracked blob: " + manifest_path)
     try:
-        value = tree.read_json(manifest_path)
+        value = tree.read_json(manifest_path, max_bytes=max_bytes)
     except ValueError as error:
         if str(error).startswith("duplicate JSON key:"):
             raise
+        if str(error).startswith("Git blob exceeds byte limit:"):
+            _review(
+                "package-manifest-byte-limit",
+                "package manifest exceeds capsule max_file_bytes: " + manifest_path,
+            )
         _review("malformed-package-manifest", "cannot parse " + manifest_path)
     if not isinstance(value, dict):
         _review("malformed-package-manifest", "package manifest must be an object: " + manifest_path)
@@ -215,8 +231,14 @@ def _read_package(
     package_blobs: Mapping[str, GitBlob],
     foreign_blobs: Mapping[str, GitBlob],
     descendant_package_roots: Sequence[str],
+    max_file_bytes: int,
 ) -> _DiscoveredPackage:
-    value = _read_manifest(tree, blobs_by_path, package_path)
+    value = _read_manifest(
+        tree,
+        blobs_by_path,
+        package_path,
+        max_file_bytes,
+    )
     name = value.get("name")
     version = value.get("version")
     if not validate_npm_package_name(name) or not isinstance(version, str) or not version:
