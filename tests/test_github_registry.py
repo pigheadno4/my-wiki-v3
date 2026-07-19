@@ -211,7 +211,7 @@ class RegistryTests(unittest.TestCase):
             '[[repos.secret_allowlist]]\n'
             'path = "packages/runtime/src/token.ts"\n'
             'blob_oid = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"\n'
-            'detector_code = "text-secrets-v1:generic-token"\n'
+            'detector_code = "github-token-v1"\n'
         )
 
         repo = load_registry(path)[0]
@@ -232,7 +232,7 @@ class RegistryTests(unittest.TestCase):
             repo.capsules[0],
         )
         self.assertEqual(
-            (SecretAllowlist("packages/runtime/src/token.ts", "a" * 40, "text-secrets-v1:generic-token"),),
+            (SecretAllowlist("packages/runtime/src/token.ts", "a" * 40, "github-token-v1"),),
             repo.secret_allowlist,
         )
 
@@ -257,8 +257,8 @@ class RegistryTests(unittest.TestCase):
             '[[repos.capsules]]\nid = "runtime"\nadapter = "npm-tracked-source-v1"\nfocus_packages = ["@scope/runtime"]\ndefault_required_roots = ["src"]\ndefault_generated_target_paths = ["src/index.js"]\n',
             '[[repos.capsules]]\nid = "runtime"\nadapter = "npm-tracked-source-v1"\nfocus_packages = ["@scope/runtime"]\nunknown = "value"\n',
             '[[repos.capsules]]\nid = "runtime"\nadapter = "npm-tracked-source-v1"\nfocus_packages = ["@scope/runtime"]\n[[repos.capsules.package_overrides]]\nname = "@scope/runtime"\nrequired_roots = ["src"]\ngenerated_target_paths = []\n',
-            '[[repos.secret_allowlist]]\npath = "src\\\\token.ts"\nblob_oid = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"\ndetector_code = "text-secrets-v1:generic-token"\n',
-            '[[repos.secret_allowlist]]\npath = "src/token.ts"\nblob_oid = "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"\ndetector_code = "text-secrets-v1:generic-token"\n',
+            '[[repos.secret_allowlist]]\npath = "src\\\\token.ts"\nblob_oid = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"\ndetector_code = "github-token-v1"\n',
+            '[[repos.secret_allowlist]]\npath = "src/token.ts"\nblob_oid = "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"\ndetector_code = "github-token-v1"\n',
         )
 
         for suffix in invalid:
@@ -277,7 +277,7 @@ class RegistryTests(unittest.TestCase):
             '[[repos.secret_allowlist]]\n'
             'path = "src/token.ts"\n'
             'blob_oid = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"\n'
-            'detector_code = "text-secrets-v1:generic-token"\n'
+            'detector_code = "github-token-v1"\n'
         )
         base = (
             '[[repos]]\nid = "paypal/paypal-js"\ncompany = "paypal"\n'

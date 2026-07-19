@@ -10,6 +10,8 @@ from github_canonical import canonical_json_bytes, canonical_sha256, safe_policy
 CAPSULE_ADAPTER = "npm-tracked-source-v1"
 DEPENDENCY_SCOPE = "internal-runtime-closure"
 SECRET_DETECTOR = "text-secrets-v1"
+CATEGORY_CLASSIFIER = "excluded-categories-v1"
+WORKSPACE_RESOLVER = "npm-workspaces-v1"
 DEFAULT_REQUIRED_ROOTS = ("src",)
 DEFAULT_EXCLUDED_CATEGORIES = ("fixtures", "stories", "tests")
 EXCLUDED_CATEGORIES = frozenset(DEFAULT_EXCLUDED_CATEGORIES)
@@ -277,14 +279,16 @@ def _normalize_allowlist(item: SecretAllowlist, prefix: str) -> SecretAllowlist:
 def _policy_payload(capsule: CapsuleConfig, allowlist: Tuple[SecretAllowlist, ...]) -> Dict[str, object]:
     return {
         "adapter": capsule.adapter,
-        "capsule_id": capsule.id,
+        "category_classifier": CATEGORY_CLASSIFIER,
         "focus_packages": list(capsule.focus_packages),
+        "id": capsule.id,
         "dependency_scope": capsule.dependency_scope,
         "default_required_roots": list(capsule.default_required_roots),
         "default_generated_target_paths": list(capsule.default_generated_target_paths),
         "include_paths": list(capsule.include_paths),
         "excluded_categories": list(capsule.excluded_categories),
         "secret_detector": capsule.secret_detector,
+        "workspace_resolver": WORKSPACE_RESOLVER,
         "max_file_bytes": capsule.max_file_bytes,
         "max_capsule_files": capsule.max_capsule_files,
         "max_capsule_utf8_bytes": capsule.max_capsule_utf8_bytes,

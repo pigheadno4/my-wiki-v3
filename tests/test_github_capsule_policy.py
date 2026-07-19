@@ -1,4 +1,5 @@
 import dataclasses
+import json
 import sys
 import unittest
 from pathlib import Path
@@ -28,7 +29,7 @@ class EffectivePolicyTests(unittest.TestCase):
     def test_frozen_policy_records_apply_exact_defaults(self):
         capsule = self.capsule()
         override = PackageOverride("@scope/internal", ("src",), (), ())
-        allowlist = SecretAllowlist("src/token.ts", "a" * 40, "text-secrets-v1:generic-token")
+        allowlist = SecretAllowlist("src/token.ts", "a" * 40, "github-token-v1")
 
         self.assertEqual("internal-runtime-closure", capsule.dependency_scope)
         self.assertEqual(("src",), capsule.default_required_roots)
@@ -61,9 +62,9 @@ class EffectivePolicyTests(unittest.TestCase):
             ),
         )
         allowlists = (
-            SecretAllowlist("src/z.ts", "b" * 40, "text-secrets-v1:generic-token"),
-            SecretAllowlist("src/a.ts", "a" * 40, "text-secrets-v1:generic-token"),
-            SecretAllowlist("src/ignored.ts", "c" * 40, "text-secrets-v1:generic-token"),
+            SecretAllowlist("src/z.ts", "b" * 40, "github-token-v1"),
+            SecretAllowlist("src/a.ts", "a" * 40, "github-token-v1"),
+            SecretAllowlist("src/ignored.ts", "c" * 40, "github-token-v1"),
             SecretAllowlist("src/not-selected-detector.ts", "d" * 40, "other-detector"),
         )
 
@@ -71,13 +72,13 @@ class EffectivePolicyTests(unittest.TestCase):
             capsule,
             allowlists,
             (("src/z.ts", "b" * 40), ("src/a.ts", "a" * 40), ("src/not-selected-detector.ts", "d" * 40)),
-            ("text-secrets-v1:generic-token",),
+            ("github-token-v1",),
         )
         reordered = build_effective_policy(
             capsule,
             tuple(reversed(allowlists)),
             (("src/a.ts", "a" * 40), ("src/z.ts", "b" * 40), ("src/not-selected-detector.ts", "d" * 40)),
-            ("text-secrets-v1:generic-token",),
+            ("github-token-v1",),
         )
 
         self.assertEqual(("@scope/a", "@scope/z"), policy.capsule.focus_packages)
@@ -94,6 +95,48 @@ class EffectivePolicyTests(unittest.TestCase):
         self.assertRegex(policy.policy_hash, r"^[0-9a-f]{64}$")
         with self.assertRaises(dataclasses.FrozenInstanceError):
             policy.policy_hash = "0" * 64
+
+    def test_effective_policy_uses_the_exact_npm_schema_and_canonical_bytes(self):
+        policy = build_effective_policy(
+            self.capsule(),
+            (SecretAllowlist("src/token.ts", "a" * 40, "github-token-v1"),),
+            (("src/token.ts", "a" * 40),),
+            ("github-token-v1",),
+        )
+        expected_payload = {
+            "adapter": "npm-tracked-source-v1",
+            "category_classifier": "excluded-categories-v1",
+            "default_generated_target_paths": [],
+            "default_required_roots": ["src"],
+            "dependency_scope": "internal-runtime-closure",
+            "excluded_categories": ["fixtures", "stories", "tests"],
+            "focus_packages": ["@scope/runtime"],
+            "id": "runtime",
+            "include_paths": [],
+            "max_capsule_files": 120,
+            "max_capsule_utf8_bytes": 750000,
+            "max_file_bytes": 512000,
+            "max_packet_files": 160,
+            "max_packet_utf8_bytes": 1000000,
+            "package_overrides": [],
+            "secret_allowlist": [
+                {"path": "src/token.ts", "blob_oid": "a" * 40, "detector_code": "github-token-v1"}
+            ],
+            "secret_detector": "text-secrets-v1",
+            "workspace_resolver": "npm-workspaces-v1",
+        }
+        expected_bytes = json.dumps(
+            expected_payload,
+            ensure_ascii=False,
+            allow_nan=False,
+            separators=(",", ":"),
+            sort_keys=True,
+        ).encode("utf-8")
+
+        self.assertEqual(set(expected_payload), set(json.loads(policy.canonical_bytes)))
+        self.assertEqual("excluded-categories-v1", json.loads(policy.canonical_bytes)["category_classifier"])
+        self.assertEqual("npm-workspaces-v1", json.loads(policy.canonical_bytes)["workspace_resolver"])
+        self.assertEqual(expected_bytes, policy.canonical_bytes)
 
 
 if __name__ == "__main__":
