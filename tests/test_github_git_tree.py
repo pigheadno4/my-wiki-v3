@@ -261,10 +261,12 @@ class GitTreeTests(unittest.TestCase):
             with self.assertRaises(github_git_tree.GitObjectReadError) as raised:
                 tree.read_blob("packages/widget/package.json")
 
+        self.assertIsInstance(raised.exception, github_git_tree.GitCommandRejectedError)
         message = str(raised.exception)
         self.assertLess(len(message), 200)
         self.assertNotIn(secret, message)
         self.assertNotIn("packages/widget/package.json", message)
+        self.assertIsNone(raised.exception.__cause__)
         self.assertEqual("1", run.call_args.kwargs["env"]["GIT_NO_REPLACE_OBJECTS"])
 
     def test_cat_file_os_and_timeout_failures_are_typed_bounded_and_redacted(self):
@@ -291,7 +293,7 @@ class GitTreeTests(unittest.TestCase):
                 self.assertNotIn("packages/widget/package.json", message)
                 self.assertIsNone(raised.exception.__cause__)
 
-    def test_commit_verification_os_and_timeout_failures_remain_deterministic_value_errors(self):
+    def test_fresh_commit_verification_os_and_timeout_failures_remain_retryable(self):
         failures = (
             OSError(2, "sensitive os detail", "sensitive/os/path"),
             subprocess.TimeoutExpired(
@@ -304,8 +306,21 @@ class GitTreeTests(unittest.TestCase):
         for failure in failures:
             with self.subTest(failure=type(failure).__name__):
                 with mock.patch("github_git_tree.subprocess.run", side_effect=failure):
-                    with self.assertRaises(ValueError) as raised:
+                    with self.assertRaises(github_git_tree.GitObjectReadError) as raised:
                         GitTree(self.repo, self.sha).blobs()
+
+                self.assertIs(type(raised.exception), github_git_tree.GitObjectReadError)
+                self.assertEqual("Git object command failed", str(raised.exception))
+                self.assertNotIn("sensitive", str(raised.exception))
+                self.assertIsNone(raised.exception.__cause__)
+
+    def test_missing_and_tree_object_ids_keep_deterministic_value_error_contract(self):
+        tree_sha = self.git("rev-parse", self.sha + "^{tree}")
+
+        for object_id in ("f" * len(self.sha), tree_sha):
+            with self.subTest(object_id=object_id):
+                with self.assertRaises(ValueError) as raised:
+                    GitTree(self.repo, object_id).blobs()
 
                 self.assertIs(type(raised.exception), ValueError)
                 self.assertEqual("sha must name an exact commit", str(raised.exception))
@@ -322,9 +337,16 @@ class GitTreeTests(unittest.TestCase):
         self.assertLess(len(str(raised.exception)), 200)
         self.assertNotIn("packages/widget/package.json", str(raised.exception))
 
-    def test_git_object_read_error_is_exported(self):
+    def test_git_object_read_error_types_are_exported(self):
         self.assertIn("GitObjectReadError", github_git_tree.__all__)
+        self.assertIn("GitCommandRejectedError", github_git_tree.__all__)
         self.assertTrue(issubclass(github_git_tree.GitObjectReadError, ValueError))
+        self.assertTrue(
+            issubclass(
+                github_git_tree.GitCommandRejectedError,
+                github_git_tree.GitObjectReadError,
+            )
+        )
 
     def test_read_json_delegates_exact_boundary_and_validates_per_read_limit(self):
         content = b'{"name":"bounded"}'

@@ -19,6 +19,10 @@ class GitObjectReadError(ValueError):
     """A bounded infrastructure failure while reading immutable Git objects."""
 
 
+class GitCommandRejectedError(GitObjectReadError):
+    """A deterministic rejection from a Git command that launched successfully."""
+
+
 @dataclass(frozen=True)
 class GitBlob:
     path: str
@@ -93,7 +97,7 @@ class GitTree:
                 resolved = _run_git_bytes(
                     ["rev-parse", "--verify", self._sha + "^{commit}"], self._repo_root
                 ).strip().decode("ascii")
-            except GitObjectReadError:
+            except GitCommandRejectedError:
                 raise ValueError("sha must name an exact commit") from None
             self._is_exact_commit = resolved == self._sha
         if not self._is_exact_commit:
@@ -139,6 +143,8 @@ def _run_git_bytes(args: Sequence[str], cwd: Path) -> bytes:
             capture_output=True,
             env=_git_environment(),
         )
+    except subprocess.CalledProcessError:
+        raise GitCommandRejectedError("Git object command was rejected") from None
     except (subprocess.SubprocessError, OSError):
         raise GitObjectReadError("Git object command failed") from None
     return result.stdout
@@ -177,4 +183,10 @@ def _reject_json_constant(value: str) -> None:
     raise ValueError("invalid JSON constant: " + value)
 
 
-__all__ = ["DEFAULT_MAX_BLOB_BYTES", "GitBlob", "GitObjectReadError", "GitTree"]
+__all__ = [
+    "DEFAULT_MAX_BLOB_BYTES",
+    "GitBlob",
+    "GitCommandRejectedError",
+    "GitObjectReadError",
+    "GitTree",
+]
