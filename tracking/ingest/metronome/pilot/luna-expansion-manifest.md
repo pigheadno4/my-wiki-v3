@@ -23,7 +23,9 @@ all gates in its atomic `model-health-probe-receipt.json`: a first model event w
 30 seconds, valid tiny terminal JSON within the 60-second total cap, complete runtime
 metadata, and complete process cleanup. Orchestration must call the receipt gate in
 `scripts/run_metronome_model_health_probe.py` before invoking any enterprise A/B
-launcher. A failed, missing, incomplete, or non-atomic receipt blocks launch.
+launcher. The receipt's canonical UTC `finished_at` must not be in the future and must
+be no more than 24 hours old at every gate evaluation; exactly 24 hours is accepted.
+A failed, stale, future-dated, missing, incomplete, or non-atomic receipt blocks launch.
 
 The probe writes only beneath
 `tracking/ingest/metronome/pilot/diagnostics/health-probes/<run-id>/` and never participates in canonical coverage. It does not authorize cycles 3–5, source promotion,
@@ -32,7 +34,9 @@ or any write beneath `raw/` or `wiki/`.
 The enterprise A/B job identity is the explicit immutable registry in
 `enterprise-diagnostic-jobs.json`, not a job-name heuristic. Direct worker and CLI
 execution of a listed job must supply `--health-probe-run-id <passing-run-id>`; the
-worker revalidates that receipt before it claims a run or launches a model process.
+worker revalidates that receipt, including freshness and runner provenance, before it
+claims a run or launches a model process. A previously passing receipt is historical
+evidence only after its 24-hour window expires or any gated runner script changes.
 
 ## Isolation and Serial Execution
 

@@ -46,6 +46,7 @@ MODEL = "gpt-5.6-luna"
 REASONING_EFFORT = "high"
 TOTAL_TIMEOUT_SECONDS = 60
 FIRST_MODEL_EVENT_LIMIT_SECONDS = 30
+MAX_PROBE_AGE_SECONDS = 24 * 60 * 60
 PROCESS_CLEANUP_BUDGET_SECONDS = 6.0
 RUNTIME_HASH_KEYS = frozenset(
     (
@@ -588,7 +589,9 @@ def _reject_gate(reason: str) -> None:
     raise HealthProbeGateError(f"enterprise A/B remains suspended: {reason}")
 
 
-def _load_passing_probe_receipt(root: Path, run_id: str) -> Dict[str, Any]:
+def _load_passing_probe_receipt(
+    root: Path, run_id: str, *, now: Optional[datetime] = None
+) -> Dict[str, Any]:
     root = Path(root).resolve()
     try:
         run_id = validate_run_id(run_id)
@@ -618,6 +621,30 @@ def _load_passing_probe_receipt(root: Path, run_id: str) -> Dict[str, Any]:
         ) from exc
     if not isinstance(receipt, dict):
         _reject_gate("health probe receipt must be one JSON object")
+
+    evaluation_time = now if now is not None else datetime.now(timezone.utc)
+    if (
+        not isinstance(evaluation_time, datetime)
+        or evaluation_time.tzinfo is None
+        or evaluation_time.utcoffset() is None
+    ):
+        _reject_gate("health probe freshness evaluation time must include a timezone")
+    finished_at_value = receipt.get("finished_at")
+    if not isinstance(finished_at_value, str) or not finished_at_value.endswith("Z"):
+        _reject_gate("health probe finished_at must be a canonical UTC timestamp")
+    try:
+        finished_at = datetime.fromisoformat(
+            finished_at_value[:-1] + "+00:00"
+        )
+    except ValueError:
+        _reject_gate("health probe finished_at must be a canonical UTC timestamp")
+    probe_age_seconds = (
+        evaluation_time.astimezone(timezone.utc) - finished_at
+    ).total_seconds()
+    if probe_age_seconds < 0:
+        _reject_gate("health probe finished_at is in the future")
+    if probe_age_seconds > MAX_PROBE_AGE_SECONDS:
+        _reject_gate("health probe is no longer fresh; maximum age is 24 hours")
 
     expected_paths = {
         "output_path": _relative(raw_output_path(attempt_dir), root),

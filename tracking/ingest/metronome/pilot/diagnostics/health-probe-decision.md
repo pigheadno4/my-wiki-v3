@@ -2,11 +2,21 @@
 
 ## Current Decision
 
-**PASS — the replacement Luna health gate is satisfied.**
+**BLOCKED — a new user-approved Luna health probe is required before enterprise A/B.**
+
+The gate now requires a passing receipt to be no more than 24 hours old at every
+evaluation and rejects future-dated or malformed `finished_at` values. It also continues
+to reconcile the hashes of all gated runner scripts. Adding this freshness enforcement
+changed `scripts/run_metronome_model_health_probe.py`, so the immutable replacement
+receipt records an earlier runner hash and cannot authorize work under the current code.
+No replacement probe or enterprise job was launched as part of this gate change.
+
+## Historical Replacement Pass
 
 The replacement `gpt-5.6-luna` / `high` probe used immutable run ID
-`luna-health-2026-07-18-02` and the fixed 60-second total cap. Enterprise A/B was not
-launched and still requires separate explicit authorization.
+`luna-health-2026-07-18-02` and the fixed 60-second total cap. It passed the gate version
+that produced it. Enterprise A/B was not launched, and this receipt is now preserved as
+historical evidence rather than current launch authority.
 
 ### Replacement Evidence
 
@@ -24,8 +34,9 @@ launched and still requires separate explicit authorization.
   and prompt/schema snapshots
 
 The replacement receipt has no failures and remains permanently ineligible for canonical
-coverage. Its successful health status authorizes consideration of the separately gated
-enterprise diagnostic; it does not itself launch or approve that job.
+coverage. Its successful health status supported consideration of the separately gated
+enterprise diagnostic at that time; it does not launch or approve that job and cannot be
+reused after runner provenance changes or its 24-hour freshness window expires.
 
 ## Prior Failed Probe — Preserved History
 

@@ -1,4 +1,5 @@
 import hashlib
+import inspect
 import json
 import os
 import signal
@@ -6,6 +7,7 @@ import sys
 import tempfile
 import time
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
 
@@ -20,6 +22,7 @@ from run_metronome_model_health_probe import (  # noqa: E402
     FIRST_MODEL_EVENT_LIMIT_SECONDS,
     TOTAL_TIMEOUT_SECONDS,
     HealthProbeGateError,
+    _load_passing_probe_receipt,
     launch_enterprise_ab_if_probe_passes,
     run_health_probe,
 )
@@ -35,6 +38,79 @@ class ModelHealthProbeTests(unittest.TestCase):
 
         def advance(self, seconds):
             self.value += seconds
+
+    def test_probe_receipt_loader_accepts_deterministic_evaluation_time(self):
+        parameters = inspect.signature(_load_passing_probe_receipt).parameters
+
+        self.assertIn("now", parameters)
+
+    def test_gate_accepts_probe_at_24_hour_freshness_boundary(self):
+        root = self.make_root()
+        receipt_path = self.make_passing_probe(root, "luna-fresh-boundary")
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        finished_at = datetime.fromisoformat(
+            receipt["finished_at"].replace("Z", "+00:00")
+        )
+
+        loaded = _load_passing_probe_receipt(
+            root,
+            "luna-fresh-boundary",
+            now=finished_at + timedelta(hours=24),
+        )
+
+        self.assertEqual("passed", loaded["status"])
+
+    def test_gate_rejects_probe_older_than_24_hours(self):
+        root = self.make_root()
+        receipt_path = self.make_passing_probe(root, "luna-stale-probe")
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        finished_at = datetime.fromisoformat(
+            receipt["finished_at"].replace("Z", "+00:00")
+        )
+
+        with self.assertRaisesRegex(HealthProbeGateError, "fresh"):
+            _load_passing_probe_receipt(
+                root,
+                "luna-stale-probe",
+                now=finished_at + timedelta(hours=24, microseconds=1),
+            )
+
+    def test_gate_rejects_probe_with_future_completion_time(self):
+        root = self.make_root()
+        receipt_path = self.make_passing_probe(root, "luna-future-probe")
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        finished_at = datetime.fromisoformat(
+            receipt["finished_at"].replace("Z", "+00:00")
+        )
+
+        with self.assertRaisesRegex(HealthProbeGateError, "future"):
+            _load_passing_probe_receipt(
+                root,
+                "luna-future-probe",
+                now=finished_at - timedelta(microseconds=1),
+            )
+
+    def test_gate_rejects_missing_or_malformed_completion_time(self):
+        for run_id, replacement in (
+            ("luna-missing-finished-at", None),
+            ("luna-malformed-finished-at", "not-a-timestamp"),
+        ):
+            with self.subTest(run_id=run_id):
+                root = self.make_root()
+                receipt_path = self.make_passing_probe(root, run_id)
+                receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+                if replacement is None:
+                    receipt.pop("finished_at")
+                else:
+                    receipt["finished_at"] = replacement
+                receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+
+                with self.assertRaisesRegex(HealthProbeGateError, "finished_at"):
+                    _load_passing_probe_receipt(
+                        root,
+                        run_id,
+                        now=datetime(2026, 7, 19, tzinfo=timezone.utc),
+                    )
 
     def make_root(self):
         tmp = tempfile.TemporaryDirectory()
