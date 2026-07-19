@@ -136,11 +136,16 @@ def build_effective_policy(
     candidates = _candidate_blob_keys(selected_candidate_blobs)
     selected_codes = _unique_strings(detector_codes, "detector_codes", allow_empty=True)
     applicable = []
+    applicable_triples = set()
     for index, item in enumerate(secret_allowlist, 1):
         normalized = _normalize_allowlist(item, "secret allowlist " + str(index))
         if (normalized.path, normalized.blob_oid) in candidates and normalized.detector_code in selected_codes:
+            triple = (normalized.path, normalized.blob_oid, normalized.detector_code)
+            if triple in applicable_triples:
+                raise ValueError("duplicate applicable secret allowlist row")
+            applicable_triples.add(triple)
             applicable.append(normalized)
-    applicable_rows = tuple(sorted(set(applicable), key=lambda item: (item.path, item.blob_oid, item.detector_code)))
+    applicable_rows = tuple(sorted(applicable, key=lambda item: (item.path, item.blob_oid, item.detector_code)))
     payload = _policy_payload(normalized_capsule, applicable_rows)
     bytes_value = canonical_json_bytes(payload)
     return EffectivePolicy(normalized_capsule, applicable_rows, bytes_value, canonical_sha256(payload))

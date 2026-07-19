@@ -1,4 +1,5 @@
 import dataclasses
+import hashlib
 import json
 import sys
 import unittest
@@ -137,6 +138,19 @@ class EffectivePolicyTests(unittest.TestCase):
         self.assertEqual("excluded-categories-v1", json.loads(policy.canonical_bytes)["category_classifier"])
         self.assertEqual("npm-workspaces-v1", json.loads(policy.canonical_bytes)["workspace_resolver"])
         self.assertEqual(expected_bytes, policy.canonical_bytes)
+        self.assertEqual(hashlib.sha256(expected_bytes).hexdigest(), policy.policy_hash)
+        self.assertEqual("8240313f30c1a0b153d332f79758e777fd0286adceb0f2a74eb61470d62735b5", policy.policy_hash)
+
+    def test_effective_policy_rejects_duplicate_applicable_allowlist_rows(self):
+        allowlist = SecretAllowlist("src/token.ts", "a" * 40, "github-token-v1")
+
+        with self.assertRaisesRegex(ValueError, "duplicate applicable secret allowlist"):
+            build_effective_policy(
+                self.capsule(),
+                (allowlist, allowlist),
+                (("src/token.ts", "a" * 40),),
+                ("github-token-v1",),
+            )
 
 
 if __name__ == "__main__":
