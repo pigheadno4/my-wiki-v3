@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import subprocess
+from typing import Mapping, Union
 
 
 def _git(args, cwd=None):
@@ -37,6 +38,21 @@ def commit_bytes(repo: Path, relative: str, content: bytes, message: str, execut
     if executable:
         path.chmod(0o755)
     _git(["add", "--", relative], cwd=repo)
+    _git(["commit", "-m", message], cwd=repo)
+    return _git(["rev-parse", "HEAD"], cwd=repo).stdout.strip()
+
+
+def commit_files(
+    repo: Path,
+    files: Mapping[str, Union[str, bytes]],
+    message: str,
+) -> str:
+    """Commit a complete text/byte fixture without invoking repository code."""
+    for relative, content in files.items():
+        path = repo / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(content.encode("utf-8") if isinstance(content, str) else content)
+        _git(["add", "--", relative], cwd=repo)
     _git(["commit", "-m", message], cwd=repo)
     return _git(["rev-parse", "HEAD"], cwd=repo).stdout.strip()
 

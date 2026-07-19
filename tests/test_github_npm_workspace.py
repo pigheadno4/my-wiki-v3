@@ -1,0 +1,581 @@
+import json
+import subprocess
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+from unittest import mock
+
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from github_capsule_policy import CapsuleConfig, PackageOverride  # noqa: E402
+from github_git_tree import GitTree  # noqa: E402
+from github_npm_workspace import (  # noqa: E402
+    DeclaredTarget,
+    DependencyEdge,
+    WorkspacePackage,
+    WorkspaceResolution,
+    resolve_workspace,
+)
+from tests.github_test_support import commit_files, commit_symlink, create_git_repo  # noqa: E402
+
+
+def manifest(name, version="1.0.0", **values):
+    result = {"name": name, "version": version}
+    result.update(values)
+    return json.dumps(result, separators=(",", ":")) + "\n"
+
+
+class NpmWorkspaceTests(unittest.TestCase):
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        self.root = Path(self.directory.name)
+        self.repo_number = 0
+
+    def tree(self, files):
+        repo_root = self.root / ("repo-" + str(self.repo_number))
+        repo_root.mkdir()
+        self.repo_number += 1
+        repo = create_git_repo(repo_root)
+        sha = commit_files(repo, files, "add npm workspace fixture")
+        return GitTree(repo, sha)
+
+    def capsule(self, *focus_packages, generated=("dist/",)):
+        return CapsuleConfig(
+            id="workspace-test",
+            adapter="npm-tracked-source-v1",
+            focus_packages=tuple(focus_packages),
+            default_generated_target_paths=tuple(generated),
+        )
+
+    def test_public_records_are_frozen_and_resolution_uses_tuples(self):
+        tree = self.tree({"package.json": manifest("root")})
+
+        resolution = resolve_workspace(tree, self.capsule("root", generated=()))
+
+        self.assertIsInstance(resolution, WorkspaceResolution)
+        self.assertIsInstance(resolution.packages[0], WorkspacePackage)
+        self.assertIsInstance(resolution.packages, tuple)
+        self.assertIsInstance(resolution.dependency_edges, tuple)
+        self.assertIsInstance(resolution.external_dependencies, tuple)
+        self.assertIsInstance(resolution.declared_targets, tuple)
+        with self.assertRaises(AttributeError):
+            resolution.packages[0].reason = "changed"
+
+    def test_root_package_is_independent_and_list_and_object_workspaces_are_supported(self):
+        fixtures = (
+            ({"name": "root", "version": "1", "workspaces": ["packages/*"]}, "child"),
+            (
+                {
+                    "name": "root",
+                    "version": "1",
+                    "workspaces": {"packages": ["packages/*"], "nohoist": ["**/legacy"]},
+                },
+                "child",
+            ),
+            ({"name": "root", "version": "1"}, "root"),
+        )
+        for root_manifest, focus in fixtures:
+            with self.subTest(workspaces=root_manifest.get("workspaces", "absent")):
+                files = {"package.json": json.dumps(root_manifest)}
+                if focus == "child":
+                    files["packages/child/package.json"] = manifest("child")
+                resolution = resolve_workspace(self.tree(files), self.capsule(focus, generated=()))
+                self.assertEqual((focus,), tuple(item.name for item in resolution.packages))
+
+    def test_single_star_expansion_is_sorted_and_overlaps_deduplicate(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(
+                    "root",
+                    workspaces=["packages/*", "packages/b", "packages/group/*"],
+                ),
+                "packages/a/package.json": manifest("a"),
+                "packages/b/package.json": manifest("b"),
+                "packages/group/package.json": manifest("group"),
+                "packages/group/c/package.json": manifest("c"),
+            }
+        )
+
+        resolution = resolve_workspace(tree, self.capsule("b", "a", "c", generated=()))
+
+        self.assertEqual(("a", "b", "c"), tuple(item.name for item in resolution.packages))
+        self.assertEqual(("packages/a", "packages/b", "packages/group/c"), tuple(item.path for item in resolution.packages))
+
+    def test_unsupported_workspace_syntax_needs_policy_review(self):
+        invalid_patterns = (
+            "packages/**",
+            "packages/{a,b}",
+            "packages/[ab]",
+            "!packages/a",
+            "packages\\*",
+            "/packages/*",
+            "packages/../other/*",
+            "packages/a*",
+            "packages//a",
+        )
+        for pattern in invalid_patterns:
+            with self.subTest(pattern=pattern):
+                tree = self.tree({"package.json": manifest("root", workspaces=[pattern])})
+                with self.assertRaisesRegex(ValueError, "^needs-policy-review:unsupported-workspace"):
+                    resolve_workspace(tree, self.capsule("root", generated=()))
+
+    def test_workspace_objects_and_discovered_directories_are_strict(self):
+        invalid_workspaces = (
+            {},
+            {"packages": "packages/*"},
+            {"packages": [], "nohoist": "legacy"},
+            {"packages": ["packages/*"], "unknown": []},
+            [""],
+        )
+        for workspaces in invalid_workspaces:
+            with self.subTest(workspaces=workspaces):
+                tree = self.tree({"package.json": manifest("root", workspaces=workspaces)})
+                with self.assertRaisesRegex(ValueError, "^needs-policy-review:unsupported-workspace"):
+                    resolve_workspace(tree, self.capsule("root", generated=()))
+
+        tree = self.tree(
+            {
+                "package.json": manifest("root", workspaces=["packages/*"]),
+                "packages/missing/README.md": "tracked directory without a manifest\n",
+            }
+        )
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:missing-package-manifest"):
+            resolve_workspace(tree, self.capsule("root", generated=()))
+
+    def test_package_identity_and_duplicate_names_are_rejected(self):
+        invalid = self.tree({"package.json": manifest("BadName")})
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:invalid-package-identity"):
+            resolve_workspace(invalid, self.capsule("BadName", generated=()))
+
+        duplicate = self.tree(
+            {
+                "package.json": manifest("root", workspaces=["packages/*"]),
+                "packages/a/package.json": manifest("same"),
+                "packages/b/package.json": manifest("same"),
+            }
+        )
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:duplicate-package-name"):
+            resolve_workspace(duplicate, self.capsule("same", generated=()))
+
+        missing_version = self.tree({"package.json": json.dumps({"name": "root"})})
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:invalid-package-identity"):
+            resolve_workspace(missing_version, self.capsule("root", generated=()))
+
+        valid = self.tree({"package.json": manifest("root")})
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:ambiguous-package"):
+            resolve_workspace(valid, self.capsule("missing", generated=()))
+
+    def test_dependency_closure_normalizes_precedence_metadata_cycles_and_externals(self):
+        tree = self.tree(self.monorepo_files())
+
+        resolution = resolve_workspace(tree, self.capsule("@acme/app"))
+
+        self.assertEqual(
+            (
+                ("@acme/app", "focus"),
+                ("@acme/bridge", "internal-dependency"),
+                ("@acme/core", "internal-dependency"),
+                ("@acme/peer", "internal-peer-dependency"),
+                ("@acme/shared", "internal-optional-dependency"),
+            ),
+            tuple((item.name, item.reason) for item in resolution.packages),
+        )
+        self.assertIn(
+            DependencyEdge("@acme/app", "@acme/shared", "optional-dependency", "link:../shared", True),
+            resolution.dependency_edges,
+        )
+        self.assertNotIn(
+            DependencyEdge("@acme/app", "@acme/shared", "dependency", "^1", False),
+            resolution.dependency_edges,
+        )
+        self.assertIn(
+            DependencyEdge("@acme/app", "@acme/core", "peer-dependency", "workspace:^", True),
+            resolution.dependency_edges,
+        )
+        self.assertIn(
+            DependencyEdge("@acme/app", "@acme/core", "optional-dependency", "file:../core", True),
+            resolution.dependency_edges,
+        )
+        self.assertIn(
+            DependencyEdge("@acme/core", "@acme/app", "dependency", "workspace:*", False),
+            resolution.dependency_edges,
+        )
+        self.assertEqual(
+            (
+                DependencyEdge("@acme/app", "external-peer", "peer-dependency", "^2", False),
+                DependencyEdge("@acme/app", "external-runtime", "dependency", "^3", False),
+            ),
+            resolution.external_dependencies,
+        )
+        self.assertNotIn("@acme/dev-only", tuple(item.name for item in resolution.packages))
+
+    def test_dependency_manifests_and_peer_metadata_are_strict(self):
+        invalid_values = (
+            {"dependencies": []},
+            {"optionalDependencies": {"dep": 1}},
+            {"peerDependencies": {"dep": "1"}, "peerDependenciesMeta": {"missing": {"optional": True}}},
+            {"peerDependencies": {"dep": "1"}, "peerDependenciesMeta": {"dep": {}}},
+            {"peerDependencies": {"dep": "1"}, "peerDependenciesMeta": {"dep": {"optional": "yes"}}},
+            {"peerDependencies": {"dep": "1"}, "peerDependenciesMeta": {"dep": {"optional": True, "extra": 1}}},
+        )
+        for values in invalid_values:
+            with self.subTest(values=values):
+                tree = self.tree({"package.json": manifest("root", **values)})
+                with self.assertRaisesRegex(ValueError, "^needs-policy-review:malformed-dependency-metadata"):
+                    resolve_workspace(tree, self.capsule("root", generated=()))
+
+    def test_local_file_and_link_protocols_must_resolve_to_the_named_workspace(self):
+        fixtures = (
+            ("file:../b", "packages/a", "packages/b", "wrong-name"),
+            ("link:../../outside", "packages/a", "packages/b", "b"),
+            ("file:../missing", "packages/a", "packages/b", "b"),
+            ("file:/absolute", "packages/a", "packages/b", "b"),
+        )
+        for specification, source_path, target_path, target_name in fixtures:
+            with self.subTest(specification=specification, target_name=target_name):
+                tree = self.tree(
+                    {
+                        "package.json": manifest("root", workspaces=["packages/*"]),
+                        source_path + "/package.json": manifest("a", dependencies={"b": specification}),
+                        target_path + "/package.json": manifest(target_name),
+                    }
+                )
+                with self.assertRaisesRegex(ValueError, "^needs-policy-review:unsafe-local-dependency"):
+                    resolve_workspace(tree, self.capsule("a", generated=()))
+
+    def test_local_file_protocol_can_identify_the_root_workspace(self):
+        tree = self.tree(
+            {
+                "package.json": manifest("root", workspaces=["packages/*"]),
+                "packages/a/package.json": manifest("a", dependencies={"root": "file:../.."}),
+            }
+        )
+
+        resolution = resolve_workspace(tree, self.capsule("a", generated=()))
+
+        self.assertIn(
+            DependencyEdge("a", "root", "dependency", "file:../..", False),
+            resolution.dependency_edges,
+        )
+
+    def test_declarations_record_files_targets_and_tracked_type_roots(self):
+        resolution = resolve_workspace(self.tree(self.monorepo_files()), self.capsule("@acme/app"))
+        app = next(item for item in resolution.packages if item.name == "@acme/app")
+
+        self.assertEqual(("dist", "src"), app.files)
+        self.assertEqual(("types",), app.tracked_declaration_roots)
+        self.assertEqual(
+            {
+                ("main", "./src/index.js", "tracked-required"),
+                ("module", "src/index.mjs", "tracked-required"),
+                ("types", "./types/index.d.ts", "tracked-required"),
+                ("typings", "types/index.d.ts", "tracked-required"),
+                ("bin", "./bin/cli.js", "tracked-required"),
+            },
+            {
+                (target.field, target.target, target.status)
+                for target in resolution.declared_targets
+                if target.field != "exports" and target.package == "@acme/app"
+            },
+        )
+
+    def test_exports_preserve_json_pointers_condition_order_and_array_order(self):
+        resolution = resolve_workspace(self.tree(self.monorepo_files()), self.capsule("@acme/app"))
+        targets = {target.json_pointer: target for target in resolution.declared_targets if target.field == "exports"}
+
+        custom = targets["/exports/./custom~1~0condition"]
+        self.assertEqual(("custom/~condition",), custom.condition_chain)
+        self.assertEqual((), custom.array_indices)
+        development = targets["/exports/./import/1/development"]
+        self.assertEqual(("import", "development"), development.condition_chain)
+        self.assertEqual((1,), development.array_indices)
+        blocked = targets["/exports/.~1feature~1*/default/1"]
+        self.assertEqual(("default",), blocked.condition_chain)
+        self.assertEqual((1,), blocked.array_indices)
+        self.assertEqual("blocked-export", blocked.status)
+        self.assertEqual("", blocked.target)
+
+    def test_exports_patterns_use_specificity_and_exact_slash_substitution(self):
+        resolution = resolve_workspace(self.tree(self.monorepo_files()), self.capsule("@acme/app"))
+        rows = [target for target in resolution.declared_targets if target.field == "exports"]
+        general = next(target for target in rows if target.target == "./src/features/*.js")
+        specific = next(target for target in rows if target.target == "./src/internal/*.js")
+
+        self.assertEqual(("src/features/plain.js",), general.matched_paths)
+        self.assertEqual(("src/internal/tool.js",), specific.matched_paths)
+        slash_tree = self.tree(
+            {
+                "package.json": manifest(
+                    "root",
+                    exports={"./public/*": "./src/*.js"},
+                ),
+                "src/deep/path.js": "export const value = 1;\n",
+            }
+        )
+        slash = resolve_workspace(slash_tree, self.capsule("root", generated=())).declared_targets[0]
+        self.assertEqual("tracked-pattern-required", slash.status)
+        self.assertEqual(("src/deep/path.js",), slash.matched_paths)
+
+    def test_more_specific_generated_or_blocked_patterns_shadow_lower_patterns(self):
+        for specific_value, expected_status in (("./dist/internal/*.js", "generated-pattern-not-tracked"), (None, "blocked-export")):
+            with self.subTest(specific_value=specific_value):
+                tree = self.tree(
+                    {
+                        "package.json": manifest(
+                            "root",
+                            exports={
+                                "./feature/*": "./src/*.js",
+                                "./feature/internal/*": specific_value,
+                            },
+                        ),
+                        "src/plain.js": "export {};\n",
+                        "src/internal/tool.js": "export {};\n",
+                    }
+                )
+
+                resolution = resolve_workspace(tree, self.capsule("root", generated=("dist/",)))
+                lower = next(target for target in resolution.declared_targets if target.target == "./src/*.js")
+
+                self.assertEqual(("src/plain.js",), lower.matched_paths)
+                self.assertTrue(any(target.status == expected_status for target in resolution.declared_targets))
+
+    def test_export_patterns_fail_when_they_select_non_regular_entries(self):
+        repo_root = self.root / ("repo-" + str(self.repo_number))
+        repo_root.mkdir()
+        self.repo_number += 1
+        repo = create_git_repo(repo_root)
+        commit_files(repo, {"package.json": manifest("root", exports={"./*": "./src/*.js"})}, "add manifest")
+        sha = commit_symlink(repo, "src/link.js", "target.js", "add exported symlink")
+
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:unsafe-declared-target"):
+            resolve_workspace(GitTree(repo, sha), self.capsule("root", generated=()))
+
+    def test_root_exports_sugar_accepts_string_null_array_and_conditions(self):
+        exports_values = (
+            ("./index.js", "tracked-required"),
+            (None, "blocked-export"),
+            (["./missing.js", "./index.js"], "tracked-required"),
+            ({"types": "./index.d.ts", "default": "./index.js"}, "tracked-required"),
+        )
+        for exports_value, expected_status in exports_values:
+            with self.subTest(exports=exports_value):
+                tree = self.tree(
+                    {
+                        "package.json": manifest("root", exports=exports_value),
+                        "index.js": "module.exports = {};\n",
+                        "index.d.ts": "export {};\n",
+                    }
+                )
+                generated = ("missing.js",) if isinstance(exports_value, list) else ()
+                resolution = resolve_workspace(tree, self.capsule("root", generated=generated))
+                self.assertTrue(any(target.status == expected_status for target in resolution.declared_targets))
+                self.assertTrue(all(target.json_pointer.startswith("/exports") for target in resolution.declared_targets))
+
+    def test_exports_reject_mixed_unsafe_duplicate_and_unsupported_structures(self):
+        invalid_exports = (
+            {".": "./index.js", "default": "./index.js"},
+            {"./bad/../key": "./index.js"},
+            {"./bad%2Fkey": "./index.js"},
+            {"./bad\\key": "./index.js"},
+            {"0": "./index.js"},
+            {"": "./index.js"},
+            {"./two**": "./src/*.js"},
+            {"./one/*": "./src/no-star.js"},
+            {"./literal": "./src/*.js"},
+            42,
+        )
+        for exports_value in invalid_exports:
+            with self.subTest(exports=exports_value):
+                tree = self.tree({"package.json": manifest("root", exports=exports_value), "index.js": "ok\n"})
+                with self.assertRaisesRegex(ValueError, "^needs-policy-review:invalid-exports"):
+                    resolve_workspace(tree, self.capsule("root", generated=()))
+
+        duplicate = self.tree({"package.json": '{"name":"root","version":"1","exports":{".":"./a.js",".":"./b.js"}}'})
+        with self.assertRaisesRegex(ValueError, "duplicate JSON key"):
+            resolve_workspace(duplicate, self.capsule("root", generated=()))
+
+    def test_declared_targets_reject_unsafe_targets_and_malformed_fields(self):
+        invalid_values = (
+            {"main": 1},
+            {"module": "../escape.js"},
+            {"types": "././types.d.ts"},
+            {"bin": []},
+            {"bin": {"cli": 1}},
+            {"files": "src"},
+            {"files": ["src", 1]},
+            {"exports": "../escape.js"},
+            {"exports": "/absolute.js"},
+            {"exports": "package-name"},
+            {"exports": "./node_modules/pkg.js"},
+        )
+        for values in invalid_values:
+            with self.subTest(values=values):
+                tree = self.tree({"package.json": manifest("root", **values)})
+                with self.assertRaisesRegex(ValueError, "^needs-policy-review:(invalid-declaration|invalid-exports)"):
+                    resolve_workspace(tree, self.capsule("root", generated=()))
+
+        empty_bin = self.tree({"package.json": manifest("root", bin={})})
+        self.assertEqual((), resolve_workspace(empty_bin, self.capsule("root", generated=())).declared_targets)
+
+    def test_wildcard_expansion_rejects_unsafe_git_paths(self):
+        tree = self.tree(
+            {
+                "package.json": manifest("root", exports={"./*": "./src/*.js"}),
+                "src/unsafe\\name.js": "export {};\n",
+            }
+        )
+
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:unsafe-declared-target"):
+            resolve_workspace(tree, self.capsule("root", generated=()))
+
+    def test_generated_targets_are_explicit_and_unreviewed_missing_targets_fail(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(
+                    "root",
+                    main="./dist/index.js",
+                    exports={"./feature/*": "./dist/features/*.js"},
+                )
+            }
+        )
+        resolution = resolve_workspace(tree, self.capsule("root", generated=("dist/",)))
+        statuses = {(target.status, target.generated_policy_path) for target in resolution.declared_targets}
+        self.assertEqual(
+            {
+                ("generated-target-not-tracked", "dist/"),
+                ("generated-pattern-not-tracked", "dist/"),
+            },
+            statuses,
+        )
+
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:untracked-declared-target"):
+            resolve_workspace(tree, self.capsule("root", generated=()))
+
+        directory_itself = self.tree({"package.json": manifest("root", main="./dist")})
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:untracked-declared-target"):
+            resolve_workspace(directory_itself, self.capsule("root", generated=("dist/",)))
+
+    def test_package_override_replaces_default_generated_targets(self):
+        tree = self.tree({"package.json": manifest("root", main="./build/index.js")})
+        capsule = CapsuleConfig(
+            id="workspace-test",
+            adapter="npm-tracked-source-v1",
+            focus_packages=("root",),
+            default_generated_target_paths=("dist/",),
+            package_overrides=(PackageOverride("root", ("src",), ("build/",), ()),),
+        )
+
+        target = resolve_workspace(tree, capsule).declared_targets[0]
+
+        self.assertEqual("generated-target-not-tracked", target.status)
+        self.assertEqual("build/", target.generated_policy_path)
+
+    def test_export_types_add_the_complete_top_level_declaration_root(self):
+        tree = self.tree(
+            {
+                "package.json": manifest("root", exports={".": {"types": "./declarations/index.d.ts"}}),
+                "declarations/index.d.ts": "export {};\n",
+                "declarations/nested/other.d.ts": "export {};\n",
+            }
+        )
+
+        package = resolve_workspace(tree, self.capsule("root", generated=())).packages[0]
+
+        self.assertEqual(("declarations",), package.tracked_declaration_roots)
+
+    def test_resolver_never_executes_node_or_package_scripts(self):
+        tree = self.tree({"package.json": manifest("root", scripts={"postinstall": "exit 99"})})
+
+        with mock.patch("github_git_tree.subprocess.run", wraps=subprocess.run) as run:
+            resolve_workspace(tree, self.capsule("root", generated=()))
+
+        commands = [call.args[0] for call in run.call_args_list]
+        self.assertTrue(commands)
+        self.assertTrue(all(command[0] == "git" for command in commands))
+
+    def monorepo_files(self):
+        root = manifest(
+            "@acme/root",
+            workspaces={
+                "packages": ["packages/*", "packages/app", "packages/group/*"],
+                "nohoist": ["**/legacy"],
+            },
+        )
+        app = manifest(
+            "@acme/app",
+            dependencies={
+                "@acme/bridge": "workspace:*",
+                "@acme/shared": "^1",
+                "external-runtime": "^3",
+            },
+            optionalDependencies={
+                "@acme/core": "file:../core",
+                "@acme/shared": "link:../shared",
+            },
+            peerDependencies={
+                "@acme/core": "workspace:^",
+                "@acme/peer": "workspace:*",
+                "external-peer": "^2",
+            },
+            peerDependenciesMeta={"@acme/core": {"optional": True}},
+            devDependencies={"@acme/dev-only": "workspace:*"},
+            main="./src/index.js",
+            module="src/index.mjs",
+            types="./types/index.d.ts",
+            typings="types/index.d.ts",
+            bin={"acme": "./bin/cli.js"},
+            files=["src", "dist"],
+            exports={
+                ".": {
+                    "types": "./types/index.d.ts",
+                    "import": [
+                        "./src/index.mjs",
+                        {"development": "./src/dev.js", "default": "./dist/index.js"},
+                    ],
+                    "custom/~condition": "./src/custom.js",
+                    "default": "./src/index.js",
+                },
+                "./feature/internal/*": "./src/internal/*.js",
+                "./feature/*": {
+                    "types": "./types/features/*.d.ts",
+                    "import": "./src/features/*.js",
+                    "default": ["./src/fallback/*.js", None],
+                },
+                "./blocked": None,
+                "./generated": "./dist/generated.js",
+                "./generated/*": "./dist/features/*.js",
+            },
+        )
+        return {
+            "package.json": root,
+            "packages/app/package.json": app,
+            "packages/app/src/index.js": "module.exports = {};\n",
+            "packages/app/src/index.mjs": "export {};\n",
+            "packages/app/src/dev.js": "export {};\n",
+            "packages/app/src/custom.js": "export {};\n",
+            "packages/app/src/features/plain.js": "export {};\n",
+            "packages/app/src/features/internal/tool.js": "export {};\n",
+            "packages/app/src/internal/tool.js": "export {};\n",
+            "packages/app/src/fallback/plain.js": "export {};\n",
+            "packages/app/src/fallback/internal/tool.js": "export {};\n",
+            "packages/app/types/index.d.ts": "export {};\n",
+            "packages/app/types/extra.d.ts": "export {};\n",
+            "packages/app/types/features/plain.d.ts": "export {};\n",
+            "packages/app/types/features/internal/tool.d.ts": "export {};\n",
+            "packages/app/bin/cli.js": "#!/usr/bin/env node\n",
+            "packages/bridge/package.json": manifest("@acme/bridge", dependencies={"@acme/core": "workspace:*"}),
+            "packages/core/package.json": manifest("@acme/core", dependencies={"@acme/app": "workspace:*"}),
+            "packages/shared/package.json": manifest("@acme/shared"),
+            "packages/peer/package.json": manifest("@acme/peer"),
+            "packages/dev-only/package.json": manifest("@acme/dev-only"),
+            "packages/group/package.json": manifest("@acme/group"),
+            "packages/group/nested/package.json": manifest("@acme/nested"),
+        }
+
+
+if __name__ == "__main__":
+    unittest.main()
