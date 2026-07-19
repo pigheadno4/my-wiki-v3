@@ -898,7 +898,11 @@ def _subpath_pattern_matches(pattern: str, value: str) -> bool:
     if "*" not in pattern:
         return pattern == value
     prefix, suffix = pattern.split("*", 1)
-    return value.startswith(prefix) and value.endswith(suffix)
+    if not value.startswith(prefix) or not value.endswith(suffix):
+        return False
+    start = len(prefix)
+    stop = len(value) - len(suffix) if suffix else len(value)
+    return stop > start
 
 
 def _declaration_root(path: str) -> str:

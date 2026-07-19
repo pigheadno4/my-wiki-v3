@@ -343,6 +343,41 @@ class NpmWorkspaceTests(unittest.TestCase):
                 self.assertEqual(("src/plain.js",), lower.matched_paths)
                 self.assertTrue(any(target.status == expected_status for target in resolution.declared_targets))
 
+    def test_subpath_shadowing_requires_a_feasible_nonempty_substitution(self):
+        cases = (
+            ("./ab*", "ab.js", ("src/ab.js",)),
+            ("./ab*bc", "abc.js", ("src/abc.js",)),
+            ("./ab*bc", "abXbc.js", ()),
+            ("./ab*", "abX.js", ()),
+            ("./ab*bc", "ab/deep/bc.js", ()),
+        )
+        for blocking_pattern, filename, expected_paths in cases:
+            with self.subTest(pattern=blocking_pattern, filename=filename):
+                tree = self.tree(
+                    {
+                        "package.json": manifest(
+                            "root",
+                            exports={
+                                "./*": "./src/*.js",
+                                blocking_pattern: None,
+                            },
+                        ),
+                        "src/" + filename: "export {};\n",
+                    }
+                )
+
+                resolution = resolve_workspace(
+                    tree,
+                    self.capsule("root", generated=()),
+                )
+                lower = next(
+                    target
+                    for target in resolution.declared_targets
+                    if target.target == "./src/*.js"
+                )
+
+                self.assertEqual(expected_paths, lower.matched_paths)
+
     def test_shadowed_lower_pattern_symlinks_are_not_selected(self):
         for specific_value in ("./dist/internal/*.js", None):
             with self.subTest(specific_value=specific_value):
