@@ -75,10 +75,10 @@ class GitTree:
             raise GitObjectReadError("Git blob read size did not match tree metadata")
         return content
 
-    def read_json(self, path: str) -> Any:
+    def read_json(self, path: str, max_bytes: Optional[int] = None) -> Any:
         """Read a JSON blob without accepting duplicate object keys."""
         try:
-            text = self.read_blob(path).decode("utf-8")
+            text = self.read_blob(path, max_bytes=max_bytes).decode("utf-8")
         except UnicodeDecodeError as error:
             raise ValueError("JSON blob is not valid UTF-8") from error
         return json.loads(

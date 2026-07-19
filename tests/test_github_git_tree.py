@@ -282,6 +282,22 @@ class GitTreeTests(unittest.TestCase):
         self.assertIn("GitObjectReadError", github_git_tree.__all__)
         self.assertTrue(issubclass(github_git_tree.GitObjectReadError, ValueError))
 
+    def test_read_json_delegates_exact_boundary_and_validates_per_read_limit(self):
+        content = b'{"name":"bounded"}'
+        sha = commit_bytes(self.repo, "bounded.json", content, "add bounded json")
+        tree = GitTree(self.repo, sha, max_blob_bytes=1)
+
+        self.assertEqual(
+            {"name": "bounded"},
+            tree.read_json("bounded.json", max_bytes=len(content)),
+        )
+        with self.assertRaisesRegex(ValueError, "byte limit"):
+            tree.read_json("bounded.json", max_bytes=len(content) - 1)
+        for value in (True, False, 0, -1, "18"):
+            with self.subTest(value=value):
+                with self.assertRaisesRegex(ValueError, "positive integer"):
+                    tree.read_json("bounded.json", max_bytes=value)
+
 
 if __name__ == "__main__":
     unittest.main()
