@@ -87,6 +87,12 @@ class SecretFinding:
     detector: str
 
 
+@dataclass(frozen=True)
+class _SecretFindingsEvidence:
+    findings: Tuple[SecretFinding, ...]
+    unallowlisted_findings: Tuple[SecretFinding, ...]
+
+
 class SecretFindingsBlocked(ValueError):
     """Structured, bounded evidence for unallowlisted secret findings."""
 
@@ -95,28 +101,50 @@ class SecretFindingsBlocked(ValueError):
         findings: Sequence[SecretFinding],
         unallowlisted_findings: Sequence[SecretFinding],
     ) -> None:
-        self._findings = _sorted_findings(findings)
-        self._unallowlisted_findings = _sorted_findings(unallowlisted_findings)
-        if not self._unallowlisted_findings:
+        complete = _sorted_findings(findings)
+        blocked = _sorted_findings(unallowlisted_findings)
+        if not blocked:
             raise ValueError("unallowlisted_findings must not be empty")
-        if any(item not in self._findings for item in self._unallowlisted_findings):
-            raise ValueError("unallowlisted_findings must be a subset of findings")
-        super().__init__(
+        complete_by_identity = {_finding_identity(item): item for item in complete}
+        for item in blocked:
+            complete_item = complete_by_identity.get(_finding_identity(item))
+            if complete_item is None:
+                raise ValueError(
+                    "unallowlisted_findings identity must be a subset of findings"
+                )
+            if complete_item != item:
+                raise ValueError(
+                    "unallowlisted_findings must contain exact finding records"
+                )
+        message = (
             "needs-policy-review:secret-finding: blocked="
-            + str(len(self._unallowlisted_findings))
+            + str(len(blocked))
             + " findings="
-            + str(len(self._findings))
+            + str(len(complete))
             + " detector="
             + SECRET_DETECTOR
         )
+        ValueError.__init__(self, message)
+        object.__setattr__(self, "_evidence", _SecretFindingsEvidence(complete, blocked))
+        object.__setattr__(self, "_sealed", True)
+
+    def __setattr__(self, name: str, value: object) -> None:
+        if getattr(self, "_sealed", False):
+            raise AttributeError("SecretFindingsBlocked is immutable")
+        object.__setattr__(self, name, value)
+
+    def __delattr__(self, name: str) -> None:
+        if getattr(self, "_sealed", False):
+            raise AttributeError("SecretFindingsBlocked is immutable")
+        object.__delattr__(self, name)
 
     @property
     def findings(self) -> Tuple[SecretFinding, ...]:
-        return self._findings
+        return self._evidence.findings
 
     @property
     def unallowlisted_findings(self) -> Tuple[SecretFinding, ...]:
-        return self._unallowlisted_findings
+        return self._evidence.unallowlisted_findings
 
 
 @dataclass(frozen=True)
@@ -460,12 +488,17 @@ def _sorted_findings(
     result = tuple(
         sorted(
             findings,
-            key=lambda item: (item.path, item.git_blob_oid, item.detector_code),
+            key=_finding_identity,
         )
     )
-    if len(result) != len(set(result)):
-        raise ValueError("findings must be unique")
+    identities = tuple(_finding_identity(item) for item in result)
+    if len(identities) != len(set(identities)):
+        raise ValueError("finding identity must be unique")
     return result
+
+
+def _finding_identity(value: SecretFinding) -> Tuple[str, str, str]:
+    return (value.path, value.git_blob_oid, value.detector_code)
 
 
 def _is_lfs_pointer(content: bytes) -> bool:

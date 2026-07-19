@@ -755,9 +755,96 @@ class CapsuleSelectionTests(unittest.TestCase):
             error.findings = ()
         with self.assertRaises(AttributeError):
             error.unallowlisted_findings = ()
+        with self.assertRaises(AttributeError):
+            error._evidence = None
+        with self.assertRaises(AttributeError):
+            error._sealed = False
+        with self.assertRaises(AttributeError):
+            error.args = ("changed",)
+        with self.assertRaises(AttributeError):
+            error.new_attribute = "changed"
+        with self.assertRaises(AttributeError):
+            del error._evidence
         self.assertLessEqual(len(str(error).encode("utf-8")), 200)
         self.assertNotIn(secret_text, str(error))
         self.assertNotIn("offset", str(error).lower())
+
+        try:
+            raise error
+        except blocked_type as caught:
+            self.assertIs(error, caught)
+
+    def test_secret_blocking_error_rejects_duplicate_normative_identities(self):
+        blocked_type = github_capsule_selection.SecretFindingsBlocked
+        base = SecretFinding(
+            "src/secret.txt",
+            "a" * 40,
+            "github-token-v1",
+            "1" * 64,
+            "text-secrets-v1",
+        )
+        conflicts = (
+            SecretFinding(
+                base.path,
+                base.git_blob_oid,
+                base.detector_code,
+                "2" * 64,
+                base.detector,
+            ),
+            SecretFinding(
+                base.path,
+                base.git_blob_oid,
+                base.detector_code,
+                base.file_sha256,
+                "different-suite-v1",
+            ),
+        )
+
+        for conflict in conflicts:
+            with self.subTest(conflict=conflict):
+                with self.assertRaisesRegex(ValueError, "identity"):
+                    blocked_type((base, conflict), (base,))
+
+        with self.assertRaisesRegex(ValueError, "exact finding"):
+            blocked_type((base,), (conflicts[0],))
+
+    def test_secret_blocking_error_keeps_complete_triple_sorted_evidence(self):
+        blocked_type = github_capsule_selection.SecretFindingsBlocked
+        path_a_aws = SecretFinding(
+            "src/a.txt",
+            "a" * 40,
+            "aws-access-key-id-v1",
+            "1" * 64,
+            "text-secrets-v1",
+        )
+        path_a_github = SecretFinding(
+            "src/a.txt",
+            "a" * 40,
+            "github-token-v1",
+            "1" * 64,
+            "text-secrets-v1",
+        )
+        path_b_pem = SecretFinding(
+            "src/b.txt",
+            "b" * 40,
+            "pem-private-key-header-v1",
+            "2" * 64,
+            "text-secrets-v1",
+        )
+
+        error = blocked_type(
+            (path_b_pem, path_a_github, path_a_aws),
+            (path_b_pem, path_a_github),
+        )
+
+        self.assertEqual(
+            (path_a_aws, path_a_github, path_b_pem),
+            error.findings,
+        )
+        self.assertEqual(
+            (path_a_github, path_b_pem),
+            error.unallowlisted_findings,
+        )
 
     def test_effective_policy_uses_candidate_blobs_not_detector_findings(self):
         tree = self.tree(
