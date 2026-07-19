@@ -327,6 +327,132 @@ class DurableIOFilesystemTests(unittest.TestCase):
                 with self.assertRaises(OSError):
                     os.fstat(descriptor)
 
+    def test_bootstrap_rejects_existing_component_swapped_during_parent_fsync(self):
+        existing = self.root / "existing"
+        attacker = self.root / "attacker-existing"
+        existing.mkdir()
+        attacker.mkdir()
+        (existing / "identity").write_bytes(b"intended")
+        (attacker / "identity").write_bytes(b"replacement")
+        real_fsync_directory = DurableIO.fsync_directory
+        real_open = os.open
+        real_dup = os.dup
+        captured = []
+        swapped = False
+
+        def recording_open(*args, **kwargs):
+            descriptor = real_open(*args, **kwargs)
+            captured.append(descriptor)
+            return descriptor
+
+        def recording_dup(descriptor):
+            duplicate = real_dup(descriptor)
+            captured.append(duplicate)
+            return duplicate
+
+        def swap_after_fsync(instance, descriptor, site):
+            nonlocal swapped
+            real_fsync_directory(instance, descriptor, site)
+            if not swapped and site == "namespace-parent-fsync":
+                swapped = True
+                os.rename(
+                    "existing",
+                    "preserved-existing",
+                    src_dir_fd=descriptor,
+                    dst_dir_fd=descriptor,
+                )
+                os.rename(
+                    "attacker-existing",
+                    "existing",
+                    src_dir_fd=descriptor,
+                    dst_dir_fd=descriptor,
+                )
+
+        def close_captured():
+            for descriptor in set(captured):
+                try:
+                    os.close(descriptor)
+                except OSError:
+                    pass
+
+        self.addCleanup(close_captured)
+        with mock.patch("github_durable_io.os.open", side_effect=recording_open):
+            with mock.patch("github_durable_io.os.dup", side_effect=recording_dup):
+                with mock.patch.object(
+                    DurableIO, "fsync_directory", new=swap_after_fsync
+                ):
+                    with self.assertRaisesRegex(
+                        github_durable_io.DurableIOError,
+                        r"^bootstrap component identity changed$",
+                    ):
+                        DurableIO().bootstrap_directory_at(self.root_fd, ("existing",))
+
+        self.assertEqual((self.root / "existing" / "identity").read_bytes(), b"replacement")
+        self.assertEqual(
+            (self.root / "preserved-existing" / "identity").read_bytes(),
+            b"intended",
+        )
+        self.assertGreaterEqual(len(captured), 2)
+        for descriptor in set(captured):
+            with self.assertRaises(OSError):
+                os.fstat(descriptor)
+
+    def test_bootstrap_rejects_new_component_swapped_during_parent_fsync(self):
+        real_fsync_directory = DurableIO.fsync_directory
+        real_open = os.open
+        real_dup = os.dup
+        captured = []
+        swapped = False
+
+        def recording_open(*args, **kwargs):
+            descriptor = real_open(*args, **kwargs)
+            captured.append(descriptor)
+            return descriptor
+
+        def recording_dup(descriptor):
+            duplicate = real_dup(descriptor)
+            captured.append(duplicate)
+            return duplicate
+
+        def swap_after_fsync(instance, descriptor, site):
+            nonlocal swapped
+            real_fsync_directory(instance, descriptor, site)
+            if not swapped and site == "namespace-parent-fsync":
+                swapped = True
+                os.rename(
+                    "created",
+                    "preserved-created",
+                    src_dir_fd=descriptor,
+                    dst_dir_fd=descriptor,
+                )
+                os.mkdir("created", 0o700, dir_fd=descriptor)
+
+        def close_captured():
+            for descriptor in set(captured):
+                try:
+                    os.close(descriptor)
+                except OSError:
+                    pass
+
+        self.addCleanup(close_captured)
+        with mock.patch("github_durable_io.os.open", side_effect=recording_open):
+            with mock.patch("github_durable_io.os.dup", side_effect=recording_dup):
+                with mock.patch.object(
+                    DurableIO, "fsync_directory", new=swap_after_fsync
+                ):
+                    with self.assertRaisesRegex(
+                        github_durable_io.DurableIOError,
+                        r"^bootstrap component identity changed$",
+                    ):
+                        DurableIO().bootstrap_directory_at(self.root_fd, ("created",))
+
+        self.assertTrue((self.root / "created").is_dir())
+        self.assertTrue((self.root / "preserved-created").is_dir())
+        self.assertGreaterEqual(len(captured), 2)
+        for descriptor in set(captured):
+            with self.assertRaises(OSError):
+                os.fstat(descriptor)
+
     def test_write_fsync_creates_exclusive_regular_file_and_returns_identity(self):
         controller = FailpointController()
 
@@ -672,10 +798,10 @@ class DurableIOFilesystemTests(unittest.TestCase):
             (
                 ("rename-before", 1),
                 ("rename-after", 1),
-                ("source-parent-fsync-before", 1),
-                ("source-parent-fsync-after", 1),
                 ("destination-parent-fsync-before", 1),
                 ("destination-parent-fsync-after", 1),
+                ("source-parent-fsync-before", 1),
+                ("source-parent-fsync-after", 1),
             ),
         )
 
@@ -711,8 +837,17 @@ class DurableIOFilesystemTests(unittest.TestCase):
         )
 
         self.assertEqual((self.root / "destination").read_bytes(), b"content")
-        self.assertIn(("source-parent-fsync-after", 1), controller.trace)
-        self.assertIn(("destination-parent-fsync-after", 1), controller.trace)
+        self.assertEqual(
+            controller.trace,
+            (
+                ("rename-before", 1),
+                ("rename-after", 1),
+                ("destination-parent-fsync-before", 1),
+                ("destination-parent-fsync-after", 1),
+                ("source-parent-fsync-before", 1),
+                ("source-parent-fsync-after", 1),
+            ),
+        )
 
     def test_rename_fsync_both_rejects_cross_filesystem_before_mutation(self):
         source = self.root / "staging"
@@ -777,6 +912,89 @@ class DurableIOFilesystemTests(unittest.TestCase):
                 ("source-parent-fsync-after", 1),
             ),
         )
+
+    def test_unlink_revalidates_name_after_the_before_failpoint(self):
+        (self.root / "intended").write_bytes(b"intended")
+        (self.root / "replacement").write_bytes(b"replacement")
+        controller = FailpointController()
+        real_checkpoint = controller.checkpoint
+        swapped = False
+
+        def swap_at_before_site(site):
+            nonlocal swapped
+            real_checkpoint(site)
+            if not swapped and site == "unlink-before":
+                swapped = True
+                os.rename(
+                    "intended",
+                    "preserved-intended",
+                    src_dir_fd=self.root_fd,
+                    dst_dir_fd=self.root_fd,
+                )
+                os.rename(
+                    "replacement",
+                    "intended",
+                    src_dir_fd=self.root_fd,
+                    dst_dir_fd=self.root_fd,
+                )
+
+        with mock.patch.object(controller, "checkpoint", side_effect=swap_at_before_site):
+            with self.assertRaisesRegex(
+                github_durable_io.DurableIOError,
+                r"^unlink source identity changed$",
+            ):
+                DurableIO(controller).unlink_fsync_parent_at(
+                    self.root_fd, "intended"
+                )
+
+        self.assertEqual((self.root / "preserved-intended").read_bytes(), b"intended")
+        self.assertEqual((self.root / "intended").read_bytes(), b"replacement")
+
+    def test_unlink_detects_name_swap_inside_unlink_from_intended_link_count(self):
+        (self.root / "intended").write_bytes(b"intended")
+        (self.root / "replacement").write_bytes(b"replacement")
+        real_unlink = os.unlink
+        swapped = False
+
+        def swap_then_unlink(name, *, dir_fd=None):
+            nonlocal swapped
+            if not swapped:
+                swapped = True
+                os.rename(
+                    name,
+                    "preserved-intended",
+                    src_dir_fd=dir_fd,
+                    dst_dir_fd=dir_fd,
+                )
+                os.rename(
+                    "replacement",
+                    name,
+                    src_dir_fd=dir_fd,
+                    dst_dir_fd=dir_fd,
+                )
+            return real_unlink(name, dir_fd=dir_fd)
+
+        with mock.patch("github_durable_io.os.unlink", side_effect=swap_then_unlink):
+            with self.assertRaisesRegex(
+                github_durable_io.DurableIOError,
+                r"^unlink source link count did not decrease$",
+            ) as raised:
+                DurableIO().unlink_fsync_parent_at(self.root_fd, "intended")
+
+        self.assertLessEqual(len(str(raised.exception)), 200)
+        self.assertEqual((self.root / "preserved-intended").read_bytes(), b"intended")
+        self.assertFalse((self.root / "intended").exists())
+
+    def test_unlink_normal_hard_link_cleanup_decrements_link_count_from_two_to_one(self):
+        (self.root / "retained").write_bytes(b"event")
+        os.link(self.root / "retained", self.root / "staged-link")
+        self.assertEqual((self.root / "retained").stat().st_nlink, 2)
+
+        DurableIO().unlink_fsync_parent_at(self.root_fd, "staged-link")
+
+        self.assertFalse((self.root / "staged-link").exists())
+        self.assertEqual((self.root / "retained").read_bytes(), b"event")
+        self.assertEqual((self.root / "retained").stat().st_nlink, 1)
 
     def test_unlink_fsync_parent_rejects_symlink_directory_and_missing_entry(self):
         outside = self.root / "outside"
@@ -869,35 +1087,69 @@ class DurableIOCrashMatrixTests(unittest.TestCase):
         self.skipTest("open descriptor inventory is unavailable")
 
     def run_workflow(self, root, controller):
-        root_fd = os.open(
-            str(root), os.O_RDONLY | getattr(os, "O_DIRECTORY", 0)
-        )
-        stage_fd = None
-        published_fd = None
-        try:
-            io = DurableIO(controller)
-            stage_fd = io.bootstrap_directory_at(
-                root_fd, ("transactions", "transaction-1", "staged-artifacts")
-            )
-            io.write_fsync_at(stage_fd, "event.staged", b"event")
-            io.fsync_directory(stage_fd, "source-parent-fsync")
-            published_fd = io.bootstrap_directory_at(root_fd, ("published",))
-            io.link_no_replace_at(
-                stage_fd, "event.staged", published_fd, "event.json"
-            )
-            io.fsync_directory(published_fd, "destination-parent-fsync")
-            io.unlink_fsync_parent_at(stage_fd, "event.staged")
-            io.write_fsync_at(stage_fd, "index.next", b"after")
-            io.fsync_directory(stage_fd, "source-parent-fsync")
-            io.rename_fsync_both_at(
-                stage_fd, "index.next", root_fd, "index.json"
-            )
-        finally:
-            if published_fd is not None:
-                os.close(published_fd)
-            if stage_fd is not None:
-                os.close(stage_fd)
-            os.close(root_fd)
+        real_write = os.write
+        real_fsync = os.fsync
+        write_calls = 0
+        regular_fsync_interrupted = False
+
+        def interrupted_short_write(descriptor, content):
+            nonlocal write_calls
+            write_calls += 1
+            if write_calls == 1:
+                raise InterruptedError(errno.EINTR, "deterministic write interruption")
+            if write_calls == 2:
+                return real_write(descriptor, content[:2])
+            return real_write(descriptor, content)
+
+        def interrupted_file_fsync(descriptor):
+            nonlocal regular_fsync_interrupted
+            if (
+                stat.S_ISREG(os.fstat(descriptor).st_mode)
+                and not regular_fsync_interrupted
+            ):
+                regular_fsync_interrupted = True
+                raise InterruptedError(errno.EINTR, "deterministic fsync interruption")
+            return real_fsync(descriptor)
+
+        with mock.patch(
+            "github_durable_io.os.write", side_effect=interrupted_short_write
+        ):
+            with mock.patch(
+                "github_durable_io.os.fsync", side_effect=interrupted_file_fsync
+            ):
+                root_fd = os.open(
+                    str(root), os.O_RDONLY | getattr(os, "O_DIRECTORY", 0)
+                )
+                stage_fd = None
+                published_fd = None
+                try:
+                    io = DurableIO(controller)
+                    stage_fd = io.bootstrap_directory_at(
+                        root_fd,
+                        ("transactions", "transaction-1", "staged-artifacts"),
+                    )
+                    io.write_fsync_at(stage_fd, "ZERO", b"")
+                    io.write_fsync_at(stage_fd, "event.staged", b"event")
+                    io.fsync_directory(stage_fd, "source-parent-fsync")
+                    published_fd = io.bootstrap_directory_at(root_fd, ("published",))
+                    io.link_no_replace_at(
+                        stage_fd, "event.staged", published_fd, "event.json"
+                    )
+                    io.fsync_directory(published_fd, "destination-parent-fsync")
+                    io.unlink_fsync_parent_at(stage_fd, "event.staged")
+                    io.write_fsync_at(stage_fd, "index.next", b"after")
+                    io.fsync_directory(stage_fd, "source-parent-fsync")
+                    io.rename_fsync_both_at(
+                        stage_fd, "index.next", root_fd, "index.json"
+                    )
+                finally:
+                    # Simulate process descriptor teardown only. No crashed
+                    # namespace is cleaned or recovered before fresh reopen.
+                    if published_fd is not None:
+                        os.close(published_fd)
+                    if stage_fd is not None:
+                        os.close(stage_fd)
+                    os.close(root_fd)
 
     def reopen_state(self, root):
         initial_fd = os.open(
@@ -964,6 +1216,7 @@ class DurableIOCrashMatrixTests(unittest.TestCase):
                 "transaction": transaction_fd is not None,
                 "stage": stage_fd is not None,
                 "published": published_fd is not None,
+                "zero": regular(stage_fd, "ZERO"),
                 "event_source": regular(stage_fd, "event.staged"),
                 "event_destination": regular(published_fd, "event.json"),
                 "index_source": regular(stage_fd, "index.next"),
@@ -973,18 +1226,61 @@ class DurableIOCrashMatrixTests(unittest.TestCase):
             for descriptor in reversed(descriptors):
                 os.close(descriptor)
 
-    def assert_documented_pre_or_post_state(self, state):
+    def project_state(self, state):
+        if not state["transactions"]:
+            depth = 0
+        elif not state["transaction"]:
+            depth = 1
+        elif not state["stage"]:
+            depth = 2
+        else:
+            depth = 3
+
+        event_source = state["event_source"]
+        event_destination = state["event_destination"]
+        if event_source is None and event_destination is None:
+            relation = "absent"
+        elif event_source is not None and event_destination is None:
+            relation = "source-only"
+        elif event_source is None and event_destination is not None:
+            relation = "destination-only"
+        elif event_source[1:] == event_destination[1:]:
+            relation = "same-inode"
+        else:
+            relation = "different-inode"
+
+        def content(record):
+            return None if record is None else record[0]
+
+        return (
+            depth,
+            state["published"],
+            content(state["zero"]),
+            content(event_source),
+            content(event_destination),
+            relation,
+            content(state["index_source"]),
+            content(state["index_destination"]),
+        )
+
+    def assert_global_invariants(self, state):
         self.assertFalse(state["transaction"] and not state["transactions"])
         self.assertFalse(state["stage"] and not state["transaction"])
+        if state["published"]:
+            self.assertTrue(state["stage"])
+        if state["zero"] is not None:
+            self.assertEqual(state["zero"][0], b"")
 
         event_source = state["event_source"]
         event_destination = state["event_destination"]
         if event_source is not None:
-            self.assertIn(event_source[0], (b"", b"event"))
+            self.assertIn(event_source[0], (b"", b"ev", b"event"))
         if event_destination is not None:
             self.assertEqual(event_destination[0], b"event")
         if event_source is not None and event_destination is not None:
             self.assertEqual(event_source[1:], event_destination[1:])
+        if event_destination is not None:
+            self.assertIsNotNone(state["zero"])
 
         index_source = state["index_source"]
         index_destination = state["index_destination"]
@@ -1000,8 +1296,8 @@ class DurableIOCrashMatrixTests(unittest.TestCase):
             self.assertIsNotNone(event_destination)
             self.assertIsNone(event_source)
 
-    def test_baseline_trace_and_every_independent_crash_reopen_safely(self):
-        expected_trace = (
+    def expected_trace(self):
+        return (
             ("namespace-mkdir-before", 1),
             ("namespace-mkdir-after", 1),
             ("namespace-parent-fsync-before", 1),
@@ -1016,10 +1312,18 @@ class DurableIOCrashMatrixTests(unittest.TestCase):
             ("namespace-parent-fsync-after", 3),
             ("file-create-before", 1),
             ("file-create-after", 1),
-            ("file-write-before", 1),
-            ("file-write-after", 1),
             ("file-fsync-before", 1),
+            ("file-fsync-before", 2),
             ("file-fsync-after", 1),
+            ("file-create-before", 2),
+            ("file-create-after", 2),
+            ("file-write-before", 1),
+            ("file-write-before", 2),
+            ("file-write-after", 1),
+            ("file-write-before", 3),
+            ("file-write-after", 2),
+            ("file-fsync-before", 3),
+            ("file-fsync-after", 2),
             ("source-parent-fsync-before", 1),
             ("source-parent-fsync-after", 1),
             ("namespace-mkdir-before", 4),
@@ -1034,21 +1338,80 @@ class DurableIOCrashMatrixTests(unittest.TestCase):
             ("unlink-after", 1),
             ("source-parent-fsync-before", 2),
             ("source-parent-fsync-after", 2),
-            ("file-create-before", 2),
-            ("file-create-after", 2),
-            ("file-write-before", 2),
-            ("file-write-after", 2),
-            ("file-fsync-before", 2),
-            ("file-fsync-after", 2),
+            ("file-create-before", 3),
+            ("file-create-after", 3),
+            ("file-write-before", 4),
+            ("file-write-after", 3),
+            ("file-fsync-before", 4),
+            ("file-fsync-after", 3),
             ("source-parent-fsync-before", 3),
             ("source-parent-fsync-after", 3),
             ("rename-before", 1),
             ("rename-after", 1),
-            ("source-parent-fsync-before", 4),
-            ("source-parent-fsync-after", 4),
             ("destination-parent-fsync-before", 2),
             ("destination-parent-fsync-after", 2),
+            ("source-parent-fsync-before", 4),
+            ("source-parent-fsync-after", 4),
         )
+
+    def allowed_pre_post_states(self, expected_trace):
+        fields = (
+            "depth",
+            "published",
+            "zero",
+            "event_source",
+            "event_destination",
+            "event_relation",
+            "index_source",
+            "index_destination",
+        )
+        state = {
+            "depth": 0,
+            "published": False,
+            "zero": None,
+            "event_source": None,
+            "event_destination": None,
+            "event_relation": "absent",
+            "index_source": None,
+            "index_destination": b"before",
+        }
+        transitions = {
+            ("namespace-mkdir-after", 1): {"depth": 1},
+            ("namespace-mkdir-after", 2): {"depth": 2},
+            ("namespace-mkdir-after", 3): {"depth": 3},
+            ("file-create-after", 1): {"zero": b""},
+            ("file-create-after", 2): {
+                "event_source": b"",
+                "event_relation": "source-only",
+            },
+            ("file-write-after", 1): {"event_source": b"ev"},
+            ("file-write-after", 2): {"event_source": b"event"},
+            ("namespace-mkdir-after", 4): {"published": True},
+            ("hard-link-after", 1): {
+                "event_destination": b"event",
+                "event_relation": "same-inode",
+            },
+            ("unlink-after", 1): {
+                "event_source": None,
+                "event_relation": "destination-only",
+            },
+            ("file-create-after", 3): {"index_source": b""},
+            ("file-write-after", 3): {"index_source": b"after"},
+            ("rename-after", 1): {
+                "index_source": None,
+                "index_destination": b"after",
+            },
+        }
+        allowed = {}
+        for target in expected_trace:
+            state.update(transitions.get(target, {}))
+            allowed[target] = (tuple(state[field] for field in fields),)
+        return allowed
+
+    def test_baseline_trace_and_every_independent_crash_reopen_safely(self):
+        expected_trace = self.expected_trace()
+        allowed_states = self.allowed_pre_post_states(expected_trace)
+        self.assertEqual(set(allowed_states), set(expected_trace))
 
         with tempfile.TemporaryDirectory() as baseline_name:
             baseline_root = Path(baseline_name)
@@ -1057,12 +1420,15 @@ class DurableIOCrashMatrixTests(unittest.TestCase):
             self.run_workflow(baseline_root, baseline)
             self.assertEqual(baseline.trace, expected_trace)
             final_state = self.reopen_state(baseline_root)
+            self.assert_global_invariants(final_state)
+            self.assertEqual(final_state["zero"][0], b"")
             self.assertEqual(final_state["event_destination"][0], b"event")
             self.assertIsNone(final_state["event_source"])
             self.assertEqual(final_state["index_destination"][0], b"after")
             self.assertIsNone(final_state["index_source"])
 
-        for site, occurrence in expected_trace:
+        for position, target in enumerate(expected_trace):
+            site, occurrence = target
             with self.subTest(site=site, occurrence=occurrence):
                 with tempfile.TemporaryDirectory() as crash_name:
                     crash_root = Path(crash_name)
@@ -1073,11 +1439,16 @@ class DurableIOCrashMatrixTests(unittest.TestCase):
                         self.run_workflow(crash_root, controller)
                     self.assertEqual(
                         (raised.exception.site, raised.exception.occurrence),
-                        (site, occurrence),
+                        target,
+                    )
+                    self.assertEqual(
+                        controller.trace, expected_trace[: position + 1]
                     )
                     del controller
-                    self.assert_documented_pre_or_post_state(
-                        self.reopen_state(crash_root)
+                    reopened = self.reopen_state(crash_root)
+                    self.assert_global_invariants(reopened)
+                    self.assertIn(
+                        self.project_state(reopened), allowed_states[target]
                     )
                     self.assertEqual(
                         self.open_descriptor_count(), descriptors_before

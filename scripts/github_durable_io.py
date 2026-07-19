@@ -97,6 +97,14 @@ class DurableIO:
                 # A prior crash can leave a visible component whose parent was
                 # never synced, so existing components are re-synced as well.
                 self.fsync_directory(current_descriptor, "namespace-parent-fsync")
+                opened_stat = _require_directory_descriptor(next_descriptor)
+                if not _entry_identity_matches(
+                    current_descriptor,
+                    component,
+                    opened_stat,
+                    directory_only=True,
+                ):
+                    raise DurableIOError("bootstrap component identity changed")
                 os.close(current_descriptor)
                 current_descriptor = next_descriptor
                 next_descriptor = None
@@ -283,8 +291,8 @@ class DurableIO:
                 raise DurableIOError("rename identity verification failed")
             if _lstat_optional(source_parent_fd, source_name) is not None:
                 raise DurableIOError("rename source namespace was replaced")
-            self.fsync_directory(source_parent_fd, "source-parent-fsync")
             self.fsync_directory(destination_parent_fd, "destination-parent-fsync")
+            self.fsync_directory(source_parent_fd, "source-parent-fsync")
         finally:
             os.close(source_descriptor)
 
@@ -305,11 +313,20 @@ class DurableIO:
             ):
                 raise DurableIOError("unlink source identity changed")
             self._checkpoint("unlink-before")
+            if not _entry_identity_matches(
+                parent_fd, name, source_stat, regular_only=True
+            ):
+                raise DurableIOError("unlink source identity changed")
             try:
                 os.unlink(name, dir_fd=parent_fd)
             except OSError as error:
                 _raise_io_error("unlink", error)
             self._checkpoint("unlink-after")
+            unlinked_stat = _require_regular_descriptor(
+                source_descriptor, "unlinked source"
+            )
+            if unlinked_stat.st_nlink != source_stat.st_nlink - 1:
+                raise DurableIOError("unlink source link count did not decrease")
             if _lstat_optional(parent_fd, name) is not None:
                 raise DurableIOError("unlink namespace was replaced")
             self.fsync_directory(parent_fd, "source-parent-fsync")
