@@ -83,6 +83,8 @@ class GitTreeTests(unittest.TestCase):
             ("git", "cat-file", "blob", self.sha + ":packages/widget/package.json"),
             commands,
         )
+        for call in run.call_args_list:
+            self.assertEqual("1", call.kwargs["env"]["GIT_NO_REPLACE_OBJECTS"])
 
     def test_read_blob_rejects_unsafe_and_untracked_paths(self):
         tree = GitTree(self.repo, self.sha)
@@ -130,6 +132,74 @@ class GitTreeTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "exact commit"):
             GitTree(self.repo, tree_sha).blobs()
+
+    def test_reads_the_named_commit_even_when_a_replace_ref_is_installed(self):
+        first_sha = commit_bytes(self.repo, "replace-target.txt", b"first\n", "add first")
+        commit_bytes(self.repo, "replace-target.txt", b"second\n", "add second")
+        self.git("replace", first_sha, "HEAD")
+
+        self.assertEqual(b"first\n", GitTree(self.repo, first_sha).read_blob("replace-target.txt"))
+
+    def test_enumerates_unrelated_unsafe_paths_but_refuses_to_read_them(self):
+        sha = commit_bytes(self.repo, "unrelated\\path.txt", b"ignored\n", "add unsafe path")
+        tree = GitTree(self.repo, sha)
+
+        self.assertIn("unrelated\\path.txt", {blob.path for blob in tree.blobs()})
+        self.assertEqual(b'{"name":"widget","version":"1.0.0"}\n', tree.read_blob("packages/widget/package.json"))
+        with self.assertRaisesRegex(ValueError, "safe repository-relative POSIX path"):
+            tree.read_blob("unrelated\\path.txt")
+
+    def test_read_json_rejects_non_finite_constants_with_bounded_errors(self):
+        for constant in ("NaN", "Infinity", "-Infinity"):
+            with self.subTest(constant=constant):
+                sha = commit_bytes(self.repo, "constant.json", constant.encode("ascii"), "add " + constant)
+                with self.assertRaisesRegex(ValueError, "invalid JSON constant") as raised:
+                    GitTree(self.repo, sha).read_json("constant.json")
+                self.assertLess(len(str(raised.exception)), 200)
+
+    def test_read_json_rejects_invalid_utf8_with_a_bounded_error(self):
+        sha = commit_bytes(self.repo, "invalid-utf8.json", b'{"value":"\xff"}', "add invalid utf8")
+
+        with self.assertRaisesRegex(ValueError, "valid UTF-8") as raised:
+            GitTree(self.repo, sha).read_json("invalid-utf8.json")
+        self.assertLess(len(str(raised.exception)), 200)
+
+    def test_commit_helpers_preserve_leading_dash_and_control_character_paths(self):
+        names = ("-leading.txt", "tab\tname.txt", "newline\nname.txt")
+        for name in names:
+            with self.subTest(name=repr(name)):
+                sha = commit_bytes(self.repo, name, name.encode("utf-8"), "add unusual path")
+                tree = GitTree(self.repo, sha)
+                self.assertIn(name, {blob.path for blob in tree.blobs()})
+                self.assertEqual(name.encode("utf-8"), tree.read_blob(name))
+        sha = commit_symlink(self.repo, "-leading-link", "target", "add unusual symlink")
+        self.assertEqual(b"target", GitTree(self.repo, sha).read_blob("-leading-link"))
+
+    def test_sha256_repository_reads_full_length_object_ids_when_supported(self):
+        sha_root = self.root / "sha256"
+        sha_root.mkdir()
+        try:
+            repo = create_git_repo(sha_root, object_format="sha256")
+        except subprocess.CalledProcessError as error:
+            detail = (error.stderr or "").lower()
+            if (
+                "object-format" in detail
+                or "unknown option" in detail
+                or ("sha256" in detail and ("unsupported" in detail or "unknown" in detail))
+            ):
+                self.skipTest("Git does not support SHA-256 object format")
+            raise
+        sha = commit_bytes(repo, "package.json", b'{"name":"sha256"}\n', "add package")
+
+        self.assertEqual(64, len(sha))
+        self.assertEqual(b'{"name":"sha256"}\n', GitTree(repo, sha).read_blob("package.json"))
+
+    def test_read_blob_accepts_exact_maximum_and_rejects_one_byte_over(self):
+        sha = commit_bytes(self.repo, "boundary.txt", b"12345", "add boundary")
+
+        self.assertEqual(b"12345", GitTree(self.repo, sha, max_blob_bytes=5).read_blob("boundary.txt"))
+        with self.assertRaisesRegex(ValueError, "byte limit"):
+            GitTree(self.repo, sha, max_blob_bytes=4).read_blob("boundary.txt")
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 import json
+import os
 from pathlib import Path
 import subprocess
 from typing import Any, Optional, Sequence, Tuple
@@ -71,7 +72,15 @@ class GitTree:
 
     def read_json(self, path: str) -> Any:
         """Read a JSON blob without accepting duplicate object keys."""
-        return json.loads(self.read_blob(path).decode("utf-8"), object_pairs_hook=_no_duplicate_keys)
+        try:
+            text = self.read_blob(path).decode("utf-8")
+        except UnicodeDecodeError as error:
+            raise ValueError("JSON blob is not valid UTF-8") from error
+        return json.loads(
+            text,
+            object_pairs_hook=_no_duplicate_keys,
+            parse_constant=_reject_json_constant,
+        )
 
     def _require_exact_commit(self) -> None:
         if self._is_exact_commit is None:
@@ -102,8 +111,6 @@ def _parse_ls_tree_entry(value: bytes) -> GitBlob:
         raise ValueError("git ls-tree entry is not valid UTF-8") from error
     if len(mode) != 6 or not mode.isdigit() or not _is_object_id(oid):
         raise ValueError("malformed git ls-tree metadata")
-    if not safe_policy_path(path):
-        raise ValueError("unsafe path in Git tree: " + repr(path))
     if object_type == b"blob":
         try:
             size = int(raw_size)
@@ -120,7 +127,13 @@ def _parse_ls_tree_entry(value: bytes) -> GitBlob:
 def _run_git_bytes(args: Sequence[str], cwd: Path) -> bytes:
     command = ["git"] + list(args)
     try:
-        result = subprocess.run(command, cwd=str(cwd), check=True, capture_output=True)
+        result = subprocess.run(
+            command,
+            cwd=str(cwd),
+            check=True,
+            capture_output=True,
+            env=_git_environment(),
+        )
     except subprocess.CalledProcessError as error:
         detail = error.stderr.decode("utf-8", "replace").strip() if error.stderr else ""
         message = "git " + " ".join(args) + " failed with exit " + str(error.returncode)
@@ -128,6 +141,12 @@ def _run_git_bytes(args: Sequence[str], cwd: Path) -> bytes:
             message += ": " + detail[:1000]
         raise ValueError(message) from error
     return result.stdout
+
+
+def _git_environment() -> dict:
+    environment = os.environ.copy()
+    environment["GIT_NO_REPLACE_OBJECTS"] = "1"
+    return environment
 
 
 def _is_object_id(value: object) -> bool:
@@ -145,6 +164,10 @@ def _no_duplicate_keys(pairs: Sequence[Tuple[str, Any]]) -> dict:
             raise ValueError("duplicate JSON key: " + key)
         result[key] = value
     return result
+
+
+def _reject_json_constant(value: str) -> None:
+    raise ValueError("invalid JSON constant: " + value)
 
 
 __all__ = ["DEFAULT_MAX_BLOB_BYTES", "GitBlob", "GitTree"]

@@ -14,10 +14,13 @@ def _git(args, cwd=None):
     )
 
 
-def create_git_repo(root: Path) -> Path:
+def create_git_repo(root: Path, object_format=None) -> Path:
     repo = root / "upstream"
     repo.mkdir()
-    _git(["init", "-b", "main", str(repo)])
+    init_args = ["init", "-b", "main"]
+    if object_format is not None:
+        init_args.append("--object-format=" + object_format)
+    _git(init_args + [str(repo)])
     _git(["config", "user.name", "Wiki Test"], cwd=repo)
     _git(["config", "user.email", "wiki@example.test"], cwd=repo)
     return repo
@@ -33,7 +36,7 @@ def commit_bytes(repo: Path, relative: str, content: bytes, message: str, execut
     path.write_bytes(content)
     if executable:
         path.chmod(0o755)
-    _git(["add", relative], cwd=repo)
+    _git(["add", "--", relative], cwd=repo)
     _git(["commit", "-m", message], cwd=repo)
     return _git(["rev-parse", "HEAD"], cwd=repo).stdout.strip()
 
@@ -42,7 +45,7 @@ def commit_symlink(repo: Path, relative: str, target: str, message: str) -> str:
     path = repo / relative
     path.parent.mkdir(parents=True, exist_ok=True)
     path.symlink_to(target)
-    _git(["add", relative], cwd=repo)
+    _git(["add", "--", relative], cwd=repo)
     _git(["commit", "-m", message], cwd=repo)
     return _git(["rev-parse", "HEAD"], cwd=repo).stdout.strip()
 
