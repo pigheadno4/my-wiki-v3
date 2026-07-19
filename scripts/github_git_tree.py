@@ -15,6 +15,10 @@ _OBJECT_ID_LENGTHS = (40, 64)
 _HEX = frozenset("0123456789abcdef")
 
 
+class GitObjectReadError(ValueError):
+    """A bounded infrastructure failure while reading immutable Git objects."""
+
+
 @dataclass(frozen=True)
 class GitBlob:
     path: str
@@ -51,8 +55,9 @@ class GitTree:
             self._blobs = tuple(sorted(entries, key=lambda entry: entry.path))
         return self._blobs
 
-    def read_blob(self, path: str) -> bytes:
+    def read_blob(self, path: str, max_bytes: Optional[int] = None) -> bytes:
         """Read one bounded tracked blob by its safe repository-relative path."""
+        limit = self._max_blob_bytes if max_bytes is None else _read_limit(max_bytes)
         if not safe_policy_path(path):
             raise ValueError("path must be a safe repository-relative POSIX path")
         blob = next((entry for entry in self.blobs() if entry.path == path), None)
@@ -60,14 +65,14 @@ class GitTree:
             raise ValueError("path is not tracked by the exact Git tree: " + path)
         if blob.size is None:
             raise ValueError("Git tree entry is not a blob: " + path)
-        if blob.size > self._max_blob_bytes:
+        if blob.size > limit:
             raise ValueError("Git blob exceeds byte limit: " + path)
 
         content = _run_git_bytes(
             ["cat-file", "blob", self._sha + ":" + path], self._repo_root
         )
         if len(content) != blob.size:
-            raise ValueError("Git blob size does not match tree metadata: " + path)
+            raise GitObjectReadError("Git blob read size did not match tree metadata")
         return content
 
     def read_json(self, path: str) -> Any:
@@ -88,7 +93,7 @@ class GitTree:
                 resolved = _run_git_bytes(
                     ["rev-parse", "--verify", self._sha + "^{commit}"], self._repo_root
                 ).strip().decode("ascii")
-            except ValueError as error:
+            except GitObjectReadError as error:
                 raise ValueError("sha must name an exact commit") from error
             self._is_exact_commit = resolved == self._sha
         if not self._is_exact_commit:
@@ -135,11 +140,9 @@ def _run_git_bytes(args: Sequence[str], cwd: Path) -> bytes:
             env=_git_environment(),
         )
     except subprocess.CalledProcessError as error:
-        detail = error.stderr.decode("utf-8", "replace").strip() if error.stderr else ""
-        message = "git " + " ".join(args) + " failed with exit " + str(error.returncode)
-        if detail:
-            message += ": " + detail[:1000]
-        raise ValueError(message) from error
+        raise GitObjectReadError(
+            "Git object command failed with exit " + str(error.returncode)
+        ) from error
     return result.stdout
 
 
@@ -157,6 +160,12 @@ def _is_object_id(value: object) -> bool:
     )
 
 
+def _read_limit(value: object) -> int:
+    if not isinstance(value, int) or isinstance(value, bool) or value <= 0:
+        raise ValueError("max_bytes must be a positive integer")
+    return value
+
+
 def _no_duplicate_keys(pairs: Sequence[Tuple[str, Any]]) -> dict:
     result = {}
     for key, value in pairs:
@@ -170,4 +179,4 @@ def _reject_json_constant(value: str) -> None:
     raise ValueError("invalid JSON constant: " + value)
 
 
-__all__ = ["DEFAULT_MAX_BLOB_BYTES", "GitBlob", "GitTree"]
+__all__ = ["DEFAULT_MAX_BLOB_BYTES", "GitBlob", "GitObjectReadError", "GitTree"]

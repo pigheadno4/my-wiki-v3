@@ -9,6 +9,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
+import github_git_tree  # noqa: E402
 from github_git_tree import GitTree  # noqa: E402
 from tests.github_test_support import (  # noqa: E402
     add_submodule_marker,
@@ -200,6 +201,86 @@ class GitTreeTests(unittest.TestCase):
         self.assertEqual(b"12345", GitTree(self.repo, sha, max_blob_bytes=5).read_blob("boundary.txt"))
         with self.assertRaisesRegex(ValueError, "byte limit"):
             GitTree(self.repo, sha, max_blob_bytes=4).read_blob("boundary.txt")
+
+    def test_per_read_limit_overrides_the_constructor_default_in_both_directions(self):
+        sha = commit_bytes(self.repo, "per-read.txt", b"12345", "add per-read boundary")
+
+        self.assertEqual(
+            b"12345",
+            GitTree(self.repo, sha, max_blob_bytes=4).read_blob("per-read.txt", max_bytes=5),
+        )
+        with self.assertRaisesRegex(ValueError, "byte limit"):
+            GitTree(self.repo, sha, max_blob_bytes=10).read_blob("per-read.txt", max_bytes=4)
+
+    def test_per_read_limit_accepts_the_exact_boundary_and_rejects_invalid_values(self):
+        sha = commit_bytes(self.repo, "override-boundary.txt", b"12345", "add override boundary")
+        tree = GitTree(self.repo, sha, max_blob_bytes=1)
+
+        self.assertEqual(b"12345", tree.read_blob("override-boundary.txt", max_bytes=5))
+        for value in (True, False, 0, -1, "5"):
+            with self.subTest(value=value):
+                with self.assertRaises(ValueError) as raised:
+                    tree.read_blob("override-boundary.txt", max_bytes=value)
+                self.assertNotIsInstance(
+                    raised.exception,
+                    github_git_tree.GitObjectReadError,
+                )
+
+    def test_deterministic_path_mode_limit_and_commit_errors_are_not_infrastructure_errors(self):
+        tree = GitTree(self.repo, self.sha, max_blob_bytes=1)
+        calls = (
+            lambda: tree.read_blob("src\\nul.txt"),
+            lambda: tree.read_blob("vendor/dependency"),
+            lambda: tree.read_blob("src/cli.sh"),
+        )
+        for call in calls:
+            with self.subTest(call=call):
+                with self.assertRaises(ValueError) as raised:
+                    call()
+                self.assertNotIsInstance(
+                    raised.exception,
+                    github_git_tree.GitObjectReadError,
+                )
+
+        tree_sha = self.git("rev-parse", self.sha + "^{tree}")
+        with self.assertRaises(ValueError) as raised:
+            GitTree(self.repo, tree_sha).blobs()
+        self.assertNotIsInstance(raised.exception, github_git_tree.GitObjectReadError)
+
+    def test_cat_file_failure_raises_bounded_redacted_infrastructure_error(self):
+        tree = GitTree(self.repo, self.sha)
+        tree.blobs()
+        secret = "sensitive stderr that must not escape"
+        failure = subprocess.CalledProcessError(
+            128,
+            ["git", "cat-file"],
+            stderr=secret.encode("utf-8"),
+        )
+
+        with mock.patch("github_git_tree.subprocess.run", side_effect=failure) as run:
+            with self.assertRaises(github_git_tree.GitObjectReadError) as raised:
+                tree.read_blob("packages/widget/package.json")
+
+        message = str(raised.exception)
+        self.assertLess(len(message), 200)
+        self.assertNotIn(secret, message)
+        self.assertNotIn("packages/widget/package.json", message)
+        self.assertEqual("1", run.call_args.kwargs["env"]["GIT_NO_REPLACE_OBJECTS"])
+
+    def test_post_read_size_mismatch_raises_infrastructure_error(self):
+        tree = GitTree(self.repo, self.sha)
+        tree.blobs()
+
+        with mock.patch("github_git_tree._run_git_bytes", return_value=b"short"):
+            with self.assertRaises(github_git_tree.GitObjectReadError) as raised:
+                tree.read_blob("packages/widget/package.json")
+
+        self.assertLess(len(str(raised.exception)), 200)
+        self.assertNotIn("packages/widget/package.json", str(raised.exception))
+
+    def test_git_object_read_error_is_exported(self):
+        self.assertIn("GitObjectReadError", github_git_tree.__all__)
+        self.assertTrue(issubclass(github_git_tree.GitObjectReadError, ValueError))
 
 
 if __name__ == "__main__":
