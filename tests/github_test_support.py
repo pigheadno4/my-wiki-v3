@@ -24,9 +24,24 @@ def create_git_repo(root: Path) -> Path:
 
 
 def commit_file(repo: Path, relative: str, content: str, message: str) -> str:
+    return commit_bytes(repo, relative, content.encode("utf-8"), message)
+
+
+def commit_bytes(repo: Path, relative: str, content: bytes, message: str, executable: bool = False) -> str:
     path = repo / relative
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(content, encoding="utf-8")
+    path.write_bytes(content)
+    if executable:
+        path.chmod(0o755)
+    _git(["add", relative], cwd=repo)
+    _git(["commit", "-m", message], cwd=repo)
+    return _git(["rev-parse", "HEAD"], cwd=repo).stdout.strip()
+
+
+def commit_symlink(repo: Path, relative: str, target: str, message: str) -> str:
+    path = repo / relative
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.symlink_to(target)
     _git(["add", relative], cwd=repo)
     _git(["commit", "-m", message], cwd=repo)
     return _git(["rev-parse", "HEAD"], cwd=repo).stdout.strip()
