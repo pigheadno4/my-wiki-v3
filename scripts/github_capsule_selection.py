@@ -63,6 +63,8 @@ _CLASSIFICATION_ORDER = (
 _CLASSIFICATION_PRIORITY = {
     reason: index for index, reason in enumerate(_CLASSIFICATION_ORDER)
 }
+
+
 @dataclass(frozen=True)
 class CapsuleFile:
     path: str
@@ -83,6 +85,38 @@ class SecretFinding:
     detector_code: str
     file_sha256: str
     detector: str
+
+
+class SecretFindingsBlocked(ValueError):
+    """Structured, bounded evidence for unallowlisted secret findings."""
+
+    def __init__(
+        self,
+        findings: Sequence[SecretFinding],
+        unallowlisted_findings: Sequence[SecretFinding],
+    ) -> None:
+        self._findings = _sorted_findings(findings)
+        self._unallowlisted_findings = _sorted_findings(unallowlisted_findings)
+        if not self._unallowlisted_findings:
+            raise ValueError("unallowlisted_findings must not be empty")
+        if any(item not in self._findings for item in self._unallowlisted_findings):
+            raise ValueError("unallowlisted_findings must be a subset of findings")
+        super().__init__(
+            "needs-policy-review:secret-finding: blocked="
+            + str(len(self._unallowlisted_findings))
+            + " findings="
+            + str(len(self._findings))
+            + " detector="
+            + SECRET_DETECTOR
+        )
+
+    @property
+    def findings(self) -> Tuple[SecretFinding, ...]:
+        return self._findings
+
+    @property
+    def unallowlisted_findings(self) -> Tuple[SecretFinding, ...]:
+        return self._unallowlisted_findings
 
 
 @dataclass(frozen=True)
@@ -206,12 +240,16 @@ def resolve_npm_capsule(
                 )
             for path in matching:
                 repository_path = _join(package.path, path)
-                category = _excluded_category(path, normalized.excluded_categories)
-                if category and repository_path not in candidate_reasons:
+                categories = _excluded_categories(
+                    path,
+                    normalized.excluded_categories,
+                )
+                if categories and repository_path not in candidate_reasons:
                     if safe_policy_path(repository_path):
-                        excluded.add(
-                            (repository_path, "excluded-category:" + category)
-                        )
+                        for category in categories:
+                            excluded.add(
+                                (repository_path, "excluded-category:" + category)
+                            )
                     continue
                 _select(
                     candidate_reasons,
@@ -235,28 +273,17 @@ def resolve_npm_capsule(
         candidate_reasons,
         effective_policy.capsule,
     )
-    allowed = {
+    allowed = frozenset(
         (item.path, item.blob_oid, item.detector_code)
         for item in effective_policy.applicable_secret_allowlist
-    }
-    unallowed = next(
-        (
-            item
-            for item in findings
-            if (item.path, item.git_blob_oid, item.detector_code) not in allowed
-        ),
-        None,
     )
-    if unallowed is not None:
-        _review(
-            "secret-finding",
-            "path="
-            + unallowed.path
-            + " blob_oid="
-            + unallowed.git_blob_oid
-            + " detector_code="
-            + unallowed.detector_code,
-        )
+    unallowlisted_findings = tuple(
+        item
+        for item in findings
+        if (item.path, item.git_blob_oid, item.detector_code) not in allowed
+    )
+    if unallowlisted_findings:
+        raise SecretFindingsBlocked(findings, unallowlisted_findings)
 
     return CapsuleResolution(
         workspace=workspace,
@@ -372,10 +399,7 @@ def _read_selected_files(
                 "capsule-budget-exceeded",
                 "path=" + path + " exceeds max_file_bytes",
             )
-        try:
-            content = tree.read_blob(path)
-        except ValueError:
-            _review("unsafe-required-file", "cannot read selected Git blob: " + path)
+        content = tree.read_blob(path, max_bytes=capsule.max_file_bytes)
         if _is_lfs_pointer(content):
             _review("unsafe-required-file", "selected path is a Git LFS pointer: " + path)
         if b"\0" in content:
@@ -428,6 +452,22 @@ def _scan_secrets(
     )
 
 
+def _sorted_findings(
+    findings: Sequence[SecretFinding],
+) -> Tuple[SecretFinding, ...]:
+    if any(not isinstance(item, SecretFinding) for item in findings):
+        raise ValueError("findings must contain SecretFinding records")
+    result = tuple(
+        sorted(
+            findings,
+            key=lambda item: (item.path, item.git_blob_oid, item.detector_code),
+        )
+    )
+    if len(result) != len(set(result)):
+        raise ValueError("findings must be unique")
+    return result
+
+
 def _is_lfs_pointer(content: bytes) -> bool:
     return (
         content == _LFS_HEADER
@@ -436,7 +476,7 @@ def _is_lfs_pointer(content: bytes) -> bool:
     )
 
 
-def _excluded_category(path: str, enabled: Sequence[str]) -> str:
+def _excluded_categories(path: str, enabled: Sequence[str]) -> Tuple[str, ...]:
     enabled_set = frozenset(enabled)
     segments = path.split("/")
     filename = segments[-1]
@@ -461,13 +501,10 @@ def _excluded_category(path: str, enabled: Sequence[str]) -> str:
             for segment in segments
         ),
     }
-    return next(
-        (
-            category
-            for category in _CATEGORY_ORDER
-            if category in enabled_set and matches[category]
-        ),
-        "",
+    return tuple(
+        category
+        for category in _CATEGORY_ORDER
+        if category in enabled_set and matches[category]
     )
 
 
@@ -508,5 +545,6 @@ __all__ = [
     "CapsuleFile",
     "CapsuleResolution",
     "SecretFinding",
+    "SecretFindingsBlocked",
     "resolve_npm_capsule",
 ]

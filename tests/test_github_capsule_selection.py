@@ -6,6 +6,7 @@ import tempfile
 import unittest
 from dataclasses import FrozenInstanceError
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,7 +23,8 @@ from github_capsule_selection import (  # noqa: E402
     SecretFinding,
     resolve_npm_capsule,
 )
-from github_git_tree import GitTree  # noqa: E402
+import github_capsule_selection  # noqa: E402
+from github_git_tree import GitObjectReadError, GitTree  # noqa: E402
 from tests.github_test_support import (  # noqa: E402
     add_submodule_marker,
     commit_files,
@@ -194,6 +196,7 @@ class CapsuleSelectionTests(unittest.TestCase):
                 ("src/main.test.js", "excluded-category:tests"),
                 ("src/specs/item.spec.js", "excluded-category:tests"),
                 ("src/stories/item.js", "excluded-category:stories"),
+                ("src/tests/fixtures/both.js", "excluded-category:fixtures"),
                 ("src/tests/fixtures/both.js", "excluded-category:tests"),
             ),
             result.excluded,
@@ -420,6 +423,35 @@ class CapsuleSelectionTests(unittest.TestCase):
         selected = next(item for item in result.files if item.path == "src/value.test.js")
         self.assertEqual("required-root", selected.classification_reason)
 
+    def test_all_enabled_categories_are_excluded_and_selected_paths_have_no_exclusion_rows(self):
+        path = "src/tests/stories/fixtures/value.test.stories.js"
+        tree = self.tree(
+            {
+                "package.json": manifest(),
+                path: "multi-category evidence\n",
+            }
+        )
+
+        excluded = resolve_npm_capsule(tree, self.capsule(), ())
+
+        self.assertEqual(
+            (
+                (path, "excluded-category:fixtures"),
+                (path, "excluded-category:stories"),
+                (path, "excluded-category:tests"),
+            ),
+            excluded.excluded,
+        )
+
+        selected = resolve_npm_capsule(
+            tree,
+            self.capsule(include_paths=(path,)),
+            (),
+        )
+        self.assertEqual((), selected.excluded)
+        selected_file = next(item for item in selected.files if item.path == path)
+        self.assertEqual("required-root", selected_file.classification_reason)
+
     def test_root_level_type_target_requires_the_complete_package_declaration_directory(self):
         tree = self.tree(
             {
@@ -472,7 +504,7 @@ class CapsuleSelectionTests(unittest.TestCase):
             ),
             "non-utf8": (b"\xff", "unsafe-required-file"),
             "nul": (b"before\0after", "unsafe-required-file"),
-            "oversize": (b"12345", "capsule-budget-exceeded"),
+            "oversize": (b"x" * 100, "capsule-budget-exceeded"),
         }
         for label, (content, error_code) in cases.items():
             with self.subTest(label=label):
@@ -480,7 +512,7 @@ class CapsuleSelectionTests(unittest.TestCase):
                     {"package.json": manifest(), "src/value.js": content},
                     max_blob_bytes=1000,
                 )
-                capsule = self.capsule(max_file_bytes=4 if label == "oversize" else 1000)
+                capsule = self.capsule(max_file_bytes=50 if label == "oversize" else 1000)
                 self.assert_policy_review(error_code, tree, capsule)
 
         tree = self.tree(
@@ -510,6 +542,49 @@ class CapsuleSelectionTests(unittest.TestCase):
             (("src/tests/link.js", "excluded-category:tests"),),
             result.excluded,
         )
+
+    def test_selected_reads_use_capsule_limit_instead_of_tree_default(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(),
+                "src/index.js": "selected source exceeds tiny tree default\n",
+            },
+            max_blob_bytes=1,
+        )
+        capsule = self.capsule(max_file_bytes=100)
+
+        with mock.patch.object(tree, "read_blob", wraps=tree.read_blob) as read_blob:
+            result = resolve_npm_capsule(tree, capsule, ())
+
+        self.assertEqual(
+            ("package.json", "src/index.js"),
+            tuple(item.path for item in result.files),
+        )
+        self.assertIn(
+            mock.call("src/index.js", max_bytes=100),
+            read_blob.call_args_list,
+        )
+
+    def test_selected_read_preserves_typed_git_object_infrastructure_failure(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(),
+                "src/index.js": "source\n",
+            }
+        )
+        original_read = tree.read_blob
+        sentinel = GitObjectReadError("bounded infrastructure failure")
+
+        def fail_selected(path, max_bytes=None):
+            if path == "src/index.js":
+                raise sentinel
+            return original_read(path, max_bytes=max_bytes)
+
+        with mock.patch.object(tree, "read_blob", side_effect=fail_selected):
+            with self.assertRaises(GitObjectReadError) as raised:
+                resolve_npm_capsule(tree, self.capsule(), ())
+
+        self.assertIs(sentinel, raised.exception)
 
     def test_every_secret_detector_positive_variant_and_boundary_is_reported(self):
         positives = {
@@ -620,6 +695,70 @@ class CapsuleSelectionTests(unittest.TestCase):
         self.assertNotIn(secret_text, repr(result.secret_findings))
         self.assertNotIn(repr(secret_text.encode("utf-8")), repr(result))
 
+    def test_secret_blocking_error_preserves_complete_sorted_structured_findings(self):
+        blocked_type = github_capsule_selection.SecretFindingsBlocked
+        self.assertTrue(issubclass(blocked_type, ValueError))
+        self.assertIn("SecretFindingsBlocked", github_capsule_selection.__all__)
+
+        long_path = (
+            "src/"
+            + "/".join("long-segment-" + str(index).zfill(2) for index in range(40))
+            + "/secret.txt"
+        )
+        pem = "-----BEGIN " + "PRIVATE KEY-----"
+        aws = "AKIA" + "A" * 16
+        github = "ghp_" + "A" * 36
+        secret_text = pem + "\n" + github + "\n" + aws
+        tree = self.tree(
+            {
+                "package.json": manifest(),
+                long_path: secret_text,
+            }
+        )
+        aws_allow = self.allow(tree, long_path, "aws-access-key-id-v1")
+        github_allow = self.allow(tree, long_path, "github-token-v1")
+        blob = self.blob(tree, long_path)
+        digest = hashlib.sha256(secret_text.encode("utf-8")).hexdigest()
+
+        with self.assertRaises(blocked_type) as raised:
+            resolve_npm_capsule(
+                tree,
+                self.capsule(),
+                (github_allow, aws_allow),
+            )
+
+        error = raised.exception
+        self.assertIsInstance(error.findings, tuple)
+        self.assertIsInstance(error.unallowlisted_findings, tuple)
+        self.assertEqual(
+            (
+                "aws-access-key-id-v1",
+                "github-token-v1",
+                "pem-private-key-header-v1",
+            ),
+            tuple(item.detector_code for item in error.findings),
+        )
+        self.assertEqual(
+            ("pem-private-key-header-v1",),
+            tuple(item.detector_code for item in error.unallowlisted_findings),
+        )
+        for finding in error.findings:
+            self.assertEqual(long_path, finding.path)
+            self.assertEqual(blob.oid, finding.git_blob_oid)
+            self.assertEqual(digest, finding.file_sha256)
+            self.assertEqual("text-secrets-v1", finding.detector)
+            with self.assertRaises((FrozenInstanceError, AttributeError)):
+                finding.path = "changed"
+        self.assertGreater(len(long_path), 500)
+        self.assertEqual(long_path, error.unallowlisted_findings[0].path)
+        with self.assertRaises(AttributeError):
+            error.findings = ()
+        with self.assertRaises(AttributeError):
+            error.unallowlisted_findings = ()
+        self.assertLessEqual(len(str(error).encode("utf-8")), 200)
+        self.assertNotIn(secret_text, str(error))
+        self.assertNotIn("offset", str(error).lower())
+
     def test_effective_policy_uses_candidate_blobs_not_detector_findings(self):
         tree = self.tree(
             {
@@ -641,11 +780,36 @@ class CapsuleSelectionTests(unittest.TestCase):
         )
         self.assertEqual((), result.secret_findings)
 
+    def test_effective_policy_preserves_exact_applicable_allowlist_rows_once(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(),
+                "src/a.js": "ordinary a\n",
+                "src/b.js": "ordinary b\n",
+                "docs/ignored.js": "ignored\n",
+            }
+        )
+        expected = (
+            self.allow(tree, "src/a.js", "aws-access-key-id-v1"),
+            self.allow(tree, "src/a.js", "github-token-v1"),
+            self.allow(tree, "src/b.js", "pem-private-key-header-v1"),
+        )
+        unrelated = self.allow(tree, "docs/ignored.js", "github-token-v1")
+
+        result = resolve_npm_capsule(
+            tree,
+            self.capsule(),
+            tuple(reversed(expected)) + (unrelated,),
+        )
+
+        self.assertEqual(expected, result.effective_policy.applicable_secret_allowlist)
+        self.assertEqual(len(expected), len(set(result.effective_policy.applicable_secret_allowlist)))
+
     def test_file_count_and_utf8_byte_budgets_accept_exact_limits_and_reject_one_less(self):
         tree = self.tree(
             {
                 "package.json": manifest(),
-                "src/a.txt": "é",
+                "src/a.txt": "é" * 25,
                 "src/b.txt": "b",
             }
         )
@@ -666,7 +830,7 @@ class CapsuleSelectionTests(unittest.TestCase):
 
         self.assertEqual(3, len(result.files))
         self.assertEqual(total, sum(item.size for item in result.files))
-        self.assertEqual(2, next(item.size for item in result.files if item.path == "src/a.txt"))
+        self.assertEqual(50, next(item.size for item in result.files if item.path == "src/a.txt"))
 
         self.assert_policy_review(
             "capsule-budget-exceeded",
@@ -694,6 +858,28 @@ class CapsuleSelectionTests(unittest.TestCase):
                 max_capsule_files=3,
                 max_capsule_utf8_bytes=total - 1,
             ),
+        )
+
+    def test_package_manifest_limit_is_classified_before_task_five_file_budget(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(),
+                "src/a.txt": "a",
+            }
+        )
+        manifest_size = self.blob(tree, "package.json").size
+
+        exact = resolve_npm_capsule(
+            tree,
+            self.capsule(max_file_bytes=manifest_size),
+            (),
+        )
+        self.assertEqual(manifest_size, exact.files[0].size)
+
+        self.assert_policy_review(
+            "package-manifest-byte-limit",
+            tree,
+            self.capsule(max_file_bytes=manifest_size - 1),
         )
 
     def test_results_sort_files_exclusions_findings_and_policy_rows_deterministically(self):
