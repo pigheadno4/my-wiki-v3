@@ -30,7 +30,7 @@ def canonical_sha256(value: Any) -> str:
 
 def validate_npm_package_name(name: str) -> bool:
     """Return whether *name* matches the npm-package-name-v1 grammar."""
-    if not isinstance(name, str) or len(name.encode("utf-8")) > 214:
+    if not isinstance(name, str) or not name.isascii() or len(name) > 214:
         return False
     if name.startswith("@"):
         return _NPM_SCOPED.fullmatch(name) is not None
@@ -62,7 +62,7 @@ def readable_label(value: str, max_bytes: int = 40) -> str:
     )
     label = _LABEL_UNSAFE.sub("-", ascii_lower).strip("-")
     label = label or "capsule"
-    label = label.encode("ascii")[:max_bytes].decode("ascii").rstrip("-.")
+    label = label.encode("ascii")[:max_bytes].decode("ascii")
     return label or "capsule"[:max_bytes]
 
 

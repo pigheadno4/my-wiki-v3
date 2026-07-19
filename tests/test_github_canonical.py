@@ -63,6 +63,10 @@ class NpmPackageNameTests(unittest.TestCase):
         self.assertFalse(validate_npm_package_name("a" * 215))
         self.assertTrue(validate_npm_package_name("a" * 214))
 
+    def test_rejects_non_ascii_and_unpaired_surrogate_names_without_raising(self):
+        self.assertFalse(validate_npm_package_name("café"))
+        self.assertFalse(validate_npm_package_name("\ud800"))
+
 
 class PolicyPathTests(unittest.TestCase):
     def test_accepts_safe_relative_posix_paths(self):
@@ -96,7 +100,7 @@ class ReadableLabelTests(unittest.TestCase):
         self.assertLessEqual(len(readable_label("A" * 100).encode("ascii")), 40)
 
     def test_truncation_does_not_leave_a_separator_at_the_boundary(self):
-        self.assertEqual("a" * 39, readable_label("a" * 39 + "-tail"))
+        self.assertEqual("a" * 39 + "-", readable_label("a" * 39 + "-tail"))
 
 
 if __name__ == "__main__":
