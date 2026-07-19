@@ -97,7 +97,11 @@ def resolve_workspace(tree: GitTree, capsule: CapsuleConfig) -> WorkspaceResolut
     blobs_by_path = {blob.path: blob for blob in all_blobs}
     root_manifest = _read_manifest(tree, blobs_by_path, "")
     package_paths = _discover_package_paths(root_manifest, all_blobs)
-    packages = tuple(_read_package(tree, blobs_by_path, path) for path in package_paths)
+    owned_blobs = _assign_package_blobs(package_paths, blobs_by_path)
+    packages = tuple(
+        _read_package(tree, blobs_by_path, path, owned_blobs[path])
+        for path in package_paths
+    )
     packages_by_name = _index_packages(packages)
     packages_by_path = {package.path: package for package in packages}
 
@@ -188,6 +192,7 @@ def _read_package(
     tree: GitTree,
     blobs_by_path: Mapping[str, GitBlob],
     package_path: str,
+    package_blobs: Mapping[str, GitBlob],
 ) -> _DiscoveredPackage:
     value = _read_manifest(tree, blobs_by_path, package_path)
     name = value.get("name")
@@ -195,16 +200,7 @@ def _read_package(
     if not validate_npm_package_name(name) or not isinstance(version, str) or not version:
         _review("invalid-package-identity", "package name and version must be valid strings: " + (package_path or "."))
     files = _package_files(value, name)
-    prefix = package_path + "/" if package_path else ""
-    if not prefix:
-        package_blobs = dict(blobs_by_path)
-    else:
-        package_blobs = {
-            path[len(prefix) :]: blob
-            for path, blob in blobs_by_path.items()
-            if path.startswith(prefix)
-        }
-    return _DiscoveredPackage(name, package_path, version, value, files, package_blobs)
+    return _DiscoveredPackage(name, package_path, version, value, files, dict(package_blobs))
 
 
 def _discover_package_paths(root_manifest: Mapping[str, object], blobs: Sequence[GitBlob]) -> Tuple[str, ...]:
@@ -224,6 +220,28 @@ def _discover_package_paths(root_manifest: Mapping[str, object], blobs: Sequence
             if all(expected == "*" or expected == actual for expected, actual in zip(pattern_parts, parts)):
                 discovered.add(directory)
     return tuple(sorted(discovered))
+
+
+def _assign_package_blobs(
+    package_paths: Sequence[str],
+    blobs_by_path: Mapping[str, GitBlob],
+) -> Dict[str, Dict[str, GitBlob]]:
+    owned: Dict[str, Dict[str, GitBlob]] = {path: {} for path in package_paths}
+    deepest_first = tuple(
+        sorted(
+            package_paths,
+            key=lambda path: (-(path.count("/") + 1 if path else 0), path),
+        )
+    )
+    for repository_path, blob in blobs_by_path.items():
+        owner = next(
+            path
+            for path in deepest_first
+            if not path or repository_path.startswith(path + "/")
+        )
+        relative_path = repository_path[len(owner) + 1 :] if owner else repository_path
+        owned[owner][relative_path] = blob
+    return owned
 
 
 def _workspace_patterns(root_manifest: Mapping[str, object]) -> Tuple[str, ...]:
@@ -416,8 +434,34 @@ class _ExportWalker:
             leaves = self._subpath_map(value, "/exports")
         else:
             leaves = self._walk(".", value, "/exports", (), ())
-        targets = tuple(leaf.target for leaf in leaves)
+        targets = tuple(self._finalize_leaf(leaf) for leaf in leaves)
         return targets, self.declaration_roots
+
+    def _finalize_leaf(self, leaf: _ExportLeaf) -> DeclaredTarget:
+        target = leaf.target
+        if target.status == "tracked-pattern-required":
+            matched_paths = tuple(sorted({path for _, path in leaf.public_matches}))
+            for path in matched_paths:
+                blob = self.package.blobs[path]
+                if not safe_policy_path(path):
+                    _review("unsafe-declared-target", "export pattern selects an unsafe tracked path")
+                if blob.mode not in _REGULAR_MODES:
+                    _review("unsafe-declared-target", "export pattern selects a non-regular tracked entry")
+            target = DeclaredTarget(
+                target.package,
+                target.field,
+                target.json_pointer,
+                target.condition_chain,
+                target.array_indices,
+                target.target,
+                target.status,
+                target.generated_policy_path,
+                matched_paths,
+            )
+        if target.status.startswith("tracked") and "types" in target.condition_chain:
+            for path in target.matched_paths:
+                self.declaration_roots.add(_declaration_root(path))
+        return target
 
     def _subpath_map(self, value: Mapping[str, object], pointer: str) -> Tuple[_ExportLeaf, ...]:
         keys = tuple(value)
@@ -564,9 +608,6 @@ class _ExportWalker:
             policy,
             matched,
         )
-        if status.startswith("tracked") and ("types" in conditions):
-            for path in matched:
-                self.declaration_roots.add(_declaration_root(path))
         return _ExportLeaf(target, public_matches)
 
 
@@ -582,6 +623,8 @@ def _normalize_export_target(value: str) -> str:
         or any(part in ("", ".", "..", "node_modules") for part in normalized.split("/"))
     ):
         _review("invalid-exports", "unsafe export target")
+    if "*" in normalized and any(character in normalized for character in "{}[]"):
+        _review("invalid-exports", "export patterns do not support braces or character classes")
     return normalized
 
 
@@ -598,6 +641,7 @@ def _validate_subpath_key(key: str) -> None:
         or _PERCENT_SEPARATOR.search(remainder)
         or any(part in ("", ".", "..", "node_modules") for part in remainder.split("/"))
         or remainder.count("*") not in (0, 1)
+        or ("*" in remainder and any(character in remainder for character in "{}[]"))
     ):
         _review("invalid-exports", "unsafe export subpath key")
 
@@ -626,17 +670,13 @@ def _pattern_status(
 ) -> Tuple[str, str, Tuple[Tuple[str, str], ...]]:
     prefix, suffix = normalized.split("*", 1)
     matches: List[Tuple[str, str]] = []
-    for path, blob in sorted(package.blobs.items()):
+    for path in sorted(package.blobs):
         if not path.startswith(prefix) or not path.endswith(suffix):
             continue
         stop = len(path) - len(suffix) if suffix else len(path)
         substitution = path[len(prefix) : stop]
         if not substitution:
             continue
-        if not safe_policy_path(path):
-            _review("unsafe-declared-target", "export pattern selects an unsafe tracked path")
-        if blob.mode not in _REGULAR_MODES:
-            _review("unsafe-declared-target", "export pattern selects a non-regular tracked entry")
         public = subpath.replace("*", substitution)
         matches.append((public, path))
     if matches:
@@ -659,12 +699,11 @@ def _matching_generated_literal(path: str, generated_paths: Sequence[str]) -> st
 
 
 def _matching_generated_pattern(prefix: str, generated_paths: Sequence[str]) -> str:
-    fixed = prefix.rstrip("/")
     for policy in generated_paths:
         if not policy.endswith("/"):
             continue
         directory = policy[:-1]
-        if fixed == directory or fixed.startswith(directory + "/"):
+        if prefix.startswith(directory + "/"):
             return policy
     return ""
 

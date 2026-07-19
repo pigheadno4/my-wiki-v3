@@ -343,6 +343,79 @@ class NpmWorkspaceTests(unittest.TestCase):
                 self.assertEqual(("src/plain.js",), lower.matched_paths)
                 self.assertTrue(any(target.status == expected_status for target in resolution.declared_targets))
 
+    def test_shadowed_lower_pattern_symlinks_are_not_selected(self):
+        for specific_value in ("./dist/internal/*.js", None):
+            with self.subTest(specific_value=specific_value):
+                repo_root = self.root / ("repo-" + str(self.repo_number))
+                repo_root.mkdir()
+                self.repo_number += 1
+                repo = create_git_repo(repo_root)
+                commit_files(
+                    repo,
+                    {
+                        "package.json": manifest(
+                            "root",
+                            exports={
+                                "./feature/*": "./src/*.js",
+                                "./feature/internal/*": specific_value,
+                            },
+                        ),
+                        "src/plain.js": "export {};\n",
+                    },
+                    "add shadow fixture",
+                )
+                sha = commit_symlink(repo, "src/internal/tool.js", "target.js", "add shadowed symlink")
+
+                resolution = resolve_workspace(
+                    GitTree(repo, sha),
+                    self.capsule("root", generated=("dist/",)),
+                )
+                lower = next(target for target in resolution.declared_targets if target.target == "./src/*.js")
+
+                self.assertEqual(("src/plain.js",), lower.matched_paths)
+
+    def test_fully_shadowed_types_pattern_does_not_add_a_declaration_root(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(
+                    "root",
+                    exports={
+                        "./feature/*": {"types": "./types/*.d.ts"},
+                        "./feature/internal/*": None,
+                    },
+                ),
+                "types/internal/tool.d.ts": "export {};\n",
+            }
+        )
+
+        resolution = resolve_workspace(tree, self.capsule("root", generated=()))
+        lower = next(target for target in resolution.declared_targets if target.target == "./types/*.d.ts")
+
+        self.assertEqual((), lower.matched_paths)
+        self.assertEqual((), resolution.packages[0].tracked_declaration_roots)
+
+    def test_null_in_conditions_and_arrays_blocks_only_its_branch(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(
+                    "root",
+                    exports={
+                        ".": {
+                            "import": [None, "./src/index.js"],
+                            "browser": None,
+                            "default": "./src/index.js",
+                        }
+                    },
+                ),
+                "src/index.js": "export {};\n",
+            }
+        )
+
+        targets = resolve_workspace(tree, self.capsule("root", generated=())).declared_targets
+
+        self.assertEqual(2, sum(target.status == "blocked-export" for target in targets))
+        self.assertEqual(2, sum(target.status == "tracked-required" for target in targets))
+
     def test_export_patterns_fail_when_they_select_non_regular_entries(self):
         repo_root = self.root / ("repo-" + str(self.repo_number))
         repo_root.mkdir()
@@ -458,6 +531,141 @@ class NpmWorkspaceTests(unittest.TestCase):
         directory_itself = self.tree({"package.json": manifest("root", main="./dist")})
         with self.assertRaisesRegex(ValueError, "^needs-policy-review:untracked-declared-target"):
             resolve_workspace(directory_itself, self.capsule("root", generated=("dist/",)))
+
+    def test_generated_pattern_directory_matching_is_segment_safe(self):
+        for target in ("./dist/*.js", "./dist/sub*.js"):
+            with self.subTest(target=target):
+                tree = self.tree({"package.json": manifest("root", exports={"./*": target})})
+                declared = resolve_workspace(
+                    tree,
+                    self.capsule("root", generated=("dist/",)),
+                ).declared_targets[0]
+                self.assertEqual("generated-pattern-not-tracked", declared.status)
+                self.assertEqual("dist/", declared.generated_policy_path)
+
+        unsafe_boundary = self.tree(
+            {"package.json": manifest("root", exports={"./*": "./dist*.js"})}
+        )
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:untracked-declared-target"):
+            resolve_workspace(
+                unsafe_boundary,
+                self.capsule("root", generated=("dist/",)),
+            )
+
+    def test_each_blob_is_owned_by_the_deepest_root_or_child_package(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(
+                    "root",
+                    workspaces=["packages/*"],
+                    exports={"./child/*": "./packages/child/src/*.js"},
+                ),
+                "packages/child/package.json": manifest(
+                    "child",
+                    exports={".": "./package.json", "./source/*": "./src/*.js"},
+                ),
+                "packages/child/src/index.js": "export {};\n",
+            }
+        )
+
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:untracked-declared-target"):
+            resolve_workspace(tree, self.capsule("root", generated=()))
+
+        child = resolve_workspace(tree, self.capsule("child", generated=()))
+        self.assertEqual(("packages/child",), tuple(package.path for package in child.packages))
+        self.assertEqual(
+            {("package.json",), ("src/index.js",)},
+            {target.matched_paths for target in child.declared_targets},
+        )
+
+    def test_one_segment_workspace_is_deeper_than_the_repository_root(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(
+                    "root",
+                    workspaces=["*"],
+                    exports={"./child/*": "./child/src/*.js"},
+                ),
+                "child/package.json": manifest(
+                    "child",
+                    exports={".": "./package.json", "./source/*": "./src/*.js"},
+                ),
+                "child/src/index.js": "export {};\n",
+            }
+        )
+
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:untracked-declared-target"):
+            resolve_workspace(tree, self.capsule("root", generated=()))
+
+        child = resolve_workspace(tree, self.capsule("child", generated=()))
+        self.assertEqual(
+            {("package.json",), ("src/index.js",)},
+            {target.matched_paths for target in child.declared_targets},
+        )
+
+    def test_each_blob_is_owned_by_the_deepest_parent_or_nested_package(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(
+                    "root",
+                    workspaces=["packages/*", "packages/parent/nested/*"],
+                ),
+                "packages/parent/package.json": manifest(
+                    "parent",
+                    exports={"./child/*": "./nested/child/src/*.js"},
+                ),
+                "packages/parent/nested/child/package.json": manifest(
+                    "nested-child",
+                    exports={".": "./package.json", "./source/*": "./src/*.js"},
+                ),
+                "packages/parent/nested/child/src/index.js": "export {};\n",
+            }
+        )
+
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:untracked-declared-target"):
+            resolve_workspace(tree, self.capsule("parent", generated=()))
+
+        child = resolve_workspace(tree, self.capsule("nested-child", generated=()))
+        self.assertEqual(
+            ("packages/parent/nested/child",),
+            tuple(package.path for package in child.packages),
+        )
+        self.assertEqual(
+            {("package.json",), ("src/index.js",)},
+            {target.matched_paths for target in child.declared_targets},
+        )
+
+    def test_export_patterns_reject_braces_and_character_classes_only_when_patterned(self):
+        invalid_exports = (
+            {"./feature/{literal}/*": "./src/*.js"},
+            {"./feature/[ab]/*": "./src/*.js"},
+            {"./feature/*": "./src/{literal}/*.js"},
+            {"./feature/*": "./src/[ab]/*.js"},
+        )
+        for exports_value in invalid_exports:
+            with self.subTest(exports=exports_value):
+                tree = self.tree({"package.json": manifest("root", exports=exports_value)})
+                with self.assertRaisesRegex(ValueError, "^needs-policy-review:invalid-exports"):
+                    resolve_workspace(tree, self.capsule("root", generated=()))
+
+        literals = self.tree(
+            {
+                "package.json": manifest(
+                    "root",
+                    exports={
+                        "./{literal}": "./src/{literal}.js",
+                        "./[ab]": "./src/[ab].js",
+                    },
+                ),
+                "src/{literal}.js": "export {};\n",
+                "src/[ab].js": "export {};\n",
+            }
+        )
+        targets = resolve_workspace(literals, self.capsule("root", generated=())).declared_targets
+        self.assertEqual(
+            {("src/{literal}.js",), ("src/[ab].js",)},
+            {target.matched_paths for target in targets},
+        )
 
     def test_package_override_replaces_default_generated_targets(self):
         tree = self.tree({"package.json": manifest("root", main="./build/index.js")})
