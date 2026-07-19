@@ -753,6 +753,196 @@ class NpmWorkspaceTests(unittest.TestCase):
         self.assertIn("mode=120000", str(raised.exception))
         self.assertLess(len(str(raised.exception)), 600)
 
+    def test_missing_descendant_literals_cannot_use_generated_policy(self):
+        cases = (
+            ("./packages/child/dist/missing.js", ("packages/child/",)),
+            ("./packages/child", ("packages/child",)),
+        )
+        for target, generated in cases:
+            with self.subTest(target=target):
+                tree = self.tree(
+                    {
+                        "package.json": manifest(
+                            "root",
+                            workspaces=["packages/*"],
+                            main=target,
+                        ),
+                        "packages/child/package.json": manifest("child"),
+                    }
+                )
+
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "^needs-policy-review:descendant-package-target",
+                ) as raised:
+                    resolve_workspace(tree, self.capsule("root", generated=generated))
+
+                self.assertIn("packages/child", str(raised.exception))
+                self.assertLess(len(str(raised.exception)), 600)
+
+    def test_unmatched_descendant_pattern_cannot_use_generated_policy(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(
+                    "root",
+                    workspaces=["packages/*"],
+                    exports={"./child/*": "./packages/child/dist/*.js"},
+                ),
+                "packages/child/package.json": manifest("child"),
+            }
+        )
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "^needs-policy-review:descendant-package-target",
+        ):
+            resolve_workspace(
+                tree,
+                self.capsule("root", generated=("packages/child/",)),
+            )
+
+    def test_parent_cannot_generate_missing_nested_package_targets(self):
+        cases = (
+            (
+                {"main": "./nested/child/dist/missing.js"},
+                ("nested/child/",),
+            ),
+            (
+                {"exports": {"./child/*": "./nested/child/dist/*.js"}},
+                ("nested/child/",),
+            ),
+            ({"main": "./nested/child"}, ("nested/child",)),
+        )
+        for declaration, generated in cases:
+            with self.subTest(declaration=declaration):
+                tree = self.tree(
+                    {
+                        "package.json": manifest(
+                            "root",
+                            workspaces=["packages/*", "packages/parent/nested/*"],
+                        ),
+                        "packages/parent/package.json": manifest(
+                            "parent",
+                            **declaration,
+                        ),
+                        "packages/parent/nested/child/package.json": manifest(
+                            "nested-child"
+                        ),
+                    }
+                )
+
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "^needs-policy-review:descendant-package-target",
+                ):
+                    resolve_workspace(
+                        tree,
+                        self.capsule("parent", generated=generated),
+                    )
+
+    def test_descendant_boundary_is_segment_aware_for_generated_targets(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(
+                    "root",
+                    workspaces=["packages/*"],
+                    main="./packages/childish/dist/missing.js",
+                    exports={"./neighbor/*": "./packages/childish/dist/*.js"},
+                ),
+                "packages/child/package.json": manifest("child"),
+            }
+        )
+
+        resolution = resolve_workspace(
+            tree,
+            self.capsule("root", generated=("packages/childish/",)),
+        )
+
+        self.assertEqual(
+            {
+                ("generated-target-not-tracked", "packages/childish/"),
+                ("generated-pattern-not-tracked", "packages/childish/"),
+            },
+            {
+                (target.status, target.generated_policy_path)
+                for target in resolution.declared_targets
+            },
+        )
+
+    def test_package_does_not_treat_its_own_root_as_a_descendant(self):
+        tree = self.tree(
+            {
+                "package.json": manifest("root", workspaces=["packages/*"]),
+                "packages/child/package.json": manifest(
+                    "child",
+                    main="./dist/missing.js",
+                ),
+            }
+        )
+
+        target = resolve_workspace(
+            tree,
+            self.capsule("child", generated=("dist/",)),
+        ).declared_targets[0]
+
+        self.assertEqual("generated-target-not-tracked", target.status)
+        self.assertEqual("dist/", target.generated_policy_path)
+
+    def test_unmatched_pattern_prefixes_cannot_expand_into_a_descendant(self):
+        cases = (
+            ("./packages/*.js", ("packages/",)),
+            ("./packages/ch*.js", ("packages/",)),
+            ("./*.js", ("packages/child/",)),
+        )
+        for target, generated in cases:
+            with self.subTest(target=target):
+                tree = self.tree(
+                    {
+                        "package.json": manifest(
+                            "root",
+                            workspaces=["packages/*"],
+                            exports={"./feature/*": target},
+                        ),
+                        "packages/child/package.json": manifest("child"),
+                    }
+                )
+
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "^needs-policy-review:descendant-package-target",
+                ):
+                    resolve_workspace(tree, self.capsule("root", generated=generated))
+
+    def test_fully_shadowed_tracked_foreign_pattern_remains_unselected(self):
+        for specific_value in ("./dist/internal/*.js", None):
+            with self.subTest(specific_value=specific_value):
+                tree = self.tree(
+                    {
+                        "package.json": manifest(
+                            "root",
+                            workspaces=["packages/*"],
+                            exports={
+                                "./feature/*": "./packages/*.js",
+                                "./feature/child/*": specific_value,
+                            },
+                        ),
+                        "packages/child/package.json": manifest("child"),
+                        "packages/child/tool.js": "export {};\n",
+                    }
+                )
+
+                resolution = resolve_workspace(
+                    tree,
+                    self.capsule("root", generated=("dist/",)),
+                )
+                lower = next(
+                    target
+                    for target in resolution.declared_targets
+                    if target.target == "./packages/*.js"
+                )
+
+                self.assertEqual((), lower.matched_paths)
+
     def test_export_patterns_reject_braces_and_character_classes_only_when_patterned(self):
         invalid_exports = (
             {"./feature/{literal}/*": "./src/*.js"},

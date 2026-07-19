@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 import posixpath
 import re
-from typing import Dict, List, Mapping, NoReturn, Sequence, Set, Tuple
+from typing import Dict, Iterable, List, Mapping, NoReturn, Sequence, Set, Tuple
 
 from github_canonical import safe_policy_path, validate_npm_package_name
 from github_capsule_policy import CAPSULE_ADAPTER, CapsuleConfig
@@ -79,6 +79,7 @@ class _DiscoveredPackage:
     files: Tuple[str, ...]
     blobs: Mapping[str, GitBlob]
     foreign_blobs: Mapping[str, GitBlob]
+    descendant_package_roots: Tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -107,6 +108,7 @@ def resolve_workspace(tree: GitTree, capsule: CapsuleConfig) -> WorkspaceResolut
     root_manifest = _read_manifest(tree, blobs_by_path, "")
     package_paths = _discover_package_paths(root_manifest, all_blobs)
     owned_blobs, foreign_blobs = _assign_package_blobs(package_paths, blobs_by_path)
+    descendant_roots = _relative_descendant_package_roots(package_paths)
     packages = tuple(
         _read_package(
             tree,
@@ -114,6 +116,7 @@ def resolve_workspace(tree: GitTree, capsule: CapsuleConfig) -> WorkspaceResolut
             path,
             owned_blobs[path],
             foreign_blobs[path],
+            descendant_roots[path],
         )
         for path in package_paths
     )
@@ -209,6 +212,7 @@ def _read_package(
     package_path: str,
     package_blobs: Mapping[str, GitBlob],
     foreign_blobs: Mapping[str, GitBlob],
+    descendant_package_roots: Sequence[str],
 ) -> _DiscoveredPackage:
     value = _read_manifest(tree, blobs_by_path, package_path)
     name = value.get("name")
@@ -224,6 +228,7 @@ def _read_package(
         files,
         dict(package_blobs),
         dict(foreign_blobs),
+        tuple(descendant_package_roots),
     )
 
 
@@ -277,6 +282,23 @@ def _assign_package_blobs(
                 )
                 foreign[ancestor][ancestor_relative] = blob
     return owned, foreign
+
+
+def _relative_descendant_package_roots(
+    package_paths: Sequence[str],
+) -> Dict[str, Tuple[str, ...]]:
+    result: Dict[str, Tuple[str, ...]] = {}
+    for package_path in package_paths:
+        prefix = package_path + "/" if package_path else ""
+        result[package_path] = tuple(
+            sorted(
+                descendant[len(prefix) :]
+                for descendant in package_paths
+                if descendant != package_path
+                and (not package_path or descendant.startswith(prefix))
+            )
+        )
+    return result
 
 
 def _workspace_patterns(root_manifest: Mapping[str, object]) -> Tuple[str, ...]:
@@ -713,6 +735,17 @@ def _literal_status(
         if blob.mode not in _REGULAR_MODES:
             _review("unsafe-declared-target", "declared target is not a regular tracked blob")
         return "tracked-required", "", (normalized,)
+    descendant_root = _literal_descendant_root(
+        normalized,
+        package.descendant_package_roots,
+    )
+    if descendant_root:
+        _reject_descendant_package_target(
+            package,
+            normalized,
+            descendant_root,
+            "literal",
+        )
     policy = _matching_generated_literal(normalized, generated_paths)
     if policy:
         return "generated-target-not-tracked", policy, ()
@@ -755,6 +788,17 @@ def _pattern_status(
         matches.append(_ExportMatch(public, path, blob, foreign))
     if matches:
         return "tracked-pattern-required", "", tuple(matches)
+    descendant_root = _pattern_descendant_root(
+        prefix,
+        package.descendant_package_roots,
+    )
+    if descendant_root:
+        _reject_descendant_package_target(
+            package,
+            normalized,
+            descendant_root,
+            "pattern",
+        )
     policy = _matching_generated_pattern(prefix, generated_paths)
     if policy:
         return "generated-pattern-not-tracked", policy, ()
@@ -773,6 +817,52 @@ def _reject_foreign_target(
         + repository_path
         + " mode="
         + blob.mode,
+    )
+
+
+def _literal_descendant_root(path: str, roots: Sequence[str]) -> str:
+    return _deepest_root(
+        root
+        for root in roots
+        if path == root or path.startswith(root + "/")
+    )
+
+
+def _pattern_descendant_root(prefix: str, roots: Sequence[str]) -> str:
+    return _deepest_root(
+        root
+        for root in roots
+        if root.startswith(prefix)
+        or prefix == root
+        or prefix.startswith(root + "/")
+    )
+
+
+def _deepest_root(roots: Iterable[str]) -> str:
+    return next(
+        iter(
+            sorted(
+                roots,
+                key=lambda root: (-(root.count("/") + 1), root),
+            )
+        ),
+        "",
+    )
+
+
+def _reject_descendant_package_target(
+    package: _DiscoveredPackage,
+    path: str,
+    descendant_root: str,
+    target_kind: str,
+) -> NoReturn:
+    _review(
+        "descendant-package-target",
+        target_kind
+        + " target enters a descendant package: target="
+        + _join(package.path, path)
+        + " descendant="
+        + _join(package.path, descendant_root),
     )
 
 
