@@ -1,6 +1,6 @@
 # GitHub Tracked Source Capsule and Deep-Dive Design
 
-**Status:** Revised after second decline review; pending final user review
+**Status:** Revised after third decline review; pending final user review
 **Date:** 2026-07-18
 **Extends:** `2026-07-14-github-repository-collection-design.md` and `2026-07-15-github-release-retention-design.md`
 
@@ -56,7 +56,11 @@ This applies to existing and future releases. A source capsule is always a suppl
 
 The first adapter is named `npm-tracked-source-v1`. This name deliberately avoids claiming verified correspondence with generated npm artifacts.
 
-## Normative Registry Schema
+## Generic Capsule Evidence Contract
+
+This section is normative for every registered repository supported by an adapter. Company and repository names appear only as examples or conformance fixtures. Implementations derive behavior from adapter contracts and `tracking/github/repo-registry.toml`; they must not branch on PayPal, Stripe, Adyen, or any other company or repository ID.
+
+### Normative Registry Schema
 
 `capsules` becomes an optional array on a repository row. Unknown keys remain errors.
 
@@ -67,7 +71,7 @@ adapter = "npm-tracked-source-v1"
 focus_packages = ["@paypal/react-paypal-js"]
 dependency_scope = "internal-runtime-closure"
 default_required_roots = ["src"]
-default_generated_target_roots = ["dist"]
+default_generated_target_paths = ["dist/", "index.js"]
 include_paths = []
 excluded_categories = ["tests", "stories", "fixtures"]
 secret_detector = "text-secrets-v1"
@@ -80,7 +84,7 @@ max_packet_utf8_bytes = 1000000
 [[repos.capsules.package_overrides]]
 name = "@paypal/paypal-js"
 required_roots = ["src", "types"]
-generated_target_roots = ["dist"]
+generated_target_paths = ["dist/", "index.js"]
 include_paths = []
 
 [[repos.secret_allowlist]]
@@ -95,10 +99,10 @@ Each capsule object has these exact fields:
 | --- | --- | --- | --- |
 | `id` | yes | string | Unique repository-local ASCII slug matching `[a-z0-9][a-z0-9-]{0,62}`. |
 | `adapter` | yes | string | Exactly `npm-tracked-source-v1`. |
-| `focus_packages` | yes | list of strings | Non-empty, unique ASCII npm package names accepted by the existing package-tag parser. |
+| `focus_packages` | yes | list of strings | Non-empty, unique package names accepted by the capsule package-name grammar below. |
 | `dependency_scope` | no | string | Defaults to and may only equal `internal-runtime-closure`. |
 | `default_required_roots` | no | list of paths | Defaults to `["src"]`. Package-relative POSIX paths. |
-| `default_generated_target_roots` | no | list of paths | Defaults to empty. Package-relative top-level directories explicitly reviewed as generated output. |
+| `default_generated_target_paths` | no | list of paths | Defaults to empty. Explicit package-relative generated files or directory prefixes. |
 | `include_paths` | no | list of paths | Defaults to empty. Applied package-relative to every included package. |
 | `excluded_categories` | no | list of enums | Defaults to `tests`, `stories`, and `fixtures`; only those values are accepted in v1. |
 | `secret_detector` | no | string | Defaults to and may only equal `text-secrets-v1`. |
@@ -109,19 +113,21 @@ Each capsule object has these exact fields:
 | `max_packet_utf8_bytes` | no | integer | Defaults to 1,000,000; positive full-reading byte count. |
 | `package_overrides` | no | list of tables | Defaults to empty; names must be unique within the capsule. |
 
-Each package override has exactly `name`, `required_roots`, `generated_target_roots`, and `include_paths`. All are required. `required_roots` is non-empty; `generated_target_roots` and `include_paths` may be empty. Unknown capsule or override keys fail registry loading.
+Each package override has exactly `name`, `required_roots`, `generated_target_paths`, and `include_paths`. All are required. `required_roots` is non-empty; `generated_target_paths` and `include_paths` may be empty. Unknown capsule or override keys fail registry loading.
 
-For an overridden package, `required_roots` and `generated_target_roots` replace their corresponding defaults; global and override `include_paths` are combined and deduplicated. A package in the resolved closure without an override uses the defaults. Every generated target root is exactly one safe top-level path segment. Nested paths, `.`, and names that overlap a required root fail registry loading.
+For an overridden package, `required_roots` and `generated_target_paths` replace their corresponding defaults; global and override `include_paths` are combined and deduplicated. A package in the resolved closure without an override uses the defaults. A generated target ending in exactly one `/` is a directory prefix; that marker is stripped before safe-path validation. Every other value is one exact file. Empty directory values and repeated trailing slashes fail. Values otherwise use the same safe package-relative path rules, and a generated file or directory may not overlap a required root or include path. Matching is literal, case-sensitive, and segment-aware; no generated-target value is a glob.
+
+The capsule package-name grammar is deliberately separate from release-tag parsing. Names are lowercase ASCII and at most 214 bytes. An unscoped name matches `[a-z0-9][a-z0-9._-]*`. A scoped name has exactly one `/` and matches `@[a-z0-9][a-z0-9._-]*/[a-z0-9][a-z0-9._-]*`. Empty scope or name components, uppercase letters, whitespace, additional slashes, and release suffixes such as `@1.2.3` fail registry loading. Both scoped and unscoped names are supported.
 
 `secret_allowlist` is an optional repository-level array. Each row has exactly `path`, `blob_oid`, and `detector_code`; all are required. Paths follow the same safe repository-relative rules, object IDs must be 40 or 64 lowercase hexadecimal characters, and duplicate triples fail. An allowlist row applies only to that exact immutable blob and detector finding. It is included in the effective collection policy hash.
 
-Paths cannot be absolute, empty, contain `.` or `..` segments, contain backslashes, or escape the package directory. V1 paths are literal paths, not globs. Exclusions use adapter-owned category classifiers rather than arbitrary registry globs, preventing a repository policy from silently excluding production source.
+All policy paths reject absolute paths, empty values, `.` or `..` segments, and backslashes. Capsule roots, includes, overrides, and generated targets are package-relative and cannot escape their owning package directory. Secret allowlist paths are repository-relative and cannot escape the repository. V1 policy paths are literal paths, not globs. Exclusions use adapter-owned category classifiers rather than arbitrary registry globs, preventing a repository policy from silently excluding production source.
 
 The effective policy is the adapter version, all versioned defaults, and normalized repository values. It is serialized as compact canonical JSON with sorted object keys and original list order replaced by deterministic sorted order where order has no semantics. Its SHA-256 is the `policy_hash`. TOML formatting and key order do not affect the hash.
 
 The registry continues to contain stable intent only. Resolved paths, SHAs, attempts, collection dates, policy results, and progress remain generated state.
 
-## Standard-Library NPM Workspace Resolution
+### Standard-Library NPM Workspace Resolution
 
 The adapter uses Python 3.9 standard-library JSON handling plus existing Git commands. JSON is parsed with duplicate-key rejection.
 
@@ -150,14 +156,14 @@ If a normalized dependency name matches a workspace package, v1 includes that pa
 
 Malformed manifests, unsupported workspace forms, ambiguous focus packages, duplicate names, and unsafe local dependency targets are deterministic `needs-policy-review` failures.
 
-## Required File Classification
+### Required File Classification
 
 The adapter reads the exact commit tree with `git ls-tree -rz` and reads blobs with `git cat-file blob`. It does not trust or execute working-tree files.
 
 For each included package, classification uses this precedence:
 
 1. Unsafe paths, symlinks, gitlinks, non-blobs, LFS pointers, non-UTF-8 content, NUL-containing content, and oversized files fail if selected by any required rule.
-2. `package.json`, literal `include_paths`, tracked `main` or `bin` wrappers, and tracked type declaration targets are required. A configured exclusion cannot remove them.
+2. `package.json`, literal `include_paths`, every tracked declared entrypoint selected below, and tracked type declaration targets are required. A configured exclusion cannot remove them.
 3. Files recognized by an enabled excluded category are outside capsule scope.
 4. Every remaining regular tracked UTF-8 file below a required root is required.
 5. Documentation and examples outside required roots remain optional existing snapshot evidence and are not part of capsule completeness.
@@ -170,12 +176,13 @@ Category classifiers are fixed in adapter v1:
 
 Changing these classifiers requires a new adapter version.
 
-The adapter records `exports`, conditional exports, wildcard export values, `main`, `module`, `types`, `typings`, `bin`, and `files` declarations. It recursively walks JSON export values but does not expand wildcard targets.
+The adapter records `exports`, conditional exports, wildcard export values, `main`, `module`, `types`, `typings`, `bin`, and `files` declarations. `main`, `module`, `types`, and `typings` must be strings when present. `bin` may be one string or an object with string keys and values. `exports` may be a string, array, or nested object; every string leaf is processed and non-string array leaves fail. `files` is recorded but does not reduce required source. Declared targets may begin with exactly one npm-relative `./`, which is stripped before safe-path validation; any other `.` or `..` segment fails. The adapter expands only the constrained wildcard form defined below.
 
 - A tracked `types` or export `types` target is required. Because declaration files can reference sibling declarations, the complete tracked top-level declaration directory containing that target is required. This captures PayPal's tracked `types/` tree.
-- A tracked `main` or `bin` target is required.
-- A missing target is `generated-target-not-tracked` only when its normalized first path segment exactly equals a `generated_target_root` declared for that package. The manifest records the matching root.
-- A missing target with no matching reviewed generated root is `needs-policy-review`; the adapter never infers generated output from names such as `dist`, `build`, or `lib`.
+- Every tracked literal target reached through `main`, `module`, `bin`, or any recursively visited `exports` string is required. This includes runtime and type conditions; the adapter does not discard an unfamiliar condition name.
+- A declared target containing `*` is accepted only when it contains no `**`, braces, or character classes. Each `*` matches one or more characters within one path segment. The adapter deterministically expands it against regular tracked blobs at the exact SHA, and every match is required.
+- A missing literal target is `generated-target-not-tracked` only when it exactly equals a reviewed generated file or is below a reviewed generated directory. A wildcard with no tracked match is `generated-pattern-not-tracked` only when its fixed path prefix is below a reviewed generated directory. The manifest records the matching generated-target policy value.
+- A missing target or unmatched pattern with no exact reviewed generated policy is `needs-policy-review`; the adapter never infers generated output from names such as `dist`, `build`, `lib`, or `index.js`.
 - Other escaping, symlink, or unsafe declared targets fail.
 - Generated targets are not mapped back to source without executing the build or parsing build configuration.
 
@@ -187,13 +194,15 @@ Published artifact correspondence: unverified-generated-targets
 Repository completeness: intentionally incomplete
 ```
 
-`Tracked source scope completeness: complete` is valid only when every required file after category classification is saved and validated. The capsule does not claim that declared generated targets match captured source or that all repository behavior is covered. A generated-root declaration is an operator-reviewed classification, not proof of artifact provenance.
+`Tracked source scope completeness: complete` is valid only when every required file after category classification is saved and validated. The capsule does not claim that declared generated targets match captured source or that all repository behavior is covered. A generated-target declaration is an operator-reviewed classification, not proof of artifact provenance.
 
-## Capsule Snapshot Manifest
+### Capsule Snapshot Manifest
 
-Existing snapshot manifest format 2 remains valid and retains its exact parser. A supplement uses format 3. At the top level, format 3 preserves every format-2 field and adds exactly `capture_purpose`, `canonical_snapshot`, and `capsule`. Its `files` records use the complete format-3 schema below; format-2 file records are not retroactively changed.
+Existing snapshot manifest formats 1 and 2 remain valid and retain their exact parsers. A supplement uses format 3. Its exact top-level key set is `format_version`, `repository`, `ref`, `capture_kind`, `capture_revision`, `collection_date`, `prior_snapshot`, `files`, `excluded`, `release_notes`, `release_evidence`, `capture_purpose`, `canonical_snapshot`, `effective_policy`, and `capsule`. The inherited `repository`, `ref`, `excluded`, `release_notes`, and `release_evidence` objects retain their exact format-2 schemas. Unknown or missing keys fail. Format-1 and format-2 records are not retroactively changed.
 
-`capture_purpose` is `source-capsule`, `policy-upgrade`, or `query-deep-dive`. `canonical_snapshot` is the repository-relative path of the unique canonical capture at the same SHA.
+`capture_purpose` is exactly `source-capsule`, `policy-upgrade`, or `query-deep-dive`. `canonical_snapshot` is the repository-relative path of the unique canonical capture at the same SHA.
+
+`effective_policy` is the complete normalized policy object used for that capture. For `npm-tracked-source-v1`, it has exactly the registry capsule fields listed above plus normalized `package_overrides`, the applicable repository `secret_allowlist`, `category_classifier = "excluded-categories-v1"`, and `workspace_resolver = "npm-workspaces-v1"`. Defaults are materialized; lists are sorted where order has no semantics; every override and allowlist row uses its exact normative schema. For `explicit-git-blobs-v1`, it has exactly `adapter`, `max_file_bytes`, `max_packet_files`, `max_packet_utf8_bytes`, `secret_detector`, and the applicable normalized `secret_allowlist`. The compact UTF-8 JSON serialization uses sorted object keys, separators `,` and `:`, no ASCII escaping, and no trailing newline. `policy_hash` is SHA-256 of exactly those bytes. Historical validation uses this embedded object, not the current registry; a current-policy difference is reported as available `policy-upgrade` work rather than invalidating old evidence.
 
 The `capsule` object has exactly:
 
@@ -207,7 +216,7 @@ The `capsule` object has exactly:
   "dependency_edges": [],
   "external_dependencies": [],
   "required_roots": [],
-  "generated_target_roots": [],
+  "generated_target_paths": [],
   "include_paths": [],
   "excluded_categories": ["fixtures", "stories", "tests"],
   "declared_targets": [],
@@ -223,22 +232,24 @@ The `capsule` object has exactly:
 
 Nested records have these exact schemas:
 
-- `included_packages`: `{name, path, version, reason}`, where reason is `focus` or `internal-runtime-dependency`;
+- `included_packages`: `{name, path, version, reason}`, where reason is `focus`, `internal-dependency`, `internal-optional-dependency`, or `internal-peer-dependency`;
 - `dependency_edges`: `{from_package, to_package, dependency_kind, specification, optional}`, where kind is `dependency`, `optional-dependency`, or `peer-dependency`;
 - `external_dependencies`: `{from_package, name, dependency_kind, specification, optional}`;
 - `required_roots`: `{package, path, source}`, where source is `default`, `package-override`, or `tracked-declaration-target`;
-- `generated_target_roots`: `{package, path, source}`, where source is `default` or `package-override`;
+- `generated_target_paths`: `{package, path, path_kind, source}`, where `path_kind` is `file` or `directory` and source is `default` or `package-override`;
 - `include_paths`: `{package, path, source}`, where source is `capsule-policy`, `package-override`, or `declared-target`;
-- `declared_targets`: `{package, field, export_key, condition, target, status, generated_root}`, where empty strings represent inapplicable export key, condition, or generated root and status is `tracked-required`, `generated-target-not-tracked`, or `recorded-pattern`; and
+- `declared_targets`: `{package, field, export_key, condition, target, status, generated_policy_path, matched_paths}`, where empty strings represent inapplicable export key, condition, or generated policy, `matched_paths` is sorted unique, and status is `tracked-required`, `tracked-pattern-required`, `generated-target-not-tracked`, or `generated-pattern-not-tracked`; and
 - `secret_scan`: exactly `{detector, scanned_blob_count}`. The detector is `text-secrets-v1`; the count is a non-negative integer and is recomputed from selected Git blobs.
 
 These arrays sort by package name and then POSIX path or target; dependency arrays additionally sort by kind and destination name. The design does not permit free-form summary strings in these records.
+
+If more than one closure path reaches a package, its recorded reason uses precedence `focus`, `internal-dependency`, `internal-optional-dependency`, then `internal-peer-dependency`; all normalized dependency edges remain recorded. The name `internal-runtime-closure` is retained as a registry compatibility value, but it means the explicitly defined dependency, optional-dependency, and peer-dependency closure above rather than claiming every peer is installed runtime code.
 
 Every format-3 `files` entry has exactly:
 
 ```json
 {
-  "path": "files/packages/example/src/index.ts",
+  "path": "packages/example/src/index.ts",
   "sha256": "<64-lowercase-hex>",
   "size": 123,
   "purpose": "source-capsule",
@@ -249,13 +260,13 @@ Every format-3 `files` entry has exactly:
 }
 ```
 
-`path`, `sha256`, `size`, and `purpose` retain their format-2 meanings. `git_blob_oid` is the exact object ID read by `git cat-file`; `git_mode` is exactly `100644` or `100755`. `package` is the owning resolved npm package for npm capsules and is the empty string for an explicit deep dive. Allowed npm classification reasons are `package-manifest`, `required-root`, `include-path`, `tracked-main-target`, `tracked-bin-target`, `tracked-types-target`, and `tracked-declaration-directory`. A deep-dive file uses `deep-dive-request`. When more than one rule selects a file, the first matching reason in that listed order is recorded. Unknown fields, modes, purposes, or reasons fail validation.
+`path` is always the safe upstream repository-relative path, exactly as in format 2; evidence resolution prepends the snapshot's `files/` directory once. `sha256` is SHA-256 of the exact copied bytes, and `size` is their byte length. `purpose` is exactly `source-capsule` for the npm adapter or `query-deep-dive` for the explicit adapter. `git_blob_oid` is the exact object ID read by `git cat-file`; `git_mode` is exactly `100644` or `100755`. `package` is the owning resolved npm package for npm capsules and is the empty string for an explicit deep dive. Allowed npm classification reasons are `package-manifest`, `required-root`, `include-path`, `tracked-main-target`, `tracked-module-target`, `tracked-bin-target`, `tracked-export-target`, `tracked-export-pattern`, `tracked-types-target`, and `tracked-declaration-directory`. A deep-dive file uses `deep-dive-request`. When more than one rule selects a file, the first matching reason in that listed order is recorded. Unknown fields, modes, purposes, or reasons fail validation.
 
-Validators recompute the package closure, required-file set, policy hash, detector identity, completeness fields, object IDs, modes, and file hashes from the exact Git tree before promotion. The immutable source-capsule manifest is scoped only by repository, SHA, adapter, capsule ID, and policy hash. It never contains version applicability. Index adapter, capsule ID, policy hash, focus packages, SHA, canonical path, kind, and revision must match the immutable manifest exactly; `applies_to_version_ids` exists only in the generated index.
+Before promotion, validators recompute the package closure, required-file set, embedded policy bytes and hash, detector identity, completeness fields, object IDs, modes, and file hashes from the exact Git tree. Offline historical validation verifies the embedded policy hash, copied-byte hashes and sizes, internal schema consistency, index projection, and raw immutability without consulting the mutable registry or executing Git network access. The immutable source-capsule manifest is scoped only by repository, SHA, adapter, capsule ID, and policy hash. It never contains version applicability. Index adapter, capsule ID, policy hash, focus packages, SHA, canonical path, kind, and revision must match the immutable format-3 manifest exactly; `applies_to_version_ids` exists only in the generated index.
 
-Query deep dives use the same format with adapter `explicit-git-blobs-v1`. Their `capsule` object instead has exactly `adapter`, `capsule_id`, `policy_hash`, `request_id`, `request_hash`, `question_hash`, `requested_version_id`, `paths`, `secret_scan`, `tracked_source_scope_completeness`, and `repository_completeness`. `paths` is the sorted exact `{path, reason}` list from the immutable request. `secret_scan` has the same exact schema as above. Completeness must be `complete-for-requested-paths`; repository completeness remains `intentionally-incomplete`. The immutable raw manifest does not duplicate the full question text. Later version applicability is not added to a deep-dive manifest.
+Query deep dives use the same format with adapter `explicit-git-blobs-v1`. Their `capsule` object instead has exactly `adapter`, `capsule_id`, `policy_hash`, `request_id`, `question_hash`, `requested_version_id`, `paths`, `secret_scan`, `tracked_source_scope_completeness`, and `repository_completeness`. `paths` is the sorted exact `{path, reason}` list from the immutable request. `request_id` is SHA-256 of the request's compact canonical JSON after removing `request_id` and `created_at`, using the same serialization rules as policy hashing. `question_hash` is SHA-256 of the question's exact UTF-8 bytes without normalization. `capsule_id` equals `request_id`. `secret_scan` has the same exact schema as above. Completeness must be `complete-for-requested-paths`; repository completeness remains `intentionally-incomplete`. The immutable raw manifest does not duplicate the full question text. Later version applicability is not added to a deep-dive manifest.
 
-## Full-Reading Budget Contract
+### Full-Reading Budget Contract
 
 All limits count raw bytes, not characters or estimated tokens. Every required reading file must decode as strict UTF-8 and contain no NUL byte.
 
@@ -275,7 +286,7 @@ Capsule selection, manifest rendering, packet rendering, and both budget checks 
 
 V1 does not automatically split a capsule. Automatic split identity is intentionally unsupported. An over-budget capsule enters `needs-policy-review`; the operator must approve larger bounded limits or define a separately designed adapter version. This removes ambiguous partial-capsule semantics.
 
-## Version Index V2
+### Version Index V2
 
 Source capsules require an explicit generated index migration. A v2 index has exactly these top-level keys:
 
@@ -290,7 +301,7 @@ Source capsules require an explicit generated index migration. A v2 index has ex
 }
 ```
 
-### Capture Records
+#### Capture Records
 
 Each capture record has exactly:
 
@@ -311,13 +322,24 @@ Each capture record has exactly:
 }
 ```
 
-Canonical IDs are `<sha>:c0`; supplement IDs are `<sha>:rN`. Allowed purposes are `release-evidence`, `legacy-supplement`, `release-alias-evidence`, `source-capsule`, `policy-upgrade`, and `query-deep-dive`. Canonical and legacy records use empty `adapter` and `capsule_id` values. Source capsules and policy upgrades use adapter `npm-tracked-source-v1` and the exact registry capsule ID. Query deep dives use adapter `explicit-git-blobs-v1` and the immutable request ID as capsule ID. Canonical records use revision zero, purpose `release-evidence`, an empty policy hash, and empty focus packages. Supplements use a positive revision unique per SHA. Capture records sort by `capture_order`, canonical before supplement, then revision.
+Canonical IDs are `<sha>:c0`; supplement IDs are `<sha>:rN`. Allowed purposes are `release-evidence`, `legacy-supplement`, `release-alias-evidence`, `source-capsule`, `policy-upgrade`, and `query-deep-dive`. Source capsules and policy upgrades use adapter `npm-tracked-source-v1` and the exact embedded capsule ID. Query deep dives use adapter `explicit-git-blobs-v1` and the immutable request ID as capsule ID. Supplements use a positive revision unique per SHA. Capture records sort by `capture_order`, canonical before supplement, then revision.
 
-Every snapshot path must resolve to an immutable manifest whose repository, SHA, kind, revision, adapter, capsule ID, and policy hash exactly match the capture record. A canonical capture applies to every version identity at its SHA. A supplement applies only to the explicit version IDs listed in the generated capture record and those versions' `evidence_ids`. Applicability is index metadata and is deliberately absent from immutable raw manifests.
+Legacy projection is exact. A format-1 or format-2 canonical snapshot projects as revision zero, purpose `release-evidence`, empty `adapter`, `capsule_id`, `policy_hash`, and `focus_packages`, and applies to every version record at its SHA. A format-1 or format-2 supplement projects with purpose `legacy-supplement` or `release-alias-evidence` as determined by its existing capture metadata, the same four empty capsule fields, and applicability derived only from exact identities in immutable `release_evidence`. Missing or ambiguous legacy applicability fails migration. Validators compare legacy records only to fields those immutable formats contain: repository, SHA, capture kind, revision, path, release evidence, and copied-file hashes. They never require format-3 adapter or policy fields from a legacy manifest.
+
+Every snapshot path must resolve to an immutable manifest and match according to its format-specific projection above. A canonical capture applies to every version identity at its SHA. A supplement applies only to the explicit version IDs listed in the generated capture record and those versions' `evidence_ids`. Applicability is index metadata and is deliberately absent from immutable raw manifests.
 
 Within one repository, `(sha, adapter, capsule_id, policy_hash)` identifies at most one source-capsule capture. `focus_packages` and `applies_to_version_ids` are sorted unique lists. A later release identity sharing the SHA attaches that existing raw capture by changing only the generated index and creating an independent supplement packet. The existing manifest and capture directory remain byte-for-byte unchanged. An A-then-later-B shared-SHA sequence must validate before and after attachment without duplicating or modifying raw evidence.
 
-### Version Records
+Source-capsule applicability is package-aware:
+
+- a `package-version` record is eligible only when its non-empty `package` is in the capture's `focus_packages`;
+- a `tag` record is eligible only when its non-empty `package` is in `focus_packages`; during v1-to-v2 migration, a plain semver tag receives a package only from exact existing release evidence, an explicit package-scoped registry track, or exactly one matching package across all configured capsule focus packages at that SHA. Zero or multiple matches are `needs-policy-review`, and later capsule collection never mutates a version identity to add a package;
+- a `branch` or `commit` record is eligible only with an empty `package`; it represents repository-state evidence and may receive the capsule after the resolver confirms every focus package at that SHA; and
+- a release identity for an internal dependency that is not also a focus package is never eligible merely because it shares the SHA or appears in `included_packages`.
+
+The validator recomputes eligibility before every attachment and on index load. Tests must cover two package releases sharing one SHA, allowed focus-package attachment, rejected sibling-package attachment, unambiguous plain-tag resolution, ambiguous plain tags, and branch/commit attachment.
+
+#### Version Records
 
 Each version record has exactly:
 
@@ -342,7 +364,7 @@ Each version record has exactly:
 
 The validator requires bidirectional agreement: every capture `applies_to_version_ids` reference must exist and include the capture in `evidence_ids`, and every noncanonical `evidence_ids` item must name a capture listing that version. Cross-SHA and cross-repository attachment is invalid.
 
-### V1 Migration
+#### V1 Migration
 
 An index without `format_version` is v1. It remains readable for existing release collection and validation, but capsule collection is blocked until explicit migration.
 
@@ -350,7 +372,7 @@ An index without `format_version` is v1. It remains readable for existing releas
 
 1. group v1 entries by SHA and require one canonical path per SHA;
 2. create one canonical capture record per SHA;
-3. create one version record per existing release, branch, tag, or commit identity;
+3. create one version record per existing release, branch, tag, or commit identity, applying the exact immutable package evidence and plain-tag binding rule above before hashing `version_id`;
 4. preserve aliases, release-note paths, changelog paths, capture order, and branch observations;
 5. scan immutable snapshot manifests under the repository snapshot root for same-SHA supplements;
 6. map legacy supplements only when their release evidence identifies exact existing version identities;
@@ -359,7 +381,7 @@ An index without `format_version` is v1. It remains readable for existing releas
 
 Dry-run writes no generated state. Approved migration stages a complete v2 index, validates a save/reload round trip, and publishes exactly one `index-v2-migrate` transaction and `index-migrated-v2` run event through the protocol below. Its immutable artifact set is empty; its before and after index hashes must differ. V1 is never rewritten implicitly. Loading v2 and saving it without semantic changes must be byte-identical.
 
-## Packet Contract V2
+### Packet Contract V2
 
 Existing packet v1 directories remain valid and immutable. New supplement packets use packet contract v2 with exactly:
 
@@ -395,13 +417,14 @@ Existing packet v1 directories remain valid and immutable. New supplement packet
 Packet contract v2 permits exactly `packet_type = "supplement"`. Baseline, delta, and comparison remain packet-v1 contracts until a separate design specifies their v2 invariants. For a supplement packet:
 
 - `from` and `to` identify the same version ID and SHA;
-- `from.evidence_ids` is a strict prefix of `to.evidence_ids`;
-- `added_evidence_ids` is exactly the non-empty suffix;
+- the set of `from.evidence_ids` is a proper subset of the set of `to.evidence_ids`; no evidence is removed;
+- both endpoint lists independently use canonical-first, increasing-revision order;
+- `added_evidence_ids` is exactly the non-empty set difference `to - from`, ordered as those IDs appear in `to`; it need not be a suffix;
 - every added capture is a supplement applicable to that version;
 - `changed_files` is empty; and
 - required reading is canonical `snapshot.md`, each added supplement manifest, and every file recorded by the added supplements, in deterministic path order.
 
-Packet IDs hash the normalized semantic contract excluding `packet_id` and the two `actual_*` budget fields, then prepend a bounded readable label. Actual budget values are deterministic derivatives of required reading and are independently validated, so they do not participate in identity. Required-reading paths and evidence IDs do participate, so different evidence sets cannot share an ID.
+Packet IDs hash the normalized semantic contract excluding `packet_id` and the two `actual_*` budget fields, then prepend a bounded readable label. Actual budget values are deterministic derivatives of required reading and are independently validated, so they do not participate in identity. Exact ordered before/after evidence lists, the ordered set difference, and required-reading paths participate, so insertion of an older revision such as `r1` into an endpoint already containing `r2` is representable and cannot collide with another evidence transition.
 
 Packet v1 parsing remains exact for old packets. Packet v2 parsing uses only the v2 schema. A packet directory cannot mix versions.
 
@@ -417,9 +440,37 @@ validation-failed -> approved | rejected
 ingested and rejected are terminal
 ```
 
-State-event JSONL retains the existing exact event shapes. There is no `superseded` state and no replacement link. Adding evidence always creates an independent supplement packet, so no existing packet or state history is rewritten.
+State-event JSONL retains the existing exact event shapes. There is no `superseded` state and no replacement link. Adding evidence always creates an independent supplement packet, so no existing packet or completed state event is rewritten.
 
-## Recoverable Publication Protocol
+#### Durable Packet Lifecycle Appends
+
+Lifecycle transitions for packet v1 and v2 use the same recoverable append protocol; existing histories need no format migration. Under lock order `repository collection lock -> packet lock`, a transition creates:
+
+```text
+tracking/github/repos/<company>/<repo>/packet-lifecycle-transactions/<event-id>/
+├── metadata.json
+├── event-line.jsonl
+└── COMMITTED
+```
+
+`event-line.jsonl` contains exactly the intended compact JSON event plus `\n`. `event_id` is SHA-256 over repository ID, packet ID, prior state-file SHA-256 and size, requested transition, and exact line bytes. `metadata.json` has exactly `event_version`, `event_id`, `repo_id`, `packet_id`, `state_path`, `state_device`, `state_inode`, `before_size`, `before_hash`, `after_size`, `after_hash`, and `line_hash`. Both files are file-`fsync`ed, the transaction directory is directory-`fsync`ed, and its parent is directory-`fsync`ed before the append.
+
+The coordinator first recovers older lifecycle transactions and validates the complete prior history. It then opens the existing regular no-follow state file, verifies device, inode, size, and hash, appends the intended line with one `O_APPEND` write, and file-`fsync`s it. Only after exact after-size and after-hash validation may it create and file-`fsync` `COMMITTED` and directory-`fsync` the lifecycle transaction directory.
+
+Recovery under the same locks is exact:
+
+- current size and hash equal `after_*`: complete forward by writing `COMMITTED`;
+- current size and hash equal `before_*`: append and `fsync` the staged line;
+- device and inode match, the first `before_size` bytes hash to `before_hash`, and the remaining bytes are a strict prefix of the intended line: truncate only that owned partial tail to `before_size`, file-`fsync`, then append and file-`fsync` the full line; or
+- any other bytes, identity, size, or hash: mark `recovery-required` and do not modify the packet.
+
+Initial `awaiting-review` history is created inside the packet's durable publication transaction, so the lifecycle protocol never creates a missing state file. Crash tests interrupt after staging writes, every `fsync`, partial append lengths, full append before commit, and commit-marker creation.
+
+## Generic Collection Operations And Durability Contract
+
+This section is normative for collection, attachment, migration, retry, lifecycle transition, and deep-dive operations across every repository. The same journal, retry, and safety behavior applies regardless of provider.
+
+### Recoverable Publication Protocol
 
 Filesystem operations across raw snapshots, packets, and the index cannot be one atomic rename. The implementation therefore uses a repository-scoped write-ahead journal and deterministic recovery rather than claiming cross-directory atomicity.
 
@@ -437,7 +488,7 @@ tracking/github/repos/<company>/<repo>/transactions/<transaction-id>/
 
 The transaction ID is a 64-character lowercase SHA-256 over repository ID, operation, exact SHA or empty string, policy hash or empty string, selected version ID or empty string, capsule ID or request ID or empty string, run ID, and attempt ordinal. This makes retries distinct while leaving each interrupted attempt recoverable by its journal.
 
-### Operations And Terminal Events
+#### Operations And Terminal Events
 
 The protocol supports exactly these operation shapes:
 
@@ -448,6 +499,7 @@ The protocol supports exactly these operation shapes:
 | `source-capsule-attach` | one packet; existing raw capture is reused | attach existing capture to one additional version | `source-capsule-attached` |
 | `source-capsule-check` | none | none; before and after index hashes are equal | `source-capsule-unchanged` |
 | `deep-dive-collect` | one new supplement and one packet | add capture and attach it to the requested version | `deep-dive-collected` |
+| `deep-dive-check` | none | none; before and after index hashes are equal | `deep-dive-unchanged` |
 
 Every transaction reserves a unique run ID and exact run path before preparation:
 
@@ -480,11 +532,11 @@ The final run file must not exist during preparation. `terminal-event.jsonl` is 
 }
 ```
 
-The allowed operation/state pairs are exactly those in the table. Migration uses selector and operation ID `index-v2` and empty ref, SHA, version, capture, packet, and request fields. A source-capsule operation ID is `capsule:<capsule-id>:<policy-hash>:<version-id>`. A deep-dive operation ID is `deep-dive:<request-id>`. Collection and attachment require capture and packet IDs; unchanged checks require the existing capture ID and an empty packet ID; deep dive additionally requires its request ID.
+The allowed operation/state pairs are exactly those in the table. Migration uses selector and operation ID `index-v2` and empty ref, SHA, version, capture, packet, and request fields. A source-capsule operation ID is `capsule:<capsule-id>:<policy-hash>:<version-id>`. A deep-dive operation ID is `deep-dive:<request-id>`. Collection and attachment require capture and packet IDs; unchanged checks require the existing capture ID and an empty packet ID; deep dive additionally requires its request ID. Within a repository, `(sha, request_id)` identifies at most one deep-dive capture, and that capture may apply only to `requested_version_id`.
 
 Legacy event-v1 run files retain existing reconciliation by `(repo_id, selector)`. Each event-v2 run file validates independently and contains exactly one terminal event for its transaction. Across event-v2 history, `transaction_id` and `run_id` are independently unique, the filename must equal `<run_id>.jsonl`, and the journaled run path must resolve to that file. The event-v2 status reducer keys latest results by `(repo_id, operation_id)` and never assumes one terminal event per selector, so several capsules for one release are representable.
 
-### Locks And Preparation
+#### Locks And Preparation
 
 The repository `.collection.lock` is acquired first and held through recovery or publication. Nested lock order is exactly:
 
@@ -501,15 +553,20 @@ The transaction coordinator owns these descriptors. Snapshot and packet publicat
 Before publication, the collector:
 
 1. recovers every nonterminal transaction for the repository;
-2. preflights packet lifecycle and index expectations;
-3. acquires the stable repository snapshot-root promotion lock when required;
-4. allocates final supplement revisions while that stable lock is held;
-5. derives the packet ID, acquires its packet lock when required, and retains all locks through commit or rollback;
-6. stages and validates the operation's exact immutable artifact set;
-7. writes exact prior and intended index bytes;
-8. renders and file-`fsync`s `terminal-event.jsonl`, records its ownership identity, and reserves a non-existing run path;
-9. appends and `fsync`s a `prepared` journal event containing all paths and SHA-256 hashes; and
-10. `fsync`s the transaction directory.
+2. creates the transaction directory with no-follow, exclusive semantics and immediately `fsync`s its `transactions/` parent;
+3. preflights packet lifecycle and index expectations;
+4. acquires the stable repository snapshot-root promotion lock when required;
+5. allocates final supplement revisions while that stable lock is held;
+6. derives the packet ID, acquires its packet lock when required, and retains all locks through commit or rollback;
+7. stages and validates the operation's exact immutable artifact set;
+8. writes `before-index.json` and `after-index.json`, then file-`fsync`s both even when their bytes are equal;
+9. renders and file-`fsync`s `terminal-event.jsonl`, records its ownership identity, and reserves a non-existing run path;
+10. file-`fsync`s every regular file in every staged snapshot and packet, then directory-`fsync`s every staging directory bottom-up through `staged-artifacts/`;
+11. directory-`fsync`s the transaction directory after all staged names and ownership identities are final;
+12. appends and file-`fsync`s a `prepared` journal event containing all paths, ownership identities, and SHA-256 hashes; and
+13. directory-`fsync`s the transaction directory again before publication begins.
+
+No `prepared` event may exist until every recovery input and every byte intended for promotion is durable. Staging and each destination must be on the same filesystem used by its same-device rename or hard link. Failure to establish that topology is a deterministic preflight failure with no publication.
 
 Publication then:
 
@@ -538,7 +595,7 @@ Every journal event has required common fields `event_version = 1`, `transaction
 
 Recovery under the collection lock follows these rules:
 
-- `source-capsule-check` has no mutable artifact or index phase; recovery either publishes its prepared terminal event or recognizes the matching event and commits;
+- `source-capsule-check` and `deep-dive-check` have no mutable artifact or index phase; recovery either publishes the prepared terminal event or recognizes the matching event and commits;
 - before index publication, verify ownership tokens, remove only transaction-owned snapshots and packets, restore no index, and append `rolled-back`;
 - after index publication but before terminal-event publication, complete forward when every artifact matches, or atomically restore `before-index.json` and remove only verified owned artifacts when an artifact is missing;
 - terminal-event publication is the irreversible forward-only boundary; recovery detects it only at the exact journaled run path and accepts it only when its device, inode, sole-line transaction ID, and byte hash match the staged run identity, even if `terminal-event-published` was not journaled;
@@ -551,7 +608,7 @@ Every recovery rename, index restoration, and verified artifact removal is follo
 
 Packet directory hashes in a committed journal describe publication-time bytes with the initial state event. Later valid packet-state appends intentionally change that directory, so completed-journal validation does not compare the current packet tree to its publication hash. Nonterminal recovery can compare it because the packet lock prevents lifecycle transitions until commit.
 
-## Normal Capsule Collection
+### Normal Capsule Collection
 
 For each selected release or branch with capsule policy:
 
@@ -581,7 +638,7 @@ retry-reset --repo <id> --operation <operation> --selector <selector> --unit-id 
 
 `--now` is accepted only by internal APIs and tests, not the production CLI. Production commands use an injected UTC clock initialized from the system clock once per command.
 
-## Persistent Retry And Quarantine State
+### Persistent Retry And Quarantine State
 
 Retry state is an append-only event log:
 
@@ -626,7 +683,7 @@ Retry state is keyed by the exact executable scheduling unit, never by failure p
 
 `retry_key` hashes exactly repository ID, operation, selector, and unit ID. `resolved_sha`, `policy_hash`, and `phase` are failure observations and never create parallel retry keys. A changed capsule policy creates a new unit ID; a changed deep-dive request creates a new request ID. `attempt_id` hashes retry key, epoch, attempt ordinal, and collection run ID. `fingerprint` hashes category, stable code, and phase; volatile paths, timestamps, and remote prose are excluded. Codes are ASCII slugs of at most 100 bytes.
 
-Transient codes are limited to reviewed network and infrastructure classes such as `network-timeout`, `dns-failure`, `github-rate-limit`, `remote-5xx`, and `git-interrupted`. Deterministic-policy codes include `invalid-registry`, `unsupported-workspace`, `ambiguous-package`, `missing-required-root`, `unsafe-required-file`, `capsule-budget-exceeded`, and `packet-budget-exceeded`. Unmapped exceptions use category `unknown` and a bounded exception-class code. A nonterminal publication journal is recovered before its selector can consume another retry attempt.
+Transient codes are limited to reviewed network and infrastructure classes such as `network-timeout`, `dns-failure`, `github-rate-limit`, `remote-5xx`, and `git-interrupted`. Deterministic-policy codes include `unsupported-workspace`, `ambiguous-package`, `missing-required-root`, `unsafe-required-file`, `capsule-budget-exceeded`, and `packet-budget-exceeded`. Registry parsing occurs before trustworthy repository scheduling units exist. An `invalid-registry` error is therefore recorded only in the command's normal run report, never in a repository retry log, and must be corrected before selection. Unmapped post-selection exceptions use category `unknown` and a bounded exception-class code. A nonterminal publication journal is recovered before its selector can consume another retry attempt.
 
 The reducer processes valid events in file order under the repository collection lock. Epoch starts at one. Within an epoch, attempt ordinals count executions of the retry unit and must increase by exactly one regardless of fingerprint or failing phase. A changed failure does not reset the retry budget. Deterministic-policy failures immediately produce `needs-policy-review`. Transient and unknown failures produce:
 
@@ -680,6 +737,8 @@ Explicit reset appends exactly:
 
 An `attempt-succeeded` event is written only when the key is currently `retry-pending`, including reset-ready state. Its epoch must match current epoch and its attempt is the next execution ordinal; it clears the active retry state. A success with no prior retry state needs no retry-log event because the collection terminal event is authoritative.
 
+Committed transaction history is authoritative over the retry log. Before dispatching a due key, the reducer searches for a committed event-v2 transaction with the same operation ID and successful semantic result. If found, it appends the missing `attempt-succeeded` event under the collection lock without republishing evidence. For deep dives this check uses the unique `(repo_id, sha, request_id)` capture; for capsules it uses the operation ID and exact index applicability. A crash after transaction commit but before retry-log success therefore converges to success rather than creating another snapshot or packet.
+
 `retry-reset` is valid only for a known `retry-pending`, `needs-policy-review`, or `quarantined` key. It requires explicit `--actor` and `--reason`; both are at most 200 ASCII bytes. `new_epoch` must equal the prior epoch plus one. Reset projects the key to `retry-pending` with `next_retry_at = observed_at` and the next execution ordinal equal to one. Earlier epochs remain immutable history and do not count toward the new four-attempt bound. `reset_id` hashes retry key, new epoch, actor, reason, and collection run ID.
 
 Failure-log appends use one write plus file `fsync` while the collection lock is held. Duplicate attempt or reset IDs are invalid, and retry commands check for an existing ID before append. Logs never contain credentials or unbounded exception text.
@@ -688,7 +747,7 @@ The failure-log parser rejects unknown fields, duplicate JSON keys, invalid time
 
 The status reducer projects `retry-pending`, `needs-policy-review`, and `quarantined` once per retry key into generated JSON and Markdown. These states are never reported as unchanged or collected, and they block ingest eligibility only for the affected operation unit and version until resolved.
 
-## Versioned Secret Detector Contract
+### Versioned Secret Detector Contract
 
 Every blob selected for an npm capsule or deep dive is scanned by the standard-library suite `text-secrets-v1` after size, strict UTF-8, and NUL validation and before staging. The scanner reads the complete decoded blob without Unicode or newline normalization and applies Python `re` patterns with `re.ASCII`; multiline behavior is enabled only where shown. It does not scan rejected binary or oversized content because those files already fail collection.
 
@@ -704,7 +763,7 @@ Changing a pattern, flag, detector set, decoding rule, or maximum supported inpu
 
 Every finding is `(path, git_blob_oid, detector_code)`. All findings must be allowlisted independently by the exact immutable triple before promotion. Reports contain only that triple, the file SHA-256, and suite name; they never contain the matched text or byte offset. The manifest claim is only `scanned by text-secrets-v1`. The collector and wiki must never describe a scanned file or capsule as `secret-free`, because this bounded detector suite cannot prove absence of credentials.
 
-## Query-Driven Deep Dive Safety
+### Query-Driven Deep Dive Safety
 
 Query handling searches wiki pages and indexed raw evidence first. When saved evidence is insufficient, the operator identifies one exact version ID and SHA and creates a tracking request containing the question, requested paths, and selection reasons.
 
@@ -742,11 +801,13 @@ The deep-dive collector:
 
 An LFS pointer is any blob beginning with the exact ASCII line `version https://git-lfs.github.com/spec/v1`. Secret detection follows the versioned contract above. A flagged blob blocks promotion. A false-positive exception requires stable registry allowlisting by repository path, exact Git blob object ID, and detector code; path-only allowlisting is invalid.
 
-A successful deep dive creates a `query-deep-dive` supplement, attaches it only to the selected version ID, creates an independent v2 supplement packet, and leaves it awaiting review. Query-specific paths remain generated tracking input and do not become capsule registry policy.
+Before collection, the deep-dive resolver checks committed index and transaction history for `(repo_id, sha, request_id)`. If absent, it creates one `query-deep-dive` supplement, attaches it only to the selected version ID, creates an independent v2 supplement packet, and leaves it awaiting review. If the exact capture is already committed and applicable, it emits `deep-dive-check`/`deep-dive-unchanged` with no duplicate snapshot or packet. A conflicting capture, SHA, requested version, question hash, path list, or policy hash is `recovery-required`, never a second capture. Query-specific paths remain generated tracking input and do not become capsule registry policy.
 
 `rules/query-and-synthesis.md` must be corrected to require this same-SHA supplement flow instead of updating accepted raw evidence.
 
-## PayPal JS Migration
+## PayPal JS Conformance Appendix
+
+This appendix is a rollout fixture, not a standalone rule or adapter. It introduces no PayPal-specific branches. Every observed requirement, including exact generated `index.js`, shared-SHA identities, historical versions, and package closure, must be expressible through the generic schemas above. A failure that requires repository-name logic rejects the generic design.
 
 The 15 canonical snapshots and 15 existing release packets remain immutable. Migration does not replace or supersede them.
 
@@ -772,23 +833,24 @@ Before any PayPal JS packet is approved for ingest, perform a separate backlink 
 Deterministic Python 3.9-compatible tests must cover:
 
 - strict nested TOML parsing with the repository's fallback parser;
-- every capsule default, unknown key, path restriction, and policy hash rule;
+- every capsule default, unknown key, package-name grammar, exact generated file/directory path, path restriction, and policy hash rule;
 - workspace list/object forms, supported globs, overlaps, root package, and rejected patterns;
 - duplicate package names, malformed manifests, dependency cycles, local protocols, dependency-map precedence, exact `peerDependenciesMeta`, optional peers, and malformed peer metadata;
-- tracked declaration roots, `types/`, wrappers, conditional exports, wildcard recording, explicit generated-root matches, unreviewed missing targets, and generated-root overlap failures;
+- tracked declaration roots, `types/`, wrappers, `main`, `module`, `bin`, literal and conditional exports, deterministic wildcard expansion, exact generated file/directory matches, unreviewed missing targets, and generated-policy overlap failures;
 - classification precedence and every allowed excluded category;
-- complete format-3 file records, format-2 compatibility, exact Git object IDs and modes, executable blobs, symlinks, gitlinks, LFS pointers, and binary data;
+- complete format-3 top-level and nested schemas, upstream-relative paths, exact purposes and deep-dive hashes, format-1/2 projection compatibility, embedded historical policy validation, exact Git object IDs and modes, executable blobs, symlinks, gitlinks, LFS pointers, and binary data;
 - every `text-secrets-v1` positive and negative vector, boundary and CRLF behavior, multiple findings, exact-blob allowlisting, detector-version policy hashing, and rejection of `secret-free` output;
 - raw-byte capsule and packet budget boundaries, including rendered manifests and packet Markdown;
 - index-only v1-to-v2 migration publication and recovery, shared-SHA package identities, ambiguous legacy supplements, and byte-stable v2 round trips;
-- bidirectional index-only capture/version evidence references, supplement revision ordering, and A-then-later-B shared-SHA attachment with an unchanged manifest hash;
-- packet v1 compatibility, exact supplement-only packet-v2 invariants, and rejection of baseline, delta, or comparison packet-v2 values;
+- bidirectional index-only capture/version evidence references, package-aware eligibility, rejected sibling-package attachment, supplement revision ordering, and A-then-later-B shared-SHA attachment with an unchanged manifest hash;
+- packet v1 compatibility, exact supplement-only packet-v2 set-difference invariants including older-revision insertion, and rejection of baseline, delta, or comparison packet-v2 values;
 - supplement required-reading calculation and packet budget validation;
 - unchanged packet state events and rejection of mixed packet versions;
-- stable snapshot-root lock ordering, concurrent revision allocation without collision, and journal recovery after every durable file or parent-directory operation;
+- stable snapshot-root lock ordering, concurrent revision allocation without collision, file-`fsync` of every staged artifact and index copy, bottom-up staging directory `fsync`, transaction-parent durability, and journal recovery after every durable file or parent-directory operation;
 - exact run-path recovery, operation-specific artifact sets and terminal events, index-only and attachment-only transactions, multiple capsules for one selector, ownership mismatch, index hash mismatch, forward completion, rollback, and manual-recovery projection;
-- retry persistence across restarts, one key across changing failure phases, due-key deduplication, injected clocks, lock-time recheck, success, reset epochs, four-attempt quarantine, and exact `retry-due` CLI dispatch;
-- deep-dive untracked, traversal, symlink, gitlink, LFS, secret, and size failures;
+- retry persistence across restarts, one key across changing failure phases, command-level invalid-registry handling, due-key deduplication, committed-transaction success reconciliation, injected clocks, lock-time recheck, reset epochs, four-attempt quarantine, and exact `retry-due` CLI dispatch;
+- deep-dive uniqueness, unchanged replay after commit/retry interruption, conflicting request rejection, untracked, traversal, symlink, gitlink, LFS, secret, and size failures;
+- packet lifecycle recovery from every partial append length and crash boundary for existing packet-v1 and new packet-v2 histories;
 - correction of the query-rule immutability conflict; and
 - the exact PayPal graph of 15 canonical captures, 15 legacy packets, one main pilot supplement, and 14 later supplement packets.
 
@@ -799,14 +861,14 @@ Network-dependent PayPal verification remains outside the default unit suite. Pa
 The design is implemented when:
 
 - repository configuration can select `npm-tracked-source-v1` without company-specific code;
-- PayPal JS includes complete declared tracked source for `@paypal/react-paypal-js` and internal `@paypal/paypal-js`, including tracked `types/` declarations;
+- the PayPal JS conformance fixture uses only registry policy and generic adapters while including complete declared tracked source for `@paypal/react-paypal-js` and internal `@paypal/paypal-js`, including tracked `types/`, runtime entrypoints, and reviewed generated targets;
 - generated artifact correspondence is explicitly unverified rather than implied;
 - no successful capsule silently omits required source or exceeds a full-reading budget;
 - index v2 preserves shared-SHA version identities and every applicable supplement across save/reload;
 - adding a later shared-SHA version changes only generated index and packet evidence, never the capsule manifest or raw capture;
 - packet v2 represents same-SHA evidence additions without modifying existing packets or state history;
 - format-3 manifests preserve exact Git object, mode, package, classification, policy, and detector provenance while format 2 remains readable;
-- crash recovery converges after every durable publication step using a stable revision lock and exact journaled run path;
+- crash recovery converges after every durable staging, publication, and packet-lifecycle step using stable locks and exact journaled paths;
 - retry and quarantine state persists once per executable scheduling unit across processes and scheduled runs;
 - deep dives read only safe exact-SHA Git blobs and execute no repository code;
 - deterministic tests and validators pass; and
