@@ -2,16 +2,35 @@
 
 ## Current Decision
 
-**BLOCKED — a new user-approved Luna health probe is required before enterprise A/B.**
+**PASS — the current Luna health gate is satisfied.**
 
-The gate now requires a passing receipt to be no more than 24 hours old at every
-evaluation and rejects future-dated or malformed `finished_at` values. It also continues
-to reconcile the hashes of all gated runner scripts. Adding this freshness enforcement
-changed `scripts/run_metronome_model_health_probe.py`, so the immutable replacement
-receipt records an earlier runner hash and cannot authorize work under the current code.
-No replacement probe or enterprise job was launched as part of this gate change.
+The user-approved `gpt-5.6-luna` / `high` probe used immutable run ID
+`luna-health-2026-07-19-01` and the fixed 60-second total cap. The strict loader passed
+under the current runner code. Enterprise A/B was not launched and still requires
+separate explicit authorization.
 
-## Historical Replacement Pass
+### Current Evidence
+
+- Receipt: `health-probes/luna-health-2026-07-19-01/model-health-probe-receipt.json`
+- Finished at: `2026-07-19T05:01:48.187031Z`
+- First actual model event: 7.500209 seconds
+- Model/runtime elapsed: 8.147006 seconds
+- Total elapsed through receipt validation: 8.396738 seconds
+- Process exit: 0
+- Cleanup: passed; no termination was required
+- Terminal JSON: valid `{"status":"ok"}`
+- Receipt publication: atomic and within the deadline
+- Runtime metadata and runner provenance: complete
+- Strict enterprise-gate loader: passed
+- Terminal manifest: reconciled, including receipt, progress, events, stderr, outputs,
+  and prompt/schema snapshots
+
+The receipt remains eligible through `2026-07-20T05:01:48.187031Z`, inclusive, only if
+the gated runner scripts remain unchanged. Every enterprise job must revalidate it before
+claiming work, so a job attempted after that instant—or after another runner change—must
+fail closed. This probe never participates in canonical coverage.
+
+## Historical Replacement Pass — Preserved History
 
 The replacement `gpt-5.6-luna` / `high` probe used immutable run ID
 `luna-health-2026-07-18-02` and the fixed 60-second total cap. It passed the gate version
@@ -72,8 +91,8 @@ were independently recomputed and match the receipt:
 - prompt: `11bfc765d2ab0301768991263c5f90acc17c3fa8eade3bffc38c106bd76a2321`
 - rejected schema: `857d76db2255ddb1f9dff3cd13f544635f706a0a3771a9b12f5f9bee6514d6b7`
 
-## Follow-up
+## Historical Remediation Note
 
 The schema now explicitly declares `status` as a string, with a regression assertion.
-This correction is for a future user-approved run only; it does not change the immutable
-failed evidence and does not authorize a second probe or enterprise A/B.
+That correction enabled the later user-approved probes but does not change the immutable
+failed evidence or itself authorize enterprise A/B.
