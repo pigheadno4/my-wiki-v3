@@ -78,12 +78,21 @@ class _DiscoveredPackage:
     manifest: Mapping[str, object]
     files: Tuple[str, ...]
     blobs: Mapping[str, GitBlob]
+    foreign_blobs: Mapping[str, GitBlob]
+
+
+@dataclass(frozen=True)
+class _ExportMatch:
+    public_path: str
+    path: str
+    blob: GitBlob
+    foreign: bool
 
 
 @dataclass(frozen=True)
 class _ExportLeaf:
     target: DeclaredTarget
-    public_matches: Tuple[Tuple[str, str], ...]
+    public_matches: Tuple[_ExportMatch, ...]
 
 
 def resolve_workspace(tree: GitTree, capsule: CapsuleConfig) -> WorkspaceResolution:
@@ -97,9 +106,15 @@ def resolve_workspace(tree: GitTree, capsule: CapsuleConfig) -> WorkspaceResolut
     blobs_by_path = {blob.path: blob for blob in all_blobs}
     root_manifest = _read_manifest(tree, blobs_by_path, "")
     package_paths = _discover_package_paths(root_manifest, all_blobs)
-    owned_blobs = _assign_package_blobs(package_paths, blobs_by_path)
+    owned_blobs, foreign_blobs = _assign_package_blobs(package_paths, blobs_by_path)
     packages = tuple(
-        _read_package(tree, blobs_by_path, path, owned_blobs[path])
+        _read_package(
+            tree,
+            blobs_by_path,
+            path,
+            owned_blobs[path],
+            foreign_blobs[path],
+        )
         for path in package_paths
     )
     packages_by_name = _index_packages(packages)
@@ -193,6 +208,7 @@ def _read_package(
     blobs_by_path: Mapping[str, GitBlob],
     package_path: str,
     package_blobs: Mapping[str, GitBlob],
+    foreign_blobs: Mapping[str, GitBlob],
 ) -> _DiscoveredPackage:
     value = _read_manifest(tree, blobs_by_path, package_path)
     name = value.get("name")
@@ -200,7 +216,15 @@ def _read_package(
     if not validate_npm_package_name(name) or not isinstance(version, str) or not version:
         _review("invalid-package-identity", "package name and version must be valid strings: " + (package_path or "."))
     files = _package_files(value, name)
-    return _DiscoveredPackage(name, package_path, version, value, files, dict(package_blobs))
+    return _DiscoveredPackage(
+        name,
+        package_path,
+        version,
+        value,
+        files,
+        dict(package_blobs),
+        dict(foreign_blobs),
+    )
 
 
 def _discover_package_paths(root_manifest: Mapping[str, object], blobs: Sequence[GitBlob]) -> Tuple[str, ...]:
@@ -225,8 +249,9 @@ def _discover_package_paths(root_manifest: Mapping[str, object], blobs: Sequence
 def _assign_package_blobs(
     package_paths: Sequence[str],
     blobs_by_path: Mapping[str, GitBlob],
-) -> Dict[str, Dict[str, GitBlob]]:
+) -> Tuple[Dict[str, Dict[str, GitBlob]], Dict[str, Dict[str, GitBlob]]]:
     owned: Dict[str, Dict[str, GitBlob]] = {path: {} for path in package_paths}
+    foreign: Dict[str, Dict[str, GitBlob]] = {path: {} for path in package_paths}
     deepest_first = tuple(
         sorted(
             package_paths,
@@ -241,7 +266,17 @@ def _assign_package_blobs(
         )
         relative_path = repository_path[len(owner) + 1 :] if owner else repository_path
         owned[owner][relative_path] = blob
-    return owned
+        for ancestor in package_paths:
+            if ancestor == owner:
+                continue
+            if not ancestor or repository_path.startswith(ancestor + "/"):
+                ancestor_relative = (
+                    repository_path[len(ancestor) + 1 :]
+                    if ancestor
+                    else repository_path
+                )
+                foreign[ancestor][ancestor_relative] = blob
+    return owned, foreign
 
 
 def _workspace_patterns(root_manifest: Mapping[str, object]) -> Tuple[str, ...]:
@@ -440,7 +475,19 @@ class _ExportWalker:
     def _finalize_leaf(self, leaf: _ExportLeaf) -> DeclaredTarget:
         target = leaf.target
         if target.status == "tracked-pattern-required":
-            matched_paths = tuple(sorted({path for _, path in leaf.public_matches}))
+            foreign_matches = tuple(match for match in leaf.public_matches if match.foreign)
+            if foreign_matches:
+                selected = next(
+                    (
+                        match
+                        for match in foreign_matches
+                        if not safe_policy_path(match.path)
+                        or match.blob.mode not in _REGULAR_MODES
+                    ),
+                    foreign_matches[0],
+                )
+                _reject_foreign_target(self.package, selected.path, selected.blob)
+            matched_paths = tuple(sorted({match.path for match in leaf.public_matches}))
             for path in matched_paths:
                 blob = self.package.blobs[path]
                 if not safe_policy_path(path):
@@ -477,11 +524,15 @@ class _ExportWalker:
             public_for_key: Set[str] = set()
             for leaf in child:
                 matches = tuple(
-                    (public, path)
-                    for public, path in leaf.public_matches
-                    if public not in claimed and not any(_subpath_pattern_matches(pattern, public) for pattern in blocking_patterns)
+                    match
+                    for match in leaf.public_matches
+                    if match.public_path not in claimed
+                    and not any(
+                        _subpath_pattern_matches(pattern, match.public_path)
+                        for pattern in blocking_patterns
+                    )
                 )
-                public_for_key.update(public for public, _ in matches)
+                public_for_key.update(match.public_path for match in matches)
                 target = leaf.target
                 if matches != leaf.public_matches:
                     target = DeclaredTarget(
@@ -493,7 +544,7 @@ class _ExportWalker:
                         target.target,
                         target.status,
                         target.generated_policy_path,
-                        tuple(sorted({path for _, path in matches})),
+                        tuple(sorted({match.path for match in matches})),
                     )
                 filtered.append(_ExportLeaf(target, matches))
             leaves.extend(filtered)
@@ -588,7 +639,10 @@ class _ExportWalker:
             _review("invalid-exports", "export patterns require one star in key and target")
         if key_stars == 0:
             status, policy, matched = _literal_status(self.package, normalized, self.generated_paths)
-            public_matches = tuple((subpath, path) for path in matched)
+            public_matches = tuple(
+                _ExportMatch(subpath, path, self.package.blobs[path], False)
+                for path in matched
+            )
         else:
             status, policy, public_matches = _pattern_status(
                 self.package,
@@ -596,7 +650,7 @@ class _ExportWalker:
                 normalized,
                 self.generated_paths,
             )
-            matched = tuple(sorted({path for _, path in public_matches}))
+            matched = tuple(sorted({match.path for match in public_matches}))
         target = DeclaredTarget(
             self.package.name,
             "exports",
@@ -651,6 +705,9 @@ def _literal_status(
     normalized: str,
     generated_paths: Sequence[str],
 ) -> Tuple[str, str, Tuple[str, ...]]:
+    foreign_blob = package.foreign_blobs.get(normalized)
+    if foreign_blob is not None:
+        _reject_foreign_target(package, normalized, foreign_blob)
     blob = package.blobs.get(normalized)
     if blob is not None:
         if blob.mode not in _REGULAR_MODES:
@@ -667,10 +724,27 @@ def _pattern_status(
     subpath: str,
     normalized: str,
     generated_paths: Sequence[str],
-) -> Tuple[str, str, Tuple[Tuple[str, str], ...]]:
+) -> Tuple[str, str, Tuple[_ExportMatch, ...]]:
     prefix, suffix = normalized.split("*", 1)
-    matches: List[Tuple[str, str]] = []
-    for path in sorted(package.blobs):
+    candidates = tuple(
+        sorted(
+            (
+                (path, blob, False)
+                for path, blob in package.blobs.items()
+            ),
+            key=lambda item: item[0],
+        )
+    ) + tuple(
+        sorted(
+            (
+                (path, blob, True)
+                for path, blob in package.foreign_blobs.items()
+            ),
+            key=lambda item: item[0],
+        )
+    )
+    matches: List[_ExportMatch] = []
+    for path, blob, foreign in sorted(candidates, key=lambda item: item[0]):
         if not path.startswith(prefix) or not path.endswith(suffix):
             continue
         stop = len(path) - len(suffix) if suffix else len(path)
@@ -678,13 +752,28 @@ def _pattern_status(
         if not substitution:
             continue
         public = subpath.replace("*", substitution)
-        matches.append((public, path))
+        matches.append(_ExportMatch(public, path, blob, foreign))
     if matches:
         return "tracked-pattern-required", "", tuple(matches)
     policy = _matching_generated_pattern(prefix, generated_paths)
     if policy:
         return "generated-pattern-not-tracked", policy, ()
     _review("untracked-declared-target", "export pattern has no tracked or reviewed generated match")
+
+
+def _reject_foreign_target(
+    package: _DiscoveredPackage,
+    path: str,
+    blob: GitBlob,
+) -> NoReturn:
+    repository_path = _join(package.path, path)
+    _review(
+        "foreign-package-target",
+        "declared target belongs to a deeper package: path="
+        + repository_path
+        + " mode="
+        + blob.mode,
+    )
 
 
 def _matching_generated_literal(path: str, generated_paths: Sequence[str]) -> str:

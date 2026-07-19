@@ -568,7 +568,7 @@ class NpmWorkspaceTests(unittest.TestCase):
             }
         )
 
-        with self.assertRaisesRegex(ValueError, "^needs-policy-review:untracked-declared-target"):
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:foreign-package-target"):
             resolve_workspace(tree, self.capsule("root", generated=()))
 
         child = resolve_workspace(tree, self.capsule("child", generated=()))
@@ -594,7 +594,7 @@ class NpmWorkspaceTests(unittest.TestCase):
             }
         )
 
-        with self.assertRaisesRegex(ValueError, "^needs-policy-review:untracked-declared-target"):
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:foreign-package-target"):
             resolve_workspace(tree, self.capsule("root", generated=()))
 
         child = resolve_workspace(tree, self.capsule("child", generated=()))
@@ -622,7 +622,7 @@ class NpmWorkspaceTests(unittest.TestCase):
             }
         )
 
-        with self.assertRaisesRegex(ValueError, "^needs-policy-review:untracked-declared-target"):
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:foreign-package-target"):
             resolve_workspace(tree, self.capsule("parent", generated=()))
 
         child = resolve_workspace(tree, self.capsule("nested-child", generated=()))
@@ -634,6 +634,124 @@ class NpmWorkspaceTests(unittest.TestCase):
             {("package.json",), ("src/index.js",)},
             {target.matched_paths for target in child.declared_targets},
         )
+
+    def test_generated_policy_cannot_reclassify_a_foreign_child_literal(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(
+                    "root",
+                    workspaces=["packages/*"],
+                    main="./packages/child/index.js",
+                ),
+                "packages/child/package.json": manifest("child"),
+                "packages/child/index.js": "module.exports = {};\n",
+            }
+        )
+
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:foreign-package-target"):
+            resolve_workspace(
+                tree,
+                self.capsule("root", generated=("packages/child/",)),
+            )
+
+    def test_generated_policy_cannot_reclassify_a_foreign_child_pattern(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(
+                    "root",
+                    workspaces=["packages/*"],
+                    exports={"./child/*": "./packages/child/src/*.js"},
+                ),
+                "packages/child/package.json": manifest("child"),
+                "packages/child/src/index.js": "export {};\n",
+            }
+        )
+
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:foreign-package-target"):
+            resolve_workspace(
+                tree,
+                self.capsule("root", generated=("packages/child/",)),
+            )
+
+    def test_parent_generated_policy_cannot_reclassify_nested_package_targets(self):
+        declarations = (
+            {"main": "./nested/child/index.js"},
+            {"exports": {"./child/*": "./nested/child/src/*.js"}},
+        )
+        for declaration in declarations:
+            with self.subTest(declaration=declaration):
+                tree = self.tree(
+                    {
+                        "package.json": manifest(
+                            "root",
+                            workspaces=["packages/*", "packages/parent/nested/*"],
+                        ),
+                        "packages/parent/package.json": manifest("parent", **declaration),
+                        "packages/parent/nested/child/package.json": manifest("nested-child"),
+                        "packages/parent/nested/child/index.js": "module.exports = {};\n",
+                        "packages/parent/nested/child/src/index.js": "export {};\n",
+                    }
+                )
+
+                with self.assertRaisesRegex(ValueError, "^needs-policy-review:foreign-package-target"):
+                    resolve_workspace(
+                        tree,
+                        self.capsule("parent", generated=("nested/child/",)),
+                    )
+
+    def test_owned_pattern_match_cannot_hide_a_foreign_package_match(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(
+                    "root",
+                    workspaces=["packages/*"],
+                    exports={"./all/*": "./*.js"},
+                ),
+                "root.js": "export {};\n",
+                "packages/child/package.json": manifest("child"),
+                "packages/child/child.js": "export {};\n",
+            }
+        )
+
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:foreign-package-target"):
+            resolve_workspace(
+                tree,
+                self.capsule("root", generated=("packages/child/",)),
+            )
+
+    def test_foreign_pattern_failure_preserves_nonregular_mode_metadata(self):
+        repo_root = self.root / ("repo-" + str(self.repo_number))
+        repo_root.mkdir()
+        self.repo_number += 1
+        repo = create_git_repo(repo_root)
+        commit_files(
+            repo,
+            {
+                "package.json": manifest(
+                    "root",
+                    workspaces=["packages/*"],
+                    exports={"./child/*": "./packages/child/src/*.js"},
+                ),
+                "packages/child/package.json": manifest("child"),
+            },
+            "add foreign symlink fixture",
+        )
+        sha = commit_symlink(
+            repo,
+            "packages/child/src/link.js",
+            "target.js",
+            "add foreign symlink",
+        )
+
+        with self.assertRaisesRegex(ValueError, "^needs-policy-review:foreign-package-target") as raised:
+            resolve_workspace(
+                GitTree(repo, sha),
+                self.capsule("root", generated=("packages/child/",)),
+            )
+
+        self.assertIn("packages/child/src/link.js", str(raised.exception))
+        self.assertIn("mode=120000", str(raised.exception))
+        self.assertLess(len(str(raised.exception)), 600)
 
     def test_export_patterns_reject_braces_and_character_classes_only_when_patterned(self):
         invalid_exports = (
