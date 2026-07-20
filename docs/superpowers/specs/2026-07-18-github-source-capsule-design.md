@@ -1,8 +1,10 @@
 # GitHub Tracked Source Capsule and Deep-Dive Design
 
-**Status:** Revised after third decline review; pending final user review
+**Status:** Superseded for implementation by `2026-07-20-paypal-js-focused-pilot-design.md`
 **Date:** 2026-07-18
 **Extends:** `2026-07-14-github-repository-collection-design.md` and `2026-07-15-github-release-retention-design.md`
+
+> This document records the broader source-capsule and durability design considered during review. It is not the active implementation contract. The focused PayPal JS pilot deliberately defers its transaction journal, packet lifecycle, event-chain, quarantine, and crash-simulation machinery until the core collection-to-query workflow is proven.
 
 ## Problem
 
