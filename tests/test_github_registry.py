@@ -184,6 +184,31 @@ class RegistryTests(unittest.TestCase):
         with self.assertRaises(dataclasses.FrozenInstanceError):
             repo.version_tracks[0].future = "all-stable"
 
+    def test_registry_accepts_latest_stable_and_rejects_unknown_latest_policy(self):
+        template = (
+            '[[repos]]\n'
+            'id = "paypal/paypal-js"\n'
+            'company = "paypal"\n'
+            'url = "https://github.com/paypal/paypal-js"\n'
+            'enabled = true\n'
+            'repo_type = "web-sdk"\n'
+            'priority = "tier1"\n'
+            'track = "releases-and-default-branch"\n'
+            'version_strategy = "monorepo-packages"\n'
+            '[[repos.version_tracks]]\n'
+            'selector = "package:@paypal/paypal-js@9"\n'
+            'backfill = "{backfill}"\n'
+            'future = "none"\n'
+        )
+
+        repo = load_registry(
+            self.write_registry(template.format(backfill="latest-stable"))
+        )[0]
+
+        self.assertEqual("latest-stable", repo.version_tracks[0].backfill)
+        with self.assertRaisesRegex(ValueError, "unknown backfill policy latest-major"):
+            load_registry(self.write_registry(template.format(backfill="latest-major")))
+
     def test_registry_loads_exact_capsule_policy_and_repository_allowlist(self):
         path = self.write_registry(
             '[[repos]]\n'

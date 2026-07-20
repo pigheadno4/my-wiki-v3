@@ -13,7 +13,7 @@ from toml_compat import load_toml
 PRIORITIES = {"tier1", "tier2", "tier3"}
 TRACKS = {"default-branch", "releases-and-default-branch"}
 VERSION_STRATEGIES = {"monorepo-packages", "semver-tags", "github-release", "commit"}
-BACKFILL_POLICIES = {"all-stable", "minor-baselines", "none"}
+BACKFILL_POLICIES = {"all-stable", "latest-stable", "minor-baselines", "none"}
 FUTURE_POLICIES = {"all-stable", "none"}
 MUTABLE_STATE_KEYS = {
     "latest_version",

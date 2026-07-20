@@ -129,6 +129,15 @@ def select_release_candidates(
     pinned = _pinned_candidates(track, eligible)
     if track.backfill == "all-stable":
         return eligible
+    if track.backfill == "latest-stable":
+        selected = []
+        existing = _version_keys(existing_versions)
+        for candidate in eligible:
+            if _version_key(candidate.version) in existing:
+                selected.append(candidate)
+        if eligible:
+            selected.append(eligible[-1])
+        return _deduplicated_candidates(selected)
     if track.backfill != "minor-baselines":
         raise ReleaseSelectionError("unknown backfill policy " + track.backfill)
     if not eligible:

@@ -132,6 +132,23 @@ class GitHubReleasesTests(unittest.TestCase):
 
         self.assertEqual(("9.0.0", "9.0.1", "9.1.0"), tuple(item.version for item in selected))
 
+    def test_latest_stable_selects_only_the_highest_stable_candidate(self):
+        selected = select_release_candidates(
+            self._track(backfill="latest-stable"),
+            self._candidates("9.0.0", "9.3.0", "9.4.0-rc.1", "9.2.5"),
+        )
+
+        self.assertEqual(("9.3.0",), tuple(item.version for item in selected))
+
+    def test_latest_stable_preserves_an_already_indexed_baseline(self):
+        selected = select_release_candidates(
+            self._track(backfill="latest-stable"),
+            self._candidates("9.0.0", "9.2.0", "9.3.0"),
+            existing_versions=("9.2.0",),
+        )
+
+        self.assertEqual(("9.2.0", "9.3.0"), tuple(item.version for item in selected))
+
     def test_minor_baselines_include_first_latest_per_minor_and_pins(self):
         selected = select_release_candidates(
             self._track(backfill="minor-baselines", pinned_versions=("9.0.1",)),
