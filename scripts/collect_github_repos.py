@@ -209,7 +209,7 @@ def _collect_attempt(
             _release_id(candidate): release_notes_fetcher(config, candidate)
             for candidate in candidates
         }
-        ordered = _sort_candidates(candidates, evidence_by_id)
+        ordered = _sort_candidates(candidates, evidence_by_id, clone_path)
         groups = _group_by_sha(ordered)
         work_item_ids: List[str] = []
         snapshot_paths: List[str] = []
@@ -691,17 +691,18 @@ def parse_package_release(
 def _sort_candidates(
     candidates: Sequence[ReleaseCandidate],
     evidence: Dict[str, Optional[ReleaseNotesEvidence]],
+    clone_path: Path,
 ) -> Tuple[ReleaseCandidate, ...]:
+    commit_dates: Dict[str, str] = {}
+
     def key(candidate: ReleaseCandidate) -> Tuple[object, ...]:
-        version = parse_semver(candidate.version)
-        if version is None:
-            raise CollectionUsageError("candidate version is not semantic")
         notes = evidence[_release_id(candidate)]
+        if candidate.commit_sha not in commit_dates:
+            commit_dates[candidate.commit_sha] = run_git(
+                ["show", "-s", "--format=%cI", candidate.commit_sha], clone_path
+            )
         return (
-            version.major,
-            version.minor or 0,
-            version.patch or 0,
-            notes.published_at if notes is not None else "",
+            notes.published_at if notes is not None else commit_dates[candidate.commit_sha],
             candidate.tag,
         )
 

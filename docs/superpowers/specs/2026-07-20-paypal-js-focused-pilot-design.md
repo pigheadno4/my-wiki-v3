@@ -1,6 +1,6 @@
 # PayPal JS Focused GitHub Collection Pilot
 
-**Status:** Specification approved; implementation pending
+**Status:** Implementation complete; offline pilot conformance passed; live collection pending user approval
 **Date:** 2026-07-20
 **Narrows:** `2026-07-14-github-repository-collection-design.md` and `2026-07-15-github-release-retention-design.md`
 **Supersedes for implementation:** `2026-07-18-github-source-capsule-design.md`

@@ -149,6 +149,25 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertEqual(self.sha, items[0].sha)
         self.assertTrue(items[0].snapshot_manifest)
 
+    def test_backfill_orders_same_sha_releases_by_release_date(self):
+        def dated_notes(config, candidate):
+            day = "07" if candidate.package == "@paypal/react-paypal-js" else "08"
+            return ReleaseNotesEvidence(
+                "https://api.github.test/" + candidate.tag,
+                "2026-07-" + day + "T12:00:00Z",
+                b"Routine release.\n",
+            )
+
+        result = self.collect(release_notes_fetcher=dated_notes)
+
+        self.assertEqual(
+            (
+                "@paypal/react-paypal-js@10.0.0",
+                "@paypal/paypal-js@10.0.0",
+            ),
+            result.release_ids,
+        )
+
     def test_recollection_with_no_new_release_is_unchanged(self):
         self.collect()
         result = self.collect(release_mode="future", collection_date="2026-07-21")
