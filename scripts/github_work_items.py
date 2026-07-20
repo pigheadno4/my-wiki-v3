@@ -197,7 +197,8 @@ def build_work_item(
         raise ValueError("package_changes contain duplicate release IDs")
     for change in changes:
         _validate_package_change(change)
-    _require_path(snapshot_manifest, "snapshot_manifest")
+    if snapshot_manifest:
+        _require_path(snapshot_manifest, "snapshot_manifest")
     mode = "full" if any(item.recommended_mode == "full" for item in changes) else "delta"
     release_ids = tuple(item.release_id for item in changes)
     item = WorkItem(
@@ -255,8 +256,20 @@ def upsert_discovered_work_item(path: Path, item: WorkItem) -> Tuple[WorkItem, .
     """Insert a discovered item without resetting an existing lifecycle."""
     _validate_work_item(item)
     items = list(load_work_items(path))
-    for existing in items:
+    for index, existing in enumerate(items):
         if existing.work_item_id == item.work_item_id:
+            _require_same_identity(existing, item)
+            if existing.state == "discovered":
+                evidence = _merge_evidence(existing, item)
+                merged = replace(
+                    evidence,
+                    collection_date=existing.collection_date,
+                    consecutive_failed_runs=existing.consecutive_failed_runs,
+                    last_error=existing.last_error,
+                    last_attempted_date=existing.last_attempted_date,
+                )
+                items[index] = merged
+                return save_work_items(path, items)
             _require_same_evidence(existing, item)
             return tuple(items)
     if item.state != "discovered":
@@ -313,16 +326,27 @@ def record_collection_failure(
     """Record one exhausted collection run and escalate after three runs."""
     _validate_work_item(item)
     _require_date(attempted_date, "attempted_date")
-    if attempts_in_run != 3:
-        raise ValueError("collection failure requires exactly three attempts in run")
+    if not isinstance(attempts_in_run, int) or not 1 <= attempts_in_run <= 3:
+        raise ValueError("collection failure requires one to three attempts in run")
     if not isinstance(error, str) or not error or len(error) > 1000:
         raise ValueError("collection failure error must be 1 to 1000 characters")
     items = list(load_work_items(path))
     matches = [index for index, value in enumerate(items) if value.work_item_id == item.work_item_id]
     if matches:
         index = matches[0]
-        current = items[index]
-        _require_same_evidence(current, item)
+        existing = items[index]
+        _require_same_identity(existing, item)
+        evidence = _merge_evidence(existing, item)
+        current = replace(
+            evidence,
+            collection_date=existing.collection_date,
+            state=existing.state,
+            approved_mode=existing.approved_mode,
+            attempts_in_run=existing.attempts_in_run,
+            consecutive_failed_runs=existing.consecutive_failed_runs,
+            last_error=existing.last_error,
+            last_attempted_date=existing.last_attempted_date,
+        )
     else:
         index = len(items)
         current = item
@@ -362,7 +386,12 @@ def render_status(items: Sequence[WorkItem]) -> str:
                 "- Attempts in run: `" + str(item.attempts_in_run) + "`",
                 "- Consecutive failed runs: `" + str(item.consecutive_failed_runs) + "`",
                 "- Last error: " + (item.last_error or "None"),
-                "- Snapshot: [manifest](" + item.snapshot_manifest + ")",
+                "- Snapshot: "
+                + (
+                    "[manifest](" + item.snapshot_manifest + ")"
+                    if item.snapshot_manifest
+                    else "Not published"
+                ),
                 "",
                 "### Package releases",
                 "",
@@ -373,7 +402,12 @@ def render_status(items: Sequence[WorkItem]) -> str:
                 [
                     "- `" + change.release_id + "` (recommended `" + change.recommended_mode + "`)",
                     "  Release: [manifest](" + change.release_manifest + ")",
-                    "  Comparison: [manifest](" + change.comparison_manifest + ")",
+                    "  Comparison: "
+                    + (
+                        "[manifest](" + change.comparison_manifest + ")"
+                        if change.comparison_manifest
+                        else "Not applicable"
+                    ),
                 ]
             )
         lines.append("")
@@ -391,8 +425,10 @@ def _validate_package_change(change: PackageChange) -> None:
         raise ValueError("to_version is required")
     if change.release_id != change.package + "@" + change.to_version:
         raise ValueError("release_id must be package-qualified")
-    _require_path(change.release_manifest, "release_manifest")
-    _require_path(change.comparison_manifest, "comparison_manifest")
+    if change.release_manifest:
+        _require_path(change.release_manifest, "release_manifest")
+    if change.comparison_manifest:
+        _require_path(change.comparison_manifest, "comparison_manifest")
     if change.recommended_mode not in INGEST_MODES:
         raise ValueError("recommended_mode must be full or delta")
     reasons = _strings(change.reasons, "reasons")
@@ -406,7 +442,15 @@ def _validate_work_item(item: WorkItem) -> None:
     _require_repo_id(item.repo_id)
     _require_sha(item.sha)
     _require_date(item.collection_date, "collection_date")
-    _require_path(item.snapshot_manifest, "snapshot_manifest")
+    if item.snapshot_manifest:
+        _require_path(item.snapshot_manifest, "snapshot_manifest")
+    elif item.state not in ("discovered", "collection_failed", "needs_manual_review"):
+        raise ValueError("work-item state requires a published snapshot")
+    if item.state not in ("discovered", "collection_failed", "needs_manual_review"):
+        if any(not change.release_manifest for change in item.package_changes):
+            raise ValueError("work-item state requires all release manifests")
+        if any(change.from_version and not change.comparison_manifest for change in item.package_changes):
+            raise ValueError("work-item state requires all applicable comparisons")
     if item.state not in STATES:
         raise ValueError("work-item state is invalid")
     if item.recommended_mode not in INGEST_MODES:
@@ -478,13 +522,69 @@ def _require_same_evidence(existing: WorkItem, incoming: WorkItem) -> None:
         "work_item_id",
         "repo_id",
         "sha",
-        "collection_date",
         "package_changes",
         "snapshot_manifest",
         "recommended_mode",
     )
     if any(getattr(existing, field) != getattr(incoming, field) for field in fields):
         raise ValueError("existing work item conflicts with discovered evidence")
+
+
+def _require_same_identity(existing: WorkItem, incoming: WorkItem) -> None:
+    existing_ids = tuple(change.release_id for change in existing.package_changes)
+    incoming_ids = tuple(change.release_id for change in incoming.package_changes)
+    if (
+        existing.work_item_id != incoming.work_item_id
+        or existing.repo_id != incoming.repo_id
+        or existing.sha != incoming.sha
+        or existing_ids != incoming_ids
+    ):
+        raise ValueError("existing work item conflicts with discovered identity")
+
+
+def _require_compatible_paths(existing: WorkItem, incoming: WorkItem) -> None:
+    if (
+        existing.snapshot_manifest
+        and incoming.snapshot_manifest
+        and existing.snapshot_manifest != incoming.snapshot_manifest
+    ):
+        raise ValueError("existing work item conflicts with snapshot evidence")
+    existing_changes = {change.release_id: change for change in existing.package_changes}
+    for change in incoming.package_changes:
+        prior = existing_changes[change.release_id]
+        for field in ("release_manifest", "comparison_manifest"):
+            prior_path = getattr(prior, field)
+            current_path = getattr(change, field)
+            if prior_path and current_path and prior_path != current_path:
+                raise ValueError("existing work item conflicts with package evidence")
+
+
+def _merge_evidence(existing: WorkItem, incoming: WorkItem) -> WorkItem:
+    _require_compatible_paths(existing, incoming)
+    old_changes = {change.release_id: change for change in existing.package_changes}
+    merged_changes = []
+    for change in incoming.package_changes:
+        prior = old_changes[change.release_id]
+        use_incoming_policy = bool(
+            change.release_manifest or change.comparison_manifest
+        )
+        policy = change if use_incoming_policy else prior
+        merged_changes.append(
+            replace(
+                policy,
+                release_manifest=change.release_manifest or prior.release_manifest,
+                comparison_manifest=(
+                    change.comparison_manifest or prior.comparison_manifest
+                ),
+            )
+        )
+    mode = "full" if any(change.recommended_mode == "full" for change in merged_changes) else "delta"
+    return replace(
+        incoming,
+        package_changes=tuple(merged_changes),
+        snapshot_manifest=incoming.snapshot_manifest or existing.snapshot_manifest,
+        recommended_mode=mode,
+    )
 
 
 def _find_index(items: Sequence[WorkItem], work_item_id: str) -> int:

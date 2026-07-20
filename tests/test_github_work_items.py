@@ -234,6 +234,29 @@ class GitHubWorkItemTests(unittest.TestCase):
         self.assertEqual((self.awaiting_item,), repeated)
         self.assertEqual("awaiting_approval", repeated[0].state)
 
+    def test_discovered_retry_can_complete_missing_evidence_without_new_id(self):
+        incomplete = replace(
+            self.awaiting_item,
+            state="discovered",
+            snapshot_manifest="",
+            package_changes=(
+                replace(
+                    self.awaiting_item.package_changes[0],
+                    release_manifest="",
+                    comparison_manifest="",
+                ),
+            ),
+        )
+        save_work_items(self.path, (incomplete,))
+
+        merged = upsert_discovered_work_item(
+            self.path, replace(self.awaiting_item, state="discovered")
+        )[0]
+
+        self.assertEqual(incomplete.work_item_id, merged.work_item_id)
+        self.assertEqual(self.snapshot_manifest, merged.snapshot_manifest)
+        self.assertTrue(merged.package_changes[0].release_manifest)
+
     def test_loader_rejects_duplicate_keys_and_unknown_fields(self):
         self.path.parent.mkdir(parents=True)
         self.path.write_text(
@@ -257,6 +280,12 @@ class GitHubWorkItemTests(unittest.TestCase):
         self.assertIn("@paypal/paypal-js@10.0.0", status)
         self.assertIn("awaiting_approval", status)
         self.assertIn(self.snapshot_manifest, status)
+
+    def test_approval_states_require_published_evidence(self):
+        incomplete = replace(self.awaiting_item, snapshot_manifest="")
+
+        with self.assertRaises(ValueError):
+            save_work_items(self.path, (incomplete,))
 
 
 if __name__ == "__main__":
