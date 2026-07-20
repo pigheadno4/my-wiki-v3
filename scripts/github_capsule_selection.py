@@ -52,6 +52,7 @@ _CLASSIFICATION_ORDER = (
     "package-manifest",
     "required-root",
     "include-path",
+    "changed-release-evidence",
     "tracked-main-target",
     "tracked-module-target",
     "tracked-bin-target",
@@ -167,6 +168,7 @@ def resolve_npm_capsule(
     tree: GitTree,
     capsule: CapsuleConfig,
     allowlist: Sequence[SecretAllowlist],
+    changed_paths: Sequence[str] = (),
 ) -> CapsuleResolution:
     """Resolve, validate, scan, and budget one NPM source capsule."""
     if not isinstance(tree, GitTree):
@@ -288,6 +290,10 @@ def resolve_npm_capsule(
                     "invalid-workspace-resolution",
                 )
 
+    _select_changed_paths(candidate_reasons, workspace, changed_paths)
+    excluded = {
+        item for item in excluded if item[0] not in candidate_reasons
+    }
     selected_blobs = _selected_blobs(candidate_reasons, blobs_by_path)
     effective_policy = build_effective_policy(
         normalized,
@@ -323,6 +329,90 @@ def resolve_npm_capsule(
         secret_findings=findings,
         effective_policy=effective_policy,
     )
+
+
+def scan_evidence_files(
+    files: Sequence[CapsuleFile],
+    allowlist: Sequence[SecretAllowlist],
+) -> Tuple[SecretFinding, ...]:
+    """Scan already selected text evidence with the capsule detector contract."""
+    findings: Set[SecretFinding] = set()
+    paths = set()
+    for item in files:
+        if not isinstance(item, CapsuleFile):
+            raise TypeError("files must contain CapsuleFile values")
+        if item.path in paths:
+            raise ValueError("evidence files contain duplicate paths")
+        paths.add(item.path)
+        if not safe_policy_path(item.path):
+            _review("unsafe-required-file", "evidence path is not safe")
+        if not isinstance(item.content, bytes):
+            raise TypeError("evidence file content must be bytes")
+        if item.size != len(item.content):
+            _review("unsafe-required-file", "evidence size does not match content")
+        digest = hashlib.sha256(item.content).hexdigest()
+        if item.sha256 != digest:
+            _review("unsafe-required-file", "evidence hash does not match content")
+        if _is_lfs_pointer(item.content):
+            _review("unsafe-required-file", "evidence is a Git LFS pointer")
+        if b"\0" in item.content:
+            _review("unsafe-required-file", "evidence contains NUL bytes")
+        try:
+            text = item.content.decode("utf-8", "strict")
+        except UnicodeDecodeError:
+            _review("unsafe-required-file", "evidence is not strict UTF-8")
+        findings.update(
+            _scan_secrets(item.path, item.git_blob_oid, item.sha256, text)
+        )
+
+    for item in allowlist:
+        if not isinstance(item, SecretAllowlist):
+            raise TypeError("allowlist must contain SecretAllowlist values")
+    complete = _sorted_findings(findings)
+    allowed = frozenset(
+        (item.path, item.blob_oid, item.detector_code) for item in allowlist
+    )
+    blocked = tuple(
+        item
+        for item in complete
+        if (item.path, item.git_blob_oid, item.detector_code) not in allowed
+    )
+    if blocked:
+        raise SecretFindingsBlocked(complete, blocked)
+    return complete
+
+
+def _select_changed_paths(
+    selected: Dict[str, Tuple[str, str, Set[str]]],
+    workspace: WorkspaceResolution,
+    changed_paths: Sequence[str],
+) -> None:
+    if isinstance(changed_paths, (str, bytes)):
+        raise TypeError("changed_paths must be a sequence of paths")
+    for path in sorted(set(changed_paths)):
+        if not isinstance(path, str) or not safe_policy_path(path):
+            _review("unsafe-changed-path", "changed path is not safe")
+        owners = []
+        for package in workspace.packages:
+            prefix = package.path + "/" if package.path else ""
+            if path.startswith(prefix) and path[len(prefix):] in package.owned_paths:
+                owners.append(package)
+        if not owners:
+            continue
+        package = max(owners, key=lambda item: len(item.path))
+        prefix = package.path + "/" if package.path else ""
+        relative = path[len(prefix):]
+        current = selected.get(path)
+        if current is None:
+            selected[path] = (
+                package.name,
+                relative,
+                {"changed-release-evidence"},
+            )
+            continue
+        if current[0] != package.name or current[1] != relative:
+            _review("ambiguous-package", "changed path has inconsistent ownership")
+        current[2].add("changed-release-evidence")
 
 
 def _targets_by_package(
@@ -580,4 +670,5 @@ __all__ = [
     "SecretFinding",
     "SecretFindingsBlocked",
     "resolve_npm_capsule",
+    "scan_evidence_files",
 ]

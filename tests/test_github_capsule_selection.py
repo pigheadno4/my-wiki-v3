@@ -22,6 +22,7 @@ from github_capsule_selection import (  # noqa: E402
     CapsuleResolution,
     SecretFinding,
     resolve_npm_capsule,
+    scan_evidence_files,
 )
 import github_capsule_selection  # noqa: E402
 from github_git_tree import GitObjectReadError, GitTree  # noqa: E402
@@ -210,6 +211,116 @@ class CapsuleSelectionTests(unittest.TestCase):
         self.assertEqual("example", cli.package)
         self.assertEqual("source-capsule", cli.purpose)
         self.assertEqual(tuple(sorted(reasons)), tuple(item.path for item in result.files))
+
+    def test_changed_release_evidence_is_collected_outside_the_normal_capsule(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(),
+                "src/index.ts": "export const value = 1;\n",
+                "test/public-api.test.ts": "test('public api', () => {});\n",
+                "docs/new-option.md": "# New option\n",
+            }
+        )
+
+        result = resolve_npm_capsule(
+            tree,
+            self.capsule(),
+            (),
+            changed_paths=("test/public-api.test.ts", "docs/new-option.md"),
+        )
+
+        selected = {item.path: item.classification_reason for item in result.files}
+        self.assertEqual(
+            "changed-release-evidence", selected["test/public-api.test.ts"]
+        )
+        self.assertEqual("changed-release-evidence", selected["docs/new-option.md"])
+
+    def test_changed_path_outside_included_packages_is_not_collected(self):
+        tree = self.tree(
+            {
+                "package.json": manifest("root", workspaces=["packages/*"]),
+                "packages/example/package.json": manifest("example"),
+                "packages/example/src/index.ts": "export const value = 1;\n",
+                "packages/unrelated/package.json": manifest("unrelated"),
+                "packages/unrelated/src/private.ts": "export const privateValue = 1;\n",
+            }
+        )
+
+        result = resolve_npm_capsule(
+            tree,
+            self.capsule(),
+            (),
+            changed_paths=("packages/unrelated/src/private.ts",),
+        )
+
+        self.assertNotIn(
+            "packages/unrelated/src/private.ts", {item.path for item in result.files}
+        )
+
+    def test_changed_release_evidence_keeps_secret_and_file_budget_guards(self):
+        secret = "ghp_" + ("a" * 36) + "\n"
+        secret_tree = self.tree(
+            {
+                "package.json": manifest(),
+                "src/index.ts": "export const value = 1;\n",
+                "docs/secret.md": secret,
+            }
+        )
+
+        with self.assertRaisesRegex(ValueError, "secret-finding"):
+            resolve_npm_capsule(
+                secret_tree,
+                self.capsule(),
+                (),
+                changed_paths=("docs/secret.md",),
+            )
+
+        oversized_tree = self.tree(
+            {
+                "package.json": manifest(),
+                "src/index.ts": "x\n",
+                "docs/large.md": "x" * 101,
+            }
+        )
+        with self.assertRaisesRegex(ValueError, "capsule-budget-exceeded"):
+            resolve_npm_capsule(
+                oversized_tree,
+                self.capsule(max_file_bytes=100),
+                (),
+                changed_paths=("docs/large.md",),
+            )
+
+    def test_public_evidence_scanner_reuses_exact_secret_allowlist_contract(self):
+        secret = ("ghp_" + ("a" * 36) + "\n").encode("utf-8")
+        tree = self.tree(
+            {
+                "package.json": manifest(),
+                "README.md": secret,
+                "src/index.ts": "export const value = 1;\n",
+            }
+        )
+        blob = self.blob(tree, "README.md")
+        evidence = CapsuleFile(
+            path="README.md",
+            content=secret,
+            sha256=hashlib.sha256(secret).hexdigest(),
+            size=len(secret),
+            purpose="repository-context",
+            git_blob_oid=blob.oid,
+            git_mode=blob.mode,
+            package="",
+            classification_reason="repository-context",
+        )
+
+        with self.assertRaises(github_capsule_selection.SecretFindingsBlocked):
+            scan_evidence_files((evidence,), ())
+
+        findings = scan_evidence_files(
+            (evidence,),
+            (SecretAllowlist("README.md", blob.oid, "github-token-v1"),),
+        )
+
+        self.assertEqual(("github-token-v1",), tuple(item.detector_code for item in findings))
 
     def test_package_overrides_and_resolved_policy_rows_are_exact(self):
         tree = self.tree(
