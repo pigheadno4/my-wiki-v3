@@ -8,17 +8,17 @@
 
 This is the single most important rule. Batching produces shallow summaries, missed details, and malformed pages. It was confirmed in smoke testing: **no batch, process one by one, read the full raw content, then ingest.**
 
-For GitHub, the source unit is exactly one approved baseline, delta, or
-comparison packet, which may reference multiple raw files. Read the packet,
-every referenced snapshot manifest, and every file in its required reading set
-in full before writing wiki content. Do not claim to have read the whole
-upstream repository.
+For GitHub, the source unit is exactly one approved SHA work item, which may
+contain multiple package releases sharing that SHA. Read the complete current
+source and changelog pages, every assigned release record and comparison, the
+snapshot manifest, and every assigned raw file in full before writing wiki
+content. Do not claim to have read the whole upstream repository.
 
 ## MANDATORY setup
 
 > Use `TodoWrite` to create **one todo item per step below** before starting any work. Mark each item completed as you finish it — never batch completions. The **concept audit (step 2) must be completed and marked done before any other page is created.**
 
-1. **Read the full raw file.** Open the entire raw file. For GitHub, read the approved packet, every referenced snapshot manifest, and every required raw file per `github-repos.md`. Do not summarize from a partial read.
+1. **Read the full raw file.** Open the entire raw file. For GitHub, read the approved work item and every assigned source page, changelog, release record, comparison, snapshot manifest, and raw file per `github-repos.md`. Do not summarize from a partial read.
    - **Grounding gate:** before writing anything, extract **3–5 verbatim quotes** (with their location in the raw file) that the summary will rest on. This forces grounding and cuts hallucination — especially important on cheaper models.
 
 ## Phase 2 — Wiki ingest (after Phase 1 raw file is approved)
@@ -30,7 +30,7 @@ upstream repository.
 3. **Source summary page** in `wiki/sources/` (filename `source-<slug>.md`, **not** dated):
    - New source page → include `raw_files:` in frontmatter with the dated raw filename.
    - Adding to an existing source page (e.g., a re-collected/changed version, or a 2nd raw file on the same topic) → prepend the new dated raw filename to the existing `raw_files:` list (**newest first**), and add the new content/delta to the body.
-   - GitHub source page → list each nested snapshot manifest as its root-relative path under `raw/` in `raw_files:` (for example, `github/paypal/paypal-js/snapshots/2026-07-14-v10.2.0-a1b2c3d/snapshot.md`, newest first). In `## Raw Sources`, link to the same manifest with a path-qualified wikilink from the repository root (for example, `[[raw/github/paypal/paypal-js/snapshots/2026-07-14-v10.2.0-a1b2c3d/snapshot|latest snapshot]]`); do not use a dated flat filename or an unqualified `[[snapshot]]` link.
+   - GitHub source page → keep one cumulative `wiki/sources/<company>/github/source-github-<repo>.md` page plus `changelog-github-<repo>.md`. List each nested snapshot manifest as its root-relative path under `raw/` in `raw_files:` (for example, `github/paypal/paypal-js/snapshots/2026-07-20-a1b2c3d/manifest.json`, newest first). Link package release records, comparisons, and exact raw files with path-qualified repository-root paths; do not use an unqualified `[[manifest]]` link.
 4. **Company pages** in `wiki/companies/` — create or update. Update `source_count`.
 5. **Concept pages** in `wiki/concepts/` — create or update per the decision table.
 6. **Comparison pages** in `wiki/comparisons/` — only if the source **substantively compares** two or more companies (pricing differences, feature comparisons, migration guides). A passing mention of multiple companies does not warrant one.

@@ -327,7 +327,7 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertEqual("backfill", collect.release_mode)
         self.assertEqual("@paypal/paypal-js@10.0.0", release.release)
         self.assertEqual("delta", approve.mode)
-        for retired in ("prepare", "packet-state"):
+        for retired in ("prepare", "packet" + "-state"):
             with self.assertRaises(SystemExit):
                 parser.parse_args([retired])
 

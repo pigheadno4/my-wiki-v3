@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate GitHub snapshots, packets, sources, and generated status."""
+"""Validate focused GitHub evidence, work items, pages, and generated status."""
 
 from pathlib import Path
 import sys
@@ -29,18 +29,21 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         )
         for error in errors:
             print("  - " + error)
-        print(
-            "pending packets: "
-            + str(len(report.pending_packets))
-            + " (informational)"
+        pending = sum(
+            item.state != "ingested" for item in report.work_items.items
         )
+        print("pending work items: " + str(pending) + " (informational)")
         return 1
     print(
         "validate_github_collection: OK ("
-        + str(len(report.snapshot_paths))
+        + str(len(report.snapshots))
         + " snapshots, "
-        + str(len(report.pending_packets))
-        + " pending packets, no structural errors)"
+        + str(len(report.release_records))
+        + " release records, "
+        + str(len(report.comparisons))
+        + " comparisons, "
+        + str(len(report.work_items.items))
+        + " work items, no structural errors)"
     )
     return 0
 

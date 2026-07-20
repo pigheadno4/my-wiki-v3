@@ -55,7 +55,7 @@ For GitHub repository evidence and generated tracking state, run:
 python3 scripts/validate_github_collection.py
 ```
 
-The command validates `raw/github/` immutable snapshots, the human-maintained `tracking/github/repo-registry.toml`, and generated state under `tracking/github/` such as packets, indexes, and dashboards. It checks nested orphan snapshots, raw/tracking boundaries, manifest coverage, source-page identity, newest-first snapshot anchors, and packet/status agreement. Awaiting-review packets are the expected GitHub ingest queue; structural contract errors return a nonzero exit code.
+The command validates immutable exact-SHA snapshots and package release records under `raw/github/`, the human-maintained `tracking/github/repo-registry.toml`, generated comparisons and work items, status equality, and cumulative source/changelog evidence for ingested items. Work items awaiting approval are the expected GitHub ingest queue; structural contract errors return a nonzero exit code.
 
 ### b. Accuracy spot-checks
 

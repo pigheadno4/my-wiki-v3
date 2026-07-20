@@ -1,75 +1,163 @@
 # Rule: GitHub repository collection and versioned ingest
 
-> This rule governs GitHub repositories such as SDKs, sample apps, integration tools, and API specifications. You arrived here from the CLAUDE.md Workflow Index. It is the standalone workflow for registry-driven collection, packet preparation, and serial wiki ingest.
+> This rule governs release-driven collection of SDKs, libraries, samples, tools, and specifications from GitHub. Collection may batch discovery, but wiki ingest is always user-approved and serial.
 
-## Collection modes
+## Authority and scope
 
-GitHub collection may batch-check selected repositories and refs. It resolves each requested ref to an exact commit SHA, records an unchanged result without creating a raw copy, and creates a snapshot only for a new capture identity.
+`tracking/github/repo-registry.toml` is the only human-maintained repository registry. Each row contains stable intent such as repository identity, company, URL, priority, release policy, and source-capsule policy. Mutable versions, SHAs, dates, failures, and ingest progress belong in generated state under `tracking/github/`.
 
-Use `tracking/github/repo-registry.toml` to select normal collection. An explicit comparison can resolve two requested refs and prepare a comparison packet. Collection, comparison, and packet preparation stop before wiki ingest; they never automatically write wiki content.
-
-## Registry contract
-
-`tracking/github/repo-registry.toml` is the single human-maintained repository registry. Each row records stable collection intent: `id`, `company`, `url`, `enabled`, `repo_type`, `priority`, `track`, and `version_strategy`. Optional requested refs, key paths, and exclusions refine deterministic discovery.
-
-The registry must not contain latest versions, SHAs, collected-version lists, collection dates, ingest progress, or run results. Those mutable values are generated state under `tracking/github/`. Adding a company requires valid registry rows only; collectors derive company and repository directories from those rows rather than hard-coding company names.
-
-## Immutable snapshot contract
-
-Every accepted GitHub capture is an immutable snapshot under:
+Package releases always use package-qualified identities such as:
 
 ```text
-raw/github/<company>/<repo>/snapshots/<collection-date>-<version-or-ref>-<short-sha>/
+@paypal/paypal-js@10.0.3
+@paypal/react-paypal-js@10.0.0
 ```
 
-Each immutable snapshot contains `snapshot.md`, the repository-owned manifest, and `files/`, which preserves the selected upstream files at their repository-relative paths. The manifest records repository identity, exact ref and full SHA, `capture_kind`, capture revision, relevant dates and aliases, every saved file with hash, size, and purpose, and omitted-file or repository-detection notes.
+Never interpret `v10` without first identifying the package. A repository can publish multiple independently versioned packages at one SHA.
 
-Accepted files under `raw/` are immutable. Normal recollection never edits a legacy stub or accepted snapshot. Exact upstream files and the snapshot manifest belong in `raw/`; generated diffs, summaries, status, and packets belong in `tracking/`.
+The focused PayPal JS pilot retains:
 
-If later review requires an omitted file for the same upstream SHA, create a new immutable `-rN` capture with `capture_kind = "supplement"`. Do not enrich or overwrite the canonical snapshot.
+- latest stable v8, latest stable v9, and every stable v10 release of `@paypal/paypal-js`;
+- latest stable v8, latest stable v9, and every stable v10 release of `@paypal/react-paypal-js`; and
+- chronological processing from v8 to v9 to v10, with semantic version, release date, and package tag as deterministic ordering inputs.
 
-## Baseline, delta, and comparison packets
+The policy is registry-driven rather than hard-coded to PayPal. Add future repositories or companies by adding reviewed registry rows and capsule policies.
 
-Generated packets live under `tracking/github/repos/<company>/<repo>/`. A baseline packet covers a first accepted snapshot. A delta packet covers a new snapshot against the deterministic prior compatible snapshot. A comparison packet is created only by an explicit comparison request and records both endpoints and direction.
+## Evidence layout
 
-Packets may include generated changed-file lists, filtered diffs, summaries, suggested reading order, and candidate concepts. They are navigation and status artifacts, not raw evidence. Every packet identifies its required reading set of immutable raw files.
-
-## Collection-to-ingest boundary
-
-Collection may batch, but ingest is human-kicked-off. Collection validates and promotes immutable snapshots, generates packets and tracking state, then leaves packets awaiting review. Only user approval or an explicitly approved coordinator action can move a packet to approved; collection never performs that transition.
-
-The tooling must remain compatible with Python 3.9.6 and add no mandatory third-party dependency. Network-dependent collection and smoke checks remain outside the default unit-test suite.
-
-## Serial repository ingest
-
-Ingest exactly one approved baseline, delta, or comparison packet at a time. A complete cycle processes one packet as the GitHub ingest unit. Before changing wiki content, read the complete `ingest-packet.md`, every referenced `snapshot.md`, and every file in the packet's required reading set in full. Do not claim to have read the whole upstream repository.
-
-Complete the packet's concept audit, stable source page update, evidence-driven company and concept updates, material version analysis when applicable, contradiction check, company index and log update, focused validation, receipt, and terminal packet state before starting another packet. Follow `rules/ingest.md` for the shared one-source discipline.
-
-## Stable source page and version history
-
-One repository maps to one stable source page unless a separately approved exception applies. Use company-first paths such as:
+One exact repository SHA has one immutable source snapshot:
 
 ```text
-wiki/sources/paypal/github/source-github-paypal-js.md
+raw/github/<company>/<repo>/snapshots/<collection-date>-<short-sha>/
++-- manifest.json
++-- files/
 ```
 
-The source page lists its ingested snapshot manifests newest first in `raw_files:` and maintains concise material version history. It links to path-qualified raw snapshots and does not duplicate generated diffs. Recollection updates the stable source page without increasing the company's source count. A material cross-version interpretation belongs in `wiki/analyses/<company>/github/`, not in a duplicate version source page.
+The snapshot contains the bounded public-source capsule, changed package evidence assigned to the release, and standard repository context such as README and license files. `manifest.json` records hashes, sizes, Git object IDs, classification reasons, package ownership, triggering release IDs, and the full SHA.
 
-## Add a company or repository
+Each package release has a separate immutable release record:
 
-Add a valid row to `tracking/github/repo-registry.toml` with the required stable fields and reviewed optional refs, key paths, and exclusions. Choose the company slug that routes raw snapshots to `raw/github/<company>/` and wiki content to company-first paths. Do not add company-specific script branches or mutable collection results to the registry.
+```text
+raw/github/<company>/<repo>/releases/<package-slug>/<version>/<collection-date>/
++-- manifest.json
++-- release-notes.md
+```
 
-Enable a row only when its collection policy is ready for normal selection. Registered but disabled or on-demand rows remain inventory without becoming scheduled collection work.
+Multiple package releases may link to the same SHA snapshot. Recollection with the same release-note hash reuses the existing record. Changed upstream notes create a new immutable dated revision; accepted evidence is never overwritten.
 
-## Legacy stub compatibility
+Generated package comparisons live under:
 
-Existing flat GitHub stubs and detail directories remain immutable legacy baselines and queryable evidence. On a repository's first new collection, create a new nested snapshot and link both the legacy and new evidence from the stable source page as appropriate.
+```text
+tracking/github/repos/<company>/<repo>/comparisons/<package-slug>/<from>--<to>/
+```
 
-Normal recollection never edits a legacy stub or detail directory. A separate migration may relocate source pages or consolidate duplicate version pages only after backlink and content review; it never rewrites accepted legacy raw content.
+Generated comparisons are navigation evidence. Exact source claims must remain grounded in the linked immutable snapshots.
 
-## Validation and monitoring
+## Collection procedure
 
-Run `python3 scripts/validate_github_collection.py` to validate `raw/github/` snapshots, `tracking/github/` packets and generated state, source identity, newest-first snapshot anchors, and raw/tracking boundaries. The validator is deterministic and does not require network access.
+Use `scripts/collect_github_repos.py` for the focused operations:
 
-`tracking/github/` owns generated version indexes, run records, packet lifecycle events, collection status, and ingest status. Generated status Markdown is regenerated from machine-readable JSON and JSONL records and is never hand-edited.
+```bash
+python3 scripts/collect_github_repos.py collect --repo <owner/repo> --mode backfill
+python3 scripts/collect_github_repos.py collect --repo <owner/repo> --mode future
+python3 scripts/collect_github_repos.py collect --repo <owner/repo> --release <package@version>
+python3 scripts/collect_github_repos.py status
+python3 scripts/collect_github_repos.py compare --repo <owner/repo> --from <package@version> --to <package@version>
+python3 scripts/collect_github_repos.py approve --item <id> --mode full
+python3 scripts/collect_github_repos.py next-ingest
+python3 scripts/collect_github_repos.py retry --item <id>
+```
+
+Collection performs these steps:
+
+1. Discover configured package releases before publishing queue state.
+2. Exclude releases already represented by accepted work items.
+3. Group releases that share one SHA into one work item with separate package changes.
+4. Fetch immutable release records.
+5. Resolve the bounded source capsule, including changed source, docs, examples, and tests owned by included packages.
+6. Publish or reuse the exact-SHA snapshot only after hashing and validation.
+7. Generate package-scoped comparisons against the prior selected release.
+8. Recommend `full` or `delta` ingest from deterministic signals.
+9. Stop in `awaiting_approval`.
+
+Collection never approves an item, starts ingest, or changes wiki knowledge.
+
+## Full and delta recommendation
+
+Use `full` for a package baseline, major-version transition, public export change, security signal, SDK initialization change, material payment behavior change, broad change set, or impact that cannot be isolated confidently.
+
+Use `delta` for a contained patch or minor release when the changed evidence does not trigger a full-ingest signal. Semantic version alone never overrides the evidence.
+
+The collector recommends; the user approves or overrides the mode.
+
+## Serial ingest boundary
+
+Ingest exactly one approved SHA work item at a time. Never batch wiki ingest, even when collection discovered many releases.
+
+For every ingest, read the complete current cumulative source page first.
+
+For `full` ingest, also read in full:
+
+- the selected source snapshot and every assigned file;
+- all package release notes in the work item;
+- all package comparisons;
+- relevant prior-version context; and
+- the repository changelog page.
+
+A full ingest adds the new package or major-version knowledge to the stable source page. It does not replace the page with latest-only content. Preserve older validated version findings and evidence links unless correcting a proven factual error, exact duplicate, or wrong package/version attribution.
+
+For `delta` ingest, also read in full:
+
+- each release note;
+- each generated comparison;
+- every changed source, documentation, example, and test file assigned to the work item;
+- the affected package and major-version section; and
+- the repository changelog page.
+
+Update only affected knowledge and append the release history. Unchanged historical raw files do not need to be reread.
+
+Follow `rules/ingest.md` for concept audit, contradiction checks, indexes, logs, and focused validation. Do not begin another work item until the current one reaches its terminal ingest state.
+
+## Cumulative source and changelog
+
+One repository uses one cumulative source page and one separate changelog:
+
+```text
+wiki/sources/<company>/github/source-github-<repo>.md
+wiki/sources/<company>/github/changelog-github-<repo>.md
+```
+
+The source page owns durable repository knowledge:
+
+- current package versions;
+- purpose, architecture, and responsibility boundaries;
+- separate package sections;
+- separate major-version subsections where evidence exists;
+- current and historical public APIs and integration behavior;
+- compatibility and migration findings;
+- evidence gaps; and
+- path-qualified links to immutable snapshots.
+
+The changelog owns chronological release synthesis. Keep separate package timelines and group releases sharing a SHA as one repository change set. Each entry records package-qualified from/to versions, release date, SHA, approved ingest mode, important change, developer or merchant impact, migration action, updated source sections, and links to release records, comparisons, snapshot manifests, and exact raw files.
+
+The changelog is not sufficient evidence for deep implementation claims.
+
+`paypal/paypal-checkout-components` is an independently collected repository with its own source page and history. It is not a subdirectory of `paypal/paypal-js`, and its behavior must not be merged into the PayPal JS evidence history. Cross-repository questions must identify which repository owns each claim.
+
+## Failure protection
+
+Build snapshots in temporary storage and publish only after collection, hashing, secret scanning, budgets, and manifest validation succeed. A failed attempt must not publish a partial snapshot, enter approval, alter the last successful snapshot, or change accepted wiki knowledge.
+
+Retry transient Git, network, and filesystem-read failures at most three times in one run. After exhaustion, record `collection_failed` with bounded error text, attempt count, and date. A later periodic run may retry the same stable work-item identity. After three consecutive failed runs, set `needs_manual_review` and stop automatic retries.
+
+Invalid registry policy, invalid tags, access denial, unsafe paths, secret findings, and budget overflow go directly to `needs_manual_review`. An explicit retry may resume after correction. Valid evidence collected before a later failure remains immutable and is reused.
+
+## Validation
+
+Run:
+
+```bash
+python3 scripts/validate_github_collection.py
+```
+
+The validator checks registry package policy, snapshot and release hashes, SHA links, package comparisons, strict work-item state, generated status equality, and cumulative source/changelog evidence for ingested items. It is offline and deterministic.
