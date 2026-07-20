@@ -45,6 +45,11 @@ class GitTree:
         self._blobs: Optional[Tuple[GitBlob, ...]] = None
         self._is_exact_commit: Optional[bool] = None
 
+    @property
+    def sha(self) -> str:
+        """Return the exact commit object ID owned by this reader."""
+        return self._sha
+
     def blobs(self) -> Tuple[GitBlob, ...]:
         """Return every recursive entry in the exact commit tree, sorted by path."""
         if self._blobs is None:
