@@ -1,9 +1,13 @@
+import hashlib
+import io
 import json
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -14,6 +18,7 @@ if str(SCRIPTS) not in sys.path:
 from run_metronome_luna_worker import (  # noqa: E402
     build_codex_command,
     build_prompt,
+    main as worker_main,
     run_worker,
 )
 
@@ -78,6 +83,43 @@ class LunaWorkerRunnerTests(unittest.TestCase):
             "unsupported_claim_self_check": [],
         }
 
+    def register_enterprise_job(self, root, job_path, job):
+        registry_path = (
+            root
+            / "tracking/ingest/metronome/pilot/enterprise-diagnostic-jobs.json"
+        )
+        registry_path.parent.mkdir(parents=True, exist_ok=True)
+        registry_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "registry_type": "metronome_enterprise_diagnostic_jobs",
+                    "enterprise_jobs": [
+                        {
+                            "job_id": job["job_id"],
+                            "job_path": job_path.relative_to(root).as_posix(),
+                            "job_sha256": hashlib.sha256(job_path.read_bytes()).hexdigest(),
+                        }
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+
+    def make_registered_enterprise_job(self, root, _job_path, job):
+        job["job_id"] = "pilot-luna-enterprise-commit"
+        job["artifact_dir"] = (
+            "tracking/ingest/metronome/pilot/runs/pilot-luna-enterprise-commit"
+        )
+        job["allowed_write_paths"] = [job["artifact_dir"]]
+        job_path = (
+            root
+            / "tracking/ingest/metronome/pilot/jobs/pilot-luna-enterprise-commit.json"
+        )
+        job_path.write_text(json.dumps(job), encoding="utf-8")
+        self.register_enterprise_job(root, job_path, job)
+        return job_path, job
+
     def test_build_codex_command_pins_model_reasoning_and_read_only_sandbox(self):
         root = Path("/repo")
         schema = root / "schema.json"
@@ -119,6 +161,103 @@ class LunaWorkerRunnerTests(unittest.TestCase):
         self.assertIn(job["raw_path"], prompt)
         self.assertIn(job["canonical_url"], prompt)
         self.assertIn("quote 1 does not match", prompt)
+
+    def test_registered_enterprise_job_is_rejected_before_reusing_attempt_or_launching(self):
+        root, job_path, job = self.make_root()
+        job_path, job = self.make_registered_enterprise_job(root, job_path, job)
+        attempt_dir = root / job["artifact_dir"] / "attempt-1"
+        attempt_dir.mkdir(parents=True)
+        sentinel = attempt_dir / "preserve-me.txt"
+        sentinel.write_text("untouched", encoding="utf-8")
+        launches = []
+
+        def fake_runner(*_args, **_kwargs):
+            launches.append(True)
+            raise AssertionError("registered enterprise job must not launch Luna")
+
+        output = io.StringIO()
+        with redirect_stdout(output):
+            result = run_worker(root, job_path, "2026-07-18", runner=fake_runner)
+
+        self.assertEqual(1, result)
+        self.assertEqual([], launches)
+        self.assertEqual("untouched", sentinel.read_text(encoding="utf-8"))
+        self.assertFalse((attempt_dir / "events.jsonl").exists())
+        self.assertFalse((root / job["artifact_dir"] / "luna-worker-receipt.json").exists())
+        self.assertIn("run_metronome_model_worker.py", output.getvalue())
+
+    def test_registered_enterprise_job_cli_rejects_before_creating_artifacts_or_launching(self):
+        root, job_path, job = self.make_root()
+        job_path, job = self.make_registered_enterprise_job(root, job_path, job)
+        output = io.StringIO()
+
+        with patch("run_metronome_luna_worker.ROOT", root), patch.object(
+            sys,
+            "argv",
+            [
+                "run_metronome_luna_worker.py",
+                "--job",
+                job_path.relative_to(root).as_posix(),
+                "--ingest-date",
+                "2026-07-18",
+            ],
+        ), patch(
+            "run_metronome_luna_worker.build_codex_command",
+            side_effect=AssertionError("registered enterprise job must not launch Luna"),
+        ), redirect_stdout(output):
+            result = worker_main()
+
+        self.assertEqual(1, result)
+        self.assertFalse((root / job["artifact_dir"]).exists())
+        self.assertIn("run_metronome_model_worker.py", output.getvalue())
+
+    def test_enterprise_named_job_not_in_registry_keeps_legacy_behavior(self):
+        root, job_path, job = self.make_root()
+        job["job_id"] = "pilot-luna-enterprise-commit"
+        job["artifact_dir"] = (
+            "tracking/ingest/metronome/pilot/runs/pilot-luna-enterprise-commit"
+        )
+        job["allowed_write_paths"] = [job["artifact_dir"]]
+        job_path.write_text(json.dumps(job), encoding="utf-8")
+
+        def fake_runner(command, **_kwargs):
+            Path(command[command.index("-o") + 1]).write_text(
+                json.dumps(self.valid_output(job)), encoding="utf-8"
+            )
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+        self.assertEqual(0, run_worker(root, job_path, "2026-07-18", runner=fake_runner))
+        self.assertTrue((root / job["artifact_dir"] / "luna-output.json").is_file())
+
+    def test_registry_identity_mismatch_fails_closed_before_runner_or_artifact_mutation(self):
+        for mismatch in ("path", "hash"):
+            with self.subTest(mismatch=mismatch):
+                root, job_path, job = self.make_root()
+                job_path, job = self.make_registered_enterprise_job(root, job_path, job)
+                if mismatch == "path":
+                    alternate_path = job_path.with_name("copied-enterprise-job.json")
+                    alternate_path.write_bytes(job_path.read_bytes())
+                    invoked_path = alternate_path
+                else:
+                    job["canonical_url"] = "https://docs.metronome.com/guides/changed"
+                    job_path.write_text(json.dumps(job), encoding="utf-8")
+                    invoked_path = job_path
+                launches = []
+
+                def fake_runner(*_args, **_kwargs):
+                    launches.append(True)
+                    raise AssertionError("registry identity mismatch must not launch Luna")
+
+                output = io.StringIO()
+                with redirect_stdout(output):
+                    result = run_worker(
+                        root, invoked_path, "2026-07-18", runner=fake_runner
+                    )
+
+                self.assertEqual(1, result)
+                self.assertEqual([], launches)
+                self.assertFalse((root / job["artifact_dir"]).exists())
+                self.assertIn("immutable registry entry", output.getvalue())
 
     def test_success_writes_accepted_output_draft_receipt_and_attempt_log(self):
         root, job_path, job = self.make_root()
