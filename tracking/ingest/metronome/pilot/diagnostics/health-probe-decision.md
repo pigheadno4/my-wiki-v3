@@ -5,17 +5,17 @@
 **PASS — the current Luna health gate is satisfied.**
 
 The user-approved `gpt-5.6-luna` / `high` probe used immutable run ID
-`luna-health-2026-07-19-01` and the fixed 60-second total cap. The strict loader passed
-under the current runner code. Enterprise A/B was not launched and still requires
-separate explicit authorization.
+`luna-health-2026-07-21-01` and the fixed 60-second total cap. The strict loader passed
+under the current runner code. It authorized the separately bounded job 1a attempt; it
+does not change that job's failed terminal result or authorize job 1b.
 
 ### Current Evidence
 
-- Receipt: `health-probes/luna-health-2026-07-19-01/model-health-probe-receipt.json`
-- Finished at: `2026-07-19T05:01:48.187031Z`
-- First actual model event: 7.500209 seconds
-- Model/runtime elapsed: 8.147006 seconds
-- Total elapsed through receipt validation: 8.396738 seconds
+- Receipt: `health-probes/luna-health-2026-07-21-01/model-health-probe-receipt.json`
+- Finished at: `2026-07-21T13:19:26.061327Z`
+- First actual model event: 3.591206 seconds
+- Model/runtime elapsed: 4.526553 seconds
+- Total elapsed through receipt validation: 4.771208 seconds
 - Process exit: 0
 - Cleanup: passed; no termination was required
 - Terminal JSON: valid `{"status":"ok"}`
@@ -25,7 +25,7 @@ separate explicit authorization.
 - Terminal manifest: reconciled, including receipt, progress, events, stderr, outputs,
   and prompt/schema snapshots
 
-The receipt remains eligible through `2026-07-20T05:01:48.187031Z`, inclusive, only if
+The receipt remains eligible through `2026-07-22T13:19:26.061327Z`, inclusive, only if
 the gated runner scripts remain unchanged. Every protected comparison job must revalidate
 it before claiming work, so a job attempted after that instant—or after another runner
 change—must fail closed. This probe never participates in canonical coverage.

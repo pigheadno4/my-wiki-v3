@@ -4,6 +4,21 @@
 
 Compare GPT-5.6 Terra with the completed GPT-5.6 Luna pilot using five new English-canonical Metronome pages. Terra drafts all five pages; Luna shadows the shortest and longest pages. GPT-5.6 Sol remains the sole canonical promoter and final approver.
 
+## Current Execution Status
+
+**BLOCKED after job 1a — job 1b and all later jobs remain unstarted.**
+
+On 2026-07-21, replacement health probe `luna-health-2026-07-21-01` passed the
+strict gate. Job 1a then ran once under immutable run ID
+`luna-design-usage-events-shadow-20260721-01`. The worker read the complete 88-line raw
+file, but Luna produced no model message or terminal JSON after the raw-read tool result.
+The worker enforced its 900-second cap, sent `SIGTERM`, observed clean process and pipe
+termination without escalation, published a failed receipt, and reconciled the terminal
+artifact manifest.
+
+This failure has no model output that can be repaired deterministically. Do not retry job
+1a or start job 1b until the failure is explicitly reviewed and a new action is approved.
+
 ## Fixed Run Order
 
 | Order | Job | Mode | Model / reasoning | Raw page | Canonical target |
@@ -27,7 +42,8 @@ total. The filename and schema field names remain unchanged to avoid changing th
 worker code solely for terminology.
 
 Every comparison worker invocation must provide both a unique `--run-id` and
-`--health-probe-run-id luna-health-2026-07-19-01`. Before claiming a run directory or
+the current passing health-probe run ID. The latest passing probe is
+`luna-health-2026-07-21-01`. Before claiming a run directory or
 launching a model, the worker reconciles its own immutable registry entry and revalidates
 the probe's freshness, runner provenance, artifacts, hashes, timing, and terminal receipt.
 A missing, stale, future-dated, tampered, or provenance-mismatched probe blocks that job.
