@@ -7,7 +7,9 @@
 The user-approved `gpt-5.6-luna` / `high` probe used immutable run ID
 `luna-health-2026-07-21-01` and the fixed 60-second total cap. The strict loader passed
 under the current runner code. It authorized the separately bounded job 1a attempt; it
-does not change that job's failed terminal result or authorize job 1b.
+later passed again before the explicitly approved job 1b attempt. Both full-page jobs
+failed independently at their 900-second caps, so this probe demonstrates short-request
+reachability only; it does not predict long-job completion or authorize job 2.
 
 ### Current Evidence
 

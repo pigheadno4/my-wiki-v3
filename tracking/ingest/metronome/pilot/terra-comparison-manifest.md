@@ -6,7 +6,7 @@ Compare GPT-5.6 Terra with the completed GPT-5.6 Luna pilot using five new Engli
 
 ## Current Execution Status
 
-**BLOCKED after job 1a — job 1b and all later jobs remain unstarted.**
+**STOPPED after job 1B — job 2 and all later jobs remain unstarted.**
 
 On 2026-07-21, replacement health probe `luna-health-2026-07-21-01` passed the
 strict gate. Job 1a then ran once under immutable run ID
@@ -16,8 +16,29 @@ The worker enforced its 900-second cap, sent `SIGTERM`, observed clean process a
 termination without escalation, published a failed receipt, and reconciled the terminal
 artifact manifest.
 
-This failure has no model output that can be repaired deterministically. Do not retry job
-1a or start job 1b until the failure is explicitly reviewed and a new action is approved.
+This failure has no model output that can be repaired deterministically. On 2026-07-21,
+the failure was explicitly reviewed and the following bounded decision was approved:
+
+- Do not retry job 1a.
+- Use the successful July 16 Luna shadow artifact only as the page-quality baseline. Its
+  older runtime instrumentation is not treated as directly comparable to the current
+  diagnostic worker.
+- Count the July 21 gated timeout as a Luna reliability failure in the final comparison.
+- Permit exactly one gated Terra job 1b attempt for the same raw page.
+- After job 1b, require a full-raw Sol review and stop again before job 2 regardless of
+  whether Terra succeeds or fails.
+
+Terra job 1b ran once under immutable run ID
+`terra-design-usage-events-20260721-01`. It emitted only `thread.started` and
+`turn.started`, never issued the raw-read command, and produced no model output. The
+worker enforced its 900-second cap, terminated cleanly, and published a valid failed
+receipt and terminal manifest. The required Sol review is recorded in
+`terra-comparison-job-1-review.md`.
+
+The comparison cannot produce a Terra-versus-Luna quality result for this page. Both
+current gated full-page attempts failed under the shared long-job runtime, despite the
+tiny health probe passing immediately beforehand. Do not start job 2 until that shared
+runtime path is investigated and a new action is explicitly approved.
 
 ## Fixed Run Order
 
