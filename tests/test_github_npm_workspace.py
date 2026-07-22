@@ -290,6 +290,32 @@ class NpmWorkspaceTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "^needs-policy-review:missing-package-manifest"):
             resolve_workspace(tree, self.capsule("root", generated=()))
 
+    def test_workspace_namespace_container_is_not_treated_as_a_package(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(
+                    "root",
+                    workspaces=[
+                        "packages/*",
+                        "packages/react-paypal-js-storybook/*",
+                    ],
+                ),
+                "packages/react-paypal-js-storybook/v6/package.json": manifest(
+                    "@paypal/react-paypal-js-storybook-v6"
+                ),
+            }
+        )
+
+        resolution = resolve_workspace(
+            tree,
+            self.capsule("@paypal/react-paypal-js-storybook-v6", generated=()),
+        )
+
+        self.assertEqual(
+            ("packages/react-paypal-js-storybook/v6",),
+            tuple(item.path for item in resolution.packages),
+        )
+
     def test_package_identity_and_duplicate_names_are_rejected(self):
         invalid = self.tree({"package.json": manifest("BadName")})
         with self.assertRaisesRegex(ValueError, "^needs-policy-review:invalid-package-identity"):

@@ -260,6 +260,7 @@ def _read_package(
 
 def _discover_package_paths(root_manifest: Mapping[str, object], blobs: Sequence[GitBlob]) -> Tuple[str, ...]:
     patterns = _workspace_patterns(root_manifest)
+    blob_paths = frozenset(blob.path for blob in blobs)
     directories: Set[str] = set()
     for blob in blobs:
         parts = blob.path.split("/")[:-1]
@@ -272,6 +273,7 @@ def _discover_package_paths(root_manifest: Mapping[str, object], blobs: Sequence
         and (not isinstance(version, str) or not version)
     )
     discovered = set() if root_is_container else {""}
+    matched: Set[str] = set()
     for pattern in patterns:
         pattern_parts = pattern.split("/")
         for directory in directories:
@@ -279,7 +281,17 @@ def _discover_package_paths(root_manifest: Mapping[str, object], blobs: Sequence
             if len(parts) != len(pattern_parts):
                 continue
             if all(expected == "*" or expected == actual for expected, actual in zip(pattern_parts, parts)):
-                discovered.add(directory)
+                matched.add(directory)
+    for directory in matched:
+        manifest_path = directory + "/package.json"
+        has_package_descendant = any(
+            other.startswith(directory + "/")
+            and other + "/package.json" in blob_paths
+            for other in matched
+        )
+        if manifest_path not in blob_paths and has_package_descendant:
+            continue
+        discovered.add(directory)
     return tuple(sorted(discovered))
 
 
