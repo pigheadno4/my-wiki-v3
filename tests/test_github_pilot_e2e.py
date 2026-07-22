@@ -110,7 +110,7 @@ class GitHubPilotEndToEndTests(unittest.TestCase):
                     ),
                     default_required_roots=("src",),
                     default_generated_target_paths=("dist/",),
-                    excluded_categories=("tests", "stories", "fixtures"),
+                    excluded_categories=("tests", "fixtures"),
                     max_file_bytes=512000,
                     max_capsule_files=120,
                     max_capsule_utf8_bytes=1500000,
@@ -162,6 +162,9 @@ class GitHubPilotEndToEndTests(unittest.TestCase):
                     ),
                     "packages/paypal-js/test/loading.test.ts": (
                         "export const expected = '" + paypal_version + "';\n"
+                    ),
+                    "packages/react-paypal-js/stories/provider.stories.tsx": (
+                        "export const version = '" + react_version + "';\n"
                     ),
                     "packages/react-paypal-js/package.json": package_manifest(
                         "@paypal/react-paypal-js", react_version
@@ -235,7 +238,7 @@ adapter="npm-tracked-source-v1"
 focus_packages=["@paypal/paypal-js", "@paypal/react-paypal-js"]
 default_required_roots=["src"]
 default_generated_target_paths=["dist/"]
-excluded_categories=["tests", "stories", "fixtures"]
+excluded_categories=["tests", "fixtures"]
 max_file_bytes=512000
 max_capsule_files=120
 max_capsule_utf8_bytes=1500000
@@ -300,7 +303,11 @@ max_packet_utf8_bytes=1800000
         }
         self.assertIn("packages/paypal-js/src/internal/load-script.ts", saved_paths)
         self.assertIn("packages/paypal-js/docs/loading.md", saved_paths)
-        self.assertIn("packages/paypal-js/test/loading.test.ts", saved_paths)
+        self.assertNotIn("packages/paypal-js/test/loading.test.ts", saved_paths)
+        self.assertIn(
+            "packages/react-paypal-js/stories/provider.stories.tsx",
+            saved_paths,
+        )
 
         unchanged = self.collect("future", "2026-07-21")
         self.assertEqual("unchanged", unchanged.state)

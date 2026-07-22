@@ -23,6 +23,8 @@ The focused PayPal JS pilot retains:
 
 The policy is registry-driven rather than hard-coded to PayPal. Add future repositories or companies by adding reviewed registry rows and capsule policies.
 
+For the focused PayPal JS pilot, changed tests and fixtures remain excluded by capsule policy. Stories remain eligible because they document supported component states and integration behavior. Explicitly required public targets still take precedence over category exclusions.
+
 ## Evidence layout
 
 One exact repository SHA has one immutable source snapshot:

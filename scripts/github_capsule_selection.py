@@ -250,6 +250,17 @@ def resolve_npm_capsule(
         for root in package.tracked_declaration_roots:
             for path in package.owned_paths:
                 if _below_root(path, root):
+                    repository_path = _join(package.path, path)
+                    categories = _excluded_categories(
+                        path,
+                        normalized.excluded_categories,
+                    )
+                    if categories and repository_path not in candidate_reasons:
+                        for category in categories:
+                            excluded.add(
+                                (repository_path, "excluded-category:" + category)
+                            )
+                        continue
                     _select(
                         candidate_reasons,
                         package,
@@ -290,7 +301,13 @@ def resolve_npm_capsule(
                     "invalid-workspace-resolution",
                 )
 
-    _select_changed_paths(candidate_reasons, workspace, changed_paths)
+    _select_changed_paths(
+        candidate_reasons,
+        workspace,
+        changed_paths,
+        normalized.excluded_categories,
+        excluded,
+    )
     excluded = {
         item for item in excluded if item[0] not in candidate_reasons
     }
@@ -386,6 +403,8 @@ def _select_changed_paths(
     selected: Dict[str, Tuple[str, str, Set[str]]],
     workspace: WorkspaceResolution,
     changed_paths: Sequence[str],
+    excluded_categories: Sequence[str],
+    excluded: Set[Tuple[str, str]],
 ) -> None:
     if isinstance(changed_paths, (str, bytes)):
         raise TypeError("changed_paths must be a sequence of paths")
@@ -402,6 +421,11 @@ def _select_changed_paths(
         package = max(owners, key=lambda item: len(item.path))
         prefix = package.path + "/" if package.path else ""
         relative = path[len(prefix):]
+        categories = _excluded_categories(relative, excluded_categories)
+        if categories and path not in selected:
+            for category in categories:
+                excluded.add((path, "excluded-category:" + category))
+            continue
         current = selected.get(path)
         if current is None:
             selected[path] = (

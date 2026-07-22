@@ -183,10 +183,7 @@ class CapsuleSelectionTests(unittest.TestCase):
             "tracked-declaration-directory",
             reasons["types/sibling.d.ts"],
         )
-        self.assertEqual(
-            "tracked-declaration-directory",
-            reasons["types/fixtures/kept.d.ts"],
-        )
+        self.assertNotIn("types/fixtures/kept.d.ts", reasons)
         self.assertEqual("required-root", reasons["src/index.js"])
         self.assertNotIn("docs/readme.md", reasons)
         self.assertNotIn("src/main.test.js", reasons)
@@ -199,6 +196,7 @@ class CapsuleSelectionTests(unittest.TestCase):
                 ("src/stories/item.js", "excluded-category:stories"),
                 ("src/tests/fixtures/both.js", "excluded-category:fixtures"),
                 ("src/tests/fixtures/both.js", "excluded-category:tests"),
+                ("types/fixtures/kept.d.ts", "excluded-category:fixtures"),
             ),
             result.excluded,
         )
@@ -212,28 +210,44 @@ class CapsuleSelectionTests(unittest.TestCase):
         self.assertEqual("source-capsule", cli.purpose)
         self.assertEqual(tuple(sorted(reasons)), tuple(item.path for item in result.files))
 
-    def test_changed_release_evidence_is_collected_outside_the_normal_capsule(self):
+    def test_changed_release_evidence_respects_exclusions_and_keeps_stories(self):
         tree = self.tree(
             {
                 "package.json": manifest(),
                 "src/index.ts": "export const value = 1;\n",
                 "test/public-api.test.ts": "test('public api', () => {});\n",
+                "stories/new-option.stories.tsx": "export const NewOption = {};\n",
+                "fixtures/new-option.json": "{}\n",
                 "docs/new-option.md": "# New option\n",
             }
         )
 
         result = resolve_npm_capsule(
             tree,
-            self.capsule(),
+            self.capsule(excluded_categories=("tests", "fixtures")),
             (),
-            changed_paths=("test/public-api.test.ts", "docs/new-option.md"),
+            changed_paths=(
+                "test/public-api.test.ts",
+                "stories/new-option.stories.tsx",
+                "fixtures/new-option.json",
+                "docs/new-option.md",
+            ),
         )
 
         selected = {item.path: item.classification_reason for item in result.files}
         self.assertEqual(
-            "changed-release-evidence", selected["test/public-api.test.ts"]
+            "changed-release-evidence", selected["stories/new-option.stories.tsx"]
         )
         self.assertEqual("changed-release-evidence", selected["docs/new-option.md"])
+        self.assertNotIn("test/public-api.test.ts", selected)
+        self.assertNotIn("fixtures/new-option.json", selected)
+        self.assertEqual(
+            (
+                ("fixtures/new-option.json", "excluded-category:fixtures"),
+                ("test/public-api.test.ts", "excluded-category:tests"),
+            ),
+            result.excluded,
+        )
 
     def test_changed_path_outside_included_packages_is_not_collected(self):
         tree = self.tree(
@@ -482,7 +496,7 @@ class CapsuleSelectionTests(unittest.TestCase):
             tuple(item.path for item in result.files),
         )
 
-    def test_exclusions_do_not_override_manifest_include_target_or_declaration_rules(self):
+    def test_explicit_targets_override_exclusions_but_declaration_expansion_does_not(self):
         tree = self.tree(
             {
                 "package.json": manifest(
@@ -507,12 +521,12 @@ class CapsuleSelectionTests(unittest.TestCase):
         self.assertEqual("tracked-main-target", reasons["tests/main.js"])
         self.assertEqual("include-path", reasons["stories/manual.js"])
         self.assertEqual("tracked-types-target", reasons["fixtures/types/index.d.ts"])
+        self.assertNotIn("fixtures/types/more.d.ts", reasons)
         self.assertEqual(
-            "tracked-declaration-directory",
-            reasons["fixtures/types/more.d.ts"],
-        )
-        self.assertEqual(
-            (("src/tests/excluded.js", "excluded-category:tests"),),
+            (
+                ("fixtures/types/more.d.ts", "excluded-category:fixtures"),
+                ("src/tests/excluded.js", "excluded-category:tests"),
+            ),
             result.excluded,
         )
 
@@ -563,7 +577,7 @@ class CapsuleSelectionTests(unittest.TestCase):
         selected_file = next(item for item in selected.files if item.path == path)
         self.assertEqual("required-root", selected_file.classification_reason)
 
-    def test_root_level_type_target_requires_the_complete_package_declaration_directory(self):
+    def test_root_level_type_target_respects_category_exclusions_in_declaration_directory(self):
         tree = self.tree(
             {
                 "package.json": manifest(types="./index.d.ts"),
@@ -583,12 +597,15 @@ class CapsuleSelectionTests(unittest.TestCase):
             ),
             result.required_roots,
         )
-        self.assertEqual((), result.excluded)
+        self.assertEqual(
+            (("src/value.test.js", "excluded-category:tests"),),
+            result.excluded,
+        )
         reasons = {item.path: item.classification_reason for item in result.files}
         self.assertEqual("tracked-types-target", reasons["index.d.ts"])
         self.assertEqual("tracked-declaration-directory", reasons["sibling.d.ts"])
         self.assertEqual("tracked-declaration-directory", reasons["docs/readme.md"])
-        self.assertEqual("required-root", reasons["src/value.test.js"])
+        self.assertNotIn("src/value.test.js", reasons)
 
     def test_missing_required_root_and_include_need_policy_review(self):
         tree = self.tree({"package.json": manifest(), "other.js": "other\n"})
