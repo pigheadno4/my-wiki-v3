@@ -92,6 +92,29 @@ class NpmWorkspaceTests(unittest.TestCase):
                 resolution = resolve_workspace(self.tree(files), self.capsule(focus, generated=()))
                 self.assertEqual((focus,), tuple(item.name for item in resolution.packages))
 
+    def test_private_unversioned_workspace_root_is_a_container_not_a_package(self):
+        tree = self.tree(
+            {
+                "package.json": json.dumps(
+                    {
+                        "name": "@paypal/paypal-js-root",
+                        "private": True,
+                        "workspaces": ["packages/*"],
+                    }
+                ),
+                "packages/paypal-js/package.json": manifest("@paypal/paypal-js"),
+                "packages/paypal-js/src/index.ts": "export const loadScript = 1;\n",
+            }
+        )
+
+        resolution = resolve_workspace(
+            tree,
+            self.capsule("@paypal/paypal-js", generated=()),
+        )
+
+        self.assertEqual(("@paypal/paypal-js",), tuple(item.name for item in resolution.packages))
+        self.assertEqual(("packages/paypal-js",), tuple(item.path for item in resolution.packages))
+
     def test_capsule_manifest_limit_overrides_constructor_for_root_and_child(self):
         root_manifest = manifest("root", description="r" * 80)
         child_root_manifest = manifest("root", workspaces=["packages/*"])

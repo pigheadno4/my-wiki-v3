@@ -265,7 +265,13 @@ def _discover_package_paths(root_manifest: Mapping[str, object], blobs: Sequence
         parts = blob.path.split("/")[:-1]
         for index in range(1, len(parts) + 1):
             directories.add("/".join(parts[:index]))
-    discovered = {""}
+    version = root_manifest.get("version")
+    root_is_container = (
+        bool(patterns)
+        and root_manifest.get("private") is True
+        and (not isinstance(version, str) or not version)
+    )
+    discovered = set() if root_is_container else {""}
     for pattern in patterns:
         pattern_parts = pattern.split("/")
         for directory in directories:
@@ -291,10 +297,15 @@ def _assign_package_blobs(
     )
     for repository_path, blob in blobs_by_path.items():
         owner = next(
-            path
-            for path in deepest_first
-            if not path or repository_path.startswith(path + "/")
+            (
+                path
+                for path in deepest_first
+                if not path or repository_path.startswith(path + "/")
+            ),
+            None,
         )
+        if owner is None:
+            continue
         relative_path = repository_path[len(owner) + 1 :] if owner else repository_path
         owned[owner][relative_path] = blob
         for ancestor in package_paths:
