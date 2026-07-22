@@ -1012,7 +1012,7 @@ class CapsuleSelectionTests(unittest.TestCase):
             }
         )
         candidate_sizes = tuple(
-            blob.size
+            tree.blob_size(blob.path)
             for blob in tree.blobs()
             if blob.path in ("package.json", "src/a.txt", "src/b.txt")
         )
@@ -1065,7 +1065,7 @@ class CapsuleSelectionTests(unittest.TestCase):
                 "src/a.txt": "a",
             }
         )
-        manifest_size = self.blob(tree, "package.json").size
+        manifest_size = tree.blob_size("package.json")
 
         exact = resolve_npm_capsule(
             tree,

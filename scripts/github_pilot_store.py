@@ -296,7 +296,7 @@ def _snapshot_files(
         if path in selected or path not in blobs:
             continue
         blob = blobs[path]
-        if blob.size is None or blob.size > config.max_file_bytes:
+        if blob.mode not in ("100644", "100755") or tree.blob_size(path) > config.max_file_bytes:
             raise PilotStoreError("repository context file exceeds max_file_bytes")
         content = tree.read_blob(path, max_bytes=config.max_file_bytes)
         item = CapsuleFile(

@@ -487,7 +487,7 @@ def _selected_blobs(
         blob = blobs_by_path.get(path)
         if blob is None:
             _review("unsafe-required-file", "selected path is not a Git tree entry: " + path)
-        if blob.mode not in _REGULAR_MODES or blob.size is None:
+        if blob.mode not in _REGULAR_MODES:
             _review(
                 "unsafe-required-file",
                 "selected path is not a regular Git blob: " + path,
@@ -512,7 +512,7 @@ def _read_selected_files(
     findings: Set[SecretFinding] = set()
     total_bytes = 0
     for path, blob in selected_blobs:
-        if blob.size is None or blob.size > capsule.max_file_bytes:
+        if tree.blob_size(path) > capsule.max_file_bytes:
             _review(
                 "capsule-budget-exceeded",
                 "path=" + path + " exceeds max_file_bytes",

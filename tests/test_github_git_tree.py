@@ -51,14 +51,14 @@ class GitTreeTests(unittest.TestCase):
             capture_output=True,
         ).stdout.strip()
 
-    def test_blobs_enumerates_exact_tree_modes_and_sizes(self):
+    def test_blobs_enumerates_exact_tree_modes_and_resolves_selected_size(self):
         blobs = {blob.path: blob for blob in GitTree(self.repo, self.sha).blobs()}
 
         self.assertEqual("100644", blobs["packages/widget/package.json"].mode)
         self.assertEqual("100755", blobs["src/cli.sh"].mode)
         self.assertEqual("120000", blobs["docs/current"].mode)
         self.assertEqual("160000", blobs["vendor/dependency"].mode)
-        self.assertEqual(len(b"before\0after"), blobs["src/nul.txt"].size)
+        self.assertEqual(len(b"before\0after"), GitTree(self.repo, self.sha).blob_size("src/nul.txt"))
         self.assertEqual("blob", self.git("cat-file", "-t", blobs["assets/lfs.bin"].oid))
         self.assertEqual(b"\xff\x00\x80", GitTree(self.repo, self.sha).read_blob("assets/binary.bin"))
         self.assertEqual(b"before\0after", GitTree(self.repo, self.sha).read_blob("src/nul.txt"))
@@ -71,7 +71,7 @@ class GitTreeTests(unittest.TestCase):
 
         self.assertEqual(committed, content)
 
-    def test_uses_ls_tree_and_cat_file_with_the_exact_commit(self):
+    def test_defers_blob_size_lookup_until_selected_blob_read(self):
         tree = GitTree(self.repo, self.sha)
 
         with mock.patch("github_git_tree.subprocess.run", wraps=subprocess.run) as run:
@@ -79,7 +79,12 @@ class GitTreeTests(unittest.TestCase):
             tree.read_blob("packages/widget/package.json")
 
         commands = [tuple(call.args[0]) for call in run.call_args_list]
-        self.assertIn(("git", "ls-tree", "-r", "-z", "--long", self.sha), commands)
+        self.assertIn(("git", "ls-tree", "-r", "-z", self.sha), commands)
+        self.assertNotIn(("git", "ls-tree", "-r", "-z", "--long", self.sha), commands)
+        self.assertIn(
+            ("git", "cat-file", "-s", self.sha + ":packages/widget/package.json"),
+            commands,
+        )
         self.assertIn(
             ("git", "cat-file", "blob", self.sha + ":packages/widget/package.json"),
             commands,

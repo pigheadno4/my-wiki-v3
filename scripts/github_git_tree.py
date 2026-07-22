@@ -5,7 +5,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
-from typing import Any, Optional, Sequence, Tuple
+from typing import Any, Dict, Optional, Sequence, Tuple
 
 from github_canonical import safe_policy_path
 
@@ -43,6 +43,7 @@ class GitTree:
         self._sha = sha
         self._max_blob_bytes = max_blob_bytes
         self._blobs: Optional[Tuple[GitBlob, ...]] = None
+        self._sizes: Dict[str, int] = {}
         self._is_exact_commit: Optional[bool] = None
 
     @property
@@ -55,7 +56,7 @@ class GitTree:
         if self._blobs is None:
             self._require_exact_commit()
             output = _run_git_bytes(
-                ["ls-tree", "-r", "-z", "--long", self._sha], self._repo_root
+                ["ls-tree", "-r", "-z", self._sha], self._repo_root
             )
             entries = tuple(_parse_ls_tree_entry(item) for item in output.split(b"\0") if item)
             paths = tuple(entry.path for entry in entries)
@@ -64,23 +65,36 @@ class GitTree:
             self._blobs = tuple(sorted(entries, key=lambda entry: entry.path))
         return self._blobs
 
+    def blob_size(self, path: str) -> int:
+        """Resolve the size of one selected blob without sizing the entire tree."""
+        blob = self._blob(path)
+        if blob.mode == "160000":
+            raise ValueError("path is not tracked as a blob: " + path)
+        if path not in self._sizes:
+            raw_size = _run_git_bytes(
+                ["cat-file", "-s", self._sha + ":" + path], self._repo_root
+            ).strip()
+            try:
+                size = int(raw_size)
+            except ValueError as error:
+                raise GitObjectReadError("Git blob size is invalid") from error
+            if size < 0:
+                raise GitObjectReadError("Git blob size is invalid")
+            self._sizes[path] = size
+        return self._sizes[path]
+
     def read_blob(self, path: str, max_bytes: Optional[int] = None) -> bytes:
         """Read one bounded tracked blob by its safe repository-relative path."""
         limit = self._max_blob_bytes if max_bytes is None else _read_limit(max_bytes)
-        if not safe_policy_path(path):
-            raise ValueError("path must be a safe repository-relative POSIX path")
-        blob = next((entry for entry in self.blobs() if entry.path == path), None)
-        if blob is None:
-            raise ValueError("path is not tracked by the exact Git tree: " + path)
-        if blob.size is None:
-            raise ValueError("Git tree entry is not a blob: " + path)
-        if blob.size > limit:
+        self._blob(path)
+        size = self.blob_size(path)
+        if size > limit:
             raise ValueError("Git blob exceeds byte limit: " + path)
 
         content = _run_git_bytes(
             ["cat-file", "blob", self._sha + ":" + path], self._repo_root
         )
-        if len(content) != blob.size:
+        if len(content) != size:
             raise GitObjectReadError("Git blob read size did not match tree metadata")
         return content
 
@@ -108,15 +122,23 @@ class GitTree:
         if not self._is_exact_commit:
             raise ValueError("sha must name an exact commit")
 
+    def _blob(self, path: str) -> GitBlob:
+        if not safe_policy_path(path):
+            raise ValueError("path must be a safe repository-relative POSIX path")
+        blob = next((entry for entry in self.blobs() if entry.path == path), None)
+        if blob is None:
+            raise ValueError("path is not tracked by the exact Git tree: " + path)
+        return blob
+
 
 def _parse_ls_tree_entry(value: bytes) -> GitBlob:
     metadata, separator, raw_path = value.partition(b"\t")
     if not separator or not raw_path:
         raise ValueError("malformed git ls-tree entry")
     fields = metadata.split()
-    if len(fields) != 4:
+    if len(fields) != 3:
         raise ValueError("malformed git ls-tree metadata")
-    raw_mode, object_type, raw_oid, raw_size = fields
+    raw_mode, object_type, raw_oid = fields
     try:
         mode = raw_mode.decode("ascii")
         oid = raw_oid.decode("ascii")
@@ -126,14 +148,8 @@ def _parse_ls_tree_entry(value: bytes) -> GitBlob:
     if len(mode) != 6 or not mode.isdigit() or not _is_object_id(oid):
         raise ValueError("malformed git ls-tree metadata")
     if object_type == b"blob":
-        try:
-            size = int(raw_size)
-        except ValueError as error:
-            raise ValueError("blob size is invalid: " + path) from error
-        if size < 0:
-            raise ValueError("blob size is invalid: " + path)
-        return GitBlob(path=path, oid=oid, mode=mode, size=size)
-    if object_type == b"commit" and mode == "160000" and raw_size == b"-":
+        return GitBlob(path=path, oid=oid, mode=mode, size=None)
+    if object_type == b"commit" and mode == "160000":
         return GitBlob(path=path, oid=oid, mode=mode, size=None)
     raise ValueError("unsupported Git tree entry: " + path)
 
