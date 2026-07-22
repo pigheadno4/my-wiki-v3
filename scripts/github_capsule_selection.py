@@ -505,7 +505,10 @@ def _read_selected_files(
     if len(selected_blobs) > capsule.max_capsule_files:
         _review(
             "capsule-budget-exceeded",
-            "selected file count exceeds max_capsule_files",
+            "selected file count "
+            + str(len(selected_blobs))
+            + " exceeds max_capsule_files "
+            + str(capsule.max_capsule_files),
         )
 
     files: List[CapsuleFile] = []

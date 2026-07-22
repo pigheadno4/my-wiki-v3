@@ -1039,15 +1039,19 @@ class CapsuleSelectionTests(unittest.TestCase):
                 max_capsule_utf8_bytes=total,
             ),
         )
-        self.assert_policy_review(
-            "capsule-budget-exceeded",
-            tree,
-            self.capsule(
-                max_file_bytes=maximum,
-                max_capsule_files=2,
-                max_capsule_utf8_bytes=total,
-            ),
-        )
+        with self.assertRaisesRegex(
+            ValueError,
+            r"selected file count 3 exceeds max_capsule_files 2$",
+        ):
+            resolve_npm_capsule(
+                tree,
+                self.capsule(
+                    max_file_bytes=maximum,
+                    max_capsule_files=2,
+                    max_capsule_utf8_bytes=total,
+                ),
+                (),
+            )
         self.assert_policy_review(
             "capsule-budget-exceeded",
             tree,
