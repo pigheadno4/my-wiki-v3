@@ -1,0 +1,5737 @@
+diff --git a/packages/react-paypal-js/.storybook/main.js b/packages/react-paypal-js/.storybook/main.js
+deleted file mode 100644
+index 3f703b3..0000000
+--- a/packages/react-paypal-js/.storybook/main.js
++++ /dev/null
+@@ -1,25 +0,0 @@
+-module.exports = {
+-  stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
+-  addons: [
+-    "@storybook/addon-links",
+-    {
+-      name: "@storybook/addon-essentials",
+-      options: {
+-        controls: true,
+-        actions: true,
+-      },
+-    },
+-  ],
+-  typescript: {
+-    check: false,
+-    checkOptions: {},
+-    reactDocgen: "react-docgen-typescript-plugin",
+-    reactDocgenTypescriptOptions: {
+-      // the Storybook docs need this to render the props table for <PayPalButtons />
+-      compilerOptions: {
+-        allowSyntheticDefaultImports: false,
+-        esModuleInterop: false,
+-      },
+-    },
+-  },
+-};
+diff --git a/packages/react-paypal-js/.storybook/manager-head.html b/packages/react-paypal-js/.storybook/manager-head.html
+deleted file mode 100644
+index ad60df2..0000000
+--- a/packages/react-paypal-js/.storybook/manager-head.html
++++ /dev/null
+@@ -1,5 +0,0 @@
+-<link
+-  rel="icon"
+-  type="image/png"
+-  href="https://www.paypalobjects.com/favicon.ico"
+-/>
+diff --git a/packages/react-paypal-js/.storybook/preview-head.html b/packages/react-paypal-js/.storybook/preview-head.html
+deleted file mode 100644
+index 664e505..0000000
+--- a/packages/react-paypal-js/.storybook/preview-head.html
++++ /dev/null
+@@ -1,111 +0,0 @@
+-<style>
+-  /* styles for readme */
+-  .badges {
+-    margin-bottom: 16px !important;
+-  }
+-
+-  .badges > a {
+-    margin-right: 4px;
+-  }
+-
+-  /* styles for marks story */
+-  .mark {
+-    display: flex;
+-    align-items: center;
+-  }
+-
+-  .spinner {
+-    display: inline-block;
+-    height: 40px;
+-    width: 40px;
+-    box-sizing: border-box;
+-    border: 3px solid rgba(0, 0, 0, 0.2);
+-    border-top-color: rgba(33, 128, 192, 0.8);
+-    border-radius: 100%;
+-    animation: rotation 0.7s infinite linear;
+-  }
+-
+-  .spinner.tiny {
+-    height: 20px;
+-    width: 20px;
+-    border-top-color: #007bff;
+-    position: relative;
+-    top: 3px;
+-  }
+-
+-  @keyframes rotation {
+-    0% {
+-      transform: rotate(0deg);
+-    }
+-    100% {
+-      transform: rotate(359deg);
+-    }
+-  }
+-
+-  .table {
+-    width: 100%;
+-    max-width: 100%;
+-    margin-bottom: 1rem;
+-    background-color: transparent;
+-    border: 1px solid #dee2e6;
+-    border-collapse: collapse;
+-    text-align: left;
+-  }
+-
+-  .table th,
+-  .table td {
+-    padding: 0.75rem;
+-    vertical-align: top;
+-    border: 1px solid #dee2e6;
+-  }
+-
+-  .card-field {
+-    width: 100%;
+-    padding: 12px;
+-    border: 1px solid #ccc;
+-    border-radius: 4px;
+-    box-sizing: border-box;
+-    margin-top: 6px;
+-    margin-bottom: 16px;
+-    resize: vertical;
+-    height: 40px;
+-    background: white;
+-    font-size: 17px;
+-    color: #3a3a3a;
+-    font-family: helvetica, tahoma, calibri, sans-serif;
+-  }
+-
+-  .btn {
+-    display: inline-block;
+-    font-weight: 400;
+-    text-align: center;
+-    white-space: nowrap;
+-    vertical-align: middle;
+-    -webkit-user-select: none;
+-    -moz-user-select: none;
+-    -ms-user-select: none;
+-    user-select: none;
+-    border: 1px solid transparent;
+-    padding: 0.375rem 0.75rem;
+-    font-size: 1rem;
+-    line-height: 1.5;
+-    border-radius: 0.25rem;
+-    transition:
+-      color 0.15s ease-in-out,
+-      background-color 0.15s ease-in-out,
+-      border-color 0.15s ease-in-out,
+-      box-shadow 0.15s ease-in-out;
+-    cursor: pointer;
+-  }
+-
+-  .btn-primary {
+-    color: #fff;
+-    background-color: #007bff;
+-    border-color: #007bff;
+-  }
+-
+-  .code-json {
+-    margin-left: 2em;
+-    line-height: 2em;
+-  }
+-</style>
+diff --git a/packages/react-paypal-js/.storybook/preview.js b/packages/react-paypal-js/.storybook/preview.js
+deleted file mode 100644
+index 4ab9fdf..0000000
+--- a/packages/react-paypal-js/.storybook/preview.js
++++ /dev/null
+@@ -1,22 +0,0 @@
+-export const parameters = {
+-  actions: { argTypesRegex: "^on[A-Z].*" },
+-  options: {
+-    storySort: {
+-      order: [
+-        "PayPal",
+-        [
+-          "PayPalButtons",
+-          "PayPalCardFields",
+-          "PayPalHostedFields",
+-          "PayPalHostedFieldsProvider",
+-          "PayPalMarks",
+-          "PayPalMessages",
+-          "Subscriptions",
+-          "VenmoButton",
+-          "PayPalScriptProvider",
+-        ],
+-        "Braintree",
+-      ],
+-    },
+-  },
+-};
+diff --git a/packages/react-paypal-js/CHANGELOG.md b/packages/react-paypal-js/CHANGELOG.md
+index d24079d..b23d3c4 100644
+--- a/packages/react-paypal-js/CHANGELOG.md
++++ b/packages/react-paypal-js/CHANGELOG.md
+@@ -1,5 +1,13 @@
+ # Changelog
+ 
++## 10.1.1
++
++### Patch Changes
++
++- 6714f3f: Migrate the v5 React SDK Storybook from Storybook 6 to Storybook 10 (`@storybook/react-vite`) and extract it out of this package into its own `@paypal/react-paypal-js-storybook-v5` workspace (mirroring the v6 storybook). This is a tooling/dev-dependency change only — the published package output is unchanged; it removes the Storybook toolchain from this library's devDependencies.
++- Updated dependencies [cfcb985]
++  - @paypal/paypal-js@10.0.2
++
+ ## 10.1.0
+ 
+ ### Minor Changes
+diff --git a/packages/react-paypal-js/package.json b/packages/react-paypal-js/package.json
+index f42f78f..adea21b 100644
+--- a/packages/react-paypal-js/package.json
++++ b/packages/react-paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@paypal/react-paypal-js",
+-  "version": "10.1.0",
++  "version": "10.1.1",
+   "description": "React components for the PayPal JS SDK",
+   "keywords": [
+     "react",
+@@ -35,7 +35,6 @@
+   },
+   "scripts": {
+     "build": "rollup --config --bundleConfigAsCjs",
+-    "build-storybook": "build-storybook -o ../../docs/web-sdk-v5-react-storybook",
+     "check-node-version": "node scripts/check-node-version.js",
+     "dev": "concurrently \"rollup --config --bundleConfigAsCjs --watch\" \"npm run type-declarations -- --watch\"",
+     "lint": "eslint . && npm run typecheck",
+@@ -43,8 +42,6 @@
+     "prepack": "rimraf dist && npm run build && npm run type-declarations",
+     "prerelease": "npm run validate",
+     "release": "standard-version",
+-    "start": "npm run check-node-version && npm run storybook",
+-    "storybook": "start-storybook -p 6006",
+     "test": "jest --env=jsdom",
+     "test:watch": "jest --env=jsdom --watch",
+     "type-declarations": "tsc --emitDeclarationOnly --outDir dist/types --project tsconfig.declarations.json",
+@@ -62,7 +59,7 @@
+   },
+   "homepage": "https://paypal.github.io/paypal-js/web-sdk-v6-react-storybook/",
+   "dependencies": {
+-    "@paypal/paypal-js": "^10.0.1",
++    "@paypal/paypal-js": "^10.0.2",
+     "@paypal/sdk-constants": "^1.0.122",
+     "server-only": "^0.0.1"
+   },
+@@ -71,17 +68,11 @@
+     "@babel/preset-env": "^7.16.11",
+     "@babel/preset-react": "^7.16.7",
+     "@babel/preset-typescript": "^7.16.7",
+-    "@codesandbox/sandpack-react": "^0.14.0",
+     "@rollup/plugin-babel": "^6.0.4",
+     "@rollup/plugin-node-resolve": "^16.0.1",
+     "@rollup/plugin-replace": "^6.0.2",
+     "@rollup/plugin-terser": "^0.4.4",
+     "@rollup/plugin-typescript": "^12.1.4",
+-    "@storybook/addon-actions": "^6.4.9",
+-    "@storybook/addon-docs": "^6.4.9",
+-    "@storybook/addon-essentials": "^6.4.9",
+-    "@storybook/addon-links": "^6.4.9",
+-    "@storybook/react": "^6.4.9",
+     "@testing-library/jest-dom": "^6.6.3",
+     "@testing-library/react": "^12.1.3",
+     "@testing-library/react-hooks": "^7.0.2",
+@@ -89,11 +80,9 @@
+     "@types/jest": "^27.4.0",
+     "@types/react": "^17.0.39",
+     "@types/react-dom": "^17.0.11",
+-    "@types/string-template": "^1.0.2",
+     "@typescript-eslint/eslint-plugin": "^8.59.0",
+     "@typescript-eslint/parser": "^8.59.0",
+     "babel-jest": "^27.5.1",
+-    "babel-loader": "^8.2.3",
+     "eslint": "^8.9.0",
+     "eslint-config-prettier": "^8.4.0",
+     "eslint-plugin-import": "^2.25.4",
+@@ -105,9 +94,7 @@
+     "jest-environment-jsdom": "^29.7.0",
+     "jest-mock-extended": "^3.0.4",
+     "react": "^17.0.2",
+-    "react-docgen-typescript-plugin": "^1.0.8",
+     "react-dom": "^17.0.2",
+-    "react-element-to-jsx-string": "^14.3.4",
+     "react-error-boundary": "^3.1.4",
+     "react-is": "^17.0.2",
+     "rimraf": "^3.0.2",
+@@ -116,7 +103,6 @@
+     "scheduler": "^0.20.2",
+     "semver": "^7.3.5",
+     "standard-version": "^9.3.2",
+-    "string-template": "^1.0.0",
+     "tslib": "2.6.2"
+   },
+   "peerDependencies": {
+diff --git a/packages/react-paypal-js/src/stories/GettingStarted.stories.mdx b/packages/react-paypal-js/src/stories/GettingStarted.stories.mdx
+deleted file mode 100644
+index 1fdc79c..0000000
+--- a/packages/react-paypal-js/src/stories/GettingStarted.stories.mdx
++++ /dev/null
+@@ -1,6 +0,0 @@
+-import { Meta, Description } from "@storybook/addon-docs";
+-import Readme from "../../README.md";
+-
+-<Meta title="Getting Started" />
+-
+-<Description>{Readme}</Description>
+diff --git a/packages/react-paypal-js/src/stories/PayPalMessages.stories.tsx b/packages/react-paypal-js/src/stories/PayPalMessages.stories.tsx
+deleted file mode 100644
+index 85e9f33..0000000
+--- a/packages/react-paypal-js/src/stories/PayPalMessages.stories.tsx
++++ /dev/null
+@@ -1,108 +0,0 @@
+-import React from "react";
+-
+-import { PayPalScriptProvider, PayPalMessages } from "../index";
+-import DocPageStructure from "./components/DocPageStructure";
+-import { getOptionsFromQueryString } from "./utils";
+-import { COMPONENT_PROPS_CATEGORY } from "./constants";
+-
+-import type { FC } from "react";
+-import type { PayPalScriptOptions } from "@paypal/paypal-js";
+-import type { StoryFn } from "@storybook/react";
+-import type { DocsContextProps } from "@storybook/addon-docs";
+-
+-const scriptProviderOptions: PayPalScriptOptions = {
+-  clientId: "test",
+-  components: "messages",
+-  ...getOptionsFromQueryString(),
+-};
+-
+-export default {
+-  id: "example/PayPalMessages",
+-  title: "PayPal/PayPalMessages",
+-  component: PayPalMessages,
+-  parameters: {
+-    controls: { expanded: true },
+-    actions: { disable: true },
+-    docs: { source: { type: "dynamic" } },
+-  },
+-  argTypes: {
+-    style: {
+-      description:
+-        "Make inline change in the way the component will be render.",
+-      ...COMPONENT_PROPS_CATEGORY,
+-    },
+-    forceReRender: {
+-      control: null,
+-      description:
+-        "List of dependencies to re-render the PayPal messages component. This is similar to the useEffect hook dependencies list.",
+-      ...COMPONENT_PROPS_CATEGORY,
+-    },
+-    className: {
+-      control: null,
+-      description: "Pass a CSS class to the div container.",
+-      ...COMPONENT_PROPS_CATEGORY,
+-    },
+-    account: {
+-      control: null,
+-      description: "Set the account identifier.",
+-      ...COMPONENT_PROPS_CATEGORY,
+-    },
+-    amount: {
+-      control: null,
+-      description:
+-        "This represent the amount of money to charge. Can be a numeric value `10` or a string value `'10.00'`",
+-      ...COMPONENT_PROPS_CATEGORY,
+-    },
+-  },
+-  args: {
+-    style: { layout: "text" },
+-  },
+-};
+-
+-export const Default: FC<{
+-  style: {
+-    layout?: "text" | "flex" | "custom";
+-    color: string;
+-  };
+-}> = ({ style }) => (
+-  <PayPalScriptProvider options={scriptProviderOptions}>
+-    <PayPalMessages style={style} forceReRender={[style]} />
+-  </PayPalScriptProvider>
+-);
+-
+-/********************
+- * OVERRIDE STORIES *
+- *******************/
+-const getDefaultCode = (style: Record<string, unknown>): string =>
+-  `import { PayPalScriptProvider, PayPalMessages } from "@paypal/react-paypal-js";
+-
+-const style = ${JSON.stringify(style)};
+-
+-export default function App() {
+-	return (
+-		<PayPalScriptProvider
+-			options={{
+-				clientId: "test",
+-				components: "messages",
+-			}}
+-		>
+-			<PayPalMessages
+-				style={style}
+-                forceReRender={[style]}
+-			/>
+-		</PayPalScriptProvider>
+-	);
+-}`;
+-
+-(Default as StoryFn).parameters = {
+-  docs: {
+-    container: ({ context }: { context: DocsContextProps }) => (
+-      <DocPageStructure
+-        context={context}
+-        code={getDefaultCode(
+-          context.getStoryContext(context.storyById(context.id)).args.style,
+-        )}
+-      />
+-    ),
+-  },
+-};
+diff --git a/packages/react-paypal-js/src/stories/braintree/BraintreePayPalButtons.stories.tsx b/packages/react-paypal-js/src/stories/braintree/BraintreePayPalButtons.stories.tsx
+deleted file mode 100644
+index 447db38..0000000
+--- a/packages/react-paypal-js/src/stories/braintree/BraintreePayPalButtons.stories.tsx
++++ /dev/null
+@@ -1,296 +0,0 @@
+-import React, { useState, useEffect, ReactElement } from "react";
+-import { action } from "@storybook/addon-actions";
+-
+-import { PayPalScriptProvider } from "../../index";
+-import { BraintreePayPalButtons } from "../../components/braintree/BraintreePayPalButtons";
+-import {
+-  getOptionsFromQueryString,
+-  generateRandomString,
+-  getClientToken,
+-  approveSale,
+-} from "../utils";
+-import {
+-  COMPONENT_PROPS_CATEGORY,
+-  COMPONENT_EVENTS,
+-  ARG_TYPE_AMOUNT,
+-  ARG_TYPE_CURRENCY,
+-  FUNDING_SOURCE_ARG,
+-  ORDER_ID,
+-  CONTAINER_SIZE,
+-  APPROVE,
+-} from "../constants";
+-import DocPageStructure from "../components/DocPageStructure";
+-import { InEligibleError, defaultProps } from "../commons";
+-import { getDefaultCode, getBillingAgreementCode } from "./code";
+-
+-import type { FC } from "react";
+-import type {
+-  PayPalScriptOptions,
+-  PayPalButtonsComponentOptions,
+-  FUNDING_SOURCE,
+-} from "@paypal/paypal-js";
+-import type { StoryFn } from "@storybook/react";
+-import type { DocsContextProps } from "@storybook/addon-docs";
+-import type {
+-  CreateOrderBraintreeActions,
+-  OnApproveBraintreeActions,
+-  OnApproveBraintreeData,
+-} from "../../types";
+-
+-type StoryProps = {
+-  style: PayPalButtonsComponentOptions["style"];
+-  message: PayPalButtonsComponentOptions["message"];
+-  fundingSource: FUNDING_SOURCE;
+-  disabled: boolean;
+-  amount: string;
+-  currency: string;
+-};
+-
+-const uid = generateRandomString();
+-const scriptProviderOptions: PayPalScriptOptions = {
+-  clientId: "test",
+-  components: "buttons",
+-  ...getOptionsFromQueryString(),
+-};
+-
+-export default {
+-  title: "Braintree/BraintreePayPalButtons",
+-  component: BraintreePayPalButtons,
+-  parameters: {
+-    controls: { expanded: true, sort: "requiredFirst" },
+-  },
+-  argTypes: {
+-    amount: ARG_TYPE_AMOUNT,
+-    currency: ARG_TYPE_CURRENCY,
+-    size: CONTAINER_SIZE,
+-    style: {
+-      control: { type: "object", expanded: true },
+-      ...COMPONENT_PROPS_CATEGORY,
+-    },
+-    message: {
+-      control: { type: "object" },
+-      ...COMPONENT_PROPS_CATEGORY,
+-    },
+-    disabled: {
+-      options: [true, false],
+-      control: { type: "select" },
+-      ...COMPONENT_PROPS_CATEGORY,
+-    },
+-    forceReRender: { control: false, ...COMPONENT_PROPS_CATEGORY },
+-    className: { control: false, ...COMPONENT_PROPS_CATEGORY },
+-    children: { control: false, ...COMPONENT_PROPS_CATEGORY },
+-    fundingSource: FUNDING_SOURCE_ARG,
+-    createOrder: { table: { category: COMPONENT_EVENTS } },
+-    createBillingAgreement: { table: { category: COMPONENT_EVENTS } },
+-    createSubscription: { table: { category: COMPONENT_EVENTS } },
+-    onShippingChange: { table: { category: COMPONENT_EVENTS } },
+-    onShippingAddressChange: { table: { category: COMPONENT_EVENTS } },
+-    onShippingOptionsChange: { table: { category: COMPONENT_EVENTS } },
+-    onApprove: { table: { category: COMPONENT_EVENTS } },
+-    onCancel: { table: { category: COMPONENT_EVENTS } },
+-    onClick: { table: { category: COMPONENT_EVENTS } },
+-    onInit: { table: { category: COMPONENT_EVENTS } },
+-    onError: { table: { category: COMPONENT_EVENTS } },
+-  },
+-  args: {
+-    // Storybook passes empty functions by default for props like `onShippingChange`.
+-    // This turns on the `onShippingChange()` feature which uses the popup experience with the Standard Card button.
+-    // We pass null to opt-out so the inline guest feature works as expected with the Standard Card button.
+-    onShippingChange: null,
+-    amount: "2",
+-    currency: "USD",
+-    size: 750,
+-    style: {
+-      label: "paypal",
+-      layout: "vertical",
+-    },
+-    disabled: false,
+-  },
+-  decorators: [
+-    (
+-      Story: FC,
+-      storyArg: {
+-        args: { size: number };
+-        originalStoryFn: { name: string };
+-      },
+-    ): ReactElement => {
+-      // Workaround to render the story after got the client token,
+-      // The new experimental loaders doesn't work in Docs views
+-      const [clientToken, setClientToken] = useState<string | null>(null);
+-      const isBillingAggrement =
+-        storyArg.originalStoryFn.name === BillingAgreement.name;
+-
+-      useEffect(() => {
+-        (async () => {
+-          setClientToken(await getClientToken());
+-        })();
+-      }, []);
+-
+-      return (
+-        <div style={{ maxWidth: `${storyArg.args.size}%` }}>
+-          {clientToken !== null && (
+-            <div style={{ maxWidth: `${storyArg.args.size}px` }}>
+-              <PayPalScriptProvider
+-                options={{
+-                  ...scriptProviderOptions,
+-                  dataClientToken: clientToken,
+-                  dataNamespace: uid,
+-                  dataUid: uid,
+-                  intent: isBillingAggrement ? "tokenize" : "capture",
+-                  vault: isBillingAggrement,
+-                }}
+-              >
+-                <Story />
+-              </PayPalScriptProvider>
+-            </div>
+-          )}
+-        </div>
+-      );
+-    },
+-  ],
+-};
+-
+-export const Default: FC<StoryProps> = ({
+-  style,
+-  message,
+-  fundingSource,
+-  disabled,
+-  amount,
+-  currency,
+-}) => {
+-  // Remember all the arguments props are received from the control panel below
+-  return (
+-    <BraintreePayPalButtons
+-      style={style}
+-      message={message}
+-      disabled={disabled}
+-      fundingSource={fundingSource}
+-      forceReRender={[style, amount, currency]}
+-      createOrder={(
+-        data: Record<string, unknown>,
+-        actions: CreateOrderBraintreeActions,
+-      ) =>
+-        actions.braintree
+-          .createPayment({
+-            flow: "checkout",
+-            amount: amount,
+-            currency: "USD",
+-            intent: "capture",
+-            enableShippingAddress: true,
+-            shippingAddressEditable: false,
+-            shippingAddressOverride: {
+-              recipientName: "Scruff McGruff",
+-              line1: "1234 Main St.",
+-              line2: "Unit 1",
+-              city: "Chicago",
+-              countryCode: "US",
+-              postalCode: "60652",
+-              state: "IL",
+-              phone: "123.456.7890",
+-            },
+-          })
+-          .then((orderId) => {
+-            action(ORDER_ID)(orderId);
+-            return orderId;
+-          })
+-      }
+-      onApprove={(
+-        data: OnApproveBraintreeData,
+-        actions: OnApproveBraintreeActions,
+-      ) =>
+-        actions.braintree.tokenizePayment(data).then((payload) => {
+-          approveSale(payload.nonce, amount).then((data) => {
+-            action(APPROVE)(data);
+-            // Call server-side endpoint to finish the sale
+-          });
+-        })
+-      }
+-      {...defaultProps}
+-    >
+-      <InEligibleError />
+-    </BraintreePayPalButtons>
+-  );
+-};
+-
+-export const BillingAgreement: FC<StoryProps> = ({
+-  style,
+-  fundingSource,
+-  disabled,
+-  amount,
+-}) => {
+-  return (
+-    <BraintreePayPalButtons
+-      style={style}
+-      disabled={disabled}
+-      fundingSource={fundingSource}
+-      forceReRender={[style, amount]}
+-      createBillingAgreement={(data, actions) =>
+-        actions.braintree.createPayment({
+-          flow: "vault", // Required
+-
+-          // The following are optional params
+-          billingAgreementDescription: "Your agreement description",
+-          enableShippingAddress: true,
+-          shippingAddressEditable: false,
+-          shippingAddressOverride: {
+-            recipientName: "Scruff McGruff",
+-            line1: "1234 Main St.",
+-            line2: "Unit 1",
+-            city: "Chicago",
+-            countryCode: "US",
+-            postalCode: "60652",
+-            state: "IL",
+-            phone: "123.456.7890",
+-          },
+-        })
+-      }
+-      onApprove={(data, actions) =>
+-        actions.braintree
+-          .tokenizePayment(data as OnApproveBraintreeData)
+-          .then((payload) => {
+-            approveSale(payload.nonce, amount).then((data) => {
+-              action(APPROVE)(data);
+-              // Call server-side endpoint to finish the sale
+-            });
+-          })
+-      }
+-      {...defaultProps}
+-    >
+-      <InEligibleError />
+-    </BraintreePayPalButtons>
+-  );
+-};
+-
+-/********************
+- * OVERRIDE STORIES *
+- *******************/
+-(Default as StoryFn).parameters = {
+-  docs: {
+-    container: ({ context }: { context: DocsContextProps }) => (
+-      <DocPageStructure
+-        context={context}
+-        code={getDefaultCode(
+-          context.getStoryContext(context.storyById(context.id)).args,
+-        )}
+-      />
+-    ),
+-  },
+-};
+-
+-(BillingAgreement as StoryFn).parameters = {
+-  docs: {
+-    container: ({ context }: { context: DocsContextProps }) => (
+-      <DocPageStructure
+-        context={context}
+-        code={getBillingAgreementCode(
+-          context.getStoryContext(context.storyById(context.id)).args,
+-        )}
+-      />
+-    ),
+-  },
+-};
+-
+-(BillingAgreement as StoryFn).argTypes = {
+-  amount: { table: { disable: true } },
+-  currency: { table: { disable: true } },
+-};
+diff --git a/packages/react-paypal-js/src/stories/braintree/code.ts b/packages/react-paypal-js/src/stories/braintree/code.ts
+deleted file mode 100644
+index 0841d03..0000000
+--- a/packages/react-paypal-js/src/stories/braintree/code.ts
++++ /dev/null
+@@ -1,186 +0,0 @@
+-import type { Args } from "@storybook/addons/dist/ts3.9/types";
+-
+-const IMPORT_STATEMENT = `import { useState, useEffect } from "react";
+-import {
+-	PayPalScriptProvider,
+-	BraintreePayPalButtons,
+-	usePayPalScriptReducer
+-} from "@paypal/react-paypal-js";`;
+-
+-const AUTH_TOKEN_STATEMENT = `const [clientToken, setClientToken] = useState(null);
+-
+-	useEffect(() => {
+-		(async () => {
+-			const response = await (
+-				await fetch(
+-					"https://react-paypal-js-storybook.fly.dev/api/braintree/generate-client-token",
+-					{ method: "POST" }
+-				)
+-			).json();
+-			setClientToken(response?.client_token || response?.clientToken);
+-		})();
+-	}, []);`;
+-
+-const getButtonWrapper = (args: Args) =>
+-  `// Custom component to wrap the PayPalButtons and handle currency changes
+-const ButtonWrapper = ({ currency }) => {
+-	// usePayPalScriptReducer can be use only inside children of PayPalScriptProviders
+-    // This is the main reason to wrap the PayPalButtons in a new component
+-    const [{ options, isPending }, dispatch] = usePayPalScriptReducer();
+-
+-    useEffect(() => {
+-        dispatch({
+-            type: "resetOptions",
+-            value: {
+-                ...options,
+-                currency: currency,
+-            },
+-        });
+-    }, [currency]);
+-
+-	return (<BraintreePayPalButtons
+-		style={style}
+-		disabled={${args.disabled}}
+-		fundingSource="${
+-      args.fundingSource || ""
+-    }" // Available values are: ["paypal", "card", "credit", "paylater", "venmo"]
+-		forceReRender={[style, amount]}
+-		createOrder={function (data, actions) {
+-			return actions.braintree
+-				.createPayment({
+-					flow: "checkout",
+-					amount: amount, // Here change the amount if needed
+-					currency: "${args.currency}", // Here change the currency if needed
+-					intent: "capture",
+-					enableShippingAddress: true,
+-					shippingAddressEditable: false,
+-					shippingAddressOverride: {
+-						recipientName: "Scruff McGruff",
+-						line1: "1234 Main St.",
+-						line2: "Unit 1",
+-						city: "Chicago",
+-						countryCode: "US",
+-						postalCode: "60652",
+-						state: "IL",
+-						phone: "123.456.7890",
+-					},
+-				})
+-				.then((orderId) => {
+-					// Your code here after create the order
+-					return orderId;
+-				});
+-		}}
+-		onApprove={function (data, actions) {
+-			return actions.braintree
+-				.tokenizePayment(data)
+-				.then((payload) => {
+-					// Your code here after capture the order
+-					console.log(JSON.stringify(payload));
+-				});
+-			}
+-		}
+-	/>);
+-};`;
+-
+-const getProviderStatement = (args: { intent: string; vault: boolean }) =>
+-  `<PayPalScriptProvider
+-						options={{
+-							clientId: "test",
+-							components: "buttons",
+-							// dataUserIdToken: "your-tokenization-key-here",
+-							dataClientToken: clientToken,
+-							intent: "${args.intent}",
+-							vault: ${args.vault},
+-						}}
+-						>`;
+-
+-export const getDefaultCode = (args: Args): string =>
+-  `${IMPORT_STATEMENT}
+-
+-// This values are the props in the UI
+-const style = ${JSON.stringify(args.style)};
+-const amount = "${args.amount}";
+-
+-${getButtonWrapper(args)}
+-
+-export default function App() {
+-	${AUTH_TOKEN_STATEMENT}
+-
+-	return (
+-		<>
+-			{clientToken ? (
+-				<div style={{ maxWidth: "${args.size}px", minHeight: "200px" }}>
+-					${getProviderStatement({ intent: "capture", vault: false })}
+-						<ButtonWrapper currency={"${args.currency}"} />
+-					</PayPalScriptProvider>
+-				</div>
+-			) : (
+-				<h1>Loading token...</h1>
+-			)}
+-		</>
+-	);
+-}`;
+-
+-export const getBillingAgreementCode = (args: Args): string =>
+-  `${IMPORT_STATEMENT}
+-
+-// This values are the props in the UI
+-const style = ${JSON.stringify(args.style)};
+-
+-${getButtonWrapper(args)}
+-
+-export default function App() {
+-	${AUTH_TOKEN_STATEMENT}
+-
+-	return (
+-		<>
+-			{clientToken ? (
+-				<div style={{ maxWidth: "750px", minHeight: "200px" }}>
+-					${getProviderStatement({ intent: "tokenize", vault: true })}
+-						<BraintreePayPalButtons
+-							style={style}
+-							disabled={${args.disabled}}
+-							fundingSource="${
+-                args.fundingSource || ""
+-              }" // Available values are: ["paypal", "card", "credit", "paylater", "venmo"]
+-							forceReRender={[style]}
+-							createBillingAgreement={function (data, actions) {
+-								return actions.braintree.createPayment({
+-									// Required
+-									flow: "vault",
+-
+-									// The following are optional params
+-									billingAgreementDescription:
+-										"Your agreement description",
+-									enableShippingAddress: true,
+-									shippingAddressEditable: false,
+-									shippingAddressOverride: {
+-										recipientName: "Scruff McGruff",
+-										line1: "1234 Main St.",
+-										line2: "Unit 1",
+-										city: "Chicago",
+-										countryCode: "US",
+-										postalCode: "60652",
+-										state: "IL",
+-										phone: "123.456.7890",
+-									},
+-								});
+-							}}
+-							onApprove={function (data, actions) {
+-								return actions.braintree
+-									.tokenizePayment(data)
+-									.then((payload) => {
+-										// Your code here after capture the order
+-										console.log(JSON.stringify(payload));
+-									});
+-								}
+-							}
+-						/>
+-					</PayPalScriptProvider>
+-				</div>
+-			) : (
+-				<h1>Loading token...</h1>
+-			)}
+-		</>
+-	);
+-}`;
+diff --git a/packages/react-paypal-js/src/stories/commons.tsx b/packages/react-paypal-js/src/stories/commons.tsx
+deleted file mode 100644
+index d0a370e..0000000
+--- a/packages/react-paypal-js/src/stories/commons.tsx
++++ /dev/null
+@@ -1,30 +0,0 @@
+-import React from "react";
+-import { action } from "@storybook/addon-actions";
+-
+-import { ERROR, SDK } from "./constants";
+-
+-import type { FC } from "react";
+-
+-/**
+- * Functional component to render a custom ineligible error UI
+- */
+-export const InEligibleError: FC<{ text?: string }> = ({ text }) => (
+-  <h3 style={{ color: "#dc3545", textTransform: "capitalize" }}>
+-    {text || "The component is ineligible to render"}
+-  </h3>
+-);
+-
+-export const defaultProps = {
+-  onInit(): void {
+-    action(SDK)("Library initialized and rendered");
+-  },
+-  onClick(): void {
+-    action("button")("Click event dispatch from the the PayPal payment button");
+-  },
+-  onError(err: Record<string, unknown>): void {
+-    action(ERROR)(err.toString());
+-  },
+-  onCancel(): void {
+-    action("payment")("The payment process was cancel");
+-  },
+-};
+diff --git a/packages/react-paypal-js/src/stories/components/CopyButton.tsx b/packages/react-paypal-js/src/stories/components/CopyButton.tsx
+deleted file mode 100644
+index 1ed72fd..0000000
+--- a/packages/react-paypal-js/src/stories/components/CopyButton.tsx
++++ /dev/null
+@@ -1,56 +0,0 @@
+-import React, { useState } from "react";
+-import { useSandpack } from "@codesandbox/sandpack-react";
+-
+-import type { ReactElement } from "react";
+-import type { Properties as CSSProperties } from "csstype";
+-
+-const COPY_BUTTON: CSSProperties = {
+-  padding: "4px 10px",
+-  cursor: "pointer",
+-  display: "flex",
+-  alignItems: "center",
+-  color: "#333333",
+-  background: "#FFFFFF",
+-  fontSize: "12px",
+-  lineHeight: "16px",
+-  fontWeight: "700",
+-  border: "1px solid rgba(0,0,0,.1)",
+-  borderRadius: "4px 0 0 0",
+-  float: "right",
+-  position: "relative",
+-  top: "-26px",
+-};
+-
+-/**
+- * This component is use to copy the behavior from the Description component
+- * in the storybook Doc pages. It use the state of the Sandpack library
+- * to get the code inside the App.js file and write it into the clipboard
+- *
+- * @returns a ReactElement with the custom copy button
+- */
+-const CopyButton = (): ReactElement => {
+-  const { sandpack } = useSandpack();
+-  const [isCopy, setIsCopy] = useState<boolean>(false);
+-
+-  const getCopyBorder = () => (isCopy ? "2px solid #1DA7FD" : "none");
+-
+-  const onClickHandler = () => {
+-    navigator.clipboard.writeText(sandpack.files[sandpack.activePath].code);
+-    setIsCopy(true);
+-    // Same behavior from default Description storybook component
+-    setTimeout(() => {
+-      setIsCopy(false);
+-    }, 1000);
+-  };
+-
+-  return (
+-    <button
+-      onClick={onClickHandler}
+-      style={{ ...COPY_BUTTON, borderBottom: getCopyBorder() }}
+-    >
+-      {isCopy ? "Copied" : "Copy"}
+-    </button>
+-  );
+-};
+-
+-export default CopyButton;
+diff --git a/packages/react-paypal-js/src/stories/components/CustomSandpack.tsx b/packages/react-paypal-js/src/stories/components/CustomSandpack.tsx
+deleted file mode 100644
+index 365838d..0000000
+--- a/packages/react-paypal-js/src/stories/components/CustomSandpack.tsx
++++ /dev/null
+@@ -1,64 +0,0 @@
+-import React from "react";
+-import {
+-  SandpackProvider,
+-  SandpackThemeProvider,
+-  SandpackPreview,
+-  SandpackCodeEditor,
+-} from "@codesandbox/sandpack-react";
+-
+-import CopyButton from "./CopyButton";
+-
+-import type { ReactElement } from "react";
+-import type {
+-  SandpackPredefinedTemplate,
+-  SandpackFile,
+-} from "@codesandbox/sandpack-react/dist/types/types";
+-import "@codesandbox/sandpack-react/dist/index.css";
+-
+-// Default styles
+-const CUSTOM_STYLE = {
+-  width: "100%",
+-  height: "450px",
+-  border: "1px solid rgba(0,0,0,.1)",
+-  boxShadow: "rgb(0 0 0 / 10%) 0 1px 3px 0",
+-};
+-
+-/**
+- * Custom component to adjust the Sandpack react library UI to the
+- * storybook requirements for a better user experience
+- *
+- * @param props to modify the UI behavior and source files
+- * @returns a ReactElement with the customized Sandpack component
+- */
+-const CustomSandpack = (props: {
+-  template?: SandpackPredefinedTemplate;
+-  files?: Record<string, SandpackFile>;
+-  customSetup?: Record<string, unknown>;
+-  showLineNumbers?: boolean;
+-  previewHeight?: string;
+-  codeHeight?: string;
+-}): ReactElement => (
+-  <SandpackProvider template={props.template} customSetup={props.customSetup}>
+-    <SandpackThemeProvider>
+-      <SandpackPreview
+-        customStyle={{
+-          ...CUSTOM_STYLE,
+-          height: props.previewHeight,
+-          padding: "1em",
+-          borderRadius: "4px 4px 0 0",
+-        }}
+-      />
+-      <SandpackCodeEditor
+-        customStyle={{
+-          ...CUSTOM_STYLE,
+-          height: props.codeHeight,
+-          borderRadius: "0 0 4px 4px",
+-        }}
+-        showLineNumbers={props.showLineNumbers || false}
+-      />
+-      <CopyButton />
+-    </SandpackThemeProvider>
+-  </SandpackProvider>
+-);
+-
+-export default CustomSandpack;
+diff --git a/packages/react-paypal-js/src/stories/components/DocPageStructure.tsx b/packages/react-paypal-js/src/stories/components/DocPageStructure.tsx
+deleted file mode 100644
+index 3cb55ac..0000000
+--- a/packages/react-paypal-js/src/stories/components/DocPageStructure.tsx
++++ /dev/null
+@@ -1,59 +0,0 @@
+-import React from "react";
+-import {
+-  DocsContainer,
+-  Title,
+-  Subtitle,
+-  Description,
+-  ArgsTable,
+-  CURRENT_SELECTION,
+-} from "@storybook/addon-docs";
+-import dedent from "ts-dedent";
+-
+-import CustomSandpack from "./CustomSandpack";
+-import { SANDPACK_STYLES } from "../constants";
+-
+-import type { DocsContextProps } from "@storybook/addon-docs/dist/ts3.9/blocks";
+-
+-/**
+- * Component to override the default DocPage structure from the storybook
+- *
+- * @param param custom props and context
+- * @returns an Element with the DocPage new structure
+- */
+-const DocPageStructure = ({
+-  context,
+-  code = "",
+-  options = { previewHeight: "450px", codeHeight: "600px" },
+-}: {
+-  context: DocsContextProps;
+-  code: string;
+-  options?: { previewHeight: string; codeHeight: string };
+-}): JSX.Element => (
+-  <DocsContainer context={context}>
+-    <Title />
+-    <Subtitle />
+-    <Description />
+-    <CustomSandpack
+-      template="react"
+-      customSetup={{
+-        dependencies: {
+-          "@paypal/react-paypal-js": "latest",
+-        },
+-        entry: "/index.js",
+-        files: {
+-          "/App.js": dedent`${code}`,
+-          "/styles.css": {
+-            code: dedent`${SANDPACK_STYLES}`,
+-            hidden: true,
+-          },
+-        },
+-      }}
+-      showLineNumbers={true}
+-      previewHeight={options?.previewHeight || "450px"}
+-      codeHeight={options?.codeHeight || "600px"}
+-    />
+-    <ArgsTable story={CURRENT_SELECTION} />
+-  </DocsContainer>
+-);
+-
+-export default DocPageStructure;
+diff --git a/packages/react-paypal-js/src/stories/constants.ts b/packages/react-paypal-js/src/stories/constants.ts
+deleted file mode 100644
+index 2ff8bc4..0000000
+--- a/packages/react-paypal-js/src/stories/constants.ts
++++ /dev/null
+@@ -1,152 +0,0 @@
+-import { FUNDING, CURRENCY } from "@paypal/sdk-constants/dist/module";
+-
+-export const COMPONENT_PROPS_CATEGORY = { table: { category: "Props" } };
+-export const COMPONENT_EVENTS = "Events";
+-export const COMPONENT_TYPES = "Types";
+-export const ORDER_ID = "orderID";
+-export const ERROR = "Error";
+-export const SDK = "SDK";
+-export const APPROVE = "approve";
+-export const SUBSCRIPTION = "subscription";
+-export const ORDER_INSTANCE_ERROR = "No order instance was provided";
+-
+-export const CONTAINER_SIZE = {
+-  name: "container width",
+-  description:
+-    "This is not a property from PayPalButtons. It is custom control to change the size of the PayPal buttons container in pixels.",
+-  control: { type: "range", min: 200, max: 750, step: 5 },
+-  table: {
+-    defaultValue: {
+-      summary: "750px",
+-    },
+-    category: "Custom",
+-    type: { summary: "number" },
+-  },
+-};
+-
+-export const ARG_TYPE_AMOUNT = {
+-  description:
+-    "This is not a property from PayPalButtons. It is custom control for testing the amount sent in the createOrder process",
+-  options: ["2", "30", "100"],
+-  control: {
+-    type: "select",
+-  },
+-  table: {
+-    defaultValue: {
+-      summary: "2.00",
+-    },
+-    category: "Custom",
+-    type: { summary: "number|string" },
+-  },
+-};
+-
+-export const ARG_TYPE_CURRENCY = {
+-  options: Object.values(CURRENCY),
+-  description:
+-    "This is not a property from PayPalButtons. It is custom control to change the currency create create a PayPal order.",
+-  control: {
+-    type: "select",
+-  },
+-  table: {
+-    category: "Custom",
+-    type: { summary: "string" },
+-    defaultValue: { summary: "USD" },
+-  },
+-};
+-
+-export const FUNDING_SOURCE_ARG = {
+-  options: [...Object.values(FUNDING), undefined],
+-  control: {
+-    type: "select",
+-    labels: {
+-      undefined: "all",
+-    },
+-  },
+-  ...COMPONENT_PROPS_CATEGORY,
+-};
+-
+-export const SANDPACK_STYLES = `body {
+-    font-family: sans-serif;
+-    -webkit-font-smoothing: auto;
+-    -moz-font-smoothing: auto;
+-    -moz-osx-font-smoothing: grayscale;
+-    font-smoothing: auto;
+-    text-rendering: optimizeLegibility;
+-    font-smooth: always;
+-    -webkit-tap-highlight-color: transparent;
+-    -webkit-touch-callout: none;
+-}
+-
+-.card-field {
+-    width: 100%;
+-    padding: 12px;
+-    border: 1px solid #ccc;
+-    border-radius: 4px;
+-    box-sizing: border-box;
+-    margin-top: 6px;
+-    margin-bottom: 16px;
+-    resize: vertical;
+-    height: 40px;
+-    background: white;
+-    font-size: 17px;
+-    color: #3a3a3a;
+-    font-family: helvetica, tahoma, calibri, sans-serif;
+-}
+-
+-.btn {
+-    display: inline-block;
+-    font-weight: 400;
+-    text-align: center;
+-    white-space: nowrap;
+-    vertical-align: middle;
+-    -webkit-user-select: none;
+-    -moz-user-select: none;
+-    -ms-user-select: none;
+-    user-select: none;
+-    border: 1px solid transparent;
+-    padding: 0.375rem 0.75rem;
+-    font-size: 1rem;
+-    line-height: 1.5;
+-    border-radius: 0.25rem;
+-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+-        border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+-    cursor: pointer;
+-}
+-
+-.btn-primary {
+-    color: #fff;
+-    background-color: #007bff;
+-    border-color: #007bff;
+-}
+-
+-.mark {
+-    display: flex;
+-    align-items: center;
+-}
+-.spinner {
+-    display: inline-block;
+-    height: 40px;
+-    width: 40px;
+-    box-sizing: border-box;
+-    border: 3px solid rgba(0, 0, 0, 0.2);
+-    border-top-color: rgba(33, 128, 192, 0.8);
+-    border-radius: 100%;
+-    animation: rotation 0.7s infinite linear;
+-}
+-
+-.spinner.tiny {
+-    height: 20px;
+-    width: 20px;
+-    border-top-color: #007bff;
+-    position: relative;
+-    top: 3px;
+-}
+-
+-@keyframes rotation {
+-    0% {
+-        transform: rotate(0deg);
+-    }
+-    100% {
+-        transform: rotate(359deg);
+-    }
+-}`;
+diff --git a/packages/react-paypal-js/src/stories/payPalButtons/PayPalButtons.stories.tsx b/packages/react-paypal-js/src/stories/payPalButtons/PayPalButtons.stories.tsx
+deleted file mode 100644
+index 5e75fd3..0000000
+--- a/packages/react-paypal-js/src/stories/payPalButtons/PayPalButtons.stories.tsx
++++ /dev/null
+@@ -1,305 +0,0 @@
+-import React, { useEffect, useState } from "react";
+-import { action } from "@storybook/addon-actions";
+-
+-import { usePayPalScriptReducer, DISPATCH_ACTION } from "../../index";
+-import { PayPalScriptProvider, PayPalButtons, FUNDING } from "../../index";
+-import {
+-  getOptionsFromQueryString,
+-  generateRandomString,
+-  createOrder,
+-  onApprove,
+-} from "../utils";
+-import {
+-  COMPONENT_PROPS_CATEGORY,
+-  COMPONENT_EVENTS,
+-  FUNDING_SOURCE_ARG,
+-  ORDER_ID,
+-  CONTAINER_SIZE,
+-  APPROVE,
+-} from "../constants";
+-import DocPageStructure from "../components/DocPageStructure";
+-import { InEligibleError, defaultProps } from "../commons";
+-import { getDefaultCode, getDonateCode } from "./code";
+-
+-import type { FC, ReactElement } from "react";
+-import type {
+-  PayPalScriptOptions,
+-  PayPalButtonsComponentOptions,
+-  FUNDING_SOURCE,
+-} from "@paypal/paypal-js";
+-import type { StoryFn } from "@storybook/react";
+-import type { DocsContextProps } from "@storybook/addon-docs";
+-
+-type StoryProps = {
+-  style: PayPalButtonsComponentOptions["style"];
+-  message: PayPalButtonsComponentOptions["message"];
+-  fundingSource: FUNDING_SOURCE;
+-  disabled: boolean;
+-  showSpinner: boolean;
+-};
+-
+-const scriptProviderOptions: PayPalScriptOptions = {
+-  clientId: "test",
+-  components: "buttons",
+-  ...getOptionsFromQueryString(),
+-};
+-
+-const LoadingSpinner: FC = () => {
+-  const [{ isPending }] = usePayPalScriptReducer();
+-
+-  return isPending ? <div className="spinner" /> : null;
+-};
+-
+-export default {
+-  id: "example/PayPalButtons",
+-  title: "PayPal/PayPalButtons",
+-  component: PayPalButtons,
+-  parameters: {
+-    controls: { expanded: true, sort: "requiredFirst" },
+-  },
+-  argTypes: {
+-    size: CONTAINER_SIZE,
+-    showSpinner: {
+-      description:
+-        "This is not a property from PayPalButtons. It is custom control to show or not a spinner when PayPal SDK is loading.",
+-      options: [true, false],
+-      control: { type: "select" },
+-      table: {
+-        defaultValue: {
+-          summary: "false",
+-        },
+-        category: "Custom",
+-        type: { summary: "boolean" },
+-      },
+-    },
+-    style: {
+-      control: { type: "object" },
+-      ...COMPONENT_PROPS_CATEGORY,
+-    },
+-    message: {
+-      control: { type: "object" },
+-      ...COMPONENT_PROPS_CATEGORY,
+-    },
+-    disabled: {
+-      options: [true, false],
+-      control: { type: "select" },
+-      ...COMPONENT_PROPS_CATEGORY,
+-    },
+-    forceReRender: { control: false, ...COMPONENT_PROPS_CATEGORY },
+-    className: { control: false, ...COMPONENT_PROPS_CATEGORY },
+-    children: { table: { disable: true } },
+-    fundingSource: FUNDING_SOURCE_ARG,
+-    createOrder: { table: { category: COMPONENT_EVENTS } },
+-    createBillingAgreement: { table: { category: COMPONENT_EVENTS } },
+-    createSubscription: { table: { category: COMPONENT_EVENTS } },
+-    onShippingChange: { table: { category: COMPONENT_EVENTS } },
+-    onShippingAddressChange: { table: { category: COMPONENT_EVENTS } },
+-    onShippingOptionsChange: { table: { category: COMPONENT_EVENTS } },
+-    onApprove: { table: { category: COMPONENT_EVENTS } },
+-    onCancel: { table: { category: COMPONENT_EVENTS } },
+-    onClick: { table: { category: COMPONENT_EVENTS } },
+-    onInit: { table: { category: COMPONENT_EVENTS } },
+-    onError: { table: { category: COMPONENT_EVENTS } },
+-  },
+-  args: {
+-    // Storybook passes empty functions by default for props like `onShippingChange`.
+-    // This turns on the `onShippingChange()` feature which uses the popup experience with the Standard Card button.
+-    // We pass null to opt-out so the inline guest feature works as expected with the Standard Card button.
+-    onShippingChange: null,
+-    size: 750,
+-    showSpinner: false,
+-    style: {
+-      layout: "vertical",
+-    },
+-    disabled: false,
+-  },
+-  decorators: [
+-    (Story: FC, storyArg: { args: { size: number } }): ReactElement => {
+-      const uid = generateRandomString();
+-
+-      return (
+-        <div
+-          style={{
+-            maxWidth: `${storyArg.args.size}px`,
+-            minHeight: "200px",
+-          }}
+-        >
+-          <PayPalScriptProvider
+-            options={{
+-              ...scriptProviderOptions,
+-              dataNamespace: uid,
+-              dataUid: uid,
+-            }}
+-          >
+-            <Story />
+-          </PayPalScriptProvider>
+-        </div>
+-      );
+-    },
+-  ],
+-};
+-
+-export const Default: FC<StoryProps> = ({
+-  style,
+-  message,
+-  fundingSource,
+-  disabled,
+-  showSpinner,
+-}) => {
+-  const [{ options }, dispatch] = usePayPalScriptReducer();
+-  useEffect(() => {
+-    dispatch({
+-      type: DISPATCH_ACTION.RESET_OPTIONS,
+-      value: {
+-        ...options,
+-        "data-order-id": Date.now().toString(),
+-      },
+-    });
+-    // eslint-disable-next-line react-hooks/exhaustive-deps
+-  }, [showSpinner]);
+-
+-  return (
+-    <>
+-      {showSpinner && <LoadingSpinner />}
+-      <PayPalButtons
+-        style={style}
+-        message={message}
+-        disabled={disabled}
+-        fundingSource={fundingSource}
+-        forceReRender={[style]}
+-        createOrder={() =>
+-          createOrder([{ sku: "1blwyeo8", quantity: 1 }]).then((orderData) => {
+-            if (orderData.id) {
+-              action(ORDER_ID)(orderData.id);
+-              return orderData.id;
+-            } else {
+-              throw new Error("failed to create Order Id");
+-            }
+-          })
+-        }
+-        onApprove={(data) =>
+-          onApprove(data).then((orderData) => action(APPROVE)(orderData))
+-        }
+-        {...defaultProps}
+-      >
+-        <InEligibleError />
+-      </PayPalButtons>
+-    </>
+-  );
+-};
+-
+-export const Donate: FC<Omit<StoryProps, "showSpinner" | "fundingSource">> = ({
+-  style,
+-  disabled,
+-}) => (
+-  <PayPalButtons
+-    fundingSource={FUNDING.PAYPAL}
+-    forceReRender={[style]}
+-    disabled={disabled}
+-    style={{ ...style, label: "donate" }}
+-    createOrder={() =>
+-      createOrder([{ sku: "etanod01", quantity: 1 }]).then((orderData) => {
+-        if (orderData.id) {
+-          action(ORDER_ID)(orderData.id);
+-          return orderData.id;
+-        } else {
+-          throw new Error("failed to create Order Id");
+-        }
+-      })
+-    }
+-    onApprove={(data) =>
+-      onApprove(data).then((orderData) => action(APPROVE)(orderData))
+-    }
+-  >
+-    <InEligibleError />
+-  </PayPalButtons>
+-);
+-
+-/********************
+- * OVERRIDE STORIES *
+- *******************/
+-(Default as StoryFn).parameters = {
+-  docs: {
+-    container: ({ context }: { context: DocsContextProps }) => (
+-      <DocPageStructure
+-        context={context}
+-        code={getDefaultCode(
+-          context.getStoryContext(context.storyById(context.id)).args,
+-        )}
+-      />
+-    ),
+-  },
+-};
+-
+-// Override the Donate story code snippet
+-(Donate as StoryFn).parameters = {
+-  docs: {
+-    container: ({ context }: { context: DocsContextProps }) => (
+-      <DocPageStructure
+-        context={context}
+-        code={getDonateCode(
+-          context.getStoryContext(context.storyById(context.id)).args,
+-        )}
+-      />
+-    ),
+-  },
+-};
+-
+-// Override the Donate story controls table props
+-(Donate as StoryFn).argTypes = {
+-  fundingSource: { control: false },
+-  showSpinner: { table: { disable: true } },
+-};
+-
+-export const WithDynamicOrderState: FC<StoryProps> = ({
+-  style,
+-  message,
+-  fundingSource,
+-  disabled,
+-  showSpinner,
+-}) => {
+-  const [count, setCount] = useState(0);
+-  const [{ options }, dispatch] = usePayPalScriptReducer();
+-  useEffect(() => {
+-    dispatch({
+-      type: DISPATCH_ACTION.RESET_OPTIONS,
+-      value: {
+-        ...options,
+-        "data-order-id": Date.now().toString(),
+-      },
+-    });
+-    // eslint-disable-next-line react-hooks/exhaustive-deps
+-  }, [showSpinner]);
+-
+-  return (
+-    <>
+-      {showSpinner && <LoadingSpinner />}
+-      <button onClick={() => setCount(count + 1)}>Count: {count}</button>
+-      <PayPalButtons
+-        style={style}
+-        message={message}
+-        disabled={disabled}
+-        fundingSource={fundingSource}
+-        forceReRender={[style]}
+-        createOrder={() =>
+-          createOrder([{ sku: "1blwyeo8", quantity: count }]).then(
+-            (orderData) => {
+-              if (orderData.id) {
+-                action(ORDER_ID)(orderData.id);
+-                return orderData.id;
+-              } else {
+-                throw new Error("failed to create Order Id");
+-              }
+-            },
+-          )
+-        }
+-        onApprove={(data) =>
+-          onApprove(data).then((orderData) => action(APPROVE)(orderData))
+-        }
+-        {...defaultProps}
+-      >
+-        <InEligibleError />
+-      </PayPalButtons>
+-    </>
+-  );
+-};
+diff --git a/packages/react-paypal-js/src/stories/payPalButtons/code.ts b/packages/react-paypal-js/src/stories/payPalButtons/code.ts
+deleted file mode 100644
+index 4c9c4e7..0000000
+--- a/packages/react-paypal-js/src/stories/payPalButtons/code.ts
++++ /dev/null
+@@ -1,172 +0,0 @@
+-import {
+-  generateFundingSource,
+-  CREATE_ORDER_URL,
+-  CAPTURE_ORDER_URL,
+-} from "../utils";
+-
+-import type { Args } from "@storybook/addons/dist/ts3.9/types";
+-
+-export const getDefaultCode = (args: Args): string =>
+-  `
+-import {
+-    PayPalScriptProvider,
+-    PayPalButtons,
+-    usePayPalScriptReducer
+-} from "@paypal/react-paypal-js";
+-
+-// This value is from the props in the UI
+-const style = ${JSON.stringify(args.style)};
+-
+-function createOrder() {
+-    // replace this url with your server
+-    return fetch("${CREATE_ORDER_URL}", {
+-        method: "POST",
+-        headers: {
+-            "Content-Type": "application/json",
+-        },
+-        // use the "body" param to optionally pass additional order information
+-        // like product ids and quantities
+-        body: JSON.stringify({
+-            cart: [
+-                {
+-                    sku: "1blwyeo8",
+-                    quantity: 2,
+-                },
+-            ],
+-        }),
+-    })
+-        .then((response) => response.json())
+-        .then((order) => {
+-            // Your code here after create the order
+-            return order.id;
+-        });
+-}
+-function onApprove(data) {
+-    // replace this url with your server
+-    return fetch("${CAPTURE_ORDER_URL}", {
+-        method: "POST",
+-        headers: {
+-            "Content-Type": "application/json",
+-        },
+-        body: JSON.stringify({
+-            orderID: data.orderID,
+-        }),
+-    })
+-        .then((response) => response.json())
+-        .then((orderData) => {
+-            // Your code here after capture the order
+-        });
+-}
+-
+-// Custom component to wrap the PayPalButtons and show loading spinner
+-const ButtonWrapper = ({ showSpinner }) => {
+-    const [{ isPending }] = usePayPalScriptReducer();
+-
+-    return (
+-        <>
+-            { (showSpinner && isPending) && <div className="spinner" /> }
+-            <PayPalButtons
+-                style={style}
+-                disabled={${args.disabled}}
+-                forceReRender={[style]}
+-                ${generateFundingSource(args.fundingSource as string)}
+-                createOrder={createOrder}
+-                onApprove={onApprove}
+-            />
+-        </>
+-    );
+-}
+-
+-export default function App() {
+-    return (
+-        <div style={{ maxWidth: "${args.size}px", minHeight: "200px" }}>
+-            <PayPalScriptProvider options={{ clientId: "test", components: "buttons", currency: "USD" }}>
+-                <ButtonWrapper showSpinner={${args.showSpinner}} />
+-            </PayPalScriptProvider>
+-        </div>
+-    );
+-}`;
+-
+-export const getDonateCode = (args: Args): string =>
+-  `
+-import {
+-    PayPalScriptProvider,
+-    PayPalButtons,
+-    usePayPalScriptReducer
+-} from "@paypal/react-paypal-js";
+-
+-// This value is from the props in the UI
+-const style = ${JSON.stringify(args.style)};
+-
+-function createOrder() {
+-    // replace this url with your server
+-    return fetch("${CREATE_ORDER_URL}", {
+-        method: "POST",
+-        headers: {
+-            "Content-Type": "application/json",
+-        },
+-        // use the "body" param to optionally pass additional order information
+-        // like product ids and quantities
+-        body: JSON.stringify({
+-            cart: [
+-                {
+-                    sku: "etanod01",
+-                    quantity: 1,
+-                },
+-            ],
+-        }),
+-    })
+-        .then((response) => response.json())
+-        .then((order) => {
+-            // Your code here after create the order
+-            return order.id;
+-        });
+-}
+-function onApprove(data) {
+-    // replace this url with your server
+-    return fetch("${CAPTURE_ORDER_URL}", {
+-        method: "POST",
+-        headers: {
+-            "Content-Type": "application/json",
+-        },
+-        body: JSON.stringify({
+-            orderID: data.orderID,
+-        }),
+-    })
+-        .then((response) => response.json())
+-        .then((orderData) => {
+-            // Your code here after capture the order
+-        });
+-}
+-
+-// Custom component to wrap the PayPalButtons and show loading spinner
+-const ButtonWrapper = ({ showSpinner }) => {
+-    const [{ isPending }] = usePayPalScriptReducer();
+-
+-    return (
+-        <>
+-            { (showSpinner && isPending) && <div className="spinner" /> }
+-            <PayPalButtons
+-                fundingSource="paypal"
+-                style={${JSON.stringify({
+-                  ...(args.style as Record<string, unknown>),
+-                  label: "donate",
+-                })}}
+-                disabled={${args.disabled}}
+-                forceReRender={[style]}
+-                createOrder={createOrder}
+-                onApprove={onApprove}
+-            />
+-        </>
+-    );
+-}
+-
+-export default function App() {
+-    return (
+-        <div style={{ maxWidth: "${args.size}px", minHeight: "200px" }}>
+-            <PayPalScriptProvider options={{ clientId: "test", components: "buttons", currency: "USD" }}>
+-                <ButtonWrapper showSpinner={${args.showSpinner}} />
+-            </PayPalScriptProvider>
+-        </div>
+-    );
+-}`;
+diff --git a/packages/react-paypal-js/src/stories/payPalCardFields/code.ts b/packages/react-paypal-js/src/stories/payPalCardFields/code.ts
+deleted file mode 100644
+index e6f17d8..0000000
+--- a/packages/react-paypal-js/src/stories/payPalCardFields/code.ts
++++ /dev/null
+@@ -1,238 +0,0 @@
+-import { CREATE_ORDER_URL, CAPTURE_ORDER_URL } from "../utils";
+-
+-export const getFormCode = (): string => {
+-  return `
+-	import React, { useState } from "react";
+-	import type { CardFieldsOnApproveData } from "@paypal/paypal-js";
+-
+-	import {
+-		PayPalScriptProvider,
+-		usePayPalCardFields,
+-		PayPalCardFieldsProvider,
+-		PayPalCardFieldsForm,
+-	} from "@paypal/react-paypal-js";
+-
+-	export default function App(): JSX.Element {
+-		const [isPaying, setIsPaying] = useState(false);
+-		async function createOrder() {
+-			return fetch("${CREATE_ORDER_URL}", {
+-				method: "POST",
+-				headers: {
+-					"Content-Type": "application/json",
+-				},
+-				body: JSON.stringify({
+-					cart: [
+-						{
+-							sku: "1blwyeo8",
+-							quantity: 2,
+-						},
+-					],
+-				}),
+-			})
+-				.then((response) => response.json())
+-				.then((order) => {
+-					return order.id;
+-				})
+-				.catch((err) => {
+-					console.error(err);
+-				});
+-		}
+-
+-		function onApprove(data: CardFieldsOnApproveData) {
+-			fetch("${CAPTURE_ORDER_URL}", {
+-				method: "POST",
+-				headers: {
+-					"Content-Type": "application/json",
+-				},
+-				body: JSON.stringify({ orderID: data.orderID }),
+-			})
+-				.then((response) => response.json())
+-				.then((data) => {
+-					setIsPaying(false);
+-				})
+-				.catch((err) => {
+-					console.error(err);
+-				});
+-		}
+-		return (
+-			<PayPalScriptProvider
+-				options={{
+-					clientId:
+-						"AduyjUJ0A7urUcWtGCTjanhRBSzOSn9_GKUzxWDnf51YaV1eZNA0ZAFhebIV_Eq-daemeI7dH05KjLWm",
+-					components: "card-fields",
+-				}}
+-			>
+-				<PayPalCardFieldsProvider
+-					createOrder={createOrder}
+-					onApprove={onApprove}
+-					onError={(err) => {
+-						console.log(err);
+-					}}
+-				>
+-					<PayPalCardFieldsForm />
+-					{/* Custom client component to handle card fields submit */}
+-					<SubmitPayment isPaying={isPaying} setIsPaying={setIsPaying} />
+-				</PayPalCardFieldsProvider>
+-			</PayPalScriptProvider>
+-		);
+-	}
+-
+-	const SubmitPayment: React.FC<{
+-		setIsPaying: React.Dispatch<React.SetStateAction<boolean>>;
+-		isPaying: boolean;
+-	}> = ({ isPaying, setIsPaying }) => {
+-		const { cardFieldsForm, fields } = usePayPalCardFields();
+-
+-		const handleClick = async () => {
+-			if (!cardFieldsForm) {
+-				const childErrorMessage =
+-					"Unable to find any child components in the <PayPalCardFieldsProvider />";
+-
+-				throw new Error(childErrorMessage);
+-			}
+-			const formState = await cardFieldsForm.getState();
+-
+-			if (!formState.isFormValid) {
+-				return alert("The payment form is invalid");
+-			}
+-			setIsPaying(true);
+-
+-			cardFieldsForm.submit().catch((err) => {
+-				setIsPaying(false);
+-			});
+-		};
+-
+-		return (
+-			<button
+-				className={isPaying ? "btn" : "btn btn-primary"}
+-				style={{ float: "right" }}
+-				onClick={handleClick}
+-			>
+-				{isPaying ? <div className="spinner tiny" /> : "Pay"}
+-			</button>
+-		);
+-	};
+-
+-	`;
+-};
+-
+-export const getIndividualFieldCode = (): string => {
+-  return `
+-	import React, { useState } from "react";
+-	import type { CardFieldsOnApproveData } from "@paypal/paypal-js";
+-
+-	import {
+-    PayPalScriptProvider,
+-    usePayPalCardFields,
+-    PayPalCardFieldsProvider,
+-    PayPalCVVField,
+-    PayPalExpiryField,
+-    PayPalNameField,
+-    PayPalNumberField,
+-	} from "@paypal/react-paypal-js";
+-
+-	export default function App(): JSX.Element {
+-		const [isPaying, setIsPaying] = useState(false);
+-		async function createOrder() {
+-			return fetch("${CREATE_ORDER_URL}", {
+-				method: "POST",
+-				headers: {
+-					"Content-Type": "application/json",
+-				},
+-				body: JSON.stringify({
+-					cart: [
+-						{
+-							sku: "1blwyeo8",
+-							quantity: 2,
+-						},
+-					],
+-				}),
+-			})
+-				.then((response) => response.json())
+-				.then((order) => {
+-					return order.id;
+-				})
+-				.catch((err) => {
+-					console.error(err);
+-				});
+-		}
+-
+-		function onApprove(data: CardFieldsOnApproveData) {
+-			fetch("${CAPTURE_ORDER_URL}", {
+-				method: "POST",
+-				headers: {
+-					"Content-Type": "application/json",
+-				},
+-				body: JSON.stringify({ orderID: data.orderID }),
+-			})
+-				.then((response) => response.json())
+-				.then((data) => {
+-					setIsPaying(false);
+-				})
+-				.catch((err) => {
+-					console.error(err);
+-				});
+-		}
+-		return (
+-			<PayPalScriptProvider
+-				options={{
+-					clientId:
+-						"AduyjUJ0A7urUcWtGCTjanhRBSzOSn9_GKUzxWDnf51YaV1eZNA0ZAFhebIV_Eq-daemeI7dH05KjLWm",
+-					components: "card-fields",
+-				}}
+-			>
+-				<PayPalCardFieldsProvider
+-					createOrder={createOrder}
+-					onApprove={onApprove}
+-					onError={(err) => {
+-						console.log(err);
+-					}}
+-				>
+-				<PayPalNameField />
+-				<PayPalNumberField />
+-				<PayPalExpiryField />
+-				<PayPalCVVField />
+-					<SubmitPayment isPaying={isPaying} setIsPaying={setIsPaying} />
+-				</PayPalCardFieldsProvider>
+-			</PayPalScriptProvider>
+-		);
+-	}
+-
+-	const SubmitPayment: React.FC<{
+-		setIsPaying: React.Dispatch<React.SetStateAction<boolean>>;
+-		isPaying: boolean;
+-	}> = ({ isPaying, setIsPaying }) => {
+-		const { cardFieldsForm } = usePayPalCardFields();
+-
+-		const handleClick = async () => {
+-			if (!cardFieldsForm) {
+-				const childErrorMessage =
+-					"Unable to find any child components in the < PayPalCardFieldsProvider />";
+-
+-				throw new Error(childErrorMessage);
+-			}
+-			const formState = await cardFieldsForm.getState();
+-
+-			if (!formState.isFormValid) {
+-				return alert("The payment form is invalid");
+-			}
+-			setIsPaying(true);
+-
+-			cardFieldsForm.submit().catch((err) => {
+-				setIsPaying(false);
+-			});
+-		};
+-
+-		return (
+-			<button
+-				className={isPaying ? "btn" : "btn btn-primary"}
+-				style={{ float: "right" }}
+-				onClick={handleClick}
+-			>
+-				{isPaying ? <div className="spinner tiny" /> : "Pay"}
+-			</button>
+-		);
+-	};
+-
+-	`;
+-};
+diff --git a/packages/react-paypal-js/src/stories/payPalCardFields/payPalCardFieldsForm.stories.tsx b/packages/react-paypal-js/src/stories/payPalCardFields/payPalCardFieldsForm.stories.tsx
+deleted file mode 100644
+index ec687db..0000000
+--- a/packages/react-paypal-js/src/stories/payPalCardFields/payPalCardFieldsForm.stories.tsx
++++ /dev/null
+@@ -1,188 +0,0 @@
+-import React, { useState } from "react";
+-import { action } from "@storybook/addon-actions";
+-
+-import {
+-  PayPalScriptProvider,
+-  usePayPalCardFields,
+-  PayPalCardFieldsProvider,
+-  PayPalCardFieldsForm,
+-} from "../../index";
+-import {
+-  getOptionsFromQueryString,
+-  generateRandomString,
+-  CREATE_ORDER_URL,
+-  CAPTURE_ORDER_URL,
+-} from "../utils";
+-import { ORDER_ID, ERROR } from "../constants";
+-import DocPageStructure from "../components/DocPageStructure";
+-import { getFormCode } from "./code";
+-
+-import type { DocsContextProps } from "@storybook/addon-docs";
+-import type { StoryFn } from "@storybook/react";
+-import type { FC } from "react";
+-import type {
+-  CardFieldsOnApproveData,
+-  PayPalScriptOptions,
+-} from "@paypal/paypal-js";
+-
+-const uid = generateRandomString();
+-
+-const scriptProviderOptions: PayPalScriptOptions = {
+-  clientId:
+-    "AduyjUJ0A7urUcWtGCTjanhRBSzOSn9_GKUzxWDnf51YaV1eZNA0ZAFhebIV_Eq-daemeI7dH05KjLWm",
+-  components: "card-fields",
+-  ...getOptionsFromQueryString(),
+-};
+-const CREATE_ORDER = "createOrder";
+-const SUBMIT_FORM = "submitForm";
+-const CAPTURE_ORDER = "captureOrder";
+-
+-/**
+- * Functional component to submit the card fields form
+- */
+-
+-const SubmitPayment: React.FC<{
+-  isPaying: boolean;
+-  setIsPaying: React.Dispatch<React.SetStateAction<boolean>>;
+-}> = ({ isPaying, setIsPaying }) => {
+-  const { cardFieldsForm } = usePayPalCardFields();
+-
+-  const handleClick = async () => {
+-    if (!cardFieldsForm) {
+-      const childErrorMessage =
+-        "Unable to find any child components in the <PayPalCardFieldsProvider />";
+-
+-      action(ERROR)(childErrorMessage);
+-      throw new Error(childErrorMessage);
+-    }
+-    const formState = await cardFieldsForm.getState();
+-
+-    if (!formState.isFormValid) {
+-      return alert("The payment form is invalid");
+-    }
+-    action(SUBMIT_FORM)("Form is valid and submitted");
+-    setIsPaying(true);
+-
+-    cardFieldsForm.submit().catch((err) => {
+-      action(ERROR)(err.message);
+-      setIsPaying(false);
+-    });
+-  };
+-
+-  return (
+-    <button
+-      className={`btn${isPaying ? "" : " btn-primary"}`}
+-      style={{ float: "right" }}
+-      onClick={handleClick}
+-    >
+-      {isPaying ? <div className="spinner tiny" /> : "Pay"}
+-    </button>
+-  );
+-};
+-
+-export default {
+-  title: "PayPal/PayPalCardFields/Form",
+-  component: PayPalCardFieldsForm,
+-  parameters: {
+-    controls: { expanded: true, sort: "requiredFirst" },
+-    docs: {
+-      source: { language: "tsx" },
+-    },
+-  },
+-  argTypes: {
+-    className: {
+-      control: false,
+-      table: { category: "Props", type: { summary: "string?" } },
+-      description:
+-        "Classes applied to the form container, not the individual fields.",
+-      defaultValue: {
+-        summary: "undefined",
+-      },
+-    },
+-  },
+-};
+-
+-export const Default: FC = () => {
+-  const [isPaying, setIsPaying] = useState(false);
+-  async function createOrder() {
+-    action(CREATE_ORDER)("Start creating the order in custom endpoint");
+-    return fetch(CREATE_ORDER_URL, {
+-      method: "POST",
+-      headers: {
+-        "Content-Type": "application/json",
+-      },
+-      body: JSON.stringify({
+-        cart: [
+-          {
+-            sku: "1blwyeo8",
+-            quantity: 2,
+-          },
+-        ],
+-      }),
+-    })
+-      .then((response) => response.json())
+-      .then((order) => {
+-        action(CREATE_ORDER)(order);
+-        return order.id;
+-      })
+-      .catch((err) => {
+-        action(ERROR)(err.message);
+-        console.error(err);
+-      });
+-  }
+-
+-  function onApprove(data: CardFieldsOnApproveData) {
+-    action(`Received ${ORDER_ID}`)(data.orderID);
+-    action(CAPTURE_ORDER)(
+-      `Sending ${ORDER_ID} to custom endpoint to capture the payment information`,
+-    );
+-    fetch(CAPTURE_ORDER_URL, {
+-      method: "POST",
+-      headers: {
+-        "Content-Type": "application/json",
+-      },
+-      body: JSON.stringify({ orderID: data.orderID }),
+-    })
+-      .then((response) => response.json())
+-      .then((data) => {
+-        action(CAPTURE_ORDER)(data);
+-        setIsPaying(false);
+-      })
+-      .catch((err) => {
+-        action(ERROR)(err.message);
+-      });
+-  }
+-  return (
+-    <PayPalScriptProvider
+-      options={{
+-        ...scriptProviderOptions,
+-
+-        dataNamespace: uid,
+-        dataUid: uid,
+-      }}
+-    >
+-      <PayPalCardFieldsProvider
+-        createOrder={createOrder}
+-        onApprove={onApprove}
+-        onError={(err) => {
+-          console.log(err);
+-        }}
+-      >
+-        <PayPalCardFieldsForm />
+-        {/* Custom client component to handle card fields submit */}
+-        <SubmitPayment isPaying={isPaying} setIsPaying={setIsPaying} />
+-      </PayPalCardFieldsProvider>
+-    </PayPalScriptProvider>
+-  );
+-};
+-
+-/********************
+- * OVERRIDE STORIES *
+- *******************/
+-(Default as StoryFn).parameters = {
+-  docs: {
+-    container: ({ context }: { context: DocsContextProps }) => (
+-      <DocPageStructure context={context} code={getFormCode()} />
+-    ),
+-  },
+-};
+diff --git a/packages/react-paypal-js/src/stories/payPalCardFields/payPalCardFieldsIndividual.stories.tsx b/packages/react-paypal-js/src/stories/payPalCardFields/payPalCardFieldsIndividual.stories.tsx
+deleted file mode 100644
+index 2e4a717..0000000
+--- a/packages/react-paypal-js/src/stories/payPalCardFields/payPalCardFieldsIndividual.stories.tsx
++++ /dev/null
+@@ -1,576 +0,0 @@
+-import React, { useState } from "react";
+-import { action } from "@storybook/addon-actions";
+-
+-import {
+-  PayPalScriptProvider,
+-  usePayPalCardFields,
+-  PayPalCardFieldsProvider,
+-  PayPalCVVField,
+-  PayPalExpiryField,
+-  PayPalNameField,
+-  PayPalNumberField,
+-} from "../../index";
+-import {
+-  getOptionsFromQueryString,
+-  generateRandomString,
+-  CREATE_ORDER_URL,
+-  CAPTURE_ORDER_URL,
+-} from "../utils";
+-import {
+-  COMPONENT_PROPS_CATEGORY,
+-  COMPONENT_TYPES,
+-  ORDER_ID,
+-  ERROR,
+-} from "../constants";
+-import { getIndividualFieldCode } from "./code";
+-import DocPageStructure from "../components/DocPageStructure";
+-
+-import type { DocsContextProps } from "@storybook/addon-docs";
+-import type { FC } from "react";
+-import type {
+-  CardFieldsOnApproveData,
+-  PayPalScriptOptions,
+-} from "@paypal/paypal-js";
+-import type { StoryFn } from "@storybook/react";
+-
+-const uid = generateRandomString();
+-const scriptProviderOptions: PayPalScriptOptions = {
+-  clientId:
+-    "AduyjUJ0A7urUcWtGCTjanhRBSzOSn9_GKUzxWDnf51YaV1eZNA0ZAFhebIV_Eq-daemeI7dH05KjLWm",
+-  components: "card-fields",
+-  ...getOptionsFromQueryString(),
+-};
+-const CREATE_ORDER = "createOrder";
+-const SUBMIT_FORM = "submitForm";
+-const CAPTURE_ORDER = "captureOrder";
+-
+-const description = `Rendering individual fields allows for more granular control over each component as well as flexibility in the layout of all [Card Fields](https://developer.paypal.com/docs/business/checkout/advanced-card-payments/integrate#3-add-javascript-sdk-and-card-form).
+-
+-This setup relies on the \`<PayPalCardFieldsProvider />\` parent component, which manages the state related to loading the JS SDK script and performs certain validations before rendering the fields.
+-
+-The individual fields include following components: 
+-
+-- \`<PaypalNameField />\` _optional_
+-- \`<PaypalNumberField />\` _required_
+-- \`<PaypalExpiryField />\` _required_
+-- \`<PaypalCVVField />\` _required_
+-
+-Each field accepts it's own independent props, such as \`className\`, \`placeholder\`, \`inputEvents\`, \`style\`. `;
+-
+-/**
+- * Functional component to submit the card fields form
+- */
+-
+-const SubmitPayment: React.FC<{
+-  isPaying: boolean;
+-  setIsPaying: React.Dispatch<React.SetStateAction<boolean>>;
+-}> = ({ isPaying, setIsPaying }) => {
+-  const { cardFieldsForm } = usePayPalCardFields();
+-
+-  const handleClick = async () => {
+-    if (!cardFieldsForm) {
+-      const childErrorMessage =
+-        "Unable to find any child components in the <PayPalCardFieldsProvider />";
+-
+-      action(ERROR)(childErrorMessage);
+-      throw new Error(childErrorMessage);
+-    }
+-    const formState = await cardFieldsForm.getState();
+-
+-    if (!formState.isFormValid) {
+-      return alert("The payment form is invalid");
+-    }
+-    action(SUBMIT_FORM)("Form is valid and submitted");
+-    setIsPaying(true);
+-
+-    cardFieldsForm.submit().catch((err) => {
+-      action(ERROR)(err.message);
+-      setIsPaying(false);
+-    });
+-  };
+-
+-  return (
+-    <button
+-      className={`btn${isPaying ? "" : " btn-primary"}`}
+-      style={{ float: "right" }}
+-      onClick={handleClick}
+-    >
+-      {isPaying ? <div className="spinner tiny" /> : "Pay"}
+-    </button>
+-  );
+-};
+-
+-export default {
+-  title: "PayPal/PayPalCardFields/Individual Fields",
+-  parameters: {
+-    controls: { expanded: true, sort: "requiredFirst" },
+-    docs: {
+-      source: { language: "tsx" },
+-      description: {
+-        component: description,
+-      },
+-    },
+-  },
+-  argTypes: {
+-    className: {
+-      control: false,
+-      table: { category: "Props", type: { summary: "string?" } },
+-      description: "Classes applied to individual field container.",
+-      defaultValue: {
+-        summary: "undefined",
+-      },
+-    },
+-    style: {
+-      description:
+-        "Custom CSS properties to customize each individual card field. [Supported CSS properties](https://developer.paypal.com/docs/checkout/advanced/customize/card-field-style/#link-supportedcssproperties).",
+-      control: { type: "object" },
+-      ...{
+-        ...COMPONENT_PROPS_CATEGORY,
+-        type: { summary: "CSSProperties" },
+-      },
+-    },
+-    inputEvents: {
+-      control: false,
+-      table: { category: "Props", type: { summary: "InputEvents?" } },
+-      description:
+-        "An object containing callbacks for when a specified input event occurs for a field.",
+-    },
+-    placeholder: {
+-      control: false,
+-      table: { category: "Props", type: { summary: "string?" } },
+-      description:
+-        "Each card field has a default placeholder text. Pass a placeholder object to customize this text.",
+-      defaultValue: {
+-        summary: "undefined",
+-      },
+-    },
+-    InputEvents: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                <b class="code-json">onChange</b>: (data: <b>PayPalCardFieldsStateObject</b>) => <b>void</b> <br>
+-                <b class="code-json">onBlur</b>: (data: <b>PayPalCardFieldsStateObject</b>) => <b>void</b> <br>
+-                <b class="code-json">onFocus</b>: (data: <b>PayPalCardFieldsStateObject</b>) => <b>void</b> <br>
+-                <b class="code-json">onInputSubmitRequest</b>: (data: <b>PayPalCardFieldsStateObject</b>) => <b>void</b> <br>
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldsStateObjectFields: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                    <b class="code-json">cardCvvField</b>: <b>PayPalCardFieldCardFieldData</b> <br>
+-                    <b class="code-json">cardNumberField</b>: <b>PayPalCardFieldCardFieldData</b> <br>
+-                    <b class="code-json">cardNameField</b>: <b>PayPalCardFieldCardFieldData</b> <br>
+-                    <b class="code-json">cardExpiryField</b>: <b>PayPalCardFieldCardFieldData</b> <br>
+-                }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldsStateObject: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                <b class="code-json">cards</b>: <b>PayPalCardFieldsCardObject</b>[] <br>
+-                <b class="code-json">emittedBy</b>?: "name" | "number" | "cvv" | "expiry" <br>
+-                <b class="code-json">isFormValid</b>: boolean <br>
+-                <b class="code-json">errors</b>: <b>PayPalCardFieldError</b>[] <br>
+-                <b class="code-json">fields</b>: <b>PayPalCardFieldsStateObjectFields</b><br>
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldsCardObject: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                <b class="code-json">code</b>: <b>PayPalCardFieldSecurityCode</b> <br>
+-                <b class="code-json">niceType</b>: string  <br>
+-                <b class="code-json">type</b>: "american-express" | "diners-club" | "discover" | "jcb" | "maestro" | "mastercard" | "unionpay" | "visa" | "elo" | "hiper" | "hipercard" <br>
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldError: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>"INELIGIBLE_CARD_VENDOR" | "INVALID_NAME" | "INVALID_NUMBER" | "INVALID_EXPIRY" | "INVALID_CVV" </code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldSecurityCode: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                <b class="code-json">code</b>: string <br>
+-                <b class="code-json">size</b>: number  <br>
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldCardFieldData: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                <b class="code-json">isFocused</b>: boolean <br>
+-                <b class="code-json">isEmpty</b>: boolean  <br>
+-                <b class="code-json">isValid</b>: boolean  <br>
+-                <b class="code-json">isPotentiallyValid</b>: boolean  <br>
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-  },
+-};
+-
+-export const Default: FC = () => {
+-  const [isPaying, setIsPaying] = useState(false);
+-  async function createOrder() {
+-    action(CREATE_ORDER)("Start creating the order in custom endpoint");
+-    return fetch(CREATE_ORDER_URL, {
+-      method: "POST",
+-      headers: {
+-        "Content-Type": "application/json",
+-      },
+-      body: JSON.stringify({
+-        cart: [
+-          {
+-            sku: "1blwyeo8",
+-            quantity: 2,
+-          },
+-        ],
+-      }),
+-    })
+-      .then((response) => response.json())
+-      .then((order) => {
+-        action(CREATE_ORDER)(order);
+-        return order.id;
+-      })
+-      .catch((err) => {
+-        action(ERROR)(err.message);
+-        console.error(err);
+-      });
+-  }
+-
+-  function onApprove(data: CardFieldsOnApproveData) {
+-    action(`Received ${ORDER_ID}`)(data.orderID);
+-    action(CAPTURE_ORDER)(
+-      `Sending ${ORDER_ID} to custom endpoint to capture the payment information`,
+-    );
+-    fetch(CAPTURE_ORDER_URL, {
+-      method: "POST",
+-      headers: {
+-        "Content-Type": "application/json",
+-      },
+-      body: JSON.stringify({ orderID: data.orderID }),
+-    })
+-      .then((response) => response.json())
+-      .then((data) => {
+-        action(CAPTURE_ORDER)(data);
+-        setIsPaying(false);
+-      })
+-      .catch((err) => {
+-        action(ERROR)(err.message);
+-      });
+-  }
+-  return (
+-    <PayPalScriptProvider
+-      options={{
+-        ...scriptProviderOptions,
+-        dataNamespace: uid,
+-        dataUid: uid,
+-      }}
+-    >
+-      <PayPalCardFieldsProvider
+-        createOrder={createOrder}
+-        onApprove={onApprove}
+-        onError={(err) => {
+-          console.log(err);
+-        }}
+-      >
+-        <PayPalNameField />
+-        <PayPalNumberField />
+-        <PayPalExpiryField />
+-        <PayPalCVVField />
+-        {/* Custom client component to handle card fields submit */}
+-        <SubmitPayment isPaying={isPaying} setIsPaying={setIsPaying} />
+-      </PayPalCardFieldsProvider>
+-    </PayPalScriptProvider>
+-  );
+-};
+-
+-/********************
+- * OVERRIDE STORIES *
+- *******************/
+-(Default as StoryFn).parameters = {
+-  docs: {
+-    container: ({ context }: { context: DocsContextProps }) => (
+-      <DocPageStructure context={context} code={getIndividualFieldCode()} />
+-    ),
+-  },
+-};
+-
+-export const WithDynamicOrderState: FC = () => {
+-  const [count, setCount] = useState(0);
+-  const [fieldsTableCounts, setFieldsTableCounts] = useState(
+-    new Array(16).fill(count),
+-  );
+-  const [providerTableCounts, setProviderTableCounts] = useState([
+-    count,
+-    count,
+-  ]);
+-  const [isPaying, setIsPaying] = useState(false);
+-
+-  const updateFieldsTableCount = (
+-    row: number,
+-    column: number,
+-    count: number,
+-  ) => {
+-    setFieldsTableCounts((prevFieldsTableCounts) => {
+-      const index = row * 4 + column;
+-      if (prevFieldsTableCounts[index] === count) {
+-        return prevFieldsTableCounts;
+-      }
+-
+-      const newFieldsTableCounts = [...prevFieldsTableCounts];
+-      newFieldsTableCounts[index] = count;
+-      return newFieldsTableCounts;
+-    });
+-  };
+-
+-  const updateProviderTableCount = (index: number, count: number) => {
+-    setProviderTableCounts((prevProviderTableCounts) => {
+-      if (prevProviderTableCounts[index] === count) {
+-        return prevProviderTableCounts;
+-      }
+-
+-      const newProviderTableCounts = [...prevProviderTableCounts];
+-      newProviderTableCounts[index] = count;
+-      return newProviderTableCounts;
+-    });
+-  };
+-
+-  async function createOrder() {
+-    updateProviderTableCount(0, count);
+-    action(CREATE_ORDER)("Start creating the order in custom endpoint");
+-    return fetch(CREATE_ORDER_URL, {
+-      method: "POST",
+-      headers: {
+-        "Content-Type": "application/json",
+-      },
+-      body: JSON.stringify({
+-        cart: [
+-          {
+-            sku: "1blwyeo8",
+-            quantity: count,
+-          },
+-        ],
+-      }),
+-    })
+-      .then((response) => response.json())
+-      .then((order) => {
+-        action(CREATE_ORDER)(order);
+-        return order.id;
+-      })
+-      .catch((err) => {
+-        action(ERROR)(err.message);
+-        console.error(err);
+-      });
+-  }
+-
+-  function onApprove(data: CardFieldsOnApproveData) {
+-    updateProviderTableCount(1, count);
+-    action(`Received ${ORDER_ID}`)(data.orderID);
+-    action(CAPTURE_ORDER)(
+-      `Sending ${ORDER_ID} to custom endpoint to capture the payment information`,
+-    );
+-    fetch(CAPTURE_ORDER_URL, {
+-      method: "POST",
+-      headers: {
+-        "Content-Type": "application/json",
+-      },
+-      body: JSON.stringify({ orderID: data.orderID }),
+-    })
+-      .then((response) => response.json())
+-      .then((data) => {
+-        action(CAPTURE_ORDER)(data);
+-        setIsPaying(false);
+-      })
+-      .catch((err) => {
+-        action(ERROR)(err.message);
+-      });
+-  }
+-
+-  const tableStyles = {
+-    borderCollapse: "collapse",
+-    border: "1px solid black",
+-    width: "100%",
+-    maxWidth: "1400px",
+-    textAlign: "center",
+-  } as React.CSSProperties;
+-
+-  const columnStyles = {
+-    border: "1px solid black",
+-  } as React.CSSProperties;
+-
+-  return (
+-    <>
+-      <button onClick={() => setCount(count + 1)}>Count: {count}</button>
+-      <PayPalScriptProvider
+-        options={{
+-          ...scriptProviderOptions,
+-          dataNamespace: uid,
+-          dataUid: uid,
+-        }}
+-      >
+-        <PayPalCardFieldsProvider
+-          createOrder={createOrder}
+-          onApprove={onApprove}
+-          onError={(err) => {
+-            console.log("onError count: ", count);
+-            console.log(err);
+-          }}
+-        >
+-          <PayPalNameField
+-            inputEvents={{
+-              onChange: () => updateFieldsTableCount(0, 0, count),
+-              onFocus: () => updateFieldsTableCount(1, 0, count),
+-              onBlur: () => updateFieldsTableCount(2, 0, count),
+-              onInputSubmitRequest: () => updateFieldsTableCount(3, 0, count),
+-            }}
+-          />
+-          <PayPalNumberField
+-            inputEvents={{
+-              onChange: () => updateFieldsTableCount(0, 1, count),
+-              onFocus: () => updateFieldsTableCount(1, 1, count),
+-              onBlur: () => updateFieldsTableCount(2, 1, count),
+-              onInputSubmitRequest: () => updateFieldsTableCount(3, 1, count),
+-            }}
+-          />
+-          <PayPalExpiryField
+-            inputEvents={{
+-              onChange: () => updateFieldsTableCount(0, 2, count),
+-              onFocus: () => updateFieldsTableCount(1, 2, count),
+-              onBlur: () => updateFieldsTableCount(2, 2, count),
+-              onInputSubmitRequest: () => updateFieldsTableCount(3, 2, count),
+-            }}
+-          />
+-          <PayPalCVVField
+-            inputEvents={{
+-              onChange: () => updateFieldsTableCount(0, 3, count),
+-              onFocus: () => updateFieldsTableCount(1, 3, count),
+-              onBlur: () => updateFieldsTableCount(2, 3, count),
+-              onInputSubmitRequest: () => updateFieldsTableCount(3, 3, count),
+-            }}
+-          />
+-          {/* Custom client component to handle card fields submit */}
+-          <SubmitPayment isPaying={isPaying} setIsPaying={setIsPaying} />
+-        </PayPalCardFieldsProvider>
+-      </PayPalScriptProvider>
+-      <section>
+-        <h2>Count state on Provider Callbacks</h2>
+-        <p>
+-          <b>createOrder:</b> <span>{providerTableCounts[0]}</span>
+-        </p>
+-        <p>
+-          <b>onApprove:</b> <span>{providerTableCounts[1]}</span>
+-        </p>
+-      </section>
+-      <section>
+-        <h2>Count state on individual fields callbacks</h2>
+-        <table style={tableStyles}>
+-          <thead>
+-            <tr>
+-              <th style={columnStyles} scope="col">
+-                Event Callback
+-              </th>
+-              <th style={columnStyles} scope="col">
+-                Name Field
+-              </th>
+-              <th style={columnStyles} scope="col">
+-                Number Field
+-              </th>
+-              <th style={columnStyles} scope="col">
+-                Expiry Field
+-              </th>
+-              <th style={columnStyles} scope="col">
+-                CVV Field
+-              </th>
+-            </tr>
+-          </thead>
+-          <tbody>
+-            <tr>
+-              <th style={columnStyles} scope="row">
+-                onChange
+-              </th>
+-              <td style={columnStyles}>
+-                <span>{fieldsTableCounts[0]}</span>
+-              </td>
+-              <td style={columnStyles}>
+-                <span>{fieldsTableCounts[1]}</span>
+-              </td>
+-              <td style={columnStyles}>
+-                <span>{fieldsTableCounts[2]}</span>
+-              </td>
+-              <td style={columnStyles}>
+-                <span>{fieldsTableCounts[3]}</span>
+-              </td>
+-            </tr>
+-            <tr>
+-              <th style={columnStyles} scope="row">
+-                onFocus
+-              </th>
+-              <td style={columnStyles}>
+-                <span>{fieldsTableCounts[4]}</span>
+-              </td>
+-              <td style={columnStyles}>
+-                <span>{fieldsTableCounts[5]}</span>
+-              </td>
+-              <td style={columnStyles}>
+-                <span>{fieldsTableCounts[6]}</span>
+-              </td>
+-              <td style={columnStyles}>
+-                <span>{fieldsTableCounts[7]}</span>
+-              </td>
+-            </tr>
+-            <tr>
+-              <th style={columnStyles} scope="row">
+-                onBlur
+-              </th>
+-              <td style={columnStyles}>
+-                <span>{fieldsTableCounts[8]}</span>
+-              </td>
+-              <td style={columnStyles}>
+-                <span>{fieldsTableCounts[9]}</span>
+-              </td>
+-              <td style={columnStyles}>
+-                <span>{fieldsTableCounts[10]}</span>
+-              </td>
+-              <td style={columnStyles}>
+-                <span>{fieldsTableCounts[11]}</span>
+-              </td>
+-            </tr>
+-            <tr>
+-              <th style={columnStyles} scope="row">
+-                onInputSubmitRequest
+-              </th>
+-              <td style={columnStyles}>
+-                <span>{fieldsTableCounts[12]}</span>
+-              </td>
+-              <td style={columnStyles}>
+-                <span>{fieldsTableCounts[13]}</span>
+-              </td>
+-              <td style={columnStyles}>
+-                <span>{fieldsTableCounts[14]}</span>
+-              </td>
+-              <td style={columnStyles}>
+-                <span>{fieldsTableCounts[15]}</span>
+-              </td>
+-            </tr>
+-          </tbody>
+-        </table>
+-      </section>
+-    </>
+-  );
+-};
+diff --git a/packages/react-paypal-js/src/stories/payPalCardFields/payPalCardFieldsProvider.stories.tsx b/packages/react-paypal-js/src/stories/payPalCardFields/payPalCardFieldsProvider.stories.tsx
+deleted file mode 100644
+index 7336fd0..0000000
+--- a/packages/react-paypal-js/src/stories/payPalCardFields/payPalCardFieldsProvider.stories.tsx
++++ /dev/null
+@@ -1,513 +0,0 @@
+-import React, { useState } from "react";
+-import { action } from "@storybook/addon-actions";
+-
+-import {
+-  PayPalScriptProvider,
+-  PayPalCardFieldsProvider,
+-  PayPalCardFieldsForm,
+-  usePayPalCardFields,
+-} from "../../index";
+-import {
+-  getOptionsFromQueryString,
+-  generateRandomString,
+-  CREATE_ORDER_URL,
+-  CAPTURE_ORDER_URL,
+-} from "../utils";
+-import {
+-  COMPONENT_PROPS_CATEGORY,
+-  COMPONENT_TYPES,
+-  ORDER_ID,
+-  ERROR,
+-} from "../constants";
+-import { getFormCode } from "./code";
+-import DocPageStructure from "../components/DocPageStructure";
+-
+-import type { FC } from "react";
+-import type {
+-  CardFieldsOnApproveData,
+-  PayPalScriptOptions,
+-} from "@paypal/paypal-js";
+-import type { StoryFn } from "@storybook/react";
+-import type { DocsContextProps } from "@storybook/addon-docs";
+-
+-const uid = generateRandomString();
+-const scriptProviderOptions: PayPalScriptOptions = {
+-  clientId:
+-    "AduyjUJ0A7urUcWtGCTjanhRBSzOSn9_GKUzxWDnf51YaV1eZNA0ZAFhebIV_Eq-daemeI7dH05KjLWm",
+-  components: "card-fields",
+-  ...getOptionsFromQueryString(),
+-};
+-const CREATE_ORDER = "createOrder";
+-const SUBMIT_FORM = "submitForm";
+-const CAPTURE_ORDER = "captureOrder";
+-
+-/**
+- * Functional component to submit the hosted fields form
+- */
+-
+-const SubmitPayment: React.FC<{
+-  isPaying: boolean;
+-  setIsPaying: React.Dispatch<React.SetStateAction<boolean>>;
+-}> = ({ isPaying, setIsPaying }) => {
+-  const { cardFieldsForm } = usePayPalCardFields();
+-
+-  const handleClick = async () => {
+-    if (!cardFieldsForm) {
+-      const childErrorMessage =
+-        "Unable to find any child components in the <PayPalHostedFieldsProvider />";
+-
+-      action(ERROR)(childErrorMessage);
+-      throw new Error(childErrorMessage);
+-    }
+-    const formState = await cardFieldsForm.getState();
+-
+-    if (!formState.isFormValid) {
+-      return alert("The payment form is invalid");
+-    }
+-    action(SUBMIT_FORM)("Form is valid and submitted");
+-    setIsPaying(true);
+-
+-    cardFieldsForm.submit().catch((err) => {
+-      action(ERROR)(err.message);
+-      setIsPaying(false);
+-    });
+-  };
+-
+-  return (
+-    <button
+-      className={`btn${isPaying ? "" : " btn-primary"}`}
+-      style={{ float: "right" }}
+-      onClick={handleClick}
+-    >
+-      {isPaying ? <div className="spinner tiny" /> : "Pay"}
+-    </button>
+-  );
+-};
+-
+-export default {
+-  title: "PayPal/PayPalCardFields/Context Provider",
+-  component: PayPalCardFieldsProvider,
+-  parameters: {
+-    controls: { expanded: true, sort: "requiredFirst" },
+-    docs: {
+-      source: { language: "tsx" },
+-      disabled: true,
+-    },
+-  },
+-  argTypes: {
+-    createOrder: {
+-      control: false,
+-      type: {
+-        required: true,
+-      },
+-      table: {
+-        category: "Props",
+-        type: { summary: "() => Promise<string>" },
+-      },
+-      description:
+-        "The callback to create the order on your server. [CardFields options documentation](https://developer.paypal.com/sdk/js/reference/#link-options)",
+-    },
+-    onApprove: {
+-      control: false,
+-      type: {
+-        required: true,
+-      },
+-      table: {
+-        category: "Props",
+-        type: { summary: "(data: CardFieldsOnApproveData) => void" },
+-      },
+-      description:
+-        "The callback to capture the order on your server. [CardFields options documentation](https://developer.paypal.com/sdk/js/reference/#link-options)",
+-    },
+-    onError: {
+-      control: false,
+-      type: {
+-        required: true,
+-      },
+-      table: {
+-        category: "Props",
+-        type: { summary: "(err: Record<string, unknown>) => void" },
+-      },
+-      description:
+-        "The callback to catch errors during checkout. [CardFields options documentation](https://developer.paypal.com/sdk/js/reference/#link-options)",
+-    },
+-    createVaultSetupToken: {
+-      control: false,
+-      type: {
+-        required: false,
+-      },
+-      table: {
+-        category: "Props",
+-        type: { summary: "() => Promise<string>" },
+-      },
+-      description:
+-        "The callback to create the `vaultSetupToken` on your server.",
+-    },
+-    style: {
+-      description:
+-        "Custom CSS properties to customize each individual card field. [Supported CSS properties](https://developer.paypal.com/docs/checkout/advanced/customize/card-field-style/#link-supportedcssproperties)",
+-      control: { type: "object" },
+-      ...{
+-        ...COMPONENT_PROPS_CATEGORY,
+-        type: { summary: "CSSProperties" },
+-      },
+-    },
+-    inputEvents: {
+-      control: false,
+-      table: { category: "Props", type: { summary: "InputEvents?" } },
+-      description:
+-        "An object containing callbacks that will be applied to each input field.",
+-    },
+-    CardFieldsOnApproveData: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                <b class="code-json">orderID</b>: string <br> 
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    InputEvents: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                <b class="code-json">onChange</b>: (data: <b>PayPalCardFieldsStateObject</b>) => <b>void</b> <br>
+-                <b class="code-json">onBlur</b>: (data: <b>PayPalCardFieldsStateObject</b>) => <b>void</b> <br>
+-                <b class="code-json">onFocus</b>: (data: <b>PayPalCardFieldsStateObject</b>) => <b>void</b> <br>
+-                <b class="code-json">onInputSubmitRequest</b>: (data: <b>PayPalCardFieldsStateObject</b>) => <b>void</b> <br>
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldsStateObjectFields: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                    <b class="code-json">cardCvvField</b>: <b>PayPalCardFieldCardFieldData</b> <br>
+-                    <b class="code-json">cardNumberField</b>: <b>PayPalCardFieldCardFieldData</b> <br>
+-                    <b class="code-json">cardNameField</b>: <b>PayPalCardFieldCardFieldData</b> <br>
+-                    <b class="code-json">cardExpiryField</b>: <b>PayPalCardFieldCardFieldData</b> <br>
+-                }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldsStateObject: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                <b class="code-json">cards</b>: <b>PayPalCardFieldsCardObject</b>[] <br>
+-                <b class="code-json">emittedBy</b>?: "name" | "number" | "cvv" | "expiry" <br>
+-                <b class="code-json">isFormValid</b>: boolean <br>
+-                <b class="code-json">errors</b>: <b>PayPalCardFieldError</b>[] <br>
+-                <b class="code-json">fields</b>: <b>PayPalCardFieldsStateObjectFields</b><br>
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldsCardObject: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                <b class="code-json">code</b>: <b>PayPalCardFieldSecurityCode</b> <br>
+-                <b class="code-json">niceType</b>: string  <br>
+-                <b class="code-json">type</b>: "american-express" | "diners-club" | "discover" | "jcb" | "maestro" | "mastercard" | "unionpay" | "visa" | "elo" | "hiper" | "hipercard" <br>
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldError: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>"INELIGIBLE_CARD_VENDOR" | "INVALID_NAME" | "INVALID_NUMBER" | "INVALID_EXPIRY" | "INVALID_CVV" </code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldSecurityCode: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                <b class="code-json">code</b>: string <br>
+-                <b class="code-json">size</b>: number  <br>
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldCardFieldData: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                <b class="code-json">isFocused</b>: boolean <br>
+-                <b class="code-json">isEmpty</b>: boolean  <br>
+-                <b class="code-json">isValid</b>: boolean  <br>
+-                <b class="code-json">isPotentiallyValid</b>: boolean  <br>
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-  },
+-};
+-
+-export const Default: FC = () => {
+-  const [isPaying, setIsPaying] = useState(false);
+-  async function createOrder() {
+-    action(CREATE_ORDER)("Start creating the order in custom endpoint");
+-    return fetch(CREATE_ORDER_URL, {
+-      method: "POST",
+-      headers: {
+-        "Content-Type": "application/json",
+-      },
+-      body: JSON.stringify({
+-        cart: [
+-          {
+-            sku: "1blwyeo8",
+-            quantity: 2,
+-          },
+-        ],
+-      }),
+-    })
+-      .then((response) => response.json())
+-      .then((order) => {
+-        action(CREATE_ORDER)(order);
+-        return order.id;
+-      })
+-      .catch((err) => {
+-        action(ERROR)(err.message);
+-        console.error(err);
+-      });
+-  }
+-
+-  function onApprove(data: CardFieldsOnApproveData) {
+-    action(`Received ${ORDER_ID}`)(data.orderID);
+-    action(CAPTURE_ORDER)(
+-      `Sending ${ORDER_ID} to custom endpoint to capture the payment information`,
+-    );
+-    fetch(CAPTURE_ORDER_URL, {
+-      method: "POST",
+-      headers: {
+-        "Content-Type": "application/json",
+-      },
+-      body: JSON.stringify({ orderID: data.orderID }),
+-    })
+-      .then((response) => response.json())
+-      .then((data) => {
+-        action(CAPTURE_ORDER)(data);
+-        setIsPaying(false);
+-      })
+-      .catch((err) => {
+-        action(ERROR)(err.message);
+-      });
+-  }
+-  return (
+-    <PayPalScriptProvider
+-      options={{
+-        ...scriptProviderOptions,
+-
+-        dataNamespace: uid,
+-        dataUid: uid,
+-      }}
+-    >
+-      <PayPalCardFieldsProvider
+-        createOrder={createOrder}
+-        onApprove={onApprove}
+-        onError={(err) => {
+-          console.log(err);
+-        }}
+-      >
+-        <PayPalCardFieldsForm />
+-        {/* Custom client component to handle card fields submit */}
+-        <SubmitPayment isPaying={isPaying} setIsPaying={setIsPaying} />
+-      </PayPalCardFieldsProvider>
+-    </PayPalScriptProvider>
+-  );
+-};
+-
+-/********************
+- * OVERRIDE STORIES *
+- *******************/
+-(Default as StoryFn).parameters = {
+-  docs: {
+-    container: ({ context }: { context: DocsContextProps }) => (
+-      <DocPageStructure context={context} code={getFormCode()} />
+-    ),
+-  },
+-};
+-
+-export const WithDynamicOrderState: FC = () => {
+-  const [count, setCount] = useState(0);
+-  const [providerTableCounts, setProviderTableCounts] = useState(
+-    new Array(6).fill(count),
+-  );
+-  const [isPaying, setIsPaying] = useState(false);
+-
+-  const updateProviderTableCount = (index: number, count: number) => {
+-    setProviderTableCounts((prevProviderTableCounts) => {
+-      if (prevProviderTableCounts[index] === count) {
+-        return prevProviderTableCounts;
+-      }
+-
+-      const newProviderTableCounts = [...prevProviderTableCounts];
+-      newProviderTableCounts[index] = count;
+-      return newProviderTableCounts;
+-    });
+-  };
+-
+-  async function createOrder() {
+-    updateProviderTableCount(0, count);
+-    action(CREATE_ORDER)("Start creating the order in custom endpoint");
+-    return fetch(CREATE_ORDER_URL, {
+-      method: "POST",
+-      headers: {
+-        "Content-Type": "application/json",
+-      },
+-      body: JSON.stringify({
+-        cart: [
+-          {
+-            sku: "1blwyeo8",
+-            quantity: count,
+-          },
+-        ],
+-      }),
+-    })
+-      .then((response) => response.json())
+-      .then((order) => {
+-        action(CREATE_ORDER)(order);
+-        return order.id;
+-      })
+-      .catch((err) => {
+-        action(ERROR)(err.message);
+-        console.error(err);
+-      });
+-  }
+-
+-  function onApprove(data: CardFieldsOnApproveData) {
+-    updateProviderTableCount(1, count);
+-    action(`Received ${ORDER_ID}`)(data.orderID);
+-    action(CAPTURE_ORDER)(
+-      `Sending ${ORDER_ID} to custom endpoint to capture the payment information`,
+-    );
+-    fetch(CAPTURE_ORDER_URL, {
+-      method: "POST",
+-      headers: {
+-        "Content-Type": "application/json",
+-      },
+-      body: JSON.stringify({ orderID: data.orderID }),
+-    })
+-      .then((response) => response.json())
+-      .then((data) => {
+-        action(CAPTURE_ORDER)(data);
+-        setIsPaying(false);
+-      })
+-      .catch((err) => {
+-        action(ERROR)(err.message);
+-      });
+-  }
+-
+-  const tableStyles = {
+-    borderCollapse: "collapse",
+-    border: "1px solid black",
+-    width: "100%",
+-    maxWidth: "1000px",
+-    textAlign: "center",
+-  } as React.CSSProperties;
+-
+-  const columnStyles = {
+-    border: "1px solid black",
+-  } as React.CSSProperties;
+-
+-  return (
+-    <>
+-      <button onClick={() => setCount(count + 1)}>Count: {count}</button>
+-      <PayPalScriptProvider
+-        options={{
+-          ...scriptProviderOptions,
+-
+-          dataNamespace: uid,
+-          dataUid: uid,
+-        }}
+-      >
+-        <PayPalCardFieldsProvider
+-          createOrder={createOrder}
+-          onApprove={onApprove}
+-          onError={(err) => {
+-            console.log(err);
+-          }}
+-          inputEvents={{
+-            onChange: () => updateProviderTableCount(2, count),
+-            onFocus: () => updateProviderTableCount(3, count),
+-            onBlur: () => updateProviderTableCount(4, count),
+-            onInputSubmitRequest: () => updateProviderTableCount(5, count),
+-          }}
+-        >
+-          <PayPalCardFieldsForm />
+-          {/* Custom client component to handle card fields submit */}
+-          <SubmitPayment isPaying={isPaying} setIsPaying={setIsPaying} />
+-        </PayPalCardFieldsProvider>
+-      </PayPalScriptProvider>
+-      <section>
+-        <h2>Count state on Provider Callbacks and input events</h2>
+-        <table style={tableStyles}>
+-          <thead>
+-            <tr>
+-              <th style={columnStyles} scope="col">
+-                Callback Name
+-              </th>
+-              <th style={columnStyles} scope="col">
+-                count state value
+-              </th>
+-            </tr>
+-          </thead>
+-          <tbody>
+-            <tr>
+-              <th style={columnStyles} scope="row">
+-                createOrder
+-              </th>
+-              <td style={columnStyles}>
+-                <span>{providerTableCounts[0]}</span>
+-              </td>
+-            </tr>
+-            <tr>
+-              <th style={columnStyles} scope="row">
+-                onApprove
+-              </th>
+-              <td style={columnStyles}>
+-                <span>{providerTableCounts[1]}</span>
+-              </td>
+-            </tr>
+-            <tr>
+-              <th style={columnStyles} scope="row">
+-                onChange
+-              </th>
+-              <td style={columnStyles}>
+-                <span>{providerTableCounts[2]}</span>
+-              </td>
+-            </tr>
+-            <tr>
+-              <th style={columnStyles} scope="row">
+-                onFocus
+-              </th>
+-              <td style={columnStyles}>
+-                <span>{providerTableCounts[3]}</span>
+-              </td>
+-            </tr>
+-            <tr>
+-              <th style={columnStyles} scope="row">
+-                onBlur
+-              </th>
+-              <td style={columnStyles}>
+-                <span>{providerTableCounts[4]}</span>
+-              </td>
+-            </tr>
+-            <tr>
+-              <th style={columnStyles} scope="row">
+-                onInputSubmitRequest
+-              </th>
+-              <td style={columnStyles}>
+-                <span>{providerTableCounts[5]}</span>
+-              </td>
+-            </tr>
+-          </tbody>
+-        </table>
+-      </section>
+-    </>
+-  );
+-};
+diff --git a/packages/react-paypal-js/src/stories/payPalCardFields/usePayPalCardFields.stories.tsx b/packages/react-paypal-js/src/stories/payPalCardFields/usePayPalCardFields.stories.tsx
+deleted file mode 100644
+index ac56367..0000000
+--- a/packages/react-paypal-js/src/stories/payPalCardFields/usePayPalCardFields.stories.tsx
++++ /dev/null
+@@ -1,305 +0,0 @@
+-import React, { useState } from "react";
+-import { action } from "@storybook/addon-actions";
+-
+-import {
+-  PayPalScriptProvider,
+-  usePayPalCardFields,
+-  PayPalCardFieldsProvider,
+-  PayPalCardFieldsForm,
+-} from "../../index";
+-import {
+-  getOptionsFromQueryString,
+-  generateRandomString,
+-  CREATE_ORDER_URL,
+-  CAPTURE_ORDER_URL,
+-} from "../utils";
+-import { COMPONENT_TYPES, ORDER_ID, ERROR } from "../constants";
+-import { getFormCode } from "./code";
+-import DocPageStructure from "../components/DocPageStructure";
+-
+-import type { FC } from "react";
+-import type {
+-  CardFieldsOnApproveData,
+-  PayPalScriptOptions,
+-} from "@paypal/paypal-js";
+-import type { StoryFn } from "@storybook/react";
+-import type { DocsContextProps } from "@storybook/addon-docs";
+-
+-const uid = generateRandomString();
+-const scriptProviderOptions: PayPalScriptOptions = {
+-  clientId:
+-    "AduyjUJ0A7urUcWtGCTjanhRBSzOSn9_GKUzxWDnf51YaV1eZNA0ZAFhebIV_Eq-daemeI7dH05KjLWm",
+-  components: "card-fields",
+-  ...getOptionsFromQueryString(),
+-};
+-const CREATE_ORDER = "createOrder";
+-const SUBMIT_FORM = "submitForm";
+-const CAPTURE_ORDER = "captureOrder";
+-
+-const description = `
+-The \`usePayPalCardFields\` custom hook provides access to the state managed by \`<PayPalCardFieldsProvider />\`.
+-`;
+-
+-/**
+- * Functional component to submit the hosted fields form
+- */
+-
+-const SubmitPayment: React.FC<{
+-  isPaying: boolean;
+-  setIsPaying: React.Dispatch<React.SetStateAction<boolean>>;
+-}> = ({ isPaying, setIsPaying }) => {
+-  const { cardFieldsForm } = usePayPalCardFields();
+-
+-  const handleClick = async () => {
+-    if (!cardFieldsForm) {
+-      const childErrorMessage =
+-        "Unable to find any child components in the <PayPalHostedFieldsProvider />";
+-
+-      action(ERROR)(childErrorMessage);
+-      throw new Error(childErrorMessage);
+-    }
+-    const formState = await cardFieldsForm.getState();
+-
+-    if (!formState.isFormValid) {
+-      return alert("The payment form is invalid");
+-    }
+-    action(SUBMIT_FORM)("Form is valid and submitted");
+-    setIsPaying(true);
+-
+-    cardFieldsForm.submit().catch((err) => {
+-      action(ERROR)(err.message);
+-      setIsPaying(false);
+-    });
+-  };
+-
+-  return (
+-    <button
+-      className={`btn${isPaying ? "" : " btn-primary"}`}
+-      style={{ float: "right" }}
+-      onClick={handleClick}
+-    >
+-      {isPaying ? <div className="spinner tiny" /> : "Pay"}
+-    </button>
+-  );
+-};
+-
+-export default {
+-  title: "PayPal/PayPalCardFields/Custom Hooks",
+-  // component: usePayPalCardFields,
+-  parameters: {
+-    controls: { expanded: true, sort: "requiredFirst" },
+-    docs: {
+-      source: { language: "tsx" },
+-      description: {
+-        component: description,
+-      },
+-    },
+-  },
+-  argTypes: {
+-    cardFieldsForm: {
+-      control: false,
+-      table: {
+-        category: "State",
+-        type: { summary: "PayPalCardFieldsComponent" },
+-      },
+-      description:
+-        "Refers to the CardFields instance generated by the &lt;PayPalCardFieldsProvider /&gt;.",
+-    },
+-    fields: {
+-      control: false,
+-      table: {
+-        category: "State",
+-        type: {
+-          summary:
+-            "Record<FieldComponentName, PayPalCardFieldsIndividualField>",
+-        },
+-      },
+-      description:
+-        "An object containing the reference for each field rendered.",
+-    },
+-    FieldComponentName: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>"CVVField" | "ExpiryField" | "NumberField" | "NameField"</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldsIndividualField: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                <b class="code-json">render</b>: (container: string | HTMLElement) => Promise&lt;void&gt; <br>
+-                <b class="code-json">addClass</b>: (className: string) => Promise&lt;void&gt; <br>
+-                <b class="code-json">clear</b>: () => void; <br>
+-                <b class="code-json">focus</b>: () => void; <br>
+-                <b class="code-json">removeAtrribute</b>: (name: "aria-invalid" | "aria-required" | "disabled" | "placeholder") => Promise&lt;void&gt; <br>
+-                <b class="code-json">removeClass</b>: (className: string) => Promise&lt;void&gt; <br>
+-                <b class="code-json">setAttribute</b>: (name: string, value: string) => Promise&lt;void&gt; <br>
+-                <b class="code-json">setMessage</b>: (message: string) => void <br>
+-                <b class="code-json">close</b>: () => Promise&lt;void&gt; <br>
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldsComponent: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                <b class="code-json">getState</b>: () => Promise&lt;PayPalCardFieldsStateObject&gt; <br>
+-                <b class="code-json">isEligible</b>: () => boolean <br>
+-                <b class="code-json">submit</b>: () => Promise&lt;void&gt; <br>
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldsStateObjectFields: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                    <b class="code-json">cardCvvField</b>: <b>PayPalCardFieldCardFieldData</b> <br>
+-                    <b class="code-json">cardNumberField</b>: <b>PayPalCardFieldCardFieldData</b> <br>
+-                    <b class="code-json">cardNameField</b>: <b>PayPalCardFieldCardFieldData</b> <br>
+-                    <b class="code-json">cardExpiryField</b>: <b>PayPalCardFieldCardFieldData</b> <br>
+-                }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldsStateObject: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                <b class="code-json">cards</b>: <b>PayPalCardFieldsCardObject</b>[] <br>
+-                <b class="code-json">emittedBy</b>?: "name" | "number" | "cvv" | "expiry" <br>
+-                <b class="code-json">isFormValid</b>: boolean <br>
+-                <b class="code-json">errors</b>: <b>PayPalCardFieldError</b>[] <br>
+-                <b class="code-json">fields</b>: <b>PayPalCardFieldsStateObjectFields</b><br>
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldsCardObject: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                <b class="code-json">code</b>: <b>PayPalCardFieldSecurityCode</b> <br>
+-                <b class="code-json">niceType</b>: string  <br>
+-                <b class="code-json">type</b>: "american-express" | "diners-club" | "discover" | "jcb" | "maestro" | "mastercard" | "unionpay" | "visa" | "elo" | "hiper" | "hipercard" <br>
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldError: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>"INELIGIBLE_CARD_VENDOR" | "INVALID_NAME" | "INVALID_NUMBER" | "INVALID_EXPIRY" | "INVALID_CVV" </code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldSecurityCode: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                <b class="code-json">code</b>: string <br>
+-                <b class="code-json">size</b>: number  <br>
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalCardFieldCardFieldData: {
+-      control: false,
+-      type: { required: false },
+-      description: `<code>{<br>
+-                <b class="code-json">isFocused</b>: boolean <br>
+-                <b class="code-json">isEmpty</b>: boolean  <br>
+-                <b class="code-json">isValid</b>: boolean  <br>
+-                <b class="code-json">isPotentiallyValid</b>: boolean  <br>
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-  },
+-};
+-
+-export const Default: FC = () => {
+-  const [isPaying, setIsPaying] = useState(false);
+-  async function createOrder() {
+-    action(CREATE_ORDER)("Start creating the order in custom endpoint");
+-    return fetch(CREATE_ORDER_URL, {
+-      method: "POST",
+-      headers: {
+-        "Content-Type": "application/json",
+-      },
+-      body: JSON.stringify({
+-        cart: [
+-          {
+-            sku: "1blwyeo8",
+-            quantity: 2,
+-          },
+-        ],
+-      }),
+-    })
+-      .then((response) => response.json())
+-      .then((order) => {
+-        action(CREATE_ORDER)(order);
+-        return order.id;
+-      })
+-      .catch((err) => {
+-        action(ERROR)(err.message);
+-        console.error(err);
+-      });
+-  }
+-
+-  function onApprove(data: CardFieldsOnApproveData) {
+-    action(`Received ${ORDER_ID}`)(data.orderID);
+-    action(CAPTURE_ORDER)(
+-      `Sending ${ORDER_ID} to custom endpoint to capture the payment information`,
+-    );
+-    fetch(CAPTURE_ORDER_URL, {
+-      method: "POST",
+-      headers: {
+-        "Content-Type": "application/json",
+-      },
+-      body: JSON.stringify({ orderID: data.orderID }),
+-    })
+-      .then((response) => response.json())
+-      .then((data) => {
+-        action(CAPTURE_ORDER)(data);
+-        setIsPaying(false);
+-      })
+-      .catch((err) => {
+-        action(ERROR)(err.message);
+-      });
+-  }
+-  return (
+-    <PayPalScriptProvider
+-      options={{
+-        ...scriptProviderOptions,
+-        dataNamespace: uid,
+-        dataUid: uid,
+-      }}
+-    >
+-      <PayPalCardFieldsProvider
+-        createOrder={createOrder}
+-        onApprove={onApprove}
+-        onError={(err) => {
+-          console.log(err);
+-        }}
+-      >
+-        <PayPalCardFieldsForm />
+-        {/* Custom client component to handle card fields submit */}
+-        <SubmitPayment isPaying={isPaying} setIsPaying={setIsPaying} />
+-      </PayPalCardFieldsProvider>
+-    </PayPalScriptProvider>
+-  );
+-};
+-
+-/********************
+- * OVERRIDE STORIES *
+- *******************/
+-(Default as StoryFn).parameters = {
+-  docs: {
+-    container: ({ context }: { context: DocsContextProps }) => (
+-      <DocPageStructure context={context} code={getFormCode()} />
+-    ),
+-  },
+-};
+diff --git a/packages/react-paypal-js/src/stories/payPalHostedFields/PayPalHostedFields.stories.tsx b/packages/react-paypal-js/src/stories/payPalHostedFields/PayPalHostedFields.stories.tsx
+deleted file mode 100644
+index 50d53ef..0000000
+--- a/packages/react-paypal-js/src/stories/payPalHostedFields/PayPalHostedFields.stories.tsx
++++ /dev/null
+@@ -1,429 +0,0 @@
+-import React, { useState, useEffect, useRef } from "react";
+-import { action } from "@storybook/addon-actions";
+-
+-import {
+-  PayPalScriptProvider,
+-  PayPalHostedFieldsProvider,
+-  PayPalHostedField,
+-  usePayPalHostedFields,
+-} from "../../index";
+-import {
+-  getOptionsFromQueryString,
+-  generateRandomString,
+-  getClientToken,
+-  FLY_SERVER,
+-  CREATE_ORDER_URL,
+-  CAPTURE_ORDER_URL,
+-} from "../utils";
+-import {
+-  COMPONENT_PROPS_CATEGORY,
+-  COMPONENT_TYPES,
+-  ARG_TYPE_AMOUNT,
+-  ORDER_ID,
+-  ERROR,
+-} from "../constants";
+-import DocPageStructure from "../components/DocPageStructure";
+-import { InEligibleError } from "../commons";
+-import { getDefaultCode, getExpirationDateCode } from "./codeHostedFields";
+-
+-import type { CSSProperties, FC, ReactElement } from "react";
+-import type { StoryFn } from "@storybook/react";
+-import type { DocsContextProps } from "@storybook/addon-docs";
+-import type { PayPalScriptOptions } from "@paypal/paypal-js";
+-
+-type StoryProps = {
+-  amount: string;
+-  styles: Record<string, unknown>;
+-  style: CSSProperties;
+-};
+-
+-const uid = generateRandomString();
+-const TOKEN_URL = `${FLY_SERVER}/api/paypal/generate-client-token`;
+-const RED_COLOR = "#dc3545";
+-const GREEN_COLOR = "#28a745";
+-const scriptProviderOptions: PayPalScriptOptions = {
+-  clientId:
+-    "AduyjUJ0A7urUcWtGCTjanhRBSzOSn9_GKUzxWDnf51YaV1eZNA0ZAFhebIV_Eq-daemeI7dH05KjLWm",
+-  components: "buttons,hosted-fields",
+-  ...getOptionsFromQueryString(),
+-};
+-const CREATE_ORDER = "createOrder";
+-const SUBMIT_FORM = "submitForm";
+-const CAPTURE_ORDER = "captureOrder";
+-
+-/**
+- * Functional component to submit the hosted fields form
+- */
+-const SubmitPayment = ({ customStyle }: { customStyle?: CSSProperties }) => {
+-  const [paying, setPaying] = useState(false);
+-  const cardHolderName = useRef<HTMLInputElement>(null);
+-  const hostedField = usePayPalHostedFields();
+-
+-  const handleClick = () => {
+-    if (!hostedField?.cardFields) {
+-      const childErrorMessage =
+-        "Unable to find any child components in the <PayPalHostedFieldsProvider />";
+-
+-      action(ERROR)(childErrorMessage);
+-      throw new Error(childErrorMessage);
+-    }
+-    const isFormInvalid =
+-      Object.values(hostedField.cardFields.getState().fields).some(
+-        (field) => !field.isValid,
+-      ) || !cardHolderName?.current?.value;
+-
+-    if (isFormInvalid) {
+-      return alert("The payment form is invalid");
+-    }
+-    action(SUBMIT_FORM)("Form is valid and submitted");
+-    setPaying(true);
+-    hostedField.cardFields
+-      .submit({
+-        cardholderName: cardHolderName?.current?.value,
+-      })
+-      .then((data) => {
+-        action(`Received ${ORDER_ID}`)(data.orderId);
+-        action(CAPTURE_ORDER)(
+-          `Sending ${ORDER_ID} to custom endpoint to capture the payment information`,
+-        );
+-        fetch(CAPTURE_ORDER_URL, {
+-          method: "POST",
+-          headers: {
+-            "Content-Type": "application/json",
+-          },
+-          body: JSON.stringify({ orderID: data.orderId }),
+-        })
+-          .then((response) => response.json())
+-          .then((data) => {
+-            action(CAPTURE_ORDER)(data);
+-          })
+-          .catch((err) => {
+-            action(ERROR)(err.message);
+-            console.error(err);
+-          })
+-          .finally(() => {
+-            setPaying(false);
+-          });
+-      })
+-      .catch((err) => {
+-        action(ERROR)(err.message);
+-        setPaying(false);
+-      });
+-  };
+-
+-  return (
+-    <>
+-      <label title="This represents the full name as shown in the card">
+-        Card Holder Name
+-        <input
+-          id="card-holder"
+-          ref={cardHolderName}
+-          className="card-field"
+-          style={{ ...customStyle, outline: "none" }}
+-          type="text"
+-          placeholder="Full name"
+-        />
+-      </label>
+-      <button
+-        className={`btn${paying ? "" : " btn-primary"}`}
+-        style={{ float: "right" }}
+-        onClick={handleClick}
+-      >
+-        {paying ? <div className="spinner tiny" /> : "Pay"}
+-      </button>
+-    </>
+-  );
+-};
+-
+-export default {
+-  title: "PayPal/PayPalHostedFields",
+-  component: PayPalHostedField,
+-  parameters: {
+-    controls: { expanded: true, sort: "requiredFirst" },
+-  },
+-  argTypes: {
+-    hostedFieldType: {
+-      control: false,
+-      ...COMPONENT_PROPS_CATEGORY,
+-    },
+-    options: { control: false, ...COMPONENT_PROPS_CATEGORY },
+-    align: { control: false, ...COMPONENT_PROPS_CATEGORY },
+-    className: { control: false, ...COMPONENT_PROPS_CATEGORY },
+-    id: { control: false, ...COMPONENT_PROPS_CATEGORY },
+-    lang: { control: false, ...COMPONENT_PROPS_CATEGORY },
+-    styles: {
+-      description:
+-        "Custom CSS properties to customize the <code>PayPalHostedFieldsProvider</code> component",
+-      control: { type: "object" },
+-      ...{
+-        ...COMPONENT_PROPS_CATEGORY,
+-        type: { summary: "CSSProperties" },
+-      },
+-    },
+-    title: { control: false, ...COMPONENT_PROPS_CATEGORY },
+-    amount: ARG_TYPE_AMOUNT,
+-    style: {
+-      description:
+-        "Custom CSS properties to customize the <code>PayPalHostedField</code> component",
+-      control: { type: "object" },
+-      ...{
+-        ...COMPONENT_PROPS_CATEGORY,
+-        type: { summary: "CSSProperties" },
+-      },
+-    },
+-    PAYPAL_HOSTED_FIELDS_TYPES: {
+-      control: false,
+-      type: { required: true },
+-      description: `<code>NUMBER | CVV | EXPIRATION_DATE |<br>EXPIRATION_MONTH | EXPIRATION_YEAR | POSTAL_CODE</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-    PayPalHostedFieldOptions: {
+-      control: false,
+-      type: { required: true },
+-      description: `<code>{<br>
+-                <b class="code-json">selector</b>: The string element selector<br><span class="code-json">(#id, .class).Represent the field identifier.</span><br>
+-                <b class="code-json">placeholder</b>: The placeholder of the field<br><span class="code-json">cvv->(300), expirationDate->(MM/YY).</span><br>
+-                <b class="code-json">type</b>: The type attribute of the input.<br><span class="code-json">To mask cvv input, for instance,</span><br><span class="code-json">type: "password" can be used.</span><br>
+-                <b class="code-json">formatInput</b>: Enable or disable automatic<br><span class="code-json">formatting on this field.</span><br>
+-                <b class="code-json">maskInput</b>: Enable or disable input masking<br><span class="code-json">when input is not focused.</span><br><span class="code-json">If set to true instead of an object,</span><br><span class="code-json">the defaults for the maskInput</span><br><span class="code-json">parameters will be used.</span><br>
+-                <b class="code-json">select</b>: If truthy, this field becomes<br><span class="code-json">a select dropdown list.This can only</span><br><span class="code-json">be used for expirationMonth and</span><br><span class="code-json">expirationYear fields.</span><br><span class="code-json">If you do not use a placeholder property</span><br><span class="code-json">for the field,</span><br><span class="code-json">the current month/year will be the</span><br><span class="code-json">default selected value.</span><br>
+-                <b class="code-json">maxlength</b>: This option applies only<br><span class="code-json">to the CVV and postal code fields.</span><br><span class="code-json">Will be used as the maxlength attribute</span><br><span class="code-json">of the input if it is less than the default.</span><br>
+-                <b class="code-json">minlength</b>: This option applies only to<br><span class="code-json">the cvv and postal code fields.</span><br><span class="code-json">Will be used as the minlength attribute</span><br><span class="code-json">of the input.</span><br>
+-                <b class="code-json">prefill</b>: A value to prefill the field with.<br><span class="code-json">For example, when creating an update card form,</span><br><span class="code-json">you can prefill the expiration date fields</span><br><span class="code-json">with the old expiration date data.<span><br>
+-                <b class="code-json">rejectUnsupportedCards</b>: Only allow card types<br><span class="code-json">that your merchant account is able to process.</span><br><span class="code-json">Unsupported card types will</span><br><span class="code-json">invalidate the card form.</span><br>
+-            }</code>
+-            `,
+-      table: { category: COMPONENT_TYPES },
+-    },
+-  },
+-  args: {
+-    amount: "2",
+-    styles: {
+-      ".valid": { color: GREEN_COLOR },
+-      ".invalid": { color: RED_COLOR },
+-      input: { "font-family": "monospace", "font-size": "16px" },
+-    },
+-    style: {
+-      border: "1px solid #606060",
+-      boxShadow: "2px 2px 10px 2px rgba(0,0,0,0.1)",
+-    },
+-  },
+-  decorators: [
+-    (Story: FC): ReactElement => {
+-      // Workaround to render the story after got the client token,
+-      // The new experimental loaders doesn't work in Docs views
+-      const [clientToken, setClientToken] = useState<string | null>(null);
+-
+-      useEffect(() => {
+-        (async () => {
+-          setClientToken(await getClientToken(TOKEN_URL));
+-        })();
+-      }, []);
+-
+-      return (
+-        <div style={{ minHeight: "200px" }}>
+-          {clientToken && (
+-            <>
+-              <PayPalScriptProvider
+-                options={{
+-                  ...scriptProviderOptions,
+-                  dataClientToken: clientToken,
+-                  dataNamespace: uid,
+-                  dataUid: uid,
+-                }}
+-              >
+-                <Story />
+-              </PayPalScriptProvider>
+-            </>
+-          )}
+-        </div>
+-      );
+-    },
+-  ],
+-};
+-
+-export const Default: FC<StoryProps> = ({ styles, style }) => {
+-  return (
+-    <PayPalHostedFieldsProvider
+-      createOrder={() => {
+-        action(CREATE_ORDER)("Start creating the order in custom endpoint");
+-        return fetch(CREATE_ORDER_URL, {
+-          method: "POST",
+-          headers: {
+-            "Content-Type": "application/json",
+-          },
+-          body: JSON.stringify({
+-            cart: [
+-              {
+-                sku: "1blwyeo8",
+-                quantity: 2,
+-              },
+-            ],
+-          }),
+-        })
+-          .then((response) => response.json())
+-          .then((order) => {
+-            action(CREATE_ORDER)(order);
+-            return order.id;
+-          })
+-          .catch((err) => {
+-            action(ERROR)(err.message);
+-            console.error(err);
+-          });
+-      }}
+-      notEligibleError={<InEligibleError />}
+-      styles={styles}
+-    >
+-      <label htmlFor="card-number">
+-        Card Number<span style={{ color: RED_COLOR }}>*</span>
+-      </label>
+-      <PayPalHostedField
+-        id="card-number"
+-        className="card-field"
+-        style={style}
+-        hostedFieldType="number"
+-        options={{
+-          selector: "#card-number",
+-          placeholder: "4111 1111 1111 1111",
+-        }}
+-      />
+-      <label htmlFor="cvv">
+-        CVV<span style={{ color: RED_COLOR }}>*</span>
+-      </label>
+-      <PayPalHostedField
+-        id="cvv"
+-        className="card-field"
+-        style={style}
+-        hostedFieldType="cvv"
+-        options={{
+-          selector: "#cvv",
+-          placeholder: "123",
+-          maskInput: true,
+-        }}
+-      />
+-      <label htmlFor="expiration-date">
+-        Expiration Date<span style={{ color: RED_COLOR }}>*</span>
+-      </label>
+-      <PayPalHostedField
+-        id="expiration-date"
+-        className="card-field"
+-        style={style}
+-        hostedFieldType="expirationDate"
+-        options={{
+-          selector: "#expiration-date",
+-          placeholder: "MM/YYYY",
+-        }}
+-      />
+-      {/* Custom client component to handle hosted fields submit */}
+-      <SubmitPayment customStyle={style} />
+-    </PayPalHostedFieldsProvider>
+-  );
+-};
+-
+-export const ExpirationDate: FC<{ amount: string }> = ({ amount }) => {
+-  return (
+-    <PayPalHostedFieldsProvider
+-      createOrder={() =>
+-        fetch(CREATE_ORDER_URL, {
+-          method: "POST",
+-          headers: {
+-            "Content-Type": "application/json",
+-          },
+-          body: JSON.stringify({
+-            purchase_units: [
+-              {
+-                amount: {
+-                  value: amount,
+-                  currency_code: "USD",
+-                },
+-              },
+-            ],
+-            intent: "CAPTURE",
+-          }),
+-        })
+-          .then((response) => response.json())
+-          .then((order) => order.id)
+-          .catch((err) => {
+-            action(ERROR)(err.message);
+-            console.error(err);
+-          })
+-      }
+-      notEligibleError={<InEligibleError />}
+-      styles={{
+-        ".valid": { color: GREEN_COLOR },
+-        ".invalid": { color: RED_COLOR },
+-      }}
+-    >
+-      <PayPalHostedField
+-        id="card-number-1"
+-        className="card-field"
+-        hostedFieldType="number"
+-        options={{
+-          selector: "#card-number-1",
+-          placeholder: "4111 1111 1111 1111",
+-        }}
+-      />
+-      <PayPalHostedField
+-        id="cvv-1"
+-        className="card-field"
+-        hostedFieldType="cvv"
+-        options={{
+-          selector: "#cvv-1",
+-          placeholder: "123",
+-          maskInput: true,
+-        }}
+-      />
+-      <PayPalHostedField
+-        id="expiration-month-1"
+-        className="card-field"
+-        hostedFieldType="expirationMonth"
+-        options={{ selector: "#expiration-month-1", placeholder: "MM" }}
+-      />
+-      <PayPalHostedField
+-        id="expiration-year-1"
+-        className="card-field"
+-        hostedFieldType="expirationYear"
+-        options={{
+-          selector: "#expiration-year-1",
+-          placeholder: "YYYY",
+-        }}
+-      />
+-      {/* Custom client component to handle hosted fields submit */}
+-      <SubmitPayment />
+-    </PayPalHostedFieldsProvider>
+-  );
+-};
+-
+-/********************
+- * OVERRIDE STORIES *
+- *******************/
+-(Default as StoryFn).parameters = {
+-  docs: {
+-    container: ({ context }: { context: DocsContextProps }): ReactElement => (
+-      <DocPageStructure
+-        context={context}
+-        code={getDefaultCode(
+-          context.getStoryContext(context.storyById(context.id)).args,
+-        )}
+-      />
+-    ),
+-  },
+-};
+-
+-(ExpirationDate as StoryFn).parameters = {
+-  docs: {
+-    container: ({ context }: { context: DocsContextProps }): ReactElement => (
+-      <DocPageStructure
+-        context={context}
+-        code={getExpirationDateCode(
+-          context.getStoryContext(context.storyById(context.id)).args,
+-        )}
+-      />
+-    ),
+-  },
+-};
+-
+-(ExpirationDate as StoryFn).args = {
+-  style: {},
+-};
+diff --git a/packages/react-paypal-js/src/stories/payPalHostedFields/PayPalHostedFieldsProvider.stories.tsx b/packages/react-paypal-js/src/stories/payPalHostedFields/PayPalHostedFieldsProvider.stories.tsx
+deleted file mode 100644
+index d200288..0000000
+--- a/packages/react-paypal-js/src/stories/payPalHostedFields/PayPalHostedFieldsProvider.stories.tsx
++++ /dev/null
+@@ -1,172 +0,0 @@
+-import React, { useState, useEffect } from "react";
+-import { action } from "@storybook/addon-actions";
+-
+-import {
+-  PayPalScriptProvider,
+-  PayPalHostedFieldsProvider,
+-  PayPalHostedField,
+-  usePayPalHostedFields,
+-} from "../../index";
+-import {
+-  getOptionsFromQueryString,
+-  generateRandomString,
+-  getClientToken,
+-  FLY_SERVER,
+-} from "../utils";
+-import { COMPONENT_PROPS_CATEGORY, COMPONENT_EVENTS, SDK } from "../constants";
+-import DocPageStructure from "../components/DocPageStructure";
+-import { InEligibleError } from "../commons";
+-import { getDefaultCode } from "./codeProvider";
+-
+-import type { FC, ReactElement } from "react";
+-import type { DocsContextProps } from "@storybook/addon-docs";
+-import type { PayPalScriptOptions } from "@paypal/paypal-js";
+-
+-const uid = generateRandomString();
+-const TOKEN_URL = `${FLY_SERVER}/api/paypal/hosted-fields/auth`;
+-const scriptProviderOptions: PayPalScriptOptions = {
+-  clientId:
+-    "AduyjUJ0A7urUcWtGCTjanhRBSzOSn9_GKUzxWDnf51YaV1eZNA0ZAFhebIV_Eq-daemeI7dH05KjLWm",
+-  components: "buttons,hosted-fields",
+-  ...getOptionsFromQueryString(),
+-};
+-
+-const LoadedCardFields = () => {
+-  const cardFields = usePayPalHostedFields();
+-
+-  useEffect(() => {
+-    if (cardFields) {
+-      action(SDK)("Hosted fields provider successfully loaded.");
+-    } else {
+-      action(SDK)("Starting loading Hosted fields provider.");
+-    }
+-  }, [cardFields]);
+-
+-  return (
+-    <>
+-      <p>
+-        <b>Hosted fields loaded: </b>
+-        {cardFields ? (
+-          <span style={{ fontSize: "20px" }}>&#9989;</span>
+-        ) : (
+-          <span style={{ fontSize: "20px" }}>&#10060;</span>
+-        )}
+-      </p>
+-    </>
+-  );
+-};
+-
+-export default {
+-  title: "PayPal/PayPalHostedFieldsProvider",
+-  component: PayPalHostedFieldsProvider,
+-  parameters: {
+-    controls: { expanded: true },
+-    docs: {
+-      container: ({ context }: { context: DocsContextProps }): ReactElement => (
+-        <DocPageStructure
+-          context={context}
+-          code={getDefaultCode(
+-            context.getStoryContext(context.storyById(context.id)).args.styles,
+-          )}
+-        />
+-      ),
+-    },
+-  },
+-  argTypes: {
+-    styles: {
+-      control: { type: "object", expanded: true },
+-      ...COMPONENT_PROPS_CATEGORY,
+-    },
+-    createOrder: {
+-      control: false,
+-      table: { category: COMPONENT_EVENTS },
+-    },
+-    notEligibleError: {
+-      control: false,
+-      ...COMPONENT_PROPS_CATEGORY,
+-    },
+-  },
+-  args: {
+-    styles: {
+-      ".valid": { color: "#28a745" },
+-      ".invalid": { color: "#dc3545" },
+-    },
+-  },
+-  decorators: [
+-    (Story: FC): ReactElement => {
+-      // Workaround to render the story after got the client token,
+-      // The new experimental loaders doesn't work in Docs views
+-      const [clientToken, setClientToken] = useState<string | null>(null);
+-
+-      useEffect(() => {
+-        (async () => {
+-          setClientToken(await getClientToken(TOKEN_URL));
+-        })();
+-      }, []);
+-
+-      return (
+-        <div style={{ minHeight: "200px" }}>
+-          {clientToken && (
+-            <>
+-              <PayPalScriptProvider
+-                options={{
+-                  ...scriptProviderOptions,
+-                  dataClientToken: clientToken,
+-                  dataNamespace: uid,
+-                  dataUid: uid,
+-                }}
+-              >
+-                <Story />
+-              </PayPalScriptProvider>
+-            </>
+-          )}
+-        </div>
+-      );
+-    },
+-  ],
+-};
+-
+-export const Default: FC<{ styles: { [key in string]: unknown } }> = (args) => {
+-  return (
+-    <PayPalHostedFieldsProvider
+-      createOrder={() => {
+-        // Server call to create the order
+-        return Promise.resolve("7NE43326GP4951156");
+-      }}
+-      notEligibleError={<InEligibleError />}
+-      styles={args.styles}
+-    >
+-      <LoadedCardFields />
+-      <PayPalHostedField
+-        id="card-number"
+-        className="card-field"
+-        hostedFieldType="number"
+-        options={{
+-          selector: "#card-number",
+-          placeholder: "4111 1111 1111 1111",
+-        }}
+-      />
+-      <PayPalHostedField
+-        id="cvv"
+-        className="card-field"
+-        hostedFieldType="cvv"
+-        options={{
+-          selector: "#cvv",
+-          placeholder: "123",
+-          maskInput: {
+-            character: "#",
+-          },
+-        }}
+-      />
+-      <PayPalHostedField
+-        id="expiration-date"
+-        className="card-field"
+-        hostedFieldType="expirationDate"
+-        options={{
+-          selector: "#expiration-date",
+-          placeholder: "MM/YYYY",
+-        }}
+-      />
+-    </PayPalHostedFieldsProvider>
+-  );
+-};
+diff --git a/packages/react-paypal-js/src/stories/payPalHostedFields/codeHostedFields.ts b/packages/react-paypal-js/src/stories/payPalHostedFields/codeHostedFields.ts
+deleted file mode 100644
+index 6ec188c..0000000
+--- a/packages/react-paypal-js/src/stories/payPalHostedFields/codeHostedFields.ts
++++ /dev/null
+@@ -1,280 +0,0 @@
+-import type { Args } from "@storybook/addons/dist/ts3.9/types";
+-
+-const EXPIRATION_DATE_SINGLE_FIELD = `<label htmlFor="card-number">
+-                            Card Number
+-                            <span style={INVALID_COLOR}>*</span>
+-                        </label>
+-                        <PayPalHostedField
+-                            id="card-number"
+-                            className="card-field"
+-                            style={CUSTOM_FIELD_STYLE}
+-                            hostedFieldType="number"
+-                            options={{
+-                                selector: "#card-number",
+-                                placeholder: "4111 1111 1111 1111",
+-                            }}
+-                        />
+-                        <label htmlFor="cvv">
+-                            CVV<span style={INVALID_COLOR}>*</span>
+-                        </label>
+-                        <PayPalHostedField
+-                            id="cvv"
+-                            className="card-field"
+-                            style={CUSTOM_FIELD_STYLE}
+-                            hostedFieldType="cvv"
+-                            options={{
+-                                selector: "#cvv",
+-                                placeholder: "123",
+-                                maskInput: true,
+-                            }}
+-                        />
+-                        <label htmlFor="expiration-date">
+-                            Expiration Date
+-                            <span style={INVALID_COLOR}>*</span>
+-                        </label>
+-                        <PayPalHostedField
+-                            id="expiration-date"
+-                            className="card-field"
+-                            style={CUSTOM_FIELD_STYLE}
+-                            hostedFieldType="expirationDate"
+-                            options={{
+-                                selector: "#expiration-date",
+-                                placeholder: "MM/YYYY",
+-                            }}
+-                        />`;
+-
+-const EXPIRATION_DATE_MULTI_FIELD = `<PayPalHostedField
+-                            id="card-number"
+-                            className="card-field"
+-							style={CUSTOM_FIELD_STYLE}
+-                            hostedFieldType="number"
+-                            options={{
+-                                selector: "#card-number",
+-                                placeholder: "4111 1111 1111 1111",
+-                            }}
+-                        />
+-                        <PayPalHostedField
+-                            id="cvv"
+-                            className="card-field"
+-							style={CUSTOM_FIELD_STYLE}
+-                            hostedFieldType="cvv"
+-                            options={{
+-                                selector: "#cvv",
+-                                placeholder: "123",
+-                                maskInput: true,
+-                            }}
+-                        />
+-                        <PayPalHostedField
+-							id="expiration-month-1"
+-							style={CUSTOM_FIELD_STYLE}
+-							className="card-field"
+-							hostedFieldType="expirationMonth"
+-							options={{
+-								selector: "#expiration-month-1",
+-								placeholder: "MM",
+-							}}
+-						/>
+-						<PayPalHostedField
+-							id="expiration-year-1"
+-							style={CUSTOM_FIELD_STYLE}
+-                            className="card-field"
+-							hostedFieldType="expirationYear"
+-							options={{
+-								selector: "#expiration-year-1",
+-								placeholder: "YYYY",
+-							}}
+-						/>`;
+-
+-const CUSTOM_INPUT = `<input
+-				id="card-holder"
+-				ref={cardHolderName}
+-				className="card-field"
+-				style={{ ...customStyle, outline: "none" }}
+-				type="text"
+-				placeholder="Full name"
+-				/>`;
+-
+-const CUSTOM_INPUT_WITH_LABEL = `<label title="This represents the full name as shown in the card">
+-				Card Holder Name
+-				<input
+-					id="card-holder"
+-					ref={cardHolderName}
+-					className="card-field"
+-					style={{ ...customStyle, outline: "none" }}
+-					type="text"
+-					placeholder="Full name"
+-				/>
+-				</label>`;
+-
+-const getCode = (
+-  {
+-    customCardNameField,
+-    expirationDateFieldType,
+-  }: { expirationDateFieldType: string; customCardNameField: string },
+-  args: Args,
+-): string =>
+-  `import { useState, useEffect, useRef } from "react";
+-import {
+-	PayPalScriptProvider,
+-	PayPalHostedFieldsProvider,
+-	PayPalHostedField,
+-	usePayPalHostedFields,
+-} from "@paypal/react-paypal-js";
+-
+-const CUSTOM_FIELD_STYLE = ${JSON.stringify(args.style)};
+-const INVALID_COLOR = {
+-	color: "#dc3545",
+-};
+-
+-// Example of custom component to handle form submit
+-const SubmitPayment = ({ customStyle }) => {
+-	const [paying, setPaying] = useState(false);
+-	const cardHolderName = useRef(null);
+-	const hostedField = usePayPalHostedFields();
+-
+-	const handleClick = () => {
+-		if (!hostedField?.cardFields) {
+-            const childErrorMessage = 'Unable to find any child components in the <PayPalHostedFieldsProvider />';
+-
+-            action(ERROR)(childErrorMessage);
+-            throw new Error(childErrorMessage);
+-        }
+-		const isFormInvalid =
+-			Object.values(hostedField.cardFields.getState().fields).some(
+-				(field) => !field.isValid
+-			) || !cardHolderName?.current?.value;
+-
+-		if (isFormInvalid) {
+-			return alert(
+-				"The payment form is invalid"
+-			);
+-		}
+-		setPaying(true);
+-		hostedField.cardFields
+-			.submit({
+-				cardholderName: cardHolderName?.current?.value,
+-			})
+-			.then((data) => {
+-				// Your logic to capture the transaction
+-				fetch("url_to_capture_transaction", {
+-					method: "POST",
+-				})
+-					.then((response) => response.json())
+-					.then((data) => {
+-						// Here use the captured info
+-					})
+-					.catch((err) => {
+-						// Here handle error
+-					})
+-					.finally(() => {
+-						setPaying(false);
+-					});
+-			})
+-			.catch((err) => {
+-				// Here handle error
+-				setPaying(false);
+-			});
+-	};
+-
+-	return (
+-		<>
+-            ${customCardNameField}
+-			<button
+-				className={\`btn\${paying ? "" : " btn-primary"}\`}
+-				style={{ float: "right" }}
+-				onClick={handleClick}
+-			>
+-				{paying ? <div className="spinner tiny" /> : "Pay"}
+-			</button>
+-		</>
+-	);
+-};
+-
+-export default function App() {
+-	const [clientToken, setClientToken] = useState(null);
+-
+-	useEffect(() => {
+-		(async () => {
+-			const response = await (
+-				await fetch(
+-					"https://react-paypal-js-storybook.fly.dev/api/paypal/generate-client-token",
+-					{ method: "POST" }
+-				)
+-			).json();
+-			setClientToken(response?.client_token || response?.clientToken);
+-		})();
+-	}, []);
+-
+-	return (
+-		<>
+-			{clientToken ? (
+-				<PayPalScriptProvider
+-					options={{
+-						clientId:
+-							"AduyjUJ0A7urUcWtGCTjanhRBSzOSn9_GKUzxWDnf51YaV1eZNA0ZAFhebIV_Eq-daemeI7dH05KjLWm",
+-						components: "buttons,hosted-fields",
+-						dataClientToken: clientToken,
+-						intent: "capture",
+-						vault: false,
+-					}}
+-				>
+-					<PayPalHostedFieldsProvider
+-						styles={${JSON.stringify(args.styles)}}
+-						createOrder={function () {
+-							return fetch(
+-								"your_custom_server_to_create_orders",
+-								{
+-									method: "POST",
+-									headers: {
+-										"Content-Type": "application/json",
+-									},
+-									body: JSON.stringify({
+-										purchase_units: [
+-											{
+-												amount: {
+-													value: "${args.amount}", // Here change the amount if needed
+-													currency_code: "USD", // Here change the currency if needed
+-												},
+-											},
+-										],
+-										intent: "capture",
+-									}),
+-								}
+-							)
+-								.then((response) => response.json())
+-								.then((order) => {
+-									// Your code here after create the order
+-									return order.id;
+-								})
+-								.catch((err) => {
+-									alert(err);
+-								});
+-						}}
+-					>
+-                        ${expirationDateFieldType}
+-						<SubmitPayment customStyle={${JSON.stringify(args.style)}} />
+-					</PayPalHostedFieldsProvider>
+-				</PayPalScriptProvider>
+-			) : (
+-				<h1>Loading token...</h1>
+-			)}
+-		</>
+-	);
+-}`;
+-
+-export const getDefaultCode = (args: Args): string =>
+-  getCode(
+-    {
+-      customCardNameField: CUSTOM_INPUT_WITH_LABEL,
+-      expirationDateFieldType: EXPIRATION_DATE_SINGLE_FIELD,
+-    },
+-    args,
+-  );
+-export const getExpirationDateCode = (args: Args): string =>
+-  getCode(
+-    {
+-      customCardNameField: CUSTOM_INPUT,
+-      expirationDateFieldType: EXPIRATION_DATE_MULTI_FIELD,
+-    },
+-    args,
+-  );
+diff --git a/packages/react-paypal-js/src/stories/payPalHostedFields/codeProvider.ts b/packages/react-paypal-js/src/stories/payPalHostedFields/codeProvider.ts
+deleted file mode 100644
+index 0e38e0d..0000000
+--- a/packages/react-paypal-js/src/stories/payPalHostedFields/codeProvider.ts
++++ /dev/null
+@@ -1,81 +0,0 @@
+-export const getDefaultCode = (styles: Record<string, unknown>): string =>
+-  `import { useState, useEffect } from "react";
+-import {
+-	PayPalScriptProvider,
+-	PayPalHostedFieldsProvider,
+-	PayPalHostedField,
+-} from "@paypal/react-paypal-js";
+-
+-export default function App() {
+-	const [clientToken, setClientToken] = useState(null);
+-
+-	useEffect(() => {
+-		(async () => {
+-			const response = await (
+-				await fetch(
+-					"https://react-paypal-js-storybook.fly.dev/api/paypal/generate-client-token",
+-					{ method: "POST" }
+-				)
+-			).json();
+-			setClientToken(response?.client_token || response?.clientToken);
+-		})();
+-	}, []);
+-
+-	return (
+-		<>
+-			{clientToken ? (
+-				<PayPalScriptProvider
+-					options={{
+-						clientId:
+-							"AduyjUJ0A7urUcWtGCTjanhRBSzOSn9_GKUzxWDnf51YaV1eZNA0ZAFhebIV_Eq-daemeI7dH05KjLWm",
+-						components: "buttons,hosted-fields",
+-						dataClientToken: clientToken,
+-						intent: "capture",
+-						vault: false,
+-					}}
+-				>
+-					<PayPalHostedFieldsProvider
+-						createOrder={() => {
+-							// Here your server call to create the order
+-							return Promise.resolve("7NE43326GP4951156"); // This is a mock result
+-						}}
+-						styles={${JSON.stringify(styles)}}
+-					>
+-						<PayPalHostedField
+-							id="card-number"
+-							className="card-field"
+-							hostedFieldType="number"
+-							options={{
+-								selector: "#card-number",
+-								placeholder: "4111 1111 1111 1111",
+-							}}
+-						/>
+-						<PayPalHostedField
+-							id="cvv"
+-							className="card-field"
+-							hostedFieldType="cvv"
+-							options={{
+-								selector: "#cvv",
+-								placeholder: "123",
+-								maskInput: {
+-									character: "#",
+-								},
+-							}}
+-						/>
+-						<PayPalHostedField
+-							id="expiration-date"
+-							className="card-field"
+-							hostedFieldType="expirationDate"
+-							options={{
+-								selector: "#expiration-date",
+-								placeholder: "MM/YYYY",
+-							}}
+-						/>
+-					</PayPalHostedFieldsProvider>
+-				</PayPalScriptProvider>
+-			) : (
+-				<h1>Loading token...</h1>
+-			)}
+-		</>
+-	);
+-}`;
+diff --git a/packages/react-paypal-js/src/stories/payPalMarks/PayPalMarks.stories.tsx b/packages/react-paypal-js/src/stories/payPalMarks/PayPalMarks.stories.tsx
+deleted file mode 100644
+index a5f4566..0000000
+--- a/packages/react-paypal-js/src/stories/payPalMarks/PayPalMarks.stories.tsx
++++ /dev/null
+@@ -1,162 +0,0 @@
+-import React, { useState } from "react";
+-import { action } from "@storybook/addon-actions";
+-
+-import {
+-  PayPalScriptProvider,
+-  PayPalMarks,
+-  PayPalButtons,
+-  FUNDING,
+-} from "../../index";
+-import { getOptionsFromQueryString, createOrder, onApprove } from "../utils";
+-import { COMPONENT_PROPS_CATEGORY, ORDER_ID, APPROVE } from "../constants";
+-import { InEligibleError, defaultProps } from "../commons";
+-import DocPageStructure from "../components/DocPageStructure";
+-import { getDefaultCode, getRadioButtonsCode } from "./code";
+-
+-import type { FC, ChangeEvent } from "react";
+-import type { StoryFn } from "@storybook/react";
+-import type { DocsContextProps } from "@storybook/addon-docs";
+-import type { PayPalScriptOptions } from "@paypal/paypal-js";
+-import type {
+-  PayPalButtonsComponentOptions,
+-  FUNDING_SOURCE,
+-} from "@paypal/paypal-js";
+-
+-const scriptProviderOptions: PayPalScriptOptions = {
+-  clientId: "test",
+-  components: "buttons,marks,funding-eligibility",
+-  ...getOptionsFromQueryString(),
+-};
+-const fundingSources = [FUNDING.PAYPAL, FUNDING.CARD, FUNDING.PAYLATER];
+-
+-export default {
+-  id: "example/PayPalMarks",
+-  title: "PayPal/PayPalMarks",
+-  component: PayPalMarks,
+-  parameters: {
+-    options: { showFunctions: true },
+-    controls: { expanded: true },
+-  },
+-  argTypes: {
+-    style: {
+-      control: { type: "object" },
+-      ...COMPONENT_PROPS_CATEGORY,
+-    },
+-    className: { control: null, table: { category: "Props" } },
+-    fundingSource: {
+-      options: [FUNDING.PAYPAL, FUNDING.CARD, FUNDING.PAYLATER, undefined],
+-      control: {
+-        type: "select",
+-        labels: {
+-          [FUNDING.PAYPAL]: "paypal",
+-          [FUNDING.CARD]: "card",
+-          [FUNDING.PAYLATER]: "paylater",
+-          undefined: "all",
+-        },
+-      },
+-      ...COMPONENT_PROPS_CATEGORY,
+-    },
+-  },
+-  args: {
+-    style: {
+-      color: "white",
+-    },
+-  },
+-};
+-
+-export const Default: FC<{ fundingSource: string }> = ({ fundingSource }) => (
+-  <PayPalScriptProvider options={scriptProviderOptions}>
+-    <PayPalMarks fundingSource={fundingSource} />
+-  </PayPalScriptProvider>
+-);
+-
+-export const RadioButtons: FC<{
+-  style: PayPalButtonsComponentOptions["style"];
+-}> = ({ style }) => {
+-  const [selectedFundingSource, setSelectedFundingSource] = useState(
+-    fundingSources[0],
+-  );
+-
+-  function onChange(event: ChangeEvent<HTMLInputElement>) {
+-    setSelectedFundingSource(event.target.value as FUNDING_SOURCE);
+-  }
+-
+-  return (
+-    <PayPalScriptProvider options={scriptProviderOptions}>
+-      <form style={{ minHeight: "200px" }}>
+-        {fundingSources.map((fundingSource) => (
+-          <label className="mark" key={fundingSource}>
+-            <input
+-              defaultChecked={fundingSource === selectedFundingSource}
+-              onChange={onChange}
+-              type="radio"
+-              name="fundingSource"
+-              value={fundingSource}
+-            />
+-            <PayPalMarks fundingSource={fundingSource} />
+-          </label>
+-        ))}
+-      </form>
+-      <br />
+-      <PayPalButtons
+-        fundingSource={selectedFundingSource}
+-        forceReRender={[selectedFundingSource]}
+-        style={style}
+-        createOrder={() =>
+-          createOrder([{ sku: "1blwyeo8", quantity: 1 }]).then((orderData) => {
+-            if (orderData.id) {
+-              action(ORDER_ID)(orderData.id);
+-              return orderData.id;
+-            } else {
+-              throw new Error("failed to create Order Id");
+-            }
+-          })
+-        }
+-        onApprove={(data) =>
+-          onApprove(data).then((orderData) => action(APPROVE)(orderData))
+-        }
+-        {...defaultProps}
+-      >
+-        <InEligibleError />
+-      </PayPalButtons>
+-    </PayPalScriptProvider>
+-  );
+-};
+-
+-/********************
+- * OVERRIDE STORIES *
+- *******************/
+-(Default as StoryFn).parameters = {
+-  docs: {
+-    container: ({ context }: { context: DocsContextProps }) => (
+-      <DocPageStructure
+-        context={context}
+-        code={getDefaultCode(
+-          context.getStoryContext(context.storyById(context.id)).args
+-            .fundingSource,
+-        )}
+-      />
+-    ),
+-  },
+-};
+-
+-(Default as StoryFn).argTypes = {
+-  style: { table: { disable: true } },
+-};
+-
+-(RadioButtons as StoryFn).parameters = {
+-  docs: {
+-    container: ({ context }: { context: DocsContextProps }) => (
+-      <DocPageStructure
+-        context={context}
+-        code={getRadioButtonsCode(
+-          context.getStoryContext(context.storyById(context.id)).args,
+-        )}
+-      />
+-    ),
+-  },
+-};
+-
+-(RadioButtons as StoryFn).argTypes = {
+-  fundingSource: { control: false },
+-};
+diff --git a/packages/react-paypal-js/src/stories/payPalMarks/code.ts b/packages/react-paypal-js/src/stories/payPalMarks/code.ts
+deleted file mode 100644
+index 2649c5b..0000000
+--- a/packages/react-paypal-js/src/stories/payPalMarks/code.ts
++++ /dev/null
+@@ -1,123 +0,0 @@
+-import {
+-  generateFundingSource,
+-  CREATE_ORDER_URL,
+-  CAPTURE_ORDER_URL,
+-} from "../utils";
+-
+-import type { Args } from "@storybook/addons/dist/ts3.9/types";
+-
+-export const getDefaultCode = (fundingSource?: string): string =>
+-  `import { PayPalScriptProvider, PayPalMarks } from "@paypal/react-paypal-js";
+-
+-export default function App() {
+-	return (
+-		<PayPalScriptProvider
+-			options={{
+-				clientId: "test",
+-				components: "buttons,marks,funding-eligibility",
+-			}}
+-		>
+-			<PayPalMarks ${generateFundingSource(fundingSource)} />
+-		</PayPalScriptProvider>
+-	);
+-}`;
+-
+-export const getRadioButtonsCode = (args: Args): string =>
+-  `import { useState } from "react";
+-import {
+-	PayPalScriptProvider,
+-	PayPalButtons,
+-	PayPalMarks,
+-} from "@paypal/react-paypal-js";
+-
+-// This values are the props in the UI
+-const amount = "${args.amount}";
+-const currency = "${args.currency}";
+-const style = ${JSON.stringify(args.style)};
+-
+-export default function App() {
+-	const fundingSources = ["paypal", "card", "paylater"];
+-	// Remember the amount props is received from the control panel
+-	const [selectedFundingSource, setSelectedFundingSource] = useState(
+-		fundingSources[0]
+-	);
+-
+-	function onChange(event) {
+-		setSelectedFundingSource(event.target.value);
+-	}
+-
+-	function createOrder() {
+-		// replace this url with your server
+-		return fetch("${CREATE_ORDER_URL}", {
+-			method: "POST",
+-			headers: {
+-				"Content-Type": "application/json",
+-			},
+-			// use the "body" param to optionally pass additional order information
+-			// like product ids and quantities
+-			body: JSON.stringify({
+-				cart: [
+-					{
+-						sku: "1blwyeo8",
+-						quantity: 2,
+-					},
+-				],
+-			}),
+-		})
+-			.then((response) => response.json())
+-			.then((order) => {
+-				// Your code here after create the order
+-				return order.id;
+-			});
+-	}
+-	function onApprove(data) {
+-		// replace this url with your server
+-		return fetch("${CAPTURE_ORDER_URL}", {
+-			method: "POST",
+-			headers: {
+-				"Content-Type": "application/json",
+-			},
+-			body: JSON.stringify({
+-				orderID: data.orderID,
+-			}),
+-		})
+-			.then((response) => response.json())
+-			.then((orderData) => {
+-				// Your code here after capture the order
+-			});
+-	}
+-
+-	return (
+-		<PayPalScriptProvider
+-			options={{
+-				clientId: "test",
+-				components: "buttons,marks,funding-eligibility"
+-			}}
+-		>
+-			<form style={{ minHeight: "200px" }}>
+-				{fundingSources.map((fundingSource) => (
+-					<label className="mark" key={fundingSource}>
+-						<input
+-							defaultChecked={
+-								fundingSource === selectedFundingSource
+-							}
+-							onChange={onChange}
+-							type="radio"
+-							name="fundingSource"
+-							value={fundingSource}
+-						/>
+-						<PayPalMarks fundingSource={fundingSource} />
+-					</label>
+-				))}
+-			</form>
+-			<br />
+-			<PayPalButtons
+-				fundingSource={selectedFundingSource}
+-				style={style}
+-				forceReRender={[selectedFundingSource, style, amount, currency]}
+-				createOrder={createOrder}
+-				onApprove={onApprove}
+-			/>
+-		</PayPalScriptProvider>
+-	);
+-}`;
+diff --git a/packages/react-paypal-js/src/stories/payPalScriptProvider/PayPalScriptProvider.stories.tsx b/packages/react-paypal-js/src/stories/payPalScriptProvider/PayPalScriptProvider.stories.tsx
+deleted file mode 100644
+index 5be54e5..0000000
+--- a/packages/react-paypal-js/src/stories/payPalScriptProvider/PayPalScriptProvider.stories.tsx
++++ /dev/null
+@@ -1,143 +0,0 @@
+-import React from "react";
+-import { action } from "@storybook/addon-actions";
+-
+-import { getOptionsFromQueryString } from "../utils";
+-import {
+-  PayPalScriptProvider,
+-  DISPATCH_ACTION,
+-  SCRIPT_LOADING_STATE,
+-} from "../../index";
+-import {
+-  getScriptID,
+-  destroySDKScript,
+-} from "../../context/scriptProviderContext";
+-import { usePayPalScriptReducer } from "../../hooks/scriptProviderHooks";
+-import DocPageStructure from "../components/DocPageStructure";
+-import { getDefaultCode } from "./code";
+-
+-import type { FC, ReactElement } from "react";
+-import type { StoryFn } from "@storybook/react";
+-import type { DocsContextProps } from "@storybook/addon-docs";
+-import type { PayPalScriptOptions } from "@paypal/paypal-js";
+-
+-const scriptProviderOptions: PayPalScriptOptions = {
+-  clientId: "test",
+-  ...getOptionsFromQueryString(),
+-};
+-
+-const LoadScriptButton: FC = () => {
+-  const [{ isResolved }, dispatch] = usePayPalScriptReducer();
+-
+-  return (
+-    <div style={{ display: "inline-flex" }}>
+-      <button
+-        type="button"
+-        style={{ display: "block", marginBottom: "20px" }}
+-        disabled={isResolved}
+-        onClick={() => {
+-          dispatch({
+-            type: DISPATCH_ACTION.LOADING_STATUS,
+-            value: SCRIPT_LOADING_STATE.PENDING,
+-          });
+-        }}
+-      >
+-        Load PayPal script
+-      </button>
+-      <button
+-        type="button"
+-        style={{
+-          display: "block",
+-          marginBottom: "20px",
+-          marginLeft: "1em",
+-        }}
+-        onClick={() => {
+-          destroySDKScript(getScriptID(scriptProviderOptions));
+-          dispatch({
+-            type: DISPATCH_ACTION.LOADING_STATUS,
+-            value: SCRIPT_LOADING_STATE.INITIAL,
+-          });
+-        }}
+-      >
+-        Reset
+-      </button>
+-    </div>
+-  );
+-};
+-
+-function PrintLoadingState(): ReactElement | null {
+-  const [{ isInitial, isPending, isResolved, isRejected }] =
+-    usePayPalScriptReducer();
+-
+-  if (isInitial) {
+-    action("isInitial")(
+-      "The sdk script has not been loaded  yet. It has been deferred.",
+-    );
+-  } else if (isPending) {
+-    action("isPending")("The sdk script is loading.");
+-  } else if (isResolved) {
+-    action("isResolved")("The sdk script has successfully loaded.");
+-  } else if (isRejected) {
+-    action("isResolved")(
+-      "Something went wrong. The sdk script failed to load.",
+-    );
+-  }
+-
+-  return null;
+-}
+-
+-export default {
+-  id: "example/PayPalScriptProvider",
+-  title: "PayPal/PayPalScriptProvider",
+-  component: PayPalScriptProvider,
+-  parameters: {
+-    controls: { expanded: true },
+-  },
+-  argTypes: {
+-    deferLoading: {
+-      options: [true, false],
+-      control: {
+-        type: "select",
+-      },
+-      description:
+-        "Allow to defer the loading of the PayPal script. If the value is `true` you'll need to load manually.",
+-      table: { category: "Props" },
+-    },
+-    options: {
+-      control: { disable: true },
+-      table: { category: "Props" },
+-    },
+-  },
+-  args: {
+-    deferLoading: false,
+-  },
+-};
+-
+-export const Default: FC<{ deferLoading: boolean }> = ({ deferLoading }) => {
+-  return (
+-    <PayPalScriptProvider
+-      options={scriptProviderOptions}
+-      deferLoading={deferLoading}
+-    >
+-      <LoadScriptButton />
+-      <PrintLoadingState />
+-      {/* add your paypal components here (ex: <PayPalButtons />) */}
+-    </PayPalScriptProvider>
+-  );
+-};
+-
+-/********************
+- * OVERRIDE STORIES *
+- *******************/
+-(Default as StoryFn).parameters = {
+-  docs: {
+-    container: ({ context }: { context: DocsContextProps }) => (
+-      <DocPageStructure
+-        context={context}
+-        code={getDefaultCode(
+-          context.getStoryContext(context.storyById(context.id)).args
+-            .deferLoading,
+-        )}
+-      />
+-    ),
+-  },
+-};
+diff --git a/packages/react-paypal-js/src/stories/payPalScriptProvider/code.ts b/packages/react-paypal-js/src/stories/payPalScriptProvider/code.ts
+deleted file mode 100644
+index fcd4644..0000000
+--- a/packages/react-paypal-js/src/stories/payPalScriptProvider/code.ts
++++ /dev/null
+@@ -1,83 +0,0 @@
+-export const getDefaultCode = (deferLoading: boolean): string =>
+-  `import {
+-	PayPalScriptProvider,
+-	usePayPalScriptReducer,
+-	getScriptID,
+-	destroySDKScript,
+-} from "@paypal/react-paypal-js";
+-
+-const SCRIPT_PROVIDER_OPTIONS = {
+-	clientId: "test",
+-};
+-
+-// Custom loader component
+-const LoadScriptButton = () => {
+-	const [{ isResolved }, dispatch] = usePayPalScriptReducer();
+-
+-	return (
+-		<div style={{ display: "inline-flex" }}>
+-			<button
+-				type="button"
+-				style={{ display: "block", marginBottom: "20px" }}
+-				disabled={isResolved}
+-				onClick={() => {
+-					dispatch({
+-						type: "setLoadingStatus",
+-						value: "pending",
+-					});
+-				}}
+-			>
+-				Load PayPal script
+-			</button>
+-			<button
+-				type="button"
+-				style={{
+-					display: "block",
+-					marginBottom: "20px",
+-					marginLeft: "1em",
+-				}}
+-				onClick={() => {
+-					destroySDKScript(getScriptID(SCRIPT_PROVIDER_OPTIONS));
+-					dispatch({
+-						type: "setLoadingStatus",
+-						value: "initial",
+-					});
+-				}}
+-			>
+-				Reset
+-			</button>
+-		</div>
+-	);
+-};
+-
+-// Show state
+-function PrintLoadingState() {
+-	const [{ isInitial, isPending, isResolved, isRejected }] =
+-		usePayPalScriptReducer();
+-	let status = "no status";
+-
+-	if (isInitial) {
+-		status = "initial";
+-	} else if (isPending) {
+-		status = "pending";
+-	} else if (isResolved) {
+-		status = "resolved";
+-	} else if (isRejected) {
+-		status = "rejected";
+-	}
+-
+-	return <div>Current status: {status}</div>;
+-}
+-
+-export default function App() {
+-	return (
+-		<PayPalScriptProvider
+-			options={SCRIPT_PROVIDER_OPTIONS}
+-			deferLoading={${deferLoading}}
+-		>
+-			<LoadScriptButton />
+-			<PrintLoadingState />
+-			{/* add your paypal components here (ex: <PayPalButtons />) */}
+-		</PayPalScriptProvider>
+-	);
+-}`;
+diff --git a/packages/react-paypal-js/src/stories/subscriptions/Subscriptions.stories.tsx b/packages/react-paypal-js/src/stories/subscriptions/Subscriptions.stories.tsx
+deleted file mode 100644
+index c6eebf9..0000000
+--- a/packages/react-paypal-js/src/stories/subscriptions/Subscriptions.stories.tsx
++++ /dev/null
+@@ -1,193 +0,0 @@
+-import React, { useEffect } from "react";
+-import { action } from "@storybook/addon-actions";
+-
+-import {
+-  PayPalScriptProvider,
+-  PayPalButtons,
+-  usePayPalScriptReducer,
+-  DISPATCH_ACTION,
+-} from "../../index";
+-import { getOptionsFromQueryString, generateRandomString } from "../utils";
+-import {
+-  ORDER_ID,
+-  APPROVE,
+-  SUBSCRIPTION,
+-  ERROR,
+-  ORDER_INSTANCE_ERROR,
+-} from "../constants";
+-import DocPageStructure from "../components/DocPageStructure";
+-import { InEligibleError, defaultProps } from "../commons";
+-import { getDefaultCode } from "./code";
+-
+-import type { FC, ReactElement } from "react";
+-import type { StoryFn } from "@storybook/react";
+-import type { DocsContextProps } from "@storybook/addon-docs";
+-import type { PayPalButtonsComponentProps } from "../../types/paypalButtonTypes";
+-import type {
+-  PayPalScriptOptions,
+-  CreateSubscriptionActions,
+-  CreateOrderActions,
+-  OnApproveData,
+-  OnApproveActions,
+-} from "@paypal/paypal-js";
+-
+-const subscriptionOptions: PayPalScriptOptions = {
+-  clientId: "test",
+-  components: "buttons",
+-  vault: true,
+-  ...getOptionsFromQueryString(),
+-};
+-
+-const buttonSubscriptionProps = {
+-  createSubscription(
+-    data: Record<string, unknown>,
+-    actions: CreateSubscriptionActions,
+-  ) {
+-    return actions.subscription
+-      .create({
+-        plan_id: PLAN_ID,
+-      })
+-      .then((orderId) => {
+-        action("subscriptionOrder")(orderId);
+-        return orderId;
+-      });
+-  },
+-  style: {
+-    label: "subscribe",
+-  },
+-  ...defaultProps,
+-};
+-
+-const buttonOrderProps = () => ({
+-  createOrder(data: Record<string, unknown>, actions: CreateOrderActions) {
+-    return actions.order
+-      .create({
+-        intent: "CAPTURE",
+-        purchase_units: [
+-          {
+-            amount: {
+-              currency_code: "USD",
+-              value: "2",
+-            },
+-          },
+-        ],
+-      })
+-      .then((orderId) => {
+-        action(ORDER_ID)(orderId);
+-        return orderId;
+-      });
+-  },
+-  onApprove(data: OnApproveData, actions: OnApproveActions) {
+-    if (!actions.order) {
+-      action(ERROR)(ORDER_INSTANCE_ERROR);
+-      return Promise.reject(ORDER_INSTANCE_ERROR);
+-    }
+-    return actions.order.capture().then(function (details) {
+-      action(APPROVE)(details);
+-    });
+-  },
+-  ...defaultProps,
+-});
+-
+-const orderOptions: PayPalScriptOptions = {
+-  clientId: "test",
+-  components: "buttons",
+-  ...getOptionsFromQueryString(),
+-};
+-
+-export default {
+-  id: "example/Subscriptions",
+-  title: "PayPal/Subscriptions",
+-  parameters: {
+-    docs: {
+-      description: {
+-        component: `You can use billing plans and subscriptions to create subscriptions that process recurring PayPal payments for physical or digital goods, or services.
+-A plan includes pricing and billing cycle information that defines the amount and frequency of charge for a subscription.
+-You can also define a fixed plan, such as a $5 basic plan or a volume or graduated-based plan with pricing tiers based on the quantity purchased.
+-
+-It relies on the \`<PayPalScriptProvider />\` parent component for managing state related to loading the JS SDK script.
+-For more information, see [Subscriptions](https://developer.paypal.com/docs/subscriptions/)`,
+-      },
+-    },
+-    controls: { expanded: true },
+-  },
+-  argTypes: {
+-    type: {
+-      control: "select",
+-      options: [SUBSCRIPTION, "capture"],
+-      table: {
+-        category: "Custom",
+-        type: { summary: "string" },
+-        defaultValue: {
+-          summary: SUBSCRIPTION,
+-        },
+-      },
+-      description: "Change the PayPal checkout intent.",
+-    },
+-  },
+-  args: {
+-    type: SUBSCRIPTION,
+-  },
+-  decorators: [
+-    (Story: FC, storyArgs: { args: { type: string } }): ReactElement => {
+-      const uid = generateRandomString();
+-      return (
+-        <PayPalScriptProvider
+-          options={{
+-            ...subscriptionOptions,
+-            dataNamespace: uid,
+-            dataUid: uid,
+-            intent: storyArgs.args.type,
+-          }}
+-        >
+-          <div style={{ minHeight: "250px" }}>
+-            <Story />
+-          </div>
+-        </PayPalScriptProvider>
+-      );
+-    },
+-  ],
+-};
+-
+-const PLAN_ID = "P-3RX065706M3469222L5IFM4I";
+-
+-export const Default: FC<{ type: string }> = ({ type }) => {
+-  // Remember the type and amount props are received from the control panel
+-  const [, dispatch] = usePayPalScriptReducer();
+-  const isSubscription = type === SUBSCRIPTION;
+-  const buttonOptions = isSubscription
+-    ? buttonSubscriptionProps
+-    : buttonOrderProps();
+-  useEffect(() => {
+-    dispatch({
+-      type: DISPATCH_ACTION.RESET_OPTIONS,
+-      value: type === SUBSCRIPTION ? subscriptionOptions : orderOptions,
+-    });
+-  }, [type, dispatch]);
+-
+-  return (
+-    <PayPalButtons
+-      forceReRender={[type]}
+-      {...(buttonOptions as PayPalButtonsComponentProps)}
+-      style={{ label: isSubscription ? "subscribe" : undefined }}
+-    >
+-      <InEligibleError />
+-    </PayPalButtons>
+-  );
+-};
+-
+-/********************
+- * OVERRIDE STORIES *
+- *******************/
+-(Default as StoryFn).parameters = {
+-  docs: {
+-    container: ({ context }: { context: DocsContextProps }) => (
+-      <DocPageStructure
+-        context={context}
+-        code={getDefaultCode(
+-          context.getStoryContext(context.storyById(context.id)).args.type,
+-        )}
+-      />
+-    ),
+-  },
+-};
+diff --git a/packages/react-paypal-js/src/stories/subscriptions/code.ts b/packages/react-paypal-js/src/stories/subscriptions/code.ts
+deleted file mode 100644
+index eab87a9..0000000
+--- a/packages/react-paypal-js/src/stories/subscriptions/code.ts
++++ /dev/null
+@@ -1,80 +0,0 @@
+-import { SUBSCRIPTION } from "../constants";
+-
+-const SUBSCRIPTION_OPTIONS = `createSubscription={(data, actions) => {
+-			return actions.subscription
+-				.create({
+-					plan_id: "P-3RX065706M3469222L5IFM4I",
+-				})
+-				.then((orderId) => {
+-					// Your code here after create the order
+-					return orderId;
+-				});
+-		}}
+-		style={{
+-			label: "subscribe",
+-		}}`;
+-
+-const CAPTURE_OPTIONS = `createOrder={function (data, actions) {
+-			return actions.order
+-				.create({
+-					intent: "CAPTURE",
+-					purchase_units: [
+-						{
+-							amount: {
+-								currency_code: "USD",
+-								value: "2",
+-							},
+-						},
+-					],
+-				})
+-				.then((orderId) => {
+-					// Your code here after create the order
+-					return orderId;
+-				});
+-		}}
+-		onApprove={function (data, actions) {
+-			return actions.order.capture().then(function (details) {
+-				// Your code here after capture the order
+-			});
+-		}}`;
+-
+-export const getDefaultCode = (type: string): string =>
+-  `import { useEffect } from "react";
+-import {
+-	PayPalScriptProvider,
+-	PayPalButtons,
+-	usePayPalScriptReducer
+-} from "@paypal/react-paypal-js";
+-
+-const ButtonWrapper = ({ type }) => {
+-	const [{ options }, dispatch] = usePayPalScriptReducer();
+-
+-	useEffect(() => {
+-        dispatch({
+-            type: "resetOptions",
+-            value: {
+-                ...options,
+-                intent: "${type === SUBSCRIPTION ? "subscription" : "capture"}",
+-            },
+-        });
+-    }, [type]);
+-
+-	return (<PayPalButtons
+-		${type === SUBSCRIPTION ? SUBSCRIPTION_OPTIONS : CAPTURE_OPTIONS}
+-	/>);
+-}
+-
+-export default function App() {
+-	return (
+-		<PayPalScriptProvider
+-			options={{
+-				clientId: "test",
+-				components: "buttons",
+-				intent: "${type}",
+-				vault: ${type === SUBSCRIPTION},
+-			}}
+-		>
+-			<ButtonWrapper type="${type}" />
+-		</PayPalScriptProvider>
+-	);
+-}`;
+diff --git a/packages/react-paypal-js/src/stories/utils.ts b/packages/react-paypal-js/src/stories/utils.ts
+deleted file mode 100644
+index 36c5fde..0000000
+--- a/packages/react-paypal-js/src/stories/utils.ts
++++ /dev/null
+@@ -1,109 +0,0 @@
+-import reactElementToJSXString from "react-element-to-jsx-string";
+-import format from "string-template";
+-import { SDK_QUERY_KEYS } from "@paypal/sdk-constants/dist/module";
+-
+-import type { ReactNode } from "react";
+-import type { OrderResponseBody } from "@paypal/paypal-js";
+-
+-// FIXME: problem with union on key
+-type TokenResponse = {
+-  [key in "clientToken" | "client_token"]: string;
+-} & { success?: boolean };
+-
+-export const FLY_SERVER = "https://react-paypal-js-storybook.fly.dev";
+-export const CREATE_ORDER_URL = `${FLY_SERVER}/api/paypal/create-order`;
+-export const CAPTURE_ORDER_URL = `${FLY_SERVER}/api/paypal/capture-order`;
+-
+-const CLIENT_TOKEN_URL = `${FLY_SERVER}/api/braintree/generate-client-token`;
+-const SALE_URL = `${FLY_SERVER}/api/braintree/sale`;
+-const allowedSDKQueryParams = Object.keys(SDK_QUERY_KEYS).map(
+-  (key) => SDK_QUERY_KEYS[key],
+-);
+-
+-// paypal-js supports the sdkBaseURL param for testing in lower environments
+-allowedSDKQueryParams.push("sdkBaseURL");
+-
+-export function getOptionsFromQueryString(): Record<string, string> {
+-  const searchParams = new URLSearchParams(window.location.search);
+-  const validOptions: Record<string, string> = {};
+-
+-  searchParams.forEach((value, key) => {
+-    if (allowedSDKQueryParams.includes(key)) {
+-      validOptions[key] = value;
+-    }
+-  });
+-
+-  return validOptions;
+-}
+-
+-export async function getClientToken(url = CLIENT_TOKEN_URL): Promise<string> {
+-  const response: TokenResponse = await (
+-    await fetch(url, { method: "POST" })
+-  ).json();
+-
+-  return response?.client_token || response?.clientToken;
+-}
+-
+-export async function approveSale(
+-  nonce: string,
+-  amount: string,
+-): Promise<unknown> {
+-  return await (
+-    await fetch(SALE_URL, {
+-      method: "POST",
+-      headers: {
+-        "Content-Type": "application/json",
+-      },
+-      body: JSON.stringify({
+-        paymentMethodNonce: nonce,
+-        amount,
+-      }),
+-    })
+-  ).json();
+-}
+-
+-export function generateRandomString(): string {
+-  return window.crypto.randomUUID();
+-}
+-
+-export function reactElementToString(source: ReactNode, ctx?: unknown): string {
+-  return reactElementToJSXString(source, {
+-    showFunctions: true,
+-    sortProps: false,
+-    functionValue: (fn) => format(fn.toString(), ctx),
+-  });
+-}
+-
+-export function generateFundingSource(fundingSource?: string): string {
+-  return `fundingSource=${
+-    fundingSource ? `"${fundingSource}"` : "{undefined}"
+-  }`;
+-}
+-
+-export function createOrder(
+-  cart: { sku: string; quantity: number }[],
+-): Promise<OrderResponseBody> {
+-  return fetch(CREATE_ORDER_URL, {
+-    method: "POST",
+-    headers: {
+-      "Content-Type": "application/json",
+-    },
+-    // use the "body" param to optionally pass additional order information
+-    // like product ids and quantities
+-    body: JSON.stringify({ cart }),
+-  }).then((response) => response.json());
+-}
+-
+-export function onApprove(data: {
+-  orderID: string;
+-}): Promise<OrderResponseBody> {
+-  return fetch(CAPTURE_ORDER_URL, {
+-    method: "POST",
+-    headers: {
+-      "Content-Type": "application/json",
+-    },
+-    body: JSON.stringify({
+-      orderID: data.orderID,
+-    }),
+-  }).then((response) => response.json());
+-}
+diff --git a/packages/react-paypal-js/src/stories/venmo/VenmoButton.stories.tsx b/packages/react-paypal-js/src/stories/venmo/VenmoButton.stories.tsx
+deleted file mode 100644
+index 621843b..0000000
+--- a/packages/react-paypal-js/src/stories/venmo/VenmoButton.stories.tsx
++++ /dev/null
+@@ -1,132 +0,0 @@
+-import React from "react";
+-
+-import { PayPalScriptProvider, FUNDING, PayPalButtons } from "../../index";
+-import { getOptionsFromQueryString, generateRandomString } from "../utils";
+-import DocPageStructure from "../components/DocPageStructure";
+-import { InEligibleError } from "../commons";
+-import { getDefaultCode } from "./code";
+-
+-import type { FC } from "react";
+-import type { PayPalScriptOptions } from "@paypal/paypal-js";
+-import type { StoryFn } from "@storybook/react";
+-import type { DocsContextProps } from "@storybook/addon-docs";
+-
+-const scriptProviderOptions: PayPalScriptOptions = {
+-  clientId:
+-    "AdLzRW18VHoABXiBhpX2gf0qhXwiW4MmFVHL69V90vciCg_iBLGyJhlf7EuWtFcdNjGiDfrwe7rmhvMZ",
+-  components: "buttons,funding-eligibility",
+-  enableFunding: "venmo",
+-  ...getOptionsFromQueryString(),
+-};
+-
+-export default {
+-  id: "example/VenmoButton",
+-  title: "PayPal/VenmoButton",
+-  parameters: {
+-    controls: { expanded: true },
+-    docs: {
+-      source: { type: "dynamic" },
+-      description: {
+-        component: `Pay with Venmo offers a simplified mobile checkout experience at no additional cost to you.
+-
+-Your buyers get:
+-
+-- A streamlined checkout process
+-- Splitting and sharing of purchases.
+-
+-It relies on the \`<PayPalScriptProvider />\` parent component for managing state related to loading the JS SDK script.
+-For more information, see [Pay with Venmo](https://developer.paypal.com/docs/business/checkout/pay-with-venmo/)
+-`,
+-      },
+-    },
+-  },
+-  argTypes: {
+-    style: {
+-      description: "Styling options for customizing the button appearance.",
+-      control: { type: "object", expanded: true },
+-      table: {
+-        category: "Props",
+-        type: {
+-          summary: `{
+-                    color?: "blue" | "silver" | "white" | "black";
+-                    label?:
+-                        | "paypal"
+-                        | "checkout"
+-                        | "buynow"
+-                        | "pay"
+-                        | "installment"
+-                        | "subscribe"
+-                        | "donate";
+-                    shape?: "rect" | "pill";
+-                }`,
+-        },
+-      },
+-    },
+-    onShippingChange: {
+-      description:
+-        "Called when the buyer changes their shipping address on PayPal.",
+-      control: null,
+-      table: { category: "Events", type: { summary: "() => void" } },
+-    },
+-  },
+-  args: {
+-    // Storybook passes empty functions by default for props like `onShippingChange`.
+-    // This turns on the `onShippingChange()` feature which uses the popup experience with the Standard Card button.
+-    // We pass null to opt-out so the inline guest feature works as expected with the Standard Card button.
+-    onShippingChange: null,
+-    style: {
+-      color: "blue",
+-    },
+-  },
+-};
+-
+-export const Default: FC<{
+-  style: {
+-    color?: "blue" | "silver" | "white" | "black";
+-    label?:
+-      | "paypal"
+-      | "checkout"
+-      | "buynow"
+-      | "pay"
+-      | "installment"
+-      | "subscribe"
+-      | "donate";
+-    shape?: "rect" | "pill";
+-  };
+-}> = ({ style }) => {
+-  const uid = generateRandomString();
+-
+-  return (
+-    <PayPalScriptProvider
+-      options={{
+-        ...scriptProviderOptions,
+-        dataNamespace: uid,
+-        dataUid: uid,
+-      }}
+-    >
+-      <PayPalButtons
+-        fundingSource={FUNDING.VENMO}
+-        style={style}
+-        forceReRender={[style]}
+-      >
+-        <InEligibleError text="You are not eligible to pay with Venmo." />
+-      </PayPalButtons>
+-    </PayPalScriptProvider>
+-  );
+-};
+-
+-/********************
+- * OVERRIDE STORIES *
+- *******************/
+-(Default as StoryFn).parameters = {
+-  docs: {
+-    container: ({ context }: { context: DocsContextProps }) => (
+-      <DocPageStructure
+-        context={context}
+-        code={getDefaultCode(
+-          context.getStoryContext(context.storyById(context.id)).args.style,
+-        )}
+-      />
+-    ),
+-  },
+-};
+diff --git a/packages/react-paypal-js/src/stories/venmo/code.ts b/packages/react-paypal-js/src/stories/venmo/code.ts
+deleted file mode 100644
+index 5c33cce..0000000
+--- a/packages/react-paypal-js/src/stories/venmo/code.ts
++++ /dev/null
+@@ -1,31 +0,0 @@
+-import type { Args } from "@storybook/addons/dist/ts3.9/types";
+-
+-export const getDefaultCode = (style: Args): string =>
+-  `import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+-
+-// Custom error component
+-const InEligibleError: FC<{ text?: string }> = ({ text }) => (
+-	<h3 style={{ color: "#dc3545", textTransform: "capitalize" }}>
+-		{text || "The component is ineligible to render"}
+-	</h3>
+-);
+-
+-export default function App() {
+-	return (
+-		<PayPalScriptProvider
+-			options={{
+-				clientId:
+-					"AdLzRW18VHoABXiBhpX2gf0qhXwiW4MmFVHL69V90vciCg_iBLGyJhlf7EuWtFcdNjGiDfrwe7rmhvMZ",
+-				components: "buttons,funding-eligibility",
+-				"enable-funding": "venmo",
+-			}}
+-		>
+-			<PayPalButtons
+-				fundingSource="venmo"
+-				style={${JSON.stringify(style)}}
+-			>
+-				<InEligibleError text="You are not eligible to pay with Venmo." />
+-			</PayPalButtons>
+-		</PayPalScriptProvider>
+-	);
+-}`;
