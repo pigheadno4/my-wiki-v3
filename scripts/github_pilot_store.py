@@ -24,7 +24,7 @@ from github_releases import ReleaseCandidate, ReleaseNotesEvidence
 
 _DATE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
 _OBJECT_ID = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
-_ROOT_CONTEXT = ("LICENSE", "LICENSE.md", "README.md", "package-lock.json", "package.json")
+_ROOT_CONTEXT = ("LICENSE", "LICENSE.md", "README.md", "package.json")
 
 
 class PilotStoreError(ValueError):

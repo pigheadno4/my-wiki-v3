@@ -114,6 +114,28 @@ class GitHubPilotStoreTests(unittest.TestCase):
         self.assertIn("LICENSE", first.files)
         self.assertIn("src/index.ts", first.files)
 
+    def test_root_package_lock_is_not_standard_snapshot_context(self):
+        sha = commit_files(
+            self.repo,
+            {"package-lock.json": "x" * (self.config.max_file_bytes + 1)},
+            "add oversized lockfile",
+        )
+        tree = GitTree(self.repo, sha)
+        resolution = resolve_npm_capsule(tree, self.capsule(), ())
+
+        snapshot = publish_source_snapshot(
+            self.root,
+            self.config,
+            tree,
+            resolution,
+            "2026-07-20",
+            ("@scope/widget@10.0.0",),
+        )
+
+        self.assertNotIn("package-lock.json", snapshot.files)
+        self.assertIn("package.json", snapshot.files)
+        self.assertIn("src/index.ts", snapshot.files)
+
     def test_same_release_note_hash_is_idempotent(self):
         first = publish_release_record(
             self.root,
