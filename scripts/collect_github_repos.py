@@ -189,8 +189,18 @@ def _collect_attempt(
         context["candidates"] = candidates
         if not candidates:
             return CollectionResult(config.id, "unchanged", (), (), (), ())
-        release_ids = tuple(_release_id(candidate) for candidate in candidates)
         if dry_run:
+            fetch_required_refs(
+                effective,
+                clone_path,
+                tuple("tag:" + tag for tag in sorted({item.tag for item in candidates})),
+            )
+            evidence_by_id = {
+                _release_id(candidate): release_notes_fetcher(config, candidate)
+                for candidate in candidates
+            }
+            ordered = _sort_candidates(candidates, evidence_by_id, clone_path)
+            release_ids = tuple(_release_id(candidate) for candidate in ordered)
             return CollectionResult(config.id, "discovered", release_ids, (), (), ())
 
         history = _load_retained_history(root, config)

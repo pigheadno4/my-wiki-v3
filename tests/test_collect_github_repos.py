@@ -168,6 +168,28 @@ class CollectGitHubReposTests(unittest.TestCase):
             result.release_ids,
         )
 
+    def test_dry_run_orders_releases_by_release_date_without_writes(self):
+        def dated_notes(config, candidate):
+            day = "07" if candidate.package == "@paypal/react-paypal-js" else "08"
+            return ReleaseNotesEvidence(
+                "https://api.github.test/" + candidate.tag,
+                "2026-07-" + day + "T12:00:00Z",
+                b"Routine release.\n",
+            )
+
+        result = self.collect(release_notes_fetcher=dated_notes, dry_run=True)
+
+        self.assertEqual("discovered", result.state)
+        self.assertEqual(
+            (
+                "@paypal/react-paypal-js@10.0.0",
+                "@paypal/paypal-js@10.0.0",
+            ),
+            result.release_ids,
+        )
+        self.assertFalse((self.root / "raw").exists())
+        self.assertFalse((self.root / "tracking").exists())
+
     def test_recollection_with_no_new_release_is_unchanged(self):
         self.collect()
         result = self.collect(release_mode="future", collection_date="2026-07-21")
