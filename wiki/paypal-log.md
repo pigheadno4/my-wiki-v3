@@ -6,6 +6,15 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-07-23] ingest | paypal/paypal-js core `10.0.3` and React `10.1.2`
+
+- Approved and processed work item `github-92e87b7fea5fb1703585` in full mode.
+- Read and hash-verified the 146-file, 997,074-byte exact-SHA capsule at `raw/github/paypal/paypal-js/snapshots/2026-07-22-3caece5/manifest.json`; 95 test/fixture files were excluded by policy.
+- Ingested `@paypal/paypal-js@10.0.3` and `@paypal/react-paypal-js@10.1.2` as separate package releases sharing SHA `3caece5256428b6b5c713decbaec10ff7d785e9f`.
+- Added v6 Venmo save-payment types, React Apple Pay disabled-prop removal, and PayPal Messages `TEXT` logo typing.
+- Updated [[paypal-vault]], [[paypal-apple-pay]], and [[paypal-pay-later]].
+- Preserved and flagged the conflict between older no-Venmo-purchase-later product guidance and the new package type; runtime availability remains unconfirmed.
+
 ## [2026-07-23] ingest | paypal/paypal-js core `10.0.2` and React `10.1.1`
 
 - Approved and processed work item `github-986685252a62505561c4` in full mode.

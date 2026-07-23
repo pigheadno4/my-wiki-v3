@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-23] ingest | GitHub paypal/paypal-js — core `10.0.3` and React `10.1.2`
+
+- Full serial ingest of `github-92e87b7fea5fb1703585` from exact SHA `3caece5256428b6b5c713decbaec10ff7d785e9f`.
+- Added v6 Venmo save-payment types, removed React's ineffective Apple Pay disabled prop, and added the Messages `TEXT` logo type.
+- Updated PayPal vault, Apple Pay, and Pay Later concepts while preserving the unresolved Venmo product-documentation contradiction.
+- Updated PayPal company, cumulative source, release ledger, provider index, and provider log without changing source count.
+
 ## [2026-07-23] ingest | GitHub paypal/paypal-js — core `10.0.2` and React `10.1.1`
 
 - Full serial ingest of `github-986685252a62505561c4` from exact SHA `3d72ac928b059cffab3c004d83656bd964ff4a1b`.

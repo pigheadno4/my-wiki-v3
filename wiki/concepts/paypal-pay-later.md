@@ -68,6 +68,8 @@ Add `messages` to `components` in the JS SDK script tag: `components=messages,bu
 
 Key attributes: `data-pp-message`, `data-pp-amount`, `data-pp-placement`, `data-pp-style-layout`.
 
+For the v6 React web component, `@paypal/react-paypal-js@10.1.2` expands the typed `logo-type` attribute from `MONOGRAM | WORDMARK` to `MONOGRAM | WORDMARK | TEXT`. This is a TypeScript/JSX contract for `<paypal-message>`, not evidence that every older JS SDK messaging integration accepts the same value.
+
 ## Available Countries (beyond US)
 
 Pay Later offerings differ by country — Australia, France, Germany, Italy, Spain, UK each have their own products. Check the Expanded Checkout eligibility page for which countries support Pay Later.
@@ -79,3 +81,4 @@ Pay Later offerings differ by country — Australia, France, Germany, Italy, Spa
 ## Sources
 
 - [[source-paypal-pay-later]] — Pay Later by country (US, AU, CA, FR, DE): product tables, purchase ranges, eligibility, bilingual support (CA)
+- [[source-github-paypal-js]] — package-qualified React v10.1.2 PayPal Messages `TEXT` logo type

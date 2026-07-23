@@ -4,6 +4,7 @@ type: source
 date_ingested: 2026-07-23
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-07-22-3caece5/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-3d72ac9/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-59cb2ce/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-4bd05ab/manifest.json"
@@ -16,6 +17,45 @@ tags: [paypal, javascript-sdk, react, npm, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for the independently versioned packages in `paypal/paypal-js`. Detailed implementation knowledge belongs in [[source-github-paypal-js]] and the linked immutable snapshots.
+
+## Repository change set: `3caece5` (2026-07-07)
+
+### Package timelines
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@paypal/paypal-js` | `10.0.2` | `10.0.3` | 2026-07-07 | `3caece5256428b6b5c713decbaec10ff7d785e9f` | Full |
+| `@paypal/react-paypal-js` | `10.1.1` | `10.1.2` | 2026-07-07 | `3caece5256428b6b5c713decbaec10ff7d785e9f` | Full |
+
+The package-qualified releases are `@paypal/paypal-js@10.0.3` and `@paypal/react-paypal-js@10.1.2`.
+
+**Important change:** Core adds a v6 Venmo save-payment session typed around a vault setup token. React removes the ineffective Apple Pay button `disabled` prop, stops writing that ignored attribute during pending state, and adds `TEXT` to the PayPal Messages `logo-type` union.
+
+**Developer or merchant impact:** TypeScript integrations can model a Venmo vault-without-payment flow, but the package contract conflicts with older product documentation that excludes Venmo from purchase-later vaulting. Apple Pay merchants must control presentation themselves rather than relying on a disabled prop. React Messages JSX accepts the additional text logo type.
+
+**Migration action:** Treat Venmo save-payment availability as unconfirmed until the matching runtime and merchant account are verified. Remove `disabled` from `ApplePayOneTimePaymentButton`, gate presentation through merchant UI and Apple capability checks, and use `logo-type="TEXT"` only with a compatible v6 Messages runtime.
+
+**Updated source sections:** core version 10; React version 10; [[paypal-vault]], [[paypal-apple-pay]], and [[paypal-pay-later]]; PayPal company summary; provider index and logs.
+
+> [!warning] Contradiction
+> Older Save Payment Methods and Pay with Venmo documentation says no Venmo save-for-purchase-later path exists. The core `10.0.3` declaration adds exactly such a save-payment contract. The type surface does not prove production runtime availability, so the conflict remains explicit.
+
+**Evidence:**
+
+- Core release record: `raw/github/paypal/paypal-js/releases/paypal-js/10.0.3/2026-07-22/manifest.json`
+- Core release notes: `raw/github/paypal/paypal-js/releases/paypal-js/10.0.3/2026-07-22/release-notes.md`
+- React release record: `raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.2/2026-07-22/manifest.json`
+- React release notes: `raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.2/2026-07-22/release-notes.md`
+- Snapshot manifest: `raw/github/paypal/paypal-js/snapshots/2026-07-22-3caece5/manifest.json`
+- Core comparison: `tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/10.0.2--10.0.3/comparison.json`
+- React comparison: `tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.1.1--10.1.2/comparison.json`
+- Venmo save-payment types: `raw/github/paypal/paypal-js/snapshots/2026-07-22-3caece5/files/packages/paypal-js/types/v6/components/venmo-payments.d.ts`
+- Apple Pay button: `raw/github/paypal/paypal-js/snapshots/2026-07-22-3caece5/files/packages/react-paypal-js/src/v6/components/ApplePayOneTimePaymentButton.tsx`
+- Messages web-component types: `raw/github/paypal/paypal-js/snapshots/2026-07-22-3caece5/files/packages/react-paypal-js/src/v6/types/sdkWebComponents.ts`
+
+### Evidence boundary
+
+This repository proves wrapper declarations and React component behavior. It does not prove runtime code owned by `paypal/paypal-checkout-components`, product rollout, merchant eligibility, or whether older product documentation has been superseded.
 
 ## Repository change set: `3d72ac9` (2026-06-29)
 
