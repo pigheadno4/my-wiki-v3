@@ -5,6 +5,7 @@ date_ingested: 2026-04-13
 date_updated: 2026-07-23
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-07-22-77487d6/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-702863f/manifest.json"
   - "github-paypal-js.md"
 tags: [paypal, javascript-sdk, react, npm, typescript, github-repository, venmo]
@@ -14,7 +15,7 @@ tags: [paypal, javascript-sdk, react, npm, typescript, github-repository, venmo]
 
 `paypal/paypal-js` is PayPal's JavaScript SDK monorepo. It contains two independently versioned packages: `@paypal/paypal-js`, the vanilla loader and TypeScript definitions, and `@paypal/react-paypal-js`, the React integration layer.
 
-This cumulative page preserves package-qualified historical findings. The first release processed through the immutable snapshot pipeline is `@paypal/paypal-js@8.4.2` at commit `702863f91b79d405c571cf75c3d742a82174b46e`. The same repository snapshot contains `@paypal/react-paypal-js@8.9.1` as supporting context, but that React version is not the release identity approved in this ingest.
+This cumulative page preserves package-qualified historical findings. The immutable pipeline currently contains independent v8 baselines for `@paypal/paypal-js@8.4.2` and `@paypal/react-paypal-js@8.9.2`. Each release has its own record and exact-SHA snapshot even though both packages live in the same repository.
 
 Repository: <https://github.com/paypal/paypal-js>
 
@@ -53,7 +54,7 @@ Repository: <https://github.com/paypal/paypal-js>
 | Package | Latest ingested release | Evidence status |
 | --- | --- | --- |
 | `@paypal/paypal-js` | `8.4.2` | Approved full baseline |
-| `@paypal/react-paypal-js` | Not yet processed by the new release pipeline | `8.9.1` is collateral context in the 8.4.2 SHA; legacy v8 and v9 pages remain linked below |
+| `@paypal/react-paypal-js` | `8.9.2` | Approved full baseline |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -104,9 +105,9 @@ The package also ships generated TypeScript declarations for Orders v2 and Billi
 
 ## `@paypal/react-paypal-js`
 
-### Responsibility and collateral v8 context
+### Responsibility
 
-At the approved SHA, the repository contains `@paypal/react-paypal-js@8.9.1`, which depends on `@paypal/paypal-js` `^8.4.0`. This is supporting repository context only; its own release will receive a separate package-qualified changelog entry when approved.
+The package describes itself as "React components for the PayPal JS SDK." It owns React lifecycle, context, reducer, component, and hook behavior while delegating script loading and SDK runtime calls to `@paypal/paypal-js`.
 
 The React package:
 
@@ -117,6 +118,47 @@ The React package:
 - retains Storybook examples as integration evidence.
 
 The retained Venmo story configures `buttons,funding-eligibility`, enables Venmo funding, and renders `PayPalButtons` with the Venmo funding source. This is an example for the React package and legacy JS SDK button flow; it is distinct from the v6 `venmo-payments` session types in `@paypal/paypal-js`.
+
+### Version 8
+
+#### `@paypal/react-paypal-js@8.9.2`
+
+This release is the exact v8 React baseline at commit `77487d6cea80c2df694166e5d8f5c420cca41e7e`. Its public component and hook architecture remains consistent with the earlier focused v8 review, but Card Fields callback handling changes materially.
+
+Grounding excerpts:
+
+> "(fix) Proxy props added to Card Fields to prevent stale closure"
+>
+> `raw/github/paypal/paypal-js/releases/react-paypal-js/8.9.2/2026-07-22/release-notes.md:3`
+
+> "new copies of this function without having to re-render the SDK components to pass new callbacks."
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-22-77487d6/files/packages/react-paypal-js/src/hooks/useProxyProps.ts:12-14`
+
+> "const proxyProps = useProxyProps(props);"
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-22-77487d6/files/packages/react-paypal-js/src/components/cardFields/PayPalCardFieldsProvider.tsx:39`
+
+> "\"@paypal/paypal-js\": \"^9.0.0\""
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-22-77487d6/files/packages/react-paypal-js/package.json:49`
+
+`useProxyProps()` keeps one stable JavaScript `Proxy` in a React ref. On every render it assigns the newest props to that proxy. When a proxied property is a function, the proxy returns a wrapper that looks up and invokes the current function at call time. This allows an SDK component initialized once to call current React callbacks without requiring SDK re-rendering.
+
+React 8.9.2 applies that mechanism at two Card Fields levels:
+
+- `PayPalCardFieldsProvider` proxies the full provider props and separately proxies `inputEvents` before creating `paypal.CardFields(...)`.
+- `PayPalCardField` proxies each individual field's `inputEvents` before registering and rendering the field.
+
+The retained `WithDynamicOrderState` stories vary React state after the Card Fields objects have mounted. They observe current state in `createOrder`, `onApprove`, provider input events, and the Name, Number, Expiry, and CVV field event callbacks. These stories are integration evidence for the stale-closure fix; tests remain excluded from the capsule.
+
+The package dependency moves from `@paypal/paypal-js ^8.4.0` in collateral React 8.9.1 context to `@paypal/paypal-js ^9.0.0` in React 8.9.2. This is a package compatibility requirement, not permission to mark `@paypal/paypal-js@9.0.0` as independently ingested. The React release notes also mention a package-lock v3 and Rollup dependency fix, which affects repository/build maintenance rather than merchant integration behavior.
+
+No API migration is stated for application code. Merchants using dynamic Card Fields callbacks should upgrade to receive fresh React state without rebuilding the SDK component.
+
+#### Collateral React 8.9.1 context
+
+The earlier `@paypal/paypal-js@8.4.2` SHA contains `@paypal/react-paypal-js@8.9.1` depending on `@paypal/paypal-js ^8.4.0`. It remains useful comparison context but is not a separately ingested React release.
 
 ## Historical evidence retained from the earlier ingest
 
@@ -142,6 +184,9 @@ See [[changelog-github-paypal-js]] for the chronological package release ledger 
 
 ## Raw Sources
 
+- `raw/github/paypal/paypal-js/snapshots/2026-07-22-77487d6/manifest.json` — exact-SHA source capsule for `@paypal/react-paypal-js@8.9.2`
+- `raw/github/paypal/paypal-js/releases/react-paypal-js/8.9.2/2026-07-22/manifest.json` — package-qualified React release record
+- `raw/github/paypal/paypal-js/releases/react-paypal-js/8.9.2/2026-07-22/release-notes.md` — React patch notes
 - `raw/github/paypal/paypal-js/snapshots/2026-07-22-702863f/manifest.json` — exact-SHA source capsule for `@paypal/paypal-js@8.4.2`
 - `raw/github/paypal/paypal-js/releases/paypal-js/8.4.2/2026-07-22/manifest.json` — package-qualified release record
 - `raw/github/paypal/paypal-js/releases/paypal-js/8.4.2/2026-07-22/release-notes.md` — upstream patch notes

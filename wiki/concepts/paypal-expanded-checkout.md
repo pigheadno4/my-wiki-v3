@@ -35,6 +35,12 @@ Customisable to match the merchant's branding.
 
 The merchant's own Submit/Pay button calls `cardFields.submit()` — triggering the `createOrder` callback. This differs from Standard Checkout where clicking the PayPal button starts the flow.
 
+### React callback freshness
+
+In `@paypal/react-paypal-js@8.9.2`, `PayPalCardFieldsProvider` and individual Card Fields proxy their callback props through a stable object. The SDK instance can therefore remain mounted while `createOrder`, `onApprove`, `onError`, and input-event callbacks read the latest React closure after component state changes. This prevents stale order quantities or stale application state without forcing the Card Fields SDK object to reinitialize.
+
+The retained Storybook scenarios exercise changing React state across provider callbacks and each individual field's `onChange`, `onFocus`, `onBlur`, and `onInputSubmitRequest` callbacks.
+
 ### `liabilityShift`
 
 Returned in the `onApprove` callback after 3DS authentication. Indicates whether fraud liability has shifted from the merchant to the card issuer. Merchants use this to decide whether to capture.
@@ -68,3 +74,4 @@ When `data.card` is truthy (card payment), `actions.restart()` does **not** appl
 
 - [[source-paypal-expanded-checkout-getting-started]] — Getting started guide
 - [[source-paypal-expanded-checkout-integrate]] — Full integration guide with CardFields + 3DS code samples
+- [[source-github-paypal-js]] — package-qualified React wrapper source and Card Fields callback implementation

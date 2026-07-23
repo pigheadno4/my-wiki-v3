@@ -6,6 +6,14 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-07-23] ingest | paypal/paypal-js `@paypal/react-paypal-js@8.9.2`
+
+- Approved and processed work item `github-b11f1f62c66a78b84806` in full mode.
+- Read and hash-verified the 101-file exact-SHA capsule at `raw/github/paypal/paypal-js/snapshots/2026-07-22-77487d6/manifest.json`; 36 tests were excluded and integration stories were retained.
+- Updated [[paypal-expanded-checkout]] with React Card Fields callback-freshness behavior.
+- Added the React v8 baseline to [[source-github-paypal-js]] and [[changelog-github-paypal-js]].
+- Recorded the dependency move to `@paypal/paypal-js ^9.0.0` without marking that core package release as ingested.
+
 ## [2026-07-23] ingest | paypal/paypal-js `@paypal/paypal-js@8.4.2`
 
 - Approved and processed work item `github-8416828e1141b2d896ea` in full mode.

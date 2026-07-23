@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-23] ingest | GitHub paypal/paypal-js — `@paypal/react-paypal-js@8.9.2`
+
+- Full serial ingest of `github-b11f1f62c66a78b84806` from exact SHA `77487d6cea80c2df694166e5d8f5c420cca41e7e`.
+- Added the React v8 baseline and Card Fields stale-closure fix to the cumulative source and changelog.
+- Updated `wiki/concepts/paypal-expanded-checkout.md`, `wiki/companies/paypal.md`, `wiki/paypal-index.md`, and `wiki/paypal-log.md`.
+- The snapshot's `@paypal/paypal-js@9.0.0` is collateral dependency context and remains un-ingested.
+
 ## [2026-07-23] ingest | GitHub paypal/paypal-js — `@paypal/paypal-js@8.4.2`
 
 - Full serial ingest of `github-8416828e1141b2d896ea` from exact SHA `702863f91b79d405c571cf75c3d742a82174b46e`.
