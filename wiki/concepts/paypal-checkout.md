@@ -89,6 +89,12 @@ Funding visibility combines server-provided eligibility with layout, platform, b
 
 This is historical implementation evidence from 2019, not current availability guidance. Later PayPal product documentation supports both mobile Venmo app switch and desktop QR checkout, so version-specific questions must distinguish the old runtime from the current product.
 
+### checkout-components v5 accumulated runtime: `5.0.425`
+
+The exact `@paypal/checkout-components@5.0.425` source exposes separate interfaces for Buttons, Marks, Card Fields, Payment Fields, Hosted Buttons, Wallet, and Saved Payment Methods. Its protected component surface also includes Checkout, Venmo, and QR Code. This is the accumulated v5 architecture; the exact `5.0.425` patch only forwards bfcache events through post-robot.
+
+The v5 Venmo funding config supports purchase and experiment-gated vault-without-purchase flows. Its implementation distinguishes desktop-web from mobile-web channels and carries native-browser, popup, app-switch, and QR-related state. Product availability and merchant eligibility must still be checked against current documentation.
+
 ### Historical package evidence: `@paypal/paypal-js@8.4.2`
 
 The exact `8.4.2` package snapshot exposes the v6 loader from the `./sdk-v6` export. Its TypeScript surface requires `clientToken` for `createInstance()` and conditionally adds methods for three declared components: `paypal-payments`, `venmo-payments`, and `paypal-legacy-billing-agreements`. The separately versioned React package appears in the same monorepo snapshot only as repository context; it is not part of the `@paypal/paypal-js@8.4.2` release identity.

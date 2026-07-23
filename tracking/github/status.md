@@ -172,9 +172,9 @@
 - Repository: `paypal/paypal-checkout-components`
 - SHA: `e03bffc45b7a3c7f36346a514f34ebbd168dd403`
 - Collection date: `2026-07-23`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `1`
 - Last error: needs-policy-review:capsule-budget-exceeded: selected file count 325 exceeds max_capsule_files 320

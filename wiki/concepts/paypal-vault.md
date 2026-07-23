@@ -49,6 +49,12 @@ These paths use `BraintreePayPalProvider`, a Braintree client token, and `paypal
 
 This package evidence establishes the public TypeScript contract at `10.0.3`; it does not independently prove production eligibility, account enablement, or runtime behavior owned by `paypal/paypal-checkout-components`.
 
+### checkout-components `5.0.425` runtime evidence
+
+The matching checkout runtime provides a Venmo `VAULT_WITHOUT_PURCHASE` funding flow and a `createVaultSetupToken` prop on its protected Venmo component. The funding path is disabled unless the `venmoVaultWithoutPurchase` experiment is true, and vaultable display state cannot be combined with shipping callbacks for native app-switch or QR flows.
+
+This closes the earlier package-only evidence gap at the source-code level, but it does not resolve merchant availability: both the package and runtime can expose staged or gated contracts. Current product documentation and account eligibility remain required before offering Venmo save-without-purchase.
+
 > [!warning] Contradiction — Venmo save without purchase
 > The 2025 Save Payment Methods and Pay with Venmo documentation says Venmo is not supported for save-for-purchase-later, while `@paypal/paypal-js@10.0.3` explicitly types a Venmo save-payment session for vault setup without a purchase. This may be a newer v6 capability, a staged/unreleased runtime contract, or a documentation lag. Do not promise merchant availability from the type declaration alone; verify current product documentation, account eligibility, and the matching runtime SDK.
 
@@ -305,3 +311,4 @@ The `customer.id` is a PayPal-generated identifier — store it against the paye
 - [[source-paypal-save-applepay-js-sdk]] — Apple Pay vault: APPROVED vs VAULTED status, VAULT.PAYMENT-TOKEN.CREATED webhook, merchant-initiated recurring pattern
 - [[source-paypal-save-cards-js-sdk]] — Card vault JS SDK: checkbox UX, SCA_ALWAYS/SCA_WHEN_REQUIRED with vault, usage_type/customer_type/permit_multiple_payment_tokens fields, 14 test cards
 - [[source-github-paypal-js]] — versioned core v10.0.1 legacy Buttons setup-token approval types plus React Braintree billing-agreement, checkout-with-vault, and Pay Later evidence
+- [[source-github-paypal-checkout-components]] — package-qualified runtime, Venmo setup-token, and eligibility evidence

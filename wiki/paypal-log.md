@@ -6,6 +6,13 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-07-23] ingest | paypal/paypal-checkout-components `5.0.425`
+
+- Approved and processed work item `github-f8c98215ba0bd54e6149` in full mode.
+- Read the 325-file, 1,985,255-byte exact-SHA capsule at `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/manifest.json`; tests and fixtures were excluded by policy.
+- Preserved the `4.1.47` baseline and added the accumulated v5 component architecture, exact bfcache patch, Venmo desktop/QR history, and experiment-gated vault-without-purchase behavior.
+- Updated [[paypal-checkout]], [[paypal-vault]], and [[paypal-expanded-checkout]] without changing PayPal's source count.
+
 ## [2026-07-23] ingest | paypal/paypal-js core `10.0.3` and React `10.1.2`
 
 - Approved and processed work item `github-92e87b7fea5fb1703585` in full mode.

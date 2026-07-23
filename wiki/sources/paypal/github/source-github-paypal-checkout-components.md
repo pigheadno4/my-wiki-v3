@@ -4,22 +4,23 @@ type: source
 date_ingested: 2026-07-23
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-07-23-289055a/manifest.json"
 tags: [paypal, checkout, javascript-sdk, github-repository, venmo]
 ---
 
 ## Overview
 
-`paypal/paypal-checkout-components` contains the historical browser runtime that rendered PayPal funding buttons and launched the PayPal Checkout experience. This cumulative page begins with the package-qualified `@paypal/checkout-components@4.1.47` baseline at exact SHA `289055a52c55911417d25082681ac626c4c9d160`.
+`paypal/paypal-checkout-components` contains the browser runtime that renders PayPal funding buttons and launches PayPal checkout experiences. This cumulative page preserves the package-qualified `@paypal/checkout-components@4.1.47` baseline and extends the history through `@paypal/checkout-components@5.0.425` at exact SHA `e03bffc45b7a3c7f36346a514f34ebbd168dd403`.
 
 Repository: <https://github.com/paypal/paypal-checkout-components>
 
 ## Evidence boundary
 
-- This snapshot proves the implementation shipped in `@paypal/checkout-components@4.1.47`, released on 2019-02-07. It is not current integration guidance.
+- The v4 snapshot proves the implementation shipped in `@paypal/checkout-components@4.1.47`, released on 2019-02-07. The v5 snapshot proves the source retained at `5.0.425`, released on 2026-07-22. Neither is a substitute for current integration guidance.
 - The repository owns checkout presentation and funding-button behavior. The separately collected `paypal/paypal-js` repository owns loader, wrapper, and TypeScript package evidence.
 - Historical funding eligibility does not prove current product availability, merchant enablement, geographic eligibility, or account configuration.
-- In particular, the mobile-only Venmo implementation below predates current PayPal documentation describing both mobile app switch and desktop QR checkout.
+- The exact `5.0.425` patch forwards browser back-forward-cache events via post-robot. Broader capability statements below describe the accumulated v5 source, not features introduced by that one patch.
 
 ## Grounding excerpts
 
@@ -38,6 +39,18 @@ Repository: <https://github.com/paypal/paypal-checkout-components>
 > "eligibleFunding = eligibleFunding.slice(0, 2)"
 >
 > `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-289055a/files/src/funding/funding.js:38-50`
+
+> "Pass bfcache events via post-robot"
+>
+> `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/files/CHANGELOG.md:1-3`
+
+> "flows: [BUTTON_FLOW.PURCHASE, BUTTON_FLOW.VAULT_WITHOUT_PURCHASE]"
+>
+> `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/files/src/funding/venmo/config.jsx:27`
+
+> "export const SavedPaymentMethods"
+>
+> `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/files/src/interface/saved-payment-methods.js:9-11`
 
 ## Repository responsibility and architecture
 
@@ -77,6 +90,16 @@ In `4.1.47`, the Venmo funding configuration:
 
 This is a version-qualified implementation fact. It must not be used to deny current desktop Venmo QR support, which was added in later product/runtime generations.
 
+## Version 5 accumulated architecture
+
+The `5.0.425` source retains the public `Buttons` interface and adds distinct interfaces for Marks, Card Fields, Payment Fields, Hosted Buttons, Wallet, and Saved Payment Methods. Lower-level Checkout, Venmo, QR Code, and other Zoid components remain protected exports in the button interface. This demonstrates a broader runtime architecture than v4, but each integration still depends on the matching JS SDK loader and product eligibility.
+
+The v5 Venmo funding configuration allows purchase and vault-without-purchase flows. Vault-without-purchase is gated by the `venmoVaultWithoutPurchase` experiment, and shipping callbacks are rejected when the display-only state is vaultable because native app-switch and QR flows do not support that combination. Mobile Venmo requires both native and popup capabilities; the accumulated changelog records later desktop handling and QR component work that superseded v4's mobile-only presentation.
+
+The separate Venmo Zoid component accepts order creation or vault setup-token creation and distinguishes desktop-web from mobile-web channels. The Saved Payment Methods component carries order callbacks, app-switch preferences, shipping callbacks, funding eligibility, customer identity, and style validation. These are implementation contracts, not proof that a merchant account is enabled for every flow.
+
+The exact `5.0.425` release entry is narrowly about forwarding bfcache events through post-robot. The major-version comparison is used as a full historical baseline because the change from `4.1.47` to `5.0.425` spans the accumulated v5 component system.
+
 ## Public and security boundary
 
 The browser-facing `Buttons` component is public on merchant pages. Lower-level checkout controls remain PayPal-domain-only. The iframe helper is therefore not a merchant escape hatch for forcing an unsupported presentation mode.
@@ -88,10 +111,20 @@ The exact snapshot also shows that layout, platform, remembered funding, and ser
 - [[changelog-github-paypal-checkout-components]] — package-qualified release ledger
 - [[source-github-paypal-js]] — independent loader, wrapper, and TypeScript package history
 - [[paypal-checkout]] — cumulative PayPal Checkout concept
+- [[paypal-vault]] — setup-token and stored-payment-method concepts
+- [[paypal-expanded-checkout]] — Card Fields and 3DS concepts
 - [[source-paypal-pay-with-venmo]] — current product documentation for mobile app switch and desktop QR
 
 ## Raw sources
 
+- Snapshot manifest (`5.0.425`): `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/manifest.json`
+- Release manifest (`5.0.425`): `raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.425/2026-07-23/manifest.json`
+- Major comparison: `tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/4.1.47--5.0.425/comparison.json`
+- Release history: `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/files/CHANGELOG.md`
+- v5 public interfaces: `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/files/src/interface/`
+- v5 Venmo funding config: `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/files/src/funding/venmo/config.jsx`
+- v5 Venmo component: `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/files/src/zoid/venmo/component.jsx`
+- v5 Saved Payment Methods component: `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/files/src/zoid/saved-payment-methods/component.jsx`
 - Snapshot manifest: `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-289055a/manifest.json`
 - Release manifest: `raw/github/paypal/paypal-checkout-components/releases/checkout-components/4.1.47/2026-07-23/manifest.json`
 - README: `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-289055a/files/README.md`

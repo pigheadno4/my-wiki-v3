@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-23] ingest | GitHub paypal/paypal-checkout-components — `5.0.425`
+
+- Full serial ingest of `github-f8c98215ba0bd54e6149` from exact SHA `e03bffc45b7a3c7f36346a514f34ebbd168dd403`.
+- Preserved the `4.1.47` baseline while adding the accumulated v5 component architecture and exact `5.0.425` bfcache patch.
+- Recorded Venmo desktop/QR history, experiment-gated vault-without-purchase behavior, and public Card Fields and Saved Payment Methods interfaces.
+- Updated PayPal concepts, company, provider index, and provider log without changing source count.
+
 ## [2026-07-23] ingest | GitHub paypal/paypal-checkout-components — `4.1.47`
 
 - Full serial ingest of `github-cba5dcae559e55e8182d` from exact SHA `289055a52c55911417d25082681ac626c4c9d160`.

@@ -4,6 +4,7 @@ type: source
 date_ingested: 2026-07-23
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-07-23-289055a/manifest.json"
 tags: [paypal, checkout, javascript-sdk, changelog, github-repository, venmo]
 ---
@@ -11,6 +12,32 @@ tags: [paypal, checkout, javascript-sdk, changelog, github-repository, venmo]
 ## Overview
 
 Chronological release synthesis for `paypal/paypal-checkout-components`. Cumulative implementation knowledge belongs in [[source-github-paypal-checkout-components]] and the linked immutable snapshots.
+
+## `@paypal/checkout-components@5.0.425` (2026-07-22)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@paypal/checkout-components` | `4.1.47` | `5.0.425` | `e03bffc45b7a3c7f36346a514f34ebbd168dd403` | Full |
+
+**Important findings:** The exact patch forwards bfcache events through post-robot. Across the accumulated v5 history, the runtime expands beyond v4 Buttons and Checkout with public Card Fields, Marks, Payment Fields, Hosted Buttons, Wallet, and Saved Payment Methods interfaces; Venmo gains desktop/QR handling and vault-without-purchase implementation.
+
+**Developer or merchant impact:** Treat each capability as version-qualified runtime evidence. Venmo vault-without-purchase remains experiment-gated in this source, and shipping callbacks are excluded for its vaultable app-switch/QR presentation. Merchant availability still requires current product documentation and account eligibility.
+
+**Migration action:** Major upgrades from v4 must review component loading, callback contracts, funding eligibility, popup/app-switch behavior, and the matching `paypal/paypal-js` integration. The `5.0.425` patch itself requires no documented merchant API migration.
+
+**Updated source sections:** evidence boundary; v5 accumulated architecture; PayPal Checkout, Vault, and Expanded Checkout concepts; PayPal company summary.
+
+**Evidence boundary:** Upstream release notes were unavailable. The exact patch finding comes from the retained changelog; broader findings come from the complete retained source capsule and the `4.1.47` to `5.0.425` comparison. They do not prove current merchant availability.
+
+**Evidence:**
+
+- Release manifest: `raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.425/2026-07-23/manifest.json`
+- Snapshot manifest: `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/manifest.json`
+- Comparison: `tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/4.1.47--5.0.425/comparison.json`
+- Changelog: `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/files/CHANGELOG.md`
+- Public interfaces: `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/files/src/interface/`
+- Venmo funding config: `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/files/src/funding/venmo/config.jsx`
+- Saved Payment Methods component: `raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/files/src/zoid/saved-payment-methods/component.jsx`
 
 ## `@paypal/checkout-components@4.1.47` (2019-02-07)
 
