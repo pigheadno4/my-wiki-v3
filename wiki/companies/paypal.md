@@ -220,7 +220,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-javascript-sdk-performance]] — JS SDK performance: instant vs delayed render, pre-caching, hidden container pattern
 - [[source-paypal-javascript-sdk-best-practices]] — JS SDK best practices: CSP domains + nonce vs unsafe-inline, COOP same-origin-allow-popups
 - [[source-paypal-react-paypal-js-readme]] — @paypal/react-paypal-js v8.x README: PayPalScriptProvider, all components, hooks, Card Fields vs Hosted Fields
-- [[source-github-paypal-js]] — GitHub paypal/paypal-js: loadScript implementation, PayPalScriptOptions types, V6 SDK createInstance pattern
+- [[source-github-paypal-js]] — cumulative GitHub evidence for independently versioned `@paypal/paypal-js` and `@paypal/react-paypal-js`; exact-SHA history begins with `@paypal/paypal-js@8.4.2`
+- [[changelog-github-paypal-js]] — package-qualified paypal/paypal-js release ledger with release notes, impact, migration action, and immutable raw links
 - [[source-github-react-paypal-js-v8]] — GitHub react-paypal-js v8 source: ScriptProvider internals, reducer state machine, Buttons lifecycle, CardFields architecture
 - [[source-paypal-expanded-checkout-integrate]] — Expanded Checkout integration: CardFields+Buttons, 3DS SCA, billing address submit, authorize routes
 - [[source-paypal-android-card-payments]] — Android SDK: CardClient, WebPayments, deprecated NativePayments, FraudProtection, 3DS SCA

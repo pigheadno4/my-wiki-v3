@@ -5,9 +5,9 @@
 - Repository: `paypal/paypal-js`
 - SHA: `702863f91b79d405c571cf75c3d742a82174b46e`
 - Collection date: `2026-07-22`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

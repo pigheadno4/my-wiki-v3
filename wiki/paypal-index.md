@@ -2,6 +2,8 @@
 
 > PayPal-specific catalog. Cross-cutting pages are in the root [[index]].
 
+Operations history: [[paypal-log]]
+
 ## Company
 
 - [[paypal]]
@@ -72,7 +74,8 @@
 - [[source-paypal-javascript-sdk-performance]] — JS SDK performance: instant vs delayed render patterns, pre-caching, hidden container trick (webpage, 2026-04-13)
 - [[source-paypal-javascript-sdk-best-practices]] — JS SDK best practices: CSP (unsafe-inline vs nonce), COOP same-origin-allow-popups (webpage, 2026-04-13)
 - [[source-paypal-react-paypal-js-readme]] — @paypal/react-paypal-js v8.x: PayPalScriptProvider, all 11 components, usePayPalScriptReducer, Card Fields hooks (npm README, 2026-04-13)
-- [[source-github-paypal-js]] — GitHub paypal/paypal-js: loadScript caching logic, PayPalScriptOptions types, V6 createInstance architecture (github-repo, 2026-04-13)
+- [[source-github-paypal-js]] — cumulative paypal/paypal-js knowledge; independently versioned packages, exact-SHA snapshots, v8.4.2 loader/v6 typing baseline (github-repo, updated 2026-07-23)
+- [[changelog-github-paypal-js]] — package-qualified release ledger; first entry `@paypal/paypal-js@8.4.2` (github-repo, 2026-07-23)
 - [[source-github-react-paypal-js-v8]] — GitHub react-paypal-js v8: ScriptProvider/reducer, Buttons lifecycle, CardFields provider+hooks (github-repo, 2026-04-13)
 - [[source-paypal-expanded-checkout-integrate]] — Expanded Checkout integration: CardFields+Buttons dual-render, 3DS SCA_ALWAYS, billing address, authorize/captureAuthorize routes (webpage, 2026-04-13)
 - [[source-paypal-android-card-payments]] — Android SDK: CardClient 8-step flow, WebPayments, deprecated NativePayments, FraudProtection (webpage, 2026-04-13)

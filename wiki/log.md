@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-23] ingest | GitHub paypal/paypal-js — `@paypal/paypal-js@8.4.2`
+
+- Full serial ingest of `github-8416828e1141b2d896ea` from exact SHA `702863f91b79d405c571cf75c3d742a82174b46e`.
+- Canonical source moved to `wiki/sources/paypal/github/source-github-paypal-js.md`; separate release ledger created at `wiki/sources/paypal/github/changelog-github-paypal-js.md`.
+- Updated `wiki/concepts/paypal-checkout.md`, `wiki/companies/paypal.md`, `wiki/paypal-index.md`, and `wiki/paypal-log.md`.
+- `@paypal/react-paypal-js@8.9.1` remains collateral snapshot context, not an ingested React release.
+
 ## [2026-05-13] ingest | Stripe — Billing Benchmarking (docs.stripe.com/billing/subscriptions/benchmarking)
 
 - Raw: `raw/stripe-billing-benchmarks-2026.md` (51 lines)
