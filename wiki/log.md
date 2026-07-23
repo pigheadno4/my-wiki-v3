@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-23] ingest | GitHub paypal/paypal-checkout-components — `4.1.47`
+
+- Full serial ingest of `github-cba5dcae559e55e8182d` from exact SHA `289055a52c55911417d25082681ac626c4c9d160`.
+- Established the independent checkout-components cumulative source and package-qualified release ledger from the complete 90-file capsule.
+- Recorded Zoid presentation, merchant callback guards, funding eligibility and ordering, and historical mobile-only secondary Venmo behavior.
+- Updated the PayPal Checkout concept, company page, provider index, and root log; source count increased from 159 to 160.
+
 ## [2026-07-23] ingest | GitHub paypal/paypal-js — core `10.0.3` and React `10.1.2`
 
 - Full serial ingest of `github-92e87b7fea5fb1703585` from exact SHA `3caece5256428b6b5c713decbaec10ff7d785e9f`.

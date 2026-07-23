@@ -131,9 +131,9 @@
 - Repository: `paypal/paypal-checkout-components`
 - SHA: `289055a52c55911417d25082681ac626c4c9d160`
 - Collection date: `2026-07-23`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `2`
 - Last error: needs-policy-review:untracked-declared-target: declared target is not tracked or reviewed generated output

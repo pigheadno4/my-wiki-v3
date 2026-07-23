@@ -81,6 +81,14 @@ PayPal supports deep-linking into the native PayPal mobile app. Requires `appSwi
 - **Web components**: `<paypal-button>`, `<paypal-pay-later-button>`, `<paypal-credit-button>`
 - **Security**: NEVER pass item total from browser; validate order on server before capture
 
+### Historical checkout-components runtime: `4.1.47`
+
+The exact `@paypal/checkout-components@4.1.47` snapshot implements the Zoid-based `paypal-buttons` and `paypal-checkout` components. Its decorated `createOrder` callback must return a nonempty string order ID. The alternative billing-agreement path is mutually exclusive with `createOrder` and requires `vault=true`.
+
+Funding visibility combines server-provided eligibility with layout, platform, branding, and remembered-funding constraints. The historical horizontal layout retains at most two eligible sources. In this v4 runtime, Venmo is mobile-only and cannot be the primary button.
+
+This is historical implementation evidence from 2019, not current availability guidance. Later PayPal product documentation supports both mobile Venmo app switch and desktop QR checkout, so version-specific questions must distinguish the old runtime from the current product.
+
 ### Historical package evidence: `@paypal/paypal-js@8.4.2`
 
 The exact `8.4.2` package snapshot exposes the v6 loader from the `./sdk-v6` export. Its TypeScript surface requires `clientToken` for `createInstance()` and conditionally adds methods for three declared components: `paypal-payments`, `venmo-payments`, and `paypal-legacy-billing-agreements`. The separately versioned React package appears in the same monorepo snapshot only as repository context; it is not part of the `@paypal/paypal-js@8.4.2` release identity.
@@ -118,6 +126,7 @@ See [[source-paypal-payment-failures]] for the full 19 error codes and recovery 
 - [[source-paypal-checkout-integrate-one-time-payment]] — Full integration guide with frontend + backend code
 - [[source-paypal-payment-failures]] — Payment failures: 19 error codes, actions.restart(), async failures, webhook events
 - [[source-paypal-js-sdk-v6-setup]] — JS SDK v6 canonical setup: script URLs, clientToken 15min expiry, 8 components, eligibility API, Pay Later/Credit sessions, web components
+- [[source-github-paypal-checkout-components]] — historical checkout presentation, callback, funding eligibility, and Venmo runtime evidence
 - [[source-github-paypal-js]] — cumulative package-qualified repository evidence and exact source snapshots
 - [[paypal-braintree-integration]] — Braintree client-token, nonce, and server-processing boundary for PayPal v6 React flows
 - [[source-paypal-security-guidelines]] — Security guidelines: CSP + SRI for SDK; load only from official CDN; validate payment events server-side before fulfilling
