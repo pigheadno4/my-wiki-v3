@@ -6,6 +6,15 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-07-23] ingest | paypal/paypal-js core `10.0.1` and React `10.1.0`
+
+- Approved and processed work item `github-ee6197518787f8152774` in full mode.
+- Read and hash-verified the 176-file, 1,246,268-byte exact-SHA capsule at `raw/github/paypal/paypal-js/snapshots/2026-07-22-59cb2ce/manifest.json`; 95 test/fixture files were excluded by policy.
+- Ingested `@paypal/paypal-js@10.0.1` and `@paypal/react-paypal-js@10.1.0` as separate package releases sharing SHA `59cb2ce64d158ac4f4cabecdd82f7b4191a8dff3`.
+- Added typed v6 DOM elements, legacy Buttons Venmo setup-token approval data, Braintree Pay Later and eligibility, server environment validation, Google Pay setup errors, and eligibility lifecycle fixes.
+- Recorded the release-note contradiction for checkout-with-vault shipping options in [[paypal-braintree-integration]], [[source-github-paypal-js]], and [[changelog-github-paypal-js]].
+- Updated [[paypal-checkout]], [[paypal-vault]], and [[paypal-google-pay]] while preserving all earlier package sections.
+
 ## [2026-07-23] ingest | paypal/paypal-js coordinated `10.0.0` transition
 
 - Approved and processed work item `github-bd7fe849961b5c6b9964` in full mode.

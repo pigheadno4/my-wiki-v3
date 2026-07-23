@@ -23,11 +23,11 @@ Client-side SDK injected via `<script>` tag. Renders payment buttons on the page
 - `createOrder` / `onApprove` / `onShippingAddressChange` / `onShippingOptionsChange` callbacks
 - Checkout pop-up launch and management
 
-The package-qualified v6 surface in `@paypal/paypal-js@9.8.0` supports direct instance creation with client ID or client token, conditional components for PayPal, Venmo, guest payments, messages, subscriptions, Card Fields, Apple Pay, and Google Pay, plus eligibility hydration. `@paypal/react-paypal-js@9.3.0` exposes this integration through the `/sdk-v6` subpath. In the coordinated `10.0.0` releases, both the core v6 loader and React `PayPalProvider` require an explicit `production` or `sandbox` environment; the client ID does not choose the endpoint.
+The package-qualified v6 surface in `@paypal/paypal-js@9.8.0` supports direct instance creation with client ID or client token, conditional components for PayPal, Venmo, guest payments, messages, subscriptions, Card Fields, Apple Pay, and Google Pay, plus eligibility hydration. `@paypal/react-paypal-js@9.3.0` exposes this integration through the `/sdk-v6` subpath. In the coordinated `10.0.0` releases, both the core v6 loader and React `PayPalProvider` require an explicit `production` or `sandbox` environment; the client ID does not choose the endpoint. Core `10.0.1` adds typed v6 DOM custom elements and legacy Buttons Venmo vault-without-purchase setup-token approval data, while React `10.1.0` requires the same environment choice for server eligibility.
 
 ### Braintree PayPal v6
 
-Braintree merchants use a separate React provider backed by Braintree's `paypalCheckoutV6` module and a server-generated Braintree client token. React 9.3.0 provides one-time, billing-agreement, and checkout-with-vault flows. Approval is tokenized into a Braintree payment-method nonce and completed with a Braintree server SDK, not PayPal's Orders API. See [[paypal-braintree-integration]].
+Braintree merchants use a separate React provider backed by Braintree's `paypalCheckoutV6` module and a server-generated Braintree client token. React 9.3.0 provides one-time, billing-agreement, and checkout-with-vault flows; React 10.1.0 adds eligibility-gated Pay Later with a prebuilt button and custom hook. Approval is tokenized into a Braintree payment-method nonce and completed with a Braintree server SDK, not PayPal's Orders API. See [[paypal-braintree-integration]].
 
 ### PayPal Orders REST API
 
@@ -226,8 +226,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-javascript-sdk-performance]] — JS SDK performance: instant vs delayed render, pre-caching, hidden container pattern
 - [[source-paypal-javascript-sdk-best-practices]] — JS SDK best practices: CSP domains + nonce vs unsafe-inline, COOP same-origin-allow-popups
 - [[source-paypal-react-paypal-js-readme]] — @paypal/react-paypal-js v8.x README: PayPalScriptProvider, all components, hooks, Card Fields vs Hosted Fields
-- [[source-github-paypal-js]] — cumulative GitHub evidence for independently versioned packages; exact-SHA v8 baselines, v9 feature transition, and the coordinated core/React `10.0.0` explicit-environment break
-- [[changelog-github-paypal-js]] — package-qualified paypal/paypal-js release ledger through both `10.0.0` releases, with impact, migration action, and immutable raw links
+- [[source-github-paypal-js]] — cumulative GitHub evidence for independently versioned packages; v8 baselines, v9 transition, explicit-environment v10, core `10.0.1` types, and React `10.1.0` Braintree Pay Later
+- [[changelog-github-paypal-js]] — package-qualified paypal/paypal-js release ledger through core `10.0.1` and React `10.1.0`, with impact, migration action, contradictions, and immutable raw links
 - [[source-github-react-paypal-js-v8]] — GitHub react-paypal-js v8 source: ScriptProvider internals, reducer state machine, Buttons lifecycle, CardFields architecture
 - [[source-paypal-expanded-checkout-integrate]] — Expanded Checkout integration: CardFields+Buttons, 3DS SCA, billing address submit, authorize routes
 - [[source-paypal-android-card-payments]] — Android SDK: CardClient, WebPayments, deprecated NativePayments, FraudProtection, 3DS SCA

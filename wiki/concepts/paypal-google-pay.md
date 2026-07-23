@@ -42,6 +42,8 @@ Three PayPal SDK touchpoints:
 
 `@paypal/react-paypal-js@9.3.0` adds `GooglePayOneTimePaymentButton` and `useGooglePayOneTimePaymentSession`. The React component checks `isReadyToPay()`, mounts the native button returned by `PaymentsClient.createButton()`, creates the merchant order during authorization, and calls the PayPal session's `confirmOrder()`.
 
+In `@paypal/react-paypal-js@10.1.0`, the hook fails loudly when Google's `pay.js` is missing after the component mounts. It clears the client/config state, records an error explaining which script to add, and forwards that error to `onError` instead of silently leaving an empty button container.
+
 > [!info] Version-specific 3DS boundary
 > In the exact `@paypal/paypal-js@9.8.0` type surface, `initiatePayerAction()` is documented as a no-argument placeholder for future 3DS support. This differs from the established integration guidance above, which calls `initiatePayerAction({ orderId })`. Do not infer complete Google Pay 3DS handling from the 9.8.0 wrapper types alone; verify the deployed SDK and current product documentation.
 

@@ -39,6 +39,10 @@ These paths use `BraintreePayPalProvider`, a Braintree client token, and `paypal
 5. Merchant stores the payment token ID (`vault_id`)
 6. For each recurring charge: `ordersCreate` with `vault_id` + `stored_credential`
 
+### Version 10.0.1 package evidence
+
+`@paypal/paypal-js@10.0.1` adds optional `vaultSetupToken` to the legacy Buttons `OnApproveData` type. Its expanded `createVaultSetupToken` JSDoc covers PayPal and Venmo vault-without-purchase: return a server-created Vault API setup token, using `payment_source.venmo` for Venmo. In these flows, `onApprove` returns `data.vaultSetupToken` while `data.orderID` is empty.
+
 ## `stored_credential` Fields (for subsequent charges via Orders API)
 
 > [!warning] Two separate APIs, two different schemas
@@ -291,4 +295,4 @@ The `customer.id` is a PayPal-generated identifier — store it against the paye
 - [[source-paypal-save-cards-android-sdk]] — Android SDK card vault: Compose checkbox UX, `customer.id` in Create Order body for returning payers, `ApproveOrderListener` 3DS callbacks, RTAU next step
 - [[source-paypal-save-applepay-js-sdk]] — Apple Pay vault: APPROVED vs VAULTED status, VAULT.PAYMENT-TOKEN.CREATED webhook, merchant-initiated recurring pattern
 - [[source-paypal-save-cards-js-sdk]] — Card vault JS SDK: checkbox UX, SCA_ALWAYS/SCA_WHEN_REQUIRED with vault, usage_type/customer_type/permit_multiple_payment_tokens fields, 14 test cards
-- [[source-github-paypal-js]] — versioned React v9.3.0 Braintree billing-agreement and checkout-with-vault evidence
+- [[source-github-paypal-js]] — versioned core v10.0.1 legacy Buttons setup-token approval types plus React Braintree billing-agreement, checkout-with-vault, and Pay Later evidence

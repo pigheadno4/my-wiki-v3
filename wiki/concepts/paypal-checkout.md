@@ -99,6 +99,12 @@ The exact `@paypal/paypal-js@9.8.0` surface accepts either `clientId` or `client
 
 The coordinated `@paypal/react-paypal-js@10.0.0` release makes the same value mandatory on the v6 `PayPalProvider`. A client ID does not select the environment: even a live client ID loads the sandbox host when paired with `environment="sandbox"`. Upgrades from v9 must therefore audit every direct loader call and every v6 React provider before deployment. This focused major-version change does not, by itself, add a payment method or change the legacy root integration.
 
+### Version 10.0.1 and React 10.1.0
+
+`@paypal/paypal-js@10.0.1` augments `HTMLElementTagNameMap` for eight v6 custom elements, so non-React TypeScript code receives typed results from `document.createElement()` and `document.querySelector()`. The declarations cover PayPal, Venmo, Pay Later, Credit, basic-card button/container, PayPal Messages, and Apple's registered button. The v6 Pay Later country-code type also adds Canada.
+
+`@paypal/react-paypal-js@10.1.0` extends the explicit-environment rule to the server-side `useFetchEligibleMethods()` helper. Omitting or passing an invalid environment throws before it selects `api-m.paypal.com` or `api-m.sandbox.paypal.com`; this prevents production server rendering from hydrating a production client with sandbox eligibility.
+
 ## Payment Failure Webhook Events
 
 - `PAYMENT.CAPTURE.COMPLETED` — successful capture

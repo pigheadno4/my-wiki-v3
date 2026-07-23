@@ -19,15 +19,27 @@ Braintree merchants can present PayPal through Braintree's `paypalCheckoutV6` mo
 
 The provider creates the Braintree client, creates the PayPal Checkout v6 instance, calls `loadPayPalSDK()`, and exposes loading, error, hydration, and checkout-instance state through `useBraintreePayPal()`. It calls `teardown()` when the provider unmounts.
 
-## Supported React Flows in Version 9.3.0
+## Supported React Flows
 
-| Flow | Component | Session hook | Approval tokenization |
-| --- | --- | --- | --- |
-| One-time payment | `BraintreePayPalOneTimePaymentButton` | `useBraintreePayPalOneTimePaymentSession` | `tokenizePayment({ orderID, payerID })` |
-| Billing agreement | `BraintreePayPalBillingAgreementButton` | `useBraintreePayPalBillingAgreementSession` | `tokenizePayment({ billingToken })` |
-| Checkout with vault | `BraintreePayPalCheckoutWithVaultButton` | `useBraintreePayPalCheckoutWithVaultSession` | `tokenizePayment({ orderID, payerID })` |
+| Flow | First evidenced version | Component | Session hook | Approval tokenization |
+| --- | --- | --- | --- | --- |
+| One-time payment | `9.3.0` | `BraintreePayPalOneTimePaymentButton` | `useBraintreePayPalOneTimePaymentSession` | `tokenizePayment({ orderID, payerID })` |
+| Billing agreement | `9.3.0` | `BraintreePayPalBillingAgreementButton` | `useBraintreePayPalBillingAgreementSession` | `tokenizePayment({ billingToken })` |
+| Checkout with vault | `9.3.0` | `BraintreePayPalCheckoutWithVaultButton` | `useBraintreePayPalCheckoutWithVaultSession` | `tokenizePayment({ orderID, payerID })` |
+| Pay Later | `10.1.0` | `BraintreePayPalPayLaterButton` | `useBraintreePayPalPayLaterSession` | `tokenizePayment()` with approval data |
 
 The billing-agreement hook supports vault-only use and `RECURRING`, `SUBSCRIPTION`, `UNSCHEDULED`, and `INSTALLMENTS` plan types. Checkout with vault combines a one-time charge and billing-agreement consent.
+
+## Version 10.1.0 Eligibility and Pay Later
+
+`@paypal/react-paypal-js@10.1.0` adds a Braintree Pay Later session hook and a prebuilt `<paypal-pay-later-button>` wrapper. The button requires Braintree eligibility data: call `useBraintreeEligibleMethods()` first, wait for loading to finish, and render only when `eligiblePaymentMethods.paylater` is true. The hook caches eligibility in provider context, deduplicates requests by checkout instance plus deep-equal options, and refetches when the options change.
+
+The typed eligibility result covers only `paypal`, `paylater`, and `credit`, with funding-source-specific `getDetails()` results. Pay Later uses the returned country and product codes. Provider initialization failures are reported separately from missing checkout-instance errors so integrations can distinguish setup failure from session availability.
+
+One-time and Pay Later session options add `shippingCallbackUrl`, a typed `BraintreeShippingAddressOverride`, and `contactPreference`. Checkout-with-vault adds `shippingCallbackUrl`.
+
+> [!warning] Contradiction
+> The `10.1.0` release note says `shippingAddressOverride` and `contactPreference` were also added to checkout-with-vault. The exact `BraintreeCheckoutWithVaultSessionOptions` declaration and hook at SHA `59cb2ce64d158ac4f4cabecdd82f7b4191a8dff3` expose only `shippingCallbackUrl`; do not pass the other two fields to that flow based on the release note alone.
 
 ## Server Boundary
 

@@ -5,6 +5,7 @@ date_ingested: 2026-04-13
 date_updated: 2026-07-23
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-07-22-59cb2ce/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-4bd05ab/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-31eb658/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-77487d6/manifest.json"
@@ -17,7 +18,7 @@ tags: [paypal, javascript-sdk, react, npm, typescript, github-repository, venmo]
 
 `paypal/paypal-js` is PayPal's JavaScript SDK monorepo. It contains two independently versioned packages: `@paypal/paypal-js`, the vanilla loader and TypeScript definitions, and `@paypal/react-paypal-js`, the React integration layer.
 
-This cumulative page preserves package-qualified historical findings. The immutable pipeline contains independent v8 baselines for `@paypal/paypal-js@8.4.2` and `@paypal/react-paypal-js@8.9.2`, the shared-SHA major transition to `@paypal/paypal-js@9.8.0` and `@paypal/react-paypal-js@9.3.0`, and the coordinated `10.0.0` environment-safety transition. Each package release retains its own record even when two releases point to one repository snapshot.
+This cumulative page preserves package-qualified historical findings. The immutable pipeline contains independent v8 baselines for `@paypal/paypal-js@8.4.2` and `@paypal/react-paypal-js@8.9.2`, the shared-SHA major transition to `@paypal/paypal-js@9.8.0` and `@paypal/react-paypal-js@9.3.0`, the coordinated `10.0.0` environment-safety transition, and the shared-SHA `@paypal/paypal-js@10.0.1` plus `@paypal/react-paypal-js@10.1.0` feature release. Each package release retains its own record even when two releases point to one repository snapshot.
 
 Repository: <https://github.com/paypal/paypal-js>
 
@@ -83,12 +84,32 @@ Repository: <https://github.com/paypal/paypal-js>
 >
 > `raw/github/paypal/paypal-js/snapshots/2026-07-22-4bd05ab/files/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx:59-61`
 
+> "Augments `HTMLElementTagNameMap` so that `document.createElement()` and `document.querySelector()` return strongly-typed elements for non-React integrations"
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-22-59cb2ce/files/packages/paypal-js/types/v6/components/web-components.d.ts:4-6`
+
+> "Present for vault-without-purchase flows (Venmo, PayPal save-payment)."
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-22-59cb2ce/files/packages/paypal-js/types/components/buttons.d.ts:55-56`
+
+> "`BraintreePayPalPayLaterButton` is a prebuilt button that renders a `<paypal-pay-later-button>` web component and manages the Braintree PayPal Pay Later"
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-22-59cb2ce/files/packages/react-paypal-js/src/v6/components/Braintree/BraintreePayPalPayLaterButton.tsx:14-16`
+
+> "**Without eligibility, the button renders with `display: none` and is invisible.**"
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-22-59cb2ce/files/packages/react-paypal-js/src/v6/components/Braintree/BraintreePayPalPayLaterButton.tsx:21-25`
+
+> "'The \"environment\" option is required and must be either \"production\" or \"sandbox\"'"
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-22-59cb2ce/files/packages/react-paypal-js/src/v6/hooks/useFetchEligibleMethods.ts:99-109`
+
 ## Package status
 
 | Package | Latest ingested release | Evidence status |
 | --- | --- | --- |
-| `@paypal/paypal-js` | `10.0.0` | Approved full major-version ingest; v8 and v9 history retained |
-| `@paypal/react-paypal-js` | `10.0.0` | Approved full major-version ingest; v8 and v9 history retained |
+| `@paypal/paypal-js` | `10.0.1` | Approved full patch ingest; v8, v9, and 10.0.0 history retained |
+| `@paypal/react-paypal-js` | `10.1.0` | Approved full minor ingest; v8, v9, and 10.0.0 history retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -173,6 +194,16 @@ The core `10.0.0` release is a focused breaking configuration change at commit `
 After validation, the loader maps `production` to `https://www.paypal.com/web-sdk/v6/core` and `sandbox` to `https://www.sandbox.paypal.com/web-sdk/v6/core`. It no longer silently defaults an omitted value to sandbox. This prevents a live client ID from accidentally loading the sandbox SDK, but it also means every v9 direct-loader call must add an explicit environment during migration.
 
 The release note and changed public files identify no new payment component, session, payment method, or server API behavior. The root legacy loader exports remain separate from this v6 breaking change.
+
+#### `@paypal/paypal-js@10.0.1`
+
+The `10.0.1` patch shares commit `59cb2ce64d158ac4f4cabecdd82f7b4191a8dff3` with React `10.1.0`. It keeps the root and `/sdk-v6` export map stable while adding public TypeScript evidence in two areas.
+
+First, non-React integrations receive DOM element types for eight custom elements through `HTMLElementTagNameMap`: PayPal, Venmo, Pay Later, Credit, basic-card button and container, PayPal Messages, and the Apple Pay button registered by Apple's SDK. Element-specific interfaces type properties such as Pay Later country/product codes and disabled state. The v6 `PayLaterCountryCodes` union also adds Canada. These are compile-time changes; they are not evidence that this package registers or renders every element itself.
+
+Second, the legacy Buttons `OnApproveData` type adds optional `vaultSetupToken`. Expanded `createVaultSetupToken` and `onApprove` JSDoc covers PayPal and Venmo vault-without-purchase: return a server-created `/v3/vault/setup-tokens` token, use `payment_source.venmo` for Venmo, and read the approved token from `data.vaultSetupToken` while `data.orderID` is empty. The separate v6 save-payment token type already existed at `10.0.0` and must not be attributed to this patch.
+
+The release also migrates repository tests to Vitest 4. That is build tooling, not merchant-facing payment behavior.
 
 ## `@paypal/react-paypal-js`
 
@@ -298,6 +329,34 @@ Migration from React v9 is additive to the existing source history:
 
 The changed React files do not establish new payment functionality. `BraintreePayPalProvider` is a separate provider path and is not evidence that this `PayPalProvider` environment change applies to Braintree integrations.
 
+#### `@paypal/react-paypal-js@10.1.0`
+
+React `10.1.0` depends on `@paypal/paypal-js ^10.0.1` and adds three public Braintree exports under `/sdk-v6`: `BraintreePayPalPayLaterButton`, `useBraintreePayPalPayLaterSession()`, and `useBraintreeEligibleMethods()`.
+
+The Pay Later hook creates a Braintree `createPayLaterSession()` with amount, currency, callbacks, shipping data, and presentation options. The prebuilt component renders `<paypal-pay-later-button>` and starts that session. Approval remains a Braintree flow: the merchant tokenizes the approval data and processes the nonce server-side.
+
+Pay Later is eligibility-gated. `useBraintreeEligibleMethods()` calls the checkout instance's `findEligibleMethods()`, caches the result and request payload in provider context, deduplicates by checkout instance plus deep-equal options, and refetches when options change. Its typed result covers only PayPal, Pay Later, and Credit. The prebuilt button reads Pay Later country/product details from that result; integrations should wait for eligibility and avoid rendering when `paylater` is false.
+
+Provider and eligibility errors become more actionable. Provider initialization errors are retained in context and surfaced separately from a missing checkout instance. Eligibility clears stale errors before refetch, avoids duplicate fetches, resets interrupted fetch markers, and treats payload-mismatched cached data as loading so stale buttons do not flash.
+
+The release expands shipping types:
+
+- one-time and Pay Later sessions add `shippingCallbackUrl`, typed `shippingAddressOverride`, and `contactPreference`;
+- billing agreements replace the unstructured address override with `BraintreeShippingAddressOverride`; and
+- checkout-with-vault adds `shippingCallbackUrl`.
+
+> [!warning] Contradiction
+> The release note says `shippingAddressOverride` and `contactPreference` were also added to checkout-with-vault. The exact `BraintreeCheckoutWithVaultSessionOptions` type and hook at this SHA expose only `shippingCallbackUrl`. The source declaration and implementation take precedence for this version.
+
+Other fixes affect integration correctness:
+
+- server-side `useFetchEligibleMethods()` now requires `environment`, validates it, and chooses the production or sandbox eligibility API explicitly;
+- the basic-card JSX type uses the actual `buyer-country` attribute instead of ineffective `buyerCountry`;
+- Google Pay reports a clear setup error through hook state and `onError` when `pay.js` is absent; and
+- standard eligibility refetches clear stale errors and avoid a perpetual loading state after interrupted effects.
+
+Migration from `10.0.0` is additive: provide `environment` to every server eligibility call, fetch Braintree eligibility before Pay Later rendering, change manually supplied basic-card buyer-country JSX to `buyer-country`, load Google `pay.js` before mounting Google Pay, and distinguish provider initialization errors from session errors.
+
 ## Historical evidence retained from the earlier ingest
 
 The earlier repository review at commit `f59f94baefea4b2ddb38553669ed0ac4ede86167` established the legacy loader option handling above and recorded a broader v6 component set, including guest payments, card fields, messages, subscriptions, Apple Pay, and Google Pay. That snapshot did not retain an exact package-qualified release identity, so its broader surface is useful historical context but must not be attributed to `@paypal/paypal-js@8.4.2`.
@@ -322,6 +381,11 @@ See [[changelog-github-paypal-js]] for the chronological package release ledger 
 
 ## Raw Sources
 
+- `raw/github/paypal/paypal-js/snapshots/2026-07-22-59cb2ce/manifest.json` — shared exact-SHA source capsule for core `10.0.1` and React `10.1.0`
+- `raw/github/paypal/paypal-js/releases/paypal-js/10.0.1/2026-07-22/manifest.json` — package-qualified core `10.0.1` release record
+- `raw/github/paypal/paypal-js/releases/paypal-js/10.0.1/2026-07-22/release-notes.md` — core patch notes
+- `raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.0/2026-07-22/manifest.json` — package-qualified React `10.1.0` release record
+- `raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.0/2026-07-22/release-notes.md` — React minor-release notes
 - `raw/github/paypal/paypal-js/snapshots/2026-07-22-4bd05ab/manifest.json` — shared exact-SHA source capsule for the coordinated `10.0.0` releases
 - `raw/github/paypal/paypal-js/releases/paypal-js/10.0.0/2026-07-22/manifest.json` — package-qualified core v10 release record
 - `raw/github/paypal/paypal-js/releases/paypal-js/10.0.0/2026-07-22/release-notes.md` — core v10 breaking-change notes

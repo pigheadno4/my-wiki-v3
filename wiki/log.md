@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-23] ingest | GitHub paypal/paypal-js — core `10.0.1` and React `10.1.0`
+
+- Full serial ingest of `github-ee6197518787f8152774` from exact SHA `59cb2ce64d158ac4f4cabecdd82f7b4191a8dff3`.
+- Added core v6 DOM types, legacy Buttons setup-token types, and React Braintree Pay Later, cached eligibility, explicit server environment, Google Pay setup errors, and eligibility lifecycle fixes.
+- Preserved v8, v9, and `10.0.0` history; recorded the checkout-with-vault option mismatch between release notes and exact source.
+- Updated PayPal company, concepts, cumulative source, release ledger, provider index, and provider log without changing source count.
+
 ## [2026-07-23] ingest | GitHub paypal/paypal-js — coordinated `10.0.0` transition
 
 - Full serial ingest of `github-bd7fe849961b5c6b9964` from exact SHA `4bd05aba2f3263f0ea4694140dc71dfe1dd5b429`.
