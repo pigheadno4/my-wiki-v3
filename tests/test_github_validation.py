@@ -203,6 +203,22 @@ default_generated_target_paths=[]
 
         self.assertIn("release record links missing SHA snapshot", "\n".join(errors))
 
+    def test_release_record_accepts_plain_upstream_tag_for_exact_package_version(self):
+        self.release_manifest["tag"] = "v10.0.0"
+        self.write_release_manifest()
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertEqual([], errors)
+
+    def test_release_record_rejects_plain_upstream_tag_for_different_version(self):
+        self.release_manifest["tag"] = "v10.0.1"
+        self.write_release_manifest()
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("release tag does not match package version" in item for item in errors))
+
     def test_status_markdown_must_match_work_items_json(self):
         self.status_path.write_text("stale\n", encoding="utf-8")
 

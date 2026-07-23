@@ -126,6 +126,25 @@
   Release: [manifest](raw/github/paypal/paypal-js/releases/react-paypal-js/10.0.0/2026-07-22/manifest.json)
   Comparison: [manifest](tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/9.3.0--10.0.0/comparison.json)
 
+## `github-cba5dcae559e55e8182d`
+
+- Repository: `paypal/paypal-checkout-components`
+- SHA: `289055a52c55911417d25082681ac626c4c9d160`
+- Collection date: `2026-07-23`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `2`
+- Last error: needs-policy-review:untracked-declared-target: declared target is not tracked or reviewed generated output
+- Snapshot: [manifest](raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-289055a/manifest.json)
+
+### Package releases
+
+- `@paypal/checkout-components@4.1.47` (recommended `full`)
+  Release: [manifest](raw/github/paypal/paypal-checkout-components/releases/checkout-components/4.1.47/2026-07-23/manifest.json)
+  Comparison: Not applicable
+
 ## `github-ee6197518787f8152774`
 
 - Repository: `paypal/paypal-js`
@@ -147,3 +166,22 @@
 - `@paypal/react-paypal-js@10.1.0` (recommended `full`)
   Release: [manifest](raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.0/2026-07-22/manifest.json)
   Comparison: [manifest](tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.0.0--10.1.0/comparison.json)
+
+## `github-f8c98215ba0bd54e6149`
+
+- Repository: `paypal/paypal-checkout-components`
+- SHA: `e03bffc45b7a3c7f36346a514f34ebbd168dd403`
+- Collection date: `2026-07-23`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `1`
+- Last error: needs-policy-review:capsule-budget-exceeded: selected file count 325 exceeds max_capsule_files 320
+- Snapshot: [manifest](raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/manifest.json)
+
+### Package releases
+
+- `@paypal/checkout-components@5.0.425` (recommended `full`)
+  Release: [manifest](raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.425/2026-07-23/manifest.json)
+  Comparison: [manifest](tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/4.1.47--5.0.425/comparison.json)

@@ -301,8 +301,10 @@ def _validate_releases(
             errors.append(label + ": release identity is invalid")
             continue
         repo_id, package, version, tag, sha = values
-        if parse_package_tag(tag) != (package, version) or parse_semver(version) is None:
+        if parse_package_tag(package + "@" + version) != (package, version):
             errors.append(label + ": release identity is not package-qualified")
+        elif not _release_tag_matches(tag, package, version):
+            errors.append(label + ": release tag does not match package version")
         if not _OBJECT_ID.fullmatch(sha):
             errors.append(label + ": release SHA is invalid")
         elif (repo_id, sha) not in snapshots:
@@ -336,6 +338,14 @@ def _validate_releases(
                 rows[-1].relative_path + ": duplicate release identity without revision"
             )
     return paths
+
+
+def _release_tag_matches(tag: str, package: str, version: str) -> bool:
+    package_tag = parse_package_tag(tag)
+    if package_tag is not None:
+        return package_tag == (package, version)
+    plain_version = tag[1:] if tag.startswith("v") else tag
+    return plain_version == version and parse_semver(tag) is not None
 
 
 def _validate_comparisons(

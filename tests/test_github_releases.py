@@ -14,6 +14,7 @@ from urllib.error import HTTPError
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 
+from github_capsule_policy import CapsuleConfig  # noqa: E402
 from github_registry import RepoConfig, VersionTrack  # noqa: E402
 from github_releases import (  # noqa: E402
     ReleaseCandidate,
@@ -315,6 +316,79 @@ class GitHubReleasesTests(unittest.TestCase):
         self.assertEqual(annotated_commit, candidates[0].commit_sha)
         self.assertEqual(lightweight_commit, candidates[1].object_sha)
         self.assertEqual(lightweight_commit, candidates[1].commit_sha)
+
+    def test_package_track_maps_plain_semver_tags_for_matching_single_package_repo(self):
+        commit_sha = commit_file(self.repo, "README.md", "one\n", "initial")
+        tag(self.repo, "v5.0.425")
+        self._publish_and_clone()
+        config = self._config(
+            capsules=(
+                CapsuleConfig(
+                    id="checkout-components",
+                    adapter="npm-tracked-source-v1",
+                    focus_packages=("@paypal/checkout-components",),
+                ),
+            )
+        )
+
+        candidates = discover_release_candidates(
+            config,
+            self.clone,
+            self._track(selector="package:@paypal/checkout-components@5"),
+        )
+
+        self.assertEqual(1, len(candidates))
+        self.assertEqual("@paypal/checkout-components", candidates[0].package)
+        self.assertEqual("5.0.425", candidates[0].version)
+        self.assertEqual("v5.0.425", candidates[0].tag)
+        self.assertEqual(commit_sha, candidates[0].commit_sha)
+
+    def test_package_track_does_not_map_plain_tags_for_ambiguous_capsule_packages(self):
+        commit_file(self.repo, "README.md", "one\n", "initial")
+        tag(self.repo, "v5.0.425")
+        self._publish_and_clone()
+        config = self._config(
+            capsules=(
+                CapsuleConfig(
+                    id="checkout-components",
+                    adapter="npm-tracked-source-v1",
+                    focus_packages=(
+                        "@paypal/checkout-components",
+                        "@paypal/sdk-constants",
+                    ),
+                ),
+            )
+        )
+
+        candidates = discover_release_candidates(
+            config,
+            self.clone,
+            self._track(selector="package:@paypal/checkout-components@5"),
+        )
+
+        self.assertEqual((), candidates)
+
+    def test_package_track_does_not_map_plain_tags_to_mismatched_focus_package(self):
+        commit_file(self.repo, "README.md", "one\n", "initial")
+        tag(self.repo, "v5.0.425")
+        self._publish_and_clone()
+        config = self._config(
+            capsules=(
+                CapsuleConfig(
+                    id="checkout-components",
+                    adapter="npm-tracked-source-v1",
+                    focus_packages=("@paypal/other-package",),
+                ),
+            )
+        )
+
+        candidates = discover_release_candidates(
+            config,
+            self.clone,
+            self._track(selector="package:@paypal/checkout-components@5"),
+        )
+
+        self.assertEqual((), candidates)
 
     def test_plain_track_rejects_ambiguous_matching_package_namespaces(self):
         commit_file(self.repo, "README.md", "one\n", "initial")

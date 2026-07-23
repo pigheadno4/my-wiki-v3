@@ -49,12 +49,14 @@ def discover_release_candidates(
 ) -> Tuple[ReleaseCandidate, ...]:
     """List matching remote tags without fetching their objects into the clone."""
     package_name, target = _track_scope(track)
+    plain_tag_package = _plain_tag_package(config, package_name)
     tag_objects, peeled_commits = _remote_tag_metadata(clone_path)
     matching_packages = set()
     candidates = []
 
     for tag in sorted(tag_objects):
         parsed_package = parse_package_tag(tag)
+        candidate_package = ""
         if parsed_package is not None:
             package, raw_version = parsed_package
             version = parse_semver(raw_version)
@@ -64,9 +66,12 @@ def discover_release_candidates(
                 matching_packages.add(package)
             if package_name is None or package != package_name:
                 continue
+            candidate_package = package
         else:
             if package_name is not None:
-                continue
+                if plain_tag_package != package_name:
+                    continue
+                candidate_package = package_name
             raw_version = tag
             version = parse_semver(raw_version)
 
@@ -82,7 +87,7 @@ def discover_release_candidates(
             continue
         candidates.append(
             ReleaseCandidate(
-                package=parsed_package[0] if parsed_package is not None else "",
+                package=candidate_package,
                 version=_normalized_version(raw_version),
                 tag=tag,
                 object_sha=tag_objects[tag],
@@ -97,6 +102,19 @@ def discover_release_candidates(
             + " matches multiple package namespaces; use a package-scoped track"
         )
     return tuple(sorted(candidates, key=cmp_to_key(_compare_candidates)))
+
+
+def _plain_tag_package(config: RepoConfig, package_name: Optional[str]) -> Optional[str]:
+    if package_name is None or config.version_strategy != "semver-tags":
+        return None
+    focus_packages = {
+        package
+        for capsule in config.capsules
+        for package in capsule.focus_packages
+    }
+    if focus_packages == {package_name}:
+        return package_name
+    return None
 
 
 def select_release_candidates(
