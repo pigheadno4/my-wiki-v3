@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-23] ingest | GitHub paypal/paypal-js — coordinated `10.0.0` transition
+
+- Full serial ingest of `github-bd7fe849961b5c6b9964` from exact SHA `4bd05aba2f3263f0ea4694140dc71dfe1dd5b429`.
+- Ingested package-qualified releases `@paypal/paypal-js@10.0.0` and `@paypal/react-paypal-js@10.0.0` while preserving the v8 and v9 sections.
+- Recorded the mandatory v6 `environment` option/prop, endpoint-selection behavior, runtime validation, and v9-to-v10 migration action.
+- Updated the PayPal checkout concept, company page, cumulative source, release ledger, provider index, and provider log.
+
 ## [2026-07-23] ingest | GitHub paypal/paypal-js — v9 major transition
 
 - Full serial ingest of `github-aa80084a50abf57e06d7` from exact SHA `31eb658ac885a490d38ef34e471c069b0c6e49cb`.

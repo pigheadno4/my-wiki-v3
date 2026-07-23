@@ -5,6 +5,7 @@ date_ingested: 2026-04-13
 date_updated: 2026-07-23
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-07-22-4bd05ab/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-31eb658/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-77487d6/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-702863f/manifest.json"
@@ -16,7 +17,7 @@ tags: [paypal, javascript-sdk, react, npm, typescript, github-repository, venmo]
 
 `paypal/paypal-js` is PayPal's JavaScript SDK monorepo. It contains two independently versioned packages: `@paypal/paypal-js`, the vanilla loader and TypeScript definitions, and `@paypal/react-paypal-js`, the React integration layer.
 
-This cumulative page preserves package-qualified historical findings. The immutable pipeline contains independent v8 baselines for `@paypal/paypal-js@8.4.2` and `@paypal/react-paypal-js@8.9.2`, followed by the shared-SHA major transition to `@paypal/paypal-js@9.8.0` and `@paypal/react-paypal-js@9.3.0`. Each package release retains its own record even when two releases point to one repository snapshot.
+This cumulative page preserves package-qualified historical findings. The immutable pipeline contains independent v8 baselines for `@paypal/paypal-js@8.4.2` and `@paypal/react-paypal-js@8.9.2`, the shared-SHA major transition to `@paypal/paypal-js@9.8.0` and `@paypal/react-paypal-js@9.3.0`, and the coordinated `10.0.0` environment-safety transition. Each package release retains its own record even when two releases point to one repository snapshot.
 
 Repository: <https://github.com/paypal/paypal-js>
 
@@ -70,12 +71,24 @@ Repository: <https://github.com/paypal/paypal-js>
 >
 > `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/files/packages/paypal-js/types/v6/components/googlepay-payments.d.ts:288-291`
 
+> "**BREAKING:** The v6 `environment` option is now required on `loadCoreSdkScript`."
+>
+> `raw/github/paypal/paypal-js/releases/paypal-js/10.0.0/2026-07-22/release-notes.md:3`
+
+> "'The \"environment\" option is required and must be either \"production\" or \"sandbox\"'"
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-22-4bd05ab/files/packages/paypal-js/src/v6/index.ts:104-107`
+
+> "**The `environment` prop is required.** `clientId` does not select the environment in v6"
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-22-4bd05ab/files/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx:59-61`
+
 ## Package status
 
 | Package | Latest ingested release | Evidence status |
 | --- | --- | --- |
-| `@paypal/paypal-js` | `9.8.0` | Approved full major-version ingest; v8 baseline retained |
-| `@paypal/react-paypal-js` | `9.3.0` | Approved full major-version ingest; v8 baseline retained |
+| `@paypal/paypal-js` | `10.0.0` | Approved full major-version ingest; v8 and v9 history retained |
+| `@paypal/react-paypal-js` | `10.0.0` | Approved full major-version ingest; v8 and v9 history retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -150,6 +163,16 @@ Google Pay becomes a typed v6 component. Its session:
 The exact 9.8.0 declaration calls `initiatePayerAction()` a no-argument placeholder for future 3DS support. This package-specific limitation must not be replaced by broader current Google Pay guidance without checking the deployed SDK version.
 
 The cumulative v9 changelog also records deterministic core-script loading, optional client-ID instance creation, eligibility hydration, Apple Pay and Google Pay component typing, and a prototype-pollution defense that accepts `sdkBaseUrl` only as an own property.
+
+### Version 10
+
+#### `@paypal/paypal-js@10.0.0`
+
+The core `10.0.0` release is a focused breaking configuration change at commit `4bd05aba2f3263f0ea4694140dc71dfe1dd5b429`. The v6 `LoadCoreSdkScriptOptions` declaration now requires `environment: "production" | "sandbox"`. `loadCoreSdkScript()` validates the options before checking server context or touching the DOM, so JavaScript callers receive a thrown `Error` when the property is missing or invalid while TypeScript callers receive a compile-time error.
+
+After validation, the loader maps `production` to `https://www.paypal.com/web-sdk/v6/core` and `sandbox` to `https://www.sandbox.paypal.com/web-sdk/v6/core`. It no longer silently defaults an omitted value to sandbox. This prevents a live client ID from accidentally loading the sandbox SDK, but it also means every v9 direct-loader call must add an explicit environment during migration.
+
+The release note and changed public files identify no new payment component, session, payment method, or server API behavior. The root legacy loader exports remain separate from this v6 breaking change.
 
 ## `@paypal/react-paypal-js`
 
@@ -258,6 +281,23 @@ The major integration migration is package-surface specific:
 
 The root export still exists for legacy use. A merchant must choose the integration surface deliberately rather than treating package major 9 as an automatic runtime migration.
 
+### Version 10
+
+#### `@paypal/react-paypal-js@10.0.0`
+
+The coordinated React `10.0.0` release shares commit `4bd05aba2f3263f0ea4694140dc71dfe1dd5b429` and depends on `@paypal/paypal-js ^10.0.0`. For the `/sdk-v6` surface, `PayPalProvider` inherits the required `environment` property from the core loader options and forwards it to `loadCoreSdkScript()`.
+
+The provider documentation is explicit that `clientId` does not select the environment. A live client ID still loads the sandbox SDK when `environment="sandbox"`; applications must pass `environment="production"` for production traffic. Missing or invalid values fail through the core v10 validation path.
+
+Migration from React v9 is additive to the existing source history:
+
+- add `environment="production"` or `environment="sandbox"` to every v6 `PayPalProvider`;
+- audit environment configuration independently from client-ID selection;
+- run TypeScript checks to find missing props and exercise runtime configuration for untyped callers; and
+- retain the established v9 component, eligibility, session, and Braintree behavior unless a later package-qualified release changes it.
+
+The changed React files do not establish new payment functionality. `BraintreePayPalProvider` is a separate provider path and is not evidence that this `PayPalProvider` environment change applies to Braintree integrations.
+
 ## Historical evidence retained from the earlier ingest
 
 The earlier repository review at commit `f59f94baefea4b2ddb38553669ed0ac4ede86167` established the legacy loader option handling above and recorded a broader v6 component set, including guest payments, card fields, messages, subscriptions, Apple Pay, and Google Pay. That snapshot did not retain an exact package-qualified release identity, so its broader surface is useful historical context but must not be attributed to `@paypal/paypal-js@8.4.2`.
@@ -282,6 +322,11 @@ See [[changelog-github-paypal-js]] for the chronological package release ledger 
 
 ## Raw Sources
 
+- `raw/github/paypal/paypal-js/snapshots/2026-07-22-4bd05ab/manifest.json` — shared exact-SHA source capsule for the coordinated `10.0.0` releases
+- `raw/github/paypal/paypal-js/releases/paypal-js/10.0.0/2026-07-22/manifest.json` — package-qualified core v10 release record
+- `raw/github/paypal/paypal-js/releases/paypal-js/10.0.0/2026-07-22/release-notes.md` — core v10 breaking-change notes
+- `raw/github/paypal/paypal-js/releases/react-paypal-js/10.0.0/2026-07-22/manifest.json` — package-qualified React v10 release record
+- `raw/github/paypal/paypal-js/releases/react-paypal-js/10.0.0/2026-07-22/release-notes.md` — React v10 breaking-change notes
 - `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/manifest.json` — shared exact-SHA source capsule for the selected v9 releases
 - `raw/github/paypal/paypal-js/releases/paypal-js/9.8.0/2026-07-22/manifest.json` — package-qualified core v9 release record
 - `raw/github/paypal/paypal-js/releases/paypal-js/9.8.0/2026-07-22/release-notes.md` — core 9.8.0 release notes

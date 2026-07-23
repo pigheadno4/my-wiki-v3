@@ -93,6 +93,12 @@ The exact `@paypal/paypal-js@9.8.0` surface accepts either `clientId` or `client
 
 `@paypal/react-paypal-js@9.3.0` exposes the v6 React API through `@paypal/react-paypal-js/sdk-v6` while retaining the root export for the legacy integration. `PayPalProvider` supports deferred string or Promise credentials, defaults to `paypal-payments`, and can hydrate server-fetched eligibility. Session hooks and prebuilt web-component buttons cover PayPal, Venmo, Pay Later, Credit, guest payments, subscriptions, saved payments, Card Fields, Apple Pay, and Google Pay.
 
+### Version 10 environment requirement
+
+`@paypal/paypal-js@10.0.0` makes `environment` mandatory for the v6 `loadCoreSdkScript()` call. Pass either `environment: "production"` or `environment: "sandbox"` explicitly. The TypeScript declaration requires the property, and runtime validation throws before script loading when it is missing or invalid.
+
+The coordinated `@paypal/react-paypal-js@10.0.0` release makes the same value mandatory on the v6 `PayPalProvider`. A client ID does not select the environment: even a live client ID loads the sandbox host when paired with `environment="sandbox"`. Upgrades from v9 must therefore audit every direct loader call and every v6 React provider before deployment. This focused major-version change does not, by itself, add a payment method or change the legacy root integration.
+
 ## Payment Failure Webhook Events
 
 - `PAYMENT.CAPTURE.COMPLETED` — successful capture

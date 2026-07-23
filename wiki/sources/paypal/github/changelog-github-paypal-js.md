@@ -4,6 +4,7 @@ type: source
 date_ingested: 2026-07-23
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-07-22-4bd05ab/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-31eb658/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-77487d6/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-702863f/manifest.json"
@@ -13,6 +14,40 @@ tags: [paypal, javascript-sdk, react, npm, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for the independently versioned packages in `paypal/paypal-js`. Detailed implementation knowledge belongs in [[source-github-paypal-js]] and the linked immutable snapshots.
+
+## Repository change set: `4bd05ab` (2026-06-04)
+
+### Package timelines
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@paypal/paypal-js` | `9.8.0` | `10.0.0` | 2026-06-04 | `4bd05aba2f3263f0ea4694140dc71dfe1dd5b429` | Full |
+| `@paypal/react-paypal-js` | `9.3.0` | `10.0.0` | 2026-06-04 | `4bd05aba2f3263f0ea4694140dc71dfe1dd5b429` | Full |
+
+**Important change:** Both v6 integration surfaces now require an explicit `production` or `sandbox` environment. The core loader validates the value and maps it to the corresponding PayPal host; the React provider forwards its required prop to that loader.
+
+**Developer or merchant impact:** Omitting the value no longer silently loads sandbox. TypeScript integrations fail compilation and untyped runtime callers receive a thrown `Error`. A client ID does not select the environment, so production configuration must be audited independently.
+
+**Migration action:** Add `environment: "production" | "sandbox"` to every v6 `loadCoreSdkScript()` call and `environment="production" | "sandbox"` to every v6 `PayPalProvider`. Use production explicitly for live traffic and verify untyped runtime configuration before deployment.
+
+**Updated source sections:** core version 10; React version 10; [[paypal-checkout]]; PayPal company summary.
+
+**Evidence:**
+
+- Core release record: `raw/github/paypal/paypal-js/releases/paypal-js/10.0.0/2026-07-22/manifest.json`
+- Core release notes: `raw/github/paypal/paypal-js/releases/paypal-js/10.0.0/2026-07-22/release-notes.md`
+- React release record: `raw/github/paypal/paypal-js/releases/react-paypal-js/10.0.0/2026-07-22/manifest.json`
+- React release notes: `raw/github/paypal/paypal-js/releases/react-paypal-js/10.0.0/2026-07-22/release-notes.md`
+- Snapshot manifest: `raw/github/paypal/paypal-js/snapshots/2026-07-22-4bd05ab/manifest.json`
+- Core comparison: `tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/9.8.0--10.0.0/comparison.json`
+- React comparison: `tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/9.3.0--10.0.0/comparison.json`
+- Core loader implementation: `raw/github/paypal/paypal-js/snapshots/2026-07-22-4bd05ab/files/packages/paypal-js/src/v6/index.ts`
+- Core required option type: `raw/github/paypal/paypal-js/snapshots/2026-07-22-4bd05ab/files/packages/paypal-js/types/v6/index.d.ts`
+- React provider: `raw/github/paypal/paypal-js/snapshots/2026-07-22-4bd05ab/files/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx`
+
+### Evidence boundary
+
+The release notes and changed public files establish an environment-selection safety break, not a new payment method, session, or server API. The unchanged historical sections remain available for v8 and v9 questions. `BraintreePayPalProvider` is a separate integration path and is not included in the changed React files.
 
 ## Repository change set: `31eb658` (2026-06-03)
 
@@ -115,6 +150,9 @@ The same SHA contains `@paypal/react-paypal-js@8.9.1`, but no React release is r
 
 ## Raw Sources
 
+- `raw/github/paypal/paypal-js/snapshots/2026-07-22-4bd05ab/manifest.json` — shared exact-SHA source capsule
+- `raw/github/paypal/paypal-js/releases/paypal-js/10.0.0/2026-07-22/manifest.json` — `@paypal/paypal-js@10.0.0` release record
+- `raw/github/paypal/paypal-js/releases/react-paypal-js/10.0.0/2026-07-22/manifest.json` — `@paypal/react-paypal-js@10.0.0` release record
 - `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/manifest.json` — shared exact-SHA source capsule
 - `raw/github/paypal/paypal-js/releases/paypal-js/9.8.0/2026-07-22/manifest.json` — `@paypal/paypal-js@9.8.0` release record
 - `raw/github/paypal/paypal-js/releases/react-paypal-js/9.3.0/2026-07-22/manifest.json` — `@paypal/react-paypal-js@9.3.0` release record
