@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-23] ingest | GitHub paypal/paypal-js — v9 major transition
+
+- Full serial ingest of `github-aa80084a50abf57e06d7` from exact SHA `31eb658ac885a490d38ef34e471c069b0c6e49cb`.
+- Ingested package-qualified releases `@paypal/paypal-js@9.8.0` and `@paypal/react-paypal-js@9.3.0` while preserving both v8 baselines.
+- Added v9 provider, eligibility, Card Fields 3DS data, Google Pay, and Braintree nonce-flow knowledge; created `wiki/concepts/paypal-braintree-integration.md`.
+- Corrected the older v9 summary's automatic-eligibility claim and updated PayPal company, concepts, index, and provider log.
+
 ## [2026-07-23] ingest | GitHub paypal/paypal-js — `@paypal/react-paypal-js@8.9.2`
 
 - Full serial ingest of `github-b11f1f62c66a78b84806` from exact SHA `77487d6cea80c2df694166e5d8f5c420cca41e7e`.

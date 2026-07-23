@@ -17,9 +17,12 @@ Monorepo at `github.com/paypal/paypal-js` (commit `ffee35f`). Two packages: `pay
 ### PayPalProvider (`PayPalProvider.tsx`)
 
 - Accepts `clientId | clientToken` (mutually exclusive), plus `components`, `pageType`, `eligibleMethodsResponse`
-- On mount: calls `loadScript` from `paypal-js` → `createInstance` → `findEligibleMethods`
+- On mount: calls the v6 core loader from `paypal-js` and then `createInstance`; eligibility is fetched separately with `useEligibleMethods` or supplied through `eligibleMethodsResponse`
 - Uses React context + reducer pattern (`PayPalDispatchContext`) to broadcast SDK state
 - `eligibleMethodsResponse` prop enables SSR hydration: skips client-side eligibility fetch if provided
+
+> [!warning] Contradiction
+> The original summary said `PayPalProvider` automatically called `findEligibleMethods()` on mount. The exact `@paypal/react-paypal-js@9.3.0` source and cumulative v9 changelog show that the provider's default eligibility request was removed. Client code uses `useEligibleMethods()`; SSR code can supply `eligibleMethodsResponse`. See [[source-github-paypal-js]].
 
 ### usePayPalOneTimePaymentSession (`usePayPalOneTimePaymentSession.ts`)
 

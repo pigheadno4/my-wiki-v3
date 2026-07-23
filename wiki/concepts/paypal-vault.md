@@ -14,6 +14,15 @@ PayPal's Vault is a tokenization system that stores a buyer's payment method so 
 - **Payment Method Tokens v3 API** — creates and manages setup tokens and payment tokens
 - **Orders v2 API** — used with a vault ID (`vault_id`) for subsequent merchant-initiated charges
 
+## Braintree PayPal v6 React Paths
+
+`@paypal/react-paypal-js@9.3.0` adds two Braintree-specific consent paths:
+
+- a billing-agreement session for vault-only, recurring, subscription, unscheduled, or installment plans; and
+- checkout with vault, which combines a one-time charge and billing-agreement consent.
+
+These paths use `BraintreePayPalProvider`, a Braintree client token, and `paypalCheckoutV6`. Approval data is converted to a payment-method nonce with `tokenizePayment()`, then processed server-side with a Braintree SDK. They are not Payment Method Tokens v3 or Orders v2 vault flows. See [[paypal-braintree-integration]].
+
 ## Token Types
 
 | Token | Created by | Lifetime | Purpose |
@@ -282,3 +291,4 @@ The `customer.id` is a PayPal-generated identifier — store it against the paye
 - [[source-paypal-save-cards-android-sdk]] — Android SDK card vault: Compose checkbox UX, `customer.id` in Create Order body for returning payers, `ApproveOrderListener` 3DS callbacks, RTAU next step
 - [[source-paypal-save-applepay-js-sdk]] — Apple Pay vault: APPROVED vs VAULTED status, VAULT.PAYMENT-TOKEN.CREATED webhook, merchant-initiated recurring pattern
 - [[source-paypal-save-cards-js-sdk]] — Card vault JS SDK: checkbox UX, SCA_ALWAYS/SCA_WHEN_REQUIRED with vault, usage_type/customer_type/permit_multiple_payment_tokens fields, 14 test cards
+- [[source-github-paypal-js]] — versioned React v9.3.0 Braintree billing-agreement and checkout-with-vault evidence

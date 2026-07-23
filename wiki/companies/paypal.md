@@ -23,6 +23,12 @@ Client-side SDK injected via `<script>` tag. Renders payment buttons on the page
 - `createOrder` / `onApprove` / `onShippingAddressChange` / `onShippingOptionsChange` callbacks
 - Checkout pop-up launch and management
 
+The package-qualified v6 surface in `@paypal/paypal-js@9.8.0` also supports direct instance creation with client ID or client token, conditional components for PayPal, Venmo, guest payments, messages, subscriptions, Card Fields, Apple Pay, and Google Pay, plus eligibility hydration. `@paypal/react-paypal-js@9.3.0` exposes this integration through the `/sdk-v6` subpath.
+
+### Braintree PayPal v6
+
+Braintree merchants use a separate React provider backed by Braintree's `paypalCheckoutV6` module and a server-generated Braintree client token. React 9.3.0 provides one-time, billing-agreement, and checkout-with-vault flows. Approval is tokenized into a Braintree payment-method nonce and completed with a Braintree server SDK, not PayPal's Orders API. See [[paypal-braintree-integration]].
+
 ### PayPal Orders REST API
 
 Server-side API for order lifecycle management:
@@ -220,7 +226,7 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-javascript-sdk-performance]] — JS SDK performance: instant vs delayed render, pre-caching, hidden container pattern
 - [[source-paypal-javascript-sdk-best-practices]] — JS SDK best practices: CSP domains + nonce vs unsafe-inline, COOP same-origin-allow-popups
 - [[source-paypal-react-paypal-js-readme]] — @paypal/react-paypal-js v8.x README: PayPalScriptProvider, all components, hooks, Card Fields vs Hosted Fields
-- [[source-github-paypal-js]] — cumulative GitHub evidence for independently versioned packages; exact-SHA v8 baselines for `@paypal/paypal-js@8.4.2` and `@paypal/react-paypal-js@8.9.2`, including the Card Fields stale-closure fix
+- [[source-github-paypal-js]] — cumulative GitHub evidence for independently versioned packages; exact-SHA v8 baselines plus the full transition to core `9.8.0` and React `9.3.0`, including v6 components, Google Pay, Card Fields 3DS data, and Braintree flows
 - [[changelog-github-paypal-js]] — package-qualified paypal/paypal-js release ledger with release notes, impact, migration action, and immutable raw links
 - [[source-github-react-paypal-js-v8]] — GitHub react-paypal-js v8 source: ScriptProvider internals, reducer state machine, Buttons lifecycle, CardFields architecture
 - [[source-paypal-expanded-checkout-integrate]] — Expanded Checkout integration: CardFields+Buttons, 3DS SCA, billing address submit, authorize routes

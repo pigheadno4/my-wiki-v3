@@ -41,6 +41,12 @@ In `@paypal/react-paypal-js@8.9.2`, `PayPalCardFieldsProvider` and individual Ca
 
 The retained Storybook scenarios exercise changing React state across provider callbacks and each individual field's `onChange`, `onFocus`, `onBlur`, and `onInputSubmitRequest` callbacks.
 
+### Version 9 submit options
+
+In `@paypal/paypal-js@9.8.0`, both one-time and save-payment Card Fields sessions accept optional `submit()` options containing `name` and a billing address. The address supports address lines, administrative areas, postal code, and country code. The release identifies these fields as 3DS authentication support.
+
+The paired `@paypal/react-paypal-js@9.3.0` Card Fields hooks pass those optional submit values through for both order IDs and vault setup tokens.
+
 ### `liabilityShift`
 
 Returned in the `onApprove` callback after 3DS authentication. Indicates whether fraud liability has shifted from the merchant to the card issuer. Merchants use this to decide whether to capture.

@@ -36,6 +36,15 @@ Three PayPal SDK touchpoints:
 4. `onPaymentAuthorized` → create order → `confirmOrder()` → capture
 5. If `PAYER_ACTION_REQUIRED`: `initiatePayerAction()` → check `liability_shift` → capture
 
+## Version 9 React Package Evidence
+
+`@paypal/paypal-js@9.8.0` exposes Google Pay through the `googlepay-payments` v6 component. Its session formats eligibility configuration for Google's `PaymentsClient`, confirms an order using Google payment-method data, and leaves button rendering and payment-sheet control to Google's SDK rather than a PayPal web component.
+
+`@paypal/react-paypal-js@9.3.0` adds `GooglePayOneTimePaymentButton` and `useGooglePayOneTimePaymentSession`. The React component checks `isReadyToPay()`, mounts the native button returned by `PaymentsClient.createButton()`, creates the merchant order during authorization, and calls the PayPal session's `confirmOrder()`.
+
+> [!info] Version-specific 3DS boundary
+> In the exact `@paypal/paypal-js@9.8.0` type surface, `initiatePayerAction()` is documented as a no-argument placeholder for future 3DS support. This differs from the established integration guidance above, which calls `initiatePayerAction({ orderId })`. Do not infer complete Google Pay 3DS handling from the 9.8.0 wrapper types alone; verify the deployed SDK and current product documentation.
+
 ## 3DS Handling
 
 `confirmOrder()` returns `status: PAYER_ACTION_REQUIRED` → call `initiatePayerAction({ orderId })` → check `orderResponse.payment_source.google_pay.card.authentication_result.liability_shift` → capture if acceptable.
@@ -61,3 +70,4 @@ Production onboarding: `paypal.com/bizsignup/add-product?product=payment_methods
 ## Sources
 
 - [[source-paypal-apm-google-pay]] — Full integration guide: dual SDK, `confirmOrder`/`initiatePayerAction`, Japan PAN_ONLY override, 38 test cards across 5 countries
+- [[source-github-paypal-js]] — package-qualified Google Pay v6 types, React hook, and native-button implementation

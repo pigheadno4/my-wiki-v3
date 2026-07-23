@@ -5,6 +5,7 @@ date_ingested: 2026-04-13
 date_updated: 2026-07-23
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-07-22-31eb658/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-77487d6/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-702863f/manifest.json"
   - "github-paypal-js.md"
@@ -15,7 +16,7 @@ tags: [paypal, javascript-sdk, react, npm, typescript, github-repository, venmo]
 
 `paypal/paypal-js` is PayPal's JavaScript SDK monorepo. It contains two independently versioned packages: `@paypal/paypal-js`, the vanilla loader and TypeScript definitions, and `@paypal/react-paypal-js`, the React integration layer.
 
-This cumulative page preserves package-qualified historical findings. The immutable pipeline currently contains independent v8 baselines for `@paypal/paypal-js@8.4.2` and `@paypal/react-paypal-js@8.9.2`. Each release has its own record and exact-SHA snapshot even though both packages live in the same repository.
+This cumulative page preserves package-qualified historical findings. The immutable pipeline contains independent v8 baselines for `@paypal/paypal-js@8.4.2` and `@paypal/react-paypal-js@8.9.2`, followed by the shared-SHA major transition to `@paypal/paypal-js@9.8.0` and `@paypal/react-paypal-js@9.3.0`. Each package release retains its own record even when two releases point to one repository snapshot.
 
 Repository: <https://github.com/paypal/paypal-js>
 
@@ -49,12 +50,32 @@ Repository: <https://github.com/paypal/paypal-js>
 >
 > `raw/github/paypal/paypal-js/releases/paypal-js/8.4.2/2026-07-22/release-notes.md:3`
 
+> "Add optional submit options to CardFields submit() method, including billingAddress and name fields for 3DS authentication support"
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/files/packages/paypal-js/CHANGELOG.md:11`
+
+> "The return type changes based on which components are specified in the components array."
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/files/packages/paypal-js/types/v6/index.d.ts:85-88`
+
+> "Braintree merchants use `BraintreePayPalProvider` instead of `PayPalProvider` to integrate PayPal via Braintree's `paypalCheckoutV6` module."
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/files/packages/react-paypal-js/README.md:728`
+
+> "Server-side with Braintree SDK — send the nonce to your server and process it with the Braintree server SDK (not PayPal's Orders API)"
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/files/packages/react-paypal-js/README.md:1165`
+
+> "Unlike other payment methods, Google Pay does not use a start() callback pattern."
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/files/packages/paypal-js/types/v6/components/googlepay-payments.d.ts:288-291`
+
 ## Package status
 
 | Package | Latest ingested release | Evidence status |
 | --- | --- | --- |
-| `@paypal/paypal-js` | `8.4.2` | Approved full baseline |
-| `@paypal/react-paypal-js` | `8.9.2` | Approved full baseline |
+| `@paypal/paypal-js` | `9.8.0` | Approved full major-version ingest; v8 baseline retained |
+| `@paypal/react-paypal-js` | `9.3.0` | Approved full major-version ingest; v8 baseline retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -102,6 +123,33 @@ Every instance includes `findEligibleMethods()` and `updateLocale()`. The eligib
 The `8.4.2` patch corrects the v6 script-load option type name and the conditional `SdkInstance` type definitions. These are compile-time typing fixes; the release notes do not claim a new runtime checkout feature or a migration step.
 
 The package also ships generated TypeScript declarations for Orders v2 and Billing Subscriptions v1. Those declarations are API typing context, not proof that this loader implements the server APIs.
+
+### Version 9
+
+#### `@paypal/paypal-js@9.8.0`
+
+The retained v9 release is the latest selected v9 package at commit `31eb658ac885a490d38ef34e471c069b0c6e49cb`. It is a full major-version ingest from the v8.4.2 baseline, so this section records the cumulative v9 surface rather than only the four changes named in the 9.8.0 release note.
+
+The `./sdk-v6` package surface now accepts exactly one of `clientId` or `clientToken`. Its conditional `SdkInstance` type expands from the three components evidenced in v8.4.2 to nine:
+
+- `paypal-payments`, `venmo-payments`, and `paypal-legacy-billing-agreements`;
+- `paypal-guest-payments`, `paypal-messages`, and `paypal-subscriptions`;
+- `card-fields`, `applepay-payments`, and `googlepay-payments`.
+
+Every instance exposes `findEligibleMethods()`, `updateLocale()`, and `hydrateEligibleMethods()`. The latter transforms a pre-fetched eligibility response and supports server-to-client eligibility hydration. Page typing also adds product listing and search results to the earlier checkout, product details, cart, mini-cart, and home contexts.
+
+For Card Fields, one-time and save-payment sessions both accept an optional second `submit()` argument containing a cardholder `name` and billing address. The billing address includes address lines, administrative areas, postal code, and country code; the 9.8.0 release identifies this as support for 3DS authentication. Session `start()` presentation options are optional and default to `auto`.
+
+Google Pay becomes a typed v6 component. Its session:
+
+- formats eligibility configuration for Google's `PaymentsClient`;
+- maps supported networks and merchant country into Google request fields;
+- confirms a merchant-created PayPal order with Google payment-method data; and
+- delegates native button and payment-sheet UI to Google's SDK.
+
+The exact 9.8.0 declaration calls `initiatePayerAction()` a no-argument placeholder for future 3DS support. This package-specific limitation must not be replaced by broader current Google Pay guidance without checking the deployed SDK version.
+
+The cumulative v9 changelog also records deterministic core-script loading, optional client-ID instance creation, eligibility hydration, Apple Pay and Google Pay component typing, and a prototype-pollution defense that accepts `sdkBaseUrl` only as an own property.
 
 ## `@paypal/react-paypal-js`
 
@@ -160,6 +208,56 @@ No API migration is stated for application code. Merchants using dynamic Card Fi
 
 The earlier `@paypal/paypal-js@8.4.2` SHA contains `@paypal/react-paypal-js@8.9.1` depending on `@paypal/paypal-js ^8.4.0`. It remains useful comparison context but is not a separately ingested React release.
 
+### Version 9
+
+#### `@paypal/react-paypal-js@9.3.0`
+
+React 9.3.0 is the paired v9 release at the same `31eb658ac885a490d38ef34e471c069b0c6e49cb` SHA and depends on `@paypal/paypal-js ^9.8.0`. The root export remains the legacy React integration; the v6 client and server surfaces are explicitly exported as `@paypal/react-paypal-js/sdk-v6` and `@paypal/react-paypal-js/sdk-v6/server`.
+
+The v6 `PayPalProvider` replaces the v8 `PayPalScriptProvider` integration pattern. It:
+
+- accepts mutually exclusive `clientId` or `clientToken` values as strings, Promises, or deferred `undefined`;
+- loads the v6 core script and defaults `components` to `paypal-payments`;
+- creates the component-qualified SDK instance;
+- optionally hydrates a pre-fetched eligibility response; and
+- holds instance, eligibility, loading, error, and hydration state in React contexts.
+
+Eligibility is not fetched automatically by the provider. Client integrations use `useEligibleMethods()`; server rendering can use the `/sdk-v6/server` export and pass the response into `eligibleMethodsResponse`.
+
+> [!warning] Contradiction
+> [[source-github-paypal-js-v6]] previously said `PayPalProvider` calls `findEligibleMethods()` on mount. The exact v9 changelog says the default eligibility request was removed, and the 9.3.0 provider only hydrates an explicitly supplied response. The older source summary is corrected accordingly.
+
+The v6 public export includes provider, prebuilt button, and session-hook paths for PayPal one-time and saved payments, Venmo, Pay Later, PayPal Credit, guest payments, subscriptions, Card Fields, Apple Pay, Google Pay, and PayPal Messages. Buttons wait for client hydration, while hooks expose loading and error state for custom UI.
+
+React 9.3.0 passes the new optional Card Fields `name` and billing-address submit values through one-time and save-payment hooks. It also makes presentation mode optional for v6 buttons and hooks, with each hook supplying its own default.
+
+Google Pay uses a native Google button rather than a PayPal web component. `useGooglePayOneTimePaymentSession()` creates Google's `PaymentsClient`, checks `isReadyToPay()`, creates the native button, creates the PayPal order during authorization, and calls `confirmOrder()`. The exact wrapper invokes the core placeholder `initiatePayerAction()` when confirmation returns `PAYER_ACTION_REQUIRED`; this is not sufficient evidence of a complete awaited 3DS flow.
+
+#### Braintree PayPal surface
+
+React 9.3.0 adds a separate Braintree path under the same `/sdk-v6` export:
+
+- `BraintreePayPalProvider` validates a Braintree namespace, creates a client from a server-generated Braintree client token, creates `paypalCheckoutV6`, loads the PayPal SDK, and tears down the instance on unmount.
+- One-time payment, billing-agreement, and checkout-with-vault flows each have a prebuilt `<paypal-button>` wrapper and a custom session hook.
+- Billing agreements support vault-only, recurring, subscription, unscheduled, and installment plan types.
+- Checkout with vault combines one-time payment and billing-agreement consent.
+
+These are nonce-based Braintree flows. The Braintree SDK creates the payment session from amount and currency, so the merchant does not provide PayPal `createOrder`. After approval, the integration calls `tokenizePayment()` with order/payer IDs or a billing token, sends the resulting nonce to its server, and processes it with a Braintree server SDK rather than PayPal's Orders API. See [[paypal-braintree-integration]].
+
+#### Migration from React 8
+
+The major integration migration is package-surface specific:
+
+| React 8 legacy integration | React 9 v6 integration |
+| --- | --- |
+| Root import | `@paypal/react-paypal-js/sdk-v6` |
+| `PayPalScriptProvider` with `options` | `PayPalProvider` with direct `clientId` or `clientToken` |
+| `PayPalButtons` | Product-specific button components or session hooks |
+| `createOrder` returns an order ID string | v6 callbacks return `{ orderId }` |
+| Provider-managed script state | Provider plus explicit eligibility hook or hydrated response |
+
+The root export still exists for legacy use. A merchant must choose the integration surface deliberately rather than treating package major 9 as an automatic runtime migration.
+
 ## Historical evidence retained from the earlier ingest
 
 The earlier repository review at commit `f59f94baefea4b2ddb38553669ed0ac4ede86167` established the legacy loader option handling above and recorded a broader v6 component set, including guest payments, card fields, messages, subscriptions, Apple Pay, and Google Pay. That snapshot did not retain an exact package-qualified release identity, so its broader surface is useful historical context but must not be attributed to `@paypal/paypal-js@8.4.2`.
@@ -184,6 +282,11 @@ See [[changelog-github-paypal-js]] for the chronological package release ledger 
 
 ## Raw Sources
 
+- `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/manifest.json` — shared exact-SHA source capsule for the selected v9 releases
+- `raw/github/paypal/paypal-js/releases/paypal-js/9.8.0/2026-07-22/manifest.json` — package-qualified core v9 release record
+- `raw/github/paypal/paypal-js/releases/paypal-js/9.8.0/2026-07-22/release-notes.md` — core 9.8.0 release notes
+- `raw/github/paypal/paypal-js/releases/react-paypal-js/9.3.0/2026-07-22/manifest.json` — package-qualified React v9 release record
+- `raw/github/paypal/paypal-js/releases/react-paypal-js/9.3.0/2026-07-22/release-notes.md` — React 9.3.0 release notes
 - `raw/github/paypal/paypal-js/snapshots/2026-07-22-77487d6/manifest.json` — exact-SHA source capsule for `@paypal/react-paypal-js@8.9.2`
 - `raw/github/paypal/paypal-js/releases/react-paypal-js/8.9.2/2026-07-22/manifest.json` — package-qualified React release record
 - `raw/github/paypal/paypal-js/releases/react-paypal-js/8.9.2/2026-07-22/release-notes.md` — React patch notes

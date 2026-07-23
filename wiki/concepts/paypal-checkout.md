@@ -87,6 +87,12 @@ The exact `8.4.2` package snapshot exposes the v6 loader from the `./sdk-v6` exp
 
 This historical surface is narrower than the later v6 product documentation summarized above. Treat package-qualified release evidence as authoritative for version-specific questions and the current product documentation as authoritative for current integrations.
 
+### Version 9 package evidence
+
+The exact `@paypal/paypal-js@9.8.0` surface accepts either `clientId` or `clientToken`, expands conditional instance typing to nine components, and adds `hydrateEligibleMethods()` for pre-fetched eligibility. Its declared components include PayPal, Venmo, guest payments, messages, subscriptions, Card Fields, Apple Pay, Google Pay, and legacy billing agreements.
+
+`@paypal/react-paypal-js@9.3.0` exposes the v6 React API through `@paypal/react-paypal-js/sdk-v6` while retaining the root export for the legacy integration. `PayPalProvider` supports deferred string or Promise credentials, defaults to `paypal-payments`, and can hydrate server-fetched eligibility. Session hooks and prebuilt web-component buttons cover PayPal, Venmo, Pay Later, Credit, guest payments, subscriptions, saved payments, Card Fields, Apple Pay, and Google Pay.
+
 ## Payment Failure Webhook Events
 
 - `PAYMENT.CAPTURE.COMPLETED` — successful capture
@@ -101,4 +107,5 @@ See [[source-paypal-payment-failures]] for the full 19 error codes and recovery 
 - [[source-paypal-payment-failures]] — Payment failures: 19 error codes, actions.restart(), async failures, webhook events
 - [[source-paypal-js-sdk-v6-setup]] — JS SDK v6 canonical setup: script URLs, clientToken 15min expiry, 8 components, eligibility API, Pay Later/Credit sessions, web components
 - [[source-github-paypal-js]] — cumulative package-qualified repository evidence and exact source snapshots
+- [[paypal-braintree-integration]] — Braintree client-token, nonce, and server-processing boundary for PayPal v6 React flows
 - [[source-paypal-security-guidelines]] — Security guidelines: CSP + SRI for SDK; load only from official CDN; validate payment events server-side before fulfilling

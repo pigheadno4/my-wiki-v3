@@ -4,6 +4,7 @@ type: source
 date_ingested: 2026-07-23
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-07-22-31eb658/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-77487d6/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-702863f/manifest.json"
 tags: [paypal, javascript-sdk, react, npm, changelog, github-repository]
@@ -12,6 +13,44 @@ tags: [paypal, javascript-sdk, react, npm, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for the independently versioned packages in `paypal/paypal-js`. Detailed implementation knowledge belongs in [[source-github-paypal-js]] and the linked immutable snapshots.
+
+## Repository change set: `31eb658` (2026-06-03)
+
+### Package timelines
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@paypal/paypal-js` | `8.4.2` | `9.8.0` | 2026-06-03 | `31eb658ac885a490d38ef34e471c069b0c6e49cb` | Full |
+| `@paypal/react-paypal-js` | `8.9.2` | `9.3.0` | 2026-06-03 | `31eb658ac885a490d38ef34e471c069b0c6e49cb` | Full |
+
+**Important change:** The core v6 type surface expands to nine conditional components, accepts client ID or client token, supports eligibility hydration, adds optional Card Fields name/billing-address submit data, and types Google Pay. The React v9 surface introduces `PayPalProvider`, explicit `/sdk-v6` and `/sdk-v6/server` exports, v6 buttons/hooks, native Google Pay UI, and Braintree one-time, billing-agreement, and checkout-with-vault flows.
+
+**Developer or merchant impact:** React v8 legacy integrations remain available from the root export, but v6 integrations use a new provider, import path, callback shape, and explicit eligibility flow. Card Fields can pass richer 3DS data. Braintree merchants receive nonce-based React flows that must be completed with Braintree server tooling rather than PayPal Orders APIs.
+
+**Migration action:** Choose the v6 subpath deliberately; replace `PayPalScriptProvider` with `PayPalProvider`; move credentials out of the legacy `options` object; return `{ orderId }` from v6 order callbacks; add explicit eligibility fetching or hydration; and test the relevant component-qualified SDK instance. Braintree integrations must provision a server-generated Braintree client token, load the Braintree Web scripts, tokenize approval data, and process the nonce server-side.
+
+**Updated source sections:** core version 9; React version 9 and migration; Braintree PayPal surface; [[paypal-checkout]], [[paypal-expanded-checkout]], [[paypal-google-pay]], [[paypal-vault]], and [[paypal-braintree-integration]].
+
+**Evidence:**
+
+- Core release record: `raw/github/paypal/paypal-js/releases/paypal-js/9.8.0/2026-07-22/manifest.json`
+- Core release notes: `raw/github/paypal/paypal-js/releases/paypal-js/9.8.0/2026-07-22/release-notes.md`
+- React release record: `raw/github/paypal/paypal-js/releases/react-paypal-js/9.3.0/2026-07-22/manifest.json`
+- React release notes: `raw/github/paypal/paypal-js/releases/react-paypal-js/9.3.0/2026-07-22/release-notes.md`
+- Snapshot manifest: `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/manifest.json`
+- Core comparison: `tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/8.4.2--9.8.0/comparison.json`
+- React comparison: `tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/8.9.2--9.3.0/comparison.json`
+- Core v6 public surface: `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/files/packages/paypal-js/types/v6/index.d.ts`
+- Card Fields submit types: `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/files/packages/paypal-js/types/v6/components/card-fields.d.ts`
+- Google Pay session types: `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/files/packages/paypal-js/types/v6/components/googlepay-payments.d.ts`
+- React v6 exports: `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/files/packages/react-paypal-js/src/v6/index.ts`
+- React provider: `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/files/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx`
+- Braintree provider: `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/files/packages/react-paypal-js/src/v6/components/Braintree/BraintreePayPalProvider.tsx`
+- Braintree integration guide: `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/files/packages/react-paypal-js/README.md`
+
+### Evidence boundary
+
+The release notes and snapshot identify the selected latest stable v9 releases, not every v9 tag as a separately ingested release. Intermediate v9 changelog entries are cumulative implementation context within this full major-version ingest.
 
 ## Repository change set: `77487d6` (2025-10-02)
 
@@ -76,6 +115,9 @@ The same SHA contains `@paypal/react-paypal-js@8.9.1`, but no React release is r
 
 ## Raw Sources
 
+- `raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/manifest.json` — shared exact-SHA source capsule
+- `raw/github/paypal/paypal-js/releases/paypal-js/9.8.0/2026-07-22/manifest.json` — `@paypal/paypal-js@9.8.0` release record
+- `raw/github/paypal/paypal-js/releases/react-paypal-js/9.3.0/2026-07-22/manifest.json` — `@paypal/react-paypal-js@9.3.0` release record
 - `raw/github/paypal/paypal-js/snapshots/2026-07-22-77487d6/manifest.json` — exact-SHA source capsule
 - `raw/github/paypal/paypal-js/releases/react-paypal-js/8.9.2/2026-07-22/manifest.json` — `@paypal/react-paypal-js@8.9.2` release record
 - `raw/github/paypal/paypal-js/snapshots/2026-07-22-702863f/manifest.json` — exact-SHA source capsule

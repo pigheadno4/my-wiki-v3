@@ -23,7 +23,7 @@ Operations history: [[paypal-log]]
 - [[source-stripe-subscriptions-paypal]] — PayPal subscription: Checkout + Direct API, off_session required, billing agreement ID, mandate.updated on revoke (webpage, 2026-05-13)
 - [[stripe-paypal]] — Stripe PayPal Integration: Checkout + SetupIntents, off_session critical, BAID, mandate.updated, detach cancels billing agreement
 - [[source-github-paypal-v6-samples]] — GitHub v6 sample integration: 36 files, PayPal/card/Venmo/GPay/APay/ACH/SEPA/APMs/subscriptions (github-repo, 2026-04-17)
-- [[source-github-paypal-js-v6]] — GitHub paypal/paypal-js: SDK v6 + React v9 source code; provider internals, session hooks, card fields, types (github-repo, 2026-04-17)
+- [[source-github-paypal-js-v6]] — historical GitHub SDK v6 + React v9 review; provider, hooks, Card Fields, and corrected explicit eligibility boundary (github-repo, corrected 2026-07-23)
 - [[source-npm-react-paypal-js-v9]] — @paypal/react-paypal-js v9.1.1: SDK v6 React wrapper, PayPalProvider, hooks, SSR, v8→v9 migration (npm, 2026-04-17)
 - [[source-paypal-donate-sdk]] — PayPal Donate SDK: pop-up overlay, hosted_button_id vs business param, onComplete callback (webpage, 2026-04-17)
 - [[source-paypal-payment-method-tokens-api]] — Payment Method Tokens API v3: cards + PayPal wallet, setup→payment token, HATEOAS links, SAQ D (webpage, 2026-04-17)
@@ -74,8 +74,8 @@ Operations history: [[paypal-log]]
 - [[source-paypal-javascript-sdk-performance]] — JS SDK performance: instant vs delayed render patterns, pre-caching, hidden container trick (webpage, 2026-04-13)
 - [[source-paypal-javascript-sdk-best-practices]] — JS SDK best practices: CSP (unsafe-inline vs nonce), COOP same-origin-allow-popups (webpage, 2026-04-13)
 - [[source-paypal-react-paypal-js-readme]] — @paypal/react-paypal-js v8.x: PayPalScriptProvider, all 11 components, usePayPalScriptReducer, Card Fields hooks (npm README, 2026-04-13)
-- [[source-github-paypal-js]] — cumulative paypal/paypal-js knowledge; exact-SHA v8 baselines for the core loader and React wrapper, including Card Fields callback freshness (github-repo, updated 2026-07-23)
-- [[changelog-github-paypal-js]] — package-qualified release ledger; v8 baselines for `@paypal/paypal-js@8.4.2` and `@paypal/react-paypal-js@8.9.2` (github-repo, updated 2026-07-23)
+- [[source-github-paypal-js]] — cumulative package-qualified knowledge; v8 baselines plus core 9.8.0 and React 9.3.0 major transition, Google Pay, Card Fields 3DS data, and Braintree flows (github-repo, updated 2026-07-23)
+- [[changelog-github-paypal-js]] — package-qualified release ledger; v8 baselines and shared-SHA v9 major transition for core 9.8.0 and React 9.3.0 (github-repo, updated 2026-07-23)
 - [[source-github-react-paypal-js-v8]] — GitHub react-paypal-js v8: ScriptProvider/reducer, Buttons lifecycle, CardFields provider+hooks (github-repo, 2026-04-13)
 - [[source-paypal-expanded-checkout-integrate]] — Expanded Checkout integration: CardFields+Buttons dual-render, 3DS SCA_ALWAYS, billing address, authorize/captureAuthorize routes (webpage, 2026-04-13)
 - [[source-paypal-android-card-payments]] — Android SDK: CardClient 8-step flow, WebPayments, deprecated NativePayments, FraudProtection (webpage, 2026-04-13)
@@ -185,6 +185,7 @@ Operations history: [[paypal-log]]
 ## Concepts
 
 - [[paypal-checkout]] — PayPal Checkout: JS SDK + Orders API integration pattern, buyer flow, button placement
+- [[paypal-braintree-integration]] — Braintree PayPal v6: client-token provider, one-time/billing-agreement/checkout-with-vault sessions, nonce-based server processing
 - [[paypal-expanded-checkout]] — PayPal Expanded Checkout (ACDC): hosted card fields, 3DS, liabilityShift, sandbox capability requirement
 - [[paypal-android-sdk]] — PayPal Android SDK: card-payments, web-payments, payment-buttons, fraud-protection modules
 - [[paypal-fastlane]] — PayPal Fastlane: guest checkout acceleration, email + one-time code, separate from PayPal account, cross-merchant
