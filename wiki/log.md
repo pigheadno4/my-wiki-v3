@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-23] ingest | GitHub paypal/paypal-js — core `10.0.2` and React `10.1.1`
+
+- Full serial ingest of `github-986685252a62505561c4` from exact SHA `3d72ac928b059cffab3c004d83656bd964ff4a1b`.
+- Added the core `/sdk-v6` default export condition and recorded the React v5 Storybook relocation to a separate Storybook 10 workspace.
+- Preserved all earlier package history and the older immutable story evidence; no payment concept or source count changed.
+- Updated PayPal company, cumulative source, release ledger, provider index, and provider log.
+
 ## [2026-07-23] ingest | GitHub paypal/paypal-js — core `10.0.1` and React `10.1.0`
 
 - Full serial ingest of `github-ee6197518787f8152774` from exact SHA `59cb2ce64d158ac4f4cabecdd82f7b4191a8dff3`.

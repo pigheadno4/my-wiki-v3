@@ -4,6 +4,7 @@ type: source
 date_ingested: 2026-07-23
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-07-22-3d72ac9/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-59cb2ce/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-4bd05ab/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-31eb658/manifest.json"
@@ -15,6 +16,42 @@ tags: [paypal, javascript-sdk, react, npm, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for the independently versioned packages in `paypal/paypal-js`. Detailed implementation knowledge belongs in [[source-github-paypal-js]] and the linked immutable snapshots.
+
+## Repository change set: `3d72ac9` (2026-06-29)
+
+### Package timelines
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@paypal/paypal-js` | `10.0.1` | `10.0.2` | 2026-06-29 | `3d72ac928b059cffab3c004d83656bd964ff4a1b` | Full |
+| `@paypal/react-paypal-js` | `10.1.0` | `10.1.1` | 2026-06-29 | `3d72ac928b059cffab3c004d83656bd964ff4a1b` | Full |
+
+**Important change:** Core adds a `default` export condition to `./sdk-v6`, pointing to the existing v6 ESM build so bundlers and dependency tracers do not fall back to the v5 entry. React moves its v5 Storybook from the package workspace into a separate Storybook 10 workspace and updates its core dependency to `^10.0.2`.
+
+The package-qualified releases are `@paypal/paypal-js@10.0.2` and `@paypal/react-paypal-js@10.1.1`.
+
+**Developer or merchant impact:** Deployments using condition-sensitive bundlers or tracers can now resolve the intended v6 entry. React's published package output and payment integration surface are unchanged; the removed in-package stories are a tooling relocation, not removal of Venmo, subscriptions, Card Fields, Hosted Fields, or Braintree support.
+
+**Migration action:** Upgrade core when `/sdk-v6` is misresolved and verify the emitted deployment bundle. React application consumers need no API migration. Repository maintainers should use the root v5 Storybook workspace commands.
+
+**Updated source sections:** core version 10; React responsibility and version 10; PayPal company summary; provider index and logs. No payment concept page changed because this release contains packaging and development-tooling changes only.
+
+**Evidence:**
+
+- Core release record: `raw/github/paypal/paypal-js/releases/paypal-js/10.0.2/2026-07-22/manifest.json`
+- Core release notes: `raw/github/paypal/paypal-js/releases/paypal-js/10.0.2/2026-07-22/release-notes.md`
+- React release record: `raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.1/2026-07-22/manifest.json`
+- React release notes: `raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.1/2026-07-22/release-notes.md`
+- Snapshot manifest: `raw/github/paypal/paypal-js/snapshots/2026-07-22-3d72ac9/manifest.json`
+- Core comparison: `tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/10.0.1--10.0.2/comparison.json`
+- React comparison: `tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.1.0--10.1.1/comparison.json`
+- Core package exports: `raw/github/paypal/paypal-js/snapshots/2026-07-22-3d72ac9/files/packages/paypal-js/package.json`
+- React package manifest: `raw/github/paypal/paypal-js/snapshots/2026-07-22-3d72ac9/files/packages/react-paypal-js/package.json`
+- Root Storybook workspace manifest: `raw/github/paypal/paypal-js/snapshots/2026-07-22-3d72ac9/files/package.json`
+
+### Evidence boundary
+
+The core patch proves package-entry resolution, not a runtime payment-flow change. The React release says published output is unchanged. The current capsule does not retain the files inside the newly separate Storybook workspace, so current-story implementation questions require separately collected workspace evidence; earlier story contents remain available in older immutable snapshots.
 
 ## Repository change set: `59cb2ce` (2026-06-25)
 

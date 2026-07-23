@@ -23,7 +23,7 @@ Client-side SDK injected via `<script>` tag. Renders payment buttons on the page
 - `createOrder` / `onApprove` / `onShippingAddressChange` / `onShippingOptionsChange` callbacks
 - Checkout pop-up launch and management
 
-The package-qualified v6 surface in `@paypal/paypal-js@9.8.0` supports direct instance creation with client ID or client token, conditional components for PayPal, Venmo, guest payments, messages, subscriptions, Card Fields, Apple Pay, and Google Pay, plus eligibility hydration. `@paypal/react-paypal-js@9.3.0` exposes this integration through the `/sdk-v6` subpath. In the coordinated `10.0.0` releases, both the core v6 loader and React `PayPalProvider` require an explicit `production` or `sandbox` environment; the client ID does not choose the endpoint. Core `10.0.1` adds typed v6 DOM custom elements and legacy Buttons Venmo vault-without-purchase setup-token approval data, while React `10.1.0` requires the same environment choice for server eligibility.
+The package-qualified v6 surface in `@paypal/paypal-js@9.8.0` supports direct instance creation with client ID or client token, conditional components for PayPal, Venmo, guest payments, messages, subscriptions, Card Fields, Apple Pay, and Google Pay, plus eligibility hydration. `@paypal/react-paypal-js@9.3.0` exposes this integration through the `/sdk-v6` subpath. In the coordinated `10.0.0` releases, both the core v6 loader and React `PayPalProvider` require an explicit `production` or `sandbox` environment; the client ID does not choose the endpoint. Core `10.0.1` adds typed v6 DOM custom elements and legacy Buttons Venmo vault-without-purchase setup-token approval data, while React `10.1.0` requires the same environment choice for server eligibility. Core `10.0.2` corrects `/sdk-v6` resolution for condition-sensitive bundlers; React `10.1.1` only relocates v5 Storybook tooling and leaves published output unchanged.
 
 ### Braintree PayPal v6
 
@@ -226,8 +226,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-javascript-sdk-performance]] — JS SDK performance: instant vs delayed render, pre-caching, hidden container pattern
 - [[source-paypal-javascript-sdk-best-practices]] — JS SDK best practices: CSP domains + nonce vs unsafe-inline, COOP same-origin-allow-popups
 - [[source-paypal-react-paypal-js-readme]] — @paypal/react-paypal-js v8.x README: PayPalScriptProvider, all components, hooks, Card Fields vs Hosted Fields
-- [[source-github-paypal-js]] — cumulative GitHub evidence for independently versioned packages; v8 baselines, v9 transition, explicit-environment v10, core `10.0.1` types, and React `10.1.0` Braintree Pay Later
-- [[changelog-github-paypal-js]] — package-qualified paypal/paypal-js release ledger through core `10.0.1` and React `10.1.0`, with impact, migration action, contradictions, and immutable raw links
+- [[source-github-paypal-js]] — cumulative GitHub evidence for independently versioned packages; v8 baselines through core `10.0.2` and React `10.1.1`
+- [[changelog-github-paypal-js]] — package-qualified paypal/paypal-js release ledger through core `10.0.2` and React `10.1.1`, with impact, migration action, contradictions, and immutable raw links
 - [[source-github-react-paypal-js-v8]] — GitHub react-paypal-js v8 source: ScriptProvider internals, reducer state machine, Buttons lifecycle, CardFields architecture
 - [[source-paypal-expanded-checkout-integrate]] — Expanded Checkout integration: CardFields+Buttons, 3DS SCA, billing address submit, authorize routes
 - [[source-paypal-android-card-payments]] — Android SDK: CardClient, WebPayments, deprecated NativePayments, FraudProtection, 3DS SCA

@@ -6,6 +6,15 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-07-23] ingest | paypal/paypal-js core `10.0.2` and React `10.1.1`
+
+- Approved and processed work item `github-986685252a62505561c4` in full mode.
+- Read and hash-verified the 146-file, 994,570-byte exact-SHA capsule at `raw/github/paypal/paypal-js/snapshots/2026-07-22-3d72ac9/manifest.json`; 95 test/fixture files were excluded and historical stories remained available in prior capsules.
+- Ingested `@paypal/paypal-js@10.0.2` and `@paypal/react-paypal-js@10.1.1` as separate package releases sharing SHA `3d72ac928b059cffab3c004d83656bd964ff4a1b`.
+- Recorded the core `/sdk-v6` default export condition that prevents condition-sensitive tooling from falling back to v5.
+- Recorded the React v5 Storybook 6-to-10 migration and separate-workspace extraction without treating removed in-package stories as removed payment support.
+- No concept or contradiction update was required because the release changes package resolution and development tooling, not payment behavior.
+
 ## [2026-07-23] ingest | paypal/paypal-js core `10.0.1` and React `10.1.0`
 
 - Approved and processed work item `github-ee6197518787f8152774` in full mode.

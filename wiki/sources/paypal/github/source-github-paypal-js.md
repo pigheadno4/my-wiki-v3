@@ -5,6 +5,7 @@ date_ingested: 2026-04-13
 date_updated: 2026-07-23
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-07-22-3d72ac9/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-59cb2ce/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-4bd05ab/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-31eb658/manifest.json"
@@ -18,7 +19,7 @@ tags: [paypal, javascript-sdk, react, npm, typescript, github-repository, venmo]
 
 `paypal/paypal-js` is PayPal's JavaScript SDK monorepo. It contains two independently versioned packages: `@paypal/paypal-js`, the vanilla loader and TypeScript definitions, and `@paypal/react-paypal-js`, the React integration layer.
 
-This cumulative page preserves package-qualified historical findings. The immutable pipeline contains independent v8 baselines for `@paypal/paypal-js@8.4.2` and `@paypal/react-paypal-js@8.9.2`, the shared-SHA major transition to `@paypal/paypal-js@9.8.0` and `@paypal/react-paypal-js@9.3.0`, the coordinated `10.0.0` environment-safety transition, and the shared-SHA `@paypal/paypal-js@10.0.1` plus `@paypal/react-paypal-js@10.1.0` feature release. Each package release retains its own record even when two releases point to one repository snapshot.
+This cumulative page preserves package-qualified historical findings. The immutable pipeline contains independent v8 baselines for `@paypal/paypal-js@8.4.2` and `@paypal/react-paypal-js@8.9.2`, the shared-SHA major transition to `@paypal/paypal-js@9.8.0` and `@paypal/react-paypal-js@9.3.0`, the coordinated `10.0.0` environment-safety transition, the shared-SHA `@paypal/paypal-js@10.0.1` plus `@paypal/react-paypal-js@10.1.0` feature release, and the shared-SHA core `10.0.2` package-resolution plus React `10.1.1` Storybook-tooling patch. Each package release retains its own record even when two releases point to one repository snapshot.
 
 Repository: <https://github.com/paypal/paypal-js>
 
@@ -104,12 +105,28 @@ Repository: <https://github.com/paypal/paypal-js>
 >
 > `raw/github/paypal/paypal-js/snapshots/2026-07-22-59cb2ce/files/packages/react-paypal-js/src/v6/hooks/useFetchEligibleMethods.ts:99-109`
 
+> "Add a `default` export condition to the `./sdk-v6` subpath so bundlers/tracers (e.g. @vercel/nft) resolve it correctly and don't fall back to the v5 entry."
+>
+> `raw/github/paypal/paypal-js/releases/paypal-js/10.0.2/2026-07-22/release-notes.md:3`
+
+> "\"default\": \"./dist/v6/esm/paypal-js.js\""
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-22-3d72ac9/files/packages/paypal-js/package.json:17-20`
+
+> "This is a tooling/dev-dependency change only — the published package output is unchanged"
+>
+> `raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.1/2026-07-22/release-notes.md:3`
+
+> "\"@paypal/paypal-js\": \"^10.0.2\""
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-22-3d72ac9/files/packages/react-paypal-js/package.json:61-64`
+
 ## Package status
 
 | Package | Latest ingested release | Evidence status |
 | --- | --- | --- |
-| `@paypal/paypal-js` | `10.0.1` | Approved full patch ingest; v8, v9, and 10.0.0 history retained |
-| `@paypal/react-paypal-js` | `10.1.0` | Approved full minor ingest; v8, v9, and 10.0.0 history retained |
+| `@paypal/paypal-js` | `10.0.2` | Approved full patch ingest; v8 through 10.0.1 history retained |
+| `@paypal/react-paypal-js` | `10.1.1` | Approved shared-SHA ingest; v8 through 10.1.0 history retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -205,6 +222,14 @@ Second, the legacy Buttons `OnApproveData` type adds optional `vaultSetupToken`.
 
 The release also migrates repository tests to Vitest 4. That is build tooling, not merchant-facing payment behavior.
 
+#### `@paypal/paypal-js@10.0.2`
+
+The `10.0.2` patch shares commit `3d72ac928b059cffab3c004d83656bd964ff4a1b` with React `10.1.1`. It adds a `default` condition to the `./sdk-v6` package export, pointing to the same `./dist/v6/esm/paypal-js.js` file as the existing `import` condition. The `types` condition remains `./types/v6/index.d.ts`, and the root package export is unchanged.
+
+This is a package-resolution correction for bundlers and dependency tracers such as `@vercel/nft`. Without a matching condition, those tools could fall back to the package's v5 entry even when an integration requested `@paypal/paypal-js/sdk-v6`. The release changes how tooling resolves the existing v6 build; it does not add a payment method, session API, callback, or runtime checkout behavior.
+
+No application API migration is stated. Consumers using the `/sdk-v6` subpath should upgrade when their bundler or deployment tracer resolves the wrong entry, then verify the emitted server or deployment bundle. The repository also upgrades `openapi-typescript`, but the retained public declaration capsule shows no release-note claim of a generated API behavior change.
+
 ## `@paypal/react-paypal-js`
 
 ### Responsibility
@@ -217,7 +242,7 @@ The React package:
 - uses reducer state for initial, pending, resolved, and rejected script states;
 - removes the existing SDK script before resetting options;
 - exports Buttons, Marks, Messages, Braintree buttons, Hosted Fields, Card Fields, and related hooks; and
-- retains Storybook examples as integration evidence.
+- retains historical Storybook examples as integration evidence in earlier capsules; from `10.1.1`, the v5 stories live in a separate repository workspace rather than in the published package workspace.
 
 The retained Venmo story configures `buttons,funding-eligibility`, enables Venmo funding, and renders `PayPalButtons` with the Venmo funding source. This is an example for the React package and legacy JS SDK button flow; it is distinct from the v6 `venmo-payments` session types in `@paypal/paypal-js`.
 
@@ -357,6 +382,16 @@ Other fixes affect integration correctness:
 
 Migration from `10.0.0` is additive: provide `environment` to every server eligibility call, fetch Braintree eligibility before Pay Later rendering, change manually supplied basic-card buyer-country JSX to `buyer-country`, load Google `pay.js` before mounting Google Pay, and distinguish provider initialization errors from session errors.
 
+#### `@paypal/react-paypal-js@10.1.1`
+
+React `10.1.1` shares commit `3d72ac928b059cffab3c004d83656bd964ff4a1b` with core `10.0.2` and updates its runtime dependency to `@paypal/paypal-js ^10.0.2`.
+
+The package's v5 Storybook is migrated from Storybook 6 to Storybook 10 with `@storybook/react-vite` and extracted into the separate `@paypal/react-paypal-js-storybook-v5` workspace. The root repository manifest now declares `packages/react-paypal-js-storybook/*` workspaces and dedicated v5/v6 Storybook scripts. Correspondingly, the React package removes its Storybook scripts, Storybook-only development dependencies, and in-package `src/stories` files.
+
+The release notes state that the published package output is unchanged. The removed stories include useful Venmo, subscriptions, Card Fields, Hosted Fields, and Braintree examples, but their relocation is documentation/tooling maintenance rather than evidence that those integration behaviors were removed. Earlier immutable capsules remain the evidence authority for their historical contents; a future query about the relocated current stories requires a snapshot policy that includes the separate Storybook workspace.
+
+No merchant application migration is required. Package maintainers use the root workspace's v5 Storybook commands, while application consumers receive the core `10.0.2` dependency range and otherwise retain the `10.1.0` public React surface.
+
 ## Historical evidence retained from the earlier ingest
 
 The earlier repository review at commit `f59f94baefea4b2ddb38553669ed0ac4ede86167` established the legacy loader option handling above and recorded a broader v6 component set, including guest payments, card fields, messages, subscriptions, Apple Pay, and Google Pay. That snapshot did not retain an exact package-qualified release identity, so its broader surface is useful historical context but must not be attributed to `@paypal/paypal-js@8.4.2`.
@@ -381,6 +416,11 @@ See [[changelog-github-paypal-js]] for the chronological package release ledger 
 
 ## Raw Sources
 
+- `raw/github/paypal/paypal-js/snapshots/2026-07-22-3d72ac9/manifest.json` — shared exact-SHA source capsule for core `10.0.2` and React `10.1.1`
+- `raw/github/paypal/paypal-js/releases/paypal-js/10.0.2/2026-07-22/manifest.json` — package-qualified core `10.0.2` release record
+- `raw/github/paypal/paypal-js/releases/paypal-js/10.0.2/2026-07-22/release-notes.md` — core package-resolution patch notes
+- `raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.1/2026-07-22/manifest.json` — package-qualified React `10.1.1` release record
+- `raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.1/2026-07-22/release-notes.md` — React Storybook-tooling patch notes
 - `raw/github/paypal/paypal-js/snapshots/2026-07-22-59cb2ce/manifest.json` — shared exact-SHA source capsule for core `10.0.1` and React `10.1.0`
 - `raw/github/paypal/paypal-js/releases/paypal-js/10.0.1/2026-07-22/manifest.json` — package-qualified core `10.0.1` release record
 - `raw/github/paypal/paypal-js/releases/paypal-js/10.0.1/2026-07-22/release-notes.md` — core patch notes
