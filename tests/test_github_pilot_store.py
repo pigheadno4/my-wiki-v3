@@ -4,6 +4,7 @@ import tempfile
 import unittest
 from dataclasses import replace
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,6 +17,7 @@ from github_pilot_store import (  # noqa: E402
     PilotStoreError,
     publish_release_record,
     publish_source_snapshot,
+    publish_source_supplement,
     write_package_comparison,
 )
 from github_registry import RepoConfig  # noqa: E402
@@ -113,6 +115,10 @@ class GitHubPilotStoreTests(unittest.TestCase):
         self.assertIn("README.md", first.files)
         self.assertIn("LICENSE", first.files)
         self.assertIn("src/index.ts", first.files)
+        manifest = json.loads(first.manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(2, manifest["format_version"])
+        self.assertTrue(manifest["author_date"])
+        self.assertTrue(manifest["commit_date"])
 
     def test_root_package_lock_is_not_standard_snapshot_context(self):
         sha = commit_files(
@@ -179,6 +185,26 @@ class GitHubPilotStoreTests(unittest.TestCase):
         self.assertEqual(b"original release notes\n", first.notes_path.read_bytes())
         self.assertEqual(b"corrected release notes\n", second.notes_path.read_bytes())
 
+    def test_release_notes_are_secret_scanned_before_publication(self):
+        secret = replace(
+            self.evidence,
+            content=("sk_live_" + ("a" * 24) + "\n").encode("utf-8"),
+        )
+
+        with self.assertRaisesRegex(ValueError, "secret-finding"):
+            publish_release_record(
+                self.root,
+                self.config,
+                self.candidate,
+                "2026-07-07T12:00:00Z",
+                secret,
+                "2026-07-20",
+            )
+
+        self.assertFalse(
+            (self.root / "raw/github/acme/widgets/releases").exists()
+        )
+
     def test_failed_snapshot_validation_publishes_no_partial_directory(self):
         invalid = replace(
             self.resolution,
@@ -197,6 +223,48 @@ class GitHubPilotStoreTests(unittest.TestCase):
 
         snapshots = self.root / "raw/github/acme/widgets/snapshots"
         self.assertEqual([], list(snapshots.iterdir()) if snapshots.exists() else [])
+
+    def test_publication_rejects_repository_root_symlink_escape(self):
+        outside = self.root / "outside"
+        outside.mkdir()
+        company_root = self.root / "raw/github/acme"
+        company_root.mkdir(parents=True)
+        (company_root / "widgets").symlink_to(outside, target_is_directory=True)
+
+        with self.assertRaisesRegex(PilotStoreError, "repository storage path"):
+            publish_source_snapshot(
+                self.root,
+                self.config,
+                self.tree,
+                self.resolution,
+                "2026-07-20",
+                ("@scope/widget@10.0.0",),
+            )
+
+        self.assertEqual([], list(outside.iterdir()))
+
+    def test_exact_sha_supplement_is_immutable_and_idempotent(self):
+        first = publish_source_supplement(
+            self.root,
+            self.config,
+            self.tree,
+            ("src/index.ts",),
+            "2026-07-20",
+        )
+        second = publish_source_supplement(
+            self.root,
+            self.config,
+            self.tree,
+            ("src/index.ts",),
+            "2026-07-21",
+        )
+
+        self.assertEqual(first.directory, second.directory)
+        self.assertEqual(("src/index.ts",), first.files)
+        self.assertEqual(
+            b"export const value = 1;\n",
+            (first.directory / "files/src/index.ts").read_bytes(),
+        )
 
     def test_comparison_is_scoped_to_the_requested_package_paths(self):
         next_sha = commit_files(
@@ -227,6 +295,80 @@ class GitHubPilotStoreTests(unittest.TestCase):
         metadata = json.loads(record.metadata_path.read_text(encoding="utf-8"))
         self.assertEqual(self.sha, metadata["from_sha"])
         self.assertEqual(next_sha, metadata["to_sha"])
+
+    def test_comparison_enforces_packet_path_and_byte_budgets(self):
+        next_sha = commit_files(
+            self.repo,
+            {
+                "src/index.ts": "export const value = '" + ("x" * 200) + "';\n",
+                "src/other.ts": "export const other = 2;\n",
+            },
+            "large comparison",
+        )
+        constrained = replace(
+            self.config,
+            capsules=(
+                replace(
+                    self.capsule(),
+                    max_packet_files=1,
+                    max_packet_utf8_bytes=64,
+                ),
+            ),
+        )
+
+        with self.assertRaisesRegex(PilotStoreError, "comparison exceeds"):
+            write_package_comparison(
+                self.root,
+                constrained,
+                self.repo,
+                "@scope/widget",
+                "10.0.0",
+                self.sha,
+                ("src",),
+                "10.0.1",
+                next_sha,
+                ("src",),
+            )
+
+    def test_comparison_publication_failure_leaves_no_partial_directory(self):
+        next_sha = commit_files(
+            self.repo,
+            {"src/index.ts": "export const value = 2;\n"},
+            "patch release",
+        )
+        from github_pilot_store import _write_bytes_atomic
+
+        calls = {"count": 0}
+
+        def fail_second_write(path, content):
+            calls["count"] += 1
+            if calls["count"] == 2:
+                raise OSError("disk full")
+            return _write_bytes_atomic(path, content)
+
+        with mock.patch(
+            "github_pilot_store._write_bytes_atomic",
+            side_effect=fail_second_write,
+        ):
+            with self.assertRaises(OSError):
+                write_package_comparison(
+                    self.root,
+                    self.config,
+                    self.repo,
+                    "@scope/widget",
+                    "10.0.0",
+                    self.sha,
+                    ("src",),
+                    "10.0.1",
+                    next_sha,
+                    ("src",),
+                )
+
+        comparison = (
+            self.root
+            / "tracking/github/repos/acme/widgets/comparisons/widget/10.0.0--10.0.1"
+        )
+        self.assertFalse(comparison.exists())
 
 
 if __name__ == "__main__":

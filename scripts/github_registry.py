@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from pathlib import Path
+import re
 from typing import Dict, List, Optional, Sequence, Tuple
 from urllib.parse import urlsplit
 
@@ -51,6 +52,7 @@ OPTIONAL_KEYS = {
 }
 VERSION_TRACK_REQUIRED_KEYS = {"selector", "backfill", "future"}
 VERSION_TRACK_OPTIONAL_KEYS = {"include_prerelease", "pinned_versions"}
+_PATH_COMPONENT = re.compile(r"[a-z0-9][a-z0-9._-]*\Z")
 
 
 @dataclass(frozen=True)
@@ -141,6 +143,11 @@ def validate_registry(repos: Sequence[RepoConfig]) -> List[str]:
             errors.append(prefix + " must use an HTTPS GitHub URL")
         elif repo.id != expected_id:
             errors.append(prefix + " id must equal lowercased URL owner/repository " + expected_id)
+        if not _safe_path_component(repo.company):
+            errors.append(prefix + " company must be a safe lowercase path component")
+        id_parts = repo.id.split("/")
+        if len(id_parts) != 2 or any(not _safe_path_component(part) for part in id_parts):
+            errors.append(prefix + " id must contain safe lowercase path components")
 
         if not isinstance(repo.enabled, bool):
             errors.append(prefix + " enabled must be a boolean")
@@ -150,6 +157,21 @@ def validate_registry(repos: Sequence[RepoConfig]) -> List[str]:
             errors.append(prefix + " byte limits must be positive")
         errors.extend(_version_track_errors(repo.version_tracks, prefix))
 
+    return errors
+
+
+def validate_enabled_policy(repo: RepoConfig) -> List[str]:
+    """Return operational-readiness errors for one enabled focused repository."""
+    if not repo.enabled:
+        return []
+    errors = []
+    if not repo.version_tracks:
+        errors.append("enabled repository requires version tracks")
+    if len(repo.capsules) != 1:
+        errors.append("enabled repository requires exactly one capsule")
+    for track in repo.version_tracks:
+        if not track.selector.startswith("package:"):
+            errors.append("enabled repository release selectors must be package-qualified")
     return errors
 
 
@@ -247,14 +269,11 @@ def _version_track_selector(value: object, index: int, track_index: int) -> str:
             "registry row " + str(index) + " version track " + str(track_index)
             + " selector must be a non-empty semantic selector"
         )
-    if value.startswith("package:"):
-        parsed = parse_package_tag(value[8:])
-    else:
-        parsed = parse_semver(value)
+    parsed = parse_package_tag(value[8:]) if value.startswith("package:") else None
     if parsed is None:
         raise ValueError(
             "registry row " + str(index) + " version track " + str(track_index)
-            + " selector must be a package-scoped or plain semantic selector"
+            + " selector must be package-qualified"
         )
     return value
 
@@ -373,3 +392,11 @@ def _github_repository_id(url: str) -> Optional[str]:
     if len(parts) != 2 or parsed.query or parsed.fragment:
         return None
     return parts[0].lower() + "/" + parts[1].lower()
+
+
+def _safe_path_component(value: str) -> bool:
+    return (
+        isinstance(value, str)
+        and value not in {".", ".."}
+        and _PATH_COMPONENT.fullmatch(value) is not None
+    )

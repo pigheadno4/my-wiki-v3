@@ -14,6 +14,7 @@ from github_work_items import (  # noqa: E402
     PackageChange,
     WorkItemStateError,
     build_work_item,
+    claim_next_ingest,
     load_work_items,
     recommend_ingest_mode,
     record_collection_failure,
@@ -167,6 +168,65 @@ class GitHubWorkItemTests(unittest.TestCase):
         )[0]
         self.assertEqual("approved", approved.state)
         self.assertEqual("delta", approved.approved_mode)
+
+    def test_claim_next_ingest_is_atomic_and_globally_serial(self):
+        first = replace(self.awaiting_item, state="approved", approved_mode="full")
+        second = replace(
+            build_work_item(
+                "paypal/paypal-js",
+                "4caece5" * 5 + "4caec",
+                "2026-07-21",
+                (replace(self.paypal_change, to_version="10.0.1", release_id="@paypal/paypal-js@10.0.1"),),
+                self.snapshot_manifest.replace("3caece5", "4caece5"),
+            ),
+            state="approved",
+            approved_mode="delta",
+        )
+        save_work_items(self.path, (first, second))
+
+        claimed = claim_next_ingest(self.path)
+
+        self.assertEqual(first.work_item_id, claimed.work_item_id)
+        states = {item.work_item_id: item.state for item in load_work_items(self.path)}
+        self.assertEqual("ingesting", states[first.work_item_id])
+        self.assertEqual("approved", states[second.work_item_id])
+        with self.assertRaisesRegex(WorkItemStateError, "already in progress"):
+            claim_next_ingest(self.path)
+
+    def test_transition_rejects_a_second_ingesting_item(self):
+        first = replace(self.awaiting_item, state="ingesting", approved_mode="full")
+        second = replace(
+            build_work_item(
+                "paypal/paypal-js",
+                "4caece5" * 5 + "4caec",
+                "2026-07-21",
+                (replace(self.paypal_change, to_version="10.0.1", release_id="@paypal/paypal-js@10.0.1"),),
+                self.snapshot_manifest.replace("3caece5", "4caece5"),
+            ),
+            state="approved",
+            approved_mode="delta",
+        )
+        save_work_items(self.path, (first, second))
+
+        with self.assertRaisesRegex(WorkItemStateError, "already in progress"):
+            transition_work_item(
+                self.path, second.work_item_id, "approved", "ingesting"
+            )
+
+    def test_late_collection_failure_does_not_demote_ingested_item(self):
+        ingested = replace(self.awaiting_item, state="ingested", approved_mode="full")
+        save_work_items(self.path, (ingested,))
+
+        retained = record_collection_failure(
+            self.path,
+            replace(self.awaiting_item, state="discovered"),
+            "late collector failed",
+            "2026-07-21",
+            3,
+        )[0]
+
+        self.assertEqual("ingested", retained.state)
+        self.assertEqual("", retained.last_error)
 
     def test_three_attempts_in_one_run_record_collection_failure(self):
         item = build_work_item(

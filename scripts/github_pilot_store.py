@@ -1,6 +1,8 @@
 """Immutable evidence storage for the focused GitHub collection pilot."""
 
 from dataclasses import dataclass
+from contextlib import contextmanager
+import fcntl
 import hashlib
 import json
 import os
@@ -9,6 +11,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+import threading
 from typing import Dict, List, Optional, Sequence, Tuple
 
 from github_canonical import canonical_json_bytes, safe_policy_path
@@ -25,6 +28,7 @@ from github_releases import ReleaseCandidate, ReleaseNotesEvidence
 _DATE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
 _OBJECT_ID = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
 _ROOT_CONTEXT = ("LICENSE", "LICENSE.md", "README.md", "package.json")
+_ARTIFACT_THREAD_LOCK = threading.RLock()
 
 
 class PilotStoreError(ValueError):
@@ -33,6 +37,16 @@ class PilotStoreError(ValueError):
 
 @dataclass(frozen=True)
 class SourceSnapshot:
+    repo_id: str
+    sha: str
+    collected_date: str
+    directory: Path
+    manifest_path: Path
+    files: Tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class SourceSupplement:
     repo_id: str
     sha: str
     collected_date: str
@@ -89,6 +103,25 @@ def publish_source_snapshot(
 ) -> SourceSnapshot:
     """Publish or reuse one immutable source snapshot for an exact SHA."""
     root = Path(root).resolve()
+    with _artifact_lock(root):
+        return _publish_source_snapshot_unlocked(
+            root,
+            config,
+            tree,
+            resolution,
+            collected_date,
+            triggering_refs,
+        )
+
+
+def _publish_source_snapshot_unlocked(
+    root: Path,
+    config: RepoConfig,
+    tree: GitTree,
+    resolution: CapsuleResolution,
+    collected_date: str,
+    triggering_refs: Sequence[str],
+) -> SourceSnapshot:
     _require_date(collected_date)
     if not isinstance(tree, GitTree):
         raise TypeError("tree must be a GitTree")
@@ -107,14 +140,17 @@ def publish_source_snapshot(
     total = sum(item.size for item in files)
     if total > config.max_snapshot_bytes:
         raise PilotStoreError("snapshot exceeds max_snapshot_bytes")
+    author_date, commit_date = tree.commit_dates()
     manifest = {
+        "author_date": author_date,
         "collected_date": collected_date,
+        "commit_date": commit_date,
         "excluded": [
             {"path": path, "reason": reason}
             for path, reason in resolution.excluded
         ],
         "files": [_file_manifest(item) for item in files],
-        "format_version": 1,
+        "format_version": 2,
         "repository": config.id,
         "sha": sha,
         "triggering_refs": sorted(set(triggering_refs)),
@@ -148,6 +184,101 @@ def publish_source_snapshot(
     )
 
 
+def publish_source_supplement(
+    root: Path,
+    config: RepoConfig,
+    tree: GitTree,
+    paths: Sequence[str],
+    collected_date: str,
+) -> SourceSupplement:
+    """Publish a bounded immutable exact-SHA supplement without changing a snapshot."""
+    root = Path(root).resolve()
+    with _artifact_lock(root):
+        return _publish_source_supplement_unlocked(
+            root, config, tree, paths, collected_date
+        )
+
+
+def _publish_source_supplement_unlocked(
+    root: Path,
+    config: RepoConfig,
+    tree: GitTree,
+    paths: Sequence[str],
+    collected_date: str,
+) -> SourceSupplement:
+    _require_date(collected_date)
+    requested = tuple(sorted(set(paths)))
+    if not requested or any(not safe_policy_path(path) for path in requested):
+        raise PilotStoreError("supplement paths must be safe repository-relative paths")
+    blobs = {blob.path: blob for blob in tree.blobs()}
+    files = []
+    total = 0
+    for path in requested:
+        blob = blobs.get(path)
+        if blob is None or blob.mode not in ("100644", "100755"):
+            raise PilotStoreError("supplement path must be a regular tracked file: " + path)
+        content = tree.read_blob(path, max_bytes=config.max_file_bytes)
+        total += len(content)
+        if total > config.max_snapshot_bytes:
+            raise PilotStoreError("supplement exceeds max_snapshot_bytes")
+        files.append(
+            CapsuleFile(
+                path=path,
+                content=content,
+                sha256=hashlib.sha256(content).hexdigest(),
+                size=len(content),
+                purpose="query-supplement",
+                git_blob_oid=blob.oid,
+                git_mode=blob.mode,
+                package="",
+                classification_reason="explicit-query-path",
+            )
+        )
+    scan_evidence_files(files, config.secret_allowlist)
+    identity = hashlib.sha256(
+        canonical_json_bytes(
+            {
+                "files": [
+                    {"path": item.path, "sha256": item.sha256}
+                    for item in files
+                ],
+                "repository": config.id,
+                "sha": tree.sha,
+            }
+        )
+    ).hexdigest()
+    repository_root = _raw_repository_root(root, config)
+    supplement_root = repository_root / "supplements"
+    for manifest_path in sorted(supplement_root.glob("*/manifest.json")):
+        manifest = _read_json(manifest_path)
+        if manifest.get("identity_sha256") == identity:
+            return _supplement_from_manifest(manifest_path.parent, manifest)
+    manifest = {
+        "collected_date": collected_date,
+        "files": [_file_manifest(item) for item in files],
+        "format_version": 1,
+        "identity_sha256": identity,
+        "repository": config.id,
+        "sha": tree.sha,
+    }
+    destination = supplement_root / (
+        collected_date + "-" + tree.sha[:7] + "-" + identity[:8]
+    )
+    staging = _new_staging(repository_root)
+    try:
+        for item in files:
+            target = staging / "files" / item.path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(item.content)
+        _write_json(staging / "manifest.json", manifest)
+        supplement_root.mkdir(parents=True, exist_ok=True)
+        os.replace(str(staging), str(destination))
+    except Exception:
+        _clean_owned(staging)
+        raise
+    return _supplement_from_manifest(destination, manifest)
+
+
 def publish_release_record(
     root: Path,
     config: RepoConfig,
@@ -158,6 +289,25 @@ def publish_release_record(
 ) -> PackageReleaseRecord:
     """Publish or reuse one immutable package release record."""
     root = Path(root).resolve()
+    with _artifact_lock(root):
+        return _publish_release_record_unlocked(
+            root,
+            config,
+            candidate,
+            release_date,
+            evidence,
+            collected_date,
+        )
+
+
+def _publish_release_record_unlocked(
+    root: Path,
+    config: RepoConfig,
+    candidate: ReleaseCandidate,
+    release_date: str,
+    evidence: Optional[ReleaseNotesEvidence],
+    collected_date: str,
+) -> PackageReleaseRecord:
     _require_date(collected_date)
     if not isinstance(candidate, ReleaseCandidate):
         raise TypeError("candidate must be a ReleaseCandidate")
@@ -172,6 +322,22 @@ def publish_release_record(
     if not isinstance(notes, bytes):
         raise TypeError("release notes must be bytes")
     notes_sha256 = hashlib.sha256(notes).hexdigest()
+    scan_evidence_files(
+        (
+            CapsuleFile(
+                path="release-notes.md",
+                content=notes,
+                sha256=notes_sha256,
+                size=len(notes),
+                purpose="release-notes",
+                git_blob_oid=notes_sha256,
+                git_mode="100644",
+                package=candidate.package,
+                classification_reason="release-notes",
+            ),
+        ),
+        config.secret_allowlist,
+    )
     release_id = candidate.package + "@" + candidate.version
     release_root = (
         _raw_repository_root(root, config)
@@ -242,13 +408,15 @@ def write_package_comparison(
         + pathspecs,
     )
     changed_paths = tuple(sorted(line for line in changed.splitlines() if line))
+    if len(config.capsules) != 1:
+        raise PilotStoreError("comparison requires exactly one capsule policy")
+    capsule = config.capsules[0]
+    if len(changed_paths) > capsule.max_packet_files:
+        raise PilotStoreError("comparison exceeds max_packet_files")
+    if len(patch) > capsule.max_packet_utf8_bytes:
+        raise PilotStoreError("comparison exceeds max_packet_utf8_bytes")
     comparison_root = (
-        Path(root).resolve()
-        / "tracking"
-        / "github"
-        / "repos"
-        / config.company
-        / config.id.split("/", 1)[1]
+        _tracking_repository_root(Path(root).resolve(), config)
         / "comparisons"
         / package_slug(package)
         / (_version_slug(from_version) + "--" + _version_slug(to_version))
@@ -265,12 +433,47 @@ def write_package_comparison(
         "to_version": to_version,
     }
     markdown = _comparison_markdown(metadata)
-    comparison_root.mkdir(parents=True, exist_ok=True)
-    _write_bytes_atomic(comparison_root / "diff.patch", patch)
-    _write_bytes_atomic(
-        comparison_root / "comparison.json", canonical_json_bytes(metadata) + b"\n"
+    markdown_bytes = markdown.encode("utf-8")
+    metadata["markdown_sha256"] = hashlib.sha256(markdown_bytes).hexdigest()
+    metadata["patch_sha256"] = hashlib.sha256(patch).hexdigest()
+    comparison_evidence = tuple(
+        CapsuleFile(
+            path=path,
+            content=content,
+            sha256=hashlib.sha256(content).hexdigest(),
+            size=len(content),
+            purpose="package-comparison",
+            git_blob_oid=hashlib.sha256(content).hexdigest(),
+            git_mode="100644",
+            package=package,
+            classification_reason="generated-comparison",
+        )
+        for path, content in (
+            ("diff.patch", patch),
+            ("comparison.md", markdown_bytes),
+        )
     )
-    _write_bytes_atomic(comparison_root / "comparison.md", markdown.encode("utf-8"))
+    scan_evidence_files(comparison_evidence, config.secret_allowlist)
+    existing = _existing_comparison(comparison_root, metadata)
+    if existing is not None:
+        return existing
+    comparison_root.parent.mkdir(parents=True, exist_ok=True)
+    staging = Path(
+        tempfile.mkdtemp(prefix=".comparison-", dir=str(comparison_root.parent))
+    )
+    try:
+        _write_bytes_atomic(staging / "diff.patch", patch)
+        _write_bytes_atomic(
+            staging / "comparison.json", canonical_json_bytes(metadata) + b"\n"
+        )
+        _write_bytes_atomic(staging / "comparison.md", markdown_bytes)
+        os.replace(str(staging), str(comparison_root))
+    except Exception:
+        _clean_owned(staging)
+        winner = _existing_comparison(comparison_root, metadata)
+        if winner is not None:
+            return winner
+        raise
     return ComparisonRecord(
         package,
         from_version,
@@ -281,6 +484,37 @@ def write_package_comparison(
         comparison_root / "diff.patch",
         comparison_root / "comparison.json",
         comparison_root / "comparison.md",
+    )
+
+
+def _existing_comparison(
+    comparison_root: Path, expected: dict
+) -> Optional[ComparisonRecord]:
+    if not comparison_root.exists():
+        return None
+    if comparison_root.is_symlink() or not comparison_root.is_dir():
+        raise PilotStoreError("comparison destination is unsafe")
+    manifest_path = comparison_root / "comparison.json"
+    patch_path = comparison_root / "diff.patch"
+    markdown_path = comparison_root / "comparison.md"
+    if any(
+        not path.is_file() or path.is_symlink()
+        for path in (manifest_path, patch_path, markdown_path)
+    ):
+        raise PilotStoreError("comparison destination is incomplete")
+    manifest = _read_json(manifest_path)
+    if manifest != expected:
+        raise PilotStoreError("comparison destination conflicts with generated evidence")
+    return ComparisonRecord(
+        str(manifest["package"]),
+        str(manifest["from_version"]),
+        str(manifest["to_version"]),
+        str(manifest["from_sha"]),
+        str(manifest["to_sha"]),
+        tuple(str(path) for path in manifest["changed_paths"]),
+        patch_path,
+        manifest_path,
+        markdown_path,
     )
 
 
@@ -410,9 +644,59 @@ def _release_from_manifest(directory: Path, manifest: dict) -> PackageReleaseRec
     )
 
 
+def _supplement_from_manifest(directory: Path, manifest: dict) -> SourceSupplement:
+    return SourceSupplement(
+        str(manifest["repository"]),
+        str(manifest["sha"]),
+        str(manifest["collected_date"]),
+        directory,
+        directory / "manifest.json",
+        tuple(str(item["path"]) for item in manifest["files"]),
+    )
+
+
 def _raw_repository_root(root: Path, config: RepoConfig) -> Path:
     name = config.id.split("/", 1)[1]
-    return root / "raw" / "github" / config.company / name
+    base = root / "raw" / "github"
+    candidate = base / config.company / name
+    _require_contained_storage_path(root, candidate)
+    return candidate
+
+
+def _tracking_repository_root(root: Path, config: RepoConfig) -> Path:
+    name = config.id.split("/", 1)[1]
+    candidate = root / "tracking" / "github" / "repos" / config.company / name
+    _require_contained_storage_path(root, candidate)
+    return candidate
+
+
+def _require_contained_storage_path(root: Path, candidate: Path) -> None:
+    root = root.resolve()
+    try:
+        relative = candidate.relative_to(root)
+    except ValueError as error:
+        raise PilotStoreError("repository storage path escapes wiki root") from error
+    current = root
+    for component in relative.parts:
+        current = current / component
+        if current.is_symlink():
+            raise PilotStoreError("repository storage path contains a symlink")
+    resolved = candidate.resolve(strict=False)
+    if resolved != root and root not in resolved.parents:
+        raise PilotStoreError("repository storage path escapes wiki root")
+
+
+@contextmanager
+def _artifact_lock(root: Path):
+    lock_path = root / "tracking" / "github" / "artifacts.lock"
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with _ARTIFACT_THREAD_LOCK:
+        with lock_path.open("a+b") as lock:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
 
 
 def _new_staging(repository_root: Path) -> Path:
@@ -532,8 +816,10 @@ __all__ = [
     "PackageReleaseRecord",
     "PilotStoreError",
     "SourceSnapshot",
+    "SourceSupplement",
     "package_slug",
     "publish_release_record",
     "publish_source_snapshot",
+    "publish_source_supplement",
     "write_package_comparison",
 ]

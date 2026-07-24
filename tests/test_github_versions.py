@@ -55,6 +55,12 @@ class GitHubVersionTests(unittest.TestCase):
             parse_package_tag("@scope/name@v10.2.0"),
         )
 
+    def test_parser_accepts_unscoped_package_tags(self):
+        self.assertEqual(
+            ("braintree-web", "3.112.1"),
+            parse_package_tag("braintree-web@3.112.1"),
+        )
+
     def test_parser_accepts_build_metadata_without_affecting_precedence(self):
         with_build = parse_semver("1.2.3+build.7")
         other_build = parse_semver("1.2.3+build.8")

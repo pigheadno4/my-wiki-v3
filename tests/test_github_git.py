@@ -203,11 +203,18 @@ class GitResolutionTests(unittest.TestCase):
             resolve_ref(self.config(), self.inspection(), "default-branch").sha,
         )
 
-    def test_package_selector_requires_a_scoped_package_namespace(self):
-        commit_file(self.repo, "README.md", "one\n", "initial")
+    def test_package_selector_accepts_an_unscoped_package_namespace(self):
+        sha = commit_file(self.repo, "README.md", "one\n", "initial")
+        tag(self.repo, "widget@9.0.0")
 
-        with self.assertRaisesRegex(RefResolutionError, "namespace"):
-            resolve_ref(self.config(), self.inspection(), "package:widget@9")
+        resolved = resolve_ref(
+            self.config(version_strategy="monorepo-packages"),
+            self.inspection(version_strategy="monorepo-packages"),
+            "package:widget@9",
+        )
+
+        self.assertEqual(sha, resolved.sha)
+        self.assertEqual("widget@9.0.0", resolved.ref_name)
 
     def test_inspection_detects_submodules(self):
         commit_file(self.repo, "README.md", "one\n", "initial")

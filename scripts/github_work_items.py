@@ -1,11 +1,14 @@
 """Deterministic ingest recommendations and queue state for the GitHub pilot."""
 
 from dataclasses import asdict, dataclass, replace
+from contextlib import contextmanager
+import fcntl
 import json
 import os
 from pathlib import Path
 import re
 import tempfile
+import threading
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from github_canonical import (
@@ -76,7 +79,10 @@ _WORK_ITEM_FIELDS = {
     "consecutive_failed_runs",
     "last_error",
     "last_attempted_date",
+    "evidence_revision",
 }
+_LEGACY_WORK_ITEM_FIELDS = _WORK_ITEM_FIELDS - {"evidence_revision"}
+_QUEUE_THREAD_LOCK = threading.RLock()
 
 
 class WorkItemStateError(ValueError):
@@ -114,6 +120,7 @@ class WorkItem:
     package_changes: Tuple[PackageChange, ...]
     snapshot_manifest: str
     recommended_mode: str
+    evidence_revision: str = ""
     approved_mode: Optional[str] = None
     state: str = "discovered"
     attempts_in_run: int = 0
@@ -168,7 +175,12 @@ def recommend_ingest_mode(signals: ChangeSignals) -> Tuple[str, Tuple[str, ...]]
     return "full", ("ambiguous-version-transition",)
 
 
-def build_work_item_id(repo_id: str, sha: str, release_ids: Sequence[str]) -> str:
+def build_work_item_id(
+    repo_id: str,
+    sha: str,
+    release_ids: Sequence[str],
+    evidence_revision: str = "",
+) -> str:
     """Build the stable identity for one SHA-grouped release set."""
     _require_repo_id(repo_id)
     _require_sha(sha)
@@ -176,6 +188,10 @@ def build_work_item_id(repo_id: str, sha: str, release_ids: Sequence[str]) -> st
     if not normalized:
         raise ValueError("release_ids must not be empty")
     payload = {"release_ids": list(normalized), "repository": repo_id, "sha": sha}
+    if evidence_revision:
+        if re.fullmatch(r"[0-9a-f]{64}", evidence_revision) is None:
+            raise ValueError("evidence_revision must be a SHA-256 hash")
+        payload["evidence_revision"] = evidence_revision
     return "github-" + canonical_sha256(payload)[:20]
 
 
@@ -185,6 +201,7 @@ def build_work_item(
     collection_date: str,
     package_changes: Sequence[PackageChange],
     snapshot_manifest: str,
+    evidence_revision: str = "",
 ) -> WorkItem:
     """Build one discovered work item from same-SHA package changes."""
     _require_repo_id(repo_id)
@@ -202,13 +219,14 @@ def build_work_item(
     mode = "full" if any(item.recommended_mode == "full" for item in changes) else "delta"
     release_ids = tuple(item.release_id for item in changes)
     item = WorkItem(
-        build_work_item_id(repo_id, sha, release_ids),
+        build_work_item_id(repo_id, sha, release_ids, evidence_revision),
         repo_id,
         sha,
         collection_date,
         changes,
         snapshot_manifest,
         mode,
+        evidence_revision,
     )
     _validate_work_item(item)
     return item
@@ -239,6 +257,11 @@ def load_work_items(path: Path) -> Tuple[WorkItem, ...]:
 
 def save_work_items(path: Path, items: Sequence[WorkItem]) -> Tuple[WorkItem, ...]:
     """Validate and atomically replace the work-item queue."""
+    with _queue_lock(path):
+        return _save_work_items_unlocked(path, items)
+
+
+def _save_work_items_unlocked(path: Path, items: Sequence[WorkItem]) -> Tuple[WorkItem, ...]:
     normalized = tuple(sorted(items, key=lambda item: item.work_item_id))
     if len({item.work_item_id for item in normalized}) != len(normalized):
         raise ValueError("work-item queue contains duplicate IDs")
@@ -255,27 +278,28 @@ def save_work_items(path: Path, items: Sequence[WorkItem]) -> Tuple[WorkItem, ..
 def upsert_discovered_work_item(path: Path, item: WorkItem) -> Tuple[WorkItem, ...]:
     """Insert a discovered item without resetting an existing lifecycle."""
     _validate_work_item(item)
-    items = list(load_work_items(path))
-    for index, existing in enumerate(items):
-        if existing.work_item_id == item.work_item_id:
-            _require_same_identity(existing, item)
-            if existing.state == "discovered":
-                evidence = _merge_evidence(existing, item)
-                merged = replace(
-                    evidence,
-                    collection_date=existing.collection_date,
-                    consecutive_failed_runs=existing.consecutive_failed_runs,
-                    last_error=existing.last_error,
-                    last_attempted_date=existing.last_attempted_date,
-                )
-                items[index] = merged
-                return save_work_items(path, items)
-            _require_same_evidence(existing, item)
-            return tuple(items)
-    if item.state != "discovered":
-        raise WorkItemStateError("new work item must start in discovered state")
-    items.append(item)
-    return save_work_items(path, items)
+    with _queue_lock(path):
+        items = list(load_work_items(path))
+        for index, existing in enumerate(items):
+            if existing.work_item_id == item.work_item_id:
+                _require_same_identity(existing, item)
+                if existing.state == "discovered":
+                    evidence = _merge_evidence(existing, item)
+                    merged = replace(
+                        evidence,
+                        collection_date=existing.collection_date,
+                        consecutive_failed_runs=existing.consecutive_failed_runs,
+                        last_error=existing.last_error,
+                        last_attempted_date=existing.last_attempted_date,
+                    )
+                    items[index] = merged
+                    return _save_work_items_unlocked(path, items)
+                _require_same_evidence(existing, item)
+                return tuple(items)
+        if item.state != "discovered":
+            raise WorkItemStateError("new work item must start in discovered state")
+        items.append(item)
+        return _save_work_items_unlocked(path, items)
 
 
 def transition_work_item(
@@ -286,34 +310,27 @@ def transition_work_item(
     approved_mode: Optional[str] = None,
 ) -> Tuple[WorkItem, ...]:
     """Apply one explicit compare-and-set lifecycle transition."""
-    items = list(load_work_items(path))
-    index = _find_index(items, work_item_id)
-    current = items[index]
-    if current.state != expected:
-        raise WorkItemStateError(
-            "expected state " + expected + " but found " + current.state
+    with _queue_lock(path):
+        items = list(load_work_items(path))
+        return _transition_work_item_unlocked(
+            path, items, work_item_id, expected, requested, approved_mode
         )
-    if requested not in TRANSITIONS.get(expected, ()):
-        raise WorkItemStateError(
-            "invalid work-item transition from " + expected + " to " + requested
+
+
+def claim_next_ingest(path: Path) -> WorkItem:
+    """Atomically claim the oldest approved work item for serial ingest."""
+    with _queue_lock(path):
+        items = list(load_work_items(path))
+        if any(item.state == "ingesting" for item in items):
+            raise WorkItemStateError("a GitHub ingest item is already in progress")
+        approved = [item for item in items if item.state == "approved"]
+        if not approved:
+            raise WorkItemStateError("no approved GitHub ingest item is available")
+        selected = min(approved, key=lambda item: (item.collection_date, item.work_item_id))
+        updated = _transition_work_item_unlocked(
+            path, items, selected.work_item_id, "approved", "ingesting", None
         )
-    if requested == "approved":
-        if approved_mode not in INGEST_MODES:
-            raise WorkItemStateError("approval requires full or delta mode")
-    elif approved_mode is not None:
-        raise WorkItemStateError("approved_mode is only valid during approval")
-    if requested == "ingesting" and current.approved_mode not in INGEST_MODES:
-        raise WorkItemStateError("ingest cannot start without an approved mode")
-    updates: Dict[str, Any] = {"state": requested}
-    if requested == "approved":
-        updates["approved_mode"] = approved_mode
-    if requested == "discovered" and expected in (
-        "collection_failed",
-        "needs_manual_review",
-    ):
-        updates["attempts_in_run"] = 0
-    items[index] = replace(current, **updates)
-    return save_work_items(path, items)
+        return next(item for item in updated if item.work_item_id == selected.work_item_id)
 
 
 def record_collection_failure(
@@ -330,38 +347,125 @@ def record_collection_failure(
         raise ValueError("collection failure requires one to three attempts in run")
     if not isinstance(error, str) or not error or len(error) > 1000:
         raise ValueError("collection failure error must be 1 to 1000 characters")
-    items = list(load_work_items(path))
-    matches = [index for index, value in enumerate(items) if value.work_item_id == item.work_item_id]
-    if matches:
-        index = matches[0]
-        existing = items[index]
-        _require_same_identity(existing, item)
-        evidence = _merge_evidence(existing, item)
-        current = replace(
-            evidence,
-            collection_date=existing.collection_date,
-            state=existing.state,
-            approved_mode=existing.approved_mode,
-            attempts_in_run=existing.attempts_in_run,
-            consecutive_failed_runs=existing.consecutive_failed_runs,
-            last_error=existing.last_error,
-            last_attempted_date=existing.last_attempted_date,
+    with _queue_lock(path):
+        items = list(load_work_items(path))
+        matches = [index for index, value in enumerate(items) if value.work_item_id == item.work_item_id]
+        if matches:
+            index = matches[0]
+            existing = items[index]
+            _require_same_identity(existing, item)
+            if existing.state in ("awaiting_approval", "approved", "ingesting", "ingested"):
+                return tuple(items)
+            evidence = _merge_evidence(existing, item)
+            current = replace(
+                evidence,
+                collection_date=existing.collection_date,
+                state=existing.state,
+                approved_mode=existing.approved_mode,
+                attempts_in_run=existing.attempts_in_run,
+                consecutive_failed_runs=existing.consecutive_failed_runs,
+                last_error=existing.last_error,
+                last_attempted_date=existing.last_attempted_date,
+            )
+        else:
+            index = len(items)
+            current = item
+            items.append(item)
+        failed_runs = current.consecutive_failed_runs + 1
+        state = "needs_manual_review" if failed_runs >= 3 else "collection_failed"
+        items[index] = replace(
+            current,
+            state=state,
+            attempts_in_run=attempts_in_run,
+            consecutive_failed_runs=failed_runs,
+            last_error=error,
+            last_attempted_date=attempted_date,
         )
-    else:
-        index = len(items)
-        current = item
-        items.append(item)
-    failed_runs = current.consecutive_failed_runs + 1
-    state = "needs_manual_review" if failed_runs >= 3 else "collection_failed"
-    items[index] = replace(
-        current,
-        state=state,
-        attempts_in_run=attempts_in_run,
-        consecutive_failed_runs=failed_runs,
-        last_error=error,
-        last_attempted_date=attempted_date,
-    )
-    return save_work_items(path, items)
+        return _save_work_items_unlocked(path, items)
+
+
+def record_ingest_failure(
+    path: Path,
+    work_item_id: str,
+    error: str,
+    attempted_date: str,
+) -> Tuple[WorkItem, ...]:
+    """Move the active ingest to manual review with bounded failure context."""
+    _require_date(attempted_date, "attempted_date")
+    if not isinstance(error, str) or not error or len(error) > 1000:
+        raise ValueError("ingest failure error must be 1 to 1000 characters")
+    with _queue_lock(path):
+        items = list(load_work_items(path))
+        index = _find_index(items, work_item_id)
+        current = items[index]
+        if current.state != "ingesting":
+            raise WorkItemStateError(
+                "expected state ingesting but found " + current.state
+            )
+        items[index] = replace(
+            current,
+            state="needs_manual_review",
+            last_error=error,
+            last_attempted_date=attempted_date,
+        )
+        return _save_work_items_unlocked(path, items)
+
+
+def _transition_work_item_unlocked(
+    path: Path,
+    items: List[WorkItem],
+    work_item_id: str,
+    expected: str,
+    requested: str,
+    approved_mode: Optional[str],
+) -> Tuple[WorkItem, ...]:
+    index = _find_index(items, work_item_id)
+    current = items[index]
+    if current.state != expected:
+        raise WorkItemStateError(
+            "expected state " + expected + " but found " + current.state
+        )
+    if requested not in TRANSITIONS.get(expected, ()):
+        raise WorkItemStateError(
+            "invalid work-item transition from " + expected + " to " + requested
+        )
+    if requested == "approved":
+        if approved_mode not in INGEST_MODES:
+            raise WorkItemStateError("approval requires full or delta mode")
+    elif approved_mode is not None:
+        raise WorkItemStateError("approved_mode is only valid during approval")
+    if requested == "ingesting":
+        if current.approved_mode not in INGEST_MODES:
+            raise WorkItemStateError("ingest cannot start without an approved mode")
+        if any(
+            item.work_item_id != work_item_id and item.state == "ingesting"
+            for item in items
+        ):
+            raise WorkItemStateError("a GitHub ingest item is already in progress")
+    updates: Dict[str, Any] = {"state": requested}
+    if requested == "approved":
+        updates["approved_mode"] = approved_mode
+    if requested == "discovered" and expected in (
+        "collection_failed",
+        "needs_manual_review",
+    ):
+        updates["attempts_in_run"] = 0
+    items[index] = replace(current, **updates)
+    return _save_work_items_unlocked(path, items)
+
+
+@contextmanager
+def _queue_lock(path: Path):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    lock_path = path.with_name(path.name + ".lock")
+    with _QUEUE_THREAD_LOCK:
+        with lock_path.open("a+b") as lock:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
 
 
 def render_status(items: Sequence[WorkItem]) -> str:
@@ -382,6 +486,7 @@ def render_status(items: Sequence[WorkItem]) -> str:
                 "- Collection date: `" + item.collection_date + "`",
                 "- State: `" + item.state + "`",
                 "- Recommended mode: `" + item.recommended_mode + "`",
+                "- Evidence revision: `" + (item.evidence_revision or "initial") + "`",
                 "- Approved mode: `" + (item.approved_mode or "not approved") + "`",
                 "- Attempts in run: `" + str(item.attempts_in_run) + "`",
                 "- Consecutive failed runs: `" + str(item.consecutive_failed_runs) + "`",
@@ -412,6 +517,14 @@ def render_status(items: Sequence[WorkItem]) -> str:
             )
         lines.append("")
     return "\n".join(lines)
+
+
+def write_status_from_queue(queue_path: Path, status_path: Path) -> str:
+    """Render and atomically write status while holding the queue lock."""
+    with _queue_lock(queue_path):
+        status = render_status(load_work_items(queue_path))
+        _write_atomic(Path(status_path), status.encode("utf-8"))
+        return status
 
 
 def _validate_package_change(change: PackageChange) -> None:
@@ -455,6 +568,8 @@ def _validate_work_item(item: WorkItem) -> None:
         raise ValueError("work-item state is invalid")
     if item.recommended_mode not in INGEST_MODES:
         raise ValueError("work-item recommended mode is invalid")
+    if item.evidence_revision and re.fullmatch(r"[0-9a-f]{64}", item.evidence_revision) is None:
+        raise ValueError("work-item evidence revision is invalid")
     if item.approved_mode is not None and item.approved_mode not in INGEST_MODES:
         raise ValueError("work-item approved mode is invalid")
     if item.state in ("approved", "ingesting", "ingested") and item.approved_mode is None:
@@ -480,7 +595,10 @@ def _validate_work_item(item: WorkItem) -> None:
     if item.recommended_mode != expected_mode:
         raise ValueError("work-item recommended mode does not match package changes")
     expected_id = build_work_item_id(
-        item.repo_id, item.sha, tuple(change.release_id for change in changes)
+        item.repo_id,
+        item.sha,
+        tuple(change.release_id for change in changes),
+        item.evidence_revision,
     )
     if item.work_item_id != expected_id or not _WORK_ITEM_ID.fullmatch(item.work_item_id):
         raise ValueError("work-item ID is invalid")
@@ -495,7 +613,10 @@ def _work_item_to_dict(item: WorkItem) -> dict:
 
 
 def _work_item_from_dict(value: Any) -> WorkItem:
-    if not isinstance(value, dict) or set(value) != _WORK_ITEM_FIELDS:
+    if not isinstance(value, dict) or set(value) not in (
+        _WORK_ITEM_FIELDS,
+        _LEGACY_WORK_ITEM_FIELDS,
+    ):
         raise ValueError("work item has unknown or missing fields")
     rows = value["package_changes"]
     if not isinstance(rows, list):
@@ -511,6 +632,7 @@ def _work_item_from_dict(value: Any) -> WorkItem:
         values["reasons"] = tuple(reasons)
         changes.append(PackageChange(**values))
     values = dict(value)
+    values.setdefault("evidence_revision", "")
     values["package_changes"] = tuple(changes)
     item = WorkItem(**values)
     _validate_work_item(item)

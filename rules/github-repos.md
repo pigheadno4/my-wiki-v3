@@ -22,6 +22,7 @@ The focused PayPal JS pilot retains:
 - chronological processing from v8 to v9 to v10, with semantic version, release date, and package tag as deterministic ordering inputs.
 
 The policy is registry-driven rather than hard-coded to PayPal. Add future repositories or companies by adding reviewed registry rows and capsule policies.
+`enabled = true` means the row is executable by the current collector: it must have package-qualified version tracks and exactly one supported capsule policy. Keep inventory-only or unsupported rows disabled.
 
 For the focused PayPal JS pilot, changed tests and fixtures remain excluded by capsule policy. Stories remain eligible because they document supported component states and integration behavior. Explicitly required public targets still take precedence over category exclusions.
 
@@ -55,6 +56,8 @@ tracking/github/repos/<company>/<repo>/comparisons/<package-slug>/<from>--<to>/
 
 Generated comparisons are navigation evidence. Exact source claims must remain grounded in the linked immutable snapshots.
 
+When an approved query needs a source file excluded from the bounded snapshot, collect a separate immutable supplement under `raw/github/<company>/<repo>/supplements/`. A supplement never modifies or replaces the accepted snapshot.
+
 ## Collection procedure
 
 Use `scripts/collect_github_repos.py` for the focused operations:
@@ -65,19 +68,22 @@ python3 scripts/collect_github_repos.py collect --repo <owner/repo> --mode futur
 python3 scripts/collect_github_repos.py collect --repo <owner/repo> --release <package@version>
 python3 scripts/collect_github_repos.py status
 python3 scripts/collect_github_repos.py compare --repo <owner/repo> --from <package@version> --to <package@version>
+python3 scripts/collect_github_repos.py supplement --repo <owner/repo> --sha <full-sha> --path <repo-relative-path>
 python3 scripts/collect_github_repos.py approve --item <id> --mode full
 python3 scripts/collect_github_repos.py next-ingest
+python3 scripts/collect_github_repos.py complete-ingest --item <id>
+python3 scripts/collect_github_repos.py fail-ingest --item <id> --error <bounded-reason>
 python3 scripts/collect_github_repos.py retry --item <id>
 ```
 
 Collection performs these steps:
 
 1. Discover configured package releases before publishing queue state.
-2. Exclude releases already represented by accepted work items.
+2. Recheck retained release tag SHAs and release-note hashes; skip only exact matches.
 3. Group releases that share one SHA into one work item with separate package changes.
-4. Fetch immutable release records.
+4. Fetch release-note evidence without publishing it.
 5. Resolve the bounded source capsule, including changed source, docs, examples, and tests owned by included packages.
-6. Publish or reuse the exact-SHA snapshot only after hashing and validation.
+6. Publish or reuse the exact-SHA snapshot only after hashing and validation, then publish immutable release records.
 7. Generate package-scoped comparisons against the prior selected release.
 8. Recommend `full` or `delta` ingest from deterministic signals.
 9. Stop in `awaiting_approval`.
@@ -95,6 +101,8 @@ The collector recommends; the user approves or overrides the mode.
 ## Serial ingest boundary
 
 Ingest exactly one approved SHA work item at a time. Never batch wiki ingest, even when collection discovered many releases.
+
+`next-ingest` atomically changes the oldest approved item to `ingesting`. It fails while another item is already `ingesting`. End the lifecycle with `complete-ingest`; use `fail-ingest` when grounding or wiki validation cannot be completed.
 
 For every ingest, read the complete current cumulative source page first.
 

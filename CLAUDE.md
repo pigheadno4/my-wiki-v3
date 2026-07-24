@@ -46,6 +46,9 @@ my-wiki/
 │           ├── snapshots/<date>-<sha>/ # one exact-SHA source capsule
 │           │   ├── manifest.json
 │           │   └── files/
+│           ├── supplements/<date>-<sha>-<identity>/ # approved deep-source additions
+│           │   ├── manifest.json
+│           │   └── files/
 │           └── releases/<package>/<version>/<date>/ # package release notes and manifest
 ├── tracking/
 │   ├── collections/           # generated inventories, run records, diffs, and status

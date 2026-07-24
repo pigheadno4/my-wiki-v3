@@ -3,8 +3,8 @@
 import argparse
 from dataclasses import asdict, dataclass, replace
 from datetime import date
+import hashlib
 import json
-import os
 from pathlib import Path
 import tempfile
 from typing import Callable, Dict, List, Optional, Sequence, Tuple
@@ -20,9 +20,10 @@ from github_pilot_store import (
     package_slug,
     publish_release_record,
     publish_source_snapshot,
+    publish_source_supplement,
     write_package_comparison,
 )
-from github_registry import RepoConfig, VersionTrack, load_registry
+from github_registry import RepoConfig, VersionTrack, load_registry, validate_enabled_policy
 from github_releases import (
     ReleaseCandidate,
     ReleaseEvidenceError,
@@ -38,12 +39,14 @@ from github_work_items import (
     WorkItem,
     WorkItemStateError,
     build_work_item,
+    claim_next_ingest,
     load_work_items,
     recommend_ingest_mode,
     record_collection_failure,
-    render_status,
+    record_ingest_failure,
     transition_work_item,
     upsert_discovered_work_item,
+    write_status_from_queue,
 )
 
 
@@ -81,18 +84,20 @@ class _RetainedRelease:
     tag: str
     sha: str
     release_manifest: str
+    notes_sha256: str
 
 
 @dataclass(frozen=True)
 class _PackageContext:
     candidate: ReleaseCandidate
     evidence: Optional[ReleaseNotesEvidence]
-    release_record: PackageReleaseRecord
+    release_date: str
     prior: Optional[_RetainedRelease]
     changed_paths: Tuple[str, ...]
     from_paths: Tuple[str, ...]
     to_paths: Tuple[str, ...]
     public_exports_changed: bool
+    release_record: Optional[PackageReleaseRecord] = None
 
 
 def collect_one(
@@ -115,6 +120,9 @@ def collect_one(
         raise CollectionUsageError("choose exactly one release mode or exact package release")
     if not isinstance(max_attempts, int) or not 1 <= max_attempts <= 3:
         raise CollectionUsageError("max_attempts must be between one and three")
+    readiness_errors = validate_enabled_policy(config)
+    if readiness_errors:
+        raise CollectionUsageError(config.id + ": " + readiness_errors[0])
     collected = collection_date or date.today().isoformat()
     root = Path(root).resolve()
     queue_path = root / WORK_ITEMS_PATH
@@ -188,7 +196,9 @@ def _collect_attempt(
         )
         context["candidates"] = candidates
         if not candidates:
-            return CollectionResult(config.id, "unchanged", (), (), (), ())
+            state = "not_available" if release is not None else "unchanged"
+            return CollectionResult(config.id, state, (), (), (), ())
+        history = _load_retained_history(root, config)
         if dry_run:
             fetch_required_refs(
                 effective,
@@ -199,11 +209,14 @@ def _collect_attempt(
                 _release_id(candidate): release_notes_fetcher(config, candidate)
                 for candidate in candidates
             }
+            candidates, _ = _changed_candidates(
+                root, candidates, evidence_by_id, history, existing_items
+            )
             ordered = _sort_candidates(candidates, evidence_by_id, clone_path)
             release_ids = tuple(_release_id(candidate) for candidate in ordered)
-            return CollectionResult(config.id, "discovered", release_ids, (), (), ())
+            state = "discovered" if ordered else "unchanged"
+            return CollectionResult(config.id, state, release_ids, (), (), ())
 
-        history = _load_retained_history(root, config)
         prior_tags = {
             retained.tag
             for candidate in candidates
@@ -215,10 +228,17 @@ def _collect_attempt(
             clone_path,
             tuple("tag:" + tag for tag in sorted({item.tag for item in candidates} | prior_tags)),
         )
+        _verify_fetched_candidates(clone_path, candidates)
         evidence_by_id = {
             _release_id(candidate): release_notes_fetcher(config, candidate)
             for candidate in candidates
         }
+        candidates, revised_release_ids = _changed_candidates(
+            root, candidates, evidence_by_id, history, existing_items
+        )
+        context["candidates"] = candidates
+        if not candidates:
+            return CollectionResult(config.id, "unchanged", (), (), (), ())
         ordered = _sort_candidates(candidates, evidence_by_id, clone_path)
         groups = _group_by_sha(ordered)
         work_item_ids: List[str] = []
@@ -237,6 +257,7 @@ def _collect_attempt(
                 evidence_by_id,
                 history,
                 collected_date,
+                revised_release_ids,
             )
             context["package_contexts"] = package_contexts
             tree = GitTree(clone_path, group[0].commit_sha, config.max_file_bytes)
@@ -257,17 +278,49 @@ def _collect_attempt(
             )
             snapshot_manifest = _relative(root, snapshot.manifest_path)
             context["snapshot_manifest"] = snapshot_manifest
+            package_contexts = tuple(
+                replace(
+                    item,
+                    release_record=publish_release_record(
+                        root,
+                        config,
+                        item.candidate,
+                        item.release_date,
+                        item.evidence,
+                        collected_date,
+                    ),
+                )
+                for item in package_contexts
+            )
+            context["package_contexts"] = package_contexts
             changes = tuple(
-                _publish_comparison_and_change(root, config, clone_path, item)
+                _publish_comparison_and_change(
+                    root,
+                    config,
+                    clone_path,
+                    item,
+                    _release_id(item.candidate) in revised_release_ids,
+                )
                 for item in package_contexts
             )
             context["changes"] = changes
+            revision_records = tuple(
+                item.release_record.notes_sha256
+                for item in package_contexts
+                if _release_id(item.candidate) in revised_release_ids
+            )
+            evidence_revision = (
+                hashlib.sha256("\n".join(sorted(revision_records)).encode("ascii")).hexdigest()
+                if revision_records
+                else ""
+            )
             work_item = build_work_item(
                 config.id,
                 group[0].commit_sha,
                 collected_date,
                 changes,
                 snapshot_manifest,
+                evidence_revision,
             )
             current = next(
                 (
@@ -340,19 +393,17 @@ def _select_candidates(
                 for release_id in existing
                 if package and release_id.startswith(package + "@")
             )
-            selected = select_release_candidates(
+            new_selected = select_release_candidates(
                 track, rows, existing_versions=versions, mode=release_mode or "backfill"
             )
+            retained = tuple(row for row in rows if _release_id(row) in existing)
+            selected = new_selected + retained
         for candidate in selected:
             identity = _release_id(candidate)
-            if identity in existing:
-                continue
             prior = discovered.get(identity)
             if prior is not None and prior.commit_sha != candidate.commit_sha:
                 raise CollectionUsageError("release identity resolves to conflicting SHAs")
             discovered[identity] = candidate
-    if release is not None and release not in discovered and release not in existing:
-        raise CollectionUsageError("configured tracks do not contain exact release " + release)
     return tuple(discovered[key] for key in sorted(discovered))
 
 
@@ -364,24 +415,31 @@ def _prepare_group(
     evidence_by_id: Dict[str, Optional[ReleaseNotesEvidence]],
     history: Dict[str, List[_RetainedRelease]],
     collected_date: str,
+    revised_release_ids: set,
 ) -> Tuple[_PackageContext, ...]:
     capsule = _one_capsule(config)
     current_tree = GitTree(clone_path, group[0].commit_sha, config.max_file_bytes)
     current_workspace = resolve_workspace(current_tree, capsule)
     contexts = []
     for candidate in sorted(group, key=lambda item: item.package):
+        current_package = _workspace_package(current_workspace.packages, candidate.package)
+        if current_package.version != candidate.version:
+            raise CollectionUsageError(
+                "release tag version does not match package manifest version for "
+                + _release_id(candidate)
+            )
         evidence = evidence_by_id[_release_id(candidate)]
         release_date = (
             evidence.published_at
             if evidence is not None
             else run_git(["show", "-s", "--format=%cI", candidate.commit_sha], clone_path)
         )
-        record = publish_release_record(
-            root, config, candidate, release_date, evidence, collected_date
-        )
         prior = _latest_prior(history.get(candidate.package, ()), candidate.version)
-        current_package = _workspace_package(current_workspace.packages, candidate.package)
-        if prior is None:
+        if _release_id(candidate) in revised_release_ids:
+            changed_paths = ()
+            from_paths = ()
+            exports_changed = False
+        elif prior is None:
             changed_paths = ()
             from_paths = ()
             exports_changed = False
@@ -404,7 +462,7 @@ def _prepare_group(
             _PackageContext(
                 candidate,
                 evidence,
-                record,
+                release_date,
                 prior,
                 changed_paths,
                 from_paths,
@@ -420,10 +478,13 @@ def _publish_comparison_and_change(
     config: RepoConfig,
     clone_path: Path,
     context: _PackageContext,
+    release_notes_revision: bool = False,
 ) -> PackageChange:
+    if context.release_record is None:
+        raise CollectionUsageError("release record must be published before comparison")
     comparison: Optional[ComparisonRecord] = None
     prior_version = context.prior.version if context.prior is not None else ""
-    if context.prior is not None:
+    if context.prior is not None and not release_notes_revision:
         comparison = write_package_comparison(
             root,
             config,
@@ -441,16 +502,19 @@ def _publish_comparison_and_change(
         if context.evidence is not None
         else ""
     )
-    mode, reasons = recommend_ingest_mode(
-        ChangeSignals(
-            context.candidate.package,
-            prior_version,
-            context.candidate.version,
-            context.changed_paths,
-            context.public_exports_changed,
-            notes,
+    if release_notes_revision:
+        mode, reasons = "delta", ("release-notes-revision",)
+    else:
+        mode, reasons = recommend_ingest_mode(
+            ChangeSignals(
+                context.candidate.package,
+                prior_version,
+                context.candidate.version,
+                context.changed_paths,
+                context.public_exports_changed,
+                notes,
+            )
         )
-    )
     return PackageChange(
         context.candidate.package,
         prior_version,
@@ -550,7 +614,11 @@ def _failure_change(root: Path, context: _PackageContext) -> PackageChange:
         prior_version,
         context.candidate.version,
         _release_id(context.candidate),
-        _relative(root, context.release_record.manifest_path),
+        (
+            _relative(root, context.release_record.manifest_path)
+            if context.release_record is not None
+            else ""
+        ),
         "",
         mode,
         reasons,
@@ -599,15 +667,34 @@ def approve_one(root: Path, work_item_id: str, mode: str) -> WorkItem:
 
 
 def next_ingest(root: Path) -> WorkItem:
-    """Return the oldest approved item without changing its state."""
-    approved = [
-        item
-        for item in load_work_items(Path(root).resolve() / WORK_ITEMS_PATH)
-        if item.state == "approved"
-    ]
-    if not approved:
-        raise WorkItemStateError("no approved GitHub ingest item is available")
-    return min(approved, key=lambda item: (item.collection_date, item.work_item_id))
+    """Atomically claim and return the oldest approved ingest item."""
+    selected = claim_next_ingest(Path(root).resolve() / WORK_ITEMS_PATH)
+    regenerate_status(root)
+    return selected
+
+
+def complete_ingest(root: Path, work_item_id: str) -> WorkItem:
+    """Record successful completion of the currently claimed ingest."""
+    items = transition_work_item(
+        Path(root).resolve() / WORK_ITEMS_PATH,
+        work_item_id,
+        "ingesting",
+        "ingested",
+    )
+    regenerate_status(root)
+    return next(item for item in items if item.work_item_id == work_item_id)
+
+
+def fail_ingest(root: Path, work_item_id: str, error: str) -> WorkItem:
+    """Stop the claimed ingest and require manual review."""
+    items = record_ingest_failure(
+        Path(root).resolve() / WORK_ITEMS_PATH,
+        work_item_id,
+        error,
+        date.today().isoformat(),
+    )
+    regenerate_status(root)
+    return next(item for item in items if item.work_item_id == work_item_id)
 
 
 def retry_one(root: Path, work_item_id: str) -> WorkItem:
@@ -673,12 +760,38 @@ def compare_one(
         )
 
 
+def supplement_one(
+    root: Path,
+    config: RepoConfig,
+    sha: str,
+    paths: Sequence[str],
+    clone_source: Optional[Path] = None,
+    collection_date: Optional[str] = None,
+):
+    """Collect explicitly approved text paths from one exact commit."""
+    root = Path(root).resolve()
+    effective = replace(config, url=str(clone_source)) if clone_source is not None else config
+    with tempfile.TemporaryDirectory(prefix="wiki-github-supplement-") as temporary:
+        clone_path = Path(temporary) / "repository"
+        clone_repository(effective, clone_path)
+        fetch_required_refs(effective, clone_path, ("commit:" + sha,))
+        tree = GitTree(clone_path, sha, config.max_file_bytes)
+        return publish_source_supplement(
+            root,
+            config,
+            tree,
+            paths,
+            collection_date or date.today().isoformat(),
+        )
+
+
 def regenerate_status(root: Path) -> str:
     """Regenerate operator Markdown from the machine queue."""
     root = Path(root).resolve()
-    status = render_status(load_work_items(root / WORK_ITEMS_PATH))
-    _write_text_atomic(root / STATUS_PATH, status)
-    return status
+    return write_status_from_queue(
+        root / WORK_ITEMS_PATH,
+        root / STATUS_PATH,
+    )
 
 
 def parse_package_release(
@@ -713,6 +826,8 @@ def _sort_candidates(
             )
         return (
             notes.published_at if notes is not None else commit_dates[candidate.commit_sha],
+            candidate.package,
+            _semver_key(candidate.version),
             candidate.tag,
         )
 
@@ -741,11 +856,65 @@ def _existing_release_ids(items: Sequence[WorkItem]) -> set:
     }
 
 
+def _changed_candidates(
+    root: Path,
+    candidates: Sequence[ReleaseCandidate],
+    evidence_by_id: Dict[str, Optional[ReleaseNotesEvidence]],
+    history: Dict[str, List[_RetainedRelease]],
+    items: Sequence[WorkItem],
+) -> Tuple[Tuple[ReleaseCandidate, ...], set]:
+    accepted_paths = {
+        change.release_manifest
+        for item in items
+        for change in item.package_changes
+        if item.state not in ("collection_failed", "discovered")
+        and change.release_manifest
+    }
+    accepted: Dict[str, List[_RetainedRelease]] = {}
+    for rows in history.values():
+        for retained in rows:
+            if retained.release_manifest in accepted_paths:
+                accepted.setdefault(
+                    retained.package + "@" + retained.version, []
+                ).append(retained)
+    changed = []
+    revised = set()
+    for candidate in candidates:
+        release_id = _release_id(candidate)
+        prior = accepted.get(release_id, ())
+        if prior and any(item.sha != candidate.commit_sha for item in prior):
+            raise CollectionUsageError(
+                "release tag moved for " + release_id + "; manual review is required"
+            )
+        evidence = evidence_by_id[release_id]
+        notes = evidence.content if evidence is not None else b""
+        notes_hash = hashlib.sha256(notes).hexdigest()
+        if prior and any(item.notes_sha256 == notes_hash for item in prior):
+            continue
+        if prior:
+            revised.add(release_id)
+        changed.append(candidate)
+    return tuple(changed), revised
+
+
+def _verify_fetched_candidates(
+    clone_path: Path, candidates: Sequence[ReleaseCandidate]
+) -> None:
+    for candidate in candidates:
+        reference = "refs/tags/" + candidate.tag
+        object_sha = run_git(["rev-parse", reference + "^{object}"], clone_path)
+        commit_sha = run_git(["rev-parse", reference + "^{commit}"], clone_path)
+        if object_sha != candidate.object_sha or commit_sha != candidate.commit_sha:
+            raise CollectionUsageError(
+                "release tag moved during collection for " + _release_id(candidate)
+            )
+
+
 def _load_retained_history(
     root: Path, config: RepoConfig
 ) -> Dict[str, List[_RetainedRelease]]:
     repository = root / "raw" / "github" / config.company / config.id.split("/", 1)[1]
-    history: Dict[str, Dict[Tuple[str, str], _RetainedRelease]] = {}
+    history: Dict[str, List[_RetainedRelease]] = {}
     for path in sorted((repository / "releases").glob("*/*/*/manifest.json")):
         try:
             document = json.loads(path.read_text(encoding="utf-8"))
@@ -755,12 +924,16 @@ def _load_retained_history(
                 str(document["tag"]),
                 str(document["sha"]),
                 _relative(root, path),
+                str(document["notes_sha256"]),
             )
         except (OSError, UnicodeError, json.JSONDecodeError, KeyError):
             raise CollectionUsageError("collected release manifest is invalid: " + str(path))
-        history.setdefault(retained.package, {})[(retained.version, retained.sha)] = retained
+        history.setdefault(retained.package, []).append(retained)
     return {
-        package: sorted(rows.values(), key=lambda item: _semver_key(item.version))
+        package: sorted(
+            rows,
+            key=lambda item: (_semver_key(item.version), item.release_manifest),
+        )
         for package, rows in history.items()
     }
 
@@ -837,6 +1010,7 @@ def _retained_from_record(record: PackageReleaseRecord) -> _RetainedRelease:
         record.tag,
         record.sha,
         record.manifest_path.as_posix(),
+        record.notes_sha256,
     )
 
 
@@ -870,23 +1044,6 @@ def _bounded_error(error: Exception) -> str:
     return text[:1000] + ("..." if len(text) > 1000 else "")
 
 
-def _write_text_atomic(path: Path, content: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    descriptor, temporary = tempfile.mkstemp(prefix=".tmp-", dir=str(path.parent))
-    try:
-        with os.fdopen(descriptor, "w", encoding="utf-8", newline="\n") as output:
-            output.write(content)
-            output.flush()
-            os.fsync(output.fileno())
-        os.replace(temporary, str(path))
-    except Exception:
-        try:
-            os.unlink(temporary)
-        except FileNotFoundError:
-            pass
-        raise
-
-
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="collect_github_repos.py")
     commands = parser.add_subparsers(dest="command", required=True)
@@ -905,11 +1062,23 @@ def _parser() -> argparse.ArgumentParser:
     compare.add_argument("--from", dest="from_release", required=True)
     compare.add_argument("--to", dest="to_release", required=True)
 
+    supplement = commands.add_parser("supplement")
+    supplement.add_argument("--repo", required=True)
+    supplement.add_argument("--sha", required=True)
+    supplement.add_argument("--path", dest="paths", action="append", required=True)
+
     approve = commands.add_parser("approve")
     approve.add_argument("--item", required=True)
     approve.add_argument("--mode", choices=("full", "delta"), required=True)
 
     commands.add_parser("next-ingest")
+
+    complete = commands.add_parser("complete-ingest")
+    complete.add_argument("--item", required=True)
+
+    failed = commands.add_parser("fail-ingest")
+    failed.add_argument("--item", required=True)
+    failed.add_argument("--error", required=True)
 
     retry = commands.add_parser("retry")
     retry.add_argument("--item", required=True)
@@ -937,12 +1106,27 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         if arguments.command == "next-ingest":
             print(json.dumps(asdict(next_ingest(root)), sort_keys=True))
             return 0
+        if arguments.command == "complete-ingest":
+            print(json.dumps(asdict(complete_ingest(root, arguments.item)), sort_keys=True))
+            return 0
+        if arguments.command == "fail-ingest":
+            print(json.dumps(asdict(fail_ingest(root, arguments.item, arguments.error)), sort_keys=True))
+            return 0
         if arguments.command == "retry":
             print(json.dumps(asdict(retry_one(root, arguments.item)), sort_keys=True))
             return 0
 
         repos = load_registry(root / "tracking/github/repo-registry.toml")
         config = _config(repos, arguments.repo)
+        if arguments.command == "supplement":
+            record = supplement_one(
+                root,
+                config,
+                arguments.sha,
+                tuple(arguments.paths),
+            )
+            print(json.dumps(asdict(record), sort_keys=True, default=str))
+            return 0
         if arguments.command == "compare":
             parse_package_release(arguments.from_release, arguments.to_release)
             record = compare_one(
@@ -969,12 +1153,15 @@ __all__ = [
     "CollectionUsageError",
     "approve_one",
     "collect_one",
+    "complete_ingest",
     "compare_one",
     "main",
+    "fail_ingest",
     "next_ingest",
     "parse_package_release",
     "regenerate_status",
     "retry_one",
+    "supplement_one",
 ]
 
 

@@ -30,7 +30,13 @@
    | Deep source question | exact-SHA source capsule and assigned source files; never the changelog summary alone |
    | Historical behavior | historical source-page version section → changelog entry → exact release record and snapshot |
 
-   Read every selected evidence file in full. If the capsule does not contain enough source to answer a deep question, record the evidence gap and run a separately approved exact-SHA supplemental collection. The supplement is a new immutable addition; never modify an accepted snapshot or legacy raw file.
+   Read every selected evidence file in full. If the capsule does not contain enough source to answer a deep question, record the evidence gap and run a separately approved exact-SHA supplemental collection:
+
+   ```bash
+   python3 scripts/collect_github_repos.py supplement --repo <owner/repo> --sha <full-sha> --path <repo-relative-path>
+   ```
+
+   Repeat `--path` for multiple explicitly approved files. The supplement is a new immutable addition; never modify an accepted snapshot or legacy raw file.
 
    Search a related repository only when the documented responsibility boundary requires it. Name the different repository and evidence authority in the answer. Label default-branch or untagged SHA evidence as unreleased.
 

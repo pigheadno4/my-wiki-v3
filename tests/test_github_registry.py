@@ -12,6 +12,7 @@ from github_registry import (  # noqa: E402
     VersionTrack,
     load_registry,
     select_repos,
+    validate_enabled_policy,
     validate_registry,
 )
 from github_capsule_policy import CapsuleConfig, PackageOverride, SecretAllowlist  # noqa: E402
@@ -32,13 +33,13 @@ APPENDIX_A_INVENTORY = (
     ('paypal/paypal-messages-android', 'https://github.com/paypal/paypal-messages-android', 'messaging-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('paypal/paypal-sdk-logos', 'https://github.com/paypal/paypal-sdk-logos', 'assets', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('paypal/paypal-rest-api-specifications', 'https://github.com/paypal/paypal-rest-api-specifications', 'api-specification', 'tier1', 'commit', False, 'default-branch', 'monthly'),
-    ('paypal-examples/v6-web-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-sample-integration', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
+    ('paypal-examples/v6-web-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-sample-integration', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
     ('paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
     ('paypal-examples/paypal-android-sdk-demo-app', 'https://github.com/paypal-examples/paypal-android-sdk-demo-app', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
     ('paypal-examples/paypal-sdk-server-side-integration', 'https://github.com/paypal-examples/paypal-sdk-server-side-integration', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
     ('paypal-examples/paypal-ios-sdk-demo-app', 'https://github.com/paypal-examples/paypal-ios-sdk-demo-app', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
     ('braintree/braintree_android', 'https://github.com/braintree/braintree_android', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
-    ('braintree/braintree_ios', 'https://github.com/braintree/braintree_ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
+    ('braintree/braintree_ios', 'https://github.com/braintree/braintree_ios', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('braintree/web-sdk-github-actions', 'https://github.com/braintree/web-sdk-github-actions', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('braintree/mobile-sdk-tooling', 'https://github.com/braintree/mobile-sdk-tooling', 'tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('braintree/graphql-api', 'https://github.com/braintree/graphql-api', 'api-specification', 'tier1', 'commit', False, 'default-branch', 'monthly'),
@@ -54,7 +55,7 @@ APPENDIX_A_INVENTORY = (
     ('braintree/braintree_node', 'https://github.com/braintree/braintree_node', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree-ios-drop-in', 'https://github.com/braintree/braintree-ios-drop-in', 'drop-in', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('braintree/braintree-android-drop-in', 'https://github.com/braintree/braintree-android-drop-in', 'drop-in', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
-    ('stripe/stripe-ios', 'https://github.com/stripe/stripe-ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
+    ('stripe/stripe-ios', 'https://github.com/stripe/stripe-ios', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-apps', 'https://github.com/stripe/stripe-apps', 'developer-platform', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-cli', 'https://github.com/stripe/stripe-cli', 'cli', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-android', 'https://github.com/stripe/stripe-android', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
@@ -135,7 +136,7 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(2, len(data["repos"][0]["requested_refs"]))
 
     def test_registry_applies_optional_field_defaults_and_is_immutable(self):
-        repo = self.repo()
+        repo = self.repo(enabled=False)
 
         self.assertEqual("on-demand", repo.collection_frequency)
         self.assertEqual((), repo.requested_refs)
@@ -148,6 +149,40 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual((), repo.secret_allowlist)
         with self.assertRaises(dataclasses.FrozenInstanceError):
             repo.enabled = False
+
+    def test_registry_rejects_unsafe_filesystem_components(self):
+        unsafe = (
+            self.repo(company="../outside"),
+            self.repo(
+                id="../paypal-js",
+                url="https://github.com/../paypal-js",
+            ),
+            self.repo(
+                id="paypal/..",
+                url="https://github.com/paypal/..",
+            ),
+        )
+
+        for repo in unsafe:
+            with self.subTest(repo=repo):
+                self.assertTrue(
+                    any("safe lowercase path component" in error for error in validate_registry((repo,)))
+                )
+
+    def test_enabled_release_repository_requires_runnable_package_policy(self):
+        no_policy = self.repo(enabled=True)
+        no_capsule = self.repo(
+            enabled=True,
+            version_tracks=(
+                VersionTrack("package:@paypal/paypal-js@10", "all-stable", "all-stable"),
+            ),
+        )
+
+        self.assertIn("enabled repository requires version tracks", validate_enabled_policy(no_policy))
+        self.assertIn(
+            "enabled repository requires exactly one capsule",
+            validate_enabled_policy(no_capsule),
+        )
 
     def test_registry_loads_immutable_nested_version_tracks_in_order(self):
         path = self.write_registry(
@@ -165,7 +200,7 @@ class RegistryTests(unittest.TestCase):
             'backfill = "all-stable"\n'
             'future = "all-stable"\n'
             '[[repos.version_tracks]]\n'
-            'selector = "v9"\n'
+            'selector = "package:@scope/name@9"\n'
             'backfill = "minor-baselines"\n'
             'future = "none"\n'
             'include_prerelease = true\n'
@@ -177,7 +212,7 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(
             (
                 VersionTrack("package:@scope/name@10", "all-stable", "all-stable"),
-                VersionTrack("v9", "minor-baselines", "none", True, ("9.0.1", "9.2.0-rc.1")),
+                VersionTrack("package:@scope/name@9", "minor-baselines", "none", True, ("9.0.1", "9.2.0-rc.1")),
             ),
             repo.version_tracks,
         )
@@ -350,6 +385,26 @@ class RegistryTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     load_registry(self.write_registry(base + invalid_track))
 
+    def test_registry_rejects_plain_version_track_selectors(self):
+        text = (
+            '[[repos]]\n'
+            'id = "paypal/paypal-js"\n'
+            'company = "paypal"\n'
+            'url = "https://github.com/paypal/paypal-js"\n'
+            'enabled = false\n'
+            'repo_type = "web-sdk"\n'
+            'priority = "tier1"\n'
+            'track = "releases-and-default-branch"\n'
+            'version_strategy = "semver-tags"\n'
+            '[[repos.version_tracks]]\n'
+            'selector = "v10"\n'
+            'backfill = "latest-stable"\n'
+            'future = "all-stable"\n'
+        )
+
+        with self.assertRaisesRegex(ValueError, "package-qualified"):
+            load_registry(self.write_registry(text))
+
     def test_registry_rejects_duplicate_version_track_selectors(self):
         path = self.write_registry(
             '[[repos]]\n'
@@ -362,11 +417,11 @@ class RegistryTests(unittest.TestCase):
             'track = "releases-and-default-branch"\n'
             'version_strategy = "monorepo-packages"\n'
             '[[repos.version_tracks]]\n'
-            'selector = "v10"\n'
+            'selector = "package:@scope/name@10"\n'
             'backfill = "none"\n'
             'future = "none"\n'
             '[[repos.version_tracks]]\n'
-            'selector = "v10"\n'
+            'selector = "package:@scope/name@10"\n'
             'backfill = "none"\n'
             'future = "none"\n'
         )

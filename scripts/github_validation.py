@@ -7,8 +7,8 @@ from pathlib import Path
 import re
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
-from github_canonical import safe_policy_path
-from github_registry import RepoConfig, load_registry
+from github_canonical import canonical_json_bytes, safe_policy_path
+from github_registry import RepoConfig, load_registry, validate_enabled_policy
 from github_versions import parse_package_tag, parse_semver
 from github_work_items import WorkItem, load_work_items, render_status
 
@@ -24,6 +24,7 @@ _SNAPSHOT_FIELDS = {
     "sha",
     "triggering_refs",
 }
+_SNAPSHOT_V2_FIELDS = _SNAPSHOT_FIELDS | {"author_date", "commit_date"}
 _SNAPSHOT_FILE_FIELDS = {
     "classification_reason",
     "git_blob_oid",
@@ -47,12 +48,22 @@ _RELEASE_FIELDS = {
     "tag",
     "version",
 }
+_SUPPLEMENT_FIELDS = {
+    "collected_date",
+    "files",
+    "format_version",
+    "identity_sha256",
+    "repository",
+    "sha",
+}
 _COMPARISON_FIELDS = {
     "changed_paths",
     "format_version",
     "from_sha",
     "from_version",
+    "markdown_sha256",
     "package",
+    "patch_sha256",
     "pathspecs",
     "repository",
     "to_sha",
@@ -103,6 +114,7 @@ class StatusInspection:
 class GitHubReport:
     repositories: RepositoryInspection
     snapshots: Tuple[ManifestInspection, ...]
+    supplements: Tuple[ManifestInspection, ...]
     release_records: Tuple[ManifestInspection, ...]
     comparisons: Tuple[ManifestInspection, ...]
     work_items: WorkItemInspection
@@ -124,6 +136,9 @@ def inspect_github(root: Path) -> GitHubReport:
 
     snapshots = _inspect_manifests(
         root, root.glob("raw/github/*/*/snapshots/*/manifest.json")
+    )
+    supplements = _inspect_manifests(
+        root, root.glob("raw/github/*/*/supplements/*/manifest.json")
     )
     release_records = _inspect_manifests(
         root, root.glob("raw/github/*/*/releases/*/*/*/manifest.json")
@@ -161,6 +176,7 @@ def inspect_github(root: Path) -> GitHubReport:
     return GitHubReport(
         repositories,
         snapshots,
+        supplements,
         release_records,
         comparisons,
         work_items,
@@ -177,6 +193,7 @@ def validate_github(report: GitHubReport) -> List[str]:
     errors: List[str] = []
     errors.extend(_validate_repositories(report.repositories))
     snapshot_index, snapshot_paths = _validate_snapshots(report.snapshots, errors)
+    _validate_supplements(report.supplements, snapshot_index, errors)
     release_index = _validate_releases(
         report.release_records, snapshot_index, errors
     )
@@ -198,6 +215,7 @@ def _validate_repositories(inspection: RepositoryInspection) -> List[str]:
         return ["repository registry is invalid: " + inspection.error]
     errors = []
     for repo in inspection.repositories:
+        errors.extend(repo.id + ": " + error for error in validate_enabled_policy(repo))
         if not repo.version_tracks:
             continue
         if len(repo.capsules) != 1:
@@ -223,9 +241,18 @@ def _validate_snapshots(
             errors.append(label + ": snapshot manifest is invalid: " + artifact.error)
             continue
         document = artifact.document
-        if set(document) != _SNAPSHOT_FIELDS or document.get("format_version") != 1:
+        version = document.get("format_version")
+        expected_fields = _SNAPSHOT_V2_FIELDS if version == 2 else _SNAPSHOT_FIELDS
+        if set(document) != expected_fields or version not in (1, 2):
             errors.append(label + ": snapshot manifest has unknown or missing fields")
             continue
+        if version == 2 and (
+            not isinstance(document.get("author_date"), str)
+            or not document.get("author_date")
+            or not isinstance(document.get("commit_date"), str)
+            or not document.get("commit_date")
+        ):
+            errors.append(label + ": snapshot commit dates are invalid")
         repo_id = document.get("repository")
         sha = document.get("sha")
         files = document.get("files")
@@ -275,6 +302,91 @@ def _validate_snapshots(
             if hashlib.sha256(content).hexdigest() != expected_hash:
                 errors.append(label + ": snapshot file hash mismatch " + path)
     return index, paths
+
+
+def _validate_supplements(
+    inspections: Sequence[ManifestInspection],
+    snapshots: Dict[Tuple[str, str], ManifestInspection],
+    errors: List[str],
+) -> None:
+    identities = set()
+    for artifact in inspections:
+        label = artifact.relative_path
+        if artifact.error or artifact.document is None:
+            errors.append(label + ": supplement manifest is invalid: " + artifact.error)
+            continue
+        document = artifact.document
+        if set(document) != _SUPPLEMENT_FIELDS or document.get("format_version") != 1:
+            errors.append(label + ": supplement manifest has unknown or missing fields")
+            continue
+        repo_id = document.get("repository")
+        sha = document.get("sha")
+        identity = document.get("identity_sha256")
+        files = document.get("files")
+        if (
+            not isinstance(repo_id, str)
+            or not isinstance(sha, str)
+            or not _OBJECT_ID.fullmatch(sha)
+            or not isinstance(identity, str)
+            or not _SHA256.fullmatch(identity)
+            or not isinstance(files, list)
+        ):
+            errors.append(label + ": supplement identity is invalid")
+            continue
+        if (repo_id, sha) not in snapshots:
+            errors.append(label + ": supplement links missing SHA snapshot")
+        identity_key = (repo_id, sha, identity)
+        if identity_key in identities:
+            errors.append(label + ": duplicate source supplement")
+        identities.add(identity_key)
+        identity_rows = []
+        seen = set()
+        for row in files:
+            if not isinstance(row, dict) or set(row) != _SNAPSHOT_FILE_FIELDS:
+                errors.append(label + ": supplement file row is invalid")
+                continue
+            path = row.get("path")
+            digest = row.get("sha256")
+            size = row.get("size")
+            if (
+                not isinstance(path, str)
+                or not safe_policy_path(path)
+                or not isinstance(digest, str)
+                or not _SHA256.fullmatch(digest)
+                or not isinstance(size, int)
+                or size < 0
+            ):
+                errors.append(label + ": supplement file row is invalid")
+                continue
+            if path in seen:
+                errors.append(label + ": duplicate supplement file path " + path)
+                continue
+            seen.add(path)
+            identity_rows.append({"path": path, "sha256": digest})
+            saved = artifact.path.parent / "files" / Path(path)
+            if not saved.is_file() or saved.is_symlink():
+                errors.append(label + ": supplement file is missing " + path)
+                continue
+            try:
+                content = saved.read_bytes()
+            except OSError as error:
+                errors.append(label + ": supplement file is unreadable " + path + ": " + _bounded(error))
+                continue
+            if len(content) != size:
+                errors.append(label + ": supplement file size mismatch " + path)
+            if hashlib.sha256(content).hexdigest() != digest:
+                errors.append(label + ": supplement file hash mismatch " + path)
+        expected_identity = hashlib.sha256(
+            canonical_json_bytes(
+                {
+                    "files": identity_rows,
+                    "repository": repo_id,
+                    "sha": sha,
+                }
+            )
+        ).hexdigest()
+        if identity != expected_identity:
+            errors.append(label + ": supplement identity hash mismatch")
 
 
 def _validate_releases(
@@ -388,6 +500,22 @@ def _validate_comparisons(
             path = artifact.path.parent / name
             if not path.is_file() or path.is_symlink():
                 errors.append(label + ": comparison file is missing " + name)
+        for name, field, message in (
+            ("diff.patch", "patch_sha256", "comparison patch hash mismatch"),
+            ("comparison.md", "markdown_sha256", "comparison Markdown hash mismatch"),
+        ):
+            expected_hash = document.get(field)
+            path = artifact.path.parent / name
+            if not isinstance(expected_hash, str) or not _SHA256.fullmatch(expected_hash):
+                errors.append(label + ": comparison file hash is invalid")
+            elif path.is_file() and not path.is_symlink():
+                try:
+                    actual_hash = hashlib.sha256(path.read_bytes()).hexdigest()
+                except OSError as error:
+                    errors.append(label + ": comparison file is unreadable: " + _bounded(error))
+                else:
+                    if actual_hash != expected_hash:
+                        errors.append(label + ": " + message)
     return paths
 
 
@@ -413,6 +541,8 @@ def _validate_work_items(
 
     source_pages = {page.relative_path: page for page in report.source_pages}
     changelog_pages = {page.relative_path: page for page in report.changelog_pages}
+    snapshots = {artifact.relative_path: artifact for artifact in report.snapshots}
+    comparisons = {artifact.relative_path: artifact for artifact in report.comparisons}
     for page in tuple(report.source_pages) + tuple(report.changelog_pages):
         if page.error:
             errors.append(page.relative_path + ": page is unreadable: " + page.error)
@@ -420,6 +550,14 @@ def _validate_work_items(
     for item in inspection.items:
         if item.snapshot_manifest and item.snapshot_manifest not in snapshot_paths:
             errors.append(item.work_item_id + ": missing snapshot manifest")
+        elif item.snapshot_manifest:
+            snapshot = snapshots.get(item.snapshot_manifest)
+            document = snapshot.document if snapshot is not None else None
+            if document is not None and (
+                document.get("repository") != item.repo_id
+                or document.get("sha") != item.sha
+            ):
+                errors.append(item.work_item_id + ": work-item snapshot identity mismatch")
         for change in item.package_changes:
             release = release_paths.get(change.release_manifest)
             if change.release_manifest and release is None:
@@ -431,8 +569,23 @@ def _validate_work_items(
                     errors.append(item.work_item_id + ": release manifest identity is invalid")
                 elif package + "@" + version != change.release_id:
                     errors.append(item.work_item_id + ": release manifest identity mismatch")
+                if release.document.get("repository") != item.repo_id:
+                    errors.append(item.work_item_id + ": work-item release repository mismatch")
+                if release.document.get("sha") != item.sha:
+                    errors.append(item.work_item_id + ": work-item release SHA mismatch")
             if change.comparison_manifest and change.comparison_manifest not in comparison_paths:
                 errors.append(item.work_item_id + ": missing comparison manifest " + change.release_id)
+            elif change.comparison_manifest:
+                comparison = comparisons.get(change.comparison_manifest)
+                document = comparison.document if comparison is not None else None
+                if document is not None and (
+                    document.get("repository") != item.repo_id
+                    or document.get("package") != change.package
+                    or document.get("from_version") != change.from_version
+                    or document.get("to_version") != change.to_version
+                    or document.get("to_sha") != item.sha
+                ):
+                    errors.append(item.work_item_id + ": work-item comparison identity mismatch")
         if item.state != "ingested":
             continue
         repo = repos.get(item.repo_id)

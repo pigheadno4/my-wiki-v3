@@ -336,6 +336,31 @@ class CapsuleSelectionTests(unittest.TestCase):
 
         self.assertEqual(("github-token-v1",), tuple(item.detector_code for item in findings))
 
+    def test_public_evidence_scanner_blocks_psp_and_modern_registry_tokens(self):
+        secrets = (
+            "sk_live_" + ("a" * 24),
+            "github_pat_" + ("a" * 40),
+            "npm_" + ("a" * 36),
+            "access_token$production$merchant$" + ("a" * 32),
+        )
+
+        for index, secret in enumerate(secrets):
+            with self.subTest(secret=index):
+                content = (secret + "\n").encode("utf-8")
+                evidence = CapsuleFile(
+                    path="secret-" + str(index) + ".txt",
+                    content=content,
+                    sha256=hashlib.sha256(content).hexdigest(),
+                    size=len(content),
+                    purpose="test",
+                    git_blob_oid=("a" * 39) + str(index),
+                    git_mode="100644",
+                    package="",
+                    classification_reason="test",
+                )
+                with self.assertRaisesRegex(ValueError, "secret-finding"):
+                    scan_evidence_files((evidence,), ())
+
     def test_package_overrides_and_resolved_policy_rows_are_exact(self):
         tree = self.tree(
             {

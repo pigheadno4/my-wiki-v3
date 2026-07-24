@@ -321,9 +321,9 @@ max_packet_utf8_bytes=1800000
         approve_one(self.wiki, oldest.work_item_id, "full")
         selected = next_ingest(self.wiki)
         self.assertEqual(oldest.work_item_id, selected.work_item_id)
-        self.assertEqual("approved", selected.state)
+        self.assertEqual("ingesting", selected.state)
         self.assertEqual(
-            "approved",
+            "ingesting",
             next(item for item in self.items() if item.work_item_id == selected.work_item_id).state,
         )
 

@@ -4,6 +4,8 @@ from dataclasses import dataclass
 import re
 from typing import Optional, Tuple
 
+from github_canonical import validate_npm_package_name
+
 
 _NUMERIC_IDENTIFIER = r"(?:0|[1-9][0-9]*)"
 _PRERELEASE_IDENTIFIER = (
@@ -17,7 +19,6 @@ _SEMVER = re.compile(
     r"(?:-((?:" + _PRERELEASE_IDENTIFIER + r")(?:\.(?:" + _PRERELEASE_IDENTIFIER + r"))*))?"
     r"(?:\+((?:" + _BUILD_IDENTIFIER + r")(?:\.(?:" + _BUILD_IDENTIFIER + r"))*))?$"
 )
-_SCOPED_PACKAGE = re.compile(r"^@[^/@]+/[^@/]+$")
 
 
 @dataclass(frozen=True)
@@ -103,10 +104,14 @@ def matches_semver(
 
 
 def parse_package_tag(tag: str) -> Optional[Tuple[str, str]]:
-    """Return a scoped package name and semantic version from a package tag."""
-    if not tag.startswith("@"):
+    """Return an npm package name and semantic version from a package tag."""
+    if not isinstance(tag, str) or "@" not in tag:
         return None
     package_name, separator, version = tag.rpartition("@")
-    if not separator or not _SCOPED_PACKAGE.fullmatch(package_name) or parse_semver(version) is None:
+    if (
+        not separator
+        or not validate_npm_package_name(package_name)
+        or parse_semver(version) is None
+    ):
         return None
     return package_name, version

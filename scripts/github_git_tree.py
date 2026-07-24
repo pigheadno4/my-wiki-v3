@@ -110,6 +110,21 @@ class GitTree:
             parse_constant=_reject_json_constant,
         )
 
+    def commit_dates(self) -> Tuple[str, str]:
+        """Return the exact commit's author and committer ISO-8601 timestamps."""
+        self._require_exact_commit()
+        output = _run_git_bytes(
+            ["show", "-s", "--format=%aI%n%cI", self._sha],
+            self._repo_root,
+        )
+        try:
+            rows = output.decode("ascii").splitlines()
+        except UnicodeDecodeError as error:
+            raise GitObjectReadError("Git commit dates are invalid") from error
+        if len(rows) != 2 or any(not row for row in rows):
+            raise GitObjectReadError("Git commit dates are invalid")
+        return rows[0], rows[1]
+
     def _require_exact_commit(self) -> None:
         if self._is_exact_commit is None:
             try:

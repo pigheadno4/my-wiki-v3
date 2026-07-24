@@ -1,5 +1,7 @@
 # GitHub Source Capsule Implementation Plan
 
+> **Superseded:** This packet/index-v2 design is historical. The active workflow is defined by `rules/github-repos.md` and the focused PayPal JS pilot plan.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Implement the accepted generic GitHub source-capsule, index-v2, immutable-event, retry, and deep-dive contracts without breaking existing release collection or starting wiki ingest.

@@ -1,5 +1,7 @@
 # PayPal JS Focused GitHub Collection Pilot Implementation Plan
 
+> **Implementation status:** The pilot collection and serial ingestion are complete. The follow-up hardening pass adds atomic ingest claims, provenance binding, release-note recollection, exact-SHA supplements, and removal of superseded packet authorities.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Build a focused, release-driven `paypal/paypal-js` pilot that preserves immutable package release evidence and SHA source snapshots, recommends full or delta serial ingest, and produces cumulative source/changelog knowledge without the superseded packet lifecycle.
@@ -163,7 +165,7 @@ dependency_scope="internal-runtime-closure"
 default_required_roots=["src"]
 default_generated_target_paths=["dist/"]
 include_paths=[]
-excluded_categories=["tests", "stories", "fixtures"]
+excluded_categories=["tests", "fixtures"]
 secret_detector="text-secrets-v1"
 max_file_bytes=512000
 max_capsule_files=240

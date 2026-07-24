@@ -7,6 +7,7 @@
 - Collection date: `2026-07-22`
 - State: `ingested`
 - Recommended mode: `full`
+- Evidence revision: `initial`
 - Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
@@ -26,6 +27,7 @@
 - Collection date: `2026-07-22`
 - State: `ingested`
 - Recommended mode: `full`
+- Evidence revision: `initial`
 - Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
@@ -48,6 +50,7 @@
 - Collection date: `2026-07-22`
 - State: `ingested`
 - Recommended mode: `full`
+- Evidence revision: `initial`
 - Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
@@ -70,6 +73,7 @@
 - Collection date: `2026-07-22`
 - State: `ingested`
 - Recommended mode: `full`
+- Evidence revision: `initial`
 - Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
@@ -92,6 +96,7 @@
 - Collection date: `2026-07-22`
 - State: `ingested`
 - Recommended mode: `full`
+- Evidence revision: `initial`
 - Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
@@ -111,6 +116,7 @@
 - Collection date: `2026-07-22`
 - State: `ingested`
 - Recommended mode: `full`
+- Evidence revision: `initial`
 - Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
@@ -133,6 +139,7 @@
 - Collection date: `2026-07-23`
 - State: `ingested`
 - Recommended mode: `full`
+- Evidence revision: `initial`
 - Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `2`
@@ -152,6 +159,7 @@
 - Collection date: `2026-07-22`
 - State: `ingested`
 - Recommended mode: `full`
+- Evidence revision: `initial`
 - Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
@@ -174,6 +182,7 @@
 - Collection date: `2026-07-23`
 - State: `ingested`
 - Recommended mode: `full`
+- Evidence revision: `initial`
 - Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `1`

@@ -18,6 +18,7 @@ from collect_github_repos import (  # noqa: E402
     next_ingest,
     parse_package_release,
     retry_one,
+    supplement_one,
 )
 from github_capsule_policy import CapsuleConfig  # noqa: E402
 from github_registry import RepoConfig, VersionTrack  # noqa: E402
@@ -197,6 +198,120 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertEqual("unchanged", result.state)
         self.assertEqual(1, len(load_work_items(self.root / "tracking/github/work-items.json")))
 
+    def test_recollection_creates_release_only_item_for_changed_notes(self):
+        self.collect()
+        queue = self.root / "tracking/github/work-items.json"
+        item = load_work_items(queue)[0]
+        transition_work_item(queue, item.work_item_id, "awaiting_approval", "approved", "delta")
+        transition_work_item(queue, item.work_item_id, "approved", "ingesting")
+        transition_work_item(queue, item.work_item_id, "ingesting", "ingested")
+
+        def corrected_notes(config, candidate):
+            return ReleaseNotesEvidence(
+                "https://api.github.test/" + candidate.tag,
+                "2026-07-07T12:00:00Z",
+                ("Corrected release " + candidate.tag + "\n").encode("utf-8"),
+            )
+
+        result = self.collect(
+            release_mode="future",
+            collection_date="2026-07-21",
+            release_notes_fetcher=corrected_notes,
+        )
+
+        self.assertEqual("awaiting_approval", result.state)
+        items = load_work_items(queue)
+        self.assertEqual(2, len(items))
+        revision = next(value for value in items if value.work_item_id != item.work_item_id)
+        self.assertEqual("delta", revision.recommended_mode)
+        self.assertTrue(revision.evidence_revision)
+        self.assertTrue(
+            all(change.reasons == ("release-notes-revision",) for change in revision.package_changes)
+        )
+
+    def test_recollection_routes_moved_release_tag_to_manual_review(self):
+        self.collect()
+        moved_sha = commit_files(
+            self.remote,
+            {"README.md": "# Moved release tag\n"},
+            "move release tag",
+        )
+        run_git(self.remote, "tag", "-f", "@paypal/paypal-js@10.0.0", moved_sha)
+
+        result = self.collect(
+            release="@paypal/paypal-js@10.0.0",
+            release_mode=None,
+            collection_date="2026-07-21",
+            max_attempts=1,
+        )
+
+        self.assertEqual("needs_manual_review", result.state)
+        self.assertIn("moved", result.errors[0])
+
+    def test_release_tag_version_must_match_package_manifest(self):
+        mismatched_sha = commit_files(
+            self.remote,
+            {
+                "packages/paypal-js/package.json": package_manifest(
+                    "@paypal/paypal-js", "10.0.2"
+                ),
+            },
+            "manifest version differs from tag",
+        )
+        tag(self.remote, "@paypal/paypal-js@10.0.1")
+
+        result = self.collect(
+            release="@paypal/paypal-js@10.0.1",
+            release_mode=None,
+            collection_date="2026-07-21",
+            max_attempts=1,
+        )
+
+        self.assertEqual("needs_manual_review", result.state)
+        self.assertIn("package manifest version", result.errors[0])
+        self.assertFalse(
+            (
+                self.root
+                / "raw/github/paypal/paypal-js/releases/paypal-js/10.0.1"
+            ).exists()
+        )
+        self.assertNotEqual(self.sha, mismatched_sha)
+
+    def test_unavailable_exact_release_is_recorded_without_ingest_item(self):
+        result = self.collect(
+            release="@paypal/paypal-js@10.99.0",
+            release_mode=None,
+            collection_date="2026-07-21",
+        )
+
+        self.assertEqual("not_available", result.state)
+        self.assertEqual((), result.work_item_ids)
+        self.assertFalse(
+            (self.root / "tracking/github/work-items.json").exists()
+        )
+
+    def test_equal_date_release_order_uses_semver_not_tag_lexical_order(self):
+        for version in ("10.0.2", "10.0.10"):
+            commit_files(
+                self.remote,
+                {
+                    "packages/paypal-js/package.json": package_manifest(
+                        "@paypal/paypal-js", version
+                    ),
+                },
+                "release " + version,
+            )
+            tag(self.remote, "@paypal/paypal-js@" + version)
+
+        result = self.collect(dry_run=True)
+        paypal = [
+            release_id
+            for release_id in result.release_ids
+            if release_id.startswith("@paypal/paypal-js@")
+        ]
+
+        self.assertLess(paypal.index("@paypal/paypal-js@10.0.2"), paypal.index("@paypal/paypal-js@10.0.10"))
+
     def test_future_patch_creates_package_scoped_delta_comparison(self):
         self.collect()
         next_sha = commit_files(
@@ -238,6 +353,9 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertEqual(1, len(items))
         self.assertEqual("collection_failed", items[0].state)
         self.assertEqual("", items[0].snapshot_manifest)
+        self.assertFalse(
+            (self.root / "raw/github/paypal/paypal-js/releases").exists()
+        )
         with self.assertRaises(ValueError):
             transition_work_item(
                 self.root / "tracking/github/work-items.json",
@@ -281,7 +399,7 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertTrue(recovered.snapshot_manifest)
         self.assertTrue(all(change.release_manifest for change in recovered.package_changes))
 
-    def test_later_retry_failure_retains_newly_valid_release_manifests(self):
+    def test_later_retry_snapshot_failure_does_not_publish_release_manifests(self):
         def fail_notes(config, candidate):
             raise ReleaseEvidenceError("temporary API failure")
 
@@ -299,7 +417,10 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertEqual("collection_failed", result.state)
         self.assertEqual(failed.work_item_id, retained.work_item_id)
         self.assertEqual("", retained.snapshot_manifest)
-        self.assertTrue(all(change.release_manifest for change in retained.package_changes))
+        self.assertTrue(all(not change.release_manifest for change in retained.package_changes))
+        self.assertFalse(
+            (self.root / "raw/github/paypal/paypal-js/releases").exists()
+        )
 
     def test_approve_records_user_selected_mode_before_ingest(self):
         self.collect()
@@ -311,16 +432,17 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertEqual("approved", approved.state)
         self.assertEqual("delta", approved.approved_mode)
 
-    def test_next_ingest_selects_oldest_approved_item_without_mutation(self):
+    def test_next_ingest_claims_oldest_approved_item(self):
         self.collect()
         item = load_work_items(self.root / "tracking/github/work-items.json")[0]
         approve_one(self.root, item.work_item_id, "full")
 
         selected = next_ingest(self.root)
-        unchanged = load_work_items(self.root / "tracking/github/work-items.json")[0]
+        claimed = load_work_items(self.root / "tracking/github/work-items.json")[0]
 
         self.assertEqual(item.work_item_id, selected.work_item_id)
-        self.assertEqual("approved", unchanged.state)
+        self.assertEqual("ingesting", selected.state)
+        self.assertEqual("ingesting", claimed.state)
 
     def test_retry_requires_failure_state_and_returns_to_discovered(self):
         self.collect()
@@ -364,13 +486,55 @@ class CollectGitHubReposTests(unittest.TestCase):
         approve = parser.parse_args(
             ["approve", "--item", "github-" + "a" * 20, "--mode", "delta"]
         )
+        completed = parser.parse_args(
+            ["complete-ingest", "--item", "github-" + "a" * 20]
+        )
+        failed = parser.parse_args(
+            ["fail-ingest", "--item", "github-" + "a" * 20, "--error", "grounding failed"]
+        )
+        supplement = parser.parse_args(
+            [
+                "supplement",
+                "--repo",
+                "paypal/paypal-js",
+                "--sha",
+                "a" * 40,
+                "--path",
+                "packages/paypal-js/src/index.ts",
+            ]
+        )
 
         self.assertEqual("backfill", collect.release_mode)
         self.assertEqual("@paypal/paypal-js@10.0.0", release.release)
         self.assertEqual("delta", approve.mode)
+        self.assertEqual("complete-ingest", completed.command)
+        self.assertEqual("grounding failed", failed.error)
+        self.assertEqual(("packages/paypal-js/src/index.ts",), tuple(supplement.paths))
         for retired in ("prepare", "packet" + "-state"):
             with self.assertRaises(SystemExit):
                 parser.parse_args([retired])
+
+    def test_supplement_collects_requested_path_without_mutating_snapshot(self):
+        self.collect()
+        snapshot = next(
+            (self.root / "raw/github/paypal/paypal-js/snapshots").glob("*/manifest.json")
+        )
+        before = snapshot.read_bytes()
+
+        supplement = supplement_one(
+            self.root,
+            self.config,
+            self.sha,
+            ("packages/paypal-js/src/index.ts",),
+            clone_source=self.remote,
+            collection_date="2026-07-21",
+        )
+
+        self.assertEqual(before, snapshot.read_bytes())
+        self.assertEqual(
+            ("packages/paypal-js/src/index.ts",),
+            supplement.files,
+        )
 
     def test_parser_requires_repo_and_rejects_collection_plus_ingest(self):
         parser = _parser()

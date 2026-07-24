@@ -44,6 +44,35 @@ _DETECTORS = (
             re.ASCII,
         ),
     ),
+    (
+        "github-fine-grained-token-v1",
+        re.compile(
+            r"(?<![A-Za-z0-9_])github_pat_[A-Za-z0-9_]{20,255}(?![A-Za-z0-9_])",
+            re.ASCII,
+        ),
+    ),
+    (
+        "npm-access-token-v1",
+        re.compile(
+            r"(?<![A-Za-z0-9_])npm_[A-Za-z0-9]{36,255}(?![A-Za-z0-9])",
+            re.ASCII,
+        ),
+    ),
+    (
+        "stripe-live-secret-key-v1",
+        re.compile(
+            r"(?<![A-Za-z0-9_])sk_live_[A-Za-z0-9]{16,255}(?![A-Za-z0-9])",
+            re.ASCII,
+        ),
+    ),
+    (
+        "braintree-production-access-token-v1",
+        re.compile(
+            r"(?<![A-Za-z0-9_])access_token\$production\$"
+            r"[A-Za-z0-9_-]+\$[A-Fa-f0-9]{32,128}(?![A-Za-z0-9])",
+            re.ASCII,
+        ),
+    ),
 )
 _DETECTOR_CODES = tuple(item[0] for item in _DETECTORS)
 _LFS_HEADER = b"version https://git-lfs.github.com/spec/v1"
