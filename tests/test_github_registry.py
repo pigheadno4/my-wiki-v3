@@ -486,6 +486,31 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual((disabled,), select_repos(repos, company="stripe", enabled_only=False))
         self.assertEqual((disabled,), select_repos(repos, repo_id="stripe/stripe-ios", enabled_only=False))
 
+    def test_adyen_web_uses_the_reviewed_bounded_public_source_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        adyen = next(repo for repo in repos if repo.id == "adyen/adyen-web")
+        capsule = adyen.capsules[0]
+
+        self.assertEqual(
+            (
+                "src/components/Card",
+                "src/components/Dropin",
+                "src/components/ThreeDS2",
+                "src/components/index.ts",
+                "src/components/types.ts",
+                "src/core",
+                "src/index.ts",
+                "src/index.umd.ts",
+                "src/types",
+                "src/types.ts",
+            ),
+            capsule.default_required_roots,
+        )
+        self.assertEqual(("dist/",), capsule.default_generated_target_paths)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual(340, capsule.max_capsule_files)
+        self.assertEqual(3000000, capsule.max_capsule_utf8_bytes)
+
     def test_registry_matches_appendix_a_inventory_and_collection_cadence(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
 
