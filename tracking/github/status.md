@@ -76,7 +76,7 @@
 - Evidence revision: `initial`
 - Approved mode: `not approved`
 - Attempts in run: `3`
-- Consecutive failed runs: `1`
+- Consecutive failed runs: `2`
 - Last error: release evidence for adyen/adyen-web tag v6.41.0: GitHub HTTP 403
 - Snapshot: Not published
 
