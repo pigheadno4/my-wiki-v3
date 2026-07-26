@@ -36,6 +36,11 @@ The focused package remains `@adyen/adyen-web`. Its base capsule will retain:
 - `src/components/Card/`; and
 - `src/components/ThreeDS2/`.
 
+The registry expresses this same reader-facing scope with directory roots in
+`default_required_roots` (`src/types`, `src/core`, and the three retained
+component directories) and the five named entry files in `include_paths`.
+This preserves the generic capsule contract without changing evidence scope.
+
 Tests and fixtures remain excluded. Stories inside retained component roots
 remain eligible. Reviewed generated target declarations under `dist/` remain
 allowed, but untracked generated output is not copied into the capsule.

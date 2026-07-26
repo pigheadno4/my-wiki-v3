@@ -496,15 +496,20 @@ class RegistryTests(unittest.TestCase):
                 "src/components/Card",
                 "src/components/Dropin",
                 "src/components/ThreeDS2",
-                "src/components/index.ts",
-                "src/components/types.ts",
                 "src/core",
-                "src/index.ts",
-                "src/index.umd.ts",
                 "src/types",
-                "src/types.ts",
             ),
             capsule.default_required_roots,
+        )
+        self.assertEqual(
+            (
+                "src/components/index.ts",
+                "src/components/types.ts",
+                "src/index.ts",
+                "src/index.umd.ts",
+                "src/types.ts",
+            ),
+            capsule.include_paths,
         )
         self.assertEqual(("dist/",), capsule.default_generated_target_paths)
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)

@@ -29,7 +29,7 @@
 
 **Interfaces:**
 - Consumes: `github_registry.load_registry(path: Path) -> Tuple[RepoConfig, ...]`
-- Produces: one enabled `adyen/adyen-web` `CapsuleConfig` with the approved package-relative required roots and unchanged safety budgets.
+- Produces: one enabled `adyen/adyen-web` `CapsuleConfig` with the approved package-relative directory roots, exact include paths, and unchanged safety budgets.
 
 - [ ] **Step 1: Write the failing registry-policy test**
 
@@ -43,18 +43,23 @@ def test_adyen_web_uses_the_reviewed_bounded_public_source_capsule(self):
 
     self.assertEqual(
         (
+            "src/components/Card",
+            "src/components/Dropin",
+            "src/components/ThreeDS2",
+            "src/core",
+            "src/types",
+        ),
+        capsule.default_required_roots,
+    )
+    self.assertEqual(
+        (
+            "src/components/index.ts",
+            "src/components/types.ts",
             "src/index.ts",
             "src/index.umd.ts",
             "src/types.ts",
-            "src/types",
-            "src/core",
-            "src/components/index.ts",
-            "src/components/types.ts",
-            "src/components/Dropin",
-            "src/components/Card",
-            "src/components/ThreeDS2",
         ),
-        capsule.default_required_roots,
+        capsule.include_paths,
     )
     self.assertEqual(("dist/",), capsule.default_generated_target_paths)
     self.assertEqual(("tests", "fixtures"), capsule.excluded_categories)
@@ -71,7 +76,8 @@ python3 -m unittest \
   tests.test_github_registry.RegistryTests.test_adyen_web_uses_the_reviewed_bounded_public_source_capsule
 ```
 
-Expected: `FAIL` because the current registry returns `("src",)`.
+Expected: `FAIL` because the current registry still puts the five exact files
+in `default_required_roots` rather than `include_paths`.
 
 - [ ] **Step 3: Apply the bounded Adyen registry policy**
 
@@ -80,19 +86,20 @@ Replace only the Adyen Web capsule's required roots in
 
 ```toml
 default_required_roots=[
-  "src/index.ts",
-  "src/index.umd.ts",
-  "src/types.ts",
   "src/types",
   "src/core",
-  "src/components/index.ts",
-  "src/components/types.ts",
   "src/components/Dropin",
   "src/components/Card",
   "src/components/ThreeDS2",
 ]
 default_generated_target_paths=["dist/"]
-include_paths=[]
+include_paths=[
+  "src/index.ts",
+  "src/index.umd.ts",
+  "src/types.ts",
+  "src/components/index.ts",
+  "src/components/types.ts",
+]
 excluded_categories=["tests", "fixtures"]
 ```
 
@@ -137,7 +144,7 @@ git commit -m "policy: bound Adyen Web source capsule"
 - Read: `scripts/github_capsule_selection.py`
 
 **Interfaces:**
-- Consumes: `GitTree(repo_path: Path, treeish: str, max_file_bytes: int)` and `resolve_npm_capsule(tree, capsule, allowlist) -> CapsuleResolution`
+- Consumes: `GitTree(repo_path: Path, treeish: full_sha, max_file_bytes: int)` and `resolve_npm_capsule(tree, capsule, allowlist) -> CapsuleResolution`. Tag `v6.41.0` must resolve to `b19eec7054340a1526c87d450fd7dfff75794ed9` before constructing `GitTree`.
 - Produces: measured file count, UTF-8 byte count, story count, and proof that tests and fixtures are absent.
 
 - [ ] **Step 1: Create an exact shallow audit clone**
@@ -151,6 +158,14 @@ git clone --filter=blob:none --no-checkout --depth 1 --branch v6.41.0 \
 ```
 
 Expected: clone succeeds and resolves tag `v6.41.0`.
+
+Verify the immutable tag target before resolving the capsule:
+
+```bash
+git -C /private/tmp/adyen-web-bounded-capsule-audit rev-parse v6.41.0^{commit}
+```
+
+Expected: `b19eec7054340a1526c87d450fd7dfff75794ed9`.
 
 - [ ] **Step 2: Resolve and print the capsule measurements**
 
@@ -170,9 +185,10 @@ repo = next(
     for item in load_registry(root / "tracking/github/repo-registry.toml")
     if item.id == "adyen/adyen-web"
 )
+snapshot_sha = "b19eec7054340a1526c87d450fd7dfff75794ed9"
 tree = GitTree(
     Path("/private/tmp/adyen-web-bounded-capsule-audit"),
-    "v6.41.0",
+    snapshot_sha,
     repo.max_file_bytes,
 )
 resolution = resolve_npm_capsule(tree, repo.capsules[0], repo.secret_allowlist)
