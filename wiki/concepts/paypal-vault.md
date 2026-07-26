@@ -14,6 +14,15 @@ PayPal's Vault is a tokenization system that stores a buyer's payment method so 
 - **Payment Method Tokens v3 API** — creates and manages setup tokens and payment tokens
 - **Orders v2 API** — used with a vault ID (`vault_id`) for subsequent merchant-initiated charges
 
+## Braintree PayPal v6 React Paths
+
+`@paypal/react-paypal-js@9.3.0` adds two Braintree-specific consent paths:
+
+- a billing-agreement session for vault-only, recurring, subscription, unscheduled, or installment plans; and
+- checkout with vault, which combines a one-time charge and billing-agreement consent.
+
+These paths use `BraintreePayPalProvider`, a Braintree client token, and `paypalCheckoutV6`. Approval data is converted to a payment-method nonce with `tokenizePayment()`, then processed server-side with a Braintree SDK. They are not Payment Method Tokens v3 or Orders v2 vault flows. See [[paypal-braintree-integration]].
+
 ## Token Types
 
 | Token | Created by | Lifetime | Purpose |
@@ -29,6 +38,25 @@ PayPal's Vault is a tokenization system that stores a buyer's payment method so 
 4. Merchant upgrades to payment token (`paymentTokensCreate`)
 5. Merchant stores the payment token ID (`vault_id`)
 6. For each recurring charge: `ordersCreate` with `vault_id` + `stored_credential`
+
+### Version 10.0.1 package evidence
+
+`@paypal/paypal-js@10.0.1` adds optional `vaultSetupToken` to the legacy Buttons `OnApproveData` type. Its expanded `createVaultSetupToken` JSDoc covers PayPal and Venmo vault-without-purchase: return a server-created Vault API setup token, using `payment_source.venmo` for Venmo. In these flows, `onApprove` returns `data.vaultSetupToken` while `data.orderID` is empty.
+
+### Version 10.0.3 v6 package evidence
+
+`@paypal/paypal-js@10.0.3` adds a typed v6 Venmo vault-without-payment path to the `venmo-payments` component. `createVenmoSavePaymentSession()` accepts save-session callbacks, and approval returns `{ vaultSetupToken }`. The session's `start()` accepts the existing Venmo `auto`, `popup`, or `modal` presentation options plus an optional promise resolving to `{ vaultSetupToken }`.
+
+This package evidence establishes the public TypeScript contract at `10.0.3`; it does not independently prove production eligibility, account enablement, or runtime behavior owned by `paypal/paypal-checkout-components`.
+
+### checkout-components `5.0.425` runtime evidence
+
+The matching checkout runtime provides a Venmo `VAULT_WITHOUT_PURCHASE` funding flow and a `createVaultSetupToken` prop on its protected Venmo component. The funding path is disabled unless the `venmoVaultWithoutPurchase` experiment is true, and vaultable display state cannot be combined with shipping callbacks for native app-switch or QR flows.
+
+This closes the earlier package-only evidence gap at the source-code level, but it does not resolve merchant availability: both the package and runtime can expose staged or gated contracts. Current product documentation and account eligibility remain required before offering Venmo save-without-purchase.
+
+> [!warning] Contradiction — Venmo save without purchase
+> The 2025 Save Payment Methods and Pay with Venmo documentation says Venmo is not supported for save-for-purchase-later, while `@paypal/paypal-js@10.0.3` explicitly types a Venmo save-payment session for vault setup without a purchase. This may be a newer v6 capability, a staged/unreleased runtime contract, or a documentation lag. Do not promise merchant availability from the type declaration alone; verify current product documentation, account eligibility, and the matching runtime SDK.
 
 ## `stored_credential` Fields (for subsequent charges via Orders API)
 
@@ -72,7 +100,7 @@ Uses `VaultController` from `@paypal/paypal-server-sdk`:
 
 - US buyers and merchants only (for recurring payments module)
 - Card vaulting requires **Expanded Checkout approval**; supported in 35 countries (AU, AT, BE, BG, CA, CN, CY, CZ, DK, EE, FI, FR, DE, HK, HU, IE, IT, **JP**, LV, LI, LT, LU, MT, NL, NO, PL, PT, RO, SG, SK, SI, ES, SE, GB, US)
-- **Venmo** can be vaulted during purchase (JS SDK) but is **not supported** for save-for-purchase-later (Vault Payment Methods API)
+- **Venmo** can be vaulted during purchase. The older Vault Payment Methods guidance says save-for-purchase-later is unsupported, but the `@paypal/paypal-js@10.0.3` v6 type surface now declares a Venmo save-payment session; treat availability as unresolved pending matching runtime and product evidence.
 
 ## Relevant Companies
 
@@ -211,7 +239,7 @@ No purchase transaction — pure vault flow using setup token → payment token:
 
 ## Save for Purchase Later (off-session)
 
-All 4 paths (JS SDK, Payment Method Tokens API, Android SDK, iOS SDK) support PayPal + cards. **No Venmo** on any purchase-later path.
+The 2025 integration matrix says all four paths (JS SDK, Payment Method Tokens API, Android SDK, and iOS SDK) support PayPal and cards, with no Venmo purchase-later path. The later `@paypal/paypal-js@10.0.3` declaration conflicts with that matrix by adding a v6 Venmo save-payment session; use package-qualified evidence and verify the deployed runtime before treating Venmo as supported.
 
 JS SDK caveat: client-side only integration saves PayPal Wallets only; client+server (Expanded Checkout) required to also save cards.
 
@@ -282,3 +310,5 @@ The `customer.id` is a PayPal-generated identifier — store it against the paye
 - [[source-paypal-save-cards-android-sdk]] — Android SDK card vault: Compose checkbox UX, `customer.id` in Create Order body for returning payers, `ApproveOrderListener` 3DS callbacks, RTAU next step
 - [[source-paypal-save-applepay-js-sdk]] — Apple Pay vault: APPROVED vs VAULTED status, VAULT.PAYMENT-TOKEN.CREATED webhook, merchant-initiated recurring pattern
 - [[source-paypal-save-cards-js-sdk]] — Card vault JS SDK: checkbox UX, SCA_ALWAYS/SCA_WHEN_REQUIRED with vault, usage_type/customer_type/permit_multiple_payment_tokens fields, 14 test cards
+- [[source-github-paypal-js]] — versioned core v10.0.1 legacy Buttons setup-token approval types plus React Braintree billing-agreement, checkout-with-vault, and Pay Later evidence
+- [[source-github-paypal-checkout-components]] — package-qualified runtime, Venmo setup-token, and eligibility evidence

@@ -1,0 +1,531 @@
+diff --git a/packages/paypal-js/CHANGELOG.md b/packages/paypal-js/CHANGELOG.md
+index d599a8b..b7c82dd 100644
+--- a/packages/paypal-js/CHANGELOG.md
++++ b/packages/paypal-js/CHANGELOG.md
+@@ -1,5 +1,20 @@
+ # Changelog
+ 
++## 10.0.1
++
++### Patch Changes
++
++- d7f697b: Migrates Vitest to v4.
++- 983beb7: Add v6 web component DOM element types so non-React TypeScript integrations get strongly-typed access to the PayPal SDK custom elements. `HTMLElementTagNameMap` is augmented for `<paypal-button>`, `<venmo-button>`, `<paypal-pay-later-button>`, `<paypal-credit-button>`, `<paypal-basic-card-button>`, `<paypal-basic-card-container>`, `<paypal-message>`, and `<apple-pay-button>` (registered by Apple's Apple Pay JS SDK).
++
++  ```ts
++  const btn = document.createElement("paypal-pay-later-button");
++  btn.countryCode = "US"; // typed: "AU" | "CA" | "DE" | "ES" | "FR" | "GB" | "IT" | "US"
++  btn.productCode = "PAYLATER"; // typed: "PAYLATER" | "PAY_LATER_SHORT_TERM"
++  ```
++
++- 7d44dcc: Add `vaultSetupToken` to `OnApproveData` and expand `createVaultSetupToken` and `onApprove` JSDoc to cover Venmo vault-without-purchase flows.
++
+ ## 10.0.0
+ 
+ ### Major Changes
+diff --git a/packages/paypal-js/bundle-tests/bundle-size.test.js b/packages/paypal-js/bundle-tests/bundle-size.test.js
+index c468b17..e972b13 100644
+--- a/packages/paypal-js/bundle-tests/bundle-size.test.js
++++ b/packages/paypal-js/bundle-tests/bundle-size.test.js
+@@ -4,7 +4,7 @@ import { filesize } from "filesize";
+ 
+ const maxBundleSizeInKiloBytes = 4.5;
+ const maxLegacyBundleSizeInKiloBytes = 8.2;
+-const v6MaxBundleSizeInKiloBytes = 2;
++const v6MaxBundleSizeInKiloBytes = 3;
+ 
+ describe("bundle size", () => {
+   test(`dist/iife/paypal-js.min.js should be less than ${maxBundleSizeInKiloBytes} KB`, () => {
+diff --git a/packages/paypal-js/package.json b/packages/paypal-js/package.json
+index abb66b6..1806249 100644
+--- a/packages/paypal-js/package.json
++++ b/packages/paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@paypal/paypal-js",
+-  "version": "10.0.0",
++  "version": "10.0.1",
+   "description": "Loading wrapper and TypeScript types for the PayPal JS SDK",
+   "main": "index.js",
+   "module": "dist/esm/paypal-js.js",
+@@ -67,7 +67,7 @@
+     "@types/promise-polyfill": "6.0.6",
+     "@typescript-eslint/eslint-plugin": "8.59.0",
+     "@typescript-eslint/parser": "8.59.0",
+-    "@vitest/coverage-v8": "^1.6.0",
++    "@vitest/coverage-v8": "4.1.0",
+     "eslint": "8.57.1",
+     "eslint-plugin-tsdoc": "^0.4.0",
+     "filesize": "10.1.0",
+@@ -80,7 +80,7 @@
+     "tslib": "2.6.2",
+     "typedoc": "^0.28.13",
+     "typedoc-material-theme": "^1.4.0",
+-    "vitest": "1.6.1"
++    "vitest": "4.1.0"
+   },
+   "dependencies": {
+     "promise-polyfill": "^8.3.0"
+diff --git a/packages/paypal-js/src/load-script.test.ts b/packages/paypal-js/src/load-script.test.ts
+index 284e212..1763d27 100644
+--- a/packages/paypal-js/src/load-script.test.ts
++++ b/packages/paypal-js/src/load-script.test.ts
+@@ -128,7 +128,7 @@ describe("loadScript()", () => {
+         // @ts-expect-error intentionally sending invalid value
+         environment: "invalid",
+       }),
+-    ).toThrowError(
++    ).toThrow(
+       'The `environment` option must be either "production" or "sandbox"',
+     );
+   });
+@@ -213,7 +213,7 @@ describe("loadCustomScript()", () => {
+   });
+ 
+   test("should use the provided promise ponyfill", () => {
+-    const PromisePonyfill = vi.fn(() => {
++    const PromisePonyfill = vi.fn(function () {
+       return {
+         then: vi.fn(),
+       };
+diff --git a/packages/paypal-js/src/v6/index.test.ts b/packages/paypal-js/src/v6/index.test.ts
+index cbc7443..bd1ed84 100644
+--- a/packages/paypal-js/src/v6/index.test.ts
++++ b/packages/paypal-js/src/v6/index.test.ts
+@@ -127,41 +127,41 @@ describe("loadCoreSdkScript()", () => {
+       return node;
+     });
+ 
+-    expect(async () => {
++    await expect(async () => {
+       await loadCoreSdkScript({ environment: "sandbox" });
+-    }).rejects.toThrowError(
++    }).rejects.toThrow(
+       'The script "https://www.sandbox.paypal.com/web-sdk/v6/core" failed to load. Check the HTTP status code and response body in DevTools to learn more.',
+     );
+   });
+ 
+   test("should error due to unvalid input", async () => {
+-    expect(async () => {
++    await expect(async () => {
+       // @ts-expect-error invalid arguments
+       await loadCoreSdkScript(123);
+-    }).rejects.toThrowError("Expected an options object");
++    }).rejects.toThrow("Expected an options object");
+ 
+-    expect(async () => {
++    await expect(async () => {
+       // @ts-expect-error invalid arguments
+       await loadCoreSdkScript({ environment: "bad_value" });
+-    }).rejects.toThrowError(
++    }).rejects.toThrow(
+       'The "environment" option is required and must be either "production" or "sandbox"',
+     );
+   });
+ 
+   test("should error when environment is omitted", async () => {
+-    expect(async () => {
++    await expect(async () => {
+       // @ts-expect-error environment is required
+       await loadCoreSdkScript({});
+-    }).rejects.toThrowError(
++    }).rejects.toThrow(
+       'The "environment" option is required and must be either "production" or "sandbox"',
+     );
+   });
+ 
+   test("should error when environment is explicitly undefined", async () => {
+-    expect(async () => {
++    await expect(async () => {
+       // @ts-expect-error environment is required
+       await loadCoreSdkScript({ environment: undefined });
+-    }).rejects.toThrowError(
++    }).rejects.toThrow(
+       'The "environment" option is required and must be either "production" or "sandbox"',
+     );
+   });
+@@ -191,20 +191,20 @@ describe("loadCoreSdkScript()", () => {
+     });
+ 
+     test("should error when dataNamespace is an empty string", async () => {
+-      expect(async () => {
++      await expect(async () => {
+         await loadCoreSdkScript({ environment: "sandbox", dataNamespace: "" });
+-      }).rejects.toThrowError(
++      }).rejects.toThrow(
+         'The "dataNamespace" option cannot be an empty string',
+       );
+     });
+ 
+     test("should error when dataNamespace is only whitespace", async () => {
+-      expect(async () => {
++      await expect(async () => {
+         await loadCoreSdkScript({
+           environment: "sandbox",
+           dataNamespace: "   ",
+         });
+-      }).rejects.toThrowError(
++      }).rejects.toThrow(
+         'The "dataNamespace" option cannot be an empty string',
+       );
+     });
+@@ -234,23 +234,23 @@ describe("loadCoreSdkScript()", () => {
+     });
+ 
+     test("should error when dataSdkIntegrationSource is an empty string", async () => {
+-      expect(async () => {
++      await expect(async () => {
+         await loadCoreSdkScript({
+           environment: "sandbox",
+           dataSdkIntegrationSource: "",
+         });
+-      }).rejects.toThrowError(
++      }).rejects.toThrow(
+         'The "dataSdkIntegrationSource" option cannot be an empty string',
+       );
+     });
+ 
+     test("should error when dataSdkIntegrationSource is only whitespace", async () => {
+-      expect(async () => {
++      await expect(async () => {
+         await loadCoreSdkScript({
+           environment: "sandbox",
+           dataSdkIntegrationSource: "   ",
+         });
+-      }).rejects.toThrowError(
++      }).rejects.toThrow(
+         'The "dataSdkIntegrationSource" option cannot be an empty string',
+       );
+     });
+diff --git a/packages/paypal-js/types/components/buttons.d.ts b/packages/paypal-js/types/components/buttons.d.ts
+index 95ce5ea..679c8fd 100644
+--- a/packages/paypal-js/types/components/buttons.d.ts
++++ b/packages/paypal-js/types/components/buttons.d.ts
+@@ -52,6 +52,8 @@ export type OnApproveData = {
+   paymentID?: string | null;
+   subscriptionID?: string | null;
+   authCode?: string | null;
++  /** Present for vault-without-purchase flows (Venmo, PayPal save-payment). */
++  vaultSetupToken?: string | null;
+ };
+ 
+ export type OnApproveActions = {
+@@ -294,8 +296,11 @@ export interface PayPalButtonsComponentOptions {
+    */
+   createSubscription?: PayPalButtonCreateSubscription;
+   /**
+-   * Save payment methods to charge payers after a set amount of time. For example, you can offer a free trial and charge payers after the trial expires. Payers don't need to be present when charged. No checkout required.
+-   * https://developer.paypal.com/docs/checkout/save-payment-methods/purchase-later/js-sdk/paypal/#link-clientsidecodesample
++   * Called on button click to set up vault-without-purchase tokenization.
++   * Used for PayPal save-payment and Venmo vault-without-purchase flows.
++   * Return a vault setup token created server-side via the PayPal Vault API (/v3/vault/setup-tokens).
++   * For Venmo, create the token with `payment_source: { venmo: {...} }`.
++   * https://developer.paypal.com/docs/checkout/save-payment-methods/purchase-later/js-sdk/paypal/
+    */
+   createVaultSetupToken?: PayPalButtonCreateVaultSetupToken;
+   /**
+@@ -304,7 +309,9 @@ export interface PayPalButtonsComponentOptions {
+    */
+   fundingSource?: PayPalButtonFundingSource;
+   /**
+-   * Called when finalizing the transaction. Often used to inform the buyer that the transaction is complete. [onApprove docs](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#onapprove).
++   * Called when finalizing the transaction. Often used to inform the buyer that the transaction is complete.
++   * For vault-without-purchase flows, `data.vaultSetupToken` contains the approved token; `data.orderID` will be empty.
++   * [onApprove docs](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#onapprove).
+    */
+   onApprove?: PayPalButtonOnApprove;
+   /**
+diff --git a/packages/paypal-js/types/tests/buttons.test.ts b/packages/paypal-js/types/tests/buttons.test.ts
+index 9f0b044..49f25a1 100644
+--- a/packages/paypal-js/types/tests/buttons.test.ts
++++ b/packages/paypal-js/types/tests/buttons.test.ts
+@@ -134,4 +134,24 @@ async function main() {
+     paypal.rememberFunding?.([paypal.FUNDING.VENMO]);
+     paypal.isFundingEligible?.(paypal.FUNDING.VENMO);
+   }
++
++  // Venmo vault-without-purchase integration
++  paypal
++    .Buttons({
++      fundingSource: paypal.FUNDING?.VENMO,
++      createVaultSetupToken: () => {
++        return fetch("/your/api/vault/setup-token/create/", { method: "post" })
++          .then((res) => res.json())
++          .then((data) => data.id);
++      },
++      onApprove: (data) => {
++        // vaultSetupToken is present for vault-without-purchase flows
++        const token: string | null | undefined = data.vaultSetupToken;
++        return fetch(`/your/api/vault/payment-token/create/`, {
++          method: "post",
++          body: JSON.stringify({ vaultSetupToken: token }),
++        }).then((res) => res.json());
++      },
++    })
++    .render("#paypal-button-container");
+ }
+diff --git a/packages/paypal-js/types/v6/components/paypal-payments.d.ts b/packages/paypal-js/types/v6/components/paypal-payments.d.ts
+index be8e8f6..f0737d6 100644
+--- a/packages/paypal-js/types/v6/components/paypal-payments.d.ts
++++ b/packages/paypal-js/types/v6/components/paypal-payments.d.ts
+@@ -12,6 +12,7 @@ import {
+ 
+ export type PayLaterCountryCodes =
+   | "AU"
++  | "CA"
+   | "DE"
+   | "ES"
+   | "FR"
+diff --git a/packages/paypal-js/types/v6/components/web-components.d.ts b/packages/paypal-js/types/v6/components/web-components.d.ts
+new file mode 100644
+index 0000000..1419949
+--- /dev/null
++++ b/packages/paypal-js/types/v6/components/web-components.d.ts
+@@ -0,0 +1,160 @@
++/**
++ * DOM element types for v6 SDK web components.
++ *
++ * Augments `HTMLElementTagNameMap` so that `document.createElement()` and
++ * `document.querySelector()` return strongly-typed elements for non-React
++ * integrations using the v6 SDK web components.
++ */
++
++/**
++ * The `<paypal-button>` and `<venmo-button>` custom elements.
++ *
++ * @example
++ * ```typescript
++ * const paypalButton = document.createElement("paypal-button");
++ * paypalButton.type = "checkout";
++ * paypalButton.addEventListener("click", () => {
++ *   // start payment session
++ * });
++ * ```
++ */
++export interface PayPalButtonElement extends HTMLElement {
++  /**
++   * Controls the button label.
++   */
++  type?: "buynow" | "checkout" | "donate" | "pay" | "subscribe";
++  /**
++   * When true, the button renders in a disabled state and suppresses click
++   * events.
++   */
++  disabled?: boolean;
++}
++
++/**
++ * The `<paypal-pay-later-button>` custom element. Both `countryCode` and
++ * `productCode` must be set for the button to render — populate them from
++ * `findEligibleMethods().getDetails("paylater")`.
++ *
++ * @example
++ * ```typescript
++ * const payLaterButton = document.createElement("paypal-pay-later-button");
++ * payLaterButton.countryCode = "US";
++ * payLaterButton.productCode = "PAY_LATER_SHORT_TERM";
++ * ```
++ */
++export interface PayPalPayLaterButtonElement extends HTMLElement {
++  countryCode?: "AU" | "CA" | "DE" | "ES" | "FR" | "GB" | "IT" | "US";
++  productCode?: "PAYLATER" | "PAY_LATER_SHORT_TERM";
++  disabled?: boolean;
++}
++
++/**
++ * The `<paypal-credit-button>` custom element. `countryCode` must be set for
++ * the button to render — populate it from
++ * `findEligibleMethods().getDetails("credit")`.
++ *
++ * @example
++ * ```typescript
++ * const creditButton = document.createElement("paypal-credit-button");
++ * creditButton.countryCode = "US";
++ * ```
++ */
++export interface PayPalCreditButtonElement extends HTMLElement {
++  countryCode?: "GB" | "US";
++  disabled?: boolean;
++}
++
++/**
++ * The `<paypal-basic-card-button>` custom element used to start a
++ * `PayPalGuestPaymentSession`. Must be wrapped in a
++ * `<paypal-basic-card-container>` to render.
++ *
++ * @example
++ * ```typescript
++ * const cardButton = document.createElement("paypal-basic-card-button");
++ * cardButton.buyerCountry = "US";
++ * ```
++ */
++export interface PayPalBasicCardButtonElement extends HTMLElement {
++  /**
++   * Buyer country used to verify inline guest checkout eligibility.
++   */
++  buyerCountry?: string;
++  disabled?: boolean;
++}
++
++/**
++ * The `<paypal-message>` custom element for PayPal Pay Later messaging.
++ *
++ * @example
++ * ```typescript
++ * const message = document.createElement("paypal-message");
++ * message.amount = "100.00";
++ * message.currencyCode = "USD";
++ * message.logoType = "MONOGRAM";
++ * ```
++ */
++export interface PayPalMessageElement extends HTMLElement {
++  amount?: string;
++  /**
++   * When true, the data layer (`PayPalMessages`) automatically picks up this
++   * element to fetch and render content.
++   */
++  autoBootstrap?: boolean;
++  buyerCountry?: string;
++  currencyCode?: string;
++  logoPosition?: "INLINE" | "LEFT" | "RIGHT" | "TOP";
++  logoType?: "MONOGRAM" | "TEXT" | "WORDMARK";
++  /**
++   * Comma-separated list of offer types to filter messaging on. Valid
++   * values: `"PAYPAL_BALANCE"`, `"PAYPAL_CASHBACK_MASTERCARD"`,
++   * `"PAYPAL_CREDIT_NO_INTEREST"`, `"PAYPAL_DEBIT_CARD"`,
++   * `"PAY_LATER_LONG_TERM"`, `"PAY_LATER_PAY_IN_1"`,
++   * `"PAY_LATER_SHORT_TERM"`.
++   */
++  offerTypes?: string;
++  presentationMode?: "AUTO" | "MODAL" | "POPUP" | "REDIRECT";
++  textColor?: "BLACK" | "MONOCHROME" | "WHITE";
++}
++
++/**
++ * The `<apple-pay-button>` custom element, defined and rendered by Apple's
++ * Apple Pay JS SDK (not the PayPal SDK). Load Apple's script alongside the
++ * PayPal SDK for the element to be registered:
++ *
++ * ```html
++ * <script
++ *   crossorigin
++ *   src="https://applepay.cdn-apple.com/jsapi/1.latest/apple-pay-sdk.js"
++ * ></script>
++ * ```
++ *
++ * @remarks
++ * Configure the element with `setAttribute` — the element observes the
++ * `buttonstyle`, `type`, and `locale` attributes via `attributeChangedCallback`
++ * and does not expose DOM property setters for them. See
++ * [Apple's documentation](https://developer.apple.com/documentation/apple_pay_on_the_web/displaying_apple_pay_buttons_using_javascript)
++ * for the supported values of each attribute.
++ *
++ * @example
++ * ```typescript
++ * const applePayButton = document.createElement("apple-pay-button");
++ * applePayButton.setAttribute("buttonstyle", "black");
++ * applePayButton.setAttribute("type", "buy");
++ * applePayButton.setAttribute("locale", "en-US");
++ * ```
++ */
++export type ApplePayButtonElement = HTMLElement;
++
++declare global {
++  interface HTMLElementTagNameMap {
++    "paypal-button": PayPalButtonElement;
++    "venmo-button": PayPalButtonElement;
++    "paypal-pay-later-button": PayPalPayLaterButtonElement;
++    "paypal-credit-button": PayPalCreditButtonElement;
++    "paypal-basic-card-button": PayPalBasicCardButtonElement;
++    "paypal-basic-card-container": HTMLElement;
++    "paypal-message": PayPalMessageElement;
++    "apple-pay-button": ApplePayButtonElement;
++  }
++}
+diff --git a/packages/paypal-js/types/v6/index.d.ts b/packages/paypal-js/types/v6/index.d.ts
+index b30e703..8f96726 100644
+--- a/packages/paypal-js/types/v6/index.d.ts
++++ b/packages/paypal-js/types/v6/index.d.ts
+@@ -256,6 +256,7 @@ export * from "./components/paypal-messages";
+ export * from "./components/paypal-subscriptions";
+ export * from "./components/applepay-payments";
+ export * from "./components/googlepay-payments";
++export * from "./components/web-components";
+ 
+ // export a subset of types from base-component
+ export {
+diff --git a/packages/paypal-js/types/v6/tests/web-components.test.ts b/packages/paypal-js/types/v6/tests/web-components.test.ts
+new file mode 100644
+index 0000000..8f7b2db
+--- /dev/null
++++ b/packages/paypal-js/types/v6/tests/web-components.test.ts
+@@ -0,0 +1,69 @@
++import type {
++  ApplePayButtonElement,
++  PayPalBasicCardButtonElement,
++  PayPalButtonElement,
++  PayPalCreditButtonElement,
++  PayPalMessageElement,
++  PayPalPayLaterButtonElement,
++} from "../index";
++
++// eslint-disable-next-line @typescript-eslint/no-unused-vars
++function main() {
++  // createElement returns the typed element via HTMLElementTagNameMap.
++  const paypalButton = document.createElement("paypal-button");
++  paypalButton.type = "checkout";
++  paypalButton.disabled = true;
++  const typedPayPalButton: PayPalButtonElement = paypalButton;
++
++  // Venmo button reuses PayPalButtonElement.
++  const venmoButton = document.querySelector("venmo-button");
++  const typedVenmoButton: PayPalButtonElement | null = venmoButton;
++
++  const payLaterButton = document.createElement("paypal-pay-later-button");
++  payLaterButton.countryCode = "US";
++  payLaterButton.productCode = "PAY_LATER_SHORT_TERM";
++  const typedPayLaterButton: PayPalPayLaterButtonElement = payLaterButton;
++
++  const creditButton = document.createElement("paypal-credit-button");
++  creditButton.countryCode = "GB";
++  const typedCreditButton: PayPalCreditButtonElement = creditButton;
++
++  const basicCardButton = document.createElement("paypal-basic-card-button");
++  basicCardButton.buyerCountry = "US";
++  basicCardButton.disabled = false;
++  const typedBasicCardButton: PayPalBasicCardButtonElement = basicCardButton;
++
++  // The container has no PayPal-specific properties; typed as HTMLElement.
++  const basicCardContainer = document.createElement(
++    "paypal-basic-card-container",
++  );
++  basicCardContainer.id = "card-container";
++
++  const message = document.createElement("paypal-message");
++  message.amount = "100.00";
++  message.currencyCode = "USD";
++  message.logoPosition = "INLINE";
++  message.logoType = "MONOGRAM";
++  message.autoBootstrap = true;
++  const typedMessage: PayPalMessageElement = message;
++
++  // <apple-pay-button> is defined by Apple's Apple Pay JS SDK. The canonical
++  // pattern is setAttribute (per the SDK's integration docs), but the element
++  // is still typed so querySelector returns a known shape.
++  const applePayButton = document.createElement("apple-pay-button");
++  applePayButton.setAttribute("buttonstyle", "black");
++  applePayButton.setAttribute("type", "buy");
++  applePayButton.setAttribute("locale", "en");
++  const typedApplePayButton: ApplePayButtonElement = applePayButton;
++
++  console.log({
++    typedPayPalButton,
++    typedVenmoButton,
++    typedPayLaterButton,
++    typedCreditButton,
++    typedBasicCardButton,
++    basicCardContainer,
++    typedMessage,
++    typedApplePayButton,
++  });
++}

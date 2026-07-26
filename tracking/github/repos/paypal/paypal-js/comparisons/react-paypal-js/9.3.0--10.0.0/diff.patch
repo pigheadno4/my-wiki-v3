@@ -1,0 +1,236 @@
+diff --git a/packages/react-paypal-js/CHANGELOG.md b/packages/react-paypal-js/CHANGELOG.md
+index 73e6528..55f5ac9 100644
+--- a/packages/react-paypal-js/CHANGELOG.md
++++ b/packages/react-paypal-js/CHANGELOG.md
+@@ -1,5 +1,31 @@
+ # Changelog
+ 
++## 10.0.0
++
++### Major Changes
++
++- 114d09c: **BREAKING:** The v6 `environment` option is now required in the `PayPalProvider`. Previously, omitting `environment` silently defaulted to sandbox, which could cause production builds to load the sandbox SDK with a live `clientId`. Pass `environment: "production"` or `environment: "sandbox"` explicitly. TypeScript users will see a compile error; runtime callers will see a thrown `Error`.
++
++  ### v6 PayPalProvider
++
++  Update the PayPalProvider to pass the environment property
++
++  ```
++  <PayPalProvider
++    clientId={clientId}
++    environment="sandbox" // "production"
++    components={["paypal-payments",]}
++    pageType="checkout"
++  >
++    <CheckoutPage />
++  </PayPalProvider>
++  ```
++
++### Patch Changes
++
++- Updated dependencies [114d09c]
++  - @paypal/paypal-js@10.0.0
++
+ ## 9.3.0
+ 
+ ### Minor Changes
+diff --git a/packages/react-paypal-js/README.md b/packages/react-paypal-js/README.md
+index 8633f98..9976dfe 100644
+--- a/packages/react-paypal-js/README.md
++++ b/packages/react-paypal-js/README.md
+@@ -79,6 +79,7 @@ function App() {
+   return (
+     <PayPalProvider
+       clientId="your-client-id"
++      environment="sandbox"
+       components={["paypal-payments"]}
+       pageType="checkout"
+     >
+@@ -121,7 +122,7 @@ The `PayPalProvider` component is the entry point for the V6 SDK. It handles loa
+ | `components`              | `Components[]`                       | No       | SDK components to load. Defaults to `["paypal-payments"]`.                                                   |
+ | `pageType`                | `string`                             | No       | Type of page: `"checkout"`, `"product-details"`, `"cart"`, `"product-listing"`, etc.                         |
+ | `locale`                  | `string`                             | No       | Locale for the SDK (e.g., `"en_US"`).                                                                        |
+-| `environment`             | `"sandbox" \| "production"`          | No       | SDK environment.                                                                                             |
++| `environment`             | `"sandbox" \| "production"`          | **Yes**  | **Required.** SDK environment. `clientId` does not select the environment in v6 — this prop does.            |
+ | `merchantId`              | `string \| string[]`                 | No       | PayPal merchant ID(s).                                                                                       |
+ | `clientMetadataId`        | `string`                             | No       | Client metadata ID for tracking.                                                                             |
+ | `partnerAttributionId`    | `string`                             | No       | Partner attribution ID (BN code).                                                                            |
+@@ -154,6 +155,7 @@ function App() {
+   return (
+     <PayPalProvider
+       clientId={clientIdPromise}
++      environment="sandbox"
+       components={["paypal-payments"]}
+       pageType="checkout"
+     >
+@@ -173,6 +175,7 @@ function App() {
+   return (
+     <PayPalProvider
+       clientToken={tokenPromise}
++      environment="sandbox"
+       components={["paypal-payments"]}
+       pageType="checkout"
+     >
+@@ -195,6 +198,7 @@ function App() {
+   return (
+     <PayPalProvider
+       clientId={clientId}
++      environment="sandbox"
+       components={["paypal-payments"]}
+       pageType="checkout"
+     >
+@@ -281,6 +285,7 @@ import { VenmoOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+ 
+ <PayPalProvider
+   clientId={clientId}
++  environment="sandbox"
+   components={["paypal-payments", "venmo-payments"]}
+   pageType="checkout"
+ >
+@@ -372,6 +377,7 @@ function App() {
+   return (
+     <PayPalProvider
+       clientId="your-client-id"
++      environment="sandbox"
+       components={["googlepay-payments"]}
+       pageType="checkout"
+     >
+@@ -432,6 +438,7 @@ import { PayPalGuestPaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+ 
+ <PayPalProvider
+   clientId={clientId}
++  environment="sandbox"
+   components={["paypal-payments", "paypal-guest-payments"]}
+   pageType="checkout"
+ >
+@@ -491,6 +498,7 @@ import { PayPalSubscriptionButton } from "@paypal/react-paypal-js/sdk-v6";
+ 
+ <PayPalProvider
+   clientId={clientId}
++  environment="sandbox"
+   components={["paypal-subscriptions"]}
+   pageType="checkout"
+ >
+@@ -691,6 +699,7 @@ export default function App() {
+   return (
+     <PayPalProvider
+       clientId="YOUR_CLIENT_ID"
++      environment="sandbox"
+       components={["applepay-payments"]}
+       pageType="checkout"
+     >
+@@ -1194,6 +1203,7 @@ function App() {
+   return (
+     <PayPalProvider
+       clientToken="your-client-token"
++      environment="sandbox"
+       components={["card-fields"]}
+       pageType="checkout"
+     >
+@@ -1858,6 +1868,7 @@ export default async function CheckoutPage() {
+   return (
+     <PayPalProvider
+       clientId={clientId}
++      environment="sandbox"
+       pageType="checkout"
+       eligibleMethodsResponse={eligibleMethodsResponse}
+     >
+@@ -1908,7 +1919,7 @@ import {
+   PayPalOneTimePaymentButton,
+ } from "@paypal/react-paypal-js/sdk-v6";
+ 
+-<PayPalProvider clientId={clientId} pageType="checkout">
++<PayPalProvider clientId={clientId} environment="sandbox" pageType="checkout">
+   <PayPalOneTimePaymentButton
+     createOrder={async () => {
+       const res = await fetch("/api/orders", { method: "POST" });
+diff --git a/packages/react-paypal-js/package.json b/packages/react-paypal-js/package.json
+index c91e843..cb0bcbc 100644
+--- a/packages/react-paypal-js/package.json
++++ b/packages/react-paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@paypal/react-paypal-js",
+-  "version": "9.3.0",
++  "version": "10.0.0",
+   "description": "React components for the PayPal JS SDK",
+   "keywords": [
+     "react",
+@@ -62,7 +62,7 @@
+   },
+   "homepage": "https://paypal.github.io/paypal-js/web-sdk-v6-react-storybook/",
+   "dependencies": {
+-    "@paypal/paypal-js": "^9.8.0",
++    "@paypal/paypal-js": "^10.0.0",
+     "@paypal/sdk-constants": "^1.0.122",
+     "server-only": "^0.0.1"
+   },
+diff --git a/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx b/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx
+index 260f3de..31993cf 100644
+--- a/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx
++++ b/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx
+@@ -56,10 +56,15 @@ type PayPalProviderProps =
+  * An unstable Promise reference (e.g., calling `fetchClientToken()` or `fetchClientId()` inline)
+  * will cause the SDK to re-initialize on every render. Wrap the promise in `useMemo` or store it in state.
+  *
++ * **The `environment` prop is required.** `clientId` does not select the environment in v6 — a
++ * live `clientId` will still load the sandbox SDK if `environment="sandbox"`. Pass
++ * `environment="production"` or `environment="sandbox"` explicitly.
++ *
+  * @example
+  * // With string clientToken
+  * <PayPalProvider
+  *   clientToken={token}
++ *   environment="sandbox"
+  *   components={["paypal-payments", "venmo-payments"]}
+  *   pageType="checkout"
+  * >
+@@ -70,6 +75,7 @@ type PayPalProviderProps =
+  * // With string clientId
+  * <PayPalProvider
+  *   clientId="YOUR_CLIENT_ID"
++ *   environment="sandbox"
+  *   components={["paypal-payments"]}
+  *   pageType="checkout"
+  * >
+@@ -82,6 +88,7 @@ type PayPalProviderProps =
+  *
+  * <PayPalProvider
+  *   clientToken={tokenPromise}
++ *   environment="sandbox"
+  *   pageType="checkout"
+  * >
+  *   <PayPalOneTimePaymentButton />
+@@ -93,6 +100,7 @@ type PayPalProviderProps =
+  *
+  * <PayPalProvider
+  *   clientId={clientIdPromise}
++ *   environment="sandbox"
+  *   pageType="checkout"
+  * >
+  *   <PayPalOneTimePaymentButton />
+@@ -108,6 +116,7 @@ type PayPalProviderProps =
+  *
+  * <PayPalProvider
+  *   clientToken={clientToken}
++ *   environment="sandbox"
+  *   pageType="checkout"
+  * >
+  *   <PayPalOneTimePaymentButton />
+@@ -123,6 +132,7 @@ type PayPalProviderProps =
+  *
+  * <PayPalProvider
+  *   clientId={clientId}
++ *   environment="sandbox"
+  *   pageType="checkout"
+  * >
+  *   <PayPalOneTimePaymentButton />
+@@ -141,7 +151,7 @@ type PayPalProviderProps =
+  *   return <PayPalOneTimePaymentButton orderId="ORDER-123" />;
+  * }
+  *
+- * <PayPalProvider clientToken={token} pageType="checkout">
++ * <PayPalProvider clientToken={token} environment="sandbox" pageType="checkout">
+  *   <MyCheckout />
+  * </PayPalProvider>
+  */

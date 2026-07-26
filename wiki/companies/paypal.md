@@ -2,7 +2,7 @@
 title: "PayPal"
 type: company
 tags: [paypal, payment-gateway, checkout, venmo, javascript-sdk, orders-api, vault, recurring-payments, payouts, disputes, reporting, agentic-commerce]
-source_count: 159
+source_count: 160
 ---
 
 ## PayPal
@@ -23,6 +23,14 @@ Client-side SDK injected via `<script>` tag. Renders payment buttons on the page
 - `createOrder` / `onApprove` / `onShippingAddressChange` / `onShippingOptionsChange` callbacks
 - Checkout pop-up launch and management
 
+The package-qualified v6 surface in `@paypal/paypal-js@9.8.0` supports direct instance creation with client ID or client token, conditional components for PayPal, Venmo, guest payments, messages, subscriptions, Card Fields, Apple Pay, and Google Pay, plus eligibility hydration. `@paypal/react-paypal-js@9.3.0` exposes this integration through the `/sdk-v6` subpath. In the coordinated `10.0.0` releases, both the core v6 loader and React `PayPalProvider` require an explicit `production` or `sandbox` environment; the client ID does not choose the endpoint. Core `10.0.1` adds typed v6 DOM custom elements and legacy Buttons Venmo vault-without-purchase setup-token approval data, while React `10.1.0` requires the same environment choice for server eligibility. Core `10.0.2` corrects `/sdk-v6` resolution for condition-sensitive bundlers; React `10.1.1` only relocates v5 Storybook tooling. Core `10.0.3` adds v6 Venmo save-payment types that conflict with older product availability guidance; React `10.1.2` removes the ineffective Apple Pay disabled prop and types the Messages `TEXT` logo.
+
+The independent `paypal/paypal-checkout-components` history begins with `@paypal/checkout-components@4.1.47` and now extends through `5.0.425`. The v4 runtime implemented Zoid-based Buttons and Checkout with mobile-only secondary Venmo. The accumulated v5 runtime adds separate Card Fields, Payment Fields, Hosted Buttons, Wallet, Saved Payment Methods, Venmo, and QR component boundaries; its Venmo vault-without-purchase path is experiment-gated. These package-qualified facts do not replace current availability guidance.
+
+### Braintree PayPal v6
+
+Braintree merchants use a separate React provider backed by Braintree's `paypalCheckoutV6` module and a server-generated Braintree client token. React 9.3.0 provides one-time, billing-agreement, and checkout-with-vault flows; React 10.1.0 adds eligibility-gated Pay Later with a prebuilt button and custom hook. Approval is tokenized into a Braintree payment-method nonce and completed with a Braintree server SDK, not PayPal's Orders API. See [[paypal-braintree-integration]].
+
 ### PayPal Orders REST API
 
 Server-side API for order lifecycle management:
@@ -38,6 +46,8 @@ Official server-side SDKs wrapping the REST API. Available for Node.js (`@paypal
 ### Venmo
 
 PayPal-owned peer-to-peer payment network; surfaced as a payment button option in PayPal Checkout for US buyers. Two checkout flows: mobile (app switch) and desktop (QR code scan). US merchants + US buyers only, USD only. Buyers must have the Venmo app installed. Supported features: one-time payments, auth+capture, save during purchase, shipping module. Not supported: multi-seller payments, contact module, buy-now-pay-later.
+
+`@paypal/paypal-js@10.0.3` declares a v6 Venmo save-payment session for vault setup without a purchase, contradicting the older product documentation's save-for-purchase-later limitation. Treat this as unresolved package-versus-product evidence until current runtime and merchant eligibility are confirmed.
 
 ## Developer Experience
 
@@ -220,7 +230,10 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-javascript-sdk-performance]] — JS SDK performance: instant vs delayed render, pre-caching, hidden container pattern
 - [[source-paypal-javascript-sdk-best-practices]] — JS SDK best practices: CSP domains + nonce vs unsafe-inline, COOP same-origin-allow-popups
 - [[source-paypal-react-paypal-js-readme]] — @paypal/react-paypal-js v8.x README: PayPalScriptProvider, all components, hooks, Card Fields vs Hosted Fields
-- [[source-github-paypal-js]] — GitHub paypal/paypal-js: loadScript implementation, PayPalScriptOptions types, V6 SDK createInstance pattern
+- [[source-github-paypal-js]] — cumulative GitHub evidence for independently versioned packages; v8 baselines through core `10.0.3` and React `10.1.2`
+- [[changelog-github-paypal-js]] — package-qualified paypal/paypal-js release ledger through core `10.0.3` and React `10.1.2`, with impact, migration action, contradictions, and immutable raw links
+- [[source-github-paypal-checkout-components]] — cumulative checkout runtime evidence from `@paypal/checkout-components@4.1.47` through `5.0.425`
+- [[changelog-github-paypal-checkout-components]] — package-qualified checkout-components release ledger through `5.0.425`
 - [[source-github-react-paypal-js-v8]] — GitHub react-paypal-js v8 source: ScriptProvider internals, reducer state machine, Buttons lifecycle, CardFields architecture
 - [[source-paypal-expanded-checkout-integrate]] — Expanded Checkout integration: CardFields+Buttons, 3DS SCA, billing address submit, authorize routes
 - [[source-paypal-android-card-payments]] — Android SDK: CardClient, WebPayments, deprecated NativePayments, FraudProtection, 3DS SCA

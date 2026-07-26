@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build a registry-driven GitHub repository collector that creates immutable curated snapshots, generated comparison and ingest packets, deterministic monitoring, and company-scoped wiki integration while preserving strictly serial, human-approved ingest.
+**Goal:** Build a registry-driven GitHub repository collector that creates immutable curated snapshots for configured release lines, preserves exact changelog and release-note evidence, generates comparison and ingest packets, monitors progress deterministically, and integrates one stable company-scoped wiki source while preserving strictly serial, human-approved ingest.
 
-**Architecture:** A standard-library Python CLI orchestrates focused modules for TOML compatibility, registry validation, Git ref resolution, key-file selection, immutable snapshot promotion, packet generation, state reporting, and validation. The deterministic core is completed and tested with temporary local Git repositories before any public repository is contacted. Live collection stops at a user-review gate; wiki ingest then processes exactly one complete packet at a time.
+**Architecture:** A standard-library Python CLI orchestrates focused modules for TOML compatibility, registry validation, stable release-track selection, selector-scoped Git fetching, key-file and release-evidence capture, immutable snapshot promotion, packet generation, state reporting, and validation. The deterministic core is completed and tested with temporary local Git repositories before any public repository is contacted. Live PayPal JS collection applies the approved hybrid v10/v9/v8 retention policy, stops at a user-review gate, and then ingests exactly one complete release or comparison packet at a time into one stable source page.
 
 **Tech Stack:** Python 3.9.6 standard library, `unittest`, Git CLI through `subprocess`, TOML with `tomllib`/`tomli`/tested fallback, JSON/JSONL state, Markdown, Obsidian wikilinks.
 
@@ -15,7 +15,10 @@
 - Collection may batch; ingest is human-kicked-off and processes exactly one packet at a time.
 - Before GitHub ingest, read the complete packet, every referenced `snapshot.md`, and every required raw file.
 - Accepted files under `raw/` are immutable. Never enrich or overwrite an accepted snapshot.
-- Exact upstream files and the repository-owned snapshot manifest belong in `raw/`; generated diffs, summaries, status, and packets belong in `tracking/`.
+- Exact upstream files, exact available GitHub release-note content, and the repository-owned snapshot manifest belong in `raw/`; generated diffs, summaries, status, and packets belong in `tracking/`.
+- Version-track policy is registry-driven. Major selectors exclude prereleases by default; exact prerelease selectors remain opt-in.
+- For the PayPal JS pilot, backfill every stable v10 release, selected v8/v9 minor baselines, and every future stable release in tracked lines.
+- A retained release creates one immutable snapshot per unique SHA and one packet per newly collected release. Same-SHA tags become aliases rather than duplicate snapshots.
 - Use company-first wiki paths such as `wiki/sources/paypal/github/` and source-type-first operational paths such as `raw/github/paypal/`.
 - One repository maps to one stable source page unless a separately approved exception applies.
 - Keep the implementation compatible with Python 3.9.6 and add no mandatory third-party dependency.
@@ -25,12 +28,12 @@
 
 ## Delivery Stages
 
-1. Tasks 1-7 build the deterministic local core and rules.
-2. Task 8 proves the complete collector against local Git fixtures.
-3. Task 9 performs the `paypal/paypal-js` live collection pilot, then stops for user approval.
-4. Task 10 performs serial pilot ingest only after that approval.
-5. Task 11 collects the remaining pilot repositories without auto-ingest.
-6. Tasks 12-13 perform the deterministic source-layout and log migrations only after pilot acceptance.
+1. Tasks 1-9 build the deterministic local core, release-retention policy, and rules.
+2. Task 10 proves multi-release collection against local Git fixtures.
+3. Task 11 performs the `paypal/paypal-js` live collection pilot, then stops for user approval.
+4. Task 12 performs serial release and comparison ingest only after that approval.
+5. Task 13 collects the remaining pilot repositories without auto-ingest.
+6. Tasks 14-15 perform the deterministic source-layout and log migrations only after pilot acceptance.
 
 ## File Map
 
@@ -39,7 +42,9 @@
 | `scripts/toml_compat.py` | Python 3.9-compatible TOML loading shared by PSP and GitHub registries. |
 | `scripts/github_registry.py` | Registry dataclasses, validation, defaults, and selection. |
 | `tracking/github/repo-registry.toml` | Human-maintained complete repository inventory and collection intent. |
-| `scripts/github_git.py` | Git subprocess wrapper, repository inspection, and exact ref resolution. |
+| `scripts/github_versions.py` | Shared semantic-version parsing, precedence, and package-tag identity. |
+| `scripts/github_git.py` | Git subprocess wrapper, selector-scoped ref fetching, repository inspection, and exact ref resolution. |
+| `scripts/github_releases.py` | Stable release-track discovery, hybrid backfill selection, and optional GitHub release-note retrieval. |
 | `scripts/github_snapshot.py` | Key-file policy, hashes, snapshot naming, staging, validation, and immutable promotion. |
 | `scripts/github_packets.py` | Version index, baseline packets, delta packets, and explicit comparison packets. |
 | `scripts/github_reporting.py` | Collection states, packet states, JSONL events, and generated dashboards. |
@@ -51,7 +56,9 @@
 | `tests/github_test_support.py` | Temporary local Git repository builder used by GitHub tests. |
 | `tests/test_toml_compat.py` | TOML fallback and PSP compatibility tests. |
 | `tests/test_github_registry.py` | Registry validation, defaults, selection, and full-inventory tests. |
+| `tests/test_github_versions.py` | Shared semantic-version, prerelease, and package-tag behavior tests. |
 | `tests/test_github_git.py` | Ref resolution, aliases, ambiguity, submodule, and LFS tests. |
+| `tests/test_github_releases.py` | Stable-only major selection, hybrid backfill, release-note evidence, and periodic tag discovery tests. |
 | `tests/test_github_snapshot.py` | Selection, byte fidelity, limits, immutability, and supplement tests. |
 | `tests/test_github_packets.py` | Baseline, delta, rename/delete, comparison, and raw/tracking boundary tests. |
 | `tests/test_github_reporting.py` | State transitions, terminal reconciliation, and dashboard tests. |
@@ -282,8 +289,8 @@ git commit -m "feat: add github repository registry"
 - Create: `tests/test_github_git.py`
 
 **Interfaces:**
-- Consumes: `RepoConfig`, a temporary clone path, and a selector such as `default-branch`, `tag:v9.1.0`, `commit:<sha>`, or `package:@scope/name@9`.
-- Produces: `run_git(args, cwd=None) -> str`, `clone_repository(config, destination) -> None`, `inspect_repository(config, clone_path) -> RepoInspection`, and `resolve_ref(config, inspection, selector) -> ResolvedRef`.
+- Consumes: `RepoConfig`, a temporary clone path, and a selector such as `default-branch`, `tag:v9.1.0`, `commit:0123456789abcdef0123456789abcdef01234567`, or `package:@scope/name@9`.
+- Produces: `run_git(args, cwd=None) -> str`, `clone_repository(config, destination) -> None`, `fetch_required_refs(config: RepoConfig, clone_path: Path, selectors: Sequence[str]) -> None`, `inspect_repository(config, clone_path) -> RepoInspection`, and `resolve_ref(config, inspection, selector) -> ResolvedRef`.
 
 - [ ] **Step 1: Write the local Git fixture builder**
 
@@ -370,7 +377,7 @@ Use argument lists with `subprocess.run(check=True, text=True, capture_output=Tr
 
 - [ ] **Step 5: Implement exact strategy resolution**
 
-Parse semantic versions with a small numeric tuple parser that accepts an optional leading `v` and prerelease suffix. Package selectors must include a package namespace. Sort aliases before returning them. Clone with `git clone --filter=blob:none --no-checkout`, then fetch only required refs before checkout.
+Parse semantic versions with numeric and prerelease identifiers, preserving SemVer precedence: a stable version sorts above its prereleases and numeric prerelease identifiers compare numerically. Exact prerelease selectors match only that prerelease. Package selectors must include a package namespace. Sort aliases before returning them. Clone with `git clone --filter=blob:none --no-checkout --no-tags`; `fetch_required_refs` may list remote tag metadata to resolve package or major selectors, then fetches only the selected tag refspecs or exact commit objects and never downloads all ref objects.
 
 - [ ] **Step 6: Run tests and commit**
 
@@ -385,48 +392,255 @@ Expected: all tests pass and no test contacts the network.
 
 ---
 
-### Task 4: Create Immutable Curated Snapshots
+### Task 4: Add Shared Version Semantics and Registry Release Tracks
 
 **Files:**
-- Create: `scripts/github_snapshot.py`
-- Create: `tests/test_github_snapshot.py`
+- Create: `scripts/github_versions.py`
+- Create: `tests/test_github_versions.py`
+- Modify: `scripts/github_registry.py`
+- Modify: `scripts/github_git.py`
+- Modify: `tests/test_github_registry.py`
+- Modify: `tests/test_github_git.py`
 
 **Interfaces:**
-- Consumes: `RepoConfig`, `ResolvedRef`, a checked-out repository, collection date, and optional prior changed paths.
-- Produces: `select_key_files(config: RepoConfig, repo_root: Path, changed_paths: Sequence[str] = ()) -> SelectionResult`, `build_snapshot(config: RepoConfig, ref: ResolvedRef, repo_root: Path, raw_root: Path, staging_root: Path, collection_date: str, prior_snapshot: Optional[str] = None, capture_kind: str = "canonical") -> SnapshotRecord`, `validate_staged_snapshot(record: SnapshotRecord) -> List[str]`, and `promote_snapshot(record: SnapshotRecord) -> Path`.
+- Consumes: semantic versions and package tags already interpreted by `github_git.py`, plus nested `[[repos.version_tracks]]` registry tables.
+- Produces: `SemanticVersion`, `parse_semver(value: str) -> Optional[SemanticVersion]`, `compare_semver(left: SemanticVersion, right: SemanticVersion) -> int`, `matches_semver(candidate: SemanticVersion, target: SemanticVersion, include_prerelease: bool = False) -> bool`, `parse_package_tag(tag: str) -> Optional[Tuple[str, str]]`, and immutable `VersionTrack` values on `RepoConfig.version_tracks`.
 
-- [ ] **Step 1: Write failing selection and immutability tests**
+- [ ] **Step 1: Write failing shared-version tests**
 
-Cover required defaults, registry `key_paths`, excluded lock/build/vendor files, binary exclusion, per-file limits, total limits, exact byte hashes, same-target rejection, and supplements.
+Create `tests/test_github_versions.py` with exact stable/prerelease behavior:
 
 ```python
-def test_snapshot_copies_exact_bytes_and_keeps_diff_outside_raw(self):
-    original = b"# README\n\x00not-selected"
-    selected = b"# README\n"
-    (repo / "README.md").write_bytes(selected)
-    record = build_snapshot(config, resolved, repo, raw_root, staging_root, "2026-07-14")
-    copied = record.staging_path / "files" / "README.md"
-    self.assertEqual(selected, copied.read_bytes())
-    self.assertFalse(any(path.name.endswith(".patch") for path in record.staging_path.rglob("*")))
+class GitHubVersionTests(unittest.TestCase):
+    def test_major_selector_excludes_newer_prerelease_by_default(self):
+        target = parse_semver("10")
+        stable = parse_semver("10.1.5")
+        prerelease = parse_semver("10.2.0-beta.1")
+        self.assertTrue(matches_semver(stable, target))
+        self.assertFalse(matches_semver(prerelease, target))
 
-def test_existing_snapshot_is_never_overwritten(self):
-    target = raw_root / "paypal" / "paypal-js" / "snapshots" / "2026-07-14-v10-a1b2c3d"
-    target.mkdir(parents=True)
-    with self.assertRaisesRegex(SnapshotError, "already exists"):
-        promote_snapshot(staged, target)
+    def test_exact_prerelease_matches_only_itself(self):
+        target = parse_semver("10.2.0-beta.1")
+        self.assertTrue(matches_semver(parse_semver("10.2.0-beta.1"), target))
+        self.assertFalse(matches_semver(parse_semver("10.2.0"), target))
+
+    def test_semver_precedence_handles_numeric_prerelease_identifiers(self):
+        self.assertLess(
+            compare_semver(parse_semver("10.0.0-rc.2"), parse_semver("10.0.0-rc.10")),
+            0,
+        )
 ```
 
-- [ ] **Step 2: Run tests to verify failure**
+Also test scoped package tags and optional leading `v`. The shared module replaces, rather than duplicates, Git-specific semantic-version parsing.
+
+- [ ] **Step 2: Write failing version-track registry tests**
+
+Define the exact records:
+
+```python
+@dataclass(frozen=True)
+class VersionTrack:
+    selector: str
+    backfill: str
+    future: str
+    include_prerelease: bool = False
+    pinned_versions: Tuple[str, ...] = ()
+
+@dataclass(frozen=True)
+class SemanticVersion:
+    major: int
+    minor: Optional[int]
+    patch: Optional[int]
+    prerelease: Optional[Tuple[str, ...]]
+    is_exact: bool
+```
+
+Add `version_tracks: Tuple[VersionTrack, ...] = ()` to the end of `RepoConfig`. Test nested TOML loading, immutability, defaults, and rejection of unknown `backfill`/`future` values, empty or unparsable selectors, prerelease values that are not booleans, duplicate selectors, and non-exact `pinned_versions`. A track selector must be either a package-scoped semantic selector such as `package:@scope/name@10` or a plain semantic tag selector such as `v10`.
+
+Allowed policies are:
+
+```python
+BACKFILL_POLICIES = {"all-stable", "minor-baselines", "none"}
+FUTURE_POLICIES = {"all-stable", "none"}
+```
+
+- [ ] **Step 3: Run tests to verify failure**
+
+```bash
+python3 -m unittest tests.test_github_versions tests.test_github_registry tests.test_github_git -v
+```
+
+Expected: import and record-field failures before the shared module and registry track support exist.
+
+- [ ] **Step 4: Implement the shared version boundary**
+
+Move semantic-version and package-tag parsing out of `github_git.py` into `github_versions.py`. Keep exact prerelease matching available, but make non-exact major/minor selectors exclude prereleases unless the caller passes `include_prerelease=True`. Update existing Git resolution and selector-scoped fetch code to use the shared functions without changing exact tag, commit, alias, or ambiguity behavior.
+
+- [ ] **Step 5: Implement nested immutable version tracks**
+
+Parse `version_tracks` from each repository row, preserve registry order, and validate every nested key. Do not add a PayPal JS track to the checked-in registry yet; Task 11 live discovery must confirm the package namespace first. Keep the existing 71-row inventory and five enabled pilots unchanged.
+
+- [ ] **Step 6: Run focused and full tests**
+
+```bash
+python3 -m unittest tests.test_github_versions tests.test_github_registry tests.test_github_git -v
+python3 -m unittest discover -s tests -v
+git diff --check
+```
+
+Expected: all existing selector tests remain green; a major selector chooses stable `10.1.5` over `10.2.0-beta.1`.
+
+- [ ] **Step 7: Commit the version policy**
+
+```bash
+git add scripts/github_versions.py scripts/github_registry.py scripts/github_git.py tests/test_github_versions.py tests/test_github_registry.py tests/test_github_git.py
+git commit -m "feat: add github release track policy"
+```
+
+---
+
+### Task 5: Discover Retained Releases and Preserve Release Notes
+
+**Files:**
+- Create: `scripts/github_releases.py`
+- Create: `tests/test_github_releases.py`
+
+**Interfaces:**
+- Consumes: `RepoConfig`, `VersionTrack`, remote tag metadata available through a temporary clone, and the set of versions already present in the generated version index.
+- Produces: `discover_release_candidates(config: RepoConfig, clone_path: Path, track: VersionTrack) -> Tuple[ReleaseCandidate, ...]`, `select_release_candidates(track: VersionTrack, candidates: Sequence[ReleaseCandidate], existing_versions: Sequence[str] = (), mode: str = "backfill") -> Tuple[ReleaseCandidate, ...]`, and `fetch_release_notes(config: RepoConfig, candidate: ReleaseCandidate, token: Optional[str] = None, opener=None) -> Optional[ReleaseNotesEvidence]`.
+
+- [ ] **Step 1: Write failing release-selection tests**
+
+Define:
+
+```python
+@dataclass(frozen=True)
+class ReleaseCandidate:
+    package: str
+    version: str
+    tag: str
+    object_sha: str
+    commit_sha: str
+    prerelease: bool
+
+@dataclass(frozen=True)
+class ReleaseNotesEvidence:
+    source_url: str
+    published_at: str
+    content: bytes
+```
+
+Require `all-stable` to select every stable version and exclude prereleases. Require `minor-baselines` to select the first stable release, latest patch in every minor line, latest stable release, and every exact `pinned_versions` entry, with the final union deduplicated and ordered by semantic version.
+
+```python
+def test_minor_baselines_include_first_latest_per_minor_and_pins(self):
+    selected = select_release_candidates(
+        track(backfill="minor-baselines", pinned_versions=("9.0.1",)),
+        candidates("9.0.0", "9.0.1", "9.1.0", "9.1.3", "9.2.0-beta.1"),
+    )
+    self.assertEqual(("9.0.0", "9.0.1", "9.1.3"), tuple(item.version for item in selected))
+```
+
+For `mode="future"`, `future="all-stable"` returns every stable candidate absent from `existing_versions`; `future="none"` returns none. Invalid modes and missing pinned versions raise `ReleaseSelectionError` rather than silently weakening retention.
+
+- [ ] **Step 2: Write failing discovery and release-note tests**
+
+Build a local bare remote with lightweight and annotated package tags. Assert discovery preserves the tag object SHA and peeled commit SHA, scopes candidates to the exact package and major selector, and returns no unrelated package tags.
+
+Mock the GitHub API opener. A successful response preserves the release body as UTF-8 bytes without adding headers. HTTP 404 returns `None`; rate limits, malformed JSON, a non-string body, and other HTTP failures raise `ReleaseEvidenceError` with repository and tag context.
+
+- [ ] **Step 3: Run tests to verify failure**
+
+```bash
+python3 -m unittest tests.test_github_releases -v
+```
+
+Expected: import failure because `github_releases.py` does not exist.
+
+- [ ] **Step 4: Implement deterministic remote discovery**
+
+Use `git ls-remote --tags origin` through `github_git.run_git`. Pair annotated tag rows with their `^{}` peeled rows. Listing remote ref metadata is allowed; do not fetch every tag object. A package selector accepts only tags for its exact package namespace. A plain semantic selector accepts only plain semantic tags; if matching package tags would make the namespace ambiguous, raise `ReleaseSelectionError` and require a package-scoped track.
+
+- [ ] **Step 5: Implement hybrid selection and exact release notes**
+
+Selection is pure and network-free. Release-note retrieval uses the standard library GitHub releases-by-tag endpoint with URL-quoted owner, repository, and tag values. Send `Accept: application/vnd.github+json`, a descriptive user agent, and optional bearer authorization. Return exact body bytes separately from metadata so `release-notes.md` can remain upstream content.
+
+- [ ] **Step 6: Run focused and full tests**
+
+```bash
+python3 -m unittest tests.test_github_releases -v
+python3 -m unittest discover -s tests -v
+git diff --check
+```
+
+Expected: no default-suite test contacts the network.
+
+- [ ] **Step 7: Commit release discovery**
+
+```bash
+git add scripts/github_releases.py tests/test_github_releases.py
+git commit -m "feat: select github release history"
+```
+
+---
+
+### Task 6: Create Immutable Curated Snapshots
+
+**Files:**
+- Modify: `scripts/github_snapshot.py`
+- Modify: `tests/test_github_snapshot.py`
+
+**Interfaces:**
+- Consumes: `RepoConfig`, `ResolvedRef`, optional `ReleaseNotesEvidence`, a checked-out repository, collection date, and optional prior changed paths.
+- Produces: `select_key_files(config: RepoConfig, repo_root: Path, changed_paths: Sequence[str] = ()) -> SelectionResult`, `build_snapshot(config: RepoConfig, ref: ResolvedRef, repo_root: Path, raw_root: Path, staging_root: Path, collection_date: str, prior_snapshot: Optional[str] = None, capture_kind: str = "canonical", release_notes: Optional[ReleaseNotesEvidence] = None, changed_paths: Sequence[str] = ()) -> SnapshotRecord`, `validate_staged_snapshot(record: SnapshotRecord) -> List[str]`, and `promote_snapshot(record: SnapshotRecord) -> Path`.
+
+- [ ] **Step 1: Write failing archive-safety and evidence tests**
+
+Retain the existing selection and immutability tests. Add tests proving:
+
+```python
+def test_changed_public_path_reaches_built_snapshot(self):
+    (repo / "src/public.js").write_text("export const value = 1;\n", encoding="utf-8")
+    record = build_snapshot(
+        config, resolved, repo, raw_root, staging_root, "2026-07-14",
+        changed_paths=("src/public.js",),
+    )
+    self.assertTrue((record.staging_path / "files/src/public.js").exists())
+
+def test_symlink_and_parent_traversal_never_leave_checkout(self):
+    outside = repo.parent / "secret.txt"
+    outside.write_text("secret", encoding="utf-8")
+    (repo / "README.md").symlink_to(outside)
+    result = select_key_files(dataclasses.replace(config, key_paths=("../secret.txt",)), repo)
+    self.assertEqual((), result.selected)
+    self.assertTrue(any(reason == "outside-checkout" for _, reason in result.excluded))
+
+def test_release_notes_are_exact_top_level_evidence(self):
+    evidence = ReleaseNotesEvidence("https://api.github.test/release", "2026-07-14T00:00:00Z", b"# Exact notes\n")
+    record = build_snapshot(
+        config, resolved, repo, raw_root, staging_root, "2026-07-14",
+        release_notes=evidence,
+    )
+    self.assertEqual(b"# Exact notes\n", (record.staging_path / "release-notes.md").read_bytes())
+```
+
+Also cover a filename containing `|`, unexpected top-level files, `.diff` rejection, manifest metadata tampering, copied-byte limit changes, advisory-lock contention, concurrent supplement allocation, unsafe promotion-parent permissions, and staging cleanup after validation or promotion failure.
+
+- [ ] **Step 2: Run tests to verify the remediation is RED**
 
 ```bash
 python3 -m unittest tests.test_github_snapshot -v
 ```
 
-Expected: import failure because `github_snapshot.py` does not exist.
+Expected: the new traversal, manifest-authority, release-note, no-clobber, and `changed_paths` tests fail against commit `0ac3167`.
 
-- [ ] **Step 3: Implement snapshot records and key-file policy**
+- [ ] **Step 3: Enforce checkout containment and copied-byte limits**
 
-Define:
+Resolve every candidate and require `candidate.relative_to(repo_root.resolve())` to succeed before selection. Reject symlinks even when their target remains inside the checkout, reject absolute and `..` registry/changed paths, and verify the destination remains under `staging/files/`. Copy bytes once, then calculate size and hash from the copied bytes; enforce per-file and total limits against those bytes rather than a pre-copy `stat()` result.
+
+- [ ] **Step 4: Make `snapshot.md` the structured integrity authority**
+
+Keep the existing record fields:
 
 ```python
 @dataclass(frozen=True)
@@ -454,40 +668,71 @@ class SnapshotRecord:
     files: Tuple[SnapshotFile, ...]
 ```
 
-Selection order is explicit registry paths, then README/changelog/migration/package/API-spec files, then changed public entrypoints and examples. Sort every path. Use MIME-independent binary detection based on NUL bytes in the first 8 KiB.
+`SnapshotRecord` may add immutable trusted fields for repository provenance,
+release-note provenance, exact release-note SHA-256/size, and staged-directory
+device/inode identity. Validation must compare the manifest and staged bytes
+against those record values; changing both `release-notes.md` and its manifest
+entry must still fail.
 
-- [ ] **Step 4: Render and validate `snapshot.md`**
+Render one versioned JSON metadata block inside `snapshot.md`, followed by human-readable saved/excluded Markdown tables. JSON is the parsing authority and safely represents valid filenames such as `docs/a|b.md`; escape Markdown table cells for display. The JSON records complete identity metadata, saved file paths/hashes/sizes/purposes, exclusions, release-note source metadata or explicit absence, and prior snapshot.
 
-The manifest must include repository URL, ID, company, type, ref kind/name, full SHA, aliases, capture kind/revision, collection and upstream dates, prior snapshot, and a complete saved/excluded file table. Validate every listed file hash and ensure every copied file is listed exactly once.
+Validation parses JSON from `snapshot.md`, compares identity fields with the record, and hashes every listed file against manifest values. It rejects duplicate entries, missing or unlisted files, any top-level entry except `snapshot.md`, optional `release-notes.md`, and `files/`, and any `.patch` or `.diff` anywhere under staging. `release-notes.md` bytes are included in manifest integrity data without altering the upstream content.
 
-- [ ] **Step 5: Promote atomically and handle supplements**
+- [ ] **Step 5: Promote inside a collector-private advisory-lock boundary**
 
-Create staging below `raw/github/.staging/` so `Path.replace()` remains on one filesystem. Validate before promotion. For a canonical SHA already present, return unchanged. An explicit supplement chooses the next free `-rN` directory and records `capture_kind = "supplement"`.
+Require the staging and repository snapshot parent directories to be owned by
+the collector user and not group- or world-writable. Open them without
+following symlinks and use descriptor-relative operations. Keep one stable
+regular `.promotion.lock` file per repository, acquire
+`fcntl.flock(LOCK_EX | LOCK_NB)` for the full transaction, and release it by
+closing the descriptor; never delete the lock pathname.
 
-- [ ] **Step 6: Run tests and commit**
+While holding the lock, recheck canonical SHA identity, select the next
+supplement `-rN`, check target absence, validate the staged-directory identity
+and manifest, verify the source and target parents share a filesystem, and
+promote with descriptor-relative `os.replace()`. Lock contention, unsafe
+permissions, symlinks, identity mismatch, target collision, or cross-filesystem
+promotion fails explicitly. Always clean only the current operation's staging
+directory after failure, and never remove an existing target.
+
+Canonical recollection still returns the existing snapshot unchanged. Supplements choose the next free revision while holding the lock and record `capture_kind = "supplement"`.
+
+The guarantee covers cooperating collectors inside the collector-private
+namespace. It does not claim protection from a malicious process running as the
+same collector user and ignoring the advisory lock.
+
+- [ ] **Step 6: Run focused and full tests**
 
 ```bash
 python3 -m unittest tests.test_github_snapshot -v
 python3 -m unittest discover -s tests -v
+git diff --check
+```
+
+Expected: all existing Task 6 tests plus archive-safety and release-evidence regressions pass.
+
+- [ ] **Step 7: Commit the remediated snapshot boundary**
+
+```bash
 git add scripts/github_snapshot.py tests/test_github_snapshot.py
-git commit -m "feat: create immutable github snapshots"
+git commit -m "fix: harden immutable github snapshots"
 ```
 
 ---
 
-### Task 5: Build Version Indexes and Ingest Packets
+### Task 7: Build Version Indexes and Ingest Packets
 
 **Files:**
 - Create: `scripts/github_packets.py`
 - Create: `tests/test_github_packets.py`
 
 **Interfaces:**
-- Consumes: immutable `SnapshotRecord` values, repository Git history, and existing `version-index.json`.
+- Consumes: immutable release-aware `SnapshotRecord` values, repository Git history, and existing `version-index.json`.
 - Produces: `load_version_index(path: Path, repo_id: str) -> VersionIndex`, `record_snapshot(index: VersionIndex, snapshot: SnapshotRecord) -> VersionIndex`, `select_prior(index: VersionIndex, ref: ResolvedRef) -> Optional[VersionEntry]`, `build_baseline_packet(config: RepoConfig, current: SnapshotRecord, packet_root: Path) -> PacketRecord`, `build_delta_packet(config: RepoConfig, prior: VersionEntry, current: SnapshotRecord, repo_root: Path, packet_root: Path) -> PacketRecord`, and `build_comparison_packet(config: RepoConfig, prior: VersionEntry, current: VersionEntry, repo_root: Path, packet_root: Path) -> PacketRecord`.
 
 - [ ] **Step 1: Write failing version-index tests**
 
-Assert one canonical version snapshot per SHA, alias deduplication, package-namespace prior selection, branch prior selection, and supplement recording without a new version.
+Assert one canonical version snapshot per SHA, alias deduplication, package-namespace prior selection, branch prior selection, supplement recording without a new version, and release-note/changelog evidence paths retained per version entry.
 
 ```python
 def test_aliases_share_one_version_entry(self):
@@ -499,7 +744,7 @@ def test_aliases_share_one_version_entry(self):
 
 - [ ] **Step 2: Write failing packet tests**
 
-Create two local commits with added, modified, renamed, and deleted files. Require `packet.json`, `ingest-packet.md`, `changed-files.txt`, and `source-diff.patch` under tracking. Assert no `.patch` appears under raw and the packet required-reading paths all exist.
+Create two local releases with added, modified, renamed, and deleted files. Require `packet.json`, `ingest-packet.md`, `changed-files.txt`, and `source-diff.patch` under tracking. Assert no `.patch` appears under raw, every packet starts in `awaiting-review`, one packet is created per newly collected release, and required reading includes the release snapshot manifest, exact available `release-notes.md`, every retained changelog path, and changed public files.
 
 ```python
 def test_delta_packet_records_deletion_and_rename(self):
@@ -533,6 +778,8 @@ class VersionEntry:
     collection_date: str
     package: str
     capture_kind: str
+    release_notes_path: str
+    changelog_paths: Tuple[str, ...]
 
 @dataclass(frozen=True)
 class VersionIndex:
@@ -556,7 +803,7 @@ Write JSON with sorted keys and a final newline. Write to a temporary sibling an
 
 - [ ] **Step 5: Generate source diffs and packet Markdown**
 
-Use `git diff --find-renames --no-ext-diff --no-textconv <from> <to> -- <selected paths>`. Exclude binary and ignored high-churn paths. The packet must distinguish evidence from generated guidance and list the exact required reading order.
+Use an argument list equivalent to `git diff --find-renames --no-ext-diff --no-textconv FROM_SHA TO_SHA -- SELECTED_PATHS`, substituting the exact SHAs and selected repository paths in the subprocess call. Exclude binary and ignored high-churn paths. The packet must distinguish evidence from generated guidance, identify the exact release/package/version, link changelog and release-note evidence or state their explicit absence, and list the exact required reading order. A changelog delta is generated under tracking only; the exact changelog remains under raw.
 
 - [ ] **Step 6: Run tests and commit**
 
@@ -569,7 +816,7 @@ git commit -m "feat: generate github ingest packets"
 
 ---
 
-### Task 6: Add State Reporting and the Public CLI
+### Task 8: Add State Reporting and the Public CLI
 
 **Files:**
 - Create: `scripts/github_reporting.py`
@@ -578,8 +825,8 @@ git commit -m "feat: generate github ingest packets"
 - Create: `tests/test_collect_github_repos.py`
 
 **Interfaces:**
-- Consumes: registry selections, Git/snapshot/packet modules, run events, and packet transition requests.
-- Produces: `append_event(path: Path, event: Mapping[str, object]) -> None`, `validate_collection_run(events: Sequence[Mapping[str, object]]) -> int`, `transition_packet(current: str, requested: str) -> str`, `render_collection_status(repos: Sequence[RepoConfig], events: Sequence[Mapping[str, object]]) -> str`, `render_ingest_status(packets: Sequence[PacketRecord], states: Mapping[str, str]) -> str`, `collect_one(root: Path, config: RepoConfig, selectors: Sequence[str]) -> CollectionResult`, `compare_one(root: Path, config: RepoConfig, from_selector: str, to_selector: str) -> PacketRecord`, and `main(argv: Optional[Sequence[str]] = None) -> int`.
+- Consumes: registry selections and version tracks, release discovery/evidence, Git/snapshot/packet modules, run events, and packet transition requests.
+- Produces: `append_event(path: Path, event: Mapping[str, object]) -> None`, `validate_collection_run(events: Sequence[Mapping[str, object]]) -> int`, `transition_packet(current: str, requested: str) -> str`, `render_collection_status(repos: Sequence[RepoConfig], events: Sequence[Mapping[str, object]]) -> str`, `render_ingest_status(packets: Sequence[PacketRecord], states: Mapping[str, str]) -> str`, `collect_one(root: Path, config: RepoConfig, selectors: Sequence[str] = (), release_mode: Optional[str] = None) -> CollectionResult`, `compare_one(root: Path, config: RepoConfig, from_selector: str, to_selector: str) -> PacketRecord`, and `main(argv: Optional[Sequence[str]] = None) -> int`.
 
 - [ ] **Step 1: Write failing state-machine tests**
 
@@ -609,13 +856,17 @@ Test these forms with mocked Git operations and a temporary root:
 collect --all --dry-run
 collect --company paypal --dry-run
 collect --repo paypal/paypal-js --ref default-branch
+collect --repo paypal/paypal-js --release-mode backfill --dry-run
+collect --repo paypal/paypal-js --release-mode future --dry-run
 compare --repo paypal/paypal-js --from package:@paypal/react-paypal-js@8 --to package:@paypal/react-paypal-js@10
 prepare --repo paypal/paypal-js --ref default-branch
 status
-packet-state --repo paypal/paypal-js --packet <packet-id> --from awaiting-review --to approved
+packet-state --repo paypal/paypal-js --packet "$PACKET_ID" --from awaiting-review --to approved
 ```
 
 Dry-run may resolve and report but must not create `raw/` or mutate generated state.
+
+`--release-mode backfill` enumerates the configured historical policy. `--release-mode future` selects stable releases absent from the version index. Explicit `--ref` and `--release-mode` are mutually exclusive. Every selected release is reported separately and creates at most one packet.
 
 `--all` and `--company` select enabled rows by default. An explicit `--repo` may select a disabled row because it is an intentional one-repository request. `--include-disabled` is required to batch-select disabled rows.
 
@@ -629,11 +880,11 @@ Expected: import failures because the modules do not exist.
 
 - [ ] **Step 4: Implement append-only events and generated dashboards**
 
-`append_event` writes one sorted JSON object plus newline using append mode. Packet history lives at `tracking/github/repos/<company>/<repo>/packets/<packet-id>/state-events.jsonl`; `packet.json` remains the immutable packet contract. Regenerate Markdown and `status.json` from registry, version indexes, packet contracts, and the latest valid events.
+`append_event` writes one sorted JSON object plus newline using append mode. For example, PayPal JS packet history lives at `tracking/github/repos/paypal/paypal-js/packets/PACKET_ID/state-events.jsonl`; `packet.json` remains the immutable packet contract. Regenerate Markdown and `status.json` from registry, version indexes, packet contracts, and the latest valid events.
 
 - [ ] **Step 5: Implement orchestration with cleanup**
 
-Use `tempfile.TemporaryDirectory(prefix="wiki-github-")` for clones. Record one terminal event for every selected repo/ref even when resolution or clone fails. Remove staging after any failure. Return `1` for unreconciled runs or validation failure, `2` for CLI/registry misuse, and `0` only for a reconciled successful command.
+Use `tempfile.TemporaryDirectory(prefix="wiki-github-")` for clones. For release modes, discover candidates, fetch only selected refs, fetch optional release-note evidence, and build one immutable snapshot and packet per selected release. Record one terminal event for every selected repo/ref even when resolution, release evidence, clone, or snapshot promotion fails. Remove staging after any failure. Return `1` for unreconciled runs or validation failure, `2` for CLI/registry misuse, and `0` only for a reconciled successful command.
 
 - [ ] **Step 6: Run focused and full tests**
 
@@ -653,7 +904,7 @@ git commit -m "feat: add github collection cli and monitoring"
 
 ---
 
-### Task 7: Validate Snapshots, Packets, and Wiki Links
+### Task 9: Validate Snapshots, Packets, and Wiki Links
 
 **Files:**
 - Create: `scripts/github_validation.py`
@@ -663,12 +914,12 @@ git commit -m "feat: add github collection cli and monitoring"
 - Modify: `scripts/validate_wiki.py` only if a failing test proves a missing nested-path behavior.
 
 **Interfaces:**
-- Consumes: `raw/github/`, `tracking/github/`, company-first GitHub source pages, version indexes, packet state events, and generated status.
+- Consumes: `raw/github/`, `tracking/github/`, registry version tracks, company-first GitHub source pages and release ledgers, version indexes, packet state events, and generated status.
 - Produces: `inspect_github(root) -> GitHubReport`, `validate_github(report) -> List[str]`, and a CLI that returns nonzero for structural errors while reporting awaiting-ingest packets as informational.
 
 - [ ] **Step 1: Write failing structural tests**
 
-Cover valid snapshots, bad hashes, manifest/file disagreement, duplicate canonical SHA snapshots, valid supplements, missing required-reading files, patch files under raw, invalid packet transitions, source `raw_files` ordering, path-qualified `snapshot.md` links, status disagreement, and pending packets.
+Cover valid snapshots, bad hashes, manifest/file disagreement, duplicate canonical SHA snapshots, valid supplements, missing required-reading files, patch or diff files under raw, invalid packet transitions, source `raw_files` ordering, path-qualified snapshot/changelog/release-note links, status disagreement, and pending packets. Add release-retention tests for a prerelease incorrectly selected by a stable-only track, a retained version missing from the index, two canonical snapshots for one SHA, release evidence silently absent from the manifest, and a newly collected release without exactly one packet.
 
 ```python
 def test_pending_packet_is_informational_not_error(self):
@@ -681,6 +932,10 @@ def test_generated_patch_under_raw_is_rejected(self):
     (root / "raw/github/paypal/paypal-js/snapshots/x/source-diff.patch").write_text("diff")
     errors = validate_github(inspect_github(root))
     self.assertTrue(any("generated patch under raw" in error for error in errors))
+
+def test_stable_track_rejects_prerelease_version_entry(self):
+    report = inspect_github(self.make_valid_tree(index_version="10.2.0-beta.1"))
+    self.assertTrue(any("prerelease in stable-only track" in error for error in validate_github(report)))
 ```
 
 - [ ] **Step 2: Run tests to verify failure**
@@ -693,11 +948,11 @@ Expected: import failure because `github_validation.py` does not exist.
 
 - [ ] **Step 3: Implement report records and validation**
 
-Define a frozen `GitHubReport` containing snapshot paths, packet paths, pending packet IDs, source records, version indexes, dashboard records, and inspection errors. Reuse `split_frontmatter`, `parse_frontmatter`, and `WIKILINK_RE` from `validate_wiki.py`; do not duplicate YAML parsing.
+Define a frozen `GitHubReport` containing registry tracks, snapshot paths, release-evidence records, packet paths, pending packet IDs, source records, version indexes, dashboard records, and inspection errors. Reuse `split_frontmatter`, `parse_frontmatter`, and `WIKILINK_RE` from `validate_wiki.py`; do not duplicate YAML parsing.
 
 - [ ] **Step 4: Extend nested link regression coverage**
 
-Add a source fixture whose two raw entries end in `snapshot.md` but use full path-qualified wikilinks. Assert `validate_wiki.check_file` resolves both. Modify `validate_wiki.py` only if this test fails.
+Add a source fixture whose two raw entries end in `snapshot.md` but use full path-qualified wikilinks, and whose release-ledger row links nested `CHANGELOG.md` and `release-notes.md`. Assert `validate_wiki.check_file` resolves every link. Modify `validate_wiki.py` only if this test fails.
 
 - [ ] **Step 5: Run validators and all tests**
 
@@ -718,17 +973,17 @@ git commit -m "feat: validate github collection artifacts"
 
 ---
 
-### Task 8: Prove the Complete Pipeline with a Local Git Repository
+### Task 10: Prove the Complete Pipeline with a Local Git Repository
 
 **Files:**
 - Modify: `tests/test_collect_github_repos.py`
 - Create generated baseline files: `tracking/github/status.json`, `tracking/github/collection-status.md`, `tracking/github/ingest-status.md`
 
 **Interfaces:**
-- Consumes: the full registry and every deterministic core module.
-- Produces: one local end-to-end test and clean empty production dashboards before live collection.
+- Consumes: the full registry, version tracks, and every deterministic core module.
+- Produces: local default-branch and multi-release end-to-end tests plus clean empty production dashboards before live collection.
 
-- [ ] **Step 1: Write a failing local end-to-end test**
+- [ ] **Step 1: Preserve the default-branch end-to-end test**
 
 The test must create a local upstream repository, run baseline collection, rerun unchanged, add/rename/delete files, run changed collection, generate a comparison, and transition one packet through approval and ingest states.
 
@@ -750,15 +1005,39 @@ def test_local_end_to_end_baseline_unchanged_change_and_compare(self):
 
 The test constructs `RepoConfig` directly with a local path. Production registry loading continues to reject non-HTTPS GitHub URLs; no test-only CLI escape hatch is added.
 
-- [ ] **Step 2: Run the test and fix only orchestration defects**
+- [ ] **Step 2: Add a failing multi-release end-to-end test**
+
+Create a local monorepo remote with stable package tags `10.0.0`, `10.1.3`, and `10.1.5`, a newer `10.2.0-beta.1`, exact changelog bytes, and mocked release-note responses. Configure an `all-stable` v10 track and assert:
+
+```python
+def test_local_release_backfill_and_future_patch(self):
+    backfill = collect_one(root, config, release_mode="backfill")
+    self.assertEqual(("10.0.0", "10.1.3", "10.1.5"), backfill.versions)
+    self.assertEqual(3, len(backfill.packet_ids))
+    self.assertFalse(any("beta" in version for version in backfill.versions))
+
+    unchanged = collect_one(root, config, release_mode="backfill")
+    self.assertEqual((), unchanged.packet_ids)
+
+    add_release(upstream, "10.1.6", changelog=b"# 10.1.6\n")
+    future = collect_one(root, config, release_mode="future")
+    self.assertEqual(("10.1.6",), future.versions)
+    self.assertEqual(1, len(future.packet_ids))
+```
+
+Assert every snapshot preserves exact changelog and release-note bytes, every packet remains `awaiting-review`, one SHA shared by two tags has one canonical snapshot, and a default-branch SHA differing from latest v10 is collected independently.
+
+- [ ] **Step 3: Run the tests and fix only owning-module defects**
 
 ```bash
-python3 -m unittest tests.test_collect_github_repos.CollectGitHubReposTests.test_local_end_to_end_baseline_unchanged_change_and_compare -v
+python3 -m unittest \
+  tests.test_collect_github_repos.CollectGitHubReposTests.test_local_end_to_end_baseline_unchanged_change_and_compare \
+  tests.test_collect_github_repos.CollectGitHubReposTests.test_local_release_backfill_and_future_patch -v
 ```
 
 Expected: PASS. Any failure must be fixed in the owning module with a focused regression assertion before proceeding.
 
-- [ ] **Step 3: Generate empty production dashboards**
+- [ ] **Step 4: Generate empty production dashboards**
 
 ```bash
 python3 scripts/collect_github_repos.py status
@@ -767,7 +1046,7 @@ python3 scripts/validate_github_collection.py
 
 Expected: 71 registered repositories, 5 enabled pilots, 0 collected versions, 0 ingest packets, and no validation errors.
 
-- [ ] **Step 4: Run the complete local gate**
+- [ ] **Step 5: Run the complete local gate**
 
 ```bash
 python3 -m unittest discover -s tests -v
@@ -777,7 +1056,7 @@ git diff --check
 
 Expected: all tests and validators pass.
 
-- [ ] **Step 5: Commit the local proof**
+- [ ] **Step 6: Commit the local proof**
 
 ```bash
 git add tests/test_collect_github_repos.py tracking/github/status.json tracking/github/collection-status.md tracking/github/ingest-status.md
@@ -786,38 +1065,41 @@ git commit -m "test: prove github collection pipeline locally"
 
 ---
 
-### Task 9: Collect the `paypal/paypal-js` Pilot and Stop
+### Task 11: Collect the `paypal/paypal-js` Pilot and Stop
 
 **Files:**
 - Modify when exact selectors are discovered: `tracking/github/repo-registry.toml`
 - Create: collector-named children under `raw/github/paypal/paypal-js/snapshots/`
 - Create: `tracking/github/repos/paypal/paypal-js/`
-- Create: `tracking/github/runs/<run-id>/`
+- Create: collector-named run directories under `tracking/github/runs/`
 - Regenerate: `tracking/github/status.json`, `tracking/github/collection-status.md`, `tracking/github/ingest-status.md`
 
 **Interfaces:**
 - Consumes: live `paypal/paypal-js` refs and the enabled registry row.
-- Produces: immutable current, v9, and v8 package-qualified snapshots plus reviewable packets; no wiki ingest.
+- Produces: every stable v10 snapshot, selected v9/v8 minor baselines, an independent changed default-branch snapshot when applicable, exact available changelog/release-note evidence, and one reviewable packet per newly collected release; no wiki ingest.
 
 - [ ] **Step 1: Read collection rules and run a no-write preflight**
 
 ```bash
-python3 scripts/collect_github_repos.py collect --repo paypal/paypal-js --dry-run
+python3 scripts/collect_github_repos.py collect --repo paypal/paypal-js --release-mode backfill --dry-run
 ```
 
-Expected: exact default-branch and package-qualified ref resolutions are printed; no `raw/github/paypal/paypal-js/` directory is created.
+Expected: remote package namespaces, stable/prerelease classification, all stable v10 candidates, selected v9/v8 baseline candidates, estimated snapshot/evidence counts, and default-branch identity are printed; no `raw/github/paypal/paypal-js/` or generated state is created.
 
 - [ ] **Step 2: Resolve package ambiguity explicitly**
 
-Confirm whether the requested v10/v9/v8 lines belong to `@paypal/react-paypal-js`, `@paypal/paypal-js`, or another package. Update `requested_refs` to exact package selectors or exact tags. Never retain a bare `v9` selector when multiple packages match.
+Confirm whether v10/v9/v8 belong to `@paypal/react-paypal-js`, `@paypal/paypal-js`, or another package. Audit exact versions already referenced by existing `paypal-js`, `paypal-js-v6`, `react-paypal-js-v8`, and npm React v9 source pages. Identify documented migration boundaries.
+
+Update the registry with three exact package-scoped `[[repos.version_tracks]]` tables. Form each selector from the exact package name printed by preflight plus `@10`, `@9`, or `@8`. Set v10 to `backfill = "all-stable"`; set v9 and v8 to `backfill = "minor-baselines"`; set all three to `future = "all-stable"` and `include_prerelease = false`. Write the sorted exact wiki-reference and migration-boundary audit results into each v8/v9 `pinned_versions` array, using an empty array when the audit finds none. Never commit a bare ambiguous major selector.
 
 - [ ] **Step 3: Run the live collection**
 
 ```bash
-python3 scripts/collect_github_repos.py collect --repo paypal/paypal-js
+python3 scripts/collect_github_repos.py collect --repo paypal/paypal-js --release-mode backfill
+python3 scripts/collect_github_repos.py collect --repo paypal/paypal-js --ref default-branch
 ```
 
-Expected: every selected ref ends as `collected-baseline`, `collected-change`, or `unchanged`; accepted snapshots are immutable and each new packet starts in `awaiting-review`.
+Expected: every selected release/ref ends as `collected-baseline`, `collected-change`, or `unchanged`; prereleases are explicitly excluded; same-SHA aliases share a canonical snapshot; exact available changelogs and release notes are retained; and every new release packet starts in `awaiting-review`.
 
 - [ ] **Step 4: Validate and inspect collection size**
 
@@ -827,7 +1109,7 @@ python3 scripts/collect_github_repos.py status
 git diff --check
 ```
 
-Inspect `snapshot.md`, every packet's required-reading list, total bytes, excluded files, submodule/LFS notes, and secret-scan findings. If a packet is too large for complete reading, adjust registry key paths and create a new explicit supplement rather than editing accepted raw.
+Inspect the run manifest, selected/excluded version list, package namespace, every `snapshot.md`, changelog/release-note availability, packet required-reading sets, total bytes, excluded files, submodule/LFS notes, and secret-scan findings. Confirm the v10 set contains every stable release and no prerelease; confirm v8/v9 implement the approved minor-baseline union. If a packet is too large for complete reading, adjust registry key paths and create a new explicit supplement rather than editing accepted raw.
 
 - [ ] **Step 5: Commit collection evidence**
 
@@ -838,11 +1120,11 @@ git commit -m "data: collect paypal js version pilot"
 
 - [ ] **Step 6: HARD USER GATE**
 
-Share the run manifest, resolved versions, snapshot sizes, required-reading files, and validation results. Stop. Do not approve a packet, update a wiki source page, or begin another pilot ingest until the user explicitly kicks off ingest.
+Share the run manifest, confirmed package namespace, selected and excluded versions, same-SHA aliases, changelog/release-note coverage, snapshot sizes, required-reading files, packet count, and validation results. Stop. Do not approve a packet, update a wiki source page, or begin another pilot ingest until the user explicitly kicks off ingest.
 
 ---
 
-### Task 10: Ingest PayPal JS Packets Serially After Approval
+### Task 12: Ingest PayPal JS Packets Serially After Approval
 
 **Files:**
 - Create or move: `wiki/sources/paypal/github/source-github-paypal-js.md`
@@ -854,20 +1136,20 @@ Share the run manifest, resolved versions, snapshot sizes, required-reading file
 - Regenerate: `tracking/github/ingest-status.md`, `tracking/github/status.json`
 
 **Interfaces:**
-- Consumes: one user-approved packet at a time and its complete required-reading set.
-- Produces: one stable current repository source page, material version history, optional version analysis, ingest receipts, and provider navigation/log entries.
+- Consumes: one user-approved release or comparison packet at a time and its complete required-reading set.
+- Produces: one stable current repository source page with a concise row for every ingested release, material comparison analysis, ingest receipts, and provider navigation/log entries.
 
 - [ ] **Step 1: Approve exactly one packet**
 
 ```bash
-python3 scripts/collect_github_repos.py packet-state --repo paypal/paypal-js --packet <approved-packet-id> --from awaiting-review --to approved
+python3 scripts/collect_github_repos.py packet-state --repo paypal/paypal-js --packet "$PACKET_ID" --from awaiting-review --to approved
 ```
 
-Use the exact packet ID from Task 9 in place of the shell token. Confirm all other packets remain `awaiting-review`.
+Use the exact packet ID from the user-approved Task 11 run manifest in place of the shell token. Confirm all other packets remain `awaiting-review`.
 
 - [ ] **Step 2: Read the complete packet evidence**
 
-Read `ingest-packet.md`, every referenced `snapshot.md`, and every required raw file end to end. Record 3-5 exact quotes with paths and line ranges in the ingest receipt before any wiki write.
+Read `ingest-packet.md`, every referenced `snapshot.md`, exact available `release-notes.md`, every retained changelog, and every required raw file end to end. Record 3-5 exact quotes with paths and line ranges in the ingest receipt before any wiki write.
 
 - [ ] **Step 3: Perform concept audit first**
 
@@ -878,10 +1160,16 @@ Search all existing PayPal JS SDK, React SDK, checkout, card-fields, Venmo, and 
 Transition the approved packet before the first canonical wiki write:
 
 ```bash
-python3 scripts/collect_github_repos.py packet-state --repo paypal/paypal-js --packet <approved-packet-id> --from approved --to ingesting
+python3 scripts/collect_github_repos.py packet-state --repo paypal/paypal-js --packet "$PACKET_ID" --from approved --to ingesting
 ```
 
-Move or create the canonical page at `wiki/sources/paypal/github/source-github-paypal-js.md`. Preserve `date_ingested`, add `date_updated`, list ingested snapshot anchors newest first, use path-qualified raw links, and add concise material entries under `## Version history`.
+Move or create the canonical page at `wiki/sources/paypal/github/source-github-paypal-js.md`. Preserve `date_ingested`, add `date_updated`, and list every ingested snapshot anchor newest first. Keep current integration guidance separate from a `## Release history` ledger with these exact columns:
+
+```text
+Version | Release date | Commit | Snapshot | Changelog | Release notes | Change summary | Migration impact
+```
+
+Every ingested release receives one row even when its change summary is “no material integration change identified.” Snapshot, changelog, and release-note links are path-qualified; unavailable upstream evidence is labeled `not published`, not silently omitted. Do not copy full changelog or release-note text into the source page.
 
 - [ ] **Step 5: Finish the complete one-packet cycle**
 
@@ -890,25 +1178,25 @@ Update company/concepts, check contradictions, update `wiki/paypal-index.md`, ap
 ```bash
 python3 scripts/validate_wiki.py wiki/sources/paypal/github/source-github-paypal-js.md wiki/companies/paypal.md
 python3 scripts/validate_github_collection.py
-python3 scripts/collect_github_repos.py packet-state --repo paypal/paypal-js --packet <approved-packet-id> --from ingesting --to ingested
+python3 scripts/collect_github_repos.py packet-state --repo paypal/paypal-js --packet "$PACKET_ID" --from ingesting --to ingested
 ```
 
 If validation fails, transition from `ingesting` to `validation-failed`, fix the current cycle, regain approval, and do not open another packet.
 
-- [ ] **Step 6: Repeat Steps 1-5 for the next historical packet**
+- [ ] **Step 6: Ingest every retained release serially**
 
-Process v9 and v8 independently, one complete packet per cycle. Commit after each successful packet:
+After the latest stable v10 establishes current state, process remaining stable v10 packets one at a time, then selected v9 packets, then selected v8 packets. Within each group, use descending semantic-version order and keep the source ledger sorted newest first. Each release completes Steps 1-5 and receives its own commit before another packet is approved:
 
 ```bash
 git add wiki tracking/github/repos/paypal/paypal-js tracking/github/ingest-status.md tracking/github/status.json
-git commit -m "wiki: ingest paypal js <resolved-version> snapshot"
+git commit -m "wiki: ingest paypal js $RESOLVED_VERSION snapshot"
 ```
 
-Replace `<resolved-version>` with the exact package version recorded in the packet.
+Set `RESOLVED_VERSION` to the exact package version recorded in the packet before committing. A same-SHA alias updates the existing ledger row rather than creating a duplicate release snapshot row.
 
 - [ ] **Step 7: Create the material comparison analysis**
 
-Generate explicit v8-to-v9 and v9-to-v10 comparison packets, approve and read each independently, then create or update `wiki/analyses/paypal/github/analysis-paypal-js-v8-v9-v10.md`. Cite the canonical source page and path-qualified snapshots. Keep mechanical file lists and patches in tracking.
+Generate explicit v8-to-v9 and v9-to-v10 comparison packets and material minor-line comparisons discovered from release changelogs. Approve and read each independently. Create or update `wiki/analyses/paypal/github/analysis-paypal-js-v8-v9-v10.md` only for behavior, API, compatibility, or migration consequences. Cite the canonical source page and path-qualified snapshots; keep mechanical file lists and patches in tracking.
 
 - [ ] **Step 8: Audit duplicate source pages**
 
@@ -925,11 +1213,11 @@ git add wiki tracking/github
 git commit -m "wiki: analyze paypal js major versions"
 ```
 
-Expected: one canonical repo source page, validated material history, and no packet left falsely marked `ingested` after a failed validation.
+Expected: one canonical repo source page, one ledger row per retained release, validated path-qualified changelog/release-note links, material analyses only where warranted, and no packet left falsely marked `ingested` after a failed validation.
 
 ---
 
-### Task 11: Collect the Remaining Cross-Company Pilots
+### Task 13: Collect the Remaining Cross-Company Pilots
 
 **Files:**
 - Create: raw and tracking artifacts for the enabled sample, Braintree, Stripe, and Adyen pilot rows.
@@ -988,12 +1276,12 @@ Share the consolidated collection status and ingest queue. Every packet remains 
 
 ---
 
-### Task 12: Migrate Legacy GitHub Source Pages to Company-First Paths
+### Task 14: Migrate Legacy GitHub Source Pages to Company-First Paths
 
 **Files:**
 - Create: `scripts/migrate_github_wiki_layout.py`
 - Create: `tests/test_migrate_github_wiki_layout.py`
-- Move on apply: `wiki/sources/source-github-*.md` to `wiki/sources/<company>/github/`
+- Move on apply: flat GitHub pages such as `wiki/sources/source-github-paypal-js.md` to company-first paths such as `wiki/sources/paypal/github/source-github-paypal-js.md`
 - Modify as derived: provider indexes and root navigation only where paths are written explicitly.
 
 **Interfaces:**
@@ -1056,7 +1344,7 @@ git commit -m "refactor: group github sources by company"
 
 ---
 
-### Task 13: Split the Root Log Deterministically
+### Task 15: Split the Root Log Deterministically
 
 **Files:**
 - Create: `scripts/migrate_wiki_logs.py`

@@ -31,9 +31,23 @@ Inline hosted input fields rendered on the merchant's page via the JS SDK:
 
 Customisable to match the merchant's branding.
 
+The exact `@paypal/checkout-components@5.0.425` runtime independently exports a public Card Fields component and retains separate Payment Fields and Hosted Buttons interfaces. This historical implementation evidence supports the component boundary, but current Expanded Checkout capability and 3DS guidance remain authoritative for merchant integration.
+
 ### `cardFields.submit()`
 
 The merchant's own Submit/Pay button calls `cardFields.submit()` — triggering the `createOrder` callback. This differs from Standard Checkout where clicking the PayPal button starts the flow.
+
+### React callback freshness
+
+In `@paypal/react-paypal-js@8.9.2`, `PayPalCardFieldsProvider` and individual Card Fields proxy their callback props through a stable object. The SDK instance can therefore remain mounted while `createOrder`, `onApprove`, `onError`, and input-event callbacks read the latest React closure after component state changes. This prevents stale order quantities or stale application state without forcing the Card Fields SDK object to reinitialize.
+
+The retained Storybook scenarios exercise changing React state across provider callbacks and each individual field's `onChange`, `onFocus`, `onBlur`, and `onInputSubmitRequest` callbacks.
+
+### Version 9 submit options
+
+In `@paypal/paypal-js@9.8.0`, both one-time and save-payment Card Fields sessions accept optional `submit()` options containing `name` and a billing address. The address supports address lines, administrative areas, postal code, and country code. The release identifies these fields as 3DS authentication support.
+
+The paired `@paypal/react-paypal-js@9.3.0` Card Fields hooks pass those optional submit values through for both order IDs and vault setup tokens.
 
 ### `liabilityShift`
 
@@ -68,3 +82,5 @@ When `data.card` is truthy (card payment), `actions.restart()` does **not** appl
 
 - [[source-paypal-expanded-checkout-getting-started]] — Getting started guide
 - [[source-paypal-expanded-checkout-integrate]] — Full integration guide with CardFields + 3DS code samples
+- [[source-github-paypal-js]] — package-qualified React wrapper source and Card Fields callback implementation
+- [[source-github-paypal-checkout-components]] — package-qualified checkout runtime and Card Fields interface

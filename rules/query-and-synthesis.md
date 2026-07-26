@@ -19,10 +19,26 @@
    - Query asks about testing/sandbox details often omitted from summaries
    - Two wiki pages contradict each other — raw file is the tiebreaker
 
-   **For GitHub repo sources** — the raw file is a stub that points to a detail directory (see `github-repos.md`):
-   1. Read the stub file (`raw/<repo-slug>.md`) — it contains a file list with full `raw/` paths and a "What each file covers" table.
-   2. Use the table to identify which saved file answers the query, then `Read` it directly using the full path.
-   3. If no saved file covers the query, use the repo URL and commit SHA from the stub to re-clone, find the needed file, save it to `raw/<repo-slug>/`, and update the stub's file list and table.
+   **For GitHub repository sources**, identify the repository and package before interpreting a version. Follow this evidence routing:
+
+   | Query | Required evidence order |
+   | --- | --- |
+   | Current integration or API behavior | cumulative source page → latest exact-SHA snapshot when implementation detail is needed |
+   | Latest change or new feature | source page → repository changelog → linked release notes, comparison, and snapshot |
+   | Version-specific behavior | repository changelog → exact package-qualified release record → linked SHA snapshot |
+   | Upgrade or version comparison | both changelog entries → package comparison → both exact-SHA snapshots |
+   | Deep source question | exact-SHA source capsule and assigned source files; never the changelog summary alone |
+   | Historical behavior | historical source-page version section → changelog entry → exact release record and snapshot |
+
+   Read every selected evidence file in full. If the capsule does not contain enough source to answer a deep question, record the evidence gap and run a separately approved exact-SHA supplemental collection:
+
+   ```bash
+   python3 scripts/collect_github_repos.py supplement --repo <owner/repo> --sha <full-sha> --path <repo-relative-path>
+   ```
+
+   Repeat `--path` for multiple explicitly approved files. The supplement is a new immutable addition; never modify an accepted snapshot or legacy raw file.
+
+   Search a related repository only when the documented responsibility boundary requires it. Name the different repository and evidence authority in the answer. Label default-branch or untagged SHA evidence as unreleased.
 
 4. **Sweep unlinked raw files**: grep `raw/` for filenames matching the query topic. Read any relevant raw files not yet linked to a source page — they contain real content that would otherwise be silently missed. Link them to existing source pages or create new source pages as needed (one at a time, per `ingest.md`).
 5. Synthesize an answer with `[[wikilinks]]` citations to wiki pages.

@@ -1,0 +1,148 @@
+diff --git a/packages/paypal-js/CHANGELOG.md b/packages/paypal-js/CHANGELOG.md
+index 85d75b0..6d91aa3 100644
+--- a/packages/paypal-js/CHANGELOG.md
++++ b/packages/paypal-js/CHANGELOG.md
+@@ -1,5 +1,11 @@
+ # Changelog
+ 
++## 10.0.3
++
++### Patch Changes
++
++- 4619c74: Adding v6 types for Venmo vault-without-payment (SavePayment)
++
+ ## 10.0.2
+ 
+ ### Patch Changes
+diff --git a/packages/paypal-js/package.json b/packages/paypal-js/package.json
+index 65ecd98..ab08072 100644
+--- a/packages/paypal-js/package.json
++++ b/packages/paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@paypal/paypal-js",
+-  "version": "10.0.2",
++  "version": "10.0.3",
+   "description": "Loading wrapper and TypeScript types for the PayPal JS SDK",
+   "main": "index.js",
+   "module": "dist/esm/paypal-js.js",
+diff --git a/packages/paypal-js/types/v6/components/venmo-payments.d.ts b/packages/paypal-js/types/v6/components/venmo-payments.d.ts
+index aa0cd05..f1efbaa 100644
+--- a/packages/paypal-js/types/v6/components/venmo-payments.d.ts
++++ b/packages/paypal-js/types/v6/components/venmo-payments.d.ts
+@@ -10,6 +10,14 @@ export type VenmoOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
+   orderId?: string;
+ };
+ 
++export type VenmoSavePaymentSessionOptions = Omit<
++  VenmoOneTimePaymentSessionOptions,
++  "onApprove"
++> & {
++  vaultSetupToken?: string;
++  onApprove?: (data: { vaultSetupToken: string }) => Promise<void>;
++};
++
+ export type VenmoPresentationModeOptions =
+   | PresentationModeOptionsForAuto
+   | PresentationModeOptionsForPopup
+@@ -17,6 +25,10 @@ export type VenmoPresentationModeOptions =
+ 
+ export type VenmoOneTimePaymentSessionPromise = Promise<{ orderId: string }>;
+ 
++export type VenmoSavePaymentSessionPromise = Promise<{
++  vaultSetupToken: string;
++}>;
++
+ export type VenmoOneTimePaymentSession = Omit<BasePaymentSession, "start"> & {
+   start: (
+     presentationModeOptions?: VenmoPresentationModeOptions = {
+@@ -26,6 +38,15 @@ export type VenmoOneTimePaymentSession = Omit<BasePaymentSession, "start"> & {
+   ) => Promise<void>;
+ };
+ 
++export type VenmoSavePaymentSession = Omit<BasePaymentSession, "start"> & {
++  start: (
++    presentationModeOptions?: VenmoPresentationModeOptions = {
++      presentationMode: "auto",
++    },
++    paymentSessionPromise?: VenmoSavePaymentSessionPromise,
++  ) => Promise<void>;
++};
++
+ /**
+  * Interface for managing Venmo payment operations within the PayPal SDK.
+  *
+@@ -65,4 +86,40 @@ export interface VenmoPaymentsInstance {
+   createVenmoOneTimePaymentSession: (
+     paymentSessionOptions: VenmoOneTimePaymentSessionOptions,
+   ) => VenmoOneTimePaymentSession;
++  /**
++   * Creates a Venmo save payment session for storing payment methods for future use.
++   *
++   * @remarks
++   * This method allows you to configure a Venmo vault setup flow where a buyer can
++   * save their Venmo account for future transactions without a purchase.
++   *
++   * @param paymentSessionOptions - Configuration options for the Venmo save payment session
++   * @returns A session object that can be used to start the vault setup flow
++   *
++   * @example
++   * ```typescript
++   * const venmoSaveSession = sdkInstance.createVenmoSavePaymentSession({
++   *   onApprove: async ({ vaultSetupToken }) => {
++   *     console.log('Venmo payment method saved:', vaultSetupToken);
++   *   },
++   *   onCancel: () => {
++   *     console.log('Venmo save payment canceled');
++   *   },
++   *   onError: (data) => {
++   *     console.error('Venmo save payment error:', data);
++   *   }
++   * });
++   *
++   * const createVaultSetupToken = () =>
++   *   Promise.resolve({ vaultSetupToken: 'vault_setup_token' });
++   *
++   * await venmoSaveSession.start(
++   *   { presentationMode: 'auto' },
++   *   createVaultSetupToken()
++   * );
++   * ```
++   */
++  createVenmoSavePaymentSession: (
++    paymentSessionOptions: VenmoSavePaymentSessionOptions,
++  ) => VenmoSavePaymentSession;
+ }
+diff --git a/packages/paypal-js/types/v6/tests/venmo-payments.test.ts b/packages/paypal-js/types/v6/tests/venmo-payments.test.ts
+index ccc9583..b242292 100644
+--- a/packages/paypal-js/types/v6/tests/venmo-payments.test.ts
++++ b/packages/paypal-js/types/v6/tests/venmo-payments.test.ts
+@@ -50,7 +50,17 @@ async function main() {
+     onApprove: onApproveCallback,
+   });
+ 
++  const venmoSavePaymentSession = sdkInstance.createVenmoSavePaymentSession({
++    onApprove: async ({ vaultSetupToken }) => {
++      console.log({
++        vaultSetupToken,
++      });
++    },
++  });
++
+   const createOrder = () => Promise.resolve({ orderId: "ABC123" });
++  const createVaultSetupToken = () =>
++    Promise.resolve({ vaultSetupToken: "VST-ABC123" });
+ 
+   const venmoButton = document.querySelector("venmo-button");
+ 
+@@ -60,6 +70,10 @@ async function main() {
+         { presentationMode: "auto" },
+         createOrder(),
+       );
++      await venmoSavePaymentSession.start(
++        { presentationMode: "auto" },
++        createVaultSetupToken(),
++      );
+     } catch (error) {
+       console.error(error);
+     }

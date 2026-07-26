@@ -1,0 +1,78 @@
+# GitHub package comparison
+
+- Repository: `paypal/paypal-js`
+- Package: `@paypal/paypal-js`
+- From: `8.4.2` (`702863f91b79d405c571cf75c3d742a82174b46e`)
+- To: `9.8.0` (`31eb658ac885a490d38ef34e471c069b0c6e49cb`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `packages/paypal-js/.eslintrc.json`
+- `packages/paypal-js/CHANGELOG.md`
+- `packages/paypal-js/README.md`
+- `packages/paypal-js/bundle-tests/bundle-size.test.js`
+- `packages/paypal-js/bundle-tests/es3.test.js`
+- `packages/paypal-js/e2e-tests/browser-global.html`
+- `packages/paypal-js/e2e-tests/browser-global.test.ts`
+- `packages/paypal-js/e2e-tests/http-server.js`
+- `packages/paypal-js/e2e-tests/load-cached-script.html`
+- `packages/paypal-js/e2e-tests/load-cached-script.test.ts`
+- `packages/paypal-js/e2e-tests/mocks.ts`
+- `packages/paypal-js/e2e-tests/reload-script.html`
+- `packages/paypal-js/e2e-tests/reload-script.test.ts`
+- `packages/paypal-js/e2e-tests/validation-errors.html`
+- `packages/paypal-js/e2e-tests/validation-errors.test.ts`
+- `packages/paypal-js/index.js`
+- `packages/paypal-js/package.json`
+- `packages/paypal-js/playwright.config.ts`
+- `packages/paypal-js/rollup.config.js`
+- `packages/paypal-js/src/legacy/index.ts`
+- `packages/paypal-js/src/load-script.node.test.ts`
+- `packages/paypal-js/src/load-script.test.ts`
+- `packages/paypal-js/src/load-script.ts`
+- `packages/paypal-js/src/utils.test.ts`
+- `packages/paypal-js/src/utils.ts`
+- `packages/paypal-js/src/v6/index.test.ts`
+- `packages/paypal-js/src/v6/index.ts`
+- `packages/paypal-js/tsconfig.json`
+- `packages/paypal-js/typedoc.json`
+- `packages/paypal-js/types/apis/openapi/billing_subscriptions_v1.d.ts`
+- `packages/paypal-js/types/apis/openapi/checkout_orders_v2.d.ts`
+- `packages/paypal-js/types/apis/orders.d.ts`
+- `packages/paypal-js/types/apis/subscriptions.d.ts`
+- `packages/paypal-js/types/components/buttons.d.ts`
+- `packages/paypal-js/types/components/card-fields.d.ts`
+- `packages/paypal-js/types/components/funding-eligibility.d.ts`
+- `packages/paypal-js/types/components/hosted-fields.d.ts`
+- `packages/paypal-js/types/components/marks.d.ts`
+- `packages/paypal-js/types/components/messages.d.ts`
+- `packages/paypal-js/types/index.d.ts`
+- `packages/paypal-js/types/script-options.d.ts`
+- `packages/paypal-js/types/tests/buttons.test.ts`
+- `packages/paypal-js/types/tests/card-fields.test.ts`
+- `packages/paypal-js/types/tests/hosted-fields.test.ts`
+- `packages/paypal-js/types/tests/load-script.test.ts`
+- `packages/paypal-js/types/tests/server.test.ts`
+- `packages/paypal-js/types/v6/components/applepay-payments.d.ts`
+- `packages/paypal-js/types/v6/components/base-component.d.ts`
+- `packages/paypal-js/types/v6/components/card-fields.d.ts`
+- `packages/paypal-js/types/v6/components/find-eligible-methods.d.ts`
+- `packages/paypal-js/types/v6/components/googlepay-payments.d.ts`
+- `packages/paypal-js/types/v6/components/paypal-guest-payments.d.ts`
+- `packages/paypal-js/types/v6/components/paypal-legacy-billing-agreements.d.ts`
+- `packages/paypal-js/types/v6/components/paypal-messages.d.ts`
+- `packages/paypal-js/types/v6/components/paypal-payments.d.ts`
+- `packages/paypal-js/types/v6/components/paypal-subscriptions.d.ts`
+- `packages/paypal-js/types/v6/components/venmo-payments.d.ts`
+- `packages/paypal-js/types/v6/index.d.ts`
+- `packages/paypal-js/types/v6/tests/applepay-payments.test.ts`
+- `packages/paypal-js/types/v6/tests/card-fields.test.ts`
+- `packages/paypal-js/types/v6/tests/googlepay-payments.test.ts`
+- `packages/paypal-js/types/v6/tests/many-components.test.ts`
+- `packages/paypal-js/types/v6/tests/paypal-guest-payments.test.ts`
+- `packages/paypal-js/types/v6/tests/paypal-legacy-billing-agreements.test.ts`
+- `packages/paypal-js/types/v6/tests/paypal-payments.test.ts`
+- `packages/paypal-js/types/v6/tests/paypal-subscriptions.test.ts`
+- `packages/paypal-js/types/v6/tests/venmo-payments.test.ts`
+- `packages/paypal-js/vitest.config.mts`

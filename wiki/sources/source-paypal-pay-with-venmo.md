@@ -65,6 +65,9 @@ Last updated: 2025-05-08
 | Buy online, pay in store | No |
 | Contact module | No |
 
+> [!warning] Contradiction — later v6 package evidence
+> This source says Save Venmo for purchase later is unsupported. `@paypal/paypal-js@10.0.3` later adds a typed `createVenmoSavePaymentSession()` vault-without-payment path. Treat the declaration as version-specific SDK evidence, not confirmation of production availability; verify current product guidance, merchant enablement, and the matching runtime. See [[source-github-paypal-js]].
+
 ### Integration
 
 Venmo is **not shown by default** — must add `enable-funding=venmo` as a query parameter to the JS SDK `<script>` tag. Beyond that, no Venmo-specific Buttons config is required:

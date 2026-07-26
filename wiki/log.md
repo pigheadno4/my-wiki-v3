@@ -1,5 +1,68 @@
 # Wiki Log
 
+## [2026-07-23] ingest | GitHub paypal/paypal-checkout-components — `5.0.425`
+
+- Full serial ingest of `github-f8c98215ba0bd54e6149` from exact SHA `e03bffc45b7a3c7f36346a514f34ebbd168dd403`.
+- Preserved the `4.1.47` baseline while adding the accumulated v5 component architecture and exact `5.0.425` bfcache patch.
+- Recorded Venmo desktop/QR history, experiment-gated vault-without-purchase behavior, and public Card Fields and Saved Payment Methods interfaces.
+- Updated PayPal concepts, company, provider index, and provider log without changing source count.
+
+## [2026-07-23] ingest | GitHub paypal/paypal-checkout-components — `4.1.47`
+
+- Full serial ingest of `github-cba5dcae559e55e8182d` from exact SHA `289055a52c55911417d25082681ac626c4c9d160`.
+- Established the independent checkout-components cumulative source and package-qualified release ledger from the complete 90-file capsule.
+- Recorded Zoid presentation, merchant callback guards, funding eligibility and ordering, and historical mobile-only secondary Venmo behavior.
+- Updated the PayPal Checkout concept, company page, provider index, and root log; source count increased from 159 to 160.
+
+## [2026-07-23] ingest | GitHub paypal/paypal-js — core `10.0.3` and React `10.1.2`
+
+- Full serial ingest of `github-92e87b7fea5fb1703585` from exact SHA `3caece5256428b6b5c713decbaec10ff7d785e9f`.
+- Added v6 Venmo save-payment types, removed React's ineffective Apple Pay disabled prop, and added the Messages `TEXT` logo type.
+- Updated PayPal vault, Apple Pay, and Pay Later concepts while preserving the unresolved Venmo product-documentation contradiction.
+- Updated PayPal company, cumulative source, release ledger, provider index, and provider log without changing source count.
+
+## [2026-07-23] ingest | GitHub paypal/paypal-js — core `10.0.2` and React `10.1.1`
+
+- Full serial ingest of `github-986685252a62505561c4` from exact SHA `3d72ac928b059cffab3c004d83656bd964ff4a1b`.
+- Added the core `/sdk-v6` default export condition and recorded the React v5 Storybook relocation to a separate Storybook 10 workspace.
+- Preserved all earlier package history and the older immutable story evidence; no payment concept or source count changed.
+- Updated PayPal company, cumulative source, release ledger, provider index, and provider log.
+
+## [2026-07-23] ingest | GitHub paypal/paypal-js — core `10.0.1` and React `10.1.0`
+
+- Full serial ingest of `github-ee6197518787f8152774` from exact SHA `59cb2ce64d158ac4f4cabecdd82f7b4191a8dff3`.
+- Added core v6 DOM types, legacy Buttons setup-token types, and React Braintree Pay Later, cached eligibility, explicit server environment, Google Pay setup errors, and eligibility lifecycle fixes.
+- Preserved v8, v9, and `10.0.0` history; recorded the checkout-with-vault option mismatch between release notes and exact source.
+- Updated PayPal company, concepts, cumulative source, release ledger, provider index, and provider log without changing source count.
+
+## [2026-07-23] ingest | GitHub paypal/paypal-js — coordinated `10.0.0` transition
+
+- Full serial ingest of `github-bd7fe849961b5c6b9964` from exact SHA `4bd05aba2f3263f0ea4694140dc71dfe1dd5b429`.
+- Ingested package-qualified releases `@paypal/paypal-js@10.0.0` and `@paypal/react-paypal-js@10.0.0` while preserving the v8 and v9 sections.
+- Recorded the mandatory v6 `environment` option/prop, endpoint-selection behavior, runtime validation, and v9-to-v10 migration action.
+- Updated the PayPal checkout concept, company page, cumulative source, release ledger, provider index, and provider log.
+
+## [2026-07-23] ingest | GitHub paypal/paypal-js — v9 major transition
+
+- Full serial ingest of `github-aa80084a50abf57e06d7` from exact SHA `31eb658ac885a490d38ef34e471c069b0c6e49cb`.
+- Ingested package-qualified releases `@paypal/paypal-js@9.8.0` and `@paypal/react-paypal-js@9.3.0` while preserving both v8 baselines.
+- Added v9 provider, eligibility, Card Fields 3DS data, Google Pay, and Braintree nonce-flow knowledge; created `wiki/concepts/paypal-braintree-integration.md`.
+- Corrected the older v9 summary's automatic-eligibility claim and updated PayPal company, concepts, index, and provider log.
+
+## [2026-07-23] ingest | GitHub paypal/paypal-js — `@paypal/react-paypal-js@8.9.2`
+
+- Full serial ingest of `github-b11f1f62c66a78b84806` from exact SHA `77487d6cea80c2df694166e5d8f5c420cca41e7e`.
+- Added the React v8 baseline and Card Fields stale-closure fix to the cumulative source and changelog.
+- Updated `wiki/concepts/paypal-expanded-checkout.md`, `wiki/companies/paypal.md`, `wiki/paypal-index.md`, and `wiki/paypal-log.md`.
+- The snapshot's `@paypal/paypal-js@9.0.0` is collateral dependency context and remains un-ingested.
+
+## [2026-07-23] ingest | GitHub paypal/paypal-js — `@paypal/paypal-js@8.4.2`
+
+- Full serial ingest of `github-8416828e1141b2d896ea` from exact SHA `702863f91b79d405c571cf75c3d742a82174b46e`.
+- Canonical source moved to `wiki/sources/paypal/github/source-github-paypal-js.md`; separate release ledger created at `wiki/sources/paypal/github/changelog-github-paypal-js.md`.
+- Updated `wiki/concepts/paypal-checkout.md`, `wiki/companies/paypal.md`, `wiki/paypal-index.md`, and `wiki/paypal-log.md`.
+- `@paypal/react-paypal-js@8.9.1` remains collateral snapshot context, not an ingested React release.
+
 ## [2026-05-13] ingest | Stripe — Billing Benchmarking (docs.stripe.com/billing/subscriptions/benchmarking)
 
 - Raw: `raw/stripe-billing-benchmarks-2026.md` (51 lines)

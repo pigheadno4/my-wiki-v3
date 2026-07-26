@@ -1,0 +1,173 @@
+diff --git a/packages/react-paypal-js/CHANGELOG.md b/packages/react-paypal-js/CHANGELOG.md
+index b23d3c4..8b61d99 100644
+--- a/packages/react-paypal-js/CHANGELOG.md
++++ b/packages/react-paypal-js/CHANGELOG.md
+@@ -1,5 +1,14 @@
+ # Changelog
+ 
++## 10.1.2
++
++### Patch Changes
++
++- 110a043: `ApplePayOneTimePaymentButton` no longer writes a `disabled` attribute to Apple's `<apple-pay-button>`, which ignored it and manages its own enabled/disabled state internally via `canMakePayments()`. The non-functional `disabled` prop has been removed — merchants control presentation themselves.
++- a987b2e: Adds 1 enum value to the paypal messages element logoType property.
++- Updated dependencies [4619c74]
++  - @paypal/paypal-js@10.0.3
++
+ ## 10.1.1
+ 
+ ### Patch Changes
+diff --git a/packages/react-paypal-js/package.json b/packages/react-paypal-js/package.json
+index adea21b..012683e 100644
+--- a/packages/react-paypal-js/package.json
++++ b/packages/react-paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@paypal/react-paypal-js",
+-  "version": "10.1.1",
++  "version": "10.1.2",
+   "description": "React components for the PayPal JS SDK",
+   "keywords": [
+     "react",
+@@ -59,12 +59,12 @@
+   },
+   "homepage": "https://paypal.github.io/paypal-js/web-sdk-v6-react-storybook/",
+   "dependencies": {
+-    "@paypal/paypal-js": "^10.0.2",
++    "@paypal/paypal-js": "^10.0.3",
+     "@paypal/sdk-constants": "^1.0.122",
+     "server-only": "^0.0.1"
+   },
+   "devDependencies": {
+-    "@babel/core": "^7.17.5",
++    "@babel/core": "^7.29.6",
+     "@babel/preset-env": "^7.16.11",
+     "@babel/preset-react": "^7.16.7",
+     "@babel/preset-typescript": "^7.16.7",
+diff --git a/packages/react-paypal-js/src/v6/components/ApplePayOneTimePaymentButton.test.tsx b/packages/react-paypal-js/src/v6/components/ApplePayOneTimePaymentButton.test.tsx
+index 774ec76..b24b336 100644
+--- a/packages/react-paypal-js/src/v6/components/ApplePayOneTimePaymentButton.test.tsx
++++ b/packages/react-paypal-js/src/v6/components/ApplePayOneTimePaymentButton.test.tsx
+@@ -94,15 +94,15 @@ describe("ApplePayOneTimePaymentButton", () => {
+     expect(mockHandleClick).toHaveBeenCalledTimes(1);
+   });
+ 
+-  it("should set disabled attribute when disabled prop is true", () => {
++  it("never writes a disabled attribute to apple-pay-button (Apple manages it)", () => {
+     const { container } = render(
+-      <ApplePayOneTimePaymentButton {...defaultProps} disabled={true} />,
++      <ApplePayOneTimePaymentButton {...defaultProps} />,
+     );
+     const button = container.querySelector("apple-pay-button");
+-    expect(button).toHaveAttribute("disabled");
++    expect(button).not.toHaveAttribute("disabled");
+   });
+ 
+-  it("should not set disabled attribute when error is present (allows retry)", () => {
++  it("stays interactive when an error is present so the user can retry", () => {
+     jest.spyOn(console, "error").mockImplementation();
+     mockUseApplePayOneTimePaymentSession.mockReturnValue({
+       error: new Error("Test error"),
+@@ -116,30 +116,9 @@ describe("ApplePayOneTimePaymentButton", () => {
+     );
+     const button = container.querySelector("apple-pay-button");
+     expect(button).not.toHaveAttribute("disabled");
+-  });
+ 
+-  it("should set disabled attribute when isPending is true", () => {
+-    mockUseApplePayOneTimePaymentSession.mockReturnValue({
+-      error: null,
+-      isPending: true,
+-      handleClick: mockHandleClick,
+-      handleCancel: mockHandleCancel,
+-      handleDestroy: mockHandleDestroy,
+-    });
+-    const { container } = render(
+-      <ApplePayOneTimePaymentButton {...defaultProps} />,
+-    );
+-    const button = container.querySelector("apple-pay-button");
+-    expect(button).toBeInTheDocument();
+-    expect(button).toHaveAttribute("disabled");
+-  });
+-
+-  it("should not set disabled attribute when state is normal", () => {
+-    const { container } = render(
+-      <ApplePayOneTimePaymentButton {...defaultProps} />,
+-    );
+-    const button = container.querySelector("apple-pay-button");
+-    expect(button).not.toHaveAttribute("disabled");
++    fireEvent.click(button!);
++    expect(mockHandleClick).toHaveBeenCalledTimes(1);
+   });
+ 
+   it("should set default button attributes", () => {
+@@ -192,7 +171,6 @@ describe("ApplePayOneTimePaymentButton", () => {
+         buttonstyle="white"
+         type="buy"
+         locale="fr"
+-        disabled={true}
+         className="test"
+       />,
+     );
+diff --git a/packages/react-paypal-js/src/v6/components/ApplePayOneTimePaymentButton.tsx b/packages/react-paypal-js/src/v6/components/ApplePayOneTimePaymentButton.tsx
+index f98620c..426a1d2 100644
+--- a/packages/react-paypal-js/src/v6/components/ApplePayOneTimePaymentButton.tsx
++++ b/packages/react-paypal-js/src/v6/components/ApplePayOneTimePaymentButton.tsx
+@@ -7,7 +7,8 @@ import type { UseApplePayOneTimePaymentSessionProps } from "../hooks/useApplePay
+ import type { ApplePayButtonElementProps } from "../types/sdkWebComponents";
+ 
+ export type ApplePayOneTimePaymentButtonProps =
+-  UseApplePayOneTimePaymentSessionProps & ApplePayButtonElementProps;
++  UseApplePayOneTimePaymentSessionProps &
++    Omit<ApplePayButtonElementProps, "disabled">;
+ 
+ /**
+  * `ApplePayOneTimePaymentButton` renders a native Apple Pay button and manages
+@@ -36,21 +37,20 @@ export const ApplePayOneTimePaymentButton = ({
+   buttonstyle = "black",
+   type = "pay",
+   locale = "en",
+-  disabled = false,
+   className,
+   ...hookProps
+ }: ApplePayOneTimePaymentButtonProps): JSX.Element | null => {
+-  const { error, isPending, handleClick, handleDestroy } =
++  const { error, handleClick, handleDestroy } =
+     useApplePayOneTimePaymentSession(hookProps);
+   const { isHydrated } = usePayPal();
+   const buttonRef = useRef<HTMLElement>(null);
+   const handleClickRef = useRef(handleClick);
+   handleClickRef.current = handleClick;
+ 
+-  const isDisabled = disabled || isPending;
+-
+-  // React's onClick doesn't work on <apple-pay-button> due to its shadow DOM,
+-  // so we attach the click handler directly on the element.
++  // Apple's <apple-pay-button> manages its own enabled/disabled state internally
++  // via canMakePayments(); we deliberately don't add an SDK-level disabled layer
++  // (merchants control presentation themselves). React's onClick also doesn't
++  // work on the element due to its shadow DOM, so we attach the handler directly.
+   useEffect(() => {
+     const el = buttonRef.current;
+     if (!el) {
+@@ -90,7 +90,6 @@ export const ApplePayOneTimePaymentButton = ({
+         buttonstyle={buttonstyle}
+         type={type}
+         locale={locale}
+-        disabled={isDisabled || undefined}
+       />
+     </div>
+   );
+diff --git a/packages/react-paypal-js/src/v6/types/sdkWebComponents.ts b/packages/react-paypal-js/src/v6/types/sdkWebComponents.ts
+index 2626415..9cd6c26 100644
+--- a/packages/react-paypal-js/src/v6/types/sdkWebComponents.ts
++++ b/packages/react-paypal-js/src/v6/types/sdkWebComponents.ts
+@@ -46,7 +46,7 @@ export interface PayPalMessagesElement extends HTMLAttributes<HTMLElement> {
+   "buyer-country"?: string;
+   "currency-code"?: string;
+   "logo-position"?: "INLINE" | "LEFT" | "RIGHT" | "TOP";
+-  "logo-type"?: "MONOGRAM" | "WORDMARK";
++  "logo-type"?: "MONOGRAM" | "WORDMARK" | "TEXT";
+   "offer-types"?: string;
+   "presentation-mode"?: "AUTO" | "MODAL" | "POPUP" | "REDIRECT";
+   ref?: Ref<PayPalMessagesElement>;

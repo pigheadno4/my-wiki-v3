@@ -25,7 +25,6 @@ import argparse
 import datetime as _dt
 import difflib
 import hashlib
-import json
 import re
 import sys
 import time
@@ -39,6 +38,7 @@ from urllib.parse import urlsplit
 from collection_discovery import DiscoveryRecord, reconcile_metronome
 from collection_reporting import render_status, validate_terminal_counts, write_jsonl
 from collection_versions import classify_candidate, latest_prior, next_target, source_body
+from toml_compat import load_toml
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "raw"
@@ -54,52 +54,8 @@ RETRYABLE = {408, 425, 429, 500, 501, 502, 503, 504}
 
 
 def load_config() -> dict:
-    """Load psp_config.toml. Uses tomllib (3.11+) or tomli if present, else a
-    tiny stdlib fallback that handles this config's subset (works on 3.9+)."""
-    try:
-        import tomllib  # Python 3.11+
-        with CONFIG.open("rb") as fh:
-            return tomllib.load(fh)
-    except ModuleNotFoundError:
-        pass
-    try:
-        import tomli  # pip install tomli
-        with CONFIG.open("rb") as fh:
-            return tomli.load(fh)
-    except ModuleNotFoundError:
-        return _load_toml_subset(CONFIG)
-
-
-def _load_toml_subset(path: Path) -> dict:
-    """Minimal TOML reader for psp_config.toml: # comments, [table],
-    [[parent.child]] arrays of tables, and `key = <json-value>` on one line
-    (strings, bools, numbers, arrays — all JSON-compatible in this config)."""
-    root: dict = {}
-    ctx = root
-    for raw in path.read_text(encoding="utf-8").splitlines():
-        line = raw.strip()
-        if not line or line.startswith("#"):
-            continue
-        if line.startswith("[[") and line.endswith("]]"):
-            keys = line[2:-2].strip().split(".")
-            d = root
-            for k in keys[:-1]:
-                d = d.setdefault(k, {})
-            d.setdefault(keys[-1], []).append({})
-            ctx = d[keys[-1]][-1]
-        elif line.startswith("[") and line.endswith("]"):
-            keys = line[1:-1].strip().split(".")
-            d = root
-            for k in keys[:-1]:
-                d = d.setdefault(k, {})
-            ctx = d.setdefault(keys[-1], {})
-        elif "=" in line:
-            key, _, val = line.partition("=")
-            try:
-                ctx[key.strip()] = json.loads(val.strip())
-            except json.JSONDecodeError:
-                ctx[key.strip()] = val.strip().strip('"')
-    return root
+    """Load PSP configuration through the shared Python 3.9 TOML loader."""
+    return load_toml(CONFIG)
 
 
 def http_get(url: str, timeout: int = 30) -> str:

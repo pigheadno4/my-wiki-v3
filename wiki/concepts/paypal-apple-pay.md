@@ -32,6 +32,10 @@ Four integration touchpoints:
 
 Both PayPal JS SDK (`components=applepay`) and Apple Pay JS SDK (`applepay.cdn-apple.com/jsapi/1.latest/apple-pay-sdk.js`) must be loaded.
 
+### React v10.1.2 button behavior
+
+`@paypal/react-paypal-js@10.1.2` removes the non-functional `disabled` prop from `ApplePayOneTimePaymentButton`. The component no longer writes a `disabled` attribute while its payment hook is pending because Apple's `<apple-pay-button>` ignores that attribute and manages its own state through `canMakePayments()`. Merchants control whether and how the button is presented; the component still attaches its click listener directly because React's `onClick` does not cross the element's shadow DOM.
+
 ## Vault Flow
 
 1. Buyer opts in during checkout
@@ -64,3 +68,4 @@ Account Settings → Payment Method → Enable Apple Pay → Get Started → sub
 
 - [[source-paypal-apm-apple-pay]] — One-time checkout integration: domain validation, 4 SDK touchpoints, `ApplePaySession`, non-Safari browser support, go-live onboarding
 - [[source-paypal-save-applepay-js-sdk]] — Save Apple Pay vault integration: request/response samples, APPROVED vs VAULTED status, webhook, platform headers, go-live steps
+- [[source-github-paypal-js]] — package-qualified React v10.1.2 Apple Pay button behavior

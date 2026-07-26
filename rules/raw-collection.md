@@ -60,7 +60,7 @@ Do NOT attempt to summarize truncated content — the partial view may miss crit
 | Pasted text/markdown | Verbatim `.md` copy | Content exists nowhere else — raw is the only record |
 | Website URL | Fetched markdown + metadata header | Web pages change/disappear — snapshot has archival value |
 | Images/screenshots | Image files in `raw/assets/` + reference in raw `.md` | Preserves the actual visual artifact |
-| GitHub repo | Stub `.md` lint anchor + key excerpts in `raw/<repo-slug>/` | See `github-repos.md` |
+| GitHub repo | Immutable exact-SHA snapshots and package release records in `raw/github/<company>/<repo>/`; generated comparisons, work items, and status in `tracking/github/` | See `github-repos.md` |
 | PSP docs (bulk) | Fetched `.md` per page, dated, diff-on-recollect | See `psp-collection.md` |
 
 ### Pasted text/markdown

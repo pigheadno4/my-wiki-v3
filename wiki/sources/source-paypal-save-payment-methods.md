@@ -64,6 +64,9 @@ Australia, Austria, Belgium, Bulgaria, Canada, China, Cyprus, Czech Republic, De
 > [!info] Venmo vault limitation
 > Venmo can be saved during purchase via JS SDK only — not via Orders API, Android SDK, iOS SDK, or save-for-purchase-later. Cards and PayPal only for all other paths.
 
+> [!warning] Contradiction — later v6 package evidence
+> This 2025 documentation says Venmo is unavailable for save-for-purchase-later. The later `@paypal/paypal-js@10.0.3` package declaration adds `createVenmoSavePaymentSession()` for a vault-without-payment flow. The package type does not prove production runtime or merchant eligibility, so preserve this source's limitation and verify the matching v6 runtime before offering the flow. See [[source-github-paypal-js]].
+
 > [!warning] Pay Later + vault
 > To continue offering Pay Later at checkout when integrating vault, you must use **Billing With Purchase** — not Billing Agreement. Billing With Purchase offers the same functionality and is compatible with existing payment options.
 
@@ -93,7 +96,7 @@ Save without purchase — charge payers after a set time (e.g. free trial → bi
 | Android SDK | Client-side | PayPal + cards |
 | iOS SDK | Client-side | PayPal + cards |
 
-**No Venmo** for any purchase-later path.
+**No Venmo** for any purchase-later path according to this 2025 source. This conflicts with the later package-qualified `@paypal/paypal-js@10.0.3` type contract described above.
 
 **JS SDK caveat**: client-side only integration saves PayPal Wallets only — need client+server (Expanded Checkout) to also save cards.
 

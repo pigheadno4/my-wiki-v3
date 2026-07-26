@@ -1,0 +1,37 @@
+{
+    "name": "@paypal/paypal-js-root",
+    "description": "Collection of libraries supporting PayPal's JS SDK",
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/paypal/paypal-js.git"
+    },
+    "scripts": {
+        "build": "npm run build --workspaces --if-present",
+        "changeset:add": "changeset add",
+        "changeset:release": "npm run build && changeset publish",
+        "changeset:version": "changeset version && npm i --package-lock-only",
+        "clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules",
+        "format": "prettier --write --ignore-unknown .",
+        "format:check": "prettier --check .",
+        "lint": "npm run lint --workspaces --if-present",
+        "test": "npm run lint && npm run test --workspaces --if-present",
+        "test:e2e": "npm run test:e2e --workspaces --if-present",
+        "prepare": "husky install"
+    },
+    "lint-staged": {
+        "*": [
+            "prettier --write --ignore-unknown"
+        ]
+    },
+    "devDependencies": {
+        "@changesets/cli": "^2.27.7",
+        "husky": "^8.0.1",
+        "lint-staged": "^13.0.3",
+        "prettier": "^3.3.3"
+    }
+}
