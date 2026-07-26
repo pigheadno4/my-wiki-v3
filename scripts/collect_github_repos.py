@@ -199,23 +199,27 @@ def _collect_attempt(
             state = "not_available" if release is not None else "unchanged"
             return CollectionResult(config.id, state, (), (), (), ())
         history = _load_retained_history(root, config)
+        evidence_by_id = {
+            _release_id(candidate): release_notes_fetcher(config, candidate)
+            for candidate in candidates
+        }
+        candidates, revised_release_ids = _changed_candidates(
+            root, candidates, evidence_by_id, history, existing_items
+        )
+        context["candidates"] = candidates
+        if not candidates:
+            return CollectionResult(config.id, "unchanged", (), (), (), ())
+
         if dry_run:
             fetch_required_refs(
                 effective,
                 clone_path,
                 tuple("tag:" + tag for tag in sorted({item.tag for item in candidates})),
             )
-            evidence_by_id = {
-                _release_id(candidate): release_notes_fetcher(config, candidate)
-                for candidate in candidates
-            }
-            candidates, _ = _changed_candidates(
-                root, candidates, evidence_by_id, history, existing_items
-            )
+            _verify_fetched_candidates(clone_path, candidates)
             ordered = _sort_candidates(candidates, evidence_by_id, clone_path)
             release_ids = tuple(_release_id(candidate) for candidate in ordered)
-            state = "discovered" if ordered else "unchanged"
-            return CollectionResult(config.id, state, release_ids, (), (), ())
+            return CollectionResult(config.id, "discovered", release_ids, (), (), ())
 
         prior_tags = {
             retained.tag
@@ -229,16 +233,6 @@ def _collect_attempt(
             tuple("tag:" + tag for tag in sorted({item.tag for item in candidates} | prior_tags)),
         )
         _verify_fetched_candidates(clone_path, candidates)
-        evidence_by_id = {
-            _release_id(candidate): release_notes_fetcher(config, candidate)
-            for candidate in candidates
-        }
-        candidates, revised_release_ids = _changed_candidates(
-            root, candidates, evidence_by_id, history, existing_items
-        )
-        context["candidates"] = candidates
-        if not candidates:
-            return CollectionResult(config.id, "unchanged", (), (), (), ())
         ordered = _sort_candidates(candidates, evidence_by_id, clone_path)
         groups = _group_by_sha(ordered)
         work_item_ids: List[str] = []

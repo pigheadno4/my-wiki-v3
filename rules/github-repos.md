@@ -21,6 +21,8 @@ The focused PayPal JS pilot retains:
 - latest stable v8, latest stable v9, and every stable v10 release of `@paypal/react-paypal-js`; and
 - chronological processing from v8 to v9 to v10, with semantic version, release date, and package tag as deterministic ordering inputs.
 
+For a track configured with `future = "all-stable"`, periodic collection selects every stable release newer than the highest retained version. It does not backfill unretained historical gaps below that version; use an explicit release request or reviewed backfill policy for those.
+
 The policy is registry-driven rather than hard-coded to PayPal. Add future repositories or companies by adding reviewed registry rows and capsule policies.
 `enabled = true` means the row is executable by the current collector: it must have package-qualified version tracks and exactly one supported capsule policy. Keep inventory-only or unsupported rows disabled.
 

@@ -142,7 +142,23 @@ def select_release_candidates(
         if track.future != "all-stable":
             raise ReleaseSelectionError("unknown future policy " + track.future)
         existing = _version_keys(existing_versions)
-        return tuple(candidate for candidate in eligible if _version_key(candidate.version) not in existing)
+        parsed_existing = tuple(
+            _parsed_version(version)
+            for version in existing_versions
+            if parse_semver(version) is not None
+        )
+        if not parsed_existing:
+            return eligible
+        latest = max(parsed_existing, key=cmp_to_key(compare_semver))
+        return tuple(
+            candidate
+            for candidate in eligible
+            if compare_semver(_parsed_version(candidate.version), latest) > 0
+            or (
+                compare_semver(_parsed_version(candidate.version), latest) == 0
+                and _version_key(candidate.version) not in existing
+            )
+        )
 
     pinned = _pinned_candidates(track, eligible)
     if track.backfill == "all-stable":

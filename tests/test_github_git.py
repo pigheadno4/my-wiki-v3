@@ -272,6 +272,9 @@ class GitResolutionTests(unittest.TestCase):
 
         self.assertFalse((destination / "README.md").exists())
         self.assertEqual("", run_git(["ls-files"], destination))
+        self.assertEqual(
+            "true", run_git(["rev-parse", "--is-shallow-repository"], destination)
+        )
         self.assertEqual(("@scope/widget",), inspection.packages)
         self.assertTrue(inspection.has_submodules)
         self.assertTrue(inspection.has_lfs)
@@ -317,6 +320,16 @@ class GitResolutionTests(unittest.TestCase):
         message = str(raised.exception)
         self.assertEqual("x" * 1000 + "...", message.rsplit(": ", 1)[1])
         self.assertNotIn(stderr, message)
+
+    def test_git_timeout_is_reported_as_a_retryable_git_error(self):
+        error = subprocess.TimeoutExpired(["git", "fetch"], 120)
+
+        with mock.patch("github_git.subprocess.run", side_effect=error) as run:
+            with self.assertRaises(GitCommandError) as raised:
+                run_git(["fetch"], self.repo)
+
+        self.assertIn("timed out after 120 seconds", str(raised.exception))
+        self.assertEqual(120, run.call_args.kwargs["timeout"])
 
 
 if __name__ == "__main__":

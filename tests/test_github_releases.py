@@ -165,6 +165,16 @@ class GitHubReleasesTests(unittest.TestCase):
 
         self.assertEqual(("9.0.1",), tuple(item.version for item in selected))
 
+    def test_future_all_stable_does_not_backfill_gaps_before_latest_indexed_version(self):
+        selected = select_release_candidates(
+            self._track(),
+            self._candidates("9.0.0", "9.0.1", "9.0.2", "9.0.3"),
+            ("9.0.2",),
+            "future",
+        )
+
+        self.assertEqual(("9.0.3",), tuple(item.version for item in selected))
+
     def test_future_none_selects_no_candidates(self):
         selected = select_release_candidates(
             self._track(future="none"), self._candidates("9.0.0"), mode="future"

@@ -12,6 +12,7 @@ from github_versions import SemanticVersion, compare_semver, matches_semver, par
 
 
 _ERROR_STDERR_LIMIT = 1000
+_GIT_COMMAND_TIMEOUT_SECONDS = 120
 _LFS_FILTER = re.compile(r"(?:^|\s)filter\s*=\s*lfs(?:\s|$)", re.IGNORECASE)
 
 
@@ -64,9 +65,13 @@ def run_git(args: Sequence[str], cwd: Optional[Path] = None) -> str:
             check=True,
             text=True,
             capture_output=True,
+            timeout=_GIT_COMMAND_TIMEOUT_SECONDS,
         )
     except subprocess.CalledProcessError as error:
         raise GitCommandError(list(args), error.returncode, error.stderr) from error
+    except subprocess.TimeoutExpired as error:
+        detail = "timed out after " + str(_GIT_COMMAND_TIMEOUT_SECONDS) + " seconds"
+        raise GitCommandError(list(args), 124, detail) from error
     return result.stdout.strip()
 
 
@@ -89,7 +94,7 @@ def fetch_required_refs(config: RepoConfig, clone_path: Path, selectors: Sequenc
             continue
         refspec = source + ":" + destination
         if refspec not in fetched:
-            run_git(["fetch", "--no-tags", "origin", refspec], clone_path)
+            run_git(["fetch", "--depth=1", "--no-tags", "origin", refspec], clone_path)
             fetched.add(refspec)
 
 

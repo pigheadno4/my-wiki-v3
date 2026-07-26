@@ -193,9 +193,11 @@ class CollectGitHubReposTests(unittest.TestCase):
 
     def test_recollection_with_no_new_release_is_unchanged(self):
         self.collect()
-        result = self.collect(release_mode="future", collection_date="2026-07-21")
+        with mock.patch("collect_github_repos.fetch_required_refs") as fetch:
+            result = self.collect(release_mode="future", collection_date="2026-07-21")
 
         self.assertEqual("unchanged", result.state)
+        fetch.assert_not_called()
         self.assertEqual(1, len(load_work_items(self.root / "tracking/github/work-items.json")))
 
     def test_recollection_creates_release_only_item_for_changed_notes(self):
