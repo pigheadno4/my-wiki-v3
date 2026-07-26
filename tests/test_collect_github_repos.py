@@ -378,7 +378,7 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertEqual("", item.snapshot_manifest)
         self.assertTrue(all(not change.release_manifest for change in item.package_changes))
 
-    def test_next_periodic_run_completes_the_same_failed_work_item(self):
+    def test_successful_retry_clears_active_collection_failure_fields(self):
         def fail_notes(config, candidate):
             raise ReleaseEvidenceError("temporary API failure")
 
@@ -398,6 +398,10 @@ class CollectGitHubReposTests(unittest.TestCase):
         recovered = recovered_items[0]
         self.assertEqual(failed.work_item_id, recovered.work_item_id)
         self.assertEqual("2026-07-20", recovered.collection_date)
+        self.assertEqual(0, recovered.attempts_in_run)
+        self.assertEqual(0, recovered.consecutive_failed_runs)
+        self.assertEqual("", recovered.last_error)
+        self.assertEqual("", recovered.last_attempted_date)
         self.assertTrue(recovered.snapshot_manifest)
         self.assertTrue(all(change.release_manifest for change in recovered.package_changes))
 

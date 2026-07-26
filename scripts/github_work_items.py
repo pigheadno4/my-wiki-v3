@@ -445,6 +445,13 @@ def _transition_work_item_unlocked(
     updates: Dict[str, Any] = {"state": requested}
     if requested == "approved":
         updates["approved_mode"] = approved_mode
+    if requested == "collected":
+        updates.update(
+            attempts_in_run=0,
+            consecutive_failed_runs=0,
+            last_error="",
+            last_attempted_date="",
+        )
     if requested == "discovered" and expected in (
         "collection_failed",
         "needs_manual_review",

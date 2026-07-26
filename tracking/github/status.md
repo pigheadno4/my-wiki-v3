@@ -76,8 +76,8 @@
 - Evidence revision: `initial`
 - Approved mode: `not approved`
 - Attempts in run: `0`
-- Consecutive failed runs: `3`
-- Last error: needs-policy-review:capsule-budget-exceeded: selected file count 1130 exceeds max_capsule_files 340
+- Consecutive failed runs: `0`
+- Last error: None
 - Snapshot: [manifest](raw/github/adyen/adyen-web/snapshots/2026-07-26-b19eec7/manifest.json)
 
 ### Package releases
