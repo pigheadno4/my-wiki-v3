@@ -71,13 +71,13 @@
 - Repository: `adyen/adyen-web`
 - SHA: `b19eec7054340a1526c87d450fd7dfff75794ed9`
 - Collection date: `2026-07-26`
-- State: `collection_failed`
+- State: `needs_manual_review`
 - Recommended mode: `full`
 - Evidence revision: `initial`
 - Approved mode: `not approved`
-- Attempts in run: `3`
-- Consecutive failed runs: `2`
-- Last error: release evidence for adyen/adyen-web tag v6.41.0: GitHub HTTP 403
+- Attempts in run: `1`
+- Consecutive failed runs: `3`
+- Last error: needs-policy-review:capsule-budget-exceeded: selected file count 1130 exceeds max_capsule_files 340
 - Snapshot: Not published
 
 ### Package releases
