@@ -62,7 +62,7 @@ def test_adyen_web_uses_the_reviewed_bounded_public_source_capsule(self):
         capsule.include_paths,
     )
     self.assertEqual(("dist/",), capsule.default_generated_target_paths)
-    self.assertEqual(("tests", "fixtures"), capsule.excluded_categories)
+    self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
     self.assertEqual(340, capsule.max_capsule_files)
     self.assertEqual(3000000, capsule.max_capsule_utf8_bytes)
 ```
