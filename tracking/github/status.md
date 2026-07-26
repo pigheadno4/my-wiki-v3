@@ -66,6 +66,26 @@
   Release: [manifest](raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.1/2026-07-22/manifest.json)
   Comparison: [manifest](tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.1.0--10.1.1/comparison.json)
 
+## `github-9f56dfbe62e4e84b03c7`
+
+- Repository: `adyen/adyen-web`
+- SHA: `b19eec7054340a1526c87d450fd7dfff75794ed9`
+- Collection date: `2026-07-26`
+- State: `collection_failed`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `3`
+- Consecutive failed runs: `1`
+- Last error: release evidence for adyen/adyen-web tag v6.41.0: GitHub HTTP 403
+- Snapshot: Not published
+
+### Package releases
+
+- `@adyen/adyen-web@6.41.0` (recommended `full`)
+  Release: [manifest]()
+  Comparison: Not applicable
+
 ## `github-aa80084a50abf57e06d7`
 
 - Repository: `paypal/paypal-js`
