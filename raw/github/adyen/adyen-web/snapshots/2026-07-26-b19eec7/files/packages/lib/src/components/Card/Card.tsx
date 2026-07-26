@@ -1,0 +1,400 @@
+import { h } from 'preact';
+import CardInput from './components/CardInput';
+import collectBrowserInfo from '../../utils/browserInfo';
+import { BinLookupResponse, CardElementData, CardConfiguration } from './types';
+import triggerBinLookUp from '../internal/SecuredFields/binLookup/triggerBinLookUp';
+import { CardBinLookupData, CardConfigSuccessData, CardFocusData } from '../internal/SecuredFields/lib/types';
+import { fieldTypeToSnakeCase, isSecuredField } from '../internal/SecuredFields/utils';
+import { notFalsy, reject } from '../../utils/commonUtils';
+import { shouldIncludeInstallmentsInPaymentData } from './components/CardInput/utils';
+import createClickToPayService from '../internal/ClickToPay/services/create-clicktopay-service';
+import { ClickToPayCheckoutPayload, IClickToPayService } from '../internal/ClickToPay/services/types';
+import ClickToPayWrapper from './components/ClickToPayWrapper';
+import { ComponentFocusObject, PaymentMethodBrand } from '../../types/global-types';
+import { TxVariants } from '../tx-variants';
+import type { UIElementStatus } from '../internal/UIElement/types';
+import UIElement from '../internal/UIElement';
+import PayButton from '../internal/PayButton';
+import type { ICore } from '../../core/types';
+import AdyenCheckoutError, { IMPLEMENTATION_ERROR } from '../../core/Errors/AdyenCheckoutError';
+import CardInputDefaultProps from './components/CardInput/defaultProps';
+import { PayButtonProps } from '../internal/PayButton/PayButton';
+import { AnalyticsInfoEvent, InfoEventType, UiTarget } from '../../core/Analytics/events/AnalyticsInfoEvent';
+import { InstallmentOptions } from './components/CardInput/components/Installments/Installments';
+
+export class CardElement extends UIElement<CardConfiguration> {
+    public static readonly type: TxVariants = TxVariants.scheme;
+
+    private readonly clickToPayService: IClickToPayService | null;
+
+    /**
+     * Reference to the 'ClickToPayComponent'
+     */
+    private clickToPayRef = null;
+
+    constructor(checkout: ICore, props?: CardConfiguration) {
+        super(checkout, props);
+
+        if (props && !props._disableClickToPay && this.props.fundingSource !== 'prepaid') {
+            this.clickToPayService = createClickToPayService(
+                this.props.configuration,
+                this.props.clickToPayConfiguration,
+                this.props.environment,
+                this.analytics
+            );
+
+            void this.clickToPayService?.initialize();
+        }
+    }
+
+    protected static readonly defaultProps = {
+        showFormInstruction: true,
+        _disableClickToPay: false,
+        doBinLookup: true,
+        // Merge most of CardInput's defaultProps
+        ...reject(['type', 'setComponentRef']).from(CardInputDefaultProps)
+    };
+
+    public setStatus(status: UIElementStatus, props?): this {
+        if (this.componentRef?.setStatus) {
+            this.componentRef.setStatus(status, props);
+        }
+        if (this.clickToPayRef?.setStatus) {
+            this.clickToPayRef.setStatus(status, props);
+        }
+        return this;
+    }
+
+    private setClickToPayRef = ref => {
+        this.clickToPayRef = ref;
+    };
+
+    // This is the most self contained way of handling funding source matching
+    // Alternatives would be to override getPaymentMethodConfigFromResponse and change it's signature
+    protected override getPaymentMethodConfigFromResponse(componentProps: CardConfiguration) {
+        if (componentProps?.fundingSource) {
+            return this.core.paymentMethodsResponse?.findByFundingSource(componentProps.type, componentProps.fundingSource);
+        }
+
+        return super.getPaymentMethodConfigFromResponse(componentProps);
+    }
+
+    formatProps(props: CardConfiguration): CardConfiguration {
+        // The value from a session should be used, before falling back to the merchant configuration
+        const enableStoreDetails = props.session?.configuration?.enableStoreDetails ?? props.enableStoreDetails;
+
+        const isZeroAuth = props.amount?.value === 0;
+        const showStoreDetailsCheckbox = isZeroAuth ? false : enableStoreDetails;
+
+        const storedCardID = props.storedPaymentMethodId || props.id; // check if we've been passed a (checkout) processed storedCard or one that merchant has pulled from the PMs response
+        const isEcommerceStoredCard = storedCardID && props?.supportedShopperInteractions?.includes('Ecommerce'); // If we have a storedCard does it support Ecommerce (it might not if the merchant has pulled it from the PMs response)
+
+        // If we have a storedPM but it doesn't support Ecommerce - we can't make a storedCard component from it
+        if (storedCardID && !isEcommerceStoredCard) {
+            // TODO - Decide if an error is too severe? Would a console.warning suffice?
+            throw new AdyenCheckoutError(
+                IMPLEMENTATION_ERROR,
+                'You are trying to create a storedCard from a stored PM that does not support Ecommerce interactions'
+            );
+        }
+
+        // Take the configuration set on the card component - which is either merchant defined or default (empty object)
+        // @ts-ignore 'installmentOptions' is optional on CardConfiguration (the merchant-facing type), but by this point
+        // UIElement.buildElementProps has already merged CardInputDefaultProps.installmentOptions ({}) into props
+        // before formatProps() is called, so the value is always defined here.
+        const merchantInstallmentOptions: InstallmentOptions = props.installmentOptions;
+
+        if (props.session && notFalsy(merchantInstallmentOptions)) {
+            console.warn(
+                'WARNING: You have defined installments configuration on the Card component, but you are using a /sessions integration.\nWith this integration, installments configuration must be defined when you create the session. Any configuration defined elsewhere will be ignored.\n\n'
+            );
+        }
+
+        // In a session scenario, only the session's own installments configuration is used; otherwise fall back to the merchant configuration / default
+        const shownInstallmentOptions: InstallmentOptions = props.session
+            ? (props.session?.configuration?.installmentOptions ?? CardInputDefaultProps.installmentOptions)
+            : merchantInstallmentOptions;
+
+        return {
+            ...props,
+            // Mismatch between hasHolderName & holderNameRequired which can mean card can never be valid
+            holderNameRequired: !props.hasHolderName ? false : props.holderNameRequired,
+            // False for *stored* BCMC cards & if merchant explicitly wants to hide the CVC field
+            hasCVC: !((props.brand && props.brand === 'bcmc') || props.hideCVC),
+            // billingAddressRequired only available for non-stored cards
+            billingAddressRequired: props.storedPaymentMethodId ? false : props.billingAddressRequired,
+            // edge case where merchant has defined both an onAddressLookup callback AND set billingAddressMode: 'partial' - which leads to some strange behaviour in the address UI
+            billingAddressMode: props.onAddressLookup ? CardInputDefaultProps.billingAddressMode : props.billingAddressMode,
+            /** props.brand will be specified in the case of a StoredCard or a Bancontact component, for a regular Card we default it to 'card' */
+            brand: props.brand ?? TxVariants.card,
+            countryCode: props.countryCode ? props.countryCode.toLowerCase() : null,
+            // Required for transition period (until configuration object becomes the norm)
+            // - if merchant has defined value directly in props, use this instead
+            configuration: {
+                ...props.configuration,
+                socialSecurityNumberMode: props.configuration?.socialSecurityNumberMode ?? 'auto'
+            },
+            brandsConfiguration: props.brandsConfiguration || props.configuration?.brandsConfiguration || {},
+            icon: props.icon || props.configuration?.icon,
+            installmentOptions: shownInstallmentOptions,
+            enableStoreDetails,
+            showStoreDetailsCheckbox,
+            /**
+             * Click to Pay configuration
+             * - If email is set explicitly in the configuration, then it can override the one used in the session creation
+             */
+            clickToPayConfiguration: {
+                ...props.clickToPayConfiguration,
+                disableOtpAutoFocus: props.clickToPayConfiguration?.disableOtpAutoFocus || false,
+                shopperEmail: props.clickToPayConfiguration?.shopperEmail || this.core.options?.session?.shopperEmail,
+                telephoneNumber: props.clickToPayConfiguration?.telephoneNumber || this.core.options?.session?.telephoneNumber,
+                locale: props.clickToPayConfiguration?.locale || props.i18n?.locale?.replace('-', '_')
+            },
+            ...(storedCardID && { storedPaymentMethodId: storedCardID })
+        };
+    }
+
+    /**
+     * Formats the component data output
+     */
+    formatData(): CardElementData {
+        /**
+         *  this.state.selectedBrandValue will be set when:
+         *  - /binLookup detects a single brand,
+         *  - when /binLookup detects a dual-branded card and the shopper makes a brand selection
+         *  - or, in the case of a storedCard
+         */
+        const cardBrand = this.state.selectedBrandValue;
+
+        return {
+            paymentMethod: {
+                type: CardElement.type,
+                ...this.state.data,
+                ...(this.props.storedPaymentMethodId && {
+                    storedPaymentMethodId: this.props.storedPaymentMethodId,
+                    holderName: this.props.holderName ?? ''
+                }),
+                ...(cardBrand && { brand: cardBrand }),
+                ...(this.props.fundingSource && { fundingSource: this.props.fundingSource }),
+                ...(this.state.fastlaneData && { fastlaneData: btoa(JSON.stringify(this.state.fastlaneData)) })
+            },
+            ...(this.state.billingAddress && { billingAddress: this.state.billingAddress }),
+            ...(this.state.socialSecurityNumber && { socialSecurityNumber: this.state.socialSecurityNumber }),
+            ...this.storePaymentMethodPayload,
+            ...(shouldIncludeInstallmentsInPaymentData(this.state.installments) && { installments: this.state.installments }),
+            browserInfo: this.browserInfo,
+            origin: !!window && window.location.origin
+        };
+    }
+
+    protected override beforeRender(configSetByMerchant?: CardConfiguration): void {
+        // We don't send 'rendered' events when rendering actions
+        if (configSetByMerchant?.originalAction) {
+            return;
+        }
+
+        const event = new AnalyticsInfoEvent({
+            type: InfoEventType.rendered,
+            component: this.type,
+            configData: { ...configSetByMerchant, showPayButton: this.props.showPayButton },
+            ...(configSetByMerchant?.oneClick && {
+                isStoredPaymentMethod: true,
+                brand: configSetByMerchant.brand
+            })
+        });
+
+        this.analytics.sendAnalytics(event);
+    }
+
+    updateStyles(stylesObj) {
+        if (this.componentRef?.updateStyles) this.componentRef.updateStyles(stylesObj);
+        return this;
+    }
+
+    setFocusOn(fieldName) {
+        if (this.componentRef?.setFocusOn) this.componentRef.setFocusOn(fieldName);
+        return this;
+    }
+
+    public onBrand = event => {
+        this.props.onBrand?.(event);
+    };
+
+    processBinLookupResponse(binLookupResponse: BinLookupResponse, isReset = false) {
+        if (this.componentRef?.processBinLookupResponse) this.componentRef.processBinLookupResponse(binLookupResponse, isReset);
+        return this;
+    }
+
+    handleUnsupportedCard(errObj) {
+        if (this.componentRef?.handleUnsupportedCard) this.componentRef.handleUnsupportedCard(errObj);
+        return this;
+    }
+
+    private handleClickToPaySubmit = (payload: ClickToPayCheckoutPayload) => {
+        this.setState({ data: { ...payload }, valid: {}, errors: {}, isValid: true });
+        this.submit();
+    };
+
+    onBinLookup(obj: CardBinLookupData) {
+        // Handler for regular card comp doesn't need this 'raw' data or to know about 'resets'
+        if (!obj.isReset) {
+            const nuObj = reject('supportedBrandsRaw').from(obj);
+            this.props.onBinLookup?.(nuObj);
+        }
+    }
+
+    private onConfigSuccess = (obj: CardConfigSuccessData) => {
+        const event = new AnalyticsInfoEvent({ component: this.type, type: InfoEventType.configured });
+        this.submitAnalytics(event);
+
+        this.props.onConfigSuccess?.(obj);
+    };
+
+    private onFocus = (obj: ComponentFocusObject) => {
+        const event = new AnalyticsInfoEvent({
+            component: this.type,
+            type: InfoEventType.focus,
+            target: fieldTypeToSnakeCase(obj.fieldType) as UiTarget
+        });
+        this.submitAnalytics(event);
+
+        // Call merchant defined callback
+        if (isSecuredField(obj.fieldType)) {
+            this.props.onFocus?.(obj.event as CardFocusData);
+        } else {
+            this.props.onFocus?.(obj);
+        }
+    };
+
+    private onBlur = (obj: ComponentFocusObject) => {
+        const event = new AnalyticsInfoEvent({
+            component: this.type,
+            type: InfoEventType.unfocus,
+            target: fieldTypeToSnakeCase(obj.fieldType) as UiTarget
+        });
+        this.submitAnalytics(event);
+
+        // Call merchant defined callback
+        if (isSecuredField(obj.fieldType)) {
+            this.props.onBlur?.(obj.event as CardFocusData);
+        } else {
+            this.props.onBlur?.(obj);
+        }
+    };
+
+    public onBinValue = triggerBinLookUp(this);
+
+    get storePaymentMethodPayload() {
+        const isStoredCard = this.props.storedPaymentMethodId?.length > 0;
+        if (isStoredCard) {
+            return {};
+        }
+
+        /**
+         * For regular card, zero auth payments, we store the payment method, *if* the configuration says we should:
+         *  - For sessions, this means if the session has been created with storePaymentMethodMode: 'askForConsent'
+         *  - For the advanced flow, this means if the merchant has still set enableStoreDetails: true
+         *
+         * What we are doing is.. if for a normal payment we would show the "Save for my next payment" checkbox,
+         * for a zero-auth payment we effectively click the checkbox on behalf of the shopper.
+         */
+        const isZeroAuth = this.props.amount?.value === 0;
+        if (isZeroAuth) {
+            return this.props.enableStoreDetails ? { storePaymentMethod: true } : {};
+        }
+
+        // For regular card, non-zero auth payments, we store the payment method based on the checkbox value.
+        const includeStorePaymentMethod = this.props.showStoreDetailsCheckbox && typeof this.state.storePaymentMethod !== 'undefined';
+        return includeStorePaymentMethod ? { storePaymentMethod: Boolean(this.state.storePaymentMethod) } : {};
+    }
+
+    get isValid() {
+        return !!this.state.isValid;
+    }
+
+    get icon() {
+        return this.props.icon ?? this.resources.getImage()(this.props.brand);
+    }
+
+    get brands(): PaymentMethodBrand[] {
+        const { brands, brandsConfiguration } = this.props;
+        if (brands) {
+            return brands.map(brand => {
+                const brandIcon = brandsConfiguration?.[brand]?.icon ?? this.props.modules.resources.getImage()(brand);
+                return { icon: brandIcon, name: brand };
+            });
+        }
+
+        return [];
+    }
+
+    get displayName(): string {
+        if (this.props.storedPaymentMethodId) {
+            return `•••• ${this.props.lastFour}`;
+        }
+
+        return this.props.name || CardElement.type;
+    }
+
+    get accessibleName(): string {
+        // Use display name, unless it's a stored payment method, there inform user
+        return (
+            (this.props.name || CardElement.type) +
+            (this.props.storedPaymentMethodId
+                ? ' ' + this.props.i18n.get('creditCard.storedCard.description.ariaLabel').replace('%@', this.props.lastFour)
+                : '')
+        );
+    }
+
+    get browserInfo() {
+        return collectBrowserInfo();
+    }
+
+    protected override payButton = (props: PayButtonProps): h.JSX.Element => {
+        const isZeroAuth = this.props.amount?.value === 0;
+        const isStoredCard = this.props.storedPaymentMethodId?.length > 0;
+        return <PayButton {...props} label={isZeroAuth && !isStoredCard ? this.props.i18n.get('payButton.saveDetails') : ''} onClick={this.submit} />;
+    };
+
+    private renderCardInput(isCardPrimaryInput = true): h.JSX.Element {
+        return (
+            <CardInput
+                setComponentRef={this.setComponentRef}
+                {...this.props}
+                {...this.state}
+                onSubmitAnalytics={this.submitAnalytics}
+                onChange={this.setState}
+                onSubmit={this.submit}
+                handleKeyDown={this.handleKeyDown}
+                payButton={this.payButton}
+                onBrand={this.onBrand}
+                onBinValue={this.onBinValue}
+                brand={this.props.brand}
+                brandsIcons={this.brands}
+                isPayButtonPrimaryVariant={isCardPrimaryInput}
+                resources={this.resources}
+                onFocus={this.onFocus}
+                onBlur={this.onBlur}
+                onConfigSuccess={this.onConfigSuccess}
+            />
+        );
+    }
+
+    protected override componentToRender(): h.JSX.Element {
+        return (
+            <ClickToPayWrapper
+                configuration={this.props.clickToPayConfiguration}
+                clickToPayService={this.clickToPayService}
+                isStandaloneComponent={false}
+                setClickToPayRef={this.setClickToPayRef}
+                onSetStatus={this.setElementStatus}
+                onSubmit={this.handleClickToPaySubmit}
+                onError={this.handleError}
+            >
+                {isCardPrimaryInput => this.renderCardInput(isCardPrimaryInput)}
+            </ClickToPayWrapper>
+        );
+    }
+}
+
+export default CardElement;

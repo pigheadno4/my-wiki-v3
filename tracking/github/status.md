@@ -71,19 +71,19 @@
 - Repository: `adyen/adyen-web`
 - SHA: `b19eec7054340a1526c87d450fd7dfff75794ed9`
 - Collection date: `2026-07-26`
-- State: `needs_manual_review`
+- State: `awaiting_approval`
 - Recommended mode: `full`
 - Evidence revision: `initial`
 - Approved mode: `not approved`
-- Attempts in run: `1`
+- Attempts in run: `0`
 - Consecutive failed runs: `3`
 - Last error: needs-policy-review:capsule-budget-exceeded: selected file count 1130 exceeds max_capsule_files 340
-- Snapshot: Not published
+- Snapshot: [manifest](raw/github/adyen/adyen-web/snapshots/2026-07-26-b19eec7/manifest.json)
 
 ### Package releases
 
 - `@adyen/adyen-web@6.41.0` (recommended `full`)
-  Release: [manifest]()
+  Release: [manifest](raw/github/adyen/adyen-web/releases/adyen-web/6.41.0/2026-07-26/manifest.json)
   Comparison: Not applicable
 
 ## `github-aa80084a50abf57e06d7`

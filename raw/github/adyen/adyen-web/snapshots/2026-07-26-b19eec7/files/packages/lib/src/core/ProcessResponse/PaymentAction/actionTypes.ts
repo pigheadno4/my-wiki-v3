@@ -1,0 +1,90 @@
+import { get3DS2FlowProps } from '../../../components/ThreeDS2/components/utils';
+import uuid from '../../../utils/uuid';
+import type { StatusFromAction, ThreeDS2ActionProps, UIElement, UIElementProps } from '../../../types';
+import type { PaymentAction } from '../../../types/global-types';
+import type { IRegistry } from '../../core.registry';
+import type { ICore } from '../../types';
+import type { ThreeDS2ConfigProps } from '../../../types';
+import type { ActionHandlerConfig } from './types';
+
+const createComponent = (core: ICore, registry: IRegistry, componentType: string, props: ActionHandlerConfig | ThreeDS2ConfigProps): UIElement => {
+    const Element = registry.getComponent(componentType);
+
+    if (!Element) {
+        throw Error(`Action Element of type ${componentType} not found in the registry`);
+    }
+
+    const element = new Element(core, { ...props, id: `${componentType}-${uuid()}` });
+    return element;
+};
+
+const getActionHandler = (statusType: StatusFromAction) => {
+    return (core: ICore, registry: IRegistry, action: PaymentAction, props: UIElementProps): UIElement => {
+        const config: ActionHandlerConfig = {
+            ...props,
+            ...action,
+            onError: props.onError,
+            statusType,
+            originalAction: action
+        };
+
+        return createComponent(core, registry, action.paymentMethodType, config);
+    };
+};
+
+const actionTypes = {
+    redirect: (core: ICore, registry, action: PaymentAction, props: UIElementProps): UIElement => {
+        const config: ActionHandlerConfig = {
+            ...props,
+            ...action,
+            statusType: 'redirect',
+            originalAction: action
+        };
+
+        return createComponent(core, registry, 'redirect', config);
+    },
+
+    threeDS2: (core: ICore, registry, action: PaymentAction, props: ThreeDS2ActionProps): UIElement => {
+        const componentType = action.subtype === 'fingerprint' ? 'threeDS2DeviceFingerprint' : 'threeDS2Challenge';
+
+        /**
+         * NOTE: the isMDFlow prop comes from the options object, added within the MDFlow when it calls createFromAction(action, options) to initiate a 3DS2 component
+         * It replaces the useOriginalFlow config prop that the MDFlow used to pass when directly initiating the threeDS2Fingerprint or threeDS2Challenge components
+         */
+        const paymentData = action.subtype === 'fingerprint' || props.isMDFlow ? action.paymentData : action.authorisationToken;
+
+        const config: ThreeDS2ConfigProps = {
+            // Props common to both flows
+            core,
+            token: action.token,
+            paymentData,
+            onActionHandled: props.onActionHandled,
+            on3DS2RedirectFlowComplete: props.on3DS2RedirectFlowComplete, // NOTE: We only ever expect props.on3DS2RedirectFlowComplete to be defined for the MDFlow
+            onAdditionalDetails: props.onAdditionalDetails, // Needed to prevent regression in v6.24.0 re. supporting onAdditionalDetails being directly set on Card component (in v7 we will *not* allow this, & this line can be removed)
+            onError: props.onError,
+            isDropin: !!props.isDropin,
+            loadingContext: props.loadingContext,
+            clientKey: props.clientKey,
+            paymentMethodType: props.paymentMethodType,
+            challengeWindowSize: props.challengeWindowSize, // always pass challengeWindowSize in case it's been set directly in the handleAction config object
+            isMDFlow: props.isMDFlow,
+            modules: {
+                analytics: props.modules?.analytics,
+                resources: props.modules?.resources
+            },
+
+            // Props unique to a particular flow
+            ...get3DS2FlowProps(action.subtype, props)
+        };
+
+        return createComponent(core, registry, componentType, config);
+    },
+
+    voucher: getActionHandler('custom'),
+    qrCode: getActionHandler('custom'),
+    await: getActionHandler('custom'),
+    bankTransfer: getActionHandler('custom'),
+    sdk: getActionHandler('custom')
+} as const;
+
+export default actionTypes;
