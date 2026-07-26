@@ -271,6 +271,43 @@ class CapsuleSelectionTests(unittest.TestCase):
             "packages/unrelated/src/private.ts", {item.path for item in result.files}
         )
 
+    def test_policy_bounded_changed_paths_cannot_expand_base_selection(self):
+        tree = self.tree(
+            {
+                "package.json": manifest(),
+                "src/index.ts": "export const checkout = 1;\n",
+                "src/core/checkout.ts": "export const core = 1;\n",
+                "src/core/checkout.test.ts": "test('checkout', () => {});\n",
+                "src/components/Wallet.ts": "export const Wallet = 1;\n",
+                "fixtures/wallet.json": "{}\n",
+            }
+        )
+
+        result = resolve_npm_capsule(
+            tree,
+            self.capsule(
+                changed_path_policy="policy-bounded",
+                default_required_roots=("src/core",),
+                include_paths=("src/index.ts",),
+                excluded_categories=("tests", "fixtures"),
+            ),
+            (),
+            changed_paths=(
+                "src/index.ts",
+                "src/core/checkout.ts",
+                "src/core/checkout.test.ts",
+                "src/components/Wallet.ts",
+                "fixtures/wallet.json",
+            ),
+        )
+
+        selected = {item.path for item in result.files}
+        self.assertIn("src/index.ts", selected)
+        self.assertIn("src/core/checkout.ts", selected)
+        self.assertNotIn("src/core/checkout.test.ts", selected)
+        self.assertNotIn("src/components/Wallet.ts", selected)
+        self.assertNotIn("fixtures/wallet.json", selected)
+
     def test_changed_release_evidence_keeps_secret_and_file_budget_guards(self):
         secret = "ghp_" + ("a" * 36) + "\n"
         secret_tree = self.tree(

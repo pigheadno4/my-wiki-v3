@@ -9,6 +9,8 @@ from github_canonical import canonical_json_bytes, canonical_sha256, safe_policy
 
 CAPSULE_ADAPTER = "npm-tracked-source-v1"
 DEPENDENCY_SCOPE = "internal-runtime-closure"
+DEFAULT_CHANGED_PATH_POLICY = "package-owned"
+CHANGED_PATH_POLICIES = frozenset((DEFAULT_CHANGED_PATH_POLICY, "policy-bounded"))
 SECRET_DETECTOR = "text-secrets-v1"
 CATEGORY_CLASSIFIER = "excluded-categories-v1"
 WORKSPACE_RESOLVER = "npm-workspaces-v1"
@@ -21,6 +23,7 @@ _BLOB_OID = re.compile(r"(?:[0-9a-f]{40}|[0-9a-f]{64})\Z")
 _CAPSULE_REQUIRED_KEYS = {"id", "adapter", "focus_packages"}
 _CAPSULE_OPTIONAL_KEYS = {
     "dependency_scope",
+    "changed_path_policy",
     "default_required_roots",
     "default_generated_target_paths",
     "include_paths",
@@ -58,6 +61,7 @@ class CapsuleConfig:
     adapter: str
     focus_packages: Tuple[str, ...]
     dependency_scope: str = DEPENDENCY_SCOPE
+    changed_path_policy: str = DEFAULT_CHANGED_PATH_POLICY
     default_required_roots: Tuple[str, ...] = DEFAULT_REQUIRED_ROOTS
     default_generated_target_paths: Tuple[str, ...] = ()
     include_paths: Tuple[str, ...] = ()
@@ -158,6 +162,12 @@ def _parse_capsule(row: Dict[str, object], prefix: str) -> CapsuleConfig:
             adapter=_required_string(row, "adapter", prefix),
             focus_packages=_strings(row, "focus_packages", prefix, required=True),
             dependency_scope=_optional_string(row, "dependency_scope", DEPENDENCY_SCOPE, prefix),
+            changed_path_policy=_optional_string(
+                row,
+                "changed_path_policy",
+                DEFAULT_CHANGED_PATH_POLICY,
+                prefix,
+            ),
             default_required_roots=_strings(row, "default_required_roots", prefix, default=DEFAULT_REQUIRED_ROOTS),
             default_generated_target_paths=_strings(row, "default_generated_target_paths", prefix, default=()),
             include_paths=_strings(row, "include_paths", prefix, default=()),
@@ -210,6 +220,11 @@ def _normalize_capsule(capsule: CapsuleConfig, prefix: str) -> CapsuleConfig:
     focus_packages = _package_names(capsule.focus_packages, prefix + " focus_packages", required=True)
     if capsule.dependency_scope != DEPENDENCY_SCOPE:
         raise ValueError(prefix + " dependency_scope must equal " + DEPENDENCY_SCOPE)
+    if capsule.changed_path_policy not in CHANGED_PATH_POLICIES:
+        raise ValueError(
+            prefix
+            + " changed_path_policy must be package-owned or policy-bounded"
+        )
     required_roots = _paths(capsule.default_required_roots, prefix + " default_required_roots", required=True)
     generated_targets = _generated_paths(
         capsule.default_generated_target_paths, prefix + " default_generated_target_paths"
@@ -247,6 +262,7 @@ def _normalize_capsule(capsule: CapsuleConfig, prefix: str) -> CapsuleConfig:
         capsule.adapter,
         focus_packages,
         capsule.dependency_scope,
+        capsule.changed_path_policy,
         required_roots,
         generated_targets,
         include_paths,
@@ -285,6 +301,7 @@ def _policy_payload(capsule: CapsuleConfig, allowlist: Tuple[SecretAllowlist, ..
     return {
         "adapter": capsule.adapter,
         "category_classifier": CATEGORY_CLASSIFIER,
+        "changed_path_policy": capsule.changed_path_policy,
         "focus_packages": list(capsule.focus_packages),
         "id": capsule.id,
         "dependency_scope": capsule.dependency_scope,

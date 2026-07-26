@@ -2,7 +2,7 @@
 
 ## Status
 
-Approved concept, pending review of this written specification before implementation.
+Implemented and collected; awaiting approval.
 
 ## Problem
 
@@ -44,6 +44,13 @@ This preserves the generic capsule contract without changing evidence scope.
 Tests and fixtures remain excluded. Stories inside retained component roots
 remain eligible. Reviewed generated target declarations under `dist/` remain
 allowed, but untracked generated output is not copied into the capsule.
+
+The capsule uses `changed_path_policy = "policy-bounded"`. A changed release
+path may add `changed-release-evidence` only when required roots, exact
+includes, declared targets, or another base-policy rule already selected that
+path. Package ownership alone cannot expand a future Adyen snapshot beyond the
+reviewed base. Changed implementation paths outside that base require an
+immutable exact-SHA supplement.
 
 The package resolver's existing internal-runtime-closure behavior may add
 required tracked internal dependencies. It must not silently broaden the

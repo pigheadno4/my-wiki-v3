@@ -33,6 +33,7 @@ class EffectivePolicyTests(unittest.TestCase):
         allowlist = SecretAllowlist("src/token.ts", "a" * 40, "github-token-v1")
 
         self.assertEqual("internal-runtime-closure", capsule.dependency_scope)
+        self.assertEqual("package-owned", capsule.changed_path_policy)
         self.assertEqual(("src",), capsule.default_required_roots)
         self.assertEqual((), capsule.default_generated_target_paths)
         self.assertEqual((), capsule.include_paths)
@@ -53,6 +54,7 @@ class EffectivePolicyTests(unittest.TestCase):
     def test_effective_policy_canonicalizes_nested_values_and_applicable_allowlist(self):
         capsule = self.capsule(
             focus_packages=("@scope/z", "@scope/a"),
+            changed_path_policy="policy-bounded",
             default_required_roots=("types", "src"),
             default_generated_target_paths=("index.js", "dist/"),
             include_paths=("extra", "config"),
@@ -83,6 +85,7 @@ class EffectivePolicyTests(unittest.TestCase):
         )
 
         self.assertEqual(("@scope/a", "@scope/z"), policy.capsule.focus_packages)
+        self.assertEqual("policy-bounded", policy.capsule.changed_path_policy)
         self.assertEqual(("src", "types"), policy.capsule.default_required_roots)
         self.assertEqual(("dist/", "index.js"), policy.capsule.default_generated_target_paths)
         self.assertEqual(("config", "extra"), policy.capsule.include_paths)
@@ -107,6 +110,7 @@ class EffectivePolicyTests(unittest.TestCase):
         expected_payload = {
             "adapter": "npm-tracked-source-v1",
             "category_classifier": "excluded-categories-v1",
+            "changed_path_policy": "package-owned",
             "default_generated_target_paths": [],
             "default_required_roots": ["src"],
             "dependency_scope": "internal-runtime-closure",
@@ -139,7 +143,26 @@ class EffectivePolicyTests(unittest.TestCase):
         self.assertEqual("npm-workspaces-v1", json.loads(policy.canonical_bytes)["workspace_resolver"])
         self.assertEqual(expected_bytes, policy.canonical_bytes)
         self.assertEqual(hashlib.sha256(expected_bytes).hexdigest(), policy.policy_hash)
-        self.assertEqual("8240313f30c1a0b153d332f79758e777fd0286adceb0f2a74eb61470d62735b5", policy.policy_hash)
+
+    def test_changed_path_policy_is_validated_and_hash_bound(self):
+        package_owned = build_effective_policy(self.capsule(), (), (), ())
+        policy_bounded = build_effective_policy(
+            self.capsule(changed_path_policy="policy-bounded"),
+            (),
+            (),
+            (),
+        )
+
+        self.assertEqual("package-owned", package_owned.capsule.changed_path_policy)
+        self.assertEqual("policy-bounded", policy_bounded.capsule.changed_path_policy)
+        self.assertNotEqual(package_owned.policy_hash, policy_bounded.policy_hash)
+        with self.assertRaisesRegex(ValueError, "changed_path_policy"):
+            build_effective_policy(
+                self.capsule(changed_path_policy="unbounded"),
+                (),
+                (),
+                (),
+            )
 
     def test_effective_policy_rejects_duplicate_applicable_allowlist_rows(self):
         allowlist = SecretAllowlist("src/token.ts", "a" * 40, "github-token-v1")

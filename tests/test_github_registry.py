@@ -259,6 +259,7 @@ class RegistryTests(unittest.TestCase):
             'id = "react-runtime"\n'
             'adapter = "npm-tracked-source-v1"\n'
             'focus_packages = ["@scope/z", "@scope/a"]\n'
+            'changed_path_policy = "policy-bounded"\n'
             'default_required_roots = ["types", "src"]\n'
             'default_generated_target_paths = ["index.js", "dist/"]\n'
             'include_paths = ["extra", "config"]\n'
@@ -281,6 +282,7 @@ class RegistryTests(unittest.TestCase):
                 "react-runtime",
                 "npm-tracked-source-v1",
                 ("@scope/a", "@scope/z"),
+                changed_path_policy="policy-bounded",
                 default_required_roots=("src", "types"),
                 default_generated_target_paths=("dist/", "index.js"),
                 include_paths=("config", "extra"),
@@ -315,6 +317,7 @@ class RegistryTests(unittest.TestCase):
             '[[repos.capsules]]\nid = "runtime"\nadapter = "npm-tracked-source-v1"\nfocus_packages = ["@scope/runtime"]\ndefault_required_roots = ["../outside"]\n',
             '[[repos.capsules]]\nid = "runtime"\nadapter = "npm-tracked-source-v1"\nfocus_packages = ["@scope/runtime"]\ndefault_generated_target_paths = ["dist//"]\n',
             '[[repos.capsules]]\nid = "runtime"\nadapter = "npm-tracked-source-v1"\nfocus_packages = ["@scope/runtime"]\ndefault_required_roots = ["src"]\ndefault_generated_target_paths = ["src/index.js"]\n',
+            '[[repos.capsules]]\nid = "runtime"\nadapter = "npm-tracked-source-v1"\nfocus_packages = ["@scope/runtime"]\nchanged_path_policy = "unbounded"\n',
             '[[repos.capsules]]\nid = "runtime"\nadapter = "npm-tracked-source-v1"\nfocus_packages = ["@scope/runtime"]\nunknown = "value"\n',
             '[[repos.capsules]]\nid = "runtime"\nadapter = "npm-tracked-source-v1"\nfocus_packages = ["@scope/runtime"]\n[[repos.capsules.package_overrides]]\nname = "@scope/runtime"\nrequired_roots = ["src"]\ngenerated_target_paths = []\n',
             '[[repos.secret_allowlist]]\npath = "src\\\\token.ts"\nblob_oid = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"\ndetector_code = "github-token-v1"\n',
@@ -512,6 +515,7 @@ class RegistryTests(unittest.TestCase):
             capsule.include_paths,
         )
         self.assertEqual(("dist/",), capsule.default_generated_target_paths)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
         self.assertEqual(340, capsule.max_capsule_files)
         self.assertEqual(3000000, capsule.max_capsule_utf8_bytes)

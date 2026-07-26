@@ -40,12 +40,12 @@ from github_work_items import (
     WorkItemStateError,
     build_work_item,
     claim_next_ingest,
+    finalize_collected_work_item,
     load_work_items,
     recommend_ingest_mode,
     record_collection_failure,
     record_ingest_failure,
     transition_work_item,
-    upsert_discovered_work_item,
     write_status_from_queue,
 )
 
@@ -316,36 +316,7 @@ def _collect_attempt(
                 snapshot_manifest,
                 evidence_revision,
             )
-            current = next(
-                (
-                    item
-                    for item in load_work_items(root / WORK_ITEMS_PATH)
-                    if item.work_item_id == work_item.work_item_id
-                ),
-                None,
-            )
-            if current is not None and current.state == "collection_failed":
-                transition_work_item(
-                    root / WORK_ITEMS_PATH,
-                    current.work_item_id,
-                    "collection_failed",
-                    "discovered",
-                )
-            items = upsert_discovered_work_item(root / WORK_ITEMS_PATH, work_item)
-            current = next(item for item in items if item.work_item_id == work_item.work_item_id)
-            if current.state == "discovered":
-                transition_work_item(
-                    root / WORK_ITEMS_PATH,
-                    current.work_item_id,
-                    "discovered",
-                    "collected",
-                )
-                transition_work_item(
-                    root / WORK_ITEMS_PATH,
-                    current.work_item_id,
-                    "collected",
-                    "awaiting_approval",
-                )
+            finalize_collected_work_item(root / WORK_ITEMS_PATH, work_item)
             work_item_ids.append(work_item.work_item_id)
             snapshot_paths.append(snapshot_manifest)
             for item in package_contexts:

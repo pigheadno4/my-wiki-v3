@@ -2,9 +2,16 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **Implementation status:** The bounded policy is implemented,
+> `@adyen/adyen-web@6.41.0` is collected, and work item
+> `github-9f56dfbe62e4e84b03c7` is awaiting approval with no approved mode.
+> Final review added generic policy-bounded changed-path enforcement and
+> atomic, phase-separated queue finalization without changing accepted raw
+> evidence.
+
 **Goal:** Replace the oversized Adyen Web source policy with the approved bounded base capsule and collect `@adyen/adyen-web@6.41.0` into the existing approval-gated work item.
 
-**Architecture:** The registry remains the sole human-maintained policy authority. The generic NPM capsule resolver applies a smaller set of package-relative required roots, preserves stories inside those roots, excludes tests and fixtures, and retains exact-SHA supplements as the path for payment-method implementation outside the base. No collector code or budget limit changes are required.
+**Architecture:** The registry remains the sole human-maintained policy authority. The generic NPM capsule resolver applies a smaller set of package-relative required roots, preserves stories inside those roots, excludes tests and fixtures, and retains exact-SHA supplements as the path for payment-method implementation outside the base. The original capsule narrowing required no collector or budget changes; final review subsequently required generic changed-path and queue-lifecycle hardening.
 
 **Tech Stack:** Python 3 standard library, `unittest`, TOML registry, Git partial clones, existing GitHub collection and validation scripts.
 
@@ -351,6 +358,10 @@ Omit the comparison path from `git add` if the initial baseline correctly
 creates no comparison directory.
 
 - [ ] **Step 7: Push and verify remote main**
+
+> **Deferred by user ruling:** Do not execute this step until final review is
+> complete and the finishing-branch gate authorizes landing. No push or landing
+> occurred during this plan execution.
 
 ```bash
 git push origin main

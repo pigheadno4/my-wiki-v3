@@ -334,6 +334,7 @@ def resolve_npm_capsule(
         candidate_reasons,
         workspace,
         changed_paths,
+        normalized.changed_path_policy,
         normalized.excluded_categories,
         excluded,
     )
@@ -432,6 +433,7 @@ def _select_changed_paths(
     selected: Dict[str, Tuple[str, str, Set[str]]],
     workspace: WorkspaceResolution,
     changed_paths: Sequence[str],
+    changed_path_policy: str,
     excluded_categories: Sequence[str],
     excluded: Set[Tuple[str, str]],
 ) -> None:
@@ -457,6 +459,8 @@ def _select_changed_paths(
             continue
         current = selected.get(path)
         if current is None:
+            if changed_path_policy == "policy-bounded":
+                continue
             selected[path] = (
                 package.name,
                 relative,

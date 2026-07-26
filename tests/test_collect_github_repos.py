@@ -3,6 +3,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from dataclasses import replace
 from pathlib import Path
 from unittest import mock
 
@@ -10,11 +11,13 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
+import github_work_items  # noqa: E402
 from collect_github_repos import (  # noqa: E402
     CollectionUsageError,
     _parser,
     approve_one,
     collect_one,
+    fail_ingest,
     next_ingest,
     parse_package_release,
     retry_one,
@@ -23,7 +26,11 @@ from collect_github_repos import (  # noqa: E402
 from github_capsule_policy import CapsuleConfig  # noqa: E402
 from github_registry import RepoConfig, VersionTrack  # noqa: E402
 from github_releases import ReleaseEvidenceError, ReleaseNotesEvidence  # noqa: E402
-from github_work_items import load_work_items, transition_work_item  # noqa: E402
+from github_work_items import (  # noqa: E402
+    load_work_items,
+    save_work_items,
+    transition_work_item,
+)
 from tests.github_test_support import commit_files, create_git_repo, tag  # noqa: E402
 
 
@@ -149,6 +156,28 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertEqual(2, len(items[0].package_changes))
         self.assertEqual(self.sha, items[0].sha)
         self.assertTrue(items[0].snapshot_manifest)
+
+    def test_collector_publishes_only_the_atomic_awaiting_approval_state(self):
+        queue_writes = []
+        write_atomic = github_work_items._write_atomic
+
+        def capture_queue_writes(path, content):
+            if Path(path).name == "work-items.json":
+                document = json.loads(content)
+                queue_writes.append(
+                    tuple(item["state"] for item in document["work_items"])
+                )
+            return write_atomic(path, content)
+
+        with mock.patch.object(
+            github_work_items,
+            "_write_atomic",
+            side_effect=capture_queue_writes,
+        ):
+            result = self.collect()
+
+        self.assertEqual("awaiting_approval", result.state)
+        self.assertEqual([("awaiting_approval",)], queue_writes)
 
     def test_backfill_orders_same_sha_releases_by_release_date(self):
         def dated_notes(config, candidate):
@@ -343,6 +372,52 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertIn("packages/paypal-js/src/index.ts", patch)
         self.assertNotIn("packages/react-paypal-js", patch)
 
+    def test_future_collection_cannot_expand_a_policy_bounded_capsule(self):
+        bounded_config = replace(
+            self.config,
+            capsules=(
+                replace(
+                    self.config.capsules[0],
+                    changed_path_policy="policy-bounded",
+                ),
+            ),
+        )
+        collect_one(
+            self.root,
+            bounded_config,
+            release_mode="backfill",
+            clone_source=self.remote,
+            release_notes_fetcher=self.release_notes,
+            collection_date="2026-07-20",
+        )
+        commit_files(
+            self.remote,
+            {
+                "packages/paypal-js/package.json": package_manifest(
+                    "@paypal/paypal-js", "10.0.1"
+                ),
+                "packages/paypal-js/src/index.ts": "export const loadScript = 2;\n",
+                "packages/paypal-js/docs/future-option.md": "# Future option\n",
+            },
+            "paypal js bounded patch",
+        )
+        tag(self.remote, "@paypal/paypal-js@10.0.1")
+
+        result = collect_one(
+            self.root,
+            bounded_config,
+            release_mode="future",
+            clone_source=self.remote,
+            release_notes_fetcher=self.release_notes,
+            collection_date="2026-07-21",
+        )
+
+        manifest_path = self.root / result.snapshot_paths[0]
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        selected = {item["path"] for item in manifest["files"]}
+        self.assertIn("packages/paypal-js/src/index.ts", selected)
+        self.assertNotIn("packages/paypal-js/docs/future-option.md", selected)
+
     def test_collection_failure_does_not_create_an_ingest_item(self):
         with mock.patch(
             "collect_github_repos.publish_source_snapshot",
@@ -474,6 +549,60 @@ class CollectGitHubReposTests(unittest.TestCase):
         failed = load_work_items(other_root / "tracking/github/work-items.json")[0]
         retried = retry_one(other_root, failed.work_item_id)
         self.assertEqual("discovered", retried.state)
+
+    def test_retry_accepts_manual_review_without_approval(self):
+        self.collect()
+        queue = self.root / "tracking/github/work-items.json"
+        item = load_work_items(queue)[0]
+        transition_work_item(
+            queue,
+            item.work_item_id,
+            "awaiting_approval",
+            "approved",
+            approved_mode="delta",
+        )
+        transition_work_item(queue, item.work_item_id, "approved", "ingesting")
+        ingest_failed = fail_ingest(
+            self.root,
+            item.work_item_id,
+            "grounding validation failed",
+        )
+        collection_failed = replace(
+            ingest_failed,
+            approved_mode=None,
+            last_error="collection policy needs review",
+        )
+        save_work_items(queue, (collection_failed,))
+
+        retried = retry_one(self.root, item.work_item_id)
+
+        self.assertEqual("discovered", retried.state)
+        self.assertIsNone(retried.approved_mode)
+        self.assertEqual("collection policy needs review", retried.last_error)
+
+    def test_retry_rejects_ingest_failure_without_mutation(self):
+        self.collect()
+        item = load_work_items(self.root / "tracking/github/work-items.json")[0]
+        approve_one(self.root, item.work_item_id, "delta")
+        next_ingest(self.root)
+        ingest_failed = fail_ingest(
+            self.root,
+            item.work_item_id,
+            "grounding validation failed",
+        )
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "collection retry cannot resume an ingest-failed work item",
+        ):
+            retry_one(self.root, item.work_item_id)
+
+        retained = load_work_items(
+            self.root / "tracking/github/work-items.json"
+        )[0]
+        self.assertEqual(ingest_failed, retained)
+        self.assertEqual("delta", retained.approved_mode)
+        self.assertEqual("grounding validation failed", retained.last_error)
 
     def test_parser_exposes_only_focused_commands(self):
         parser = _parser()

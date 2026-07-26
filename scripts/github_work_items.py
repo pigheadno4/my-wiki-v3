@@ -302,6 +302,81 @@ def upsert_discovered_work_item(path: Path, item: WorkItem) -> Tuple[WorkItem, .
         return _save_work_items_unlocked(path, items)
 
 
+def finalize_collected_work_item(
+    path: Path,
+    item: WorkItem,
+) -> Tuple[WorkItem, ...]:
+    """Atomically publish complete collection evidence at the approval gate."""
+    _validate_work_item(item)
+    if item.state != "discovered":
+        raise WorkItemStateError(
+            "collection finalization requires discovered input"
+        )
+    if item.approved_mode is not None:
+        raise WorkItemStateError(
+            "collection finalization approved_mode must be null"
+        )
+    finalized_input = replace(
+        item,
+        state="awaiting_approval",
+        approved_mode=None,
+        attempts_in_run=0,
+        consecutive_failed_runs=0,
+        last_error="",
+        last_attempted_date="",
+    )
+    _validate_work_item(finalized_input)
+
+    with _queue_lock(path):
+        items = list(load_work_items(path))
+        matches = [
+            index
+            for index, value in enumerate(items)
+            if value.work_item_id == item.work_item_id
+        ]
+        if not matches:
+            items.append(finalized_input)
+            return _save_work_items_unlocked(path, items)
+
+        index = matches[0]
+        existing = items[index]
+        _require_same_identity(existing, item)
+        if existing.approved_mode is not None:
+            if existing.state == "needs_manual_review":
+                raise WorkItemStateError(
+                    "collection finalization cannot resume an ingest-failed work item"
+                )
+            raise WorkItemStateError(
+                "collection finalization requires approved_mode null"
+            )
+        if existing.state == "awaiting_approval":
+            _require_same_evidence(existing, finalized_input)
+            return tuple(items)
+        if existing.state not in (
+            "discovered",
+            "collection_failed",
+            "needs_manual_review",
+        ):
+            raise WorkItemStateError(
+                "collection finalization cannot replace state " + existing.state
+            )
+
+        evidence = _merge_evidence(existing, item)
+        finalized = replace(
+            evidence,
+            collection_date=existing.collection_date,
+            state="awaiting_approval",
+            approved_mode=None,
+            attempts_in_run=0,
+            consecutive_failed_runs=0,
+            last_error="",
+            last_attempted_date="",
+        )
+        _validate_work_item(finalized)
+        items[index] = finalized
+        return _save_work_items_unlocked(path, items)
+
+
 def transition_work_item(
     path: Path,
     work_item_id: str,
@@ -354,7 +429,16 @@ def record_collection_failure(
             index = matches[0]
             existing = items[index]
             _require_same_identity(existing, item)
-            if existing.state in ("awaiting_approval", "approved", "ingesting", "ingested"):
+            if existing.state in (
+                "collected",
+                "awaiting_approval",
+                "approved",
+                "ingesting",
+                "ingested",
+            ) or (
+                existing.state == "needs_manual_review"
+                and existing.approved_mode is not None
+            ):
                 return tuple(items)
             evidence = _merge_evidence(existing, item)
             current = replace(
@@ -428,6 +512,14 @@ def _transition_work_item_unlocked(
     if requested not in TRANSITIONS.get(expected, ()):
         raise WorkItemStateError(
             "invalid work-item transition from " + expected + " to " + requested
+        )
+    if (
+        requested == "discovered"
+        and expected in ("collection_failed", "needs_manual_review")
+        and current.approved_mode is not None
+    ):
+        raise WorkItemStateError(
+            "collection retry cannot resume an ingest-failed work item"
         )
     if requested == "approved":
         if approved_mode not in INGEST_MODES:
@@ -802,6 +894,7 @@ __all__ = [
     "WorkItemStateError",
     "build_work_item",
     "build_work_item_id",
+    "finalize_collected_work_item",
     "load_work_items",
     "recommend_ingest_mode",
     "record_collection_failure",

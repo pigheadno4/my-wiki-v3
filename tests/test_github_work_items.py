@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
+import github_work_items  # noqa: E402
 from github_work_items import (  # noqa: E402
     ChangeSignals,
     PackageChange,
@@ -213,20 +214,31 @@ class GitHubWorkItemTests(unittest.TestCase):
                 self.path, second.work_item_id, "approved", "ingesting"
             )
 
-    def test_late_collection_failure_does_not_demote_ingested_item(self):
-        ingested = replace(self.awaiting_item, state="ingested", approved_mode="full")
-        save_work_items(self.path, (ingested,))
+    def test_late_collection_failure_does_not_demote_finalized_or_ingest_states(self):
+        for state, approved_mode in (
+            ("collected", None),
+            ("awaiting_approval", None),
+            ("approved", "full"),
+            ("ingesting", "full"),
+            ("ingested", "full"),
+        ):
+            with self.subTest(state=state):
+                current = replace(
+                    self.awaiting_item,
+                    state=state,
+                    approved_mode=approved_mode,
+                )
+                save_work_items(self.path, (current,))
 
-        retained = record_collection_failure(
-            self.path,
-            replace(self.awaiting_item, state="discovered"),
-            "late collector failed",
-            "2026-07-21",
-            3,
-        )[0]
+                retained = record_collection_failure(
+                    self.path,
+                    replace(self.awaiting_item, state="discovered"),
+                    "late collector failed",
+                    "2026-07-21",
+                    3,
+                )[0]
 
-        self.assertEqual("ingested", retained.state)
-        self.assertEqual("", retained.last_error)
+                self.assertEqual(current, retained)
 
     def test_three_attempts_in_one_run_record_collection_failure(self):
         item = build_work_item(
@@ -316,6 +328,117 @@ class GitHubWorkItemTests(unittest.TestCase):
         self.assertEqual(incomplete.work_item_id, merged.work_item_id)
         self.assertEqual(self.snapshot_manifest, merged.snapshot_manifest)
         self.assertTrue(merged.package_changes[0].release_manifest)
+
+    def test_atomic_finalization_publishes_new_item_directly_to_approval(self):
+        discovered = replace(self.awaiting_item, state="discovered")
+
+        finalized = github_work_items.finalize_collected_work_item(
+            self.path,
+            discovered,
+        )[0]
+
+        self.assertEqual("awaiting_approval", finalized.state)
+        self.assertIsNone(finalized.approved_mode)
+        self.assertEqual((finalized,), load_work_items(self.path))
+
+    def test_atomic_finalization_recovers_collection_failures_with_same_identity(self):
+        for failed_state in ("collection_failed", "needs_manual_review"):
+            with self.subTest(failed_state=failed_state):
+                incomplete = replace(
+                    self.awaiting_item,
+                    state=failed_state,
+                    snapshot_manifest="",
+                    package_changes=(
+                        replace(
+                            self.awaiting_item.package_changes[0],
+                            release_manifest="",
+                            comparison_manifest="",
+                        ),
+                    ),
+                    attempts_in_run=3,
+                    consecutive_failed_runs=2,
+                    last_error="temporary Git failure",
+                    last_attempted_date="2026-07-21",
+                )
+                save_work_items(self.path, (incomplete,))
+                incoming = replace(
+                    self.awaiting_item,
+                    state="discovered",
+                    collection_date="2026-07-22",
+                )
+
+                finalized = github_work_items.finalize_collected_work_item(
+                    self.path,
+                    incoming,
+                )[0]
+
+                self.assertEqual(incomplete.work_item_id, finalized.work_item_id)
+                self.assertEqual("2026-07-20", finalized.collection_date)
+                self.assertEqual("awaiting_approval", finalized.state)
+                self.assertIsNone(finalized.approved_mode)
+                self.assertEqual(0, finalized.attempts_in_run)
+                self.assertEqual(0, finalized.consecutive_failed_runs)
+                self.assertEqual("", finalized.last_error)
+                self.assertEqual("", finalized.last_attempted_date)
+                self.assertEqual(self.snapshot_manifest, finalized.snapshot_manifest)
+                self.assertTrue(finalized.package_changes[0].release_manifest)
+
+    def test_atomic_finalization_is_idempotent_for_identical_approval_item(self):
+        save_work_items(self.path, (self.awaiting_item,))
+
+        repeated = github_work_items.finalize_collected_work_item(
+            self.path,
+            replace(self.awaiting_item, state="discovered"),
+        )
+
+        self.assertEqual((self.awaiting_item,), repeated)
+        self.assertEqual((self.awaiting_item,), load_work_items(self.path))
+
+    def test_atomic_finalization_rejects_conflicting_evidence_without_mutation(self):
+        save_work_items(self.path, (self.awaiting_item,))
+        conflict = replace(
+            self.awaiting_item,
+            state="discovered",
+            snapshot_manifest=self.snapshot_manifest.replace(
+                "2026-07-20",
+                "2026-07-21",
+            ),
+        )
+
+        with self.assertRaisesRegex(ValueError, "conflicts with discovered evidence"):
+            github_work_items.finalize_collected_work_item(self.path, conflict)
+
+        self.assertEqual((self.awaiting_item,), load_work_items(self.path))
+
+    def test_atomic_finalization_rejects_stale_or_ingest_approval(self):
+        stale = replace(
+            self.awaiting_item,
+            state="discovered",
+            approved_mode="delta",
+        )
+        with self.assertRaisesRegex(ValueError, "approved_mode must be null"):
+            github_work_items.finalize_collected_work_item(self.path, stale)
+        self.assertEqual((), load_work_items(self.path))
+
+        ingest_failed = replace(
+            self.awaiting_item,
+            state="needs_manual_review",
+            approved_mode="delta",
+            last_error="grounding validation failed",
+            last_attempted_date="2026-07-21",
+        )
+        save_work_items(self.path, (ingest_failed,))
+
+        with self.assertRaisesRegex(
+            WorkItemStateError,
+            "collection finalization cannot resume an ingest-failed work item",
+        ):
+            github_work_items.finalize_collected_work_item(
+                self.path,
+                replace(self.awaiting_item, state="discovered"),
+            )
+
+        self.assertEqual((ingest_failed,), load_work_items(self.path))
 
     def test_loader_rejects_duplicate_keys_and_unknown_fields(self):
         self.path.parent.mkdir(parents=True)
