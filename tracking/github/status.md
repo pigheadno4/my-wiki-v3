@@ -71,10 +71,10 @@
 - Repository: `adyen/adyen-web`
 - SHA: `b19eec7054340a1526c87d450fd7dfff75794ed9`
 - Collection date: `2026-07-26`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

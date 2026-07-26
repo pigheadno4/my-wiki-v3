@@ -7,6 +7,7 @@
 - [[stripe-index]] — Stripe sources, company page, and `stripe-*` concepts
 - [[paypal-index]] — PayPal sources, company page, and `paypal-*` concepts
 - [[metronome-index]] — Metronome sources, company page, and `metronome-*` concepts
+- [[adyen-index]] — Adyen sources, company page, and versioned GitHub implementation knowledge
 
 ## Overview
 
@@ -17,6 +18,7 @@
 - [[paypal]] — PayPal: payment platform, JS SDK, Venmo, Orders API
 - [[stripe]] — Stripe: developer-first payment APIs, PaymentIntents, Checkout, Subscriptions, Elements
 - [[metronome]] — Stripe-owned usage-based billing provider capsule; collection complete, controlled ingest pilot underway
+- [[adyen]] — Adyen: Web Drop-in and Components, Sessions, cards, 3DS2, and checkout actions
 
 ## Comparisons
 

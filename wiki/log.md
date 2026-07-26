@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-26] ingest | GitHub Adyen/adyen-web — `6.41.0`
+
+- Full serial ingest of `github-9f56dfbe62e4e84b03c7` from exact SHA `b19eec7054340a1526c87d450fd7dfff75794ed9`.
+- Established the first Adyen cumulative source and package-qualified release ledger from the complete 219-file capsule.
+- Recorded Drop-in and Components architecture, Sessions configuration authority, card funding-source behavior, 3DS2 validation, accessibility, analytics exclusions, and the PayPal Fastlane dependency boundary.
+- Created the Adyen company, provider index, and provider log; updated the cross-provider co-badged-cards concept.
+
 ## [2026-07-23] ingest | GitHub paypal/paypal-checkout-components — `5.0.425`
 
 - Full serial ingest of `github-f8c98215ba0bd54e6149` from exact SHA `e03bffc45b7a3c7f36346a514f34ebbd168dd403`.
