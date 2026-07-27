@@ -6,7 +6,7 @@
 > checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Enable `braintree/braintree-web` as a registry-driven GitHub source
-capsule, prove that its current `braintree-web@3.142.0` release fits the
+capsule, prove that its current `braintree-web@3.143.0` release fits the
 approved production-source-plus-stories boundary, and collect exactly one
 approval-gated baseline without ingesting it.
 
@@ -24,7 +24,9 @@ partial clones, and the existing GitHub collection and validation scripts.
 
 - Keep `raw/` immutable; never rewrite an accepted snapshot.
 - Do not collect Braintree Web v2.
-- Select only `braintree-web@3.142.0` for this baseline.
+- Select only `braintree-web@3.143.0` for this baseline.
+- Use exact upstream tag `3.143.0`; unlike the prior `v3.142.0` tag, it omits
+  the `v` prefix.
 - Retain all future stable v3 releases; exclude prereleases.
 - Include full production `src/` and `.storybook/stories/`.
 - Include `CHANGELOG.md` and `components.json`.
@@ -62,7 +64,7 @@ def test_test_category_excludes_mock_directories_without_excluding_stories(self)
     story_path = ".storybook/stories/HostedFields.stories.ts"
     tree = self.tree(
         {
-            "package.json": manifest(name="braintree-web", version="3.142.0"),
+            "package.json": manifest(name="braintree-web", version="3.143.0"),
             "src/index.js": "module.exports = {};\n",
             mock_path: "module.exports = {};\n",
             story_path: "export default {};\n",
@@ -246,7 +248,7 @@ git commit -m "policy: enable Braintree Web source capsule"
 
 ---
 
-### Task 3: Audit The Exact `v3.142.0` Capsule
+### Task 3: Audit The Exact `3.143.0` Capsule
 
 **Files:**
 - Read: `tracking/github/repo-registry.toml`
@@ -255,7 +257,7 @@ git commit -m "policy: enable Braintree Web source capsule"
 - Read: `scripts/github_capsule_selection.py`
 
 **Interfaces:**
-- Consumes: tag `v3.142.0`, its resolved full commit SHA, `GitTree`, and
+- Consumes: tag `3.143.0`, its resolved full commit SHA, `GitTree`, and
   `resolve_npm_capsule`.
 - Produces: exact file, byte, story, test, fixture, and mock measurements plus
   required-path assertions.
@@ -264,11 +266,11 @@ git commit -m "policy: enable Braintree Web source capsule"
 
 ```bash
 AUDIT_ROOT="$(mktemp -d /private/tmp/braintree-web-audit.XXXXXX)"
-git clone --filter=blob:none --no-checkout --depth 1 --branch v3.142.0 \
+git clone --filter=blob:none --no-checkout --depth 1 --branch 3.143.0 \
   https://github.com/braintree/braintree-web.git \
   "$AUDIT_ROOT/repo"
 export AUDIT_REPO="$AUDIT_ROOT/repo"
-export SNAPSHOT_SHA="$(git -C "$AUDIT_REPO" rev-parse 'v3.142.0^{commit}')"
+export SNAPSHOT_SHA="$(git -C "$AUDIT_REPO" rev-parse '3.143.0^{commit}')"
 printf 'SNAPSHOT_SHA=%s\n' "$SNAPSHOT_SHA"
 test "${#SNAPSHOT_SHA}" -eq 40
 ```
@@ -384,7 +386,7 @@ No repository files or commits are produced by this task.
 - Consumes: `collect_github_repos.py collect --repo
   braintree/braintree-web --mode backfill --dry-run`.
 - Produces: `state="discovered"` with exactly
-  `release_ids=["braintree-web@3.142.0"]`.
+  `release_ids=["braintree-web@3.143.0"]`.
 
 - [ ] **Step 1: Export committed state into a temporary repository**
 
@@ -413,7 +415,7 @@ Expected JSON:
 ```json
 {
   "errors": [],
-  "release_ids": ["braintree-web@3.142.0"],
+  "release_ids": ["braintree-web@3.143.0"],
   "repo_id": "braintree/braintree-web",
   "snapshot_paths": [],
   "state": "discovered",
@@ -441,7 +443,7 @@ No repository files or commits are produced by this task.
 
 **Files:**
 - Create: `raw/github/braintree/braintree-web/snapshots/<date>-<sha7>/**`
-- Create: `raw/github/braintree/braintree-web/releases/braintree-web/3.142.0/**`
+- Create: `raw/github/braintree/braintree-web/releases/braintree-web/3.143.0/**`
 - Modify: `tracking/github/work-items.json`
 - Modify: `tracking/github/status.md`
 - Create, if produced by the collector:
@@ -450,7 +452,7 @@ No repository files or commits are produced by this task.
 
 **Interfaces:**
 - Consumes: the approved registry policy and package-qualified
-  `braintree-web@3.142.0`.
+  `braintree-web@3.143.0`.
 - Produces: one immutable exact-SHA snapshot, one package release record,
   generated baseline change metadata, and one work item in
   `awaiting_approval`. A first baseline has no prior release comparison.
@@ -465,7 +467,7 @@ python3 scripts/collect_github_repos.py collect \
   --mode backfill
 ```
 
-Expected: exit code 0, `release_ids=["braintree-web@3.142.0"]`, exactly one
+Expected: exit code 0, `release_ids=["braintree-web@3.143.0"]`, exactly one
 snapshot path, exactly one work item ID, no errors, and
 `state="awaiting_approval"`.
 
@@ -485,8 +487,8 @@ Read the generated snapshot manifest, release manifest, comparison/change
 record, and work-item row. Confirm:
 
 - repository ID is `braintree/braintree-web`;
-- release ID is `braintree-web@3.142.0`;
-- tag is `v3.142.0`;
+- release ID is `braintree-web@3.143.0`;
+- tag is `3.143.0`;
 - the snapshot SHA equals the Task 3 audit SHA;
 - the work item is `awaiting_approval` with no approved ingest mode;
 - selected file and byte counts match the audited policy result;
@@ -520,7 +522,7 @@ if test -d tracking/github/repos/braintree/braintree-web; then
 fi
 git diff --cached --check
 git status --short
-git commit -m "Collect Braintree Web 3.142.0 baseline"
+git commit -m "Collect Braintree Web 3.143.0 baseline"
 ```
 
 Omit any `git add` path that does not exist or was not generated. Never use
@@ -560,7 +562,7 @@ editing any Braintree wiki authority.
 
 - [ ] `braintree/braintree-web` has one enabled v3 release track and one
   reviewed capsule.
-- [ ] Backfill discovers only `braintree-web@3.142.0`.
+- [ ] Backfill discovers only `braintree-web@3.143.0`.
 - [ ] The exact tag target and package manifest version agree.
 - [ ] Full `src/` and Storybook stories are retained.
 - [ ] Tests, fixtures, `__mocks__`, and Storybook test infrastructure are

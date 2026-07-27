@@ -10,14 +10,16 @@ Add `braintree/braintree-web` as the next registry-driven GitHub pilot. Retain
 enough source to answer deep implementation questions while preserving the
 existing approval-gated, serial full-read ingest boundary.
 
-The pilot establishes `braintree-web@3.142.0` as the only historical baseline
+The pilot establishes `braintree-web@3.143.0` as the only historical baseline
 and retains every future stable v3 release. It does not backfill v2.
 
 ## Repository Findings
 
 `braintree/braintree-web` publishes one root package named `braintree-web`.
-Tag `v3.142.0` contains the current approved baseline. The package's public
-implementation is organized under `src/` and includes:
+Tag `3.143.0` contains the current approved baseline. Unlike the prior
+`v3.142.0` baseline tag, upstream omitted the `v` prefix for this release;
+exact upstream tag spelling is part of the retained release identity. The
+package's public implementation is organized under `src/` and includes:
 
 - client and shared request infrastructure;
 - Hosted Fields and card tokenization;
@@ -71,7 +73,7 @@ include_prerelease = false
 ```
 
 The first collection must resolve package-qualified release
-`braintree-web@3.142.0` from tag `v3.142.0`. Later periodic collection selects
+`braintree-web@3.143.0` from tag `3.143.0`. Later periodic collection selects
 every stable v3 release newer than the highest retained version.
 
 Prereleases and v2 releases remain out of scope. Historical releases below the
@@ -131,7 +133,7 @@ automatically raising a limit.
    paths.
 3. Run the offline GitHub validator and complete test suite.
 4. Run a backfill dry run in isolated temporary state.
-5. Require the dry run to discover only `braintree-web@3.142.0` and to remain
+5. Require the dry run to discover only `braintree-web@3.143.0` and to remain
    within the reviewed file and byte budgets.
 6. Run real backfill collection only after the dry-run evidence is reviewed.
 7. Publish the immutable exact-SHA snapshot, release record, generated status,
@@ -201,7 +203,7 @@ identity, and final queue state.
 
 - `braintree/braintree-web` is enabled with exactly one supported capsule and
   one package-qualified v3 version track.
-- Backfill discovery selects only `braintree-web@3.142.0`.
+- Backfill discovery selects only `braintree-web@3.143.0`.
 - The snapshot contains full production source and Storybook stories while
   excluding tests, fixtures, `__mocks__`, and Storybook test infrastructure.
 - The capsule stays at or below 380 files and 3,000,000 UTF-8 bytes.
