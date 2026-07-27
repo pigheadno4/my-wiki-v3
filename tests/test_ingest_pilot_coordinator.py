@@ -163,6 +163,33 @@ class CoordinatorTests(unittest.TestCase):
         self.assertTrue(self.attempt("job-1", 1).joinpath("failure.json").is_file())
         self.assertEqual(output["campaign_state"], "active")
 
+    def test_third_invalid_worker_result_is_terminal_and_retains_failure_evidence(self):
+        self.start_five()
+
+        for attempt in (1, 2):
+            run_once(
+                self.root,
+                self.campaign_id,
+                worker_result_path=self.write_worker_result(
+                    "job-1", attempt=attempt, raw_sha256="0" * 64
+                ),
+            )
+            self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["state"], "failed")
+            retry_job(self.root, self.campaign_id, "job-1")
+            run_once(self.root, self.campaign_id)
+
+        output = run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-1", attempt=3, raw_sha256="0" * 64),
+        )
+
+        job = load_jobs(self.root, self.campaign_id)[0]
+        self.assertEqual(job["state"], "rejected")
+        self.assertEqual(job["last_event"], "worker_result_rejected")
+        self.assertTrue(self.attempt("job-1", 3).joinpath("failure.json").is_file())
+        self.assertEqual(output["jobs"][0]["state"], "rejected")
+
     def test_non_utf8_worker_result_fails_only_that_job(self):
         self.start_five()
         result_path = self.write_worker_result("job-1")

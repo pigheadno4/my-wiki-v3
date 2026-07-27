@@ -64,7 +64,13 @@ def init_campaign(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> Dict[
     return _campaign_payload(root, str(campaign_id))
 
 
-def _apply_worker_result(root: Path, campaign_id: str, jobs: list, result_path: Path) -> Dict[str, Any]:
+def _apply_worker_result(
+    root: Path,
+    campaign_id: str,
+    jobs: list,
+    result_path: Path,
+    max_attempts: int,
+) -> Dict[str, Any]:
     result = _load_result(result_path)
     job = _job(jobs, result.get("job_id"))
     if job["state"] != "running":
@@ -82,11 +88,12 @@ def _apply_worker_result(root: Path, campaign_id: str, jobs: list, result_path: 
     try:
         validated = validate_worker_result(root, job, result)
     except ValidationError as error:
-        job["state"] = "failed"
-        job["last_event"] = "worker_result_invalid"
+        exhausted = job["attempt"] >= max_attempts
+        job["state"] = "rejected" if exhausted else "failed"
+        job["last_event"] = "worker_result_rejected" if exhausted else "worker_result_invalid"
         job["failure_reason"] = str(error)
         write_attempt_file(attempt_dir, "failure.json", _json_bytes({"reason": str(error)}))
-        return {"event": "worker_result_invalid", "job_id": job["job_id"], "reason": str(error)}
+        return {"event": job["last_event"], "job_id": job["job_id"], "reason": str(error)}
 
     write_attempt_file(attempt_dir, "candidate.md", validated["source_page"].encode("utf-8"))
     write_attempt_file(attempt_dir, "receipt.json", _json_bytes(validated))
@@ -173,7 +180,15 @@ def run_once(
     jobs = load_jobs(root, campaign_id)
     events = []
     if worker_result_path is not None:
-        events.append(_apply_worker_result(root, campaign_id, jobs, Path(worker_result_path)))
+        events.append(
+            _apply_worker_result(
+                root,
+                campaign_id,
+                jobs,
+                Path(worker_result_path),
+                campaign["max_attempts"],
+            )
+        )
     changes_requested = False
     if review_result_path is not None:
         review_event = _apply_review_result(jobs, Path(review_result_path), campaign["max_attempts"])
