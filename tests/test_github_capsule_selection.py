@@ -639,6 +639,36 @@ class CapsuleSelectionTests(unittest.TestCase):
         selected_file = next(item for item in selected.files if item.path == path)
         self.assertEqual("required-root", selected_file.classification_reason)
 
+    def test_test_category_excludes_mock_directories_without_excluding_stories(self):
+        mock_path = "src/lib/__mocks__/analytics.js"
+        story_path = ".storybook/stories/HostedFields.stories.ts"
+        tree = self.tree(
+            {
+                "package.json": manifest(name="braintree-web", version="3.142.0"),
+                "src/index.js": "module.exports = {};\n",
+                mock_path: "module.exports = {};\n",
+                story_path: "export default {};\n",
+            }
+        )
+
+        result = resolve_npm_capsule(
+            tree,
+            self.capsule(
+                focus_packages=("braintree-web",),
+                default_required_roots=("src", ".storybook/stories"),
+                excluded_categories=("tests", "fixtures"),
+            ),
+            (),
+        )
+
+        paths = tuple(item.path for item in result.files)
+        self.assertIn(story_path, paths)
+        self.assertNotIn(mock_path, paths)
+        self.assertIn(
+            (mock_path, "excluded-category:tests"),
+            result.excluded,
+        )
+
     def test_root_level_type_target_respects_category_exclusions_in_declaration_directory(self):
         tree = self.tree(
             {

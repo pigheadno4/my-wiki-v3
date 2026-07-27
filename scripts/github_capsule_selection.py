@@ -668,7 +668,13 @@ def _excluded_categories(path: str, enabled: Sequence[str]) -> Tuple[str, ...]:
             ".test." in filename
             or ".spec." in filename
             or any(
-                segment in ("test", "tests", "__tests__", "bundle-tests")
+                segment in (
+                    "test",
+                    "tests",
+                    "__tests__",
+                    "__mocks__",
+                    "bundle-tests",
+                )
                 for segment in segments
             )
         ),
