@@ -1,0 +1,40 @@
+{
+  "job_id": "setup-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Webhooks\"\ntype: source\ndate_ingested: 2026-07-27\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/platform-configuration/setup-webhooks-2026-07-13.md\"\ntags: [metronome, webhooks, platform-configuration, integrations]\n---\n\n## Overview\nThis Metronome documentation page describes the webhook events it can deliver and how a receiving service should acknowledge, deduplicate, and verify them. It covers billing and marketplace events as well as payment-gating workflows, and documents a custom HTTPS handler or a Slack destination as delivery options.\n\n## Key takeaways\n- Threshold alerts, contract/commit/credit system notifications, offset notifications, invoice events, integration issues, marketplace disablement, and payment-gating events are documented webhook categories.\n- A public HTTPS handler must return a successful response such as `200 OK`; delivery failures are retried with exponential backoff, ultimately at a 15-minute cadence for up to two days.\n- Consumers should deduplicate using the notification `id`, because retries and multiple configured destinations can produce duplicate deliveries.\n- A consumer can obtain authoritative details from the Metronome API or verify the `Metronome-Webhook-Signature` against the raw request bytes.\n\n## Details\n### Event coverage and configuration\nThreshold notifications use `alerts.<notification_type>` and monitor real-time metrics when defined thresholds are crossed. System notifications cover contract, commit, and credit events; offset notifications can be scheduled relative to a known object date. `invoice.finalized` occurs after the grace period and requires setup through a Metronome representative. The Stripe-only `invoice.billing_provider_error` is automatically sent when a destination is configured and the Stripe integration is enabled, but it does not cover errors that reside entirely within Stripe. The page also documents `integration.issue`, marketplace-metering-disabled events for AWS, Azure, and GCP, and payment-gating events for threshold, status, required action, and externally initiated workflows.\n\n### Delivery and duplicate handling\nMetronome requires a publicly accessible HTTPS endpoint. Status codes above `299` trigger retries; an unacknowledged notification is retried with exponential backoff until a 15-minute cadence, then until acceptance or two days from the initial attempt (about 200 retries). The page recommends queuing a payload, returning `200`, then validating or processing it asynchronously. It cautions that delivery may repeat after retries or when multiple webhook URLs are configured; use the event `id` to deduplicate. The published webhook IP list may change, with at least 30 days' notice.\n\n### Authenticity and payload evolution\nWebhooks contain minimal event information, so the page suggests fetching full data from the corresponding Metronome API endpoint when appropriate. Alternatively, compute HMAC-SHA256 over `X-Metronome-Date`, a newline, and the exact request-body bytes using the per-webhook secret, then compare it with `Metronome-Webhook-Signature`. Prefer `X-Metronome-Date` to `Date`, reject requests older than five minutes, and do not reserialize parsed JSON before signature verification. Metronome may add backward-compatible fields without notice, so consumers should validate only fields expected by the documented integration.\n\n### Slack delivery\nInstead of building a custom handler, a team can create a Slack incoming webhook, add it as a Metronome webhook destination, configure a test notification, and trigger that notification to confirm delivery in the Slack channel.\n\n## Related\n- Companies: [[metronome]]\n- Concepts: [[metronome-webhooks]]\n\n## Raw Sources\n- [[setup-webhooks-2026-07-13]] \u2014 verbatim Metronome documentation page\n",
+  "quotes": [
+    {
+      "text": "Metronome provides programmatic notifications in the form of webhooks. If you configure a webhook URL, Metronome sends an HTTP POST request to that URL when certain events occur, such as a contract being created, a threshold being reached or an invoice being finalized.",
+      "location": "Webhooks, line 11"
+    },
+    {
+      "text": "If your webhook endpoint does not properly acknowledge the notification, Metronome continuously retries it with exponential backoff until it hits a 15-minute retry cadence. Once the retry process hits 15 minutes, Metronome repeats the notification until it is either accepted or two days have passed since the initial notification attempt (\\~200 retries).",
+      "location": "Handle Webhook Notifications > Acknowledge the Notification, line 730"
+    },
+    {
+      "text": "If you want to ensure duplicate notifications are ignored, you can use the notification's `id` field to deduplicate.",
+      "location": "Handle Webhook Notifications > Prepare for Duplicate Notifications, line 739"
+    },
+    {
+      "text": "To validate the signature, first concatenate the value of the request's `X-Metronome-Date` header and the exact bytes of the request body, separated by a newline character (`\\n`). Then compute the HMAC-SHA256 of the resulting string, keyed by the webhook's secret key.",
+      "location": "Handle Webhook Notifications > Verify Notifications > Verify Signatures, line 765"
+    }
+  ],
+  "suggestions": {
+    "company": [
+      "Update the Metronome company page with this promoted source and increment its source count after source-page review."
+    ],
+    "concepts": [
+      "Audit for an existing Metronome webhook or notification-delivery concept; create or update `metronome-webhooks` only if the concept audit confirms the page is warranted."
+    ],
+    "index": [
+      "Add the promoted source page to the Metronome provider index."
+    ],
+    "log": [
+      "Append a Metronome ingest-log entry identifying this webhook source and its dated raw snapshot."
+    ]
+  },
+  "raw_path": "raw/metronome/guides/platform-configuration/setup-webhooks-2026-07-13.md",
+  "raw_sha256": "be2dac89292c31ac5f489809e5f4b483f2e1633b82799ccff45d6c20e44ad73a",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,44 @@
+{
+  "job_id": "get-contract-edit-history",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Get Contract Edit History API\"\ntype: source\ndate_ingested: 2026-07-27\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/contracts/get-contract-edit-history-2026-07-13.md\"\ntags: [metronome, contracts, audit-history, api-reference]\n---\n\n## Overview\nThis Metronome API reference documents `POST /v2/contracts/getEditHistory`, an authenticated endpoint that returns the recorded edit history for one customer contract. It is useful for auditing contract-term changes because Metronome says the history includes edits made in the UI, through `editContract`, and through other contract-changing endpoints such as `updateContractEndDate`.\n\n## Key takeaways\n- The request requires UUID `customer_id` and `contract_id` values; the documented response is a `data` array of `ContractEdit` records.\n- A `ContractEdit` records an edit identifier and can include a timestamp and uniqueness key, plus additions, updates, archives, and removals across contract configuration.\n- The history can expose changes to overrides, discounts, scheduled charges, commits, credits, recurring commits or credits, usage filters, subscriptions, contract name or end date, refunds, and threshold-billing configuration.\n- The reference documents `400` errors with `ContractNotFound` or `CustomerNotFound`; it does not document pagination parameters, cursors, limits, or next-page fields.\n\n## Details\n### Request and audit purpose\nSend a bearer-authenticated `POST` request to `/v2/contracts/getEditHistory` with the customer and contract UUIDs. The endpoint is an audit view rather than a mutation: it lists the edits ever made to that contract and is intended to show what changed, when, and by whom.\n\n### Response edit structure\nThe successful payload contains `data`, an array of `ContractEdit` objects. Each edit requires an `id` and may include `timestamp` and `uniqueness_key`. Its fields are grouped by change operation: additions such as overrides, discounts, scheduled charges, commits, credits, recurring commitments or credits, usage filters, subscriptions, and threshold configurations; updates to those objects as well as contract name, end date, refund invoices, and subscription quantities or seats; and archival or removal arrays for commits, credits, scheduled charges, and overrides. The example demonstrates an added prepaid commit with access and invoice schedules and an added multiplier override.\n\n### Important documented constraints\nThis endpoint's reference does not define pagination, so a consumer should not assume a cursor or page-size contract from this page. Several embedded edit structures carry their own validation rules: a uniqueness key is 1\u2013128 characters and reusing it for record creation is described as producing a `409`; commit or credit `specifiers` cannot be used together with `applicable_product_ids` or `applicable_product_tags`; and subscription quantity updates require `starting_at`. The endpoint's explicit error response is `400` with a code and message, where the documented codes are `ContractNotFound` and `CustomerNotFound`.\n\n## Related\n- Companies: [[metronome]]\n- Concepts: [[metronome-customers-and-contracts]]\n\n## Raw Sources\n- [[get-contract-edit-history-2026-07-13]] \u2014 verbatim Metronome API reference for contract edit history\n",
+  "quotes": [
+    {
+      "text": "List all the edits made to a contract over time. In Metronome, you can edit a contract at any point after it's created to fix mistakes or reflect changes in terms. Metronome stores a full history of all edits that were ever made to a contract, whether through the UI, `editContract` endpoint, or other endpoints like `updateContractEndDate`.",
+      "location": "Introduction, line 11"
+    },
+    {
+      "text": "- An array of every edit ever made to the contract",
+      "location": "Introduction > Key response fields, line 17"
+    },
+    {
+      "text": "required:\n                - customer_id\n                - contract_id",
+      "location": "OpenAPI > requestBody schema, lines 128-130"
+    },
+    {
+      "text": "data:\n                    type: array\n                    items:\n                      $ref: '#/components/schemas/ContractEdit'",
+      "location": "OpenAPI > 200 response schema, lines 151-154"
+    },
+    {
+      "text": "- ContractNotFound\n                      - CustomerNotFound",
+      "location": "OpenAPI > 400 response code enum, lines 214-218"
+    }
+  ],
+  "suggestions": {
+    "company": [
+      "Update the Metronome company page with this promoted contract-audit API source and increment its source count after source-page review."
+    ],
+    "concepts": [
+      "Update the existing `metronome-customers-and-contracts` concept with the availability and audit semantics of the contract edit-history endpoint; a separate concept page is not warranted for this thin API-reference source."
+    ],
+    "index": [
+      "Add `source-metronome-api-reference-contracts-get-contract-edit-history` to the Metronome provider index."
+    ],
+    "log": [
+      "Append a Metronome ingest-log entry identifying the contract edit-history API reference and its dated raw snapshot."
+    ]
+  },
+  "raw_path": "raw/metronome/api-reference/contracts/get-contract-edit-history-2026-07-13.md",
+  "raw_sha256": "73072ca968bca78aa30ebcb896a1738061c3a3f90caabfa782af58ef60438c81",
+  "status": "candidate_ready"
+}
