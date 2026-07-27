@@ -15,6 +15,7 @@ from .state import (
 )
 from .scheduler import review_order, worker_orders
 from .validator import ValidationError, sha256_file, validate_worker_result
+from .coordinator import init_campaign, reject_job, retry_job, run_once, status
 
 __all__ = [
     "PilotError",
@@ -22,15 +23,20 @@ __all__ = [
     "campaign_paths",
     "create_attempt",
     "initialize_state",
+    "init_campaign",
     "load_campaign",
     "load_jobs",
     "recover_interrupted",
+    "reject_job",
     "render_monitor",
     "save_jobs",
     "write_attempt_file",
     "ValidationError",
     "review_order",
+    "retry_job",
+    "run_once",
     "sha256_file",
     "validate_worker_result",
     "worker_orders",
+    "status",
 ]
