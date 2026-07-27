@@ -44,7 +44,7 @@ APPENDIX_A_INVENTORY = (
     ('braintree/mobile-sdk-tooling', 'https://github.com/braintree/mobile-sdk-tooling', 'tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('braintree/graphql-api', 'https://github.com/braintree/graphql-api', 'api-specification', 'tier1', 'commit', False, 'default-branch', 'monthly'),
     ('braintree/credit-card-type', 'https://github.com/braintree/credit-card-type', 'utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('braintree/braintree-web', 'https://github.com/braintree/braintree-web', 'web-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('braintree/braintree-web', 'https://github.com/braintree/braintree-web', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/uuid', 'https://github.com/braintree/uuid', 'utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/popup-bridge-ios', 'https://github.com/braintree/popup-bridge-ios', 'mobile-utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/restricted-input', 'https://github.com/braintree/restricted-input', 'web-utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
@@ -519,6 +519,41 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
         self.assertEqual(340, capsule.max_capsule_files)
         self.assertEqual(3000000, capsule.max_capsule_utf8_bytes)
+
+    def test_braintree_web_uses_the_reviewed_public_source_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        braintree = next(repo for repo in repos if repo.id == "braintree/braintree-web")
+
+        self.assertTrue(braintree.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:braintree-web@3",
+                    "latest-stable",
+                    "all-stable",
+                ),
+            ),
+            braintree.version_tracks,
+        )
+        self.assertEqual(1, len(braintree.capsules))
+        capsule = braintree.capsules[0]
+        self.assertEqual("braintree-web-public-source", capsule.id)
+        self.assertEqual("npm-tracked-source-v1", capsule.adapter)
+        self.assertEqual(("braintree-web",), capsule.focus_packages)
+        self.assertEqual("internal-runtime-closure", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(
+            (".storybook/stories", "src"),
+            capsule.default_required_roots,
+        )
+        self.assertEqual(("dist/",), capsule.default_generated_target_paths)
+        self.assertEqual(("CHANGELOG.md", "components.json"), capsule.include_paths)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(380, capsule.max_capsule_files)
+        self.assertEqual(3000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(420, capsule.max_packet_files)
+        self.assertEqual(3500000, capsule.max_packet_utf8_bytes)
 
     def test_registry_matches_appendix_a_inventory_and_collection_cadence(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
