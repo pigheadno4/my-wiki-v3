@@ -13,6 +13,8 @@ from .state import (
     save_jobs,
     write_attempt_file,
 )
+from .scheduler import review_order, worker_orders
+from .validator import ValidationError, sha256_file, validate_worker_result
 
 __all__ = [
     "PilotError",
@@ -26,4 +28,9 @@ __all__ = [
     "render_monitor",
     "save_jobs",
     "write_attempt_file",
+    "ValidationError",
+    "review_order",
+    "sha256_file",
+    "validate_worker_result",
+    "worker_orders",
 ]
