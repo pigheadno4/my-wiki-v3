@@ -37,9 +37,19 @@ def _raw_entry(source_page: str, raw_path: str) -> str:
     closing = source_page.find("\n---\n", 4)
     if closing == -1:
         raise ValidationError("source page frontmatter is incomplete")
-    frontmatter = source_page[4:closing]
+    frontmatter = source_page[4:closing].splitlines()
     expected = raw_path.removeprefix("raw/")
-    if f'  - "{expected}"' not in frontmatter.splitlines():
+    try:
+        raw_files = frontmatter.index("raw_files:")
+    except ValueError as error:
+        raise ValidationError("source page is missing raw_files") from error
+    raw_entries = []
+    for line in frontmatter[raw_files + 1:]:
+        if line.startswith("  - "):
+            raw_entries.append(line)
+        elif line and not line.startswith(" "):
+            break
+    if f'  - "{expected}"' not in raw_entries:
         raise ValidationError("source page raw_files entry does not match raw path")
     return expected
 
@@ -84,10 +94,17 @@ def validate_worker_result(root: Path, job: dict, result: dict) -> Dict[str, Any
     if not isinstance(source_page, str):
         raise ValidationError("source page must be text")
     raw_entry = _raw_entry(source_page, job["raw_path"])
-    if "## Raw Sources" not in source_page:
-        raise ValidationError("source page is missing Raw Sources")
+    lines = source_page.splitlines()
+    try:
+        heading = lines.index("## Raw Sources")
+    except ValueError as error:
+        raise ValidationError("source page is missing Raw Sources") from error
+    section_end = next(
+        (index for index, line in enumerate(lines[heading + 1:], start=heading + 1) if line.startswith("## ")),
+        len(lines),
+    )
     raw_wikilink = f"[[{Path(raw_entry).stem}]]"
-    raw_sources = source_page.split("## Raw Sources", 1)[1]
+    raw_sources = "\n".join(lines[heading + 1:section_end])
     if raw_wikilink not in raw_sources:
         raise ValidationError("source page raw link does not match raw path")
 

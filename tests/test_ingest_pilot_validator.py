@@ -109,8 +109,27 @@ class WorkerResultValidationTests(unittest.TestCase):
                     )
                 self.assert_invalid(self.valid_result(source_page=source_page))
 
+    def test_rejects_expected_raw_path_outside_raw_files(self):
+        source_page = self.valid_result()["source_page"].replace(
+            "raw_files:\n"
+            "  - \"metronome/guides/platform-configuration/security-principles-2026-07-13.md\"\n",
+            "raw_files:\n"
+            "  - \"metronome/guides/platform-configuration/other.md\"\n"
+            "other_files:\n"
+            "  - \"metronome/guides/platform-configuration/security-principles-2026-07-13.md\"\n",
+        )
+
+        self.assert_invalid(self.valid_result(source_page=source_page))
+
     def test_rejects_missing_raw_sources_heading(self):
         source_page = self.valid_result()["source_page"].replace("## Raw Sources\n", "")
+
+        self.assert_invalid(self.valid_result(source_page=source_page))
+
+    def test_rejects_a_nonexact_raw_sources_heading(self):
+        source_page = self.valid_result()["source_page"].replace(
+            "## Raw Sources\n", "## Raw Sources Notes\n"
+        )
 
         self.assert_invalid(self.valid_result(source_page=source_page))
 
@@ -126,6 +145,16 @@ class WorkerResultValidationTests(unittest.TestCase):
             "## Raw Sources\n",
             "[[security-principles-2026-07-13]] — misplaced raw link\n\n## Raw Sources\n",
         ).replace("- [[security-principles-2026-07-13]] — verbatim documentation\n", "")
+
+        self.assert_invalid(self.valid_result(source_page=source_page))
+
+    def test_rejects_a_raw_wikilink_in_a_later_section(self):
+        source_page = self.valid_result()["source_page"].replace(
+            "- [[security-principles-2026-07-13]] — verbatim documentation\n",
+            "- [[other-raw-file]] — wrong link\n\n"
+            "## Related\n"
+            "- [[security-principles-2026-07-13]] — misplaced raw link\n",
+        )
 
         self.assert_invalid(self.valid_result(source_page=source_page))
 
