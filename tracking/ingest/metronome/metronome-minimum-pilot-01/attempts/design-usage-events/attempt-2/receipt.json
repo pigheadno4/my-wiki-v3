@@ -1,0 +1,45 @@
+{
+  "job_id": "design-usage-events",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome Design Usage Events\"\ntype: source\ndate_ingested: 2026-07-27\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/events/design-usage-events-2026-07-13.md\"\ntags: [metronome, usage-events, usage-based-billing, billable-metrics]\n---\n\n## Overview\n\nThis guide explains how to design usage events for Metronome with a CDN billing example. It frames event design around required billing and notification outcomes, the data and timing available in the originating system, and retaining fields that can support later reporting or pricing changes.\n\n## Key takeaways\n\n- Start from the measures required for billing or operations; the CDN example needs `transfer` events with `bytes`, `transaction_id`, `customer_id`, and `timestamp` to measure customer data transfer for a billing period.\n- Event frequency and payload shape should follow what the source system can reliably provide. Individual access-log events and hourly domain summaries can both support monthly invoicing, but have different customer-identifier and notification-cadence implications.\n- Include available contextual fields such as domain and data center when possible so future usage reporting and region-specific metrics can use them.\n- New billable metrics apply only to future collection and aggregation; they cannot be applied retroactively to historical data.\n\n## Details\n\n### Work backward from requirements\n\nThe guide recommends starting with existing requirements or an ideal invoice. In its CDN scenario, the minimum event uses event type `transfer`, a `bytes` property, `transaction_id`, `customer_id`, and `timestamp`; this supports summing bytes for a customer and billing period. The same transfer measure can also support traffic-spike notifications. Pricing details may be adjusted later only if the needed metrics are already present.\n\n### Work forward from available data\n\nThe guide contrasts sending an event for each served page with sending incremental per-customer summaries. A globally aggregated detailed log can be forwarded as individual events, while independently logged data centers may need to send hourly summaries from a central system that can map a domain to its customer. The selected cadence must also meet operational notification needs.\n\n### Preserve future options\n\nThe guide recommends sending available event data, because the stream pipeline discards irrelevant data during processing. In the example, retaining `domain` enables usage breakdowns by domain, and retaining `data_center` enables filtered regional metrics with individual regional prices. Those future metrics affect only future data collection and aggregation.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-event-ingestion]], [[metronome-billable-metrics]], [[metronome-usage-based-billing]]\n\n## Raw Sources\n\n- [[design-usage-events-2026-07-13]] \u2014 verbatim guide on designing Metronome usage events\n",
+  "quotes": [
+    {
+      "text": "Success with Metronome depends on the data you provide, so it's important to properly design your usage events.",
+      "location": "Introduction, line 10"
+    },
+    {
+      "text": "This supports a billable metric like \"sum of `bytes` for all events of type `transfer` (for a given customer, for a given billing period).\"",
+      "location": "Work backward from what you need, line 35"
+    },
+    {
+      "text": "Both options provide the same invoicing ability at the end of each month, which route you choose depends upon your needs.",
+      "location": "Work forward from what you have, line 39"
+    },
+    {
+      "text": "Metronome's stream pipeline can handle high event throughput, and irrelevant data is discarded during processing.",
+      "location": "Maximize your flexibility, line 57"
+    },
+    {
+      "text": "New billable metrics cannot be applied to historical data.",
+      "location": "Warning, line 88"
+    }
+  ],
+  "suggestions": {
+    "company": [
+      "Update [[metronome]] only if its overview needs a source link for event-design guidance; this page adds no company-profile facts."
+    ],
+    "concepts": [
+      "Update [[metronome-event-ingestion]] with the source's event-design principles, payload-context examples, and non-retroactive metric boundary.",
+      "Consider adding a concise source link to [[metronome-billable-metrics]] for future-only metric application."
+    ],
+    "index": [
+      "Add [[source-metronome-guides-events-design-usage-events]] to wiki/metronome-index.md under event-ingestion or usage-billing sources."
+    ],
+    "log": [
+      "Append a dated wiki/metronome-log.md entry recording ingestion of the 2026-07-13 design-usage-events snapshot."
+    ]
+  },
+  "raw_path": "raw/metronome/guides/events/design-usage-events-2026-07-13.md",
+  "raw_sha256": "ae48bff62df062d45d423bc66fbeabc2a08951782a435e9fd48047cd82813d3c",
+  "status": "candidate_ready"
+}

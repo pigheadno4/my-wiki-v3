@@ -1,0 +1,45 @@
+{
+  "job_id": "preview-events",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Preview Events API\"\ntype: source\ndate_ingested: 2026-07-27\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/invoices/preview-events-2026-07-13.md\"\ntags: [metronome, invoices, usage-events, api-reference]\n---\n\n## Overview\nThis API endpoint previews how supplied usage events would affect a customer's invoices. `POST /v1/customers/{customer_id}/previewEvents` uses the customer's current contract configuration to generate draft invoices for testing before the events are processed.\n\n## Key takeaways\n- The request requires a UUID `customer_id` path parameter and an `events` array containing one to 100 preview events.\n- `mode` defaults to `replace`, which ignores historical usage; `merge` combines supplied events with the customer's existing usage and requires at least one event.\n- Contracts with SQL billable metrics are not supported. A supplied `transaction_id` is checked against historical events from the past 34 days, and duplicate IDs in the same request cause an error.\n- A successful response returns `data`, an array of draft invoice objects with invoice and customer identifiers, credit type, line items, status, total, and type.\n\n## Details\nEach preview event requires a nonempty `event_type`; it can include an RFC 3339 `timestamp` (the current time is used when absent), arbitrary `properties`, and an optional `transaction_id` of up to 128 characters. The request object disallows additional top-level properties. Set `skip_zero_qty_line_items` to omit zero-quantity line items from the response.\n\nThe preview returns invoice records rather than posting an invoice: the documented example returns `USAGE` invoices with `DRAFT` status, period timestamps, a contract ID, a credit type, a total, and usage line items. Line items include a name, total, credit type, and type, and can also carry quantity, unit price, product, commitment or credit, subscription, discount, and scheduling information when applicable. The API documents a `400` bad-request response and a `404` response when the specified resource is not found; the shared error schema requires a `message`.\n\n## Related\n- Companies: [[metronome]]\n- Concepts: [[metronome-event-ingestion]], [[metronome-invoicing]], [[metronome-usage-based-billing]]\n\n## Raw Sources\n- [[preview-events-2026-07-13]] \u2014 verbatim Metronome API reference for previewing invoice effects of usage events\n",
+  "quotes": [
+    {
+      "text": "Customers on contracts with SQL billable metrics are not supported.",
+      "location": "Overview, line 11"
+    },
+    {
+      "text": "Array of usage events to include in the preview calculation. Must\n            contain at least one event in `merge` mode.",
+      "location": "PreviewEventsPayload.events description, lines 203-205"
+    },
+    {
+      "text": "Controls how the provided events are combined with existing usage\n            data.",
+      "location": "PreviewEventsPayload.mode description, lines 212-214"
+    },
+    {
+      "text": "Optional unique identifier for event deduplication. When provided,\n            preview events are automatically deduplicated against historical\n            events from the past 34 days.  Duplicate transaction IDs within the\n            same request will return an error.",
+      "location": "PreviewEvent.transaction_id description, lines 453-457"
+    },
+    {
+      "text": "When `true`, line items with zero quantity are excluded from the\n            response.",
+      "location": "PreviewEventsPayload.skip_zero_qty_line_items description, lines 221-223"
+    }
+  ],
+  "suggestions": {
+    "company": [
+      "Update the Metronome company page with this source and increment its source count after promotion."
+    ],
+    "concepts": [
+      "Audit existing Metronome event-ingestion and invoicing concepts; update those pages with this preview capability if the audit confirms they are the relevant established concepts.",
+      "Do not create a standalone concept from this API reference unless the concept audit finds a genuine gap beyond the existing event-ingestion and invoicing topics."
+    ],
+    "index": [
+      "Add the promoted source page to the Metronome provider index under invoice or API-reference sources."
+    ],
+    "log": [
+      "Append a Metronome ingest-log entry identifying the Preview Events API source and its dated raw snapshot."
+    ]
+  },
+  "raw_path": "raw/metronome/api-reference/invoices/preview-events-2026-07-13.md",
+  "raw_sha256": "022e7c970bf8eb8dbe80c6f15d6f4be8cbdcaab9733dc51718958edf407d34b6",
+  "status": "candidate_ready"
+}
