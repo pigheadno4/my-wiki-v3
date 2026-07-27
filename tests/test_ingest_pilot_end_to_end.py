@@ -249,13 +249,35 @@ class TenJobRollingCampaignTests(unittest.TestCase):
         self.assertEqual(changes["worker_orders"], [])
         self.assertEqual(changes["review_order"]["job_id"], "job-3")
         self.assertEqual(self.job("job-2")["state"], "queued")
+        self.assertGreater(
+            self.job("job-2")["queue_position"],
+            max(
+                job["queue_position"]
+                for job in load_jobs(self.root, self.campaign_id)
+                if job["job_id"] != "job-2"
+            ),
+        )
 
-        candidate = campaign_paths(self.root, self.campaign_id)["attempts"] / "job-3/attempt-1/candidate.md"
+        attempts = campaign_paths(self.root, self.campaign_id)["attempts"]
+        candidate = attempts / "job-3/attempt-1/candidate.md"
+        interrupted_inputs = {
+            job_id: (attempts / f"{job_id}/attempt-1/input.json").read_bytes()
+            for job_id in ("job-3", "job-6", "job-7", "job-8", "job-9", "job-10")
+        }
         self.assertTrue(candidate.is_file())
         recover_interrupted(self.root, self.campaign_id)
-        self.assertEqual(self.job("job-3")["state"], "failed")
+        self.assertEqual(
+            [self.job(job_id)["state"] for job_id in interrupted_inputs],
+            ["failed"] * len(interrupted_inputs),
+        )
         self.assertTrue(candidate.is_file())
-        self.assertEqual(self.job("job-6")["state"], "failed")
+        self.assertEqual(
+            {
+                job_id: (attempts / f"{job_id}/attempt-1/input.json").read_bytes()
+                for job_id in interrupted_inputs
+            },
+            interrupted_inputs,
+        )
 
         resumed = run_once(self.root, self.campaign_id, available_worker_slots=5)
         self.assertEqual([order["job_id"] for order in resumed["worker_orders"]], ["job-1", "job-2"])
