@@ -22,6 +22,21 @@ RESULT_KEYS = {
 SUGGESTION_KEYS = {"company", "concepts", "index", "log"}
 
 
+def _ensure_utf8(value: Any) -> None:
+    if isinstance(value, str):
+        try:
+            value.encode("utf-8")
+        except UnicodeEncodeError as error:
+            raise ValidationError("worker result contains non-UTF-8 text") from error
+    elif isinstance(value, dict):
+        for key, item in value.items():
+            _ensure_utf8(key)
+            _ensure_utf8(item)
+    elif isinstance(value, list):
+        for item in value:
+            _ensure_utf8(item)
+
+
 def sha256_file(path: Path) -> str:
     """Return the SHA-256 digest of one raw file."""
     digest = hashlib.sha256()
@@ -56,7 +71,10 @@ def _raw_entry(source_page: str, raw_path: str) -> str:
 
 def validate_worker_result(root: Path, job: dict, result: dict) -> Dict[str, Any]:
     """Validate a candidate against its trusted job and immutable raw source."""
-    if not isinstance(result, dict) or set(result) != RESULT_KEYS:
+    if not isinstance(result, dict):
+        raise ValidationError("worker result must use the fixed schema")
+    _ensure_utf8(result)
+    if set(result) != RESULT_KEYS:
         raise ValidationError("worker result must use the fixed schema")
     if result["job_id"] != job["job_id"] or result["attempt"] != job["attempt"]:
         raise ValidationError("worker result does not match the job attempt")

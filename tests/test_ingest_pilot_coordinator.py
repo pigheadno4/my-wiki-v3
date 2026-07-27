@@ -163,6 +163,19 @@ class CoordinatorTests(unittest.TestCase):
         self.assertTrue(self.attempt("job-1", 1).joinpath("failure.json").is_file())
         self.assertEqual(output["campaign_state"], "active")
 
+    def test_non_utf8_worker_result_fails_only_that_job(self):
+        self.start_five()
+        result_path = self.write_worker_result("job-1")
+        result = json.loads(result_path.read_text(encoding="utf-8"))
+        result["source_page"] += "\ud800"
+        result_path.write_text(json.dumps(result), encoding="utf-8")
+
+        output = run_once(self.root, self.campaign_id, worker_result_path=result_path)
+
+        self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["state"], "failed")
+        self.assertTrue(self.attempt("job-1", 1).joinpath("failure.json").is_file())
+        self.assertEqual(output["campaign_state"], "active")
+
     def test_approved_review_stays_dry_run_approved(self):
         self.make_reviewing("job-1", attempt=1)
 
@@ -183,12 +196,13 @@ class CoordinatorTests(unittest.TestCase):
             self.root,
             self.campaign_id,
             review_result_path=self.write_review("job-1", 1, "changes_requested"),
-            available_worker_slots=0,
         )
 
         job = load_jobs(self.root, self.campaign_id)[0]
         self.assertEqual(job["state"], "queued")
         self.assertGreater(job["queue_position"], initial_tail)
+        self.assertEqual(job["attempt"], 1)
+        self.assertFalse(self.attempt("job-1", 2).exists())
 
     def test_third_changes_request_rejects_job(self):
         self.make_reviewing("job-1", attempt=3)
@@ -251,6 +265,40 @@ class CoordinatorTests(unittest.TestCase):
         self.assertEqual(output["campaign_state"], "active")
         with self.assertRaises(PilotError):
             reject_job(self.root, self.campaign_id, "job-2", "")
+
+    def test_retry_returns_warning_after_audit_append_failure(self):
+        self.start_five()
+        run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-1", raw_sha256="0" * 64),
+        )
+        events = self.root / "tracking/ingest/metronome" / self.campaign_id / "events.jsonl"
+        events.unlink()
+        events.mkdir()
+
+        output = retry_job(self.root, self.campaign_id, "job-1")
+
+        self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["state"], "queued")
+        self.assertIn("warnings", output)
+        self.assertTrue(output["warnings"])
+
+    def test_reject_returns_warning_after_audit_append_failure(self):
+        self.start_five()
+        run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-1", raw_sha256="0" * 64),
+        )
+        events = self.root / "tracking/ingest/metronome" / self.campaign_id / "events.jsonl"
+        events.unlink()
+        events.mkdir()
+
+        output = reject_job(self.root, self.campaign_id, "job-1", "operator decision")
+
+        self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["state"], "rejected")
+        self.assertIn("warnings", output)
+        self.assertTrue(output["warnings"])
 
     def test_run_rejects_worker_and_review_results_together_without_mutation(self):
         self.start_five()
@@ -328,6 +376,20 @@ class CoordinatorTests(unittest.TestCase):
         self.assertEqual(monitored["campaign_state"], "active")
         self.assertEqual(retried["jobs"][0]["state"], "queued")
         self.assertEqual(rejected["jobs"][0]["state"], "rejected")
+
+    def test_cli_reports_handled_errors_only_to_stderr(self):
+        script = Path(__file__).parents[1] / "scripts" / "manage_ingest_pilot.py"
+
+        completed = subprocess.run(
+            [sys.executable, str(script), "status", "--campaign", self.campaign_id],
+            cwd=self.root,
+            text=True,
+            capture_output=True,
+        )
+
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertEqual(completed.stdout, "")
+        self.assertIn("cannot read campaign.json", completed.stderr)
 
 
 if __name__ == "__main__":

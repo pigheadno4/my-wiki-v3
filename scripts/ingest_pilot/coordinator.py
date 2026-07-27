@@ -174,9 +174,14 @@ def run_once(
     events = []
     if worker_result_path is not None:
         events.append(_apply_worker_result(root, campaign_id, jobs, Path(worker_result_path)))
+    changes_requested = False
     if review_result_path is not None:
-        events.append(_apply_review_result(jobs, Path(review_result_path), campaign["max_attempts"]))
-    orders = _start_workers(root, campaign_id, jobs, campaign, available_worker_slots)
+        review_event = _apply_review_result(jobs, Path(review_result_path), campaign["max_attempts"])
+        events.append(review_event)
+        changes_requested = review_event["event"] == "changes_requested"
+    orders = [] if changes_requested else _start_workers(
+        root, campaign_id, jobs, campaign, available_worker_slots
+    )
     events.extend({"event": "worker_started", "job_id": order["job_id"]} for order in orders)
     review = _start_review(jobs)
     if review is not None:
@@ -213,8 +218,12 @@ def retry_job(root: Path, campaign_id: str, job_id: str) -> Dict[str, Any]:
     job["last_event"] = "retry_queued"
     job["failure_reason"] = None
     save_jobs(root, campaign_id, jobs)
-    append_event(root, campaign_id, {"event": "retry_queued", "job_id": job_id})
-    return _campaign_payload(root, campaign_id)
+    output = _campaign_payload(root, campaign_id)
+    try:
+        append_event(root, campaign_id, {"event": "retry_queued", "job_id": job_id})
+    except PilotError as error:
+        output["warnings"] = [str(error)]
+    return output
 
 
 def reject_job(root: Path, campaign_id: str, job_id: str, reason: str) -> Dict[str, Any]:
@@ -229,5 +238,9 @@ def reject_job(root: Path, campaign_id: str, job_id: str, reason: str) -> Dict[s
     job["last_event"] = "operator_rejected"
     job["failure_reason"] = reason
     save_jobs(root, campaign_id, jobs)
-    append_event(root, campaign_id, {"event": "operator_rejected", "job_id": job_id, "reason": reason})
-    return _campaign_payload(root, campaign_id)
+    output = _campaign_payload(root, campaign_id)
+    try:
+        append_event(root, campaign_id, {"event": "operator_rejected", "job_id": job_id, "reason": reason})
+    except PilotError as error:
+        output["warnings"] = [str(error)]
+    return output
