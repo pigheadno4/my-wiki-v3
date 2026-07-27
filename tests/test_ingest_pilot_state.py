@@ -65,6 +65,34 @@ class PilotStateTests(unittest.TestCase):
         initialize_state(self.root, self.manifest)
         return load_jobs(self.root, self.campaign_id)
 
+    def test_initialize_fails_without_truncating_existing_events(self):
+        paths = campaign_paths(self.root, self.campaign_id)
+        paths["campaign_dir"].mkdir(parents=True)
+        expected_events = b'{"event":"existing"}\n'
+        paths["events"].write_bytes(expected_events)
+
+        with self.assertRaisesRegex(PilotError, "events.jsonl already exists"):
+            initialize_state(self.root, self.manifest)
+
+        self.assertEqual(paths["events"].read_bytes(), expected_events)
+        self.assertFalse(paths["jobs"].exists())
+
+    def test_initialize_rejects_a_destination_manifest_that_differs_from_input(self):
+        paths = campaign_paths(self.root, self.campaign_id)
+        paths["campaign_dir"].mkdir(parents=True)
+        destination_manifest = dict(self.manifest)
+        destination_manifest["jobs"] = list(self.manifest["jobs"])
+        destination_manifest["jobs"][0] = dict(destination_manifest["jobs"][0])
+        destination_manifest["jobs"][0]["job_id"] = "different-security-principles"
+        expected_manifest = (json.dumps(destination_manifest, indent=2) + "\n").encode("utf-8")
+        paths["manifest"].write_bytes(expected_manifest)
+
+        with self.assertRaisesRegex(PilotError, "destination manifest does not match input"):
+            initialize_state(self.root, self.manifest)
+
+        self.assertEqual(paths["manifest"].read_bytes(), expected_manifest)
+        self.assertFalse(paths["jobs"].exists())
+
     def test_initialize_creates_only_minimum_campaign_files(self):
         initialize_state(self.root, self.manifest)
 

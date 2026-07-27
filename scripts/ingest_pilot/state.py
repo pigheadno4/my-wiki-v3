@@ -132,7 +132,10 @@ def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> No
         raise PilotError("campaign is already initialized")
     try:
         campaign_dir.mkdir(parents=True, exist_ok=True)
-        if not paths["manifest"].exists():
+        if paths["manifest"].exists():
+            if _load_json(paths["manifest"]) != manifest_data:
+                raise PilotError("destination manifest does not match input")
+        else:
             paths["manifest"].write_bytes(_json_bytes(manifest_data))
         campaign = {
             "schema_version": SCHEMA_VERSION,
@@ -159,16 +162,18 @@ def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> No
             }
             for position, source in enumerate(manifest_data["jobs"], start=1)
         ]
-        paths["events"].write_text(
-            "".join(
-                json.dumps({"event": "initialized", "job_id": job["job_id"]}, separators=(",", ":"))
-                + "\n"
-                for job in jobs
-            ),
-            encoding="utf-8",
-        )
+        with paths["events"].open("x", encoding="utf-8") as events:
+            events.write(
+                "".join(
+                    json.dumps({"event": "initialized", "job_id": job["job_id"]}, separators=(",", ":"))
+                    + "\n"
+                    for job in jobs
+                )
+            )
         _replace_jobs(paths["jobs"], jobs)
         _write_monitor(campaign_dir, campaign, jobs)
+    except FileExistsError as error:
+        raise PilotError("events.jsonl already exists") from error
     except (KeyError, OSError, TypeError) as error:
         raise PilotError("cannot initialize campaign") from error
 
