@@ -57,7 +57,7 @@ METRONOME_HASHES = (
 
 
 class MinimumMetronomeManifestTests(unittest.TestCase):
-    def test_manifest_keeps_the_five_immutable_sources_pending(self):
+    def test_manifest_preserves_the_five_immutable_source_inputs(self):
         root = Path(__file__).parents[1]
         manifest_path = root / "tracking/ingest/metronome/metronome-minimum-pilot-01/manifest.json"
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -70,7 +70,6 @@ class MinimumMetronomeManifestTests(unittest.TestCase):
             raw_file = root / raw_path
             self.assertTrue(raw_file.is_file())
             self.assertFalse(raw_file.is_symlink())
-            self.assertFalse((root / source_target).exists())
             self.assertEqual(
                 raw_file.read_text(encoding="utf-8").splitlines()[0],
                 f"<!-- Source URL: {canonical_url} -->",

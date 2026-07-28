@@ -16,6 +16,7 @@ A Metronome billable metric defines a per-customer aggregation over a selected s
 - `aggregation_key` selects the value to aggregate.
 - The SDK guide lists `SUM`, `COUNT`, and `MAX` as supported aggregation operations.
 - `group_keys` divide usage into buckets, similar to SQL `GROUP BY`, and can support grouped invoice presentation.
+- Context retained on usage events can support later metric changes. The event-design guide uses `domain` for grouped usage reporting and `data_center` for region-specific metrics and prices.
 
 ## Lifecycle boundary
 
@@ -24,10 +25,10 @@ The SDK guide states that billable metrics match only usage events sent after me
 ## Sources
 
 - [[source-metronome-guides-get-started-developer-sdks]] — metric definition, filters, aggregation operations, grouping, and creation-time boundary
+- [[source-metronome-guides-events-design-usage-events]] — future metric flexibility and the non-retroactive processing boundary
 
 ## Related
 
 - [[metronome-event-ingestion]]
 - [[metronome-products-and-rate-cards]]
 - [[metronome-usage-based-billing]]
-

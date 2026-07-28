@@ -1,6 +1,6 @@
 # Metronome Index
 
-> Canonical router for the Metronome provider capsule. Collection is complete; the controlled ingest pilot is underway.
+> Canonical router for the Metronome provider capsule. Collection is complete; canonical ingest proceeds one source at a time.
 
 ## Company
 
@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 5 |
-| Documentation pages pending ingest | 220 |
+| Source summaries ingested | 6 |
+| Documentation pages pending ingest | 219 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -25,6 +25,7 @@ Operational evidence:
 
 - [[source-metronome-guides-get-started-home]] — documentation entry point, getting-started routes, and four pricing/packaging models
 - [[source-metronome-guides-get-started-developer-sdks]] — SDK installation and an introductory event-to-invoice implementation path
+- [[source-metronome-guides-events-design-usage-events]] — event-design principles, cadence tradeoffs, contextual properties, and future-only metric changes
 - [[source-metronome-guides-invoices-overview]] — Stripe, marketplace, and ERP invoicing options
 - [[source-metronome-guides-reporting-insights-data-export-database-reference]] — warehouse schema navigation, snapshot grains, and query cautions
 - [[source-metronome-api-reference-contracts-create-a-contract]] — create endpoint, nested request families, conditional requirements, and response boundary
@@ -33,8 +34,8 @@ Operational evidence:
 
 - [[metronome-usage-based-billing]] — pay as you go, enterprise commitments, subscriptions with usage, and prepaid credits
 - [[metronome-invoicing]] — native Stripe, marketplace, and ERP invoicing paths
-- [[metronome-event-ingestion]] — usage-event fields, limits, idempotency, and matching boundary
-- [[metronome-billable-metrics]] — filters, aggregation operations, grouping, and creation-time behavior
+- [[metronome-event-ingestion]] — usage-event fields, limits, idempotency, design choices, and matching boundary
+- [[metronome-billable-metrics]] — filters, aggregation operations, contextual grouping, and creation-time behavior
 - [[metronome-products-and-rate-cards]] — product presentation, quantity conversion, and effective rates
 - [[metronome-customers-and-contracts]] — ingest aliases, commercial terms, and draft-invoice activation
 - [[metronome-reporting-and-analytics]] — exported table families, row grains, and nullability/version cautions

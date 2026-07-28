@@ -17,6 +17,12 @@ Metronome event ingestion accepts application usage payloads through the `/inges
 - `customer_id` may be a Metronome customer ID or an application-defined identifier later registered as an ingest alias.
 - `event_type` is application defined, and `properties` can contain arbitrary metering and grouping data.
 
+## Event design
+
+Metronome recommends working backward from billing and operational outcomes, then forward from the timing and data available in the source system. A producer can send detailed events as activity occurs or send periodic summaries; the appropriate choice depends on whether the producer can resolve `customer_id` and whether the cadence meets needs such as usage-spike notifications.
+
+Keeping available context in `properties` preserves future options. In the documentation's CDN example, `domain` supports per-domain usage breakdowns and `data_center` supports later regional metrics and pricing.
+
 ## Processing boundary
 
 An accepted event is not automatically billable. It must match a billable metric and a customer before it contributes to billing. The SDK guide also warns that a newly created billable metric matches only events sent after the metric was created.
@@ -24,10 +30,10 @@ An accepted event is not automatically billable. It must match a billable metric
 ## Sources
 
 - [[source-metronome-guides-get-started-developer-sdks]] — SDK ingestion example, payload fields, limits, deduplication, and matching sequence
+- [[source-metronome-guides-events-design-usage-events]] — event-design principles, cadence tradeoffs, and contextual-property examples
 
 ## Related
 
 - [[metronome-billable-metrics]]
 - [[metronome-customers-and-contracts]]
 - [[metronome-usage-based-billing]]
-

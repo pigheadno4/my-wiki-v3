@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 5
+source_count: 6
 ---
 
 ## Overview
@@ -22,6 +22,7 @@ The documentation home is a navigation overview. The SDK walkthrough adds an int
 
 - Python, Node.js, Ruby, and Go SDKs demonstrate a common event-to-invoice flow.
 - Event ingestion uses transaction IDs for deduplication and can associate application identifiers with customers through ingest aliases.
+- Event design starts from billing and operational requirements, follows the data and cadence available in the source system, and retains contextual properties for future reporting or pricing changes.
 - Billable metrics filter and aggregate events; products and rate cards turn those measurements into prices.
 - Customer contracts apply the rate card and produce draft invoices that update with usage.
 
@@ -42,13 +43,14 @@ The create-contract API adds package or rate-card selection, commits and credits
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 5
-- Documentation pages pending ingest: 220
+- Ingested source summaries: 6
+- Documentation pages pending ingest: 219
 
 ## Sources
 
 - [[source-metronome-guides-get-started-home]] — documentation entry point and four pricing/packaging routes
 - [[source-metronome-guides-get-started-developer-sdks]] — SDK setup and introductory event-to-invoice workflow
+- [[source-metronome-guides-events-design-usage-events]] — usage-event design principles, cadence tradeoffs, and future metric flexibility
 - [[source-metronome-guides-invoices-overview]] — Stripe, marketplace, and ERP invoicing options
 - [[source-metronome-guides-reporting-insights-data-export-database-reference]] — warehouse schema families, grains, and query cautions
 - [[source-metronome-api-reference-contracts-create-a-contract]] — contract creation request families and conditional rules
