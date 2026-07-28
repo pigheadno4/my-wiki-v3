@@ -138,6 +138,21 @@ def _publish_source_snapshot_unlocked(
 
     files = _snapshot_files(tree, resolution, config)
     total = sum(item.size for item in files)
+    capsule = resolution.effective_policy.capsule
+    if len(files) > capsule.max_capsule_files:
+        raise PilotStoreError(
+            "needs-policy-review:capsule-budget-exceeded: published file count "
+            + str(len(files))
+            + " exceeds max_capsule_files "
+            + str(capsule.max_capsule_files)
+        )
+    if total > capsule.max_capsule_utf8_bytes:
+        raise PilotStoreError(
+            "needs-policy-review:capsule-budget-exceeded: published UTF-8 bytes "
+            + str(total)
+            + " exceeds max_capsule_utf8_bytes "
+            + str(capsule.max_capsule_utf8_bytes)
+        )
     if total > config.max_snapshot_bytes:
         raise PilotStoreError("snapshot exceeds max_snapshot_bytes")
     author_date, commit_date = tree.commit_dates()

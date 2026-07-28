@@ -2,7 +2,7 @@
 
 ## Status
 
-Approved design; awaiting implementation.
+Implemented and collected; awaiting approval.
 
 ## Goal
 
