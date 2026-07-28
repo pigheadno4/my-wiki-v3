@@ -6,6 +6,14 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-07-28 — Canonical ingest: setup webhooks
+
+- Ingested: [[source-metronome-guides-platform-configuration-setup-webhooks]] from the complete 870-line guide.
+- Concept audit: created [[metronome-webhooks]] before canonical source promotion; no comparison page was warranted.
+- Terra/Sol dry run: attempt 1 reached `review_approved`; canonical promotion retained the grounded delivery and verification rules and added the required canonical URL and path-qualified raw backlink.
+- Coverage after finalization: 9 source summaries ingested and 216 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-minimum-pilot-01/monitor.md) and [approved attempt receipt](../tracking/ingest/metronome/metronome-minimum-pilot-01/attempts/setup-webhooks/attempt-1/receipt.json).
+
 ## 2026-07-28 — Canonical ingest: Get Contract Edit History API
 
 - Ingested: [[source-metronome-api-reference-contracts-get-contract-edit-history]] from the complete 2,672-line API reference.

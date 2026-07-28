@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 8 |
-| Documentation pages pending ingest | 217 |
+| Source summaries ingested | 9 |
+| Documentation pages pending ingest | 216 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -31,6 +31,7 @@ Operational evidence:
 - [[source-metronome-api-reference-contracts-create-a-contract]] — create endpoint, nested request families, conditional requirements, and response boundary
 - [[source-metronome-api-reference-invoices-preview-events]] — request modes, event constraints, deduplication, and draft-invoice response
 - [[source-metronome-api-reference-contracts-get-contract-edit-history]] — audit scope, edit-operation groups, and response constraints
+- [[source-metronome-guides-platform-configuration-setup-webhooks]] — event families, retry and duplicate handling, signature verification, and Slack delivery
 
 ## Concepts
 
@@ -41,6 +42,7 @@ Operational evidence:
 - [[metronome-products-and-rate-cards]] — product presentation, quantity conversion, and effective rates
 - [[metronome-customers-and-contracts]] — ingest aliases, commercial terms, and draft-invoice activation
 - [[metronome-reporting-and-analytics]] — exported table families, row grains, and nullability/version cautions
+- [[metronome-webhooks]] — notification delivery, deduplication, API verification, and HMAC authenticity
 
 ## Planned concept taxonomy
 
