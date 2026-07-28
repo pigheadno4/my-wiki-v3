@@ -10,8 +10,8 @@ Operations history: [[braintree-log]]
 
 ## Sources
 
-- [[source-github-braintree-web]] — cumulative `braintree-web@3.143.0` implementation baseline: Hosted Fields, 3DS, PayPal v6, Venmo, wallets, local payments, and decision-support components (github-repo, 2026-07-28)
-- [[changelog-github-braintree-web]] — package-qualified Braintree Web release ledger beginning at `3.143.0` (github-repo, 2026-07-28)
+- [[source-github-braintree-web]] — cumulative `braintree-web` implementation knowledge through `3.144.0`: Hosted Fields, 3DS, PayPal v6, View/Edit Funding Instrument, Venmo, wallets, local payments, and decision-support components (github-repo, 2026-07-28)
+- [[changelog-github-braintree-web]] — package-qualified Braintree Web release ledger from `3.143.0` through `3.144.0` (github-repo, 2026-07-28)
 
 ## Concepts
 

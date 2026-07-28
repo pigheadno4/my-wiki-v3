@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-28] ingest | GitHub braintree/braintree-web — `3.144.0`
+
+- Full serial ingest of `github-236dd1f1ac8a3f30f537` from exact SHA `41460fba05c1ea1222e795b36a10765a6699b8e7`.
+- Preserved the `3.143.0` cumulative baseline and added PayPal View/Edit Funding Instrument, expanded PayPal Checkout v6 session options, and resilient Venmo creation.
+- Recorded the exact comparison boundary: 319 byte-identical files, 10 changed files, and one added Edit FI story.
+- Updated the Braintree company, cumulative source, release ledger, two existing concepts, provider index, and provider log without changing source count.
+
 ## [2026-07-28] ingest | GitHub braintree/braintree-web — `3.143.0`
 
 - Full serial ingest of `github-1ab2662d292502a53058` from exact SHA `bae582d791026c143abb91c3bdcada92b8c060f6`.

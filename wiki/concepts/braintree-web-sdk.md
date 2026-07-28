@@ -13,7 +13,7 @@ Braintree Web is a modular browser SDK. A merchant creates a Braintree client fr
 
 The `braintree-web` package exposes separate components rather than a ready-made checkout UI. Hosted Fields provides merchant-styled card fields backed by Braintree-hosted iframes; Braintree Web Drop-in is a separate repository and product.
 
-At `braintree-web@3.143.0`, the package exports 23 components covering:
+At `braintree-web@3.144.0`, the package exports 23 components covering:
 
 - cards through Hosted Fields, 3D Secure, UnionPay, and American Express verification;
 - PayPal Checkout, PayPal Checkout v6, Venmo, Fastlane, Apple Pay, and Google Pay;
@@ -38,9 +38,17 @@ Wallet modules adapt external wallet SDKs or browser APIs into Braintree payment
 
 These are Braintree processing paths. They must not be described as direct PayPal Orders API integrations.
 
+## PayPal Checkout Changes in 3.144.0
+
+The non-v6 `paypalCheckout` component adds View/Edit Funding Instrument for returning buyers with a vaulted Billing Agreement. The flow requires a Braintree client token generated with `preferredPaymentMethodToken`; the SDK exchanges its payment-method JWT for a billing-agreement JWT and supplies that token to PayPal `SavedPaymentMethods`. The edit flag applies to checkout, not vault creation.
+
+The `paypalCheckoutV6` session path adds optional locale, landing-page type, user action, risk-correlation ID, and shipping-address controls. Checkout-with-vault can carry plan type and plan metadata. These fields establish an SDK request surface, not merchant or buyer eligibility.
+
+Venmo component creation now treats failed incognito detection as an unknown, non-private result and continues setup. This avoids a detection failure becoming a checkout initialization failure; it does not establish private-browsing support.
+
 ## Versioned Evidence
 
-The first retained baseline is `braintree-web@3.143.0` at SHA `bae582d791026c143abb91c3bdcada92b8c060f6`. The exact patch changes dependencies: `credit-card-type` moves to `10.2.0`, and the Fastlane loader package changes to `@paypal/fastlane-sdk-loader`. Broader behavior on the cumulative source page describes implementation present at that SHA, not changes introduced by this patch.
+The first retained baseline is `braintree-web@3.143.0` at SHA `bae582d791026c143abb91c3bdcada92b8c060f6`. The latest retained release is `3.144.0` at SHA `41460fba05c1ea1222e795b36a10765a6699b8e7`. Its exact comparison adds PayPal funding-instrument editing, v6 session options, and the Venmo detection fallback while preserving the earlier architecture.
 
 ## Related
 

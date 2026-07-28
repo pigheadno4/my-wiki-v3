@@ -45,11 +45,15 @@ One-time and Pay Later session options add `shippingCallbackUrl`, a typed `Brain
 
 Unlike standard PayPal buttons, merchants pass amount and currency rather than implementing `createOrder`. The Braintree SDK creates the payment session. After approval, the merchant calls `tokenizePayment()` and sends the resulting payment-method nonce to its server for processing with a Braintree server SDK, not PayPal's Orders API.
 
-## Braintree Web 3.143.0 Evidence
+## Braintree Web Evidence
 
 The independently retained `braintree-web@3.143.0` source confirms the client-side half of this boundary. Its `paypalCheckoutV6` component loads PayPal Web SDK v6, creates one-time, Pay Later, checkout-with-vault, and billing-agreement sessions, exposes eligible-method lookup, and converts approval data into a Braintree payment-method nonce.
 
 The same exact-SHA source also includes vault-initiated checkout for repeat purchases with a vaulted PayPal token. This is cumulative behavior present in `3.143.0`; the `3.143.0` patch itself only updates dependencies.
+
+At `braintree-web@3.144.0`, the non-v6 `paypalCheckout` component adds a separate View/Edit Funding Instrument path for returning buyers with a vaulted Billing Agreement. It requires a client token generated with `preferredPaymentMethodToken`, exchanges the embedded payment-method JWT for a billing-agreement JWT, and uses PayPal SDK `SavedPaymentMethods`. This is not a new vault-consent flow and does not apply to `flow: "vault"`.
+
+The same release expands the PayPal Checkout v6 session payload with locale, landing-page, user-action, risk-correlation, and shipping-address controls. Checkout-with-vault can also carry plan type and plan metadata. Availability remains subject to Braintree account configuration and the delegated PayPal runtime.
 
 ## Related
 

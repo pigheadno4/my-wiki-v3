@@ -4,21 +4,22 @@ type: source
 date_ingested: 2026-07-28
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree-web/snapshots/2026-07-28-41460fb/manifest.json"
   - "github/braintree/braintree-web/snapshots/2026-07-27-bae582d/manifest.json"
 tags: [braintree, javascript-sdk, checkout, hosted-fields, venmo, paypal, 3d-secure, github-repository]
 ---
 
 ## Overview
 
-`braintree/braintree-web` contains Braintree's modular browser SDK. The first retained baseline is package-qualified release `braintree-web@3.143.0` at exact SHA `bae582d791026c143abb91c3bdcada92b8c060f6`.
+`braintree/braintree-web` contains Braintree's modular browser SDK. The retained history begins with `braintree-web@3.143.0`; the latest retained release is `braintree-web@3.144.0` at exact SHA `41460fba05c1ea1222e795b36a10765a6699b8e7`.
 
 Repository: <https://github.com/braintree/braintree-web>
 
 ## Evidence Boundary
 
-- The snapshot proves implementation present in `braintree-web@3.143.0`, released on 2026-06-11. It does not replace current product documentation or prove merchant, buyer, country, or payment-method eligibility.
+- The snapshots prove implementation present in `braintree-web@3.143.0` and `3.144.0`. They do not replace current product documentation or prove merchant, buyer, country, or payment-method eligibility.
 - The package exposes SDK components, not Braintree Web Drop-in. Drop-in is a separately versioned repository.
-- The 27 retained stories show intended integration scenarios. Tests, fixtures, and mocks are excluded, so test-only behavior is outside this capsule.
+- The latest snapshot retains 28 stories that show intended integration scenarios. Tests, fixtures, and mocks are excluded, so test-only behavior is outside this capsule.
 - PayPal Checkout v6 and Fastlane delegate runtime behavior to PayPal SDKs. This source covers the Braintree adapters and nonce boundary, not the complete delegated runtimes.
 - Legacy modules retained in source, including Masterpass and Visa Checkout, are implementation history rather than evidence that merchants should start new integrations with them.
 
@@ -43,6 +44,22 @@ Repository: <https://github.com/braintree/braintree-web>
 > "Update Fastlane SDK loader package from `@paypal/accelerated-checkout-loader` to `@paypal/fastlane-sdk-loader`"
 >
 > `raw/github/braintree/braintree-web/snapshots/2026-07-27-bae582d/files/CHANGELOG.md:5-7`
+
+> "**Edit FI (Funding Instrument)** allows returning buyers with a vaulted Billing Agreement to view and change their saved PayPal payment method inline during checkout."
+>
+> `raw/github/braintree/braintree-web/snapshots/2026-07-28-41460fb/files/.storybook/stories/PayPalCheckout/PayPalCheckoutEditFI.stories.ts:28`
+
+> "Requires the client token to have been generated with a `preferredPaymentMethodToken`. Only applicable to the `checkout` flow."
+>
+> `raw/github/braintree/braintree-web/snapshots/2026-07-28-41460fb/files/src/paypal-checkout/paypal-checkout.js:549`
+
+> "When `true`, prompts the customer for a shipping address."
+>
+> `raw/github/braintree/braintree-web/snapshots/2026-07-28-41460fb/files/src/paypal-checkout-v6/paypal-checkout-v6.js:1436`
+
+> "Fix venmo.create() failing to create when isIncognito promise fails"
+>
+> `raw/github/braintree/braintree-web/releases/braintree-web/3.144.0/2026-07-28/release-notes.md:10-11`
 
 ## Package and Client Architecture
 
@@ -77,11 +94,21 @@ The result includes a new nonce plus `liabilityShifted` and `liabilityShiftPossi
 
 Session options cover amount, currency, intent, shipping callbacks, contact preferences, address overrides, commit behavior, and billing-agreement plan metadata where applicable. Eligibility and method presence in code do not establish account enablement.
 
+At `3.144.0`, the shared v6 payment-session path also forwards optional locale, landing-page type, user action, risk-correlation ID, shipping-address enablement, and shipping-address editability. Checkout-with-vault can additionally carry `planType` and formatted `planMetadata` for recurring, subscription, unscheduled, or installment agreement patterns. These are client-side request capabilities; product availability and valid combinations still depend on current Braintree and PayPal guidance.
+
+## PayPal View/Edit Funding Instrument
+
+`3.144.0` adds a non-v6 `paypalCheckout` path for a returning buyer to view or change the PayPal funding instrument behind an existing vaulted Billing Agreement. The merchant must generate the Braintree client token with a `preferredPaymentMethodToken`, call checkout `createPayment()` with `editBillingAgreement: true`, and use the PayPal SDK's `SavedPaymentMethods` component.
+
+The SDK exchanges the client token's `paymentMethodIdJwt` for a billing-agreement JWT and supplies it to the PayPal SDK as `data-user-id-token`, unless the merchant explicitly supplied that data attribute. The edit flag adds `editBillingAgreementJwt` only to the `checkout` flow, not the vault flow. If the JWT exchange fails, initialization continues without the generated token, so the release does not guarantee that Edit FI will be available for every returning buyer.
+
 ## Venmo
 
 The standalone Venmo component tokenizes through mobile app switch and optional fallback experiences. Browser support is configuration-sensitive: merchants can restrict new tabs and webviews, allow non-default browsers, choose iOS redirect/manual-return handling, and control cancellation when the buyer returns early.
 
 Desktop support can render a QR flow, while optional desktop or mobile web login provides a non-app path. `paymentMethodUsage` declares `single_use` or `multi_use`; the latter is intended for a nonce that will be vaulted and reused through Braintree. Merchant eligibility, supported environments, and server processing still require product guidance beyond this source snapshot.
+
+In `3.144.0`, rejection of the asynchronous incognito-detection check no longer rejects `venmo.create()`. The SDK falls back to an unknown, non-private result and continues normal client creation and Venmo enablement checks. This is failure isolation, not evidence that Venmo is supported in private browsing.
 
 ## Other Payment and Decision Surfaces
 
@@ -104,6 +131,12 @@ The release updates `credit-card-type` to `10.2.0` and replaces `@paypal/acceler
 
 All broader findings above are the cumulative baseline present at the exact release SHA, not changes introduced by `3.143.0`.
 
+## `3.144.0` Release Findings
+
+The release adds PayPal View/Edit Funding Instrument support, expands PayPal Checkout v6 payment-resource and session options, updates `framebus` from `6.0.3` to `6.1.0`, and prevents failed incognito detection from aborting `venmo.create()`.
+
+The exact-SHA comparison contains 319 byte-identical retained files, 10 changed files, and one added Edit FI story relative to `3.143.0`. The durable architecture sections remain valid; the additions above identify the material payment-flow changes without replacing the earlier baseline.
+
 ## Related
 
 - [[changelog-github-braintree-web]] — package-qualified release ledger
@@ -114,6 +147,15 @@ All broader findings above are the cumulative baseline present at the exact rele
 
 ## Raw Sources
 
+- Snapshot manifest: `raw/github/braintree/braintree-web/snapshots/2026-07-28-41460fb/manifest.json`
+- Release manifest: `raw/github/braintree/braintree-web/releases/braintree-web/3.144.0/2026-07-28/manifest.json`
+- Release notes: `raw/github/braintree/braintree-web/releases/braintree-web/3.144.0/2026-07-28/release-notes.md`
+- Comparison manifest: `tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.143.0--3.144.0/comparison.json`
+- Readable comparison: `tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.143.0--3.144.0/comparison.md`
+- Edit FI story: `raw/github/braintree/braintree-web/snapshots/2026-07-28-41460fb/files/.storybook/stories/PayPalCheckout/PayPalCheckoutEditFI.stories.ts`
+- PayPal Checkout: `raw/github/braintree/braintree-web/snapshots/2026-07-28-41460fb/files/src/paypal-checkout/paypal-checkout.js`
+- PayPal Checkout v6: `raw/github/braintree/braintree-web/snapshots/2026-07-28-41460fb/files/src/paypal-checkout-v6/paypal-checkout-v6.js`
+- Venmo entry point: `raw/github/braintree/braintree-web/snapshots/2026-07-28-41460fb/files/src/venmo/index.js`
 - Snapshot manifest: `raw/github/braintree/braintree-web/snapshots/2026-07-27-bae582d/manifest.json`
 - Release manifest: `raw/github/braintree/braintree-web/releases/braintree-web/3.143.0/2026-07-27/manifest.json`
 - Release notes: `raw/github/braintree/braintree-web/releases/braintree-web/3.143.0/2026-07-27/release-notes.md`

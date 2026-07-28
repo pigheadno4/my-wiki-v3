@@ -25,10 +25,10 @@
 - Repository: `braintree/braintree-web`
 - SHA: `41460fba05c1ea1222e795b36a10765a6699b8e7`
 - Collection date: `2026-07-28`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

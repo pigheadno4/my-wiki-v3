@@ -19,16 +19,16 @@ Braintree is represented in this wiki by the independently versioned Braintree W
 
 ## Versioned Implementation Knowledge
 
-The retained `braintree-web@3.143.0` baseline records 23 exported components at exact SHA `bae582d791026c143abb91c3bdcada92b8c060f6`. The exact patch updates card-type data and changes the Fastlane loader dependency; broader source findings are cumulative behavior present at that version.
+The retained history begins with `braintree-web@3.143.0` and currently reaches `3.144.0` at exact SHA `41460fba05c1ea1222e795b36a10765a6699b8e7`. The newer release adds PayPal View/Edit Funding Instrument, expands PayPal Checkout v6 session options, and prevents failed incognito detection from aborting Venmo creation while preserving the 23-component architecture.
 
 Repository evidence is not current enablement guidance. PayPal and Fastlane modules also have delegated-runtime boundaries, and legacy source modules should not be treated as recommendations for new integrations.
 
 ## Knowledge Status
 
 - Ingested cumulative GitHub repository sources: 1
-- Ingested package releases: 1
-- Latest retained package release: `braintree-web@3.143.0`
-- Latest retained exact SHA: `bae582d791026c143abb91c3bdcada92b8c060f6`
+- Ingested package releases: 2
+- Latest retained package release: `braintree-web@3.144.0`
+- Latest retained exact SHA: `41460fba05c1ea1222e795b36a10765a6699b8e7`
 
 ## Sources
 
