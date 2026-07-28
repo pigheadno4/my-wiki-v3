@@ -1,0 +1,3 @@
+- Dependencies
+  - Update `credit-card-type` to 10.2.0
+  - Update Fastlane SDK loader package from `@paypal/accelerated-checkout-loader` to `@paypal/fastlane-sdk-loader`

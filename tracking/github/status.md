@@ -1,5 +1,25 @@
 # GitHub repository ingest status
 
+## `github-1ab2662d292502a53058`
+
+- Repository: `braintree/braintree-web`
+- SHA: `bae582d791026c143abb91c3bdcada92b8c060f6`
+- Collection date: `2026-07-27`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/braintree/braintree-web/snapshots/2026-07-27-bae582d/manifest.json)
+
+### Package releases
+
+- `braintree-web@3.143.0` (recommended `full`)
+  Release: [manifest](raw/github/braintree/braintree-web/releases/braintree-web/3.143.0/2026-07-27/manifest.json)
+  Comparison: Not applicable
+
 ## `github-8416828e1141b2d896ea`
 
 - Repository: `paypal/paypal-js`
