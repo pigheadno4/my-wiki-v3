@@ -1,0 +1,41 @@
+{
+  "job_id": "high-volume-ingestion",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Usage Events at Scale\"\ntype: source\ndate_ingested: 2026-07-28\ncanonical_url: \"https://docs.metronome.com/guides/events/high-volume-ingestion\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/events/high-volume-ingestion-2026-07-13.md\"\ntags: [metronome, usage-events, event-ingestion, data-integrity]\n---\n\n## Overview\nMetronome\u2019s Usage events at scale guide describes high-throughput usage-event ingestion and tools for monitoring event data. It also outlines programmatic controls and recovery considerations for maintaining data integrity as event volume grows.\n\n## Key takeaways\n- Metronome states that its infrastructure supports up to 110,000 events per second, while the default ingest rate limit starts at 5,000 events per second.\n- Clients can submit up to 100 usage events in one request to the ingest endpoint.\n- The event UI supports inspection, searching, payload review, attribution review, and CSV export; the Event Search API can be used to sample events and validate billable-metric matching.\n- The guide describes a 34-day historical ingest and deduplication window through the ingest endpoint for recovery and replay.\n\n## Details\nThe guide recommends batching events when sending high volumes: send an array of usage-event objects in a POST request to the ingest endpoint, following the documented event schema.\n\nFor inspection, the event explorer can help validate ingestion, matching to billable metrics, and duplicate events. The documented controls include time-based event and duplicate-event graphs, searches by customer, duplicate status, billable metric, and transaction ID, complete event payload views, attribution views, and CSV export.\n\nFor sustained high-volume reliability, the guide recommends automated programmatic checks alongside queueing, retry, logging, alerting, and dead-letter-queue practices. It identifies Event Search API sampling as a control for detecting schema changes that could prevent events from matching active billable metrics.\n\nThe guide says the 34-day historical ingest and deduplication window uses the same ingest endpoint and can support replaying more than 24 hours of traffic, with draft invoices and credit ledgers re-rated in real time. It states that corrections beyond 34 days are handled by Metronome\u2019s operations team.\n\n## Related\n- Coordinator audit: determine whether existing Metronome company and platform-specific concept pages should receive links or updates before promotion.\n\n## Raw Sources\n- [[raw/metronome/guides/events/high-volume-ingestion-2026-07-13|high-volume-ingestion-2026-07-13]] \u2014 verbatim Metronome documentation page.",
+  "quotes": [
+    {
+      "text": "Metronome's infrastructure supports up to 110,000 events per second (6.6 million events per minute) without requiring pre-aggregation or rollups. Default ingest rate limit starts at 5,000 events per second. If you need higher throughput, contact Metronome to increase it.",
+      "location": "High throughput event ingest, line 17"
+    },
+    {
+      "text": "You can batch 100 events per request sent to Metronome\u2019s ingest endpoint.",
+      "location": "High throughput event ingest, line 19"
+    },
+    {
+      "text": "The Metronome UI offers direct access to inspect your event pipeline through our dedicated event explorer.",
+      "location": "Monitor event data in the UI, line 58"
+    },
+    {
+      "text": "Metronome offers a 34-day historical ingest and deduplication window processed through the same [ingest endpoint](/api-reference/usage/ingest-events).",
+      "location": "Maintaining data integrity at scale, line 83"
+    }
+  ],
+  "suggestions": {
+    "company": [
+      "Coordinator audit: verify the existing Metronome company page and update its source count only during promotion."
+    ],
+    "concepts": [
+      "Coordinator audit: assess whether a Metronome-specific usage-event ingestion concept exists before creating or updating one.",
+      "Coordinator audit: assess whether the documented Event Search API and data-integrity controls add concrete facts to an existing concept."
+    ],
+    "index": [
+      "Coordinator audit: add the promoted source to wiki/metronome-index.md."
+    ],
+    "log": [
+      "Coordinator audit: append the promotion record to wiki/metronome-log.md, not wiki/log.md."
+    ]
+  },
+  "raw_path": "raw/metronome/guides/events/high-volume-ingestion-2026-07-13.md",
+  "raw_sha256": "3060a2a6e53a96c2eecbb842aaeef7166213bf0bea44c5d216be01ed7b58f250",
+  "status": "candidate_ready"
+}

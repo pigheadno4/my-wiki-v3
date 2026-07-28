@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 10 |
-| Documentation pages pending ingest | 215 |
+| Source summaries ingested | 15 |
+| Documentation pages pending ingest | 210 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -26,6 +26,11 @@ Operational evidence:
 - [[source-metronome-guides-get-started-home]] — documentation entry point, getting-started routes, and four pricing/packaging models
 - [[source-metronome-guides-get-started-developer-sdks]] — SDK installation and an introductory event-to-invoice implementation path
 - [[source-metronome-guides-events-design-usage-events]] — event-design principles, cadence tradeoffs, contextual properties, and future-only metric changes
+- [[source-metronome-guides-events-high-volume-ingestion]] — throughput limits, batching, pipeline observability, and recovery
+- [[source-metronome-guides-get-started-stripe-marketplace-app]] — Stripe Dashboard app, customer management, and contract creation
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-enterprise-commit]] — enterprise commitment schedules, tag-scoped discounts, lifecycle, and example cautions
+- [[source-metronome-integrations-invoice-integrations-stripe]] — Stripe account routing, invoice settings, status synchronization, payment timing, and limits
+- [[source-metronome-api-reference-credits-and-commits-create-a-commit]] — customer-level commit requirements, schedules, scope, priority, and response boundary
 - [[source-metronome-guides-invoices-overview]] — Stripe, marketplace, and ERP invoicing options
 - [[source-metronome-guides-reporting-insights-data-export-database-reference]] — warehouse schema navigation, snapshot grains, and query cautions
 - [[source-metronome-api-reference-contracts-create-a-contract]] — create endpoint, nested request families, conditional requirements, and response boundary
@@ -38,6 +43,8 @@ Operational evidence:
 
 - [[metronome-usage-based-billing]] — pay as you go, enterprise commitments, subscriptions with usage, and prepaid credits
 - [[metronome-invoicing]] — native Stripe, marketplace, and ERP invoicing paths
+- [[metronome-integrations]] — external-system integration boundaries and workflows
+- [[metronome-credits-and-commits]] — commitment access and invoice schedules, rollover, and lifecycle boundaries
 - [[metronome-event-ingestion]] — usage-event fields, limits, idempotency, design choices, and matching boundary
 - [[metronome-billable-metrics]] — filters, aggregation operations, contextual grouping, and creation-time behavior
 - [[metronome-products-and-rate-cards]] — product presentation, quantity conversion, and effective rates
@@ -50,9 +57,7 @@ Operational evidence:
 
 Additional concept pages will be created only when grounded source summaries are ingested:
 
-- `metronome-credits-and-commits.md`
 - `metronome-alerts-and-notifications.md`
-- `metronome-integrations.md`
 
 ## Related platforms
 

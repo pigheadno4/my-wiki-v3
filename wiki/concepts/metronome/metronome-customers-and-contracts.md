@@ -38,14 +38,26 @@ Important creation constraints include:
 
 `POST /v2/contracts/getEditHistory` returns the recorded edit history for one customer contract. Metronome describes this as a full history spanning changes made in the UI, through `editContract`, and through other contract-changing endpoints. Each `ContractEdit` can identify when an edit occurred and group the additions, updates, archives, and removals it contained, including changes to pricing overrides, discounts, charges, commits, credits, subscriptions, usage filters, contract dates, and threshold configuration.
 
+## Edits and transitions
+
+The enterprise guide distinguishes two lifecycle operations. An edit adds terms without starting a new contract. A transition starts a new contract, preserves its relationship to the original, and can apply renewal logic such as rolling over unused commitments or credits.
+
+## Stripe Dashboard contract management
+
+The Metronome Stripe App embeds customer and contract management in the Stripe Dashboard. It lists Stripe customers linked through Metronome billing-provider configurations and can automatically create a corresponding Metronome customer when contract creation starts. Its four-step wizard configures invoice terms, rate-card pricing and overrides, subscription quantities and product entitlement, credit schedules, and confirmation. The resulting contract uses the Stripe customer's existing billing-provider configuration for invoice delivery.
+
 ## Sources
 
 - [[source-metronome-guides-get-started-developer-sdks]] — customer aliases, basic contract provisioning, and introductory invoice behavior
 - [[source-metronome-api-reference-contracts-create-a-contract]] — create endpoint, request families, conditional requirements, and response boundary
 - [[source-metronome-api-reference-contracts-get-contract-edit-history]] — cross-channel contract change history and response structure
+- [[source-metronome-guides-get-started-stripe-marketplace-app]] — Stripe Dashboard customer and contract management workflow
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-enterprise-commit]] — enterprise provisioning, edits, transitions, and renewal rollover
 
 ## Related
 
 - [[metronome-event-ingestion]]
 - [[metronome-products-and-rate-cards]]
 - [[metronome-invoicing]]
+- [[metronome-integrations]]
+- [[metronome-credits-and-commits]]

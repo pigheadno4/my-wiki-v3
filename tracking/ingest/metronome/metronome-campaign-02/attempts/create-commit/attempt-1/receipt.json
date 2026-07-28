@@ -1,0 +1,44 @@
+{
+  "job_id": "create-commit",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Create a commit\"\ntype: source\ndate_ingested: 2026-07-28\ncanonical_url: \"https://docs.metronome.com/api-reference/credits-and-commits/create-a-commit\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/credits-and-commits/create-a-commit-2026-07-13.md\"\ntags: [metronome, credits-and-commits, customer-commits, api]\n---\n\n## Overview\nThis API reference documents Metronome's customer-level commit creation endpoint. It creates prepaid or postpaid spending commitments that can apply across a customer's contracts or be limited to specified contracts, although the page recommends creating commitments directly on customer contracts for most standard use cases.\n\n## Key takeaways\n- Send `POST /v1/contracts/customerCommits/create` with `customer_id`, `type`, `priority`, `product_id`, and `access_schedule`; the API returns a commit identifier on success.\n- `type` supports prepaid and postpaid values. Postpaid commits require an invoice schedule, require matching access and invoice totals, and permit only one item in each schedule.\n- `invoice_contract_id` is required for postpaid commits and prepaid commits that have billing, except when a prepaid commit is free or `do_not_invoice` is true.\n- Product targeting can use product IDs, product tags, or specifiers; specifiers cannot be combined with either of the other two targeting fields.\n- The documented responses are `200` success, `400` bad request, and `404` not found. A reused `uniqueness_key` is documented to fail with `409`, despite no `409` response entry in the operation's response map.\n\n## Details\nThe endpoint is authenticated with bearer authentication. The required request fields are `customer_id`, `type`, `priority`, `product_id`, and `access_schedule`; `product_id` is described as required because products are used to invoice the commit amount. `access_schedule` requires schedule items whose individual items require `amount`, inclusive `starting_at`, and exclusive `ending_before`.\n\nFor `POSTPAID`, `invoice_schedule` is required, only one schedule item is allowed in each schedule, and invoice totals must match the access amount. The invoice schedule can provide `amount`, or `unit_price` together with `quantity`; its schema also permits a recurring schedule. For `PREPAID`, omitting `invoice_schedule` creates a complimentary commit with no invoice. `do_not_invoice` applies only to commit invoice schedules and suppresses invoice generation when true.\n\n`applicable_contract_ids` scopes a commit to contracts; without it, the commit applies to all contracts. If no applicable product IDs, tags, or specifiers are supplied, it applies to all products. Lower numeric `priority` values are applied first; ties give contract-level commits and credits precedence over customer-level commits and credits. `netsuite_sales_order_id` and `salesforce_opportunity_id` are feature-gated by client configuration; `exclude` within a specifier is also feature-gated.\n\n> [!warning] Documentation inconsistency\n> The schema's `type` enum accepts both uppercase and lowercase forms, while the prose says callers must specify either `\"prepaid\"` or `\"postpaid\"`. The `invoice_schedule` description also spells `access_schedule` as `accesss_schedule`; the surrounding requirements consistently refer to `access_schedule`. The uniqueness-key description documents a `409` failure, but the operation explicitly lists only `200`, `400`, and `404` responses.\n\n## Related\n- Coordinator audit: determine whether existing Metronome company and customer-commit concept pages should be linked; this candidate deliberately adds no wiki links.\n\n## Raw Sources\n- [[raw/metronome/api-reference/credits-and-commits/create-a-commit-2026-07-13|create-a-commit-2026-07-13]] \u2014 verbatim Metronome API reference for customer-level commit creation.\n",
+  "quotes": [
+    {
+      "text": "Creates customer-level commits that establish spending commitments for customers across their Metronome usage. Commits represent contracted spending obligations that can be either prepaid (paid upfront) or postpaid (billed later). ",
+      "location": "Create a commit introduction"
+    },
+    {
+      "text": "invoice_contract_id is required for postpaid commits and for prepaid commits with billing (only optional for free prepaid commits) unless do_not_invoice is set to true",
+      "location": "Billing configuration"
+    },
+    {
+      "text": "Which products the commit applies to.",
+      "location": "OpenAPI > CreateCustomerCommitPayload > applicable_product_ids"
+    },
+    {
+      "text": "This field's availability is dependent on your client's",
+      "location": "OpenAPI > CreateCustomerCommitPayload > netsuite_sales_order_id and salesforce_opportunity_id"
+    },
+    {
+      "text": "Prevents the creation of duplicates.",
+      "location": "OpenAPI > UniquenessKeyForCommitsAndCredits"
+    }
+  ],
+  "suggestions": {
+    "company": [
+      "Coordinator audit: consider whether this source adds a concrete customer-level-commit API fact to the existing Metronome company page."
+    ],
+    "concepts": [
+      "Coordinator audit: check existing Metronome commit or credit concepts before creating or linking any concept page."
+    ],
+    "index": [
+      "Coordinator audit: if promoted, list the approved source in wiki/metronome-index.md."
+    ],
+    "log": [
+      "Coordinator audit: if promoted, record the ingest in wiki/metronome-log.md."
+    ]
+  },
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/create-a-commit-2026-07-13.md",
+  "raw_sha256": "5b64a29a0e68c46631f22db7ce1cb1a8a9ca5cc2a8b5eb915620df6886664adc",
+  "status": "candidate_ready"
+}

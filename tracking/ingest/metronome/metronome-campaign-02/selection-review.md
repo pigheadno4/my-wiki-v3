@@ -1,8 +1,8 @@
 # Metronome Campaign 02 Selection Review
 
-Status: `initialized_awaiting_worker_launch`
+Status: `complete`
 
-The user approved this manifest on 2026-07-28. Campaign state is initialized with five queued jobs; no worker launch or candidate promotion is approved.
+The user approved this manifest and worker launch on 2026-07-28. All five jobs passed deterministic worker-result validation and serial Sol review on attempt 1, then were promoted to canonical wiki sources.
 
 ## Proposed jobs
 
@@ -23,6 +23,6 @@ The user approved this manifest on 2026-07-28. Campaign state is initialized wit
 - Every source target is unique and does not exist.
 - Campaign size is five, worker concurrency is five, and review concurrency remains one.
 
-## Execution boundary after approval
+## Execution result
 
-Initialization may create only the campaign state, job projection, event journal, monitor, and attempt folders under this campaign directory. Workers may produce source candidates and shared-file suggestions only. Sol review and canonical promotion remain serial, one source at a time; approval of this manifest does not approve any candidate source page.
+Workers produced source candidates and shared-file suggestions only. Sol read each complete raw page, audited concepts, repaired and promoted canonical pages serially, and reconciled shared indexes and logs. No worker wrote canonical wiki files; no job failed, retried, or was rejected.

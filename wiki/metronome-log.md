@@ -6,6 +6,57 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-07-28 — Metronome Campaign 02 completed
+
+- Result: five of five jobs were approved on attempt 1; no job failed, retried, or was rejected.
+- Execution: three native GPT-5.6 Terra workers produced bounded candidates and suggestions, while Sol performed serial full-raw review, concept audit, canonical promotion, shared-file reconciliation, and final approval.
+- Output: five source summaries, two new concepts, and grounded updates to four existing concepts.
+- Coverage after campaign: 15 source summaries ingested and 210 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-02/monitor.md), [selection and result summary](../tracking/ingest/metronome/metronome-campaign-02/selection-review.md), and [event journal](../tracking/ingest/metronome/metronome-campaign-02/events.jsonl).
+
+## 2026-07-28 — Canonical ingest: Create a commit API
+
+- Ingested: [[source-metronome-api-reference-credits-and-commits-create-a-commit]] from the complete 605-line API reference.
+- Concept audit: updated [[metronome-credits-and-commits]]; no endpoint-specific concept or comparison page was warranted.
+- Sol review retained conditional prepaid/postpaid invoice rules, cross-contract scope, targeting semantics, priority ties, gated fields, and the generic recurring-schedule versus postpaid single-item ambiguity.
+- Terra/Sol campaign: attempt 1 passed deterministic candidate validation and serial Sol review after bounded canonical repair.
+- Coverage after finalization: 15 source summaries ingested and 210 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-02/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-02/attempts/create-commit/attempt-1/receipt.json).
+
+## 2026-07-28 — Canonical ingest: Stripe invoice integration
+
+- Ingested: [[source-metronome-integrations-invoice-integrations-stripe]] from the complete 331-line guide.
+- Concept audit: updated [[metronome-invoicing]] and [[metronome-integrations]]; no new concept or cross-provider comparison page was warranted.
+- Sol review restored multi-account routing, non-retroactive activation, payment-gated product mapping, account-level setting boundaries, Stripe-side payment timing, and representation limits omitted by the worker draft.
+- Terra/Sol campaign: attempt 1 passed deterministic candidate validation and serial Sol review after canonical repair.
+- Coverage after finalization: 14 source summaries ingested and 211 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-02/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-02/attempts/stripe-invoice-integration/attempt-1/receipt.json).
+
+## 2026-07-28 — Canonical ingest: enterprise commitment model
+
+- Ingested: [[source-metronome-guides-pricing-packaging-billing-model-guides-enterprise-commit]] from the complete 267-line guide.
+- Concept audit: created [[metronome-credits-and-commits]] and updated [[metronome-products-and-rate-cards]] and [[metronome-customers-and-contracts]]; no comparison page was warranted.
+- Sol review preserved two source-document inconsistencies: `product` versus the API reference's `product_id`, and an upsell described as a commitment but implemented as a scheduled charge.
+- Terra/Sol campaign: attempt 1 passed deterministic candidate validation and serial Sol review after canonical repair.
+- Coverage after finalization: 13 source summaries ingested and 212 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-02/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-02/attempts/enterprise-commit/attempt-1/receipt.json).
+
+## 2026-07-28 — Canonical ingest: Metronome Stripe App
+
+- Ingested: [[source-metronome-guides-get-started-stripe-marketplace-app]] from the complete 154-line guide.
+- Concept audit: created [[metronome-integrations]] and updated [[metronome-customers-and-contracts]]; no comparison page was warranted.
+- Terra/Sol campaign: attempt 1 passed deterministic candidate validation and serial Sol review.
+- Coverage after finalization: 12 source summaries ingested and 213 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-02/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-02/attempts/stripe-marketplace-app/attempt-1/receipt.json).
+
+## 2026-07-28 — Canonical ingest: usage events at scale
+
+- Ingested: [[source-metronome-guides-events-high-volume-ingestion]] from the complete 85-line guide.
+- Concept audit: updated [[metronome-event-ingestion]] with throughput, batching, observability, and recovery boundaries; no new concept or comparison page was warranted.
+- Terra/Sol campaign: attempt 1 passed deterministic candidate validation and serial Sol review.
+- Coverage after finalization: 11 source summaries ingested and 214 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-02/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-02/attempts/high-volume-ingestion/attempt-1/receipt.json).
+
 ## 2026-07-28 — Minimum promotion pilot closed
 
 - Result: all five jobs were approved and promoted; no job failed or was rejected.
