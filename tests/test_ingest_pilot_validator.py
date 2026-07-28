@@ -30,6 +30,7 @@ class WorkerResultValidationTests(unittest.TestCase):
             "raw_path": self.raw_path,
             "raw_sha256": sha256_file(self.raw),
             "source_target": "wiki/sources/metronome/source-metronome-security-principles.md",
+            "canonical_url": "https://docs.metronome.com/guides/platform-configuration/security-principles.md",
         }
 
     def valid_result(self, **overrides):
@@ -41,13 +42,14 @@ class WorkerResultValidationTests(unittest.TestCase):
                 "title: \"Metronome security principles\"\n"
                 "type: source\n"
                 "date_ingested: 2026-07-27\n"
+                "canonical_url: \"https://docs.metronome.com/guides/platform-configuration/security-principles.md\"\n"
                 "original_format: webpage\n"
                 "raw_files:\n"
                 "  - \"metronome/guides/platform-configuration/security-principles-2026-07-13.md\"\n"
                 "tags: [metronome, security]\n"
                 "---\n\n"
                 "## Raw Sources\n"
-                "- [[security-principles-2026-07-13]] — verbatim documentation\n"
+                "- [[raw/metronome/guides/platform-configuration/security-principles-2026-07-13|security-principles-2026-07-13]] — verbatim documentation\n"
             ),
             "quotes": [
                 {"text": "Least privilege", "location": "Metronome's security principles"},
@@ -109,6 +111,19 @@ class WorkerResultValidationTests(unittest.TestCase):
                     )
                 self.assert_invalid(self.valid_result(source_page=source_page))
 
+    def test_rejects_missing_or_wrong_canonical_url(self):
+        expected = (
+            'canonical_url: "https://docs.metronome.com/guides/'
+            'platform-configuration/security-principles.md"\n'
+        )
+        for replacement in (
+            "",
+            'canonical_url: "https://docs.metronome.com/guides/other.md"\n',
+        ):
+            with self.subTest(replacement=replacement):
+                source_page = self.valid_result()["source_page"].replace(expected, replacement)
+                self.assert_invalid(self.valid_result(source_page=source_page))
+
     def test_rejects_expected_raw_path_outside_raw_files(self):
         source_page = self.valid_result()["source_page"].replace(
             "raw_files:\n"
@@ -135,7 +150,16 @@ class WorkerResultValidationTests(unittest.TestCase):
 
     def test_rejects_a_wrong_raw_wikilink(self):
         source_page = self.valid_result()["source_page"].replace(
-            "[[security-principles-2026-07-13]]", "[[other-raw-file]]"
+            "[[raw/metronome/guides/platform-configuration/security-principles-2026-07-13|security-principles-2026-07-13]]",
+            "[[other-raw-file]]",
+        )
+
+        self.assert_invalid(self.valid_result(source_page=source_page))
+
+    def test_rejects_a_filename_only_raw_wikilink(self):
+        source_page = self.valid_result()["source_page"].replace(
+            "[[raw/metronome/guides/platform-configuration/security-principles-2026-07-13|security-principles-2026-07-13]]",
+            "[[security-principles-2026-07-13]]",
         )
 
         self.assert_invalid(self.valid_result(source_page=source_page))
@@ -143,17 +167,20 @@ class WorkerResultValidationTests(unittest.TestCase):
     def test_rejects_a_raw_wikilink_outside_the_raw_sources_section(self):
         source_page = self.valid_result()["source_page"].replace(
             "## Raw Sources\n",
-            "[[security-principles-2026-07-13]] — misplaced raw link\n\n## Raw Sources\n",
-        ).replace("- [[security-principles-2026-07-13]] — verbatim documentation\n", "")
+            "[[raw/metronome/guides/platform-configuration/security-principles-2026-07-13|security-principles-2026-07-13]] — misplaced raw link\n\n## Raw Sources\n",
+        ).replace(
+            "- [[raw/metronome/guides/platform-configuration/security-principles-2026-07-13|security-principles-2026-07-13]] — verbatim documentation\n",
+            "",
+        )
 
         self.assert_invalid(self.valid_result(source_page=source_page))
 
     def test_rejects_a_raw_wikilink_in_a_later_section(self):
         source_page = self.valid_result()["source_page"].replace(
-            "- [[security-principles-2026-07-13]] — verbatim documentation\n",
+            "- [[raw/metronome/guides/platform-configuration/security-principles-2026-07-13|security-principles-2026-07-13]] — verbatim documentation\n",
             "- [[other-raw-file]] — wrong link\n\n"
             "## Related\n"
-            "- [[security-principles-2026-07-13]] — misplaced raw link\n",
+            "- [[raw/metronome/guides/platform-configuration/security-principles-2026-07-13|security-principles-2026-07-13]] — misplaced raw link\n",
         )
 
         self.assert_invalid(self.valid_result(source_page=source_page))

@@ -46,7 +46,7 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _raw_entry(source_page: str, raw_path: str) -> str:
+def _raw_entry(source_page: str, raw_path: str, canonical_url: str) -> str:
     if not source_page.startswith("---\n"):
         raise ValidationError("source page must start with frontmatter")
     closing = source_page.find("\n---\n", 4)
@@ -54,6 +54,8 @@ def _raw_entry(source_page: str, raw_path: str) -> str:
         raise ValidationError("source page frontmatter is incomplete")
     frontmatter = source_page[4:closing].splitlines()
     expected = raw_path.removeprefix("raw/")
+    if f'canonical_url: "{canonical_url}"' not in frontmatter:
+        raise ValidationError("source page canonical_url does not match the job")
     try:
         raw_files = frontmatter.index("raw_files:")
     except ValueError as error:
@@ -111,7 +113,10 @@ def validate_worker_result(root: Path, job: dict, result: dict) -> Dict[str, Any
     source_page = result["source_page"]
     if not isinstance(source_page, str):
         raise ValidationError("source page must be text")
-    raw_entry = _raw_entry(source_page, job["raw_path"])
+    canonical_url = job.get("canonical_url")
+    if not isinstance(canonical_url, str) or not canonical_url:
+        raise ValidationError("job is missing canonical_url")
+    raw_entry = _raw_entry(source_page, job["raw_path"], canonical_url)
     lines = source_page.splitlines()
     try:
         heading = lines.index("## Raw Sources")
@@ -121,9 +126,9 @@ def validate_worker_result(root: Path, job: dict, result: dict) -> Dict[str, Any
         (index for index, line in enumerate(lines[heading + 1:], start=heading + 1) if line.startswith("## ")),
         len(lines),
     )
-    raw_wikilink = f"[[{Path(raw_entry).stem}]]"
+    raw_target = f"raw/{raw_entry.removesuffix('.md')}"
     raw_sources = "\n".join(lines[heading + 1:section_end])
-    if raw_wikilink not in raw_sources:
+    if f"[[{raw_target}|" not in raw_sources and f"[[{raw_target}]]" not in raw_sources:
         raise ValidationError("source page raw link does not match raw path")
 
     return result

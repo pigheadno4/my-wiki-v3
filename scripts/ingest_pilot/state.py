@@ -154,6 +154,7 @@ def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> No
                 "raw_path": source["raw_path"],
                 "raw_sha256": source["raw_sha256"],
                 "source_target": source["source_target"],
+                "canonical_url": source["canonical_url"],
                 "state": "queued",
                 "attempt": 0,
                 "queue_position": position,

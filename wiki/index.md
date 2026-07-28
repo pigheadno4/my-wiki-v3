@@ -18,7 +18,7 @@
 
 - [[paypal]] — PayPal: payment platform, JS SDK, Venmo, Orders API
 - [[stripe]] — Stripe: developer-first payment APIs, PaymentIntents, Checkout, Subscriptions, Elements
-- [[metronome]] — Stripe-owned usage-based billing provider capsule; collection complete, controlled ingest pilot underway
+- [[metronome]] — Stripe-owned usage-based billing provider capsule; collection complete, five-page promotion pilot complete, serial ingest continuing
 - [[adyen]] — Adyen: Web Drop-in and Components, Sessions, cards, 3DS2, and checkout actions
 - [[braintree]] — Braintree: modular Web SDK, Hosted Fields, 3DS, wallets, local payments, and nonce-based server handoff
 

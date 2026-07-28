@@ -1,6 +1,6 @@
 # Metronome Minimum Pilot 01
 
-- Campaign state: `active`
+- Campaign state: `complete`
 - Worker concurrency: `5`
 - Queued: 0
 - Running: 0

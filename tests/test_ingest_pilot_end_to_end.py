@@ -157,13 +157,14 @@ class TenJobRollingCampaignTests(unittest.TestCase):
                 f'title: "{job_id}"\n'
                 "type: source\n"
                 "date_ingested: 2026-07-27\n"
+                f'canonical_url: "{job["canonical_url"]}"\n'
                 "original_format: webpage\n"
                 "raw_files:\n"
                 f'  - "{job["raw_path"].removeprefix("raw/")}"\n'
                 "tags: [metronome]\n"
                 "---\n\n"
                 "## Raw Sources\n"
-                f"- [[{raw_stem}]] — fake immutable raw input\n"
+                f"- [[{job['raw_path'].removesuffix('.md')}|{raw_stem}]] — fake immutable raw input\n"
             ),
             "quotes": [
                 {"text": "Quote one: immutable raw input.", "location": "body"},

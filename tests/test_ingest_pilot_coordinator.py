@@ -45,6 +45,7 @@ class CoordinatorTests(unittest.TestCase):
             "raw_path": raw_path,
             "raw_sha256": hashlib.sha256(raw.read_bytes()).hexdigest(),
             "source_target": f"wiki/sources/metronome/source-job-{number}.md",
+            "canonical_url": f"https://docs.metronome.com/job-{number}",
         }
 
     def test_run_emits_five_orders_and_persists_running_attempts(self):
@@ -88,13 +89,14 @@ class CoordinatorTests(unittest.TestCase):
                 f'title: "{job_id}"\n'
                 "type: source\n"
                 "date_ingested: 2026-07-27\n"
+                f'canonical_url: "{job["canonical_url"]}"\n'
                 "original_format: webpage\n"
                 "raw_files:\n"
                 f'  - "{job["raw_path"].removeprefix("raw/")}"\n'
                 "tags: [metronome]\n"
                 "---\n\n"
                 "## Raw Sources\n"
-                f"- [[{raw_stem}]] — verbatim documentation\n"
+                f"- [[{job['raw_path'].removesuffix('.md')}|{raw_stem}]] — verbatim documentation\n"
             ),
             "quotes": [
                 {"text": "Least privilege", "location": "body"},

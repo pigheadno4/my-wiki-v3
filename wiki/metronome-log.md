@@ -6,6 +6,13 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-07-28 — Minimum promotion pilot closed
+
+- Result: all five jobs were approved and promoted; no job failed or was rejected.
+- Boundary correction: future campaign jobs retain their canonical URL, and the coordinator now rejects candidate pages that omit or change it or use a filename-only raw backlink.
+- Scope: this closes `metronome-minimum-pilot-01`; it does not authorize bulk ingest or bypass serial Sol review.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-minimum-pilot-01/monitor.md) and [event journal](../tracking/ingest/metronome/metronome-minimum-pilot-01/events.jsonl).
+
 ## 2026-07-28 — Canonical ingest: security principles
 
 - Ingested: [[source-metronome-guides-platform-configuration-security-principles]] from the complete 29-line guide.
