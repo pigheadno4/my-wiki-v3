@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 9
+source_count: 10
 ---
 
 ## Overview
@@ -43,6 +43,12 @@ The contract edit-history API exposes recorded changes made through the UI and c
 - Receivers should acknowledge quickly, process asynchronously, and deduplicate by notification ID because retries can continue for up to two days.
 - Authenticity can be established by retrieving authoritative API data or verifying an HMAC-SHA256 signature over the request date and exact body bytes.
 
+## Security principles
+
+- Access follows least privilege, with explicit grants and field-level controls.
+- Service-to-service and actor-to-system communication follows a zero-trust authentication model.
+- Metronome states that engineers use daily minted credentials lasting 12 hours rather than long-lived credentials on developer machines.
+
 ## Reporting and data export
 
 - Warehouse exports cover raw events, customers, invoices, contracts, pricing, packages, payments, alerts, and metadata.
@@ -52,8 +58,8 @@ The contract edit-history API exposes recorded changes made through the UI and c
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 9
-- Documentation pages pending ingest: 216
+- Ingested source summaries: 10
+- Documentation pages pending ingest: 215
 
 ## Sources
 
@@ -66,6 +72,7 @@ The contract edit-history API exposes recorded changes made through the UI and c
 - [[source-metronome-api-reference-invoices-preview-events]] — draft-invoice previews from proposed usage events
 - [[source-metronome-api-reference-contracts-get-contract-edit-history]] — cross-channel contract edit history and change categories
 - [[source-metronome-guides-platform-configuration-setup-webhooks]] — webhook categories, retry behavior, deduplication, and verification
+- [[source-metronome-guides-platform-configuration-security-principles]] — least privilege, zero trust, and short-lived credentials
 
 ## Related
 
@@ -80,3 +87,4 @@ The contract edit-history API exposes recorded changes made through the UI and c
 - [[metronome-customers-and-contracts]] — customer aliases, commercial terms, and invoice activation
 - [[metronome-reporting-and-analytics]] — warehouse exports, snapshot grains, and query cautions
 - [[metronome-webhooks]] — notification delivery, reliability, and authenticity
+- [[metronome-security-principles]] — platform access, authentication, and credential-lifetime principles

@@ -6,6 +6,14 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-07-28 — Canonical ingest: security principles
+
+- Ingested: [[source-metronome-guides-platform-configuration-security-principles]] from the complete 29-line guide.
+- Concept audit: created [[metronome-security-principles]] before canonical source promotion; no comparison page was warranted.
+- Terra/Sol dry run: attempt 1 reached `review_approved`; canonical promotion retained the four grounded security claims and added the required canonical URL and path-qualified raw backlink.
+- Coverage after finalization: 10 source summaries ingested and 215 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-minimum-pilot-01/monitor.md) and [approved attempt receipt](../tracking/ingest/metronome/metronome-minimum-pilot-01/attempts/security-principles/attempt-1/receipt.json).
+
 ## 2026-07-28 — Canonical ingest: setup webhooks
 
 - Ingested: [[source-metronome-guides-platform-configuration-setup-webhooks]] from the complete 870-line guide.
