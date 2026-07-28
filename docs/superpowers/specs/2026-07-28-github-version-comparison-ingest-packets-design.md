@@ -2,7 +2,7 @@
 
 ## Status
 
-Design approved in discussion; written specification awaiting user review.
+Approved.
 
 ## Goal
 
