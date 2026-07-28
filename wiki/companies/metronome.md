@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 6
+source_count: 7
 ---
 
 ## Overview
@@ -25,6 +25,7 @@ The documentation home is a navigation overview. The SDK walkthrough adds an int
 - Event design starts from billing and operational requirements, follows the data and cadence available in the source system, and retains contextual properties for future reporting or pricing changes.
 - Billable metrics filter and aggregate events; products and rate cards turn those measurements into prices.
 - Customer contracts apply the rate card and produce draft invoices that update with usage.
+- The Preview Events API can calculate draft invoices from proposed usage before processing, using either replacement or merged historical-usage semantics.
 
 The create-contract API adds package or rate-card selection, commits and credits, pricing overrides, subscriptions, scheduled charges, usage routing, threshold billing, provider configuration, and customer hierarchy. Only customer ID and contract start are unconditionally required at the top level; nested requirements depend on the selected structures.
 
@@ -43,8 +44,8 @@ The create-contract API adds package or rate-card selection, commits and credits
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 6
-- Documentation pages pending ingest: 219
+- Ingested source summaries: 7
+- Documentation pages pending ingest: 218
 
 ## Sources
 
@@ -54,6 +55,7 @@ The create-contract API adds package or rate-card selection, commits and credits
 - [[source-metronome-guides-invoices-overview]] — Stripe, marketplace, and ERP invoicing options
 - [[source-metronome-guides-reporting-insights-data-export-database-reference]] — warehouse schema families, grains, and query cautions
 - [[source-metronome-api-reference-contracts-create-a-contract]] — contract creation request families and conditional rules
+- [[source-metronome-api-reference-invoices-preview-events]] — draft-invoice previews from proposed usage events
 
 ## Related
 

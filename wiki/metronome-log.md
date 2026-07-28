@@ -6,6 +6,14 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-07-28 — Canonical ingest: Preview Events API
+
+- Ingested: [[source-metronome-api-reference-invoices-preview-events]] from the complete 1,020-line API reference.
+- Concept audit: updated [[metronome-event-ingestion]], [[metronome-invoicing]], and [[metronome-usage-based-billing]]; no new concept or comparison page was warranted.
+- Terra/Sol dry run: attempt 1 reached `review_approved`; canonical promotion retained the grounded API constraints and added the required canonical URL and path-qualified raw backlink.
+- Coverage after finalization: 7 source summaries ingested and 218 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-minimum-pilot-01/monitor.md) and [approved attempt receipt](../tracking/ingest/metronome/metronome-minimum-pilot-01/attempts/preview-events/attempt-1/receipt.json).
+
 ## 2026-07-28 — Canonical ingest: design usage events
 
 - Ingested: [[source-metronome-guides-events-design-usage-events]] from the complete 88-line guide.

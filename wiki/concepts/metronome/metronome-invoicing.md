@@ -21,6 +21,10 @@ Metronome presents invoicing as a set of distribution-channel options rather tha
 
 The overview emphasizes optionality: organizations can use simpler integrated invoicing, marketplace distribution, or ERP systems according to their contracting and revenue-process needs. It does not define invoice objects, lifecycle states, synchronization details, or integration setup; those require the linked dedicated guides.
 
+## Event-based invoice preview
+
+Metronome exposes `POST /v1/customers/{customer_id}/previewEvents` to calculate draft invoices from supplied usage events and the customer's current contract configuration before those events are processed. The request can replace historical usage or merge with it, and the response returns draft invoice records with totals and line items. Contracts using SQL billable metrics are excluded from this preview capability.
+
 ## Related
 
 - Company: [[metronome]]
@@ -30,3 +34,4 @@ The overview emphasizes optionality: organizations can use simpler integrated in
 ## Sources
 
 - [[source-metronome-guides-invoices-overview]] — Stripe, marketplace, and ERP invoicing options
+- [[source-metronome-api-reference-invoices-preview-events]] — draft-invoice previews calculated from proposed usage events
