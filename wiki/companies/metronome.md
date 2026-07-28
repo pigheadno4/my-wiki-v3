@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 7
+source_count: 8
 ---
 
 ## Overview
@@ -29,6 +29,8 @@ The documentation home is a navigation overview. The SDK walkthrough adds an int
 
 The create-contract API adds package or rate-card selection, commits and credits, pricing overrides, subscriptions, scheduled charges, usage routing, threshold billing, provider configuration, and customer hierarchy. Only customer ID and contract start are unconditionally required at the top level; nested requirements depend on the selected structures.
 
+The contract edit-history API exposes recorded changes made through the UI and contract-changing endpoints, grouping additions, updates, archives, and removals for contract audit work.
+
 ## Invoicing options
 
 - Native Stripe invoicing can use Stripe Tax, dunning, and other Stripe product-suite capabilities.
@@ -44,8 +46,8 @@ The create-contract API adds package or rate-card selection, commits and credits
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 7
-- Documentation pages pending ingest: 218
+- Ingested source summaries: 8
+- Documentation pages pending ingest: 217
 
 ## Sources
 
@@ -56,6 +58,7 @@ The create-contract API adds package or rate-card selection, commits and credits
 - [[source-metronome-guides-reporting-insights-data-export-database-reference]] — warehouse schema families, grains, and query cautions
 - [[source-metronome-api-reference-contracts-create-a-contract]] — contract creation request families and conditional rules
 - [[source-metronome-api-reference-invoices-preview-events]] — draft-invoice previews from proposed usage events
+- [[source-metronome-api-reference-contracts-get-contract-edit-history]] — cross-channel contract edit history and change categories
 
 ## Related
 

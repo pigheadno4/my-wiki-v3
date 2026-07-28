@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 7 |
-| Documentation pages pending ingest | 218 |
+| Source summaries ingested | 8 |
+| Documentation pages pending ingest | 217 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -30,6 +30,7 @@ Operational evidence:
 - [[source-metronome-guides-reporting-insights-data-export-database-reference]] — warehouse schema navigation, snapshot grains, and query cautions
 - [[source-metronome-api-reference-contracts-create-a-contract]] — create endpoint, nested request families, conditional requirements, and response boundary
 - [[source-metronome-api-reference-invoices-preview-events]] — request modes, event constraints, deduplication, and draft-invoice response
+- [[source-metronome-api-reference-contracts-get-contract-edit-history]] — audit scope, edit-operation groups, and response constraints
 
 ## Concepts
 
