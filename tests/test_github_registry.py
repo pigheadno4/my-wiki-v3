@@ -48,7 +48,7 @@ APPENDIX_A_INVENTORY = (
     ('braintree/uuid', 'https://github.com/braintree/uuid', 'utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/popup-bridge-ios', 'https://github.com/braintree/popup-bridge-ios', 'mobile-utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/restricted-input', 'https://github.com/braintree/restricted-input', 'web-utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('braintree/braintree-web-drop-in', 'https://github.com/braintree/braintree-web-drop-in', 'drop-in', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('braintree/braintree-web-drop-in', 'https://github.com/braintree/braintree-web-drop-in', 'drop-in', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/popup-bridge-android', 'https://github.com/braintree/popup-bridge-android', 'mobile-utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree_php', 'https://github.com/braintree/braintree_php', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree_ruby', 'https://github.com/braintree/braintree_ruby', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
@@ -554,6 +554,34 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(3000000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(420, capsule.max_packet_files)
         self.assertEqual(3500000, capsule.max_packet_utf8_bytes)
+
+    def test_braintree_web_drop_in_uses_the_reviewed_public_source_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        drop_in = next(
+            repo for repo in repos if repo.id == "braintree/braintree-web-drop-in"
+        )
+
+        self.assertTrue(drop_in.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:braintree-web-drop-in@1",
+                    "latest-stable",
+                    "all-stable",
+                ),
+            ),
+            drop_in.version_tracks,
+        )
+        self.assertEqual(1, len(drop_in.capsules))
+        capsule = drop_in.capsules[0]
+        self.assertEqual("braintree-web-drop-in-public-source", capsule.id)
+        self.assertEqual("npm-tracked-source-v1", capsule.adapter)
+        self.assertEqual(("braintree-web-drop-in",), capsule.focus_packages)
+        self.assertEqual(("src",), capsule.default_required_roots)
+        self.assertEqual(("CHANGELOG.md",), capsule.include_paths)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual(200, capsule.max_capsule_files)
+        self.assertEqual(1500000, capsule.max_capsule_utf8_bytes)
 
     def test_registry_matches_appendix_a_inventory_and_collection_cadence(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")

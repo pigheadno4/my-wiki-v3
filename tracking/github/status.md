@@ -20,6 +20,26 @@
   Release: [manifest](raw/github/braintree/braintree-web/releases/braintree-web/3.143.0/2026-07-27/manifest.json)
   Comparison: Not applicable
 
+## `github-236dd1f1ac8a3f30f537`
+
+- Repository: `braintree/braintree-web`
+- SHA: `41460fba05c1ea1222e795b36a10765a6699b8e7`
+- Collection date: `2026-07-28`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/braintree/braintree-web/snapshots/2026-07-28-41460fb/manifest.json)
+
+### Package releases
+
+- `braintree-web@3.144.0` (recommended `full`)
+  Release: [manifest](raw/github/braintree/braintree-web/releases/braintree-web/3.144.0/2026-07-28/manifest.json)
+  Comparison: [manifest](tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.143.0--3.144.0/comparison.json)
+
 ## `github-8416828e1141b2d896ea`
 
 - Repository: `paypal/paypal-js`
@@ -38,6 +58,26 @@
 
 - `@paypal/paypal-js@8.4.2` (recommended `full`)
   Release: [manifest](raw/github/paypal/paypal-js/releases/paypal-js/8.4.2/2026-07-22/manifest.json)
+  Comparison: Not applicable
+
+## `github-88d13a8f0c219387aab4`
+
+- Repository: `braintree/braintree-web-drop-in`
+- SHA: `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`
+- Collection date: `2026-07-28`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/braintree/braintree-web-drop-in/snapshots/2026-07-28-ec1c7c5/manifest.json)
+
+### Package releases
+
+- `braintree-web-drop-in@1.47.0` (recommended `full`)
+  Release: [manifest](raw/github/braintree/braintree-web-drop-in/releases/braintree-web-drop-in/1.47.0/2026-07-28/manifest.json)
   Comparison: Not applicable
 
 ## `github-92e87b7fea5fb1703585`

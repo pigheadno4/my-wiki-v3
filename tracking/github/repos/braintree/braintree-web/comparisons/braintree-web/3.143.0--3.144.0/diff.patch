@@ -1,0 +1,2292 @@
+diff --git a/.github/PULL_REQUEST_TEMPLATE.md b/.github/PULL_REQUEST_TEMPLATE.md
+index e6d641d..3e5c8e8 100644
+--- a/.github/PULL_REQUEST_TEMPLATE.md
++++ b/.github/PULL_REQUEST_TEMPLATE.md
+@@ -1,6 +1,5 @@
+ ### Summary
+ 
+-
+ ### Checklist
+ 
+ - [ ] Added a changelog entry
+diff --git a/.storybook/stories/PayPalCheckout/PayPalCheckoutEditFI.stories.ts b/.storybook/stories/PayPalCheckout/PayPalCheckoutEditFI.stories.ts
+new file mode 100644
+index 0000000..6472d29
+--- /dev/null
++++ b/.storybook/stories/PayPalCheckout/PayPalCheckoutEditFI.stories.ts
+@@ -0,0 +1,159 @@
++import type { Meta, StoryObj } from "@storybook/html";
++import { createSimpleBraintreeStory } from "../../utils/story-helper";
++import { getBraintreeSDK } from "../../utils/braintree-sdk";
++import { getClientToken } from "../../utils/sdk-config";
++
++type PayPalCheckoutEditFIInstance = {
++  loadPayPalSDK: (_options: object) => Promise<void>;
++  createPayment: (_options: object) => Promise<string>;
++  tokenizePayment: (_data: object) => Promise<{ nonce: string }>;
++};
++
++type PayPalSDKWithSavedPaymentMethods = typeof window.paypal & {
++  SavedPaymentMethods?: (_options: {
++    createOrder: () => Promise<string>;
++    onApprove: (_data: object) => void;
++    onError: (_err: Error) => void;
++  }) => { render: (_selector: string) => void };
++};
++
++const meta: Meta = {
++  title: "Braintree/PayPal Checkout/Edit FI",
++  parameters: {
++    layout: "centered",
++    braintreeScripts: ["paypal-checkout"],
++    docs: {
++      description: {
++        component: `
++**Edit FI (Funding Instrument)** allows returning buyers with a vaulted Billing Agreement to view and change their saved PayPal payment method inline during checkout.
++        `,
++      },
++    },
++  },
++};
++
++export default meta;
++
++const createEditFIForm = (): HTMLElement => {
++  const container = document.createElement("div");
++  container.innerHTML = `
++    <div class="shared-container" style="max-width: 700px;">
++      <h2 style="margin-bottom: 10px; font-size: 24px;">PayPal Edit FI</h2>
++
++      <div id="status-section" style="margin-bottom: 20px; padding: 20px; border: 1px solid #ddd; border-radius: 6px;">
++        <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 16px;">SDK Initialization Status</h3>
++        <div id="client-status" style="margin-bottom: 8px; font-size: 13px;">⏳ Creating client...</div>
++        <div id="paypal-status" style="margin-bottom: 8px; font-size: 13px;">⏳ Creating paypalCheckout...</div>
++        <div id="sdk-status" style="font-size: 13px;">⏳ Loading PayPal SDK...</div>
++      </div>
++
++      <div id="paypal-button-section" style="display: none; margin-bottom: 20px; padding: 20px; border: 1px solid #ddd; border-radius: 6px;">
++        <div id="paypal-edit-fi-button"></div>
++      </div>
++
++      <div id="result" class="shared-result"></div>
++    </div>
++  `;
++
++  return container;
++};
++
++const setupEditFI = async (container: HTMLElement): Promise<void> => {
++  const getElementById = <T extends HTMLElement = HTMLElement>(
++    id: string
++  ): T => {
++    return container.querySelector(`#${id}`) as T;
++  };
++
++  const showResult = (message: string, isSuccess: boolean): void => {
++    const resultDiv = getElementById("result");
++    resultDiv.className = `shared-result shared-result--visible ${isSuccess ? "shared-result--success" : "shared-result--error"}`;
++    resultDiv.innerHTML = message;
++  };
++
++  const setStatus = (id: string, message: string): void => {
++    getElementById(id).innerHTML = message;
++  };
++
++  try {
++    const clientToken = await getClientToken();
++    const braintree = getBraintreeSDK();
++
++    setStatus("client-status", "⏳ Creating client...");
++    const clientInstance = await braintree.client.create({
++      authorization: clientToken,
++    });
++    setStatus("client-status", "✅ Client created");
++
++    setStatus("paypal-status", "⏳ Creating paypalCheckout...");
++    const paypalCheckoutInstance = (await braintree.paypalCheckout.create({
++      client: clientInstance,
++    })) as PayPalCheckoutEditFIInstance;
++    setStatus("paypal-status", "✅ paypalCheckout created");
++
++    setStatus("sdk-status", "⏳ Loading PayPal SDK...");
++    await paypalCheckoutInstance.loadPayPalSDK({
++      intent: "authorize",
++      currency: "USD",
++    });
++    setStatus("sdk-status", "✅ PayPal SDK loaded");
++
++    getElementById("paypal-button-section").style.display = "block";
++
++    const paypalSDK = window.paypal as PayPalSDKWithSavedPaymentMethods;
++
++    if (paypalSDK && paypalSDK.SavedPaymentMethods) {
++      paypalSDK
++        .SavedPaymentMethods({
++          createOrder() {
++            return paypalCheckoutInstance.createPayment({
++              flow: "checkout",
++              intent: "authorize",
++              amount: "10.00",
++              currency: "USD",
++              editBillingAgreement: true,
++            });
++          },
++          onApprove(data: object) {
++            return paypalCheckoutInstance
++              .tokenizePayment(data)
++              .then((payload) => {
++                showResult(
++                  `<strong>Edit FI approved!</strong><br><small>Nonce: ${payload.nonce}</small>`,
++                  true
++                );
++              });
++          },
++          onError(err: Error) {
++            showResult(
++              `<strong>PayPal Error:</strong> ${err.message || "An error occurred"}`,
++              false
++            );
++          },
++        })
++        .render("#paypal-edit-fi-button");
++    } else {
++      getElementById("paypal-edit-fi-button").innerHTML =
++        '<p style="color: #666; font-size: 13px;"><code>paypal.SavedPaymentMethods</code> is not available in this version of the PayPal SDK.</p>';
++    }
++
++    showResult("<strong>Initialization complete.</strong>", true);
++  } catch (error) {
++    showResult(
++      `<strong>Initialization Error:</strong> ${(error as Error).message}`,
++      false
++    );
++  }
++};
++
++export const EditFI: StoryObj = {
++  name: "Edit FI",
++  render: createSimpleBraintreeStory(
++    (container) => {
++      const formContainer = createEditFIForm();
++      container.appendChild(formContainer);
++      setupEditFI(formContainer);
++    },
++    ["client.min.js", "paypal-checkout.min.js"]
++  ),
++};
+diff --git a/.vscode/settings.json b/.vscode/settings.json
+index 4b95ef4..94ca03d 100644
+--- a/.vscode/settings.json
++++ b/.vscode/settings.json
+@@ -32,5 +32,63 @@
+   "files.insertFinalNewline": true,
+   "files.trimTrailingWhitespace": true,
+   "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+-  "prettier.useTabs": true
++  "prettier.useTabs": true,
++
++  // Configurations for VSCode recommended extensions
++  "cSpell.ignorePaths": [
++    "node_modules/",
++    "dist/",
++    "vendor/",
++    "storybook-static/",
++    ".storybook/static/",
++    ".storybook/types/",
++    "**/coverage/",
++    ".vscode",
++    "CLAUDE.md"
++  ],
++  "cSpell.userWords": [
++    "autofilled",
++    "blik",
++    "describedby",
++    "deeplink",
++    "derequire",
++    "elif",
++    "evented",
++    "framebus",
++    "fraudnet",
++    "fpti",
++    "getopt",
++    "hiper",
++    "iframer",
++    "kount",
++    "luhn",
++    "masterpass",
++    "maxlength",
++    "nvmrc",
++    "paysheet",
++    "roboform",
++    "screenreader",
++    "screenreaders",
++    "sepa",
++    "sjcl",
++    "stylesheet",
++    "threeds",
++    "untypable",
++    "venmo"
++  ],
++  "cSpell.ignoreRegExpList": [
++    "CStyleComment",
++    "Urls",
++    "Email",
++    "\\`\\S*\\`",
++    "\\@\\S*"
++  ],
++  "markdownlint.config": {
++    // allow multiple headings with the same title
++    // as is used in CHANGELOG `### Breaking Changes`
++    "MD024": false,
++    // allow long lines
++    "MD013": false
++  },
++  "markdownlint.lintWorkspaceGlobs": ["**/*.md", "!**/CLAUDE.md", "!jsdoc/**/*"]
+ }
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 917de8d..d8bd915 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,16 @@
+ # CHANGELOG
+ 
++## 3.144.0 (2026-07-27)
++
++- PayPal Checkout
++  - Add support for View/Edit FI
++- PayPal Checkout v6
++  - Accept optional `planType`, `planMetadata`, `locale`, `landingPageType`, `userAction`, `riskCorrelationId`, `shippingAddressEditable`, and `enableShippingAddress` params when creating a payment resource/session
++- Dependencies
++  - Update `framebus` to 6.1.0
++- Venmo
++  - Fix `venmo.create()` failing to create when `isIncognito` promise fails
++
+ ## 3.143.0 (2026-06-11)
+ 
+ - Dependencies
+diff --git a/__mocks__/framebus.js b/__mocks__/framebus.js
+index 2333bda..34b1362 100644
+--- a/__mocks__/framebus.js
++++ b/__mocks__/framebus.js
+@@ -1,4 +1,4 @@
+-/* eslint-env jest */
++/* global jest */
+ "use strict";
+ 
+ function Framebus(options) {
+diff --git a/package-lock.json b/package-lock.json
+index 9adb4e0..9b2def0 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -1,12 +1,12 @@
+ {
+   "name": "braintree-web",
+-  "version": "3.143.0",
++  "version": "3.144.0",
+   "lockfileVersion": 3,
+   "requires": true,
+   "packages": {
+     "": {
+       "name": "braintree-web",
+-      "version": "3.143.0",
++      "version": "3.144.0",
+       "license": "MIT",
+       "dependencies": {
+         "@braintree/asset-loader": "2.0.3",
+@@ -20,12 +20,13 @@
+         "@paypal/fastlane-sdk-loader": "1.2.1",
+         "card-validator": "10.0.3",
+         "credit-card-type": "10.2.0",
+-        "framebus": "6.0.3",
++        "framebus": "6.1.0",
+         "inject-stylesheet": "7.0.0",
+         "promise-polyfill": "8.2.3",
+         "restricted-input": "4.0.3"
+       },
+       "devDependencies": {
++        "@braintree/jsdoc-template": "^4.0.0",
+         "@ladjs/gulp-envify": "^2.0.1",
+         "@playwright/test": "1.60.0",
+         "@storybook/addon-docs": "^9.1.2",
+@@ -68,7 +69,6 @@
+         "jest": "^29.2.1",
+         "jest-environment-jsdom": "^29.7.0",
+         "jsdoc": "^4.0.0",
+-        "jsdoc-template": "braintree/jsdoc-template#3.2.0",
+         "json5": "2.2.3",
+         "lint-staged": "^15.2.11",
+         "lodash": "^4.18.0",
+@@ -126,6 +126,8 @@
+     },
+     "node_modules/@babel/compat-data": {
+       "version": "7.29.3",
++      "resolved": "https://registry.npmjs.org/@babel/compat-data/-/compat-data-7.29.3.tgz",
++      "integrity": "sha512-LIVqM46zQWZhj17qA8wb4nW/ixr2y1Nw+r1etiAWgRM6U1IqP+LNhL1yg440jYZR72jCWcWbLWzIosH+uP1fqg==",
+       "dev": true,
+       "license": "MIT",
+       "engines": {
+@@ -294,6 +296,8 @@
+     },
+     "node_modules/@babel/parser": {
+       "version": "7.29.3",
++      "resolved": "https://registry.npmjs.org/@babel/parser/-/parser-7.29.3.tgz",
++      "integrity": "sha512-b3ctpQwp+PROvU/cttc4OYl4MzfJUWy6FZg+PMXfzmt/+39iHVF0sDfqay8TQM3JA2EUOyKcFZt75jWriQijsA==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -590,6 +594,12 @@
+       "version": "2.0.1",
+       "license": "MIT"
+     },
++    "node_modules/@braintree/jsdoc-template": {
++      "version": "4.0.0",
++      "resolved": "https://registry.npmjs.org/@braintree/jsdoc-template/-/jsdoc-template-4.0.0.tgz",
++      "integrity": "sha512-CWKS+LH8Jptgfs1VwFFH5GKpSlofM8oG2QOd+ajGhtGqzDtLtKEENTs7FiEIoxwabdK3UfnnCKB2ucqph3tQjA==",
++      "dev": true
++    },
+     "node_modules/@braintree/sanitize-url": {
+       "version": "7.0.4",
+       "license": "MIT"
+@@ -1823,6 +1833,8 @@
+     },
+     "node_modules/@rollup/rollup-darwin-arm64": {
+       "version": "4.60.3",
++      "resolved": "https://registry.npmjs.org/@rollup/rollup-darwin-arm64/-/rollup-darwin-arm64-4.60.3.tgz",
++      "integrity": "sha512-vo6Y5Qfpx7/5EaamIwi0WqW2+zfiusVihKatLvtN1VFVy3D13uERk/6gZLU1UiHRL6fDXqj/ELIeVRGnvcTE1g==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -2836,6 +2848,22 @@
+         "@esbuild/win32-x64": "0.27.7"
+       }
+     },
++    "node_modules/@storybook/html-vite/node_modules/fsevents": {
++      "version": "2.3.3",
++      "resolved": "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz",
++      "integrity": "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==",
++      "dev": true,
++      "hasInstallScript": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "darwin"
++      ],
++      "peer": true,
++      "engines": {
++        "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
++      }
++    },
+     "node_modules/@storybook/html-vite/node_modules/vite": {
+       "version": "7.3.2",
+       "dev": true,
+@@ -3165,70 +3193,6 @@
+         "node": ">=14.0.0"
+       }
+     },
+-    "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/core": {
+-      "version": "1.8.1",
+-      "dev": true,
+-      "inBundle": true,
+-      "license": "MIT",
+-      "optional": true,
+-      "dependencies": {
+-        "@emnapi/wasi-threads": "1.1.0",
+-        "tslib": "^2.4.0"
+-      }
+-    },
+-    "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/runtime": {
+-      "version": "1.8.1",
+-      "dev": true,
+-      "inBundle": true,
+-      "license": "MIT",
+-      "optional": true,
+-      "dependencies": {
+-        "tslib": "^2.4.0"
+-      }
+-    },
+-    "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/wasi-threads": {
+-      "version": "1.1.0",
+-      "dev": true,
+-      "inBundle": true,
+-      "license": "MIT",
+-      "optional": true,
+-      "dependencies": {
+-        "tslib": "^2.4.0"
+-      }
+-    },
+-    "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@napi-rs/wasm-runtime": {
+-      "version": "1.1.1",
+-      "dev": true,
+-      "inBundle": true,
+-      "license": "MIT",
+-      "optional": true,
+-      "dependencies": {
+-        "@emnapi/core": "^1.7.1",
+-        "@emnapi/runtime": "^1.7.1",
+-        "@tybys/wasm-util": "^0.10.1"
+-      },
+-      "funding": {
+-        "type": "github",
+-        "url": "https://github.com/sponsors/Brooooooklyn"
+-      }
+-    },
+-    "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@tybys/wasm-util": {
+-      "version": "0.10.1",
+-      "dev": true,
+-      "inBundle": true,
+-      "license": "MIT",
+-      "optional": true,
+-      "dependencies": {
+-        "tslib": "^2.4.0"
+-      }
+-    },
+-    "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/tslib": {
+-      "version": "2.8.1",
+-      "dev": true,
+-      "inBundle": true,
+-      "license": "0BSD",
+-      "optional": true
+-    },
+     "node_modules/@tailwindcss/oxide-win32-arm64-msvc": {
+       "version": "4.2.4",
+       "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-win32-arm64-msvc/-/oxide-win32-arm64-msvc-4.2.4.tgz",
+@@ -3372,6 +3336,8 @@
+     },
+     "node_modules/@tootallnate/once": {
+       "version": "2.0.1",
++      "resolved": "https://registry.npmjs.org/@tootallnate/once/-/once-2.0.1.tgz",
++      "integrity": "sha512-HqmEUIGRJ5fSXchkVgR5F7qn48bDBzv0kWj/Kfu5e6uci4UlEeng4331LnBkWffb++Ei3FOVLxo8JJWMFBDMeQ==",
+       "dev": true,
+       "license": "MIT",
+       "engines": {
+@@ -3598,6 +3564,8 @@
+     },
+     "node_modules/@typescript-eslint/eslint-plugin": {
+       "version": "8.59.2",
++      "resolved": "https://registry.npmjs.org/@typescript-eslint/eslint-plugin/-/eslint-plugin-8.59.2.tgz",
++      "integrity": "sha512-j/bwmkBvHUtPNxzuWe5z6BEk3q54YRyGlBXkSsmfoih7zNrBvl5A9A98anlp/7JbyZcWIJ8KXo/3Tq/DjFLtuQ==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -3633,6 +3601,8 @@
+     },
+     "node_modules/@typescript-eslint/parser": {
+       "version": "8.59.2",
++      "resolved": "https://registry.npmjs.org/@typescript-eslint/parser/-/parser-8.59.2.tgz",
++      "integrity": "sha512-plR3pp6D+SSUn1HM7xvSkx12/DhoHInI2YF35KAcVFNZvlC0gtrWqx7Qq1oH2Ssgi0vlFRCTbP+DZc7B9+TtsQ==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -3656,6 +3626,8 @@
+     },
+     "node_modules/@typescript-eslint/project-service": {
+       "version": "8.59.2",
++      "resolved": "https://registry.npmjs.org/@typescript-eslint/project-service/-/project-service-8.59.2.tgz",
++      "integrity": "sha512-+2hqvEkeyf/0FBor67duF0Ll7Ot8jyKzDQOSrxazF/danillRq2DwR9dLptsXpoZQqxE1UisSmoZewrlPas9Vw==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -3676,6 +3648,8 @@
+     },
+     "node_modules/@typescript-eslint/scope-manager": {
+       "version": "8.59.2",
++      "resolved": "https://registry.npmjs.org/@typescript-eslint/scope-manager/-/scope-manager-8.59.2.tgz",
++      "integrity": "sha512-JzfyEpEtOU89CcFSwyNS3mu4MLvLSXqnmX05+aKBDM+TdR5jzcGOEBwxwGNxrEQ7p/z6kK2WyioCGBf2zZBnvg==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -3692,6 +3666,8 @@
+     },
+     "node_modules/@typescript-eslint/tsconfig-utils": {
+       "version": "8.59.2",
++      "resolved": "https://registry.npmjs.org/@typescript-eslint/tsconfig-utils/-/tsconfig-utils-8.59.2.tgz",
++      "integrity": "sha512-BKK4alN7oi4C/zv4VqHQ+uRU+lTa6JGIZ7s1juw7b3RHo9OfKB+bKX3u0iVZetdsUCBBkSbdWbarJbmN0fTeSw==",
+       "dev": true,
+       "license": "MIT",
+       "engines": {
+@@ -3707,6 +3683,8 @@
+     },
+     "node_modules/@typescript-eslint/type-utils": {
+       "version": "8.59.2",
++      "resolved": "https://registry.npmjs.org/@typescript-eslint/type-utils/-/type-utils-8.59.2.tgz",
++      "integrity": "sha512-nhqaj1nmTdVVl/BP5omXNRGO38jn5iosis2vbdmupF2txCf8ylWT8lx+JlvMYYVqzGVKtjojUFoQ3JRWK+mfzQ==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -3730,6 +3708,8 @@
+     },
+     "node_modules/@typescript-eslint/types": {
+       "version": "8.59.2",
++      "resolved": "https://registry.npmjs.org/@typescript-eslint/types/-/types-8.59.2.tgz",
++      "integrity": "sha512-e82GVOE8Ps3E++Egvb6Y3Dw0S10u8NkQ9KXmtRhCWJJ8kDhOJTvtMAWnFL16kB1583goCWXsr0NieKCZMs2/0Q==",
+       "dev": true,
+       "license": "MIT",
+       "engines": {
+@@ -3742,6 +3722,8 @@
+     },
+     "node_modules/@typescript-eslint/typescript-estree": {
+       "version": "8.59.2",
++      "resolved": "https://registry.npmjs.org/@typescript-eslint/typescript-estree/-/typescript-estree-8.59.2.tgz",
++      "integrity": "sha512-o0XPGNwcWw+FIwStOWn+BwBuEmL6QXP0rsvAFg7ET1dey1Nr6Wb1ac8p5HEsK0ygO/6mUxlk+YWQD9xcb/nnXg==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -3801,6 +3783,8 @@
+     },
+     "node_modules/@typescript-eslint/utils": {
+       "version": "8.59.2",
++      "resolved": "https://registry.npmjs.org/@typescript-eslint/utils/-/utils-8.59.2.tgz",
++      "integrity": "sha512-Juw3EinkXqjaffxz6roowvV7GZT/kET5vSKKZT6upl5TXdWkLkYmNPXwDDL2Vkt2DPn0nODIS4egC/0AGxKo/Q==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -3823,6 +3807,8 @@
+     },
+     "node_modules/@typescript-eslint/visitor-keys": {
+       "version": "8.59.2",
++      "resolved": "https://registry.npmjs.org/@typescript-eslint/visitor-keys/-/visitor-keys-8.59.2.tgz",
++      "integrity": "sha512-NwjLUnGy8/Zfx23fl50tRC8rYaYnM52xNRYFAXvmiil9yh1+K6aRVQMnzW6gQB/1DLgWt977lYQn7C+wtgXZiA==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -4154,6 +4140,8 @@
+     },
+     "node_modules/ajv": {
+       "version": "8.20.0",
++      "resolved": "https://registry.npmjs.org/ajv/-/ajv-8.20.0.tgz",
++      "integrity": "sha512-Thbli+OlOj+iMPYFBVBfJ3OmCAnaSyNn4M1vz9T6Gka5Jt9ba/HIR56joy65tY6kx/FCF5VXNB819Y7/GUrBGA==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -4958,6 +4946,8 @@
+     },
+     "node_modules/baseline-browser-mapping": {
+       "version": "2.10.27",
++      "resolved": "https://registry.npmjs.org/baseline-browser-mapping/-/baseline-browser-mapping-2.10.27.tgz",
++      "integrity": "sha512-zEs/ufmZoUd7WftKpKyXaT6RFxpQ5Qm9xytKRHvJfxFV9DFJkZph9RvJ1LcOUi0Z1ZVijMte65JbILeV+8QQEA==",
+       "dev": true,
+       "license": "Apache-2.0",
+       "bin": {
+@@ -5476,6 +5466,8 @@
+     },
+     "node_modules/caniuse-lite": {
+       "version": "1.0.30001792",
++      "resolved": "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001792.tgz",
++      "integrity": "sha512-hVLMUZFgR4JJ6ACt1uEESvQN1/dBVqPAKY0hgrV70eN3391K6juAfTjKZLKvOMsx8PxA7gsY1/tLMMTcfFLLpw==",
+       "dev": true,
+       "funding": [
+         {
+@@ -6901,6 +6893,8 @@
+     },
+     "node_modules/electron-to-chromium": {
+       "version": "1.5.351",
++      "resolved": "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.5.351.tgz",
++      "integrity": "sha512-9D7Iqx8RImSvCnOsj86rCH6eQjZFQoM04Jn6HnZVM0Nu/G58/gmKYQ1d12MZTbjQbQSTGI8nwEy07ErsA2slLA==",
+       "dev": true,
+       "license": "ISC"
+     },
+@@ -6961,6 +6955,8 @@
+     },
+     "node_modules/enhanced-resolve": {
+       "version": "5.21.0",
++      "resolved": "https://registry.npmjs.org/enhanced-resolve/-/enhanced-resolve-5.21.0.tgz",
++      "integrity": "sha512-otxSQPw4lkOZWkHpB3zaEQs6gWYEsmX4xQF68ElXC/TWvGxGMSGOvoNbaLXm6/cS/fSfHtsEdw90y20PCd+sCA==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -7030,6 +7026,8 @@
+     },
+     "node_modules/es-module-lexer": {
+       "version": "2.1.0",
++      "resolved": "https://registry.npmjs.org/es-module-lexer/-/es-module-lexer-2.1.0.tgz",
++      "integrity": "sha512-n27zTYMjYu1aj4MjCWzSP7G9r75utsaoc8m61weK+W8JMBGGQybd43GstCXZ3WNmSFtGT9wi59qQTW6mhTR5LQ==",
+       "dev": true,
+       "license": "MIT",
+       "peer": true
+@@ -7912,6 +7910,8 @@
+     },
+     "node_modules/fast-uri": {
+       "version": "3.1.2",
++      "resolved": "https://registry.npmjs.org/fast-uri/-/fast-uri-3.1.2.tgz",
++      "integrity": "sha512-rVjf7ArG3LTk+FS6Yw81V1DLuZl1bRbNrev6Tmd/9RaroeeRRJhAt7jg/6YFxbvAQXUCavSoZhPPj6oOx+5KjQ==",
+       "dev": true,
+       "funding": [
+         {
+@@ -8197,16 +8197,14 @@
+       }
+     },
+     "node_modules/framebus": {
+-      "version": "6.0.3",
++      "version": "6.1.0",
++      "resolved": "https://registry.npmjs.org/framebus/-/framebus-6.1.0.tgz",
++      "integrity": "sha512-duaN1OV9gU0yDeEqiJaHs/130e8KXatX2yxTzBheR8UK1pFgxMUknhFS2FEIJRGbsEiXPTHsXC6+gfvJHvie6w==",
+       "license": "MIT",
+       "dependencies": {
+-        "@braintree/uuid": "^1.0.0"
++        "@braintree/uuid": "^2.0.0"
+       }
+     },
+-    "node_modules/framebus/node_modules/@braintree/uuid": {
+-      "version": "1.0.1",
+-      "license": "ISC"
+-    },
+     "node_modules/fromentries": {
+       "version": "1.3.2",
+       "dev": true,
+@@ -9451,6 +9449,8 @@
+     },
+     "node_modules/is-core-module": {
+       "version": "2.16.2",
++      "resolved": "https://registry.npmjs.org/is-core-module/-/is-core-module-2.16.2.tgz",
++      "integrity": "sha512-evOr8xfXKxE6qSR0hSXL2r3sd7ALj8+7jQEUvPYcm5sgZFdJ+AYzT6yNmJenvIYQBgIGwfwz08sL8zoL7yq2BA==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -10533,6 +10533,8 @@
+     },
+     "node_modules/jiti": {
+       "version": "2.7.0",
++      "resolved": "https://registry.npmjs.org/jiti/-/jiti-2.7.0.tgz",
++      "integrity": "sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==",
+       "dev": true,
+       "license": "MIT",
+       "bin": {
+@@ -10591,11 +10593,6 @@
+         "node": ">=12.0.0"
+       }
+     },
+-    "node_modules/jsdoc-template": {
+-      "version": "3.2.0",
+-      "resolved": "git+ssh://git@github.com/braintree/jsdoc-template.git#04ccbb46addd8beabcbe1815fc81eb9d33e4c124",
+-      "dev": true
+-    },
+     "node_modules/jsdoc-type-pratt-parser": {
+       "version": "4.1.0",
+       "dev": true,
+@@ -11618,6 +11615,8 @@
+     },
+     "node_modules/loader-runner": {
+       "version": "4.3.2",
++      "resolved": "https://registry.npmjs.org/loader-runner/-/loader-runner-4.3.2.tgz",
++      "integrity": "sha512-DFEqQ3ihfS9blba08cLfYf1NRAIEm+dDjic073DRDc3/JspI/8wYmtDsHwd3+4hwvdxSK7PGaElfTmm0awWJ4w==",
+       "dev": true,
+       "license": "MIT",
+       "peer": true,
+@@ -11645,11 +11644,15 @@
+     },
+     "node_modules/lodash": {
+       "version": "4.18.1",
++      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.18.1.tgz",
++      "integrity": "sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==",
+       "dev": true,
+       "license": "MIT"
+     },
+     "node_modules/lodash.flattendeep": {
+       "version": "4.4.0",
++      "resolved": "https://registry.npmjs.org/lodash.flattendeep/-/lodash.flattendeep-4.4.0.tgz",
++      "integrity": "sha512-uHaJFihxmJcEX3kT4I23ABqKKalJ/zDrDg0lsFtc1h+3uw49SIJ5beyhx5ExVRti3AvKoOJngIj7xz3oylPdWQ==",
+       "dev": true,
+       "license": "MIT"
+     },
+@@ -11660,6 +11663,8 @@
+     },
+     "node_modules/lodash.merge": {
+       "version": "4.6.2",
++      "resolved": "https://registry.npmjs.org/lodash.merge/-/lodash.merge-4.6.2.tgz",
++      "integrity": "sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==",
+       "dev": true,
+       "license": "MIT"
+     },
+@@ -12415,6 +12420,8 @@
+     },
+     "node_modules/nanoid": {
+       "version": "3.3.12",
++      "resolved": "https://registry.npmjs.org/nanoid/-/nanoid-3.3.12.tgz",
++      "integrity": "sha512-ZB9RH/39qpq5Vu6Y+NmUaFhQR6pp+M2Xt76XBnEwDaGcVAqhlvxrl3B2bKS5D3NH3QR76v3aSrKaF/Kiy7lEtQ==",
+       "dev": true,
+       "funding": [
+         {
+@@ -13416,6 +13423,8 @@
+     },
+     "node_modules/path-scurry/node_modules/lru-cache": {
+       "version": "11.3.6",
++      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-11.3.6.tgz",
++      "integrity": "sha512-Gf/KoL3C/MlI7Bt0PGI9I+TeTC/I6r/csU58N4BSNc4lppLBeKsOdFYkK+dX0ABDUMJNfCHTyPpzwwO21Awd3A==",
+       "dev": true,
+       "license": "BlueOak-1.0.0",
+       "engines": {
+@@ -13690,6 +13699,8 @@
+     },
+     "node_modules/postcss": {
+       "version": "8.5.14",
++      "resolved": "https://registry.npmjs.org/postcss/-/postcss-8.5.14.tgz",
++      "integrity": "sha512-SoSL4+OSEtR99LHFZQiJLkT59C5B1amGO1NzTwj7TT1qCUgUO6hxOvzkOYxD+vMrXBM3XJIKzokoERdqQq/Zmg==",
+       "dev": true,
+       "funding": [
+         {
+@@ -14603,6 +14614,8 @@
+     },
+     "node_modules/rollup": {
+       "version": "4.60.3",
++      "resolved": "https://registry.npmjs.org/rollup/-/rollup-4.60.3.tgz",
++      "integrity": "sha512-pAQK9HalE84QSm4Po3EmWIZPd3FnjkShVkiMlz1iligWYkWQ7wHYd1PF/T7QZ5TVSD6uSTon5gBVMSM4JfBV+A==",
+       "dev": true,
+       "license": "MIT",
+       "peer": true,
+@@ -14645,6 +14658,22 @@
+         "fsevents": "~2.3.2"
+       }
+     },
++    "node_modules/rollup/node_modules/fsevents": {
++      "version": "2.3.3",
++      "resolved": "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz",
++      "integrity": "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==",
++      "dev": true,
++      "hasInstallScript": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "darwin"
++      ],
++      "peer": true,
++      "engines": {
++        "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
++      }
++    },
+     "node_modules/run-parallel": {
+       "version": "1.2.0",
+       "dev": true,
+@@ -15964,6 +15993,8 @@
+     },
+     "node_modules/terser-webpack-plugin": {
+       "version": "5.5.0",
++      "resolved": "https://registry.npmjs.org/terser-webpack-plugin/-/terser-webpack-plugin-5.5.0.tgz",
++      "integrity": "sha512-UYhptBwhWvfIjKd/UuFo6D8uq9xpGLDK+z8EDsj/zWhrTaH34cKEbrkMKfV5YWqGBvAYA3tlzZbs2R+qYrbQJA==",
+       "dev": true,
+       "license": "MIT",
+       "peer": true,
+@@ -16435,6 +16466,8 @@
+     },
+     "node_modules/typescript-eslint": {
+       "version": "8.59.2",
++      "resolved": "https://registry.npmjs.org/typescript-eslint/-/typescript-eslint-8.59.2.tgz",
++      "integrity": "sha512-pJw051uomb3ZeCzGTpRb8RbEqB5Y4WWet8gl/GcTlU35BSx0PVdZ86/bqkQCyKKuraVQEK7r6kBHQXF+fBhkoQ==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -16821,6 +16854,9 @@
+     },
+     "node_modules/uuid": {
+       "version": "8.3.2",
++      "resolved": "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz",
++      "integrity": "sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==",
++      "deprecated": "uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).",
+       "dev": true,
+       "license": "MIT",
+       "bin": {
+@@ -17183,6 +17219,8 @@
+     },
+     "node_modules/webpack-sources": {
+       "version": "3.4.1",
++      "resolved": "https://registry.npmjs.org/webpack-sources/-/webpack-sources-3.4.1.tgz",
++      "integrity": "sha512-eACpxRN02yaawnt+uUNIF7Qje6A9zArxBbcAJjK1PK3S9Ycg5jIuJ8pW4q8EMnwNZCEGltcjkRx1QzOxOkKD8A==",
+       "dev": true,
+       "license": "MIT",
+       "peer": true,
+@@ -17413,6 +17451,8 @@
+     },
+     "node_modules/yaml": {
+       "version": "2.8.4",
++      "resolved": "https://registry.npmjs.org/yaml/-/yaml-2.8.4.tgz",
++      "integrity": "sha512-ml/JPOj9fOQK8RNnWojA67GbZ0ApXAUlN2UQclwv2eVgTgn7O9gg9o7paZWKMp4g0H3nTLtS9LVzhkpOFIKzog==",
+       "dev": true,
+       "license": "ISC",
+       "bin": {
+diff --git a/package.json b/package.json
+index c927924..f7feefe 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "braintree-web",
+-  "version": "3.143.0",
++  "version": "3.144.0",
+   "license": "MIT",
+   "main": "src/index.js",
+   "private": true,
+@@ -18,6 +18,7 @@
+     "prelint": "npm run prettier",
+     "lint": "eslint . --cache --fix",
+     "lint-no-cache-no-fix": "eslint .",
++    "lint:ci": "prettier . --ignore-unknown --check && eslint . --cache",
+     "release": "./scripts/release",
+     "safe-publish": "node scripts/safe-publish.mjs",
+     "safe-publish:dry": "node scripts/safe-publish.mjs --dry-run",
+@@ -52,12 +53,13 @@
+     "@paypal/fastlane-sdk-loader": "1.2.1",
+     "card-validator": "10.0.3",
+     "credit-card-type": "10.2.0",
+-    "framebus": "6.0.3",
++    "framebus": "6.1.0",
+     "inject-stylesheet": "7.0.0",
+     "promise-polyfill": "8.2.3",
+     "restricted-input": "4.0.3"
+   },
+   "devDependencies": {
++    "@braintree/jsdoc-template": "^4.0.0",
+     "@ladjs/gulp-envify": "^2.0.1",
+     "@playwright/test": "1.60.0",
+     "@storybook/addon-docs": "^9.1.2",
+@@ -100,7 +102,6 @@
+     "jest": "^29.2.1",
+     "jest-environment-jsdom": "^29.7.0",
+     "jsdoc": "^4.0.0",
+-    "jsdoc-template": "braintree/jsdoc-template#3.2.0",
+     "json5": "2.2.3",
+     "lint-staged": "^15.2.11",
+     "lodash": "^4.18.0",
+diff --git a/src/client/get-configuration.js b/src/client/get-configuration.js
+index e3b3d93..e65c199 100644
+--- a/src/client/get-configuration.js
++++ b/src/client/get-configuration.js
+@@ -93,6 +93,7 @@ function getConfiguration(authData, inputSessionId) {
+           ? "TOKENIZATION_KEY"
+           : "CLIENT_TOKEN",
+         authorizationFingerprint: attrs.authorizationFingerprint,
++        paymentMethodIdJwt: authData.paymentMethodIdJwt,
+         analyticsMetadata: analyticsMetadata,
+         gatewayConfiguration: response,
+       };
+diff --git a/src/lib/create-authorization-data.js b/src/lib/create-authorization-data.js
+index ffa408e..e0ac42a 100644
+--- a/src/lib/create-authorization-data.js
++++ b/src/lib/create-authorization-data.js
+@@ -39,6 +39,7 @@ function createAuthorizationData(authorization) {
+     data.environment = parsedClientToken.environment;
+     data.attrs.authorizationFingerprint =
+       parsedClientToken.authorizationFingerprint;
++    data.paymentMethodIdJwt = parsedClientToken.paymentMethodIdJwt;
+     data.configUrl = parsedClientToken.configUrl;
+     data.graphQL = parsedClientToken.graphQL;
+   }
+diff --git a/src/paypal-checkout-v6/paypal-checkout-v6.js b/src/paypal-checkout-v6/paypal-checkout-v6.js
+index 7479166..4e41afb 100644
+--- a/src/paypal-checkout-v6/paypal-checkout-v6.js
++++ b/src/paypal-checkout-v6/paypal-checkout-v6.js
+@@ -833,9 +833,27 @@ PayPalCheckoutV6.prototype._createPaymentResource = function (options) {
+     cancelUrl: options.cancelUrl || "https://www.paypal.com/checkoutnow/error",
+     experienceProfile: {
+       brandName: options.displayName || gatewayConfiguration.paypal.displayName,
++      localeCode: options.locale,
++      noShipping: (!options.enableShippingAddress).toString(),
++      landingPageType: options.landingPageType,
+     },
+   };
+ 
++  var isAddressOverride = false;
++
++  if (options.hasOwnProperty("shippingAddressEditable")) {
++    isAddressOverride = options.shippingAddressEditable === false;
++  }
++  payload.experienceProfile.addressOverride = isAddressOverride;
++
++  if (options.hasOwnProperty("userAction")) {
++    payload.experienceProfile.userAction = options.userAction;
++  }
++
++  if (options.riskCorrelationId) {
++    payload.correlationId = options.riskCorrelationId;
++  }
++
+   if (this._merchantAccountId) {
+     payload.merchantAccountId = this._merchantAccountId;
+   }
+@@ -868,6 +886,14 @@ PayPalCheckoutV6.prototype._createPaymentResource = function (options) {
+     payload.billingAgreementDetails = options.billingAgreementDetails;
+   }
+ 
++  if (options.planType) {
++    payload.planType = options.planType;
++  }
++
++  if (options.planMetadata) {
++    payload.planMetadata = this._formatPlanMetadata(options.planMetadata);
++  }
++
+   if (options.shippingCallbackUrl) {
+     payload.shippingCallbackUrl = options.shippingCallbackUrl;
+   }
+@@ -1280,6 +1306,12 @@ PayPalCheckoutV6.prototype._createPaymentSession = function (
+     "shippingCallbackUrl",
+     "contactPreference",
+     "shippingAddressOverride",
++    "planType",
++    "planMetadata",
++    "locale",
++    "landingPageType",
++    "userAction",
++    "riskCorrelationId",
+   ];
+ 
+   optionalProperties.forEach(function (property) {
+@@ -1288,6 +1320,14 @@ PayPalCheckoutV6.prototype._createPaymentSession = function (
+     }
+   });
+ 
++  if (options.hasOwnProperty("enableShippingAddress")) {
++    paymentOptions.enableShippingAddress = options.enableShippingAddress;
++  }
++
++  if (options.hasOwnProperty("shippingAddressEditable")) {
++    paymentOptions.shippingAddressEditable = options.shippingAddressEditable;
++  }
++
+   return {
+     /**
+      * Starts the PayPal payment flow.
+@@ -1390,6 +1430,12 @@ PayPalCheckoutV6.prototype._createPaymentSession = function (
+  * @param {string} [options.shippingAddressOverride.recipientEmail] Email address of the recipient.
+  * @param {string} [options.contactPreference] Optional field to control contact information display. Can be 'NO_CONTACT_INFO' (default, no contact info shown), 'RETAIN_CONTACT_INFO' (contact info shown but not editable), or 'UPDATE_CONTACT_INFO' (contact info shown and editable). Required if using different recipient via shippingAddressOverride.
+  * * Note: this feature is currently available for US-based merchants only; see https://developer.paypal.com/docs/checkout/standard/customize/contact-module/#availability for up-to-date regional availability.
++ * @param {string} [options.locale] Locale code (e.g., 'en_US', 'fr_FR') to customize the PayPal experience language and format.
++ * @param {string} [options.landingPageType] Landing page type: 'login' (shows PayPal login) or 'billing' (shows guest checkout). Defaults to PayPal's selection.
++ * @param {string} [options.userAction] Changes the call-to-action in the PayPal flow: 'continue' or 'pay_now'.
++ * @param {boolean} [options.enableShippingAddress=false] When `true`, prompts the customer for a shipping address.
++ * @param {boolean} [options.shippingAddressEditable=true] Controls whether the displayed shipping address is editable. Pass `false` to make it read-only.
++ * @param {string} [options.riskCorrelationId] Risk correlation ID for advanced fraud protection. Stored and used during tokenization.
+  * @param {string} [options.presentationMode='auto'] How to present PayPal: 'auto', 'popup', 'modal', 'redirect', 'payment-handler', 'direct-app-switch'.
+  * @example
+  * // Standard PayPal payment
+@@ -1654,6 +1700,12 @@ PayPalCheckoutV6.prototype.createOneTimePaymentSession = function (options) {
+  * @param {string} [options.shippingAddressOverride.recipientEmail] Email address of the recipient.
+  * @param {string} [options.contactPreference] Optional field to control contact information display. Can be 'NO_CONTACT_INFO' (default, no contact info shown), 'RETAIN_CONTACT_INFO' (contact info shown but not editable), or 'UPDATE_CONTACT_INFO' (contact info shown and editable). Required if using different recipient via shippingAddressOverride.
+  * * Note: this feature is currently available for US-based merchants only; see https://developer.paypal.com/docs/checkout/standard/customize/contact-module/#availability for up-to-date regional availability.
++ * @param {string} [options.locale] Locale code (e.g., 'en_US', 'fr_FR') to customize the PayPal experience language and format.
++ * @param {string} [options.landingPageType] Landing page type: 'login' (shows PayPal login) or 'billing' (shows guest checkout). Defaults to PayPal's selection.
++ * @param {string} [options.userAction] Changes the call-to-action in the PayPal flow: 'continue' or 'pay_now'.
++ * @param {boolean} [options.enableShippingAddress=false] When `true`, prompts the customer for a shipping address.
++ * @param {boolean} [options.shippingAddressEditable=true] Controls whether the displayed shipping address is editable. Pass `false` to make it read-only.
++ * @param {string} [options.riskCorrelationId] Risk correlation ID for advanced fraud protection. Stored and used during tokenization.
+  * @param {string} [options.presentationMode='auto'] How to present PayPal: 'auto', 'popup', 'modal', 'redirect', 'payment-handler', 'direct-app-switch'.
+  * @example
+  * // Standard Pay Later payment
+@@ -1804,6 +1856,12 @@ PayPalCheckoutV6.prototype.createPayLaterSession = function (options) {
+  * @param {boolean} [options.commit=true] Controls the flow type: `true` for "Pay Now" (immediate payment), `false` for "Continue" (review and confirm). Defaults to `true`.
+  * @param {object} [options.billingAgreementDetails] Details for the billing agreement.
+  * @param {string} [options.billingAgreementDetails.description] Description for the billing agreement (e.g., 'Monthly subscription to Totally Real Products!').
++ * @param {string} [options.planType] Type of plan: RECURRING, SUBSCRIPTION, UNSCHEDULED, or INSTALLMENTS.
++ * @param {object} [options.planMetadata] Metadata about the plan including billing cycles.
++ * @param {array} [options.planMetadata.billingCycles] Array of billing cycle objects.
++ * @param {string} [options.planMetadata.currencyIsoCode] Currency ISO code for the plan.
++ * @param {string} [options.planMetadata.name] Name of the plan.
++ * @param {string} [options.planMetadata.productDescription] Description of the product.
+  * @param {function} options.onApprove Called when the customer approves the payment.
+  * @param {function} [options.onCancel] Called when the customer cancels the payment.
+  * @param {function} [options.onError] Called when an error occurs.
+@@ -1817,6 +1875,12 @@ PayPalCheckoutV6.prototype.createPayLaterSession = function (options) {
+  * @param {string} [options.returnUrl] URL to return to after payment completion. This parameter is required when using direct-app-switch presentation mode; for other flows, it is optional and defaults to the PayPal error page if not provided.
+  * @param {string} [options.cancelUrl] URL to return to after payment cancellation. This parameter is required when using direct-app-switch presentation mode; for other flows, it is optional and defaults to the PayPal error page if not provided.
+  * @param {string} [options.displayName] The merchant name displayed inside of the PayPal lightbox; defaults to the company name on your Braintree account.
++ * @param {string} [options.locale] Locale code (e.g., 'en_US', 'fr_FR') to customize the PayPal experience language and format.
++ * @param {string} [options.landingPageType] Landing page type: 'login' (shows PayPal login) or 'billing' (shows guest checkout). Defaults to PayPal's selection.
++ * @param {string} [options.userAction] Changes the call-to-action in the PayPal flow: 'continue' or 'pay_now'.
++ * @param {boolean} [options.enableShippingAddress=false] When `true`, prompts the customer for a shipping address.
++ * @param {boolean} [options.shippingAddressEditable=true] Controls whether the displayed shipping address is editable. Pass `false` to make it read-only.
++ * @param {string} [options.riskCorrelationId] Risk correlation ID for advanced fraud protection. Stored and used during tokenization.
+  * @param {string} [options.presentationMode='auto'] How to present PayPal: 'auto', 'popup', 'modal', 'redirect', 'payment-handler', 'direct-app-switch'.
+  * @example
+  * // Create a checkout session with vault consent
+@@ -1908,6 +1972,46 @@ PayPalCheckoutV6.prototype.createPayLaterSession = function (options) {
+  *   session.start({ presentationMode: 'auto' });
+  * });
+  *
++ * @example
++ * // Checkout with vault and subscription plan
++ * var session = paypalCheckoutV6Instance.createCheckoutWithVaultSession({
++ *   amount: '10.00',
++ *   currency: 'USD',
++ *   planType: 'SUBSCRIPTION',
++ *   planMetadata: {
++ *     currencyIsoCode: 'USD',
++ *     name: 'Premium Plan',
++ *     billingCycles: [{
++ *       billingFrequency: 1,
++ *       billingFrequencyUnit: 'MONTH',
++ *       sequence: 1,
++ *       pricingScheme: {
++ *         pricingModel: 'FIXED',
++ *         price: '10.00'
++ *       }
++ *     }]
++ *   },
++ *   billingAgreementDetails: {
++ *     description: 'Monthly Premium Subscription'
++ *   },
++ *   onApprove: function (data) {
++ *     return paypalCheckoutV6Instance.tokenizePayment(data).then(function (payload) {
++ *       // Send nonce to server for both charging and vaulting
++ *       submitToServer(payload.nonce);
++ *     });
++ *   },
++ *   onCancel: function () {
++ *     console.log('Canceled');
++ *   },
++ *   onError: function (err) {
++ *     console.error(err);
++ *   }
++ * });
++ *
++ * button.addEventListener('click', function () {
++ *   session.start();
++ * });
++ *
+  * @returns {object} Payment session object with `start()` method.
+  */
+ PayPalCheckoutV6.prototype.createCheckoutWithVaultSession = function (options) {
+diff --git a/src/paypal-checkout/errors.js b/src/paypal-checkout/errors.js
+index e4b4631..edf7a9b 100644
+--- a/src/paypal-checkout/errors.js
++++ b/src/paypal-checkout/errors.js
+@@ -102,4 +102,10 @@ module.exports = {
+     code: "PAYPAL_MISSING_REQUIRED_OPTION",
+     message: "Missing required option.",
+   },
++  PAYPAL_BILLING_AGREEMENT_JWT_FAILED: {
++    type: BraintreeError.types.NETWORK,
++    code: "PAYPAL_BILLING_AGREEMENT_JWT_FAILED",
++    message:
++      "Could not create a billing agreement token from the payment method JWT.",
++  },
+ };
+diff --git a/src/paypal-checkout/paypal-checkout.js b/src/paypal-checkout/paypal-checkout.js
+index a959ed4..ef1362c 100644
+--- a/src/paypal-checkout/paypal-checkout.js
++++ b/src/paypal-checkout/paypal-checkout.js
+@@ -333,6 +333,8 @@ PayPalCheckout.prototype._initialize = function (options) {
+ 
+         analytics.sendEvent(client, "paypal-checkout.initialized");
+         this._frameServicePromise = this._setupFrameService(client);
++        this._billingAgreementJwtPromise =
++          this._createBillingAgreementJwt(client);
+ 
+         return client;
+       }.bind(this)
+@@ -351,6 +353,47 @@ PayPalCheckout.prototype._initialize = function (options) {
+   return Promise.resolve(this);
+ };
+ 
++PayPalCheckout.prototype._createBillingAgreementJwt = function (client) {
++  var self = this;
++  var paymentMethodIdJwt = this._configuration.paymentMethodIdJwt;
++
++  if (!paymentMethodIdJwt) {
++    return Promise.resolve();
++  }
++
++  return client
++    .request({
++      api: "graphQLApi",
++      data: {
++        query: constants.CREATE_BILLING_AGREEMENT_JWT_MUTATION,
++        variables: {
++          input: {
++            paymentMethodJwt: paymentMethodIdJwt,
++          },
++        },
++      },
++    })
++    .then(function (response) {
++      self._billingAgreementJwt = response.data.createBillingAgreementJwt.jwt;
++      analytics.sendEvent(
++        client,
++        "paypal-checkout.create-billing-agreement-jwt.succeeded"
++      );
++    })
++    .catch(function (err) {
++      self._billingAgreementJwtError = new BraintreeError({
++        type: errors.PAYPAL_BILLING_AGREEMENT_JWT_FAILED.type,
++        code: errors.PAYPAL_BILLING_AGREEMENT_JWT_FAILED.code,
++        message: errors.PAYPAL_BILLING_AGREEMENT_JWT_FAILED.message,
++        details: { originalError: err },
++      });
++      analytics.sendEvent(
++        client,
++        "paypal-checkout.create-billing-agreement-jwt.failed"
++      );
++    });
++};
++
+ PayPalCheckout.prototype._setupFrameService = function (client) {
+   var frameServicePromise = new ExtendedPromise();
+   var config = client.getConfiguration();
+@@ -503,6 +546,7 @@ PayPalCheckout.prototype._setupFrameService = function (client) {
+  * @param {string} [options.shippingCallbackUrl] Optional server side shipping callback URL to be notified when a customer updates their shipping address or options. A callback request will be sent to the merchant server at this URL.
+  * @param {string} [options.riskCorrelationId] Optional merchant-provided risk correlation ID. This ID is used for tracking risk management.
+  * @param {string} [options.paymentReadySessionId] Optional session identifier returned from PaymentReady.createCustomerSession that can be used to track a specific checkout attempt. This ID is used for analytics and to connect multiple API calls associated with a single checkout flow.
++ * @param {boolean} [options.editBillingAgreement] When `true`, initiates the Edit FI (funding instrument) flow for a returning buyer with a vaulted Billing Agreement. Requires the client token to have been generated with a `preferredPaymentMethodToken`. Only applicable to the `checkout` flow.
+  * @param {string} [options.userAction=CONTINUE] Changes the call-to-action on the PayPal review page
+  *  * `CONTINUE` - Shows the default call-to-action text on the PayPal Express Checkout page.
+  *  * `COMMIT` - Shows a deterministic call-to-action for the PayPal Checkout flow.
+@@ -727,6 +771,14 @@ PayPalCheckout.prototype._createPaymentResource = function (options, config) {
+ 
+   return this._clientPromise
+     .then(function (client) {
++      return Promise.all([
++        client,
++        self._billingAgreementJwtPromise || Promise.resolve(),
++      ]);
++    })
++    .then(function (results) {
++      var client = results[0];
++
+       return client
+         .request({
+           endpoint: endpoint,
+@@ -1436,6 +1488,7 @@ PayPalCheckout.prototype.getClientId = function () {
+  * @param {object} [options.dataAttributes] The data attributes to apply to the script. Any data attribute can be passed. A subset of the parameters are listed below. For a full list of data attributes, see the [PayPal docs](https://developer.paypal.com/docs/checkout/reference/customize-sdk/#script-parameters).
+  * @param {string} [options.dataAttributes.client-token] The client token to use in the script. (usually not needed)
+  * @param {string} [options.dataAttributes.csp-nonce] See the [PayPal docs about content security nonces](https://developer.paypal.com/docs/checkout/reference/customize-sdk/#csp-nonce).
++ * @param {string} [options.dataAttributes.user-id-token] Note: do not set this attribute if you want to use the view/edit FI flow.
+  * @param {callback} [callback] Called when the PayPal SDK has been loaded onto the page. The second argument is the PayPal Checkout instance. If no callback is provided, the promise resolves with the PayPal Checkout instance when the PayPal SDK has been loaded onto the page.
+  * @returns {(Promise|void)} Returns a promise if no callback is provided.
+  * @example <caption>Without options</caption>
+@@ -1462,8 +1515,9 @@ PayPalCheckout.prototype.loadPayPalSDK = function (options) {
+   var idPromise, src;
+   var loadPromise = new ExtendedPromise();
+   var dataAttributes = (options && options.dataAttributes) || {};
+-  var userIdToken =
++  var merchantUserIdToken =
+     dataAttributes["user-id-token"] || dataAttributes["data-user-id-token"];
++  var userIdToken = merchantUserIdToken;
+ 
+   if (this._configuration) {
+     dataAttributes["client-metadata-id"] = dataAttributes["client-metadata-id"]
+@@ -1532,11 +1586,21 @@ PayPalCheckout.prototype.loadPayPalSDK = function (options) {
+     idPromise = this.getClientId();
+   }
+ 
+-  idPromise.then(
+-    function (id) {
++  Promise.all([
++    idPromise,
++    this._billingAgreementJwtPromise || Promise.resolve(),
++  ]).then(
++    function (results) {
++      var id = results[0];
++
+       options["client-id"] = id;
+ 
+-      if (this._autoSetDataUserIdToken && userIdToken) {
++      if (this._billingAgreementJwt && !merchantUserIdToken) {
++        this._paypalScript.setAttribute(
++          "data-user-id-token",
++          this._billingAgreementJwt
++        );
++      } else if (this._autoSetDataUserIdToken && userIdToken) {
+         this._paypalScript.setAttribute("data-user-id-token", userIdToken);
+ 
+         // preloading improves the rendering time of the PayPal button
+@@ -1737,6 +1801,14 @@ PayPalCheckout.prototype._formatPaymentResourceCheckoutData = function (
+     if (options.hasOwnProperty("billingAgreementDetails")) {
+       paymentResource.billingAgreementDetails = options.billingAgreementDetails;
+     }
++
++    if (
++      options.editBillingAgreement === true &&
++      this._configuration.paymentMethodIdJwt
++    ) {
++      paymentResource.editBillingAgreementJwt =
++        this._configuration.paymentMethodIdJwt;
++    }
+   }
+ };
+ 
+diff --git a/src/paypal/shared/constants.js b/src/paypal/shared/constants.js
+index 70b7994..a086a0e 100644
+--- a/src/paypal/shared/constants.js
++++ b/src/paypal/shared/constants.js
+@@ -13,4 +13,6 @@ module.exports = {
+     teBraintree: "https://www.braintree.stage.paypal.com/sdk/js?",
+   },
+   BT_INTEGRATION_SOURCE: "BRAINTREE_WEB_SDK",
++  CREATE_BILLING_AGREEMENT_JWT_MUTATION:
++    "mutation CreateBillingAgreementJwt($input: CreateBillingAgreementJwtInput!) { createBillingAgreementJwt(input: $input) { jwt } }",
+ };
+diff --git a/src/venmo/external/venmo-desktop.js b/src/venmo/external/venmo-desktop.js
+index 2cce659..6fc89fd 100644
+--- a/src/venmo/external/venmo-desktop.js
++++ b/src/venmo/external/venmo-desktop.js
+@@ -80,7 +80,9 @@ var VenmoDesktop = /** @class */ (function () {
+         resolve(_this);
+       });
+       _this.bus.on(events_1.VENMO_DESKTOP_REQUEST_NEW_QR_CODE, function () {
+-        _this.sendEvent("venmo.tokenize.desktop.restarted-from-error-view");
++        _this.sendEvent("venmo.tokenize.desktop.restarted-from-error-view", {
++          payment_method_usage: _this.paymentMethodUsage,
++        });
+         _this.startPolling();
+       });
+       document.body.appendChild(_this.iframe);
+@@ -106,7 +108,9 @@ var VenmoDesktop = /** @class */ (function () {
+       };
+       var unknownErrorHandler = function (err) {
+         removeListeners();
+-        _this.sendEvent("venmo.tokenize.desktop.unknown-error");
++        _this.sendEvent("venmo.tokenize.desktop.unknown-error", {
++          payment_method_usage: _this.paymentMethodUsage,
++        });
+         reject({
+           allowUIToHandleError: false,
+           reason: "UNKNOWN_ERROR",
+@@ -117,7 +121,10 @@ var VenmoDesktop = /** @class */ (function () {
+         removeListeners();
+         _this.updateVenmoDesktopPaymentContext("CANCELED");
+         _this.sendEvent(
+-          "venmo.tokenize.desktop.status-change.canceled-from-modal"
++          "venmo.tokenize.desktop.status-change.canceled-from-modal",
++          {
++            payment_method_usage: _this.paymentMethodUsage,
++          }
+         );
+         reject({
+           allowUIToHandleError: false,
+@@ -192,6 +199,7 @@ var VenmoDesktop = /** @class */ (function () {
+     });
+     this.sendEvent("venmo.desktop-qr.display-qr-code.status.presented", {
+       context_id: this.venmoContextId,
++      payment_method_usage: this.paymentMethodUsage,
+     });
+     this.setAlert("To scan the QR code, open your Venmo app");
+   };
+@@ -209,6 +217,7 @@ var VenmoDesktop = /** @class */ (function () {
+     this.bus.emit(events_1.VENMO_DESKTOP_AUTHORIZING);
+     this.sendEvent("venmo.desktop-qr.display-qr-code.status.authorizing", {
+       context_id: this.venmoContextId,
++      payment_method_usage: this.paymentMethodUsage,
+     });
+     this.setAlert("Authorize on your Venmo app");
+   };
+@@ -244,7 +253,9 @@ var VenmoDesktop = /** @class */ (function () {
+           // noop here and let the UI handle the customer error
+           return;
+         }
+-        _this.sendEvent("venmo.tokenize.desktop.unhandled-error");
++        _this.sendEvent("venmo.tokenize.desktop.unhandled-error", {
++          payment_method_usage: _this.paymentMethodUsage,
++        });
+         _this.triggerRejected(err);
+       });
+   };
+@@ -256,7 +267,9 @@ var VenmoDesktop = /** @class */ (function () {
+     if (Date.now() > expiredTime) {
+       return this.updateVenmoDesktopPaymentContext("EXPIRED").then(function () {
+         _this.displayError("Something went wrong");
+-        _this.sendEvent("venmo.tokenize.desktop.status-change.sdk-timeout");
++        _this.sendEvent("venmo.tokenize.desktop.status-change.sdk-timeout", {
++          payment_method_usage: _this.paymentMethodUsage,
++        });
+         return _this.Promise.reject({
+           allowUIToHandleError: true,
+           reason: "TIMEOUT",
+@@ -273,7 +286,10 @@ var VenmoDesktop = /** @class */ (function () {
+       if (newStatus !== status) {
+         status = newStatus;
+         _this.sendEvent(
+-          "venmo.tokenize.desktop.status-change." + status.toLowerCase()
++          "venmo.tokenize.desktop.status-change." + status.toLowerCase(),
++          {
++            payment_method_usage: _this.paymentMethodUsage,
++          }
+         );
+ 
+         switch (status) {
+@@ -357,7 +373,9 @@ var VenmoDesktop = /** @class */ (function () {
+       input.displayName = this.displayName;
+     }
+ 
+-    _this.sendEvent("venmo.desktop-qr.create-payment-context.started");
++    _this.sendEvent("venmo.desktop-qr.create-payment-context.started", {
++      payment_method_usage: _this.paymentMethodUsage,
++    });
+ 
+     return this.apiRequest(queries_1.CREATE_PAYMENT_CONTEXT_QUERY, {
+       input: input,
+@@ -365,11 +383,14 @@ var VenmoDesktop = /** @class */ (function () {
+       .then(function (response) {
+         _this.sendEvent("venmo.desktop-qr.create-payment-context.succeeded", {
+           context_id: response.createVenmoPaymentContext.venmoPaymentContext.id,
++          payment_method_usage: _this.paymentMethodUsage,
+         });
+         return response.createVenmoPaymentContext.venmoPaymentContext;
+       })
+       .catch(function (err) {
+-        _this.sendEvent("venmo.desktop-qr.create-payment-context.failed");
++        _this.sendEvent("venmo.desktop-qr.create-payment-context.failed", {
++          payment_method_usage: _this.paymentMethodUsage,
++        });
+         throw err;
+       });
+   };
+@@ -421,6 +442,7 @@ var VenmoDesktop = /** @class */ (function () {
+ 
+     _this.sendEvent("venmo.desktop-qr.query-payment-context.started", {
+       context_id: _this.venmoContextId,
++      payment_method_usage: _this.paymentMethodUsage,
+     });
+ 
+     var query = _this.shouldUseLegacyQRCodeMutation
+@@ -433,12 +455,14 @@ var VenmoDesktop = /** @class */ (function () {
+       .then(function (response) {
+         _this.sendEvent("venmo.desktop-qr.query-payment-context.succeeded", {
+           context_id: _this.venmoContextId,
++          payment_method_usage: _this.paymentMethodUsage,
+         });
+         return response.node;
+       })
+       .catch(function (err) {
+         _this.sendEvent("venmo.desktop-qr.query-payment-context.failed", {
+           context_id: _this.venmoContextId,
++          payment_method_usage: _this.paymentMethodUsage,
+         });
+         throw err;
+       });
+diff --git a/src/venmo/index.js b/src/venmo/index.js
+index bbe6b8e..4360a97 100644
+--- a/src/venmo/index.js
++++ b/src/venmo/index.js
+@@ -100,7 +100,9 @@ function create(options) {
+     })
+     .then(function () {
+       var createPromise, instance;
+-      var incognitoPromise = browserDetection.isIncognito();
++      var incognitoPromise = browserDetection.isIncognito().catch(function () {
++        return { isPrivate: false, browserName: "unknown" };
++      });
+ 
+       if (options.profileId && typeof options.profileId !== "string") {
+         return Promise.reject(
+@@ -148,7 +150,6 @@ function create(options) {
+       return Promise.all([createPromise, incognitoPromise]).then(
+         function (results) {
+           var isIncognito = results[1];
+-
+           options._isIncognito = isIncognito.isPrivate;
+ 
+           options.createPromise = createPromise;
+diff --git a/tasks/jsdoc.js b/tasks/jsdoc.js
+index b0165d1..de95d3e 100644
+--- a/tasks/jsdoc.js
++++ b/tasks/jsdoc.js
+@@ -64,7 +64,7 @@ gulp.task("jsdoc:generate", function (done) {
+       destination: VERSIONED_DIR,
+       recurse: true,
+       readme: JSDOC_HOME,
+-      template: "node_modules/jsdoc-template",
++      template: "node_modules/@braintree/jsdoc-template",
+     },
+     done
+   );
+diff --git a/test/client/unit/get-configuration.js b/test/client/unit/get-configuration.js
+index 9da79dc..fcfbbcd 100644
+--- a/test/client/unit/get-configuration.js
++++ b/test/client/unit/get-configuration.js
+@@ -208,6 +208,36 @@ describe("getConfiguration", () => {
+       );
+     });
+ 
++    it("forwards paymentMethodIdJwt from the client token to the configuration object", async () => {
++      const rawToken = JSON.parse(atob(clientToken));
++
++      rawToken.paymentMethodIdJwt = "fake-pmt-jwt";
++
++      const tokenWithJwt = btoa(JSON.stringify(rawToken));
++
++      jest
++        .spyOn(AJAXDriver, "request")
++        .mockImplementation(yieldsAsync(null, {}));
++
++      const config = await getConfiguration(
++        createAuthorizationData(tokenWithJwt)
++      );
++
++      expect(config.paymentMethodIdJwt).toBe("fake-pmt-jwt");
++    });
++
++    it("sets paymentMethodIdJwt to undefined when not present in client token", async () => {
++      jest
++        .spyOn(AJAXDriver, "request")
++        .mockImplementation(yieldsAsync(null, {}));
++
++      const config = await getConfiguration(
++        createAuthorizationData(clientToken)
++      );
++
++      expect(config.paymentMethodIdJwt).toBeUndefined();
++    });
++
+     it("calls the callback with a CLIENT_GATEWAY_NETWORK error if request fails", (done) => {
+       const fakeErr = new Error("you goofed!");
+ 
+diff --git a/test/lib/unit/create-authorization-data.js b/test/lib/unit/create-authorization-data.js
+new file mode 100644
+index 0000000..1719997
+--- /dev/null
++++ b/test/lib/unit/create-authorization-data.js
+@@ -0,0 +1,50 @@
++"use strict";
++
++const createAuthorizationData = require("../../../src/lib/create-authorization-data");
++
++describe("createAuthorizationData", () => {
++  describe("client token", () => {
++    let baseToken;
++
++    beforeEach(() => {
++      baseToken = {
++        authorizationFingerprint: "fake-fingerprint",
++        configUrl: "https://example.com/config",
++        environment: "sandbox",
++        graphQL: { url: "https://example.com/graphql", date: "2018-05-08" },
++      };
++    });
++
++    const encode = (obj) => btoa(JSON.stringify(obj));
++
++    it("parses paymentMethodIdJwt from the client token onto the data object", () => {
++      baseToken.paymentMethodIdJwt = "fake-pmt-jwt";
++
++      const result = createAuthorizationData(encode(baseToken));
++
++      expect(result.paymentMethodIdJwt).toBe("fake-pmt-jwt");
++    });
++
++    it("does not put paymentMethodIdJwt in attrs", () => {
++      baseToken.paymentMethodIdJwt = "fake-pmt-jwt";
++
++      const result = createAuthorizationData(encode(baseToken));
++
++      expect(result.attrs.paymentMethodIdJwt).toBeUndefined();
++    });
++
++    it("sets paymentMethodIdJwt to undefined when not present in client token", () => {
++      const result = createAuthorizationData(encode(baseToken));
++
++      expect(result.paymentMethodIdJwt).toBeUndefined();
++    });
++
++    it("still parses authorizationFingerprint when paymentMethodIdJwt is present", () => {
++      baseToken.paymentMethodIdJwt = "fake-pmt-jwt";
++
++      const result = createAuthorizationData(encode(baseToken));
++
++      expect(result.attrs.authorizationFingerprint).toBe("fake-fingerprint");
++    });
++  });
++});
+diff --git a/test/paypal-checkout-v6/unit/paypal-checkout-v6.js b/test/paypal-checkout-v6/unit/paypal-checkout-v6.js
+index ed3d701..c69b540 100644
+--- a/test/paypal-checkout-v6/unit/paypal-checkout-v6.js
++++ b/test/paypal-checkout-v6/unit/paypal-checkout-v6.js
+@@ -4770,6 +4770,302 @@ describe("PayPalCheckoutV6", () => {
+       });
+     });
+ 
++    it("supports planType option", (done) => {
++      jest.spyOn(testContext.client, "request").mockResolvedValue({
++        paymentResource: {
++          redirectUrl: "https://example.com?token=ORDER123",
++        },
++      });
++
++      const session = testContext.instance.createCheckoutWithVaultSession({
++        amount: "10.00",
++        currency: "USD",
++        planType: "SUBSCRIPTION",
++        onApprove: jest.fn(),
++      });
++
++      session.start().then(() => {
++        expect(testContext.client.request).toHaveBeenCalledWith(
++          expect.objectContaining({
++            data: expect.objectContaining({
++              planType: "SUBSCRIPTION",
++            }),
++          })
++        );
++        done();
++      });
++    });
++
++    it("supports planMetadata option", (done) => {
++      jest.spyOn(testContext.client, "request").mockResolvedValue({
++        paymentResource: {
++          redirectUrl: "https://example.com?token=ORDER123",
++        },
++      });
++
++      const planMetadata = {
++        name: "Premium Plan",
++        currencyIsoCode: "USD",
++        billingCycles: [
++          {
++            billingFrequency: 1,
++            billingFrequencyUnit: "MONTH",
++            numberOfExecutions: 12,
++            sequence: 1,
++            trial: false,
++            pricingScheme: {
++              pricingModel: "FIXED",
++              price: "29.99",
++            },
++          },
++        ],
++      };
++
++      const session = testContext.instance.createCheckoutWithVaultSession({
++        amount: "10.00",
++        currency: "USD",
++        planType: "SUBSCRIPTION",
++        planMetadata: planMetadata,
++        onApprove: jest.fn(),
++      });
++
++      session.start().then(() => {
++        expect(testContext.client.request).toHaveBeenCalledWith(
++          expect.objectContaining({
++            data: expect.objectContaining({
++              planType: "SUBSCRIPTION",
++              planMetadata: expect.objectContaining({
++                billingCycles: expect.any(Array),
++              }),
++            }),
++          })
++        );
++        done();
++      });
++    });
++
++    it("supports locale option", (done) => {
++      jest.spyOn(testContext.client, "request").mockResolvedValue({
++        paymentResource: {
++          redirectUrl: "https://example.com?token=ORDER123",
++        },
++      });
++
++      const session = testContext.instance.createCheckoutWithVaultSession({
++        amount: "10.00",
++        currency: "USD",
++        locale: "fr_FR",
++        onApprove: jest.fn(),
++      });
++
++      session.start().then(() => {
++        expect(testContext.client.request).toHaveBeenCalledWith(
++          expect.objectContaining({
++            data: expect.objectContaining({
++              experienceProfile: expect.objectContaining({
++                localeCode: "fr_FR",
++              }),
++            }),
++          })
++        );
++        done();
++      });
++    });
++
++    it("supports landingPageType option", (done) => {
++      jest.spyOn(testContext.client, "request").mockResolvedValue({
++        paymentResource: {
++          redirectUrl: "https://example.com?token=ORDER123",
++        },
++      });
++
++      const session = testContext.instance.createCheckoutWithVaultSession({
++        amount: "10.00",
++        currency: "USD",
++        landingPageType: "login",
++        onApprove: jest.fn(),
++      });
++
++      session.start().then(() => {
++        expect(testContext.client.request).toHaveBeenCalledWith(
++          expect.objectContaining({
++            data: expect.objectContaining({
++              experienceProfile: expect.objectContaining({
++                landingPageType: "login",
++              }),
++            }),
++          })
++        );
++        done();
++      });
++    });
++
++    it("supports userAction option", (done) => {
++      jest.spyOn(testContext.client, "request").mockResolvedValue({
++        paymentResource: {
++          redirectUrl: "https://example.com?token=ORDER123",
++        },
++      });
++
++      const session = testContext.instance.createCheckoutWithVaultSession({
++        amount: "10.00",
++        currency: "USD",
++        userAction: "pay_now",
++        onApprove: jest.fn(),
++      });
++
++      session.start().then(() => {
++        expect(testContext.client.request).toHaveBeenCalledWith(
++          expect.objectContaining({
++            data: expect.objectContaining({
++              experienceProfile: expect.objectContaining({
++                userAction: "pay_now",
++              }),
++            }),
++          })
++        );
++        done();
++      });
++    });
++
++    it("sets noShipping to false when enableShippingAddress is true", (done) => {
++      jest.spyOn(testContext.client, "request").mockResolvedValue({
++        paymentResource: {
++          redirectUrl: "https://example.com?token=ORDER123",
++        },
++      });
++
++      const session = testContext.instance.createCheckoutWithVaultSession({
++        amount: "10.00",
++        currency: "USD",
++        enableShippingAddress: true,
++        onApprove: jest.fn(),
++      });
++
++      session.start().then(() => {
++        expect(testContext.client.request).toHaveBeenCalledWith(
++          expect.objectContaining({
++            data: expect.objectContaining({
++              experienceProfile: expect.objectContaining({
++                noShipping: "false",
++              }),
++            }),
++          })
++        );
++        done();
++      });
++    });
++
++    it("sets noShipping to true when enableShippingAddress is false", (done) => {
++      jest.spyOn(testContext.client, "request").mockResolvedValue({
++        paymentResource: {
++          redirectUrl: "https://example.com?token=ORDER123",
++        },
++      });
++
++      const session = testContext.instance.createCheckoutWithVaultSession({
++        amount: "10.00",
++        currency: "USD",
++        enableShippingAddress: false,
++        onApprove: jest.fn(),
++      });
++
++      session.start().then(() => {
++        expect(testContext.client.request).toHaveBeenCalledWith(
++          expect.objectContaining({
++            data: expect.objectContaining({
++              experienceProfile: expect.objectContaining({
++                noShipping: "true",
++              }),
++            }),
++          })
++        );
++        done();
++      });
++    });
++
++    it("sets addressOverride to true when shippingAddressEditable is false", (done) => {
++      jest.spyOn(testContext.client, "request").mockResolvedValue({
++        paymentResource: {
++          redirectUrl: "https://example.com?token=ORDER123",
++        },
++      });
++
++      const session = testContext.instance.createCheckoutWithVaultSession({
++        amount: "10.00",
++        currency: "USD",
++        shippingAddressEditable: false,
++        onApprove: jest.fn(),
++      });
++
++      session.start().then(() => {
++        expect(testContext.client.request).toHaveBeenCalledWith(
++          expect.objectContaining({
++            data: expect.objectContaining({
++              experienceProfile: expect.objectContaining({
++                addressOverride: true,
++              }),
++            }),
++          })
++        );
++        done();
++      });
++    });
++
++    it("sets addressOverride to false when shippingAddressEditable is true", (done) => {
++      jest.spyOn(testContext.client, "request").mockResolvedValue({
++        paymentResource: {
++          redirectUrl: "https://example.com?token=ORDER123",
++        },
++      });
++
++      const session = testContext.instance.createCheckoutWithVaultSession({
++        amount: "10.00",
++        currency: "USD",
++        shippingAddressEditable: true,
++        onApprove: jest.fn(),
++      });
++
++      session.start().then(() => {
++        expect(testContext.client.request).toHaveBeenCalledWith(
++          expect.objectContaining({
++            data: expect.objectContaining({
++              experienceProfile: expect.objectContaining({
++                addressOverride: false,
++              }),
++            }),
++          })
++        );
++        done();
++      });
++    });
++
++    it("supports riskCorrelationId option", (done) => {
++      jest.spyOn(testContext.client, "request").mockResolvedValue({
++        paymentResource: {
++          redirectUrl: "https://example.com?token=ORDER123",
++        },
++      });
++
++      const session = testContext.instance.createCheckoutWithVaultSession({
++        amount: "10.00",
++        currency: "USD",
++        riskCorrelationId: "risk-id-123",
++        onApprove: jest.fn(),
++      });
++
++      session.start().then(() => {
++        expect(testContext.client.request).toHaveBeenCalledWith(
++          expect.objectContaining({
++            data: expect.objectContaining({
++              correlationId: "risk-id-123",
++            }),
++          })
++        );
++        done();
++      });
++    });
++
+     describe("direct-app-switch URL validation", () => {
+       it("rejects when returnUrl is missing for direct-app-switch mode", () => {
+         const session = testContext.instance.createCheckoutWithVaultSession({
+diff --git a/test/paypal-checkout/unit/paypal-checkout.js b/test/paypal-checkout/unit/paypal-checkout.js
+index c6df94f..a33a5d3 100644
+--- a/test/paypal-checkout/unit/paypal-checkout.js
++++ b/test/paypal-checkout/unit/paypal-checkout.js
+@@ -193,6 +193,99 @@ describe("PayPalCheckout", () => {
+         expect(pp).toBeInstanceOf(PayPalCheckout);
+       });
+     });
++
++    describe("_createBillingAgreementJwt", () => {
++      it("does not fire a request when paymentMethodIdJwt is absent", async () => {
++        const instance = new PayPalCheckout({});
++
++        testContext.client.request.mockClear();
++        await instance._initialize({ client: testContext.client });
++        await instance._billingAgreementJwtPromise;
++
++        const graphqlCalls = testContext.client.request.mock.calls.filter(
++          (call) => call[0].api === "graphQLApi"
++        );
++
++        expect(graphqlCalls).toHaveLength(0);
++      });
++
++      it("fires a graphQLApi request with the paymentMethodIdJwt when present", async () => {
++        const instance = new PayPalCheckout({});
++
++        testContext.configuration.paymentMethodIdJwt = "fake-pmt-jwt";
++        testContext.client.request.mockResolvedValueOnce({
++          data: {
++            createBillingAgreementJwt: {
++              jwt: "fake-baid-jwt",
++            },
++          },
++        });
++        await instance._initialize({ client: testContext.client });
++        await instance._billingAgreementJwtPromise;
++
++        const graphqlCall = testContext.client.request.mock.calls.find(
++          (call) => call[0].api === "graphQLApi"
++        );
++
++        expect(graphqlCall[0]).toMatchObject({
++          api: "graphQLApi",
++          data: {
++            variables: {
++              input: { paymentMethodJwt: "fake-pmt-jwt" },
++            },
++          },
++        });
++      });
++
++      it("sets _billingAgreementJwt on success", async () => {
++        const instance = new PayPalCheckout({});
++
++        testContext.configuration.paymentMethodIdJwt = "fake-pmt-jwt";
++        testContext.client.request.mockResolvedValueOnce({
++          data: {
++            createBillingAgreementJwt: {
++              jwt: "fake-baid-jwt",
++            },
++          },
++        });
++        await instance._initialize({ client: testContext.client });
++        await instance._billingAgreementJwtPromise;
++
++        expect(instance._billingAgreementJwt).toBe("fake-baid-jwt");
++        expect(analytics.sendEvent).toHaveBeenCalledWith(
++          testContext.client,
++          "paypal-checkout.create-billing-agreement-jwt.succeeded"
++        );
++      });
++
++      it("sets _billingAgreementJwtError on failure without rejecting _initialize", async () => {
++        const instance = new PayPalCheckout({});
++        const exchangeError = new Error("exchange failed");
++
++        testContext.configuration.paymentMethodIdJwt = "fake-pmt-jwt";
++        testContext.client.request.mockRejectedValueOnce(exchangeError);
++
++        await expect(
++          instance._initialize({ client: testContext.client })
++        ).resolves.toBeInstanceOf(PayPalCheckout);
++
++        await instance._billingAgreementJwtPromise;
++
++        expect(instance._billingAgreementJwtError).toBeInstanceOf(
++          BraintreeError
++        );
++        expect(instance._billingAgreementJwtError.code).toBe(
++          "PAYPAL_BILLING_AGREEMENT_JWT_FAILED"
++        );
++        expect(instance._billingAgreementJwtError.details.originalError).toBe(
++          exchangeError
++        );
++        expect(analytics.sendEvent).toHaveBeenCalledWith(
++          testContext.client,
++          "paypal-checkout.create-billing-agreement-jwt.failed"
++        );
++      });
++    });
+   });
+ 
+   describe("createPayment", () => {
+@@ -564,6 +657,65 @@ describe("PayPalCheckout", () => {
+             });
+         });
+ 
++        it("includes editBillingAgreementJwt with paymentMethodIdJwt when editBillingAgreement is true", () => {
++          testContext.configuration.paymentMethodIdJwt = "fake-pmt-jwt";
++
++          return testContext.paypalCheckout
++            .createPayment({
++              ...testContext.options,
++              editBillingAgreement: true,
++            })
++            .then(() => {
++              expect(testContext.client.request.mock.calls[0][0]).toMatchObject(
++                {
++                  data: {
++                    editBillingAgreementJwt: "fake-pmt-jwt",
++                  },
++                }
++              );
++              expect(
++                testContext.client.request.mock.calls[0][0].data
++              ).not.toHaveProperty("editBillingAgreement");
++            });
++        });
++
++        it("does not include editBillingAgreementJwt when editBillingAgreement flag is not set", () => {
++          testContext.configuration.paymentMethodIdJwt = "fake-pmt-jwt";
++
++          return testContext.paypalCheckout
++            .createPayment(testContext.options)
++            .then(() => {
++              expect(
++                testContext.client.request.mock.calls[0][0].data
++              ).not.toHaveProperty("editBillingAgreementJwt");
++            });
++        });
++
++        it("does not include editBillingAgreementJwt when paymentMethodIdJwt is not set", () => {
++          return testContext.paypalCheckout
++            .createPayment({
++              ...testContext.options,
++              editBillingAgreement: true,
++            })
++            .then(() => {
++              expect(
++                testContext.client.request.mock.calls[0][0].data
++              ).not.toHaveProperty("editBillingAgreementJwt");
++            });
++        });
++
++        it("does not include editBillingAgreementJwt for vault flow even when editBillingAgreement is true", () => {
++          testContext.configuration.paymentMethodIdJwt = "fake-pmt-jwt";
++
++          return testContext.paypalCheckout
++            .createPayment({ flow: "vault", editBillingAgreement: true })
++            .then(() => {
++              expect(
++                testContext.client.request.mock.calls[0][0].data
++              ).not.toHaveProperty("editBillingAgreementJwt");
++            });
++        });
++
+         it("contains other options when specified", () => {
+           testContext.options.intent = "sale";
+           testContext.options.contactPreference = "RETAIN_CONTACT_INFO";
+@@ -3779,6 +3931,94 @@ describe("PayPalCheckout", () => {
+         );
+       });
+     });
++
++    it("sets data-user-id-token to the BAID JWT when _billingAgreementJwt is set", () => {
++      const instance = testContext.paypalCheckout;
++
++      instance._billingAgreementJwt = "fake-baid-jwt";
++
++      const promise = instance.loadPayPalSDK();
++
++      fakeScript.onload();
++
++      return promise.then(() => {
++        expect(fakeScript.getAttribute("data-user-id-token")).toBe(
++          "fake-baid-jwt"
++        );
++      });
++    });
++
++    it("waits for _billingAgreementJwtPromise before injecting BAID JWT", () => {
++      const instance = testContext.paypalCheckout;
++      let resolveExchange;
++
++      instance._billingAgreementJwtPromise = new Promise((resolve) => {
++        resolveExchange = resolve;
++      }).then(() => {
++        instance._billingAgreementJwt = "fake-baid-jwt";
++      });
++
++      const promise = instance.loadPayPalSDK();
++
++      resolveExchange();
++      fakeScript.onload();
++
++      return promise.then(() => {
++        expect(fakeScript.getAttribute("data-user-id-token")).toBe(
++          "fake-baid-jwt"
++        );
++      });
++    });
++
++    it("loads the SDK without data-user-id-token when exchange failed", () => {
++      const instance = testContext.paypalCheckout;
++
++      instance._billingAgreementJwtPromise = Promise.resolve();
++      instance._billingAgreementJwtError = new BraintreeError(
++        errors.PAYPAL_BILLING_AGREEMENT_JWT_FAILED
++      );
++
++      const promise = instance.loadPayPalSDK();
++
++      fakeScript.onload();
++
++      return promise.then(() => {
++        expect(fakeScript.getAttribute("data-user-id-token")).toBeNull();
++        expect(document.head.insertBefore).toBeCalledTimes(1);
++      });
++    });
++
++    it("does not set data-user-id-token to BAID JWT when _billingAgreementJwt is not set", () => {
++      const instance = testContext.paypalCheckout;
++
++      const promise = instance.loadPayPalSDK();
++
++      fakeScript.onload();
++
++      return promise.then(() => {
++        expect(fakeScript.getAttribute("data-user-id-token")).toBeNull();
++      });
++    });
++
++    it("does not overwrite merchant-supplied user-id-token with _billingAgreementJwt", () => {
++      const instance = testContext.paypalCheckout;
++
++      instance._billingAgreementJwt = "fake-baid-jwt";
++
++      const promise = instance.loadPayPalSDK({
++        dataAttributes: {
++          "user-id-token": "merchant-supplied-token",
++        },
++      });
++
++      fakeScript.onload();
++
++      return promise.then(() => {
++        expect(fakeScript.getAttribute("data-user-id-token")).toBe(
++          "merchant-supplied-token"
++        );
++      });
++    });
+   });
+ 
+   describe("teardown", () => {
+diff --git a/test/venmo/unit/index.js b/test/venmo/unit/index.js
+index 0ca6dfd..351aa06 100644
+--- a/test/venmo/unit/index.js
++++ b/test/venmo/unit/index.js
+@@ -5,6 +5,7 @@ jest.mock("../../../src/lib/basic-component-verification");
+ jest.mock("../../../src/lib/create-deferred-client");
+ jest.mock("../../../src/venmo/shared/supports-venmo");
+ jest.mock("../../../src/lib/create-assets-url");
++jest.mock("../../../src/venmo/shared/browser-detection");
+ 
+ const analytics = require("../../../src/lib/analytics");
+ const basicComponentVerification = require("../../../src/lib/basic-component-verification");
+@@ -14,6 +15,7 @@ const { fake } = require("../../helpers");
+ const BraintreeError = require("../../../src/lib/braintree-error");
+ const supportsVenmo = require("../../../src/venmo/shared/supports-venmo");
+ const Venmo = require("../../../src/venmo/venmo");
++const browserDetection = require("../../../src/venmo/shared/browser-detection");
+ 
+ describe("venmo static methods", () => {
+   describe("venmo.create", () => {
+@@ -28,6 +30,10 @@ describe("venmo static methods", () => {
+       jest
+         .spyOn(createDeferredClient, "create")
+         .mockResolvedValue(testContext.client);
++      browserDetection.isIncognito.mockResolvedValue({
++        isPrivate: false,
++        browserName: "unknown",
++      });
+     });
+ 
+     it("verifies with basicComponentVerification", () =>
+@@ -129,6 +135,33 @@ describe("venmo static methods", () => {
+           "venmo.initialized"
+         );
+       }));
++
++    it("does not fast-fail create when isIncognito rejects", () => {
++      browserDetection.isIncognito.mockRejectedValueOnce(
++        new Error("incognito detection failed")
++      );
++      jest.spyOn(testContext.client, "request").mockResolvedValue({
++        data: {
++          createVenmoPaymentContext: {
++            venmoPaymentContext: {
++              status: "CREATED",
++              id: "context-id",
++              createdAt: "2021-01-20T03:25:37.522000Z",
++              expiresAt: "2021-01-20T03:30:37.522000Z",
++            },
++          },
++        },
++      });
++
++      return create({
++        client: testContext.client,
++        paymentMethodUsage: "single_use",
++        totalAmount: "10.00",
++      }).then((instance) => {
++        expect(instance).toBeInstanceOf(Venmo);
++        expect(instance._isIncognito).toBe(false);
++      });
++    });
+   });
+ 
+   describe("venmo.isBrowserSupported", () => {
+diff --git a/test/venmo/unit/venmo-desktop.js b/test/venmo/unit/venmo-desktop.js
+index ff54d1c..476a6c9 100644
+--- a/test/venmo/unit/venmo-desktop.js
++++ b/test/venmo/unit/venmo-desktop.js
+@@ -175,7 +175,8 @@ describe("VenmoDesktop", function () {
+ 
+       expect(venmoOptions.sendEvent).toHaveBeenCalledTimes(1);
+       expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+-        "venmo.tokenize.desktop.restarted-from-error-view"
++        "venmo.tokenize.desktop.restarted-from-error-view",
++        { payment_method_usage: "SINGLE_USE" }
+       );
+     });
+ 
+@@ -278,7 +279,8 @@ describe("VenmoDesktop", function () {
+ 
+         return instance.launchDesktopFlow().catch(function (err) {
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+-            "venmo.tokenize.desktop.status-change.canceled-from-modal"
++            "venmo.tokenize.desktop.status-change.canceled-from-modal",
++            { payment_method_usage: "SINGLE_USE" }
+           );
+           expect(err).toEqual({
+             allowUIToHandleError: false,
+@@ -336,7 +338,8 @@ describe("VenmoDesktop", function () {
+         return instance.launchDesktopFlow().catch(function (err) {
+           expect(venmoOptions.sendEvent).toHaveBeenCalledTimes(1);
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+-            "venmo.tokenize.desktop.unknown-error"
++            "venmo.tokenize.desktop.unknown-error",
++            { payment_method_usage: "SINGLE_USE" }
+           );
+           expect(err).toEqual({
+             allowUIToHandleError: false,
+@@ -674,7 +677,8 @@ describe("VenmoDesktop", function () {
+ 
+         return instance.startPolling().then(function () {
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+-            "venmo.desktop-qr.create-payment-context.started"
++            "venmo.desktop-qr.create-payment-context.started",
++            { payment_method_usage: "SINGLE_USE" }
+           );
+         });
+       });
+@@ -688,11 +692,12 @@ describe("VenmoDesktop", function () {
+ 
+         return instance.startPolling().then(function () {
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+-            "venmo.desktop-qr.create-payment-context.started"
++            "venmo.desktop-qr.create-payment-context.started",
++            { payment_method_usage: "SINGLE_USE" }
+           );
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+             "venmo.desktop-qr.create-payment-context.succeeded",
+-            { context_id: "fake-id" }
++            { context_id: "fake-id", payment_method_usage: "SINGLE_USE" }
+           );
+         });
+       });
+@@ -708,10 +713,12 @@ describe("VenmoDesktop", function () {
+ 
+         return instance.startPolling().then(function () {
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+-            "venmo.desktop-qr.create-payment-context.started"
++            "venmo.desktop-qr.create-payment-context.started",
++            { payment_method_usage: "SINGLE_USE" }
+           );
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+-            "venmo.desktop-qr.create-payment-context.failed"
++            "venmo.desktop-qr.create-payment-context.failed",
++            { payment_method_usage: "SINGLE_USE" }
+           );
+           expect(venmoOptions.sendEvent).not.toHaveBeenCalledWith(
+             "venmo.desktop-qr.create-payment-context.succeeded",
+@@ -780,7 +787,8 @@ describe("VenmoDesktop", function () {
+         );
+         expect(venmoOptions.sendEvent).toHaveBeenCalledTimes(1);
+         expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+-          "venmo.tokenize.desktop.status-change.sdk-timeout"
++          "venmo.tokenize.desktop.status-change.sdk-timeout",
++          { payment_method_usage: "SINGLE_USE" }
+         );
+         expect(err.allowUIToHandleError).toBe(true);
+         expect(err.reason).toBe("TIMEOUT");
+@@ -949,15 +957,16 @@ describe("VenmoDesktop", function () {
+         .pollForStatusChange("CREATED", Date.now() + 100)
+         .catch(function (err) {
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+-            "venmo.tokenize.desktop.status-change.expired"
++            "venmo.tokenize.desktop.status-change.expired",
++            { payment_method_usage: "SINGLE_USE" }
+           );
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+             "venmo.desktop-qr.query-payment-context.started",
+-            { context_id: "fake-id" }
++            { context_id: "fake-id", payment_method_usage: "SINGLE_USE" }
+           );
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+             "venmo.desktop-qr.query-payment-context.succeeded",
+-            { context_id: "fake-id" }
++            { context_id: "fake-id", payment_method_usage: "SINGLE_USE" }
+           );
+           expect(err.allowUIToHandleError).toBe(true);
+           expect(err.reason).toBe("EXPIRED");
+@@ -995,15 +1004,16 @@ describe("VenmoDesktop", function () {
+         .pollForStatusChange("CREATED", Date.now() + 100)
+         .catch(function (err) {
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+-            "venmo.tokenize.desktop.status-change.failed"
++            "venmo.tokenize.desktop.status-change.failed",
++            { payment_method_usage: "SINGLE_USE" }
+           );
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+             "venmo.desktop-qr.query-payment-context.started",
+-            { context_id: "fake-id" }
++            { context_id: "fake-id", payment_method_usage: "SINGLE_USE" }
+           );
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+             "venmo.desktop-qr.query-payment-context.succeeded",
+-            { context_id: "fake-id" }
++            { context_id: "fake-id", payment_method_usage: "SINGLE_USE" }
+           );
+           expect(err.allowUIToHandleError).toBe(true);
+           expect(err.reason).toBe("FAILED");
+@@ -1041,15 +1051,16 @@ describe("VenmoDesktop", function () {
+         .pollForStatusChange("CREATED", Date.now() + 100)
+         .catch(function (err) {
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+-            "venmo.tokenize.desktop.status-change.canceled"
++            "venmo.tokenize.desktop.status-change.canceled",
++            { payment_method_usage: "SINGLE_USE" }
+           );
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+             "venmo.desktop-qr.query-payment-context.started",
+-            { context_id: "fake-id" }
++            { context_id: "fake-id", payment_method_usage: "SINGLE_USE" }
+           );
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+             "venmo.desktop-qr.query-payment-context.succeeded",
+-            { context_id: "fake-id" }
++            { context_id: "fake-id", payment_method_usage: "SINGLE_USE" }
+           );
+           expect(err.allowUIToHandleError).toBe(true);
+           expect(err.reason).toBe("CANCELED");
+@@ -1079,11 +1090,11 @@ describe("VenmoDesktop", function () {
+           expect(venmoOptions.sendEvent).toHaveBeenCalledTimes(2);
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+             "venmo.desktop-qr.query-payment-context.started",
+-            { context_id: "fake-id" }
++            { context_id: "fake-id", payment_method_usage: "SINGLE_USE" }
+           );
+           expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+             "venmo.desktop-qr.query-payment-context.failed",
+-            { context_id: "fake-id" }
++            { context_id: "fake-id", payment_method_usage: "SINGLE_USE" }
+           );
+           expect(venmoOptions.sendEvent).not.toHaveBeenCalledWith(
+             "venmo.desktop-qr.query-payment-context.succeeded",
+@@ -1415,7 +1426,10 @@ describe("VenmoDesktop", function () {
+         expect(venmoOptions.sendEvent).toHaveBeenCalledTimes(1);
+         expect(venmoOptions.sendEvent).toHaveBeenCalledWith(
+           "venmo.desktop-qr.display-qr-code.status.presented",
+-          { context_id: "fake-context-id" }
++          {
++            context_id: "fake-context-id",
++            payment_method_usage: "SINGLE_USE",
++          }
+         );
+       });
+     });
