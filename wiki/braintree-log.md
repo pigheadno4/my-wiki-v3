@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-07-28] ingest | braintree/braintree-web-drop-in `1.47.0`
+
+- Approved and processed work item `github-88d13a8f0c219387aab4` in full mode.
+- Read and hash-verified the complete 86-file, 466,847-byte exact-SHA capsule at `raw/github/braintree/braintree-web-drop-in/snapshots/2026-07-28-ec1c7c5/manifest.json`.
+- Established an independent cumulative source and release ledger for the prebuilt UI; recorded payment views, vaulted-method handling, 3DS, fraud data, localization, and sanitization changes.
+- Recorded the `braintree-web@3.123.2` dependency boundary and scheduled 2026 deprecation/2027 unsupported milestones; created the Drop-in concept and updated the Braintree company and provider index.
+
 ## [2026-07-28] ingest | braintree/braintree-web `3.144.0`
 
 - Approved and processed work item `github-236dd1f1ac8a3f30f537` in full mode.

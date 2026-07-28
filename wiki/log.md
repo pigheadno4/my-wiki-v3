@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-28] ingest | GitHub braintree/braintree-web-drop-in - `1.47.0`
+
+- Full serial ingest of `github-88d13a8f0c219387aab4` from exact SHA `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`.
+- Established the independent Drop-in cumulative source and package-qualified release ledger from the complete 86-file capsule.
+- Recorded prebuilt payment views, vaulted methods, 3DS, fraud data, localization, output-sanitization changes, and the pinned `braintree-web@3.123.2` boundary.
+- Added the scheduled deprecation/unsupported milestones and migration direction; updated the Braintree company, concept catalog, provider index, and provider log.
+
 ## [2026-07-28] ingest | GitHub braintree/braintree-web — `3.144.0`
 
 - Full serial ingest of `github-236dd1f1ac8a3f30f537` from exact SHA `41460fba05c1ea1222e795b36a10765a6699b8e7`.

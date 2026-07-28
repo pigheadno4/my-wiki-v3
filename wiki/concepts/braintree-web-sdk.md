@@ -54,5 +54,6 @@ The first retained baseline is `braintree-web@3.143.0` at SHA `bae582d791026c143
 
 - [[source-github-braintree-web]] — cumulative exact-SHA implementation evidence
 - [[changelog-github-braintree-web]] — package-qualified release ledger
+- [[braintree-web-drop-in]] - independently versioned prebuilt UI and migration boundary
 - [[paypal-braintree-integration]] — PayPal v6 and Braintree nonce-processing boundary
 - [[paypal-fastlane]] — delegated Fastlane product concept

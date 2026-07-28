@@ -65,10 +65,10 @@
 - Repository: `braintree/braintree-web-drop-in`
 - SHA: `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`
 - Collection date: `2026-07-28`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None
