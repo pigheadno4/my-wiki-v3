@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-28] ingest | GitHub braintree/braintree-web — `3.143.0`
+
+- Full serial ingest of `github-1ab2662d292502a53058` from exact SHA `bae582d791026c143abb91c3bdcada92b8c060f6`.
+- Established the first Braintree cumulative source and package-qualified release ledger from the complete 329-file capsule.
+- Recorded Hosted Fields, 3D Secure, PayPal Checkout v6, Venmo, wallets, local and bank methods, risk data, Payment Ready, and delegated runtime boundaries.
+- Created the Braintree company, concept, provider index, and provider log; extended the PayPal/Braintree integration concept with independent Braintree Web evidence.
+
 ## [2026-07-26] ingest | GitHub Adyen/adyen-web — `6.41.0`
 
 - Full serial ingest of `github-9f56dfbe62e4e84b03c7` from exact SHA `b19eec7054340a1526c87d450fd7dfff75794ed9`.
