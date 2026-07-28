@@ -192,7 +192,11 @@ def validate_github(report: GitHubReport) -> List[str]:
         raise TypeError("report must be GitHubReport")
     errors: List[str] = []
     errors.extend(_validate_repositories(report.repositories))
-    snapshot_index, snapshot_paths = _validate_snapshots(report.snapshots, errors)
+    snapshot_index, snapshot_paths = _validate_snapshots(
+        report.snapshots,
+        report.repositories.repositories,
+        errors,
+    )
     _validate_supplements(report.supplements, snapshot_index, errors)
     release_index = _validate_releases(
         report.release_records, snapshot_index, errors
@@ -231,10 +235,13 @@ def _validate_repositories(inspection: RepositoryInspection) -> List[str]:
 
 
 def _validate_snapshots(
-    inspections: Sequence[ManifestInspection], errors: List[str]
+    inspections: Sequence[ManifestInspection],
+    repositories: Sequence[RepoConfig],
+    errors: List[str],
 ) -> Tuple[Dict[Tuple[str, str], ManifestInspection], set]:
     index: Dict[Tuple[str, str], ManifestInspection] = {}
     paths = set()
+    repos = {repo.id: repo for repo in repositories}
     for artifact in inspections:
         label = artifact.relative_path
         if artifact.error or artifact.document is None:
@@ -267,6 +274,39 @@ def _validate_snapshots(
             errors.append(label + ": duplicate SHA snapshot for " + repo_id)
         index[key] = artifact
         paths.add(label)
+        repo = repos.get(repo_id)
+        capsule = (
+            repo.capsules[0]
+            if repo is not None and len(repo.capsules) == 1
+            else None
+        )
+        if capsule is not None and len(files) > capsule.max_capsule_files:
+            errors.append(
+                label
+                + ": snapshot file count "
+                + str(len(files))
+                + " exceeds max_capsule_files "
+                + str(capsule.max_capsule_files)
+            )
+        sizes = tuple(
+            row.get("size")
+            for row in files
+            if isinstance(row, dict)
+            and isinstance(row.get("size"), int)
+            and row.get("size") >= 0
+        )
+        if (
+            capsule is not None
+            and len(sizes) == len(files)
+            and sum(sizes) > capsule.max_capsule_utf8_bytes
+        ):
+            errors.append(
+                label
+                + ": snapshot UTF-8 bytes "
+                + str(sum(sizes))
+                + " exceeds max_capsule_utf8_bytes "
+                + str(capsule.max_capsule_utf8_bytes)
+            )
         seen = set()
         for row in files:
             if not isinstance(row, dict) or set(row) != _SNAPSHOT_FILE_FIELDS:

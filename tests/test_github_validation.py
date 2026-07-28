@@ -122,11 +122,16 @@ class GitHubValidationTests(unittest.TestCase):
     def changelog_path(self):
         return self.root / "wiki/sources/paypal/github/changelog-github-paypal-js.md"
 
-    def write_registry(self):
+    def write_registry(
+        self,
+        *,
+        max_capsule_files=120,
+        max_capsule_utf8_bytes=750000,
+    ):
         path = self.root / "tracking/github/repo-registry.toml"
-        path.parent.mkdir(parents=True)
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(
-            """[[repos]]
+            f"""[[repos]]
 id="paypal/paypal-js"
 company="paypal"
 url="https://github.com/paypal/paypal-js"
@@ -148,6 +153,8 @@ adapter="npm-tracked-source-v1"
 focus_packages=["@paypal/paypal-js"]
 default_required_roots=["src"]
 default_generated_target_paths=[]
+max_capsule_files={max_capsule_files}
+max_capsule_utf8_bytes={max_capsule_utf8_bytes}
 """,
             encoding="utf-8",
         )
@@ -346,6 +353,51 @@ default_generated_target_paths=[]
         errors = validate_github(inspect_github(self.root))
 
         self.assertTrue(any("snapshot file hash mismatch" in item for item in errors))
+
+    def test_snapshot_file_count_cannot_exceed_capsule_budget(self):
+        self.write_registry(max_capsule_files=1)
+        context = b"# Repository context\n"
+        context_path = self.snapshot_directory / "files/README.md"
+        context_path.write_bytes(context)
+        self.snapshot_manifest["files"].append(
+            {
+                "classification_reason": "repository-context",
+                "git_blob_oid": "c" * 40,
+                "git_mode": "100644",
+                "package": "",
+                "path": "README.md",
+                "purpose": "repository-context",
+                "sha256": hashlib.sha256(context).hexdigest(),
+                "size": len(context),
+            }
+        )
+        self.write_json(self.snapshot_manifest_path, self.snapshot_manifest)
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(
+            any(
+                "snapshot file count 2 exceeds max_capsule_files 1" in item
+                for item in errors
+            )
+        )
+
+    def test_snapshot_utf8_bytes_cannot_exceed_capsule_budget(self):
+        size = self.snapshot_manifest["files"][0]["size"]
+        self.write_registry(max_capsule_utf8_bytes=size - 1)
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(
+            any(
+                "snapshot UTF-8 bytes "
+                + str(size)
+                + " exceeds max_capsule_utf8_bytes "
+                + str(size - 1)
+                in item
+                for item in errors
+            )
+        )
 
     def test_supplement_hash_mismatch_is_rejected(self):
         directory = (

@@ -224,6 +224,65 @@ class GitHubPilotStoreTests(unittest.TestCase):
         snapshots = self.root / "raw/github/acme/widgets/snapshots"
         self.assertEqual([], list(snapshots.iterdir()) if snapshots.exists() else [])
 
+    def test_repository_context_file_count_overflow_requires_policy_review(self):
+        capsule = replace(self.capsule(), max_capsule_files=3)
+        config = replace(self.config, capsules=(capsule,))
+        resolution = resolve_npm_capsule(self.tree, capsule, ())
+
+        with self.assertRaisesRegex(
+            PilotStoreError,
+            (
+                r"^needs-policy-review:capsule-budget-exceeded: "
+                r"published file count 4 exceeds max_capsule_files 3$"
+            ),
+        ):
+            publish_source_snapshot(
+                self.root,
+                config,
+                self.tree,
+                resolution,
+                "2026-07-20",
+                ("@scope/widget@10.0.0",),
+            )
+
+        snapshots = self.root / "raw/github/acme/widgets/snapshots"
+        self.assertEqual([], list(snapshots.iterdir()) if snapshots.exists() else [])
+
+    def test_repository_context_byte_overflow_requires_policy_review(self):
+        selected_bytes = len(package_manifest("10.0.0").encode("utf-8")) + len(
+            b"export const value = 1;\n"
+        )
+        context_bytes = len(b"# Widget\n") + len(b"Apache-2.0\n")
+        capsule = replace(
+            self.capsule(),
+            max_capsule_utf8_bytes=selected_bytes + context_bytes - 1,
+        )
+        config = replace(self.config, capsules=(capsule,))
+        resolution = resolve_npm_capsule(self.tree, capsule, ())
+
+        with self.assertRaisesRegex(
+            PilotStoreError,
+            (
+                r"^needs-policy-review:capsule-budget-exceeded: "
+                r"published UTF-8 bytes "
+                + str(selected_bytes + context_bytes)
+                + r" exceeds max_capsule_utf8_bytes "
+                + str(selected_bytes + context_bytes - 1)
+                + r"$"
+            ),
+        ):
+            publish_source_snapshot(
+                self.root,
+                config,
+                self.tree,
+                resolution,
+                "2026-07-20",
+                ("@scope/widget@10.0.0",),
+            )
+
+        snapshots = self.root / "raw/github/acme/widgets/snapshots"
+        self.assertEqual([], list(snapshots.iterdir()) if snapshots.exists() else [])
+
     def test_publication_rejects_repository_root_symlink_escape(self):
         outside = self.root / "outside"
         outside.mkdir()
