@@ -124,6 +124,23 @@ The 380-file and 3 MB capsule limits leave bounded headroom above the measured
 baseline. Budget overflow must route to manual review rather than
 automatically raising a limit.
 
+## Collection Envelopes
+
+The policy resolver and the published immutable snapshot are distinct,
+approved evidence envelopes. The resolver capsule is the policy-audit result:
+**327 files** and **2,149,720 UTF-8 bytes** at
+`bae582d791026c143abb91c3bdcada92b8c060f6`. The published snapshot is the
+immutable source record: **329 files** and **2,162,444 UTF-8 bytes** at the
+same SHA. It includes the resolver capsule plus standard repository context
+`LICENSE` (1,086 bytes) and `README.md` (11,638 bytes).
+
+The published snapshot must preserve every resolver-selected record and may
+add only the collector's standard root repository context. Published snapshot
+counts are therefore not required to equal resolver capsule counts. Both
+envelopes remain subject to the approved 380-file / 3,000,000-byte capsule
+budget; this clarification does not expand policy roots, change exclusions, or
+alter packet budgets.
+
 ## Collection Flow
 
 1. Update the existing Braintree Web registry row with the approved version
@@ -206,7 +223,10 @@ identity, and final queue state.
 - Backfill discovery selects only `braintree-web@3.143.0`.
 - The snapshot contains full production source and Storybook stories while
   excluding tests, fixtures, `__mocks__`, and Storybook test infrastructure.
-- The capsule stays at or below 380 files and 3,000,000 UTF-8 bytes.
+- The 327-file / 2,149,720-byte resolver capsule and the 329-file /
+  2,162,444-byte published snapshot both stay at or below 380 files and
+  3,000,000 UTF-8 bytes; their counts need not match because the latter
+  includes standard repository context.
 - The work item is package-qualified, exact-SHA-bound, and ends in
   `awaiting_approval`.
 - No Braintree wiki ingest occurs without a separate user approval.

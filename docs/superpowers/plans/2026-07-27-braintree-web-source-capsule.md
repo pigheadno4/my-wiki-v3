@@ -34,6 +34,12 @@ partial clones, and the existing GitHub collection and validation scripts.
   and Storybook test infrastructure.
 - Keep the approved 380-file / 3,000,000-byte capsule budgets and 420-file /
   3,500,000-byte packet budgets.
+- Treat the resolver capsule and published snapshot as separate approved
+  envelopes: resolver `327` files / `2,149,720` UTF-8 bytes; published
+  snapshot `329` files / `2,162,444` UTF-8 bytes, including standard root
+  context `LICENSE` (1,086 bytes) and `README.md` (11,638 bytes). Published
+  counts are not required to equal resolver counts; both remain within the
+  unchanged capsule budget.
 - Publish no partial snapshot on failure.
 - Stop successful collection at `awaiting_approval`; do not approve or ingest.
 - Do not create or modify Braintree wiki source, changelog, company, index, or
@@ -491,7 +497,11 @@ record, and work-item row. Confirm:
 - tag is `3.143.0`;
 - the snapshot SHA equals the Task 3 audit SHA;
 - the work item is `awaiting_approval` with no approved ingest mode;
-- selected file and byte counts match the audited policy result;
+- the resolver capsule remains `327` files / `2,149,720` UTF-8 bytes and the
+  published snapshot remains `329` files / `2,162,444` UTF-8 bytes;
+- the published snapshot contains every resolver-selected record plus only the
+  standard root repository context `LICENSE` (1,086 bytes) and `README.md`
+  (11,638 bytes), so the two envelope counts are not required to match;
 - stories are retained;
 - tests, fixtures, and `__mocks__` are excluded; and
 - no file under `wiki/` changed.
