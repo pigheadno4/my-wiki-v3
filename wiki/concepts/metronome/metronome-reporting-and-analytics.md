@@ -16,6 +16,13 @@ Metronome data export exposes billing and operational data as warehouse tables f
 - Join through stable object IDs such as customer, contract, invoice, line-item, product, billable-metric, and rate-card IDs.
 - Follow table-specific scope notes. For example, `contracts_commits` contains contract-level commits but excludes customer-level commits or credits and contract-level credits.
 
+## Delivery and freshness
+
+- One export destination is configured across all Metronome environments, so Production and Sandbox cannot use distinct destinations.
+- Selected incremental tables transfer every two hours with four-hour average freshness; the listed snapshot tables and some other exports transfer every 24 hours with 24-hour average freshness.
+- Object-storage destinations produce append-only Parquet files with at-least-once semantics. Consumers must resolve repeated primary keys from updates or retries by selecting the most recent row.
+- Incremental exports include rows changed since the prior export; Metronome directs consumers to use `updated_at` to obtain the latest updates.
+
 ## Global cautions
 
 - Because of the export methodology, every column may appear nullable in the destination schema even when its business meaning is normally required.
@@ -26,6 +33,7 @@ Metronome data export exposes billing and operational data as warehouse tables f
 ## Sources
 
 - [[source-metronome-guides-reporting-insights-data-export-database-reference]] — exported table families, grains, fields, snapshot behavior, and global cautions
+- [[source-metronome-guides-reporting-insights-data-export-overview]] — destination scope, delivery cadence, freshness, and object-storage semantics
 
 ## Related
 
@@ -33,4 +41,3 @@ Metronome data export exposes billing and operational data as warehouse tables f
 - [[metronome-invoicing]]
 - [[metronome-customers-and-contracts]]
 - [[metronome-products-and-rate-cards]]
-

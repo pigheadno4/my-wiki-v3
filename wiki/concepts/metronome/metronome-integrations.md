@@ -25,10 +25,15 @@ Metronome integrations connect its usage-billing and contract workflows to exter
 - Tax providers operate on the draft Stripe invoice before Stripe finalization.
 - `invoice.billing_provider_error` reports failures sending an invoice to Stripe, but the webhook guide warns that it does not cover failures that exist entirely inside Stripe.
 
+## Stripe Tax boundary
+
+Metronome creates and maps the Stripe invoice, while Stripe Tax calculates and applies tax when Stripe finalizes it. Metronome supplies the linked Stripe customer and a line-item product mapping; Stripe uses the customer address for jurisdiction and the Stripe product tax code for classification. Leaving the invoice as a draft defers automatic tax until manual finalization.
+
 ## Sources
 
 - [[source-metronome-guides-get-started-stripe-marketplace-app]] — embedded Stripe Dashboard app, customer management, contract creation, and invoicing boundary
 - [[source-metronome-integrations-invoice-integrations-stripe]] — native invoice delivery, account routing, mappings, status synchronization, and Stripe limits
+- [[source-metronome-integrations-tax-integrations-stripe-tax]] — tax responsibility, customer/product mapping, finalization, and threshold configuration
 
 ## Related
 

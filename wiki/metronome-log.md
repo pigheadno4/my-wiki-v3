@@ -6,6 +6,61 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-07-29 — Metronome Campaign 03 completed
+
+- Result: five of five jobs were approved on attempt 1; no job failed, retried, or was rejected.
+- Routing: two standard jobs used native GPT-5.6 Terra and three strong jobs used native GPT-5.6 Sol; Sol performed serial full-raw review and canonical promotion for every job.
+- Output: five source summaries and grounded updates to existing company and concept pages; no duplicate concept or comparison page was created.
+- Quality: preserved the prepaid-guide contradictions, edit-API unknowns, Stripe Tax mapping ambiguity, and explicit missing-information boundaries.
+- Coverage after campaign: 20 source summaries ingested and 205 documentation pages pending.
+- Evaluation boundary: routing worked for this sample, but full Sol rereads mean the pilot does not establish lower reviewer-token volume.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-03/monitor.md), [selection and result summary](../tracking/ingest/metronome/metronome-campaign-03/selection-review.md), and [event journal](../tracking/ingest/metronome/metronome-campaign-03/events.jsonl).
+
+## 2026-07-29 — Canonical ingest: Stripe Tax integration
+
+- Ingested: [[source-metronome-integrations-tax-integrations-stripe-tax]] from the complete 184-line guide.
+- Concept audit: updated [[stripe-tax]], [[metronome-invoicing]], [[metronome-integrations]], [[metronome-products-and-rate-cards]], and [[metronome-credits-and-commits]]; no duplicate tax concept or comparison page was warranted.
+- Sol review retained the Metronome/Stripe responsibility boundary, address and tax-code prerequisites, many-to-one product mapping, finalization timing, threshold override, and the `Product` versus `ContractProduct` and all-tax-provider scope cautions.
+- Campaign 03 routing: the strong-tier Sol worker candidate passed deterministic validation and serial full-raw Sol coordinator review on attempt 1.
+- Coverage after finalization: 20 source summaries ingested and 205 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-03/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-03/attempts/stripe-tax/attempt-1/receipt.json).
+
+## 2026-07-29 — Canonical ingest: Edit a Commit API
+
+- Ingested: [[source-metronome-api-reference-credits-and-commits-edit-a-commit]] from the complete 457-line API reference.
+- Concept audit: updated [[metronome-credits-and-commits]], [[metronome-customers-and-contracts]], [[metronome-invoicing]], and [[metronome-products-and-rate-cards]]; no endpoint-specific concept or comparison page was warranted.
+- Sol review retained schedule add/update/remove requirements, finalized and voided invoice restrictions, selector exclusivity, hierarchy variants, and the undocumented response-ID, `product_id`, proration, error, and null/omission boundaries.
+- Campaign 03 routing: the strong-tier Sol worker candidate passed deterministic validation and serial full-raw Sol coordinator review on attempt 1.
+- Coverage after finalization: 19 source summaries ingested and 206 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-03/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-03/attempts/edit-a-commit/attempt-1/receipt.json).
+
+## 2026-07-29 — Canonical ingest: credits and commits guide
+
+- Ingested: [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-create-a-pre-paid-commit]] from the complete 459-line guide.
+- Concept audit: updated [[metronome-credits-and-commits]], [[metronome-customers-and-contracts]], [[metronome-products-and-rate-cards]], [[metronome-invoicing]], and [[metronome-usage-based-billing]]; no duplicate concept or comparison page was warranted.
+- Sol review preserved contradictions in the guide's prepaid amount, recurring-example JSON, signup/upgrade dates, and `rollover_fraction` representation, with a reciprocal warning on the create-contract API source.
+- Campaign 03 routing: the strong-tier Sol worker candidate passed deterministic validation and serial full-raw Sol coordinator review on attempt 1.
+- Coverage after finalization: 18 source summaries ingested and 207 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-03/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-03/attempts/create-pre-paid-commit/attempt-1/receipt.json).
+
+## 2026-07-29 — Canonical ingest: dashboard first-invoice quickstart
+
+- Ingested: [[source-metronome-guides-get-started-metronome-dashboard-quickstart]] from the complete 248-line dashboard guide.
+- Concept audit: updated the existing event-ingestion, billable-metric, product/rate-card, customer/contract, invoicing, and webhook concepts; no dashboard-only concept or comparison page was warranted.
+- Sol review retained the 2,000-property limit, immutable metric settings, group-key dependencies, Sandbox-only test-event rules, 34-day timestamp window, and invoice/provider boundary.
+- Campaign 03 routing: the standard-tier Terra candidate passed deterministic validation and serial full-raw Sol review on attempt 1.
+- Coverage after finalization: 17 source summaries ingested and 208 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-03/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-03/attempts/metronome-dashboard-quickstart/attempt-1/receipt.json).
+
+## 2026-07-29 — Canonical ingest: data export overview
+
+- Ingested: [[source-metronome-guides-reporting-insights-data-export-overview]] from the complete 134-line guide.
+- Concept audit: updated [[metronome-reporting-and-analytics]] with destination scope, delivery cadence, freshness, and append-only object-storage semantics; no duplicate concept or comparison page was warranted.
+- Sol review confirmed the one-destination boundary, table-specific timing, at-least-once deduplication responsibility, and the absence of a stated retention period.
+- Campaign 03 routing: the standard-tier Terra candidate passed deterministic validation and serial full-raw Sol review on attempt 1.
+- Coverage after finalization: 16 source summaries ingested and 209 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-03/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-03/attempts/data-export-overview/attempt-1/receipt.json).
+
 ## 2026-07-29 — Campaign 02 query-quality audit
 
 - Scope: an independent reviewer checked all five source pages against all 1,442 raw lines using 15 core, boundary, and trap questions.

@@ -38,6 +38,7 @@ This endpoint's reference does not define pagination, so a consumer should not a
 
 - Companies: [[metronome]]
 - Concepts: [[metronome-customers-and-contracts]]
+- Targeted commit mutation: [[source-metronome-api-reference-credits-and-commits-edit-a-commit]]
 
 ## Raw Sources
 

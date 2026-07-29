@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 15 |
-| Documentation pages pending ingest | 210 |
+| Source summaries ingested | 20 |
+| Documentation pages pending ingest | 205 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -28,11 +28,16 @@ Operational evidence:
 - [[source-metronome-guides-events-design-usage-events]] — event-design principles, cadence tradeoffs, contextual properties, and future-only metric changes
 - [[source-metronome-guides-events-high-volume-ingestion]] — throughput limits, batching, pipeline observability, and recovery
 - [[source-metronome-guides-get-started-stripe-marketplace-app]] — Stripe Dashboard app, customer management, and contract creation
+- [[source-metronome-guides-get-started-metronome-dashboard-quickstart]] — dashboard first-invoice workflow, immutable metric choices, and Sandbox testing
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-enterprise-commit]] — enterprise commitment schedules, tag-scoped discounts, lifecycle, and example cautions
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-create-a-pre-paid-commit]] — free credits, prepaid/postpaid commits, recurring grants, transitions, and line-item drawdown
 - [[source-metronome-integrations-invoice-integrations-stripe]] — Stripe account routing, invoice settings, status synchronization, payment timing, and limits
+- [[source-metronome-integrations-tax-integrations-stripe-tax]] — Stripe Tax prerequisites, product mapping, invoice finalization, and threshold override
 - [[source-metronome-api-reference-credits-and-commits-create-a-commit]] — customer-level commit requirements, schedules, scope, priority, and response boundary
+- [[source-metronome-api-reference-credits-and-commits-edit-a-commit]] — targeted commit mutation, schedule operations, invoice-state limits, and schema cautions
 - [[source-metronome-guides-invoices-overview]] — Stripe, marketplace, and ERP invoicing options
 - [[source-metronome-guides-reporting-insights-data-export-database-reference]] — warehouse schema navigation, snapshot grains, and query cautions
+- [[source-metronome-guides-reporting-insights-data-export-overview]] — destination scope, transfer cadence, freshness, and append-only object-storage delivery
 - [[source-metronome-api-reference-contracts-create-a-contract]] — create endpoint, nested request families, conditional requirements, and response boundary
 - [[source-metronome-api-reference-invoices-preview-events]] — request modes, event constraints, deduplication, and draft-invoice response
 - [[source-metronome-api-reference-contracts-get-contract-edit-history]] — audit scope, edit-operation groups, and response constraints

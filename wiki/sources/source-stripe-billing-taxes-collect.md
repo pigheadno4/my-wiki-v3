@@ -100,6 +100,7 @@ Dynamic config: listen to `invoice.created` → edit draft invoice during ~1h wi
 - [[stripe-tax]] — concept page (updated)
 - [[stripe-subscriptions]] — concept page
 - [[stripe]] — company page
+- [[source-metronome-integrations-tax-integrations-stripe-tax]] — Metronome-created Stripe invoice setup and mapping
 
 ## Raw Sources
 

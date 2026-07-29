@@ -16,6 +16,7 @@ Metronome event ingestion accepts application usage payloads through the `/inges
 - `timestamp` records when usage occurred. The SDK guide permits timestamps up to 34 days in the past.
 - `customer_id` may be a Metronome customer ID or an application-defined identifier later registered as an ingest alias.
 - `event_type` is application defined, and `properties` can contain arbitrary metering and grouping data.
+- The dashboard quickstart describes `transaction_id`, `customer_id`, `event_type`, and `timestamp` as required and permits up to 2,000 event properties.
 
 ## Event design
 
@@ -39,12 +40,15 @@ An accepted event is not automatically billable. It must match a billable metric
 
 The Preview Events API provides a separate, non-ingestion path for testing how supplied events would affect a customer's invoices under the current contract configuration. `replace` mode ignores historical usage, while `merge` combines the supplied events with existing usage. Preview transaction IDs are checked against historical events from the previous 34 days, but contracts with SQL billable metrics are not supported.
 
+Dashboard test-event entry is a separate Sandbox-only path. Its transaction ID must be unique, its timestamp must be within the prior 34 days, and its event type and properties must match the configured billable metric. Production events use the API.
+
 ## Sources
 
 - [[source-metronome-guides-get-started-developer-sdks]] — SDK ingestion example, payload fields, limits, deduplication, and matching sequence
 - [[source-metronome-guides-events-design-usage-events]] — event-design principles, cadence tradeoffs, and contextual-property examples
 - [[source-metronome-guides-events-high-volume-ingestion]] — throughput, batching, observability, and recovery controls
 - [[source-metronome-api-reference-invoices-preview-events]] — event-to-invoice preview modes, deduplication behavior, and limitations
+- [[source-metronome-guides-get-started-metronome-dashboard-quickstart]] — required fields, property limit, and Sandbox test-event boundary
 
 ## Related
 

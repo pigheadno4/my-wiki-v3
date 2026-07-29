@@ -45,6 +45,7 @@ The guide recommends customer-facing cost exploration and spend controls, and de
 - Company: [[metronome]]
 - Concepts: [[metronome-credits-and-commits]], [[metronome-customers-and-contracts]], [[metronome-products-and-rate-cards]], [[metronome-usage-based-billing]]
 - API boundary: [[source-metronome-api-reference-contracts-create-a-contract]]
+- Targeted commit mutation: [[source-metronome-api-reference-credits-and-commits-edit-a-commit]]
 
 ## Raw Sources
 

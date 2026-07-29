@@ -22,6 +22,8 @@ Metronome's documentation presents usage-oriented billing as a pricing and packa
 
 The documentation landing page routes readers toward billing architecture planning and getting-started material, then highlights contracts, invoicing, and revenue recognition as adjacent areas. It does not establish the detailed sequence connecting those areas.
 
+The credits-and-commits guide supplies one implementation path for hybrid subscription and usage models: recurring credits provide free periodic usage, recurring commits provide paid periodic usage, and each period receives a distinct balance ledger. Uncovered usage remains available for overage billing.
+
 ## Pre-processing validation
 
 The Preview Events API provides a concrete validation step between usage-event design and invoice generation. It can calculate draft invoices from proposed events using the customer's current contract, either replacing historical usage for the calculation or merging with it. The preview does not support contracts with SQL billable metrics.
@@ -43,3 +45,4 @@ These questions require dedicated sources and are not answered by the landing pa
 
 - [[source-metronome-guides-get-started-home]] — documentation landing page and pricing-model routes
 - [[source-metronome-api-reference-invoices-preview-events]] — pre-processing draft-invoice calculation from proposed usage events
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-create-a-pre-paid-commit]] — recurring free or paid grants, balances, and overage boundary

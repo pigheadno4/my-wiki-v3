@@ -46,6 +46,9 @@ Some request fields are explicitly gated by client configuration or feature flag
 
 A commit requires `type` and `product_id`; its access/invoice schedule rules differ for prepaid and postpaid forms. A credit requires `product_id` and `access_schedule`. Product IDs/tags and boolean-style specifiers scope balance drawdown, but specifiers cannot be combined with the product-ID/tag applicability fields. Rollover fractions must be between 0 and 1.
 
+> [!warning] Contradiction
+> The credits-and-commits guide's recurring examples use `rollover_fraction: 100`, while this API reference constrains the field to a value from 0 to 1. Treat the current API schema as the implementation boundary and see [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-create-a-pre-paid-commit]] for the other example inconsistencies.
+
 ### Usage statement schedule
 
 The schedule input requires frequency and supports monthly, quarterly, annual, and weekly values. The day defaults to the first of the month when omitted; a custom date requires `billing_anchor_date`. `invoice_generation_starting_at` can defer automatic usage invoices when historical invoices will be imported separately.

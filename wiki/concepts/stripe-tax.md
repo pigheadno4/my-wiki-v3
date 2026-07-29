@@ -44,6 +44,12 @@ Stripe Tax supports both the newer Accounts v2 API (GA for Connect, public previ
 - **Tax behavior**: `exclusive` = tax added on top of price; `inclusive` = tax embedded in price
 - **Stripe-managed rates**: Stripe maintains rate database across jurisdictions; no manual updates required
 
+## Metronome invoice integration
+
+For Metronome-created Stripe invoices, Stripe Tax calculates and applies tax when the Stripe invoice is finalized. The integration requires Stripe Tax activation and registration, a linked Stripe customer with an address and Taxable status, and a mapped Stripe product with the appropriate tax code.
+
+Metronome stores the Stripe product ID in `stripe_product_id` and maps it to `invoiceitem.price.product`. Multiple Metronome products can reuse one Stripe product when they share a tax code, so the custom field must not enforce uniqueness. Threshold and one-off payment-gated flows require explicit Stripe tax settings rather than account-level enablement alone.
+
 ## Payment Intents: Full Tax API
 
 For maximum control — especially line-item level reversals:
@@ -105,3 +111,4 @@ Use `stripe.taxRates.create()` when you need hard-coded rates instead of automat
 - [[source-stripe-billing-taxes-collect]] — Billing tax guide: Stripe Tax + Tax Rates for subscriptions, Elements without Intent flow, address validation, invoice.finalization_failed webhook, Credit Note refunds
 - [[source-stripe-billing-customer-tax-ids]] — Customer Tax IDs: 130+ types, "Impact in Tax Calculation" flag (reverse charge), AU/EU/GB auto-validation, VIES tooltip, 3 test magic IDs
 - [[source-stripe-billing-taxes-migration]] — migrating subscriptions to Stripe Tax: automated tooling + manual steps, tax_behavior immutability, schedule approach to avoid prorations
+- [[source-metronome-integrations-tax-integrations-stripe-tax]] — Metronome customer/product mapping, finalization-time calculation, and threshold override

@@ -23,6 +23,16 @@ The guide's example allocates a $500,000 prepaid commitment across three annual 
 
 A contract edit adds terms without starting a new contract. A contract transition starts a new contract, retains its relationship to the original, and can apply transition logic such as rolling over unused commitments or credits.
 
+Recurring credits and commits create a new grant and ledger each period. `commit_duration` controls how long unused value remains available, the recurrence schedule defaults to the contract usage schedule, and null proration defaults to `FIRST_AND_LAST`. A distinct recurring-grant start date becomes its anchor and does not prorate the first period.
+
+## Drawdown and invoice attribution
+
+- Credits and prepaid commits draw down before postpaid commits; lower numeric priorities consume first.
+- The same usage can apply to only one credit or commit, with any remainder continuing as postpaid fulfillment or overage.
+- Application occurs at invoice line-item level. Covered usage, the negative balance-application line, and uncovered overage remain separately attributable.
+- Every credit or commit uses a fixed product for invoice and reporting attribution, while product IDs, tags, or specifiers can restrict eligible usage.
+- Stripe-taxed prepaid-balance thresholds, spend thresholds, and one-off payment-gated commits require `payment_gate_type: "STRIPE"`, `tax_type: "STRIPE"`, and `stripe_config.payment_type: "INVOICE"`; account-level tax enablement does not cover these flows.
+
 ## Customer-level create API
 
 `POST /v1/contracts/customerCommits/create` creates a balance outside an individual contract for enterprise-wide or multi-contract use. Metronome recommends contract-level commits for standard cases.
@@ -34,19 +44,34 @@ A contract edit adds terms without starting a new contract. A contract transitio
 - Lower priority numbers consume first, with contract-level balances winning ties over customer-level balances.
 - `uniqueness_key` prevents duplicate creation; its description documents a `409` failure.
 
+## Targeted commit edits
+
+`POST /v2/contracts/commits/edit` changes one contract-level or customer-level commit identified by `customer_id` and `commit_id`. It can update display fields, access or invoice schedule items, invoicing contract, applicability, priority, rate type, fixed product, or hierarchy access.
+
+- Schedule items use separate add, update, and remove arrays; updates and removals address existing items by UUID.
+- Direct product ID or tag selectors cannot be combined with `specifiers`.
+- Hierarchy child access can allow all children, no children, or a non-empty contract-ID list.
+- The schema does not define general omitted-versus-null mutation semantics, the meaning of its success `data.id`, or the interaction between top-level `product_id` and the applicability selectors.
+
 ## Documentation cautions
 
-The enterprise guide contains two example-level inconsistencies that should be checked against the current API schema before implementation:
+The guides contain example-level inconsistencies that should be checked against the current API schema before implementation:
 
 - Its create-contract sample uses `product` inside a commit, while the dedicated create-contract API reference documents `product_id`.
 - Its upsell prose calls the new $300,000 term a commitment, while the accompanying edit request adds a scheduled charge rather than a commit.
 - The customer-commit schema exposes a generic recurring invoice schedule, while its postpaid prose requires one schedule item; confirm this combination before use.
+
+> [!warning] Contradiction
+> The credits-and-commits guide's prepaid prose describes $10,000 of accessible value, while its sample grants `100000` USD cents ($1,000) and invoices `1000000` cents ($10,000). Its recurring examples also contain invalid JSON, dates that conflict with the described January 1 signup and January 21 upgrade, and `rollover_fraction: 100`; the dedicated create-contract reference constrains this fraction to 0–1.
 
 ## Sources
 
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-enterprise-commit]] — enterprise commitment design, schedules, rollover, discounts, and lifecycle examples
 - [[source-metronome-api-reference-contracts-create-a-contract]] — current create-contract request schema and conditional constraints
 - [[source-metronome-api-reference-credits-and-commits-create-a-commit]] — customer-level create endpoint, conditional invoicing, scope, priority, and response boundary
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-create-a-pre-paid-commit]] — free credits, prepaid and postpaid commits, recurring grants, transitions, and line-item drawdown
+- [[source-metronome-api-reference-credits-and-commits-edit-a-commit]] — targeted commit fields, schedule operations, applicability, and hierarchy access
+- [[source-metronome-integrations-tax-integrations-stripe-tax]] — explicit tax configuration for threshold and payment-gated flows
 
 ## Related
 

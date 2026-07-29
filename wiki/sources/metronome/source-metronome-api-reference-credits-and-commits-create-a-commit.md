@@ -58,6 +58,7 @@ A usage item needs to satisfy at least one specifier. Within a specifier, produc
 - Company: [[metronome]]
 - Concepts: [[metronome-credits-and-commits]], [[metronome-customers-and-contracts]], [[metronome-products-and-rate-cards]]
 - Preferred contract-level path: [[source-metronome-api-reference-contracts-create-a-contract]]
+- Targeted mutation: [[source-metronome-api-reference-credits-and-commits-edit-a-commit]]
 
 ## Raw Sources
 

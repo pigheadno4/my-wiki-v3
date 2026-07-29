@@ -25,9 +25,12 @@ For signature verification, compute HMAC-SHA256 over `X-Metronome-Date`, a newli
 
 Metronome may add backward-compatible fields without notice. Integrations should validate the documented fields they require rather than rejecting payloads solely because additional fields appear.
 
+The dashboard quickstart identifies payment-status webhooks as the notification path for payment-gated commits; the dedicated webhook guide remains the authority for delivery and verification mechanics.
+
 ## Sources
 
 - [[source-metronome-guides-platform-configuration-setup-webhooks]] — event families, delivery semantics, deduplication, and signature verification
+- [[source-metronome-guides-get-started-metronome-dashboard-quickstart]] — payment-status notification use for payment-gated commits
 
 ## Related
 

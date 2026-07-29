@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 15
+source_count: 20
 ---
 
 ## Overview
@@ -36,6 +36,12 @@ The enterprise commitment guide shows how prepaid balance access can be schedule
 
 The customer-commit API supports enterprise-wide and multi-contract spending pools, although Metronome recommends contract-level commits for standard cases. Its prepaid and postpaid paths have different invoice requirements, and lower numeric priorities consume first.
 
+The dashboard quickstart provides a no-code first-invoice path through billable metrics, products, rate cards, customer contracts, Sandbox-only test events, and draft-invoice verification. It documents immutable billable-metric configuration, a 2,000-property event limit, and a 24-hour grace period before invoice finalization.
+
+The credits-and-commits guide adds recurring grant ledgers, priority and line-item drawdown, renewal-transition behavior, and separately configurable access and invoice schedules. Its worked payloads contain amount, syntax, date, and rollover-fraction inconsistencies, so the dedicated API references remain the implementation authority.
+
+The targeted commit-edit API changes one existing contract- or customer-level commit, including schedule items, applicability, invoicing contract, rate type, priority, and hierarchy access. Draft invoices reflect changes immediately, while finalized and voided invoice associations constrain schedule updates and removals.
+
 ## Invoicing options
 
 - Native Stripe invoicing can use Stripe Tax, dunning, and other Stripe product-suite capabilities.
@@ -43,6 +49,8 @@ The customer-commit API supports enterprise-wide and multi-contract spending poo
 - ERP invoicing includes out-of-the-box and custom integrations for collection, book-closing, and revenue workflows.
 
 The native Stripe integration routes invoices through customer or contract billing configurations, supports multiple Stripe accounts, and imports Stripe status changes by webhook. Existing finalized invoices are not replayed when a provider is added later, and Stripe representation limits can collapse line items or move true decimal quantities into descriptions.
+
+Stripe Tax can calculate tax when Stripe finalizes a Metronome-created invoice. The setup depends on linked customers with addresses, Stripe product tax codes, and a Metronome `stripe_product_id` mapping; threshold and payment-gated flows require explicit API tax configuration.
 
 ## Stripe Dashboard app
 
@@ -67,12 +75,14 @@ The native Stripe integration routes invoices through customer or contract billi
 - Warehouse exports cover raw events, customers, invoices, contracts, pricing, packages, payments, alerts, and metadata.
 - Finalized invoice rows, daily draft snapshots, and invoice-breakdown snapshots have distinct grains and update behavior.
 - Exported columns may all appear nullable because of the export methodology, so warehouse types alone do not establish business optionality.
+- One export destination spans Production and Sandbox. Selected tables transfer every two hours with four-hour average freshness, while others transfer every 24 hours with 24-hour average freshness.
+- Object-storage delivery is append-only and at-least-once, so consumers must resolve repeated primary keys using the most recent row.
 
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 15
-- Documentation pages pending ingest: 210
+- Ingested source summaries: 20
+- Documentation pages pending ingest: 205
 
 ## Sources
 
@@ -81,11 +91,16 @@ The native Stripe integration routes invoices through customer or contract billi
 - [[source-metronome-guides-events-design-usage-events]] — usage-event design principles, cadence tradeoffs, and future metric flexibility
 - [[source-metronome-guides-events-high-volume-ingestion]] — throughput, batching, observability, and recovery controls
 - [[source-metronome-guides-get-started-stripe-marketplace-app]] — embedded Stripe Dashboard app and contract workflow
+- [[source-metronome-guides-get-started-metronome-dashboard-quickstart]] — dashboard first-invoice workflow and Sandbox testing boundary
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-enterprise-commit]] — enterprise commitment schedules, discounts, lifecycle, and example cautions
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-create-a-pre-paid-commit]] — free credits, prepaid and postpaid commits, recurring grants, and drawdown
 - [[source-metronome-integrations-invoice-integrations-stripe]] — Stripe invoice routing, configuration, statuses, payment timing, and limits
+- [[source-metronome-integrations-tax-integrations-stripe-tax]] — Stripe Tax responsibility, product mapping, finalization, and threshold configuration
 - [[source-metronome-api-reference-credits-and-commits-create-a-commit]] — customer-level commit creation, invoicing conditions, targeting, and priority
+- [[source-metronome-api-reference-credits-and-commits-edit-a-commit]] — targeted commit fields, schedule operations, invoice-state constraints, and schema boundaries
 - [[source-metronome-guides-invoices-overview]] — Stripe, marketplace, and ERP invoicing options
 - [[source-metronome-guides-reporting-insights-data-export-database-reference]] — warehouse schema families, grains, and query cautions
+- [[source-metronome-guides-reporting-insights-data-export-overview]] — destination scope, delivery cadence, freshness, and object-storage semantics
 - [[source-metronome-api-reference-contracts-create-a-contract]] — contract creation request families and conditional rules
 - [[source-metronome-api-reference-invoices-preview-events]] — draft-invoice previews from proposed usage events
 - [[source-metronome-api-reference-contracts-get-contract-edit-history]] — cross-channel contract edit history and change categories
