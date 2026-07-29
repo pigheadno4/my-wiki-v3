@@ -1,10 +1,12 @@
 import hashlib
 import json
+import shutil
 import sys
 import tempfile
 import unittest
 from dataclasses import replace
 from pathlib import Path, PurePosixPath
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,6 +18,8 @@ from github_ingest_packets import (  # noqa: E402
     PackagePacketInput,
     PacketBuildError,
     build_ingest_packet,
+    publish_queued_packet,
+    publish_review_packet,
 )
 from github_pilot_store import UpstreamChange  # noqa: E402
 from github_registry import RepoConfig  # noqa: E402
@@ -211,6 +215,7 @@ class GitHubIngestPacketTests(unittest.TestCase):
         prior_excluded=(),
         current_excluded=(),
         config=None,
+        packet_kind="queued",
     ):
         prior = self.snapshot(
             self.prior_sha,
@@ -241,10 +246,10 @@ class GitHubIngestPacketTests(unittest.TestCase):
         return build_ingest_packet(
             self.root,
             config or self.config,
-            "github-" + ("1" * 20),
+            "github-" + ("1" * 20) if packet_kind == "queued" else "",
             self.relative(current),
             (package_input,),
-            "queued",
+            packet_kind,
         )
 
     def test_retained_diff_accounts_for_rename_without_false_add_remove(self):
@@ -884,6 +889,167 @@ class GitHubIngestPacketTests(unittest.TestCase):
                 ),
                 config=constrained,
             )
+
+    def test_queued_packet_publication_is_canonical_idempotent_and_conflict_safe(self):
+        packet = self.build(
+            {
+                "package.json": self.manifest_content("10.0.0"),
+                "src/index.ts": "export const value = 1;\n",
+            },
+            {
+                "package.json": self.manifest_content("10.0.1"),
+                "src/index.ts": "export const value = 2;\n",
+            },
+            (
+                UpstreamChange("modified", "package.json", "package.json"),
+                UpstreamChange("modified", "src/index.ts", "src/index.ts"),
+            ),
+        )
+
+        first = publish_queued_packet(self.root, self.config, packet)
+        second = publish_queued_packet(self.root, self.config, packet)
+
+        self.assertEqual(first, second)
+        self.assertEqual(
+            (
+                self.root
+                / "tracking/github/repos/acme/widgets/ingest-packets"
+                / ("github-" + ("1" * 20))
+                / "packet.json"
+            ).resolve(),
+            first,
+        )
+        self.assertEqual(
+            packet.document,
+            json.loads(first.read_text(encoding="utf-8")),
+        )
+        self.assertEqual(packet.markdown, (first.parent / "packet.md").read_bytes())
+
+        conflicting = IngestPacket(
+            dict(packet.document, collection_date="2026-07-29"),
+            packet.markdown,
+        )
+        with self.assertRaisesRegex(PacketBuildError, "conflicts"):
+            publish_queued_packet(self.root, self.config, conflicting)
+
+    def test_queued_packet_failure_leaves_no_partial_directory(self):
+        packet = self.build(
+            {
+                "package.json": self.manifest_content("10.0.0"),
+                "src/index.ts": "export const value = 1;\n",
+            },
+            {
+                "package.json": self.manifest_content("10.0.1"),
+                "src/index.ts": "export const value = 2;\n",
+            },
+            (
+                UpstreamChange("modified", "package.json", "package.json"),
+                UpstreamChange("modified", "src/index.ts", "src/index.ts"),
+            ),
+        )
+        from github_ingest_packets import _write_atomic
+
+        calls = {"count": 0}
+
+        def fail_second(path, content):
+            calls["count"] += 1
+            if calls["count"] == 2:
+                raise OSError("disk full")
+            return _write_atomic(path, content)
+
+        with mock.patch(
+            "github_ingest_packets._write_atomic",
+            side_effect=fail_second,
+        ):
+            with self.assertRaises(OSError):
+                publish_queued_packet(self.root, self.config, packet)
+
+        destination = (
+            self.root
+            / "tracking/github/repos/acme/widgets/ingest-packets"
+            / ("github-" + ("1" * 20))
+        )
+        self.assertFalse(destination.exists())
+
+    def test_review_packet_publication_is_idempotent_and_cleans_partial_files(self):
+        packet = self.build(
+            {
+                "package.json": self.manifest_content("10.0.0"),
+                "src/index.ts": "export const value = 1;\n",
+            },
+            {
+                "package.json": self.manifest_content("10.0.1"),
+                "src/index.ts": "export const value = 2;\n",
+            },
+            (
+                UpstreamChange("modified", "package.json", "package.json"),
+                UpstreamChange("modified", "src/index.ts", "src/index.ts"),
+            ),
+            packet_kind="ad-hoc",
+        )
+        comparison = (
+            self.root
+            / "tracking/github/repos/acme/widgets/comparisons/widget/10.0.0--10.0.1"
+        )
+
+        first = publish_review_packet(comparison, packet)
+        second = publish_review_packet(comparison, packet)
+
+        self.assertEqual(first, second)
+        self.assertEqual(comparison / "review-packet.json", first)
+        self.assertEqual(
+            packet.markdown, (comparison / "review-packet.md").read_bytes()
+        )
+
+        first.unlink()
+        (comparison / "review-packet.md").unlink()
+        from github_ingest_packets import _write_atomic
+
+        calls = {"count": 0}
+
+        def fail_second(path, content):
+            calls["count"] += 1
+            if calls["count"] == 2:
+                raise OSError("disk full")
+            return _write_atomic(path, content)
+
+        with mock.patch(
+            "github_ingest_packets._write_atomic",
+            side_effect=fail_second,
+        ):
+            with self.assertRaises(OSError):
+                publish_review_packet(comparison, packet)
+
+        self.assertFalse((comparison / "review-packet.json").exists())
+        self.assertFalse((comparison / "review-packet.md").exists())
+
+    def test_queued_packet_rejects_repository_symlink_escape(self):
+        packet = self.build(
+            {
+                "package.json": self.manifest_content("10.0.0"),
+                "src/index.ts": "export const value = 1;\n",
+            },
+            {
+                "package.json": self.manifest_content("10.0.1"),
+                "src/index.ts": "export const value = 2;\n",
+            },
+            (
+                UpstreamChange("modified", "package.json", "package.json"),
+                UpstreamChange("modified", "src/index.ts", "src/index.ts"),
+            ),
+        )
+        outside = self.root / "outside"
+        outside.mkdir()
+        repository_parent = self.root / "tracking/github/repos/acme"
+        shutil.rmtree(repository_parent / "widgets")
+        (repository_parent / "widgets").symlink_to(
+            outside, target_is_directory=True
+        )
+
+        with self.assertRaisesRegex(PacketBuildError, "storage path"):
+            publish_queued_packet(self.root, self.config, packet)
+
+        self.assertEqual([], list(outside.iterdir()))
 
 
 if __name__ == "__main__":

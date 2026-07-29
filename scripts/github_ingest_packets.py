@@ -3,18 +3,22 @@
 from dataclasses import dataclass
 import hashlib
 import json
+import os
 from pathlib import Path, PurePosixPath
 import re
+import shutil
+import tempfile
+import threading
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
-from github_canonical import safe_policy_path
+from github_canonical import canonical_json_bytes, safe_policy_path
 from github_capsule_policy import (
     CAPSULE_ADAPTER,
     CapsuleConfig,
     build_effective_policy,
 )
 from github_capsule_selection import classify_excluded_categories
-from github_pilot_store import UpstreamChange
+from github_pilot_store import UpstreamChange, _require_contained_storage_path
 from github_registry import RepoConfig
 from github_versions import parse_semver
 
@@ -104,6 +108,7 @@ _REASON_ORDER = (
     "payment-review-signal",
     "policy-history-bootstrap",
 )
+_PACKET_THREAD_LOCK = threading.RLock()
 
 
 class PacketBuildError(ValueError):
@@ -234,6 +239,165 @@ def build_ingest_packet(
     markdown = _render_markdown(document)
     document["markdown_sha256"] = hashlib.sha256(markdown).hexdigest()
     return IngestPacket(document, markdown)
+
+
+def publish_queued_packet(
+    root: Path,
+    config: RepoConfig,
+    packet: IngestPacket,
+) -> Path:
+    """Publish one queued packet directory as an atomic evidence unit."""
+    root = Path(root).resolve()
+    _validate_config(config)
+    json_bytes, markdown_bytes = _packet_bytes(packet, "queued")
+    work_item_id = str(packet.document["work_item_id"])
+    repository_name = config.id.split("/", 1)[1]
+    repository_root = (
+        root
+        / "tracking"
+        / "github"
+        / "repos"
+        / config.company
+        / repository_name
+    )
+    _require_packet_storage(root, repository_root)
+    destination = repository_root / "ingest-packets" / work_item_id
+    with _PACKET_THREAD_LOCK:
+        existing = _existing_packet_pair(
+            destination / "packet.json",
+            destination / "packet.md",
+            json_bytes,
+            markdown_bytes,
+        )
+        if existing:
+            return destination / "packet.json"
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        staging = Path(
+            tempfile.mkdtemp(prefix=".packet-", dir=str(destination.parent))
+        )
+        try:
+            _write_atomic(staging / "packet.md", markdown_bytes)
+            _write_atomic(staging / "packet.json", json_bytes)
+            os.replace(str(staging), str(destination))
+        except Exception:
+            shutil.rmtree(staging, ignore_errors=True)
+            if _existing_packet_pair(
+                destination / "packet.json",
+                destination / "packet.md",
+                json_bytes,
+                markdown_bytes,
+            ):
+                return destination / "packet.json"
+            raise
+    return destination / "packet.json"
+
+
+def publish_review_packet(
+    comparison_directory: Path,
+    packet: IngestPacket,
+) -> Path:
+    """Publish an ad hoc review pair beside an accepted comparison."""
+    comparison_directory = Path(comparison_directory)
+    if (
+        not comparison_directory.is_dir()
+        or comparison_directory.is_symlink()
+        or not (comparison_directory / "comparison.json").is_file()
+        or (comparison_directory / "comparison.json").is_symlink()
+    ):
+        raise PacketBuildError("comparison directory is unsafe")
+    json_bytes, markdown_bytes = _packet_bytes(packet, "ad-hoc")
+    json_path = comparison_directory / "review-packet.json"
+    markdown_path = comparison_directory / "review-packet.md"
+    with _PACKET_THREAD_LOCK:
+        if _existing_packet_pair(
+            json_path, markdown_path, json_bytes, markdown_bytes
+        ):
+            return json_path
+        created = []
+        try:
+            _write_atomic(markdown_path, markdown_bytes)
+            created.append(markdown_path)
+            _write_atomic(json_path, json_bytes)
+            created.append(json_path)
+        except Exception:
+            for path in reversed(created):
+                try:
+                    path.unlink()
+                except FileNotFoundError:
+                    pass
+            raise
+    return json_path
+
+
+def _packet_bytes(
+    packet: IngestPacket, expected_kind: str
+) -> Tuple[bytes, bytes]:
+    if not isinstance(packet, IngestPacket):
+        raise TypeError("packet must be IngestPacket")
+    document = packet.document
+    if not isinstance(document, dict) or document.get("packet_kind") != expected_kind:
+        raise PacketBuildError("packet kind does not match publication target")
+    if document.get("repository") is None:
+        raise PacketBuildError("packet repository identity is missing")
+    markdown = packet.markdown
+    if not isinstance(markdown, bytes):
+        raise PacketBuildError("packet Markdown must be bytes")
+    if hashlib.sha256(markdown).hexdigest() != document.get("markdown_sha256"):
+        raise PacketBuildError("packet Markdown hash mismatch")
+    return canonical_json_bytes(document) + b"\n", markdown
+
+
+def _existing_packet_pair(
+    json_path: Path,
+    markdown_path: Path,
+    expected_json: bytes,
+    expected_markdown: bytes,
+) -> bool:
+    exists = (json_path.exists(), markdown_path.exists())
+    if not any(exists):
+        return False
+    if (
+        not all(exists)
+        or json_path.is_symlink()
+        or markdown_path.is_symlink()
+        or not json_path.is_file()
+        or not markdown_path.is_file()
+    ):
+        raise PacketBuildError("packet destination is incomplete or unsafe")
+    if (
+        json_path.read_bytes() != expected_json
+        or markdown_path.read_bytes() != expected_markdown
+    ):
+        raise PacketBuildError("packet destination conflicts with generated evidence")
+    return True
+
+
+def _require_packet_storage(root: Path, candidate: Path) -> None:
+    try:
+        _require_contained_storage_path(root, candidate)
+    except ValueError as error:
+        raise PacketBuildError("repository storage path is unsafe") from error
+
+
+def _write_atomic(path: Path, content: bytes) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary = tempfile.mkstemp(prefix=".tmp-", dir=str(path.parent))
+    try:
+        with os.fdopen(descriptor, "wb") as output:
+            output.write(content)
+            output.flush()
+            os.fsync(output.fileno())
+        os.replace(temporary, path)
+    except Exception:
+        try:
+            os.close(descriptor)
+        except OSError:
+            pass
+        try:
+            os.unlink(temporary)
+        except FileNotFoundError:
+            pass
+        raise
 
 
 def _build_package(
@@ -1124,4 +1288,6 @@ __all__ = [
     "PacketBuildError",
     "PacketRecommendation",
     "build_ingest_packet",
+    "publish_queued_packet",
+    "publish_review_packet",
 ]
