@@ -9,8 +9,14 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from github_canonical import canonical_json_bytes, safe_policy_path
 from github_registry import RepoConfig, load_registry, validate_enabled_policy
+from github_ingest_packets import PacketBuildError, load_packet_summary
 from github_versions import parse_package_tag, parse_semver
-from github_work_items import WorkItem, load_work_items, render_status
+from github_work_items import (
+    PacketStatusSummary,
+    WorkItem,
+    load_work_items,
+    render_status,
+)
 
 
 _OBJECT_ID = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
@@ -602,9 +608,27 @@ def _validate_work_items(
         return
     if inspection.exists:
         status = report.status_text
+        packet_summaries = {}
+        root = report.repositories.path.parents[2]
+        for item in inspection.items:
+            if not item.ingest_packet:
+                continue
+            try:
+                summary = load_packet_summary(root, item.ingest_packet)
+            except (OSError, ValueError, PacketBuildError):
+                continue
+            packet_summaries[item.work_item_id] = PacketStatusSummary(
+                summary.packet_path,
+                summary.priority,
+                summary.required_reading_count,
+                summary.unclassified_count,
+                summary.evidence_gap_count,
+            )
         if status.error:
             errors.append("tracking/github/status.md is unreadable: " + status.error)
-        elif not status.exists or status.text != render_status(inspection.items):
+        elif not status.exists or status.text != render_status(
+            inspection.items, packet_summaries
+        ):
             errors.append("tracking/github/status.md is stale")
     elif report.status_text.exists:
         errors.append("tracking/github/status.md exists without work-items.json")

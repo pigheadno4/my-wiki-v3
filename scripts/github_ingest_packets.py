@@ -143,6 +143,15 @@ class IngestPacket:
 
 
 @dataclass(frozen=True)
+class PacketSummary:
+    packet_path: str
+    priority: str
+    required_reading_count: int
+    unclassified_count: int
+    evidence_gap_count: int
+
+
+@dataclass(frozen=True)
 class _LoadedSnapshot:
     relative_path: str
     manifest: dict
@@ -327,6 +336,32 @@ def publish_review_packet(
                     pass
             raise
     return json_path
+
+
+def load_packet_summary(root: Path, packet_path: str) -> PacketSummary:
+    """Load the bounded operator summary from one canonical packet."""
+    _, document, content = _load_json(Path(root).resolve(), packet_path)
+    if canonical_json_bytes(document) + b"\n" != content:
+        raise PacketBuildError("packet JSON is not canonical")
+    recommendation = document.get("recommendation")
+    required = document.get("required_reading")
+    unclassified = document.get("unclassified_changes")
+    gaps = document.get("evidence_gaps")
+    if (
+        not isinstance(recommendation, dict)
+        or recommendation.get("priority") not in ("normal", "high")
+        or not isinstance(required, list)
+        or not isinstance(unclassified, list)
+        or not isinstance(gaps, list)
+    ):
+        raise PacketBuildError("packet status summary is invalid")
+    return PacketSummary(
+        packet_path,
+        str(recommendation["priority"]),
+        len(required),
+        len(unclassified),
+        len(gaps),
+    )
 
 
 def _packet_bytes(
@@ -1287,7 +1322,9 @@ __all__ = [
     "PackagePacketInput",
     "PacketBuildError",
     "PacketRecommendation",
+    "PacketSummary",
     "build_ingest_packet",
+    "load_packet_summary",
     "publish_queued_packet",
     "publish_review_packet",
 ]

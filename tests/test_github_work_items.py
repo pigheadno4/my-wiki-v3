@@ -13,6 +13,7 @@ import github_work_items  # noqa: E402
 from github_work_items import (  # noqa: E402
     ChangeSignals,
     PackageChange,
+    PacketStatusSummary,
     WorkItemStateError,
     build_work_item,
     claim_next_ingest,
@@ -49,14 +50,21 @@ class GitHubWorkItemTests(unittest.TestCase):
             recommended_mode="full",
             reasons=("major-version-transition",),
         )
+        item = build_work_item(
+            "paypal/paypal-js",
+            "3caece5" * 5 + "3caec",
+            "2026-07-20",
+            (self.paypal_change,),
+            self.snapshot_manifest,
+        )
+        self.ingest_packet = (
+            "tracking/github/repos/paypal/paypal-js/ingest-packets/"
+            + item.work_item_id
+            + "/packet.json"
+        )
         self.awaiting_item = replace(
-            build_work_item(
-                "paypal/paypal-js",
-                "3caece5" * 5 + "3caec",
-                "2026-07-20",
-                (self.paypal_change,),
-                self.snapshot_manifest,
-            ),
+            item,
+            ingest_packet=self.ingest_packet,
             state="awaiting_approval",
         )
 
@@ -341,6 +349,50 @@ class GitHubWorkItemTests(unittest.TestCase):
         self.assertIsNone(finalized.approved_mode)
         self.assertEqual((finalized,), load_work_items(self.path))
 
+    def test_new_finalization_requires_packet_but_historical_json_remains_valid(self):
+        with self.assertRaisesRegex(
+            WorkItemStateError,
+            "ingest packet",
+        ):
+            github_work_items.finalize_collected_work_item(
+                self.path,
+                replace(
+                    self.awaiting_item,
+                    state="discovered",
+                    ingest_packet="",
+                ),
+            )
+
+        document = {
+            "format_version": 1,
+            "work_items": [
+                github_work_items._work_item_to_dict(self.awaiting_item)
+            ],
+        }
+        document["work_items"][0].pop("ingest_packet")
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.write_text(json.dumps(document), encoding="utf-8")
+
+        loaded = load_work_items(self.path)
+
+        self.assertEqual("", loaded[0].ingest_packet)
+        save_work_items(self.path, loaded)
+        self.assertEqual("", load_work_items(self.path)[0].ingest_packet)
+
+    def test_packet_pointer_is_immutable_collection_evidence(self):
+        save_work_items(self.path, (self.awaiting_item,))
+        conflict = replace(
+            self.awaiting_item,
+            state="discovered",
+            ingest_packet=self.ingest_packet.replace(
+                "repos/paypal/paypal-js/",
+                "repos/paypal/other/",
+            ),
+        )
+
+        with self.assertRaisesRegex(ValueError, "conflicts with discovered evidence"):
+            github_work_items.finalize_collected_work_item(self.path, conflict)
+
     def test_atomic_finalization_recovers_collection_failures_with_same_identity(self):
         for failed_state in ("collection_failed", "needs_manual_review"):
             with self.subTest(failed_state=failed_state):
@@ -457,12 +509,26 @@ class GitHubWorkItemTests(unittest.TestCase):
             load_work_items(self.path)
 
     def test_status_is_generated_from_work_items(self):
-        status = render_status((self.awaiting_item,))
+        status = render_status(
+            (self.awaiting_item,),
+            {
+                self.awaiting_item.work_item_id: PacketStatusSummary(
+                    self.ingest_packet,
+                    "high",
+                    8,
+                    0,
+                    0,
+                )
+            },
+        )
 
         self.assertIn("paypal/paypal-js", status)
         self.assertIn("@paypal/paypal-js@10.0.0", status)
         self.assertIn("awaiting_approval", status)
         self.assertIn(self.snapshot_manifest, status)
+        self.assertIn("Review priority: `high`", status)
+        self.assertIn("Required reading: `8` files", status)
+        self.assertIn("packet.md", status)
 
     def test_approval_states_require_published_evidence(self):
         incomplete = replace(self.awaiting_item, snapshot_manifest="")

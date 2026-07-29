@@ -14,6 +14,13 @@ from github_capsule_selection import resolve_npm_capsule
 from github_git import GitCommandError, clone_repository, fetch_required_refs, run_git
 from github_git_tree import GitObjectReadError, GitTree
 from github_npm_workspace import WorkspacePackage, resolve_workspace
+from github_ingest_packets import (
+    PackagePacketInput,
+    build_ingest_packet,
+    load_packet_summary,
+    publish_queued_packet,
+    publish_review_packet,
+)
 from github_pilot_store import (
     ComparisonRecord,
     PackageReleaseRecord,
@@ -21,6 +28,7 @@ from github_pilot_store import (
     publish_release_record,
     publish_source_snapshot,
     publish_source_supplement,
+    read_upstream_changes,
     write_package_comparison,
 )
 from github_registry import RepoConfig, VersionTrack, load_registry, validate_enabled_policy
@@ -35,6 +43,7 @@ from github_releases import (
 from github_versions import compare_semver, parse_package_tag, parse_semver
 from github_work_items import (
     ChangeSignals,
+    PacketStatusSummary,
     PackageChange,
     WorkItem,
     WorkItemStateError,
@@ -316,6 +325,56 @@ def _collect_attempt(
                 snapshot_manifest,
                 evidence_revision,
             )
+            package_inputs = tuple(
+                _package_packet_input(
+                    root,
+                    config,
+                    clone_path,
+                    item,
+                    change,
+                    snapshot_manifest,
+                    _release_id(item.candidate) in revised_release_ids,
+                )
+                for item, change in zip(package_contexts, changes)
+            )
+            packet = build_ingest_packet(
+                root,
+                config,
+                work_item.work_item_id,
+                snapshot_manifest,
+                package_inputs,
+                "queued",
+            )
+            packet_packages = {
+                row["package"]: row for row in packet.document["packages"]
+            }
+            changes = tuple(
+                replace(
+                    change,
+                    recommended_mode=packet_packages[change.package][
+                        "recommendation"
+                    ]["mode"],
+                    reasons=tuple(
+                        packet_packages[change.package]["recommendation"][
+                            "reasons"
+                        ]
+                    ),
+                )
+                for change in changes
+            )
+            work_item = build_work_item(
+                config.id,
+                group[0].commit_sha,
+                collected_date,
+                changes,
+                snapshot_manifest,
+                evidence_revision,
+            )
+            packet_path = publish_queued_packet(root, config, packet)
+            work_item = replace(
+                work_item,
+                ingest_packet=_relative(root, packet_path),
+            )
             finalize_collected_work_item(root / WORK_ITEMS_PATH, work_item)
             work_item_ids.append(work_item.work_item_id)
             snapshot_paths.append(snapshot_manifest)
@@ -489,6 +548,56 @@ def _publish_comparison_and_change(
         _relative(root, comparison.metadata_path) if comparison is not None else "",
         mode,
         reasons,
+    )
+
+
+def _package_packet_input(
+    root: Path,
+    config: RepoConfig,
+    clone_path: Path,
+    context: _PackageContext,
+    change: PackageChange,
+    current_snapshot_manifest: str,
+    release_notes_revision: bool,
+) -> PackagePacketInput:
+    if context.release_record is None:
+        raise CollectionUsageError("release record must exist before packet build")
+    if release_notes_revision:
+        return PackagePacketInput(
+            context.candidate.package,
+            context.candidate.version,
+            context.candidate.version,
+            context.candidate.commit_sha,
+            context.candidate.commit_sha,
+            change.release_manifest,
+            "",
+            current_snapshot_manifest,
+            (),
+            True,
+        )
+    prior = context.prior
+    return PackagePacketInput(
+        context.candidate.package,
+        prior.version if prior is not None else "",
+        context.candidate.version,
+        prior.sha if prior is not None else "",
+        context.candidate.commit_sha,
+        change.release_manifest,
+        change.comparison_manifest,
+        (
+            _snapshot_manifest_for_sha(root, config, prior.sha)
+            if prior is not None
+            else ""
+        ),
+        (
+            read_upstream_changes(
+                clone_path,
+                prior.sha,
+                context.candidate.commit_sha,
+            )
+            if prior is not None
+            else ()
+        ),
     )
 
 
@@ -711,7 +820,7 @@ def compare_one(
             ).packages,
             package,
         )
-        return write_package_comparison(
+        comparison = write_package_comparison(
             Path(root).resolve(),
             config,
             clone_path,
@@ -723,6 +832,30 @@ def compare_one(
             current.sha,
             _package_pathspecs(current_package),
         )
+        packet = build_ingest_packet(
+            Path(root).resolve(),
+            config,
+            "",
+            _snapshot_manifest_for_sha(Path(root).resolve(), config, current.sha),
+            (
+                PackagePacketInput(
+                    package,
+                    from_version,
+                    to_version,
+                    prior.sha,
+                    current.sha,
+                    current.release_manifest,
+                    _relative(Path(root).resolve(), comparison.metadata_path),
+                    _snapshot_manifest_for_sha(
+                        Path(root).resolve(), config, prior.sha
+                    ),
+                    read_upstream_changes(clone_path, prior.sha, current.sha),
+                ),
+            ),
+            "ad-hoc",
+        )
+        publish_review_packet(comparison.metadata_path.parent, packet)
+        return comparison
 
 
 def supplement_one(
@@ -756,7 +889,26 @@ def regenerate_status(root: Path) -> str:
     return write_status_from_queue(
         root / WORK_ITEMS_PATH,
         root / STATUS_PATH,
+        _packet_status_summaries(root),
     )
+
+
+def _packet_status_summaries(
+    root: Path,
+) -> Dict[str, PacketStatusSummary]:
+    summaries = {}
+    for item in load_work_items(root / WORK_ITEMS_PATH):
+        if not item.ingest_packet:
+            continue
+        summary = load_packet_summary(root, item.ingest_packet)
+        summaries[item.work_item_id] = PacketStatusSummary(
+            summary.packet_path,
+            summary.priority,
+            summary.required_reading_count,
+            summary.unclassified_count,
+            summary.evidence_gap_count,
+        )
+    return summaries
 
 
 def parse_package_release(
@@ -1004,6 +1156,35 @@ def _relative(root: Path, path: Path) -> str:
         raise CollectionUsageError("artifact path escapes the wiki root") from None
 
 
+def _snapshot_manifest_for_sha(
+    root: Path,
+    config: RepoConfig,
+    sha: str,
+) -> str:
+    repository = config.id.split("/", 1)[1]
+    snapshot_root = (
+        Path(root)
+        / "raw"
+        / "github"
+        / config.company
+        / repository
+        / "snapshots"
+    )
+    matches = []
+    for path in sorted(snapshot_root.glob("*/manifest.json")):
+        try:
+            document = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            continue
+        if document.get("repository") == config.id and document.get("sha") == sha:
+            matches.append(path)
+    if len(matches) != 1:
+        raise CollectionUsageError(
+            "exactly one retained snapshot is required for SHA " + sha
+        )
+    return _relative(Path(root).resolve(), matches[0])
+
+
 def _bounded_error(error: Exception) -> str:
     text = str(error).strip() or error.__class__.__name__
     return text[:1000] + ("..." if len(text) > 1000 else "")
@@ -1069,7 +1250,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             print(json.dumps(asdict(approve_one(root, arguments.item, arguments.mode)), sort_keys=True))
             return 0
         if arguments.command == "next-ingest":
-            print(json.dumps(asdict(next_ingest(root)), sort_keys=True))
+            item = next_ingest(root)
+            payload = asdict(item)
+            if item.ingest_packet:
+                payload["packet_summary"] = asdict(
+                    load_packet_summary(root, item.ingest_packet)
+                )
+            print(json.dumps(payload, sort_keys=True))
             return 0
         if arguments.command == "complete-ingest":
             print(json.dumps(asdict(complete_ingest(root, arguments.item)), sort_keys=True))
