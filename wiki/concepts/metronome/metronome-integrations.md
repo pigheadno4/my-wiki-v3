@@ -20,7 +20,7 @@ Metronome integrations connect its usage-billing and contract workflows to exter
 
 - Metronome owns usage rating and its invoice record, then creates the corresponding Stripe invoice for payment collection.
 - Connections and mapping rules are configured per Metronome environment and Stripe account.
-- Customer or contract billing configuration determines which Stripe account and customer receive an invoice.
+- Customer configuration uses `delivery_method_id` to select a Stripe account in a multi-account setup. Contract creation instead selects one of the customer's configured providers with `billing_provider_configuration_id`, obtained from `/getCustomerBillingProviderConfigurations`.
 - Stripe owns downstream payment timing, retries, and invoice payment status; Metronome imports status changes from Stripe webhooks.
 - Tax providers operate on the draft Stripe invoice before Stripe finalization.
 - `invoice.billing_provider_error` reports failures sending an invoice to Stripe, but the webhook guide warns that it does not cover failures that exist entirely inside Stripe.

@@ -16,7 +16,7 @@ Metronome documents its native Stripe integration for creating a corresponding S
 ## Key takeaways
 
 - Stripe connections are configured per Metronome environment; sandbox connects to Stripe test mode for end-to-end invoice and payment-collection testing.
-- Customer billing configuration supplies the Stripe customer ID and collection method; multi-account configurations require `delivery_method_id`, while contract-level configuration can route different contracts through different providers.
+- Customer billing configuration supplies the Stripe customer ID and collection method; multi-account customer configuration requires `delivery_method_id`. When selecting among several customer billing configurations at contract creation, use `billing_provider_configuration_id`.
 - For `charge_automatically`, Stripe can wait up to one hour after the `invoice.created` webhook before attempting payment, with a 72-hour fallback when webhook delivery fails.
 - Adding Stripe to an existing contract affects only invoices that finalize afterward; previously finalized invoices are not sent retroactively.
 - Payment-gated commits require each participating Metronome product to map a valid `stripe_product_id`, or the payment attempt fails and the commit is voided.
@@ -27,7 +27,9 @@ Metronome documents its native Stripe integration for creating a corresponding S
 
 Each Metronome environment has its own Stripe connection; a Metronome sandbox connects to Stripe test mode. One environment can connect to multiple Stripe accounts, but settings and entity mappings are then configured independently for each account. Customer configuration must use `delivery_method_id` to identify the destination account in a multi-account setup; single-account setup can use `delivery_method`.
 
-A customer billing configuration uses `stripe_customer_id` and `stripe_collection_method`. `charge_automatically` requires a default payment method on the Stripe customer before finalization. `send_invoice` emails payment instructions and takes its due-date behavior from the account-level integration setting. Contract-level configuration can route different contracts differently, such as Stripe for pay-as-you-go and a marketplace for enterprise terms.
+A customer billing configuration uses `stripe_customer_id` and `stripe_collection_method`. `charge_automatically` requires a default payment method on the Stripe customer before finalization. `send_invoice` emails payment instructions and takes its due-date behavior from the account-level integration setting.
+
+Contract-level configuration can route different contracts differently, such as Stripe for pay-as-you-go and a marketplace for enterprise terms. With multiple Stripe accounts, retrieve the customer's configured providers through `/getCustomerBillingProviderConfigurations`, then pass the selected configuration as `billing_provider_configuration.billing_provider_configuration_id` when creating the contract. This contract selector is distinct from the customer configuration's `delivery_method_id`.
 
 Adding a billing provider to an existing contract does not replay prior finalized invoices. The first Stripe delivery is the in-arrears invoice for the billing period in which the configuration was attached, determined by attachment time rather than contract start or configuration creation time.
 

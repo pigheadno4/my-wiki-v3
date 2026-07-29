@@ -6,6 +6,14 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-07-29 — Campaign 02 query-quality audit
+
+- Scope: an independent reviewer checked all five source pages against all 1,442 raw lines using 15 core, boundary, and trap questions.
+- Initial result: 13 pass, 1 partial, and 1 fail. The hard failure omitted the contract-level multi-account `billing_provider_configuration_id` and lookup route; the soft partial omitted the equivalent 6.6-million-events-per-minute throughput figure.
+- Resolution: Sol repaired the source and related concepts. Final result: 15 pass, 0 partial, and 0 fail.
+- Architecture boundary: no new coordinator machinery, schema, retry behavior, or parallel-ingest abstraction was added.
+- Evidence: [Campaign 02 quality audit](../tracking/ingest/metronome/metronome-campaign-02/quality-audit.md).
+
 ## 2026-07-28 — Metronome Campaign 02 completed
 
 - Result: five of five jobs were approved on attempt 1; no job failed, retried, or was rejected.

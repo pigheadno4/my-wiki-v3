@@ -4,6 +4,8 @@ Status: `complete`
 
 The user approved this manifest and worker launch on 2026-07-28. All five jobs passed deterministic worker-result validation and serial Sol review on attempt 1, then were promoted to canonical wiki sources.
 
+Post-campaign query-quality audit: [quality-audit.md](quality-audit.md) — 15/15 questions passed after one hard routing repair and one soft completeness repair.
+
 ## Proposed jobs
 
 | Order | Job | Page shape | Lines | Selection reason |

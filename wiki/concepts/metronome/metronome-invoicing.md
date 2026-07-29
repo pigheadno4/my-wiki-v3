@@ -28,7 +28,7 @@ Metronome exposes `POST /v1/customers/{customer_id}/previewEvents` to calculate 
 ## Native Stripe invoice delivery
 
 - Stripe connections are scoped to a Metronome environment; sandbox connects to Stripe test mode.
-- Customer billing configuration selects the Stripe customer and collection method. Multi-account setups require `delivery_method_id`; contract-level configuration can route contracts independently.
+- Customer billing configuration selects the Stripe customer and collection method. Multi-account customer setup requires `delivery_method_id`; contract creation selects among the customer's configured providers with `billing_provider_configuration_id`, obtained from `/getCustomerBillingProviderConfigurations`.
 - Adding Stripe to an existing contract does not send earlier finalized invoices retroactively.
 - `charge_automatically` requires a Stripe default payment method. Stripe can wait up to one hour after `invoice.created` before attempting payment, or 72 hours when that webhook delivery fails.
 - Account-level settings can leave invoices as drafts, skip invoices below the currency minimum, adjust presentation, or align `effective_at` to the service period. The guide says that alignment is incompatible with Stripe Tax.

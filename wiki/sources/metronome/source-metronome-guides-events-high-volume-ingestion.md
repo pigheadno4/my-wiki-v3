@@ -15,7 +15,7 @@ This guide describes Metronome's high-throughput usage-event ingestion, event-in
 
 ## Key takeaways
 
-- Metronome documents infrastructure capacity of up to 110,000 events per second, while the default ingest rate limit starts at 5,000 events per second.
+- Metronome documents infrastructure capacity of up to 110,000 events per second (6.6 million per minute), while the default ingest rate limit starts at 5,000 events per second.
 - Clients can submit up to 100 usage events in one request to the ingest endpoint.
 - The event UI supports inspection, searching, payload review, attribution review, and CSV export; the Event Search API can sample events and validate billable-metric matching.
 - The guide describes a 34-day historical ingest and deduplication window through the ingest endpoint for recovery and replay.
