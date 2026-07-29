@@ -54,9 +54,24 @@ Generated package comparisons live under:
 
 ```text
 tracking/github/repos/<company>/<repo>/comparisons/<package-slug>/<from>--<to>/
++-- comparison.json
++-- comparison.md
++-- diff.patch
++-- review-packet.json     # only after an ad hoc compare
++-- review-packet.md       # only after an ad hoc compare
 ```
 
 Generated comparisons are navigation evidence. Exact source claims must remain grounded in the linked immutable snapshots.
+
+Each newly collected work item has one immutable review packet:
+
+```text
+tracking/github/repos/<company>/<repo>/ingest-packets/<work-item-id>/
++-- packet.json
++-- packet.md
+```
+
+`packet.json` is the canonical machine-readable review contract. It records retained transitions, upstream dispositions, dependency and public-API changes, evidence gaps, unclassified changes, required reading, existing wiki context, expected wiki targets, and the deterministic mode and priority recommendation. `packet.md` is its hashed operator view. Historical work items created before this format may remain packetless; every newly finalized collection requires a packet.
 
 When an approved query needs a source file excluded from the bounded snapshot, collect a separate immutable supplement under `raw/github/<company>/<repo>/supplements/`. A supplement never modifies or replaces the accepted snapshot.
 
@@ -87,18 +102,33 @@ Collection performs these steps:
 5. Resolve the bounded source capsule, including changed source, docs, examples, and tests owned by included packages.
 6. Publish or reuse the exact-SHA snapshot only after hashing and validation, then publish immutable release records.
 7. Generate package-scoped comparisons against the prior selected release.
-8. Recommend `full` or `delta` ingest from deterministic signals.
-9. Stop in `awaiting_approval`.
+8. Build and atomically publish the ingest review packet.
+9. Derive the work-item recommendation from that packet.
+10. Stop in `awaiting_approval`.
 
 Collection never approves an item, starts ingest, or changes wiki knowledge.
 
+The required operator sequence is:
+
+```text
+collect -> review packet -> user approve -> next-ingest
+```
+
+Run `status` to see the packet link, priority, required-reading count, unclassified-change count, and evidence-gap count. Read both packet files before approval. `next-ingest` returns the selected work item and its packet summary; it is a lifecycle transition, not permission to skip packet evidence.
+
+`compare` creates or reuses the package comparison and writes `review-packet.json` plus `review-packet.md` beside it. It is an ad hoc review operation only: it must not create or advance a work item, approve ingest, or edit wiki pages.
+
 ## Full and delta recommendation
 
-Use `full` for a package baseline, major-version transition, public export change, security signal, SDK initialization change, material payment behavior change, broad change set, or impact that cannot be isolated confidently.
+Use `full` for a package baseline, major-version transition, incompatible public export change, capsule-policy change, missing prior snapshot, or a security impact that cannot be bounded by retained evidence.
 
-Use `delta` for a contained patch or minor release when the changed evidence does not trigger a full-ingest signal. Semantic version alone never overrides the evidence.
+Use `delta` for a contained patch or minor release when every upstream change has a disposition, no blocking evidence gap exists, no changed retained file is unclassified, and no full-ingest signal applies. Semantic version alone never overrides the evidence.
 
-The collector recommends; the user approves or overrides the mode.
+Priority is separate from mode. Payment, security, public-API, and policy-history signals may require `high` review even when the bounded ingest mode remains `delta`.
+
+Any packet with an evidence gap, unclassified changed file, invalid identity, failed hash, or exceeded packet budget requires correction or manual review. Do not approve it as delta merely because the release is a patch.
+
+The collector recommends; the user approves or overrides the mode. Packet generation is never ingest approval, and scripts do not edit wiki knowledge.
 
 ## Serial ingest boundary
 
@@ -110,23 +140,21 @@ For every ingest, read the complete current cumulative source page first.
 
 For `full` ingest, also read in full:
 
-- the selected source snapshot and every assigned file;
-- all package release notes in the work item;
-- all package comparisons;
-- relevant prior-version context; and
-- the repository changelog page.
+- every path in the packet's `required_reading` and `wiki_context`;
+- the complete current snapshot, including every retained file;
+- all listed release and comparison history; and
+- relevant prior-version source and changelog context.
 
 A full ingest adds the new package or major-version knowledge to the stable source page. It does not replace the page with latest-only content. Preserve older validated version findings and evidence links unless correcting a proven factual error, exact duplicate, or wrong package/version attribution.
 
 For `delta` ingest, also read in full:
 
-- each release note;
-- each generated comparison;
-- every changed source, documentation, example, and test file assigned to the work item;
-- the affected package and major-version section; and
-- the repository changelog page.
+- every path in the packet's `required_reading`;
+- every path in the packet's `wiki_context`;
+- each changed retained source, documentation, example, and story file; and
+- every linked release note, comparison, and affected history section.
 
-Update only affected knowledge and append the release history. Unchanged historical raw files do not need to be reread.
+Do not batch or partially sample these lists: read each file in full, one by one. Update only affected knowledge and append the release history. Unchanged historical raw files do not need to be reread during delta ingest.
 
 Follow `rules/ingest.md` for concept audit, contradiction checks, indexes, logs, and focused validation. Do not begin another work item until the current one reaches its terminal ingest state.
 
@@ -172,4 +200,4 @@ Run:
 python3 scripts/validate_github_collection.py
 ```
 
-The validator checks registry package policy, snapshot and release hashes, SHA links, package comparisons, strict work-item state, generated status equality, and cumulative source/changelog evidence for ingested items. It is offline and deterministic.
+The validator checks registry package policy, snapshot and release hashes, SHA links, package comparisons, canonical packet content and Markdown hashes, packet/work-item linkage, deterministic recommendations, required-reading containment, strict work-item state, generated status equality, and cumulative source/changelog evidence for ingested items. It is offline and deterministic.

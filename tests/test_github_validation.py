@@ -12,8 +12,16 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from github_canonical import canonical_json_bytes  # noqa: E402
+from github_ingest_packets import (  # noqa: E402
+    PackagePacketInput,
+    build_ingest_packet,
+    load_packet_summary,
+    publish_queued_packet,
+)
+from github_registry import load_registry  # noqa: E402
 from github_validation import inspect_github, validate_github  # noqa: E402
 from github_work_items import (  # noqa: E402
+    PacketStatusSummary,
     PackageChange,
     build_work_item,
     render_status,
@@ -166,6 +174,8 @@ default_generated_target_paths=[]
         to_version="10.0.0",
         from_sha=None,
         to_sha=None,
+        format_version=1,
+        upstream_changes=None,
     ):
         slug = package.rsplit("/", 1)[-1]
         directory = (
@@ -178,35 +188,88 @@ default_generated_target_paths=[]
         patch = b""
         markdown = b"# Comparison\n"
         manifest = directory / "comparison.json"
-        self.write_json(
-            manifest,
+        changes = upstream_changes or []
+        changed_paths = sorted(
             {
-                "changed_paths": [],
-                "format_version": 1,
-                "from_sha": from_sha or ("f" * 40),
-                "from_version": from_version,
-                "markdown_sha256": hashlib.sha256(markdown).hexdigest(),
-                "package": package,
-                "patch_sha256": hashlib.sha256(patch).hexdigest(),
-                "pathspecs": ["packages/" + slug],
-                "repository": "paypal/paypal-js",
-                "to_sha": to_sha or self.sha,
-                "to_version": to_version,
-            },
+                path
+                for row in changes
+                for path in (row.get("old_path"), row.get("new_path"))
+                if path
+            }
         )
+        document = {
+            "changed_paths": changed_paths,
+            "format_version": format_version,
+            "from_sha": from_sha or ("f" * 40),
+            "from_version": from_version,
+            "markdown_sha256": hashlib.sha256(markdown).hexdigest(),
+            "package": package,
+            "patch_sha256": hashlib.sha256(patch).hexdigest(),
+            "pathspecs": ["packages/" + slug],
+            "repository": "paypal/paypal-js",
+            "to_sha": to_sha or self.sha,
+            "to_version": to_version,
+        }
+        if format_version == 2:
+            document["upstream_changes"] = changes
+        self.write_json(manifest, document)
         (directory / "diff.patch").write_bytes(patch)
         (directory / "comparison.md").write_bytes(markdown)
         return manifest
 
     def save_work_items(self):
         save_work_items(self.queue_path, (self.work_item,))
+        summaries = {}
+        if self.work_item.ingest_packet:
+            packet = load_packet_summary(
+                self.root, self.work_item.ingest_packet
+            )
+            summaries[self.work_item.work_item_id] = PacketStatusSummary(
+                packet.packet_path,
+                packet.priority,
+                packet.required_reading_count,
+                packet.unclassified_count,
+                packet.evidence_gap_count,
+            )
         self.status_path.parent.mkdir(parents=True, exist_ok=True)
         self.status_path.write_text(
-            render_status((self.work_item,)), encoding="utf-8"
+            render_status((self.work_item,), summaries), encoding="utf-8"
         )
 
     def relative(self, path):
-        return path.relative_to(self.root).as_posix()
+        return path.resolve().relative_to(self.root.resolve()).as_posix()
+
+    def enable_packet(self):
+        config = load_registry(
+            self.root / "tracking/github/repo-registry.toml"
+        )[0]
+        packet = build_ingest_packet(
+            self.root,
+            config,
+            self.work_item.work_item_id,
+            self.snapshot_relative,
+            (
+                PackagePacketInput(
+                    package="@paypal/paypal-js",
+                    from_version="",
+                    to_version="10.0.0",
+                    from_sha="",
+                    to_sha=self.sha,
+                    release_manifest=self.release_relative,
+                    comparison_manifest="",
+                    prior_snapshot_manifest="",
+                    upstream_changes=(),
+                ),
+            ),
+            "queued",
+        )
+        packet_path = publish_queued_packet(self.root, config, packet)
+        self.work_item = replace(
+            self.work_item,
+            ingest_packet=self.relative(packet_path),
+        )
+        self.save_work_items()
+        return packet_path
 
     def write_ingested_pages(self, changelog_body=None):
         self.source_path.parent.mkdir(parents=True, exist_ok=True)
@@ -229,10 +292,80 @@ default_generated_target_paths=[]
             )
         self.changelog_path.write_text(body, encoding="utf-8")
 
-    def test_valid_focused_repository_has_no_errors(self):
+    def test_valid_historical_packetless_work_item_has_no_errors(self):
         report = inspect_github(self.root)
 
         self.assertEqual([], validate_github(report))
+
+    def test_valid_packet_enabled_work_item_has_no_errors(self):
+        self.enable_packet()
+
+        self.assertEqual([], validate_github(inspect_github(self.root)))
+
+    def test_packet_json_must_be_canonical(self):
+        packet_path = self.enable_packet()
+        document = json.loads(packet_path.read_text(encoding="utf-8"))
+        packet_path.write_text(
+            json.dumps(document, indent=2) + "\n",
+            encoding="utf-8",
+        )
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("packet JSON is not canonical" in item for item in errors))
+
+    def test_packet_markdown_hash_mismatch_is_rejected(self):
+        packet_path = self.enable_packet()
+        (packet_path.parent / "packet.md").write_text(
+            "tampered\n", encoding="utf-8"
+        )
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("packet Markdown hash mismatch" in item for item in errors))
+
+    def test_packet_required_reading_must_still_exist(self):
+        self.enable_packet()
+        (
+            self.snapshot_directory
+            / "files/packages/paypal-js/package.json"
+        ).unlink()
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("packet rebuild failed" in item for item in errors))
+
+    def test_packet_deterministic_content_mismatch_is_rejected(self):
+        packet_path = self.enable_packet()
+        document = json.loads(packet_path.read_text(encoding="utf-8"))
+        document["packages"][0]["retained_evidence"]["counts"]["added"] += 1
+        self.write_json(packet_path, document)
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(
+            any("packet deterministic content mismatch" in item for item in errors)
+        )
+
+    def test_packet_path_and_work_item_identity_mismatch_is_rejected(self):
+        packet_path = self.enable_packet()
+        document = json.loads(packet_path.read_text(encoding="utf-8"))
+        document["work_item_id"] = "github-" + ("f" * 20)
+        self.write_json(packet_path, document)
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(
+            any("packet path/work-item identity mismatch" in item for item in errors)
+        )
+
+    def test_packet_validation_remains_stable_after_expected_wiki_pages_exist(self):
+        self.enable_packet()
+        self.source_path.parent.mkdir(parents=True, exist_ok=True)
+        self.source_path.write_text("# Source\n", encoding="utf-8")
+        self.changelog_path.write_text("# Changelog\n", encoding="utf-8")
+
+        self.assertEqual([], validate_github(inspect_github(self.root)))
 
     def test_release_record_must_link_an_existing_sha_snapshot(self):
         self.release_manifest["sha"] = "f" * 40
@@ -302,6 +435,66 @@ default_generated_target_paths=[]
         errors = validate_github(inspect_github(self.root))
 
         self.assertTrue(any("comparison patch hash mismatch" in item for item in errors))
+
+    def test_comparison_validator_accepts_v1_and_v2_manifests(self):
+        self.write_comparison(from_sha=self.sha)
+        errors = validate_github(inspect_github(self.root))
+        self.assertEqual([], errors)
+
+        shutil.rmtree(self.root / "tracking/github/repos")
+        self.write_comparison(
+            from_sha=self.sha,
+            format_version=2,
+            upstream_changes=[
+                {
+                    "status": "modified",
+                    "old_path": "packages/paypal-js/package.json",
+                    "new_path": "packages/paypal-js/package.json",
+                }
+            ],
+        )
+
+        self.assertEqual([], validate_github(inspect_github(self.root)))
+
+    def test_comparison_validator_rejects_malformed_v2_rename(self):
+        manifest = self.write_comparison(
+            from_sha=self.sha,
+            format_version=2,
+            upstream_changes=[
+                {
+                    "status": "renamed",
+                    "old_path": "packages/paypal-js/old.ts",
+                    "new_path": "",
+                }
+            ],
+        )
+        document = json.loads(manifest.read_text(encoding="utf-8"))
+        document["changed_paths"] = ["packages/paypal-js/old.ts"]
+        self.write_json(manifest, document)
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("comparison upstream change row is invalid" in item for item in errors))
+
+    def test_comparison_validator_rejects_changed_path_union_mismatch(self):
+        manifest = self.write_comparison(
+            from_sha=self.sha,
+            format_version=2,
+            upstream_changes=[
+                {
+                    "status": "added",
+                    "old_path": "",
+                    "new_path": "packages/paypal-js/new.ts",
+                }
+            ],
+        )
+        document = json.loads(manifest.read_text(encoding="utf-8"))
+        document["changed_paths"] = []
+        self.write_json(manifest, document)
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("comparison changed path union mismatch" in item for item in errors))
 
     def test_release_record_accepts_plain_upstream_tag_for_exact_package_version(self):
         self.release_manifest["tag"] = "v10.0.0"

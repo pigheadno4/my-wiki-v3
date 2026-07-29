@@ -1,4 +1,5 @@
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -12,9 +13,11 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from github_capsule_policy import CapsuleConfig  # noqa: E402
 from github_capsule_selection import resolve_npm_capsule  # noqa: E402
+from github_canonical import canonical_json_bytes  # noqa: E402
 from github_git_tree import GitTree  # noqa: E402
 from github_pilot_store import (  # noqa: E402
     PilotStoreError,
+    UpstreamChange,
     publish_release_record,
     publish_source_snapshot,
     publish_source_supplement,
@@ -354,6 +357,149 @@ class GitHubPilotStoreTests(unittest.TestCase):
         metadata = json.loads(record.metadata_path.read_text(encoding="utf-8"))
         self.assertEqual(self.sha, metadata["from_sha"])
         self.assertEqual(next_sha, metadata["to_sha"])
+
+    def test_comparison_persists_added_modified_deleted_and_renamed_paths(self):
+        commit_files(
+            self.repo,
+            {
+                "docs/old.md": "old documentation\n",
+                "src/old.ts": "export const renamed = true;\n",
+            },
+            "add comparison fixtures",
+        )
+        from_sha = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=self.repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        (self.repo / "docs/old.md").unlink()
+        (self.repo / "src/old.ts").rename(self.repo / "src/new.ts")
+        (self.repo / "src/index.ts").write_text(
+            "export const value = 2;\n", encoding="utf-8"
+        )
+        (self.repo / "src/new.stories.js").write_text(
+            "export default {};\n", encoding="utf-8"
+        )
+        subprocess.run(
+            ["git", "add", "-A"],
+            cwd=self.repo,
+            check=True,
+            capture_output=True,
+        )
+        subprocess.run(
+            ["git", "commit", "-m", "exercise comparison statuses"],
+            cwd=self.repo,
+            check=True,
+            capture_output=True,
+        )
+        to_sha = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=self.repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+
+        record = write_package_comparison(
+            self.root,
+            self.config,
+            self.repo,
+            "@scope/widget",
+            "10.0.0",
+            from_sha,
+            ("docs", "src"),
+            "10.0.1",
+            to_sha,
+            ("docs", "src"),
+        )
+
+        self.assertEqual(
+            (
+                UpstreamChange("deleted", "docs/old.md", ""),
+                UpstreamChange("modified", "src/index.ts", "src/index.ts"),
+                UpstreamChange("added", "", "src/new.stories.js"),
+                UpstreamChange("renamed", "src/old.ts", "src/new.ts"),
+            ),
+            record.upstream_changes,
+        )
+        self.assertEqual(
+            (
+                "docs/old.md",
+                "src/index.ts",
+                "src/new.stories.js",
+                "src/new.ts",
+                "src/old.ts",
+            ),
+            record.changed_paths,
+        )
+        metadata = json.loads(record.metadata_path.read_text(encoding="utf-8"))
+        self.assertEqual(2, metadata["format_version"])
+        self.assertEqual(
+            [
+                {"new_path": "", "old_path": "docs/old.md", "status": "deleted"},
+                {
+                    "new_path": "src/index.ts",
+                    "old_path": "src/index.ts",
+                    "status": "modified",
+                },
+                {
+                    "new_path": "src/new.stories.js",
+                    "old_path": "",
+                    "status": "added",
+                },
+                {
+                    "new_path": "src/new.ts",
+                    "old_path": "src/old.ts",
+                    "status": "renamed",
+                },
+            ],
+            metadata["upstream_changes"],
+        )
+
+    def test_comparison_reuses_immutable_legacy_v1_evidence(self):
+        next_sha = commit_files(
+            self.repo,
+            {"src/index.ts": "export const value = 2;\n"},
+            "patch release",
+        )
+        first = write_package_comparison(
+            self.root,
+            self.config,
+            self.repo,
+            "@scope/widget",
+            "10.0.0",
+            self.sha,
+            ("src",),
+            "10.0.1",
+            next_sha,
+            ("src",),
+        )
+        legacy = json.loads(first.metadata_path.read_text(encoding="utf-8"))
+        legacy["format_version"] = 1
+        legacy.pop("upstream_changes")
+        first.metadata_path.write_bytes(canonical_json_bytes(legacy) + b"\n")
+        legacy_bytes = first.metadata_path.read_bytes()
+
+        reused = write_package_comparison(
+            self.root,
+            self.config,
+            self.repo,
+            "@scope/widget",
+            "10.0.0",
+            self.sha,
+            ("src",),
+            "10.0.1",
+            next_sha,
+            ("src",),
+        )
+
+        self.assertEqual(legacy_bytes, reused.metadata_path.read_bytes())
+        self.assertEqual(
+            (UpstreamChange("modified", "src/index.ts", "src/index.ts"),),
+            reused.upstream_changes,
+        )
 
     def test_comparison_enforces_packet_path_and_byte_budgets(self):
         next_sha = commit_files(

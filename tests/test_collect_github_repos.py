@@ -17,6 +17,7 @@ from collect_github_repos import (  # noqa: E402
     _parser,
     approve_one,
     collect_one,
+    compare_one,
     fail_ingest,
     next_ingest,
     parse_package_release,
@@ -156,28 +157,49 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertEqual(2, len(items[0].package_changes))
         self.assertEqual(self.sha, items[0].sha)
         self.assertTrue(items[0].snapshot_manifest)
+        self.assertTrue(items[0].ingest_packet)
+        packet = json.loads(
+            (self.root / items[0].ingest_packet).read_text(encoding="utf-8")
+        )
+        self.assertEqual("full", packet["recommendation"]["mode"])
+        self.assertEqual(
+            ["@paypal/paypal-js", "@paypal/react-paypal-js"],
+            [row["package"] for row in packet["packages"]],
+        )
+        self.assertFalse((self.root / "wiki").exists())
 
     def test_collector_publishes_only_the_atomic_awaiting_approval_state(self):
         queue_writes = []
+        events = []
         write_atomic = github_work_items._write_atomic
+        from collect_github_repos import publish_queued_packet
 
         def capture_queue_writes(path, content):
             if Path(path).name == "work-items.json":
+                events.append("queue")
                 document = json.loads(content)
                 queue_writes.append(
                     tuple(item["state"] for item in document["work_items"])
                 )
             return write_atomic(path, content)
 
+        def capture_packet(*args, **kwargs):
+            events.append("packet")
+            return publish_queued_packet(*args, **kwargs)
+
         with mock.patch.object(
             github_work_items,
             "_write_atomic",
             side_effect=capture_queue_writes,
+        ), mock.patch(
+            "collect_github_repos.publish_queued_packet",
+            side_effect=capture_packet,
         ):
             result = self.collect()
 
         self.assertEqual("awaiting_approval", result.state)
         self.assertEqual([("awaiting_approval",)], queue_writes)
+        self.assertEqual(["packet", "queue"], events)
 
     def test_backfill_orders_same_sha_releases_by_release_date(self):
         def dated_notes(config, candidate):
@@ -371,6 +393,118 @@ class CollectGitHubReposTests(unittest.TestCase):
         patch = (comparison.parent / "diff.patch").read_text(encoding="utf-8")
         self.assertIn("packages/paypal-js/src/index.ts", patch)
         self.assertNotIn("packages/react-paypal-js", patch)
+
+    def test_same_major_payment_release_uses_bounded_delta_packet(self):
+        self.collect()
+        next_sha = commit_files(
+            self.remote,
+            {
+                "packages/paypal-js/package.json": package_manifest(
+                    "@paypal/paypal-js", "10.0.1"
+                ),
+                "packages/paypal-js/src/index.ts": "export const loadScript = 2;\n",
+            },
+            "paypal js payment patch",
+        )
+        tag(self.remote, "@paypal/paypal-js@10.0.1")
+
+        def payment_notes(config, candidate):
+            return ReleaseNotesEvidence(
+                "https://api.github.test/" + candidate.tag,
+                "2026-07-21T12:00:00Z",
+                b"Fix Venmo payment initialization.\n",
+            )
+
+        self.collect(
+            release_mode="future",
+            collection_date="2026-07-21",
+            release_notes_fetcher=payment_notes,
+        )
+
+        item = next(
+            row
+            for row in load_work_items(
+                self.root / "tracking/github/work-items.json"
+            )
+            if row.sha == next_sha
+        )
+        packet = json.loads(
+            (self.root / item.ingest_packet).read_text(encoding="utf-8")
+        )
+        self.assertEqual("delta", item.recommended_mode)
+        self.assertEqual("delta", packet["recommendation"]["mode"])
+        self.assertEqual("high", packet["recommendation"]["priority"])
+
+    def test_packet_budget_failure_routes_to_manual_review_without_partial_packet(self):
+        constrained = replace(
+            self.config,
+            capsules=(
+                replace(
+                    self.config.capsules[0],
+                    max_packet_files=1,
+                ),
+            ),
+        )
+
+        result = collect_one(
+            self.root,
+            constrained,
+            release_mode="backfill",
+            clone_source=self.remote,
+            release_notes_fetcher=self.release_notes,
+            collection_date="2026-07-20",
+            max_attempts=1,
+        )
+
+        self.assertEqual("needs_manual_review", result.state)
+        self.assertIn("packet budget", result.errors[0])
+        packet_root = (
+            self.root
+            / "tracking/github/repos/paypal/paypal-js/ingest-packets"
+        )
+        self.assertEqual(
+            [],
+            list(packet_root.iterdir()) if packet_root.exists() else [],
+        )
+        item = load_work_items(
+            self.root / "tracking/github/work-items.json"
+        )[0]
+        self.assertEqual("needs_manual_review", item.state)
+        self.assertEqual("", item.ingest_packet)
+
+    def test_ad_hoc_compare_writes_review_packet_without_queue_or_wiki_mutation(self):
+        self.collect()
+        commit_files(
+            self.remote,
+            {
+                "packages/paypal-js/package.json": package_manifest(
+                    "@paypal/paypal-js", "10.0.1"
+                ),
+                "packages/paypal-js/src/index.ts": "export const loadScript = 2;\n",
+            },
+            "paypal js patch",
+        )
+        tag(self.remote, "@paypal/paypal-js@10.0.1")
+        self.collect(release_mode="future", collection_date="2026-07-21")
+        queue_path = self.root / "tracking/github/work-items.json"
+        queue_before = queue_path.read_bytes()
+
+        comparison = compare_one(
+            self.root,
+            self.config,
+            "@paypal/paypal-js@10.0.0",
+            "@paypal/paypal-js@10.0.1",
+            clone_source=self.remote,
+        )
+
+        self.assertTrue(
+            (comparison.metadata_path.parent / "review-packet.json").is_file()
+        )
+        self.assertTrue(
+            (comparison.metadata_path.parent / "review-packet.md").is_file()
+        )
+        self.assertEqual(queue_before, queue_path.read_bytes())
+        self.assertFalse((self.root / "wiki").exists())
 
     def test_future_collection_cannot_expand_a_policy_bounded_capsule(self):
         bounded_config = replace(

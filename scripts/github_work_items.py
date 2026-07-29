@@ -9,7 +9,7 @@ from pathlib import Path
 import re
 import tempfile
 import threading
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
 from github_canonical import (
     canonical_json_bytes,
@@ -80,8 +80,14 @@ _WORK_ITEM_FIELDS = {
     "last_error",
     "last_attempted_date",
     "evidence_revision",
+    "ingest_packet",
 }
-_LEGACY_WORK_ITEM_FIELDS = _WORK_ITEM_FIELDS - {"evidence_revision"}
+_WORK_ITEM_FIELD_SETS = (
+    _WORK_ITEM_FIELDS,
+    _WORK_ITEM_FIELDS - {"ingest_packet"},
+    _WORK_ITEM_FIELDS - {"evidence_revision"},
+    _WORK_ITEM_FIELDS - {"evidence_revision", "ingest_packet"},
+)
 _QUEUE_THREAD_LOCK = threading.RLock()
 
 
@@ -112,6 +118,15 @@ class PackageChange:
 
 
 @dataclass(frozen=True)
+class PacketStatusSummary:
+    packet_path: str
+    priority: str
+    required_reading_count: int
+    unclassified_count: int
+    evidence_gap_count: int
+
+
+@dataclass(frozen=True)
 class WorkItem:
     work_item_id: str
     repo_id: str
@@ -121,6 +136,7 @@ class WorkItem:
     snapshot_manifest: str
     recommended_mode: str
     evidence_revision: str = ""
+    ingest_packet: str = ""
     approved_mode: Optional[str] = None
     state: str = "discovered"
     attempts_in_run: int = 0
@@ -202,6 +218,7 @@ def build_work_item(
     package_changes: Sequence[PackageChange],
     snapshot_manifest: str,
     evidence_revision: str = "",
+    ingest_packet: str = "",
 ) -> WorkItem:
     """Build one discovered work item from same-SHA package changes."""
     _require_repo_id(repo_id)
@@ -227,6 +244,7 @@ def build_work_item(
         snapshot_manifest,
         mode,
         evidence_revision,
+        ingest_packet,
     )
     _validate_work_item(item)
     return item
@@ -308,6 +326,10 @@ def finalize_collected_work_item(
 ) -> Tuple[WorkItem, ...]:
     """Atomically publish complete collection evidence at the approval gate."""
     _validate_work_item(item)
+    if not item.ingest_packet:
+        raise WorkItemStateError(
+            "collection finalization requires a published ingest packet"
+        )
     if item.state != "discovered":
         raise WorkItemStateError(
             "collection finalization requires discovered input"
@@ -567,8 +589,12 @@ def _queue_lock(path: Path):
                 fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
 
 
-def render_status(items: Sequence[WorkItem]) -> str:
+def render_status(
+    items: Sequence[WorkItem],
+    packet_summaries: Optional[Mapping[str, PacketStatusSummary]] = None,
+) -> str:
     """Render generated operator status from validated queue items."""
+    summaries = dict(packet_summaries or {})
     normalized = tuple(sorted(items, key=lambda item: item.work_item_id))
     for item in normalized:
         _validate_work_item(item)
@@ -576,6 +602,14 @@ def render_status(items: Sequence[WorkItem]) -> str:
     if not normalized:
         return "\n".join(lines + ["No work items.", ""])
     for item in normalized:
+        summary = summaries.get(item.work_item_id)
+        if summary is not None:
+            _validate_packet_summary(item, summary)
+        packet_markdown = (
+            item.ingest_packet[: -len("packet.json")] + "packet.md"
+            if item.ingest_packet.endswith("packet.json")
+            else item.ingest_packet
+        )
         lines.extend(
             [
                 "## `" + item.work_item_id + "`",
@@ -596,6 +630,36 @@ def render_status(items: Sequence[WorkItem]) -> str:
                     if item.snapshot_manifest
                     else "Not published"
                 ),
+                "- Packet: "
+                + (
+                    "[review packet](" + packet_markdown + ")"
+                    if item.ingest_packet
+                    else "Historical item without packet"
+                ),
+                "- Review priority: `"
+                + (summary.priority if summary is not None else "not available")
+                + "`",
+                "- Required reading: `"
+                + (
+                    str(summary.required_reading_count)
+                    if summary is not None
+                    else "not available"
+                )
+                + "` files",
+                "- Unclassified changes: `"
+                + (
+                    str(summary.unclassified_count)
+                    if summary is not None
+                    else "not available"
+                )
+                + "`",
+                "- Evidence gaps: `"
+                + (
+                    str(summary.evidence_gap_count)
+                    if summary is not None
+                    else "not available"
+                )
+                + "`",
                 "",
                 "### Package releases",
                 "",
@@ -618,10 +682,14 @@ def render_status(items: Sequence[WorkItem]) -> str:
     return "\n".join(lines)
 
 
-def write_status_from_queue(queue_path: Path, status_path: Path) -> str:
+def write_status_from_queue(
+    queue_path: Path,
+    status_path: Path,
+    packet_summaries: Optional[Mapping[str, PacketStatusSummary]] = None,
+) -> str:
     """Render and atomically write status while holding the queue lock."""
     with _queue_lock(queue_path):
-        status = render_status(load_work_items(queue_path))
+        status = render_status(load_work_items(queue_path), packet_summaries)
         _write_atomic(Path(status_path), status.encode("utf-8"))
         return status
 
@@ -669,6 +737,16 @@ def _validate_work_item(item: WorkItem) -> None:
         raise ValueError("work-item recommended mode is invalid")
     if item.evidence_revision and re.fullmatch(r"[0-9a-f]{64}", item.evidence_revision) is None:
         raise ValueError("work-item evidence revision is invalid")
+    if item.ingest_packet:
+        _require_path(item.ingest_packet, "ingest_packet")
+        expected_suffix = (
+            "/ingest-packets/" + item.work_item_id + "/packet.json"
+        )
+        if (
+            not item.ingest_packet.startswith("tracking/github/repos/")
+            or not item.ingest_packet.endswith(expected_suffix)
+        ):
+            raise ValueError("work-item ingest packet path is invalid")
     if item.approved_mode is not None and item.approved_mode not in INGEST_MODES:
         raise ValueError("work-item approved mode is invalid")
     if item.state in ("approved", "ingesting", "ingested") and item.approved_mode is None:
@@ -705,6 +783,8 @@ def _validate_work_item(item: WorkItem) -> None:
 
 def _work_item_to_dict(item: WorkItem) -> dict:
     value = asdict(item)
+    if not item.ingest_packet:
+        value.pop("ingest_packet")
     value["package_changes"] = [asdict(change) for change in item.package_changes]
     for change in value["package_changes"]:
         change["reasons"] = list(change["reasons"])
@@ -712,10 +792,7 @@ def _work_item_to_dict(item: WorkItem) -> dict:
 
 
 def _work_item_from_dict(value: Any) -> WorkItem:
-    if not isinstance(value, dict) or set(value) not in (
-        _WORK_ITEM_FIELDS,
-        _LEGACY_WORK_ITEM_FIELDS,
-    ):
+    if not isinstance(value, dict) or set(value) not in _WORK_ITEM_FIELD_SETS:
         raise ValueError("work item has unknown or missing fields")
     rows = value["package_changes"]
     if not isinstance(rows, list):
@@ -732,6 +809,7 @@ def _work_item_from_dict(value: Any) -> WorkItem:
         changes.append(PackageChange(**values))
     values = dict(value)
     values.setdefault("evidence_revision", "")
+    values.setdefault("ingest_packet", "")
     values["package_changes"] = tuple(changes)
     item = WorkItem(**values)
     _validate_work_item(item)
@@ -746,6 +824,7 @@ def _require_same_evidence(existing: WorkItem, incoming: WorkItem) -> None:
         "package_changes",
         "snapshot_manifest",
         "recommended_mode",
+        "ingest_packet",
     )
     if any(getattr(existing, field) != getattr(incoming, field) for field in fields):
         raise ValueError("existing work item conflicts with discovered evidence")
@@ -770,6 +849,12 @@ def _require_compatible_paths(existing: WorkItem, incoming: WorkItem) -> None:
         and existing.snapshot_manifest != incoming.snapshot_manifest
     ):
         raise ValueError("existing work item conflicts with snapshot evidence")
+    if (
+        existing.ingest_packet
+        and incoming.ingest_packet
+        and existing.ingest_packet != incoming.ingest_packet
+    ):
+        raise ValueError("existing work item conflicts with ingest packet evidence")
     existing_changes = {change.release_id: change for change in existing.package_changes}
     for change in incoming.package_changes:
         prior = existing_changes[change.release_id]
@@ -804,8 +889,27 @@ def _merge_evidence(existing: WorkItem, incoming: WorkItem) -> WorkItem:
         incoming,
         package_changes=tuple(merged_changes),
         snapshot_manifest=incoming.snapshot_manifest or existing.snapshot_manifest,
+        ingest_packet=incoming.ingest_packet or existing.ingest_packet,
         recommended_mode=mode,
     )
+
+
+def _validate_packet_summary(
+    item: WorkItem, summary: PacketStatusSummary
+) -> None:
+    if not isinstance(summary, PacketStatusSummary):
+        raise TypeError("packet summary must be PacketStatusSummary")
+    if summary.packet_path != item.ingest_packet:
+        raise ValueError("packet summary path does not match work item")
+    if summary.priority not in ("normal", "high"):
+        raise ValueError("packet summary priority is invalid")
+    for value in (
+        summary.required_reading_count,
+        summary.unclassified_count,
+        summary.evidence_gap_count,
+    ):
+        if not isinstance(value, int) or value < 0:
+            raise ValueError("packet summary count is invalid")
 
 
 def _find_index(items: Sequence[WorkItem], work_item_id: str) -> int:
@@ -889,6 +993,7 @@ __all__ = [
     "ChangeSignals",
     "FULL_SIGNAL_ORDER",
     "PackageChange",
+    "PacketStatusSummary",
     "TRANSITIONS",
     "WorkItem",
     "WorkItemStateError",

@@ -659,8 +659,21 @@ def _is_lfs_pointer(content: bytes) -> bool:
     )
 
 
-def _excluded_categories(path: str, enabled: Sequence[str]) -> Tuple[str, ...]:
+def classify_excluded_categories(
+    path: str, enabled: Sequence[str]
+) -> Tuple[str, ...]:
+    """Return approved evidence categories matched by one package-relative path."""
+    if not isinstance(path, str) or not safe_policy_path(path):
+        raise ValueError("category classifier path must be safe")
+    return _classify_excluded_categories(path, enabled)
+
+
+def _classify_excluded_categories(
+    path: str, enabled: Sequence[str]
+) -> Tuple[str, ...]:
     enabled_set = frozenset(enabled)
+    if any(category not in _CATEGORY_ORDER for category in enabled_set):
+        raise ValueError("category classifier contains an unknown category")
     segments = path.split("/")
     filename = segments[-1]
     matches = {
@@ -695,6 +708,10 @@ def _excluded_categories(path: str, enabled: Sequence[str]) -> Tuple[str, ...]:
         for category in _CATEGORY_ORDER
         if category in enabled_set and matches[category]
     )
+
+
+def _excluded_categories(path: str, enabled: Sequence[str]) -> Tuple[str, ...]:
+    return _classify_excluded_categories(path, enabled)
 
 
 def _target_reasons(target: DeclaredTarget) -> Tuple[str, ...]:
@@ -735,6 +752,7 @@ __all__ = [
     "CapsuleResolution",
     "SecretFinding",
     "SecretFindingsBlocked",
+    "classify_excluded_categories",
     "resolve_npm_capsule",
     "scan_evidence_files",
 ]

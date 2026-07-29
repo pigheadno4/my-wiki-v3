@@ -13,6 +13,11 @@
 - Consecutive failed runs: `0`
 - Last error: None
 - Snapshot: [manifest](raw/github/braintree/braintree-web/snapshots/2026-07-27-bae582d/manifest.json)
+- Packet: Historical item without packet
+- Review priority: `not available`
+- Required reading: `not available` files
+- Unclassified changes: `not available`
+- Evidence gaps: `not available`
 
 ### Package releases
 
@@ -33,6 +38,11 @@
 - Consecutive failed runs: `0`
 - Last error: None
 - Snapshot: [manifest](raw/github/braintree/braintree-web/snapshots/2026-07-28-41460fb/manifest.json)
+- Packet: Historical item without packet
+- Review priority: `not available`
+- Required reading: `not available` files
+- Unclassified changes: `not available`
+- Evidence gaps: `not available`
 
 ### Package releases
 
@@ -53,6 +63,11 @@
 - Consecutive failed runs: `0`
 - Last error: None
 - Snapshot: [manifest](raw/github/paypal/paypal-js/snapshots/2026-07-22-702863f/manifest.json)
+- Packet: Historical item without packet
+- Review priority: `not available`
+- Required reading: `not available` files
+- Unclassified changes: `not available`
+- Evidence gaps: `not available`
 
 ### Package releases
 
@@ -73,6 +88,11 @@
 - Consecutive failed runs: `0`
 - Last error: None
 - Snapshot: [manifest](raw/github/braintree/braintree-web-drop-in/snapshots/2026-07-28-ec1c7c5/manifest.json)
+- Packet: Historical item without packet
+- Review priority: `not available`
+- Required reading: `not available` files
+- Unclassified changes: `not available`
+- Evidence gaps: `not available`
 
 ### Package releases
 
@@ -93,6 +113,11 @@
 - Consecutive failed runs: `0`
 - Last error: None
 - Snapshot: [manifest](raw/github/paypal/paypal-js/snapshots/2026-07-22-3caece5/manifest.json)
+- Packet: Historical item without packet
+- Review priority: `not available`
+- Required reading: `not available` files
+- Unclassified changes: `not available`
+- Evidence gaps: `not available`
 
 ### Package releases
 
@@ -116,6 +141,11 @@
 - Consecutive failed runs: `0`
 - Last error: None
 - Snapshot: [manifest](raw/github/paypal/paypal-js/snapshots/2026-07-22-3d72ac9/manifest.json)
+- Packet: Historical item without packet
+- Review priority: `not available`
+- Required reading: `not available` files
+- Unclassified changes: `not available`
+- Evidence gaps: `not available`
 
 ### Package releases
 
@@ -139,6 +169,11 @@
 - Consecutive failed runs: `0`
 - Last error: None
 - Snapshot: [manifest](raw/github/adyen/adyen-web/snapshots/2026-07-26-b19eec7/manifest.json)
+- Packet: Historical item without packet
+- Review priority: `not available`
+- Required reading: `not available` files
+- Unclassified changes: `not available`
+- Evidence gaps: `not available`
 
 ### Package releases
 
@@ -159,6 +194,11 @@
 - Consecutive failed runs: `0`
 - Last error: None
 - Snapshot: [manifest](raw/github/paypal/paypal-js/snapshots/2026-07-22-31eb658/manifest.json)
+- Packet: Historical item without packet
+- Review priority: `not available`
+- Required reading: `not available` files
+- Unclassified changes: `not available`
+- Evidence gaps: `not available`
 
 ### Package releases
 
@@ -182,6 +222,11 @@
 - Consecutive failed runs: `0`
 - Last error: None
 - Snapshot: [manifest](raw/github/paypal/paypal-js/snapshots/2026-07-22-77487d6/manifest.json)
+- Packet: Historical item without packet
+- Review priority: `not available`
+- Required reading: `not available` files
+- Unclassified changes: `not available`
+- Evidence gaps: `not available`
 
 ### Package releases
 
@@ -202,6 +247,11 @@
 - Consecutive failed runs: `0`
 - Last error: None
 - Snapshot: [manifest](raw/github/paypal/paypal-js/snapshots/2026-07-22-4bd05ab/manifest.json)
+- Packet: Historical item without packet
+- Review priority: `not available`
+- Required reading: `not available` files
+- Unclassified changes: `not available`
+- Evidence gaps: `not available`
 
 ### Package releases
 
@@ -225,6 +275,11 @@
 - Consecutive failed runs: `2`
 - Last error: needs-policy-review:untracked-declared-target: declared target is not tracked or reviewed generated output
 - Snapshot: [manifest](raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-289055a/manifest.json)
+- Packet: Historical item without packet
+- Review priority: `not available`
+- Required reading: `not available` files
+- Unclassified changes: `not available`
+- Evidence gaps: `not available`
 
 ### Package releases
 
@@ -245,6 +300,11 @@
 - Consecutive failed runs: `0`
 - Last error: None
 - Snapshot: [manifest](raw/github/paypal/paypal-js/snapshots/2026-07-22-59cb2ce/manifest.json)
+- Packet: Historical item without packet
+- Review priority: `not available`
+- Required reading: `not available` files
+- Unclassified changes: `not available`
+- Evidence gaps: `not available`
 
 ### Package releases
 
@@ -268,6 +328,11 @@
 - Consecutive failed runs: `1`
 - Last error: needs-policy-review:capsule-budget-exceeded: selected file count 325 exceeds max_capsule_files 320
 - Snapshot: [manifest](raw/github/paypal/paypal-checkout-components/snapshots/2026-07-23-e03bffc/manifest.json)
+- Packet: Historical item without packet
+- Review priority: `not available`
+- Required reading: `not available` files
+- Unclassified changes: `not available`
+- Evidence gaps: `not available`
 
 ### Package releases
 
