@@ -22,6 +22,7 @@ from github_capsule_selection import (  # noqa: E402
     CapsuleResolution,
     SecretFinding,
     resolve_npm_capsule,
+    classify_excluded_categories,
     scan_evidence_files,
 )
 import github_capsule_selection  # noqa: E402
@@ -667,6 +668,22 @@ class CapsuleSelectionTests(unittest.TestCase):
         self.assertIn(
             (mock_path, "excluded-category:tests"),
             result.excluded,
+        )
+
+    def test_public_category_classifier_matches_capsule_selection(self):
+        self.assertEqual(
+            ("tests",),
+            classify_excluded_categories(
+                "src/lib/__mocks__/analytics.js",
+                ("tests", "fixtures"),
+            ),
+        )
+        self.assertEqual(
+            (),
+            classify_excluded_categories(
+                ".storybook/stories/HostedFields.stories.ts",
+                ("tests", "fixtures"),
+            ),
         )
 
     def test_root_level_type_target_respects_category_exclusions_in_declaration_directory(self):

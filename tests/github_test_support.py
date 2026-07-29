@@ -1,8 +1,11 @@
 """Local Git repository fixtures for GitHub collection tests."""
 
+import json
 from pathlib import Path
 import subprocess
 from typing import Mapping, Union
+
+from github_canonical import canonical_json_bytes
 
 
 def _git(args, cwd=None):
@@ -93,3 +96,8 @@ def add_submodule_marker(repo: Path, relative: str) -> None:
     )
     _git(["add", ".gitmodules"], cwd=repo)
     _git(["commit", "-m", "add submodule marker"], cwd=repo)
+
+
+def write_canonical_json(path: Path, value: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(canonical_json_bytes(value) + b"\n")
