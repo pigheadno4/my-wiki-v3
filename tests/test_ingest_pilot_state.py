@@ -1,6 +1,7 @@
 import json
 import tempfile
 import unittest
+from copy import deepcopy
 from pathlib import Path
 
 from scripts.ingest_pilot.state import (
@@ -122,6 +123,66 @@ class PilotStateTests(unittest.TestCase):
                 "mode": "dry_run",
             },
         )
+
+    def test_initialize_preserves_portable_worker_routing_metadata(self):
+        manifest = deepcopy(self.manifest)
+        manifest["jobs"][0]["recommended_worker_tier"] = "standard"
+        manifest["jobs"][0]["routing_reason"] = "short operational guide"
+        manifest["jobs"][1]["recommended_worker_tier"] = "strong"
+        manifest["jobs"][1]["routing_reason"] = "cross-provider billing boundary"
+
+        initialize_state(self.root, manifest)
+
+        jobs = load_jobs(self.root, self.campaign_id)
+        self.assertEqual(jobs[0]["recommended_worker_tier"], "standard")
+        self.assertEqual(jobs[0]["routing_reason"], "short operational guide")
+        self.assertEqual(jobs[1]["recommended_worker_tier"], "strong")
+        self.assertEqual(jobs[1]["routing_reason"], "cross-provider billing boundary")
+        self.assertNotIn("recommended_worker_tier", jobs[2])
+        self.assertNotIn("routing_reason", jobs[2])
+
+    def test_initialize_rejects_incomplete_worker_routing_metadata(self):
+        incomplete = deepcopy(self.manifest)
+        incomplete["jobs"][0]["recommended_worker_tier"] = "standard"
+
+        with self.assertRaisesRegex(
+            PilotError, "worker routing requires both recommended_worker_tier and routing_reason"
+        ):
+            initialize_state(self.root, incomplete)
+
+        paths = campaign_paths(self.root, self.campaign_id)
+        self.assertFalse(paths["manifest"].exists())
+        self.assertFalse(paths["campaign"].exists())
+        self.assertFalse(paths["jobs"].exists())
+
+    def test_initialize_rejects_unknown_worker_tier(self):
+        unknown = deepcopy(self.manifest)
+        unknown["jobs"][0]["recommended_worker_tier"] = "premium"
+        unknown["jobs"][0]["routing_reason"] = "unsupported tier"
+
+        with self.assertRaisesRegex(PilotError, "recommended_worker_tier must be standard or strong"):
+            initialize_state(self.root, unknown)
+
+        paths = campaign_paths(self.root, self.campaign_id)
+        self.assertFalse(paths["manifest"].exists())
+        self.assertFalse(paths["campaign"].exists())
+        self.assertFalse(paths["jobs"].exists())
+
+    def test_initialize_rejects_blank_routing_reason(self):
+        blank = deepcopy(self.manifest)
+        blank["jobs"][0]["recommended_worker_tier"] = "standard"
+        blank["jobs"][0]["routing_reason"] = "   "
+
+        with self.assertRaisesRegex(PilotError, "routing_reason must be non-empty text"):
+            initialize_state(self.root, blank)
+
+    def test_initialize_rejects_non_text_worker_tier(self):
+        malformed = deepcopy(self.manifest)
+        malformed["jobs"][0]["recommended_worker_tier"] = []
+        malformed["jobs"][0]["routing_reason"] = "invalid type"
+
+        with self.assertRaisesRegex(PilotError, "recommended_worker_tier must be standard or strong"):
+            initialize_state(self.root, malformed)
 
     def test_save_jobs_replaces_projection_without_rewriting_events(self):
         self.initialize_jobs()

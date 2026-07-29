@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Mapping, Union
 
 
 SCHEMA_VERSION = 1
+WORKER_TIERS = {"standard", "strong"}
 
 
 class PilotError(Exception):
@@ -123,6 +124,27 @@ def _manifest_data(manifest: Union[Path, Mapping[str, Any]]) -> Dict[str, Any]:
     return data
 
 
+def _routing_metadata(source: Mapping[str, Any]) -> Dict[str, str]:
+    tier_present = "recommended_worker_tier" in source
+    reason_present = "routing_reason" in source
+    if tier_present != reason_present:
+        raise PilotError(
+            "worker routing requires both recommended_worker_tier and routing_reason"
+        )
+    if not tier_present:
+        return {}
+    tier = source["recommended_worker_tier"]
+    reason = source["routing_reason"]
+    if not isinstance(tier, str) or tier not in WORKER_TIERS:
+        raise PilotError("recommended_worker_tier must be standard or strong")
+    if not isinstance(reason, str) or not reason.strip():
+        raise PilotError("routing_reason must be non-empty text")
+    return {
+        "recommended_worker_tier": tier,
+        "routing_reason": reason,
+    }
+
+
 def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> None:
     manifest_data = _manifest_data(manifest)
     campaign_id = manifest_data["campaign_id"]
@@ -130,6 +152,9 @@ def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> No
     campaign_dir = paths["campaign_dir"]
     if paths["campaign"].exists() or paths["jobs"].exists():
         raise PilotError("campaign is already initialized")
+    routing_metadata = [
+        _routing_metadata(source) for source in manifest_data["jobs"]
+    ]
     try:
         campaign_dir.mkdir(parents=True, exist_ok=True)
         if paths["manifest"].exists():
@@ -155,6 +180,7 @@ def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> No
                 "raw_sha256": source["raw_sha256"],
                 "source_target": source["source_target"],
                 "canonical_url": source["canonical_url"],
+                **routing_metadata[position - 1],
                 "state": "queued",
                 "attempt": 0,
                 "queue_position": position,

@@ -30,6 +30,11 @@ def worker_orders(
             "raw_path": job["raw_path"],
             "raw_sha256": job["raw_sha256"],
             "source_target": job["source_target"],
+            **{
+                key: job[key]
+                for key in ("recommended_worker_tier", "routing_reason")
+                if key in job
+            },
         }
         for job in _queued_jobs(jobs, max_attempts)[:slots]
     ]

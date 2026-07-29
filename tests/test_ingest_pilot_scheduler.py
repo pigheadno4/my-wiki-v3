@@ -98,6 +98,32 @@ class SchedulerTests(unittest.TestCase):
 
         self.assertEqual([order["job_id"] for order in orders], ["job-2"])
 
+    def test_worker_order_carries_portable_routing_metadata(self):
+        jobs = make_jobs(1)
+        jobs[0]["recommended_worker_tier"] = "strong"
+        jobs[0]["routing_reason"] = "schema-heavy API"
+
+        orders = worker_orders(
+            jobs,
+            worker_concurrency=1,
+            max_attempts=3,
+            available_worker_slots=1,
+        )
+
+        self.assertEqual(
+            orders[0],
+            {
+                "action": "spawn_worker",
+                "job_id": "job-1",
+                "attempt": 1,
+                "raw_path": "raw/metronome/job-1.md",
+                "raw_sha256": "1" * 64,
+                "source_target": "wiki/sources/metronome/source-job-1.md",
+                "recommended_worker_tier": "strong",
+                "routing_reason": "schema-heavy API",
+            },
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

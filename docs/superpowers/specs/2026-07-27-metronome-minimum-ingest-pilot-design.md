@@ -63,7 +63,7 @@ No implementation file may import code from the frozen safety-first branch. Smal
 
 Workers are pure readers and return structured data to the coordinator. They do not receive repository write authority.
 
-### Terra input
+### Worker input
 
 ```json
 {
@@ -72,13 +72,22 @@ Workers are pure readers and return structured data to the coordinator. They do 
   "attempt": 1,
   "raw_path": "raw/metronome/example/page-2026-07-19.md",
   "raw_sha256": "<sha256>",
-  "source_target": "wiki/sources/metronome/source-example-page.md"
+  "source_target": "wiki/sources/metronome/source-example-page.md",
+  "recommended_worker_tier": "standard",
+  "routing_reason": "short operational guide"
 }
 ```
 
-Terra must read the complete raw file and return one source-page candidate.
+`recommended_worker_tier` is portable workflow metadata, not a model name:
 
-### Terra output
+- `standard` maps to the configured lower-cost ingestion worker.
+- `strong` maps to the configured high-judgment ingestion worker.
+
+The runtime owns the tier-to-model mapping, so Codex and a future Hermes deployment can use different models without changing job manifests. `routing_reason` is required whenever a tier is present. Historical manifests without routing metadata remain valid.
+
+The coordinator may populate the recommendation during list creation from collection metadata such as path, canonical URL, title, and line count. It does not need to read the raw body to persist the recommendation. The selected worker still reads the complete raw file and returns one source-page candidate.
+
+### Worker output
 
 ```json
 {
