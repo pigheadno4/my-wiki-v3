@@ -80,6 +80,9 @@ The prose points to separate edit and edit-history endpoints after creation and 
 - Company: [[metronome]]
 - Concept: [[metronome-customers-and-contracts]]
 - Related concepts: [[metronome-products-and-rate-cards]], [[metronome-usage-based-billing]], [[metronome-invoicing]]
+- Related source: [[source-metronome-api-reference-idempotency]]
+- Customer provisioning: [[source-metronome-api-reference-customers-create-a-customer]]
+- Legacy amendment endpoint: [[source-metronome-api-reference-contracts-amend-a-contract]]
 
 ## Raw Sources
 

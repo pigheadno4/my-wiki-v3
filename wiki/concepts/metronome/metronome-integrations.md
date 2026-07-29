@@ -39,6 +39,12 @@ Metronome can schedule contract invoice delivery among Stripe, NetSuite, and AWS
 
 Metronome owns the provider schedule and invoice routing. The guide does not document how destination accounts are provisioned, reconciled, or checked for readiness before a scheduled segment becomes active.
 
+## Customer-provisioning configuration
+
+Customer creation can attach configurations for Stripe, NetSuite, AWS Marketplace, Azure Marketplace, or GCP Marketplace. Each billing configuration requires a provider; delivery can be identified by a delivery-method UUID or a named method such as direct provider delivery, AWS SQS, Tackle, or AWS SNS. Provider-specific configuration is open-ended, and its empty-object default is invalid for most provider/delivery combinations.
+
+The optional tax-provider field lists Anrok, Avalara, and Stripe. The source limits Stripe tax calculation in this customer-creation structure to Stripe configurations using payment-intent collection methods. A separately feature-flagged revenue-system configuration currently enumerates NetSuite and expects a provider-specific customer identifier.
+
 ## Sources
 
 - [[source-metronome-guides-get-started-stripe-marketplace-app]] — embedded Stripe Dashboard app, customer management, contract creation, and invoicing boundary
@@ -46,6 +52,7 @@ Metronome owns the provider schedule and invoice routing. The guide does not doc
 - [[source-metronome-integrations-tax-integrations-stripe-tax]] — tax responsibility, customer/product mapping, finalization, and threshold configuration
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-prepaid-balance-thresholds]] — Stripe and external threshold payment-gate responsibilities
 - [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] — Stripe, NetSuite, and marketplace transition timing and responsibility
+- [[source-metronome-api-reference-customers-create-a-customer]] — provider, delivery, tax, and revenue-system configuration during provisioning
 
 ## Related
 

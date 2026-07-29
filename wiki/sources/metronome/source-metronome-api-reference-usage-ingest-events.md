@@ -56,7 +56,7 @@ This page also does not define future-timestamp handling or the precise cutoff s
 
 - Company: [[metronome]]
 - Concepts: [[metronome-event-ingestion]], [[metronome-billable-metrics]], [[metronome-usage-based-billing]]
-- Related sources: [[source-metronome-guides-events-high-volume-ingestion]], [[source-metronome-guides-events-design-usage-events]], [[source-metronome-guides-get-started-developer-sdks]]
+- Related sources: [[source-metronome-api-reference-idempotency]], [[source-metronome-guides-events-high-volume-ingestion]], [[source-metronome-guides-events-design-usage-events]], [[source-metronome-guides-get-started-developer-sdks]]
 
 ## Raw Sources
 

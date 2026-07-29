@@ -13,6 +13,14 @@ Metronome customers are the billing entities to which usage is attributed. Contr
 
 An ingest alias associates an application-defined identifier with a Metronome customer. The SDK guide recommends this pattern when usage starts before the customer exists in Metronome: send the application's customer-table ID in events, then register it as an alias when provisioning the customer.
 
+An ingest alias is also a persistent idempotency boundary: it cannot be moved to another customer until it is removed from the original customer, even when the original customer is archived.
+
+## Customer creation API
+
+`POST /v1/customers` creates a customer for product-led or sales-led provisioning. `name` is the only required payload property; values longer than 160 characters are truncated. A customer may receive up to 2,000 ingest aliases of 1–128 characters each, while the older `external_id` field is deprecated.
+
+Billing-provider and revenue-system configurations can be attached during creation or added later. A contract must select the intended customer configuration because one customer can have multiple invoice destinations. The narrative calls the returned identifier `customer_id`, while the response schema exposes it as `data.id`.
+
 ## Contract and invoice behavior
 
 - A basic contract can apply predefined list prices from a rate card.
@@ -46,6 +54,12 @@ With payment gating enabled, a failed payment changes `is_enabled` to `false`; M
 
 The targeted `POST /v2/contracts/commits/edit` operation is narrower than a general contract edit: it identifies one existing customer- or contract-level commit and changes that commit's fields, schedules, applicability, invoicing contract, rate type, priority, or hierarchy access.
 
+## Legacy contract amendments
+
+`POST /v1/contracts/amend` is a legacy mutation endpoint. Metronome directs new clients to `editContract` and says amendment access is removed once Contract editing is enabled.
+
+The legacy request requires customer ID, contract ID, and an inclusive `starting_at`, and can add commits, credits, overrides, scheduled charges, and client-configured commercial fields. Its schema does not define whether omitted fields preserve state, whether arrays append or replace, how backdating interacts with invoice state, whether nested changes are atomic, or what the response `data.id` identifies.
+
 ## Edits and transitions
 
 The enterprise guide distinguishes two lifecycle operations. An edit adds terms without starting a new contract. A transition starts a new contract, preserves its relationship to the original, and can apply renewal logic such as rolling over unused commitments or credits.
@@ -78,6 +92,9 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-prepaid-balance-thresholds]] — contract threshold configuration, immediate evaluation, and failed-payment disablement
 - [[source-metronome-api-reference-credits-and-commits-edit-a-commit]] — targeted commit edit boundary
 - [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] — contract provider schedules, transition matrix, and segment limit
+- [[source-metronome-api-reference-idempotency]] — ingest-alias reuse, supported uniqueness keys, and HTTP 409 conflict behavior
+- [[source-metronome-api-reference-customers-create-a-customer]] — provisioning flow, alias limits, optional downstream configuration, and response boundary
+- [[source-metronome-api-reference-contracts-amend-a-contract]] — legacy amendment lifecycle, mutation surface, and undocumented state semantics
 
 ## Related
 
@@ -86,3 +103,4 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - [[metronome-invoicing]]
 - [[metronome-integrations]]
 - [[metronome-credits-and-commits]]
+- [[metronome-api-idempotency]]

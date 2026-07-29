@@ -96,7 +96,7 @@ A `200` response requires `data`, which contains a UUID `id`; the generic `Id` s
 
 - Company: [[metronome]]
 - Concepts: [[metronome-credits-and-commits]], [[metronome-customers-and-contracts]], [[metronome-invoicing]], [[metronome-products-and-rate-cards]]
-- Related sources: [[source-metronome-api-reference-credits-and-commits-create-a-commit]], [[source-metronome-api-reference-contracts-get-contract-edit-history]], [[source-metronome-guides-pricing-packaging-billing-model-guides-enterprise-commit]]
+- Related sources: [[source-metronome-api-reference-contracts-amend-a-contract]], [[source-metronome-api-reference-credits-and-commits-create-a-commit]], [[source-metronome-api-reference-contracts-get-contract-edit-history]], [[source-metronome-guides-pricing-packaging-billing-model-guides-enterprise-commit]]
 
 ## Raw Sources
 

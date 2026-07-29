@@ -60,6 +60,7 @@ For `charge_automatically`, Metronome sends the finalized invoice immediately, b
 - Concepts: [[metronome-invoicing]], [[metronome-integrations]], [[metronome-customers-and-contracts]], [[metronome-credits-and-commits]], [[metronome-webhooks]]
 - Stripe Tax setup: [[source-metronome-integrations-tax-integrations-stripe-tax]]
 - Scheduled provider changes: [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]]
+- Customer provisioning: [[source-metronome-api-reference-customers-create-a-customer]]
 
 ## Raw Sources
 

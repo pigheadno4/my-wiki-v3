@@ -1,6 +1,6 @@
 # Metronome Campaign 05 Selection Review
 
-Status: `proposed`
+Status: `complete`
 
 Manifest: [manifest.json](manifest.json)
 
@@ -43,4 +43,19 @@ Total selected raw lines: 1,790.
 
 Content quality still requires full Sol review. The handoff correction is considered useful if this campaign completes with fewer than Campaign 04's five mechanical validator failures, especially zero canonical-URL, extra-key, or missing-quote-location failures.
 
-Campaign initialization and worker launch require approval of this exact proposal.
+The user approved this exact proposal on 2026-07-30 before campaign initialization and worker launch.
+
+## Execution result
+
+- Routing: the two `standard` jobs ran on native GPT-5.6 Terra; the three `strong` jobs ran on native GPT-5.6 Sol.
+- Scheduling: at most three workers ran concurrently, and freed slots were refilled immediately without a batch barrier.
+- Worker boundary: every worker read exactly one complete raw page and wrote only an isolated fixed-schema result under `/private/tmp`.
+- Review: the Sol coordinator reread all five raw pages in full, performed concept-first promotion, reconciled forward and reverse links, checked contradictions, and validated every promoted source.
+- Final result: 5 approved jobs, 0 failed attempts, 0 retries, and 0 rejected jobs. Every job completed on attempt 1.
+- Coverage after promotion: 30 Metronome source summaries ingested and 195 documentation pages pending.
+
+## Preflight conclusion
+
+Campaign 04 recorded five mechanical validator failures; Campaign 05 recorded zero across short, medium, schema-heavy, and 1,133-line inputs. The self-contained canonical URL, exact top-level-key, and quote-field handoff is therefore retained.
+
+This does not reduce the Sol content-review gate. Full rereads still added or repaired a platform idempotency concept, two reciprocal documentation tensions, request-body and response-ID boundaries, customer-configuration caveats, credit-selector ambiguity, and legacy amendment atomicity/error-cache unknowns.

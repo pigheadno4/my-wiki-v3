@@ -15,6 +15,7 @@ Metronome event ingestion accepts application usage payloads through the `/inges
 - `transaction_id` is the event's required, nonempty idempotency key, with a maximum length of 128 characters; Metronome documents a 34-day duplicate-detection window.
 - `timestamp` is required and RFC 3339 formatted. The API reference permits historical events up to 34 days in the past.
 - `customer_id` is required and may be a Metronome customer ID or an application-defined ingest alias.
+- Customer creation accepts up to 2,000 ingest aliases of 1–128 characters each; the older `external_id` alias field is deprecated.
 - `event_type` is a required nonempty string, and optional `properties` can contain arbitrary metering and grouping data.
 - The dashboard quickstart describes `transaction_id`, `customer_id`, `event_type`, and `timestamp` as required and permits up to 2,000 event properties.
 
@@ -26,7 +27,7 @@ Keeping available context in `properties` preserves future options. In the docum
 
 ## Processing boundary
 
-An accepted event is not automatically billable. It must match a billable metric and a customer before it contributes to billing. The SDK guide also warns that a newly created billable metric matches only events sent after the metric was created.
+An accepted event is not automatically billable. It must match a billable metric and a customer before it contributes to billing. New streaming metrics match later events by default; the create-metrics guide says Metronome retains raw events and can perform a representative-assisted reflow for earlier events, without documenting service guarantees.
 
 The ingest reference documents only a `200 Success` response without a body schema. It does not define partial-batch acceptance, validation errors, duplicate indicators, ordering, retry semantics, future timestamps, payload-collision behavior, or whether the 34-day cutoff is inclusive.
 
@@ -52,9 +53,13 @@ Dashboard test-event entry is a separate Sandbox-only path. Its transaction ID m
 - [[source-metronome-api-reference-invoices-preview-events]] — event-to-invoice preview modes, deduplication behavior, and limitations
 - [[source-metronome-guides-get-started-metronome-dashboard-quickstart]] — required fields, property limit, and Sandbox test-event boundary
 - [[source-metronome-api-reference-usage-ingest-events]] — endpoint authentication, exact event schema, idempotency window, response gaps, and advertised capacity
+- [[source-metronome-api-reference-idempotency]] — transaction-ID duplicate suppression, retention, and retry guidance
+- [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]] — post-ingest matching test and assisted-reflow exception
+- [[source-metronome-api-reference-customers-create-a-customer]] — ingest-alias provisioning, limits, and deprecation boundary
 
 ## Related
 
 - [[metronome-billable-metrics]]
 - [[metronome-customers-and-contracts]]
 - [[metronome-usage-based-billing]]
+- [[metronome-api-idempotency]]

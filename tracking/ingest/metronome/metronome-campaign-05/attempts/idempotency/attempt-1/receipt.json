@@ -1,0 +1,46 @@
+{
+  "job_id": "idempotency",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Idempotency\"\ntype: source\ndate_ingested: 2026-07-30\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/idempotency\"\nraw_files:\n  - \"metronome/api-reference/idempotency-2026-07-13.md\"\ntags: [metronome, api, idempotency, retries, event-ingestion]\n---\n\n## Overview\nThis API reference defines Metronome's idempotency mechanisms for safely retrying writes without creating duplicate data. The documented mechanism depends on the data being written: usage events use `transaction_id`, customer writes use ingest aliases, select resource-creation endpoints accept `uniqueness_key`, and POST requests can use `Idempotency-Key`.\n\n## Key takeaways\n- Accepted usage events with the same `transaction_id` are ignored for 34 days, allowing a sender to retry an event without duplication.\n- An ingest alias cannot be moved between customers until it has been removed from the original customer, including when that customer is archived.\n- A `uniqueness_key` is stored with the resource; attempting to reuse it returns HTTP `409 Conflict`. The documented examples are contracts, alerts, customer-level commits and credits, and future contract edits.\n- `Idempotency-Key` is supported on all POST endpoints. A retry with the same key and identical parameters returns the original result, whereas changed parameters return HTTP `409 Conflict`.\n- POST idempotency keys are retained for at least 24 hours, and a cached result can be an HTTP 500 error. An error therefore needs investigation before retrying with a different key.\n\n## Mechanism selection and retry behavior\nThe source distinguishes resource identity from request-result caching. For event ingestion, `transaction_id` is the idempotency key. For customer provisioning, an ingest alias naturally prevents duplicate entities and conflicting records. For a select set of created resources, use the request-body `uniqueness_key` when the endpoint supports it.\n\nFor POST endpoints without a dedicated uniqueness key, send `Idempotency-Key`. Metronome persists the result only after the request begins execution, meaning it has passed validation and does not conflict with another concurrent request. The same key must be reused with identical parameters to receive the original result.\n\n## Error and lifetime boundary\nMetronome caches an error returned by an `Idempotency-Key` request and returns that error on subsequent retries using the same key. The source recommends investigating the system state and deciding whether to retry or resolve manually, rather than automatically changing a key after a partial failure.\n\nThe documented retry windows differ by mechanism: usage events can be retried within 34 days, while REST API writes using the header have at least a 24-hour retention period. The page recommends deterministic resource keys derived from business data and operation type, UUIDs where deterministic keys are unnecessary, exponential backoff, and reuse of the same retry key.\n\n## Related\n- Companies: [[metronome]]\n- Concepts: [[metronome-api-idempotency]], [[metronome-event-ingestion]], [[metronome-customers-and-contracts]]\n- Related sources: [[source-metronome-api-reference-usage-ingest-events]], [[source-metronome-api-reference-contracts-create-a-contract]]\n\n## Raw Sources\n- [[raw/metronome/api-reference/idempotency-2026-07-13|2026-07-13 snapshot \u2014 API-wide idempotency mechanisms and retry behavior]]\n",
+  "quotes": [
+    {
+      "text": "Metronome uses different idempotency mechanisms depending on the type of data:",
+      "location": "line 17, How Metronome supports idempotency"
+    },
+    {
+      "text": "Once a usage event has been accepted with a given transaction ID, Metronome ignores subsequent events with the same transaction ID within the next 34 days. This allows you to safely retry sending events without risk of duplication.",
+      "location": "line 30, Event ingestion"
+    },
+    {
+      "text": "Due to the idempotent nature of ingest aliases, you can move an ingest alias between customers only if you first remove it from the original customer. This rule applies to both archived and active customers.",
+      "location": "line 41, Moving ingest aliases warning"
+    },
+    {
+      "text": "Metronome supports idempotency for commonly created resources in Metronome by accepting a `uniqueness_key` field in the request payload. This uniqueness key is stored as part of the resource in Metronome, and Metronome ensures that no resources can share the same uniqueness key. If you attempt to create a resource with a uniqueness key already in use, you receive an HTTP `409 Conflict` error with message *\u201cThis uniqueness key has already been used.\u201d*",
+      "location": "line 53, Uniqueness keys"
+    },
+    {
+      "text": "When a request with `Idempotency-Key` header returns an error, Metronome caches the error and returns it for subsequent retries with the same idempotency key. **This behavior follows industry best practices**\u2014when an operation fails midway, retries without manual review can make the situation worse. In these situations, Metronome caches and returns the error to ensure you see the failure consistently, investigate the state of the system, and decide whether to retry or resolve manually.",
+      "location": "line 76, Understand idempotency with errors"
+    }
+  ],
+  "suggestions": {
+    "company": [
+      "Coordinator audit: update wiki/companies/metronome.md with the API-wide idempotency mechanism boundary (transaction ID, ingest alias, uniqueness_key, and Idempotency-Key), the distinct 34-day and at-least-24-hour retry windows, and cached-error behavior; recompute source_count rather than hard-coding it."
+    ],
+    "concepts": [
+      "Coordinator audit: create [[metronome-api-idempotency]] as the platform-specific authority for API-wide mechanism selection, request-result caching, retry windows, and cached-error investigation; link rather than duplicate the event-specific and customer-alias material in existing concepts.",
+      "Coordinator audit: update [[metronome-event-ingestion]] with this source as corroboration for transaction-ID duplicate suppression and the 34-day window; retain its existing endpoint-schema and processing-boundary ownership.",
+      "Coordinator audit: update [[metronome-customers-and-contracts]] with the ingest-alias move-before-reuse rule and the select-resource uniqueness_key boundary, including HTTP 409 reuse behavior; do not imply that uniqueness_key is supported by every resource endpoint."
+    ],
+    "index": [
+      "Coordinator audit: if promoted, add [[source-metronome-api-reference-idempotency]] to wiki/metronome-index.md under Sources and [[metronome-api-idempotency]] under Concepts; no root-index entry or cross-provider comparison is warranted for this provider-specific reference."
+    ],
+    "log": [
+      "Coordinator audit: if promoted, append a 2026-07-30 entry to wiki/metronome-log.md for the complete 86-line idempotency reference, recording the four mechanisms, retry-window distinction, and cached-error/manual-investigation boundary."
+    ]
+  },
+  "raw_path": "raw/metronome/api-reference/idempotency-2026-07-13.md",
+  "raw_sha256": "af376a347a44e1ff1a329b86c9e5b1d06bd14144f529c56745350fcb375d5def",
+  "status": "candidate_ready"
+}

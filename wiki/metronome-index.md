@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 25 |
-| Documentation pages pending ingest | 200 |
+| Source summaries ingested | 30 |
+| Documentation pages pending ingest | 195 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -45,6 +45,11 @@ Operational evidence:
 - [[source-metronome-api-reference-invoices-preview-events]] — request modes, event constraints, deduplication, and draft-invoice response
 - [[source-metronome-api-reference-contracts-get-contract-edit-history]] — audit scope, edit-operation groups, and response constraints
 - [[source-metronome-api-reference-pagination]] — cursor parameters, completion signal, limit guidance, and undocumented ordering
+- [[source-metronome-api-reference-status-codes]] — HTTP response categories, JSON error envelope, rate-limit scopes, and retry boundaries
+- [[source-metronome-api-reference-idempotency]] — event, customer, resource, and POST idempotency mechanisms and lifetimes
+- [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]] — metric roles, aggregations, group-key constraints, reflow, and testing
+- [[source-metronome-api-reference-customers-create-a-customer]] — provisioning, aliases, downstream configuration, and response boundaries
+- [[source-metronome-api-reference-contracts-amend-a-contract]] — legacy amendment lifecycle, nested schedules, overrides, and schema gaps
 - [[source-metronome-guides-platform-configuration-setup-webhooks]] — event families, retry and duplicate handling, signature verification, and Slack delivery
 - [[source-metronome-guides-platform-configuration-security-principles]] — least privilege, zero-trust communication, and short-lived credentials
 - [[source-metronome-api-reference-authentication]] — bearer-token creation, SDK configuration, permission scopes, and archival
@@ -62,6 +67,7 @@ Operational evidence:
 - [[metronome-reporting-and-analytics]] — exported table families, row grains, and nullability/version cautions
 - [[metronome-webhooks]] — notification delivery, deduplication, API verification, and HMAC authenticity
 - [[metronome-security-principles]] — explicit access grants, authenticated communication, and credential lifetime
+- [[metronome-api-idempotency]] — key selection, conflict behavior, retention windows, and cached-error handling
 
 ## Planned concept taxonomy
 

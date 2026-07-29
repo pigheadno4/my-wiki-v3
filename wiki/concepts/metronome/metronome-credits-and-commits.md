@@ -66,6 +66,12 @@ Active threshold billing must be removed before a contract can transition to an 
 - Hierarchy child access can allow all children, no children, or a non-empty contract-ID list.
 - The schema does not define general omitted-versus-null mutation semantics, the meaning of its success `data.id`, or the interaction between top-level `product_id` and the applicability selectors.
 
+## Legacy amendment payloads
+
+The retiring contract-amendment endpoint can add prepaid or postpaid commits and credits as part of one amendment. Its commit schema requires type and product, while prose calls `access_schedule` required without listing it in the OpenAPI `required` array. Postpaid schedules are limited to one matching access and invoice item; omitting a prepaid invoice schedule creates a complimentary commit.
+
+Commit and credit rollover fractions are constrained to 0–1, and lower numeric priorities apply first. Direct product IDs or tags cannot be combined with specifiers. The credit applicability description says absence of IDs and tags means all products even though the same object also accepts specifiers; the page does not reconcile that wording.
+
 ## Documentation cautions
 
 The guides contain example-level inconsistencies that should be checked against the current API schema before implementation:
@@ -87,6 +93,7 @@ The guides contain example-level inconsistencies that should be checked against 
 - [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] — threshold removal prerequisite for marketplace transitions
 - [[source-metronome-api-reference-credits-and-commits-edit-a-commit]] — targeted commit fields, schedule operations, applicability, and hierarchy access
 - [[source-metronome-integrations-tax-integrations-stripe-tax]] — explicit tax configuration for threshold and payment-gated flows
+- [[source-metronome-api-reference-contracts-amend-a-contract]] — legacy amendment commit/credit schedules, targeting, priority, and validation gaps
 
 ## Related
 

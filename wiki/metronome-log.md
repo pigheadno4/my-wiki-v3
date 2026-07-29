@@ -6,6 +6,66 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-07-30 — Metronome Campaign 05 completed
+
+- Result: all five jobs were approved on attempt 1; no worker result failed deterministic validation, no retry was needed, and no job was rejected.
+- Routing: two standard jobs used native GPT-5.6 Terra and three strong jobs used native GPT-5.6 Sol; at most three native workers ran concurrently while Sol performed serial full-raw review.
+- Preflight evaluation: canonical URL, exact top-level-key, and quote-field failures fell from five in Campaign 04 to zero in Campaign 05 across 1,790 raw lines, including one 1,133-line endpoint.
+- Content-review boundary: Sol still added material concept, contradiction, request/response, selector, lifecycle, and unknown-semantics coverage, so deterministic compliance does not replace full review.
+- Output: five source summaries, one new platform concept, grounded updates to existing concepts and company state, and reciprocal source links.
+- Coverage after campaign: 30 source summaries ingested and 195 documentation pages pending.
+- Evidence: [campaign selection and result](../tracking/ingest/metronome/metronome-campaign-05/selection-review.md), [campaign monitor](../tracking/ingest/metronome/metronome-campaign-05/monitor.md), and [event journal](../tracking/ingest/metronome/metronome-campaign-05/events.jsonl).
+
+## 2026-07-30 — Canonical ingest: Amend a Contract API
+
+- Ingested: [[source-metronome-api-reference-contracts-amend-a-contract]] from the complete 1,133-line legacy API reference.
+- Concept audit: updated [[metronome-customers-and-contracts]], [[metronome-credits-and-commits]], and [[metronome-products-and-rate-cards]] before canonical source creation; no endpoint-specific concept or comparison page was warranted.
+- Sol review retained the `editContract` migration/removal boundary, inclusive amendment timing, nested schedule and override validation, configuration gates, prose-versus-required-list gaps, credit applicability ambiguity, and undocumented mutation, invoice, atomicity, and response-ID semantics.
+- Cross-source review linked the API-wide idempotency guarantee while preserving the absence of defined cached-error behavior for a partially applied multi-object amendment.
+- Link reconciliation added reciprocal references from create-contract, edit-history, targeted commit-edit, and idempotency sources.
+- Campaign 05: the 1,133-line strong-tier Sol candidate passed the new canonical-URL, fixed-key, and quote-field preflight plus deterministic validation on attempt 1 before serial full-raw Sol review.
+- Coverage after finalization: 30 source summaries ingested and 195 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-05/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-05/attempts/amend-a-contract/attempt-1/receipt.json).
+
+## 2026-07-30 — Canonical ingest: Create a Customer API
+
+- Ingested: [[source-metronome-api-reference-customers-create-a-customer]] from the complete 393-line API reference.
+- Concept audit: updated [[metronome-customers-and-contracts]], [[metronome-event-ingestion]], and [[metronome-integrations]] before canonical source creation; no endpoint-specific concept or comparison page was warranted.
+- Sol review retained the required name and truncation behavior, 2,000 alias limit and deprecation, provider/delivery/tax/revenue boundaries, optional request-body ambiguity, and `customer_id` versus `data.id` response mismatch.
+- Link reconciliation added reciprocal references from the idempotency, create-contract, and Stripe-integration sources.
+- Campaign 05: the strong-tier Sol candidate passed the new canonical-URL, fixed-key, and quote-field preflight plus deterministic validation on attempt 1 before serial full-raw Sol review.
+- Coverage after finalization: 29 source summaries ingested and 196 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-05/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-05/attempts/create-a-customer/attempt-1/receipt.json).
+
+## 2026-07-30 — Canonical ingest: create billable metrics
+
+- Ingested: [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]] from the complete 130-line guide.
+- Concept audit: updated [[metronome-billable-metrics]], [[metronome-event-ingestion]], and [[metronome-products-and-rate-cards]] before canonical source creation; no new concept or comparison page was warranted.
+- Sol review retained all four streaming aggregations, SQL distinct-count guidance, compound group-key and filter prerequisites, the near-one-thousand-value latency caution, the ingest/search test, and missing reflow guarantees.
+- Contradiction review reconciled the event-design guide's categorical non-retroactivity wording with this guide's representative-assisted reflow exception and added reciprocal source links.
+- Campaign 05: the strong-tier Sol candidate passed the new canonical-URL, fixed-key, and quote-field preflight plus deterministic validation on attempt 1 before serial full-raw Sol review.
+- Coverage after finalization: 28 source summaries ingested and 197 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-05/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-05/attempts/create-billable-metrics/attempt-1/receipt.json).
+
+## 2026-07-30 — Canonical ingest: API idempotency
+
+- Ingested: [[source-metronome-api-reference-idempotency]] from the complete 86-line API convention page.
+- Concept audit: created [[metronome-api-idempotency]] and updated [[metronome-event-ingestion]] and [[metronome-customers-and-contracts]] before canonical source creation; no comparison page was warranted.
+- Sol review retained the four mechanism scopes, ingest-alias move-before-reuse rule, 34-day event and at-least-24-hour request-cache windows, HTTP 409 conflicts, cached HTTP 500 behavior, and the cross-page retry-guidance tension.
+- Link reconciliation added reciprocal references from the status-code, ingest-events, and create-contract sources.
+- Campaign 05: the standard-tier Terra candidate passed the new canonical-URL, fixed-key, and quote-field preflight plus deterministic validation on attempt 1 before serial full-raw Sol review.
+- Coverage after finalization: 27 source summaries ingested and 198 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-05/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-05/attempts/idempotency/attempt-1/receipt.json).
+
+## 2026-07-30 — Canonical ingest: API status codes
+
+- Ingested: [[source-metronome-api-reference-status-codes]] from the complete 48-line API convention page.
+- Concept audit: no existing concept needed material changes and no standalone concept or comparison page was warranted for this thin API-wide convention.
+- Sol review retained the `4XX` JSON `message` envelope, `409` idempotency warning, `429` client-versus-customer rate-limit scope, `5XX` partial-creation warning, and the undocumented numeric-limit, reset-header, and backoff boundaries.
+- Campaign 05: the standard-tier Terra candidate passed the new canonical-URL, fixed-key, and quote-field preflight plus deterministic validation on attempt 1 before serial full-raw Sol review.
+- Coverage after finalization: 26 source summaries ingested and 199 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-05/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-05/attempts/status-codes/attempt-1/receipt.json).
+
 ## 2026-07-29 — Metronome Campaign 04 completed
 
 - Result: all five jobs were approved; 5 failed attempts were retained, retried within the three-attempt limit, and no job was rejected.

@@ -15,6 +15,7 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 - A usage product can reference a billable metric.
 - `presentation_group_key` can group invoice line items by an event-property value.
 - Pricing and presentation group keys on a product must be a subset of the underlying metric's group keys; both can be used together.
+- When both presentation and pricing dimensions are required, the metric must define one compound group key containing every property used by either product key.
 - `quantity_conversion` can multiply or divide displayed quantities, such as converting individual tokens to millions of tokens.
 - A rounding conversion can change display granularity, such as rounding seconds to minutes.
 
@@ -36,6 +37,7 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 - Product custom fields can retain ERP SKU identifiers for reconciliation and revenue-recognition mapping.
 - A commit edit can target usage through direct product IDs or tags, or through pricing and presentation-group specifiers, but the direct selectors and `specifiers` cannot be combined.
 - A commit's `rate_type` can switch current and future invoices between list-rate and commit-rate behavior; finalized invoices must be voided and regenerated to reflect the change.
+- Legacy contract amendments can add overwrite, multiplier, or tiered rate overrides. Overwrites take precedence; explicit tiered and multiplier priority uses the lowest number first. Product IDs or tags cannot be combined with override specifiers, and a configured percentage minimum prevents commit-specific overrides from applying.
 - Stripe Tax mapping stores a Stripe product ID in `stripe_product_id`; Metronome products can share one Stripe product only when they share a tax code, so the field must not enforce uniqueness.
 
 > [!warning] Documentation ambiguity
@@ -50,6 +52,8 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-prepaid-balance-thresholds]] — custom-unit threshold evaluation and rate-card conversion
 - [[source-metronome-api-reference-credits-and-commits-edit-a-commit]] — selector exclusivity and commit rate-type updates
 - [[source-metronome-integrations-tax-integrations-stripe-tax]] — Stripe product and tax-code mapping
+- [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]] — compound group-key design and metric-to-product pricing flow
+- [[source-metronome-api-reference-contracts-amend-a-contract]] — legacy override types, selector exclusivity, priority, and minimum behavior
 
 ## Related
 

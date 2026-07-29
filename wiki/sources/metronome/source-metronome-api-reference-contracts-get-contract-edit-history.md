@@ -40,6 +40,7 @@ This endpoint's reference does not define pagination, so a consumer should not a
 - Concepts: [[metronome-customers-and-contracts]]
 - Targeted commit mutation: [[source-metronome-api-reference-credits-and-commits-edit-a-commit]]
 - Scheduled provider changes: [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]]
+- Legacy amendment mutation: [[source-metronome-api-reference-contracts-amend-a-contract]]
 
 ## Raw Sources
 

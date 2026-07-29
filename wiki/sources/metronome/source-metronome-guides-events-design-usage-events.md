@@ -20,6 +20,9 @@ This guide explains how to design usage events for Metronome with a CDN billing 
 - Include available contextual fields such as domain and data center when possible so future usage reporting and region-specific metrics can use them.
 - New billable metrics apply only to future collection and aggregation; they cannot be applied retroactively to historical data.
 
+> [!warning] Contradiction
+> The later create-metrics guide documents a representative-assisted reflow that can apply retained earlier events to a newly created streaming metric. This page's categorical non-retroactivity statement therefore describes the default processing path, not every assisted recovery option.
+
 ## Details
 
 ### Work backward from requirements
@@ -38,6 +41,7 @@ The guide recommends sending available event data, because the stream pipeline d
 
 - Company: [[metronome]]
 - Concepts: [[metronome-event-ingestion]], [[metronome-billable-metrics]], [[metronome-usage-based-billing]]
+- Related source: [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]]
 
 ## Raw Sources
 
