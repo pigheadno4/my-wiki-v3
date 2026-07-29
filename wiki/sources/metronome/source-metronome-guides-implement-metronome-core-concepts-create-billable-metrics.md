@@ -17,7 +17,7 @@ This guide explains how to design, configure, and test Metronome billable metric
 
 - A billable metric filters and aggregates the event stream into the quantity used for an invoice line item. Products supply invoice presentation, rate cards attach list prices, and contracts can override rates and generate customer invoices.
 - Design each metric around one usage component that may be priced independently. The guide recommends considering customer value, invoice expectations, available event properties, event scale, and required calculation latency.
-- Streaming billable metrics support `COUNT`, `SUM`, `MAX`, and `LATEST`; `LATEST` returns the most recent property value in the billing period. Use a SQL billable metric for more complex calculations, including distinct counts.
+- Streaming billable metrics support `COUNT`, `SUM`, `MAX`, and `LATEST` across the UI, API, Plans, and Contracts; `LATEST` returns the most recent property value in the billing period. Use a SQL billable metric for more complex calculations, including distinct counts.
 - A streaming metric must exist before incoming usage is associated with it by default. Metronome retains raw events and can perform a representative-assisted reflow when earlier events need to apply to a new streaming metric.
 - Group keys must be defined at the metric layer before downstream use. They support invoice presentation and dimension-specific pricing, but streaming-metric group keys cannot be edited after creation.
 - After creating a metric, send test events through the ingest endpoint and look them up by `transaction_id` with `searchEvents` to verify billable-metric and customer matching.
@@ -30,7 +30,7 @@ The guide recommends defining the usage components first. Examples include API-c
 
 ## Streaming and SQL metrics
 
-Streaming billable metrics are intended for high-throughput, low-latency workflows that can use simple filters and the `COUNT`, `SUM`, `MAX`, or `LATEST` aggregations. `LATEST` bills on the most recent value observed for a property during the billing period, such as the latest seat count or storage reading. Streaming metrics also support real-time alerting across high-volume customer populations.
+Streaming billable metrics are intended for high-throughput, low-latency workflows that can use simple filters and the `COUNT`, `SUM`, `MAX`, or `LATEST` aggregations. All four aggregations are available in the UI, API, Plans, and Contracts. `LATEST` bills on the most recent value observed for a property during the billing period, such as the latest seat count or storage reading. Streaming metrics also support real-time alerting across high-volume customer populations.
 
 SQL billable metrics support calculations that basic streaming filters cannot express. The guide specifically directs distinct counting, such as unique users, to a SQL metric using `count(distinct …)`. It says SQL metrics can provide comparable alerting performance for many workloads, while complex queries or large numbers of SQL metrics may require Metronome guidance to meet latency goals.
 

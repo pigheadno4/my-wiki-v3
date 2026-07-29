@@ -59,3 +59,9 @@ The user approved this exact proposal on 2026-07-30 before campaign initializati
 Campaign 04 recorded five mechanical validator failures; Campaign 05 recorded zero across short, medium, schema-heavy, and 1,133-line inputs. The self-contained canonical URL, exact top-level-key, and quote-field handoff is therefore retained.
 
 This does not reduce the Sol content-review gate. Full rereads still added or repaired a platform idempotency concept, two reciprocal documentation tensions, request-body and response-ID boundaries, customer-configuration caveats, credit-selector ambiguity, and legacy amendment atomicity/error-cache unknowns.
+
+## Query-quality audit
+
+An independent Sol reviewer tested each source with one core, one boundary, and one trap query, then compared the source-only answer with the complete raw page. The initial result was 10 pass, 4 partial, and 1 fail. Sol independently confirmed and repaired the five content omissions plus one concept backlink/open-question gap; the targeted re-audit finished at 15 pass, 0 partial, and 0 fail.
+
+Evidence: [quality-audit.md](quality-audit.md)

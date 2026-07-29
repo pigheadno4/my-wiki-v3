@@ -24,6 +24,8 @@ The documentation landing page routes readers toward billing architecture planni
 
 The credits-and-commits guide supplies one implementation path for hybrid subscription and usage models: recurring credits provide free periodic usage, recurring commits provide paid periodic usage, and each period receives a distinct balance ledger. Uncovered usage remains available for overage billing.
 
+The billable-metrics guide fills in the metering layer: usage events are filtered and aggregated into invoice-line quantities, products control invoice presentation, rate cards attach list prices, and contracts can override those rates. Streaming metrics provide `COUNT`, `SUM`, `MAX`, and `LATEST` across the UI, API, Plans, and Contracts, while SQL metrics support calculations such as distinct counts.
+
 ## Pre-processing validation
 
 The Preview Events API provides a concrete validation step between usage-event design and invoice generation. It can calculate draft invoices from proposed events using the customer's current contract, either replacing historical usage for the calculation or merging with it. The preview does not support contracts with SQL billable metrics.
@@ -34,15 +36,16 @@ This page describes the Metronome-specific implementation surface. For the cross
 
 ## Open questions
 
-- How usage events are represented, validated, and aggregated.
-- Which product, rate-card, customer, and contract objects participate in each pricing pattern.
+- Which event schemas and validation rules apply before billable-metric matching.
+- How customer and contract configuration varies across the four pricing patterns.
 - How invoice generation and revenue-recognition outputs differ across the four patterns.
 - Which capabilities are native to Metronome versus coordinated with Stripe products.
 
-These questions require dedicated sources and are not answered by the landing page.
+These remaining questions require dedicated sources and are not fully answered by the landing page or the currently ingested implementation guides.
 
 ## Sources
 
 - [[source-metronome-guides-get-started-home]] — documentation landing page and pricing-model routes
+- [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]] — event aggregation, product and rate-card roles, contract overrides, and metric testing
 - [[source-metronome-api-reference-invoices-preview-events]] — pre-processing draft-invoice calculation from proposed usage events
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-create-a-pre-paid-commit]] — recurring free or paid grants, balances, and overage boundary

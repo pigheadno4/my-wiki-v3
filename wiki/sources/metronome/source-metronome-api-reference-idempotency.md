@@ -17,7 +17,7 @@ This API reference defines Metronome's idempotency mechanisms for safely retryin
 
 - Accepted usage events with the same `transaction_id` are ignored for 34 days, allowing a sender to retry an event without duplication.
 - An ingest alias cannot be moved between customers until it has been removed from the original customer, including when that customer is archived.
-- A `uniqueness_key` is stored with the resource; attempting to reuse it returns HTTP `409 Conflict`. The documented examples are contracts, alerts, customer-level commits and credits, and future contract edits.
+- A `uniqueness_key` is stored with the resource; attempting to reuse it returns HTTP `409 Conflict`. The documented examples are contracts, alerts, customer-level commits and credits, and future contract edits. The retention table says the key lasts until released, but release is available only for Alerts; it documents no release path for the other resource types.
 - `Idempotency-Key` is supported on all POST endpoints. A retry with the same key and identical parameters returns the original result, whereas changed parameters return HTTP `409 Conflict`.
 - POST idempotency keys are retained for at least 24 hours, and a cached result can be an HTTP `500` error. An error therefore needs investigation before retrying with a different key.
 

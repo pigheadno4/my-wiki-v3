@@ -11,7 +11,7 @@ tags: [metronome, customers, contracts, event-ingestion, billing-integrations]
 
 ## Overview
 
-This API reference documents `POST /v1/customers`, which creates a Metronome customer and can attach billing-provider or revenue-system configuration during provisioning. It connects customer identity used for usage-event matching with the downstream systems that receive invoices or collect payment.
+This API reference documents the bearer-authenticated `POST /v1/customers`, which creates a Metronome customer and can attach billing-provider or revenue-system configuration during provisioning. It connects customer identity used for usage-event matching with the downstream systems that receive invoices or collect payment.
 
 ## Key takeaways
 
@@ -43,7 +43,7 @@ The revenue-system configuration is marked with a revenue-recognition feature fl
 
 ## Response and documented boundaries
 
-A successful request returns a `Customer` object under `data`, including the Metronome UUID in `data.id`, aliases, name, and the deprecated `external_id`. The narrative calls the created identifier `customer_id`, whereas the OpenAPI schema and example expose it as `data.id`; implementations should follow the actual response contract and verify this naming boundary.
+A successful request returns HTTP `200` with a `Customer` object under `data`, including the Metronome UUID in `data.id`, aliases, name, and the deprecated `external_id`. The narrative calls the created identifier `customer_id`, whereas the OpenAPI schema and example expose it as `data.id`; implementations should follow the actual response contract and verify this naming boundary.
 
 The reference also documents HTTP 409 when a customer with the requested ID already exists, but the request schema has no dedicated customer-ID field. It does not identify whether the conflict is keyed by an ingest alias or deprecated `external_id`, nor does it document retry behavior for this endpoint.
 

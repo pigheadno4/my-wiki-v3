@@ -6,6 +6,15 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-07-30 — Metronome Campaign 05 query-quality audit
+
+- Method: an independent Sol reviewer asked one core, one boundary, and one trap question per Campaign 05 source, answered from the source alone, and checked the answer against each complete raw page; Sol then independently adjudicated every finding.
+- Initial result: 10 pass, 4 partial, and 1 fail across 15 tests.
+- Bounded repairs: documented Alerts-only uniqueness-key release, streaming-aggregation availability surfaces, Create a Customer bearer authentication and HTTP `200`, commit invoice suppression, the required multiplier on every tiered-override tier, and the missing usage-based-billing concept backlink/update.
+- Final result: 15 pass, 0 partial, and 0 fail; all 41 audited wikilinks resolve, provider counts remain 225 raw / 30 ingested / 195 pending, and no scheduler, schema, or validator change was introduced.
+- Scale decision: retain the current three-worker ceiling and serial strong-model review for the next campaign; do not relax review because the long nested OpenAPI page produced the only material omission.
+- Evidence: [Campaign 05 quality audit](../tracking/ingest/metronome/metronome-campaign-05/quality-audit.md).
+
 ## 2026-07-30 — Metronome Campaign 05 completed
 
 - Result: all five jobs were approved on attempt 1; no worker result failed deterministic validation, no retry was needed, and no job was rejected.
