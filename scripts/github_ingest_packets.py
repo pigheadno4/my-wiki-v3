@@ -803,6 +803,10 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
     filename = lowered.rsplit("/", 1)[-1]
     if filename == "package.json":
         return "package-manifest"
+    if filename == "tsconfig.json" or (
+        filename.startswith("tsconfig.") and filename.endswith(".json")
+    ):
+        return "build-configuration"
     if filename.startswith(("changelog", "history", "releases")):
         return "release-history"
     if row.get("purpose") == "repository-context" or row.get(

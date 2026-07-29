@@ -871,7 +871,7 @@ def read_upstream_changes(
                 item = UpstreamChange("deleted", path, "")
             else:
                 item = UpstreamChange("modified", path, path)
-        elif re.fullmatch(r"R(?:100|[0-9]{1,2})", status):
+        elif re.fullmatch(r"R(?:100|0[0-9]{2})", status):
             if index + 1 >= len(values):
                 raise PilotStoreError("Git comparison rename row is malformed")
             old_path = _decode_git_field(values[index], "old path")

@@ -286,6 +286,38 @@ class GitHubIngestPacketTests(unittest.TestCase):
         self.assertEqual("renamed", statuses["src/new.ts"])
         self.assertNotIn("src/old.ts", statuses)
 
+    def test_typescript_config_is_classified_as_build_configuration(self):
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            "tsconfig.lib.json": '{"compilerOptions":{"target":"ES2020"}}\n',
+        }
+        current = {
+            "package.json": self.manifest_content("10.1.0"),
+            "tsconfig.lib.json": '{"compilerOptions":{"target":"ES2022"}}\n',
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            (
+                UpstreamChange("modified", "package.json", "package.json"),
+                UpstreamChange(
+                    "modified",
+                    "tsconfig.lib.json",
+                    "tsconfig.lib.json",
+                ),
+            ),
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        self.assertEqual(
+            "build-configuration",
+            classified["tsconfig.lib.json"],
+        )
+
     def test_baseline_is_full_and_reads_every_current_snapshot_file(self):
         files = {
             "package.json": self.manifest_content("8.0.0"),

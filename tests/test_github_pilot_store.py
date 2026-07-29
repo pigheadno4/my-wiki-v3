@@ -21,6 +21,7 @@ from github_pilot_store import (  # noqa: E402
     publish_release_record,
     publish_source_snapshot,
     publish_source_supplement,
+    read_upstream_changes,
     write_package_comparison,
 )
 from github_registry import RepoConfig  # noqa: E402
@@ -456,6 +457,35 @@ class GitHubPilotStoreTests(unittest.TestCase):
                 },
             ],
             metadata["upstream_changes"],
+        )
+
+    def test_comparison_accepts_zero_padded_rename_similarity(self):
+        output = (
+            b"R090\0"
+            b"packages/widget/src/old.ts\0"
+            b"packages/widget/src/new.ts\0"
+        )
+
+        with mock.patch(
+            "github_pilot_store._run_git_bytes",
+            return_value=output,
+        ):
+            changes = read_upstream_changes(
+                self.repo,
+                "a" * 40,
+                "b" * 40,
+                ("packages/widget",),
+            )
+
+        self.assertEqual(
+            (
+                UpstreamChange(
+                    "renamed",
+                    "packages/widget/src/old.ts",
+                    "packages/widget/src/new.ts",
+                ),
+            ),
+            changes,
         )
 
     def test_comparison_reuses_immutable_legacy_v1_evidence(self):
