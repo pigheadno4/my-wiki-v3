@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from github_capsule_policy import CapsuleConfig  # noqa: E402
 from github_capsule_selection import resolve_npm_capsule  # noqa: E402
+from github_canonical import canonical_json_bytes  # noqa: E402
 from github_git_tree import GitTree  # noqa: E402
 from github_pilot_store import (  # noqa: E402
     PilotStoreError,
@@ -455,6 +456,49 @@ class GitHubPilotStoreTests(unittest.TestCase):
                 },
             ],
             metadata["upstream_changes"],
+        )
+
+    def test_comparison_reuses_immutable_legacy_v1_evidence(self):
+        next_sha = commit_files(
+            self.repo,
+            {"src/index.ts": "export const value = 2;\n"},
+            "patch release",
+        )
+        first = write_package_comparison(
+            self.root,
+            self.config,
+            self.repo,
+            "@scope/widget",
+            "10.0.0",
+            self.sha,
+            ("src",),
+            "10.0.1",
+            next_sha,
+            ("src",),
+        )
+        legacy = json.loads(first.metadata_path.read_text(encoding="utf-8"))
+        legacy["format_version"] = 1
+        legacy.pop("upstream_changes")
+        first.metadata_path.write_bytes(canonical_json_bytes(legacy) + b"\n")
+        legacy_bytes = first.metadata_path.read_bytes()
+
+        reused = write_package_comparison(
+            self.root,
+            self.config,
+            self.repo,
+            "@scope/widget",
+            "10.0.0",
+            self.sha,
+            ("src",),
+            "10.0.1",
+            next_sha,
+            ("src",),
+        )
+
+        self.assertEqual(legacy_bytes, reused.metadata_path.read_bytes())
+        self.assertEqual(
+            (UpstreamChange("modified", "src/index.ts", "src/index.ts"),),
+            reused.upstream_changes,
         )
 
     def test_comparison_enforces_packet_path_and_byte_budgets(self):

@@ -537,7 +537,16 @@ def _existing_comparison(
     ):
         raise PilotStoreError("comparison destination is incomplete")
     manifest = _read_json(manifest_path)
-    if manifest != expected:
+    if manifest == expected:
+        upstream_changes = _upstream_changes_from_manifest(manifest)
+    elif _matches_legacy_comparison(
+        manifest,
+        expected,
+        patch_path,
+        markdown_path,
+    ):
+        upstream_changes = _upstream_changes_from_manifest(expected)
+    else:
         raise PilotStoreError("comparison destination conflicts with generated evidence")
     return ComparisonRecord(
         str(manifest["package"]),
@@ -546,10 +555,33 @@ def _existing_comparison(
         str(manifest["from_sha"]),
         str(manifest["to_sha"]),
         tuple(str(path) for path in manifest["changed_paths"]),
-        _upstream_changes_from_manifest(manifest),
+        upstream_changes,
         patch_path,
         manifest_path,
         markdown_path,
+    )
+
+
+def _matches_legacy_comparison(
+    manifest: dict,
+    expected: dict,
+    patch_path: Path,
+    markdown_path: Path,
+) -> bool:
+    legacy_fields = set(expected) - {"upstream_changes"}
+    if (
+        manifest.get("format_version") != 1
+        or set(manifest) != legacy_fields
+    ):
+        return False
+    comparable = set(legacy_fields) - {"format_version", "markdown_sha256"}
+    if any(manifest.get(field) != expected.get(field) for field in comparable):
+        return False
+    return (
+        hashlib.sha256(patch_path.read_bytes()).hexdigest()
+        == manifest.get("patch_sha256")
+        and hashlib.sha256(markdown_path.read_bytes()).hexdigest()
+        == manifest.get("markdown_sha256")
     )
 
 
