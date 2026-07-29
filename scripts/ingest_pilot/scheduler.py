@@ -3,6 +3,18 @@
 from typing import Dict, List, Optional
 
 
+WORKER_RESULT_KEYS = [
+    "job_id",
+    "attempt",
+    "source_page",
+    "quotes",
+    "suggestions",
+    "raw_path",
+    "raw_sha256",
+    "status",
+]
+
+
 def _queued_jobs(jobs: List[dict], max_attempts: int) -> List[dict]:
     return sorted(
         (
@@ -30,6 +42,16 @@ def worker_orders(
             "raw_path": job["raw_path"],
             "raw_sha256": job["raw_sha256"],
             "source_target": job["source_target"],
+            "canonical_url": job["canonical_url"],
+            "result_contract": {
+                "top_level_keys": WORKER_RESULT_KEYS,
+                "quote_required_keys": ["text", "location"],
+            },
+            "preflight": [
+                "Copy canonical_url exactly into source_page frontmatter.",
+                "Return exactly result_contract.top_level_keys and no other top-level keys.",
+                "Ensure every quote has non-empty text and location.",
+            ],
             **{
                 key: job[key]
                 for key in ("recommended_worker_tier", "routing_reason")

@@ -14,6 +14,7 @@ def make_jobs(count):
             "raw_path": f"raw/metronome/job-{number}.md",
             "raw_sha256": str(number) * 64,
             "source_target": f"wiki/sources/metronome/source-job-{number}.md",
+            "canonical_url": f"https://docs.metronome.com/job-{number}",
         }
         for number in range(1, count + 1)
     ]
@@ -119,6 +120,25 @@ class SchedulerTests(unittest.TestCase):
                 "raw_path": "raw/metronome/job-1.md",
                 "raw_sha256": "1" * 64,
                 "source_target": "wiki/sources/metronome/source-job-1.md",
+                "canonical_url": "https://docs.metronome.com/job-1",
+                "result_contract": {
+                    "top_level_keys": [
+                        "job_id",
+                        "attempt",
+                        "source_page",
+                        "quotes",
+                        "suggestions",
+                        "raw_path",
+                        "raw_sha256",
+                        "status",
+                    ],
+                    "quote_required_keys": ["text", "location"],
+                },
+                "preflight": [
+                    "Copy canonical_url exactly into source_page frontmatter.",
+                    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+                    "Ensure every quote has non-empty text and location.",
+                ],
                 "recommended_worker_tier": "strong",
                 "routing_reason": "schema-heavy API",
             },

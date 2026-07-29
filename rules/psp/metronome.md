@@ -47,3 +47,13 @@ After collection and before any ingest pilot, run the capsule validator. It repo
 ## Boundary
 
 Collection ends after raw files, run records, aggregate status, and manifest validation. It never starts ingest automatically.
+
+## Worker handoff
+
+For coordinator-controlled ingest, dispatch the generated worker order without retyping its trusted values. Before returning a candidate, the worker must use the order's preflight:
+
+- Copy `canonical_url` exactly into the source-page frontmatter; do not substitute the raw page's fetch URL.
+- Return exactly the top-level keys listed in `result_contract.top_level_keys`.
+- Give every grounding quote non-empty `text` and `location` values.
+
+These are submission checks, not new campaign state. The existing validator remains the fail-closed authority, and an invalid result follows the existing bounded retry path.

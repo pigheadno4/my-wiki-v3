@@ -4,6 +4,8 @@ Status: `complete`
 
 Manifest: [manifest.json](manifest.json)
 
+Retrospective: [retrospective.md](retrospective.md)
+
 This bounded follow-up to Campaign 03 was approved and executed on 2026-07-29. Selection used only `inventory-current.json`, raw paths, byte hashes, line counts, and existing source coverage; no raw body was read before approval. Every job later received one complete worker reread and one complete serial Sol reread before canonical approval.
 
 ## Proposed jobs
