@@ -12,6 +12,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
+from github_canonical import canonical_sha256  # noqa: E402
 from github_capsule_policy import CapsuleConfig  # noqa: E402
 from github_ingest_packets import (  # noqa: E402
     IngestPacket,
@@ -22,7 +23,7 @@ from github_ingest_packets import (  # noqa: E402
     publish_review_packet,
 )
 from github_pilot_store import UpstreamChange  # noqa: E402
-from github_registry import RepoConfig  # noqa: E402
+from github_registry import RepoConfig, load_registry  # noqa: E402
 from tests.github_test_support import write_canonical_json  # noqa: E402
 
 
@@ -1050,6 +1051,131 @@ class GitHubIngestPacketTests(unittest.TestCase):
             publish_queued_packet(self.root, self.config, packet)
 
         self.assertEqual([], list(outside.iterdir()))
+
+    def test_braintree_3_143_0_to_3_144_0_conformance(self):
+        fixture_root = (
+            ROOT
+            / "tests/fixtures/github/braintree-web-3.143.0--3.144.0"
+        )
+        fixture = json.loads(
+            (fixture_root / "fixture.json").read_text(encoding="utf-8")
+        )
+        comparison_fixture = json.loads(
+            (fixture_root / "comparison.json").read_text(encoding="utf-8")
+        )
+        snapshot_documents = {}
+        for label, summary_name, evidence_key in (
+            ("prior", "prior-manifest.json", "prior_snapshot"),
+            ("current", "current-manifest.json", "current_snapshot"),
+        ):
+            summary_path = fixture_root / summary_name
+            summary = json.loads(summary_path.read_text(encoding="utf-8"))
+            evidence_path = ROOT / fixture[evidence_key]
+            content = evidence_path.read_bytes()
+            document = json.loads(content)
+            snapshot_documents[label] = document
+            self.assertEqual(summary["repository"], document["repository"])
+            self.assertEqual(summary["sha"], document["sha"])
+            self.assertEqual(summary["collected_date"], document["collected_date"])
+            self.assertEqual(summary["file_count"], len(document["files"]))
+            self.assertEqual(
+                summary["manifest_sha256"],
+                hashlib.sha256(content).hexdigest(),
+            )
+            self.assertEqual(
+                summary["files_sha256"],
+                canonical_sha256(document["files"]),
+            )
+
+        accepted_comparison_path = ROOT / fixture["comparison"]
+        accepted_comparison = json.loads(
+            accepted_comparison_path.read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            comparison_fixture["accepted_manifest_sha256"],
+            hashlib.sha256(accepted_comparison_path.read_bytes()).hexdigest(),
+        )
+        for field in (
+            "repository",
+            "package",
+            "from_version",
+            "to_version",
+            "from_sha",
+            "to_sha",
+        ):
+            self.assertEqual(comparison_fixture[field], accepted_comparison[field])
+
+        changes = tuple(
+            UpstreamChange(
+                row["status"],
+                row["old_path"],
+                row["new_path"],
+            )
+            for row in comparison_fixture["upstream_changes"]
+        )
+        config = {
+            item.id: item
+            for item in load_registry(
+                ROOT / "tracking/github/repo-registry.toml"
+            )
+        }[fixture["repository"]]
+        packet = build_ingest_packet(
+            ROOT,
+            config,
+            "",
+            fixture["current_snapshot"],
+            (
+                PackagePacketInput(
+                    package=fixture["package"],
+                    from_version=comparison_fixture["from_version"],
+                    to_version=comparison_fixture["to_version"],
+                    from_sha=comparison_fixture["from_sha"],
+                    to_sha=comparison_fixture["to_sha"],
+                    release_manifest=fixture["release"],
+                    comparison_manifest=fixture["comparison"],
+                    prior_snapshot_manifest=fixture["prior_snapshot"],
+                    upstream_changes=changes,
+                ),
+            ),
+            "ad-hoc",
+        )
+        document = packet.document
+        package = document["packages"][0]
+        expected = fixture["expected"]
+        self.assertEqual(
+            {
+                key: expected[key]
+                for key in ("added", "modified", "removed", "renamed", "unchanged")
+            },
+            package["retained_evidence"]["counts"],
+        )
+        added = [
+            row
+            for row in package["retained_evidence"]["files"]
+            if row["status"] == "added"
+        ]
+        self.assertEqual(
+            [(expected["added_story"], "story")],
+            [(row["path"], row["classification"]) for row in added],
+        )
+        self.assertEqual(expected["evidence_gaps"], len(document["evidence_gaps"]))
+        self.assertEqual(
+            expected["unclassified_changes"],
+            len(document["unclassified_changes"]),
+        )
+        self.assertEqual(expected["mode"], document["recommendation"]["mode"])
+        self.assertEqual(
+            expected["priority"], document["recommendation"]["priority"]
+        )
+
+        required = set(document["required_reading"])
+        current_root = PurePosixPath(fixture["current_snapshot"]).parent
+        for row in package["retained_evidence"]["files"]:
+            if row["status"] == "unchanged":
+                self.assertNotIn(
+                    str(current_root / "files" / row["path"]),
+                    required,
+                )
 
 
 if __name__ == "__main__":
