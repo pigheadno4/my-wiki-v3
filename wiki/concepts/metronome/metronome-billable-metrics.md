@@ -25,11 +25,14 @@ The SDK guide states that billable metrics match only usage events sent after me
 
 The dashboard quickstart distinguishes streaming metrics for most real-time aggregation use cases from SQL metrics for calculations such as daily averages, unique period counts, or weighted formulas. It also states that group keys, property filters, and aggregation settings cannot be modified after metric creation.
 
+The ingest API reference says accepted events are matched to billable metrics and become immediately available for usage and spend calculations, but it does not define per-event match results or failure behavior.
+
 ## Sources
 
 - [[source-metronome-guides-get-started-developer-sdks]] — metric definition, filters, aggregation operations, grouping, and creation-time boundary
 - [[source-metronome-guides-events-design-usage-events]] — future metric flexibility and the non-retroactive processing boundary
 - [[source-metronome-guides-get-started-metronome-dashboard-quickstart]] — streaming and SQL roles, downstream group-key uses, and immutability
+- [[source-metronome-api-reference-usage-ingest-events]] — ingest-time matching statement and response-documentation boundary
 
 ## Related
 

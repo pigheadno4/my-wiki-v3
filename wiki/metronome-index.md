@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 20 |
-| Documentation pages pending ingest | 205 |
+| Source summaries ingested | 25 |
+| Documentation pages pending ingest | 200 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -27,10 +27,13 @@ Operational evidence:
 - [[source-metronome-guides-get-started-developer-sdks]] — SDK installation and an introductory event-to-invoice implementation path
 - [[source-metronome-guides-events-design-usage-events]] — event-design principles, cadence tradeoffs, contextual properties, and future-only metric changes
 - [[source-metronome-guides-events-high-volume-ingestion]] — throughput limits, batching, pipeline observability, and recovery
+- [[source-metronome-api-reference-usage-ingest-events]] — authenticated endpoint schema, idempotency window, response gaps, and advertised capacity
 - [[source-metronome-guides-get-started-stripe-marketplace-app]] — Stripe Dashboard app, customer management, and contract creation
 - [[source-metronome-guides-get-started-metronome-dashboard-quickstart]] — dashboard first-invoice workflow, immutable metric choices, and Sandbox testing
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-enterprise-commit]] — enterprise commitment schedules, tag-scoped discounts, lifecycle, and example cautions
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-create-a-pre-paid-commit]] — free credits, prepaid/postpaid commits, recurring grants, transitions, and line-item drawdown
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-prepaid-balance-thresholds]] — automatic recharge, balance filtering, custom pricing units, and payment-gate recovery
+- [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] — provider transition matrix, invoice routing, schedule limits, and timing cautions
 - [[source-metronome-integrations-invoice-integrations-stripe]] — Stripe account routing, invoice settings, status synchronization, payment timing, and limits
 - [[source-metronome-integrations-tax-integrations-stripe-tax]] — Stripe Tax prerequisites, product mapping, invoice finalization, and threshold override
 - [[source-metronome-api-reference-credits-and-commits-create-a-commit]] — customer-level commit requirements, schedules, scope, priority, and response boundary
@@ -41,8 +44,10 @@ Operational evidence:
 - [[source-metronome-api-reference-contracts-create-a-contract]] — create endpoint, nested request families, conditional requirements, and response boundary
 - [[source-metronome-api-reference-invoices-preview-events]] — request modes, event constraints, deduplication, and draft-invoice response
 - [[source-metronome-api-reference-contracts-get-contract-edit-history]] — audit scope, edit-operation groups, and response constraints
+- [[source-metronome-api-reference-pagination]] — cursor parameters, completion signal, limit guidance, and undocumented ordering
 - [[source-metronome-guides-platform-configuration-setup-webhooks]] — event families, retry and duplicate handling, signature verification, and Slack delivery
 - [[source-metronome-guides-platform-configuration-security-principles]] — least privilege, zero-trust communication, and short-lived credentials
+- [[source-metronome-api-reference-authentication]] — bearer-token creation, SDK configuration, permission scopes, and archival
 
 ## Concepts
 

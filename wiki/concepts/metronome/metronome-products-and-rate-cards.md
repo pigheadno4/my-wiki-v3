@@ -26,6 +26,7 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 - `starting_at` and `ending_before` establish effective periods so rates can evolve over time.
 - A rate card uses one fiat currency. The dashboard guide recommends a shared standard rate card, with contract-level overrides for customer-specific prices.
 - Rate-card options include dimensional values, volume tiers, custom pricing-unit conversions, commit-specific rates, and date-effective rate changes.
+- Prepaid thresholds can be denominated in a custom pricing unit. Metronome evaluates the threshold and recharge target in that unit, then uses the customer's rate-card conversion to calculate the fiat payment.
 
 ## Enterprise design
 
@@ -46,6 +47,7 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-enterprise-commit]] — product tags, fixed-charge products, and finance mappings
 - [[source-metronome-guides-get-started-metronome-dashboard-quickstart]] — group-key constraints, conversions, and dashboard rate-card workflow
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-create-a-pre-paid-commit]] — fixed-product attribution and balance applicability
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-prepaid-balance-thresholds]] — custom-unit threshold evaluation and rate-card conversion
 - [[source-metronome-api-reference-credits-and-commits-edit-a-commit]] — selector exclusivity and commit rate-type updates
 - [[source-metronome-integrations-tax-integrations-stripe-tax]] — Stripe product and tax-code mapping
 

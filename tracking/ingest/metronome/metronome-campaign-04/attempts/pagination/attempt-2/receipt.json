@@ -1,0 +1,40 @@
+{
+  "job_id": "pagination",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome API Pagination\"\ntype: source\ndate_ingested: 2026-07-29\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/pagination\"\nraw_files:\n  - \"metronome/api-reference/pagination-2026-07-13.md\"\ntags: [metronome, api, pagination]\n---\n\n## Overview\nThis reference documents Metronome's cursor-based pagination convention for list methods that return multiple results. It applies the same `limit` and `next_page` URL parameters across list endpoints; `/customers` is the example endpoint in the source.\n\n## Key takeaways\n- `limit` controls the number of results returned per page, while `next_page` carries the cursor for the following page.\n- A response containing a `next_page` value indicates that additional records remain; clients include that value in the subsequent query.\n- Pagination finishes when `next_page` is `null`.\n- The source recommends `limit=1` for inspecting a response, `limit=50` when loading many results with fewer calls, and caps `limit` at `100`.\n\n## Details\nA client begins with a list request, optionally setting `limit`. When the response includes `next_page`, the client sends another request with that cursor as the `next_page` query parameter. The source's `/v1/customers` example shows `limit=10` on the initial request and then adds the returned cursor to retrieve the next page.\n\n## Scope and unknowns\nThis source defines the request parameters, continuation signal, completion condition, and stated limit guidance. It does not specify a default limit, result ordering, cursor lifetime, retry behavior, or endpoint-specific variations.\n\n## Related\n- Companies: [[metronome]]\n- Concepts: API pagination convention for Metronome list endpoints\n\n## Raw Sources\n- [[raw/metronome/api-reference/pagination-2026-07-13]] \u2014 verbatim Metronome API pagination reference\n",
+  "quotes": [
+    {
+      "text": "Calling any list method that returns multiple results, such as `/customers`, may require pagination: multiple calls to fetch all the results. Metronome provides two URL parameters on all list endpoints for this purpose:",
+      "location": "lines 11-11"
+    },
+    {
+      "text": "* `limit` customizes how many results are returned per page",
+      "location": "lines 13-13"
+    },
+    {
+      "text": "When a returned response contains a `next_page` value, more records exist than were returned. Include that `next_page` value in a subsequent query to fetch the next set of results. To fetch every result, repeat this process until `next_page` is null.",
+      "location": "lines 16-16"
+    },
+    {
+      "text": "// If no next_page value is returned, this is the last page of results.",
+      "location": "lines 52-52"
+    },
+    {
+      "text": "To make a quick API call to inspect the response format, set `limit=1`. To load many results with as few API calls as possible, set `limit=50`. For performance reasons, `limit` is capped at `100`.",
+      "location": "lines 60-60"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [],
+    "index": [
+      "Add [[source-metronome-api-reference-pagination]] to the Metronome source catalog."
+    ],
+    "log": [
+      "2026-07-29 \u2014 Ingested Metronome API Pagination from [[raw/metronome/api-reference/pagination-2026-07-13]]."
+    ]
+  },
+  "raw_path": "raw/metronome/api-reference/pagination-2026-07-13.md",
+  "raw_sha256": "0066e3031e8b55e86ba540b50408e832c2e0717d5c183adff532590a1a858a8d",
+  "status": "candidate_ready"
+}

@@ -33,6 +33,19 @@ Recurring credits and commits create a new grant and ledger each period. `commit
 - Every credit or commit uses a fixed product for invoice and reporting attribution, while product IDs, tags, or specifiers can restrict eligible usage.
 - Stripe-taxed prepaid-balance thresholds, spend thresholds, and one-off payment-gated commits require `payment_gate_type: "STRIPE"`, `tax_type: "STRIPE"`, and `stripe_config.payment_type: "INVOICE"`; account-level tax enablement does not cover these flows.
 
+## Prepaid balance thresholds
+
+A contract can automatically replenish prepaid value when its eligible balance reaches a configured `threshold_amount`. `recharge_to_amount` is the target balance, so Metronome creates only the commit needed to restore that level. The default calculation includes contract- and customer-level commits and credits but always excludes individual seat-scoped balances. Threshold balance specifiers can additionally exclude balances by `ContractCreditOrCommit` custom fields.
+
+Thresholds support fiat and custom pricing units. Custom-unit amounts are converted to fiat for payment through the customer's rate-card conversion. Payment gating can delay release of an automatic or manually purchased commit until Stripe or an external gateway confirms payment.
+
+A failed gated payment disables the threshold configuration and is not retried automatically. Re-enabling it forces a fresh balance evaluation and payment attempt. An external gateway must retain the `payment_gate.external_initiate` workflow ID and call the threshold-release endpoint to release or cancel the commit.
+
+Active threshold billing must be removed before a contract can transition to an AWS, Azure, or GCP Marketplace billing provider.
+
+> [!warning] Documentation ambiguity
+> The threshold guide alternates between recharge at the threshold and recharge only below it. It also describes `discount_config.fraction` as the discount while showing `0.9` for a 10% discount, and its minimums note uses field labels that differ from the request examples. Confirm these boundaries against the current API schema.
+
 ## Customer-level create API
 
 `POST /v1/contracts/customerCommits/create` creates a balance outside an individual contract for enterprise-wide or multi-contract use. Metronome recommends contract-level commits for standard cases.
@@ -70,6 +83,8 @@ The guides contain example-level inconsistencies that should be checked against 
 - [[source-metronome-api-reference-contracts-create-a-contract]] — current create-contract request schema and conditional constraints
 - [[source-metronome-api-reference-credits-and-commits-create-a-commit]] — customer-level create endpoint, conditional invoicing, scope, priority, and response boundary
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-create-a-pre-paid-commit]] — free credits, prepaid and postpaid commits, recurring grants, transitions, and line-item drawdown
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-prepaid-balance-thresholds]] — automatic recharge, balance inclusion, payment gating, and failure handling
+- [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] — threshold removal prerequisite for marketplace transitions
 - [[source-metronome-api-reference-credits-and-commits-edit-a-commit]] — targeted commit fields, schedule operations, applicability, and hierarchy access
 - [[source-metronome-integrations-tax-integrations-stripe-tax]] — explicit tax configuration for threshold and payment-gated flows
 

@@ -1,0 +1,44 @@
+{
+  "job_id": "authentication",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome API Authentication\"\ntype: source\ndate_ingested: 2026-07-29\ncanonical_url: \"https://docs.metronome.com/api-reference/authentication\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/authentication-2026-07-13.md\"\ntags: [metronome, api-authentication, bearer-tokens, api-security]\n---\n\n## Overview\n\nThis Metronome API reference page describes how to create, use, scope, and archive API bearer tokens. It documents the dashboard creation flow, header and SDK configuration, invalid-token responses, Postman setup, and the permission model that starts from the creating user's permissions.\n\n## Key takeaways\n\n- Metronome API requests authenticate with bearer tokens, and token creation is performed in the Metronome app under Connections \u2192 API tokens & webhooks.\n- The full token is displayed only during creation, so it must be copied to a secure location before the creation flow is completed.\n- API calls use the `Authorization` header; the documented Python, Node.js, Ruby, and Go SDK examples default to the `METRONOME_BEARER_TOKEN` environment variable when a token is not supplied directly.\n- A valid token can yield endpoint data or a 404 JSON error object when no resources are found; an invalid token yields a 401 or 403 error.\n- Tokens inherit the creating user's permissions by default and can be limited by access level, environment, or endpoint; the source directs permission adjustments to a Metronome representative.\n\n## Details\n\nThe documented app flow creates a named token through **Connections** and **API tokens & webhooks**, then requires the user to copy the token before selecting **Done**. Metronome says the token name is associated with API calls made using it, which can help track changes and requests in audit logs.\n\nFor direct API use, the page requires the `Authorization` header. Its SDK examples cover Python, Node.js, Ruby, and Go, and each shows an environment-variable default of `METRONOME_BEARER_TOKEN`. The Postman instructions import Metronome's OpenAPI specification, set collection authorization to **Bearer Token** with `{{api_token}}`, and add that variable to the Postman environment.\n\nBy default, a token retains the permissions of the user who created it. The documented scope dimensions are access level (such as read-only), environment (such as sandbox only), and endpoint (such as only `getCustomers`). The source says to contact a Metronome representative to adjust permissions.\n\nUnused tokens can be archived with the Trash icon in the Metronome UI, and that action cannot be undone. The page recommends removing unused tokens and regularly rotating tokens that remain in use.\n\n> [!info] Source boundary\n> This source does not specify a token format, token expiry duration, a self-service procedure for changing scopes, or an API endpoint for creating, rotating, or archiving tokens. It documents UI-based creation and archiving, and directs permission adjustments to a Metronome representative.\n\n## Related\n\n- Companies: [[metronome]]\n- Concepts: [[metronome-security-principles]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/authentication-2026-07-13|2026-07-13 snapshot \u2014 Metronome API authentication]]\n",
+  "quotes": [
+    {
+      "text": "Metronome\u2019s API uses bearer tokens to authenticate requests.",
+      "location": "raw/metronome/api-reference/authentication-2026-07-13.md:11"
+    },
+    {
+      "text": "You cannot view the full token again.",
+      "location": "raw/metronome/api-reference/authentication-2026-07-13.md:26"
+    },
+    {
+      "text": "When making API calls, provide the token using the\u00a0`Authorization`\u00a0header.",
+      "location": "raw/metronome/api-reference/authentication-2026-07-13.md:33"
+    },
+    {
+      "text": "If your token is invalid, you\u2019ll receive a 401 or 403 error.",
+      "location": "raw/metronome/api-reference/authentication-2026-07-13.md:82"
+    },
+    {
+      "text": "By default, Metronome API tokens will retain the same permissions as the user that created them.",
+      "location": "raw/metronome/api-reference/authentication-2026-07-13.md:96"
+    }
+  ],
+  "suggestions": {
+    "company": [
+      "If this candidate is promoted, add the API authentication facts to wiki/companies/metronome.md, add [[source-metronome-api-reference-authentication]] to Sources, and increase source_count from 20 to 21."
+    ],
+    "concepts": [
+      "If promoted, update wiki/concepts/metronome/metronome-security-principles.md with the API-token-specific facts: bearer-token authentication, default inheritance of the creator's permissions, documented scope dimensions, and UI-only create/archive flow. Preserve the source's unknown token format, expiry, and self-service scope-management details."
+    ],
+    "index": [
+      "If promoted, add [[source-metronome-api-reference-authentication]] to the Sources section and refresh the source-summary and pending-ingest counts in wiki/metronome-index.md."
+    ],
+    "log": [
+      "If promoted, append a concise 2026-07-29 ingest entry to wiki/metronome-log.md for the API Authentication reference, including bearer tokens, permission scopes, invalid-token responses, and archive irreversibility."
+    ]
+  },
+  "raw_path": "raw/metronome/api-reference/authentication-2026-07-13.md",
+  "raw_sha256": "3e2170da9588787b83456b3cd2a88a7e3778bad7a49ac067f8cf8a694ebbfa40",
+  "status": "candidate_ready"
+}

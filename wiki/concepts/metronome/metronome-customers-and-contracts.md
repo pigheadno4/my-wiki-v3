@@ -34,6 +34,12 @@ Important creation constraints include:
 - `uniqueness_key` can prevent duplicate creation; its schema says reuse fails with HTTP 409.
 - The scheduled-charge consolidation setting cannot be changed after the contract is created.
 
+## Prepaid threshold configuration
+
+`prepaid_balance_threshold_configuration` adds contract-level automatic recharge. It defines the eligible balance threshold, recharge target, commit attribution, enablement, and optional payment gate. Changes take effect immediately and force an evaluation of the customer's current balance.
+
+With payment gating enabled, a failed payment changes `is_enabled` to `false`; Metronome does not retry automatically. Setting it back to `true` causes another balance evaluation and payment attempt. The threshold guide does not define duplicate-evaluation suppression or concurrency ordering.
+
 ## Contract edit history
 
 `POST /v2/contracts/getEditHistory` returns the recorded edit history for one customer contract. Metronome describes this as a full history spanning changes made in the UI, through `editContract`, and through other contract-changing endpoints. Each `ContractEdit` can identify when an edit occurred and group the additions, updates, archives, and removals it contained, including changes to pricing overrides, discounts, charges, commits, credits, subscriptions, usage filters, contract dates, and threshold configuration.
@@ -45,6 +51,12 @@ The targeted `POST /v2/contracts/commits/edit` operation is narrower than a gene
 The enterprise guide distinguishes two lifecycle operations. An edit adds terms without starting a new contract. A transition starts a new contract, preserves its relationship to the original, and can apply renewal logic such as rolling over unused commitments or credits.
 
 For recurring-grant upgrades, a renewal at the next period removes future old-contract charges and creates a finalized scheduled invoice plus a new draft usage invoice. A mid-period renewal prorates the first grant and finalizes old-contract usage through the transition date. A backdated renewal moves open-period usage to the replacement contract and uses a one-time adjustment before forward recurrence begins.
+
+## Billing-provider schedule
+
+An existing contract can change invoice destinations without being replaced. `add_billing_provider_configuration_update` on `POST v2/contracts/edit` adds a segment at `START_OF_CURRENT_PERIOD` or `START_OF_NEXT_PERIOD`; the full ordered schedule is returned separately from the backward-compatible currently active configuration.
+
+Stripe-to-Stripe and Stripe/NetSuite transitions may start in the current or next period. Any transition to or from AWS, Azure, or GCP Marketplace is next-period only, and threshold billing must be removed before moving to a marketplace. A contract supports at most 10 schedule segments unless the account team grants more capacity.
 
 ## Stripe Dashboard contract management
 
@@ -63,7 +75,9 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-enterprise-commit]] — enterprise provisioning, edits, transitions, and renewal rollover
 - [[source-metronome-guides-get-started-metronome-dashboard-quickstart]] — dashboard customer and contract provisioning
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-create-a-pre-paid-commit]] — recurring grants, renewal transitions, and upgrade timing
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-prepaid-balance-thresholds]] — contract threshold configuration, immediate evaluation, and failed-payment disablement
 - [[source-metronome-api-reference-credits-and-commits-edit-a-commit]] — targeted commit edit boundary
+- [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] — contract provider schedules, transition matrix, and segment limit
 
 ## Related
 

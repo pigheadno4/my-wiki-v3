@@ -6,6 +6,63 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-07-29 — Metronome Campaign 04 completed
+
+- Result: all five jobs were approved; 5 failed attempts were retained, retried within the three-attempt limit, and no job was rejected.
+- Routing: two standard jobs used native GPT-5.6 Terra and three strong jobs used native GPT-5.6 Sol; Sol performed serial full-raw review and canonical promotion for every job.
+- Deterministic gates rejected three `.md` fetch URLs used as canonical URLs, one malformed fixed-schema result, and one result with missing quote locations before review.
+- Output: five source summaries plus grounded company, concept, reciprocal-source-link, index, and log updates.
+- Coverage after campaign: 25 source summaries ingested and 200 documentation pages pending.
+- Evaluation: content-complexity routing remained useful, but fixed-schema compliance was not model-tier-specific; keep the existing validator and exact preflight assertions without adding a classifier.
+- Evidence: [campaign selection and result](../tracking/ingest/metronome/metronome-campaign-04/selection-review.md), [campaign monitor](../tracking/ingest/metronome/metronome-campaign-04/monitor.md), and [event journal](../tracking/ingest/metronome/metronome-campaign-04/events.jsonl).
+
+## 2026-07-29 — Canonical ingest: scheduled billing-provider changes
+
+- Ingested: [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] from the complete 137-line guide.
+- Concept audit: updated [[metronome-customers-and-contracts]], [[metronome-invoicing]], [[metronome-integrations]], and [[metronome-credits-and-commits]] before canonical source creation; no new concept or comparison page was warranted.
+- Sol review preserved the service-period start-versus-end timing conflict, the `issued~at` label, invalid JSON in both request examples, external-provider readiness gaps, and the exactly-once finalized-invoice boundary.
+- Link reconciliation added reciprocal references from the Stripe invoice integration, prepaid-threshold guide, and contract edit-history source.
+- Campaign 04: attempt 1 failed fixed-schema validation, attempt 2 failed quote-location validation, and attempt 3 passed deterministic validation before serial Sol review.
+- Coverage after finalization: 25 source summaries ingested and 200 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-04/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-04/attempts/schedule-billing-provider-change/attempt-3/receipt.json).
+
+## 2026-07-29 — Canonical ingest: Ingest Events API
+
+- Ingested: [[source-metronome-api-reference-usage-ingest-events]] from the complete 293-line API reference.
+- Concept audit: updated [[metronome-event-ingestion]] and [[metronome-billable-metrics]] before canonical source creation; no new concept or comparison page was warranted.
+- Sol review retained the one-to-100-event schema, four required fields, 128-character transaction ID limit, 34-day backdate and deduplication window, and the missing response, partial-batch, retry, duplicate, future-time, and cutoff semantics.
+- Throughput boundary: the endpoint's 100,000-events-per-second support statement remains distinct from the high-volume guide's 110,000 infrastructure-capacity and 5,000 default-account-limit figures.
+- Campaign 04: attempt 1 was rejected because the candidate used the `.md` fetch URL as canonical; attempt 2 corrected the canonical URL and passed deterministic validation before serial Sol review.
+- Coverage after finalization: 24 source summaries ingested and 201 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-04/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-04/attempts/ingest-events/attempt-2/receipt.json).
+
+## 2026-07-29 — Canonical ingest: API pagination
+
+- Ingested: [[source-metronome-api-reference-pagination]] from the complete 61-line API guide.
+- Concept audit: no existing concept needed material changes and no standalone concept or comparison page was warranted for this thin API-wide convention.
+- Sol review retained the `limit` and `next_page` traversal contract, the recommended 1/50 values and 100 cap, and the undocumented ordering, cursor-lifetime, retry, and endpoint-variation boundaries.
+- Campaign 04: attempt 1 was rejected because the candidate used the `.md` fetch URL as canonical; attempt 2 corrected the canonical URL and passed deterministic validation before serial Sol review.
+- Coverage after finalization: 23 source summaries ingested and 202 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-04/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-04/attempts/pagination/attempt-2/receipt.json).
+
+## 2026-07-29 — Canonical ingest: API authentication
+
+- Ingested: [[source-metronome-api-reference-authentication]] from the complete 112-line API guide.
+- Concept audit: updated [[metronome-security-principles]] before canonical source creation; no new concept or comparison page was warranted.
+- Sol review preserved the distinction between customer bearer tokens with an undocumented expiry and the separate 12-hour engineer credential lifecycle.
+- Campaign 04: attempt 1 was rejected because the candidate used the `.md` fetch URL as canonical; attempt 2 corrected the canonical URL and passed deterministic validation before serial Sol review.
+- Coverage after finalization: 22 source summaries ingested and 203 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-04/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-04/attempts/authentication/attempt-2/receipt.json).
+
+## 2026-07-29 — Canonical ingest: prepaid balance thresholds
+
+- Ingested: [[source-metronome-guides-customers-billing-optimize-customer-experience-prepaid-balance-thresholds]] from the complete 269-line guide.
+- Concept audit: updated [[metronome-credits-and-commits]], [[metronome-customers-and-contracts]], [[metronome-invoicing]], [[metronome-products-and-rate-cards]], [[metronome-webhooks]], and [[metronome-integrations]] before canonical source creation; no new concept or comparison page was warranted.
+- Sol review preserved the source's threshold equality, minimum-field naming, and discount-fraction ambiguities, plus its undocumented concurrency and duplicate-recharge behavior.
+- Campaign 04: the strong-tier candidate passed deterministic validation on attempt 1 and then underwent a complete serial Sol reread and promotion review.
+- Coverage after finalization: 21 source summaries ingested and 204 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-04/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-04/attempts/prepaid-balance-thresholds/attempt-1/receipt.json).
+
 ## 2026-07-29 — Metronome Campaign 03 completed
 
 - Result: five of five jobs were approved on attempt 1; no job failed, retried, or was rejected.

@@ -11,11 +11,11 @@ Metronome event ingestion accepts application usage payloads through the `/inges
 
 ## Event contract
 
-- A request can contain up to 100 events.
-- `transaction_id` is the event's unique idempotency key; Metronome deduplicates on it so a producer can resend an event without double charging.
-- `timestamp` records when usage occurred. The SDK guide permits timestamps up to 34 days in the past.
-- `customer_id` may be a Metronome customer ID or an application-defined identifier later registered as an ingest alias.
-- `event_type` is application defined, and `properties` can contain arbitrary metering and grouping data.
+- `POST /v1/ingest` is bearer authenticated and accepts a JSON array containing one to 100 events.
+- `transaction_id` is the event's required, nonempty idempotency key, with a maximum length of 128 characters; Metronome documents a 34-day duplicate-detection window.
+- `timestamp` is required and RFC 3339 formatted. The API reference permits historical events up to 34 days in the past.
+- `customer_id` is required and may be a Metronome customer ID or an application-defined ingest alias.
+- `event_type` is a required nonempty string, and optional `properties` can contain arbitrary metering and grouping data.
 - The dashboard quickstart describes `transaction_id`, `customer_id`, `event_type`, and `timestamp` as required and permits up to 2,000 event properties.
 
 ## Event design
@@ -28,9 +28,11 @@ Keeping available context in `properties` preserves future options. In the docum
 
 An accepted event is not automatically billable. It must match a billable metric and a customer before it contributes to billing. The SDK guide also warns that a newly created billable metric matches only events sent after the metric was created.
 
+The ingest reference documents only a `200 Success` response without a body schema. It does not define partial-batch acceptance, validation errors, duplicate indicators, ordering, retry semantics, future timestamps, payload-collision behavior, or whether the 34-day cutoff is inclusive.
+
 ## Scale, observability, and recovery
 
-- Metronome documents infrastructure capacity of up to 110,000 events per second, with a default ingest limit of 5,000 events per second that can be increased by contacting Metronome.
+- The API reference advertises support for 100,000 events per second and says capacity can scale beyond that figure. The separate high-volume guide describes infrastructure capacity up to 110,000 events per second and a default account limit of 5,000 events per second that can be increased by contacting Metronome; these are different scopes, not one interchangeable limit.
 - High-volume producers can batch up to 100 events in one ingest request.
 - The event explorer can inspect payloads, duplicates, customer and billable-metric attribution, transaction IDs, and CSV exports. For continuous checks, the Event Search API can sample raw events and verify that they still match active billable metrics.
 - The scale guide recommends queueing, retries, message-queue logging, alerting, and dead-letter queues around the producer pipeline.
@@ -49,6 +51,7 @@ Dashboard test-event entry is a separate Sandbox-only path. Its transaction ID m
 - [[source-metronome-guides-events-high-volume-ingestion]] — throughput, batching, observability, and recovery controls
 - [[source-metronome-api-reference-invoices-preview-events]] — event-to-invoice preview modes, deduplication behavior, and limitations
 - [[source-metronome-guides-get-started-metronome-dashboard-quickstart]] — required fields, property limit, and Sandbox test-event boundary
+- [[source-metronome-api-reference-usage-ingest-events]] — endpoint authentication, exact event schema, idempotency window, response gaps, and advertised capacity
 
 ## Related
 

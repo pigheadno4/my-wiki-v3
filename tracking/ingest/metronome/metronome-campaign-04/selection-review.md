@@ -1,10 +1,10 @@
 # Metronome Campaign 04 Selection Review
 
-Status: `proposed_awaiting_approval`
+Status: `complete`
 
 Manifest: [manifest.json](manifest.json)
 
-This is a bounded follow-up to Campaign 03. Selection used only `inventory-current.json`, raw paths, byte hashes, line counts, and existing source coverage; no raw body was read while preparing the proposal. Approval of this proposal is a separate gate from initialization or worker launch.
+This bounded follow-up to Campaign 03 was approved and executed on 2026-07-29. Selection used only `inventory-current.json`, raw paths, byte hashes, line counts, and existing source coverage; no raw body was read before approval. Every job later received one complete worker reread and one complete serial Sol reread before canonical approval.
 
 ## Proposed jobs
 
@@ -35,4 +35,20 @@ Total selected raw lines: 872. This is smaller than Campaign 03's 1,482 lines wh
 - The Sol coordinator performs serial concept-first review and owns all canonical source, company, concept, index, log, contradiction, and link changes.
 - Refill an available worker slot immediately rather than waiting for a five-job batch barrier.
 - Retry a failed job up to three total attempts; a job-level failure does not pause unrelated jobs.
-- Do not initialize or launch this campaign until the user approves this exact proposal.
+- The user approved this exact proposal before initialization and worker launch.
+
+## Execution result
+
+- Routing: the two `standard` jobs ran on native GPT-5.6 Terra; the three `strong` jobs ran on native GPT-5.6 Sol.
+- Scheduling: three workers started initially and later jobs or retries entered as slots became available; no batch barrier was used.
+- Worker boundary: every attempt read exactly one complete raw page and wrote only an isolated fixed-schema candidate outside the repository. The coordinator alone wrote tracking and canonical wiki files.
+- Review: Sol reread all five raw pages in full, performed concept-first promotion, reconciled forward and reverse links, checked contradictions, and ran focused deterministic validation after each source.
+- Final result: 5 approved jobs, 0 rejected jobs, and 5 failed attempts preserved as evidence.
+- Attempts: `authentication` 2, `pagination` 2, `ingest-events` 2, `prepaid-balance-thresholds` 1, and `schedule-billing-provider-change` 3.
+- Deterministic failures: three first attempts used the `.md` fetch URL instead of the canonical URL; the provider-change job then failed once for extra or missing fixed-schema fields and once for missing quote locations.
+- Canonical findings: customer-token lifetime remains distinct from 12-hour engineer credentials; pagination leaves ordering and cursor lifetime unspecified; ingest response and partial-batch semantics are absent; prepaid threshold equality and discount semantics conflict internally; provider-selection timing and request examples contain defects.
+- Coverage after promotion: 25 Metronome source summaries ingested and 200 documentation pages pending.
+
+## Routing conclusion
+
+The standard-versus-strong metadata still described content complexity correctly, but model tier did not predict fixed-schema compliance in this sample. The existing fail-closed validator and bounded retry loop caught every malformed candidate before Sol review. A future campaign should retain the same simple routing and exact preflight assertions for canonical URL, top-level keys, and quote fields; it does not need a new classifier or more state machinery.

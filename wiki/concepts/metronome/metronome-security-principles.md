@@ -21,9 +21,17 @@ Communication between systems, or between an actor and a system, is authenticate
 
 Metronome says almost no part of its system depends on long-lived API keys or static security tokens. Its engineers mint credentials daily, those credentials last 12 hours, and long-lived AWS credentials are not stored on developer machines.
 
+## Customer API tokens
+
+Metronome's public API uses bearer tokens created and archived through the dashboard. Tokens inherit the creating user's permissions by default and can be restricted by access level, environment, or endpoint through a Metronome representative. The full token is visible only at creation, the SDKs default to `METRONOME_BEARER_TOKEN`, and archiving a token cannot be undone.
+
+> [!info] Credential-scope boundary
+> The 12-hour lifetime above describes credentials minted by Metronome engineers. The API-authentication page does not state a lifetime or expiry policy for customer-created bearer tokens, so the two credential classes should not be treated as having the same lifecycle.
+
 ## Sources
 
 - [[source-metronome-guides-platform-configuration-security-principles]] — least privilege, zero trust, and short-lived credential principles
+- [[source-metronome-api-reference-authentication]] — customer bearer-token creation, use, scoping, and archival
 
 ## Related
 

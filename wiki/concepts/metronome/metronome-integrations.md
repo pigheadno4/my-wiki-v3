@@ -29,11 +29,23 @@ Metronome integrations connect its usage-billing and contract workflows to exter
 
 Metronome creates and maps the Stripe invoice, while Stripe Tax calculates and applies tax when Stripe finalizes it. Metronome supplies the linked Stripe customer and a line-item product mapping; Stripe uses the customer address for jurisdiction and the Stripe product tax code for classification. Leaving the invoice as a draft defers automatic tax until manual finalization.
 
+## Threshold payment-gate boundary
+
+For a Stripe-gated prepaid threshold, Metronome initiates the configured Stripe invoice or PaymentIntent and releases the recharge commit only after successful payment. With `payment_gate_type: EXTERNAL`, Metronome emits `payment_gate.external_initiate`, while the integrator owns collection and must call the threshold-release endpoint with the workflow ID to release or cancel the commit. The guide does not document external-gateway readiness, retry, or idempotency behavior.
+
+## Billing-provider transitions
+
+Metronome can schedule contract invoice delivery among Stripe, NetSuite, and AWS, Azure, or GCP Marketplace. Marketplace-involved transitions must start next period because marketplace billing covers a complete period; Stripe and NetSuite changes can also correct the current period while the invoice remains a draft.
+
+Metronome owns the provider schedule and invoice routing. The guide does not document how destination accounts are provisioned, reconciled, or checked for readiness before a scheduled segment becomes active.
+
 ## Sources
 
 - [[source-metronome-guides-get-started-stripe-marketplace-app]] — embedded Stripe Dashboard app, customer management, contract creation, and invoicing boundary
 - [[source-metronome-integrations-invoice-integrations-stripe]] — native invoice delivery, account routing, mappings, status synchronization, and Stripe limits
 - [[source-metronome-integrations-tax-integrations-stripe-tax]] — tax responsibility, customer/product mapping, finalization, and threshold configuration
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-prepaid-balance-thresholds]] — Stripe and external threshold payment-gate responsibilities
+- [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] — Stripe, NetSuite, and marketplace transition timing and responsibility
 
 ## Related
 

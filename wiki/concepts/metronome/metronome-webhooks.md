@@ -27,10 +27,13 @@ Metronome may add backward-compatible fields without notice. Integrations should
 
 The dashboard quickstart identifies payment-status webhooks as the notification path for payment-gated commits; the dedicated webhook guide remains the authority for delivery and verification mechanics.
 
+For prepaid balance thresholds, `payment_gate.threshold_reached` marks the trigger, `payment_gate.payment_status` reports `paid` or `failed`, and `payment_gate.payment_pending_action_required` signals that intervention is needed. External payment gates additionally use `payment_gate.external_initiate`; the integrator must retain its `workflow_id` to release or cancel the pending commit.
+
 ## Sources
 
 - [[source-metronome-guides-platform-configuration-setup-webhooks]] — event families, delivery semantics, deduplication, and signature verification
 - [[source-metronome-guides-get-started-metronome-dashboard-quickstart]] — payment-status notification use for payment-gated commits
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-prepaid-balance-thresholds]] — threshold, payment-status, action-required, and external-initiation events
 
 ## Related
 
