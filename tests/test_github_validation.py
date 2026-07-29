@@ -166,6 +166,8 @@ default_generated_target_paths=[]
         to_version="10.0.0",
         from_sha=None,
         to_sha=None,
+        format_version=1,
+        upstream_changes=None,
     ):
         slug = package.rsplit("/", 1)[-1]
         directory = (
@@ -178,22 +180,31 @@ default_generated_target_paths=[]
         patch = b""
         markdown = b"# Comparison\n"
         manifest = directory / "comparison.json"
-        self.write_json(
-            manifest,
+        changes = upstream_changes or []
+        changed_paths = sorted(
             {
-                "changed_paths": [],
-                "format_version": 1,
-                "from_sha": from_sha or ("f" * 40),
-                "from_version": from_version,
-                "markdown_sha256": hashlib.sha256(markdown).hexdigest(),
-                "package": package,
-                "patch_sha256": hashlib.sha256(patch).hexdigest(),
-                "pathspecs": ["packages/" + slug],
-                "repository": "paypal/paypal-js",
-                "to_sha": to_sha or self.sha,
-                "to_version": to_version,
-            },
+                path
+                for row in changes
+                for path in (row.get("old_path"), row.get("new_path"))
+                if path
+            }
         )
+        document = {
+            "changed_paths": changed_paths,
+            "format_version": format_version,
+            "from_sha": from_sha or ("f" * 40),
+            "from_version": from_version,
+            "markdown_sha256": hashlib.sha256(markdown).hexdigest(),
+            "package": package,
+            "patch_sha256": hashlib.sha256(patch).hexdigest(),
+            "pathspecs": ["packages/" + slug],
+            "repository": "paypal/paypal-js",
+            "to_sha": to_sha or self.sha,
+            "to_version": to_version,
+        }
+        if format_version == 2:
+            document["upstream_changes"] = changes
+        self.write_json(manifest, document)
         (directory / "diff.patch").write_bytes(patch)
         (directory / "comparison.md").write_bytes(markdown)
         return manifest
@@ -302,6 +313,66 @@ default_generated_target_paths=[]
         errors = validate_github(inspect_github(self.root))
 
         self.assertTrue(any("comparison patch hash mismatch" in item for item in errors))
+
+    def test_comparison_validator_accepts_v1_and_v2_manifests(self):
+        self.write_comparison(from_sha=self.sha)
+        errors = validate_github(inspect_github(self.root))
+        self.assertEqual([], errors)
+
+        shutil.rmtree(self.root / "tracking/github/repos")
+        self.write_comparison(
+            from_sha=self.sha,
+            format_version=2,
+            upstream_changes=[
+                {
+                    "status": "modified",
+                    "old_path": "packages/paypal-js/package.json",
+                    "new_path": "packages/paypal-js/package.json",
+                }
+            ],
+        )
+
+        self.assertEqual([], validate_github(inspect_github(self.root)))
+
+    def test_comparison_validator_rejects_malformed_v2_rename(self):
+        manifest = self.write_comparison(
+            from_sha=self.sha,
+            format_version=2,
+            upstream_changes=[
+                {
+                    "status": "renamed",
+                    "old_path": "packages/paypal-js/old.ts",
+                    "new_path": "",
+                }
+            ],
+        )
+        document = json.loads(manifest.read_text(encoding="utf-8"))
+        document["changed_paths"] = ["packages/paypal-js/old.ts"]
+        self.write_json(manifest, document)
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("comparison upstream change row is invalid" in item for item in errors))
+
+    def test_comparison_validator_rejects_changed_path_union_mismatch(self):
+        manifest = self.write_comparison(
+            from_sha=self.sha,
+            format_version=2,
+            upstream_changes=[
+                {
+                    "status": "added",
+                    "old_path": "",
+                    "new_path": "packages/paypal-js/new.ts",
+                }
+            ],
+        )
+        document = json.loads(manifest.read_text(encoding="utf-8"))
+        document["changed_paths"] = []
+        self.write_json(manifest, document)
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(any("comparison changed path union mismatch" in item for item in errors))
 
     def test_release_record_accepts_plain_upstream_tag_for_exact_package_version(self):
         self.release_manifest["tag"] = "v10.0.0"

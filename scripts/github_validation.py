@@ -69,6 +69,8 @@ _COMPARISON_FIELDS = {
     "to_sha",
     "to_version",
 }
+_COMPARISON_V2_FIELDS = _COMPARISON_FIELDS | {"upstream_changes"}
+_UPSTREAM_CHANGE_FIELDS = {"new_path", "old_path", "status"}
 
 
 @dataclass(frozen=True)
@@ -473,7 +475,11 @@ def _validate_comparisons(
             errors.append(label + ": comparison manifest is invalid: " + artifact.error)
             continue
         document = artifact.document
-        if set(document) != _COMPARISON_FIELDS or document.get("format_version") != 1:
+        version = document.get("format_version")
+        expected_fields = (
+            _COMPARISON_V2_FIELDS if version == 2 else _COMPARISON_FIELDS
+        )
+        if set(document) != expected_fields or version not in (1, 2):
             errors.append(label + ": comparison manifest has unknown or missing fields")
             continue
         repo_id = document.get("repository")
@@ -496,6 +502,8 @@ def _validate_comparisons(
                 for value in values
             ):
                 errors.append(label + ": comparison contains unsafe " + field)
+        if version == 2:
+            _validate_upstream_changes(document, label, errors)
         for name in ("diff.patch", "comparison.md"):
             path = artifact.path.parent / name
             if not path.is_file() or path.is_symlink():
@@ -517,6 +525,68 @@ def _validate_comparisons(
                     if actual_hash != expected_hash:
                         errors.append(label + ": " + message)
     return paths
+
+
+def _validate_upstream_changes(
+    document: dict,
+    label: str,
+    errors: List[str],
+) -> None:
+    rows = document.get("upstream_changes")
+    if not isinstance(rows, list):
+        errors.append(label + ": comparison upstream changes must be an array")
+        return
+    normalized = []
+    seen = set()
+    invalid = False
+    for row in rows:
+        if not isinstance(row, dict) or set(row) != _UPSTREAM_CHANGE_FIELDS:
+            invalid = True
+            continue
+        status = row.get("status")
+        old_path = row.get("old_path")
+        new_path = row.get("new_path")
+        if not all(isinstance(value, str) for value in (status, old_path, new_path)):
+            invalid = True
+            continue
+        valid_shape = (
+            status == "added"
+            and not old_path
+            and bool(new_path)
+            or status == "deleted"
+            and bool(old_path)
+            and not new_path
+            or status == "modified"
+            and bool(old_path)
+            and old_path == new_path
+            or status == "renamed"
+            and bool(old_path)
+            and bool(new_path)
+            and old_path != new_path
+        )
+        paths = tuple(path for path in (old_path, new_path) if path)
+        identity = (status, old_path, new_path)
+        if (
+            not valid_shape
+            or any(not safe_policy_path(path) for path in paths)
+            or identity in seen
+        ):
+            invalid = True
+            continue
+        seen.add(identity)
+        normalized.append(identity)
+    if invalid:
+        errors.append(label + ": comparison upstream change row is invalid")
+    expected_paths = sorted(
+        {
+            path
+            for _, old_path, new_path in normalized
+            for path in (old_path, new_path)
+            if path
+        }
+    )
+    if document.get("changed_paths") != expected_paths:
+        errors.append(label + ": comparison changed path union mismatch")
 
 
 def _validate_work_items(

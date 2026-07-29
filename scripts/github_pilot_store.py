@@ -78,9 +78,17 @@ class ComparisonRecord:
     from_sha: str
     to_sha: str
     changed_paths: Tuple[str, ...]
+    upstream_changes: Tuple["UpstreamChange", ...]
     patch_path: Path
     metadata_path: Path
     markdown_path: Path
+
+
+@dataclass(frozen=True)
+class UpstreamChange:
+    status: str
+    old_path: str
+    new_path: str
 
 
 def package_slug(package: str) -> str:
@@ -413,16 +421,18 @@ def write_package_comparison(
     pathspecs = tuple(sorted(set(from_paths) | set(to_paths)))
     if not pathspecs or any(not safe_policy_path(path) for path in pathspecs):
         raise PilotStoreError("comparison paths are invalid")
-    changed = _run_git(
+    upstream_changes = read_upstream_changes(
         repo_root,
-        ("diff", "--name-only", from_sha, to_sha, "--") + pathspecs,
+        from_sha,
+        to_sha,
+        pathspecs,
     )
     patch = _run_git_bytes(
         repo_root,
         ("diff", "--no-ext-diff", "--unified=3", from_sha, to_sha, "--")
         + pathspecs,
     )
-    changed_paths = tuple(sorted(line for line in changed.splitlines() if line))
+    changed_paths = _changed_path_union(upstream_changes)
     if len(config.capsules) != 1:
         raise PilotStoreError("comparison requires exactly one capsule policy")
     capsule = config.capsules[0]
@@ -438,7 +448,7 @@ def write_package_comparison(
     )
     metadata = {
         "changed_paths": list(changed_paths),
-        "format_version": 1,
+        "format_version": 2,
         "from_sha": from_sha,
         "from_version": from_version,
         "package": package,
@@ -446,6 +456,14 @@ def write_package_comparison(
         "repository": config.id,
         "to_sha": to_sha,
         "to_version": to_version,
+        "upstream_changes": [
+            {
+                "new_path": item.new_path,
+                "old_path": item.old_path,
+                "status": item.status,
+            }
+            for item in upstream_changes
+        ],
     }
     markdown = _comparison_markdown(metadata)
     markdown_bytes = markdown.encode("utf-8")
@@ -496,6 +514,7 @@ def write_package_comparison(
         from_sha,
         to_sha,
         changed_paths,
+        upstream_changes,
         comparison_root / "diff.patch",
         comparison_root / "comparison.json",
         comparison_root / "comparison.md",
@@ -527,6 +546,7 @@ def _existing_comparison(
         str(manifest["from_sha"]),
         str(manifest["to_sha"]),
         tuple(str(path) for path in manifest["changed_paths"]),
+        _upstream_changes_from_manifest(manifest),
         patch_path,
         manifest_path,
         markdown_path,
@@ -759,11 +779,173 @@ def _comparison_markdown(metadata: dict) -> str:
     lines.extend("- `" + str(path) + "`" for path in changed)
     if not changed:
         lines.append("- None")
+    if metadata.get("format_version") == 2:
+        lines.extend(["", "## Upstream changes", ""])
+        rows = metadata["upstream_changes"]
+        for row in rows:
+            old_path = str(row["old_path"])
+            new_path = str(row["new_path"])
+            status = str(row["status"])
+            if status == "renamed":
+                label = "`" + old_path + "` -> `" + new_path + "`"
+            else:
+                label = "`" + (new_path or old_path) + "`"
+            lines.append("- `" + status + "`: " + label)
+        if not rows:
+            lines.append("- None")
     return "\n".join(lines) + "\n"
 
 
-def _run_git(repo_root: Path, args: Sequence[str]) -> str:
-    return _run_git_bytes(repo_root, args).decode("utf-8")
+def read_upstream_changes(
+    repo_root: Path,
+    from_sha: str,
+    to_sha: str,
+    pathspecs: Sequence[str] = (),
+) -> Tuple[UpstreamChange, ...]:
+    """Return strict rename-aware changes between two local Git objects."""
+    if not _OBJECT_ID.fullmatch(from_sha) or not _OBJECT_ID.fullmatch(to_sha):
+        raise PilotStoreError("comparison SHA is invalid")
+    normalized_paths = tuple(sorted(set(pathspecs)))
+    if any(not safe_policy_path(path) for path in normalized_paths):
+        raise PilotStoreError("comparison paths are invalid")
+    args = (
+        "diff",
+        "--name-status",
+        "-z",
+        "-M",
+        "--find-renames=50%",
+        from_sha,
+        to_sha,
+    )
+    if normalized_paths:
+        args += ("--",) + normalized_paths
+    output = _run_git_bytes(repo_root, args)
+    values = output.split(b"\0")
+    if values and values[-1] == b"":
+        values.pop()
+    changes = []
+    index = 0
+    while index < len(values):
+        status = _decode_git_field(values[index], "status")
+        index += 1
+        if status in ("A", "M", "D"):
+            if index >= len(values):
+                raise PilotStoreError("Git comparison status row is malformed")
+            path = _decode_git_field(values[index], "path")
+            index += 1
+            if status == "A":
+                item = UpstreamChange("added", "", path)
+            elif status == "D":
+                item = UpstreamChange("deleted", path, "")
+            else:
+                item = UpstreamChange("modified", path, path)
+        elif re.fullmatch(r"R(?:100|[0-9]{1,2})", status):
+            if index + 1 >= len(values):
+                raise PilotStoreError("Git comparison rename row is malformed")
+            old_path = _decode_git_field(values[index], "old path")
+            new_path = _decode_git_field(values[index + 1], "new path")
+            index += 2
+            item = UpstreamChange("renamed", old_path, new_path)
+        else:
+            raise PilotStoreError("Git comparison status is unsupported")
+        _validate_upstream_change(item, normalized_paths)
+        changes.append(item)
+    if len(changes) != len(set(changes)):
+        raise PilotStoreError("Git comparison contains duplicate status rows")
+    return tuple(
+        sorted(
+            changes,
+            key=lambda item: (
+                item.new_path or item.old_path,
+                item.old_path,
+                item.status,
+            ),
+        )
+    )
+
+
+def _decode_git_field(value: bytes, label: str) -> str:
+    try:
+        decoded = value.decode("utf-8")
+    except UnicodeDecodeError:
+        raise PilotStoreError("Git comparison " + label + " is not UTF-8") from None
+    if not safe_policy_path(decoded):
+        raise PilotStoreError("Git comparison " + label + " is unsafe")
+    return decoded
+
+
+def _validate_upstream_change(
+    item: UpstreamChange, pathspecs: Sequence[str] = ()
+) -> None:
+    if not isinstance(item, UpstreamChange):
+        raise TypeError("upstream change must be UpstreamChange")
+    valid_shape = (
+        item.status == "added"
+        and not item.old_path
+        and bool(item.new_path)
+        or item.status == "deleted"
+        and bool(item.old_path)
+        and not item.new_path
+        or item.status == "modified"
+        and bool(item.old_path)
+        and item.old_path == item.new_path
+        or item.status == "renamed"
+        and bool(item.old_path)
+        and bool(item.new_path)
+        and item.old_path != item.new_path
+    )
+    if not valid_shape:
+        raise PilotStoreError("Git comparison status row is invalid")
+    paths = tuple(path for path in (item.old_path, item.new_path) if path)
+    if any(not safe_policy_path(path) for path in paths):
+        raise PilotStoreError("Git comparison path is unsafe")
+    if pathspecs and any(
+        not any(path == root or path.startswith(root + "/") for root in pathspecs)
+        for path in paths
+    ):
+        raise PilotStoreError("Git comparison path escapes requested scope")
+
+
+def _changed_path_union(
+    changes: Sequence[UpstreamChange],
+) -> Tuple[str, ...]:
+    return tuple(
+        sorted(
+            {
+                path
+                for item in changes
+                for path in (item.old_path, item.new_path)
+                if path
+            }
+        )
+    )
+
+
+def _upstream_changes_from_manifest(manifest: dict) -> Tuple[UpstreamChange, ...]:
+    if manifest.get("format_version") == 1:
+        return tuple(
+            UpstreamChange("modified", str(path), str(path))
+            for path in manifest["changed_paths"]
+        )
+    rows = manifest.get("upstream_changes")
+    if not isinstance(rows, list):
+        raise PilotStoreError("comparison upstream changes are invalid")
+    changes = tuple(
+        UpstreamChange(
+            str(row.get("status", "")),
+            str(row.get("old_path", "")),
+            str(row.get("new_path", "")),
+        )
+        for row in rows
+        if isinstance(row, dict)
+    )
+    if len(changes) != len(rows):
+        raise PilotStoreError("comparison upstream changes are invalid")
+    for item in changes:
+        _validate_upstream_change(item)
+    if _changed_path_union(changes) != tuple(manifest["changed_paths"]):
+        raise PilotStoreError("comparison changed path union mismatch")
+    return changes
 
 
 def _run_git_bytes(repo_root: Path, args: Sequence[str]) -> bytes:
