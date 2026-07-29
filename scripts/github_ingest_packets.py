@@ -167,6 +167,8 @@ def build_ingest_packet(
     snapshot_manifest: str,
     package_inputs: Sequence[PackagePacketInput],
     packet_kind: str,
+    wiki_context_override: Optional[Sequence[str]] = None,
+    expected_wiki_targets_override: Optional[Sequence[str]] = None,
 ) -> IngestPacket:
     """Build one canonical packet without publishing or changing queue state."""
     root = Path(root).resolve()
@@ -217,7 +219,19 @@ def build_ingest_packet(
         )
 
     recommendation = _aggregate_recommendation(package_documents)
-    wiki_context, expected_targets = _wiki_paths(root, config)
+    if (wiki_context_override is None) != (
+        expected_wiki_targets_override is None
+    ):
+        raise PacketBuildError("wiki generation context override is incomplete")
+    if wiki_context_override is None:
+        wiki_context, expected_targets = _wiki_paths(root, config)
+    else:
+        wiki_context, expected_targets = _validate_wiki_paths(
+            root,
+            config,
+            wiki_context_override,
+            expected_wiki_targets_override or (),
+        )
     all_required.update(wiki_context)
     required = tuple(sorted(all_required))
     _enforce_packet_budget(root, capsule, required)
@@ -1178,6 +1192,28 @@ def _wiki_paths(root: Path, config: RepoConfig) -> Tuple[Tuple[str, ...], Tuple[
     return context, expected
 
 
+def _validate_wiki_paths(
+    root: Path,
+    config: RepoConfig,
+    context: Sequence[str],
+    expected: Sequence[str],
+) -> Tuple[Tuple[str, ...], Tuple[str, ...]]:
+    stored_context = tuple(context)
+    stored_expected = tuple(expected)
+    current_context, current_expected = _wiki_paths(root, config)
+    canonical = set(current_context) | set(current_expected)
+    if (
+        len(stored_context) != len(set(stored_context))
+        or len(stored_expected) != len(set(stored_expected))
+        or set(stored_context) & set(stored_expected)
+        or set(stored_context) | set(stored_expected) != canonical
+    ):
+        raise PacketBuildError("wiki generation context is invalid")
+    for path in stored_context:
+        _resolve_file(root, path)
+    return stored_context, stored_expected
+
+
 def _enforce_packet_budget(
     root: Path, capsule: CapsuleConfig, required: Sequence[str]
 ) -> None:
@@ -1262,6 +1298,27 @@ def _validate_package_input(
     for change in item.upstream_changes:
         if not isinstance(change, UpstreamChange):
             raise PacketBuildError("package upstream changes are invalid")
+        valid_shape = (
+            change.status == "added"
+            and not change.old_path
+            and bool(change.new_path)
+            or change.status == "deleted"
+            and bool(change.old_path)
+            and not change.new_path
+            or change.status == "modified"
+            and bool(change.old_path)
+            and change.old_path == change.new_path
+            or change.status == "renamed"
+            and bool(change.old_path)
+            and bool(change.new_path)
+            and change.old_path != change.new_path
+        )
+        if not valid_shape or any(
+            not safe_policy_path(path)
+            for path in (change.old_path, change.new_path)
+            if path
+        ):
+            raise PacketBuildError("package upstream change shape is invalid")
 
 
 def _valid_sha(value: Any) -> bool:

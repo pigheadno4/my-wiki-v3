@@ -9,7 +9,13 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from github_canonical import canonical_json_bytes, safe_policy_path
 from github_registry import RepoConfig, load_registry, validate_enabled_policy
-from github_ingest_packets import PacketBuildError, load_packet_summary
+from github_ingest_packets import (
+    PackagePacketInput,
+    PacketBuildError,
+    build_ingest_packet,
+    load_packet_summary,
+)
+from github_pilot_store import UpstreamChange
 from github_versions import parse_package_tag, parse_semver
 from github_work_items import (
     PacketStatusSummary,
@@ -125,6 +131,8 @@ class GitHubReport:
     supplements: Tuple[ManifestInspection, ...]
     release_records: Tuple[ManifestInspection, ...]
     comparisons: Tuple[ManifestInspection, ...]
+    queued_packets: Tuple[ManifestInspection, ...]
+    review_packets: Tuple[ManifestInspection, ...]
     work_items: WorkItemInspection
     source_pages: Tuple[PageInspection, ...]
     changelog_pages: Tuple[PageInspection, ...]
@@ -154,6 +162,16 @@ def inspect_github(root: Path) -> GitHubReport:
     comparisons = _inspect_manifests(
         root,
         root.glob("tracking/github/repos/*/*/comparisons/*/*/comparison.json"),
+    )
+    queued_packets = _inspect_manifests(
+        root,
+        root.glob("tracking/github/repos/*/*/ingest-packets/*/packet.json"),
+    )
+    review_packets = _inspect_manifests(
+        root,
+        root.glob(
+            "tracking/github/repos/*/*/comparisons/*/*/review-packet.json"
+        ),
     )
     queue_path = root / "tracking/github/work-items.json"
     if queue_path.exists():
@@ -187,6 +205,8 @@ def inspect_github(root: Path) -> GitHubReport:
         supplements,
         release_records,
         comparisons,
+        queued_packets,
+        review_packets,
         work_items,
         source_pages,
         changelog_pages,
@@ -208,11 +228,13 @@ def validate_github(report: GitHubReport) -> List[str]:
     comparison_paths = _validate_comparisons(
         report.comparisons, snapshot_index, errors
     )
+    queued_packets = _validate_packets(report, errors)
     _validate_work_items(
         report,
         snapshot_paths,
         release_index,
         comparison_paths,
+        queued_packets,
         errors,
     )
     return _deduplicated(errors)
@@ -595,11 +617,161 @@ def _validate_upstream_changes(
         errors.append(label + ": comparison changed path union mismatch")
 
 
+def _validate_packets(
+    report: GitHubReport,
+    errors: List[str],
+) -> Dict[str, dict]:
+    root = report.repositories.path.parents[2]
+    repos = {repo.id: repo for repo in report.repositories.repositories}
+    queued = {}
+    for kind, artifacts in (
+        ("queued", report.queued_packets),
+        ("ad-hoc", report.review_packets),
+    ):
+        for artifact in artifacts:
+            label = artifact.relative_path
+            if artifact.error or artifact.document is None:
+                errors.append(
+                    label + ": packet JSON is invalid: " + artifact.error
+                )
+                continue
+            document = artifact.document
+            try:
+                content = artifact.path.read_bytes()
+            except OSError as error:
+                errors.append(label + ": packet JSON is unreadable: " + _bounded(error))
+                continue
+            if canonical_json_bytes(document) + b"\n" != content:
+                errors.append(label + ": packet JSON is not canonical")
+            if document.get("packet_kind") != kind:
+                errors.append(label + ": packet kind/path mismatch")
+                continue
+            repo_id = document.get("repository")
+            config = repos.get(repo_id) if isinstance(repo_id, str) else None
+            if config is None:
+                errors.append(label + ": packet repository is absent from registry")
+                continue
+            work_item_id = document.get("work_item_id")
+            if kind == "queued":
+                expected_path = (
+                    "tracking/github/repos/"
+                    + config.company
+                    + "/"
+                    + config.id.split("/", 1)[1]
+                    + "/ingest-packets/"
+                    + str(work_item_id)
+                    + "/packet.json"
+                )
+                if label != expected_path:
+                    errors.append(label + ": packet path/work-item identity mismatch")
+            elif work_item_id:
+                errors.append(label + ": ad-hoc packet carries work-item identity")
+            markdown_name = "packet.md" if kind == "queued" else "review-packet.md"
+            markdown_path = artifact.path.parent / markdown_name
+            if not markdown_path.is_file() or markdown_path.is_symlink():
+                errors.append(label + ": packet Markdown is missing")
+                continue
+            try:
+                markdown = markdown_path.read_bytes()
+            except OSError as error:
+                errors.append(label + ": packet Markdown is unreadable: " + _bounded(error))
+                continue
+            if hashlib.sha256(markdown).hexdigest() != document.get("markdown_sha256"):
+                errors.append(label + ": packet Markdown hash mismatch")
+            try:
+                inputs = _packet_inputs(document)
+                if kind == "ad-hoc":
+                    if len(inputs) != 1 or not inputs[0].comparison_manifest:
+                        raise PacketBuildError(
+                            "ad-hoc packet requires one comparison"
+                        )
+                    comparison_path = (
+                        root / inputs[0].comparison_manifest
+                    ).parent.resolve()
+                    if comparison_path != artifact.path.parent.resolve():
+                        raise PacketBuildError(
+                            "ad-hoc packet comparison path mismatch"
+                        )
+                rebuilt = build_ingest_packet(
+                    root,
+                    config,
+                    str(work_item_id),
+                    str(document.get("snapshot_manifest", "")),
+                    inputs,
+                    kind,
+                    document.get("wiki_context"),
+                    document.get("expected_wiki_targets"),
+                )
+            except (OSError, TypeError, ValueError) as error:
+                errors.append(label + ": packet rebuild failed: " + _bounded(error))
+                continue
+            if rebuilt.document != document:
+                errors.append(label + ": packet deterministic content mismatch")
+            if rebuilt.markdown != markdown:
+                errors.append(label + ": packet Markdown content mismatch")
+            if kind == "queued":
+                queued[label] = document
+    return queued
+
+
+def _packet_inputs(document: dict) -> Tuple[PackagePacketInput, ...]:
+    rows = document.get("packages")
+    if not isinstance(rows, list):
+        raise PacketBuildError("packet packages must be an array")
+    inputs = []
+    for row in rows:
+        if not isinstance(row, dict):
+            raise PacketBuildError("packet package row is invalid")
+        upstream_rows = row.get("upstream_changes")
+        if not isinstance(upstream_rows, list):
+            raise PacketBuildError("packet upstream changes must be an array")
+        upstream = []
+        for change in upstream_rows:
+            if not isinstance(change, dict):
+                raise PacketBuildError("packet upstream change row is invalid")
+            status = change.get("status")
+            old_path = change.get("old_path")
+            new_path = change.get("new_path")
+            if not all(
+                isinstance(value, str)
+                for value in (status, old_path, new_path)
+            ):
+                raise PacketBuildError("packet upstream change row is invalid")
+            upstream.append(UpstreamChange(status, old_path, new_path))
+        recommendation = row.get("recommendation")
+        reasons = (
+            recommendation.get("reasons")
+            if isinstance(recommendation, dict)
+            else ()
+        )
+        inputs.append(
+            PackagePacketInput(
+                package=str(row.get("package", "")),
+                from_version=str(row.get("from_version", "")),
+                to_version=str(row.get("to_version", "")),
+                from_sha=str(row.get("from_sha", "")),
+                to_sha=str(row.get("to_sha", "")),
+                release_manifest=str(row.get("release_manifest", "")),
+                comparison_manifest=str(row.get("comparison_manifest", "")),
+                prior_snapshot_manifest=str(
+                    row.get("prior_snapshot_manifest", "")
+                ),
+                upstream_changes=tuple(upstream),
+                release_notes_revision=(
+                    isinstance(reasons, list)
+                    and "release-notes-revision" in reasons
+                ),
+            )
+        )
+    return tuple(inputs)
+
+
 def _validate_work_items(
     report: GitHubReport,
     snapshot_paths: set,
     release_paths: Dict[str, ManifestInspection],
     comparison_paths: set,
+    queued_packets: Dict[str, dict],
     errors: List[str],
 ) -> None:
     inspection = report.work_items
@@ -615,7 +787,7 @@ def _validate_work_items(
                 continue
             try:
                 summary = load_packet_summary(root, item.ingest_packet)
-            except (OSError, ValueError, PacketBuildError):
+            except (OSError, ValueError):
                 continue
             packet_summaries[item.work_item_id] = PacketStatusSummary(
                 summary.packet_path,
@@ -637,11 +809,27 @@ def _validate_work_items(
     changelog_pages = {page.relative_path: page for page in report.changelog_pages}
     snapshots = {artifact.relative_path: artifact for artifact in report.snapshots}
     comparisons = {artifact.relative_path: artifact for artifact in report.comparisons}
+    referenced_packets = set()
     for page in tuple(report.source_pages) + tuple(report.changelog_pages):
         if page.error:
             errors.append(page.relative_path + ": page is unreadable: " + page.error)
     repos = {repo.id: repo for repo in report.repositories.repositories}
     for item in inspection.items:
+        if item.ingest_packet:
+            referenced_packets.add(item.ingest_packet)
+            packet = queued_packets.get(item.ingest_packet)
+            if packet is None:
+                errors.append(
+                    item.work_item_id + ": missing or invalid ingest packet"
+                )
+            elif (
+                packet.get("work_item_id") != item.work_item_id
+                or packet.get("repository") != item.repo_id
+                or packet.get("to_sha") != item.sha
+            ):
+                errors.append(
+                    item.work_item_id + ": packet/work-item identity mismatch"
+                )
         if item.snapshot_manifest and item.snapshot_manifest not in snapshot_paths:
             errors.append(item.work_item_id + ": missing snapshot manifest")
         elif item.snapshot_manifest:
@@ -720,6 +908,8 @@ def _validate_work_items(
                     + ": changelog omits raw evidence link for "
                     + change.release_id
                 )
+    for path in sorted(set(queued_packets) - referenced_packets):
+        errors.append(path + ": queued packet has no work item")
 
 
 def _inspect_manifests(
