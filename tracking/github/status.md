@@ -390,6 +390,31 @@
   Release: [manifest](raw/github/paypal/paypal-checkout-components/releases/checkout-components/4.1.47/2026-07-23/manifest.json)
   Comparison: Not applicable
 
+## `github-d784ed22413ba025c631`
+
+- Repository: `stripe/react-stripe-js`
+- SHA: `a742a105cdf297aa28f87bac5292c27a60defad3`
+- Collection date: `2026-07-30`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/manifest.json)
+- Packet: [review packet](tracking/github/repos/stripe/react-stripe-js/ingest-packets/github-d784ed22413ba025c631/packet.md)
+- Review priority: `high`
+- Required reading: `49` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/react-stripe-js@6.8.0` (recommended `full`)
+  Release: [manifest](raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.0/2026-07-30/manifest.json)
+  Comparison: Not applicable
+
 ## `github-ee6197518787f8152774`
 
 - Repository: `paypal/paypal-js`
