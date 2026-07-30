@@ -46,6 +46,8 @@ _SOURCE_SUFFIXES = (
     ".rs",
     ".swift",
     ".ts",
+    ".mts",
+    ".cts",
     ".tsx",
 )
 _DOCUMENT_SUFFIXES = (".md", ".mdx", ".rst", ".txt")

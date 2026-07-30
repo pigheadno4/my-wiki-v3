@@ -318,6 +318,43 @@ class GitHubIngestPacketTests(unittest.TestCase):
             classified["tsconfig.lib.json"],
         )
 
+    def test_typescript_module_sources_are_classified_as_public_source(self):
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            "lib/index.d.mts": "export type Widget = string;\n",
+            "lib/index.d.cts": "export type Widget = string;\n",
+        }
+        current = {
+            "package.json": self.manifest_content("10.1.0"),
+            "lib/index.d.mts": "export type Widget = string | number;\n",
+            "lib/index.d.cts": "export type Widget = string | number;\n",
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            (
+                UpstreamChange("modified", "package.json", "package.json"),
+                UpstreamChange(
+                    "modified",
+                    "lib/index.d.mts",
+                    "lib/index.d.mts",
+                ),
+                UpstreamChange(
+                    "modified",
+                    "lib/index.d.cts",
+                    "lib/index.d.cts",
+                ),
+            ),
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        self.assertEqual("public-source", classified["lib/index.d.mts"])
+        self.assertEqual("public-source", classified["lib/index.d.cts"])
+
     def test_baseline_is_full_and_reads_every_current_snapshot_file(self):
         files = {
             "package.json": self.manifest_content("8.0.0"),
