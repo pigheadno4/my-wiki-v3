@@ -31,15 +31,23 @@ The architecture guide also says incoming usage can trigger alert and threshold 
 
 For prepaid balance thresholds, `payment_gate.threshold_reached` marks the trigger, `payment_gate.payment_status` reports `paid` or `failed`, and `payment_gate.payment_pending_action_required` signals that intervention is needed. External payment gates additionally use `payment_gate.external_initiate`; the integrator must retain its `workflow_id` to release or cancel the pending commit.
 
+Product architecture may require timely notifications for balance alerts, tier changes, and payment events, but the planning guide supplies no latency or delivery guarantee. The manual payment-gated commit flow emits `payment_gate.payment_status` with `paid` or `failed` and can emit `payment_gate.payment_pending_action_required`; webhook-delivery retries are not payment retries.
+
+The trial example delivers `alerts.low_remaining_contract_credit_and_commit_balance_reached` with fields including `credit_type_id`, `remaining_balance`, and `triggered_by`. The merchant consumes it as an action signal. Alert scope and trigger semantics live in [[metronome-alerts-and-notifications]], while this page's dedicated webhook source remains authoritative for signature verification, delivery retries, ordering, and deduplication.
+
 ## Sources
 
 - [[source-metronome-guides-platform-configuration-setup-webhooks]] — event families, delivery semantics, deduplication, and signature verification
 - [[source-metronome-guides-get-started-metronome-dashboard-quickstart]] — payment-status notification use for payment-gated commits
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-prepaid-balance-thresholds]] — threshold, payment-status, action-required, and external-initiation events
 - [[source-metronome-guides-get-started-how-metronome-works]] — event-time alert evaluation boundary
+- [[source-metronome-guides-implement-metronome-planning-your-billing-architecture]] — notification needs as an architecture consideration
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — manual payment-status and action-required notifications
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — trial balance-alert delivery example
 
 ## Related
 
 - [[metronome-customers-and-contracts]]
 - [[metronome-invoicing]]
 - [[metronome-usage-based-billing]]
+- [[metronome-alerts-and-notifications]]

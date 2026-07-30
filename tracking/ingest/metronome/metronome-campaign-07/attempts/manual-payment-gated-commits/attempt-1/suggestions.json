@@ -1,0 +1,50 @@
+{
+  "company": [
+    {
+      "target_path": "wiki/companies/metronome.md",
+      "suggested_change": "On promotion, add [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] to the exhaustive Sources list, recompute source_count, and add only the bounded manual flow: an existing contract with valid billing configuration can receive a Stripe-gated prepaid commit; Metronome releases its balance after success, voids the Metronome and Stripe invoices and creates no commit after failure, and requires a new API request for payment retry. Preserve default-payment-method, address, and product-mapping prerequisites, action-required notification, timing variability, and the distinction between payment retry and webhook-delivery retry. Do not generalize this page to external gates or application authorization."
+    },
+    {
+      "target_path": "wiki/companies/stripe.md",
+      "suggested_change": "On promotion, add this source and recompute source_count for the grounded Stripe role only: a Metronome payment-gated commit maps its product through `stripe_product_id` to `invoiceitem.price`, and failed payment voids the associated Stripe invoice. Preserve that the page does not identify the underlying Stripe payment object or its lifecycle, so its instruction to send a new Metronome API request must not replace generic Stripe PaymentIntent guidance."
+    }
+  ],
+  "concepts": [
+    {
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "suggested_change": "Add the manual one-off Stripe-gated commit lifecycle: only an existing contract is edited; the invoice amount triggers payment; success releases the commit balance; failure voids both associated invoices and creates no commit; retry requires a new API request and is not automatic. Add the reciprocal source wikilink. Preserve the unresolved pre-success resource state and do not extend this detailed Stripe flow to the external threshold-gate path."
+    },
+    {
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "suggested_change": "Add the source-scoped prerequisites and operation boundary: the payment-gated commit can be added only to an existing contract with valid billing configuration, while the customer needs a configured default payment method and valid stored address. Add the reciprocal source wikilink; do not infer complete edit-contract validation, checkout address schema, idempotency, concurrency, or authorization behavior."
+    },
+    {
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "suggested_change": "Extend the existing Stripe mapping material with the non-tax-specific payment-gated requirement that the commit product carry `stripe_product_id` and map that field to `invoiceitem.price`, otherwise the invoice line item and payment fail. Add the reciprocal source wikilink and retain the existing Product-versus-ContractProduct terminology warning from the Stripe Tax documentation."
+    },
+    {
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "suggested_change": "Add a separate manual payment-gated commit flow beside threshold billing: Metronome attempts payment for the commit invoice amount, voids the associated Metronome and Stripe invoices and creates no commit on failure, performs no automatic payment retry, and requires a new request. Add the reciprocal source wikilink; keep ordinary finalized-invoice timing, threshold gating, and webhook delivery retries distinct."
+    },
+    {
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "suggested_change": "Add the Stripe-specific manual-gate boundary: Metronome initiates and monitors payment, release timing depends on provider/method/authentication, and the product mapping is required. Narrow any broad statement that Stripe owns downstream retries so it does not imply automatic retry for this manual payment-gated path; the dedicated guide explicitly requires a new Metronome request after failure. Add the reciprocal source wikilink."
+    },
+    {
+      "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+      "suggested_change": "Distinguish the manual flow's two notification types from threshold billing's three-event set: manual creation emits `payment_gate.payment_status` with `paid` or `failed`, plus `payment_gate.payment_pending_action_required` when intervention is needed. Add the reciprocal source wikilink and state that webhook-delivery retries from the setup guide are not payment retries; authentication completion, event ordering, and duplicate business-action handling remain unspecified here."
+    }
+  ],
+  "index": [
+    {
+      "target_path": "wiki/metronome-index.md",
+      "suggested_change": "On promotion, add [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] under Sources as the existing-contract Stripe payment gate, product mapping, paid/failed/action-required outcomes, and manual retry boundary. Recompute coverage from final campaign state. No root-index entry or comparison page is warranted because this is a provider-integration guide, not a substantive company comparison."
+    }
+  ],
+  "log": [
+    {
+      "target_path": "wiki/metronome-log.md",
+      "suggested_change": "On promotion, insert a newest-first 2026-07-30 canonical-ingest entry for the complete 89-line source with raw SHA-256 8bf72b9358adcf9c36569957f61ec623f048d0a5787738090dcb5fc6f0b9d13d. Record existing-contract/default-payment-method/address/product-mapping prerequisites, the typical-seconds but provider-dependent timing boundary, paid/failed/action-required notifications, invoice voiding with no commit after failure, and new-request/no-automatic-payment-retry behavior. Preserve the Product-versus-ContractProduct terminology issue, temporary-resource-state ambiguity, underlying Stripe-object unknown, payment-versus-webhook-delivery retry distinction, and unsupported external-provider/access-control generalizations; recompute coverage after campaign-wide promotion."
+    }
+  ]
+}

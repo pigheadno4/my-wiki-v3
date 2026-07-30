@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 40
+source_count: 50
 ---
 
 ## Overview
@@ -109,6 +109,23 @@ Metronome's Postman guide imports the live OpenAPI specification, organizes requ
 
 The API quickstart provides the first-connection sequence: create and securely copy a named token, install one of four SDKs, use `METRONOME_BEARER_TOKEN` or a supplied bearer token, and list customers even when the account has none. It does not define token lifecycle policy, SDK versions, general error behavior, or numeric limits.
 
+## Subscription and PayGo lifecycle
+
+- Subscription products carry recurring fees, with quantity-one list prices on rate cards and quantity, proration, collection direction, applicable rates, and credits applied through customer contracts.
+- Subscription price changes reach inheriting contracts next period while a contract overwrite retains its price. Upgrades can prorate through renewal transitions; downgrades take effect next period.
+- Most cancellations should end the contract, while a later restart creates a new contract. A hybrid subscription cancelled by moving its end date requires its recurring credit to end separately.
+- The PayGo example combines usage products, one rate card, a customer contract, a plan-scoped product-tag override, and optional Stripe `send_invoice` delivery. It is illustrative and does not establish application entitlement or automatic card collection.
+- Free trials can use either a capped, time-bounded credit with a balance alert or an uncapped time-bounded multiplier-0 override. Access enforcement and customer action remain merchant-owned.
+
+The subscription guides use both `entitlement` and `entitled`, and one lifecycle operation labels a create-contract action while linking to edit-contract. Current API fields and endpoints should be verified.
+
+## Architecture, access, and retrieval additions
+
+- Billing-system planning spans value exchange, reliable usage data, commercial terms, billing-data distribution, and ongoing operations. The planning source is strategic guidance, not evidence of APIs, limits, SLAs, accounting compliance, or recovery guarantees.
+- RBAC documents admin, member, and viewer roles, SSO claim mapping with default denial, full access for existing users when SSO is absent, and immutable role selection for newly created tokens. Its relationship to the authentication guide's default inherited permissions remains unresolved.
+- `GET /v1/billable-metrics/{billable_metric_id}` retrieves one metric, including archived configuration, while the customer-scoped list endpoint supports cursor pagination, current-plan filtering, and archived inclusion. Their schemas retain `UNIQUE`, SQL discrimination, filter, grouping, and example contradictions.
+- A manual Stripe-gated commit edits an existing contract, releases balance after payment success, voids both invoices and creates no commit after failure, and requires a new request for retry. Payment retry and webhook-delivery retry are distinct.
+
 ## Reporting and data export
 
 - Warehouse exports cover raw events, customers, invoices, contracts, pricing, packages, payments, alerts, and metadata.
@@ -120,8 +137,8 @@ The API quickstart provides the first-connection sequence: create and securely c
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 40
-- Documentation pages pending ingest: 185
+- Ingested source summaries: 50
+- Documentation pages pending ingest: 175
 
 ## Sources
 
@@ -165,6 +182,16 @@ The API quickstart provides the first-connection sequence: create and securely c
 - [[source-metronome-guides-implement-metronome-core-concepts-create-manage-rate-cards]] — aliases, effective changes, dimensional pricing, and tiers
 - [[source-metronome-api-reference-billable-metrics-create-a-billable-metric]] — singular create schema, filters, SQL exclusivity, contradictions, and UUID response
 - [[source-metronome-guides-implement-metronome-core-concepts-provision-customer]] — alias hierarchy, retroactive association, rating prerequisite, and provider routing
+- [[source-metronome-guides-pricing-packaging-subscription-subscription-overview]] — subscription products, rate-card prices, contracts, and credit scope
+- [[source-metronome-guides-pricing-packaging-subscription-define-subscription-pricing]] — per-offering products, seat key, quantity-one prices, and multi-rate setup
+- [[source-metronome-guides-pricing-packaging-subscription-manage-subscription-lifecycle]] — inherited pricing, trials, transitions, proration, and cancellation
+- [[source-metronome-guides-platform-configuration-role-based-access-rbac]] — roles, SSO claims, default denial, and token role selection
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-pay-as-you-go]] — illustrative PayGo packaging, provisioning, overrides, and Stripe delivery
+- [[source-metronome-guides-implement-metronome-planning-your-billing-architecture]] — five-lens billing architecture planning framework
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — Stripe-gated manual commit lifecycle and explicit retry boundary
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — capped-credit and zero-multiplier trial patterns
+- [[source-metronome-api-reference-billable-metrics-get-a-billable-metric]] — single-metric retrieval and archive visibility
+- [[source-metronome-api-reference-billable-metrics-get-billable-metrics-for-a-customer]] — customer-scoped metric discovery, filters, and pagination
 
 ## Related
 
@@ -183,3 +210,5 @@ The API quickstart provides the first-connection sequence: create and securely c
 - [[metronome-webhooks]] — notification delivery, reliability, and authenticity
 - [[metronome-security-principles]] — platform access, authentication, and credential-lifetime principles
 - [[metronome-api-idempotency]] — platform-specific retry keys, conflict behavior, retention, and cached errors
+- [[metronome-subscriptions]] — subscription pricing, contract configuration, transitions, and cancellation
+- [[metronome-alerts-and-notifications]] — alert-definition semantics and merchant-action boundary

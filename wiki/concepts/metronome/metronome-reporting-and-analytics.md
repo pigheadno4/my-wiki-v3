@@ -30,10 +30,15 @@ Metronome data export exposes billing and operational data as warehouse tables f
 - Draft invoices can be `DRAFT_INCOMPLETE`, with no total or line items until a later snapshot hydrates them.
 - Some histories are versioned or effective-dated; selecting the latest exported row is not always equivalent to selecting the row valid for a requested time.
 
+## Architecture requirements
+
+Billing architecture should define the freshness and granularity customers need, how sales teams access billing context through a CRM or custom reporting, and how revenue-recognition data and audit trails are handled. The planning guide does not promise a particular API, CRM integration, reporting latency, accounting treatment, or compliance outcome.
+
 ## Sources
 
 - [[source-metronome-guides-reporting-insights-data-export-database-reference]] — exported table families, grains, fields, snapshot behavior, and global cautions
 - [[source-metronome-guides-reporting-insights-data-export-overview]] — destination scope, delivery cadence, freshness, and object-storage semantics
+- [[source-metronome-guides-implement-metronome-planning-your-billing-architecture]] — customer, sales, finance, and audit distribution requirements
 
 ## Related
 

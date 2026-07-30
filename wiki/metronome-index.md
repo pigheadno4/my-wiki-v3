@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 40 |
-| Documentation pages pending ingest | 185 |
+| Source summaries ingested | 50 |
+| Documentation pages pending ingest | 175 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -63,6 +63,16 @@ Operational evidence:
 - [[source-metronome-guides-implement-metronome-core-concepts-create-manage-rate-cards]] — aliases, effective changes, dimensional pricing, and tiers
 - [[source-metronome-api-reference-billable-metrics-create-a-billable-metric]] — create schema, filters, SQL exclusivity, contradictions, and UUID response
 - [[source-metronome-guides-implement-metronome-core-concepts-provision-customer]] — alias hierarchy, retroactive association, rating prerequisite, and provider routing
+- [[source-metronome-guides-pricing-packaging-subscription-subscription-overview]] — subscription products, quantity-one prices, contracts, and credit scope
+- [[source-metronome-guides-pricing-packaging-subscription-define-subscription-pricing]] — per-offering products, seat key, list pricing, and multi-rate setup
+- [[source-metronome-guides-pricing-packaging-subscription-manage-subscription-lifecycle]] — price propagation, trials, transitions, proration, and cancellation
+- [[source-metronome-guides-platform-configuration-role-based-access-rbac]] — built-in roles, SSO claims, default denial, and token role assignment
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-pay-as-you-go]] — illustrative PayGo packaging, provisioning, plan tags, and Stripe delivery
+- [[source-metronome-guides-implement-metronome-planning-your-billing-architecture]] — five-lens architecture planning for data, terms, distribution, and operations
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — existing-contract Stripe gate, payment outcomes, and manual retry
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — capped-credit and uncapped zero-multiplier trial patterns
+- [[source-metronome-api-reference-billable-metrics-get-a-billable-metric]] — single-metric schema, matching, aggregation, grouping, and archive state
+- [[source-metronome-api-reference-billable-metrics-get-billable-metrics-for-a-customer]] — customer metric listing, pagination, filters, and schema defects
 
 ## Concepts
 
@@ -78,12 +88,8 @@ Operational evidence:
 - [[metronome-webhooks]] — notification delivery, deduplication, API verification, and HMAC authenticity
 - [[metronome-security-principles]] — explicit access grants, authenticated communication, and credential lifetime
 - [[metronome-api-idempotency]] — key selection, conflict behavior, retention windows, and cached-error handling
-
-## Planned concept taxonomy
-
-Additional concept pages will be created only when grounded source summaries are ingested:
-
-- `metronome-alerts-and-notifications.md`
+- [[metronome-subscriptions]] — subscription pricing, contract configuration, transitions, and cancellation
+- [[metronome-alerts-and-notifications]] — alert definitions, trial-balance triggers, and merchant action boundary
 
 ## Related platforms
 

@@ -50,6 +50,10 @@ The Preview Events API provides a separate, non-ingestion path for testing how s
 
 Dashboard test-event entry is a separate Sandbox-only path. Its transaction ID must be unique, its timestamp must be within the prior 34 days, and its event type and properties must match the configured billable metric. Production events use the API.
 
+## Architecture-planning checklist
+
+Before selecting an ingest design, identify usage origins and reliable delivery, choose event or batch cadence from generation and change behavior, plan for peak volume and velocity, carry grouping keys required by pricing dimensions, and retain contextual fields that make spend interpretable. This planning source does not itself define schemas, transport, throughput, cardinality, freshness, replay, or correction guarantees.
+
 ## Sources
 
 - [[source-metronome-guides-get-started-developer-sdks]] — SDK ingestion example, payload fields, limits, deduplication, and matching sequence
@@ -63,6 +67,7 @@ Dashboard test-event entry is a separate Sandbox-only path. Its transaction ID m
 - [[source-metronome-api-reference-customers-create-a-customer]] — ingest-alias provisioning, limits, and deprecation boundary
 - [[source-metronome-guides-implement-metronome-core-concepts-send-usage-events]] — producer-side event representation, retry and DLQ behavior, resilience testing, and heartbeat guidance
 - [[source-metronome-guides-get-started-how-metronome-works]] — one-event-to-many-metrics relationship and instrumentation boundary
+- [[source-metronome-guides-implement-metronome-planning-your-billing-architecture]] — data-origin, cadence, scale, dimension, and context checklist
 
 ## Related
 

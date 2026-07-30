@@ -1,0 +1,68 @@
+{
+  "job_id": "manage-subscription-lifecycle",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome Manage Subscription Lifecycle\"\ntype: source\ndate_ingested: 2026-07-30\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/pricing-packaging/subscription/manage-subscription-lifecycle\"\nraw_files:\n  - \"metronome/guides/pricing-packaging/subscription/manage-subscription-lifecycle-2026-07-13.md\"\ntags: [metronome, subscriptions, pricing, free-trials, contract-transitions, cancellation]\n---\n\n## Overview\n\nThis operational guide describes subscription price changes, free-trial structures, add-ons, transitions, and cancellation through Metronome rate cards and customer contracts. It provides lifecycle guidance rather than the complete schema for contract creation or editing.\n\n## Key takeaways\n\n- Changing a subscription rate on its rate card flows to inheriting contracts at the next billing period; a contract-level overwrite retains that contract's overwritten price.\n- A trial shorter than a billing cycle uses two consecutive subscriptions and a $0 override on the first; a full-cycle trial uses one time-bounded $0 override before list-rate billing resumes in the next period.\n- A subscription has one rate per billing period, allowing scheduled rate-card changes without interrupting mid-cycle customers.\n- Add-ons use the `add_subscription` edit-contract action. The guide says the relevant rate's `entitlement` must be `true`; this is the guide's terminology, not authoritative request-field spelling.\n- Metronome recommends renewal transitions for upgrades and downgrades. It limits proration to upgrades, while a downgrade takes effect at the next billing period.\n\n## Lifecycle operations\n\nFor an upgrade or downgrade, the guide recommends a contract transition with `transition.type` set to `renewal`. It describes the transition as ending the first subscription and starting the second in one API call, automatically handling proration, keeping original and new package rates separately auditable, and handling credit rollover for credit-based subscription models. The guide bounds proration to upgrade motions such as increasing quantity or adding a subscription mid-period; decreasing quantity takes effect at the next billing period.\n\nA cancellation can end the contract or only the subscription by moving the respective end date through the linked edit-contract endpoint. Metronome recommends ending the contract for most cancellations; if the customer later restarts, it recommends creating a new contract so the contract remains the source of truth for the active plan. Ending a hybrid subscription also requires ending its recurring credit separately. After the latest service period is finalized, changing a contract end date does not update the subscription end date; an in-advance subscription needs a new subscription for future active service periods.\n\n## Documentation boundaries\n\n> [!warning] Endpoint-link inconsistency\n> The upgrade/downgrade section calls its route the \"create contract endpoint\" but links to the edit-contract path. This guide does not establish the authoritative endpoint or full payload shape for `transition.type=renewal`; use dedicated current contract API references for implementation.\n\n> [!info] Entitlement terminology\n> This guide says the subscription-rate `entitlement` must be `true` for an add-on. Existing Metronome rate-card context documents `entitled`; no dedicated schema source reviewed here reconciles those spellings, so this guide does not establish an authoritative request field.\n\nThe guide does not define trial date-boundary semantics, the edit-contract request schema, entitlement defaults, contract-transition validation, cancellation effects on invoices, or concurrency and retry behavior.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-subscriptions]], [[metronome-customers-and-contracts]], [[metronome-products-and-rate-cards]], [[metronome-credits-and-commits]]\n- Related sources: [[source-metronome-api-reference-contracts-create-a-contract]], [[source-metronome-guides-implement-metronome-core-concepts-create-manage-rate-cards]]\n- Legacy mutation context: [[source-metronome-api-reference-contracts-amend-a-contract]] \u2014 retiring amendment endpoint, not the edit-contract endpoint linked by this guide\n\n## Raw Sources\n\n- [[raw/metronome/guides/pricing-packaging/subscription/manage-subscription-lifecycle-2026-07-13|2026-07-13 snapshot \u2014 subscription pricing, trials, transitions, and cancellation]]\n",
+  "quotes": [
+    {
+      "text": "A core benefit of using Metronome subscriptions is centralized management of pricing via the rate card. To change the price of a subscription, change the price of the associated subscription rate on the rate card. All contracts inherit the new pricing and customers are billed at the new rate at the start of the next billing period.",
+      "location": "lines 13-15, Update pricing"
+    },
+    {
+      "text": "If you apply an overwrite override to the price of the subscription on the contract, the contract won't inherit changes made on the rate card. It keeps the price assigned on the overwrite.",
+      "location": "lines 17-21, Update pricing info callout"
+    },
+    {
+      "text": "Add a new subscription to an existing contract using the `add_subscription` action on the [edit contract end point](/api-reference/contracts/edit-a-contract). Make sure the `entitlement` for the relevant subscription rate is set to `true`. This is most often used to model subscription add-ons.",
+      "location": "lines 40-42, Add a subscription to an existing contract"
+    },
+    {
+      "text": "Metronome only supports prorating for upgrade motions, such as increasing quantity or adding a new subscription mid-period. For downgrade motions, such as decreasing quantity, the change takes effect at the start of the next billing period.",
+      "location": "lines 54-58, Upgrade or downgrade a subscription downgrades callout"
+    },
+    {
+      "text": "Extending or removing a contract's end date does **not** automatically update the subscription end date if the most recent service period has already been finalized. For in-advance subscriptions, create a new subscription using the [EditContract](/api-reference/contracts/edit-a-contract) endpoint when extending the contract to ensure that the customer will have an active subscription in future service periods.",
+      "location": "lines 69-73, Cancel a subscription warning"
+    }
+  ],
+  "suggestions": {
+    "company": [
+      {
+        "target_path": "wiki/companies/metronome.md",
+        "suggested_change": "Coordinator reduction: this job contributes one fact-bearing source to Metronome's subscription-lifecycle coverage. If promoted, retain only the narrow facts that rate-card subscription-price changes reach inheriting contracts next period while an overwrite does not, and that only upgrades are prorated while downgrades are next-period. Reconcile source_count once after all Campaign 07 promotions; do not prescribe a per-job absolute count."
+      }
+    ],
+    "concepts": [
+      {
+        "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+        "suggested_change": "Coordinator reduction: create or update the shared platform-specific subscription concept with this guide's lifecycle facts: subscription-rate-card price changes propagate to inheriting contracts at the next billing period, except a contract overwrite retains its assigned price; a sub-cycle trial uses two consecutive subscriptions and a $0 override on the first, while a full-cycle trial uses one time-bounded $0 override before next-period list pricing; add-ons use `add_subscription` and the guide says the relevant rate's `entitlement` is `true`; `transition.type=renewal` is recommended for upgrades and downgrades, with proration only for upgrade motions and next-period effect for downgrades; cancellation can end a contract or subscription, most cancellations should end the contract, later restarts should create a new contract, hybrid cancellation also ends recurring credit separately, and finalized service periods prevent contract-end-date changes from extending an in-advance subscription. Preserve the unresolved create-contract-label/edit-contract-link inconsistency and qualify `entitlement` as this guide's wording because existing rate-card context says `entitled`. Add [[source-metronome-guides-pricing-packaging-subscription-manage-subscription-lifecycle]] under Sources for retained facts."
+      },
+      {
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "suggested_change": "Coordinator reduction: add the subscription-specific rate-card behavior that a changed subscription rate applies to inheriting contracts at the next billing period, whereas a contract overwrite retains its assigned price; subscriptions have one rate per billing period. Record that the add-on guide uses `entitlement` while this concept currently documents `entitled`, without treating either this guide alone as the authoritative request-field spelling. Add [[source-metronome-guides-pricing-packaging-subscription-manage-subscription-lifecycle]] under Sources if these facts are retained."
+      },
+      {
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "suggested_change": "Coordinator reduction: add renewal-transition guidance for subscription upgrades and downgrades, bounded to the guide's upgrade-only proration and next-period downgrade timing; preserve that its prose calls a create-contract endpoint but links to edit-contract. Complete cancellation boundaries: ending the contract is recommended for most cancellations; a later restart should create a new contract so the contract remains the active-plan source of truth; and once the latest service period is finalized, changing the contract end date does not update the subscription end date, so an in-advance subscription needs a new subscription for future service periods. Add [[source-metronome-guides-pricing-packaging-subscription-manage-subscription-lifecycle]] under Sources for retained facts."
+      },
+      {
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "suggested_change": "Coordinator reduction: add only the bounded lifecycle fact that cancelling a hybrid subscription by ending its subscription also requires ending its recurring credit separately. Add [[source-metronome-guides-pricing-packaging-subscription-manage-subscription-lifecycle]] under Sources if retained."
+      }
+    ],
+    "index": [
+      {
+        "target_path": "wiki/metronome-index.md",
+        "suggested_change": "Coordinator reduction: add [[source-metronome-guides-pricing-packaging-subscription-manage-subscription-lifecycle]] under Sources with a concise subscription price-propagation, trial, transition, proration-boundary, and cancellation summary. Reconcile ingested and pending coverage totals once after all Campaign 07 promotions; do not prescribe per-job absolute counts."
+      }
+    ],
+    "log": [
+      {
+        "target_path": "wiki/metronome-log.md",
+        "suggested_change": "Coordinator reduction: if promoted, add a newest-first canonical-ingest entry for this 73-line guide, recording its rate-card inheritance and overwrite exception, trial structures, add-on wording caveat, upgrade-only proration, cancellation boundaries, and unresolved create-contract-label/edit-contract-link inconsistency. Reconcile campaign-wide coverage once after all promotions; do not prescribe per-job absolute counts."
+      }
+    ]
+  },
+  "raw_path": "raw/metronome/guides/pricing-packaging/subscription/manage-subscription-lifecycle-2026-07-13.md",
+  "raw_sha256": "f9e63e43294ce5fcd611e1983d292cad6bb2e1d15d90958c0b33adba0d535ac2",
+  "status": "candidate_ready"
+}

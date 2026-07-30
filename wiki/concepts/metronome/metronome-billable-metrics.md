@@ -48,6 +48,14 @@ After metric creation, the guide recommends sending test events through `/ingest
 
 Because usage-event structures target particular metrics, changing the producer schema can stop downstream metrics from recording usage. Metronome recommends validating and testing event-structure changes with a representative.
 
+## Retrieval APIs
+
+`GET /v1/billable-metrics/{billable_metric_id}` returns one metric configuration under `data`; only `id` and `name` are required in `BillableMetricV1`. An archived metric remains retrievable with RFC 3339 `archived_at` and stops processing new usage events. The endpoint documents `404`, but not archive propagation, permissions, rate limits, or consistency.
+
+`GET /v1/customers/{customer_id}/billable-metrics` lists metrics available to one customer. It accepts limits from `1` to `100`, returns required nullable `next_page`, and can filter to the current plan or include archived metrics. Items require `id` and `name` and can carry current standard or SQL fields plus deprecated `group_by`, `aggregate`, `aggregate_keys`, and `filter`.
+
+The retrieval schemas preserve the create-schema conflicts: `UNIQUE` remains unexplained, SQL and standard configuration have no discriminator, and include/exclude precedence, empty `not_in_values`, aggregation-key requiredness, and group-key limits remain undefined. The customer-list example also uses `aggregation_key: bytes` without a matching property-filter name and shows conflicting `group_by` and `group_keys` values.
+
 ## Sources
 
 - [[source-metronome-guides-get-started-developer-sdks]] — metric definition, filters, aggregation operations, grouping, and creation-time boundary
@@ -61,6 +69,8 @@ Because usage-event structures target particular metrics, changing the producer 
 - [[source-metronome-guides-implement-metronome-core-concepts-provision-contract]] — usage-filter prerequisites for streaming and SQL metrics
 - [[source-metronome-guides-implement-metronome-core-concepts-create-manage-rate-cards]] — metric/product/many-rate relationship
 - [[source-metronome-api-reference-billable-metrics-create-a-billable-metric]] — create schema, SQL exclusivity, filters, aggregation contradictions, nested groups, and UUID response
+- [[source-metronome-api-reference-billable-metrics-get-a-billable-metric]] — single-metric retrieval, archive visibility, and response-schema boundaries
+- [[source-metronome-api-reference-billable-metrics-get-billable-metrics-for-a-customer]] — customer-scoped pagination, filters, deprecated fields, and example defects
 
 ## Related
 

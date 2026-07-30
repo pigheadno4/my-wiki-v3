@@ -30,6 +30,14 @@ The billable-metrics guide fills in the metering layer: usage events are filtere
 
 The Preview Events API provides a concrete validation step between usage-event design and invoice generation. It can calculate draft invoices from proposed events using the customer's current contract, either replacing historical usage for the calculation or merging with it. The preview does not support contracts with SQL billable metrics.
 
+## Planning, PayGo, and trial patterns
+
+The billing-architecture guide frames implementation as five connected decisions: define the value exchange, build reliable usage data, choose customer-aligned commercial terms, distribute billing data to its consumers, and operate the system with monitoring and correction paths. This is a planning checklist, not evidence of particular schemas, limits, availability, or service guarantees.
+
+A PayGo example packages arrears-oriented self-service usage through products and a rate card, with an optional recurring fixed fee and optional Stripe invoice route. Its AutoSales prices and customer-acquisition framing are illustrative rather than platform guarantees.
+
+Metronome documents two free-trial packaging patterns: a time-bounded credit grant with a balance alert, and a time-bounded multiplier-0 override for uncapped free usage. In both patterns, usage returns to list-price arrears after the grant or override ends; merchant systems remain responsible for access enforcement and customer action.
+
 ## Platform context
 
 This page describes the Metronome-specific implementation surface. For the cross-provider recurring model, see [[recurring-payments]]. Related platform context is available through [[metronome]] and [[stripe]].
@@ -50,3 +58,6 @@ These remaining questions require dedicated sources and are not fully answered b
 - [[source-metronome-api-reference-invoices-preview-events]] — pre-processing draft-invoice calculation from proposed usage events
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-create-a-pre-paid-commit]] — recurring free or paid grants, balances, and overage boundary
 - [[source-metronome-guides-get-started-how-metronome-works]] — ordered event-to-invoice architecture and timing boundaries
+- [[source-metronome-guides-implement-metronome-planning-your-billing-architecture]] — five-lens billing-system planning checklist
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-pay-as-you-go]] — illustrative PayGo packaging and provisioning path
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — capped-credit and zero-multiplier trial patterns

@@ -1,6 +1,6 @@
 # Metronome Campaign 07 Selection Review
 
-Status: `proposed`
+Status: `complete`
 
 Manifest: [manifest.json](manifest.json)
 
@@ -57,6 +57,21 @@ During execution, worker handoff checks raw SHA-256, canonical URL, exact result
 
 Campaign 07 can validate the approved workflow only if every promoted page has a distinct worker and Sol reviewer, workers and reviewers make no repository writes, coordinator rereads stay within declared exceptions, shared-file reduction is applied once except for a verified repair, campaign-wide deterministic checks pass, the three-page audit has no material expansion finding, elapsed time and coordinator repair work improve over Campaign 06, and the sampled query audit has no quality regression.
 
-## Explicit stop
+## Completion result
 
-Initialization and dispatch require user approval of this exact proposal. This proposal creates neither campaign state nor jobs, events, monitors, attempts, candidates, source pages, or canonical wiki changes.
+- Jobs: 10 approved, 0 failed, 0 rejected.
+- Attempts: 16 worker candidates and 16 distinct Sol reviews. Five jobs passed on attempt 1; four passed on attempt 2; `manage-subscription-lifecycle` passed on attempt 3.
+- Routing: the five standard jobs used Terra for 10 worker attempts; the five strong jobs used Sol for 6 worker attempts; all 16 candidate reviews used a fresh, distinct Sol reviewer.
+- Promotion: the coordinator created two concepts, updated eleven existing concepts, promoted ten byte-identical approved source candidates, and reconciled company, provider index, root router, log, links, and counts once.
+- Coverage: 225 raw / 50 ingested / 175 pending; the capsule validator passes.
+- Mechanical checks: all ten manifest hashes, promoted-candidate byte comparisons, canonical URLs, raw paths and backlinks, company/index entries, and expected fact-bearing concept backlinks pass.
+- Independent audit: the three immutable audit pages passed 9/9 future-query tests with 0 partial and 0 fail, so the expansion rule was not triggered. See [quality-audit.md](quality-audit.md).
+
+## Pilot findings
+
+- Dynamic refill worked without a batch barrier and kept up to three sub-agent slots occupied with the review-first/one-worker-reserve policy.
+- Strong workers passed first review on 4/5 pages. Standard workers passed first review on 1/5 pages; their repairs were mainly shared-concept targeting, reciprocal citations, and precise boundary wording rather than raw-summary fabrication.
+- One coordinator prompt gave the first three temporary results the wrong status literal (`completed`). Fail-closed validation rejected the submission before campaign mutation; changing only the temporary envelope to `candidate_ready` made all three pass without consuming retries.
+- One planned identity label named `define-subscription-pricing` while its authoritative order was `manage-subscription-lifecycle`. The worker followed the generated job order and processed only the correct raw page; the mismatch remains visible in campaign tracking.
+- Coordinator reduction initially missed one planning-source backlink in `metronome-customers-and-contracts`; the deterministic reciprocal-link check found and repaired it before audit.
+- The event journal does not record timestamps, so this campaign cannot make a measured elapsed-time improvement claim. Content quality is approved, but future speed conclusions should use a lightweight external start/end duration rather than expanding the state schema.

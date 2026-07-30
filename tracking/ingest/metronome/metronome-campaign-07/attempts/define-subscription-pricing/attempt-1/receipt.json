@@ -1,0 +1,45 @@
+{
+  "job_id": "define-subscription-pricing",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Define Subscription Pricing\"\ntype: source\ndate_ingested: 2026-07-30\ncanonical_url: \"https://docs.metronome.com/guides/pricing-packaging/subscription/define-subscription-pricing\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/pricing-packaging/subscription/define-subscription-pricing-2026-07-13.md\"\ntags: [metronome, subscriptions, pricing, rate-cards, entitlements, seat-based-billing]\n---\n\n## Overview\n\nThis short guide defines Metronome's list-price setup for subscription offerings: create a subscription product for each offering, then place it on a rate card. It also documents the prerequisite for a seat-based credit model and the rate attributes used for the quantity-one list price; it is not a complete subscription-contract or API schema reference.\n\n## Key takeaways\n\n- Create a distinct subscription product for each subscription offering, such as Good, Better, and Best plans.\n- For a seat-based credit model, applicable usage products need a `seat_id` presentation group key so usage can be determined per product and seat.\n- A rate card supplies the subscription offering's list price at quantity one; subscription quantity and associated credits are configured later when creating the contract.\n- The documented API setup adds a subscription product as a `flat` rate and specifies `price`, `billing_frequency`, and an entitlement state.\n- When one rate card has more than one subscription rate, Metronome recommends defaulting their entitlement states to `false` and enabling the selected rate while provisioning the contract.\n\n## Subscription catalog and seat-based credits\n\nThe guide directs an implementer to create one subscription product for each kind of subscription it sells, either in the Metronome app or through the product-create API. Its seat-based credit guidance applies to applicable **usage** products: configure `seat_id` as a presentation group key, then include that property on usage events so Metronome can determine usage for each product and seat. The example is illustrative and does not define seat identifier format, uniqueness, lifecycle, or how seat usage changes affect a contract.\n\n## Rate-card list pricing\n\nA rate card acts as the list price for a subscription offering at quantity one. The guide explicitly places quantity and associated-credit configuration in the later contract-creation stage. To add the subscription through the API, add the product as a `flat` rate and supply a price, billing frequency, and entitlement state. The displayed request uses `entitled: false`, `rate_type: \"flat\"`, a `starting_at` timestamp, `price: 500`, and `billing_frequency: \"MONTHLY\"`.\n\nFor a card containing more than one subscription rate, the guide recommends defaulting the rates' entitlement states to `false` and enabling the chosen rate during contract provisioning. This is a recommendation for that multi-rate configuration, not a documented universal entitlement default or a complete subscription-selection lifecycle.\n\n## Documentation boundaries\n\n- The guide links to product creation and rate-card add-rate APIs but does not provide their complete request or response schemas, validation rules, idempotency behavior, or error handling.\n- It does not define permitted `billing_frequency` or entitlement values, price denomination or precision, the relationship between `starting_at` and billing cycles, or how multiple applicable subscription rates are resolved.\n- It does not document contract fields for subscription quantity or associated credits, seat additions or removals, proration, invoicing, cancellation, or entitlement changes after provisioning.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-products-and-rate-cards]], [[metronome-customers-and-contracts]]\n- Related source: [[source-metronome-guides-implement-metronome-core-concepts-create-manage-rate-cards]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/pricing-packaging/subscription/define-subscription-pricing-2026-07-13]] \u2014 verbatim subscription-pricing guide\n",
+  "quotes": [
+    {
+      "text": "Create the list prices for your subscription offerings by first creating your subscription products and then adding them to your rate card.",
+      "location": "raw/metronome/guides/pricing-packaging/subscription/define-subscription-pricing-2026-07-13.md:11 (Introduction)"
+    },
+    {
+      "text": "Create a subscription product for each type of subscription you offer. For example, if you offer a Good, Better, and Best plan, create a product for each.",
+      "location": "raw/metronome/guides/pricing-packaging/subscription/define-subscription-pricing-2026-07-13.md:15 (Create a subscription product)"
+    },
+    {
+      "text": "If planning to support a seat based credit model, ensure that all applicable usage products have a `seat_id` presentation group key set on them. This will be used to determine the usage on a per product, per seat basis.",
+      "location": "raw/metronome/guides/pricing-packaging/subscription/define-subscription-pricing-2026-07-13.md:19 (Optionally add seat id as presentation group key for usage products)"
+    },
+    {
+      "text": "Your rate card acts as your list price for your subscription offering based on a quantity of 1. Quantity amount and associated credits are configured later, during the contract creation process.",
+      "location": "raw/metronome/guides/pricing-packaging/subscription/define-subscription-pricing-2026-07-13.md:39 (Add a subscription product to a rate card)"
+    },
+    {
+      "text": "If you have more than one subscription rate on your rate card, Metronome recommends defaulting them to `false` and enabling them when provisioning a contract.",
+      "location": "raw/metronome/guides/pricing-packaging/subscription/define-subscription-pricing-2026-07-13.md:45 (Add a subscription product to a rate card)"
+    }
+  ],
+  "suggestions": {
+    "company": [
+      "Coordinator audit: if promoted, update wiki/companies/metronome.md only with the narrow subscription-list-price flow (per-offering product, quantity-one rate-card price, and later contract configuration of quantity and credits), add [[source-metronome-guides-pricing-packaging-subscription-define-subscription-pricing]] to its Sources list, and recompute source_count. Do not turn the guide's multi-rate entitlement recommendation into a platform-wide default."
+    ],
+    "concepts": [
+      "Coordinator audit: update wiki/concepts/metronome/metronome-products-and-rate-cards.md with the source-specific subscription setup: one product per subscription offering; quantity-one list pricing on a rate card; API rate attributes `flat`, `price`, `billing_frequency`, and entitlement; and the recommendation to default multiple subscription rates to non-entitled until the selected rate is enabled during contract provisioning. Add [[source-metronome-guides-pricing-packaging-subscription-define-subscription-pricing]] under Sources. Preserve the uncertainty that the guide does not define enums, price denomination, effective-time or multi-rate resolution semantics.",
+      "Coordinator audit: update wiki/concepts/metronome/metronome-customers-and-contracts.md narrowly with the guide's division of responsibility: subscription quantity and associated credits are configured during contract creation, and selected subscription-rate entitlement is enabled when provisioning. Add the source backlink only if that durable fact is retained. Do not infer contract request fields, proration, cancellation, seat lifecycle, or entitlement-update behavior."
+    ],
+    "index": [
+      "Coordinator audit: if promoted, add [[source-metronome-guides-pricing-packaging-subscription-define-subscription-pricing]] to wiki/metronome-index.md under Sources as the subscription product, seat-based-credit prerequisite, and quantity-one rate-card pricing guide. No root-index entry, comparison, or duplicate standalone concept is warranted because the existing Metronome product/rate-card and contract concepts cover the durable subjects."
+    ],
+    "log": [
+      "Coordinator audit: if promoted, add a newest-first 2026-07-30 entry to wiki/metronome-log.md recording the complete 59-line source and assigned SHA-256, per-offering subscription products, the `seat_id` presentation-group-key prerequisite for seat-based credits, quantity-one rate-card list pricing, later contract quantity/credit configuration, and the multi-rate entitlement recommendation. Preserve that billing-frequency values, price denomination, effective timing, rate selection, and full contract lifecycle are undocumented here."
+    ]
+  },
+  "raw_path": "raw/metronome/guides/pricing-packaging/subscription/define-subscription-pricing-2026-07-13.md",
+  "raw_sha256": "a62fbde45e686010c44e3d9827f8d1343c72244569dafeb8775a333c0f3761d1",
+  "status": "candidate_ready"
+}

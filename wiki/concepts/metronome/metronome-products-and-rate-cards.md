@@ -60,6 +60,14 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 > [!info] Retroactive edit boundary
 > The product guide permits retroactive effective dates but does not explain recalculation, draft-versus-finalized invoice effects, historical visibility after archival, or how existing commits, credits, discounts, and scheduled charges follow the change.
 
+## Subscription and payment-gate extensions
+
+- Subscription offerings use one product per offering, with quantity-one list pricing on a rate card. Separate billing frequencies can use distinct rates; when several subscription rates exist, the guide recommends defaulting them to `false` and enabling the applicable rate or rates on the contract without defining exclusivity or resolution.
+- Subscription-rate changes reach inheriting contracts in the next billing period, while contract overwrites retain their assigned price. The lifecycle source says one subscription rate applies per billing period.
+- The PayGo example tags selected-plan products `premium` and uses a tag-scoped `entitled: false` override for its Basic package. This is invoice/package configuration, not proof of application authorization.
+- A manual Stripe-gated commit requires the commit product to carry `stripe_product_id` mapped to `invoiceitem.price`; a missing mapping prevents the invoice line and payment. The existing Product-versus-ContractProduct terminology warning still applies.
+- Trial packaging can use `entitled: false` for merchant-enforced feature restriction or a time-bounded multiplier `0` for uncapped free usage, after which list pricing resumes. Overlapping-override precedence, missing-rate behavior, and automatic product gating remain unknown.
+
 ## Sources
 
 - [[source-metronome-guides-get-started-developer-sdks]] — introductory product, quantity-conversion, rate-card, and effective-date workflow
@@ -75,6 +83,12 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 - [[source-metronome-guides-get-started-how-metronome-works]] — reusable pricing layer, presentation controls, and automatic-flow claim
 - [[source-metronome-guides-implement-metronome-core-concepts-provision-contract]] — contract layering, tag-scoped multiplier, and dimensional override requirement
 - [[source-metronome-guides-implement-metronome-core-concepts-create-manage-rate-cards]] — card creation, aliases, effective changes, dimensional rates, and tiers
+- [[source-metronome-guides-pricing-packaging-subscription-subscription-overview]] — subscription products, quantity-one prices, and terminology caution
+- [[source-metronome-guides-pricing-packaging-subscription-define-subscription-pricing]] — per-offering setup, flat-rate example, and multi-rate recommendation
+- [[source-metronome-guides-pricing-packaging-subscription-manage-subscription-lifecycle]] — inherited price changes, overwrites, and lifecycle wording
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-pay-as-you-go]] — plan tags and contract-scoped entitlement override
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — Stripe product mapping for a payment-gated commit
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — time-bounded entitlement and zero-multiplier trial overrides
 
 ## Related
 
@@ -82,3 +96,4 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 - [[metronome-customers-and-contracts]]
 - [[metronome-usage-based-billing]]
 - [[metronome-credits-and-commits]]
+- [[metronome-subscriptions]]

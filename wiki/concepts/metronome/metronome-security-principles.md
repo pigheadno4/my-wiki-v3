@@ -30,11 +30,18 @@ The API quickstart corroborates the creation boundary: give the token a descript
 > [!info] Credential-scope boundary
 > The 12-hour lifetime above describes credentials minted by Metronome engineers. The API-authentication page does not state a lifetime or expiry policy for customer-created bearer tokens, so the two credential classes should not be treated as having the same lifecycle.
 
+## Role-based access control
+
+Metronome documents three built-in roles: admin, member, and viewer. With SSO, an identity-provider claim maps users to a role and unmapped users are denied by default. Without SSO, users who already have Metronome access receive full access.
+
+New API tokens can be assigned a selected role at creation, and that role cannot later be changed. The authentication reference separately says tokens inherit the creating user's permissions by default. These may describe default inheritance versus explicit RBAC assignment, but the sources do not define precedence; retain both as source-scoped facts.
+
 ## Sources
 
 - [[source-metronome-guides-platform-configuration-security-principles]] — least privilege, zero trust, and short-lived credential principles
 - [[source-metronome-api-reference-authentication]] — customer bearer-token creation, use, scoping, and archival
 - [[source-metronome-api-reference-api-quickstart]] — first-connection token handling and SDK environment-variable setup
+- [[source-metronome-guides-platform-configuration-role-based-access-rbac]] — built-in roles, SSO claims, default denial, and token role selection
 
 ## Related
 

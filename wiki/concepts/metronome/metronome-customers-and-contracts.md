@@ -95,6 +95,16 @@ The Metronome Stripe App embeds customer and contract management in the Stripe D
 
 The Metronome dashboard quickstart creates a customer, optionally assigns ingest aliases, and then creates a contract with a rate card and start and end dates. The contract can also select a billing provider and include customer-specific prepaid commits or overrides.
 
+## Subscription, trial, and metric-discovery extensions
+
+- A purchased subscription plan is represented through a customer contract. The subscription guides assign quantity, proration, collection direction, applicable rate or rates, and associated credits to contract provisioning, but do not define complete request schemas or multi-rate resolution.
+- Subscription upgrades and downgrades use renewal transitions in the lifecycle guide. Only upgrades are prorated; downgrades take effect next period. Most cancellations should end the contract, and later restarts should create a new contract so the contract remains the active-plan record.
+- A PayGo illustration provisions a Stripe customer, attaches its ID through a Metronome customer billing-provider configuration, and then creates a contract. Its Best payload uses top-level `ending_at`, conflicting with the create-contract API's exclusive `ending_before`; preserve the six-month intent but verify the schema.
+- A manual payment-gated commit can be added only to an existing contract with valid billing configuration; the customer needs a configured default payment method and stored address. The source does not define complete edit validation, idempotency, concurrency, or authorization.
+- Trial examples place one-week credits or overrides inside a one-year contract. Credit depletion or expiry can expose later usage to arrears pricing, while an expired multiplier-0 override returns selected usage to list pricing; no distinct paid-state transition is documented.
+- `GET /v1/customers/{customer_id}/billable-metrics` lists metrics available to one customer. `on_current_plan=true` narrows the list, but the source does not explain how “current plan” maps to contracts, rate cards, multiple or scheduled contracts, or metric-association provenance.
+- Commercial-design planning should make prepaid-versus-arrears terms, seat and usage interaction, commitments and overages, ramp and multi-year structures, exceeded-limit policy, and segment-specific payment terms explicit. The planning guide does not itself establish supported contract fields, lifecycle behavior, or enforcement.
+
 ## Sources
 
 - [[source-metronome-guides-get-started-developer-sdks]] — customer aliases, basic contract provisioning, and introductory invoice behavior
@@ -116,6 +126,14 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - [[source-metronome-guides-implement-metronome-core-concepts-provision-contract]] — provisioning prerequisites, charge schedules, provider attachment, and usage-filter routing
 - [[source-metronome-guides-implement-metronome-core-concepts-create-manage-rate-cards]] — alias provisioning, reusable standard pricing, customer tier overrides, and card relationship tension
 - [[source-metronome-guides-implement-metronome-core-concepts-provision-customer]] — alias hierarchy, retroactive association, contract rating boundary, and provider assignment
+- [[source-metronome-guides-pricing-packaging-subscription-subscription-overview]] — contract-level subscription quantity, proration, collection, and credits
+- [[source-metronome-guides-pricing-packaging-subscription-define-subscription-pricing]] — quantity, credits, and applicable-rate provisioning
+- [[source-metronome-guides-pricing-packaging-subscription-manage-subscription-lifecycle]] — transitions, proration, cancellation, and finalized-period boundary
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-pay-as-you-go]] — illustrative PayGo provisioning and ending-field conflict
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — existing-contract and customer prerequisites
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — contract-layered capped and uncapped trial periods
+- [[source-metronome-api-reference-billable-metrics-get-billable-metrics-for-a-customer]] — customer-scoped metric discovery and current-plan filter
+- [[source-metronome-guides-implement-metronome-planning-your-billing-architecture]] — commercial-design axes and implementation unknowns
 
 ## Related
 
@@ -125,3 +143,4 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - [[metronome-integrations]]
 - [[metronome-credits-and-commits]]
 - [[metronome-api-idempotency]]
+- [[metronome-subscriptions]]

@@ -85,6 +85,13 @@ The guides contain example-level inconsistencies that should be checked against 
 > [!warning] Contradiction
 > The credits-and-commits guide's prepaid prose describes $10,000 of accessible value, while its sample grants `100000` USD cents ($1,000) and invoices `1000000` cents ($10,000). Its recurring examples also contain invalid JSON, dates that conflict with the described January 1 signup and January 21 upgrade, and `rollover_fraction: 100`; the dedicated create-contract reference constrains this fraction to 0–1.
 
+## Subscription, manual-gate, and trial extensions
+
+- A subscription can optionally provision credit pooled at subscription level or scoped per seat. The overview does not define grant schedules, drawdown, thresholds, payment gates, or hybrid mechanics.
+- When cancelling a hybrid subscription by moving that subscription's end date, its recurring credit must be ended separately. The lifecycle source does not establish contract-level cancellation behavior for that credit.
+- A manual one-off Stripe-gated commit edits an existing contract. Successful payment releases the balance; failure voids the associated Metronome and Stripe invoices, creates no commit, and requires a new API request rather than an automatic payment retry. Pre-success resource state and external-gate equivalence are undocumented.
+- A capped trial can use a fixed credit product with a time-bounded access schedule, blank applicability fields for all usage, and a low numeric priority so the trial grant draws down first. Depletion or expiry permits later usage to rate in arrears; monetary encoding and isolation from other balances remain unknown.
+
 ## Sources
 
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-enterprise-commit]] — enterprise commitment design, schedules, rollover, discounts, and lifecycle examples
@@ -97,6 +104,10 @@ The guides contain example-level inconsistencies that should be checked against 
 - [[source-metronome-integrations-tax-integrations-stripe-tax]] — explicit tax configuration for threshold and payment-gated flows
 - [[source-metronome-api-reference-contracts-amend-a-contract]] — legacy amendment commit/credit schedules, targeting, priority, and validation gaps
 - [[source-metronome-guides-implement-metronome-core-concepts-provision-contract]] — worked commit schedules, tag scope, platform charge, and consolidation
+- [[source-metronome-guides-pricing-packaging-subscription-subscription-overview]] — pooled or per-seat subscription-credit scope
+- [[source-metronome-guides-pricing-packaging-subscription-manage-subscription-lifecycle]] — bounded hybrid-subscription cancellation rule
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — manual Stripe gate, invoice voiding, and explicit retry
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — capped trial grant, priority, and expiry boundary
 
 ## Related
 
@@ -104,3 +115,4 @@ The guides contain example-level inconsistencies that should be checked against 
 - [[metronome-products-and-rate-cards]]
 - [[metronome-usage-based-billing]]
 - [[metronome-invoicing]]
+- [[metronome-subscriptions]]

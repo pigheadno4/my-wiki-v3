@@ -33,6 +33,8 @@ Metronome creates and maps the Stripe invoice, while Stripe Tax calculates and a
 
 For a Stripe-gated prepaid threshold, Metronome initiates the configured Stripe invoice or PaymentIntent and releases the recharge commit only after successful payment. With `payment_gate_type: EXTERNAL`, Metronome emits `payment_gate.external_initiate`, while the integrator owns collection and must call the threshold-release endpoint with the workflow ID to release or cancel the commit. The guide does not document external-gateway readiness, retry, or idempotency behavior.
 
+For a manual Stripe-gated commit, Metronome initiates and monitors payment and requires the product mapping described in [[metronome-products-and-rate-cards]]. Release timing depends on the provider, payment method, and authentication. After failure, the guide requires a new Metronome request and no automatic payment retry; the broader Stripe ownership statement above must not override this source-specific boundary.
+
 ## Billing-provider transitions
 
 Metronome can schedule contract invoice delivery among Stripe, NetSuite, and AWS, Azure, or GCP Marketplace. Marketplace-involved transitions must start next period because marketplace billing covers a complete period; Stripe and NetSuite changes can also correct the current period while the invoice remains a draft.
@@ -59,6 +61,7 @@ The optional tax-provider field lists Anrok, Avalara, and Stripe. The source lim
 - [[source-metronome-api-reference-customers-create-a-customer]] — provider, delivery, tax, and revenue-system configuration during provisioning
 - [[source-metronome-guides-get-started-how-metronome-works]] — high-level downstream-destination boundary
 - [[source-metronome-guides-implement-metronome-core-concepts-provision-customer]] — external connection prerequisite, contract selection, and beta archival
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — Stripe manual-gate responsibility, product mapping, and retry boundary
 
 ## Related
 

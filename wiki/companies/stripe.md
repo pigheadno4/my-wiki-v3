@@ -2,7 +2,7 @@
 title: "Stripe"
 type: company
 tags: [stripe, payment-gateway, payment-intents, checkout, subscriptions, elements, webhooks, payment-links]
-source_count: 650
+source_count: 651
 ---
 
 ## Stripe
@@ -109,6 +109,7 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 - [[source-github-stripe-js]] — `stripe/stripe-js` v8.11.0 loader, Elements, Checkout, and public TypeScript baseline
 - [[changelog-github-stripe-js]] — package-qualified Stripe JS release history
 - [[source-metronome-integrations-tax-integrations-stripe-tax]] — Stripe Tax on Metronome-created Stripe invoices, including customer and product mapping
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — Stripe product mapping, invoice voiding, and retry boundary for a Metronome-gated commit
 - [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] — contract invoice-routing transitions between Stripe, NetSuite, and marketplaces
 - [[source-github-stripe-postman]] — Stripe API Postman collection: 107 endpoint groups, 4 versioned collections in public workspace, fork/import setup, 2024-04-15 changelog
 - [[source-github-stripe-android]] — stripe-android SDK v23.8.0: PaymentSheet/FlowController/CustomerSheet, Stripe API client, GooglePayLauncher, PaymentMethod model, 3DS2 config, Jetpack Compose integration

@@ -43,6 +43,12 @@ Commit edits appear immediately on draft invoices, while finalized invoices rema
 
 Prepaid balance thresholds can gate release of a recharge commit on payment. Stripe gating can use a Stripe Billing invoice or a direct PaymentIntent. On a failed payment, the guide says the threshold configuration is disabled and a voided invoice should appear in both Metronome and Stripe; there is no automatic retry. An external payment gate leaves collection to the integrator, which must explicitly release or cancel the pending commit.
 
+## PayGo and manual commit payment
+
+The PayGo example configures Stripe with `send_invoice`, which emails payment instructions. It must not be interpreted as automatic card collection; the native Stripe integration states that a default payment method is required for `charge_automatically`, not generally for `send_invoice`.
+
+A separate manual payment-gated commit flow attempts payment for a one-off commit invoice. Success releases the commit; failure voids both associated invoices, creates no commit, and is not automatically retried. A new Metronome API request is required, and this payment retry is distinct from webhook-delivery retries.
+
 ## Native Stripe invoice delivery
 
 - Stripe connections are scoped to a Metronome environment; sandbox connects to Stripe test mode.
@@ -90,3 +96,5 @@ Decimal quantities are moved into descriptions while Stripe line-item quantities
 - [[source-metronome-guides-get-started-how-metronome-works]] — calculation order and separation of evaluation, visibility, and finalization
 - [[source-metronome-guides-implement-metronome-core-concepts-provision-contract]] — consolidation conditions and beta provider-attachment timing
 - [[source-metronome-guides-implement-metronome-core-concepts-provision-customer]] — customer/contract routing boundary and beta archival
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-pay-as-you-go]] — illustrative Stripe `send_invoice` boundary
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — manual commit payment, invoice voiding, and retry boundary

@@ -1,0 +1,45 @@
+{
+  "job_id": "role-based-access-rbac",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Role-Based Access Control (RBAC)\"\ntype: source\ndate_ingested: 2026-07-30\ncanonical_url: \"https://docs.metronome.com/guides/platform-configuration/role-based-access-rbac\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/platform-configuration/role-based-access-rbac-2026-07-13.md\"\ntags: [metronome, rbac, access-control, sso, api-tokens, platform-configuration]\n---\n\n## Overview\n\nThis Metronome guide documents the platform's role-based access control (RBAC) policy, its three built-in roles, SSO/identity-provider setup, and assigning an RBAC role to a newly created API token. It is a configuration guide, not a complete role-permission matrix, SSO protocol reference, or token-management API specification.\n\n## Key takeaways\n\n- Metronome says RBAC policies control what users can see and change, and are intended to reduce security-vulnerability scope and human error.\n- The built-in roles are Administrator (full CRUD), Writer (CRUD except API-key creation and administrative settings), and Reader (view-only).\n- RBAC policies are defined by the customer's identity provider and require SSO; without SSO, every user with Metronome access has full permissions.\n- The identity-provider claim can have any name (with `role` recommended) and uses `admin`, `writer`, `reader`, or a custom-role value agreed with Metronome; an unspecified user role is denied access by default.\n- A newly created API token can be assigned an Administrator, Writer, or Reader role in the UI; that role scopes the token's access and cannot be changed after creation.\n\n## Built-in roles and identity-provider policy\n\nAdministrator has full create, read, update, and delete access to all Metronome components. Writer has CRUD access except for creating API keys and changing administrative settings such as data-export setup. Reader can view every component but cannot create, update, or delete anything. The guide also says custom roles are supported, but directs users to work with a Metronome representative to create them.\n\nRBAC is configured through the identity provider after SSO is set up. The provider supplies a claim name and role values, and the customer tells Metronome which role should apply when a role is absent. The stated default is denial of access for users without a specified role. The guide does not define the claim's assertion format, how claims are refreshed, how a custom role's permissions are designed, or whether changes to an identity-provider role take effect for an existing session.\n\n## API-token role assignment\n\nWhen creating an API token in **Connections > API tokens & webhooks**, a user can directly select one of the three built-in RBAC roles. The token inherits the selected role's permissions, and the guide says the role cannot be changed once the token has been created. A custom role must first be created through a Metronome representative before it can be assigned to a token.\n\n> [!info] Documentation boundary\n> This guide does not state the permissions for a custom role, token expiry or rotation behavior, an API for token-role management, or whether a token follows later changes to its assigned role. It also does not reconcile direct role selection at token creation with the API-authentication guide's separate statement that tokens inherit the creating user's permissions by default.\n\n## Related\n\n- Company: [[metronome]]\n- Concept: [[metronome-security-principles]]\n- Related source: [[source-metronome-api-reference-authentication]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/platform-configuration/role-based-access-rbac-2026-07-13]] \u2014 verbatim Metronome RBAC guide\n",
+  "quotes": [
+    {
+      "text": "Role-based access control (RBAC) policies define how users interact with Metronome, what they are allowed to see, and what changes they are allowed to make. This increases your control over the data a user can access and the actions they can take. Implementing RBAC minimizes the scope of security vulnerabilities and reduces human error.",
+      "location": "raw/metronome/guides/platform-configuration/role-based-access-rbac-2026-07-13.md:13 (Role-based access control introduction)"
+    },
+    {
+      "text": "Administrators have full CRUD (create, read, update, and delete) access to all components of the Metronome system.",
+      "location": "raw/metronome/guides/platform-configuration/role-based-access-rbac-2026-07-13.md:27-28 (Defined roles \u2014 Administrator)"
+    },
+    {
+      "text": "Writers have CRUD access to everything in Metronome except the creation of API keys or administrative settings (like setting up data export).",
+      "location": "raw/metronome/guides/platform-configuration/role-based-access-rbac-2026-07-13.md:30-31 (Defined roles \u2014 Writer)"
+    },
+    {
+      "text": "RBAC policies are defined by your Identity Provider; you must set up [SSO](/guides/platform-configuration/single-sign-on-sso/). If no SSO is configured, all users with access to Metronome have full access permissions.",
+      "location": "raw/metronome/guides/platform-configuration/role-based-access-rbac-2026-07-13.md:36-38 (Set up RBAC)"
+    },
+    {
+      "text": "The token will inherit the permissions of the selected role, scoping its access accordingly. Roles cannot be changed after a token is created.",
+      "location": "raw/metronome/guides/platform-configuration/role-based-access-rbac-2026-07-13.md:52-54 (Assign a role to an API token)"
+    }
+  ],
+  "suggestions": {
+    "company": [
+      "Coordinator audit: if promoted, update wiki/companies/metronome.md with the narrow RBAC facts only: three built-in roles, identity-provider/SSO dependency, the no-SSO full-access condition, and immutable selected-role scoping for newly created API tokens. Add [[source-metronome-guides-platform-configuration-role-based-access-rbac]] to Sources and recompute source_count. Do not claim a custom-role permission model or a complete token lifecycle from this guide."
+    ],
+    "concepts": [
+      "Coordinator audit: update wiki/concepts/metronome/metronome-security-principles.md with the RBAC role definitions, the identity-provider claim/default-denial setup, the no-SSO full-access condition, and token role selection at creation. Add [[source-metronome-guides-platform-configuration-role-based-access-rbac]] under Sources. Keep the security-principles statement about explicit grants scoped to its source; the RBAC guide's full-access condition applies to users who already have Metronome access when SSO is not configured.",
+      "Coordinator audit: reconcile this guide's direct selected-role token scoping with [[source-metronome-api-reference-authentication]], which says tokens inherit the creating user's permissions by default. The two statements may describe default versus explicit RBAC assignment, but neither source explicitly explains their precedence; retain both as source-scoped facts and flag the ambiguity rather than infer a universal token-permission rule. No standalone RBAC concept is proposed because this concise configuration guide extends the existing platform-specific security concept."
+    ],
+    "index": [
+      "Coordinator audit: add [[source-metronome-guides-platform-configuration-role-based-access-rbac]] to the Sources section of wiki/metronome-index.md as the RBAC roles, identity-provider claim, SSO dependency, and API-token-role-assignment guide. No root-index entry or comparison is warranted."
+    ],
+    "log": [
+      "Coordinator audit: if promoted, add a newest-first 2026-07-30 entry to wiki/metronome-log.md with the source, raw SHA-256 c04741f28b342fef66f05b2cfecb2d972e28035dcffd434bc8a2a9e14230c0f9, built-in role boundaries, IdP/SSO configuration and default denial, no-SSO full access for users with access, and immutable selected-role token scoping. Note that custom-role permissions, claim/session propagation, token lifecycle, and precedence relative to inherited creator permissions are not established here."
+    ]
+  },
+  "raw_path": "raw/metronome/guides/platform-configuration/role-based-access-rbac-2026-07-13.md",
+  "raw_sha256": "c04741f28b342fef66f05b2cfecb2d972e28035dcffd434bc8a2a9e14230c0f9",
+  "status": "candidate_ready"
+}

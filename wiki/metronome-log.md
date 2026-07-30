@@ -6,6 +6,18 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-07-30 — Metronome Campaign 07 completed
+
+- Result: ten approved jobs, sixteen worker/reviewer attempts, zero failed jobs, and zero rejected jobs; coverage is 225 raw / 50 ingested / 175 pending.
+- Routing: five standard jobs used Terra workers and five strong jobs used Sol workers; every candidate received a distinct fresh Sol full-source review. Strong workers passed first review on 4/5 pages, while standard workers passed first review on 1/5 pages.
+- Dynamic scheduling: three shared sub-agent slots used review-first refill with one worker reserved only when queued work remained and no worker was active; no batch barrier or per-agent worktree was used.
+- Promotion: created [[metronome-subscriptions]] and [[metronome-alerts-and-notifications]], updated eleven existing Metronome concepts, and promoted the ten approved sources with exact canonical URLs and path-qualified raw backlinks.
+- Sources: [[source-metronome-guides-pricing-packaging-subscription-subscription-overview]], [[source-metronome-guides-pricing-packaging-subscription-define-subscription-pricing]], [[source-metronome-guides-pricing-packaging-subscription-manage-subscription-lifecycle]], [[source-metronome-guides-platform-configuration-role-based-access-rbac]], [[source-metronome-guides-pricing-packaging-billing-model-guides-pay-as-you-go]], [[source-metronome-guides-implement-metronome-planning-your-billing-architecture]], [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]], [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]], [[source-metronome-api-reference-billable-metrics-get-a-billable-metric]], and [[source-metronome-api-reference-billable-metrics-get-billable-metrics-for-a-customer]].
+- Verification: ten manifest hashes, promoted-candidate byte equality, canonical/raw links, company/index entries, and required fact backlinks pass; targeted validation passes for all 25 frontmatter-bearing touched pages, and the capsule reports 225 raw / 50 sources / 175 pending.
+- Independent query audit: the three immutable manifest samples passed 9/9 queries with 0 partial and 0 fail; no expansion to all ten pages was required.
+- Pilot issues retained for follow-up: an initial temporary status-literal prompt error was blocked before campaign mutation; one worker identity label did not match its authoritative job name although the correct raw/order was processed; and one coordinator backlink omission was found and repaired before audit. The journal lacks timestamps, so no measured elapsed-time improvement is claimed.
+- Evidence: [selection and result](../tracking/ingest/metronome/metronome-campaign-07/selection-review.md), [quality audit](../tracking/ingest/metronome/metronome-campaign-07/quality-audit.md), [monitor](../tracking/ingest/metronome/metronome-campaign-07/monitor.md), and [event journal](../tracking/ingest/metronome/metronome-campaign-07/events.jsonl).
+
 ## 2026-07-30 — Metronome Campaign 06 completed
 
 - Result: ten approved jobs, one retained failed attempt, one successful retry, and zero rejected jobs; coverage is 225 raw / 40 ingested / 185 pending.
