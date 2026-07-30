@@ -60,7 +60,7 @@ APPENDIX_A_INVENTORY = (
     ('stripe/stripe-cli', 'https://github.com/stripe/stripe-cli', 'cli', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-android', 'https://github.com/stripe/stripe-android', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('stripe/link-cli', 'https://github.com/stripe/link-cli', 'cli', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('stripe/stripe-react-native', 'https://github.com/stripe/stripe-react-native', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('stripe/stripe-react-native', 'https://github.com/stripe/stripe-react-native', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-ios-spm', 'https://github.com/stripe/stripe-ios-spm', 'release-mirror', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('stripe/stripe-php', 'https://github.com/stripe/stripe-php', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-node', 'https://github.com/stripe/stripe-node', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
@@ -664,6 +664,61 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(2500000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(280, capsule.max_packet_files)
         self.assertEqual(3000000, capsule.max_packet_utf8_bytes)
+
+    def test_stripe_react_native_uses_the_cross_platform_public_source_profile(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        react_native = next(
+            repo for repo in repos if repo.id == "stripe/stripe-react-native"
+        )
+
+        self.assertTrue(react_native.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:@stripe/stripe-react-native@0",
+                    "latest-stable",
+                    "all-stable",
+                ),
+            ),
+            react_native.version_tracks,
+        )
+        self.assertEqual(1, len(react_native.capsules))
+        capsule = react_native.capsules[0]
+        self.assertEqual("stripe-react-native-public-source", capsule.id)
+        self.assertEqual("npm-tracked-source-v1", capsule.adapter)
+        self.assertEqual(("@stripe/stripe-react-native",), capsule.focus_packages)
+        self.assertEqual("internal-runtime-closure", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(
+            ("android/src/main", "ios", "src"),
+            capsule.default_required_roots,
+        )
+        self.assertEqual(("lib/",), capsule.default_generated_target_paths)
+        self.assertEqual(
+            (
+                "CHANGELOG.md",
+                "MIGRATING.md",
+                "android/build.gradle",
+                "android/gradle.properties",
+                "example/src/screens/ApplePayScreen.tsx",
+                "example/src/screens/ConnectAccountOnboardingScreen.tsx",
+                "example/src/screens/CustomerSheetScreen.tsx",
+                "example/src/screens/EmbeddedPaymentElementScreen.tsx",
+                "example/src/screens/GooglePayScreen.tsx",
+                "example/src/screens/Onramp/CryptoOnrampFlow.tsx",
+                "example/src/screens/PaymentSheetDeferredIntentScreen.tsx",
+                "example/src/screens/PaymentSheetWithSetupIntent.tsx",
+                "stripe-react-native.podspec",
+            ),
+            capsule.include_paths,
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(340, capsule.max_capsule_files)
+        self.assertEqual(3000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(380, capsule.max_packet_files)
+        self.assertEqual(3500000, capsule.max_packet_utf8_bytes)
 
     def test_registry_matches_appendix_a_inventory_and_collection_cadence(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
