@@ -64,7 +64,7 @@ APPENDIX_A_INVENTORY = (
     ('stripe/stripe-ios-spm', 'https://github.com/stripe/stripe-ios-spm', 'release-mirror', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('stripe/stripe-php', 'https://github.com/stripe/stripe-php', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-node', 'https://github.com/stripe/stripe-node', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('stripe/stripe-js', 'https://github.com/stripe/stripe-js', 'web-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('stripe/stripe-js', 'https://github.com/stripe/stripe-js', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/sync-engine', 'https://github.com/stripe/sync-engine', 'tooling', 'tier2', 'commit', False, 'default-branch', 'monthly'),
     ('stripe/react-stripe-js', 'https://github.com/stripe/react-stripe-js', 'web-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-terminal-ios', 'https://github.com/stripe/stripe-terminal-ios', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
@@ -582,6 +582,53 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
         self.assertEqual(200, capsule.max_capsule_files)
         self.assertEqual(1500000, capsule.max_capsule_utf8_bytes)
+
+    def test_stripe_js_uses_the_root_npm_public_source_profile(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        stripe_js = next(repo for repo in repos if repo.id == "stripe/stripe-js")
+
+        self.assertTrue(stripe_js.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:@stripe/stripe-js@8",
+                    "latest-stable",
+                    "none",
+                ),
+                VersionTrack(
+                    "package:@stripe/stripe-js@9",
+                    "latest-stable",
+                    "all-stable",
+                ),
+            ),
+            stripe_js.version_tracks,
+        )
+        self.assertEqual(1, len(stripe_js.capsules))
+        capsule = stripe_js.capsules[0]
+        self.assertEqual("stripe-js-public-source", capsule.id)
+        self.assertEqual("npm-tracked-source-v1", capsule.adapter)
+        self.assertEqual(("@stripe/stripe-js",), capsule.focus_packages)
+        self.assertEqual("internal-runtime-closure", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(
+            (
+                "examples/parcel/src",
+                "examples/rollup/src",
+                "pure",
+                "src",
+                "types",
+            ),
+            capsule.default_required_roots,
+        )
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual((), capsule.include_paths)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(160, capsule.max_capsule_files)
+        self.assertEqual(2000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(200, capsule.max_packet_files)
+        self.assertEqual(2500000, capsule.max_packet_utf8_bytes)
 
     def test_registry_matches_appendix_a_inventory_and_collection_cadence(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
