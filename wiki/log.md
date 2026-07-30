@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-30] ingest | GitHub stripe/stripe-js — `@stripe/stripe-js@9.12.1`
+
+- Full serial ingest of `github-82cea027945f7df14795` from exact SHA `43d35b1b0e324475ea9f9cb867ad2c4e7dabe3f8`.
+- Preserved the v8.11.0 baseline and added the cumulative v8-to-v9 transition from the complete 79-file `dahlia` capsule.
+- Separated the 9.12.1 Parcel dependency patch note from major-version findings: Checkout entrypoint reshaping, beta Form SDK, expanded Elements and Checkout state, removed typed Source helpers, and Shared Payment Token next-action typing.
+- Updated the Stripe company, Elements and Checkout concepts, provider index, and dated Clover contradiction warning without changing source count.
+
 ## [2026-07-30] ingest | GitHub stripe/stripe-js — `@stripe/stripe-js@8.11.0`
 
 - Full serial ingest of `github-cb3904e11eff1c98f76d` from exact SHA `d7bbb144b783287300ff7e63aec7c8133b52460e`.

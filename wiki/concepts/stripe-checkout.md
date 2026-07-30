@@ -41,6 +41,19 @@ The `@stripe/stripe-js@8.11.0` declarations expose three distinct Checkout entry
 
 The v8 `StripeCheckout` interface provides element creation and lookup plus `loadActions()`. Its actions cover confirmation, promotion codes, shipping and billing addresses, contact details, line-item quantities, tax IDs, shipping options, and server updates. These declarations are a historical package baseline; later major versions can rename or reshape the interfaces without erasing the v8 evidence. See [[source-github-stripe-js]] and [[changelog-github-stripe-js]].
 
+## Historical Stripe.js v9 API Transition
+
+The retained `@stripe/stripe-js@9.12.1` declarations target the `dahlia` Stripe.js train and reshape the v8 Checkout entrypoints:
+
+- `initCheckout()` is removed in favor of `initCheckoutElementsSdk()`.
+- `initCheckoutFormSdk()` adds a beta Checkout Form SDK whose UI owns contact, address, and tax-ID updates rather than exposing those imperative action methods.
+- `initEmbeddedCheckout()` becomes `createEmbeddedCheckoutPage()`.
+- Payment Form Element naming becomes Checkout Form.
+- Checkout actions add element validation and optional-line-item add/remove operations.
+- Session state adds optional items, removable line items, price IDs, decimal unit amounts, currency options, and surcharge status and totals.
+
+This is a cumulative v8-to-v9 package comparison, not the 9.12.1 patch note alone. The older [[source-stripe-checkout-elements-beta-changelog]] remains useful as dated Clover migration evidence, but its “latest” label and `initCheckout()` example are not current for the retained v9 declarations.
+
 ## Checkout Sessions vs Payment Intents (for Elements)
 
 Both integrate with Elements + Appearance API. **Use Checkout Sessions for most integrations** — it handles the same payment flows as Payment Intents with significantly less code.
@@ -182,7 +195,7 @@ Both integrate with Elements + Appearance API. **Use Checkout Sessions for most 
 - [[source-stripe-checkout-sessions-vs-payment-intents]] — Official comparison: 11-row feature matrix, session expiration, webhook lifecycle scope, Adaptive Pricing exclusivity
 - [[source-stripe-checkout-elements-quickstart]] — Checkout Elements quickstart: CheckoutElementsProvider, useCheckout hook, 4 elements, return page, Adaptive Pricing, Stripe Tax
 - [[source-stripe-web-elements-overview]] — Stripe Elements overview: 7 elements, API comparison diagram, features
-- [[source-github-stripe-js]] — package-qualified `@stripe/stripe-js@8.11.0` Checkout and Embedded Checkout type baseline
+- [[source-github-stripe-js]] — package-qualified `@stripe/stripe-js@8.11.0` baseline and `9.12.1` Checkout API transition
 - [[stripe-elements]] — Stripe Elements concept page (all 7 elements, React integration patterns)
 - [[source-stripe-checkout-custom-components]] — Custom fields (3 types), custom text (4 placements), ToS consent, payment method reuse agreement, localization, Dashboard policies
 - [[source-stripe-inapp-digital-goods-checkout]] — iOS digital goods app-to-web flow: origin_context=mobile_app, Universal Links, SKPaymentQueue gate, checkout.session.completed fulfillment

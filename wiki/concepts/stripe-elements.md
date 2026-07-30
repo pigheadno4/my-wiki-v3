@@ -69,15 +69,16 @@ import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-
 
 ## Stripe.js Loader Boundary
 
-The `@stripe/stripe-js` npm package is a loader and TypeScript declaration package, not a bundled copy of the Stripe.js runtime. For the historical `@stripe/stripe-js@8.11.0` baseline:
+The `@stripe/stripe-js` npm package is a loader and TypeScript declaration package, not a bundled copy of the Stripe.js runtime. The retained history now covers `@stripe/stripe-js@8.11.0` and the full transition to `@stripe/stripe-js@9.12.1`:
 
 - Stripe.js must load from `https://js.stripe.com`; the runtime cannot be bundled or self-hosted.
-- The v8 package targets the `clover` Stripe.js release train and exposes CommonJS, ES module, and TypeScript declaration entrypoints.
+- The v8 package targets `clover`; v9 targets `dahlia`. Package versions pin declaration trains but do not prove runtime feature availability.
 - Importing `@stripe/stripe-js` schedules script loading as a side effect. Importing `@stripe/stripe-js/pure` defers loading until `loadStripe()` is called.
 - `loadStripe()` resolves to `null` in a server environment, caches a browser load attempt, and clears the cached promise after a load failure so a later call can retry.
 - Only the pure entrypoint exposes `loadStripe.setLoadParameters({advancedFraudSignals})`, and parameters cannot change after the first `loadStripe()` call.
+- In v9, `elements.update()` returns `Promise<void>`. Contact Details and beta Terms Element entrypoints are added, Payment Element can emit `availablepaymentmethodschange`, and Tax ID Element can expose verification status.
 
-See [[source-github-stripe-js]] for the package-qualified v8 source baseline and exact implementation evidence.
+See [[source-github-stripe-js]] for package-qualified v8 and v9 implementation evidence.
 
 ## Card Element (Legacy)
 
@@ -145,7 +146,7 @@ const error = await actions.confirm();
 - [[source-stripe-payment-intents-quickstart]] — Payment Intents quickstart (Payment Intents + Elements)
 - [[source-stripe-react-stripejs]] — React Stripe.js reference: CheckoutElementsProvider, useCheckoutElements, Elements provider, useStripe/useElements, ElementsConsumer
 - [[source-github-react-stripe-js]] — react-stripe-js repo v6.3.0: Elements.tsx, createElementComponent factory, EmbeddedCheckoutProvider, CheckoutElementsProvider impl, examples
-- [[source-github-stripe-js]] — `@stripe/stripe-js@8.11.0` loader, runtime boundary, public type surface, and Elements entrypoints
+- [[source-github-stripe-js]] — package-qualified `@stripe/stripe-js@8.11.0` and `9.12.1` loader, runtime boundary, public type surface, and Elements history
 - [[source-stripe-elements-advanced-payments]] — Checkout Sessions vs Payment Intents feature matrix
 - [[source-stripe-payment-element]] — Payment Element reference: layout, Appearance API, 8 options, combining elements, 17 error codes
 - [[source-stripe-payment-element-best-practices]] — Best practices: LLM instruction, HTML confirm pattern, 7-item checklist, 5-item features checklist

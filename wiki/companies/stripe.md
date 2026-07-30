@@ -43,7 +43,7 @@ Created when a PaymentIntent is confirmed. Represents one specific attempt to mo
 
 Drop-in UI components for custom integrations. Enables custom-built checkout flows while Stripe handles PCI compliance and UI rendering.
 
-The `@stripe/stripe-js` npm package is the web loader and TypeScript declaration layer for Stripe.js, not a self-hosted runtime. Its retained v8.11.0 baseline loads the `clover` train from `js.stripe.com`, supports standard and deferred `/pure` entrypoints, and resolves to `null` outside a browser. See [[source-github-stripe-js]].
+The `@stripe/stripe-js` npm package is the web loader and TypeScript declaration layer for Stripe.js, not a self-hosted runtime. The retained history covers v8.11.0 on `clover` and v9.12.1 on `dahlia`, while preserving standard and deferred `/pure` entrypoints and server-side `null` behavior. V9 reshapes Checkout entrypoints, expands Elements types, and removes typed client-side Source helpers. See [[source-github-stripe-js]].
 
 ### Express Checkout Element
 

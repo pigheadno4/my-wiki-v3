@@ -14,6 +14,9 @@ Migration guide from older beta versions to the stable Clover (latest) and Basil
 
 > The wiki's current code examples already reflect Clover behavior (`loadActions()`, `@stripe/react-stripe-js/checkout`, `useCheckout()` returning a disjoint union).
 
+> [!warning] Contradiction
+> “Latest” is relative to this page's 2026-04-22 collection. The retained `@stripe/stripe-js@9.12.1` source targets `dahlia`, removes `initCheckout()`, and uses `initCheckoutElementsSdk()` for the Elements path. Keep this page as historical Clover migration evidence; use [[source-github-stripe-js]] and [[changelog-github-stripe-js]] for package-qualified v9 behavior.
+
 ## Clover (Latest) — Key Breaking Changes
 
 Requires: `@stripe/stripe-js >= 8.0.0`, `@stripe/react-stripe-js >= 5.0.0`, API version `2025-09-30.clover`

@@ -55,10 +55,10 @@
 - Repository: `stripe/stripe-js`
 - SHA: `43d35b1b0e324475ea9f9cb867ad2c4e7dabe3f8`
 - Collection date: `2026-07-30`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None
