@@ -1,6 +1,6 @@
 # Metronome Campaign 06 Selection Review
 
-Status: `proposed`
+Status: `complete`
 
 Manifest: [manifest.json](manifest.json)
 
@@ -63,3 +63,23 @@ Before Campaign 06 can be called complete:
 5. An independent query-quality audit samples all ten sources with one core, one boundary, and one trap question before any recommendation to increase scale again.
 
 Campaign initialization and worker launch require approval of this exact proposal.
+
+## Execution result
+
+- Routing: five standard jobs used native GPT-5.6 Terra and five strong jobs used native GPT-5.6 Sol.
+- Scheduling: no more than three workers ran concurrently; a freed slot started the queued retry without waiting for a batch barrier.
+- Worker boundary: workers read one complete raw page and wrote isolated fixed-schema candidates under `/private/tmp`; only the Sol coordinator wrote shared repository files.
+- Review: Sol reread all ten raw pages, promoted concept-first, preserved contradictions and unknowns, reconciled links, and validated each source.
+- Retry behavior: nine jobs passed on attempt 1. `provision-customer` attempt 1 failed a byte-for-byte quote check; evidence was retained, and a fresh Terra attempt 2 passed and was approved.
+- Final result: 10 approved jobs, 1 failed attempt, 1 retry, and 0 rejected jobs.
+- Coverage after promotion: 40 Metronome source summaries ingested and 185 documentation pages pending.
+
+## Quality and graduation result
+
+The independent query audit initially produced 29 pass, 1 partial, and 0 fail across 30 tests. A one-sentence creation-time recommendation was restored to the customer source; the final result is 30 pass, 0 partial, and 0 fail.
+
+Every source and raw link resolves, each Campaign 06 source appears exactly once in the company page and provider index, all manifest hashes match, targeted validation passes, the capsule reconciles 225/40/185, and the full suite passed 548 tests.
+
+Concept backlinks use a narrow fact-based rule: company and provider index are exhaustive catalogs, while a concept cites a source only when that source contributes a durable fact. Navigation-only source links do not force mechanical reciprocal citations.
+
+Campaign 06 is complete, but it does not graduate the workflow to reduced testing or parallel review because one first attempt was malformed. Evidence: [quality-audit.md](quality-audit.md).

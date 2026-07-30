@@ -20,7 +20,7 @@ Metronome's documentation presents usage-oriented billing as a pricing and packa
 
 ## Adjacent billing domains
 
-The documentation landing page routes readers toward billing architecture planning and getting-started material, then highlights contracts, invoicing, and revenue recognition as adjacent areas. It does not establish the detailed sequence connecting those areas.
+The documentation landing page routes readers toward billing architecture planning and getting-started material, then highlights contracts, invoicing, and revenue recognition as adjacent areas. The architecture guide establishes the main sequence: applications send usage events; billable metrics calculate quantities; products and rate cards define what is sold and its default price; contracts add customer-specific commercial terms; and invoices apply those inputs. It separates event-time alert evaluation and on-demand API views from invoice finalization at billing-cycle close.
 
 The credits-and-commits guide supplies one implementation path for hybrid subscription and usage models: recurring credits provide free periodic usage, recurring commits provide paid periodic usage, and each period receives a distinct balance ledger. Uncovered usage remains available for overage billing.
 
@@ -49,3 +49,4 @@ These remaining questions require dedicated sources and are not fully answered b
 - [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]] — event aggregation, product and rate-card roles, contract overrides, and metric testing
 - [[source-metronome-api-reference-invoices-preview-events]] — pre-processing draft-invoice calculation from proposed usage events
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-create-a-pre-paid-commit]] — recurring free or paid grants, balances, and overage boundary
+- [[source-metronome-guides-get-started-how-metronome-works]] — ordered event-to-invoice architecture and timing boundaries

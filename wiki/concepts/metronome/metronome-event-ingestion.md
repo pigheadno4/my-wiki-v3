@@ -7,7 +7,7 @@ tags: [metronome, usage-events, metering, idempotency]
 
 ## Definition
 
-Metronome event ingestion accepts application usage payloads through the `/ingest` endpoint. Events carry an idempotency key, occurrence time, customer identifier, event type, and arbitrary properties that downstream billable metrics can filter, aggregate, and group.
+Metronome event ingestion accepts application usage payloads through the `/ingest` endpoint. Events carry an idempotency key, occurrence time, customer identifier, event type, and optional properties that downstream billable metrics can filter, aggregate, and group.
 
 ## Event contract
 
@@ -16,7 +16,7 @@ Metronome event ingestion accepts application usage payloads through the `/inges
 - `timestamp` is required and RFC 3339 formatted. The API reference permits historical events up to 34 days in the past.
 - `customer_id` is required and may be a Metronome customer ID or an application-defined ingest alias.
 - Customer creation accepts up to 2,000 ingest aliases of 1–128 characters each; the older `external_id` alias field is deprecated.
-- `event_type` is a required nonempty string, and optional `properties` can contain arbitrary metering and grouping data.
+- `event_type` is a required nonempty string, and optional `properties` can contain metering and grouping data. The endpoint schema treats the map as an object, while the implementation guide recommends representing every property key and value as a string to avoid floating-point precision loss; Metronome says it computes with arbitrary-precision decimals internally.
 - The dashboard quickstart describes `transaction_id`, `customer_id`, `event_type`, and `timestamp` as required and permits up to 2,000 event properties.
 
 ## Event design
@@ -29,6 +29,8 @@ Keeping available context in `properties` preserves future options. In the docum
 
 An accepted event is not automatically billable. It must match a billable metric and a customer before it contributes to billing. New streaming metrics match later events by default; the create-metrics guide says Metronome retains raw events and can perform a representative-assisted reflow for earlier events, without documenting service guarantees.
 
+One event can feed multiple billable metrics. Metronome presents this separation as allowing the producer's instrumentation to remain stable while metering configuration changes, but the architecture guide does not define edit eligibility, effective timing, or retroactive behavior; the forward-only default and assisted-reflow exception below still apply.
+
 The ingest reference documents only a `200 Success` response without a body schema. It does not define partial-batch acceptance, validation errors, duplicate indicators, ordering, retry semantics, future timestamps, payload-collision behavior, or whether the 34-day cutoff is inclusive.
 
 ## Scale, observability, and recovery
@@ -38,6 +40,9 @@ The ingest reference documents only a `200 Success` response without a body sche
 - The event explorer can inspect payloads, duplicates, customer and billable-metric attribution, transaction IDs, and CSV exports. For continuous checks, the Event Search API can sample raw events and verify that they still match active billable metrics.
 - The scale guide recommends queueing, retries, message-queue logging, alerting, and dead-letter queues around the producer pipeline.
 - Historical ingest and deduplication use a 34-day window through the same ingest endpoint. The guide says this supports traffic replay and real-time re-rating of draft invoices and credit ledgers; older corrections require Metronome operations.
+- For direct API delivery, the implementation guide says to retry network and `5xx` failures until `200` because a failed call can be partially ingested. On `429`, back off with increasing exponential delays; move other `4xx` payload failures to a dead-letter queue instead of automatically retrying them.
+- Metronome can configure a chosen trial API failure rate in Sandbox or Production; the guide recommends 20%. Producers should log message-queue traffic during initial integration and whenever the event structure changes.
+- Periodic heartbeat events should use a deterministic transaction ID such as `<node id>_<floor(unix_now()/60)>` and send at least two heartbeats per measurement period. Duplicate IDs are ignored, reducing the chance that timer imprecision or delay leaves a measurement gap.
 
 ## Invoice preview boundary
 
@@ -56,6 +61,8 @@ Dashboard test-event entry is a separate Sandbox-only path. Its transaction ID m
 - [[source-metronome-api-reference-idempotency]] — transaction-ID duplicate suppression, retention, and retry guidance
 - [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]] — post-ingest matching test and assisted-reflow exception
 - [[source-metronome-api-reference-customers-create-a-customer]] — ingest-alias provisioning, limits, and deprecation boundary
+- [[source-metronome-guides-implement-metronome-core-concepts-send-usage-events]] — producer-side event representation, retry and DLQ behavior, resilience testing, and heartbeat guidance
+- [[source-metronome-guides-get-started-how-metronome-works]] — one-event-to-many-metrics relationship and instrumentation boundary
 
 ## Related
 

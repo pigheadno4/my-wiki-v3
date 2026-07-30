@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 30 |
-| Documentation pages pending ingest | 195 |
+| Source summaries ingested | 40 |
+| Documentation pages pending ingest | 185 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -53,6 +53,16 @@ Operational evidence:
 - [[source-metronome-guides-platform-configuration-setup-webhooks]] — event families, retry and duplicate handling, signature verification, and Slack delivery
 - [[source-metronome-guides-platform-configuration-security-principles]] — least privilege, zero-trust communication, and short-lived credentials
 - [[source-metronome-api-reference-authentication]] — bearer-token creation, SDK configuration, permission scopes, and archival
+- [[source-metronome-api-reference-introduction]] — API directory, stated platform capabilities, SDK routes, and endpoint-domain map
+- [[source-metronome-api-reference-postman]] — live OpenAPI import, collection bearer-token setup, and illustrative customer request
+- [[source-metronome-api-reference-api-quickstart]] — token creation, four SDK installs, environment configuration, and connectivity test
+- [[source-metronome-guides-implement-metronome-core-concepts-send-usage-events]] — producer event representation, queue/retry policy, heartbeat idempotence, and asynchronous customer matching
+- [[source-metronome-guides-implement-metronome-core-concepts-create-products-contracts]] — product types, price ownership, creation, effective-dated edits, tags, and group keys
+- [[source-metronome-guides-get-started-how-metronome-works]] — ordered event-to-invoice architecture, object responsibilities, and timing boundaries
+- [[source-metronome-guides-implement-metronome-core-concepts-provision-contract]] — contract provisioning, charge consolidation, provider attachment, discounts, and usage filters
+- [[source-metronome-guides-implement-metronome-core-concepts-create-manage-rate-cards]] — aliases, effective changes, dimensional pricing, and tiers
+- [[source-metronome-api-reference-billable-metrics-create-a-billable-metric]] — create schema, filters, SQL exclusivity, contradictions, and UUID response
+- [[source-metronome-guides-implement-metronome-core-concepts-provision-customer]] — alias hierarchy, retroactive association, rating prerequisite, and provider routing
 
 ## Concepts
 

@@ -12,24 +12,35 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 ## Products
 
 - The guide lists usage, fixed, composite, and subscription product types.
-- A usage product can reference a billable metric.
+- Usage products vary with reported usage and each references exactly one previously created billable metric; one metric can support multiple products.
+- Composite products apply a percentage charge over applicable products, subscription products charge recurring fees, and fixed products support scheduled charges, commits, and credits.
+- Products determine charge mechanics and invoice presentation, but price ownership remains downstream: usage, composite, and subscription prices live on rate cards and can be modified on contracts; fixed-product prices live on contracts.
 - `presentation_group_key` can group invoice line items by an event-property value.
 - Pricing and presentation group keys on a product must be a subset of the underlying metric's group keys; both can be used together.
 - When both presentation and pricing dimensions are required, the metric must define one compound group key containing every property used by either product key.
 - `quantity_conversion` can multiply or divide displayed quantities, such as converting individual tokens to millions of tokens.
 - A rounding conversion can change display granularity, such as rounding seconds to minutes.
+- Product edits are effective-dated and can start in the future or apply retroactively from a past `Starting at` value. Name, tags, metric, conversion, rounding, and API-only group-key fields are editable while billing is active, but product type is immutable; correcting it requires a replacement product and archival of the original.
+- Product tags can also store internal catalog identifiers and select products for composites, commits, and discounts.
 
 ## Rate cards and rates
 
+- Card creation accepts a name, optional description and effective-dated aliases, selected products, one fiat currency, and product rates, entitlements, and effective dates. Aliases can stand in for generated IDs during contract provisioning, but uniqueness, overlap, boundary lookup, and reuse are undocumented.
+- Metadata edits cover name, description, aliases, and newly rated products. Price changes instead add a future-effective rate; the guide does not define overlap, automatic ending, backdating, deletion, currency changes, grandfathering, or invoice recalculation.
 - `entitled` controls whether a rate appears on customer invoices by default; a non-entitled rate requires a contract-level override.
 - The guide lists flat and tiered rates.
 - USD prices are expressed in cents, while the guide says other currencies use whole units and points to its currency-denomination guide for details.
 - `starting_at` and `ending_before` establish effective periods so rates can evolve over time.
+- The architecture guide describes rate cards as reusable default pricing that flows into multiple customer commercial models. Contract-specific discounts and per-unit overrides remain a separate layer; the guide does not establish precedence, grandfathering, or rollout timing when shared rates change.
 - A rate card uses one fiat currency. The dashboard guide recommends a shared standard rate card, with contract-level overrides for customer-specific prices.
 - Rate-card options include dimensional values, volume tiers, custom pricing-unit conversions, commit-specific rates, and date-effective rate changes.
+- Dimensional pricing maps one metric and one product to many rates selected by group-key combinations. The guide's 216-combination example is illustrative, not a platform limit; fallback, missing-combination, and multi-match precedence are undocumented.
+- Tier minimums are exclusive and maximums inclusive. One tier configuration applies independently per presentation-group value, and each tier appears as its own invoice line. Tier-count, validation, gap, and overlap behavior remain undocumented.
 - Prepaid thresholds can be denominated in a custom pricing unit. Metronome evaluates the threshold and recharge target in that unit, then uses the customer's rate-card conversion to calculate the fiat payment.
 
 ## Enterprise design
+
+- Contracts build on a selected rate card but may also carry fixed products outside it. The provisioning guide's cloud-tag example adds an entitled `0.95` multiplier; dimensional pricing requires an override for each relevant group-key and product combination.
 
 - Product tags can group products that are priced, discounted, or packaged similarly, allowing contract overrides to target a group instead of enumerating product IDs.
 - Every invoice charge is associated with a product, including one-time charges and upfront payments for prepaid commitments; the guide models these as fixed products.
@@ -43,6 +54,12 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 > [!warning] Documentation ambiguity
 > The Stripe Tax guide creates `stripe_product_id` on Metronome's `Product` entity but maps it from `ContractProduct`. The page does not reconcile those labels.
 
+> [!warning] Rate-card documentation inconsistencies
+> The guide alternates between `/addRates` and `/addRate`, and between `"FLAT"` and `"tiered"` casing. It also says all contracts are built on rate cards while the create-contract schema makes package or rate-card selection optional. Confirm current API behavior rather than inferring endpoint aliases, enum normalization, or an implicit card.
+
+> [!info] Retroactive edit boundary
+> The product guide permits retroactive effective dates but does not explain recalculation, draft-versus-finalized invoice effects, historical visibility after archival, or how existing commits, credits, discounts, and scheduled charges follow the change.
+
 ## Sources
 
 - [[source-metronome-guides-get-started-developer-sdks]] — introductory product, quantity-conversion, rate-card, and effective-date workflow
@@ -54,6 +71,10 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 - [[source-metronome-integrations-tax-integrations-stripe-tax]] — Stripe product and tax-code mapping
 - [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]] — compound group-key design and metric-to-product pricing flow
 - [[source-metronome-api-reference-contracts-amend-a-contract]] — legacy override types, selector exclusivity, priority, and minimum behavior
+- [[source-metronome-guides-implement-metronome-core-concepts-create-products-contracts]] — product types, price ownership, creation, effective-dated edits, tags, and group keys
+- [[source-metronome-guides-get-started-how-metronome-works]] — reusable pricing layer, presentation controls, and automatic-flow claim
+- [[source-metronome-guides-implement-metronome-core-concepts-provision-contract]] — contract layering, tag-scoped multiplier, and dimensional override requirement
+- [[source-metronome-guides-implement-metronome-core-concepts-create-manage-rate-cards]] — card creation, aliases, effective changes, dimensional rates, and tiers
 
 ## Related
 

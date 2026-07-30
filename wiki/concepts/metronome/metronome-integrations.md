@@ -39,7 +39,11 @@ Metronome can schedule contract invoice delivery among Stripe, NetSuite, and AWS
 
 Metronome owns the provider schedule and invoice routing. The guide does not document how destination accounts are provisioned, reconciled, or checked for readiness before a scheduled segment becomes active.
 
+The architecture overview names payment systems and marketplaces as the contract's delivery destination and says finalized invoices are sent to a selected downstream system at cycle close. It does not allocate configuration, payment collection, retry, or failure responsibilities, so the dedicated integration sources remain authoritative.
+
 ## Customer-provisioning configuration
+
+The external billing system must be connected before its customer configuration is created. Customer-level AWS configuration alone does not route invoices; a contract must select it. Beta archival makes a configuration reusable elsewhere but immediately removes it from an active contract and stops destination billing, with no replacement allowed on that contract according to this guide.
 
 Customer creation can attach configurations for Stripe, NetSuite, AWS Marketplace, Azure Marketplace, or GCP Marketplace. Each billing configuration requires a provider; delivery can be identified by a delivery-method UUID or a named method such as direct provider delivery, AWS SQS, Tackle, or AWS SNS. Provider-specific configuration is open-ended, and its empty-object default is invalid for most provider/delivery combinations.
 
@@ -53,6 +57,8 @@ The optional tax-provider field lists Anrok, Avalara, and Stripe. The source lim
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-prepaid-balance-thresholds]] — Stripe and external threshold payment-gate responsibilities
 - [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] — Stripe, NetSuite, and marketplace transition timing and responsibility
 - [[source-metronome-api-reference-customers-create-a-customer]] — provider, delivery, tax, and revenue-system configuration during provisioning
+- [[source-metronome-guides-get-started-how-metronome-works]] — high-level downstream-destination boundary
+- [[source-metronome-guides-implement-metronome-core-concepts-provision-customer]] — external connection prerequisite, contract selection, and beta archival
 
 ## Related
 

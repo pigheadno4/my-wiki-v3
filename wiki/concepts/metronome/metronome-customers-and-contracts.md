@@ -15,22 +15,33 @@ An ingest alias associates an application-defined identifier with a Metronome cu
 
 An ingest alias is also a persistent idempotency boundary: it cannot be moved to another customer until it is removed from the original customer, even when the original customer is archived.
 
+Because aliases can match events sent before or after the Metronome customer exists, the event guide recommends keeping Metronome out of the producer's critical customer-creation path: create the application customer first, then create the matching Metronome customer asynchronously.
+
+The provisioning guide additionally treats aliases as an enterprise hierarchy mechanism: one Metronome customer can receive usage from sub-organization aliases, with group keys shaping invoice presentation. It explicitly says adding an alias later retroactively associates earlier usage carrying that alias.
+
 ## Customer creation API
 
 `POST /v1/customers` creates a customer for product-led or sales-led provisioning. `name` is the only required payload property; values longer than 160 characters are truncated. A customer may receive up to 2,000 ingest aliases of 1–128 characters each, while the older `external_id` field is deprecated.
 
 Billing-provider and revenue-system configurations can be attached during creation or added later. A contract must select the intended customer configuration because one customer can have multiple invoice destinations. The narrative calls the returned identifier `customer_id`, while the response schema exposes it as `data.id`.
 
+The implementation guide states that a customer needs at least one contract before rating begins. A customer can hold several provider configurations, while each contract selects one, separating customer creation from rating and invoice routing.
+
 ## Contract and invoice behavior
 
 - A basic contract can apply predefined list prices from a rate card.
 - Contract-level terms can add negotiated discounts or commitments.
+- Contracts can modify rate-card prices and hold fixed-product prices, but the product guide does not define price precedence or contract lifecycle behavior.
 - The contract `starting_at` time determines the billing periods for which invoices are generated.
 - Current-period usage appears on a draft invoice, and the guide says its line items update seconds after Metronome receives usage data.
 
 This introductory source does not define the full contract schema, amendment lifecycle, or invoice-state machine; those require dedicated contract and invoicing references.
 
+The architecture guide frames each contract as answering what the customer buys, how they pay, and where charges are delivered. It lists pay-as-you-go arrears, prepaid credits, subscriptions with overage, enterprise commitments, and hybrids, while leaving request validation, effective-time semantics, amendments, and state transitions to dedicated references.
+
 ## Contract creation API
+
+The implementation workflow names six prerequisites: connected usage events, a billable metric, product, rate card, customer, and customer billing-provider configuration. Its worked contract combines an effective start, rate-card alias, provider routing, prepaid commit, scheduled charge, and usage-statement schedule. The page does not reconcile its customer-level configuration prerequisite with the contract-level `billing_provider_configuration` sample.
 
 `POST /v1/contracts/create` requires only `customer_id` and `starting_at` at the top level. Optional structures can apply a rate card or package, commits and credits, overrides, scheduled charges, subscriptions, usage routing, thresholds, provider configuration, and hierarchy behavior.
 
@@ -41,6 +52,8 @@ Important creation constraints include:
 - Subscription quantity requirements depend on `quantity_management_mode`: quantity-only needs `initial_quantity`, while seat-based needs `seat_config`.
 - `uniqueness_key` can prevent duplicate creation; its schema says reuse fails with HTTP 409.
 - The scheduled-charge consolidation setting cannot be changed after the contract is created.
+
+Rate-card aliases can stand in for generated IDs during provisioning, and contract overrides can change tier boundaries or prices for one customer. The rate-card guide says categorically that all contracts are built on cards, while this API surface treats package or rate-card selection as optional; no source explains whether a default or package-resolved card fills that gap.
 
 ## Prepaid threshold configuration
 
@@ -67,6 +80,8 @@ The enterprise guide distinguishes two lifecycle operations. An edit adds terms 
 For recurring-grant upgrades, a renewal at the next period removes future old-contract charges and creates a finalized scheduled invoice plus a new draft usage invoice. A mid-period renewal prorates the first grant and finalizes old-contract usage through the transition date. A backdated renewal moves open-period usage to the replacement contract and uses a one-time adjustment before forward recurrence begins.
 
 ## Billing-provider schedule
+
+A beta workflow permits attaching a billing provider to a previously unconfigured contract at the current period start, including marketplace metering for the whole period. This differs from the next-period-only marketplace transition rule below; the documentation does not establish whether initial attachment and provider-to-provider transition intentionally have different timing.
 
 An existing contract can change invoice destinations without being replaced. `add_billing_provider_configuration_update` on `POST v2/contracts/edit` adds a segment at `START_OF_CURRENT_PERIOD` or `START_OF_NEXT_PERIOD`; the full ordered schedule is returned separately from the backward-compatible currently active configuration.
 
@@ -95,6 +110,12 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - [[source-metronome-api-reference-idempotency]] — ingest-alias reuse, supported uniqueness keys, and HTTP 409 conflict behavior
 - [[source-metronome-api-reference-customers-create-a-customer]] — provisioning flow, alias limits, optional downstream configuration, and response boundary
 - [[source-metronome-api-reference-contracts-amend-a-contract]] — legacy amendment lifecycle, mutation surface, and undocumented state semantics
+- [[source-metronome-guides-implement-metronome-core-concepts-send-usage-events]] — asynchronous customer provisioning and ingest-alias matching boundary
+- [[source-metronome-guides-implement-metronome-core-concepts-create-products-contracts]] — product price-ownership boundary and contract modification context
+- [[source-metronome-guides-get-started-how-metronome-works]] — contract what/how/where boundary and commercial-model examples
+- [[source-metronome-guides-implement-metronome-core-concepts-provision-contract]] — provisioning prerequisites, charge schedules, provider attachment, and usage-filter routing
+- [[source-metronome-guides-implement-metronome-core-concepts-create-manage-rate-cards]] — alias provisioning, reusable standard pricing, customer tier overrides, and card relationship tension
+- [[source-metronome-guides-implement-metronome-core-concepts-provision-customer]] — alias hierarchy, retroactive association, contract rating boundary, and provider assignment
 
 ## Related
 

@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 30
+source_count: 40
 ---
 
 ## Overview
@@ -26,14 +26,21 @@ The documentation home is a navigation overview. The SDK walkthrough adds an int
 - Event design starts from billing and operational requirements, follows the data and cadence available in the source system, and retains contextual properties for future reporting or pricing changes.
 - Billable metrics filter and aggregate events; products and rate cards turn those measurements into prices.
 - Customer contracts apply the rate card and produce draft invoices that update with usage.
+- The architecture guide orders the full flow as usage events, billable-metric quantities, product and rate-card pricing, customer contract terms, and invoice generation. It distinguishes event-time alert evaluation and on-demand API views from cycle-close invoice finalization and downstream delivery.
 - The Preview Events API can calculate draft invoices from proposed usage before processing, using either replacement or merged historical-usage semantics.
 - High-volume ingestion supports batches of 100 events, with documented infrastructure capacity up to 110,000 events per second and a default 5,000-events-per-second limit. Metronome recommends event sampling, queue and retry controls, and dead-letter queues around the producer pipeline.
 
 The ingest endpoint reference separately advertises support for 100,000 events per second and a 34-day historical and deduplication window. It documents only a `200 Success` response without per-event results or errors, so partial-batch, retry, duplicate-response, and exact cutoff semantics remain unspecified.
 
+The implementation guide adds producer recovery behavior: queue direct-ingest events, retry network and `5xx` failures until `200`, back off exponentially after continued `429` responses, and dead-letter other `4xx` payload failures. It recommends string-valued properties, deterministic heartbeat IDs with duplicate sends, configurable failure-rate tests, and asynchronous Metronome customer creation through ingest-alias matching.
+
 The create-contract API adds package or rate-card selection, commits and credits, pricing overrides, subscriptions, scheduled charges, usage routing, threshold billing, provider configuration, and customer hierarchy. Only customer ID and contract start are unconditionally required at the top level; nested requirements depend on the selected structures.
 
+The implementation workflow layers a worked prepaid commit, quarterly platform charge, monthly usage statements, and AWS Marketplace routing onto a rate card. It also documents usage-invoice consolidation, a beta current-period provider attachment that may differ from marketplace transition timing, tag-scoped discounts, and schedulable multi-contract usage filters.
+
 Customer creation requires a name and can attach up to 2,000 ingest aliases plus billing-provider or revenue-system configuration. The page recommends provisioning the downstream payment or ERP customer first and then selecting the intended customer configuration on the contract. Its narrative returns `customer_id`, while the schema returns `data.id`, and the documented 409 conflict does not identify which request field supplies the conflicting customer ID.
+
+The implementation guide adds that aliases can model enterprise sub-organizations and can retroactively associate earlier usage when attached later. A customer needs a contract before rating begins; customer-level provider configuration alone does not route billing, and its beta archival can immediately stop an active contract's destination.
 
 The contract edit-history API exposes recorded changes made through the UI and contract-changing endpoints, grouping additions, updates, archives, and removals for contract audit work.
 
@@ -52,6 +59,12 @@ The customer-commit API supports enterprise-wide and multi-contract spending poo
 The dashboard quickstart provides a no-code first-invoice path through billable metrics, products, rate cards, customer contracts, Sandbox-only test events, and draft-invoice verification. It documents immutable billable-metric configuration, a 2,000-property event limit, and a 24-hour grace period before invoice finalization.
 
 Billable metrics can be streaming queries using `COUNT`, `SUM`, `MAX`, or `LATEST`, or SQL queries for calculations such as distinct counts. Presentation and pricing dimensions must be defined in metric group keys before downstream use; high-cardinality keys can increase API latency. New streaming metrics match later events by default, although Metronome can perform an undocumented representative-assisted reflow over retained raw events.
+
+The create-metric endpoint accepts one named metric using either SQL or mutually exclusive standard fields and returns one UUID. Its schema introduces unresolved contradictions around `UNIQUE`, aggregation-key requiredness, empty exclusion lists, and request-body requiredness, and documents no endpoint-specific errors, limits, or recovery behavior.
+
+Products define charge mechanics and invoice presentation but not price ownership. Usage, composite, and subscription prices live on rate cards and can be modified on contracts; fixed-product prices live on contracts. Product edits are effective-dated and can be retroactive, while product type is immutable and requires replacement plus archival when wrong.
+
+Rate cards centralize one-currency standard pricing, effective-dated aliases, scheduled rates, dimensional combinations, and tiers. The guide preserves inconsistencies between singular/plural add-rate paths and enum casing, plus an unresolved tension between “all contracts use rate cards” and the optional create-contract rate-card/package request family.
 
 The credits-and-commits guide adds recurring grant ledgers, priority and line-item drawdown, renewal-transition behavior, and separately configurable access and invoice schedules. Its worked payloads contain amount, syntax, date, and rollover-fraction inconsistencies, so the dedicated API references remain the implementation authority.
 
@@ -92,6 +105,10 @@ Stripe Tax can calculate tax when Stripe finalizes a Metronome-created invoice. 
 
 The API-authentication page does not state an expiry duration for customer bearer tokens; the 12-hour lifetime above applies only to Metronome engineer credentials.
 
+Metronome's Postman guide imports the live OpenAPI specification, organizes requests by tags, and uses a collection-scoped bearer-token variable. Its customer request and response are illustrative rather than a complete endpoint schema, and the guide does not pin the OpenAPI version or define token lifecycle controls.
+
+The API quickstart provides the first-connection sequence: create and securely copy a named token, install one of four SDKs, use `METRONOME_BEARER_TOKEN` or a supplied bearer token, and list customers even when the account has none. It does not define token lifecycle policy, SDK versions, general error behavior, or numeric limits.
+
 ## Reporting and data export
 
 - Warehouse exports cover raw events, customers, invoices, contracts, pricing, packages, payments, alerts, and metadata.
@@ -103,8 +120,8 @@ The API-authentication page does not state an expiry duration for customer beare
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 30
-- Documentation pages pending ingest: 195
+- Ingested source summaries: 40
+- Documentation pages pending ingest: 185
 
 ## Sources
 
@@ -138,6 +155,16 @@ The API-authentication page does not state an expiry duration for customer beare
 - [[source-metronome-guides-platform-configuration-setup-webhooks]] — webhook categories, retry behavior, deduplication, and verification
 - [[source-metronome-guides-platform-configuration-security-principles]] — least privilege, zero trust, and short-lived credentials
 - [[source-metronome-api-reference-authentication]] — customer bearer-token creation, SDK use, permissions, and archival
+- [[source-metronome-api-reference-introduction]] — API directory, stated platform capabilities, SDK routes, and endpoint-domain map
+- [[source-metronome-api-reference-postman]] — live OpenAPI import, collection bearer-token setup, and illustrative customer request
+- [[source-metronome-api-reference-api-quickstart]] — token creation, four SDK installs, environment configuration, and connectivity test
+- [[source-metronome-guides-implement-metronome-core-concepts-send-usage-events]] — producer event representation, queue/retry policy, heartbeat idempotence, and asynchronous customer matching
+- [[source-metronome-guides-implement-metronome-core-concepts-create-products-contracts]] — product types, price ownership, creation, effective-dated edits, tags, and group keys
+- [[source-metronome-guides-get-started-how-metronome-works]] — ordered event-to-invoice architecture, object responsibilities, and timing boundaries
+- [[source-metronome-guides-implement-metronome-core-concepts-provision-contract]] — contract provisioning, charge consolidation, provider attachment, discounts, and usage filters
+- [[source-metronome-guides-implement-metronome-core-concepts-create-manage-rate-cards]] — aliases, effective changes, dimensional pricing, and tiers
+- [[source-metronome-api-reference-billable-metrics-create-a-billable-metric]] — singular create schema, filters, SQL exclusivity, contradictions, and UUID response
+- [[source-metronome-guides-implement-metronome-core-concepts-provision-customer]] — alias hierarchy, retroactive association, rating prerequisite, and provider routing
 
 ## Related
 

@@ -6,6 +6,111 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-07-30 — Metronome Campaign 06 completed
+
+- Result: ten approved jobs, one retained failed attempt, one successful retry, and zero rejected jobs; coverage is 225 raw / 40 ingested / 185 pending.
+- Routing and scheduling: five Terra standard candidates and five Sol strong candidates, with at most three workers active and immediate refill rather than batch barriers.
+- Independent query audit: initial 29 pass / 1 partial / 0 fail; after restoring one customer-creation recommendation, final 30 pass / 0 partial / 0 fail.
+- Verification: all manifest hashes match, ten sources pass targeted validation, capsule counts reconcile, and the full 548-test suite passed.
+- Graduation: Campaign content passes, but reduced testing and parallel review remain disabled because `provision-customer` attempt 1 failed the zero-malformed-first-attempt criterion.
+- Link policy: company and provider index remain exhaustive; concept backlinks are required for durable factual contribution, not navigation-only symmetry.
+- Evidence: [selection and result](../tracking/ingest/metronome/metronome-campaign-06/selection-review.md), [quality audit](../tracking/ingest/metronome/metronome-campaign-06/quality-audit.md), [monitor](../tracking/ingest/metronome/metronome-campaign-06/monitor.md), and [event journal](../tracking/ingest/metronome/metronome-campaign-06/events.jsonl).
+
+## 2026-07-30 — Canonical ingest: Provision a Customer
+
+- Ingested: [[source-metronome-guides-implement-metronome-core-concepts-provision-customer]] from the complete 124-line guide.
+- Concept audit updated contracts, integrations, and invoicing with alias hierarchy, retroactive association, contract-required rating, customer-versus-contract provider assignment, and beta archival behavior.
+- Terra attempt 1 failed deterministic quote validation; its receipt remains in the campaign journal. A fresh Terra worker produced a byte-for-byte verified attempt 2, which then passed serial full-raw Sol review.
+- Full customer schema, alias limits, errors, idempotency, non-AWS provider fields, and invoice lifecycle remain delegated to dedicated sources.
+- Coverage after finalization: 40 source summaries ingested and 185 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-06/monitor.md), [failed attempt](../tracking/ingest/metronome/metronome-campaign-06/attempts/provision-customer/attempt-1/failure.json), and [approved attempt](../tracking/ingest/metronome/metronome-campaign-06/attempts/provision-customer/attempt-2/receipt.json).
+
+## 2026-07-30 — Canonical ingest: Create a Billable Metric API
+
+- Ingested: [[source-metronome-api-reference-billable-metrics-create-a-billable-metric]] from the complete 342-line endpoint reference.
+- Concept audit updated [[metronome-billable-metrics]] with SQL exclusivity, all-filter matching, enum spellings, aggregation-key constraints, nested group keys, and response shape.
+- Sol review preserved contradictions around `UNIQUE`, aggregation-key requiredness, empty `not_in_values`, and an optional request body whose payload requires `name`.
+- Errors, limits, retry, idempotency, SQL output rules, group-key limits, and batch semantics remain undocumented.
+- Campaign 06: the strong-tier Sol candidate passed fixed-schema validation on attempt 1 before serial full-raw Sol review.
+- Coverage after finalization: 39 source summaries ingested and 186 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-06/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-06/attempts/create-a-billable-metric/attempt-1/receipt.json).
+
+## 2026-07-30 — Canonical ingest: Create and Manage Rate Cards
+
+- Ingested: [[source-metronome-guides-implement-metronome-core-concepts-create-manage-rate-cards]] from the complete 264-line guide.
+- Concept audit updated products and rate cards, billable metrics, and contracts with creation fields, aliases, one-currency scope, scheduled rates, dimensional relationships, tier boundaries, and provisioning effects.
+- Sol review preserved the `/addRates` versus `/addRate` and `"FLAT"` versus `"tiered"` inconsistencies, plus the tension between “all contracts use rate cards” and the optional create-contract card/package family.
+- Alias overlap, rate overlap, fallback, removal, currency changes, limits, grandfathering, and invoice recalculation remain undocumented.
+- Campaign 06: the strong-tier Sol candidate passed fixed-schema validation on attempt 1 before serial full-raw Sol review.
+- Coverage after finalization: 38 source summaries ingested and 187 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-06/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-06/attempts/create-manage-rate-cards/attempt-1/receipt.json).
+
+## 2026-07-30 — Canonical ingest: Provision a Customer Contract
+
+- Ingested: [[source-metronome-guides-implement-metronome-core-concepts-provision-contract]] from the complete 213-line implementation guide.
+- Concept audit updated contracts, products and rate cards, credits and commits, invoicing, and billable metrics with prerequisites, charge schedules, consolidation, provider attachment, tag discounts, and usage-filter constraints.
+- Sol review retained the prerequisite-versus-later-attachment tension and the possible conflict between current-period marketplace attachment and next-period-only marketplace transitions.
+- Undocumented amount denomination, nested validation, override precedence, filter overlap/no-match behavior, backdating, errors, and retry semantics remain explicit.
+- Campaign 06: the strong-tier Sol candidate passed fixed-schema validation on attempt 1 before serial full-raw Sol review.
+- Coverage after finalization: 37 source summaries ingested and 188 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-06/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-06/attempts/provision-contract/attempt-1/receipt.json).
+
+## 2026-07-30 — Canonical ingest: How Metronome Works
+
+- Ingested: [[source-metronome-guides-get-started-how-metronome-works]] from the complete 163-line architecture guide.
+- Concept audit: updated usage billing, event ingestion, billable metrics, products and rate cards, contracts, invoicing, webhooks, and integrations with the ordered object model and timing boundaries.
+- Sol review retained the one-event-to-many-metrics relationship; shared-price versus customer-term separation; what/how/where contract framing; and the distinction among event-time evaluation, API visibility, and cycle-close finalization.
+- Broad claims about no-code evolution, automatic pricing propagation, support for any commercial model, and real-time behavior remain non-guaranteed; precedence, grandfathering, latency, lifecycle, and downstream-delivery semantics remain undocumented.
+- Campaign 06: the strong-tier Sol candidate passed fixed-schema validation on attempt 1 before serial full-raw Sol review.
+- Coverage after finalization: 36 source summaries ingested and 189 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-06/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-06/attempts/how-metronome-works/attempt-1/receipt.json).
+
+## 2026-07-30 — Canonical ingest: Create Products
+
+- Ingested: [[source-metronome-guides-implement-metronome-core-concepts-create-products-contracts]] from the complete 119-line product guide.
+- Concept audit: updated [[metronome-products-and-rate-cards]], [[metronome-billable-metrics]], and [[metronome-customers-and-contracts]] first with product types, price ownership, metric cardinality, effective-dated edits, and narrow contract boundaries.
+- Sol review retained immutable product type, replacement/archive handling, retroactive editing, tag roles, dimensional and presentation group keys, the near-one-thousand-value latency caution, and undocumented recalculation and invoice-state effects.
+- Campaign 06: the strong-tier Sol candidate passed fixed-schema validation on attempt 1 before serial full-raw Sol review.
+- Coverage after finalization: 35 source summaries ingested and 190 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-06/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-06/attempts/create-products-contracts/attempt-1/receipt.json).
+
+## 2026-07-30 — Canonical ingest: Send Usage Events
+
+- Ingested: [[source-metronome-guides-implement-metronome-core-concepts-send-usage-events]] from the complete 118-line implementation guide.
+- Concept audit: updated [[metronome-event-ingestion]], [[metronome-api-idempotency]], [[metronome-billable-metrics]], and [[metronome-customers-and-contracts]] first with property representation, status-specific retry, heartbeat, SQL-aggregation, event-change, and asynchronous customer boundaries.
+- Sol review retained the required producer fields, RFC 3339 and future-time rule, reliable-queue/DLQ sequence, 20% resilience-test recommendation, deterministic heartbeat example, and all undocumented endpoint and duplicate-response semantics.
+- Campaign 06: the standard-tier Terra candidate passed fixed-schema validation on attempt 1 before serial full-raw Sol review.
+- Coverage after finalization: 34 source summaries ingested and 191 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-06/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-06/attempts/send-usage-events/attempt-1/receipt.json).
+
+## 2026-07-30 — Canonical ingest: API Quickstart
+
+- Ingested: [[source-metronome-api-reference-api-quickstart]] from the complete 148-line onboarding guide.
+- Concept audit: updated [[metronome-security-principles]] first with the secure-copy and environment-variable evidence while preserving the undocumented customer-token lifecycle boundary.
+- Sol review retained four exact SDK installation/configuration routes, empty-list connectivity behavior, the API-key versus bearer-token terminology boundary, and the absence of SDK version, numeric-limit, and general error semantics.
+- Link reconciliation added reciprocal references from the authentication and SDK walkthrough sources.
+- Campaign 06: the standard-tier Terra candidate passed fixed-schema validation on attempt 1 before serial full-raw Sol review.
+- Coverage after finalization: 33 source summaries ingested and 192 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-06/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-06/attempts/api-quickstart/attempt-1/receipt.json).
+
+## 2026-07-30 — Canonical ingest: Use Postman with Metronome
+
+- Ingested: [[source-metronome-api-reference-postman]] from the complete 79-line setup guide.
+- Concept audit: no new concept or concept update was warranted for this thin developer-tool guide.
+- Sol review retained the live OpenAPI import URL, Tags organization, collection-scoped bearer-token variable, illustrative customer exchange, and undocumented OpenAPI version and token-lifecycle boundaries; it removed an unnecessary operational recommendation from the candidate.
+- Campaign 06: the standard-tier Terra candidate passed fixed-schema validation on attempt 1 before serial full-raw Sol review.
+- Coverage after finalization: 32 source summaries ingested and 193 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-06/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-06/attempts/postman/attempt-1/receipt.json).
+
+## 2026-07-30 — Canonical ingest: API Reference Introduction
+
+- Ingested: [[source-metronome-api-reference-introduction]] from the complete 71-line API directory page.
+- Concept audit: no concept edit or new concept was warranted because the page only routes existing platform domains and adds no new implementation behavior.
+- Sol review retained the named API-wide capabilities, four SDK repositories, ten endpoint domains, and the boundary that the page contains no endpoint schemas, limits, authentication rules, or lifecycle semantics.
+- Campaign 06: the standard-tier Terra candidate passed fixed-schema validation on attempt 1 before serial full-raw Sol review.
+- Coverage after finalization: 31 source summaries ingested and 194 documentation pages pending.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-06/monitor.md) and [attempt receipt](../tracking/ingest/metronome/metronome-campaign-06/attempts/api-introduction/attempt-1/receipt.json).
+
 ## 2026-07-30 — Metronome Campaign 05 query-quality audit
 
 - Method: an independent Sol reviewer asked one core, one boundary, and one trap question per Campaign 05 source, answered from the source alone, and checked the answer against each complete raw page; Sol then independently adjudicated every finding.

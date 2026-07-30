@@ -74,6 +74,7 @@ A contract applies the rate card to the customer. It can use list prices directl
 - Concepts: [[metronome-event-ingestion]], [[metronome-billable-metrics]], [[metronome-products-and-rate-cards]], [[metronome-customers-and-contracts]]
 - Billing context: [[metronome-usage-based-billing]]
 - Invoicing context: [[metronome-invoicing]]
+- Setup context: [[source-metronome-api-reference-api-quickstart]]
 
 ## Raw Sources
 

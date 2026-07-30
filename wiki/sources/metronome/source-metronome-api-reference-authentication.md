@@ -41,7 +41,7 @@ Unused tokens can be archived with the Trash icon in the Metronome UI, and that 
 
 - Companies: [[metronome]]
 - Concepts: [[metronome-security-principles]]
-- Related sources: [[source-metronome-guides-platform-configuration-security-principles]], [[source-metronome-guides-get-started-developer-sdks]]
+- Related sources: [[source-metronome-guides-platform-configuration-security-principles]], [[source-metronome-guides-get-started-developer-sdks]], [[source-metronome-api-reference-api-quickstart]]
 
 ## Raw Sources
 

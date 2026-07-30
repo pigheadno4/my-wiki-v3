@@ -35,6 +35,8 @@ Recurring credits and commits create a new grant and ledger each period. `commit
 
 ## Prepaid balance thresholds
 
+A contract-provisioning example separates a one-year prepaid commit's access schedule from its one-time upfront invoice schedule and scopes the balance to `cloud`-tagged products. A quarterly platform charge has its own schedule. Optional usage-invoice consolidation applies to scheduled charges including commits when the service-period end date aligns and the usage invoice remains unfinalized.
+
 A contract can automatically replenish prepaid value when its eligible balance reaches a configured `threshold_amount`. `recharge_to_amount` is the target balance, so Metronome creates only the commit needed to restore that level. The default calculation includes contract- and customer-level commits and credits but always excludes individual seat-scoped balances. Threshold balance specifiers can additionally exclude balances by `ContractCreditOrCommit` custom fields.
 
 Thresholds support fiat and custom pricing units. Custom-unit amounts are converted to fiat for payment through the customer's rate-card conversion. Payment gating can delay release of an automatic or manually purchased commit until Stripe or an external gateway confirms payment.
@@ -94,6 +96,7 @@ The guides contain example-level inconsistencies that should be checked against 
 - [[source-metronome-api-reference-credits-and-commits-edit-a-commit]] — targeted commit fields, schedule operations, applicability, and hierarchy access
 - [[source-metronome-integrations-tax-integrations-stripe-tax]] — explicit tax configuration for threshold and payment-gated flows
 - [[source-metronome-api-reference-contracts-amend-a-contract]] — legacy amendment commit/credit schedules, targeting, priority, and validation gaps
+- [[source-metronome-guides-implement-metronome-core-concepts-provision-contract]] — worked commit schedules, tag scope, platform charge, and consolidation
 
 ## Related
 

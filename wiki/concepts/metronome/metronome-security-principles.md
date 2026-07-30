@@ -25,6 +25,8 @@ Metronome says almost no part of its system depends on long-lived API keys or st
 
 Metronome's public API uses bearer tokens created and archived through the dashboard. Tokens inherit the creating user's permissions by default and can be restricted by access level, environment, or endpoint through a Metronome representative. The full token is visible only at creation, the SDKs default to `METRONOME_BEARER_TOKEN`, and archiving a token cannot be undone.
 
+The API quickstart corroborates the creation boundary: give the token a descriptive name and copy it to a secure location before completing the flow. Its setup examples accept a bearer token directly or use `METRONOME_BEARER_TOKEN`, but the quickstart adds no expiry, recovery, rotation, scope, or revocation policy.
+
 > [!info] Credential-scope boundary
 > The 12-hour lifetime above describes credentials minted by Metronome engineers. The API-authentication page does not state a lifetime or expiry policy for customer-created bearer tokens, so the two credential classes should not be treated as having the same lifecycle.
 
@@ -32,6 +34,7 @@ Metronome's public API uses bearer tokens created and archived through the dashb
 
 - [[source-metronome-guides-platform-configuration-security-principles]] — least privilege, zero trust, and short-lived credential principles
 - [[source-metronome-api-reference-authentication]] — customer bearer-token creation, use, scoping, and archival
+- [[source-metronome-api-reference-api-quickstart]] — first-connection token handling and SDK environment-variable setup
 
 ## Related
 
