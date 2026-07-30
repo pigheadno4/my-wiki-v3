@@ -622,8 +622,9 @@
 - [[stripe-android-sdk]] — Stripe Android SDK: PaymentSheet patterns, GooglePayLauncher, Stripe API client, 3DS2 customization, iOS/RN comparison
 - [[source-github-stripe-ios]] — stripe-ios SDK v25.14.0: 9 modules, PaymentSheet/EmbeddedPaymentElement/CustomerSheet, STPAPIClient, STPPaymentHandler, Apple Pay, 40+ localizations (github-repo, 2026-05-13)
 - [[stripe-ios-sdk]] — Stripe iOS SDK: module architecture, PaymentSheet/Embedded/CustomerSheet, STPAPIClient low-level API, STPPaymentHandler 3DS, Apple Pay, configuration
-- [[source-github-stripe-react-native]] — stripe-react-native SDK v0.65.1: PaymentSheet, hooks, Apple/Google Pay via usePlatformPay, components, platform requirements (github-repo, 2026-05-13)
-- [[stripe-react-native-sdk]] — Stripe React Native SDK: PaymentSheet, usePlatformPay, CardField/CardForm, hooks API, IAP limitation, migration notes
+- [[source-github-stripe-react-native]] — cumulative `@stripe/stripe-react-native`: legacy v0.65.1 plus v0.72.0 PaymentSheet, Embedded Payment Element, Platform Pay, Connect, onramp, and private-preview Link Controller (github-repo, updated 2026-07-30)
+- [[changelog-github-stripe-react-native]] — package-qualified release ledger; v0.72.0 native SDK upgrades and explicit Link SetupIntent confirmation (github-repo, 2026-07-30)
+- [[stripe-react-native-sdk]] — Stripe React Native SDK: PaymentSheet, Embedded Payment Element, Platform Pay, Connect, onramp, app-store boundary, and migration notes
 - [[source-stripe-subscriptions-cancel]] — Cancel subscriptions: 4 methods, custom cancel date caveats, invoice item handling, dispute config, anchor behavior (webpage, 2026-05-13)
 - [[source-stripe-subscriptions-pause]] — True pause (flexible billing only): bill_for, 6 blocking conditions, resume 23h window, 4 webhooks (webpage, 2026-05-13)
 - [[source-stripe-subscriptions-invoices]] — Subscription invoices: lifecycle, 4-level payment priority, draft window, void rules, metadata propagation (webpage, 2026-05-13)

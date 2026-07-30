@@ -47,6 +47,8 @@ The `@stripe/stripe-js` npm package is the web loader and TypeScript declaration
 
 `@stripe/react-stripe-js` is the separate React binding layer. Its retained `6.8.0` baseline provides standard Elements, provider-specific Checkout Elements and beta Checkout Form hooks, Embedded Checkout, SSR-safe initialization, and typed component lifecycle. It requires `@stripe/stripe-js >=9.5.0 <10.0.0`; typed exports do not independently prove runtime rollout or merchant eligibility. See [[source-github-react-stripe-js]].
 
+`@stripe/stripe-react-native` is the mobile bridge to Stripe's native iOS and Android SDKs. The cumulative source preserves the legacy `0.65.1` capsule and adds the approved `0.72.0` baseline: PaymentSheet and Embedded Payment Element, Platform Pay, CustomerSheet, Financial Connections, Connect embedded components, crypto onramp, and private-preview Link Controller. In `0.72.0`, Link SetupIntent confirmation became an explicit post-selection step. See [[source-github-stripe-react-native]] and [[changelog-github-stripe-react-native]].
+
 ### Express Checkout Element
 
 Single component that renders multiple one-click payment buttons (Link, Apple Pay, Google Pay, PayPal, Klarna, Amazon Pay). Buttons are dynamically sorted by customer location. New payment methods activate from the Dashboard — no frontend changes needed. See [[stripe-express-checkout-element]].
@@ -111,7 +113,8 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 - [[source-github-stripe-postman]] — Stripe API Postman collection: 107 endpoint groups, 4 versioned collections in public workspace, fork/import setup, 2024-04-15 changelog
 - [[source-github-stripe-android]] — stripe-android SDK v23.8.0: PaymentSheet/FlowController/CustomerSheet, Stripe API client, GooglePayLauncher, PaymentMethod model, 3DS2 config, Jetpack Compose integration
 - [[source-github-stripe-ios]] — stripe-ios SDK v25.14.0: 9 modules (PaymentSheet/Payments/ApplePay/Connect/Identity/FinancialConnections), STPAPIClient, STPPaymentHandler, EmbeddedPaymentElement, CustomerSheet
-- [[source-github-stripe-react-native]] — stripe-react-native SDK v0.65.1: PaymentSheet, usePlatformPay (Apple/Google Pay), hooks API, CardField/CardForm, platform requirements, in-app purchase limitation
+- [[source-github-stripe-react-native]] — stripe-react-native cumulative SDK source: legacy v0.65.1 plus v0.72.0 PaymentSheet, Embedded Payment Element, Platform Pay, Connect, onramp, and Link Controller
+- [[changelog-github-stripe-react-native]] — package-qualified release history and v0.72.0 explicit Link SetupIntent confirmation migration
 - [[source-stripe-billing-benchmarks]] — billing benchmarking: k-NN peer matching, ≥5 subs access, peer eligibility ≥100 subs, 7 metrics benchmarked, percentile display
 - [[source-stripe-billing-analytics]] — billing analytics: MRR + 6 growth components, ARPU, LTV, cohort retention, configurable settings, 3 CSV reports
 - [[source-stripe-subscriptions-backdate]] — backdating: classic vs flexible line items, 3 patterns (charge/no-charge/anchor), coupon duration counts from backdate not API call

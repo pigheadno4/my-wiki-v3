@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-07-30] ingest | GitHub stripe/stripe-react-native — `@stripe/stripe-react-native@0.72.0`
+
+- Full serial ingest of `github-a9880c38e9e3a0e271a3` from exact SHA `e752a71aec30a0ed88e605345cff3ad74053b623`.
+- Migrated the legacy v0.65.1 source into the canonical Stripe/GitHub hierarchy and added a separate package-qualified changelog while preserving the old findings.
+- Recorded the complete 250-file retained capsule: TypeScript API, Android and iOS bridges, PaymentSheet, Embedded Payment Element, CustomerSheet, Platform Pay, Connect embedded components, crypto onramp, examples, and stories.
+- Isolated the exact v0.72.0 changes from broader baseline knowledge: native iOS/Android SDK upgrades and explicit private-preview Link SetupIntent confirmation after payment-method selection.
+- Updated the Stripe company, React Native SDK concept, and provider index without changing source count.
+
 ## [2026-07-30] ingest | GitHub stripe/react-stripe-js — `@stripe/react-stripe-js@6.8.0`
 
 - Full serial ingest of `github-d784ed22413ba025c631` from exact SHA `a742a105cdf297aa28f87bac5292c27a60defad3`.
