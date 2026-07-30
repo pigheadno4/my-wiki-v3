@@ -74,8 +74,8 @@ Operations history: [[paypal-log]]
 - [[source-paypal-javascript-sdk-performance]] — JS SDK performance: instant vs delayed render patterns, pre-caching, hidden container trick (webpage, 2026-04-13)
 - [[source-paypal-javascript-sdk-best-practices]] — JS SDK best practices: CSP (unsafe-inline vs nonce), COOP same-origin-allow-popups (webpage, 2026-04-13)
 - [[source-paypal-react-paypal-js-readme]] — @paypal/react-paypal-js v8.x: PayPalScriptProvider, all 11 components, usePayPalScriptReducer, Card Fields hooks (npm README, 2026-04-13)
-- [[source-github-paypal-js]] — cumulative package-qualified knowledge; v8/v9 history through core 10.0.3 and React 10.1.2, including Venmo save-payment, Apple Pay button, and Messages typing changes (github-repo, updated 2026-07-23)
-- [[changelog-github-paypal-js]] — package-qualified release ledger through shared-SHA core 10.0.3 and React 10.1.2 (github-repo, updated 2026-07-23)
+- [[source-github-paypal-js]] — cumulative package-qualified knowledge; v8/v9 history through core 10.1.0 and React 10.2.1, including loader hardening, Braintree Messages, and SSR eligibility coordination (github-repo, updated 2026-07-30)
+- [[changelog-github-paypal-js]] — package-qualified release ledger through core 10.1.0 and React 10.2.1 (github-repo, updated 2026-07-30)
 - [[source-github-paypal-checkout-components]] — cumulative checkout runtime from `4.1.47` through `5.0.425`: component interfaces, funding eligibility, Venmo desktop/QR and gated vault behavior (github-repo, updated 2026-07-23)
 - [[changelog-github-paypal-checkout-components]] — package-qualified checkout-components release ledger through `5.0.425` (github-repo, updated 2026-07-23)
 - [[source-github-react-paypal-js-v8]] — GitHub react-paypal-js v8: ScriptProvider/reducer, Buttons lifecycle, CardFields provider+hooks (github-repo, 2026-04-13)
@@ -186,13 +186,13 @@ Operations history: [[paypal-log]]
 
 ## Concepts
 
-- [[paypal-checkout]] — PayPal Checkout: JS SDK + Orders API integration pattern, buyer flow, button placement
-- [[paypal-braintree-integration]] — Braintree PayPal v6: client-token provider, one-time/billing-agreement/checkout-with-vault sessions, nonce-based server processing
+- [[paypal-checkout]] — PayPal Checkout: JS SDK + Orders API integration, package-qualified v6 environment and eligibility behavior
+- [[paypal-braintree-integration]] — Braintree PayPal v6: client-token provider, payment sessions, Pay Later and Messages, nonce-based server processing
 - [[paypal-expanded-checkout]] — PayPal Expanded Checkout (ACDC): hosted card fields, 3DS, liabilityShift, sandbox capability requirement
 - [[paypal-android-sdk]] — PayPal Android SDK: card-payments, web-payments, payment-buttons, fraud-protection modules
 - [[paypal-fastlane]] — PayPal Fastlane: guest checkout acceleration, email + one-time code, separate from PayPal account, cross-merchant
 - [[paypal-fxaas]] — PayPal FXaaS: contract-based currency conversion, rate locking, 100+ display currencies, 25 holding currencies
-- [[paypal-pay-later]] — PayPal Pay Later: Pay in 4 (biweekly, $30–$1,500) and Pay Monthly (credit, $49–$10K); merchant paid upfront
+- [[paypal-pay-later]] — PayPal Pay Later: country products, eligibility, web messaging, and React Braintree Messages behavior
 - [[paypal-ios-sdk]] — PayPal iOS SDK: CardPayments, PayPalWebPayments, PaymentButtons, FraudProtection; SPM/CocoaPods; paylater case gotcha
 - [[paypal-vault]] — PayPal Vault / Payment Method Tokens: setup tokens, payment tokens, stored credentials, APPROVED vs VAULTED status
 - [[paypal-apm]] — PayPal APMs: 11 methods (Apple/Google Pay, 7 bank redirects, Multibanco, Pay upon Invoice); Trustly 365-day refunds; giropay/Sofort sunset

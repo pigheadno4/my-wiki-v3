@@ -262,6 +262,59 @@
   Release: [manifest](raw/github/paypal/paypal-js/releases/react-paypal-js/10.0.0/2026-07-22/manifest.json)
   Comparison: [manifest](tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/9.3.0--10.0.0/comparison.json)
 
+## `github-c2f5968bcd8357fc29d5`
+
+- Repository: `paypal/paypal-js`
+- SHA: `b496f3a7ea2a547b99ea5fb9895dfaf8cd01f6a3`
+- Collection date: `2026-07-30`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/manifest.json)
+- Packet: [review packet](tracking/github/repos/paypal/paypal-js/ingest-packets/github-c2f5968bcd8357fc29d5/packet.md)
+- Review priority: `high`
+- Required reading: `38` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/paypal-js@10.1.0` (recommended `delta`)
+  Release: [manifest](raw/github/paypal/paypal-js/releases/paypal-js/10.1.0/2026-07-30/manifest.json)
+  Comparison: [manifest](tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/10.0.3--10.1.0/comparison.json)
+- `@paypal/react-paypal-js@10.2.0` (recommended `delta`)
+  Release: [manifest](raw/github/paypal/paypal-js/releases/react-paypal-js/10.2.0/2026-07-30/manifest.json)
+  Comparison: [manifest](tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.1.2--10.2.0/comparison.json)
+
+## `github-ca78b4ec339be0d6bdb8`
+
+- Repository: `paypal/paypal-js`
+- SHA: `7ff3eeec13e734f24f6e8fbf9aded68437c1398e`
+- Collection date: `2026-07-30`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/manifest.json)
+- Packet: [review packet](tracking/github/repos/paypal/paypal-js/ingest-packets/github-ca78b4ec339be0d6bdb8/packet.md)
+- Review priority: `normal`
+- Required reading: `20` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/react-paypal-js@10.2.1` (recommended `delta`)
+  Release: [manifest](raw/github/paypal/paypal-js/releases/react-paypal-js/10.2.1/2026-07-30/manifest.json)
+  Comparison: [manifest](tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.2.0--10.2.1/comparison.json)
+
 ## `github-cba5dcae559e55e8182d`
 
 - Repository: `paypal/paypal-checkout-components`

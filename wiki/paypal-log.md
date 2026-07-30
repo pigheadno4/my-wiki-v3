@@ -6,6 +6,22 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-07-30] ingest | paypal/paypal-js React `10.2.1`
+
+- Approved and processed work item `github-ca78b4ec339be0d6bdb8` in delta mode.
+- Read the 20-path ingest packet and the 147-file, 1,098,433-byte exact-SHA capsule at `raw/github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/manifest.json`; 97 test/fixture files were excluded by policy.
+- Ingested `@paypal/react-paypal-js@10.2.1` at SHA `7ff3eeec13e734f24f6e8fbf9aded68437c1398e`; no core package release is attached to this change set.
+- Added the server-hydration/client-fetch race fix and resolved-response SSR guidance to [[source-github-paypal-js]], [[changelog-github-paypal-js]], and [[paypal-checkout]].
+- No new concept, contradiction, payment behavior, Braintree behavior, or PayPal source count was introduced.
+
+## [2026-07-30] ingest | paypal/paypal-js core `10.1.0` and React `10.2.0`
+
+- Approved and processed work item `github-c2f5968bcd8357fc29d5` in delta mode.
+- Read the 38-path ingest packet and the 150-file, 1,138,032-byte exact-SHA capsule at `raw/github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/manifest.json`; 97 test/fixture files were excluded by policy.
+- Ingested `@paypal/paypal-js@10.1.0` and `@paypal/react-paypal-js@10.2.0` as separate package releases sharing SHA `b496f3a7ea2a547b99ea5fb9895dfaf8cd01f6a3`.
+- Added loader prototype-pollution protection, non-null Messages failure content, Braintree PayPal Messages, the `fetchEligibleMethods()` migration, and corrected server-hydration reuse.
+- Updated [[paypal-checkout]], [[paypal-pay-later]], and [[paypal-braintree-integration]] without adding a new concept, contradiction, or PayPal source count.
+
 ## [2026-07-23] ingest | paypal/paypal-checkout-components `5.0.425`
 
 - Approved and processed work item `github-f8c98215ba0bd54e6149` in full mode.

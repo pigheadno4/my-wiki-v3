@@ -2,7 +2,7 @@
 title: "Braintree PayPal Integration"
 type: concept
 category: technology
-tags: [paypal, braintree, checkout, vault, billing-agreements, react, javascript-sdk]
+tags: [paypal, braintree, checkout, vault, billing-agreements, messages, pay-later, react, javascript-sdk]
 ---
 
 ## Braintree PayPal Integration
@@ -40,6 +40,14 @@ One-time and Pay Later session options add `shippingCallbackUrl`, a typed `Brain
 
 > [!warning] Contradiction
 > The `10.1.0` release note says `shippingAddressOverride` and `contactPreference` were also added to checkout-with-vault. The exact `BraintreeCheckoutWithVaultSessionOptions` declaration and hook at SHA `59cb2ce64d158ac4f4cabecdd82f7b4191a8dff3` expose only `shippingCallbackUrl`; do not pass the other two fields to that flow based on the release note alone.
+
+## Version 10.2.0 PayPal Messages
+
+`@paypal/react-paypal-js@10.2.0` adds `useBraintreePayPalMessages()` for promotional and BNPL messaging. It asynchronously calls `createMessages()` on the provider's shared Braintree PayPal Checkout v6 instance and exposes `isReady`, `isLoading`, `error`, and `handleFetchContent()`.
+
+Content returned by `handleFetchContent()` can update its amount without a new fetch. An API failure can resolve to an empty message-content sentinel rather than throw; the hook exposes an error but still returns that content so `<paypal-message>` can collapse. Provider-context failures remain labeled separately from instance-creation and fetch failures.
+
+This hook presents messaging content; it is not a payment session and does not produce a Braintree nonce.
 
 ## Server Boundary
 

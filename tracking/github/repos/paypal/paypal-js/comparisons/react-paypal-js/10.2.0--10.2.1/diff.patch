@@ -1,0 +1,478 @@
+diff --git a/packages/react-paypal-js/CHANGELOG.md b/packages/react-paypal-js/CHANGELOG.md
+index 0f47429..8deb687 100644
+--- a/packages/react-paypal-js/CHANGELOG.md
++++ b/packages/react-paypal-js/CHANGELOG.md
+@@ -1,5 +1,11 @@
+ # Changelog
+ 
++## 10.2.1
++
++### Patch Changes
++
++- 10fdbc1: Fix: race condition between server-hydrated eligibility and client-side fetch
++
+ ## 10.2.0
+ 
+ ### Minor Changes
+diff --git a/packages/react-paypal-js/README.md b/packages/react-paypal-js/README.md
+index e55aee9..a513c6c 100644
+--- a/packages/react-paypal-js/README.md
++++ b/packages/react-paypal-js/README.md
+@@ -2301,6 +2301,8 @@ The `type` prop controls the button label:
+ 
+ The `fetchEligibleMethods` function (from the `/server` export path) lets you pre-fetch eligibility data on the server and pass it to `PayPalProvider` via the `eligibleMethodsResponse` prop. The provider hydrates the SDK instance with this response, so the client renders eligible payment methods immediately — no client-side eligibility round-trip and no flash of missing or stale buttons.
+ 
++> **Important:** `eligibleMethodsResponse` must be a resolved value, not a Promise. `await` the result of `fetchEligibleMethods()` (or your own fetch) before passing it to `PayPalProvider`.
++
+ **Step 1 — Fetch eligibility in a server component and hydrate the provider:**
+ 
+ ```tsx
+diff --git a/packages/react-paypal-js/package.json b/packages/react-paypal-js/package.json
+index 363626e..e87b1f2 100644
+--- a/packages/react-paypal-js/package.json
++++ b/packages/react-paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@paypal/react-paypal-js",
+-  "version": "10.2.0",
++  "version": "10.2.1",
+   "description": "React components for the PayPal JS SDK",
+   "keywords": [
+     "react",
+diff --git a/packages/react-paypal-js/src/v6/components/PayPalCardFieldsProvider.test.tsx b/packages/react-paypal-js/src/v6/components/PayPalCardFieldsProvider.test.tsx
+index 28a567f..188c864 100644
+--- a/packages/react-paypal-js/src/v6/components/PayPalCardFieldsProvider.test.tsx
++++ b/packages/react-paypal-js/src/v6/components/PayPalCardFieldsProvider.test.tsx
+@@ -107,6 +107,8 @@ describe("PayPalCardFieldsProvider", () => {
+       eligiblePaymentMethods: null,
+       error: null,
+       isHydrated: true,
++      eligibilityHydrationStatus: INSTANCE_LOADING_STATE.RESOLVED,
++      isEligibilityHydrated: false,
+     });
+   });
+ 
+@@ -122,6 +124,8 @@ describe("PayPalCardFieldsProvider", () => {
+         eligiblePaymentMethods: null,
+         error: null,
+         isHydrated: true,
++        eligibilityHydrationStatus: INSTANCE_LOADING_STATE.RESOLVED,
++        isEligibilityHydrated: false,
+       });
+ 
+       const { result } = renderCardFieldsProvider();
+@@ -138,6 +142,8 @@ describe("PayPalCardFieldsProvider", () => {
+         eligiblePaymentMethods: null,
+         error: null,
+         isHydrated: true,
++        eligibilityHydrationStatus: INSTANCE_LOADING_STATE.RESOLVED,
++        isEligibilityHydrated: false,
+       });
+ 
+       const { result } = renderCardFieldsProvider();
+@@ -157,6 +163,8 @@ describe("PayPalCardFieldsProvider", () => {
+         eligiblePaymentMethods: null,
+         error: null,
+         isHydrated: true,
++        eligibilityHydrationStatus: INSTANCE_LOADING_STATE.RESOLVED,
++        isEligibilityHydrated: false,
+       });
+ 
+       const { result, rerender } = renderCardFieldsProvider();
+@@ -175,6 +183,8 @@ describe("PayPalCardFieldsProvider", () => {
+         eligiblePaymentMethods: null,
+         error: null,
+         isHydrated: true,
++        eligibilityHydrationStatus: INSTANCE_LOADING_STATE.RESOLVED,
++        isEligibilityHydrated: false,
+       });
+ 
+       rerender();
+@@ -292,6 +302,8 @@ describe("PayPalCardFieldsProvider", () => {
+         eligiblePaymentMethods: null,
+         error: null,
+         isHydrated: true,
++        eligibilityHydrationStatus: INSTANCE_LOADING_STATE.RESOLVED,
++        isEligibilityHydrated: false,
+       });
+ 
+       rerender();
+diff --git a/packages/react-paypal-js/src/v6/components/PayPalProvider.test.tsx b/packages/react-paypal-js/src/v6/components/PayPalProvider.test.tsx
+index 590262b..c70a7da 100644
+--- a/packages/react-paypal-js/src/v6/components/PayPalProvider.test.tsx
++++ b/packages/react-paypal-js/src/v6/components/PayPalProvider.test.tsx
+@@ -662,6 +662,39 @@ describe("PayPalProvider", () => {
+       await waitFor(() => expectRejectedState(state, mockError));
+       expect(state.eligiblePaymentMethods).toBe(null);
+     });
++
++    test("eligibilityHydrationStatus is REJECTED once hydration errors out", async () => {
++      const mockError = new Error("hydration failed");
++      const mockHydrateEligibleMethods = jest.fn().mockImplementation(() => {
++        throw mockError;
++      });
++      const mockInstance = {
++        ...createMockSdkInstance(),
++        hydrateEligibleMethods: mockHydrateEligibleMethods,
++      };
++
++      (loadCoreSdkScript as jest.Mock).mockResolvedValue({
++        createInstance: jest.fn().mockResolvedValue(mockInstance),
++      });
++
++      const { state } = await renderProvider({
++        eligibleMethodsResponse: TEST_ELIGIBILITY_HOOK_RESULT,
++      });
++
++      await waitFor(() => expectRejectedState(state, mockError));
++      expect(state.eligibilityHydrationStatus).toBe(
++        INSTANCE_LOADING_STATE.REJECTED,
++      );
++    });
++
++    test("eligibilityHydrationStatus remains RESOLVED when no eligibleMethodsResponse is provided", async () => {
++      const { state } = await renderProvider();
++
++      await waitFor(() => expectResolvedState(state));
++      expect(state.eligibilityHydrationStatus).toBe(
++        INSTANCE_LOADING_STATE.RESOLVED,
++      );
++    });
+   });
+ 
+   describe("Props Changes", () => {
+@@ -1056,6 +1089,8 @@ function setupTestComponent() {
+     eligiblePaymentMethods: null,
+     error: null,
+     isHydrated: false,
++    eligibilityHydrationStatus: INSTANCE_LOADING_STATE.RESOLVED,
++    isEligibilityHydrated: false,
+   };
+ 
+   function TestComponent({ children = null }: { children?: React.ReactNode }) {
+diff --git a/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx b/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx
+index 31993cf..856e692 100644
+--- a/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx
++++ b/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx
+@@ -172,6 +172,9 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
+ }) => {
+   const memoizedComponents = useCompareMemoize(components);
+   const memoizedMerchantId = useDeepCompareMemoize(merchantId);
++  const memoizedEligibleMethodsResponse = useDeepCompareMemoize(
++    eligibleMethodsResponse,
++  );
+   const [paypalNamespace, setPaypalNamespace] =
+     useState<PayPalV6Namespace | null>(null);
+   const [state, dispatch] = useReducer(instanceReducer, initialState);
+@@ -331,20 +334,18 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
+ 
+   useEffect(() => {
+     const sdkInstance = state.sdkInstance;
+-    if (!sdkInstance) {
++    if (!sdkInstance || !memoizedEligibleMethodsResponse) {
+       return;
+     }
+ 
+     try {
+-      if (eligibleMethodsResponse) {
+-        const eligiblePaymentMethods = sdkInstance.hydrateEligibleMethods(
+-          eligibleMethodsResponse,
+-        );
+-        dispatch({
+-          type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
+-          value: { eligiblePaymentMethods, payload: null },
+-        });
+-      }
++      const eligiblePaymentMethods = sdkInstance.hydrateEligibleMethods(
++        memoizedEligibleMethodsResponse,
++      );
++      dispatch({
++        type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY_HYDRATED,
++        value: { eligiblePaymentMethods },
++      });
+     } catch (error) {
+       setError(error);
+       dispatch({
+@@ -352,7 +353,22 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
+         value: toError(error),
+       });
+     }
+-  }, [state.sdkInstance, eligibleMethodsResponse, setError]);
++  }, [state.sdkInstance, memoizedEligibleMethodsResponse, setError]);
++
++  // Dispatched during render (not in an effect) so children see the
++  // correct status on the same render, before their own effects run.
++  let eligibilityHydrationStatus = INSTANCE_LOADING_STATE.RESOLVED;
++  if (memoizedEligibleMethodsResponse && !state.isEligibilityHydrated) {
++    eligibilityHydrationStatus = state.error
++      ? INSTANCE_LOADING_STATE.REJECTED
++      : INSTANCE_LOADING_STATE.PENDING;
++  }
++  if (eligibilityHydrationStatus !== state.eligibilityHydrationStatus) {
++    dispatch({
++      type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY_HYDRATION_STATUS,
++      value: eligibilityHydrationStatus,
++    });
++  }
+ 
+   const contextValue: PayPalState = useMemo(
+     () => ({
+@@ -362,6 +378,8 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
+       error: state.error,
+       loadingStatus: state.loadingStatus,
+       isHydrated,
++      eligibilityHydrationStatus,
++      isEligibilityHydrated: state.isEligibilityHydrated,
+     }),
+     [
+       state.sdkInstance,
+@@ -370,6 +388,8 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
+       state.error,
+       state.loadingStatus,
+       isHydrated,
++      eligibilityHydrationStatus,
++      state.isEligibilityHydrated,
+     ],
+   );
+ 
+diff --git a/packages/react-paypal-js/src/v6/context/PayPalProviderContext.test.ts b/packages/react-paypal-js/src/v6/context/PayPalProviderContext.test.ts
+index 7f5d2f2..4452884 100644
+--- a/packages/react-paypal-js/src/v6/context/PayPalProviderContext.test.ts
++++ b/packages/react-paypal-js/src/v6/context/PayPalProviderContext.test.ts
+@@ -54,6 +54,8 @@ function createInitialState(): PayPalState {
+     loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+     error: null,
+     isHydrated: true,
++    eligibilityHydrationStatus: INSTANCE_LOADING_STATE.RESOLVED,
++    isEligibilityHydrated: false,
+   };
+ }
+ 
+diff --git a/packages/react-paypal-js/src/v6/context/PayPalProviderContext.tsx b/packages/react-paypal-js/src/v6/context/PayPalProviderContext.tsx
+index c3493ce..f68c995 100644
+--- a/packages/react-paypal-js/src/v6/context/PayPalProviderContext.tsx
++++ b/packages/react-paypal-js/src/v6/context/PayPalProviderContext.tsx
+@@ -19,6 +19,8 @@ export interface PayPalState {
+   loadingStatus: INSTANCE_LOADING_STATE;
+   error: Error | null;
+   isHydrated: boolean;
++  eligibilityHydrationStatus: INSTANCE_LOADING_STATE;
++  isEligibilityHydrated: boolean;
+ }
+ 
+ export type InstanceAction =
+@@ -37,6 +39,14 @@ export type InstanceAction =
+         payload?: FindEligibleMethodsOptions | null;
+       };
+     }
++  | {
++      type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY_HYDRATION_STATUS;
++      value: INSTANCE_LOADING_STATE;
++    }
++  | {
++      type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY_HYDRATED;
++      value: { eligiblePaymentMethods: EligiblePaymentMethodsOutput | null };
++    }
+   | { type: INSTANCE_DISPATCH_ACTION.SET_ERROR; value: Error }
+   | {
+       type: INSTANCE_DISPATCH_ACTION.RESET_STATE;
+@@ -49,6 +59,8 @@ export const initialState: PayPalState = {
+   loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+   error: null,
+   isHydrated: false,
++  eligibilityHydrationStatus: INSTANCE_LOADING_STATE.RESOLVED,
++  isEligibilityHydrated: false,
+ };
+ 
+ export function instanceReducer(
+@@ -70,6 +82,18 @@ export function instanceReducer(
+         eligiblePaymentMethods: action.value.eligiblePaymentMethods,
+         eligiblePaymentMethodsPayload: action.value.payload,
+       };
++    case INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY_HYDRATION_STATUS:
++      return {
++        ...state,
++        eligibilityHydrationStatus: action.value,
++      };
++    case INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY_HYDRATED:
++      return {
++        ...state,
++        eligiblePaymentMethods: action.value.eligiblePaymentMethods,
++        eligiblePaymentMethodsPayload: null,
++        isEligibilityHydrated: true,
++      };
+     case INSTANCE_DISPATCH_ACTION.SET_ERROR:
+       return {
+         ...state,
+diff --git a/packages/react-paypal-js/src/v6/hooks/useEligibleMethods.test.ts b/packages/react-paypal-js/src/v6/hooks/useEligibleMethods.test.ts
+index 01b0f09..fd72e89 100644
+--- a/packages/react-paypal-js/src/v6/hooks/useEligibleMethods.test.ts
++++ b/packages/react-paypal-js/src/v6/hooks/useEligibleMethods.test.ts
+@@ -26,6 +26,8 @@ describe("useEligibleMethods", () => {
+       loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+       error: null,
+       isHydrated: true,
++      eligibilityHydrationStatus: INSTANCE_LOADING_STATE.RESOLVED,
++      isEligibilityHydrated: false,
+       ...contextValue,
+     };
+ 
+@@ -669,4 +671,80 @@ describe("useEligibleMethods", () => {
+       expect(mockSdkInstance!.findEligibleMethods).toHaveBeenCalledTimes(1);
+     });
+   });
++
++  describe("hydration pending behavior", () => {
++    const mockEligibilityResult = {
++      isEligible: jest.fn(),
++      getDetails: jest.fn(),
++    };
++
++    function createMockSdkInstance(
++      findEligibleMethodsImpl: () => Promise<unknown> = () =>
++        Promise.resolve(mockEligibilityResult),
++    ) {
++      return {
++        findEligibleMethods: jest.fn(findEligibleMethodsImpl),
++      } as unknown as PayPalState["sdkInstance"];
++    }
++
++    test("should NOT fetch when hydration is pending and no payload is provided", async () => {
++      const mockDispatch = jest.fn();
++      const mockSdkInstance = createMockSdkInstance();
++
++      renderHook(() => useEligibleMethods(), {
++        wrapper: createWrapper(
++          {
++            sdkInstance: mockSdkInstance,
++            eligiblePaymentMethods: null,
++            eligibilityHydrationStatus: INSTANCE_LOADING_STATE.PENDING,
++            loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
++          },
++          mockDispatch,
++        ),
++      });
++
++      await act(async () => {
++        await Promise.resolve();
++      });
++
++      // Hydration is in flight — wait for it instead of racing ahead with a fetch
++      expect(mockSdkInstance!.findEligibleMethods).not.toHaveBeenCalled();
++      expect(mockDispatch).not.toHaveBeenCalled();
++    });
++
++    test("should fetch immediately when hydration is pending but an explicit payload is provided", async () => {
++      const mockDispatch = jest.fn();
++      const mockSdkInstance = createMockSdkInstance();
++      const testPayload = { currencyCode: "EUR" };
++
++      renderHook(() => useEligibleMethods({ payload: testPayload as never }), {
++        wrapper: createWrapper(
++          {
++            sdkInstance: mockSdkInstance,
++            eligiblePaymentMethods: null,
++            eligibilityHydrationStatus: INSTANCE_LOADING_STATE.PENDING,
++            loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
++          },
++          mockDispatch,
++        ),
++      });
++
++      await act(async () => {
++        await Promise.resolve();
++      });
++
++      // Server hydration is always stored with payload: null, so it can
++      // never satisfy an explicit-payload call — no reason to make it wait.
++      expect(mockSdkInstance!.findEligibleMethods).toHaveBeenCalledWith(
++        testPayload,
++      );
++      expect(mockDispatch).toHaveBeenCalledWith({
++        type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
++        value: {
++          eligiblePaymentMethods: mockEligibilityResult,
++          payload: testPayload,
++        },
++      });
++    });
++  });
+ });
+diff --git a/packages/react-paypal-js/src/v6/hooks/useEligibleMethods.ts b/packages/react-paypal-js/src/v6/hooks/useEligibleMethods.ts
+index 4fa3d6c..0b704cf 100644
+--- a/packages/react-paypal-js/src/v6/hooks/useEligibleMethods.ts
++++ b/packages/react-paypal-js/src/v6/hooks/useEligibleMethods.ts
+@@ -4,6 +4,7 @@ import { usePayPal } from "./usePayPal";
+ import { usePayPalDispatch } from "./usePayPalDispatch";
+ import {
+   INSTANCE_DISPATCH_ACTION,
++  INSTANCE_LOADING_STATE,
+   type EligiblePaymentMethodsOutput,
+   type FindEligibleMethodsOptions,
+ } from "../types";
+@@ -71,6 +72,7 @@ export function useEligibleMethods(
+     eligiblePaymentMethods,
+     eligiblePaymentMethodsPayload,
+     error: contextError,
++    eligibilityHydrationStatus,
+   } = usePayPal();
+   const dispatch = usePayPalDispatch();
+   const [eligibilityError, setError] = useError();
+@@ -103,6 +105,16 @@ export function useEligibleMethods(
+       return;
+     }
+ 
++    // Hydrated data always has payload null, so it can only ever satisfy a
++    // no-payload call. Only block those on hydration; let payload-specific
++    // calls fetch immediately since hydration will never answer them.
++    if (
++      eligibilityHydrationStatus === INSTANCE_LOADING_STATE.PENDING &&
++      memoizedPayload === undefined
++    ) {
++      return;
++    }
++
+     const hasFetchedThisConfig =
+       lastFetchRef.current?.instance === sdkInstance &&
+       lastFetchRef.current?.payload === memoizedPayload;
+@@ -175,7 +187,13 @@ export function useEligibleMethods(
+       isSubscribed = false;
+       lastFetchRef.current = null; // Reset fetch tracking on unmount or dependency change
+     };
+-  }, [sdkInstance, memoizedPayload, dispatch, setError]);
++  }, [
++    sdkInstance,
++    memoizedPayload,
++    dispatch,
++    setError,
++    eligibilityHydrationStatus,
++  ]);
+ 
+   // isLoading should be true (unless an error is present) if:
+   // 1. We're actively fetching, OR
+diff --git a/packages/react-paypal-js/src/v6/hooks/usePayPalTestUtils.ts b/packages/react-paypal-js/src/v6/hooks/usePayPalTestUtils.ts
+index 10a5746..cfef064 100644
+--- a/packages/react-paypal-js/src/v6/hooks/usePayPalTestUtils.ts
++++ b/packages/react-paypal-js/src/v6/hooks/usePayPalTestUtils.ts
+@@ -17,6 +17,8 @@ const defaultPayPalState: PayPalState = {
+   eligiblePaymentMethods: null,
+   error: null,
+   isHydrated: true,
++  eligibilityHydrationStatus: INSTANCE_LOADING_STATE.RESOLVED,
++  isEligibilityHydrated: false,
+ };
+ 
+ /**
+diff --git a/packages/react-paypal-js/src/v6/types/ProviderEnums.ts b/packages/react-paypal-js/src/v6/types/ProviderEnums.ts
+index cd9c977..a4910ce 100644
+--- a/packages/react-paypal-js/src/v6/types/ProviderEnums.ts
++++ b/packages/react-paypal-js/src/v6/types/ProviderEnums.ts
+@@ -8,6 +8,8 @@ export enum INSTANCE_DISPATCH_ACTION {
+   SET_LOADING_STATUS = "setLoadingStatus",
+   SET_INSTANCE = "setInstance",
+   SET_ELIGIBILITY = "setEligibility",
++  SET_ELIGIBILITY_HYDRATION_STATUS = "setEligibilityHydrationStatus",
++  SET_ELIGIBILITY_HYDRATED = "setEligibilityHydrated",
+   SET_ERROR = "setError",
+   RESET_STATE = "resetState",
+ }

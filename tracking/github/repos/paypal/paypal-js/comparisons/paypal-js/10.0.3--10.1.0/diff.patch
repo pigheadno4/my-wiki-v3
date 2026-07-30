@@ -1,0 +1,195 @@
+diff --git a/packages/paypal-js/CHANGELOG.md b/packages/paypal-js/CHANGELOG.md
+index 6d91aa3..0c160dc 100644
+--- a/packages/paypal-js/CHANGELOG.md
++++ b/packages/paypal-js/CHANGELOG.md
+@@ -1,5 +1,15 @@
+ # Changelog
+ 
++## 10.1.0
++
++### Minor Changes
++
++- d9c0200: Narrow `PayPalMessagesSession.fetchContent` to return `Promise<MessageContent>` (previously `Promise<MessageContent | null>`). The evergreen SDK never resolves to `null` — on an API error it returns an empty sentinel `MessageContent` (empty `messageItems`) so the `<paypal-message>` element recognizes the error state and collapses. Existing `=== null` checks against the result become dead code but continue to compile.
++
++### Patch Changes
++
++- 09f2994: Fix incomplete prototype-pollution protection in `processOptions`. The `environment` option was still read via destructuring, which reads through the prototype chain, so `Object.prototype.environment = "sandbox"` could downgrade a production checkout to the sandbox SDK URL. `environment` is now read with a `hasOwnProperty` guard, matching the existing `sdkBaseUrl` protection.
++
+ ## 10.0.3
+ 
+ ### Patch Changes
+diff --git a/packages/paypal-js/README.md b/packages/paypal-js/README.md
+index f0afcae..2cf1b5e 100644
+--- a/packages/paypal-js/README.md
++++ b/packages/paypal-js/README.md
+@@ -16,6 +16,24 @@
+ [license-badge]: https://img.shields.io/npm/l/@paypal/paypal-js.svg?style=flat-square
+ [license]: https://github.com/paypal/paypal-js/blob/main/LICENSE
+ 
++## Table of Contents
++
++- [Why use paypal-js?](#why-use-paypal-js)
++- [Installation](#installation)
++- [Usage (V5 legacy loader)](#usage)
++  - [`loadScript(options)`](#loadscriptoptions)
++  - [Passing Arguments](#passing-arguments)
++  - [Legacy Browser Support](#legacy-browser-support)
++  - [Using a CDN](#using-a-cdn)
++  - [`loadCustomScript(options)`](#loadcustomscriptoptions)
++- [TypeScript Support](#typescript-support)
++- [V6 SDK Support](#v6-sdk-support)
++  - [Loading the V6 SDK](#loading-the-v6-sdk)
++  - [Creating an SDK Instance](#creating-an-sdk-instance)
++  - [V6 Components](#v6-components)
++  - [V6 TypeScript Types](#v6-typescript-types)
++  - [Complete V6 Example](#complete-v6-example)
++
+ ## Why use paypal-js?
+ 
+ The [default JS SDK code snippet](https://developer.paypal.com/docs/checkout/standard/integrate/#link-addpaymentbuttons) blocks page rendering:
+@@ -43,6 +61,8 @@ npm install @paypal/paypal-js
+ 
+ ## Usage
+ 
++> This section documents the **legacy V5 loader** (`loadScript` / `loadCustomScript`), which resolves with `window.paypal`. For new integrations, use the [V6 SDK Support](#v6-sdk-support) section below.
++
+ Import the `loadScript` function for asynchronously loading the Paypal JS SDK.
+ 
+ ### `loadScript(options)`
+@@ -291,6 +311,8 @@ This package includes TypeScript type definitions for the PayPal JS SDK. This in
+ 
+ The PayPal Web SDK V6 introduces a modern, component-based architecture with a `createInstance()` pattern, explicit component loading, and built-in eligibility checking.
+ 
++For eligibility details, see the [Find Eligible Methods API reference](https://developer.paypal.com/docs/api/payments/v2/#find_eligible_methods).
++
+ ### Loading the V6 SDK
+ 
+ Use `loadCoreSdkScript()` to asynchronously load the V6 SDK:
+@@ -319,6 +341,10 @@ const paypal = await loadCoreSdkScript({
+ After loading, create an instance with `createInstance()`:
+ 
+ ```ts
++import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
++
++const paypal = await loadCoreSdkScript({ environment: "sandbox" });
++
+ const sdkInstance = await paypal.createInstance({
+   clientId: "YOUR_CLIENT_ID",
+   components: ["paypal-payments", "venmo-payments"],
+@@ -327,6 +353,8 @@ const sdkInstance = await paypal.createInstance({
+ });
+ ```
+ 
++The value returned by `loadCoreSdkScript` is the PayPal global namespace — the same object as `window.paypal` (or your custom `dataNamespace`) — so you can also call `window.paypal.createInstance(...)`. Note that `loadCoreSdkScript` resolves with `null` when run server-side; see the [Complete V6 Example](#complete-v6-example) for the null guard.
++
+ ### V6 Components
+ 
+ These are the components that currently support the TypeScript types offered for the V6 PayPal JS SDK via `paypal-js`.
+@@ -340,6 +368,8 @@ These are the components that currently support the TypeScript types offered for
+ | `paypal-messages`                  | PayPal messaging component                          |
+ | `paypal-subscriptions`             | Subscription payment handling                       |
+ | `paypal-legacy-billing-agreements` | Legacy billing support                              |
++| `applepay-payments`                | Apple Pay payment integration                       |
++| `googlepay-payments`               | Google Pay payment integration                      |
+ 
+ ### V6 TypeScript Types
+ 
+@@ -400,3 +430,5 @@ async function createOrderOnServer() {
+   return response.json(); // { orderId: "..." }
+ }
+ ```
++
++View the [Find Eligible Methods API reference](https://developer.paypal.com/docs/api/payments/v2/#find_eligible_methods) for details on the eligibility endpoint used by `findEligibleMethods()`.
+diff --git a/packages/paypal-js/package.json b/packages/paypal-js/package.json
+index ab08072..634c978 100644
+--- a/packages/paypal-js/package.json
++++ b/packages/paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@paypal/paypal-js",
+-  "version": "10.0.3",
++  "version": "10.1.0",
+   "description": "Loading wrapper and TypeScript types for the PayPal JS SDK",
+   "main": "index.js",
+   "module": "dist/esm/paypal-js.js",
+diff --git a/packages/paypal-js/src/utils.test.ts b/packages/paypal-js/src/utils.test.ts
+index 121e0bf..c6786b5 100644
+--- a/packages/paypal-js/src/utils.test.ts
++++ b/packages/paypal-js/src/utils.test.ts
+@@ -73,6 +73,18 @@ describe("processOptions()", () => {
+     }
+   });
+ 
++  test("ignores prototype-polluted environment", () => {
++    // Simulate prototype pollution without touching the global Object.prototype:
++    // give the options object a prototype carrying a malicious `environment`.
++    const options = Object.assign(Object.create({ environment: "sandbox" }), {
++      clientId: "test",
++    });
++
++    const { url } = processOptions(options);
++
++    expect(url).toBe("https://www.paypal.com/sdk/js?client-id=test");
++  });
++
+   test("default values when only client-id is passed in", () => {
+     const { url, attributes } = processOptions({ clientId: "test" });
+ 
+diff --git a/packages/paypal-js/src/utils.ts b/packages/paypal-js/src/utils.ts
+index 40d2302..8381493 100644
+--- a/packages/paypal-js/src/utils.ts
++++ b/packages/paypal-js/src/utils.ts
+@@ -75,8 +75,15 @@ export function processOptions(options: PayPalScriptOptions): {
+     ? options.sdkBaseUrl
+     : undefined;
+ 
++  const environment = Object.prototype.hasOwnProperty.call(
++    options,
++    "environment",
++  )
++    ? options.environment
++    : undefined;
++
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+-  const { environment, sdkBaseUrl: _, ...rest } = options;
++  const { environment: _env, sdkBaseUrl: _, ...rest } = options;
+   const sdkBaseUrl = customSdkBaseUrl || processSdkBaseUrl(environment);
+ 
+   const optionsWithStringIndex = rest as PayPalScriptOptionsWithStringIndex;
+diff --git a/packages/paypal-js/types/v6/components/paypal-messages.d.ts b/packages/paypal-js/types/v6/components/paypal-messages.d.ts
+index 7395aa2..ca69c0d 100644
+--- a/packages/paypal-js/types/v6/components/paypal-messages.d.ts
++++ b/packages/paypal-js/types/v6/components/paypal-messages.d.ts
+@@ -137,9 +137,7 @@ export type LearnMore =
+  * Session object for managing PayPal Messages.
+  */
+ export type PayPalMessagesSession = {
+-  fetchContent: (
+-    options?: FetchContentOptions,
+-  ) => Promise<MessageContent | null>;
++  fetchContent: (options?: FetchContentOptions) => Promise<MessageContent>;
+   createLearnMore: (options?: LearnMoreOptions) => LearnMore;
+ };
+ 
+diff --git a/packages/paypal-js/types/v6/tests/paypal-messages.test.ts b/packages/paypal-js/types/v6/tests/paypal-messages.test.ts
+new file mode 100644
+index 0000000..dae77e4
+--- /dev/null
++++ b/packages/paypal-js/types/v6/tests/paypal-messages.test.ts
+@@ -0,0 +1,16 @@
++import type { PayPalMessagesSession } from "../index";
++
++// The SDK always resolves fetchContent to a MessageContent object — on an API
++// error it returns an empty sentinel (empty messageItems) rather than null. These
++// compile-time assertions lock that contract in: if the return type ever regresses
++// to `MessageContent | null`, the @ts-expect-error below becomes unused and tsc fails.
++type FetchResult = Awaited<ReturnType<PayPalMessagesSession["fetchContent"]>>;
++
++// A MessageContent object is assignable to the resolved type.
++export const messageContent: FetchResult = {
++  messageItems: { mainItems: [], actionItems: [] },
++};
++
++// null is NOT assignable to the non-nullable return type.
++// @ts-expect-error fetchContent must not resolve to null
++export const nullMessageContent: FetchResult = null;

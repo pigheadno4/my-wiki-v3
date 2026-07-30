@@ -119,6 +119,18 @@ The coordinated `@paypal/react-paypal-js@10.0.0` release makes the same value ma
 
 `@paypal/react-paypal-js@10.1.0` extends the explicit-environment rule to the server-side `useFetchEligibleMethods()` helper. Omitting or passing an invalid environment throws before it selects `api-m.paypal.com` or `api-m.sandbox.paypal.com`; this prevents production server rendering from hydrating a production client with sandbox eligibility.
 
+### Core 10.1.0 and React 10.2.0
+
+`@paypal/paypal-js@10.1.0` reads legacy-loader `environment` and `sdkBaseUrl` settings only from own properties. An inherited `environment="sandbox"` value can no longer change the production-default SDK URL through prototype pollution.
+
+`@paypal/react-paypal-js@10.2.0` renames the server async function to `fetchEligibleMethods()`; `useFetchEligibleMethods()` remains a deprecated alias for migration compatibility. React eligibility hydration now treats the provider's stored `null` payload and an omitted consumer payload as equivalent. The hydrated result is reused only for a no-payload `useEligibleMethods()` call; a supplied payload still requests eligibility for that configuration.
+
+### React 10.2.1 SSR eligibility coordination
+
+`@paypal/react-paypal-js@10.2.1` prevents a no-payload `useEligibleMethods()` effect from racing `PayPalProvider` while it hydrates a server-fetched eligibility response. The provider exposes pending, resolved, or rejected hydration state before child effects run; the no-payload hook waits and reuses the hydrated result. A hook with an explicit payload still fetches immediately because server hydration cannot satisfy that distinct client payload.
+
+For SSR, await `fetchEligibleMethods()` and pass the resolved value, not a Promise, as `eligibleMethodsResponse`. Call `useEligibleMethods()` without a payload to consume it.
+
 ## Payment Failure Webhook Events
 
 - `PAYMENT.CAPTURE.COMPLETED` — successful capture

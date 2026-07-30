@@ -1,9 +1,11 @@
 ---
 title: "GitHub changelog: paypal/paypal-js"
 type: source
-date_ingested: 2026-07-23
+date_ingested: 2026-07-30
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/manifest.json"
+  - "github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-3caece5/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-3d72ac9/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-59cb2ce/manifest.json"
@@ -17,6 +19,76 @@ tags: [paypal, javascript-sdk, react, npm, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for the independently versioned packages in `paypal/paypal-js`. Detailed implementation knowledge belongs in [[source-github-paypal-js]] and the linked immutable snapshots.
+
+## Repository change set: `7ff3eee` (2026-07-29)
+
+### Package timeline
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@paypal/react-paypal-js` | `10.2.0` | `10.2.1` | 2026-07-29 | `7ff3eeec13e734f24f6e8fbf9aded68437c1398e` | Delta |
+
+The package-qualified release is `@paypal/react-paypal-js@10.2.1`. No `@paypal/paypal-js` package release is part of this change set.
+
+**Important change:** React coordinates `PayPalProvider` eligibility hydration with child `useEligibleMethods()` effects so a no-payload client hook cannot race a server-hydrated response.
+
+**Developer or merchant impact:** Server-rendered integrations avoid a redundant or competing client eligibility request while provider hydration is pending. Explicit client payloads remain independent and continue fetching immediately.
+
+**Migration action:** Await `fetchEligibleMethods()` before passing its resolved value as `eligibleMethodsResponse`. Call `useEligibleMethods()` without a payload when consuming that hydrated response; supply a payload only when a distinct client-side eligibility request is intended.
+
+**Updated source sections:** React version 10; [[paypal-checkout]]; PayPal company summary; provider index and logs.
+
+**Evidence:**
+
+- React release record: `raw/github/paypal/paypal-js/releases/react-paypal-js/10.2.1/2026-07-30/manifest.json`
+- React release notes: `raw/github/paypal/paypal-js/releases/react-paypal-js/10.2.1/2026-07-30/release-notes.md`
+- Snapshot manifest: `raw/github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/manifest.json`
+- React comparison: `tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.2.0--10.2.1/comparison.json`
+- Provider hydration state: `raw/github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/files/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx`
+- Eligibility hook: `raw/github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/files/packages/react-paypal-js/src/v6/hooks/useEligibleMethods.ts`
+- Server-rendering guidance: `raw/github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/files/packages/react-paypal-js/README.md`
+
+### Evidence boundary
+
+This patch proves React provider and hook coordination. It does not change PayPal's eligibility decision, payment-session behavior, product availability, or Braintree integration.
+
+## Repository change set: `b496f3a` (2026-07-27)
+
+### Package timelines
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@paypal/paypal-js` | `10.0.3` | `10.1.0` | 2026-07-27 | `b496f3a7ea2a547b99ea5fb9895dfaf8cd01f6a3` | Delta |
+| `@paypal/react-paypal-js` | `10.1.2` | `10.2.0` | 2026-07-27 | `b496f3a7ea2a547b99ea5fb9895dfaf8cd01f6a3` | Delta |
+
+The package-qualified releases are `@paypal/paypal-js@10.1.0` and `@paypal/react-paypal-js@10.2.0`.
+
+**Important change:** Core rejects inherited `environment` and `sdkBaseUrl` option values and makes PayPal Messages content non-null through an empty failure sentinel. React adds Braintree PayPal Messages, renames the server eligibility helper, and fixes reuse of server-hydrated eligibility when the consumer omits a payload.
+
+**Developer or merchant impact:** Prototype-polluted inherited options can no longer redirect the legacy loader to sandbox. Messages integrations receive content on API failure so their element can collapse instead of processing `null`. Braintree React merchants can fetch promotional or BNPL message content through the shared checkout instance. Server-rendered React integrations avoid an unnecessary eligibility request when the hydrated and omitted payloads are equivalent.
+
+**Migration action:** Stop treating `fetchContent() === null` as the PayPal Messages failure contract. Import `fetchEligibleMethods()` for server eligibility and migrate away from the deprecated `useFetchEligibleMethods()` alias before the next major. For Braintree Messages, wait for `isReady`, handle provider and fetch errors separately, and pass even empty returned content to `<paypal-message>`.
+
+**Updated source sections:** core version 10; React version 10; [[paypal-checkout]]; [[paypal-pay-later]]; [[paypal-braintree-integration]]; PayPal company summary; provider index and logs.
+
+**Evidence:**
+
+- Core release record: `raw/github/paypal/paypal-js/releases/paypal-js/10.1.0/2026-07-30/manifest.json`
+- Core release notes: `raw/github/paypal/paypal-js/releases/paypal-js/10.1.0/2026-07-30/release-notes.md`
+- React release record: `raw/github/paypal/paypal-js/releases/react-paypal-js/10.2.0/2026-07-30/manifest.json`
+- React release notes: `raw/github/paypal/paypal-js/releases/react-paypal-js/10.2.0/2026-07-30/release-notes.md`
+- Snapshot manifest: `raw/github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/manifest.json`
+- Core comparison: `tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/10.0.3--10.1.0/comparison.json`
+- React comparison: `tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.1.2--10.2.0/comparison.json`
+- Core option processing: `raw/github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/files/packages/paypal-js/src/utils.ts`
+- PayPal Messages types: `raw/github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/files/packages/paypal-js/types/v6/components/paypal-messages.d.ts`
+- Braintree Messages hook: `raw/github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/files/packages/react-paypal-js/src/v6/hooks/Braintree/useBraintreePayPalMessages.ts`
+- Server eligibility helper: `raw/github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/files/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.ts`
+- Eligibility hydration: `raw/github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/files/packages/react-paypal-js/src/v6/hooks/useEligibleMethods.ts`
+
+### Evidence boundary
+
+This repository proves package declarations, loader option handling, and React wrapper behavior. Braintree server processing, PayPal Messages service behavior, product rollout, and merchant eligibility remain outside this source boundary.
 
 ## Repository change set: `3caece5` (2026-07-07)
 

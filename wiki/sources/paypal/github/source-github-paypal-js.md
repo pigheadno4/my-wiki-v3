@@ -2,9 +2,11 @@
 title: "GitHub: paypal/paypal-js"
 type: source
 date_ingested: 2026-04-13
-date_updated: 2026-07-23
+date_updated: 2026-07-30
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/manifest.json"
+  - "github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-3caece5/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-3d72ac9/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-59cb2ce/manifest.json"
@@ -20,7 +22,7 @@ tags: [paypal, javascript-sdk, react, npm, typescript, github-repository, venmo]
 
 `paypal/paypal-js` is PayPal's JavaScript SDK monorepo. It contains two independently versioned packages: `@paypal/paypal-js`, the vanilla loader and TypeScript definitions, and `@paypal/react-paypal-js`, the React integration layer.
 
-This cumulative page preserves package-qualified historical findings. The immutable pipeline contains independent v8 baselines for `@paypal/paypal-js@8.4.2` and `@paypal/react-paypal-js@8.9.2`, the shared-SHA major transition to `@paypal/paypal-js@9.8.0` and `@paypal/react-paypal-js@9.3.0`, the coordinated `10.0.0` environment-safety transition, and every collected stable v10 patch through `@paypal/paypal-js@10.0.3` and `@paypal/react-paypal-js@10.1.2`. Each package release retains its own record even when two releases point to one repository snapshot.
+This cumulative page preserves package-qualified historical findings. The immutable pipeline contains independent v8 baselines for `@paypal/paypal-js@8.4.2` and `@paypal/react-paypal-js@8.9.2`, the shared-SHA major transition to `@paypal/paypal-js@9.8.0` and `@paypal/react-paypal-js@9.3.0`, the coordinated `10.0.0` environment-safety transition, and every collected stable v10 patch through `@paypal/paypal-js@10.1.0` and `@paypal/react-paypal-js@10.2.1`. Each package release retains its own record even when two releases point to one repository snapshot.
 
 Repository: <https://github.com/paypal/paypal-js>
 
@@ -138,12 +140,48 @@ Repository: <https://github.com/paypal/paypal-js>
 >
 > `raw/github/paypal/paypal-js/snapshots/2026-07-22-3caece5/files/packages/react-paypal-js/src/v6/types/sdkWebComponents.ts:43-50`
 
+> "Use hasOwnProperty to avoid picking up prototype-polluted values."
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/files/packages/paypal-js/src/utils.ts:70-83`
+
+> "fetchContent: (options?: FetchContentOptions) => Promise<MessageContent>;"
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/files/packages/paypal-js/types/v6/components/paypal-messages.d.ts:136-142`
+
+> "Hook for creating a Braintree PayPal Messages instance to fetch promotional / BNPL messaging content for `<paypal-message>` elements."
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/files/packages/react-paypal-js/src/v6/hooks/Braintree/useBraintreePayPalMessages.ts:27-35`
+
+> "@deprecated Renamed to `fetchEligibleMethods`. This is a server-side async function, not a React hook"
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/files/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.ts:135-141`
+
+> "Normalize null to undefined so a server-hydrated payload (stored as null by PayPalProvider) matches a consumer that passes no payload (undefined)."
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/files/packages/react-paypal-js/src/v6/hooks/useEligibleMethods.ts:115-134`
+
+> "Fix: race condition between server-hydrated eligibility and client-side fetch"
+>
+> `raw/github/paypal/paypal-js/releases/react-paypal-js/10.2.1/2026-07-30/release-notes.md:3`
+
+> "Dispatched during render (not in an effect) so children see the correct status on the same render, before their own effects run."
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/files/packages/react-paypal-js/src/v6/components/PayPalProvider.tsx:358-371`
+
+> "Only block those on hydration; let payload-specific calls fetch immediately since hydration will never answer them."
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/files/packages/react-paypal-js/src/v6/hooks/useEligibleMethods.ts:108-116`
+
+> "`eligibleMethodsResponse` must be a resolved value, not a Promise."
+>
+> `raw/github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/files/packages/react-paypal-js/README.md:2300-2304`
+
 ## Package status
 
 | Package | Latest ingested release | Evidence status |
 | --- | --- | --- |
-| `@paypal/paypal-js` | `10.0.3` | Approved full patch ingest; v8 through 10.0.2 history retained |
-| `@paypal/react-paypal-js` | `10.1.2` | Approved full patch ingest; v8 through 10.1.1 history retained |
+| `@paypal/paypal-js` | `10.1.0` | Approved delta ingest; v8 through 10.0.3 history retained |
+| `@paypal/react-paypal-js` | `10.2.1` | Approved delta ingest; v8 through 10.2.0 history retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -263,6 +301,14 @@ The JSDoc describes saving a buyer's Venmo account for future transactions witho
 
 > [!warning] Contradiction
 > The 2025 Save Payment Methods and Pay with Venmo documentation says Venmo is not supported for save-for-purchase-later, while this exact package release types a Venmo save-payment session for vault setup without a purchase. The declaration proves the `10.0.3` TypeScript surface, not production eligibility or runtime implementation in `paypal/paypal-checkout-components`. Verify current product documentation, merchant enablement, and the matching runtime before offering this flow.
+
+#### `@paypal/paypal-js@10.1.0`
+
+The `10.1.0` release shares commit `b496f3a7ea2a547b99ea5fb9895dfaf8cd01f6a3` with React `10.2.0`. It hardens legacy script option processing by accepting both `sdkBaseUrl` and `environment` only when each is an own property of the options object. An inherited `environment="sandbox"` value can therefore no longer switch a production-default script URL to sandbox through prototype pollution.
+
+The v6 PayPal Messages declaration also changes `PayPalMessagesSession.fetchContent()` from `Promise<MessageContent | null>` to `Promise<MessageContent>`. API failures resolve to an empty sentinel content object rather than `null`, allowing `<paypal-message>` to receive that content and collapse its presentation. Integrations should process the returned content object and must not depend on a `null` result to identify this failure path.
+
+The release does not add a payment method or establish merchant eligibility. The option-processing protection belongs to the legacy loader path, while the Messages declaration describes the v6 package contract.
 
 ## `@paypal/react-paypal-js`
 
@@ -440,6 +486,28 @@ Migration from `10.1.1` is narrow:
 - continue using Apple capability checks rather than treating an HTML disabled attribute as an availability gate; and
 - permit `logo-type="TEXT"` where the matching v6 Messages runtime supports it.
 
+#### `@paypal/react-paypal-js@10.2.0`
+
+React `10.2.0` shares commit `b496f3a7ea2a547b99ea5fb9895dfaf8cd01f6a3` with core `10.1.0` and updates its runtime dependency to `@paypal/paypal-js ^10.1.0`.
+
+The `/sdk-v6` surface adds `useBraintreePayPalMessages()`. It asynchronously creates a Messages instance through Braintree's shared `paypalCheckoutV6` object, exposes `isReady`, `isLoading`, `error`, and `handleFetchContent()`, and supports amount updates through the returned message content. Instance, provider-context, and content-fetch failures remain distinguishable. When Braintree returns an empty message sentinel, the hook sets a fetch error but still returns the content so `<paypal-message>` can collapse.
+
+The server eligibility helper is renamed from `useFetchEligibleMethods()` to `fetchEligibleMethods()` because it is an async server function rather than a React hook. The old export remains as a deprecated alias for this release, and related client type aliases also remain deprecated rather than being removed. Consumers should migrate imports before the next major version.
+
+Eligibility hydration now treats the provider's stored `null` payload and a consumer's omitted `undefined` payload as equivalent. A hydrated result is reused only when `useEligibleMethods()` is called without a different payload; supplying a payload still triggers the matching client-side eligibility request.
+
+The TypeScript build cache moves outside `dist`, preventing stale incremental output after the distribution directory is removed. This is build correctness, not a payment API change. No public API incompatibility is reported for this release.
+
+#### `@paypal/react-paypal-js@10.2.1`
+
+React `10.2.1` is a contained patch at commit `7ff3eeec13e734f24f6e8fbf9aded68437c1398e`. It fixes a race between `PayPalProvider` hydrating server-fetched eligibility and a child `useEligibleMethods()` effect starting a client request.
+
+The provider now tracks eligibility hydration separately from general SDK loading. When `eligibleMethodsResponse` is present, it exposes hydration as pending on the same render before child effects run, records successful hydration independently, and reports hydration errors as rejected. A no-payload `useEligibleMethods()` call waits while this hydration is pending, then reuses the hydrated result rather than issuing a competing request.
+
+Payload-specific calls do not wait. Server-hydrated eligibility is stored without a client payload and cannot answer a different payload-specific query, so `useEligibleMethods({ payload })` still fetches immediately for that configuration.
+
+For server rendering, await `fetchEligibleMethods()` and pass its resolved response to `eligibleMethodsResponse`; do not pass a Promise. Consume that hydrated result by calling `useEligibleMethods()` without a payload. No public API incompatibility, payment-session change, or new payment method is reported.
+
 ## Historical evidence retained from the earlier ingest
 
 The earlier repository review at commit `f59f94baefea4b2ddb38553669ed0ac4ede86167` established the legacy loader option handling above and recorded a broader v6 component set, including guest payments, card fields, messages, subscriptions, Apple Pay, and Google Pay. That snapshot did not retain an exact package-qualified release identity, so its broader surface is useful historical context but must not be attributed to `@paypal/paypal-js@8.4.2`.
@@ -464,6 +532,14 @@ See [[changelog-github-paypal-js]] for the chronological package release ledger 
 
 ## Raw Sources
 
+- `raw/github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/manifest.json` — exact-SHA source capsule for React `10.2.1`
+- `raw/github/paypal/paypal-js/releases/react-paypal-js/10.2.1/2026-07-30/manifest.json` — package-qualified React `10.2.1` release record
+- `raw/github/paypal/paypal-js/releases/react-paypal-js/10.2.1/2026-07-30/release-notes.md` — SSR eligibility hydration race patch notes
+- `raw/github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/manifest.json` — shared exact-SHA source capsule for core `10.1.0` and React `10.2.0`
+- `raw/github/paypal/paypal-js/releases/paypal-js/10.1.0/2026-07-30/manifest.json` — package-qualified core `10.1.0` release record
+- `raw/github/paypal/paypal-js/releases/paypal-js/10.1.0/2026-07-30/release-notes.md` — loader and Messages patch notes
+- `raw/github/paypal/paypal-js/releases/react-paypal-js/10.2.0/2026-07-30/manifest.json` — package-qualified React `10.2.0` release record
+- `raw/github/paypal/paypal-js/releases/react-paypal-js/10.2.0/2026-07-30/release-notes.md` — Braintree Messages and eligibility patch notes
 - `raw/github/paypal/paypal-js/snapshots/2026-07-22-3caece5/manifest.json` — shared exact-SHA source capsule for core `10.0.3` and React `10.1.2`
 - `raw/github/paypal/paypal-js/releases/paypal-js/10.0.3/2026-07-22/manifest.json` — package-qualified core `10.0.3` release record
 - `raw/github/paypal/paypal-js/releases/paypal-js/10.0.3/2026-07-22/release-notes.md` — Venmo save-payment patch notes
