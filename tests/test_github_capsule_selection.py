@@ -640,6 +640,23 @@ class CapsuleSelectionTests(unittest.TestCase):
         selected_file = next(item for item in selected.files if item.path == path)
         self.assertEqual("required-root", selected_file.classification_reason)
 
+    def test_category_directory_matching_is_case_insensitive(self):
+        path = "ios/Tests/PaymentSheetTests.swift"
+        tree = self.tree(
+            {
+                "package.json": manifest(),
+                path: "final class PaymentSheetTests {}\n",
+            }
+        )
+
+        result = resolve_npm_capsule(tree, self.capsule(default_required_roots=("ios",)), ())
+
+        self.assertEqual(
+            ((path, "excluded-category:tests"),),
+            result.excluded,
+        )
+        self.assertNotIn(path, {item.path for item in result.files})
+
     def test_test_category_excludes_mock_directories_without_excluding_stories(self):
         mock_path = "src/lib/__mocks__/analytics.js"
         story_path = ".storybook/stories/HostedFields.stories.ts"

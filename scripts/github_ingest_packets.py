@@ -40,6 +40,8 @@ _SOURCE_SUFFIXES = (
     ".kts",
     ".mjs",
     ".cjs",
+    ".m",
+    ".mm",
     ".php",
     ".py",
     ".rb",
@@ -587,7 +589,12 @@ def _load_snapshot(root: Path, relative: str, repository: str) -> _LoadedSnapsho
             raise PacketBuildError("snapshot file hash mismatch: " + file_path)
         files[file_path] = row
     excluded: Dict[str, str] = {}
+    excluded_pairs = set()
     for row in excluded_rows:
+        pair = (
+            row.get("path"),
+            row.get("reason"),
+        ) if isinstance(row, dict) else None
         if (
             not isinstance(row, dict)
             or set(row) != {"path", "reason"}
@@ -595,10 +602,11 @@ def _load_snapshot(root: Path, relative: str, repository: str) -> _LoadedSnapsho
             or not safe_policy_path(row["path"])
             or not isinstance(row.get("reason"), str)
             or not row["reason"]
-            or row["path"] in excluded
+            or pair in excluded_pairs
         ):
             raise PacketBuildError("snapshot exclusion row is invalid")
-        excluded[row["path"]] = row["reason"]
+        excluded_pairs.add(pair)
+        excluded.setdefault(row["path"], row["reason"])
     return _LoadedSnapshot(
         relative,
         document,
@@ -807,6 +815,10 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "package-manifest"
     if filename == "tsconfig.json" or (
         filename.startswith("tsconfig.") and filename.endswith(".json")
+    ):
+        return "build-configuration"
+    if filename in ("build.gradle", "gradle.properties") or filename.endswith(
+        (".podspec", ".pbxproj", ".xcscheme", ".xml")
     ):
         return "build-configuration"
     if (

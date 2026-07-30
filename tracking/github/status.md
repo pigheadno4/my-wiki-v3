@@ -206,6 +206,31 @@
   Release: [manifest](raw/github/adyen/adyen-web/releases/adyen-web/6.41.0/2026-07-26/manifest.json)
   Comparison: Not applicable
 
+## `github-a9880c38e9e3a0e271a3`
+
+- Repository: `stripe/stripe-react-native`
+- SHA: `e752a71aec30a0ed88e605345cff3ad74053b623`
+- Collection date: `2026-07-30`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/stripe/stripe-react-native/snapshots/2026-07-30-e752a71/manifest.json)
+- Packet: [review packet](tracking/github/repos/stripe/stripe-react-native/ingest-packets/github-a9880c38e9e3a0e271a3/packet.md)
+- Review priority: `high`
+- Required reading: `253` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-react-native@0.72.0` (recommended `full`)
+  Release: [manifest](raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.72.0/2026-07-30/manifest.json)
+  Comparison: Not applicable
+
 ## `github-aa80084a50abf57e06d7`
 
 - Repository: `paypal/paypal-js`

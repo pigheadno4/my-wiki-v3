@@ -674,7 +674,7 @@ def _classify_excluded_categories(
     enabled_set = frozenset(enabled)
     if any(category not in _CATEGORY_ORDER for category in enabled_set):
         raise ValueError("category classifier contains an unknown category")
-    segments = path.split("/")
+    segments = tuple(segment.lower() for segment in path.split("/"))
     filename = segments[-1]
     matches = {
         "tests": (

@@ -355,6 +355,71 @@ class GitHubIngestPacketTests(unittest.TestCase):
         self.assertEqual("build-configuration", classified["types/.eslintrc.yml"])
         self.assertEqual("build-configuration", classified["src/eslint.config.mjs"])
 
+    def test_native_package_metadata_is_classified_as_build_configuration(self):
+        native_files = {
+            "android/build.gradle": "dependencies {}\n",
+            "android/gradle.properties": "StripeSdkVersion=1\n",
+            "android/src/main/AndroidManifest.xml": "<manifest />\n",
+            "ios/StripeSdk.xcodeproj/project.pbxproj": "// project\n",
+            "ios/StripeSdk.xcodeproj/xcshareddata/xcschemes/Tests.xcscheme": "<Scheme />\n",
+            "widget.podspec": "Pod::Spec.new do |spec|\nend\n",
+        }
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            **native_files,
+        }
+        current = {
+            "package.json": self.manifest_content("10.1.0"),
+            **native_files,
+        }
+        changes = tuple(
+            UpstreamChange("modified", path, path)
+            for path in sorted(native_files)
+        )
+
+        packet = self.build(
+            prior,
+            current,
+            changes,
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        for path in native_files:
+            self.assertEqual("build-configuration", classified[path])
+
+    def test_objective_c_sources_are_classified_as_public_source(self):
+        sources = {
+            "ios/WidgetManager.m": "@implementation WidgetManager\n@end\n",
+            "ios/WidgetModule.mm": "@implementation WidgetModule\n@end\n",
+        }
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            **sources,
+        }
+        current = {
+            "package.json": self.manifest_content("10.1.0"),
+            **sources,
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            tuple(
+                UpstreamChange("modified", path, path)
+                for path in sorted(sources)
+            ),
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        for path in sources:
+            self.assertEqual("public-source", classified[path])
+
     def test_typescript_module_sources_are_classified_as_public_source(self):
         prior = {
             "package.json": self.manifest_content("10.0.0"),
@@ -863,6 +928,33 @@ class GitHubIngestPacketTests(unittest.TestCase):
         self.assertFalse(
             any(path.endswith("src/index.test.ts") for path in packet.document["required_reading"])
         )
+
+    def test_multiple_category_exclusions_for_one_path_are_accepted(self):
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            "src/index.ts": "export const value = 1;\n",
+        }
+        current = {
+            "package.json": self.manifest_content("10.0.1"),
+            "src/index.ts": "export const value = 1;\n",
+        }
+        path = "src/__tests__/fixtures/sample.json"
+        excluded = (
+            (path, "excluded-category:fixtures"),
+            (path, "excluded-category:tests"),
+        )
+
+        packet = self.build(
+            prior,
+            current,
+            (UpstreamChange("modified", path, path),),
+            prior_excluded=excluded,
+            current_excluded=excluded,
+        )
+
+        row = packet.document["packages"][0]["upstream_changes"][0]
+        self.assertEqual("intentional-policy-exclusion", row["disposition"])
+        self.assertEqual("excluded-category:fixtures", row["reason"])
 
     def test_missing_required_source_and_unclassified_retained_file_block_packet(self):
         prior = {
