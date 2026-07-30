@@ -1,6 +1,7 @@
 """One-process dry-run transitions for the minimum ingest pilot."""
 
 import json
+from copy import deepcopy
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Sequence, Union
 
@@ -70,7 +71,7 @@ def _apply_worker_result(
     jobs: list,
     result_path: Path,
     max_attempts: int,
-) -> Dict[str, Any]:
+) -> tuple[Dict[str, Any], list[tuple[Path, str, bytes]]]:
     result = _load_result(result_path)
     job = _job(jobs, result.get("job_id"))
     if job["state"] != "running":
@@ -92,16 +93,22 @@ def _apply_worker_result(
         job["state"] = "rejected" if exhausted else "failed"
         job["last_event"] = "worker_result_rejected" if exhausted else "worker_result_invalid"
         job["failure_reason"] = str(error)
-        write_attempt_file(attempt_dir, "failure.json", _json_bytes({"reason": str(error)}))
-        return {"event": job["last_event"], "job_id": job["job_id"], "reason": str(error)}
+        return (
+            {"event": job["last_event"], "job_id": job["job_id"], "reason": str(error)},
+            [(attempt_dir, "failure.json", _json_bytes({"reason": str(error)}))],
+        )
 
-    write_attempt_file(attempt_dir, "candidate.md", validated["source_page"].encode("utf-8"))
-    write_attempt_file(attempt_dir, "receipt.json", _json_bytes(validated))
-    write_attempt_file(attempt_dir, "suggestions.json", _json_bytes(validated["suggestions"]))
     job["state"] = "candidate_ready"
     job["last_event"] = "candidate_ready"
     job["failure_reason"] = None
-    return {"event": "candidate_ready", "job_id": job["job_id"]}
+    return (
+        {"event": "candidate_ready", "job_id": job["job_id"]},
+        [
+            (attempt_dir, "candidate.md", validated["source_page"].encode("utf-8")),
+            (attempt_dir, "receipt.json", _json_bytes(validated)),
+            (attempt_dir, "suggestions.json", _json_bytes(validated["suggestions"])),
+        ],
+    )
 
 
 def _apply_review_result(
@@ -111,7 +118,7 @@ def _apply_review_result(
     jobs: list,
     result_path: Path,
     max_attempts: int,
-) -> Dict[str, Any]:
+) -> tuple[Dict[str, Any], list[tuple[Path, str, bytes]]]:
     result = _load_result(result_path)
     if set(result) != REVIEW_RESULT_KEYS:
         raise PilotError("review result must use the fixed schema")
@@ -132,36 +139,41 @@ def _apply_review_result(
     changes = result["required_changes"]
     if verdict not in REVIEW_VERDICTS or not isinstance(reason, str) or not reason or not isinstance(changes, list):
         raise PilotError("review result is invalid")
+    files = []
     if "reviewer_identity" in job:
         attempt_dir = (
             root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
             / job["job_id"] / f"attempt-{job['attempt']}"
         )
-        attempt_dir.mkdir(parents=True, exist_ok=True)
-        write_attempt_file(
-            attempt_dir,
-            "review.json",
-            _json_bytes({
+        files.append(
+            (attempt_dir, "review.json", _json_bytes({
                 **result,
                 "reviewer_identity": job["reviewer_identity"],
                 "reviewer_model": job["reviewer_model"],
-            }),
+            }))
         )
     if verdict == "approved":
         job["state"] = "approved"
         job["last_event"] = "review_approved"
         job["failure_reason"] = None
-        return {"event": "review_approved", "job_id": job["job_id"]}
+        return {"event": "review_approved", "job_id": job["job_id"]}, files
     if verdict == "rejected" or job["attempt"] >= max_attempts:
         job["state"] = "rejected"
         job["last_event"] = "review_rejected" if verdict == "rejected" else "changes_exhausted"
         job["failure_reason"] = reason
-        return {"event": job["last_event"], "job_id": job["job_id"], "reason": reason}
+        return {"event": job["last_event"], "job_id": job["job_id"], "reason": reason}, files
     job["state"] = "queued"
     job["queue_position"] = max(item["queue_position"] for item in jobs) + 1
     job["last_event"] = "changes_requested"
     job["failure_reason"] = None
-    return {"event": "changes_requested", "job_id": job["job_id"], "reason": reason}
+    return {"event": "changes_requested", "job_id": job["job_id"], "reason": reason}, files
+
+
+def _write_pending_files(files: Sequence[tuple[Path, str, bytes]]) -> None:
+    for attempt_dir, filename, content in files:
+        if not attempt_dir.exists():
+            attempt_dir.mkdir(parents=True)
+        write_attempt_file(attempt_dir, filename, content)
 
 
 def _start_workers(
@@ -303,24 +315,26 @@ def run_once(
         or total_subagent_slots < 0
     ):
         raise PilotError("total_subagent_slots must be a non-negative integer")
-    jobs = load_jobs(root, campaign_id)
+    jobs = deepcopy(load_jobs(root, campaign_id))
     events = []
+    pending_files = []
     if worker_result_path is not None:
-        events.append(
-            _apply_worker_result(
-                root,
-                campaign_id,
-                jobs,
-                Path(worker_result_path),
-                campaign["max_attempts"],
-            )
+        event, files = _apply_worker_result(
+            root,
+            campaign_id,
+            jobs,
+            Path(worker_result_path),
+            campaign["max_attempts"],
         )
+        events.append(event)
+        pending_files.extend(files)
     changes_requested = False
     if review_result_path is not None:
-        review_event = _apply_review_result(
+        review_event, files = _apply_review_result(
             root, campaign_id, campaign, jobs, Path(review_result_path), campaign["max_attempts"]
         )
         events.append(review_event)
+        pending_files.extend(files)
         changes_requested = review_event["event"] == "changes_requested"
     review_orders = []
     if changes_requested and total_subagent_slots is None:
@@ -340,6 +354,7 @@ def run_once(
     else:
         review = review_orders[0] if review_orders else None
     events.extend({"event": "review_started", "job_id": order["job_id"]} for order in review_orders)
+    _write_pending_files(pending_files)
     save_jobs(root, campaign_id, jobs)
     warnings = []
     for event in events:

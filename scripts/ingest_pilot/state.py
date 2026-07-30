@@ -149,11 +149,11 @@ def _review_configuration(manifest: Mapping[str, Any]) -> Dict[str, Any]:
     review_concurrency = manifest.get("review_concurrency", 1)
     if isinstance(review_concurrency, bool) or not isinstance(review_concurrency, int) or review_concurrency < 1:
         raise PilotError("review_concurrency must be a positive integer")
-    audit_job_ids = manifest.get("audit_job_ids")
-    if audit_job_ids is None:
+    if "audit_job_ids" not in manifest:
         if review_concurrency > 1:
             raise PilotError("parallel review requires audit_job_ids")
         return {"review_concurrency": review_concurrency}
+    audit_job_ids = manifest["audit_job_ids"]
     job_ids = {source.get("job_id") for source in manifest["jobs"]}
     if (
         not isinstance(audit_job_ids, list)

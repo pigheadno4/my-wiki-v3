@@ -214,6 +214,13 @@ class PilotStateTests(unittest.TestCase):
         with self.assertRaisesRegex(PilotError, "review_concurrency must be a positive integer"):
             initialize_state(self.root, zero)
 
+        explicit_null = deepcopy(self.manifest)
+        explicit_null["campaign_id"] = "null-audit-job-ids"
+        explicit_null["audit_job_ids"] = None
+        with self.assertRaisesRegex(PilotError, "audit_job_ids"):
+            initialize_state(self.root, explicit_null)
+        self.assertFalse(campaign_paths(self.root, explicit_null["campaign_id"])["campaign"].exists())
+
     def test_save_jobs_replaces_projection_without_rewriting_events(self):
         self.initialize_jobs()
         jobs = load_jobs(self.root, self.campaign_id)

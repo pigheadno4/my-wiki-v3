@@ -319,6 +319,112 @@ class CoordinatorTests(unittest.TestCase):
             )
         self.assertEqual(load_jobs(self.root, self.campaign_id), before)
 
+    def test_parallel_worker_result_missing_reviewer_assignment_leaves_state_and_attempt_unchanged_then_retries(self):
+        parallel = dict(self.manifest)
+        parallel["review_concurrency"] = 2
+        parallel["audit_job_ids"] = ["job-1", "job-2", "job-3"]
+        init_campaign(self.root, parallel)
+        run_once(
+            self.root,
+            self.campaign_id,
+            total_subagent_slots=3,
+            worker_assignments={
+                "job-1": {"identity": "worker-a", "model": "Terra"},
+                "job-2": {"identity": "worker-b", "model": "Terra"},
+                "job-3": {"identity": "worker-c", "model": "Terra"},
+            },
+            reviewer_assignments={},
+        )
+        before_jobs = load_jobs(self.root, self.campaign_id)
+        before_attempt = {
+            path.name: path.read_bytes() for path in self.attempt("job-1", 1).iterdir()
+        }
+
+        with self.assertRaisesRegex(PilotError, "reviewer assignments"):
+            run_once(
+                self.root,
+                self.campaign_id,
+                worker_result_path=self.write_worker_result("job-1"),
+                total_subagent_slots=3,
+                worker_assignments={},
+                reviewer_assignments={},
+            )
+
+        self.assertEqual(load_jobs(self.root, self.campaign_id), before_jobs)
+        self.assertEqual(
+            {path.name: path.read_bytes() for path in self.attempt("job-1", 1).iterdir()},
+            before_attempt,
+        )
+
+        retried = run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-1"),
+            total_subagent_slots=3,
+            worker_assignments={},
+            reviewer_assignments={"job-1": {"identity": "reviewer-a", "model": "Sol"}},
+        )
+        self.assertEqual(retried["review_order"]["job_id"], "job-1")
+        self.assertEqual(next(job for job in load_jobs(self.root, self.campaign_id) if job["job_id"] == "job-1")["state"], "reviewing")
+        self.assertTrue(self.attempt("job-1", 1).joinpath("candidate.md").is_file())
+
+    def test_parallel_review_result_missing_worker_assignment_leaves_state_and_attempt_unchanged_then_retries(self):
+        parallel = dict(self.manifest)
+        parallel["review_concurrency"] = 2
+        parallel["audit_job_ids"] = ["job-1", "job-2", "job-3"]
+        init_campaign(self.root, parallel)
+        run_once(
+            self.root,
+            self.campaign_id,
+            total_subagent_slots=3,
+            worker_assignments={
+                "job-1": {"identity": "worker-a", "model": "Terra"},
+                "job-2": {"identity": "worker-b", "model": "Terra"},
+                "job-3": {"identity": "worker-c", "model": "Terra"},
+            },
+            reviewer_assignments={},
+        )
+        run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-1"),
+            total_subagent_slots=3,
+            worker_assignments={},
+            reviewer_assignments={"job-1": {"identity": "reviewer-a", "model": "Sol"}},
+        )
+        before_jobs = load_jobs(self.root, self.campaign_id)
+        before_attempt = {
+            path.name: path.read_bytes() for path in self.attempt("job-1", 1).iterdir()
+        }
+
+        with self.assertRaisesRegex(PilotError, "worker assignments"):
+            run_once(
+                self.root,
+                self.campaign_id,
+                review_result_path=self.write_review("job-1", 1, "approved"),
+                total_subagent_slots=3,
+                worker_assignments={},
+                reviewer_assignments={},
+            )
+
+        self.assertEqual(load_jobs(self.root, self.campaign_id), before_jobs)
+        self.assertEqual(
+            {path.name: path.read_bytes() for path in self.attempt("job-1", 1).iterdir()},
+            before_attempt,
+        )
+
+        retried = run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review("job-1", 1, "approved"),
+            total_subagent_slots=3,
+            worker_assignments={"job-4": {"identity": "worker-d", "model": "Terra"}},
+            reviewer_assignments={},
+        )
+        self.assertEqual(next(job for job in load_jobs(self.root, self.campaign_id) if job["job_id"] == "job-1")["state"], "approved")
+        self.assertEqual([order["job_id"] for order in retried["worker_orders"]], ["job-4"])
+        self.assertTrue(self.attempt("job-1", 1).joinpath("review.json").is_file())
+
     def test_parallel_reviews_write_immutable_provenance_for_each_verdict(self):
         self.start_five()
         for job_id, verdict, expected_state in (
