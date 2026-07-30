@@ -60,7 +60,7 @@ The bounded capsule includes:
 - `examples/parcel/src/` and `examples/rollup/src/` for reviewed integration examples; and
 - standard repository context such as `README.md`, `LICENSE`, and `package.json`.
 
-Tests, fixtures, example lockfiles and build configuration, dependencies, generated `lib/` output, distribution artifacts, and unrelated repository automation are excluded.
+Tests, fixtures, example lockfiles and build configuration, dependencies, the generated `lib/` tree, distribution artifacts, and unrelated repository automation are excluded as required roots. Exact tracked files referenced by public package fields such as `main`, `module`, `types`, or `exports` remain eligible because they are package entrypoint evidence.
 
 The initial limits are:
 
