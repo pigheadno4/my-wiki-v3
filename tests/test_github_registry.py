@@ -66,7 +66,7 @@ APPENDIX_A_INVENTORY = (
     ('stripe/stripe-node', 'https://github.com/stripe/stripe-node', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-js', 'https://github.com/stripe/stripe-js', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/sync-engine', 'https://github.com/stripe/sync-engine', 'tooling', 'tier2', 'commit', False, 'default-branch', 'monthly'),
-    ('stripe/react-stripe-js', 'https://github.com/stripe/react-stripe-js', 'web-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('stripe/react-stripe-js', 'https://github.com/stripe/react-stripe-js', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-terminal-ios', 'https://github.com/stripe/stripe-terminal-ios', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-terminal-android', 'https://github.com/stripe/stripe-terminal-android', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('stripe/ai', 'https://github.com/stripe/ai', 'developer-tooling', 'tier2', 'commit', False, 'default-branch', 'monthly'),
@@ -629,6 +629,41 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(2000000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(200, capsule.max_packet_files)
         self.assertEqual(2500000, capsule.max_packet_utf8_bytes)
+
+    def test_react_stripe_js_uses_the_root_npm_public_source_profile(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        react_stripe_js = next(
+            repo for repo in repos if repo.id == "stripe/react-stripe-js"
+        )
+
+        self.assertTrue(react_stripe_js.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:@stripe/react-stripe-js@6",
+                    "latest-stable",
+                    "all-stable",
+                ),
+            ),
+            react_stripe_js.version_tracks,
+        )
+        self.assertEqual(1, len(react_stripe_js.capsules))
+        capsule = react_stripe_js.capsules[0]
+        self.assertEqual("react-stripe-js-public-source", capsule.id)
+        self.assertEqual("npm-tracked-source-v1", capsule.adapter)
+        self.assertEqual(("@stripe/react-stripe-js",), capsule.focus_packages)
+        self.assertEqual("internal-runtime-closure", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(("examples", "src"), capsule.default_required_roots)
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual((), capsule.include_paths)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(240, capsule.max_capsule_files)
+        self.assertEqual(2500000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(280, capsule.max_packet_files)
+        self.assertEqual(3000000, capsule.max_packet_utf8_bytes)
 
     def test_registry_matches_appendix_a_inventory_and_collection_cadence(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
