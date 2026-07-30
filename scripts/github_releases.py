@@ -132,7 +132,7 @@ def select_release_candidates(
         return ()
 
     package_name, target = _track_scope(track)
-    eligible = _deduplicated_candidates(
+    matching = tuple(
         candidate
         for candidate in candidates
         if _candidate_matches_track(candidate, package_name, target, track)
@@ -148,32 +148,43 @@ def select_release_candidates(
             if parse_semver(version) is not None
         )
         if not parsed_existing:
-            return eligible
+            return _deduplicated_candidates(matching)
         latest = max(parsed_existing, key=cmp_to_key(compare_semver))
-        return tuple(
+        selected = tuple(
             candidate
-            for candidate in eligible
+            for candidate in matching
             if compare_semver(_parsed_version(candidate.version), latest) > 0
             or (
                 compare_semver(_parsed_version(candidate.version), latest) == 0
                 and _version_key(candidate.version) not in existing
             )
         )
+        return _deduplicated_candidates(selected)
 
-    pinned = _pinned_candidates(track, eligible)
     if track.backfill == "all-stable":
+        eligible = _deduplicated_candidates(matching)
+        _pinned_candidates(track, eligible)
         return eligible
     if track.backfill == "latest-stable":
-        selected = []
+        if not matching:
+            _pinned_candidates(track, ())
+            return ()
         existing = _version_keys(existing_versions)
-        for candidate in eligible:
-            if _version_key(candidate.version) in existing:
-                selected.append(candidate)
-        if eligible:
-            selected.append(eligible[-1])
-        return _deduplicated_candidates(selected)
+        latest = max(matching, key=cmp_to_key(_compare_candidates))
+        selected_keys = existing.union(
+            {_version_key(latest.version)}
+        ).union(_version_keys(track.pinned_versions))
+        selected = _deduplicated_candidates(
+            candidate
+            for candidate in matching
+            if _version_key(candidate.version) in selected_keys
+        )
+        _pinned_candidates(track, selected)
+        return selected
     if track.backfill != "minor-baselines":
         raise ReleaseSelectionError("unknown backfill policy " + track.backfill)
+    eligible = _deduplicated_candidates(matching)
+    pinned = _pinned_candidates(track, eligible)
     if not eligible:
         return ()
 

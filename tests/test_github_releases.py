@@ -298,6 +298,53 @@ class GitHubReleasesTests(unittest.TestCase):
         with self.assertRaisesRegex(ReleaseSelectionError, "release-evidence conflict.*9.0.0"):
             select_release_candidates(self._track(selector="v9.0.0"), aliases)
 
+    def test_latest_stable_ignores_conflicting_unretained_history(self):
+        candidates = (
+            ReleaseCandidate("", "0.6.1", "0.6.1", "tag-old-a", "commit-old-a", False),
+            ReleaseCandidate("", "0.6.1", "v0.6.1", "tag-old-b", "commit-old-b", False),
+            ReleaseCandidate("", "0.66.0", "v0.66.0", "tag-latest", "commit-latest", False),
+        )
+
+        selected = select_release_candidates(
+            self._track(selector="v0", backfill="latest-stable"),
+            candidates,
+        )
+
+        self.assertEqual(("0.66.0",), tuple(item.version for item in selected))
+
+    def test_future_collection_ignores_conflicting_history_below_retained_version(self):
+        candidates = (
+            ReleaseCandidate("", "0.6.1", "0.6.1", "tag-old-a", "commit-old-a", False),
+            ReleaseCandidate("", "0.6.1", "v0.6.1", "tag-old-b", "commit-old-b", False),
+            ReleaseCandidate("", "0.66.0", "v0.66.0", "tag-current", "commit-current", False),
+            ReleaseCandidate("", "0.67.0", "v0.67.0", "tag-future", "commit-future", False),
+        )
+
+        selected = select_release_candidates(
+            self._track(selector="v0", future="all-stable"),
+            candidates,
+            existing_versions=("0.66.0",),
+            mode="future",
+        )
+
+        self.assertEqual(("0.67.0",), tuple(item.version for item in selected))
+
+    def test_all_stable_still_rejects_conflicting_historical_aliases(self):
+        candidates = (
+            ReleaseCandidate("", "0.6.1", "0.6.1", "tag-old-a", "commit-old-a", False),
+            ReleaseCandidate("", "0.6.1", "v0.6.1", "tag-old-b", "commit-old-b", False),
+            ReleaseCandidate("", "0.66.0", "v0.66.0", "tag-latest", "commit-latest", False),
+        )
+
+        with self.assertRaisesRegex(
+            ReleaseSelectionError,
+            "release-evidence conflict.*0.6.1",
+        ):
+            select_release_candidates(
+                self._track(selector="v0", backfill="all-stable"),
+                candidates,
+            )
+
     def test_invalid_mode_and_missing_pin_fail_without_weakening_retention(self):
         with self.assertRaisesRegex(ReleaseSelectionError, "mode"):
             select_release_candidates(self._track(), self._candidates("9.0.0"), mode="other")
