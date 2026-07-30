@@ -318,6 +318,43 @@ class GitHubIngestPacketTests(unittest.TestCase):
             classified["tsconfig.lib.json"],
         )
 
+    def test_eslint_configs_are_classified_as_build_configuration(self):
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            "types/.eslintrc.yml": "rules: {}\n",
+            "src/eslint.config.mjs": "export default [];\n",
+        }
+        current = {
+            "package.json": self.manifest_content("10.1.0"),
+            "types/.eslintrc.yml": "rules:\n  semi: error\n",
+            "src/eslint.config.mjs": "export default [{ rules: {} }];\n",
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            (
+                UpstreamChange("modified", "package.json", "package.json"),
+                UpstreamChange(
+                    "modified",
+                    "types/.eslintrc.yml",
+                    "types/.eslintrc.yml",
+                ),
+                UpstreamChange(
+                    "modified",
+                    "src/eslint.config.mjs",
+                    "src/eslint.config.mjs",
+                ),
+            ),
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        self.assertEqual("build-configuration", classified["types/.eslintrc.yml"])
+        self.assertEqual("build-configuration", classified["src/eslint.config.mjs"])
+
     def test_typescript_module_sources_are_classified_as_public_source(self):
         prior = {
             "package.json": self.manifest_content("10.0.0"),

@@ -809,6 +809,12 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         filename.startswith("tsconfig.") and filename.endswith(".json")
     ):
         return "build-configuration"
+    if (
+        filename == ".eslintrc"
+        or filename.startswith(".eslintrc.")
+        or filename.startswith("eslint.config.")
+    ):
+        return "build-configuration"
     if filename.startswith(("changelog", "history", "releases")):
         return "release-history"
     if row.get("purpose") == "repository-context" or row.get(
