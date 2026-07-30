@@ -8,6 +8,65 @@
 
 This is the single most important rule. Batching produces shallow summaries, missed details, and malformed pages. It was confirmed in smoke testing: **no batch, process one by one, read the full raw content, then ingest.**
 
+## Coordinator-controlled parallel-review campaign exception
+
+The default above remains mandatory for ordinary ingest. A campaign may defer
+and reduce shared-file writes only when an exact, explicitly approved campaign
+manifest **and an explicit provider-specific authorization** provide all of
+these controls. A provider without its own authorization remains serial-only.
+
+- Each worker handles exactly one source unit, reads it completely, extracts
+  three to five verbatim quotes, and returns one isolated source candidate plus
+  structured shared-file suggestions.
+- A different strong-model reviewer reads that same complete source unit and
+  checks the candidate, quotes, contradictions, unknowns, raw link, relevant
+  concepts and source context, and the semantic validity of shared-file
+  suggestions. Reviewers do not reread the full company page, provider index,
+  or provider log. An approved candidate needs no third default full-source
+  read by the coordinator.
+- Workers and reviewers are repository-read-only. The coordinator remains the
+  only writer of canonical sources, concepts, company pages, indexes, logs,
+  counts, campaign state, and commits.
+- The coordinator fully rereads the source only for a disputed or uncertain
+  review, a retry with unresolved content risk, a high-risk page named in the
+  manifest, or a page selected for final quality sampling.
+- Source units remain independent. No candidate may combine several raw pages,
+  and review approval is recorded per source before canonical promotion.
+
+After all reviews finish, the coordinator may reduce approved suggestions by
+shared target instead of repeatedly editing the same file:
+
+1. Merge approved durable facts and planned source wikilinks by concept and
+   apply each concept update once, before the corresponding sources.
+2. Write the individually approved source pages.
+3. Verify contradictions and fact-based reciprocal concept citations; repair a
+   defect if one is found.
+4. Update the company page, provider index, provider log, and calculated counts
+   once for the campaign.
+
+Concept updates still precede the corresponding canonical source promotion.
+Company and provider indexes are exhaustive reverse catalogs; a concept cites a
+source when that source contributes a durable fact. A navigation-only source
+link does not force a reciprocal concept citation.
+
+Validation is layered rather than repeated globally after every page:
+
+- Worker handoff: raw hash, canonical URL, result schema, and verbatim quotes.
+- Reviewer handoff: complete-source review and candidate/suggestion approval.
+- Campaign close: validate every promoted source and touched concept, then run
+  provider count, link, duplicate-entry, raw-hash, and capsule checks once.
+- The coordinator alone exhaustively checks the company page, provider index,
+  provider log, links, and counts once at campaign close.
+- Run the full unit suite when code, rules, or validators changed. A
+  documentation-only mature campaign uses the targeted and capsule checks.
+
+The immutable approved manifest records three distinct audit job IDs before
+execution: one standard page, the longest or schema-heaviest page, and one
+ordinary manifest sample. Any material partial or fail expands the audit to
+every campaign page.
+Broken links, duplicate index/company entries, hashes, and counts are always
+checked across the complete campaign.
+
 For GitHub, the source unit is exactly one approved SHA work item, which may
 contain multiple package releases sharing that SHA. Read the complete current
 source and changelog pages, every assigned release record and comparison, the

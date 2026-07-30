@@ -57,3 +57,49 @@ For coordinator-controlled ingest, dispatch the generated worker order without r
 - Give every grounding quote non-empty `text` and `location` values.
 
 These are submission checks, not new campaign state. The existing validator remains the fail-closed authority, and an invalid result follows the existing bounded retry path.
+
+## Parallel-review campaign allocation
+
+Metronome is explicitly authorized to use the coordinator-controlled exception
+in `rules/ingest.md` after the exact campaign manifest is approved. This
+authorization is Metronome-specific; every other provider remains serial-only
+until its own provider rule grants equivalent authorization.
+
+The coordinator is fixed. All remaining native-agent capacity is a dynamic
+pool; worker and reviewer slots are not reserved in advance. At each dispatch:
+
+```text
+free_slots = total_subagent_slots - active_workers - active_reviewers
+worker_reserve = 1 if queued_jobs > 0 and active_workers == 0 else 0
+review_slots = min(candidate_ready, review_cap, free_slots - worker_reserve)
+```
+
+Every new worker or reviewer order must fit `free_slots`. Reserve one worker
+slot only when queued source jobs remain and no worker is already active; an
+active worker satisfies the reserve. Start ready reviews up to `review_slots`,
+then fill the remaining free slots with queued workers:
+
+- If no candidate is ready, fill available capacity with workers.
+- When a worker finishes, release its slot and prefer a fresh strong reviewer
+  for a ready candidate.
+- Never start more reviewers than ready candidates.
+- Do not delay a ready review merely to reserve another worker slot when a
+  worker is already active.
+- When the worker queue is empty, all available sub-agent slots may review.
+- The reviewer must be a different agent from the candidate's worker.
+
+With the current Codex capacity of three sub-agent slots beside the
+coordinator, the intended allocation is:
+
+| Ready candidates | Queued jobs | Reviewers | Workers |
+| ---: | --- | ---: | ---: |
+| 0 | yes | 0 | 3 |
+| 1 | yes | 1 | 2 |
+| 2+ | yes | 2 | 1 |
+| 1 | no | 1 | 0 |
+| 2 | no | 2 | 0 |
+| 3+ | no | 3 | 0 |
+
+Backend capacity is discovered at runtime. The campaign's configured
+concurrency is a ceiling, not a promise that every platform exposes that many
+native agents.
