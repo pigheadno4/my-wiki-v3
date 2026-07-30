@@ -46,6 +46,9 @@ Available elements: AddressElement, ExpressCheckoutElement, LinkAuthenticationEl
 - Use `onReady` prop to capture Element instance for imperative methods like `focus()`
 - One of each Element type per provider
 
+> [!warning] Contradiction
+> The retained `@stripe/react-stripe-js@6.8.0` implementation in [[source-github-react-stripe-js]] treats `clientSecret` and `fonts` as immutable but forwards other changed provider options through `elements.update()`. The broader immutability statement above reflects this source's 2025 documentation snapshot.
+
 ## Related Pages
 
 - [[stripe-elements]] — Stripe Elements concept page (React API section added)

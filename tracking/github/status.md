@@ -395,10 +395,10 @@
 - Repository: `stripe/react-stripe-js`
 - SHA: `a742a105cdf297aa28f87bac5292c27a60defad3`
 - Collection date: `2026-07-30`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

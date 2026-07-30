@@ -55,8 +55,8 @@ Elements works with two Stripe payment APIs:
 
 ```jsx
 // Package: @stripe/react-stripe-js/checkout
-import { CheckoutElementsProvider, PaymentElement, useCheckout } from "@stripe/react-stripe-js/checkout";
-// confirm: checkout.confirm()
+import { CheckoutElementsProvider, PaymentElement, useCheckoutElements } from "@stripe/react-stripe-js/checkout";
+// confirm: checkoutState.checkout.confirm()
 ```
 
 ### With Payment Intents API
@@ -126,16 +126,31 @@ const error = await actions.confirm();
 
 - `CheckoutElementsProvider` → wraps app; `clientSecret` from Checkout Session; `stripe` prop immutable
 - `useCheckoutElements()` → returns `{ type: 'loading'|'error'|'success', checkout }` object; `checkout.confirm()` submits
-- Note: `useCheckoutElements` replaces old `useCheckout` (pre-v6)
-- Elements: BillingAddressElement, CurrencySelectorElement, ExpressCheckoutElement, PaymentElement, PaymentMethodMessagingElement, ShippingAddressElement, TaxIdElement
+- `useCheckout()` has been deprecated since v6.3.0 and is scheduled for removal in v7; use the provider-specific hook
+- `CheckoutFormProvider` + `useCheckoutForm()` expose the narrower beta Checkout Form SDK, while `CheckoutElementsProvider` + `useCheckoutElements()` expose the Elements SDK
+- Checkout exports include Billing Address, Shipping Address, Currency Selector, Payment, Express Checkout, Tax ID, Contact Details, Checkout Form, and beta-gated Terms components
 
 ### Advanced path (from `@stripe/react-stripe-js`)
 
-- `<Elements stripe={stripePromise} options={{ clientSecret }}>` → wraps app; `options` immutable (use `elements.update()` for appearance)
+- `<Elements stripe={stripePromise} options={{ clientSecret }}>` → wraps app; `clientSecret` and `fonts` are immutable, while other changed options are forwarded to `elements.update()`
 - `useStripe()` → Stripe object (null until Promise resolves)
 - `useElements()` → Elements object; `elements.getElement(PaymentElement)` for imperative focus
 - `ElementsConsumer` → for class components; render props pattern `({ stripe, elements }) => ...`
-- Elements: AddressElement, ExpressCheckoutElement, LinkAuthenticationElement, PaymentElement, PaymentMethodMessagingElement, TaxIdElement
+- Root exports include Address, Express Checkout, Link Authentication, Payment, Payment Method Messaging, Tax ID, five Issuing display/copy components, and beta-gated Terms components
+
+### Retained React package baseline
+
+The cumulative repository baseline is `@stripe/react-stripe-js@6.8.0` at exact commit `a742a10`. It requires React and React DOM `>=16.8.0 <20.0.0` and `@stripe/stripe-js >=9.5.0 <10.0.0`. The root and `/checkout` entrypoints publish separate CommonJS, ESM, and declaration targets.
+
+Provider behavior is intentionally strict:
+
+- the `stripe` prop can start as `null` for server rendering, but cannot be replaced after initialization;
+- standard `Elements` treats `clientSecret` and `fonts` as immutable while forwarding other changed options through `elements.update()`;
+- Checkout providers initialize their SDK once, publish loading/success/error state, and apply later appearance or font changes through the SDK;
+- an app cannot nest standard `Elements` and a Checkout provider around the same consumer; and
+- Element wrappers attach and detach event callbacks, mount once, and destroy the underlying Element during cleanup.
+
+The v6.8.0 release note adds `TermsElement`. Both the root and `/checkout` implementations explicitly require beta access, so the export proves a typed integration surface, not account eligibility or general availability. See [[source-github-react-stripe-js]] and [[changelog-github-react-stripe-js]].
 
 **PCI compliance**: always load Stripe.js from js.stripe.com — never bundle or self-host.
 
@@ -145,7 +160,8 @@ const error = await actions.confirm();
 - [[source-stripe-checkout-elements-quickstart]] — Checkout Elements quickstart (Checkout Sessions + Elements)
 - [[source-stripe-payment-intents-quickstart]] — Payment Intents quickstart (Payment Intents + Elements)
 - [[source-stripe-react-stripejs]] — React Stripe.js reference: CheckoutElementsProvider, useCheckoutElements, Elements provider, useStripe/useElements, ElementsConsumer
-- [[source-github-react-stripe-js]] — react-stripe-js repo v6.3.0: Elements.tsx, createElementComponent factory, EmbeddedCheckoutProvider, CheckoutElementsProvider impl, examples
+- [[source-github-react-stripe-js]] — cumulative React Stripe.js repository history: legacy v6.3.0 context plus package-qualified `@stripe/react-stripe-js@6.8.0`
+- [[changelog-github-react-stripe-js]] — package-qualified React Stripe.js release ledger
 - [[source-github-stripe-js]] — package-qualified `@stripe/stripe-js@8.11.0` and `9.12.1` loader, runtime boundary, public type surface, and Elements history
 - [[source-stripe-elements-advanced-payments]] — Checkout Sessions vs Payment Intents feature matrix
 - [[source-stripe-payment-element]] — Payment Element reference: layout, Appearance API, 8 options, combining elements, 17 error codes

@@ -2,7 +2,7 @@
 title: "Stripe"
 type: company
 tags: [stripe, payment-gateway, payment-intents, checkout, subscriptions, elements, webhooks, payment-links]
-source_count: 649
+source_count: 650
 ---
 
 ## Stripe
@@ -44,6 +44,8 @@ Created when a PaymentIntent is confirmed. Represents one specific attempt to mo
 Drop-in UI components for custom integrations. Enables custom-built checkout flows while Stripe handles PCI compliance and UI rendering.
 
 The `@stripe/stripe-js` npm package is the web loader and TypeScript declaration layer for Stripe.js, not a self-hosted runtime. The retained history covers v8.11.0 on `clover` and v9.12.1 on `dahlia`, while preserving standard and deferred `/pure` entrypoints and server-side `null` behavior. V9 reshapes Checkout entrypoints, expands Elements types, and removes typed client-side Source helpers. See [[source-github-stripe-js]].
+
+`@stripe/react-stripe-js` is the separate React binding layer. Its retained `6.8.0` baseline provides standard Elements, provider-specific Checkout Elements and beta Checkout Form hooks, Embedded Checkout, SSR-safe initialization, and typed component lifecycle. It requires `@stripe/stripe-js >=9.5.0 <10.0.0`; typed exports do not independently prove runtime rollout or merchant eligibility. See [[source-github-react-stripe-js]].
 
 ### Express Checkout Element
 
@@ -537,7 +539,8 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 - [[source-stripe-currencies]] — Supported currencies: minor units formatting, ISK/HUF/TWD/UGX special rules, min/max charge amounts, EEA card definition
 - [[source-stripe-react-stripejs]] — React Stripe.js reference: CheckoutElementsProvider/useCheckoutElements + Elements/useStripe/useElements/ElementsConsumer
 - [[source-github-stripe-node]] — stripe-node SDK repo v22.1.1: error taxonomy, webhook verification, retry logic, autoPagination, PaymentIntents + Checkout/Sessions APIs
-- [[source-github-react-stripe-js]] — react-stripe-js repo v6.3.0: Elements/createElementComponent, EmbeddedCheckoutProvider, CheckoutElementsProvider impl, 2 examples
+- [[source-github-react-stripe-js]] — cumulative react-stripe-js history: legacy v6.3.0 plus `@stripe/react-stripe-js@6.8.0` providers, hooks, lifecycle, SSR, compatibility, and beta Terms Element
+- [[changelog-github-react-stripe-js]] — package-qualified react-stripe-js release history
 - [[source-stripe-bizum]] — Bizum: Spain-only real-time, phone auth, 395-day refunds, 40-day evidence, onboarding required
 - [[source-stripe-declines-overview]] — Declines overview: 3 failure types (issuer/blocked/invalid), outcome object fields, Radar block reasons, Adaptive Acceptance blocking, allow list
 - [[source-stripe-card-declines]] — Card declines: network codes, advice_code retry table, max 8 retries, on/off-session handling, geographic + FSA/HSA restrictions

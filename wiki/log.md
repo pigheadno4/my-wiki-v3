@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-30] ingest | GitHub stripe/react-stripe-js — `@stripe/react-stripe-js@6.8.0`
+
+- Full serial ingest of `github-d784ed22413ba025c631` from exact SHA `a742a105cdf297aa28f87bac5292c27a60defad3`.
+- Preserved the legacy v6.3.0 manual capsule while establishing the canonical cumulative source and package-qualified changelog from the complete 49-file required-reading set.
+- Separated the exact beta Terms Element release note from broader baseline findings: standard and Checkout providers, provider-specific hooks, Embedded Checkout, Issuing components, SSR behavior, lifecycle, and peer compatibility.
+- Updated the Stripe company, Elements and Checkout concepts, and provider index; source count increased from 649 to 650.
+
 ## [2026-07-30] ingest | GitHub stripe/stripe-js — `@stripe/stripe-js@9.12.1`
 
 - Full serial ingest of `github-82cea027945f7df14795` from exact SHA `43d35b1b0e324475ea9f9cb867ad2c4e7dabe3f8`.

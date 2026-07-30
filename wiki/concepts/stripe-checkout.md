@@ -54,6 +54,18 @@ The retained `@stripe/stripe-js@9.12.1` declarations target the `dahlia` Stripe.
 
 This is a cumulative v8-to-v9 package comparison, not the 9.12.1 patch note alone. The older [[source-stripe-checkout-elements-beta-changelog]] remains useful as dated Clover migration evidence, but its “latest” label and `initCheckout()` example are not current for the retained v9 declarations.
 
+## React Stripe.js v6.8 Binding
+
+`@stripe/react-stripe-js@6.8.0` binds the v9 Checkout contracts into two provider-specific React surfaces:
+
+- `CheckoutElementsProvider` initializes `initCheckoutElementsSdk()`, and `useCheckoutElements()` returns the Elements action and session surface.
+- `CheckoutFormProvider` initializes the beta `initCheckoutFormSdk()`, and `useCheckoutForm()` returns the narrower Form action and session surface.
+- `useCheckout()` remains a backward-compatible Elements-shaped alias but has been deprecated since v6.3.0 and is scheduled for removal in v7.
+- Both providers initialize once, accept a sync Stripe object, promise, or `null` for SSR, and reject changing the Stripe prop after it has been set.
+- The `/checkout` entrypoint also exposes Payment, Express Checkout, address, Tax ID, Contact Details, Checkout Form, Currency Selector, and beta Terms components.
+
+Embedded Checkout remains a separate root-package path through `EmbeddedCheckoutProvider` and `EmbeddedCheckout`. Its provider accepts either `clientSecret` or `fetchClientSecret`, creates the embedded page once, and destroys it on unmount. These React bindings depend on `@stripe/stripe-js`; they do not independently prove the behavior or rollout of the Stripe-hosted runtime. See [[source-github-react-stripe-js]].
+
 ## Checkout Sessions vs Payment Intents (for Elements)
 
 Both integrate with Elements + Appearance API. **Use Checkout Sessions for most integrations** — it handles the same payment flows as Payment Intents with significantly less code.
@@ -196,6 +208,8 @@ Both integrate with Elements + Appearance API. **Use Checkout Sessions for most 
 - [[source-stripe-checkout-elements-quickstart]] — Checkout Elements quickstart: CheckoutElementsProvider, useCheckout hook, 4 elements, return page, Adaptive Pricing, Stripe Tax
 - [[source-stripe-web-elements-overview]] — Stripe Elements overview: 7 elements, API comparison diagram, features
 - [[source-github-stripe-js]] — package-qualified `@stripe/stripe-js@8.11.0` baseline and `9.12.1` Checkout API transition
+- [[source-github-react-stripe-js]] — React provider, hook, component lifecycle, SSR, and package-compatibility evidence at `@stripe/react-stripe-js@6.8.0`
+- [[changelog-github-react-stripe-js]] — package-qualified React Stripe.js release history
 - [[stripe-elements]] — Stripe Elements concept page (all 7 elements, React integration patterns)
 - [[source-stripe-checkout-custom-components]] — Custom fields (3 types), custom text (4 placements), ToS consent, payment method reuse agreement, localization, Dashboard policies
 - [[source-stripe-inapp-digital-goods-checkout]] — iOS digital goods app-to-web flow: origin_context=mobile_app, Universal Links, SKPaymentQueue gate, checkout.session.completed fulfillment
