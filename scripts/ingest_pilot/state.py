@@ -145,6 +145,27 @@ def _routing_metadata(source: Mapping[str, Any]) -> Dict[str, str]:
     }
 
 
+def _review_configuration(manifest: Mapping[str, Any]) -> Dict[str, Any]:
+    review_concurrency = manifest.get("review_concurrency", 1)
+    if isinstance(review_concurrency, bool) or not isinstance(review_concurrency, int) or review_concurrency < 1:
+        raise PilotError("review_concurrency must be a positive integer")
+    audit_job_ids = manifest.get("audit_job_ids")
+    if audit_job_ids is None:
+        if review_concurrency > 1:
+            raise PilotError("parallel review requires audit_job_ids")
+        return {"review_concurrency": review_concurrency}
+    job_ids = {source.get("job_id") for source in manifest["jobs"]}
+    if (
+        not isinstance(audit_job_ids, list)
+        or len(audit_job_ids) != 3
+        or any(not isinstance(job_id, str) or not job_id for job_id in audit_job_ids)
+        or len(set(audit_job_ids)) != 3
+        or any(job_id not in job_ids for job_id in audit_job_ids)
+    ):
+        raise PilotError("audit_job_ids must contain three distinct manifest job IDs")
+    return {"review_concurrency": review_concurrency, "audit_job_ids": list(audit_job_ids)}
+
+
 def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> None:
     manifest_data = _manifest_data(manifest)
     campaign_id = manifest_data["campaign_id"]
@@ -152,6 +173,7 @@ def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> No
     campaign_dir = paths["campaign_dir"]
     if paths["campaign"].exists() or paths["jobs"].exists():
         raise PilotError("campaign is already initialized")
+    review_configuration = _review_configuration(manifest_data)
     routing_metadata = [
         _routing_metadata(source) for source in manifest_data["jobs"]
     ]
@@ -169,7 +191,7 @@ def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> No
             "state": "active",
             "worker_concurrency": 5,
             "max_attempts": 3,
-            "review_concurrency": 1,
+            **review_configuration,
             "mode": "dry_run",
         }
         paths["campaign"].write_bytes(_json_bytes(campaign))

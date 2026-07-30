@@ -21,6 +21,9 @@ def _parser() -> argparse.ArgumentParser:
     run.add_argument("--worker-result")
     run.add_argument("--review-result")
     run.add_argument("--available-worker-slots", type=int)
+    run.add_argument("--total-subagent-slots", type=int)
+    run.add_argument("--worker-assignment", action="append", default=[])
+    run.add_argument("--reviewer-assignment", action="append", default=[])
 
     campaign = commands.add_parser("status")
     campaign.add_argument("--campaign", required=True)
@@ -44,12 +47,24 @@ def main() -> int:
         if arguments.command == "init":
             output = init_campaign(root, Path(arguments.manifest))
         elif arguments.command == "run":
+            def assignments(values):
+                output = []
+                for value in values:
+                    identity, separator, model = value.partition("=")
+                    if not separator or not identity or not model or "=" in model:
+                        raise PilotError("assignment must use IDENTITY=MODEL")
+                    output.append({"identity": identity, "model": model})
+                return output
+
             output = run_once(
                 root,
                 arguments.campaign,
                 worker_result_path=Path(arguments.worker_result) if arguments.worker_result else None,
                 review_result_path=Path(arguments.review_result) if arguments.review_result else None,
                 available_worker_slots=arguments.available_worker_slots,
+                total_subagent_slots=arguments.total_subagent_slots,
+                worker_assignments=assignments(arguments.worker_assignment),
+                reviewer_assignments=assignments(arguments.reviewer_assignment),
             )
         elif arguments.command == "status":
             output = status(root, arguments.campaign)

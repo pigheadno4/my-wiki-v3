@@ -257,6 +257,130 @@ class CoordinatorTests(unittest.TestCase):
         self.assertEqual(job["state"], "rejected")
         self.assertEqual(job["failure_reason"], "Not grounded")
 
+    def test_parallel_assignments_are_required_before_state_mutation_and_distinct(self):
+        parallel = dict(self.manifest)
+        parallel["review_concurrency"] = 2
+        parallel["audit_job_ids"] = ["job-1", "job-2", "job-3"]
+        init_campaign(self.root, parallel)
+        before = load_jobs(self.root, self.campaign_id)
+
+        with self.assertRaisesRegex(PilotError, "worker assignments"):
+            run_once(self.root, self.campaign_id, total_subagent_slots=3)
+        self.assertEqual(load_jobs(self.root, self.campaign_id), before)
+
+        first = run_once(
+            self.root,
+            self.campaign_id,
+            total_subagent_slots=3,
+            worker_assignments={"job-1": {"identity": "worker-a", "model": "Terra"}, "job-2": {"identity": "worker-b", "model": "Terra"}, "job-3": {"identity": "worker-c", "model": "Terra"}},
+            reviewer_assignments={},
+        )
+        self.assertEqual([order["job_id"] for order in first["worker_orders"]], ["job-1", "job-2", "job-3"])
+        self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["worker_identity"], "worker-a")
+
+        ready = load_jobs(self.root, self.campaign_id)
+        ready[0]["state"] = "candidate_ready"
+        ready[1]["state"] = "candidate_ready"
+        save_jobs(self.root, self.campaign_id, ready)
+        before_reviews = load_jobs(self.root, self.campaign_id)
+        with self.assertRaisesRegex(PilotError, "reviewer identity"):
+            run_once(
+                self.root,
+                self.campaign_id,
+                total_subagent_slots=3,
+                reviewer_assignments={
+                    "job-1": {"identity": "worker-a", "model": "Sol"},
+                    "job-2": {"identity": "reviewer-b", "model": "Sol"},
+                },
+                worker_assignments={},
+            )
+        self.assertEqual(load_jobs(self.root, self.campaign_id), before_reviews)
+
+    def test_parallel_review_result_without_assignment_fails_closed(self):
+        parallel = dict(self.manifest)
+        parallel["review_concurrency"] = 2
+        parallel["audit_job_ids"] = ["job-1", "job-2", "job-3"]
+        init_campaign(self.root, parallel)
+        jobs = load_jobs(self.root, self.campaign_id)
+        jobs[0]["attempt"] = 1
+        jobs[0]["state"] = "reviewing"
+        jobs[0]["last_event"] = "review_started"
+        save_jobs(self.root, self.campaign_id, jobs)
+        before = load_jobs(self.root, self.campaign_id)
+
+        with self.assertRaisesRegex(PilotError, "reviewer assignment"):
+            run_once(
+                self.root,
+                self.campaign_id,
+                review_result_path=self.write_review("job-1", 1, "approved"),
+                total_subagent_slots=3,
+                worker_assignments={},
+                reviewer_assignments={},
+            )
+        self.assertEqual(load_jobs(self.root, self.campaign_id), before)
+
+    def test_parallel_reviews_write_immutable_provenance_for_each_verdict(self):
+        self.start_five()
+        for job_id, verdict, expected_state in (
+            ("job-1", "approved", "approved"),
+            ("job-2", "changes_requested", "queued"),
+            ("job-3", "rejected", "rejected"),
+        ):
+            with self.subTest(verdict=verdict):
+                jobs = load_jobs(self.root, self.campaign_id)
+                job = next(item for item in jobs if item["job_id"] == job_id)
+                job["state"] = "reviewing"
+                job["last_event"] = "review_started"
+                job["worker_identity"] = "worker-a"
+                job["worker_model"] = "Terra"
+                job["reviewer_identity"] = "reviewer-a"
+                job["reviewer_model"] = "Sol"
+                save_jobs(self.root, self.campaign_id, jobs)
+
+                run_once(self.root, self.campaign_id, review_result_path=self.write_review(job_id, 1, verdict))
+
+                review = json.loads(self.attempt(job_id, 1).joinpath("review.json").read_text(encoding="utf-8"))
+                self.assertEqual(review["verdict"], verdict)
+                self.assertEqual(review["reviewer_identity"], "reviewer-a")
+                self.assertEqual(review["reviewer_model"], "Sol")
+                self.assertEqual(next(job for job in load_jobs(self.root, self.campaign_id) if job["job_id"] == job_id)["state"], expected_state)
+
+    def test_cli_runs_a_shared_slot_worker_review_cycle(self):
+        manifest = dict(self.manifest)
+        manifest["review_concurrency"] = 2
+        manifest["audit_job_ids"] = ["job-1", "job-2", "job-3"]
+        manifest_path = self.root / "parallel-manifest.json"
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        script = Path(__file__).parents[1] / "scripts" / "manage_ingest_pilot.py"
+
+        def invoke(*arguments):
+            completed = subprocess.run(
+                [sys.executable, str(script), *arguments], cwd=self.root, text=True, capture_output=True, check=True
+            )
+            self.assertEqual(completed.stderr, "")
+            return json.loads(completed.stdout)
+
+        invoke("init", "--manifest", str(manifest_path))
+        started = invoke(
+            "run", "--campaign", self.campaign_id, "--total-subagent-slots", "3",
+            "--worker-assignment", "worker-a=Terra", "--worker-assignment", "worker-b=Terra",
+            "--worker-assignment", "worker-c=Terra",
+        )
+        self.assertEqual([order["job_id"] for order in started["worker_orders"]], ["job-1", "job-2", "job-3"])
+        candidate = invoke(
+            "run", "--campaign", self.campaign_id, "--total-subagent-slots", "3",
+            "--worker-result", str(self.write_worker_result("job-1")),
+            "--reviewer-assignment", "reviewer-a=Sol",
+        )
+        self.assertEqual([order["job_id"] for order in candidate["review_orders"]], ["job-1"])
+        reviewed = invoke(
+            "run", "--campaign", self.campaign_id, "--total-subagent-slots", "3",
+            "--review-result", str(self.write_review("job-1", 1, "approved")),
+            "--worker-assignment", "worker-d=Terra",
+        )
+        self.assertEqual(reviewed["jobs"][0]["state"], "approved")
+        self.assertEqual([order["job_id"] for order in reviewed["worker_orders"]], ["job-4"])
+
     def test_retry_and_reject_require_failed_jobs_and_retain_attempts(self):
         self.start_five()
         run_once(

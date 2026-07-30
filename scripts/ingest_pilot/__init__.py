@@ -13,7 +13,7 @@ from .state import (
     save_jobs,
     write_attempt_file,
 )
-from .scheduler import review_order, worker_orders
+from .scheduler import review_order, shared_slot_orders, worker_orders
 from .validator import ValidationError, sha256_file, validate_worker_result
 from .coordinator import init_campaign, reject_job, retry_job, run_once, status
 
@@ -33,6 +33,7 @@ __all__ = [
     "write_attempt_file",
     "ValidationError",
     "review_order",
+    "shared_slot_orders",
     "retry_job",
     "run_once",
     "sha256_file",

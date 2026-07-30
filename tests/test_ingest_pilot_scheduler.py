@@ -2,6 +2,7 @@ import unittest
 from copy import deepcopy
 
 from scripts.ingest_pilot.scheduler import review_order, worker_orders
+import scripts.ingest_pilot.scheduler as scheduler
 
 
 def make_jobs(count):
@@ -143,6 +144,36 @@ class SchedulerTests(unittest.TestCase):
                 "routing_reason": "schema-heavy API",
             },
         )
+
+    def test_shared_slots_start_three_workers_then_one_review_and_two_workers(self):
+        jobs = make_jobs(6)
+
+        first = scheduler.shared_slot_orders(
+            jobs, worker_concurrency=5, review_concurrency=2, max_attempts=3, total_subagent_slots=3
+        )
+        self.assertEqual([order["job_id"] for order in first["worker_orders"]], ["job-1", "job-2", "job-3"])
+        self.assertEqual(first["review_orders"], [])
+
+        jobs = make_jobs(6)
+        jobs[0]["state"] = "candidate_ready"
+        second = scheduler.shared_slot_orders(
+            jobs, worker_concurrency=5, review_concurrency=2, max_attempts=3, total_subagent_slots=3
+        )
+        self.assertEqual([order["job_id"] for order in second["review_orders"]], ["job-1"])
+        self.assertEqual([order["job_id"] for order in second["worker_orders"]], ["job-2", "job-3"])
+
+    def test_shared_slots_emit_two_ready_reviews_and_do_not_reserve_when_worker_is_active(self):
+        jobs = make_jobs(5)
+        jobs[0]["state"] = "candidate_ready"
+        jobs[1]["state"] = "candidate_ready"
+        jobs[2]["state"] = "running"
+
+        orders = scheduler.shared_slot_orders(
+            jobs, worker_concurrency=5, review_concurrency=2, max_attempts=3, total_subagent_slots=3
+        )
+
+        self.assertEqual([order["job_id"] for order in orders["review_orders"]], ["job-1", "job-2"])
+        self.assertEqual(orders["worker_orders"], [])
 
 
 if __name__ == "__main__":

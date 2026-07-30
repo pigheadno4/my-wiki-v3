@@ -2,9 +2,9 @@
 
 import json
 from pathlib import Path
-from typing import Any, Dict, Mapping, Optional, Union
+from typing import Any, Dict, Mapping, Optional, Sequence, Union
 
-from .scheduler import review_order, worker_orders
+from .scheduler import review_order, shared_slot_orders, worker_orders
 from .state import (
     PilotError,
     append_event,
@@ -104,18 +104,49 @@ def _apply_worker_result(
     return {"event": "candidate_ready", "job_id": job["job_id"]}
 
 
-def _apply_review_result(jobs: list, result_path: Path, max_attempts: int) -> Dict[str, Any]:
+def _apply_review_result(
+    root: Path,
+    campaign_id: str,
+    campaign: Mapping[str, Any],
+    jobs: list,
+    result_path: Path,
+    max_attempts: int,
+) -> Dict[str, Any]:
     result = _load_result(result_path)
     if set(result) != REVIEW_RESULT_KEYS:
         raise PilotError("review result must use the fixed schema")
     job = _job(jobs, result["job_id"])
     if job["state"] != "reviewing" or result["attempt"] != job["attempt"]:
         raise PilotError("review result does not match a reviewing job")
+    if campaign["review_concurrency"] > 1 and (
+        not isinstance(job.get("reviewer_identity"), str)
+        or not job["reviewer_identity"]
+        or not isinstance(job.get("reviewer_model"), str)
+        or not job["reviewer_model"]
+    ):
+        raise PilotError("parallel review requires a reviewer assignment")
+    if campaign["review_concurrency"] > 1 and job["reviewer_identity"] == job.get("worker_identity"):
+        raise PilotError("reviewer identity must differ from worker identity")
     verdict = result["verdict"]
     reason = result["reason"]
     changes = result["required_changes"]
     if verdict not in REVIEW_VERDICTS or not isinstance(reason, str) or not reason or not isinstance(changes, list):
         raise PilotError("review result is invalid")
+    if "reviewer_identity" in job:
+        attempt_dir = (
+            root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
+            / job["job_id"] / f"attempt-{job['attempt']}"
+        )
+        attempt_dir.mkdir(parents=True, exist_ok=True)
+        write_attempt_file(
+            attempt_dir,
+            "review.json",
+            _json_bytes({
+                **result,
+                "reviewer_identity": job["reviewer_identity"],
+                "reviewer_model": job["reviewer_model"],
+            }),
+        )
     if verdict == "approved":
         job["state"] = "approved"
         job["last_event"] = "review_approved"
@@ -156,6 +187,90 @@ def _start_workers(
     return orders
 
 
+def _assignment_by_job(
+    assignments: Optional[Union[Mapping[str, Mapping[str, str]], Sequence[Mapping[str, str]]]],
+    orders: Sequence[Mapping[str, object]],
+    label: str,
+) -> Dict[str, Dict[str, str]]:
+    if not orders:
+        return {}
+    if assignments is None:
+        raise PilotError(f"{label} assignments are required")
+    if isinstance(assignments, Mapping):
+        expected_job_ids = {str(order["job_id"]) for order in orders}
+        if set(assignments) != expected_job_ids:
+            raise PilotError(f"{label} assignments must match emitted orders")
+        selected = {str(order["job_id"]): assignments[str(order["job_id"])] for order in orders}
+    elif isinstance(assignments, Sequence) and not isinstance(assignments, (str, bytes)):
+        if len(assignments) != len(orders):
+            raise PilotError(f"{label} assignments must match emitted orders")
+        selected = {str(order["job_id"]): assignment for order, assignment in zip(orders, assignments)}
+    else:
+        raise PilotError(f"{label} assignments must match emitted orders")
+    validated = {}
+    for job_id, assignment in selected.items():
+        if not isinstance(assignment, Mapping) or set(assignment) != {"identity", "model"}:
+            raise PilotError(f"{label} assignments require identity and model")
+        identity, model = assignment["identity"], assignment["model"]
+        if not isinstance(identity, str) or not identity.strip() or not isinstance(model, str) or not model.strip():
+            raise PilotError(f"{label} assignments require non-empty identity and model")
+        validated[job_id] = {"identity": identity, "model": model}
+    return validated
+
+
+def _start_shared_orders(
+    root: Path,
+    campaign_id: str,
+    jobs: list,
+    campaign: Mapping[str, Any],
+    total_subagent_slots: int,
+    worker_assignments: Optional[Union[Mapping[str, Mapping[str, str]], Sequence[Mapping[str, str]]]],
+    reviewer_assignments: Optional[Union[Mapping[str, Mapping[str, str]], Sequence[Mapping[str, str]]]],
+) -> Dict[str, list]:
+    projected = shared_slot_orders(
+        jobs,
+        campaign["worker_concurrency"],
+        campaign["review_concurrency"],
+        campaign["max_attempts"],
+        total_subagent_slots,
+    )
+    worker_assignment_by_job = _assignment_by_job(worker_assignments, projected["worker_orders"], "worker")
+    reviewer_assignment_by_job = _assignment_by_job(reviewer_assignments, projected["review_orders"], "reviewer")
+    for order in projected["review_orders"]:
+        job = _job(jobs, order["job_id"])
+        assignment = reviewer_assignment_by_job[job["job_id"]]
+        if assignment["identity"] == job.get("worker_identity"):
+            raise PilotError("reviewer identity must differ from worker identity")
+    for order in projected["worker_orders"]:
+        job = _job(jobs, order["job_id"])
+        assignment = worker_assignment_by_job[job["job_id"]]
+        order["worker_identity"] = assignment["identity"]
+        order["worker_model"] = assignment["model"]
+        attempt = order["attempt"]
+        attempt_dir = create_attempt(root, campaign_id, job, attempt)
+        write_attempt_file(attempt_dir, "input.json", _json_bytes(order))
+        job.update({
+            "attempt": attempt,
+            "state": "running",
+            "last_event": "worker_started",
+            "failure_reason": None,
+            "worker_identity": assignment["identity"],
+            "worker_model": assignment["model"],
+        })
+    for order in projected["review_orders"]:
+        job = _job(jobs, order["job_id"])
+        assignment = reviewer_assignment_by_job[job["job_id"]]
+        order["reviewer_identity"] = assignment["identity"]
+        order["reviewer_model"] = assignment["model"]
+        job.update({
+            "state": "reviewing",
+            "last_event": "review_started",
+            "reviewer_identity": assignment["identity"],
+            "reviewer_model": assignment["model"],
+        })
+    return projected
+
+
 def _start_review(jobs: list) -> Optional[Dict[str, object]]:
     order = review_order(jobs)
     if order is None:
@@ -172,11 +287,22 @@ def run_once(
     worker_result_path: Optional[Path] = None,
     review_result_path: Optional[Path] = None,
     available_worker_slots: Optional[int] = None,
+    total_subagent_slots: Optional[int] = None,
+    worker_assignments: Optional[Union[Mapping[str, Mapping[str, str]], Sequence[Mapping[str, str]]]] = None,
+    reviewer_assignments: Optional[Union[Mapping[str, Mapping[str, str]], Sequence[Mapping[str, str]]]] = None,
 ) -> Dict[str, Any]:
     """Apply one result, then publish bounded worker and review orders."""
     if worker_result_path is not None and review_result_path is not None:
         raise PilotError("supply either a worker result or a review result, not both")
     campaign = load_campaign(root, campaign_id)
+    if campaign["review_concurrency"] > 1 and total_subagent_slots is None:
+        raise PilotError("parallel review requires total_subagent_slots")
+    if total_subagent_slots is not None and (
+        isinstance(total_subagent_slots, bool)
+        or not isinstance(total_subagent_slots, int)
+        or total_subagent_slots < 0
+    ):
+        raise PilotError("total_subagent_slots must be a non-negative integer")
     jobs = load_jobs(root, campaign_id)
     events = []
     if worker_result_path is not None:
@@ -191,16 +317,29 @@ def run_once(
         )
     changes_requested = False
     if review_result_path is not None:
-        review_event = _apply_review_result(jobs, Path(review_result_path), campaign["max_attempts"])
+        review_event = _apply_review_result(
+            root, campaign_id, campaign, jobs, Path(review_result_path), campaign["max_attempts"]
+        )
         events.append(review_event)
         changes_requested = review_event["event"] == "changes_requested"
-    orders = [] if changes_requested else _start_workers(
-        root, campaign_id, jobs, campaign, available_worker_slots
-    )
+    review_orders = []
+    if changes_requested and total_subagent_slots is None:
+        orders = []
+    elif total_subagent_slots is None:
+        orders = _start_workers(root, campaign_id, jobs, campaign, available_worker_slots)
+    else:
+        shared_orders = _start_shared_orders(
+            root, campaign_id, jobs, campaign, total_subagent_slots, worker_assignments, reviewer_assignments
+        )
+        orders, review_orders = shared_orders["worker_orders"], shared_orders["review_orders"]
     events.extend({"event": "worker_started", "job_id": order["job_id"]} for order in orders)
-    review = _start_review(jobs)
-    if review is not None:
-        events.append({"event": "review_started", "job_id": review["job_id"]})
+    if total_subagent_slots is None:
+        review = _start_review(jobs)
+        if review is not None:
+            review_orders = [review]
+    else:
+        review = review_orders[0] if review_orders else None
+    events.extend({"event": "review_started", "job_id": order["job_id"]} for order in review_orders)
     save_jobs(root, campaign_id, jobs)
     warnings = []
     for event in events:
@@ -211,6 +350,7 @@ def run_once(
     output = _campaign_payload(root, campaign_id)
     output["worker_orders"] = orders
     output["review_order"] = review
+    output["review_orders"] = review_orders
     if warnings:
         output["warnings"] = warnings
     return output

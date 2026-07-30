@@ -184,6 +184,36 @@ class PilotStateTests(unittest.TestCase):
         with self.assertRaisesRegex(PilotError, "recommended_worker_tier must be standard or strong"):
             initialize_state(self.root, malformed)
 
+    def test_initialize_copies_review_concurrency_and_validates_audit_jobs(self):
+        parallel = deepcopy(self.manifest)
+        parallel["review_concurrency"] = 2
+        parallel["audit_job_ids"] = ["security-principles", "audit-logs", "setup-webhooks"]
+
+        initialize_state(self.root, parallel)
+
+        campaign = load_campaign(self.root, self.campaign_id)
+        self.assertEqual(campaign["review_concurrency"], 2)
+        self.assertEqual(campaign["audit_job_ids"], parallel["audit_job_ids"])
+
+    def test_initialize_defaults_legacy_review_concurrency_and_rejects_invalid_parallel_audit_shape(self):
+        initialize_state(self.root, self.manifest)
+        self.assertEqual(load_campaign(self.root, self.campaign_id)["review_concurrency"], 1)
+
+        invalid = deepcopy(self.manifest)
+        invalid["campaign_id"] = "invalid-parallel-audit"
+        invalid["review_concurrency"] = 2
+        invalid["audit_job_ids"] = ["security-principles", "security-principles", "not-in-manifest"]
+        with self.assertRaisesRegex(PilotError, "audit_job_ids"):
+            initialize_state(self.root, invalid)
+        paths = campaign_paths(self.root, invalid["campaign_id"])
+        self.assertFalse(paths["campaign"].exists())
+
+        zero = deepcopy(self.manifest)
+        zero["campaign_id"] = "zero-review-concurrency"
+        zero["review_concurrency"] = 0
+        with self.assertRaisesRegex(PilotError, "review_concurrency must be a positive integer"):
+            initialize_state(self.root, zero)
+
     def test_save_jobs_replaces_projection_without_rewriting_events(self):
         self.initialize_jobs()
         jobs = load_jobs(self.root, self.campaign_id)
