@@ -655,7 +655,7 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual("internal-runtime-closure", capsule.dependency_scope)
         self.assertEqual("policy-bounded", capsule.changed_path_policy)
         self.assertEqual(("examples", "src"), capsule.default_required_roots)
-        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(("dist/",), capsule.default_generated_target_paths)
         self.assertEqual((), capsule.include_paths)
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
         self.assertEqual("text-secrets-v1", capsule.secret_detector)
