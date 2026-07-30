@@ -2,7 +2,7 @@
 title: "Stripe"
 type: company
 tags: [stripe, payment-gateway, payment-intents, checkout, subscriptions, elements, webhooks, payment-links]
-source_count: 647
+source_count: 649
 ---
 
 ## Stripe
@@ -42,6 +42,8 @@ Created when a PaymentIntent is confirmed. Represents one specific attempt to mo
 ### Stripe Elements
 
 Drop-in UI components for custom integrations. Enables custom-built checkout flows while Stripe handles PCI compliance and UI rendering.
+
+The `@stripe/stripe-js` npm package is the web loader and TypeScript declaration layer for Stripe.js, not a self-hosted runtime. Its retained v8.11.0 baseline loads the `clover` train from `js.stripe.com`, supports standard and deferred `/pure` entrypoints, and resolves to `null` outside a browser. See [[source-github-stripe-js]].
 
 ### Express Checkout Element
 
@@ -100,6 +102,8 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 
 ## Sources
 
+- [[source-github-stripe-js]] — `stripe/stripe-js` v8.11.0 loader, Elements, Checkout, and public TypeScript baseline
+- [[changelog-github-stripe-js]] — package-qualified Stripe JS release history
 - [[source-metronome-integrations-tax-integrations-stripe-tax]] — Stripe Tax on Metronome-created Stripe invoices, including customer and product mapping
 - [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] — contract invoice-routing transitions between Stripe, NetSuite, and marketplaces
 - [[source-github-stripe-postman]] — Stripe API Postman collection: 107 endpoint groups, 4 versioned collections in public workspace, fork/import setup, 2024-04-15 changelog

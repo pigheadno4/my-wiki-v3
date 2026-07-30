@@ -464,6 +464,8 @@
 - [[source-stripe-react-stripejs]] — React Stripe.js: CheckoutElementsProvider + useCheckoutElements (Checkout path), Elements + useStripe/useElements/ElementsConsumer (advanced) (webpage, 2026-05-08)
 - [[source-github-stripe-node]] — stripe-node SDK v22.1.1: error taxonomy, webhook verification, retry/idempotency, autoPagination, PaymentIntents + Checkout APIs (github-repo, 2026-05-08)
 - [[source-github-react-stripe-js]] — react-stripe-js v6.3.0: Elements/createElementComponent factory, EmbeddedCheckoutProvider, CheckoutElementsProvider impl, examples (github-repo, 2026-05-08)
+- [[source-github-stripe-js]] — `@stripe/stripe-js@8.11.0`: `clover` loader, standard and pure entrypoints, Elements, Checkout, and public TypeScript baseline (github-repo, 2026-07-30)
+- [[changelog-github-stripe-js]] — package-qualified `stripe/stripe-js` release history beginning with the v8.11.0 full baseline (github-repo, 2026-07-30)
 - [[source-stripe-declines-overview]] — Declines overview: 3 failure types (issuer/blocked/invalid), outcome object, Radar block reasons, Adaptive Acceptance, allow list (webpage, 2026-05-09)
 - [[source-stripe-card-declines]] — Card declines: network codes, advice_code retry table, max 8 retries, on/off-session handling, geographic + FSA/HSA restrictions (webpage, 2026-05-09)
 - [[source-stripe-decline-codes]] — Decline codes reference: 50 card codes + 19 LPM codes, fraud codes to mask, deprecated codes (webpage, 2026-05-09)

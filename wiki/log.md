@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-30] ingest | GitHub stripe/stripe-js — `@stripe/stripe-js@8.11.0`
+
+- Full serial ingest of `github-cb3904e11eff1c98f76d` from exact SHA `d7bbb144b783287300ff7e63aec7c8133b52460e`.
+- Established the cumulative Stripe JS source and package-qualified changelog from the complete 77-file `clover` capsule.
+- Recorded the Stripe-hosted runtime boundary, standard and `/pure` loader behavior, server-null and retry semantics, Elements and Checkout contracts, and broad public TypeScript surface.
+- Updated Stripe company, Elements and Checkout concepts, and provider index; source count increased from 647 to 649.
+
 ## [2026-07-28] ingest | GitHub braintree/braintree-web-drop-in - `1.47.0`
 
 - Full serial ingest of `github-88d13a8f0c219387aab4` from exact SHA `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`.

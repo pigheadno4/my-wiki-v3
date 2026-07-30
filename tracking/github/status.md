@@ -50,6 +50,31 @@
   Release: [manifest](raw/github/braintree/braintree-web/releases/braintree-web/3.144.0/2026-07-28/manifest.json)
   Comparison: [manifest](tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.143.0--3.144.0/comparison.json)
 
+## `github-82cea027945f7df14795`
+
+- Repository: `stripe/stripe-js`
+- SHA: `43d35b1b0e324475ea9f9cb867ad2c4e7dabe3f8`
+- Collection date: `2026-07-30`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/stripe/stripe-js/snapshots/2026-07-30-43d35b1/manifest.json)
+- Packet: [review packet](tracking/github/repos/stripe/stripe-js/ingest-packets/github-82cea027945f7df14795/packet.md)
+- Review priority: `normal`
+- Required reading: `26` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-js@9.12.1` (recommended `full`)
+  Release: [manifest](raw/github/stripe/stripe-js/releases/stripe-js/9.12.1/2026-07-30/manifest.json)
+  Comparison: [manifest](tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/8.11.0--9.12.1/comparison.json)
+
 ## `github-8416828e1141b2d896ea`
 
 - Repository: `paypal/paypal-js`
@@ -314,6 +339,31 @@
 - `@paypal/react-paypal-js@10.2.1` (recommended `delta`)
   Release: [manifest](raw/github/paypal/paypal-js/releases/react-paypal-js/10.2.1/2026-07-30/manifest.json)
   Comparison: [manifest](tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.2.0--10.2.1/comparison.json)
+
+## `github-cb3904e11eff1c98f76d`
+
+- Repository: `stripe/stripe-js`
+- SHA: `d7bbb144b783287300ff7e63aec7c8133b52460e`
+- Collection date: `2026-07-30`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/stripe/stripe-js/snapshots/2026-07-30-d7bbb14/manifest.json)
+- Packet: [review packet](tracking/github/repos/stripe/stripe-js/ingest-packets/github-cb3904e11eff1c98f76d/packet.md)
+- Review priority: `high`
+- Required reading: `80` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-js@8.11.0` (recommended `full`)
+  Release: [manifest](raw/github/stripe/stripe-js/releases/stripe-js/8.11.0/2026-07-30/manifest.json)
+  Comparison: Not applicable
 
 ## `github-cba5dcae559e55e8182d`
 
