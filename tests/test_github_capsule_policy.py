@@ -144,6 +144,43 @@ class EffectivePolicyTests(unittest.TestCase):
         self.assertEqual(expected_bytes, policy.canonical_bytes)
         self.assertEqual(hashlib.sha256(expected_bytes).hexdigest(), policy.policy_hash)
 
+    def test_tagged_tree_policy_uses_tagged_schema_and_hashes_it(self):
+        capsule = CapsuleConfig(
+            id="stripe-ios-source",
+            adapter="tagged-tree-v1",
+            focus_packages=("stripe-ios",),
+            dependency_scope="configured-repository-paths",
+            changed_path_policy="policy-bounded",
+            default_required_roots=(
+                "StripePayments/StripePayments/Source/API Bindings",
+            ),
+        )
+
+        policy = build_effective_policy(capsule, (), (), ())
+        payload = json.loads(policy.canonical_bytes)
+
+        self.assertEqual("tagged-tree-v1", payload["adapter"])
+        self.assertEqual(
+            "configured-repository-paths",
+            payload["dependency_scope"],
+        )
+        self.assertEqual(
+            "single-tagged-tree-v1",
+            payload["workspace_resolver"],
+        )
+        self.assertRegex(policy.policy_hash, r"^[0-9a-f]{64}$")
+
+    def test_tagged_tree_policy_requires_one_focus_package(self):
+        capsule = CapsuleConfig(
+            id="invalid",
+            adapter="tagged-tree-v1",
+            focus_packages=("stripe-ios", "stripe-android"),
+            dependency_scope="configured-repository-paths",
+        )
+
+        with self.assertRaisesRegex(ValueError, "exactly one focus package"):
+            build_effective_policy(capsule, (), (), ())
+
     def test_changed_path_policy_is_validated_and_hash_bound(self):
         package_owned = build_effective_policy(self.capsule(), (), (), ())
         policy_bounded = build_effective_policy(

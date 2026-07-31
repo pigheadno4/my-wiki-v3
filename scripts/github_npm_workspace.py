@@ -6,7 +6,7 @@ import re
 from typing import Dict, Iterable, List, Mapping, NoReturn, Sequence, Set, Tuple
 
 from github_canonical import safe_policy_path, validate_npm_package_name
-from github_capsule_policy import CAPSULE_ADAPTER, CapsuleConfig
+from github_capsule_policy import NPM_CAPSULE_ADAPTER, CapsuleConfig
 from github_git_tree import GitBlob, GitObjectReadError, GitTree
 
 
@@ -101,8 +101,8 @@ def resolve_workspace(tree: GitTree, capsule: CapsuleConfig) -> WorkspaceResolut
     """Resolve one capsule's package closure and statically enumerable targets."""
     if not isinstance(tree, GitTree):
         raise TypeError("tree must be a GitTree")
-    if not isinstance(capsule, CapsuleConfig) or capsule.adapter != CAPSULE_ADAPTER:
-        raise ValueError("capsule must use " + CAPSULE_ADAPTER)
+    if not isinstance(capsule, CapsuleConfig) or capsule.adapter != NPM_CAPSULE_ADAPTER:
+        raise ValueError("capsule must use " + NPM_CAPSULE_ADAPTER)
 
     all_blobs = tree.blobs()
     blobs_by_path = {blob.path: blob for blob in all_blobs}
