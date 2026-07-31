@@ -153,6 +153,7 @@ class CoordinatorTests(unittest.TestCase):
             self.root,
             self.campaign_id,
             worker_result_path=self.write_worker_result("job-1"),
+            reviewer_assignments=[{"identity": "reviewer-a", "model": "Sol"}],
         )
 
         job = load_jobs(self.root, self.campaign_id)[0]
@@ -162,6 +163,41 @@ class CoordinatorTests(unittest.TestCase):
         self.assertTrue(attempt.joinpath("receipt.json").is_file())
         self.assertTrue(attempt.joinpath("suggestions.json").is_file())
         self.assertEqual(output["review_order"]["job_id"], "job-1")
+
+    def test_serial_v2_review_requires_provenance_and_persists_review_evidence(self):
+        self.start_five()
+
+        candidate = run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-1"),
+            reviewer_assignments=[{"identity": "reviewer-a", "model": "Sol"}],
+        )
+        approved = run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review("job-1", 1, "approved"),
+        )
+
+        review_path = self.attempt("job-1", 1).joinpath("review.json")
+        self.assertEqual(candidate["review_order"]["reviewer_identity"], "reviewer-a")
+        self.assertEqual(approved["jobs"][0]["state"], "approved")
+        self.assertTrue(review_path.is_file())
+        review = json.loads(review_path.read_text(encoding="utf-8"))
+        self.assertEqual(review["reviewer_identity"], "reviewer-a")
+        self.assertEqual(review["reviewer_model"], "Sol")
+
+    def test_serial_v2_candidate_requires_a_reviewer_assignment(self):
+        self.start_five()
+
+        with self.assertRaisesRegex(PilotError, "reviewer assignments"):
+            run_once(
+                self.root,
+                self.campaign_id,
+                worker_result_path=self.write_worker_result("job-1"),
+            )
+
+        self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["state"], "running")
 
     def test_invalid_worker_result_fails_only_that_job(self):
         self.start_five()
@@ -175,6 +211,30 @@ class CoordinatorTests(unittest.TestCase):
         self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["state"], "failed")
         self.assertTrue(self.attempt("job-1", 1).joinpath("failure.json").is_file())
         self.assertEqual(output["campaign_state"], "active")
+
+    def test_unhashable_worker_update_kind_becomes_failure_evidence(self):
+        self.start_five()
+        suggestion = {
+            "update_id": "concept-billing-link",
+            "target_path": "wiki/concepts/metronome/metronome-billing.md",
+            "update_kind": ["durable_fact"],
+            "anchor": "## Sources",
+            "proposed_markdown": "- [[source-job-1]] — documented billing behavior",
+            "quote_indexes": [0],
+            "warnings": [],
+        }
+
+        output = run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-1", suggestions={
+                "company": [], "concepts": [suggestion], "index": [], "log": [],
+            }),
+        )
+
+        failure = json.loads(self.attempt("job-1", 1).joinpath("failure.json").read_text(encoding="utf-8"))
+        self.assertEqual(output["jobs"][0]["state"], "failed")
+        self.assertIn("update_kind", failure["reason"])
 
     def test_third_invalid_worker_result_is_terminal_and_retains_failure_evidence(self):
         self.start_five()
@@ -312,6 +372,49 @@ class CoordinatorTests(unittest.TestCase):
                 self.campaign_id,
                 review_result_path=self.write_review("job-1", 1, "approved", review_scope="partial"),
             )
+
+    def test_review_enum_lists_are_rejected_without_type_errors(self):
+        self.make_reviewing("job-1", attempt=1)
+        malformed_results = (
+            {"verdict": ["approved"]},
+            {"review_scope": ["full"]},
+            {
+                "verdict": "changes_requested",
+                "required_changes": ["Revise the source page"],
+                "retry_review_scope": ["targeted"],
+            },
+            {"shared_update_decisions": [{
+                "update_id": "unexpected", "verdict": ["approved"], "reason": "Grounded",
+            }]},
+        )
+        for overrides in malformed_results:
+            with self.subTest(overrides=overrides):
+                verdict = overrides.get("verdict", "approved")
+                payload = {key: value for key, value in overrides.items() if key != "verdict"}
+                with self.assertRaisesRegex(PilotError, "review result is invalid"):
+                    run_once(
+                        self.root,
+                        self.campaign_id,
+                        review_result_path=self.write_review("job-1", 1, verdict, **payload),
+                    )
+
+    def test_legacy_review_verdict_list_is_rejected_without_a_type_error(self):
+        self.make_reviewing("job-1", attempt=1)
+        campaign_path = self.root / "tracking/ingest/metronome" / self.campaign_id / "campaign.json"
+        campaign = json.loads(campaign_path.read_text(encoding="utf-8"))
+        campaign["schema_version"] = 1
+        campaign_path.write_text(json.dumps(campaign), encoding="utf-8")
+        legacy_review = self.root / "legacy-review.json"
+        legacy_review.write_text(json.dumps({
+            "job_id": "job-1",
+            "attempt": 1,
+            "verdict": ["approved"],
+            "reason": "Grounded and complete",
+            "required_changes": [],
+        }), encoding="utf-8")
+
+        with self.assertRaisesRegex(PilotError, "review result is invalid"):
+            run_once(self.root, self.campaign_id, review_result_path=legacy_review)
 
     def test_review_decisions_match_current_attempt_suggestions(self):
         suggestion = {
@@ -712,6 +815,8 @@ class CoordinatorTests(unittest.TestCase):
             self.campaign_id,
             "--worker-result",
             str(worker_result),
+            "--reviewer-assignment",
+            "reviewer-a=Sol",
         )
         review_result = self.write_review("job-1", 1, "approved")
         approved = invoke(

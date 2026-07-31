@@ -128,13 +128,18 @@ def _validate_review_result(result: dict, expected_scope: str, suggestion_ids: s
     retry_scope = result["retry_review_scope"]
     decisions = result["shared_update_decisions"]
     if (
-        verdict not in REVIEW_VERDICTS
+        not isinstance(verdict, str)
+        or verdict not in REVIEW_VERDICTS
         or not isinstance(reason, str)
         or not reason.strip()
         or not isinstance(changes, list)
         or not all(isinstance(change, str) and change.strip() for change in changes)
+        or not isinstance(review_scope, str)
         or review_scope not in REVIEW_SCOPES
         or review_scope != expected_scope
+        or (retry_scope is not None and (
+            not isinstance(retry_scope, str) or retry_scope not in REVIEW_SCOPES
+        ))
     ):
         raise PilotError("review result is invalid")
     if verdict == "approved" and (changes or retry_scope is not None):
@@ -154,6 +159,7 @@ def _validate_review_result(result: dict, expected_scope: str, suggestion_ids: s
         update_id = decision["update_id"]
         if (
             not isinstance(update_id, str)
+            or not isinstance(decision["verdict"], str)
             or decision["verdict"] not in SHARED_UPDATE_DECISION_VERDICTS
             or not isinstance(decision["reason"], str)
             or not decision["reason"].strip()
@@ -179,6 +185,7 @@ def _apply_review_result(
     job = _job(jobs, result["job_id"])
     if job["state"] != "reviewing" or result["attempt"] != job["attempt"]:
         raise PilotError("review result does not match a reviewing job")
+    is_schema_v2 = campaign.get("schema_version", 1) == 2
     if campaign["review_concurrency"] > 1 and (
         not isinstance(job.get("reviewer_identity"), str)
         or not job["reviewer_identity"]
@@ -188,10 +195,17 @@ def _apply_review_result(
         raise PilotError("parallel review requires a reviewer assignment")
     if campaign["review_concurrency"] > 1 and job["reviewer_identity"] == job.get("worker_identity"):
         raise PilotError("reviewer identity must differ from worker identity")
+    if is_schema_v2 and (
+        not isinstance(job.get("reviewer_identity"), str)
+        or not job["reviewer_identity"]
+        or not isinstance(job.get("reviewer_model"), str)
+        or not job["reviewer_model"]
+    ):
+        raise PilotError("schema-v2 review requires reviewer provenance")
     verdict = result["verdict"]
     reason = result["reason"]
     changes = result["required_changes"]
-    if campaign.get("schema_version", 1) == 2:
+    if is_schema_v2:
         attempt_dir = (
             root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
             / job["job_id"] / f"attempt-{job['attempt']}"
@@ -203,14 +217,20 @@ def _apply_review_result(
             for suggestion in category
         }
         _validate_review_result(result, job.get("next_review_scope", "full"), suggestion_ids)
-    elif verdict not in REVIEW_VERDICTS or not isinstance(reason, str) or not reason or not isinstance(changes, list):
+    elif (
+        not isinstance(verdict, str)
+        or verdict not in REVIEW_VERDICTS
+        or not isinstance(reason, str)
+        or not reason
+        or not isinstance(changes, list)
+    ):
         raise PilotError("review result is invalid")
     files = []
-    if "reviewer_identity" in job:
-        attempt_dir = (
-            root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
-            / job["job_id"] / f"attempt-{job['attempt']}"
-        )
+    attempt_dir = (
+        root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
+        / job["job_id"] / f"attempt-{job['attempt']}"
+    )
+    if is_schema_v2 or "reviewer_identity" in job:
         files.append(
             (attempt_dir, "review.json", _json_bytes({
                 **result,
@@ -350,11 +370,21 @@ def _start_shared_orders(
     return projected
 
 
-def _start_review(jobs: list) -> Optional[Dict[str, object]]:
+def _start_review(
+    jobs: list,
+    campaign: Mapping[str, Any],
+    reviewer_assignments: Optional[Union[Mapping[str, Mapping[str, str]], Sequence[Mapping[str, str]]]],
+) -> Optional[Dict[str, object]]:
     order = review_order(jobs)
     if order is None:
         return None
     job = _job(jobs, order["job_id"])
+    if campaign.get("schema_version", 1) == 2:
+        assignment = _assignment_by_job(reviewer_assignments, [order], "reviewer")[job["job_id"]]
+        order["reviewer_identity"] = assignment["identity"]
+        order["reviewer_model"] = assignment["model"]
+        job["reviewer_identity"] = assignment["identity"]
+        job["reviewer_model"] = assignment["model"]
     job["state"] = "reviewing"
     job["last_event"] = "review_started"
     return order
@@ -415,7 +445,7 @@ def run_once(
         orders, review_orders = shared_orders["worker_orders"], shared_orders["review_orders"]
     events.extend({"event": "worker_started", "job_id": order["job_id"]} for order in orders)
     if total_subagent_slots is None:
-        review = _start_review(jobs)
+        review = _start_review(jobs, campaign, reviewer_assignments)
         if review is not None:
             review_orders = [review]
     else:

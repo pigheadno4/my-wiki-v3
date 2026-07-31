@@ -105,7 +105,8 @@ def _validate_suggestions(suggestions: dict, quote_count: int) -> None:
                 or target_path.startswith("/")
             ):
                 raise ValidationError("suggestion target_path is invalid")
-            if suggestion["update_kind"] not in UPDATE_KINDS:
+            update_kind = suggestion["update_kind"]
+            if not isinstance(update_kind, str) or update_kind not in UPDATE_KINDS:
                 raise ValidationError("suggestion update_kind is invalid")
             for key in ("anchor", "proposed_markdown"):
                 if not isinstance(suggestion[key], str) or not suggestion[key].strip():

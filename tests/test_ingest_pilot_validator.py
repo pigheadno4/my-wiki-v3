@@ -233,6 +233,21 @@ class WorkerResultValidationTests(unittest.TestCase):
                     "company": [], "concepts": [update], "index": [], "log": [],
                 }))
 
+    def test_rejects_an_unhashable_update_kind(self):
+        update = {
+            "update_id": "concept-billing-link",
+            "target_path": "wiki/concepts/metronome/metronome-billing.md",
+            "update_kind": ["durable_fact"],
+            "anchor": "## Sources",
+            "proposed_markdown": "- [[source-job-1]] — documented billing behavior",
+            "quote_indexes": [0],
+            "warnings": [],
+        }
+
+        self.assert_invalid(self.valid_result(suggestions={
+            "company": [], "concepts": [update], "index": [], "log": [],
+        }))
+
     def test_rejects_an_output_key_outside_the_fixed_schema(self):
         result = self.valid_result()
         result["unexpected"] = True
