@@ -7,13 +7,26 @@ from typing import Dict, Iterable, Sequence, Tuple
 from github_canonical import canonical_json_bytes, canonical_sha256, safe_policy_path, validate_npm_package_name
 
 
-CAPSULE_ADAPTER = "npm-tracked-source-v1"
-DEPENDENCY_SCOPE = "internal-runtime-closure"
+NPM_CAPSULE_ADAPTER = "npm-tracked-source-v1"
+TAGGED_TREE_ADAPTER = "tagged-tree-v1"
+CAPSULE_ADAPTERS = frozenset((NPM_CAPSULE_ADAPTER, TAGGED_TREE_ADAPTER))
+CAPSULE_ADAPTER = NPM_CAPSULE_ADAPTER
+NPM_DEPENDENCY_SCOPE = "internal-runtime-closure"
+TAGGED_TREE_DEPENDENCY_SCOPE = "configured-repository-paths"
+DEPENDENCY_SCOPES = {
+    NPM_CAPSULE_ADAPTER: NPM_DEPENDENCY_SCOPE,
+    TAGGED_TREE_ADAPTER: TAGGED_TREE_DEPENDENCY_SCOPE,
+}
+DEPENDENCY_SCOPE = NPM_DEPENDENCY_SCOPE
 DEFAULT_CHANGED_PATH_POLICY = "package-owned"
 CHANGED_PATH_POLICIES = frozenset((DEFAULT_CHANGED_PATH_POLICY, "policy-bounded"))
 SECRET_DETECTOR = "text-secrets-v1"
 CATEGORY_CLASSIFIER = "excluded-categories-v1"
-WORKSPACE_RESOLVER = "npm-workspaces-v1"
+WORKSPACE_RESOLVERS = {
+    NPM_CAPSULE_ADAPTER: "npm-workspaces-v1",
+    TAGGED_TREE_ADAPTER: "single-tagged-tree-v1",
+}
+WORKSPACE_RESOLVER = WORKSPACE_RESOLVERS[NPM_CAPSULE_ADAPTER]
 DEFAULT_REQUIRED_ROOTS = ("src",)
 DEFAULT_EXCLUDED_CATEGORIES = ("fixtures", "stories", "tests")
 EXCLUDED_CATEGORIES = frozenset(DEFAULT_EXCLUDED_CATEGORIES)
@@ -156,12 +169,18 @@ def build_effective_policy(
 
 
 def _parse_capsule(row: Dict[str, object], prefix: str) -> CapsuleConfig:
+    adapter = _required_string(row, "adapter", prefix)
     return _normalize_capsule(
         CapsuleConfig(
             id=_required_string(row, "id", prefix),
-            adapter=_required_string(row, "adapter", prefix),
+            adapter=adapter,
             focus_packages=_strings(row, "focus_packages", prefix, required=True),
-            dependency_scope=_optional_string(row, "dependency_scope", DEPENDENCY_SCOPE, prefix),
+            dependency_scope=_optional_string(
+                row,
+                "dependency_scope",
+                DEPENDENCY_SCOPES.get(adapter, DEPENDENCY_SCOPE),
+                prefix,
+            ),
             changed_path_policy=_optional_string(
                 row,
                 "changed_path_policy",
@@ -215,11 +234,18 @@ def _normalize_capsule(capsule: CapsuleConfig, prefix: str) -> CapsuleConfig:
         raise ValueError(prefix + " must be a CapsuleConfig")
     if _CAPSULE_ID.fullmatch(capsule.id) is None:
         raise ValueError(prefix + " id must be a lowercase ASCII slug")
-    if capsule.adapter != CAPSULE_ADAPTER:
-        raise ValueError(prefix + " adapter must equal " + CAPSULE_ADAPTER)
+    if capsule.adapter not in CAPSULE_ADAPTERS:
+        raise ValueError(
+            prefix
+            + " adapter must be one of "
+            + ", ".join(sorted(CAPSULE_ADAPTERS))
+        )
     focus_packages = _package_names(capsule.focus_packages, prefix + " focus_packages", required=True)
-    if capsule.dependency_scope != DEPENDENCY_SCOPE:
-        raise ValueError(prefix + " dependency_scope must equal " + DEPENDENCY_SCOPE)
+    if capsule.adapter == TAGGED_TREE_ADAPTER and len(focus_packages) != 1:
+        raise ValueError(prefix + " tagged-tree-v1 requires exactly one focus package")
+    dependency_scope = DEPENDENCY_SCOPES[capsule.adapter]
+    if capsule.dependency_scope != dependency_scope:
+        raise ValueError(prefix + " dependency_scope must equal " + dependency_scope)
     if capsule.changed_path_policy not in CHANGED_PATH_POLICIES:
         raise ValueError(
             prefix
@@ -261,7 +287,7 @@ def _normalize_capsule(capsule: CapsuleConfig, prefix: str) -> CapsuleConfig:
         capsule.id,
         capsule.adapter,
         focus_packages,
-        capsule.dependency_scope,
+        dependency_scope,
         capsule.changed_path_policy,
         required_roots,
         generated_targets,
@@ -310,7 +336,7 @@ def _policy_payload(capsule: CapsuleConfig, allowlist: Tuple[SecretAllowlist, ..
         "include_paths": list(capsule.include_paths),
         "excluded_categories": list(capsule.excluded_categories),
         "secret_detector": capsule.secret_detector,
-        "workspace_resolver": WORKSPACE_RESOLVER,
+        "workspace_resolver": WORKSPACE_RESOLVERS[capsule.adapter],
         "max_file_bytes": capsule.max_file_bytes,
         "max_capsule_files": capsule.max_capsule_files,
         "max_capsule_utf8_bytes": capsule.max_capsule_utf8_bytes,

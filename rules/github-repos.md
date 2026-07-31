@@ -28,6 +28,12 @@ The policy is registry-driven rather than hard-coded to PayPal. Add future repos
 
 For the focused PayPal JS pilot, changed tests and fixtures remain excluded by capsule policy. Stories remain eligible because they document supported component states and integration behavior. Explicitly required public targets still take precedence over category exclusions.
 
+### Tagged repository profile
+
+Use `tagged-tree-v1` when one semantic Git tag maps to one package-qualified release identity but the repository does not expose an NPM workspace. The adapter resolves the exact tag and emits one synthetic root package; repository roots, literal includes, exclusions, and limits remain reviewed data in `tracking/github/repo-registry.toml`.
+
+The adapter does not run language parsers, package managers, or builds, and it does not create a synthetic `package.json`. A tagged capsule is bounded public API, implementation, build, and example evidence rather than a complete repository mirror. Missing implementation needed for a later approved query must be collected as an immutable supplement tied to the existing release SHA.
+
 ## Evidence layout
 
 One exact repository SHA has one immutable source snapshot:

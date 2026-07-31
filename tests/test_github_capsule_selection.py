@@ -21,8 +21,10 @@ from github_capsule_selection import (  # noqa: E402
     CapsuleFile,
     CapsuleResolution,
     SecretFinding,
-    resolve_npm_capsule,
     classify_excluded_categories,
+    resolve_capsule,
+    resolve_capsule_workspace,
+    resolve_npm_capsule,
     scan_evidence_files,
 )
 import github_capsule_selection  # noqa: E402
@@ -112,6 +114,122 @@ class CapsuleSelectionTests(unittest.TestCase):
         self.assertIsInstance(result.include_paths, tuple)
         with self.assertRaises((FrozenInstanceError, AttributeError)):
             result.files[0].path = "changed"
+
+    def test_tagged_dispatch_selects_only_configured_nonexcluded_evidence(self):
+        tree = self.tree(
+            {
+                "README.md": "# SDK\n",
+                "SDK/Source/Checkout.swift": "public struct Checkout {}\n",
+                "SDK/Source/Tests/Checkout.swift": "test checkout\n",
+                "SDK/Source/tests/Fixture.swift": "test fixture\n",
+                "SDK/Source/snapshots/checkout.txt": "snapshot\n",
+                "SDK/Source/stories/Checkout.story.swift": "public let story = true\n",
+                "docs/outside.md": "outside\n",
+            }
+        )
+        capsule = CapsuleConfig(
+            id="tagged-selection",
+            adapter="tagged-tree-v1",
+            focus_packages=("stripe-ios",),
+            dependency_scope="configured-repository-paths",
+            changed_path_policy="policy-bounded",
+            default_required_roots=("SDK/Source",),
+            include_paths=("README.md",),
+            excluded_categories=("tests", "fixtures"),
+        )
+
+        workspace = resolve_capsule_workspace(
+            tree,
+            capsule,
+            {"stripe-ios": "26.4.1"},
+        )
+        result = resolve_capsule(
+            tree,
+            capsule,
+            (),
+            changed_paths=(
+                "SDK/Source/Checkout.swift",
+                "docs/outside.md",
+            ),
+            versions={"stripe-ios": "26.4.1"},
+        )
+
+        self.assertEqual(workspace, result.workspace)
+        selected = {
+            item.path: item.classification_reason for item in result.files
+        }
+        self.assertEqual("include-path", selected["README.md"])
+        self.assertEqual(
+            "required-root",
+            selected["SDK/Source/Checkout.swift"],
+        )
+        self.assertEqual(
+            "required-root",
+            selected["SDK/Source/stories/Checkout.story.swift"],
+        )
+        self.assertNotIn("SDK/Source/Tests/Checkout.swift", selected)
+        self.assertNotIn("SDK/Source/tests/Fixture.swift", selected)
+        self.assertNotIn("SDK/Source/snapshots/checkout.txt", selected)
+        self.assertNotIn("docs/outside.md", selected)
+        self.assertEqual(
+            {"stripe-ios"},
+            {item.package for item in result.files},
+        )
+        self.assertEqual(
+            "tagged-tree-v1",
+            result.effective_policy.capsule.adapter,
+        )
+
+    def test_tagged_dispatch_reuses_secret_and_budget_guards(self):
+        def capsule(**overrides):
+            values = {
+                "id": "tagged-guards",
+                "adapter": "tagged-tree-v1",
+                "focus_packages": ("stripe-ios",),
+                "dependency_scope": "configured-repository-paths",
+                "changed_path_policy": "policy-bounded",
+                "default_required_roots": ("SDK/Source",),
+                "include_paths": ("README.md",),
+            }
+            values.update(overrides)
+            return CapsuleConfig(**values)
+
+        secret_tree = self.tree(
+            {
+                "README.md": "# SDK\n",
+                "SDK/Source/Checkout.swift": (
+                    'let token = "ghp_' + ("a" * 36) + '"\n'
+                ),
+            }
+        )
+        with self.assertRaisesRegex(ValueError, "secret-finding"):
+            resolve_capsule(
+                secret_tree,
+                capsule(),
+                (),
+                versions={"stripe-ios": "26.4.1"},
+            )
+
+        budget_tree = self.tree(
+            {
+                "README.md": "# SDK\n",
+                "SDK/Source/Checkout.swift": "public struct Checkout {}\n",
+            }
+        )
+        with self.assertRaisesRegex(ValueError, "capsule-budget-exceeded"):
+            resolve_capsule(
+                budget_tree,
+                capsule(max_capsule_files=1),
+                (),
+                versions={"stripe-ios": "26.4.1"},
+            )
+        with self.assertRaisesRegex(ValueError, "capsule-budget-exceeded"):
+            resolve_capsule(
+                budget_tree,
+                capsule(max_capsule_utf8_bytes=10),
+                (),
+                versions={"stripe-ios": "26.4.1"},
+            )
 
     def test_exact_classification_precedence_exclusions_and_file_metadata(self):
         package = manifest(

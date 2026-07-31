@@ -55,10 +55,10 @@ APPENDIX_A_INVENTORY = (
     ('braintree/braintree_node', 'https://github.com/braintree/braintree_node', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree-ios-drop-in', 'https://github.com/braintree/braintree-ios-drop-in', 'drop-in', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('braintree/braintree-android-drop-in', 'https://github.com/braintree/braintree-android-drop-in', 'drop-in', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
-    ('stripe/stripe-ios', 'https://github.com/stripe/stripe-ios', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('stripe/stripe-ios', 'https://github.com/stripe/stripe-ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-apps', 'https://github.com/stripe/stripe-apps', 'developer-platform', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-cli', 'https://github.com/stripe/stripe-cli', 'cli', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('stripe/stripe-android', 'https://github.com/stripe/stripe-android', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('stripe/stripe-android', 'https://github.com/stripe/stripe-android', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/link-cli', 'https://github.com/stripe/link-cli', 'cli', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-react-native', 'https://github.com/stripe/stripe-react-native', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-ios-spm', 'https://github.com/stripe/stripe-ios-spm', 'release-mirror', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
@@ -719,6 +719,75 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(3000000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(380, capsule.max_packet_files)
         self.assertEqual(3500000, capsule.max_packet_utf8_bytes)
+
+    def test_stripe_native_sdks_use_tagged_tree_profiles(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(
+                ROOT / "tracking/github/repo-registry.toml"
+            )
+        }
+
+        for repo_id, package, major, pinned, root_count, include_count in (
+            (
+                "stripe/stripe-ios",
+                "stripe-ios",
+                "26",
+                "26.4.1",
+                6,
+                41,
+            ),
+            (
+                "stripe/stripe-android",
+                "stripe-android",
+                "23",
+                "23.13.1",
+                3,
+                41,
+            ),
+        ):
+            with self.subTest(repo_id=repo_id):
+                repo = repos[repo_id]
+                self.assertTrue(repo.enabled)
+                self.assertEqual(
+                    (
+                        VersionTrack(
+                            "package:" + package + "@" + major,
+                            "latest-stable",
+                            "all-stable",
+                            False,
+                            (pinned,),
+                        ),
+                    ),
+                    repo.version_tracks,
+                )
+                self.assertEqual(1, len(repo.capsules))
+                capsule = repo.capsules[0]
+                self.assertEqual("tagged-tree-v1", capsule.adapter)
+                self.assertEqual((package,), capsule.focus_packages)
+                self.assertEqual(
+                    "configured-repository-paths",
+                    capsule.dependency_scope,
+                )
+                self.assertEqual(
+                    "policy-bounded",
+                    capsule.changed_path_policy,
+                )
+                self.assertEqual((), capsule.default_generated_target_paths)
+                self.assertEqual(
+                    root_count,
+                    len(capsule.default_required_roots),
+                )
+                self.assertEqual(
+                    include_count,
+                    len(capsule.include_paths),
+                )
+                self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+                self.assertEqual(512000, capsule.max_file_bytes)
+                self.assertEqual(500, capsule.max_capsule_files)
+                self.assertEqual(5000000, capsule.max_capsule_utf8_bytes)
+                self.assertEqual(550, capsule.max_packet_files)
+                self.assertEqual(6000000, capsule.max_packet_utf8_bytes)
 
     def test_registry_matches_appendix_a_inventory_and_collection_cadence(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")

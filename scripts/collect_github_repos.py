@@ -10,10 +10,14 @@ import tempfile
 from typing import Callable, Dict, List, Optional, Sequence, Tuple
 from urllib.error import URLError
 
-from github_capsule_selection import resolve_npm_capsule
+from github_capsule_policy import TAGGED_TREE_ADAPTER
+from github_capsule_selection import (
+    resolve_capsule,
+    resolve_capsule_workspace,
+)
 from github_git import GitCommandError, clone_repository, fetch_required_refs, run_git
 from github_git_tree import GitObjectReadError, GitTree
-from github_npm_workspace import WorkspacePackage, resolve_workspace
+from github_npm_workspace import WorkspacePackage
 from github_ingest_packets import (
     PackagePacketInput,
     build_ingest_packet,
@@ -268,8 +272,14 @@ def _collect_attempt(
             changed_paths = tuple(
                 sorted({path for item in package_contexts for path in item.changed_paths})
             )
-            resolution = resolve_npm_capsule(
-                tree, capsule, config.secret_allowlist, changed_paths=changed_paths
+            resolution = resolve_capsule(
+                tree,
+                capsule,
+                config.secret_allowlist,
+                changed_paths=changed_paths,
+                versions={
+                    candidate.package: candidate.version for candidate in group
+                },
             )
             snapshot = publish_source_snapshot(
                 root,
@@ -443,7 +453,11 @@ def _prepare_group(
 ) -> Tuple[_PackageContext, ...]:
     capsule = _one_capsule(config)
     current_tree = GitTree(clone_path, group[0].commit_sha, config.max_file_bytes)
-    current_workspace = resolve_workspace(current_tree, capsule)
+    current_workspace = resolve_capsule_workspace(
+        current_tree,
+        capsule,
+        {candidate.package: candidate.version for candidate in group},
+    )
     contexts = []
     for candidate in sorted(group, key=lambda item: item.package):
         current_package = _workspace_package(current_workspace.packages, candidate.package)
@@ -469,19 +483,40 @@ def _prepare_group(
             exports_changed = False
         else:
             prior_tree = GitTree(clone_path, prior.sha, config.max_file_bytes)
-            prior_workspace = resolve_workspace(prior_tree, capsule)
+            prior_workspace = resolve_capsule_workspace(
+                prior_tree,
+                capsule,
+                {candidate.package: prior.version},
+            )
             prior_package = _workspace_package(prior_workspace.packages, candidate.package)
-            changed_paths = _package_changed_paths(
-                clone_path,
-                prior.sha,
-                candidate.commit_sha,
-                prior_package,
-                current_package,
-            )
-            from_paths = _package_pathspecs(prior_package)
-            exports_changed = _public_exports(prior_tree, prior_package) != _public_exports(
-                current_tree, current_package
-            )
+            if capsule.adapter == TAGGED_TREE_ADAPTER:
+                changed_paths = _tagged_changed_paths(
+                    clone_path,
+                    prior.sha,
+                    candidate.commit_sha,
+                    prior_package,
+                    current_package,
+                )
+                from_paths = _tagged_pathspecs(prior_package)
+                exports_changed = False
+            else:
+                changed_paths = _package_changed_paths(
+                    clone_path,
+                    prior.sha,
+                    candidate.commit_sha,
+                    prior_package,
+                    current_package,
+                )
+                from_paths = _package_pathspecs(prior_package)
+                exports_changed = _public_exports(
+                    prior_tree,
+                    prior_package,
+                ) != _public_exports(current_tree, current_package)
+        to_paths = (
+            _tagged_pathspecs(current_package)
+            if capsule.adapter == TAGGED_TREE_ADAPTER
+            else _package_pathspecs(current_package)
+        )
         contexts.append(
             _PackageContext(
                 candidate,
@@ -490,7 +525,7 @@ def _prepare_group(
                 prior,
                 changed_paths,
                 from_paths,
-                _package_pathspecs(current_package),
+                to_paths,
                 exports_changed,
             )
         )
@@ -809,16 +844,30 @@ def compare_one(
         )
         capsule = _one_capsule(config)
         prior_package = _workspace_package(
-            resolve_workspace(
-                GitTree(clone_path, prior.sha, config.max_file_bytes), capsule
+            resolve_capsule_workspace(
+                GitTree(clone_path, prior.sha, config.max_file_bytes),
+                capsule,
+                {package: from_version},
             ).packages,
             package,
         )
         current_package = _workspace_package(
-            resolve_workspace(
-                GitTree(clone_path, current.sha, config.max_file_bytes), capsule
+            resolve_capsule_workspace(
+                GitTree(clone_path, current.sha, config.max_file_bytes),
+                capsule,
+                {package: to_version},
             ).packages,
             package,
+        )
+        from_paths = (
+            _tagged_pathspecs(prior_package)
+            if capsule.adapter == TAGGED_TREE_ADAPTER
+            else _package_pathspecs(prior_package)
+        )
+        to_paths = (
+            _tagged_pathspecs(current_package)
+            if capsule.adapter == TAGGED_TREE_ADAPTER
+            else _package_pathspecs(current_package)
         )
         comparison = write_package_comparison(
             Path(root).resolve(),
@@ -827,10 +876,10 @@ def compare_one(
             package,
             from_version,
             prior.sha,
-            _package_pathspecs(prior_package),
+            from_paths,
             to_version,
             current.sha,
-            _package_pathspecs(current_package),
+            to_paths,
         )
         packet = build_ingest_packet(
             Path(root).resolve(),
@@ -1106,6 +1155,28 @@ def _package_pathspecs(package: WorkspacePackage) -> Tuple[str, ...]:
     if not roots:
         raise CollectionUsageError("root package has no bounded comparison paths")
     return tuple(roots)
+
+
+def _tagged_changed_paths(
+    clone_path: Path,
+    from_sha: str,
+    to_sha: str,
+    prior: WorkspacePackage,
+    current: WorkspacePackage,
+) -> Tuple[str, ...]:
+    output = run_git(["diff", "--name-only", from_sha, to_sha, "--"], clone_path)
+    owned = frozenset(prior.owned_paths).union(current.owned_paths)
+    return tuple(
+        sorted(path for path in output.splitlines() if path and path in owned)
+    )
+
+
+def _tagged_pathspecs(package: WorkspacePackage) -> Tuple[str, ...]:
+    if package.path:
+        raise CollectionUsageError("tagged tree package must use the repository root")
+    if not package.owned_paths:
+        raise CollectionUsageError("tagged tree package has no bounded comparison paths")
+    return tuple(sorted(package.owned_paths))
 
 
 def _public_exports(tree: GitTree, package: WorkspacePackage) -> dict:

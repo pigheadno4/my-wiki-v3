@@ -14,7 +14,9 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import github_work_items  # noqa: E402
 from collect_github_repos import (  # noqa: E402
     CollectionUsageError,
+    _RetainedRelease,
     _parser,
+    _prepare_group,
     approve_one,
     collect_one,
     compare_one,
@@ -26,7 +28,11 @@ from collect_github_repos import (  # noqa: E402
 )
 from github_capsule_policy import CapsuleConfig  # noqa: E402
 from github_registry import RepoConfig, VersionTrack  # noqa: E402
-from github_releases import ReleaseEvidenceError, ReleaseNotesEvidence  # noqa: E402
+from github_releases import (  # noqa: E402
+    ReleaseCandidate,
+    ReleaseEvidenceError,
+    ReleaseNotesEvidence,
+)
 from github_work_items import (  # noqa: E402
     load_work_items,
     save_work_items,
@@ -329,6 +335,193 @@ class CollectGitHubReposTests(unittest.TestCase):
             ).exists()
         )
         self.assertNotEqual(self.sha, mismatched_sha)
+
+    def test_tagged_prepare_group_uses_release_identity_without_npm_exports(self):
+        prior_sha = commit_files(
+            self.remote,
+            {
+                "README.md": "# Native SDK\n",
+                "Native/Source/Checkout.swift": "public struct Checkout {}\n",
+            },
+            "native baseline",
+        )
+        current_sha = commit_files(
+            self.remote,
+            {
+                "Native/Source/Checkout.swift": (
+                    "public struct Checkout { public let enabled = true }\n"
+                ),
+            },
+            "native patch",
+        )
+        candidate = ReleaseCandidate(
+            "stripe-ios",
+            "26.4.1",
+            "26.4.1",
+            current_sha,
+            current_sha,
+            False,
+        )
+        config = RepoConfig(
+            id="stripe/stripe-ios",
+            company="stripe",
+            url="https://github.com/stripe/stripe-ios",
+            enabled=True,
+            repo_type="mobile-sdk",
+            priority="tier1",
+            track="releases-and-default-branch",
+            version_strategy="semver-tags",
+            version_tracks=(
+                VersionTrack(
+                    "package:stripe-ios@26",
+                    "latest-stable",
+                    "all-stable",
+                ),
+            ),
+            capsules=(
+                CapsuleConfig(
+                    id="stripe-ios-source",
+                    adapter="tagged-tree-v1",
+                    focus_packages=("stripe-ios",),
+                    dependency_scope="configured-repository-paths",
+                    changed_path_policy="policy-bounded",
+                    default_required_roots=("Native/Source",),
+                    include_paths=("README.md",),
+                ),
+            ),
+        )
+        history = {
+            "stripe-ios": [
+                _RetainedRelease(
+                    "stripe-ios",
+                    "26.4.0",
+                    "26.4.0",
+                    prior_sha,
+                    "raw/prior/manifest.json",
+                    "a" * 64,
+                )
+            ]
+        }
+
+        with mock.patch(
+            "collect_github_repos._public_exports",
+            side_effect=AssertionError("tagged collection parsed NPM exports"),
+        ):
+            contexts = _prepare_group(
+                self.root,
+                config,
+                self.remote,
+                (candidate,),
+                {
+                    "stripe-ios@26.4.1": ReleaseNotesEvidence(
+                        "https://api.github.test/26.4.1",
+                        "2026-07-21T12:00:00Z",
+                        b"Native patch.\n",
+                    )
+                },
+                history,
+                "2026-07-21",
+                set(),
+            )
+
+        self.assertEqual(1, len(contexts))
+        context = contexts[0]
+        self.assertEqual(
+            ("Native/Source/Checkout.swift",),
+            context.changed_paths,
+        )
+        self.assertEqual(
+            ("Native/Source/Checkout.swift", "README.md"),
+            context.from_paths,
+        )
+        self.assertEqual(
+            ("Native/Source/Checkout.swift", "README.md"),
+            context.to_paths,
+        )
+        self.assertFalse(context.public_exports_changed)
+
+    def test_tagged_baseline_collects_without_synthetic_package_manifest(self):
+        native_parent = Path(self.directory.name) / "native-fixture"
+        native_parent.mkdir()
+        native_remote = create_git_repo(native_parent)
+        native_sha = commit_files(
+            native_remote,
+            {
+                "README.md": "# Native SDK\n",
+                "Package.swift": "// package\n",
+                "Native/Source/Checkout.swift": "public struct Checkout {}\n",
+                "Native/Tests/CheckoutTests.swift": "test checkout\n",
+            },
+            "native baseline",
+        )
+        tag(native_remote, "26.4.1")
+        config = RepoConfig(
+            id="stripe/stripe-ios",
+            company="stripe",
+            url="https://github.com/stripe/stripe-ios",
+            enabled=True,
+            repo_type="mobile-sdk",
+            priority="tier1",
+            track="releases-and-default-branch",
+            version_strategy="semver-tags",
+            version_tracks=(
+                VersionTrack(
+                    "package:stripe-ios@26",
+                    "latest-stable",
+                    "all-stable",
+                    pinned_versions=("26.4.1",),
+                ),
+            ),
+            capsules=(
+                CapsuleConfig(
+                    id="stripe-ios-source",
+                    adapter="tagged-tree-v1",
+                    focus_packages=("stripe-ios",),
+                    dependency_scope="configured-repository-paths",
+                    changed_path_policy="policy-bounded",
+                    default_required_roots=("Native/Source",),
+                    include_paths=("README.md", "Package.swift"),
+                    excluded_categories=("tests", "fixtures"),
+                    max_capsule_files=20,
+                    max_capsule_utf8_bytes=200000,
+                    max_packet_files=30,
+                    max_packet_utf8_bytes=300000,
+                ),
+            ),
+        )
+
+        result = collect_one(
+            self.root,
+            config,
+            release="stripe-ios@26.4.1",
+            clone_source=native_remote,
+            release_notes_fetcher=self.release_notes,
+            collection_date="2026-07-21",
+        )
+
+        self.assertEqual("awaiting_approval", result.state)
+        self.assertEqual((native_sha,), tuple(
+            item.sha
+            for item in load_work_items(
+                self.root / "tracking/github/work-items.json"
+            )
+        ))
+        snapshot = json.loads(
+            (self.root / result.snapshot_paths[0]).read_text(encoding="utf-8")
+        )
+        selected = {row["path"] for row in snapshot["files"]}
+        self.assertNotIn("package.json", selected)
+        packet_path = load_work_items(
+            self.root / "tracking/github/work-items.json"
+        )[0].ingest_packet
+        packet = json.loads(
+            (self.root / packet_path).read_text(encoding="utf-8")
+        )
+        package = packet["packages"][0]
+        self.assertEqual("stripe-ios", package["package"])
+        self.assertEqual([], package["dependency_changes"])
+        self.assertEqual([], package["public_api_changes"])
+        self.assertFalse((self.root / "wiki").exists())
 
     def test_unavailable_exact_release_is_recorded_without_ingest_item(self):
         result = self.collect(
