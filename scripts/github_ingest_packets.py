@@ -49,6 +49,7 @@ _SOURCE_SUFFIXES = (
     ".rb",
     ".rs",
     ".swift",
+    ".api",
     ".ts",
     ".mts",
     ".cts",
@@ -834,14 +835,34 @@ def _retained_row(
 def _classify_file(path: str, row: Mapping[str, Any]) -> str:
     lowered = path.lower()
     filename = lowered.rsplit("/", 1)[-1]
+    if "/" not in lowered and filename in ("license", "notice"):
+        return "repository-context"
     if filename == "package.json":
         return "package-manifest"
     if filename == "tsconfig.json" or (
         filename.startswith("tsconfig.") and filename.endswith(".json")
     ):
         return "build-configuration"
-    if filename in ("build.gradle", "gradle.properties") or filename.endswith(
-        (".podspec", ".pbxproj", ".xcscheme", ".xml")
+    if (
+        filename
+        in (
+            "dependencies.gradle",
+            "gradle.properties",
+            "modules.yaml",
+            "package.swift",
+            "settings.gradle",
+            "version",
+        )
+        or filename.endswith(
+            (
+                ".gradle",
+                ".gradle.kts",
+                ".podspec",
+                ".pbxproj",
+                ".xcscheme",
+                ".xml",
+            )
+        )
     ):
         return "build-configuration"
     if (

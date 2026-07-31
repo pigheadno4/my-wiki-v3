@@ -298,7 +298,16 @@ class GitHubIngestPacketTests(unittest.TestCase):
                     dependency_scope="configured-repository-paths",
                     changed_path_policy="policy-bounded",
                     default_required_roots=("Native/Source",),
-                    include_paths=("README.md", "Package.swift"),
+                    include_paths=(
+                        "README.md",
+                        "LICENSE",
+                        "VERSION",
+                        "Package.swift",
+                        "modules.yaml",
+                        "settings.gradle",
+                        "dependencies.gradle",
+                        "Native/api/native.api",
+                    ),
                     excluded_categories=("tests", "fixtures"),
                     max_packet_files=30,
                     max_packet_utf8_bytes=200000,
@@ -317,6 +326,42 @@ class GitHubIngestPacketTests(unittest.TestCase):
                 ),
                 "Package.swift": (
                     "// package\n",
+                    "public-source",
+                    "include-path",
+                    "stripe-ios",
+                ),
+                "LICENSE": (
+                    "MIT\n",
+                    "public-source",
+                    "include-path",
+                    "stripe-ios",
+                ),
+                "VERSION": (
+                    "26.4.1\n",
+                    "public-source",
+                    "include-path",
+                    "stripe-ios",
+                ),
+                "modules.yaml": (
+                    "modules: []\n",
+                    "public-source",
+                    "include-path",
+                    "stripe-ios",
+                ),
+                "settings.gradle": (
+                    "rootProject.name = 'native'\n",
+                    "public-source",
+                    "include-path",
+                    "stripe-ios",
+                ),
+                "dependencies.gradle": (
+                    "ext.versions = [:]\n",
+                    "public-source",
+                    "include-path",
+                    "stripe-ios",
+                ),
+                "Native/api/native.api": (
+                    "public final class Checkout\n",
                     "public-source",
                     "include-path",
                     "stripe-ios",
@@ -361,6 +406,23 @@ class GitHubIngestPacketTests(unittest.TestCase):
         self.assertEqual("stripe-ios", package["package"])
         self.assertEqual([], package["dependency_changes"])
         self.assertEqual([], package["public_api_changes"])
+        classified = {
+            row["path"]: row["classification"]
+            for row in package["retained_evidence"]["files"]
+        }
+        self.assertEqual("repository-context", classified["LICENSE"])
+        for path in (
+            "VERSION",
+            "Package.swift",
+            "modules.yaml",
+            "settings.gradle",
+            "dependencies.gradle",
+        ):
+            self.assertEqual("build-configuration", classified[path])
+        self.assertEqual(
+            "public-source",
+            classified["Native/api/native.api"],
+        )
         self.assertTrue(
             any(
                 path.endswith("/files/Native/Source/Checkout.swift")
