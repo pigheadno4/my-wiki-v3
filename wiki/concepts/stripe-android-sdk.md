@@ -2,162 +2,127 @@
 title: "Stripe Android SDK"
 type: concept
 category: framework
-tags: [stripe, android, kotlin, mobile, sdk, payments, google-pay, payment-sheet, jetpack-compose]
+tags: [stripe, android, kotlin, mobile, sdk, payments, google-pay, payment-sheet, embedded-payment-element, jetpack-compose]
 ---
 
 ## Overview
 
-`stripe-android` (v23.8.0) is Stripe's official native Android SDK. Written in Kotlin, built with Jetpack Compose internally. Requires Android 6.0+ (API 23), `compileSdkVersion` 36, Kotlin 2.x. PCI-compliant — sensitive card data goes directly to Stripe.
+`stripe-android` is Stripe's official native Android SDK. The approved `23.13.1` baseline provides prebuilt payment UI, lower-level PaymentIntent and SetupIntent APIs, Google Pay, automatic 3DS/SCA handling, and separate modules for Connect, Identity, Financial Connections, Crypto Onramp, BNPL messaging, and card scanning.
 
-## Requirements
+The SDK collects sensitive payment details directly for Stripe rather than routing them through the merchant server. Merchant backends still own creation of PaymentIntents, SetupIntents, customer/session credentials, fulfillment decisions, and webhook processing.
 
-| Requirement | Value |
-|---|---|
-| Android API | 23+ (Android 6.0) |
-| `compileSdkVersion` | 36+ |
+## Current Ingested Baseline
+
+| Field | Value |
+| --- | --- |
+| Package | `com.stripe:stripe-android:23.13.1` |
+| Release tag | `v23.13.1` |
+| Exact commit | `dc874ce7c62dd433664ec4e312efeb9300c21795` |
+| Android minimum | Android 6.0 / API 23 |
+| Compile SDK | 36+ |
 | Android Gradle Plugin | 8.13.2 |
 | Gradle | 9.3.1 |
 | Kotlin | 2.3.10 |
-| Jetpack Compose | Version-pinned (SDK updates monthly; check CHANGELOG) |
+| Compose compatibility | Compose UI 1.10.x for SDK 23.x |
+
+This table reports the latest wiki-ingested release, not necessarily the latest release available upstream.
 
 ## Installation
 
 ```gradle
 dependencies {
-    implementation 'com.stripe:stripe-android:23.8.0'
+    implementation 'com.stripe:stripe-android:23.13.1'
 }
 ```
 
-## Initialization
+Initialize publishable configuration at application startup. A connected-account ID can be included for Connect API requests.
 
 ```kotlin
-// Call once at app startup (e.g. Application.onCreate)
 PaymentConfiguration.init(context, publishableKey = "pk_...")
-
-// For Connect (on behalf of connected accounts)
 PaymentConfiguration.init(context, publishableKey = "pk_...", stripeAccountId = "acct_...")
 ```
 
-## Payment UI options
+## Payment UI
 
-### PaymentSheet (recommended)
+### PaymentSheet
 
-Full-screen bottom sheet — collect + confirm in one flow.
+PaymentSheet is the maintained prebuilt checkout surface. `PaymentSheet.Builder` is the preferred Activity, Fragment, and Compose construction path; direct constructors are deprecated. It supports:
 
-```kotlin
-val paymentSheet = PaymentSheet(activity) { result ->
-    when (result) {
-        is PaymentSheetResult.Completed -> { /* success */ }
-        is PaymentSheetResult.Canceled -> { }
-        is PaymentSheetResult.Failed -> { result.error }
-    }
-}
+- PaymentIntent and SetupIntent client-secret flows;
+- deferred Intent creation through a merchant callback;
+- saved methods through customer configuration;
+- Google Pay, Link, delayed methods, custom methods, and external methods subject to account and platform eligibility;
+- appearance, billing, shipping, payment-method ordering, and wallet-button configuration; and
+- automatic next-action and 3DS handling.
 
-// Client-secret pattern (server creates PaymentIntent upfront)
-paymentSheet.presentWithPaymentIntent(clientSecret, configuration)
-
-// IntentConfiguration pattern (deferred — server confirms after collection)
-val intentConfig = PaymentSheet.IntentConfiguration(
-    mode = PaymentSheet.IntentConfiguration.Mode.Payment(amount = 1099, currency = "usd"),
-    confirmHandler = { paymentMethod, _, intentCreationCallback ->
-        // create PaymentIntent server-side → call intentCreationCallback(clientSecret, null)
-    }
-)
-paymentSheet.presentWithIntentConfiguration(intentConfig, configuration)
-```
-
-Jetpack Compose: `PaymentSheet.rememberPaymentSheet()`
+`PaymentSheetResult.Completed` means the customer completed the SDK flow. The payment can still be processing, so fulfillment must wait for a successful server-side payment event.
 
 ### FlowController
 
-Two-step flow: present payment method selector separately, then confirm when customer taps your own Pay button. Use `PaymentSheet.FlowController`.
+`PaymentSheet.FlowController` separates method selection from confirmation. The merchant presents payment options, displays the returned `PaymentOption`, and calls `confirm()` from its own pay button.
 
-### CustomerSheet
+### Embedded Payment Element
 
-Saved payment methods management UI. Configure via `CustomerSheet.Configuration` and `CustomerAdapter` protocol.
-
-### EmbeddedPaymentElement
-
-Inline (non-sheet) payment UI embedded directly in your layout.
+`EmbeddedPaymentElement` places payment-method UI inside a merchant-owned Compose layout. It has explicit configure, selection-state, clear, and confirm operations and returns `Completed`, `Canceled`, or `Failed`. The retained example demonstrates one-step and state-preserving two-step Activity contracts.
 
 ## Google Pay
 
-```kotlin
-val launcher = GooglePayLauncher(
-    activity = this,
-    config = GooglePayLauncher.Config(
-        environment = GooglePayEnvironment.Test,
-        merchantCountryCode = "US",
-        merchantName = "My Shop"
-    ),
-    readyCallback = { isReady -> /* toggle Google Pay button visibility */ },
-    resultCallback = { result ->
-        when (result) {
-            is GooglePayLauncherResult.Completed -> { result.paymentIntent }
-            is GooglePayLauncherResult.Canceled -> { }
-            is GooglePayLauncherResult.Failed -> { result.error }
-        }
-    }
-)
-launcher.presentForPaymentIntent(clientSecret)
-```
+`GooglePayLauncher` confirms PaymentIntents or SetupIntents after an asynchronous readiness callback. `presentForPaymentIntent` and `presentForSetupIntent` are invalid until the device is reported ready. SetupIntent presentation additionally requires an ISO currency code, even though the SetupIntent API itself does not.
 
-`GooglePayPaymentMethodLauncher` — creates a PaymentMethod without immediately confirming a PaymentIntent (for custom flows).
+`GooglePayPaymentMethodLauncher` is the lower-level option when an integration needs a PaymentMethod without immediately confirming an Intent. Compose integrations use `rememberGooglePayLauncher`.
 
-Compose: `rememberGooglePayLauncher()`
+Wallet API availability does not prove that a specific merchant, country, currency, card network, or payment method is enabled.
 
-## Low-level API (`Stripe` client)
+## Low-Level APIs
 
-```kotlin
-val stripe = Stripe(context, publishableKey = "pk_...")
-```
+The `Stripe` entry point supports asynchronous and synchronous access to:
 
-Key methods:
-- `createPaymentMethod(params, callback)` — tokenize card/bank details
-- `createToken(params, callback)` — legacy token creation
-- `confirmPaymentIntent(confirmParams, activity, requestCode)` — confirm + handle 3DS
-- `confirmSetupIntent(confirmParams, activity, requestCode)` — confirm SetupIntent
-- `handleNextActionForPayment(activity, clientSecret)` — resume 3DS from `onActivityResult`
-- `retrievePaymentIntent(clientSecret, callback)`
-- `retrieveSetupIntent(clientSecret, callback)`
+- PaymentIntent confirmation, retrieval, and next-action handling;
+- SetupIntent confirmation, retrieval, and next-action handling;
+- PaymentMethod creation;
+- Source creation and retrieval; and
+- token creation for supported card, bank, identity, and account parameter types.
 
-## 3DS2 customization
+`PaymentLauncher` is a lifecycle-aware confirmation and next-action abstraction for Activity, Fragment, and Compose integrations. Both surfaces use publishable keys and client secrets; they do not replace server-side secret-key operations.
 
-`PaymentAuthConfig.Stripe3ds2Config` — customize 3DS2 challenge screen appearance: button style, label, navigation bar, text fields, footer, selection indicators. Set globally:
+## Specialized Modules
 
-```kotlin
-PaymentAuthConfig.init(
-    PaymentAuthConfig.Builder()
-        .set3ds2Config(PaymentAuthConfig.Stripe3ds2Config.Builder()
-            .setTimeout(5)
-            .build())
-        .build()
-)
-```
+| Module | Primary contract | Lifecycle or access note |
+| --- | --- | --- |
+| `connect` | `EmbeddedComponentManager` creates account-onboarding, Payments, and Payouts components | Requires publishable key plus a callback that fetches a server-created client secret; Payments and Payouts became GA in `23.12.0` |
+| `financial-connections` | `FinancialConnectionsSheet` returns linked-account session data or token results | Register the launcher unconditionally during Activity/Fragment initialization |
+| `identity` | `IdentityVerificationSheet` presents a verification session | Requires a verification-session ID and ephemeral-key secret created on the server |
+| `crypto-onramp` | `OnrampCoordinator` handles Link authentication, KYC, wallet ownership, payment collection, token creation, and checkout | Marked experimental/private-preview evidence; availability is not implied by the public source |
+| `payment-method-messaging` | Compose BNPL promotional messaging for Affirm, Afterpay/Clearpay, and Klarna | Public preview; amount and currency are required, and configuration can return `NoContent` |
+| `stripecardscan` | Card scan implementation used by Stripe UI surfaces | Direct retained classes are library-group restricted; v23.6 restored card scanning in public preview through Stripe UI |
 
-## Key configuration (`PaymentSheet.Configuration`)
+## Migration Landmarks
 
-- `merchantDisplayName` — shown in payment sheet header
-- `customer` — `PaymentSheet.CustomerConfiguration(id, ephemeralKeySecret)` for saved PMs
-- `googlePay` — `PaymentSheet.GooglePayConfiguration(environment, countryCode, currencyCode)`
-- `appearance` — `PaymentSheet.Appearance` (colors, shapes, typography)
-- `defaultBillingDetails` — pre-fill billing fields
-- `allowsDelayedPaymentMethods` — enable bank debits, vouchers, etc.
-- `returnUrl` — for redirect-based payment methods
+- `23.0.0` raises the minimum Android API level to 23 and the compile/target SDK to 36. It also updates Kotlin, Compose, Gradle, and Android dependencies.
+- v22 removes legacy token-oriented `CardParams` paths, deprecated Google Pay launchers, 3DS1, and accidentally exposed APIs; builder APIs replace data-class copying for public configuration objects.
+- v21 removes Basic Integration in favor of Mobile Payment Element and changes PaymentSheet's default method layout to automatic.
+- Current code favors builder and lifecycle-aware launcher APIs over deprecated constructors and launcher factories.
 
-## Localization
+## `23.13.1` Release Note
 
-40+ languages — same set as iOS SDK: Bulgarian, Catalan, Chinese (HK/Simplified/Traditional), Croatian, Czech, Danish, Dutch, Finnish, French, German, Greek, Hungarian, Indonesian, Italian, Japanese, Korean, Norwegian, Polish, Portuguese, Romanian, Russian, Slovak, Slovenian, Spanish, Swedish, Thai, Turkish, Vietnamese.
+The exact `23.13.1` release fixes an Alipay test-mode issue where the SDK could fail to reconcile and close out a payment. The broader architecture on this page is baseline evidence from the complete retained capsule and must not be attributed solely to that patch.
 
-## Key differences vs iOS SDK
+## Related
 
-| Aspect | Android | iOS |
-|---|---|---|
-| Init pattern | `PaymentConfiguration.init(context, pk)` | `StripeProvider` / `initStripe()` |
-| Platform Pay | `GooglePayLauncher` | `STPApplePayContext` |
-| UI framework | Jetpack Compose (internal) | SwiftUI / UIKit |
-| IAP restriction | Not mentioned | Explicitly noted (Apple App Store rules) |
+- Source: [[source-github-stripe-android]]
+- Changelog: [[changelog-github-stripe-android]]
+- Company: [[stripe]]
+- Native counterpart: [[stripe-ios-sdk]]
+- Cross-platform bridge: [[stripe-react-native-sdk]]
+- Supporting concepts: [[stripe-inapp-payments]], [[stripe-payment-intents]], [[stripe-3d-secure]], [[stripe-payment-method-messaging-element]], [[stripe-crypto-onramp]]
 
 ## Sources
 
-- [[source-github-stripe-android]] — GitHub repo: stripe/stripe-android (v23.8.0, 10 key files)
+- `raw/github/stripe/stripe-android/snapshots/2026-07-31-dc874ce/manifest.json` - exact-SHA `23.13.1` source capsule
+- `raw/github/stripe/stripe-android/snapshots/2026-07-31-dc874ce/files/README.md` - purpose, capabilities, requirements, installation, and security boundary
+- `raw/github/stripe/stripe-android/snapshots/2026-07-31-dc874ce/files/MIGRATING.md` - major-version migration requirements
+- `raw/github/stripe/stripe-android/snapshots/2026-07-31-dc874ce/files/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt` - PaymentSheet and FlowController contract
+- `raw/github/stripe/stripe-android/snapshots/2026-07-31-dc874ce/files/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheetResult.kt` - result and fulfillment semantics
+- `raw/github/stripe/stripe-android/snapshots/2026-07-31-dc874ce/files/payments-core/src/main/java/com/stripe/android/Stripe.kt` - low-level client API
+- `raw/github/stripe/stripe-android/snapshots/2026-07-31-dc874ce/files/payments-core/src/main/java/com/stripe/android/googlepaylauncher/GooglePayLauncher.kt` - Google Pay lifecycle and result contract
+- `raw/github-stripe-android.md` - legacy v23.8.0 capsule pointer

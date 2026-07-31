@@ -445,10 +445,10 @@
 - Repository: `stripe/stripe-android`
 - SHA: `dc874ce7c62dd433664ec4e312efeb9300c21795`
 - Collection date: `2026-07-31`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

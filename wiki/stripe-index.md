@@ -618,8 +618,9 @@
 - [[source-stripe-subscriptions-change-price]] — Change price (upgrade/downgrade): item-ID pitfall, quantity resets to 1, billing period rules, zero-amount edge cases (webpage, 2026-05-13)
 - [[source-stripe-subscriptions-prorations]] — Prorations: 6 triggers, non-trigger table, classic vs flexible credit prorations, preview locking, unpaid invoice handling (webpage, 2026-05-13)
 - [[source-github-stripe-postman]] — Stripe API Postman collection: 107 endpoint groups, 4 versioned collections, public workspace postman.com/stripedev (github-repo, 2026-05-13)
-- [[source-github-stripe-android]] — stripe-android SDK v23.8.0: PaymentSheet/FlowController/CustomerSheet, Stripe client, GooglePayLauncher, 3DS2 config, Jetpack Compose (github-repo, 2026-05-13)
-- [[stripe-android-sdk]] — Stripe Android SDK: PaymentSheet patterns, GooglePayLauncher, Stripe API client, 3DS2 customization, iOS/RN comparison
+- [[source-github-stripe-android]] — cumulative stripe-android SDK: legacy v23.8.0 plus v23.13.1 PaymentSheet, Embedded Payment Element, direct Intents, Google Pay, Connect, Identity, Financial Connections, and onramp (github-repo, updated 2026-07-31)
+- [[changelog-github-stripe-android]] — package-qualified Android release ledger; exact v23.13.1 Alipay test-mode reconciliation fix and accumulated v23.9-v23.13 context (github-repo, 2026-07-31)
+- [[stripe-android-sdk]] — Stripe Android SDK: v23.13.1 requirements, builder-first PaymentSheet, Embedded Payment Element, Google Pay, low-level Intent APIs, specialized modules, and fulfillment boundary
 - [[source-github-stripe-ios]] — stripe-ios SDK v25.14.0: 9 modules, PaymentSheet/EmbeddedPaymentElement/CustomerSheet, STPAPIClient, STPPaymentHandler, Apple Pay, 40+ localizations (github-repo, 2026-05-13)
 - [[stripe-ios-sdk]] — Stripe iOS SDK: module architecture, PaymentSheet/Embedded/CustomerSheet, STPAPIClient low-level API, STPPaymentHandler 3DS, Apple Pay, configuration
 - [[source-github-stripe-react-native]] — cumulative `@stripe/stripe-react-native`: legacy v0.65.1 plus v0.72.0 PaymentSheet, Embedded Payment Element, Platform Pay, Connect, onramp, and private-preview Link Controller (github-repo, updated 2026-07-30)

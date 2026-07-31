@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-07-31] ingest | GitHub stripe/stripe-android - `stripe-android@23.13.1`
+
+- Full serial ingest of `github-d17bdc90cb232420fcbc` from exact SHA `dc874ce7c62dd433664ec4e312efeb9300c21795`.
+- Migrated the legacy v23.8.0 source into the canonical Stripe/GitHub hierarchy and added a separate package-qualified changelog while preserving prior findings.
+- Recorded the bounded 52-file capsule: PaymentSheet, FlowController, Embedded Payment Element, direct Intent and Google Pay APIs, Connect, Identity, Financial Connections, Crypto Onramp, BNPL messaging, card scanning, build metadata, and example flows.
+- Isolated the exact v23.13.1 Alipay test-mode reconciliation fix from broader baseline and cumulative v23.9-v23.13 knowledge.
+- Updated the Stripe company, Android SDK concept, and provider index without changing repository-source count.
+
 ## [2026-07-30] ingest | GitHub stripe/stripe-react-native — `@stripe/stripe-react-native@0.72.0`
 
 - Full serial ingest of `github-a9880c38e9e3a0e271a3` from exact SHA `e752a71aec30a0ed88e605345cff3ad74053b623`.

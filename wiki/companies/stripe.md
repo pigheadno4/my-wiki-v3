@@ -49,6 +49,8 @@ The `@stripe/stripe-js` npm package is the web loader and TypeScript declaration
 
 `@stripe/stripe-react-native` is the mobile bridge to Stripe's native iOS and Android SDKs. The cumulative source preserves the legacy `0.65.1` capsule and adds the approved `0.72.0` baseline: PaymentSheet and Embedded Payment Element, Platform Pay, CustomerSheet, Financial Connections, Connect embedded components, crypto onramp, and private-preview Link Controller. In `0.72.0`, Link SetupIntent confirmation became an explicit post-selection step. See [[source-github-stripe-react-native]] and [[changelog-github-stripe-react-native]].
 
+`stripe-android` is the native Android SDK behind Stripe's prebuilt and low-level mobile payment surfaces. The cumulative source preserves the legacy `23.8.0` capsule and adds the approved `23.13.1` baseline: builder-first PaymentSheet, FlowController, Embedded Payment Element, direct Intent APIs, Google Pay, and specialized Connect, Identity, Financial Connections, Crypto Onramp, messaging, and card-scan modules. A completed SDK result can still represent a processing payment, so fulfillment remains webhook-gated. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
+
 ### Express Checkout Element
 
 Single component that renders multiple one-click payment buttons (Link, Apple Pay, Google Pay, PayPal, Klarna, Amazon Pay). Buttons are dynamically sorted by customer location. New payment methods activate from the Dashboard — no frontend changes needed. See [[stripe-express-checkout-element]].
@@ -112,7 +114,8 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — Stripe product mapping, invoice voiding, and retry boundary for a Metronome-gated commit
 - [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] — contract invoice-routing transitions between Stripe, NetSuite, and marketplaces
 - [[source-github-stripe-postman]] — Stripe API Postman collection: 107 endpoint groups, 4 versioned collections in public workspace, fork/import setup, 2024-04-15 changelog
-- [[source-github-stripe-android]] — stripe-android SDK v23.8.0: PaymentSheet/FlowController/CustomerSheet, Stripe API client, GooglePayLauncher, PaymentMethod model, 3DS2 config, Jetpack Compose integration
+- [[source-github-stripe-android]] — cumulative stripe-android SDK source: legacy v23.8.0 plus v23.13.1 PaymentSheet, Embedded Payment Element, direct Intents, Google Pay, Connect, Identity, Financial Connections, and onramp
+- [[changelog-github-stripe-android]] — package-qualified Android release history and exact v23.13.1 Alipay test-mode reconciliation fix
 - [[source-github-stripe-ios]] — stripe-ios SDK v25.14.0: 9 modules (PaymentSheet/Payments/ApplePay/Connect/Identity/FinancialConnections), STPAPIClient, STPPaymentHandler, EmbeddedPaymentElement, CustomerSheet
 - [[source-github-stripe-react-native]] — stripe-react-native cumulative SDK source: legacy v0.65.1 plus v0.72.0 PaymentSheet, Embedded Payment Element, Platform Pay, Connect, onramp, and Link Controller
 - [[changelog-github-stripe-react-native]] — package-qualified release history and v0.72.0 explicit Link SetupIntent confirmation migration
