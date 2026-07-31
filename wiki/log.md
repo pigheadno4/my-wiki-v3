@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-07-31] ingest | GitHub paypal/paypal-android - `paypal-android@2.3.0`
+
+- Full serial ingest of `github-c2ebe224d536e16acded` from exact SHA `d69a2fad7a96155e71f2681dc7cbfa9957fff544`.
+- Migrated the legacy listener-era source into the canonical PayPal/GitHub hierarchy and added a package-qualified changelog while preserving the older findings.
+- Recorded the complete 242-file bounded capsule: v2 callback and finish APIs, card and PayPal checkout/vault flows, 3DS, process recovery, buttons, fraud data, demo server orchestration, build metadata, and resources.
+- Isolated the exact `2.3.0` asynchronous checkout-start callback from broader v2 migration and cumulative `2.0.1`-`2.2.0` behavior.
+- Confirmed that the retained source exposes no native Venmo integration and updated the PayPal company, Android SDK, Vault concept, and provider index without changing source count.
+
 ## [2026-07-31] ingest | GitHub paypal/paypal-ios - `paypal-ios@2.0.1`
 
 - Full serial ingest of `github-5c8c7287ce91fe6f34c2` from exact SHA `2008a6de7c00a2ae53c669932d5fb19674c35b1e`.

@@ -237,7 +237,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-github-react-paypal-js-v8]] — GitHub react-paypal-js v8 source: ScriptProvider internals, reducer state machine, Buttons lifecycle, CardFields architecture
 - [[source-paypal-expanded-checkout-integrate]] — Expanded Checkout integration: CardFields+Buttons, 3DS SCA, billing address submit, authorize routes
 - [[source-paypal-android-card-payments]] — Android SDK: CardClient, WebPayments, deprecated NativePayments, FraudProtection, 3DS SCA
-- [[source-github-paypal-android]] — GitHub paypal-android: CardClient source, instance state, Demo ViewModels, Venmo funding source contradiction
+- [[source-github-paypal-android]] — cumulative GitHub paypal-android evidence through `paypal-android@2.3.0`: v2 callback/finish APIs, cards, PayPal checkout and vaulting, 3DS, process recovery, buttons, fraud data, and no native Venmo API
+- [[changelog-github-paypal-android]] — package-qualified paypal-android history: v1 listener boundary, v2 migration, and exact `2.3.0` asynchronous checkout callback
 - [[source-paypal-ios-card-payments]] — iOS SDK: CardClient/CardDelegate, WebPayments, PaymentButtons (UIKit+SwiftUI), FraudProtection
 - [[source-github-paypal-ios]] — cumulative GitHub paypal-ios evidence through `paypal-ios@2.0.1`: v2 Result/async APIs, checkout and card vaulting, 3DS, cancellation fixes, buttons, fraud data, and no native Venmo funding-source case
 - [[changelog-github-paypal-ios]] — package-qualified paypal-ios history: v1 delegate boundary, v2 migration, and exact `2.0.1` deep-link cancellation fixes

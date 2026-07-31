@@ -108,10 +108,11 @@ Uses `VaultController` from `@paypal/paypal-server-sdk`:
 
 ## Save PayPal Wallet (during purchase, Android SDK)
 
-Uses `PayPalWebCheckoutClient` (browser-based web checkout) — not `CardClient`. Key distinctions:
+Uses `PayPalWebCheckoutClient` (browser-based web checkout) - not `CardClient`. At `paypal-android@2.3.0`, the older listener examples are version 1 history:
 
 - **Deep link**: requires `deepLinkUrlScheme` (e.g. `"com.myapplication.android"`) for browser return
-- **Listener**: `PayPalWebCheckoutListener` with `onPayPalWebSuccess/Failure/Canceled`
+- **Start**: `start(activity, request, callback)` reports browser-presentation success or failure; the synchronous two-argument overload is deprecated
+- **Finish**: `finishStart(intent)` reports `Success`, `Canceled`, `Failure`, or `NoResult`
 - **Returning payer**: pass saved `vault.id` as payment source in next Create Order — no `customer.id` in body
 - **Create Order payload**: identical to JS SDK PayPal vault (`store_in_vault: ON_SUCCESS`, `usage_type: MERCHANT`, `customer_type: CONSUMER`)
 - **APPROVED vs VAULTED** + webhook — same pattern as all other vault integrations
@@ -146,7 +147,8 @@ Same vault pattern as JS SDK but with Android-specific differences:
 
 - **Returning payer**: `customer.id` passed in `payment_source.card.attributes.customer.id` in Create Order body — not via `target_customer_id` in a token request
 - **PCI handling**: `CardClient.approveOrder()` handles card data and PCI compliance; requires `returnUrl` with custom app scheme
-- **3DS callbacks**: `onApproveOrderThreeDSecureWillLaunch()` / `onApproveOrderThreeDSecureDidFinish()` on `ApproveOrderListener`
+- **Version 2 callback**: `approveOrder(request, CardApproveOrderCallback)` returns `Success`, `Failure`, or `AuthorizationRequired`
+- **3DS completion**: present the returned challenge, then pass the deep-link intent to `finishApproveOrder(intent)`
 - **APPROVED vs VAULTED** + `VAULT.PAYMENT-TOKEN.CREATED` webhook — same pattern as all other vault integrations
 - **RTAU**: subsequent next step links to real-time account updater
 
@@ -193,7 +195,8 @@ Uses `PayPalWebCheckoutClient.vault()` — same client as during-purchase, vault
 
 - **Module**: `paypal-web-payments`
 - **Request**: `PayPalWebVaultRequest(setupTokenId)`
-- **Listener**: `vaultListener` with `onPayPalWebVaultSuccess/Failure/Canceled`
+- **Presentation result**: `vault(activity, request)` returns success or failure for launching the browser challenge
+- **Completion result**: `finishVault(intent)` returns `Success`, `Failure`, `Canceled`, or `NoResult`
 - **Setup token**: `usage_type: PLATFORM` (vs `MERCHANT` in during-purchase — potential doc inconsistency)
 - **Setup token status**: `PAYER_ACTION_REQUIRED` (unlike cards which return `CREATED`)
 
@@ -204,7 +207,8 @@ Uses `PayPalWebCheckoutClient.vault()` — same client as during-purchase, vault
 
 Uses `CardClient.vault()` — not `approveOrder()`. Key distinctions:
 
-- **Listener**: `CardVaultListener` with `onVaultSuccess(result: CardVaultResult)` / `onVaultFailure`
+- **Version 2 callback**: `CardVaultCallback` receives `Success`, `Failure`, or `AuthorizationRequired`
+- **Challenge completion**: `finishVault(intent)` resolves the returned deep link
 - **Setup token status**: `CREATED` (not `PAYER_ACTION_REQUIRED`)
 - **Returning customer**: `customer.id` in setup token request body
 - **Result**: `CardVaultResult.setupTokenID` → send to server → upgrade to payment token
@@ -308,7 +312,7 @@ The `customer.id` is a PayPal-generated identifier — store it against the paye
 - [[source-paypal-save-paypal-purchase-later-ios-sdk]] — iOS SDK PayPal purchase-later: `PayPalVaultDelegate`, `PayPalVaultRequest`, `usage_type: PLATFORM`, `PAYER_ACTION_REQUIRED` status
 - [[source-paypal-save-cards-purchase-later-ios-sdk]] — iOS SDK cards purchase-later: `CardVaultDelegate`, `cardVaultDidCancel`, `CREATED` setup token status, `customer.id` in setup token body
 - [[source-paypal-save-paypal-purchase-later-android-sdk]] — Android SDK PayPal purchase-later: `PayPalWebCheckoutClient.vault()`, `usage_type: PLATFORM` (vs MERCHANT elsewhere), `PAYER_ACTION_REQUIRED` status
-- [[source-paypal-save-cards-purchase-later-android-sdk]] — Android SDK cards purchase-later: `CardClient.vault()`, `CardVaultListener`, `CREATED` setup token status, `customer.id` in setup token body
+- [[source-paypal-save-cards-purchase-later-android-sdk]] — historical Android version 1 card-vault guide, `CREATED` setup token status, and `customer.id` in setup token body
 - [[source-paypal-save-paypal-purchase-later-js-sdk]] — JS SDK PayPal purchase-later: Buttons with `createVaultSetupToken`, setup token with `experience_context`, `merchant-id` param, pop-up approval
 - [[source-paypal-save-cards-purchase-later-js-sdk]] — JS SDK cards purchase-later: setup token → payment token, `createVaultSetupToken` replaces `createOrder`, 3DS option, token ID security note, 14 test cards
 - [[source-paypal-save-paypal-orders-api]] — Orders API PayPal Wallet vault: reference transaction approval required, two-step flow, `experience_context`, `VAULT.PAYMENT-TOKEN.DELETION-INITIATED` webhook
@@ -316,10 +320,12 @@ The `customer.id` is a PayPal-generated identifier — store it against the paye
 - [[source-paypal-save-paypal-ios-sdk]] — iOS SDK PayPal Wallet vault: `PayPalWebCheckoutClient`, `PayPalWebCheckoutDelegate`, 35 countries, `vault.id` for returning payers
 - [[source-paypal-save-cards-ios-sdk]] — iOS SDK card vault: SwiftUI Toggle, `CardDelegate` protocol, US-only availability (contradicts Android/JS SDK 35-country support)
 - [[source-paypal-save-paypal-android-sdk]] — Android SDK PayPal Wallet vault: `PayPalWebCheckoutClient`, deep link scheme, `vault.id` for returning payers, identical payload to JS SDK
-- [[source-paypal-save-cards-android-sdk]] — Android SDK card vault: Compose checkbox UX, `customer.id` in Create Order body for returning payers, `ApproveOrderListener` 3DS callbacks, RTAU next step
+- [[source-paypal-save-cards-android-sdk]] — historical Android version 1 listener guide plus Compose checkbox UX, returning-payer `customer.id`, and RTAU
 - [[source-paypal-save-applepay-js-sdk]] — Apple Pay vault: APPROVED vs VAULTED status, VAULT.PAYMENT-TOKEN.CREATED webhook, merchant-initiated recurring pattern
 - [[source-paypal-save-cards-js-sdk]] — Card vault JS SDK: checkbox UX, SCA_ALWAYS/SCA_WHEN_REQUIRED with vault, usage_type/customer_type/permit_multiple_payment_tokens fields, 14 test cards
 - [[source-github-paypal-js]] — versioned core v10.0.1 legacy Buttons setup-token approval types plus React Braintree billing-agreement, checkout-with-vault, and Pay Later evidence
 - [[source-github-paypal-checkout-components]] — package-qualified runtime, Venmo setup-token, and eligibility evidence
 - [[source-github-paypal-ios]] — cumulative native iOS evidence through `paypal-ios@2.0.1`, including v2 Result/async APIs, cancellation handling, and the no-native-Venmo enum boundary
 - [[changelog-github-paypal-ios]] — package-qualified iOS major-version and patch history
+- [[source-github-paypal-android]] — cumulative native Android evidence through `paypal-android@2.3.0`, including v2 callbacks, manual browser completion, and the native Venmo evidence boundary
+- [[changelog-github-paypal-android]] — package-qualified Android major-version and `2.3.0` callback history

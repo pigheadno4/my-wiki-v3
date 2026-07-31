@@ -6,6 +6,15 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-07-31] ingest | paypal/paypal-android `2.3.0`
+
+- Approved and processed work item `github-c2ebe224d536e16acded` in full mode.
+- Read the complete 245-path assignment, including the 242-file, 567,836-byte exact-SHA capsule at `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/manifest.json`; tests, fixtures, CI, binaries, and tooling were excluded by policy.
+- Preserved the listener-era review and added the v2 callback/result model, explicit browser challenge completion, process-restorable state, card and PayPal vault flows, PaymentButtons, fraud data, and demo server contract.
+- Isolated the exact `2.3.0` asynchronous `PayPalWebCheckoutClient.start(activity, request, callback)` addition from the broader `2.0.0` migration and intermediate finish/cancellation changes.
+- Confirmed that the PayPal web funding enum, buttons, demo, and retained `Venmo` public surface expose no native Venmo integration.
+- Updated [[paypal-android-sdk]] and [[paypal-vault]], migrated the cumulative source into the canonical PayPal/GitHub hierarchy, and added a separate changelog without changing PayPal's source count.
+
 ## [2026-07-31] ingest | paypal/paypal-ios `2.0.1`
 
 - Approved and processed work item `github-5c8c7287ce91fe6f34c2` in full mode.
