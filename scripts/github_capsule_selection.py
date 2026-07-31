@@ -1,4 +1,4 @@
-"""Deterministic file selection and validation for NPM source capsules."""
+"""Deterministic file selection and validation for GitHub source capsules."""
 
 from dataclasses import dataclass, field
 import hashlib
@@ -7,8 +7,9 @@ from typing import AbstractSet, Dict, List, Mapping, NoReturn, Optional, Sequenc
 
 from github_canonical import safe_policy_path
 from github_capsule_policy import (
-    CAPSULE_ADAPTER,
+    NPM_CAPSULE_ADAPTER,
     SECRET_DETECTOR,
+    TAGGED_TREE_ADAPTER,
     CapsuleConfig,
     EffectivePolicy,
     PackageOverride,
@@ -22,6 +23,7 @@ from github_npm_workspace import (
     WorkspaceResolution,
     resolve_workspace,
 )
+from github_tagged_tree import resolve_tagged_workspace
 
 
 _REGULAR_MODES = frozenset(("100644", "100755"))
@@ -202,8 +204,8 @@ def resolve_npm_capsule(
     """Resolve, validate, scan, and budget one NPM source capsule."""
     if not isinstance(tree, GitTree):
         raise TypeError("tree must be a GitTree")
-    if not isinstance(capsule, CapsuleConfig) or capsule.adapter != CAPSULE_ADAPTER:
-        raise ValueError("capsule must use " + CAPSULE_ADAPTER)
+    if not isinstance(capsule, CapsuleConfig) or capsule.adapter != NPM_CAPSULE_ADAPTER:
+        raise ValueError("capsule must use " + NPM_CAPSULE_ADAPTER)
 
     normalized = build_effective_policy(capsule, (), (), _DETECTOR_CODES).capsule
     workspace = resolve_workspace(tree, normalized)
@@ -372,6 +374,148 @@ def resolve_npm_capsule(
         excluded=tuple(sorted(excluded)),
         required_roots=tuple(sorted(required_rows)),
         generated_target_paths=tuple(sorted(set(generated_rows))),
+        include_paths=tuple(sorted(include_rows)),
+        secret_findings=findings,
+        effective_policy=effective_policy,
+    )
+
+
+def resolve_capsule_workspace(
+    tree: GitTree,
+    capsule: CapsuleConfig,
+    versions: Optional[Mapping[str, str]] = None,
+) -> WorkspaceResolution:
+    """Resolve the adapter-specific workspace contract for one exact tree."""
+    if not isinstance(capsule, CapsuleConfig):
+        raise TypeError("capsule must be a CapsuleConfig")
+    if capsule.adapter == NPM_CAPSULE_ADAPTER:
+        return resolve_workspace(tree, capsule)
+    if capsule.adapter == TAGGED_TREE_ADAPTER:
+        if versions is None:
+            raise ValueError("tagged-tree-v1 requires package versions")
+        return resolve_tagged_workspace(tree, capsule, versions)
+    raise ValueError("unsupported capsule adapter " + capsule.adapter)
+
+
+def resolve_capsule(
+    tree: GitTree,
+    capsule: CapsuleConfig,
+    allowlist: Sequence[SecretAllowlist],
+    changed_paths: Sequence[str] = (),
+    versions: Optional[Mapping[str, str]] = None,
+) -> CapsuleResolution:
+    """Resolve one source capsule through its configured adapter."""
+    if not isinstance(capsule, CapsuleConfig):
+        raise TypeError("capsule must be a CapsuleConfig")
+    if capsule.adapter == NPM_CAPSULE_ADAPTER:
+        return resolve_npm_capsule(tree, capsule, allowlist, changed_paths)
+    if capsule.adapter != TAGGED_TREE_ADAPTER:
+        raise ValueError("unsupported capsule adapter " + capsule.adapter)
+    if versions is None:
+        raise ValueError("tagged-tree-v1 requires package versions")
+    return _resolve_tagged_capsule(
+        tree,
+        capsule,
+        allowlist,
+        changed_paths,
+        versions,
+    )
+
+
+def _resolve_tagged_capsule(
+    tree: GitTree,
+    capsule: CapsuleConfig,
+    allowlist: Sequence[SecretAllowlist],
+    changed_paths: Sequence[str],
+    versions: Mapping[str, str],
+) -> CapsuleResolution:
+    normalized = build_effective_policy(capsule, (), (), _DETECTOR_CODES).capsule
+    workspace = resolve_tagged_workspace(tree, normalized, versions)
+    blobs_by_path = {blob.path: blob for blob in tree.blobs()}
+    package = workspace.packages[0]
+    owned_paths = frozenset(package.owned_paths)
+
+    candidate_reasons: Dict[str, Tuple[str, str, Set[str]]] = {}
+    excluded: Set[Tuple[str, str]] = set()
+    required_rows: Set[Tuple[str, str, str]] = set()
+    include_rows: Set[Tuple[str, str, str]] = set()
+
+    for path in normalized.include_paths:
+        include_rows.add((package.name, path, "capsule-policy"))
+        _select(
+            candidate_reasons,
+            package,
+            path,
+            "include-path",
+            owned_paths,
+            "missing-required-include",
+        )
+    for root in normalized.default_required_roots:
+        required_rows.add((package.name, root, "default"))
+        matching = tuple(path for path in package.owned_paths if _below_root(path, root))
+        if not matching:
+            _review(
+                "missing-required-root",
+                "package=" + package.name + " path=" + root,
+            )
+        for path in matching:
+            categories = _excluded_categories(
+                path,
+                normalized.excluded_categories,
+            )
+            if categories and path not in candidate_reasons:
+                for category in categories:
+                    excluded.add((path, "excluded-category:" + category))
+                continue
+            _select(
+                candidate_reasons,
+                package,
+                path,
+                "required-root",
+                owned_paths,
+                "invalid-workspace-resolution",
+            )
+
+    _select_changed_paths(
+        candidate_reasons,
+        workspace,
+        changed_paths,
+        normalized.changed_path_policy,
+        normalized.excluded_categories,
+        excluded,
+    )
+    excluded = {item for item in excluded if item[0] not in candidate_reasons}
+    selected_blobs = _selected_blobs(candidate_reasons, blobs_by_path)
+    effective_policy = build_effective_policy(
+        normalized,
+        allowlist,
+        tuple((path, blob.oid) for path, blob in selected_blobs),
+        _DETECTOR_CODES,
+    )
+    files, findings = _read_selected_files(
+        tree,
+        selected_blobs,
+        candidate_reasons,
+        effective_policy.capsule,
+    )
+    allowed = frozenset(
+        (item.path, item.blob_oid, item.detector_code)
+        for item in effective_policy.applicable_secret_allowlist
+    )
+    unallowlisted_findings = tuple(
+        item
+        for item in findings
+        if (item.path, item.git_blob_oid, item.detector_code) not in allowed
+    )
+    if unallowlisted_findings:
+        raise SecretFindingsBlocked(findings, unallowlisted_findings)
+
+    return CapsuleResolution(
+        workspace=workspace,
+        files=files,
+        excluded=tuple(sorted(excluded)),
+        required_roots=tuple(sorted(required_rows)),
+        generated_target_paths=(),
         include_paths=tuple(sorted(include_rows)),
         secret_findings=findings,
         effective_policy=effective_policy,
@@ -753,6 +897,8 @@ __all__ = [
     "SecretFinding",
     "SecretFindingsBlocked",
     "classify_excluded_categories",
+    "resolve_capsule",
+    "resolve_capsule_workspace",
     "resolve_npm_capsule",
     "scan_evidence_files",
 ]
