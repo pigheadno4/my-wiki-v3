@@ -13,7 +13,9 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
 from github_canonical import canonical_json_bytes, safe_policy_path
 from github_capsule_policy import (
-    CAPSULE_ADAPTER,
+    CAPSULE_ADAPTERS,
+    NPM_CAPSULE_ADAPTER,
+    TAGGED_TREE_ADAPTER,
     CapsuleConfig,
     build_effective_policy,
 )
@@ -479,7 +481,14 @@ def _build_package(
         raise PacketBuildError("non-baseline packet requires comparison evidence")
 
     retained = _retained_diff(prior, current, item.upstream_changes)
-    package_paths = _package_roots(item.package, prior, current)
+    if item.package not in capsule.focus_packages:
+        raise PacketBuildError("packet package is outside capsule focus")
+    package_paths = _package_roots(
+        item.package,
+        prior,
+        current,
+        capsule.adapter,
+    )
     upstream, gaps = _upstream_dispositions(
         item.upstream_changes,
         prior,
@@ -496,14 +505,28 @@ def _build_package(
         for row in changed_rows
         if row["classification"] == "unclassified"
     ]
-    prior_manifest = _package_manifest(root, prior, item.package) if prior else {}
-    current_manifest = _package_manifest(root, current, item.package)
-    if prior_manifest and prior_manifest.get("version") != item.from_version:
-        raise PacketBuildError("prior package manifest version mismatch")
-    if current_manifest.get("version") != item.to_version:
-        raise PacketBuildError("current package manifest version mismatch")
-    dependency_changes = _dependency_changes(prior_manifest, current_manifest)
-    public_api_changes = _public_api_changes(prior_manifest, current_manifest)
+    if capsule.adapter == NPM_CAPSULE_ADAPTER:
+        prior_manifest = (
+            _package_manifest(root, prior, item.package) if prior else {}
+        )
+        current_manifest = _package_manifest(root, current, item.package)
+        if prior_manifest and prior_manifest.get("version") != item.from_version:
+            raise PacketBuildError("prior package manifest version mismatch")
+        if current_manifest.get("version") != item.to_version:
+            raise PacketBuildError("current package manifest version mismatch")
+        dependency_changes = _dependency_changes(
+            prior_manifest,
+            current_manifest,
+        )
+        public_api_changes = _public_api_changes(
+            prior_manifest,
+            current_manifest,
+        )
+    else:
+        if release["manifest"].get("version") != item.to_version:
+            raise PacketBuildError("tagged release version mismatch")
+        dependency_changes = []
+        public_api_changes = []
     notes_path = str(PurePosixPath(item.release_manifest).parent / "release-notes.md")
     required = _required_reading(
         root,
@@ -915,7 +938,10 @@ def _required_by_policy(
         )
         if not relative:
             continue
-        if relative == "package.json":
+        if (
+            capsule.adapter == NPM_CAPSULE_ADAPTER
+            and relative == "package.json"
+        ):
             return True
         roots = capsule.default_required_roots
         includes = capsule.include_paths
@@ -938,7 +964,20 @@ def _package_roots(
     package: str,
     prior: Optional[_LoadedSnapshot],
     current: _LoadedSnapshot,
+    adapter: str,
 ) -> Tuple[str, ...]:
+    if adapter == TAGGED_TREE_ADAPTER:
+        for snapshot in tuple(
+            row for row in (prior, current) if row is not None
+        ):
+            if not any(
+                metadata.get("package") == package
+                for metadata in snapshot.files.values()
+            ):
+                raise PacketBuildError(
+                    "tagged snapshot does not contain package evidence"
+                )
+        return ("",)
     paths = []
     for snapshot in tuple(row for row in (prior, current) if row is not None):
         for path, metadata in snapshot.files.items():
@@ -1306,7 +1345,7 @@ def _render_markdown(document: dict) -> bytes:
 def _validate_config(config: RepoConfig) -> None:
     if not isinstance(config, RepoConfig) or len(config.capsules) != 1:
         raise PacketBuildError("packet requires one repository capsule")
-    if config.capsules[0].adapter != CAPSULE_ADAPTER:
+    if config.capsules[0].adapter not in CAPSULE_ADAPTERS:
         raise PacketBuildError("packet adapter is unsupported")
 
 

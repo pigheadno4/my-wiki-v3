@@ -286,6 +286,91 @@ class GitHubIngestPacketTests(unittest.TestCase):
         self.assertEqual("renamed", statuses["src/new.ts"])
         self.assertNotIn("src/old.ts", statuses)
 
+    def test_tagged_baseline_builds_without_package_manifest(self):
+        config = replace(
+            self.config,
+            version_strategy="semver-tags",
+            capsules=(
+                CapsuleConfig(
+                    id="stripe-ios-source",
+                    adapter="tagged-tree-v1",
+                    focus_packages=("stripe-ios",),
+                    dependency_scope="configured-repository-paths",
+                    changed_path_policy="policy-bounded",
+                    default_required_roots=("Native/Source",),
+                    include_paths=("README.md", "Package.swift"),
+                    excluded_categories=("tests", "fixtures"),
+                    max_packet_files=30,
+                    max_packet_utf8_bytes=200000,
+                ),
+            ),
+        )
+        current = self.snapshot(
+            self.current_sha,
+            "26.4.1",
+            {
+                "README.md": (
+                    "# Native SDK\n",
+                    "repository-context",
+                    "repository-context",
+                    "",
+                ),
+                "Package.swift": (
+                    "// package\n",
+                    "public-source",
+                    "include-path",
+                    "stripe-ios",
+                ),
+                "Native/Source/Checkout.swift": (
+                    "public struct Checkout {}\n",
+                    "public-source",
+                    "required-root",
+                    "stripe-ios",
+                ),
+            },
+        )
+        release = self.release(
+            "26.4.1",
+            self.current_sha,
+            "Native baseline.\n",
+            package="stripe-ios",
+        )
+
+        packet = build_ingest_packet(
+            self.root,
+            config,
+            "github-" + ("2" * 20),
+            self.relative(current),
+            (
+                PackagePacketInput(
+                    package="stripe-ios",
+                    from_version="",
+                    to_version="26.4.1",
+                    from_sha="",
+                    to_sha=self.current_sha,
+                    release_manifest=self.relative(release),
+                    comparison_manifest="",
+                    prior_snapshot_manifest="",
+                    upstream_changes=(),
+                ),
+            ),
+            "queued",
+        )
+
+        package = packet.document["packages"][0]
+        self.assertEqual("stripe-ios", package["package"])
+        self.assertEqual([], package["dependency_changes"])
+        self.assertEqual([], package["public_api_changes"])
+        self.assertTrue(
+            any(
+                path.endswith("/files/Native/Source/Checkout.swift")
+                for path in package["required_reading"]
+            )
+        )
+        self.assertTrue(
+            all("package.json" not in path for path in package["required_reading"])
+        )
+
     def test_typescript_config_is_classified_as_build_configuration(self):
         prior = {
             "package.json": self.manifest_content("10.0.0"),
