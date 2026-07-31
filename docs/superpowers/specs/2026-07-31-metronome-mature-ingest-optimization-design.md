@@ -17,6 +17,32 @@ This change does not add a new scheduler, backend abstraction, worktree model,
 agent registry, rollback system, or event-level performance telemetry. It does
 not authorize parallel ingest for another provider.
 
+## Simplified production mode
+
+Campaign 08 carries forward the approved dynamic scheduler and applies these
+rules as one operating mode:
+
+- Sol is the default worker and every first attempt receives an independent
+  Sol review. Terra is used only for genuinely templated, isolated pages that
+  require no semantic update to a shared concept.
+- Keep three dynamic sub-agent slots beside the coordinator. A completed
+  worker immediately releases its slot; the scheduler assigns that slot to a
+  ready reviewer or the next worker without waiting for a batch barrier.
+- The first reviewer reads the complete raw source.
+- A retry limited to links, frontmatter, wording, or an already-identified
+  omitted field uses targeted diff review when the raw hash is unchanged.
+- A retry caused by factual error, material omission, misunderstanding, new
+  evidence, or unresolved content risk receives another complete-source
+  review.
+- The coordinator does not perform a default full-source reread. It owns final
+  approval, canonical promotion, shared-file writes, reciprocal links, and
+  final mechanical validation.
+- Each campaign runs one campaign-close wiki validation, one Metronome capsule
+  validation, and the predetermined three-page query audit. It does not repeat
+  global validation between individual promotions.
+- Timing adds only `started_at` and `completed_at`; no event-level performance
+  monitoring system is introduced.
+
 ## Review modes
 
 Every first-attempt candidate receives the existing complete-source review by
@@ -87,11 +113,11 @@ unaffected target reductions continue.
 
 ## Model routing
 
-Route pages that modify shared concepts, require cross-source reasoning, carry
-schema-heavy contracts, or have contradiction risk to a Sol worker. Terra is
-limited to isolated, templated pages whose anticipated shared changes are
-mechanical catalog, log, link, and count updates. Every first attempt still has
-an independent Sol reviewer.
+Sol is the default worker. In particular, route pages that modify shared
+concepts, require cross-source reasoning, carry schema-heavy contracts, or have
+contradiction risk to Sol. Terra is limited to isolated, templated pages whose
+anticipated shared changes are mechanical catalog, log, link, and count
+updates. Every first attempt still has an independent Sol reviewer.
 
 ## Coordinator boundary
 
