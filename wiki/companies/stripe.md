@@ -51,6 +51,8 @@ The `@stripe/stripe-js` npm package is the web loader and TypeScript declaration
 
 `stripe-android` is the native Android SDK behind Stripe's prebuilt and low-level mobile payment surfaces. The cumulative source preserves the legacy `23.8.0` capsule and adds the approved `23.13.1` baseline: builder-first PaymentSheet, FlowController, Embedded Payment Element, direct Intent APIs, Google Pay, and specialized Connect, Identity, Financial Connections, Crypto Onramp, messaging, and card-scan modules. A completed SDK result can still represent a processing payment, so fulfillment remains webhook-gated. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
 
+`stripe-ios` is the native Swift SDK behind Stripe's prebuilt and low-level iOS payment surfaces. The cumulative source preserves the legacy `25.14.0` capsule and adds the approved `26.4.1` baseline: PaymentSheet, FlowController, Embedded Payment Element, CustomerSheet, Apple Pay, low-level Intent and 3DS APIs, and specialized Connect, Identity, Financial Connections, Issuing, and alpha Crypto Onramp modules. Version 26 requires iOS 15+, and a completed SDK result can still represent a processing payment, so fulfillment remains event-gated. See [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
+
 ### Express Checkout Element
 
 Single component that renders multiple one-click payment buttons (Link, Apple Pay, Google Pay, PayPal, Klarna, Amazon Pay). Buttons are dynamically sorted by customer location. New payment methods activate from the Dashboard — no frontend changes needed. See [[stripe-express-checkout-element]].
@@ -116,7 +118,8 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 - [[source-github-stripe-postman]] — Stripe API Postman collection: 107 endpoint groups, 4 versioned collections in public workspace, fork/import setup, 2024-04-15 changelog
 - [[source-github-stripe-android]] — cumulative stripe-android SDK source: legacy v23.8.0 plus v23.13.1 PaymentSheet, Embedded Payment Element, direct Intents, Google Pay, Connect, Identity, Financial Connections, and onramp
 - [[changelog-github-stripe-android]] — package-qualified Android release history and exact v23.13.1 Alipay test-mode reconciliation fix
-- [[source-github-stripe-ios]] — stripe-ios SDK v25.14.0: 9 modules (PaymentSheet/Payments/ApplePay/Connect/Identity/FinancialConnections), STPAPIClient, STPPaymentHandler, EmbeddedPaymentElement, CustomerSheet
+- [[source-github-stripe-ios]] — cumulative stripe-ios SDK source: legacy v25.14.0 plus v26.4.1 PaymentSheet, Embedded Payment Element, Apple Pay, low-level Intents, Connect, Identity, Financial Connections, Issuing, and onramp
+- [[changelog-github-stripe-ios]] — package-qualified iOS release history, iOS 15 migration boundary, and exact v26.4.1 Alipay result fix
 - [[source-github-stripe-react-native]] — stripe-react-native cumulative SDK source: legacy v0.65.1 plus v0.72.0 PaymentSheet, Embedded Payment Element, Platform Pay, Connect, onramp, and Link Controller
 - [[changelog-github-stripe-react-native]] — package-qualified release history and v0.72.0 explicit Link SetupIntent confirmation migration
 - [[source-stripe-billing-benchmarks]] — billing benchmarking: k-NN peer matching, ≥5 subs access, peer eligibility ≥100 subs, 7 metrics benchmarked, percentile display

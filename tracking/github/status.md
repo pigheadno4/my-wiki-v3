@@ -55,10 +55,10 @@
 - Repository: `stripe/stripe-ios`
 - SHA: `d9252fd0a4a6d369fa45bb06f74c4e818c914f91`
 - Collection date: `2026-07-31`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

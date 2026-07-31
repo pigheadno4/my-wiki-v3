@@ -621,8 +621,9 @@
 - [[source-github-stripe-android]] — cumulative stripe-android SDK: legacy v23.8.0 plus v23.13.1 PaymentSheet, Embedded Payment Element, direct Intents, Google Pay, Connect, Identity, Financial Connections, and onramp (github-repo, updated 2026-07-31)
 - [[changelog-github-stripe-android]] — package-qualified Android release ledger; exact v23.13.1 Alipay test-mode reconciliation fix and accumulated v23.9-v23.13 context (github-repo, 2026-07-31)
 - [[stripe-android-sdk]] — Stripe Android SDK: v23.13.1 requirements, builder-first PaymentSheet, Embedded Payment Element, Google Pay, low-level Intent APIs, specialized modules, and fulfillment boundary
-- [[source-github-stripe-ios]] — stripe-ios SDK v25.14.0: 9 modules, PaymentSheet/EmbeddedPaymentElement/CustomerSheet, STPAPIClient, STPPaymentHandler, Apple Pay, 40+ localizations (github-repo, 2026-05-13)
-- [[stripe-ios-sdk]] — Stripe iOS SDK: module architecture, PaymentSheet/Embedded/CustomerSheet, STPAPIClient low-level API, STPPaymentHandler 3DS, Apple Pay, configuration
+- [[source-github-stripe-ios]] — cumulative stripe-ios SDK: legacy v25.14.0 plus v26.4.1 PaymentSheet, Embedded Payment Element, Apple Pay, low-level Intents, Connect, Identity, Financial Connections, Issuing, and onramp (github-repo, updated 2026-07-31)
+- [[changelog-github-stripe-ios]] — package-qualified iOS release ledger; iOS 15 migration boundary and exact v26.4.1 Alipay false-failure fix (github-repo, 2026-07-31)
+- [[stripe-ios-sdk]] — Stripe iOS SDK: v26.4.1 requirements, PaymentSheet, Embedded Payment Element, Apple Pay, low-level payment and 3DS APIs, specialized modules, and fulfillment boundary
 - [[source-github-stripe-react-native]] — cumulative `@stripe/stripe-react-native`: legacy v0.65.1 plus v0.72.0 PaymentSheet, Embedded Payment Element, Platform Pay, Connect, onramp, and private-preview Link Controller (github-repo, updated 2026-07-30)
 - [[changelog-github-stripe-react-native]] — package-qualified release ledger; v0.72.0 native SDK upgrades and explicit Link SetupIntent confirmation (github-repo, 2026-07-30)
 - [[stripe-react-native-sdk]] — Stripe React Native SDK: PaymentSheet, Embedded Payment Element, Platform Pay, Connect, onramp, app-store boundary, and migration notes

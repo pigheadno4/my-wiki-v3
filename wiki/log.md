@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-07-31] ingest | GitHub stripe/stripe-ios - `stripe-ios@26.4.1`
+
+- Full serial ingest of `github-7ecc6c2199897656ffe3` from exact SHA `d9252fd0a4a6d369fa45bb06f74c4e818c914f91`.
+- Migrated the legacy v25.14.0 source into the canonical Stripe/GitHub hierarchy and added a separate package-qualified changelog while preserving prior findings.
+- Recorded the bounded 259-file capsule: PaymentSheet, FlowController, Embedded Payment Element, CustomerSheet, Apple Pay, low-level Intent and 3DS APIs, Connect, Identity, Financial Connections, Issuing, Crypto Onramp, build metadata, and example flows.
+- Isolated the exact v26.4.1 Alipay false-failure fix from the iOS 15 major-version boundary and broader v25.15-v26.4 context.
+- Updated the Stripe company, iOS SDK concept, and provider index without changing repository-source count.
+
 ## [2026-07-31] ingest | GitHub stripe/stripe-android - `stripe-android@23.13.1`
 
 - Full serial ingest of `github-d17bdc90cb232420fcbc` from exact SHA `dc874ce7c62dd433664ec4e312efeb9300c21795`.
