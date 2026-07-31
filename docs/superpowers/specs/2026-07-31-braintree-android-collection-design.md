@@ -3,7 +3,7 @@
 **Date:** 2026-07-31
 **Repository:** `braintree/braintree_android`
 **Initial release:** `braintree-android@5.30.0`
-**Status:** Approved design; implementation pending written-spec review
+**Status:** Revised design; pending written-spec review
 
 ## Goal
 
@@ -32,7 +32,7 @@ The production SDK is divided into 14 Gradle modules:
 - `UIComponents`
 - `Venmo`
 
-The reviewed production capsule is approximately 386 files and 1,945,353 UTF-8 bytes. `UIComponents` is the largest module because its maintained resources define required PayPal, Venmo, and card-field UI behavior. The repository has no dedicated public API signature files analogous to the Stripe Android `.api` files, so production `src/main` content is the primary implementation evidence.
+The reviewed production capsule is 388 readable files and 1,171,992 UTF-8 bytes. `UIComponents` is the largest module because its maintained Kotlin and XML resources define required PayPal, Venmo, and card-field UI behavior. Its `card_fields_cc_discover.png` file is 773,661 bytes and cannot enter the text-evidence capsule because it exceeds the 512,000-byte per-file limit and is not UTF-8. The repository has no dedicated public API signature files analogous to the Stripe Android `.api` files, so production `src/main` content is the primary implementation evidence.
 
 Release `5.30.0` removes the Visa Checkout module, deprecates related configuration fields, adds public suspend APIs across multiple payment modules, updates Android build and SDK levels, and changes UI component button sizing. These changes make it a useful complete v5 baseline.
 
@@ -40,7 +40,7 @@ Release `5.30.0` removes the Visa Checkout module, deprecates related configurat
 
 ### 1. Complete production capsule
 
-Selected. Collect every production module's `src/main` tree, its module build and consumer configuration where present, and bounded root documentation and build context.
+Selected. Collect every readable production source and resource, each module's build and runtime configuration, and bounded root documentation and build context. Use split `UIComponents` roots to omit its single unsupported binary asset without weakening shared collector safety checks.
 
 This preserves cross-module behavior and public implementation evidence while excluding tests, generated documentation, demos, and repository tooling. The measured capsule remains below the existing serial-read review threshold.
 
@@ -76,8 +76,9 @@ The repository will use one `tagged-tree-v1` capsule with:
 - focus package `braintree-android`;
 - dependency scope `configured-repository-paths`;
 - changed-path policy `policy-bounded`;
-- all 14 production module `src/main` roots;
-- module `build.gradle` and consumer ProGuard files where present; and
+- 13 complete production module `src/main` roots;
+- split Kotlin and XML roots plus the manifest for `UIComponents`;
+- all 14 module `build.gradle` files and the three production `proguard.pro` files; and
 - exact root documentation, migration, dependency, license, settings, and build files.
 
 The exact root context is:
@@ -94,11 +95,21 @@ The exact root context is:
 - `build.gradle`
 - `gradle.properties`
 
+The split `UIComponents` policy uses these required roots:
+
+- `UIComponents/src/main/java`
+- `UIComponents/src/main/res/drawable`
+- `UIComponents/src/main/res/layout`
+- `UIComponents/src/main/res/values`
+
+It includes `UIComponents/src/main/AndroidManifest.xml` as an exact file. This retains every maintained text source and resource in the module while keeping the unsupported PNG outside the selected evidence set.
+
 The capsule excludes:
 
 - `Demo` and `TestUtils` modules;
 - all `src/test` and `src/androidTest` trees;
 - generated Dokka content under `docs/` and the `DokkaRestrictToPlugin` build plugin;
+- `UIComponents/src/main/res/drawable-xxhdpi/card_fields_cc_discover.png`, which is a binary presentation asset rather than readable implementation evidence;
 - fixtures, snapshots, generated build output, and vendored dependencies;
 - CI, release automation, and development tooling; and
 - binaries and other non-text assets unless a reviewed production resource is required to understand SDK behavior.
@@ -117,12 +128,12 @@ The capsule uses the shared tagged-native hard limits:
 | Packet files | 550 |
 | Packet UTF-8 content | 6,000,000 bytes |
 
-The measured 386-file baseline stays below the 450-file required-reading review threshold. A smoke packet with more than 450 required-reading files returns to capsule-policy review and is not eligible for approval, even if it remains under the absolute packet limit. Hard-limit failures must not be solved by silent truncation or automatic budget increases.
+The measured 388-file readable baseline stays below the 450-file required-reading review threshold. A smoke packet with more than 450 required-reading files returns to capsule-policy review and is not eligible for approval, even if it remains under the absolute packet limit. Hard-limit failures must not be solved by silent truncation or automatic budget increases.
 
 ## Collection Flow
 
 1. Extend the existing inventory row with the approved v5 version track and capsule configuration, then enable it.
-2. Add focused fixtures and tests for Braintree's Gradle module layout, required roots, production resources, exclusions, tag resolution, and policy-bounded changed paths.
+2. Add focused fixtures and tests for Braintree's Gradle module layout, required roots, retained XML resources, the excluded binary PNG path, tag resolution, and policy-bounded changed paths.
 3. Run focused tests, the complete offline GitHub test suite, registry validation, and `scripts/validate_github_collection.py`.
 4. Run a backfill dry run in isolated temporary state.
 5. Require the dry run to select only `braintree-android@5.30.0`, resolve the exact commit, include all required production roots, and remain within the reviewed budgets.
@@ -176,9 +187,10 @@ A supplement does not modify the accepted snapshot and does not merge evidence f
 Implementation must prove:
 
 - exact tag `5.30.0` resolves to package-qualified release `braintree-android@5.30.0` and the expected peeled commit;
-- all 14 production module roots and required root context are retained;
+- all 14 production modules are represented by readable source, resource, build, and manifest evidence, and required root context is retained;
 - Demo, TestUtils, tests, generated docs, CI, and tooling remain excluded;
 - required production XML and UI resources remain eligible;
+- the oversized non-UTF-8 Discover card PNG remains outside the selected evidence set without weakening shared safety checks;
 - changed paths inside and outside the configured policy receive deterministic dispositions;
 - missing roots, unsafe paths, secrets, and hard-budget violations fail closed;
 - existing tagged and NPM repository behavior remains unchanged; and
@@ -190,7 +202,7 @@ The final collection report must state the exact release identity, tag, commit S
 
 - `braintree/braintree_android` is enabled with exactly one supported capsule and one package-qualified v5 track.
 - Backfill discovery selects only `braintree-android@5.30.0` at commit `51f183a48557d0fd00eefa541712df0c4f21ee28`.
-- The immutable snapshot includes all 14 production modules and required root context while excluding tests, demos, generated documentation, CI, and tooling.
+- The immutable snapshot includes readable evidence for all 14 production modules and required root context while excluding the unsupported binary PNG, tests, demos, generated documentation, CI, and tooling.
 - The snapshot and packet remain within hard budgets and at or below 450 required-reading files.
 - No changed retained production path is unclassified and no blocking evidence gap remains.
 - Offline GitHub validation passes.
