@@ -5,9 +5,11 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from scripts.ingest_pilot.coordinator import (
     PilotError,
+    complete_campaign,
     init_campaign,
     reject_job,
     retry_job,
@@ -120,20 +122,49 @@ class CoordinatorTests(unittest.TestCase):
             "verdict": verdict,
             "reason": "Grounded and complete",
             "required_changes": [],
+            "review_scope": "full",
+            "retry_review_scope": None,
+            "shared_update_decisions": [],
         }
         result.update(overrides)
         path = self.root / f"{job_id}-review-result.json"
         path.write_text(json.dumps(result), encoding="utf-8")
         return path
 
-    def make_reviewing(self, job_id, attempt):
+    def make_reviewing(self, job_id, attempt, suggestions=None):
         init_campaign(self.root, self.manifest)
         jobs = load_jobs(self.root, self.campaign_id)
         job = next(job for job in jobs if job["job_id"] == job_id)
         job["attempt"] = attempt
         job["state"] = "reviewing"
         job["last_event"] = "review_started"
+        job["reviewer_identity"] = "reviewer-a"
+        job["reviewer_model"] = "Sol"
         save_jobs(self.root, self.campaign_id, jobs)
+        attempt_dir = self.attempt(job_id, attempt)
+        attempt_dir.mkdir(parents=True)
+        suggestions = suggestions or {"company": [], "concepts": [], "index": [], "log": []}
+        attempt_dir.joinpath("suggestions.json").write_text(
+            json.dumps(suggestions),
+            encoding="utf-8",
+        )
+        self.write_receipt(job, attempt_dir, suggestions)
+
+    def write_receipt(self, job, attempt_dir, suggestions):
+        attempt_dir.joinpath("receipt.json").write_text(json.dumps({
+            "job_id": job["job_id"],
+            "attempt": job["attempt"],
+            "source_page": "validated source page",
+            "quotes": [
+                {"text": "Least privilege", "location": "body"},
+                {"text": "Separation of duties", "location": "body"},
+                {"text": "Secure by default", "location": "body"},
+            ],
+            "suggestions": suggestions,
+            "raw_path": job["raw_path"],
+            "raw_sha256": job["raw_sha256"],
+            "status": "candidate_ready",
+        }), encoding="utf-8")
 
     def test_valid_worker_result_persists_candidate_and_emits_review_order(self):
         self.start_five()
@@ -142,6 +173,7 @@ class CoordinatorTests(unittest.TestCase):
             self.root,
             self.campaign_id,
             worker_result_path=self.write_worker_result("job-1"),
+            reviewer_assignments=[{"identity": "reviewer-a", "model": "Sol"}],
         )
 
         job = load_jobs(self.root, self.campaign_id)[0]
@@ -151,6 +183,41 @@ class CoordinatorTests(unittest.TestCase):
         self.assertTrue(attempt.joinpath("receipt.json").is_file())
         self.assertTrue(attempt.joinpath("suggestions.json").is_file())
         self.assertEqual(output["review_order"]["job_id"], "job-1")
+
+    def test_serial_v2_review_requires_provenance_and_persists_review_evidence(self):
+        self.start_five()
+
+        candidate = run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-1"),
+            reviewer_assignments=[{"identity": "reviewer-a", "model": "Sol"}],
+        )
+        approved = run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review("job-1", 1, "approved"),
+        )
+
+        review_path = self.attempt("job-1", 1).joinpath("review.json")
+        self.assertEqual(candidate["review_order"]["reviewer_identity"], "reviewer-a")
+        self.assertEqual(approved["jobs"][0]["state"], "approved")
+        self.assertTrue(review_path.is_file())
+        review = json.loads(review_path.read_text(encoding="utf-8"))
+        self.assertEqual(review["reviewer_identity"], "reviewer-a")
+        self.assertEqual(review["reviewer_model"], "Sol")
+
+    def test_serial_v2_candidate_requires_a_reviewer_assignment(self):
+        self.start_five()
+
+        with self.assertRaisesRegex(PilotError, "reviewer assignments"):
+            run_once(
+                self.root,
+                self.campaign_id,
+                worker_result_path=self.write_worker_result("job-1"),
+            )
+
+        self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["state"], "running")
 
     def test_invalid_worker_result_fails_only_that_job(self):
         self.start_five()
@@ -164,6 +231,30 @@ class CoordinatorTests(unittest.TestCase):
         self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["state"], "failed")
         self.assertTrue(self.attempt("job-1", 1).joinpath("failure.json").is_file())
         self.assertEqual(output["campaign_state"], "active")
+
+    def test_unhashable_worker_update_kind_becomes_failure_evidence(self):
+        self.start_five()
+        suggestion = {
+            "update_id": "concept-billing-link",
+            "target_path": "wiki/concepts/metronome/metronome-billing.md",
+            "update_kind": ["durable_fact"],
+            "anchor": "## Sources",
+            "proposed_markdown": "- [[source-job-1]] — documented billing behavior",
+            "quote_indexes": [0],
+            "warnings": [],
+        }
+
+        output = run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-1", suggestions={
+                "company": [], "concepts": [suggestion], "index": [], "log": [],
+            }),
+        )
+
+        failure = json.loads(self.attempt("job-1", 1).joinpath("failure.json").read_text(encoding="utf-8"))
+        self.assertEqual(output["jobs"][0]["state"], "failed")
+        self.assertIn("update_kind", failure["reason"])
 
     def test_third_invalid_worker_result_is_terminal_and_retains_failure_evidence(self):
         self.start_five()
@@ -192,6 +283,52 @@ class CoordinatorTests(unittest.TestCase):
         self.assertTrue(self.attempt("job-1", 3).joinpath("failure.json").is_file())
         self.assertEqual(output["jobs"][0]["state"], "rejected")
 
+    def test_terminal_rejections_clear_retry_and_active_review_context(self):
+        init_campaign(self.root, self.manifest)
+        jobs = load_jobs(self.root, self.campaign_id)
+        jobs[0].update({
+            "attempt": 3,
+            "state": "running",
+            "retry_context": {
+                "prior_attempt": 2,
+                "review_scope": "targeted",
+                "required_changes": ["Fix the concept backlink and no other prose."],
+                "prior_reviewer_identity": "reviewer-a",
+            },
+            "active_review_scope": "targeted",
+        })
+        save_jobs(self.root, self.campaign_id, jobs)
+
+        run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-1", attempt=3, raw_sha256="0" * 64),
+        )
+
+        terminal_worker = load_jobs(self.root, self.campaign_id)[0]
+        self.assertEqual(terminal_worker["state"], "rejected")
+        self.assertNotIn("retry_context", terminal_worker)
+        self.assertNotIn("active_review_scope", terminal_worker)
+
+        terminal_worker.update({
+            "state": "failed",
+            "retry_context": {
+                "prior_attempt": 2,
+                "review_scope": "full",
+                "required_changes": ["Fix the concept backlink and no other prose."],
+                "prior_reviewer_identity": "reviewer-a",
+            },
+            "active_review_scope": "full",
+        })
+        save_jobs(self.root, self.campaign_id, [terminal_worker, *load_jobs(self.root, self.campaign_id)[1:]])
+
+        reject_job(self.root, self.campaign_id, "job-1", "operator decision")
+
+        terminal_operator = load_jobs(self.root, self.campaign_id)[0]
+        self.assertEqual(terminal_operator["state"], "rejected")
+        self.assertNotIn("retry_context", terminal_operator)
+        self.assertNotIn("active_review_scope", terminal_operator)
+
     def test_non_utf8_worker_result_fails_only_that_job(self):
         self.start_five()
         result_path = self.write_worker_result("job-1")
@@ -217,6 +354,87 @@ class CoordinatorTests(unittest.TestCase):
         self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["state"], "approved")
         self.assertNotIn("promotion_order", output)
 
+    def test_complete_requires_terminal_jobs_and_records_explicit_campaign_close(self):
+        with patch(
+            "scripts.ingest_pilot.state._utc_now", return_value="2026-07-31T01:02:03Z"
+        ):
+            self.start_five()
+        run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-1"),
+            reviewer_assignments=[{"identity": "reviewer-a", "model": "Sol"}],
+        )
+        run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review("job-1", 1, "approved"),
+        )
+        jobs = load_jobs(self.root, self.campaign_id)
+        for job in jobs[1:]:
+            job["state"] = "rejected"
+        save_jobs(self.root, self.campaign_id, jobs)
+        review_path = self.attempt("job-1", 1) / "review.json"
+        review_before = review_path.read_bytes()
+
+        with patch(
+            "scripts.ingest_pilot.coordinator._utc_now", return_value="2026-07-31T04:05:06Z"
+        ):
+            output = complete_campaign(self.root, self.campaign_id, 2)
+
+        campaign = json.loads((self.root / "tracking/ingest/metronome" / self.campaign_id / "campaign.json").read_text(encoding="utf-8"))
+        self.assertEqual(campaign["state"], "complete")
+        self.assertEqual(campaign["completed_at"], "2026-07-31T04:05:06Z")
+        self.assertEqual(campaign["coordinator_repairs"], 2)
+        self.assertEqual(output["campaign_state"], "complete")
+        self.assertIn("- Completed at: `2026-07-31T04:05:06Z`", output["monitor"])
+        self.assertIn("- Elapsed: `10983 seconds`", output["monitor"])
+        self.assertEqual(review_path.read_bytes(), review_before)
+        with self.assertRaisesRegex(PilotError, "already complete"):
+            complete_campaign(self.root, self.campaign_id, 0)
+
+    def test_complete_rejects_invalid_repair_counts_and_nonterminal_jobs(self):
+        init_campaign(self.root, self.manifest)
+        for repairs in (-1, True):
+            with self.subTest(repairs=repairs):
+                with self.assertRaisesRegex(PilotError, "non-negative integer"):
+                    complete_campaign(self.root, self.campaign_id, repairs)
+
+        for state in ("queued", "running", "candidate_ready", "reviewing", "failed"):
+            with self.subTest(state=state):
+                jobs = load_jobs(self.root, self.campaign_id)
+                for job in jobs:
+                    job["state"] = "approved"
+                jobs[0]["state"] = state
+                save_jobs(self.root, self.campaign_id, jobs)
+                with self.assertRaisesRegex(PilotError, "terminal"):
+                    complete_campaign(self.root, self.campaign_id, 0)
+
+    def test_complete_validates_approved_evidence_before_persisting_completion_and_can_retry(self):
+        self.make_reviewing("job-1", attempt=1)
+        run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review("job-1", 1, "approved"),
+        )
+        jobs = load_jobs(self.root, self.campaign_id)
+        for job in jobs[1:]:
+            job["state"] = "rejected"
+        save_jobs(self.root, self.campaign_id, jobs)
+        review_path = self.attempt("job-1", 1) / "review.json"
+        evidence = review_path.read_bytes()
+        review_path.unlink()
+
+        with self.assertRaisesRegex(PilotError, "cannot read result"):
+            complete_campaign(self.root, self.campaign_id, 0)
+
+        campaign_path = self.root / "tracking/ingest/metronome" / self.campaign_id / "campaign.json"
+        self.assertEqual(json.loads(campaign_path.read_text(encoding="utf-8"))["state"], "active")
+
+        review_path.write_bytes(evidence)
+        output = complete_campaign(self.root, self.campaign_id, 0)
+        self.assertEqual(output["campaign_state"], "complete")
+
     def test_changes_requested_queues_fresh_attempt_at_tail(self):
         self.make_reviewing("job-1", attempt=1)
         initial_tail = max(job["queue_position"] for job in load_jobs(self.root, self.campaign_id))
@@ -224,7 +442,10 @@ class CoordinatorTests(unittest.TestCase):
         run_once(
             self.root,
             self.campaign_id,
-            review_result_path=self.write_review("job-1", 1, "changes_requested"),
+            review_result_path=self.write_review(
+                "job-1", 1, "changes_requested",
+                required_changes=["Revise the source page"], retry_review_scope="full",
+            ),
         )
 
         job = load_jobs(self.root, self.campaign_id)[0]
@@ -233,13 +454,81 @@ class CoordinatorTests(unittest.TestCase):
         self.assertEqual(job["attempt"], 1)
         self.assertFalse(self.attempt("job-1", 2).exists())
 
+    def test_targeted_changes_request_carries_bounded_context_to_retry_orders(self):
+        self.make_reviewing("job-1", attempt=1)
+
+        run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review(
+                "job-1", 1, "changes_requested",
+                required_changes=["Fix the concept backlink and no other prose."],
+                retry_review_scope="targeted",
+            ),
+        )
+
+        queued = load_jobs(self.root, self.campaign_id)[0]
+        self.assertEqual(
+            queued["retry_context"],
+            {
+                "prior_attempt": 1,
+                "review_scope": "targeted",
+                "required_changes": ["Fix the concept backlink and no other prose."],
+                "prior_reviewer_identity": "reviewer-a",
+            },
+        )
+        self.assertNotIn("reviewer_identity", queued)
+        self.assertNotIn("reviewer_model", queued)
+
+        retry = run_once(self.root, self.campaign_id)
+        worker_order = next(order for order in retry["worker_orders"] if order["job_id"] == "job-1")
+        self.assertEqual(worker_order["retry_context"], queued["retry_context"])
+
+        corrected = run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-1", attempt=2),
+            reviewer_assignments=[{"identity": "reviewer-a", "model": "Sol"}],
+        )
+
+        self.assertEqual(corrected["review_order"]["review_scope"], "targeted")
+        self.assertEqual(corrected["review_order"]["prior_attempt"], 1)
+        self.assertEqual(corrected["review_order"]["preferred_reviewer_identity"], "reviewer-a")
+
+    def test_full_retry_does_not_prefer_the_prior_reviewer(self):
+        self.make_reviewing("job-1", attempt=1)
+
+        run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review(
+                "job-1", 1, "changes_requested",
+                required_changes=["Fix the concept backlink and no other prose."],
+                retry_review_scope="full",
+            ),
+        )
+        run_once(self.root, self.campaign_id)
+        corrected = run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-1", attempt=2),
+            reviewer_assignments=[{"identity": "reviewer-b", "model": "Sol"}],
+        )
+
+        self.assertEqual(corrected["review_order"]["review_scope"], "full")
+        self.assertEqual(corrected["review_order"]["prior_attempt"], 1)
+        self.assertIsNone(corrected["review_order"]["preferred_reviewer_identity"])
+
     def test_third_changes_request_rejects_job(self):
         self.make_reviewing("job-1", attempt=3)
 
         run_once(
             self.root,
             self.campaign_id,
-            review_result_path=self.write_review("job-1", 3, "changes_requested"),
+            review_result_path=self.write_review(
+                "job-1", 3, "changes_requested",
+                required_changes=["Revise the source page"], retry_review_scope="full",
+            ),
         )
 
         self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["state"], "rejected")
@@ -256,6 +545,291 @@ class CoordinatorTests(unittest.TestCase):
         job = load_jobs(self.root, self.campaign_id)[0]
         self.assertEqual(job["state"], "rejected")
         self.assertEqual(job["failure_reason"], "Not grounded")
+
+    def test_approved_review_requires_no_changes_and_no_retry_scope(self):
+        self.make_reviewing("job-1", attempt=1)
+        for overrides in (
+            {"required_changes": ["Revise the source page"]},
+            {"retry_review_scope": "targeted"},
+        ):
+            with self.subTest(overrides=overrides):
+                with self.assertRaisesRegex(PilotError, "review result is invalid"):
+                    run_once(
+                        self.root,
+                        self.campaign_id,
+                        review_result_path=self.write_review("job-1", 1, "approved", **overrides),
+                    )
+
+    def test_changes_requested_requires_changes_and_a_retry_scope(self):
+        self.make_reviewing("job-1", attempt=1)
+        for overrides in (
+            {},
+            {"required_changes": ["Revise the source page"], "retry_review_scope": None},
+            {"required_changes": ["Revise the source page"], "retry_review_scope": "partial"},
+        ):
+            with self.subTest(overrides=overrides):
+                with self.assertRaisesRegex(PilotError, "review result is invalid"):
+                    run_once(
+                        self.root,
+                        self.campaign_id,
+                        review_result_path=self.write_review("job-1", 1, "changes_requested", **overrides),
+                    )
+
+    def test_review_scope_must_be_full_or_targeted(self):
+        self.make_reviewing("job-1", attempt=1)
+
+        with self.assertRaisesRegex(PilotError, "review result is invalid"):
+            run_once(
+                self.root,
+                self.campaign_id,
+                review_result_path=self.write_review("job-1", 1, "approved", review_scope="partial"),
+            )
+
+    def test_review_result_must_match_the_active_review_scope(self):
+        self.make_reviewing("job-1", attempt=1)
+        jobs = load_jobs(self.root, self.campaign_id)
+        jobs[0]["active_review_scope"] = "targeted"
+        save_jobs(self.root, self.campaign_id, jobs)
+
+        with self.assertRaisesRegex(PilotError, "review result is invalid"):
+            run_once(
+                self.root,
+                self.campaign_id,
+                review_result_path=self.write_review("job-1", 1, "approved", review_scope="full"),
+            )
+
+        self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["state"], "reviewing")
+
+    def test_review_result_boolean_attempt_is_rejected_without_transitioning_job(self):
+        self.make_reviewing("job-1", attempt=1)
+
+        with self.assertRaisesRegex(PilotError, "review result does not match a reviewing job"):
+            run_once(
+                self.root,
+                self.campaign_id,
+                review_result_path=self.write_review("job-1", True, "approved"),
+            )
+
+        self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["state"], "reviewing")
+
+    def test_review_enum_lists_are_rejected_without_type_errors(self):
+        self.make_reviewing("job-1", attempt=1)
+        malformed_results = (
+            {"verdict": ["approved"]},
+            {"review_scope": ["full"]},
+            {
+                "verdict": "changes_requested",
+                "required_changes": ["Revise the source page"],
+                "retry_review_scope": ["targeted"],
+            },
+            {"shared_update_decisions": [{
+                "update_id": "unexpected", "verdict": ["approved"], "reason": "Grounded",
+            }]},
+        )
+        for overrides in malformed_results:
+            with self.subTest(overrides=overrides):
+                verdict = overrides.get("verdict", "approved")
+                payload = {key: value for key, value in overrides.items() if key != "verdict"}
+                with self.assertRaisesRegex(PilotError, "review result is invalid"):
+                    run_once(
+                        self.root,
+                        self.campaign_id,
+                        review_result_path=self.write_review("job-1", 1, verdict, **payload),
+                    )
+
+    def test_legacy_review_verdict_list_is_rejected_without_a_type_error(self):
+        self.make_reviewing("job-1", attempt=1)
+        campaign_path = self.root / "tracking/ingest/metronome" / self.campaign_id / "campaign.json"
+        campaign = json.loads(campaign_path.read_text(encoding="utf-8"))
+        campaign["schema_version"] = 1
+        campaign_path.write_text(json.dumps(campaign), encoding="utf-8")
+        legacy_review = self.root / "legacy-review.json"
+        legacy_review.write_text(json.dumps({
+            "job_id": "job-1",
+            "attempt": 1,
+            "verdict": ["approved"],
+            "reason": "Grounded and complete",
+            "required_changes": [],
+        }), encoding="utf-8")
+
+        with self.assertRaisesRegex(PilotError, "review result is invalid"):
+            run_once(self.root, self.campaign_id, review_result_path=legacy_review)
+
+    def test_review_decisions_match_current_attempt_suggestions(self):
+        suggestion = {
+            "update_id": "concept-billing-link",
+            "target_path": "wiki/concepts/metronome/metronome-billing.md",
+            "update_kind": "durable_fact",
+            "anchor": "## Sources",
+            "proposed_markdown": "- [[source-job-1]] — documented billing behavior",
+            "quote_indexes": [0],
+            "warnings": [],
+        }
+        self.make_reviewing("job-1", attempt=1, suggestions={
+            "company": [], "concepts": [suggestion], "index": [], "log": [],
+        })
+        invalid_decision_sets = (
+            [],
+            [{"update_id": "concept-billing-link", "verdict": "approved"}],
+            [{"update_id": "concept-billing-link", "verdict": "deferred", "reason": "Later"}],
+            [{"update_id": "other-update", "verdict": "approved", "reason": "Grounded"}],
+            [
+                {"update_id": "concept-billing-link", "verdict": "approved", "reason": "Grounded"},
+                {"update_id": "concept-billing-link", "verdict": "rejected", "reason": "Duplicate"},
+            ],
+        )
+        for decisions in invalid_decision_sets:
+            with self.subTest(decisions=decisions):
+                with self.assertRaisesRegex(PilotError, "review result is invalid"):
+                    run_once(
+                        self.root,
+                        self.campaign_id,
+                        review_result_path=self.write_review(
+                            "job-1", 1, "approved", shared_update_decisions=decisions,
+                        ),
+                    )
+
+        output = run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review("job-1", 1, "approved", shared_update_decisions=[{
+                "update_id": "concept-billing-link", "verdict": "approved", "reason": "Grounded",
+            }]),
+        )
+        review = json.loads(self.attempt("job-1", 1).joinpath("review.json").read_text(encoding="utf-8"))
+        self.assertEqual(output["jobs"][0]["state"], "approved")
+        self.assertEqual(review["shared_update_decisions"][0]["update_id"], "concept-billing-link")
+
+    def test_status_groups_only_reviewer_approved_shared_updates(self):
+        approved_billing_updates = (
+            ("job-1", "billing-a", "- [[source-job-1]] — billing fact A"),
+            ("job-2", "billing-b", "- [[source-job-2]] — billing fact B"),
+        )
+        self.make_reviewing("job-1", attempt=1)
+        jobs = load_jobs(self.root, self.campaign_id)
+        for job_id, update_id, proposed_markdown in approved_billing_updates:
+            job = next(job for job in jobs if job["job_id"] == job_id)
+            job["attempt"] = 1
+            job["state"] = "approved"
+            job["last_event"] = "review_approved"
+            job["reviewer_identity"] = "reviewer-a"
+            job["reviewer_model"] = "Sol"
+            attempt = self.attempt(job_id, 1)
+            attempt.mkdir(parents=True, exist_ok=True)
+            suggestions = {
+                "company": [{
+                    "update_id": f"{update_id}-company",
+                    "target_path": "wiki/companies/metronome.md",
+                    "update_kind": "durable_fact",
+                    "anchor": "## Overview",
+                    "proposed_markdown": "- unnecessary company update",
+                    "quote_indexes": [0],
+                    "warnings": [],
+                }],
+                "concepts": [{
+                    "update_id": update_id,
+                    "target_path": "wiki/concepts/metronome/metronome-billing.md",
+                    "update_kind": "durable_fact",
+                    "anchor": "## Sources",
+                    "proposed_markdown": proposed_markdown,
+                    "quote_indexes": [0],
+                    "warnings": [],
+                }],
+                "index": [],
+                "log": [],
+            }
+            attempt.joinpath("suggestions.json").write_text(json.dumps(suggestions), encoding="utf-8")
+            attempt.joinpath("receipt.json").write_text(json.dumps({
+                "job_id": job_id,
+                "attempt": 1,
+                "source_page": "valid receipt source page",
+                "quotes": [
+                    {"text": "Least privilege", "location": "body"},
+                    {"text": "Separation of duties", "location": "body"},
+                    {"text": "Secure by default", "location": "body"},
+                ],
+                "suggestions": suggestions,
+                "raw_path": job["raw_path"],
+                "raw_sha256": job["raw_sha256"],
+                "status": "candidate_ready",
+            }), encoding="utf-8")
+            review = {
+                "job_id": job_id,
+                "attempt": 1,
+                "verdict": "approved",
+                "reason": "Grounded and complete",
+                "required_changes": [],
+                "review_scope": "full",
+                "retry_review_scope": None,
+                "shared_update_decisions": [
+                    {"update_id": f"{update_id}-company", "verdict": "rejected", "reason": "Unnecessary"},
+                    {"update_id": update_id, "verdict": "approved", "reason": "Grounded"},
+                ],
+                "reviewer_identity": "reviewer-a",
+                "reviewer_model": "Sol",
+            }
+            attempt.joinpath("review.json").write_text(json.dumps(review), encoding="utf-8")
+        save_jobs(self.root, self.campaign_id, jobs)
+
+        output = status(self.root, self.campaign_id)
+
+        self.assertEqual(output["shared_update_plan"], {
+            "wiki/concepts/metronome/metronome-billing.md": [
+                {
+                    "job_id": "job-1", "attempt": 1, "update_id": "billing-a",
+                    "update_kind": "durable_fact", "anchor": "## Sources",
+                    "proposed_markdown": "- [[source-job-1]] — billing fact A",
+                    "quote_indexes": [0], "warnings": [],
+                },
+                {
+                    "job_id": "job-2", "attempt": 1, "update_id": "billing-b",
+                    "update_kind": "durable_fact", "anchor": "## Sources",
+                    "proposed_markdown": "- [[source-job-2]] — billing fact B",
+                    "quote_indexes": [0], "warnings": [],
+                },
+            ],
+        })
+        self.assertFalse((self.root / "wiki").exists())
+
+        review_path = self.attempt("job-1", 1).joinpath("review.json")
+        review = json.loads(review_path.read_text(encoding="utf-8"))
+        for field, tampered_value in (("reviewer_identity", "reviewer-b"), ("reviewer_model", "Terra")):
+            review[field] = tampered_value
+            review_path.write_text(json.dumps(review), encoding="utf-8")
+            with self.subTest(field=field):
+                with self.assertRaisesRegex(PilotError, "approved shared update evidence is invalid"):
+                    status(self.root, self.campaign_id)
+            review[field] = "reviewer-a" if field == "reviewer_identity" else "Sol"
+        review_path.write_text(json.dumps(review), encoding="utf-8")
+
+        suggestions_path = self.attempt("job-1", 1).joinpath("suggestions.json")
+        suggestions = json.loads(suggestions_path.read_text(encoding="utf-8"))
+        suggestions["concepts"][0]["quote_indexes"] = [99]
+        suggestions_path.write_text(json.dumps(suggestions), encoding="utf-8")
+        with self.assertRaisesRegex(PilotError, "approved shared update evidence is invalid"):
+            status(self.root, self.campaign_id)
+        self.assertFalse((self.root / "wiki").exists())
+        suggestions["concepts"][0]["quote_indexes"] = [0]
+        suggestions_path.write_text(json.dumps(suggestions), encoding="utf-8")
+
+        jobs[0]["queue_position"] = 2
+        jobs[1]["queue_position"] = 1
+        save_jobs(self.root, self.campaign_id, jobs)
+        self.assertEqual(
+            [update["job_id"] for update in status(self.root, self.campaign_id)["shared_update_plan"]
+             ["wiki/concepts/metronome/metronome-billing.md"]],
+            ["job-2", "job-1"],
+        )
+
+        campaign_path = self.root / "tracking/ingest/metronome" / self.campaign_id / "campaign.json"
+        campaign = json.loads(campaign_path.read_text(encoding="utf-8"))
+        campaign["schema_version"] = 1
+        campaign_path.write_text(json.dumps(campaign), encoding="utf-8")
+        self.attempt("job-1", 1).joinpath("suggestions.json").write_text(
+            json.dumps({"company": ["historical string suggestion"]}), encoding="utf-8",
+        )
+
+        self.assertEqual(status(self.root, self.campaign_id)["shared_update_plan"], {})
 
     def test_parallel_assignments_are_required_before_state_mutation_and_distinct(self):
         parallel = dict(self.manifest)
@@ -295,6 +869,31 @@ class CoordinatorTests(unittest.TestCase):
                 worker_assignments={},
             )
         self.assertEqual(load_jobs(self.root, self.campaign_id), before_reviews)
+
+    def test_serial_ready_candidate_requires_reviewer_assignment_before_worker_attempt_mutation(self):
+        serial = dict(self.manifest)
+        serial["worker_concurrency"] = 1
+        init_campaign(self.root, serial)
+        jobs = load_jobs(self.root, self.campaign_id)
+        jobs[0].update({"attempt": 1, "state": "candidate_ready", "last_event": "candidate_ready"})
+        save_jobs(self.root, self.campaign_id, jobs)
+        attempts = self.root / "tracking/ingest/metronome" / self.campaign_id / "attempts"
+        before_jobs = load_jobs(self.root, self.campaign_id)
+        before_attempt_paths = sorted(path.relative_to(attempts) for path in attempts.rglob("*"))
+
+        with self.assertRaisesRegex(PilotError, "reviewer assignments"):
+            run_once(self.root, self.campaign_id)
+
+        self.assertEqual(load_jobs(self.root, self.campaign_id), before_jobs)
+        self.assertEqual(sorted(path.relative_to(attempts) for path in attempts.rglob("*")), before_attempt_paths)
+
+        output = run_once(
+            self.root,
+            self.campaign_id,
+            reviewer_assignments=[{"identity": "reviewer-a", "model": "Sol"}],
+        )
+        self.assertEqual(output["review_order"]["job_id"], "job-1")
+        self.assertEqual(load_jobs(self.root, self.campaign_id)[1]["state"], "running")
 
     def test_parallel_review_result_without_assignment_fails_closed(self):
         parallel = dict(self.manifest)
@@ -442,8 +1041,21 @@ class CoordinatorTests(unittest.TestCase):
                 job["reviewer_identity"] = "reviewer-a"
                 job["reviewer_model"] = "Sol"
                 save_jobs(self.root, self.campaign_id, jobs)
+                attempt = self.attempt(job_id, 1)
+                attempt.joinpath("suggestions.json").write_text(
+                    json.dumps({"company": [], "concepts": [], "index": [], "log": []}),
+                    encoding="utf-8",
+                )
+                self.write_receipt(job, attempt, {"company": [], "concepts": [], "index": [], "log": []})
 
-                run_once(self.root, self.campaign_id, review_result_path=self.write_review(job_id, 1, verdict))
+                review_kwargs = (
+                    {"required_changes": ["Revise the source page"], "retry_review_scope": "full"}
+                    if verdict == "changes_requested" else {}
+                )
+                run_once(
+                    self.root, self.campaign_id,
+                    review_result_path=self.write_review(job_id, 1, verdict, **review_kwargs),
+                )
 
                 review = json.loads(self.attempt(job_id, 1).joinpath("review.json").read_text(encoding="utf-8"))
                 self.assertEqual(review["verdict"], verdict)
@@ -599,6 +1211,8 @@ class CoordinatorTests(unittest.TestCase):
             self.campaign_id,
             "--worker-result",
             str(worker_result),
+            "--reviewer-assignment",
+            "reviewer-a=Sol",
         )
         review_result = self.write_review("job-1", 1, "approved")
         approved = invoke(
@@ -635,6 +1249,41 @@ class CoordinatorTests(unittest.TestCase):
         self.assertEqual(monitored["campaign_state"], "active")
         self.assertEqual(retried["jobs"][0]["state"], "queued")
         self.assertEqual(rejected["jobs"][0]["state"], "rejected")
+
+    def test_cli_completes_terminal_campaign_with_repair_count(self):
+        init_campaign(self.root, self.manifest)
+        jobs = load_jobs(self.root, self.campaign_id)
+        for job in jobs:
+            job["state"] = "rejected"
+        save_jobs(self.root, self.campaign_id, jobs)
+        script = Path(__file__).parents[1] / "scripts" / "manage_ingest_pilot.py"
+
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(script),
+                "complete",
+                "--campaign",
+                self.campaign_id,
+                "--coordinator-repairs",
+                "3",
+            ],
+            cwd=self.root,
+            text=True,
+            capture_output=True,
+        )
+
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        output = json.loads(completed.stdout)
+        self.assertEqual(output["campaign_state"], "complete")
+        self.assertEqual(
+            json.loads(
+                (self.root / "tracking/ingest/metronome" / self.campaign_id / "campaign.json").read_text(
+                    encoding="utf-8"
+                )
+            )["coordinator_repairs"],
+            3,
+        )
 
     def test_cli_reports_handled_errors_only_to_stderr(self):
         script = Path(__file__).parents[1] / "scripts" / "manage_ingest_pilot.py"

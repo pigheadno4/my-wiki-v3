@@ -182,6 +182,8 @@ class TenJobRollingCampaignTests(unittest.TestCase):
 
     def write_review_result(self, job_id, verdict):
         job = self.job(job_id)
+        required_changes = ["revise the fake candidate"] if verdict == "changes_requested" else []
+        retry_review_scope = "full" if verdict == "changes_requested" else None
         result_path = self.root / f"{job_id}-attempt-{job['attempt']}-review-result.json"
         result_path.write_text(
             json.dumps(
@@ -190,12 +192,21 @@ class TenJobRollingCampaignTests(unittest.TestCase):
                     "attempt": job["attempt"],
                     "verdict": verdict,
                     "reason": "fake review result",
-                    "required_changes": [],
+                    "required_changes": required_changes,
+                    "review_scope": job.get("active_review_scope", "full"),
+                    "retry_review_scope": retry_review_scope,
+                    "shared_update_decisions": [],
                 }
             ),
             encoding="utf-8",
         )
         return result_path
+
+    def reviewer_assignment(self, job_id):
+        job = self.job(job_id)
+        reviewer_identity = f"reviewer-{job_id}-attempt-{job['attempt']}"
+        self.assertNotEqual(reviewer_identity, job.get("worker_identity"))
+        return [{"identity": reviewer_identity, "model": "Sol"}]
 
     def running_count(self):
         return sum(job["state"] == "running" for job in load_jobs(self.root, self.campaign_id))
@@ -225,6 +236,7 @@ class TenJobRollingCampaignTests(unittest.TestCase):
                 self.campaign_id,
                 worker_result_path=self.write_worker_result(f"job-{number}"),
                 available_worker_slots=5,
+                reviewer_assignments=(self.reviewer_assignment("job-2") if number == 2 else None),
             )
             self.assertEqual([order["job_id"] for order in output["worker_orders"]], [f"job-{expected_refill}"])
             self.assertLessEqual(self.running_count(), 5)
@@ -245,6 +257,7 @@ class TenJobRollingCampaignTests(unittest.TestCase):
             self.campaign_id,
             review_result_path=self.write_review_result("job-2", "changes_requested"),
             available_worker_slots=5,
+            reviewer_assignments=self.reviewer_assignment("job-3"),
         )
         self.assertEqual(changes["worker_orders"], [])
         self.assertEqual(changes["review_order"]["job_id"], "job-3")
@@ -279,7 +292,12 @@ class TenJobRollingCampaignTests(unittest.TestCase):
             interrupted_inputs,
         )
 
-        resumed = run_once(self.root, self.campaign_id, available_worker_slots=5)
+        resumed = run_once(
+            self.root,
+            self.campaign_id,
+            available_worker_slots=5,
+            reviewer_assignments=self.reviewer_assignment("job-4"),
+        )
         self.assertEqual([order["job_id"] for order in resumed["worker_orders"]], ["job-1", "job-2"])
         self.assertEqual(resumed["review_order"]["job_id"], "job-4")
         next_review = run_once(
@@ -287,6 +305,7 @@ class TenJobRollingCampaignTests(unittest.TestCase):
             self.campaign_id,
             review_result_path=self.write_review_result("job-4", "approved"),
             available_worker_slots=5,
+            reviewer_assignments=self.reviewer_assignment("job-5"),
         )
         self.assertEqual(next_review["review_order"]["job_id"], "job-5")
         no_review = run_once(
@@ -302,6 +321,7 @@ class TenJobRollingCampaignTests(unittest.TestCase):
             self.campaign_id,
             worker_result_path=self.write_worker_result("job-2"),
             available_worker_slots=5,
+            reviewer_assignments=self.reviewer_assignment("job-2"),
         )
         self.assertEqual(self.job("job-2")["attempt"], 2)
         self.assertEqual(second_attempt["review_order"]["job_id"], "job-2")
@@ -319,6 +339,7 @@ class TenJobRollingCampaignTests(unittest.TestCase):
             self.campaign_id,
             worker_result_path=self.write_worker_result("job-2"),
             available_worker_slots=5,
+            reviewer_assignments=self.reviewer_assignment("job-2"),
         )
         self.assertEqual(third_review["review_order"]["job_id"], "job-2")
         run_once(

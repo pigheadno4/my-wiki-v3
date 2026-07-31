@@ -14,14 +14,35 @@ from .state import (
     load_campaign,
     load_jobs,
     render_monitor,
+    save_campaign,
     save_jobs,
+    _utc_now,
     write_attempt_file,
 )
-from .validator import ValidationError, validate_worker_result
+from .validator import (
+    RESULT_KEYS,
+    TARGET_PREFIXES,
+    UPDATE_KINDS,
+    ValidationError,
+    validate_worker_result,
+)
 
 
-REVIEW_RESULT_KEYS = {"job_id", "attempt", "verdict", "reason", "required_changes"}
+LEGACY_REVIEW_RESULT_KEYS = {"job_id", "attempt", "verdict", "reason", "required_changes"}
+REVIEW_RESULT_KEYS = {
+    "job_id", "attempt", "verdict", "reason", "required_changes",
+    "review_scope", "retry_review_scope", "shared_update_decisions",
+}
 REVIEW_VERDICTS = {"approved", "changes_requested", "rejected"}
+REVIEW_SCOPES = {"full", "targeted"}
+SHARED_UPDATE_DECISION_KEYS = {"update_id", "verdict", "reason"}
+SHARED_UPDATE_DECISION_VERDICTS = {"approved", "rejected"}
+SUGGESTION_CATEGORIES = ("company", "concepts", "index", "log")
+SUGGESTION_ITEM_KEYS = {
+    "update_id", "target_path", "update_kind", "anchor",
+    "proposed_markdown", "quote_indexes", "warnings",
+}
+REVIEW_EVIDENCE_KEYS = REVIEW_RESULT_KEYS | {"reviewer_identity", "reviewer_model"}
 
 
 def _json_bytes(value: Any) -> bytes:
@@ -45,13 +66,180 @@ def _load_result(path: Path) -> Dict[str, Any]:
     return value
 
 
+def _approved_shared_updates(root: Path, campaign_id: str, jobs: list) -> Dict[str, list[dict]]:
+    """Group only the current reviewer-approved schema-v2 shared updates."""
+    campaign = load_campaign(root, campaign_id)
+    if campaign.get("schema_version", 1) != 2:
+        return {}
+
+    plan: Dict[str, list[dict]] = {}
+    ordered_jobs = []
+    for position, job in enumerate(jobs):
+        if job.get("state") != "approved":
+            continue
+        queue_position = job.get("queue_position")
+        if (
+            isinstance(queue_position, bool)
+            or not isinstance(queue_position, int)
+            or queue_position < 1
+        ):
+            raise PilotError("approved shared update evidence is invalid")
+        ordered_jobs.append((queue_position, position, job))
+    for _, _, job in sorted(ordered_jobs):
+        attempt = job.get("attempt")
+        job_id = job.get("job_id")
+        if (
+            not isinstance(job_id, str)
+            or not job_id
+            or isinstance(attempt, bool)
+            or not isinstance(attempt, int)
+            or attempt < 1
+        ):
+            raise PilotError("approved shared update evidence is invalid")
+        attempt_dir = (
+            root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
+            / job_id / f"attempt-{attempt}"
+        )
+        suggestions = _load_result(attempt_dir / "suggestions.json")
+        review = _load_result(attempt_dir / "review.json")
+        receipt = _load_result(attempt_dir / "receipt.json")
+        if (
+            set(suggestions) != set(SUGGESTION_CATEGORIES)
+            or set(review) != REVIEW_EVIDENCE_KEYS
+            or set(receipt) != RESULT_KEYS
+        ):
+            raise PilotError("approved shared update evidence is invalid")
+        if (
+            receipt["job_id"] != job_id
+            or isinstance(receipt["attempt"], bool)
+            or not isinstance(receipt["attempt"], int)
+            or receipt["attempt"] != attempt
+            or receipt["raw_path"] != job.get("raw_path")
+            or receipt["raw_sha256"] != job.get("raw_sha256")
+            or receipt["status"] != "candidate_ready"
+            or receipt["suggestions"] != suggestions
+            or not isinstance(receipt["source_page"], str)
+            or not isinstance(receipt["quotes"], list)
+            or not 3 <= len(receipt["quotes"]) <= 5
+            or any(
+                not isinstance(quote, dict)
+                or not isinstance(quote.get("text"), str)
+                or not quote["text"]
+                or not isinstance(quote.get("location"), str)
+                or not quote["location"]
+                for quote in receipt["quotes"]
+            )
+            or review["job_id"] != job_id
+            or isinstance(review["attempt"], bool)
+            or not isinstance(review["attempt"], int)
+            or review["attempt"] < 1
+            or review["attempt"] != attempt
+            or review["verdict"] != "approved"
+            or not isinstance(review["reason"], str)
+            or not review["reason"].strip()
+            or not isinstance(review["required_changes"], list)
+            or review["required_changes"]
+            or not isinstance(review["review_scope"], str)
+            or review["review_scope"] not in REVIEW_SCOPES
+            or review["retry_review_scope"] is not None
+            or not isinstance(review["reviewer_identity"], str)
+            or not review["reviewer_identity"].strip()
+            or review["reviewer_identity"] != job.get("reviewer_identity")
+            or not isinstance(review["reviewer_model"], str)
+            or not review["reviewer_model"].strip()
+            or review["reviewer_model"] != job.get("reviewer_model")
+            or not isinstance(review["shared_update_decisions"], list)
+        ):
+            raise PilotError("approved shared update evidence is invalid")
+
+        flattened = []
+        for category in SUGGESTION_CATEGORIES:
+            category_suggestions = suggestions[category]
+            if not isinstance(category_suggestions, list):
+                raise PilotError("approved shared update evidence is invalid")
+            for suggestion in category_suggestions:
+                if (
+                    not isinstance(suggestion, dict)
+                    or set(suggestion) != SUGGESTION_ITEM_KEYS
+                    or not isinstance(suggestion["update_id"], str)
+                    or not suggestion["update_id"]
+                    or not isinstance(suggestion["target_path"], str)
+                    or not suggestion["target_path"]
+                    or not suggestion["target_path"].startswith(TARGET_PREFIXES[category])
+                    or not suggestion["target_path"].endswith(".md")
+                    or "/../" in f"/{suggestion['target_path']}"
+                    or suggestion["target_path"].startswith("/")
+                    or not isinstance(suggestion["update_kind"], str)
+                    or suggestion["update_kind"] not in UPDATE_KINDS
+                    or not isinstance(suggestion["anchor"], str)
+                    or not suggestion["anchor"].strip()
+                    or not isinstance(suggestion["proposed_markdown"], str)
+                    or not suggestion["proposed_markdown"].strip()
+                    or not isinstance(suggestion["quote_indexes"], list)
+                    or any(
+                        isinstance(index, bool)
+                        or not isinstance(index, int)
+                        or index < 0
+                        or index >= len(receipt["quotes"])
+                        for index in suggestion["quote_indexes"]
+                    )
+                    or len(set(suggestion["quote_indexes"])) != len(suggestion["quote_indexes"])
+                    or (
+                        not suggestion["quote_indexes"]
+                        and suggestion["update_kind"] not in {
+                            "catalog_entry", "log_entry", "calculated_count",
+                        }
+                    )
+                    or not isinstance(suggestion["warnings"], list)
+                    or not all(isinstance(warning, str) for warning in suggestion["warnings"])
+                ):
+                    raise PilotError("approved shared update evidence is invalid")
+                flattened.append(suggestion)
+        suggestion_ids = [suggestion["update_id"] for suggestion in flattened]
+        decisions = review["shared_update_decisions"]
+        if len(set(suggestion_ids)) != len(suggestion_ids) or len(decisions) != len(suggestion_ids):
+            raise PilotError("approved shared update evidence is invalid")
+        approved_ids = set()
+        for decision in decisions:
+            if (
+                not isinstance(decision, dict)
+                or set(decision) != SHARED_UPDATE_DECISION_KEYS
+                or not isinstance(decision["update_id"], str)
+                or decision["update_id"] not in suggestion_ids
+                or not isinstance(decision["verdict"], str)
+                or decision["verdict"] not in SHARED_UPDATE_DECISION_VERDICTS
+                or not isinstance(decision["reason"], str)
+                or not decision["reason"].strip()
+            ):
+                raise PilotError("approved shared update evidence is invalid")
+            if decision["verdict"] == "approved":
+                approved_ids.add(decision["update_id"])
+        if len({decision["update_id"] for decision in decisions}) != len(decisions):
+            raise PilotError("approved shared update evidence is invalid")
+        for suggestion in flattened:
+            if suggestion["update_id"] in approved_ids:
+                plan.setdefault(suggestion["target_path"], []).append({
+                    "job_id": job_id,
+                    "attempt": attempt,
+                    "update_id": suggestion["update_id"],
+                    "update_kind": suggestion["update_kind"],
+                    "anchor": suggestion["anchor"],
+                    "proposed_markdown": suggestion["proposed_markdown"],
+                    "quote_indexes": suggestion["quote_indexes"],
+                    "warnings": suggestion["warnings"],
+                })
+    return plan
+
+
 def _campaign_payload(root: Path, campaign_id: str) -> Dict[str, Any]:
     campaign = load_campaign(root, campaign_id)
+    jobs = load_jobs(root, campaign_id)
     return {
         "campaign_id": campaign["campaign_id"],
         "campaign_state": campaign["state"],
-        "jobs": load_jobs(root, campaign_id),
+        "jobs": jobs,
         "monitor": render_monitor(root, campaign_id),
+        "shared_update_plan": _approved_shared_updates(root, campaign_id, jobs),
     }
 
 
@@ -93,6 +281,9 @@ def _apply_worker_result(
         job["state"] = "rejected" if exhausted else "failed"
         job["last_event"] = "worker_result_rejected" if exhausted else "worker_result_invalid"
         job["failure_reason"] = str(error)
+        if exhausted:
+            job.pop("active_review_scope", None)
+            job.pop("retry_context", None)
         return (
             {"event": job["last_event"], "job_id": job["job_id"], "reason": str(error)},
             [(attempt_dir, "failure.json", _json_bytes({"reason": str(error)}))],
@@ -111,6 +302,58 @@ def _apply_worker_result(
     )
 
 
+def _validate_review_result(result: dict, expected_scope: str, suggestion_ids: set[str]) -> None:
+    if set(result) != REVIEW_RESULT_KEYS:
+        raise PilotError("review result must use the fixed schema")
+    verdict = result["verdict"]
+    reason = result["reason"]
+    changes = result["required_changes"]
+    review_scope = result["review_scope"]
+    retry_scope = result["retry_review_scope"]
+    decisions = result["shared_update_decisions"]
+    if (
+        not isinstance(verdict, str)
+        or verdict not in REVIEW_VERDICTS
+        or not isinstance(reason, str)
+        or not reason.strip()
+        or not isinstance(changes, list)
+        or not all(isinstance(change, str) and change.strip() for change in changes)
+        or not isinstance(review_scope, str)
+        or review_scope not in REVIEW_SCOPES
+        or review_scope != expected_scope
+        or (retry_scope is not None and (
+            not isinstance(retry_scope, str) or retry_scope not in REVIEW_SCOPES
+        ))
+    ):
+        raise PilotError("review result is invalid")
+    if verdict == "approved" and (changes or retry_scope is not None):
+        raise PilotError("review result is invalid")
+    if verdict == "changes_requested" and (
+        not changes or retry_scope not in REVIEW_SCOPES
+    ):
+        raise PilotError("review result is invalid")
+    if verdict == "rejected" and retry_scope is not None:
+        raise PilotError("review result is invalid")
+    if not isinstance(decisions, list):
+        raise PilotError("review result is invalid")
+    decision_ids = []
+    for decision in decisions:
+        if not isinstance(decision, dict) or set(decision) != SHARED_UPDATE_DECISION_KEYS:
+            raise PilotError("review result is invalid")
+        update_id = decision["update_id"]
+        if (
+            not isinstance(update_id, str)
+            or not isinstance(decision["verdict"], str)
+            or decision["verdict"] not in SHARED_UPDATE_DECISION_VERDICTS
+            or not isinstance(decision["reason"], str)
+            or not decision["reason"].strip()
+        ):
+            raise PilotError("review result is invalid")
+        decision_ids.append(update_id)
+    if len(set(decision_ids)) != len(decision_ids) or set(decision_ids) != suggestion_ids:
+        raise PilotError("review result is invalid")
+
+
 def _apply_review_result(
     root: Path,
     campaign_id: str,
@@ -120,11 +363,16 @@ def _apply_review_result(
     max_attempts: int,
 ) -> tuple[Dict[str, Any], list[tuple[Path, str, bytes]]]:
     result = _load_result(result_path)
-    if set(result) != REVIEW_RESULT_KEYS:
+    review_keys = REVIEW_RESULT_KEYS if campaign.get("schema_version", 1) == 2 else LEGACY_REVIEW_RESULT_KEYS
+    if set(result) != review_keys:
         raise PilotError("review result must use the fixed schema")
-    job = _job(jobs, result["job_id"])
-    if job["state"] != "reviewing" or result["attempt"] != job["attempt"]:
+    attempt = result.get("attempt")
+    if isinstance(attempt, bool) or not isinstance(attempt, int) or attempt < 1:
         raise PilotError("review result does not match a reviewing job")
+    job = _job(jobs, result["job_id"])
+    if job["state"] != "reviewing" or attempt != job["attempt"]:
+        raise PilotError("review result does not match a reviewing job")
+    is_schema_v2 = campaign.get("schema_version", 1) == 2
     if campaign["review_concurrency"] > 1 and (
         not isinstance(job.get("reviewer_identity"), str)
         or not job["reviewer_identity"]
@@ -134,17 +382,42 @@ def _apply_review_result(
         raise PilotError("parallel review requires a reviewer assignment")
     if campaign["review_concurrency"] > 1 and job["reviewer_identity"] == job.get("worker_identity"):
         raise PilotError("reviewer identity must differ from worker identity")
+    if is_schema_v2 and (
+        not isinstance(job.get("reviewer_identity"), str)
+        or not job["reviewer_identity"]
+        or not isinstance(job.get("reviewer_model"), str)
+        or not job["reviewer_model"]
+    ):
+        raise PilotError("schema-v2 review requires reviewer provenance")
     verdict = result["verdict"]
     reason = result["reason"]
     changes = result["required_changes"]
-    if verdict not in REVIEW_VERDICTS or not isinstance(reason, str) or not reason or not isinstance(changes, list):
-        raise PilotError("review result is invalid")
-    files = []
-    if "reviewer_identity" in job:
+    if is_schema_v2:
         attempt_dir = (
             root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
             / job["job_id"] / f"attempt-{job['attempt']}"
         )
+        suggestions = _load_result(attempt_dir / "suggestions.json")
+        suggestion_ids = {
+            suggestion["update_id"]
+            for category in suggestions.values()
+            for suggestion in category
+        }
+        _validate_review_result(result, job.get("active_review_scope", "full"), suggestion_ids)
+    elif (
+        not isinstance(verdict, str)
+        or verdict not in REVIEW_VERDICTS
+        or not isinstance(reason, str)
+        or not reason
+        or not isinstance(changes, list)
+    ):
+        raise PilotError("review result is invalid")
+    files = []
+    attempt_dir = (
+        root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
+        / job["job_id"] / f"attempt-{job['attempt']}"
+    )
+    if is_schema_v2 or "reviewer_identity" in job:
         files.append(
             (attempt_dir, "review.json", _json_bytes({
                 **result,
@@ -156,16 +429,31 @@ def _apply_review_result(
         job["state"] = "approved"
         job["last_event"] = "review_approved"
         job["failure_reason"] = None
+        job.pop("active_review_scope", None)
+        job.pop("retry_context", None)
         return {"event": "review_approved", "job_id": job["job_id"]}, files
     if verdict == "rejected" or job["attempt"] >= max_attempts:
         job["state"] = "rejected"
         job["last_event"] = "review_rejected" if verdict == "rejected" else "changes_exhausted"
         job["failure_reason"] = reason
+        job.pop("active_review_scope", None)
+        job.pop("retry_context", None)
         return {"event": job["last_event"], "job_id": job["job_id"], "reason": reason}, files
+    if is_schema_v2:
+        job["retry_context"] = {
+            "prior_attempt": job["attempt"],
+            "review_scope": result["retry_review_scope"],
+            "required_changes": list(result["required_changes"]),
+            "prior_reviewer_identity": job.get("reviewer_identity"),
+        }
     job["state"] = "queued"
     job["queue_position"] = max(item["queue_position"] for item in jobs) + 1
     job["last_event"] = "changes_requested"
     job["failure_reason"] = None
+    job.pop("active_review_scope", None)
+    job.pop("next_review_scope", None)
+    job.pop("reviewer_identity", None)
+    job.pop("reviewer_model", None)
     return {"event": "changes_requested", "job_id": job["job_id"], "reason": reason}, files
 
 
@@ -277,19 +565,31 @@ def _start_shared_orders(
         job.update({
             "state": "reviewing",
             "last_event": "review_started",
+            "active_review_scope": order["review_scope"],
             "reviewer_identity": assignment["identity"],
             "reviewer_model": assignment["model"],
         })
     return projected
 
 
-def _start_review(jobs: list) -> Optional[Dict[str, object]]:
+def _start_review(
+    jobs: list,
+    campaign: Mapping[str, Any],
+    reviewer_assignments: Optional[Union[Mapping[str, Mapping[str, str]], Sequence[Mapping[str, str]]]],
+) -> Optional[Dict[str, object]]:
     order = review_order(jobs)
     if order is None:
         return None
     job = _job(jobs, order["job_id"])
+    if campaign.get("schema_version", 1) == 2:
+        assignment = _assignment_by_job(reviewer_assignments, [order], "reviewer")[job["job_id"]]
+        order["reviewer_identity"] = assignment["identity"]
+        order["reviewer_model"] = assignment["model"]
+        job["reviewer_identity"] = assignment["identity"]
+        job["reviewer_model"] = assignment["model"]
     job["state"] = "reviewing"
     job["last_event"] = "review_started"
+    job["active_review_scope"] = order["review_scope"]
     return order
 
 
@@ -336,6 +636,10 @@ def run_once(
         events.append(review_event)
         pending_files.extend(files)
         changes_requested = review_event["event"] == "changes_requested"
+    if total_subagent_slots is None and campaign.get("schema_version", 1) == 2:
+        projected_review = review_order(jobs)
+        if projected_review is not None:
+            _assignment_by_job(reviewer_assignments, [projected_review], "reviewer")
     review_orders = []
     if changes_requested and total_subagent_slots is None:
         orders = []
@@ -348,7 +652,7 @@ def run_once(
         orders, review_orders = shared_orders["worker_orders"], shared_orders["review_orders"]
     events.extend({"event": "worker_started", "job_id": order["job_id"]} for order in orders)
     if total_subagent_slots is None:
-        review = _start_review(jobs)
+        review = _start_review(jobs, campaign, reviewer_assignments)
         if review is not None:
             review_orders = [review]
     else:
@@ -373,6 +677,30 @@ def run_once(
 
 def status(root: Path, campaign_id: str) -> Dict[str, Any]:
     """Regenerate and return the non-authoritative campaign monitor."""
+    return _campaign_payload(root, campaign_id)
+
+
+def complete_campaign(root: Path, campaign_id: str, coordinator_repairs: int) -> Dict[str, Any]:
+    """Explicitly record a completed campaign after terminal job review."""
+    if (
+        isinstance(coordinator_repairs, bool)
+        or not isinstance(coordinator_repairs, int)
+        or coordinator_repairs < 0
+    ):
+        raise PilotError("coordinator repairs must be a non-negative integer")
+    campaign = load_campaign(root, campaign_id)
+    if campaign.get("state") == "complete":
+        raise PilotError("campaign is already complete")
+    if campaign.get("state") != "active":
+        raise PilotError("campaign must be active to complete")
+    jobs = load_jobs(root, campaign_id)
+    if any(job.get("state") not in {"approved", "rejected"} for job in jobs):
+        raise PilotError("campaign completion requires only terminal approved or rejected jobs")
+    _campaign_payload(root, campaign_id)
+    campaign["state"] = "complete"
+    campaign["completed_at"] = _utc_now()
+    campaign["coordinator_repairs"] = coordinator_repairs
+    save_campaign(root, campaign_id, campaign)
     return _campaign_payload(root, campaign_id)
 
 
@@ -407,6 +735,8 @@ def reject_job(root: Path, campaign_id: str, job_id: str, reason: str) -> Dict[s
     job["state"] = "rejected"
     job["last_event"] = "operator_rejected"
     job["failure_reason"] = reason
+    job.pop("active_review_scope", None)
+    job.pop("retry_context", None)
     save_jobs(root, campaign_id, jobs)
     output = _campaign_payload(root, campaign_id)
     try:

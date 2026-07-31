@@ -31,6 +31,7 @@ class WorkerResultValidationTests(unittest.TestCase):
             "raw_sha256": sha256_file(self.raw),
             "source_target": "wiki/sources/metronome/source-metronome-security-principles.md",
             "canonical_url": "https://docs.metronome.com/guides/platform-configuration/security-principles.md",
+            "contract_version": 2,
         }
 
     def valid_result(self, **overrides):
@@ -190,6 +191,62 @@ class WorkerResultValidationTests(unittest.TestCase):
         result["suggestions"].pop("log")
 
         self.assert_invalid(result)
+
+    def test_accepts_a_structured_concept_update_grounded_in_a_quote(self):
+        result = self.valid_result(suggestions={
+            "company": [],
+            "concepts": [{
+                "update_id": "concept-billing-link",
+                "target_path": "wiki/concepts/metronome/metronome-billing.md",
+                "update_kind": "durable_fact",
+                "anchor": "## Sources",
+                "proposed_markdown": "- [[source-job-1]] — documented billing behavior",
+                "quote_indexes": [0],
+                "warnings": [],
+            }],
+            "index": [],
+            "log": [],
+        })
+
+        self.assertEqual(validate_worker_result(self.root, self.job, result)["suggestions"], result["suggestions"])
+
+    def test_rejects_malformed_structured_suggestions(self):
+        valid_update = {
+            "update_id": "concept-billing-link",
+            "target_path": "wiki/concepts/metronome/metronome-billing.md",
+            "update_kind": "durable_fact",
+            "anchor": "## Sources",
+            "proposed_markdown": "- [[source-job-1]] — documented billing behavior",
+            "quote_indexes": [0],
+            "warnings": [],
+        }
+        invalid_updates = (
+            {"update_id": "../escape"},
+            {**valid_update, "target_path": "raw/metronome/source.md"},
+            {**valid_update, "update_kind": "rewrite_everything"},
+            {**valid_update, "quote_indexes": [3]},
+            {**valid_update, "warnings": "none"},
+        )
+        for update in invalid_updates:
+            with self.subTest(update=update):
+                self.assert_invalid(self.valid_result(suggestions={
+                    "company": [], "concepts": [update], "index": [], "log": [],
+                }))
+
+    def test_rejects_an_unhashable_update_kind(self):
+        update = {
+            "update_id": "concept-billing-link",
+            "target_path": "wiki/concepts/metronome/metronome-billing.md",
+            "update_kind": ["durable_fact"],
+            "anchor": "## Sources",
+            "proposed_markdown": "- [[source-job-1]] — documented billing behavior",
+            "quote_indexes": [0],
+            "warnings": [],
+        }
+
+        self.assert_invalid(self.valid_result(suggestions={
+            "company": [], "concepts": [update], "index": [], "log": [],
+        }))
 
     def test_rejects_an_output_key_outside_the_fixed_schema(self):
         result = self.valid_result()

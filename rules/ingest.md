@@ -18,12 +18,13 @@ these controls. A provider without its own authorization remains serial-only.
 - Each worker handles exactly one source unit, reads it completely, extracts
   three to five verbatim quotes, and returns one isolated source candidate plus
   structured shared-file suggestions.
-- A different strong-model reviewer reads that same complete source unit and
-  checks the candidate, quotes, contradictions, unknowns, raw link, relevant
-  concepts and source context, and the semantic validity of shared-file
-  suggestions. Reviewers do not reread the full company page, provider index,
-  or provider log. An approved candidate needs no third default full-source
-  read by the coordinator.
+- Every first attempt receives a complete-source review by a different
+  strong-model reviewer. That reviewer checks the candidate, quotes,
+  contradictions, unknowns, raw link, relevant concepts and source context,
+  and the semantic validity of shared-file suggestions; reviewers do not
+  reread the full company page, provider index, or provider log. A bounded
+  correction may use targeted diff review only when its raw hash is unchanged;
+  factual or uncertain corrections require another complete-source review.
 - Workers and reviewers are repository-read-only. The coordinator remains the
   only writer of canonical sources, concepts, company pages, indexes, logs,
   counts, campaign state, and commits.
@@ -33,8 +34,9 @@ these controls. A provider without its own authorization remains serial-only.
 - Source units remain independent. No candidate may combine several raw pages,
   and review approval is recorded per source before canonical promotion.
 
-After all reviews finish, the coordinator may reduce approved suggestions by
-shared target instead of repeatedly editing the same file:
+After all reviews finish, the coordinator groups reviewer-approved shared
+updates by target and applies each target once instead of repeatedly editing
+the same file:
 
 1. Merge approved durable facts and planned source wikilinks by concept and
    apply each concept update once, before the corresponding sources.
@@ -56,7 +58,8 @@ Validation is layered rather than repeated globally after every page:
 - Campaign close: validate every promoted source and touched concept, then run
   provider count, link, duplicate-entry, raw-hash, and capsule checks once.
 - The coordinator alone exhaustively checks the company page, provider index,
-  provider log, links, and counts once at campaign close.
+  provider log, links, and counts once at campaign close; it does not perform
+  a default third full-source read.
 - Run the full unit suite when code, rules, or validators changed. A
   documentation-only mature campaign uses the targeted and capsule checks.
 

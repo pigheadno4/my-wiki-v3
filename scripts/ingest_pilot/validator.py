@@ -20,6 +20,20 @@ RESULT_KEYS = {
     "status",
 }
 SUGGESTION_KEYS = {"company", "concepts", "index", "log"}
+SUGGESTION_ITEM_KEYS = {
+    "update_id", "target_path", "update_kind", "anchor",
+    "proposed_markdown", "quote_indexes", "warnings",
+}
+UPDATE_KINDS = {
+    "durable_fact", "reciprocal_source_link", "catalog_entry",
+    "log_entry", "calculated_count",
+}
+TARGET_PREFIXES = {
+    "company": "wiki/companies/",
+    "concepts": "wiki/concepts/",
+    "index": "wiki/",
+    "log": "wiki/",
+}
 
 
 def _ensure_utf8(value: Any) -> None:
@@ -71,6 +85,51 @@ def _raw_entry(source_page: str, raw_path: str, canonical_url: str) -> str:
     return expected
 
 
+def _validate_suggestions(suggestions: dict, quote_count: int) -> None:
+    update_ids = set()
+    for category in SUGGESTION_KEYS:
+        for suggestion in suggestions[category]:
+            if not isinstance(suggestion, dict) or set(suggestion) != SUGGESTION_ITEM_KEYS:
+                raise ValidationError("suggestion must use the fixed schema")
+            update_id = suggestion["update_id"]
+            if not isinstance(update_id, str) or not update_id or update_id in update_ids:
+                raise ValidationError("suggestion update_id must be unique non-empty text")
+            update_ids.add(update_id)
+            target_path = suggestion["target_path"]
+            prefix = TARGET_PREFIXES[category]
+            if (
+                not isinstance(target_path, str)
+                or not target_path.startswith(prefix)
+                or not target_path.endswith(".md")
+                or "/../" in f"/{target_path}"
+                or target_path.startswith("/")
+            ):
+                raise ValidationError("suggestion target_path is invalid")
+            update_kind = suggestion["update_kind"]
+            if not isinstance(update_kind, str) or update_kind not in UPDATE_KINDS:
+                raise ValidationError("suggestion update_kind is invalid")
+            for key in ("anchor", "proposed_markdown"):
+                if not isinstance(suggestion[key], str) or not suggestion[key].strip():
+                    raise ValidationError(f"suggestion {key} must be non-empty text")
+            quote_indexes = suggestion["quote_indexes"]
+            if not isinstance(quote_indexes, list) or any(
+                isinstance(index, bool) or not isinstance(index, int)
+                for index in quote_indexes
+            ):
+                raise ValidationError("suggestion quote_indexes must be integer indexes")
+            if len(set(quote_indexes)) != len(quote_indexes) or any(
+                index < 0 or index >= quote_count for index in quote_indexes
+            ):
+                raise ValidationError("suggestion quote_indexes are invalid")
+            if not quote_indexes and suggestion["update_kind"] not in {
+                "catalog_entry", "log_entry", "calculated_count",
+            }:
+                raise ValidationError("suggestion quote_indexes are required")
+            warnings = suggestion["warnings"]
+            if not isinstance(warnings, list) or not all(isinstance(warning, str) for warning in warnings):
+                raise ValidationError("suggestion warnings must be text")
+
+
 def validate_worker_result(root: Path, job: dict, result: dict) -> Dict[str, Any]:
     """Validate a candidate against its trusted job and immutable raw source."""
     if not isinstance(result, dict):
@@ -90,12 +149,6 @@ def validate_worker_result(root: Path, job: dict, result: dict) -> Dict[str, Any
     if result["raw_sha256"] != job["raw_sha256"] or raw_sha256 != job["raw_sha256"]:
         raise ValidationError("worker result raw hash does not match the job")
 
-    suggestions = result["suggestions"]
-    if not isinstance(suggestions, dict) or set(suggestions) != SUGGESTION_KEYS:
-        raise ValidationError("suggestions must use the fixed schema")
-    if not all(isinstance(suggestions[key], list) for key in SUGGESTION_KEYS):
-        raise ValidationError("suggestions values must be arrays")
-
     quotes = result["quotes"]
     if not isinstance(quotes, list) or not 3 <= len(quotes) <= 5:
         raise ValidationError("worker result must contain three to five quotes")
@@ -109,6 +162,21 @@ def validate_worker_result(root: Path, job: dict, result: dict) -> Dict[str, Any
             raise ValidationError("quote text and location are required")
         if text.encode("utf-8") not in raw_bytes:
             raise ValidationError("quote is absent from the raw file")
+
+    suggestions = result["suggestions"]
+    if not isinstance(suggestions, dict) or set(suggestions) != SUGGESTION_KEYS:
+        raise ValidationError("suggestions must use the fixed schema")
+    if not all(isinstance(suggestions[key], list) for key in SUGGESTION_KEYS):
+        raise ValidationError("suggestions values must be arrays")
+    if job.get("contract_version", 1) == 1:
+        if not all(
+            isinstance(item, str)
+            for category in SUGGESTION_KEYS
+            for item in suggestions[category]
+        ):
+            raise ValidationError("legacy suggestions must be text arrays")
+    else:
+        _validate_suggestions(suggestions, len(quotes))
 
     source_page = result["source_page"]
     if not isinstance(source_page, str):
