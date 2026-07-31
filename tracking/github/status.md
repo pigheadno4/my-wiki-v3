@@ -175,6 +175,31 @@
   Release: [manifest](raw/github/braintree/braintree-web-drop-in/releases/braintree-web-drop-in/1.47.0/2026-07-28/manifest.json)
   Comparison: Not applicable
 
+## `github-8bf8fabdfdc1687790bd`
+
+- Repository: `braintree/braintree_android`
+- SHA: `51f183a48557d0fd00eefa541712df0c4f21ee28`
+- Collection date: `2026-08-01`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/braintree/braintree_android/snapshots/2026-08-01-51f183a/manifest.json)
+- Packet: [review packet](tracking/github/repos/braintree/braintree_android/ingest-packets/github-8bf8fabdfdc1687790bd/packet.md)
+- Review priority: `high`
+- Required reading: `391` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree-android@5.30.0` (recommended `full`)
+  Release: [manifest](raw/github/braintree/braintree_android/releases/braintree-android/5.30.0/2026-08-01/manifest.json)
+  Comparison: Not applicable
+
 ## `github-92e87b7fea5fb1703585`
 
 - Repository: `paypal/paypal-js`

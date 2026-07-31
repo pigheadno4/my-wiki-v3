@@ -1,0 +1,31 @@
+package com.braintreepayments.api.venmo
+
+internal object VenmoAnalytics {
+
+    // Conversion Events
+    const val TOKENIZE_STARTED = "venmo:tokenize:started"
+    const val TOKENIZE_FAILED = "venmo:tokenize:failed"
+    const val TOKENIZE_SUCCEEDED = "venmo:tokenize:succeeded"
+    const val APP_SWITCH_CANCELED = "venmo:tokenize:app-switch:canceled"
+
+    // Launching App Switch events
+    const val APP_SWITCH_STARTED = "venmo:tokenize:app-switch:started"
+    const val APP_SWITCH_SUCCEEDED = "venmo:tokenize:app-switch:succeeded"
+    const val APP_SWITCH_FAILED = "venmo:tokenize:app-switch:failed"
+
+    // Handle return events
+    const val HANDLE_RETURN_STARTED = "venmo:tokenize:handle-return:started"
+    const val HANDLE_RETURN_SUCCEEDED = "venmo:tokenize:handle-return:succeeded"
+    const val HANDLE_RETURN_FAILED = "venmo:tokenize:handle-return:failed"
+    const val HANDLE_RETURN_NO_RESULT = "venmo:tokenize:handle-return:no-result"
+
+    // Create Payment Context events
+    const val CREATE_PAYMENT_CONTEXT_STARTED = "venmo:create-payment-context:started"
+    const val CREATE_PAYMENT_CONTEXT_SUCCEEDED = "venmo:create-payment-context:succeeded"
+    const val CREATE_PAYMENT_CONTEXT_FAILED = "venmo:create-payment-context:failed"
+
+    // Query Payment Context events
+    const val QUERY_PAYMENT_CONTEXT_STARTED = "venmo:query-payment-context:started"
+    const val QUERY_PAYMENT_CONTEXT_SUCCEEDED = "venmo:query-payment-context:succeeded"
+    const val QUERY_PAYMENT_CONTEXT_FAILED = "venmo:query-payment-context:failed"
+}
