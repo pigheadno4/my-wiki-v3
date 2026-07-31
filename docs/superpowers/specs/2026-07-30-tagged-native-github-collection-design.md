@@ -3,7 +3,7 @@
 **Date:** 2026-07-30
 **Profile:** Tagged native SDK repository
 **Validation pilots:** `stripe/stripe-ios` and `stripe/stripe-android`
-**Status:** Design approved; written specification pending user review
+**Status:** Approved
 
 ## Goal
 
