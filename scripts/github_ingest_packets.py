@@ -859,6 +859,7 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
                 ".gradle.kts",
                 ".podspec",
                 ".pbxproj",
+                ".xcprivacy",
                 ".xcscheme",
                 ".xml",
             )

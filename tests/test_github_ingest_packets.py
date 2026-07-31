@@ -360,6 +360,12 @@ class GitHubIngestPacketTests(unittest.TestCase):
                     "include-path",
                     "stripe-ios",
                 ),
+                "PrivacyInfo.xcprivacy": (
+                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n",
+                    "public-source",
+                    "include-path",
+                    "stripe-ios",
+                ),
                 "Native/api/native.api": (
                     "public final class Checkout\n",
                     "public-source",
@@ -417,6 +423,7 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "modules.yaml",
             "settings.gradle",
             "dependencies.gradle",
+            "PrivacyInfo.xcprivacy",
         ):
             self.assertEqual("build-configuration", classified[path])
         self.assertEqual(

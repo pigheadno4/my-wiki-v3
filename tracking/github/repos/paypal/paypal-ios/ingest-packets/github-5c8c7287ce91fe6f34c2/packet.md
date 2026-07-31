@@ -1,0 +1,168 @@
+# GitHub ingest packet
+
+- Repository: `paypal/paypal-ios`
+- Work item: `github-5c8c7287ce91fe6f34c2`
+- Snapshot: `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/manifest.json`
+- Recommended mode: `full`
+- Review priority: `high`
+
+## `paypal-ios`
+
+- Version: `baseline` -> `2.0.1`
+- Recommendation: `full` / `high`
+- Unchanged retained files: `0`
+
+### Required reading
+
+- `raw/github/paypal/paypal-ios/releases/paypal-ios/2.0.1/2026-07-31/manifest.json`
+- `raw/github/paypal/paypal-ios/releases/paypal-ios/2.0.1/2026-07-31/release-notes.md`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/CHANGELOG.md`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Card/CardFormatter.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Card/CardType.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/CardPayments/CardPaymentViewModel/CardPaymentState.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/CardPayments/CardPaymentViewModel/CardPaymentViewModel.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/CardPayments/CardViewComponents/CardOrderActionButton.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/CardPayments/CardViewComponents/CardOrderApproveView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/CardPayments/CardViewComponents/CardPaymentOrderCompletionView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/CardPayments/CardViewComponents/CardPaymentView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/CardPayments/CardViewComponents/CardPaymentsResultViews/CardApprovalResultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/CardPayments/CardViewComponents/CardPaymentsResultViews/CardOrderCompletionResultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/CardPayments/CardViewComponents/CardPaymentsResultViews/OrderCreateCardResultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/CardPayments/CardViewComponents/CreateOrderCardPaymentView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/CardVault/CardVaultViewModel/CardVaultViewModel.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/CardVault/CardVaultViews/CardVaultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/CardVault/CardVaultViews/UpdateSetupTokenResultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/CardVault/CardVaultViews/UpdateSetupTokenView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/DemoSettings/DemoSettings.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/DemoSettings/Environment.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/DemoSettings/Intent.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Extensions/CardExtensions.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Extensions/PaymentButtonEnums+Extension.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Models/ApprovalResult.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Models/ClientIDRequest.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Models/ClientIDResponse.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Models/CreateOrderParams.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Models/CreateSetupTokenParam.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Models/CreateSetupTokenResponse.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Models/EmptyBodyParams.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Models/Order.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Models/PaymentTokenParam.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Models/PaymentTokenResponse.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Networking/DemoMerchantAPI.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Networking/MerchantIntegration.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Networking/URLResponseError.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/PayPalVault/PayPalVaultViewModel/PayPalVaultViewModel.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/PayPalVault/PayPalVaultViews/PayPalVaultResultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/PayPalVault/PayPalVaultViews/PayPalVaultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebButtonsView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebCreateOrderView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebPaymentsView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalApprovalResultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalOrderCompletionResultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalOrderCreateResultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalWebTransactionView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/PayPalWebPayments/PayPalWebViewModel/PayPalPaymentState.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/PayPalWebPayments/PayPalWebViewModel/PayPalWebViewModel.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/SwiftUIComponents/CommonComponents/CardFormView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/SwiftUIComponents/CommonComponents/CircularProgressView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/SwiftUIComponents/CommonComponents/CoreConfigManager.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/SwiftUIComponents/CommonComponents/ErrorView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/SwiftUIComponents/CommonComponents/FloatingLabelTextField.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/SwiftUIComponents/CommonComponents/LabelViewText.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/SwiftUIComponents/CommonComponents/LeadingText.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/SwiftUIComponents/CommonComponents/RoundedBlueButtonStyle.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/SwiftUIComponents/CurrentState.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/SwiftUIComponents/FeatureSelectionView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/SwiftUIComponents/SwiftUIPaymentButtonDemo.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Vault/VaultViewModel/VaultState.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Vault/VaultViewModel/VaultViewModel.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Vault/VaultViews/CreatePaymentTokenView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Vault/VaultViews/CreateSetupTokenView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Vault/VaultViews/PaymentTokenResultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/Vault/VaultViews/SetupTokenResultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/LICENSE`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Package.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/PayPal.podspec`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/README.md`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CardPayments/APIRequests/CheckoutOrdersAPI.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CardPayments/APIRequests/ConfirmPaymentSourceRequest.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CardPayments/APIRequests/ConfirmPaymentSourceResponse.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CardPayments/APIRequests/UpdateSetupTokenResponse.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CardPayments/APIRequests/UpdateVaultVariables.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CardPayments/APIRequests/VaultPaymentTokensAPI.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CardPayments/CardClient.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CardPayments/CardError.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CardPayments/Models/Address.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CardPayments/Models/Card.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CardPayments/Models/CardRequest.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CardPayments/Models/CardResult.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CardPayments/Models/CardVaultRequest.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CardPayments/Models/CardVaultResult.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CardPayments/Models/PaymentSource.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CardPayments/Models/SCA.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CardPayments/PrivacyInfo.xcprivacy`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/AnalyticsEventData.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/CoreConfig.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/CorePaymentsError.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/CoreSDKError.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/AnalyticsService.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/ClientConfigResponse.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/Enums/Environment.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/Enums/HTTPHeader.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/Enums/HTTPMethod.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/GraphQL/GraphQLErrorResponse.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/GraphQL/GraphQLHTTPPostBody.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/GraphQL/GraphQLHTTPResponse.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/GraphQL/GraphQLRequest.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/HTTP.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/HTTPRequest.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/HTTPResponse.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/HTTPResponseParser.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/Models/ErrorResponse.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/NetworkingClient.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/NetworkingError.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/RESTRequest.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/TrackingEventsAPI.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/URLSession+URLSessionProtocol.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/URLSessionProtocol.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/UpdateClientConfigAPI.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/UpdateClientConfigVariables.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/PayPalCoreConstants.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/PrivacyInfo.xcprivacy`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/WebAuthenticationSession.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/FraudProtection/CoreConfig+MagnesSDK.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/FraudProtection/DeviceInspector.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/FraudProtection/DeviceInspectorProtocol.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/FraudProtection/MagnesSDKProtocol.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/FraudProtection/MagnesSDKResult.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/FraudProtection/MagnesSetupParams.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/FraudProtection/PayPalDataCollector.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/FraudProtection/PrivacyInfo.xcprivacy`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PayPalWebPayments/Environment+PayPalWebCheckout.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PayPalWebPayments/PayPalError.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PayPalWebPayments/PayPalVaultRequest.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PayPalWebPayments/PayPalVaultResult.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PayPalWebPayments/PayPalWebCheckoutClient.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PayPalWebPayments/PayPalWebCheckoutFundingSource.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PayPalWebPayments/PayPalWebCheckoutRequest.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PayPalWebPayments/PayPalWebCheckoutResult.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PayPalWebPayments/PrivacyInfo.xcprivacy`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PaymentButtons/Coordinator.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PaymentButtons/PayPalButton.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PaymentButtons/PayPalCreditButton.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PaymentButtons/PayPalPayLaterButton.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PaymentButtons/PaymentButton+ImageAsset.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PaymentButtons/PaymentButton.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PaymentButtons/PaymentButtonColor.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PaymentButtons/PaymentButtonEdges.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PaymentButtons/PaymentButtonFont.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PaymentButtons/PaymentButtonFundingSource.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PaymentButtons/PaymentButtonLabel.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PaymentButtons/PaymentButtonSize.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PaymentButtons/PrivacyInfo.xcprivacy`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/v2_MIGRATION_GUIDE.md`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/manifest.json`
+
+### Upstream changes
+
+- None

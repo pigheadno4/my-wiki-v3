@@ -1018,7 +1018,11 @@ def _existing_release_ids(items: Sequence[WorkItem]) -> set:
         change.release_id
         for item in items
         for change in item.package_changes
-        if item.state not in ("collection_failed", "discovered")
+        if item.state not in (
+            "collection_failed",
+            "discovered",
+            "needs_manual_review",
+        )
     }
 
 
@@ -1033,7 +1037,11 @@ def _changed_candidates(
         change.release_manifest
         for item in items
         for change in item.package_changes
-        if item.state not in ("collection_failed", "discovered")
+        if item.state not in (
+            "collection_failed",
+            "discovered",
+            "needs_manual_review",
+        )
         and change.release_manifest
     }
     accepted: Dict[str, List[_RetainedRelease]] = {}

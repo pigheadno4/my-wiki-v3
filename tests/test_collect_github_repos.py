@@ -830,6 +830,28 @@ class CollectGitHubReposTests(unittest.TestCase):
             (self.root / "raw/github/paypal/paypal-js/releases").exists()
         )
 
+    def test_retry_completes_manual_review_after_partial_evidence_publication(self):
+        with mock.patch(
+            "collect_github_repos.build_ingest_packet",
+            side_effect=ValueError("unclassified retained evidence"),
+        ):
+            failed_result = self.collect(max_attempts=1)
+
+        failed = load_work_items(self.root / "tracking/github/work-items.json")[0]
+        self.assertEqual("needs_manual_review", failed_result.state)
+        self.assertTrue(failed.snapshot_manifest)
+        self.assertTrue(all(change.release_manifest for change in failed.package_changes))
+
+        retry_one(self.root, failed.work_item_id)
+        recovered_result = self.collect(collection_date="2026-07-21")
+        recovered = load_work_items(self.root / "tracking/github/work-items.json")[0]
+
+        self.assertEqual("awaiting_approval", recovered_result.state)
+        self.assertEqual(failed.work_item_id, recovered.work_item_id)
+        self.assertTrue(recovered.ingest_packet)
+        self.assertEqual(0, recovered.consecutive_failed_runs)
+        self.assertEqual("", recovered.last_error)
+
     def test_approve_records_user_selected_mode_before_ingest(self):
         self.collect()
         item = load_work_items(self.root / "tracking/github/work-items.json")[0]

@@ -25,7 +25,7 @@ APPENDIX_A_INVENTORY = (
     ('paypal/paypal-android', 'https://github.com/paypal/paypal-android', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('paypal/paypal-sdk-release', 'https://github.com/paypal/paypal-sdk-release', 'release-index', 'tier2', 'github-release', False, 'releases-and-default-branch', 'monthly'),
     ('paypal/paypal-js', 'https://github.com/paypal/paypal-js', 'web-sdk', 'tier1', 'monorepo-packages', True, 'releases-and-default-branch', 'weekly'),
-    ('paypal/paypal-ios', 'https://github.com/paypal/paypal-ios', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('paypal/paypal-ios', 'https://github.com/paypal/paypal-ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('paypal/postman-collections', 'https://github.com/paypal/postman-collections', 'api-collection', 'tier2', 'commit', False, 'default-branch', 'monthly'),
     ('paypal/paypal-typescript-server-sdk', 'https://github.com/paypal/PayPal-TypeScript-Server-SDK', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('paypal/paypal-php-server-sdk', 'https://github.com/paypal/PayPal-PHP-Server-SDK', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
