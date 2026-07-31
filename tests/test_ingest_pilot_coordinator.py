@@ -263,6 +263,52 @@ class CoordinatorTests(unittest.TestCase):
         self.assertTrue(self.attempt("job-1", 3).joinpath("failure.json").is_file())
         self.assertEqual(output["jobs"][0]["state"], "rejected")
 
+    def test_terminal_rejections_clear_retry_and_active_review_context(self):
+        init_campaign(self.root, self.manifest)
+        jobs = load_jobs(self.root, self.campaign_id)
+        jobs[0].update({
+            "attempt": 3,
+            "state": "running",
+            "retry_context": {
+                "prior_attempt": 2,
+                "review_scope": "targeted",
+                "required_changes": ["Fix the concept backlink and no other prose."],
+                "prior_reviewer_identity": "reviewer-a",
+            },
+            "active_review_scope": "targeted",
+        })
+        save_jobs(self.root, self.campaign_id, jobs)
+
+        run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-1", attempt=3, raw_sha256="0" * 64),
+        )
+
+        terminal_worker = load_jobs(self.root, self.campaign_id)[0]
+        self.assertEqual(terminal_worker["state"], "rejected")
+        self.assertNotIn("retry_context", terminal_worker)
+        self.assertNotIn("active_review_scope", terminal_worker)
+
+        terminal_worker.update({
+            "state": "failed",
+            "retry_context": {
+                "prior_attempt": 2,
+                "review_scope": "full",
+                "required_changes": ["Fix the concept backlink and no other prose."],
+                "prior_reviewer_identity": "reviewer-a",
+            },
+            "active_review_scope": "full",
+        })
+        save_jobs(self.root, self.campaign_id, [terminal_worker, *load_jobs(self.root, self.campaign_id)[1:]])
+
+        reject_job(self.root, self.campaign_id, "job-1", "operator decision")
+
+        terminal_operator = load_jobs(self.root, self.campaign_id)[0]
+        self.assertEqual(terminal_operator["state"], "rejected")
+        self.assertNotIn("retry_context", terminal_operator)
+        self.assertNotIn("active_review_scope", terminal_operator)
+
     def test_non_utf8_worker_result_fails_only_that_job(self):
         self.start_five()
         result_path = self.write_worker_result("job-1")
@@ -306,6 +352,71 @@ class CoordinatorTests(unittest.TestCase):
         self.assertGreater(job["queue_position"], initial_tail)
         self.assertEqual(job["attempt"], 1)
         self.assertFalse(self.attempt("job-1", 2).exists())
+
+    def test_targeted_changes_request_carries_bounded_context_to_retry_orders(self):
+        self.make_reviewing("job-1", attempt=1)
+
+        run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review(
+                "job-1", 1, "changes_requested",
+                required_changes=["Fix the concept backlink and no other prose."],
+                retry_review_scope="targeted",
+            ),
+        )
+
+        queued = load_jobs(self.root, self.campaign_id)[0]
+        self.assertEqual(
+            queued["retry_context"],
+            {
+                "prior_attempt": 1,
+                "review_scope": "targeted",
+                "required_changes": ["Fix the concept backlink and no other prose."],
+                "prior_reviewer_identity": "reviewer-a",
+            },
+        )
+        self.assertNotIn("reviewer_identity", queued)
+        self.assertNotIn("reviewer_model", queued)
+
+        retry = run_once(self.root, self.campaign_id)
+        worker_order = next(order for order in retry["worker_orders"] if order["job_id"] == "job-1")
+        self.assertEqual(worker_order["retry_context"], queued["retry_context"])
+
+        corrected = run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-1", attempt=2),
+            reviewer_assignments=[{"identity": "reviewer-a", "model": "Sol"}],
+        )
+
+        self.assertEqual(corrected["review_order"]["review_scope"], "targeted")
+        self.assertEqual(corrected["review_order"]["prior_attempt"], 1)
+        self.assertEqual(corrected["review_order"]["preferred_reviewer_identity"], "reviewer-a")
+
+    def test_full_retry_does_not_prefer_the_prior_reviewer(self):
+        self.make_reviewing("job-1", attempt=1)
+
+        run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review(
+                "job-1", 1, "changes_requested",
+                required_changes=["Fix the concept backlink and no other prose."],
+                retry_review_scope="full",
+            ),
+        )
+        run_once(self.root, self.campaign_id)
+        corrected = run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-1", attempt=2),
+            reviewer_assignments=[{"identity": "reviewer-b", "model": "Sol"}],
+        )
+
+        self.assertEqual(corrected["review_order"]["review_scope"], "full")
+        self.assertEqual(corrected["review_order"]["prior_attempt"], 1)
+        self.assertIsNone(corrected["review_order"]["preferred_reviewer_identity"])
 
     def test_third_changes_request_rejects_job(self):
         self.make_reviewing("job-1", attempt=3)
@@ -372,6 +483,21 @@ class CoordinatorTests(unittest.TestCase):
                 self.campaign_id,
                 review_result_path=self.write_review("job-1", 1, "approved", review_scope="partial"),
             )
+
+    def test_review_result_must_match_the_active_review_scope(self):
+        self.make_reviewing("job-1", attempt=1)
+        jobs = load_jobs(self.root, self.campaign_id)
+        jobs[0]["active_review_scope"] = "targeted"
+        save_jobs(self.root, self.campaign_id, jobs)
+
+        with self.assertRaisesRegex(PilotError, "review result is invalid"):
+            run_once(
+                self.root,
+                self.campaign_id,
+                review_result_path=self.write_review("job-1", 1, "approved", review_scope="full"),
+            )
+
+        self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["state"], "reviewing")
 
     def test_review_enum_lists_are_rejected_without_type_errors(self):
         self.make_reviewing("job-1", attempt=1)

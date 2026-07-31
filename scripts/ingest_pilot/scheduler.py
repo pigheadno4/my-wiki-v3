@@ -1,5 +1,6 @@
 """Pure work-order projections for the minimum ingest pilot."""
 
+from copy import deepcopy
 from typing import Dict, List, Optional
 
 
@@ -24,6 +25,19 @@ def _queued_jobs(jobs: List[dict], max_attempts: int) -> List[dict]:
         ),
         key=lambda job: job["queue_position"],
     )
+
+
+def _review_context(job: dict) -> Dict[str, object]:
+    retry_context = job.get("retry_context", {})
+    review_scope = retry_context.get("review_scope", "full")
+    return {
+        "review_scope": review_scope,
+        "prior_attempt": retry_context.get("prior_attempt"),
+        "preferred_reviewer_identity": (
+            retry_context.get("prior_reviewer_identity")
+            if review_scope == "targeted" else None
+        ),
+    }
 
 
 def worker_orders(
@@ -53,6 +67,7 @@ def worker_orders(
                 "Return exactly result_contract.top_level_keys and no other top-level keys.",
                 "Ensure every quote has non-empty text and location.",
             ],
+            **({"retry_context": deepcopy(job["retry_context"])} if job["attempt"] > 0 and "retry_context" in job else {}),
             **{
                 key: job[key]
                 for key in ("recommended_worker_tier", "routing_reason")
@@ -82,9 +97,7 @@ def review_order(jobs: List[dict]) -> Optional[Dict[str, object]]:
         "raw_sha256": job["raw_sha256"],
         "source_target": job["source_target"],
         "contract_version": job.get("contract_version", 1),
-        "review_scope": job.get("next_review_scope", "full"),
-        "prior_attempt": job["attempt"] - 1 if job["attempt"] > 1 else None,
-        "preferred_reviewer_identity": job.get("reviewer_identity"),
+        **_review_context(job),
     }
 
 
@@ -102,9 +115,7 @@ def _review_orders(jobs: List[dict], limit: int) -> List[Dict[str, object]]:
             "raw_sha256": job["raw_sha256"],
             "source_target": job["source_target"],
             "contract_version": job.get("contract_version", 1),
-            "review_scope": job.get("next_review_scope", "full"),
-            "prior_attempt": job["attempt"] - 1 if job["attempt"] > 1 else None,
-            "preferred_reviewer_identity": job.get("reviewer_identity"),
+            **_review_context(job),
         }
         for job in candidates[:max(0, limit)]
     ]

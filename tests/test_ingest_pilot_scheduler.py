@@ -122,6 +122,7 @@ class SchedulerTests(unittest.TestCase):
                 "raw_sha256": "1" * 64,
                 "source_target": "wiki/sources/metronome/source-job-1.md",
                 "canonical_url": "https://docs.metronome.com/job-1",
+                "contract_version": 1,
                 "result_contract": {
                     "top_level_keys": [
                         "job_id",
@@ -144,6 +145,51 @@ class SchedulerTests(unittest.TestCase):
                 "routing_reason": "schema-heavy API",
             },
         )
+
+    def test_retry_orders_carry_context_and_targeted_reviewer_preference(self):
+        jobs = make_jobs(1)
+        jobs[0].update({
+            "attempt": 1,
+            "retry_context": {
+                "prior_attempt": 1,
+                "review_scope": "targeted",
+                "required_changes": ["Fix the concept backlink and no other prose."],
+                "prior_reviewer_identity": "reviewer-a",
+            },
+        })
+
+        worker = worker_orders(
+            jobs,
+            worker_concurrency=1,
+            max_attempts=3,
+            available_worker_slots=1,
+        )[0]
+        self.assertEqual(worker["retry_context"], jobs[0]["retry_context"])
+
+        jobs[0]["state"] = "candidate_ready"
+        review = review_order(jobs)
+        self.assertEqual(review["review_scope"], "targeted")
+        self.assertEqual(review["prior_attempt"], 1)
+        self.assertEqual(review["preferred_reviewer_identity"], "reviewer-a")
+
+    def test_full_retry_has_no_reviewer_preference(self):
+        jobs = make_jobs(1)
+        jobs[0].update({
+            "attempt": 2,
+            "state": "candidate_ready",
+            "retry_context": {
+                "prior_attempt": 1,
+                "review_scope": "full",
+                "required_changes": ["Fix the concept backlink and no other prose."],
+                "prior_reviewer_identity": "reviewer-a",
+            },
+        })
+
+        review = review_order(jobs)
+
+        self.assertEqual(review["review_scope"], "full")
+        self.assertEqual(review["prior_attempt"], 1)
+        self.assertIsNone(review["preferred_reviewer_identity"])
 
     def test_shared_slots_start_three_workers_then_one_review_and_two_workers(self):
         jobs = make_jobs(6)

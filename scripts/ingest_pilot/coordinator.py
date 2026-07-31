@@ -100,6 +100,9 @@ def _apply_worker_result(
         job["state"] = "rejected" if exhausted else "failed"
         job["last_event"] = "worker_result_rejected" if exhausted else "worker_result_invalid"
         job["failure_reason"] = str(error)
+        if exhausted:
+            job.pop("active_review_scope", None)
+            job.pop("retry_context", None)
         return (
             {"event": job["last_event"], "job_id": job["job_id"], "reason": str(error)},
             [(attempt_dir, "failure.json", _json_bytes({"reason": str(error)}))],
@@ -216,7 +219,7 @@ def _apply_review_result(
             for category in suggestions.values()
             for suggestion in category
         }
-        _validate_review_result(result, job.get("next_review_scope", "full"), suggestion_ids)
+        _validate_review_result(result, job.get("active_review_scope", "full"), suggestion_ids)
     elif (
         not isinstance(verdict, str)
         or verdict not in REVIEW_VERDICTS
@@ -242,17 +245,31 @@ def _apply_review_result(
         job["state"] = "approved"
         job["last_event"] = "review_approved"
         job["failure_reason"] = None
+        job.pop("active_review_scope", None)
+        job.pop("retry_context", None)
         return {"event": "review_approved", "job_id": job["job_id"]}, files
     if verdict == "rejected" or job["attempt"] >= max_attempts:
         job["state"] = "rejected"
         job["last_event"] = "review_rejected" if verdict == "rejected" else "changes_exhausted"
         job["failure_reason"] = reason
+        job.pop("active_review_scope", None)
+        job.pop("retry_context", None)
         return {"event": job["last_event"], "job_id": job["job_id"], "reason": reason}, files
+    if is_schema_v2:
+        job["retry_context"] = {
+            "prior_attempt": job["attempt"],
+            "review_scope": result["retry_review_scope"],
+            "required_changes": list(result["required_changes"]),
+            "prior_reviewer_identity": job.get("reviewer_identity"),
+        }
     job["state"] = "queued"
     job["queue_position"] = max(item["queue_position"] for item in jobs) + 1
     job["last_event"] = "changes_requested"
     job["failure_reason"] = None
-    job["next_review_scope"] = result.get("retry_review_scope", "full")
+    job.pop("active_review_scope", None)
+    job.pop("next_review_scope", None)
+    job.pop("reviewer_identity", None)
+    job.pop("reviewer_model", None)
     return {"event": "changes_requested", "job_id": job["job_id"], "reason": reason}, files
 
 
@@ -364,6 +381,7 @@ def _start_shared_orders(
         job.update({
             "state": "reviewing",
             "last_event": "review_started",
+            "active_review_scope": order["review_scope"],
             "reviewer_identity": assignment["identity"],
             "reviewer_model": assignment["model"],
         })
@@ -387,6 +405,7 @@ def _start_review(
         job["reviewer_model"] = assignment["model"]
     job["state"] = "reviewing"
     job["last_event"] = "review_started"
+    job["active_review_scope"] = order["review_scope"]
     return order
 
 
@@ -504,6 +523,8 @@ def reject_job(root: Path, campaign_id: str, job_id: str, reason: str) -> Dict[s
     job["state"] = "rejected"
     job["last_event"] = "operator_rejected"
     job["failure_reason"] = reason
+    job.pop("active_review_scope", None)
+    job.pop("retry_context", None)
     save_jobs(root, campaign_id, jobs)
     output = _campaign_payload(root, campaign_id)
     try:
