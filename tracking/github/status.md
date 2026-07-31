@@ -50,6 +50,31 @@
   Release: [manifest](raw/github/braintree/braintree-web/releases/braintree-web/3.144.0/2026-07-28/manifest.json)
   Comparison: [manifest](tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.143.0--3.144.0/comparison.json)
 
+## `github-7ecc6c2199897656ffe3`
+
+- Repository: `stripe/stripe-ios`
+- SHA: `d9252fd0a4a6d369fa45bb06f74c4e818c914f91`
+- Collection date: `2026-07-31`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/manifest.json)
+- Packet: [review packet](tracking/github/repos/stripe/stripe-ios/ingest-packets/github-7ecc6c2199897656ffe3/packet.md)
+- Review priority: `high`
+- Required reading: `262` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-ios@26.4.1` (recommended `full`)
+  Release: [manifest](raw/github/stripe/stripe-ios/releases/stripe-ios/26.4.1/2026-07-31/manifest.json)
+  Comparison: Not applicable
+
 ## `github-82cea027945f7df14795`
 
 - Repository: `stripe/stripe-js`

@@ -1,0 +1,282 @@
+# GitHub ingest packet
+
+- Repository: `stripe/stripe-ios`
+- Work item: `github-7ecc6c2199897656ffe3`
+- Snapshot: `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/manifest.json`
+- Recommended mode: `full`
+- Review priority: `high`
+
+## `stripe-ios`
+
+- Version: `baseline` -> `26.4.1`
+- Recommendation: `full` / `high`
+- Unchanged retained files: `0`
+
+### Required reading
+
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.4.1/2026-07-31/manifest.json`
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.4.1/2026-07-31/release-notes.md`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/CHANGELOG.md`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/Example/Non-Card Payment Examples/Non-Card Payment Examples/USBankAccountExampleViewController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/Example/PaymentSheet Example/PaymentSheet Example/ExampleCheckoutViewController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/Example/PaymentSheet Example/PaymentSheet Example/ExampleEmbeddedElementCheckoutViewController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/Example/PaymentSheet Example/PaymentSheet Example/ExampleSwiftUIPaymentSheet.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/LICENSE`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/MIGRATING.md`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/Package.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/README.md`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeApplePay.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeApplePay/StripeApplePay/Source/ApplePayContext/STPAPIClient+ApplePay.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeApplePay/StripeApplePay/Source/ApplePayContext/STPApplePayContext+LegacySupport.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeApplePay/StripeApplePay/Source/ApplePayContext/STPApplePayContext.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeConnect.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeConnect/StripeConnect/Source/EmbeddedComponentManager.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeConnect/StripeConnect/Source/StripeConnect+Exports.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeCryptoOnramp.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CheckoutResult.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeFinancialConnections.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeFinancialConnections/StripeFinancialConnections/Source/FinancialConnectionsSheet.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeFinancialConnections/StripeFinancialConnections/Source/FinancialConnectionsSheetError.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeIdentity.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeIdentity/StripeIdentity/Source/IdentityVerificationSheetError.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeIssuing.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeIssuing/StripeIssuing/Source/STPPinManagementService.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeIssuing/StripeIssuing/Source/STPPushProvisioningContext.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripeIssuing/StripeIssuing/Source/StripeIssuing.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerAddPaymentMethodViewController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSavedPaymentMethodsCollectionViewController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSavedPaymentMethodsViewController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet+API.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet+PaymentMethodAvailability.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet+SwiftUI.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetConfiguration.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetDataSource.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetError.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedFormViewController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+SwiftUI.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElementConfiguration.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElementContainerView.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElementDelegate.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentMethodsView.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedUpdateContext.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedViewRepresentable.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/MandateTextProvider.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/RadioButton.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/UIStackView+Separator.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/InstantBankPaymentsController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkAppearance.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkConfiguration.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkFlowControllerHelpers.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithLinkController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithNativeLinkController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PaymentSheet-LinkConfirmOption.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentElementConfiguration.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+CheckoutSessionAPI.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+DeferredAPI.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+SwiftUI.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetAppearance.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetError.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController+AsyncPublicAPIs.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Legacy Compatability/StripeAPI+Deprecated.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Legacy Compatability/StripeApplePay+Import.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Legacy Compatability/StripeCore+Import.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/ACH/LinkAccountSession.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/ACH/STPCollectBankAccountParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/ConfirmationTokens/STPConfirmationToken.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/ConfirmationTokens/STPConfirmationTokenClientContext.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/ConfirmationTokens/STPConfirmationTokenParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/ConfirmationTokens/STPPaymentMethodPreview.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmAlipayOptions.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmBLIKOptions.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmCardOptions.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmKonbiniOptions.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmLinkOptions.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmPaymentMethodOptions.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmUSBankAccountOptions.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmWeChatPayOptions.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntent.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentAction.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentActionRedirectToURL.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentConfirmParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentEnums.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentLastPaymentError.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentShippingDetails.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentShippingDetailsAddress.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentShippingDetailsAddressParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentShippingDetailsParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentSourceAction.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/LinkPaymentDetails.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethod.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodAddress.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodAllowRedisplay.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodBillingDetails.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodUpdateParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPRadarOptions.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodAUBECSDebit.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodAUBECSDebitParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodAffirm.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodAffirmParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodAfterpayClearpay.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodAfterpayClearpayParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodAlipay.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodAlipayParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodAlma.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodAlmaParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodAmazonPay.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodAmazonPayParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodBLIK.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodBLIKParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodBacsDebit.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodBacsDebitParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodBancontact.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodBancontactParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodBillie.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodBillieParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodBoleto.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodBoletoParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCard.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCardArt.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCardChecks.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCardNetworks.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCardNetworksParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCardParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCardPresent.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCardWallet.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCardWalletMasterpass.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCardWalletVisaCheckout.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCashApp.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCashAppParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCrypto.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCryptoParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodEPS.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodEPSParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodFPX.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodFPXParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodGrabPay.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodGrabPayParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodKlarna.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodKlarnaParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodLink.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodLinkParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMobilePay.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMobilePayParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMultibanco.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMultibancoParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNetBanking.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNetBankingParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodOXXO.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodOXXOParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodPayByBank.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodPayByBankParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodPayPal.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodPayPalParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodPayPay.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodPayPayParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodPrzelewy24.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodPrzelewy24Params.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodRevolutPay.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodRevolutPayParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodSEPADebit.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodSEPADebitParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodSatispay.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodSatispayParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodSunbit.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodSunbitParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodSwish.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodSwishParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodThreeDSecureUsage.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTwint.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTwintParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodUSBankAccount.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodUSBankAccountParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodWeChatPay.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodWeChatPayParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodWero.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodWeroParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodiDEAL.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodiDEALParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/STPAPIResponseDecodable.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/STPAddress.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/STPCardBrand.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/STPConnectAccountAddress.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/STPConnectAccountCompanyParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/STPConnectAccountIndividualParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/STPConnectAccountParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/STPContactField.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/STPCustomer.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/STPFPXBankBrand.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/STPFile.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/STPFormEncodable.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/STPIssuingCardPin.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/STPRadarSession.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/STPToken.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/SetupIntents/STPSetupIntent.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/SetupIntents/STPSetupIntentConfirmParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/SetupIntents/STPSetupIntentEnums.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/SetupIntents/STPSetupIntentLastSetupError.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/LinkSettings.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentAction.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentActionAlipayHandleRedirect.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentActionBoletoDisplayDetails.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentActionCashAppRedirectToApp.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentActionKonbiniDisplayDetails.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentActionMultibancoDisplayDetails.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentActionOXXODisplayDetails.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentActionPayNowDisplayQrCode.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentActionPromptPayDisplayQrCode.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentActionRedirectToURL.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentActionSwishHandleRedirect.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentActionVerifyWithMicrodeposits.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentActionWeChatPayRedirectToApp.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentAutomaticPaymentMethods.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPMandateCustomerAcceptanceParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPMandateDataParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPMandateOnlineParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPPaymentMethodOptions.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Sources/STPSource.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Sources/STPSourceEnums.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Sources/STPSourceParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Sources/STPSourceProtocol.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Sources/Types/STPBankAccount.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Sources/Types/STPBankAccountParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Sources/Types/STPCard.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Sources/Types/STPCardParams.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/Models/Sources/Types/STPSourceCardDetails.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/STPAPIClient+ApplePay.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/STPAPIClient+LinkAccountSession.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/STPAPIClient+Payments.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/STPAPIClient+Radar.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/API Bindings/STPClientAttributionMetadata+Payments.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/PaymentHandler/PollingBudget.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/PaymentHandler/STPAnalyticsClient+STPPaymentHandler.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/PaymentHandler/STPAuthenticationContext.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/PaymentHandler/STPThreeDSButtonCustomization.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/PaymentHandler/STPThreeDSCustomizationSettings.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/PaymentHandler/STPThreeDSFooterCustomization.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/PaymentHandler/STPThreeDSLabelCustomization.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/PaymentHandler/STPThreeDSNavigationBarCustomization.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/PaymentHandler/STPThreeDSSelectionCustomization.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/PaymentHandler/STPThreeDSTextFieldCustomization.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/StripePayments/StripePayments/Source/PaymentHandler/STPThreeDSUICustomization.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/VERSION`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/files/modules.yaml`
+- `raw/github/stripe/stripe-ios/snapshots/2026-07-31-d9252fd/manifest.json`
+
+### Upstream changes
+
+- None
