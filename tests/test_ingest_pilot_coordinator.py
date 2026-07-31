@@ -5,9 +5,11 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from scripts.ingest_pilot.coordinator import (
     PilotError,
+    complete_campaign,
     init_campaign,
     reject_job,
     retry_job,
@@ -351,6 +353,62 @@ class CoordinatorTests(unittest.TestCase):
 
         self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["state"], "approved")
         self.assertNotIn("promotion_order", output)
+
+    def test_complete_requires_terminal_jobs_and_records_explicit_campaign_close(self):
+        with patch(
+            "scripts.ingest_pilot.state._utc_now", return_value="2026-07-31T01:02:03Z"
+        ):
+            self.start_five()
+        run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-1"),
+            reviewer_assignments=[{"identity": "reviewer-a", "model": "Sol"}],
+        )
+        run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review("job-1", 1, "approved"),
+        )
+        jobs = load_jobs(self.root, self.campaign_id)
+        for job in jobs[1:]:
+            job["state"] = "rejected"
+        save_jobs(self.root, self.campaign_id, jobs)
+        review_path = self.attempt("job-1", 1) / "review.json"
+        review_before = review_path.read_bytes()
+
+        with patch(
+            "scripts.ingest_pilot.coordinator._utc_now", return_value="2026-07-31T04:05:06Z"
+        ):
+            output = complete_campaign(self.root, self.campaign_id, 2)
+
+        campaign = json.loads((self.root / "tracking/ingest/metronome" / self.campaign_id / "campaign.json").read_text(encoding="utf-8"))
+        self.assertEqual(campaign["state"], "complete")
+        self.assertEqual(campaign["completed_at"], "2026-07-31T04:05:06Z")
+        self.assertEqual(campaign["coordinator_repairs"], 2)
+        self.assertEqual(output["campaign_state"], "complete")
+        self.assertIn("- Completed at: `2026-07-31T04:05:06Z`", output["monitor"])
+        self.assertIn("- Elapsed: `10983 seconds`", output["monitor"])
+        self.assertEqual(review_path.read_bytes(), review_before)
+        with self.assertRaisesRegex(PilotError, "already complete"):
+            complete_campaign(self.root, self.campaign_id, 0)
+
+    def test_complete_rejects_invalid_repair_counts_and_nonterminal_jobs(self):
+        init_campaign(self.root, self.manifest)
+        for repairs in (-1, True):
+            with self.subTest(repairs=repairs):
+                with self.assertRaisesRegex(PilotError, "non-negative integer"):
+                    complete_campaign(self.root, self.campaign_id, repairs)
+
+        for state in ("queued", "running", "candidate_ready", "reviewing", "failed"):
+            with self.subTest(state=state):
+                jobs = load_jobs(self.root, self.campaign_id)
+                for job in jobs:
+                    job["state"] = "approved"
+                jobs[0]["state"] = state
+                save_jobs(self.root, self.campaign_id, jobs)
+                with self.assertRaisesRegex(PilotError, "terminal"):
+                    complete_campaign(self.root, self.campaign_id, 0)
 
     def test_changes_requested_queues_fresh_attempt_at_tail(self):
         self.make_reviewing("job-1", attempt=1)
@@ -1119,6 +1177,41 @@ class CoordinatorTests(unittest.TestCase):
         self.assertEqual(monitored["campaign_state"], "active")
         self.assertEqual(retried["jobs"][0]["state"], "queued")
         self.assertEqual(rejected["jobs"][0]["state"], "rejected")
+
+    def test_cli_completes_terminal_campaign_with_repair_count(self):
+        init_campaign(self.root, self.manifest)
+        jobs = load_jobs(self.root, self.campaign_id)
+        for job in jobs:
+            job["state"] = "rejected"
+        save_jobs(self.root, self.campaign_id, jobs)
+        script = Path(__file__).parents[1] / "scripts" / "manage_ingest_pilot.py"
+
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(script),
+                "complete",
+                "--campaign",
+                self.campaign_id,
+                "--coordinator-repairs",
+                "3",
+            ],
+            cwd=self.root,
+            text=True,
+            capture_output=True,
+        )
+
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        output = json.loads(completed.stdout)
+        self.assertEqual(output["campaign_state"], "complete")
+        self.assertEqual(
+            json.loads(
+                (self.root / "tracking/ingest/metronome" / self.campaign_id / "campaign.json").read_text(
+                    encoding="utf-8"
+                )
+            )["coordinator_repairs"],
+            3,
+        )
 
     def test_cli_reports_handled_errors_only_to_stderr(self):
         script = Path(__file__).parents[1] / "scripts" / "manage_ingest_pilot.py"

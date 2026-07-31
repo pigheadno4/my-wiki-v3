@@ -14,7 +14,9 @@ from .state import (
     load_campaign,
     load_jobs,
     render_monitor,
+    save_campaign,
     save_jobs,
+    _utc_now,
     write_attempt_file,
 )
 from .validator import (
@@ -661,6 +663,29 @@ def run_once(
 
 def status(root: Path, campaign_id: str) -> Dict[str, Any]:
     """Regenerate and return the non-authoritative campaign monitor."""
+    return _campaign_payload(root, campaign_id)
+
+
+def complete_campaign(root: Path, campaign_id: str, coordinator_repairs: int) -> Dict[str, Any]:
+    """Explicitly record a completed campaign after terminal job review."""
+    if (
+        isinstance(coordinator_repairs, bool)
+        or not isinstance(coordinator_repairs, int)
+        or coordinator_repairs < 0
+    ):
+        raise PilotError("coordinator repairs must be a non-negative integer")
+    campaign = load_campaign(root, campaign_id)
+    if campaign.get("state") == "complete":
+        raise PilotError("campaign is already complete")
+    if campaign.get("state") != "active":
+        raise PilotError("campaign must be active to complete")
+    jobs = load_jobs(root, campaign_id)
+    if any(job.get("state") not in {"approved", "rejected"} for job in jobs):
+        raise PilotError("campaign completion requires only terminal approved or rejected jobs")
+    campaign["state"] = "complete"
+    campaign["completed_at"] = _utc_now()
+    campaign["coordinator_repairs"] = coordinator_repairs
+    save_campaign(root, campaign_id, campaign)
     return _campaign_payload(root, campaign_id)
 
 

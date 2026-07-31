@@ -3,6 +3,7 @@ import tempfile
 import unittest
 from copy import deepcopy
 from pathlib import Path
+from unittest.mock import patch
 
 from scripts.ingest_pilot.state import (
     PilotError,
@@ -100,8 +101,9 @@ class PilotStateTests(unittest.TestCase):
         self.assertEqual(paths["manifest"].read_bytes(), expected_manifest)
         self.assertFalse(paths["jobs"].exists())
 
-    def test_initialize_creates_only_minimum_campaign_files(self):
-        initialize_state(self.root, self.manifest)
+    def test_initialize_creates_campaign_timing_defaults(self):
+        with patch("scripts.ingest_pilot.state._utc_now", return_value="2026-07-31T01:02:03Z"):
+            initialize_state(self.root, self.manifest)
 
         campaign_dir = self.root / "tracking/ingest/metronome/metronome-minimum-pilot-01"
         self.assertEqual(
@@ -122,6 +124,9 @@ class PilotStateTests(unittest.TestCase):
                 "max_attempts": 3,
                 "review_concurrency": 1,
                 "mode": "dry_run",
+                "started_at": "2026-07-31T01:02:03Z",
+                "completed_at": None,
+                "coordinator_repairs": 0,
             },
         )
         self.assertEqual([job["contract_version"] for job in jobs], [2] * 5)
@@ -360,6 +365,26 @@ class PilotStateTests(unittest.TestCase):
             campaign_paths(self.root, self.campaign_id)["monitor"].read_text(encoding="utf-8"),
             monitor,
         )
+
+    def test_monitor_reports_in_progress_timing_and_persisted_review_scopes(self):
+        with patch("scripts.ingest_pilot.state._utc_now", return_value="2026-07-31T01:02:03Z"):
+            jobs = self.initialize_jobs()
+        campaign_dir = campaign_paths(self.root, self.campaign_id)["campaign_dir"]
+        for job, review_scope in zip(jobs[:2], ("full", "targeted")):
+            attempt_dir = campaign_dir / "attempts" / job["job_id"] / "attempt-1"
+            attempt_dir.mkdir(parents=True)
+            attempt_dir.joinpath("review.json").write_text(
+                json.dumps({"review_scope": review_scope}), encoding="utf-8"
+            )
+
+        monitor = render_monitor(self.root, self.campaign_id)
+
+        self.assertIn("- Started at: `2026-07-31T01:02:03Z`", monitor)
+        self.assertIn("- Completed at: `incomplete`", monitor)
+        self.assertIn("- Full reviews: 1", monitor)
+        self.assertIn("- Targeted reviews: 1", monitor)
+        self.assertIn("- Coordinator repairs: 0", monitor)
+        self.assertIn("- Elapsed: `in progress`", monitor)
 
 
 if __name__ == "__main__":

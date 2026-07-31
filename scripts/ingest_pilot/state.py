@@ -2,6 +2,7 @@
 
 import json
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Union
 
@@ -53,6 +54,10 @@ def _json_bytes(value: Any) -> bytes:
     return (json.dumps(value, indent=2, sort_keys=False) + "\n").encode("utf-8")
 
 
+def _utc_now() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def _replace_jobs(path: Path, jobs: List[Dict[str, Any]]) -> None:
     temporary = path.with_name(path.name + ".tmp")
     if temporary.exists():
@@ -69,6 +74,32 @@ def _replace_jobs(path: Path, jobs: List[Dict[str, Any]]) -> None:
         raise PilotError("cannot save jobs.json") from error
 
 
+def _replace_campaign(path: Path, campaign: Mapping[str, Any]) -> None:
+    temporary = path.with_name(path.name + ".tmp")
+    if temporary.exists():
+        raise PilotError("temporary campaign file already exists")
+    try:
+        with temporary.open("xb") as output:
+            output.write(_json_bytes(campaign))
+            output.flush()
+            os.fsync(output.fileno())
+        os.replace(temporary, path)
+    except PilotError:
+        raise
+    except OSError as error:
+        raise PilotError("cannot save campaign.json") from error
+
+
+def _review_counts(campaign_dir: Path) -> Dict[str, int]:
+    counts = {"full": 0, "targeted": 0}
+    for review_path in (campaign_dir / "attempts").glob("*/attempt-*/review.json"):
+        review = _load_json(review_path)
+        scope = review.get("review_scope") if isinstance(review, dict) else None
+        if scope in counts:
+            counts[scope] += 1
+    return counts
+
+
 def _write_monitor(campaign_dir: Path, campaign: Mapping[str, Any], jobs: List[Dict[str, Any]]) -> str:
     counts = {state: sum(job.get("state") == state for job in jobs) for state in (
         "queued",
@@ -79,12 +110,32 @@ def _write_monitor(campaign_dir: Path, campaign: Mapping[str, Any], jobs: List[D
         "failed",
         "rejected",
     )}
+    review_counts = _review_counts(campaign_dir)
+    started_at = campaign.get("started_at", "not recorded")
+    completed_at = campaign.get("completed_at")
+    completed_display = completed_at if completed_at is not None else "incomplete"
+    elapsed = "in progress"
+    if isinstance(started_at, str) and isinstance(completed_at, str):
+        try:
+            elapsed_seconds = int(
+                (datetime.strptime(completed_at, "%Y-%m-%dT%H:%M:%SZ")
+                 - datetime.strptime(started_at, "%Y-%m-%dT%H:%M:%SZ")).total_seconds()
+            )
+            elapsed = f"{elapsed_seconds} seconds"
+        except ValueError:
+            elapsed = "unavailable"
     title = str(campaign["campaign_id"]).replace("-", " ").title()
     lines = [
         f"# {title}",
         "",
         f"- Campaign state: `{campaign['state']}`",
         f"- Worker concurrency: `{campaign['worker_concurrency']}`",
+        f"- Started at: `{started_at}`",
+        f"- Completed at: `{completed_display}`",
+        f"- Full reviews: {review_counts['full']}",
+        f"- Targeted reviews: {review_counts['targeted']}",
+        f"- Coordinator repairs: {campaign.get('coordinator_repairs', 0)}",
+        f"- Elapsed: `{elapsed}`",
         f"- Queued: {counts['queued']}",
         f"- Running: {counts['running']}",
         f"- Candidate ready: {counts['candidate_ready']}",
@@ -193,8 +244,11 @@ def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> No
             "max_attempts": 3,
             **review_configuration,
             "mode": "dry_run",
+            "started_at": _utc_now(),
+            "completed_at": None,
+            "coordinator_repairs": 0,
         }
-        paths["campaign"].write_bytes(_json_bytes(campaign))
+        _replace_campaign(paths["campaign"], campaign)
         jobs = [
             {
                 "job_id": source["job_id"],
@@ -231,6 +285,12 @@ def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> No
 def save_jobs(root: Path, campaign_id: str, jobs: List[Dict[str, Any]]) -> None:
     paths = campaign_paths(root, campaign_id)
     _replace_jobs(paths["jobs"], jobs)
+    render_monitor(root, campaign_id)
+
+
+def save_campaign(root: Path, campaign_id: str, campaign: Mapping[str, Any]) -> None:
+    paths = campaign_paths(root, campaign_id)
+    _replace_campaign(paths["campaign"], campaign)
     render_monitor(root, campaign_id)
 
 
