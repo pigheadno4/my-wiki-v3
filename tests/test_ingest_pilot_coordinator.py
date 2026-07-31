@@ -141,10 +141,28 @@ class CoordinatorTests(unittest.TestCase):
         save_jobs(self.root, self.campaign_id, jobs)
         attempt_dir = self.attempt(job_id, attempt)
         attempt_dir.mkdir(parents=True)
+        suggestions = suggestions or {"company": [], "concepts": [], "index": [], "log": []}
         attempt_dir.joinpath("suggestions.json").write_text(
-            json.dumps(suggestions or {"company": [], "concepts": [], "index": [], "log": []}),
+            json.dumps(suggestions),
             encoding="utf-8",
         )
+        self.write_receipt(job, attempt_dir, suggestions)
+
+    def write_receipt(self, job, attempt_dir, suggestions):
+        attempt_dir.joinpath("receipt.json").write_text(json.dumps({
+            "job_id": job["job_id"],
+            "attempt": job["attempt"],
+            "source_page": "validated source page",
+            "quotes": [
+                {"text": "Least privilege", "location": "body"},
+                {"text": "Separation of duties", "location": "body"},
+                {"text": "Secure by default", "location": "body"},
+            ],
+            "suggestions": suggestions,
+            "raw_path": job["raw_path"],
+            "raw_sha256": job["raw_sha256"],
+            "status": "candidate_ready",
+        }), encoding="utf-8")
 
     def test_valid_worker_result_persists_candidate_and_emits_review_order(self):
         self.start_five()
@@ -599,6 +617,8 @@ class CoordinatorTests(unittest.TestCase):
             job["attempt"] = 1
             job["state"] = "approved"
             job["last_event"] = "review_approved"
+            job["reviewer_identity"] = "reviewer-a"
+            job["reviewer_model"] = "Sol"
             attempt = self.attempt(job_id, 1)
             attempt.mkdir(parents=True, exist_ok=True)
             suggestions = {
@@ -624,7 +644,21 @@ class CoordinatorTests(unittest.TestCase):
                 "log": [],
             }
             attempt.joinpath("suggestions.json").write_text(json.dumps(suggestions), encoding="utf-8")
-            attempt.joinpath("review.json").write_text(json.dumps({
+            attempt.joinpath("receipt.json").write_text(json.dumps({
+                "job_id": job_id,
+                "attempt": 1,
+                "source_page": "valid receipt source page",
+                "quotes": [
+                    {"text": "Least privilege", "location": "body"},
+                    {"text": "Separation of duties", "location": "body"},
+                    {"text": "Secure by default", "location": "body"},
+                ],
+                "suggestions": suggestions,
+                "raw_path": job["raw_path"],
+                "raw_sha256": job["raw_sha256"],
+                "status": "candidate_ready",
+            }), encoding="utf-8")
+            review = {
                 "job_id": job_id,
                 "attempt": 1,
                 "verdict": "approved",
@@ -638,7 +672,8 @@ class CoordinatorTests(unittest.TestCase):
                 ],
                 "reviewer_identity": "reviewer-a",
                 "reviewer_model": "Sol",
-            }), encoding="utf-8")
+            }
+            attempt.joinpath("review.json").write_text(json.dumps(review), encoding="utf-8")
         save_jobs(self.root, self.campaign_id, jobs)
 
         output = status(self.root, self.campaign_id)
@@ -650,6 +685,27 @@ class CoordinatorTests(unittest.TestCase):
             ],
         })
         self.assertFalse((self.root / "wiki").exists())
+
+        review_path = self.attempt("job-1", 1).joinpath("review.json")
+        review = json.loads(review_path.read_text(encoding="utf-8"))
+        for field, tampered_value in (("reviewer_identity", "reviewer-b"), ("reviewer_model", "Terra")):
+            review[field] = tampered_value
+            review_path.write_text(json.dumps(review), encoding="utf-8")
+            with self.subTest(field=field):
+                with self.assertRaisesRegex(PilotError, "approved shared update evidence is invalid"):
+                    status(self.root, self.campaign_id)
+            review[field] = "reviewer-a" if field == "reviewer_identity" else "Sol"
+        review_path.write_text(json.dumps(review), encoding="utf-8")
+
+        suggestions_path = self.attempt("job-1", 1).joinpath("suggestions.json")
+        suggestions = json.loads(suggestions_path.read_text(encoding="utf-8"))
+        suggestions["concepts"][0]["quote_indexes"] = [99]
+        suggestions_path.write_text(json.dumps(suggestions), encoding="utf-8")
+        with self.assertRaisesRegex(PilotError, "approved shared update evidence is invalid"):
+            status(self.root, self.campaign_id)
+        self.assertFalse((self.root / "wiki").exists())
+        suggestions["concepts"][0]["quote_indexes"] = [0]
+        suggestions_path.write_text(json.dumps(suggestions), encoding="utf-8")
 
         jobs[0]["queue_position"] = 2
         jobs[1]["queue_position"] = 1
@@ -860,6 +916,7 @@ class CoordinatorTests(unittest.TestCase):
                     json.dumps({"company": [], "concepts": [], "index": [], "log": []}),
                     encoding="utf-8",
                 )
+                self.write_receipt(job, attempt, {"company": [], "concepts": [], "index": [], "log": []})
 
                 review_kwargs = (
                     {"required_changes": ["Revise the source page"], "retry_review_scope": "full"}

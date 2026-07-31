@@ -17,7 +17,13 @@ from .state import (
     save_jobs,
     write_attempt_file,
 )
-from .validator import TARGET_PREFIXES, UPDATE_KINDS, ValidationError, validate_worker_result
+from .validator import (
+    RESULT_KEYS,
+    TARGET_PREFIXES,
+    UPDATE_KINDS,
+    ValidationError,
+    validate_worker_result,
+)
 
 
 LEGACY_REVIEW_RESULT_KEYS = {"job_id", "attempt", "verdict", "reason", "required_changes"}
@@ -94,10 +100,34 @@ def _approved_shared_updates(root: Path, campaign_id: str, jobs: list) -> Dict[s
         )
         suggestions = _load_result(attempt_dir / "suggestions.json")
         review = _load_result(attempt_dir / "review.json")
-        if set(suggestions) != set(SUGGESTION_CATEGORIES) or set(review) != REVIEW_EVIDENCE_KEYS:
+        receipt = _load_result(attempt_dir / "receipt.json")
+        if (
+            set(suggestions) != set(SUGGESTION_CATEGORIES)
+            or set(review) != REVIEW_EVIDENCE_KEYS
+            or set(receipt) != RESULT_KEYS
+        ):
             raise PilotError("approved shared update evidence is invalid")
         if (
-            review["job_id"] != job_id
+            receipt["job_id"] != job_id
+            or isinstance(receipt["attempt"], bool)
+            or not isinstance(receipt["attempt"], int)
+            or receipt["attempt"] != attempt
+            or receipt["raw_path"] != job.get("raw_path")
+            or receipt["raw_sha256"] != job.get("raw_sha256")
+            or receipt["status"] != "candidate_ready"
+            or receipt["suggestions"] != suggestions
+            or not isinstance(receipt["source_page"], str)
+            or not isinstance(receipt["quotes"], list)
+            or not 3 <= len(receipt["quotes"]) <= 5
+            or any(
+                not isinstance(quote, dict)
+                or not isinstance(quote.get("text"), str)
+                or not quote["text"]
+                or not isinstance(quote.get("location"), str)
+                or not quote["location"]
+                for quote in receipt["quotes"]
+            )
+            or review["job_id"] != job_id
             or review["attempt"] != attempt
             or review["verdict"] != "approved"
             or not isinstance(review["reason"], str)
@@ -109,8 +139,10 @@ def _approved_shared_updates(root: Path, campaign_id: str, jobs: list) -> Dict[s
             or review["retry_review_scope"] is not None
             or not isinstance(review["reviewer_identity"], str)
             or not review["reviewer_identity"].strip()
+            or review["reviewer_identity"] != job.get("reviewer_identity")
             or not isinstance(review["reviewer_model"], str)
             or not review["reviewer_model"].strip()
+            or review["reviewer_model"] != job.get("reviewer_model")
             or not isinstance(review["shared_update_decisions"], list)
         ):
             raise PilotError("approved shared update evidence is invalid")
@@ -140,7 +172,10 @@ def _approved_shared_updates(root: Path, campaign_id: str, jobs: list) -> Dict[s
                     or not suggestion["proposed_markdown"].strip()
                     or not isinstance(suggestion["quote_indexes"], list)
                     or any(
-                        isinstance(index, bool) or not isinstance(index, int) or index < 0
+                        isinstance(index, bool)
+                        or not isinstance(index, int)
+                        or index < 0
+                        or index >= len(receipt["quotes"])
                         for index in suggestion["quote_indexes"]
                     )
                     or len(set(suggestion["quote_indexes"])) != len(suggestion["quote_indexes"])
