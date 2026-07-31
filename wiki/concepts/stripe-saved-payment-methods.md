@@ -118,6 +118,10 @@ stripe.paymentIntents.create({
 });
 ```
 
+### Metronome Indian-card e-mandate flow
+
+In the documented Metronome Indian-card invoice integration, the merchant confirms a Stripe SetupIntent on-session and Stripe creates the mandate. The integration must wait for Stripe status `active`; `pending` may last up to 30 minutes, while `inactive` requires new customer authorization. Stripe may emit `invoice.payment_action_required` and owns mandate creation and lifecycle. The guide requires SetupIntent setup because it characterizes all charges in this specific flow, including the first, as off-session; that requirement must not be generalized to all Stripe saved-payment-method behavior.
+
 ## Link Integration
 
 Works with saved PMs without extra config. Business-saved PMs displayed before Link PMs.
@@ -151,3 +155,4 @@ Disable built-in UI with `enableSave: 'never'` + `enableRedisplay: 'never'`, the
 - [[source-stripe-inapp-save-card-without-auth]] — Legacy save-card (US/Canada only): attach PM to Customer, charge with error_on_requires_action, setup_future_usage=on_session, CVC re-collection; non-compliant in India
 - [[source-stripe-payments-existing-customers]] — Existing customer flows: 4 paths (hosted/embedded/Elements/custom), allow_redisplay rules, prefill conditions, 30-min timeout
 - [[source-stripe-save-card-without-auth]] — Web legacy save card (US/CA only): createPaymentMethod→attach Customer, error_on_requires_action, setup_future_usage=on_session, CVC re-collection
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates]] — source-scoped Indian-card SetupIntent mandate creation, activation states, invoice attachment, action-required handling, and Stripe lifecycle ownership

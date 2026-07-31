@@ -39,6 +39,10 @@ This introductory source does not define the full contract schema, amendment lif
 
 The architecture guide frames each contract as answering what the customer buys, how they pay, and where charges are delivered. It lists pay-as-you-go arrears, prepaid credits, subscriptions with overage, enterprise commitments, and hybrids, while leaving request validation, effective-time semantics, amendments, and state transitions to dedicated references.
 
+### Customer balance views
+
+Metronome documents `/getNetBalance` as a customer-scoped single aggregate with filters for balance type, currency, pending charges, and custom fields. `listBalances` provides the detailed per-credit or per-commit alternative. The page does not define whether the aggregate crosses all customer contracts, how customer- and contract-level balances interact, how hierarchy affects the result, or whether reads are snapshot-consistent.
+
 ## Contract creation API
 
 The implementation workflow names six prerequisites: connected usage events, a billable metric, product, rate card, customer, and customer billing-provider configuration. Its worked contract combines an effective start, rate-card alias, provider routing, prepaid commit, scheduled charge, and usage-statement schedule. The page does not reconcile its customer-level configuration prerequisite with the contract-level `billing_provider_configuration` sample.
@@ -134,6 +138,7 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — contract-layered capped and uncapped trial periods
 - [[source-metronome-api-reference-billable-metrics-get-billable-metrics-for-a-customer]] — customer-scoped metric discovery and current-plan filter
 - [[source-metronome-guides-implement-metronome-planning-your-billing-architecture]] — commercial-design axes and implementation unknowns
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]] — customer aggregate and individual credit-or-commit balance views
 
 ## Related
 

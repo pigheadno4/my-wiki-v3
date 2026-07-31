@@ -1,0 +1,139 @@
+{
+  "job_id": "create-and-manage-notifications",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Manage your customer lifecycle with Metronome notifications\"\ntype: source\ndate_ingested: 2026-07-31\ncanonical_url: \"https://docs.metronome.com/guides/customers-billing/set-up-notifications/create-and-manage-notifications\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/customers-billing/set-up-notifications/create-and-manage-notifications-2026-07-13.md\"\ntags: [metronome, notifications, webhooks, customer-lifecycle, thresholds]\n---\n\n## Overview\n\nThis guide explains how Metronome notifications turn customer activity, contract events, and billing conditions into webhook-delivered signals. It distinguishes threshold, system, and offset notifications, then documents their delivery model, evaluation timing, state behavior, and operational uses.\n\n## Key takeaways\n\n- Threshold notifications fire when monitored conditions are met, system notifications follow object events or configured timestamps, and offset notifications follow a user-defined schedule relative to an event.\n- Notifications are delivered asynchronously as JSON webhook payloads to configured endpoints; all notification types use HTTPS POST.\n- Failed deliveries are retried with exponential backoff and jitter for up to 48 hours. Delivery is at least once, so endpoints must safely handle duplicates.\n- Threshold conditions are evaluated at least every three minutes, and a notification is documented to fire within five minutes after usage that breaches the threshold is ingested.\n- System and offset notifications are stateless. Threshold notifications are stateful and move between `OK` and `IN_ALARM`, with `EVALUATING` representing the pre-evaluation condition and an optional resolved event when an alarm returns to `OK`.\n- Metronome currently sends every notification to every configured webhook; this page does not describe per-webhook notification filtering.\n\n## Notification families and uses\n\nThreshold notifications monitor conditions such as spend exceeding an amount or available credit falling below a percentage. System notifications cover object creation, updates, and scheduled lifecycle moments such as contract starts or ends. Offset notifications use a merchant-defined relative policy, such as several days before a commit expires or after a contract starts.\n\nThe guide positions these signals as inputs to merchant-owned workflows: onboarding and trial reminders, usage-based access management, sales notifications about expiring contracts or exhausted commits, and proactive customer communication before credits expire or contracts renew. The notification itself is an action signal; the merchant remains responsible for the downstream product, communication, or operational response.\n\n## Delivery model\n\nMetronome sends notifications asynchronously as JSON-formatted webhooks. Payloads follow a consistent schema and can include `customer_id`, `timestamp`, and fields for the relevant object. Payloads also include a signature header for origin verification, while the dedicated [[source-metronome-guides-platform-configuration-setup-webhooks]] page remains the authority for the exact verification procedure.\n\nIf an endpoint is unavailable, Metronome retries with exponential backoff and jitter for up to 48 hours or until delivery succeeds. Because delivery is at least once, duplicates are possible and receivers should be idempotent. The guide also recommends retaining delivery logs for audit and downstream debugging.\n\n## Evaluation, scheduling, and state\n\nThreshold evaluation occurs at least once every three minutes. The page says a threshold notification fires within five minutes after the triggering usage is ingested. System notifications are generated from an object's configured timestamp or an action such as an edit, while offset notifications are generated from a user-defined policy relative to an event; both are described as near-real-time delivery at the applicable moment.\n\nSystem and offset notifications are stateless because they do not track an ongoing condition after their scheduled trigger. Threshold notifications are continuously evaluated. The page describes `OK` and `IN_ALARM` as their two ongoing states, while separately listing `EVALUATING` before the first evaluation. A threshold can return from `IN_ALARM` to `OK`, and an additional `*_resolved` notification may be emitted when that behavior is enabled.\n\nThe initial state depends on underlying data. For example, a customer with no active commits remains `OK` for commit-balance notifications until a commit exists and is consumed.\n\n## Operating guidance and boundaries\n\nThe guide recommends system notifications for time-based lifecycle automation, threshold notifications for continuous spend, usage, and credit monitoring, and offset notifications for proactive relative-date workflows. Custom fields can narrow notification policies to customer groups such as an enterprise segment or product tier. Receivers should make endpoints idempotent and retain delivery records.\n\n> [!info] Evolving\n> Metronome says it is expanding the available system and threshold notification types. This page documents no fixed completeness guarantee for the catalog.\n\nMetronome currently supports webhook delivery only, and all notifications are sent to all configured webhooks. The page does not document endpoint configuration steps, a complete payload schema, event-ordering guarantees, or per-destination filtering; use [[source-metronome-guides-platform-configuration-setup-webhooks]] for the broader delivery and verification contract.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-alerts-and-notifications]], [[metronome-webhooks]], [[metronome-customers-and-contracts]]\n- Related sources: [[source-metronome-guides-platform-configuration-setup-webhooks]], [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/customers-billing/set-up-notifications/create-and-manage-notifications-2026-07-13|2026-07-13 snapshot \u2014 notification types, delivery, scheduling, and states]]\n",
+  "quotes": [
+    {
+      "text": "There are three different types of notifications you can receive from Metronome:\n\n* **[Threshold notifications](/guides/customers-billing/set-up-notifications/threshold-notifications)** that fire when specific conditions are met, like spend exceeding a dollar amount or available credit amount dropping below a certain percentage\n* **[System notifications](/guides/customers-billing/set-up-notifications/system-notifications)** that fire when an object is created or updated or at scheduled points in time, such as when a contract starts or ends\n* **[Offset notifications](/guides/customers-billing/set-up-notifications/offset-notifications)** that fire at scheduled points in time as defined by a user set policy, such as 7 days before a commit expires or 3 days after a contract starts",
+      "location": "lines 17-21, notification type list"
+    },
+    {
+      "text": "Metronome notifications are delivered as JSON formatted [webhook notifications](/guides/platform-configuration/setup-webhooks/) to an endpoint you configure. These notifications are sent asynchronously and are designed to power automated workflows, customer communication, and internal operations.",
+      "location": "line 25, How notifications work"
+    },
+    {
+      "text": "* **Webhook-based delivery**: All notification types are sent as HTTPS POST requests.\n* **Standard format**: All payloads follow a consistent JSON schema and include contextual data like `customer_id`, `timestamp`, and relevant object fields.\n* **Reliable retries**: If the endpoint is unavailable, Metronome will automatically retry delivery using exponential backoff with jitter. Retries continue for up to 48 hours (or until successful).\n* **At least once delivery**: You may receive duplicate notifications; webhook endpoints should be idempotent.\n* **Security**: Webhook payloads include a signature header so you can verify the origin",
+      "location": "lines 29-33, Delivery mechanics"
+    },
+    {
+      "text": "| **Threshold**    | *Emitted when new usage or data triggers a threshold condition.*<br />The threshold is evaluated at least once every three minutes. Notifications will fire within 5 minutes of the usage triggering the breach of the threshold being ingested.                                     |",
+      "location": "line 39, Evaluation and scheduling table"
+    },
+    {
+      "text": "Notification types in Metronome fall into two behavioral models: **stateless** and **stateful**.\n\n**System and Offset Notifications** are stateless; they trigger once at a scheduled moment like when a contract ends and they do not track ongoing conditions or transitions.\n\n**Threshold Notifications** are stateful; they are continuously evaluated and move between two states: `OK` and `IN_ALARM`. For example, a commit balance notification may enter the `IN_ALARM` state when a customer's remaining balance drops below 10%, and return to `OK` once new prepaid credits are issued.",
+      "location": "lines 45-49, Notification states"
+    }
+  ],
+  "suggestions": {
+    "company": [
+      {
+        "update_id": "company-notification-families-and-state",
+        "target_path": "wiki/companies/metronome.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Notifications and webhooks",
+        "proposed_markdown": "- Notifications divide into threshold, system, and offset families. System and offset notifications are stateless scheduled signals; threshold notifications are continuously evaluated, use `OK` and `IN_ALARM` as ongoing states, and have an `EVALUATING` condition before initial evaluation. Thresholds are evaluated at least every three minutes, with firing documented within five minutes after triggering usage is ingested.",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source describes two ongoing threshold states but separately lists EVALUATING before initial evaluation; preserve that distinction."
+        ]
+      },
+      {
+        "update_id": "company-source-catalog-notifications",
+        "target_path": "wiki/companies/metronome.md",
+        "update_kind": "catalog_entry",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] \u2014 threshold, system, and offset notification behavior, delivery, scheduling, and states",
+        "quote_indexes": [],
+        "warnings": []
+      }
+    ],
+    "concepts": [
+      {
+        "update_id": "alerts-notification-families-and-lifecycle",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Notification types and lifecycle",
+        "proposed_markdown": "Metronome separates threshold, system, and offset notifications. Threshold notifications monitor conditions such as spend or available credit; system notifications follow object creation, updates, or configured timestamps; offset notifications follow user-defined schedules relative to lifecycle events.\n\nSystem and offset notifications are stateless. Threshold notifications are continuously evaluated, use `OK` and `IN_ALARM` as their ongoing states, and list `EVALUATING` before the initial evaluation. Evaluation occurs at least every three minutes, and the guide documents firing within five minutes after triggering usage is ingested. A return from `IN_ALARM` to `OK` may emit an optional `*_resolved` event.",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "The resolved-event statement appears outside the selected quote excerpts but is explicit at raw line 55 and must be checked during complete-source review.",
+          "Do not turn the documented evaluation and firing intervals into a general end-to-end webhook delivery SLA."
+        ]
+      },
+      {
+        "update_id": "alerts-source-link-notifications",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] \u2014 notification families, evaluation timing, state transitions, and operating guidance",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "webhooks-at-least-once-jitter-delivery",
+        "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Delivery model",
+        "proposed_markdown": "The notification lifecycle guide confirms asynchronous JSON delivery for all notification types over HTTPS POST. It describes exponential-backoff retries with jitter for up to 48 hours and at-least-once delivery, so receivers must tolerate duplicates and make processing idempotent.",
+        "quote_indexes": [
+          1,
+          2
+        ],
+        "warnings": [
+          "The dedicated setup-webhooks source remains authoritative for acknowledgement codes, retry cadence, deduplication keys, and the signature-verification algorithm."
+        ]
+      },
+      {
+        "update_id": "webhooks-source-link-notifications",
+        "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] \u2014 asynchronous HTTPS delivery, jittered retries, at-least-once semantics, and idempotent receiver guidance",
+        "quote_indexes": [
+          1,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [
+      {
+        "update_id": "metronome-index-source-notifications",
+        "target_path": "wiki/metronome-index.md",
+        "update_kind": "catalog_entry",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] \u2014 notification families, webhook delivery, evaluation timing, and threshold states",
+        "quote_indexes": [],
+        "warnings": []
+      }
+    ],
+    "log": [
+      {
+        "update_id": "metronome-log-source-notifications",
+        "target_path": "wiki/metronome-log.md",
+        "update_kind": "log_entry",
+        "anchor": "Newest entry",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] \u2014 threshold, system, and offset notification behavior, webhook delivery, scheduling, and state transitions",
+        "quote_indexes": [],
+        "warnings": [
+          "Coordinator should generate the final Campaign 08 log entry and coverage counts mechanically at campaign close."
+        ]
+      }
+    ]
+  },
+  "raw_path": "raw/metronome/guides/customers-billing/set-up-notifications/create-and-manage-notifications-2026-07-13.md",
+  "raw_sha256": "7c0125db5f4ab812a70d96d8d79b5a32942a1b05b0419820fea001b11ae57d5a",
+  "status": "candidate_ready"
+}

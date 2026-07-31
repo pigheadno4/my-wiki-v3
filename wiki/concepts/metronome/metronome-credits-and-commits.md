@@ -25,6 +25,8 @@ A contract edit adds terms without starting a new contract. A contract transitio
 
 Recurring credits and commits create a new grant and ledger each period. `commit_duration` controls how long unused value remains available, the recurrence schedule defaults to the contract usage schedule, and null proration defaults to `FIRST_AND_LAST`. A distinct recurring-grant start date becomes its anchor and does not prorate the first period.
 
+For offset-notification scheduling, Metronome says subsequent recurring-commit child commits are generated at most one future billing period ahead. A before-`commit.segment.start` offset longer than that horizon cannot fire at the requested earlier time because the child does not yet exist; it fires when the next child is created. This page does not establish the exact child-creation instant or a general recurring-commit generation SLA outside the offset scenario.
+
 ## Drawdown and invoice attribution
 
 - Credits and prepaid commits draw down before postpaid commits; lower numeric priorities consume first.
@@ -32,6 +34,12 @@ Recurring credits and commits create a new grant and ledger each period. `commit
 - Application occurs at invoice line-item level. Covered usage, the negative balance-application line, and uncovered overage remain separately attributable.
 - Every credit or commit uses a fixed product for invoice and reporting attribution, while product IDs, tags, or specifiers can restrict eligible usage.
 - Stripe-taxed prepaid-balance thresholds, spend thresholds, and one-off payment-gated commits require `payment_gate_type: "STRIPE"`, `tax_type: "STRIPE"`, and `stripe_config.payment_type: "INVOICE"`; account-level tax enablement does not cover these flows.
+
+### Balance retrieval and ledger calculation
+
+`/getNetBalance` returns one customer-level remaining-balance sum with filters for balance type, currency, pending charges, and custom fields. `listBalances` supports individual credit and commit views: each balance has a ledger, and summing its positive and negative entries produces that ledger's remaining balance. Values can be fractional; for USD the unit is cents, so `0.8` represents $0.008 and must not be silently truncated.
+
+Ledger entries carry a type, signed amount, and effective timestamp. One invoice-deduction entry exists for every invoice that consumes a balance, and its timestamp is the usage invoice's service-period end. Positive and negative manual entries can correct or migrate balances. Credit, prepaid-commit, and postpaid-commit ledgers have distinct start, drawdown, rollover, expiration, true-up, manual, and seat-adjustment types; the guide gives identical descriptions for `prepaid_segment_expiration` and `prepaid_commit_expiration` without distinguishing their trigger boundaries.
 
 ## Prepaid balance thresholds
 
@@ -47,6 +55,10 @@ Active threshold billing must be removed before a contract can transition to an 
 
 > [!warning] Documentation ambiguity
 > The threshold guide alternates between recharge at the threshold and recharge only below it. It also describes `discount_config.fraction` as the discount while showing `0.9` for a 10% discount, and its minimums note uses field labels that differ from the request examples. Confirm these boundaries against the current API schema.
+
+A threshold `discount_config.cap` can reference a public-beta spend tracker. The documented tracker currently sums selected commit purchases by manual or threshold-recharge source and optional discounted status. When qualifying spend reaches the cap, new threshold commits remain undiscounted until the tracker resets at the next billing period. A similar cap on manually issued payment-gated commits is not automatic: the merchant must query the tracker and enforce the check before issuing the commit.
+
+Spend-threshold billing is a separate contract control from prepaid-balance auto-recharge. It associates a product with the commit shown on the incremental invoice and can payment-gate that commit's release. Under the external path, the integrator stores `payment_gate.external_initiate.workflow_id`, collects payment, and calls the threshold-release endpoint to release the commit on success or cancel it on failure. The source does not define the pending commit's amount, type, schedules, ledger availability, or visibility before the outcome.
 
 ## Customer-level create API
 
@@ -92,6 +104,10 @@ The guides contain example-level inconsistencies that should be checked against 
 - A manual one-off Stripe-gated commit edits an existing contract. Successful payment releases the balance; failure voids the associated Metronome and Stripe invoices, creates no commit, and requires a new API request rather than an automatic payment retry. Pre-success resource state and external-gate equivalence are undocumented.
 - A capped trial can use a fixed credit product with a time-bounded access schedule, blank applicability fields for all usage, and a low numeric priority so the trial grant draws down first. Depletion or expiry permits later usage to rate in arrears; monetary encoding and isolation from other balances remain unknown.
 
+## Commit-balance notifications
+
+A merchant can create `low_remaining_commit_balance_reached` for a customer, credit type, and threshold. The resulting signal can support customer communication, sales outreach, or a merchant-owned service cutoff when the balance reaches zero. The page does not define which contract- or customer-level commits contribute, applicability or priority effects, expired-balance treatment, inclusion of credits, or automatic access enforcement.
+
 ## Sources
 
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-enterprise-commit]] — enterprise commitment design, schedules, rollover, discounts, and lifecycle examples
@@ -108,6 +124,11 @@ The guides contain example-level inconsistencies that should be checked against 
 - [[source-metronome-guides-pricing-packaging-subscription-manage-subscription-lifecycle]] — bounded hybrid-subscription cancellation rule
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — manual Stripe gate, invoice voiding, and explicit retry
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — capped trial grant, priority, and expiry boundary
+- [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] — recurring-child generation horizon and before-segment offset timing limitation
+- [[source-metronome-guides-customers-billing-manage-customers-spend-trackers]] — commit-purchase tracking, threshold-discount caps, reset behavior, and manual enforcement boundary
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-set-customer-spend-control]] — spend-triggered commit representation, optional payment gate, and external release/cancel flow
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] — low-remaining-commit alert and merchant-owned outreach or access action
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]] — aggregate and detailed balance APIs, signed-ledger arithmetic, precision, effective time, entry types, and manual adjustments
 
 ## Related
 

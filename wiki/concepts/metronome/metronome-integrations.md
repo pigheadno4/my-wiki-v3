@@ -25,6 +25,8 @@ Metronome integrations connect its usage-billing and contract workflows to exter
 - Tax providers operate on the draft Stripe invoice before Stripe finalization.
 - `invoice.billing_provider_error` reports failures sending an invoice to Stripe, but the webhook guide warns that it does not cover failures that exist entirely inside Stripe.
 
+For the Indian-card mandate flow, Stripe owns SetupIntent confirmation, mandate creation, status changes, and `invoice.payment_action_required`. Metronome's role is limited to storing and returning a contract custom-field value, mapping it to Stripe's invoice `default_mandate`, attempting attachment on invoices sent to Stripe, and surfacing payment failures through its normal failure path. Metronome does not expose a mandate-management API or manage lifecycle events; the integrator must wait for active status and replace or update the Stripe mandate before retrying when necessary.
+
 ## Stripe Tax boundary
 
 Metronome creates and maps the Stripe invoice, while Stripe Tax calculates and applies tax when Stripe finalizes it. Metronome supplies the linked Stripe customer and a line-item product mapping; Stripe uses the customer address for jurisdiction and the Stripe product tax code for classification. Leaving the invoice as a draft defers automatic tax until manual finalization.
@@ -34,6 +36,8 @@ Metronome creates and maps the Stripe invoice, while Stripe Tax calculates and a
 For a Stripe-gated prepaid threshold, Metronome initiates the configured Stripe invoice or PaymentIntent and releases the recharge commit only after successful payment. With `payment_gate_type: EXTERNAL`, Metronome emits `payment_gate.external_initiate`, while the integrator owns collection and must call the threshold-release endpoint with the workflow ID to release or cancel the commit. The guide does not document external-gateway readiness, retry, or idempotency behavior.
 
 For a manual Stripe-gated commit, Metronome initiates and monitors payment and requires the product mapping described in [[metronome-products-and-rate-cards]]. Release timing depends on the provider, payment method, and authentication. After failure, the guide requires a new Metronome request and no automatic payment retry; the broader Stripe ownership statement above must not override this source-specific boundary.
+
+Spend-threshold billing uses the same explicit external-ownership pattern as the documented threshold release route: `payment_gate_type: EXTERNAL` causes `payment_gate.external_initiate`; the integrator retains the workflow ID, collects payment independently, and calls the release endpoint to release or cancel the pending commit. For Stripe, the spend-threshold page offers invoice or PaymentIntent collection and requires a valid contract billing configuration. It does not define gateway readiness, event ordering, duplicate outcomes, expiry, retry, or idempotency.
 
 ## Billing-provider transitions
 
@@ -62,6 +66,8 @@ The optional tax-provider field lists Anrok, Avalara, and Stripe. The source lim
 - [[source-metronome-guides-get-started-how-metronome-works]] — high-level downstream-destination boundary
 - [[source-metronome-guides-implement-metronome-core-concepts-provision-customer]] — external connection prerequisite, contract selection, and beta archival
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — Stripe manual-gate responsibility, product mapping, and retry boundary
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates]] — Stripe mandate ownership, Metronome contract-field mapping, action-required handling, and retry boundary
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-set-customer-spend-control]] — Stripe and external spend-threshold payment-gate responsibility
 
 ## Related
 

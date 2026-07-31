@@ -1,0 +1,45 @@
+{
+  "action": "spawn_worker",
+  "job_id": "india-e-mandates",
+  "attempt": 2,
+  "raw_path": "raw/metronome/guides/customers-billing/optimize-customer-experience/india-e-mandates-2026-07-13.md",
+  "raw_sha256": "a143201d70f01039a6a13cfc9ab4be02270bd632ce56d9fcf84ea94c9389d8f5",
+  "source_target": "wiki/sources/metronome/source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates.md",
+  "canonical_url": "https://docs.metronome.com/guides/customers-billing/optimize-customer-experience/india-e-mandates",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location."
+  ],
+  "retry_context": {
+    "prior_attempt": 1,
+    "review_scope": "targeted",
+    "required_changes": [
+      "Add a contract-v2 company catalog suggestion targeting `wiki/companies/stripe.md` with the source wikilink and a concise source-scoped description of Stripe SetupIntent/mandate ownership and action-required handling. Warn the coordinator to recompute Stripe `source_count` from the final promoted catalog and not to infer RBI rules, legal compliance, or payment-success guarantees.",
+      "Add a contract-v2 durable-fact suggestion targeting `wiki/concepts/stripe-saved-payment-methods.md` for this India-card integration: on-session SetupIntent confirmation creates the mandate; readiness requires Stripe `active` status; `pending` may last up to 30 minutes; `inactive` requires new authorization; Stripe may emit `invoice.payment_action_required`; and Stripe, not Metronome, owns the mandate lifecycle. Keep the page's all-charges-off-session and SetupIntent requirement scoped to this documented Metronome/Indian-card flow rather than general Stripe saved-method behavior.",
+      "Add the matching reciprocal-source-link suggestion under `wiki/concepts/stripe-saved-payment-methods.md` for `[[source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates]]`. Ground both new concept suggestions with the existing quote indexes and retain the regulatory, retry, denomination, eligibility, and attachment-versus-payment unknowns. Preserve all existing candidate text and already-valid suggestions."
+    ],
+    "prior_reviewer_identity": "sol-review-india-e-mandates-a1"
+  },
+  "recommended_worker_tier": "strong",
+  "routing_reason": "regional recurring-payment rules and Stripe integration boundaries require careful interpretation",
+  "worker_identity": "sol-india-e-mandates-a2",
+  "worker_model": "gpt-5.6-sol"
+}

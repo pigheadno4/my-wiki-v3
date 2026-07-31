@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 50 |
-| Documentation pages pending ingest | 175 |
+| Source summaries ingested | 60 |
+| Documentation pages pending ingest | 165 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -73,6 +73,16 @@ Operational evidence:
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — capped-credit and uncapped zero-multiplier trial patterns
 - [[source-metronome-api-reference-billable-metrics-get-a-billable-metric]] — single-metric schema, matching, aggregation, grouping, and archive state
 - [[source-metronome-api-reference-billable-metrics-get-billable-metrics-for-a-customer]] — customer metric listing, pagination, filters, and schema defects
+- [[source-metronome-guides-customers-billing-overview]] — Customers & Billing navigation across lifecycle management, dashboards and spend controls, fraud and entitlement themes, and alerts
+- [[source-metronome-guides-customers-billing-manage-customers-manage-product-access]] — product-access navigation overview spanning customer provisioning, contract lifecycle, temporary trials, and entitlement-state notifications
+- [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] — notification families, webhook delivery, evaluation timing, and threshold states
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates]] — Indian-card Stripe mandate setup, threshold and recurring configuration, invoice mapping, and responsibility boundaries
+- [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] — relative-time offsets, payload semantics, prospective behavior, setup paths, and recurring-commit caveat
+- [[source-metronome-guides-customers-billing-manage-customers-spend-trackers]] — public-beta commit-purchase accumulation, threshold-discount caps, contract retrieval, and enforcement boundaries
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-set-customer-spend-control]] — contract spend thresholds, incremental billing, configuration updates, and Stripe/external payment gates
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] — contract-aware event-cost simulation, preview modes, multi-contract draft output, deduplication conflict, and limits
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] — customer-defined spend, grouped-dimension, commit-balance, and invoice-total alerts with merchant enforcement
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]] — aggregate and ledger balance retrieval, signed calculation, precision, timestamps, and manual adjustments
 
 ## Concepts
 
@@ -90,6 +100,8 @@ Operational evidence:
 - [[metronome-api-idempotency]] — key selection, conflict behavior, retention windows, and cached-error handling
 - [[metronome-subscriptions]] — subscription pricing, contract configuration, transitions, and cancellation
 - [[metronome-alerts-and-notifications]] — alert definitions, trial-balance triggers, and merchant action boundary
+- [[metronome-spend-trackers]] — public-beta commit-purchase accumulators, threshold-discount integration, retrieval, and billing-state unknowns
+- [[metronome-spend-threshold-billing]] — contract-level incremental collection with optional commit-release payment gating, distinct from product-access enforcement and a customer-wide cross-contract cap
 
 ## Related platforms
 

@@ -30,6 +30,10 @@ The billable-metrics guide fills in the metering layer: usage events are filtere
 
 The Preview Events API provides a concrete validation step between usage-event design and invoice generation. It can calculate draft invoices from proposed events using the customer's current contract, either replacing historical usage for the calculation or merging with it. The preview does not support contracts with SQL billable metrics.
 
+The cost-preview guide expands the validation use case: the simulation can model tier transitions, commit and credit coverage versus overage, free allotments, and several products using the customer's contract. Merge mode estimates incremental cost against existing billing-period usage, while replace mode tests only the proposed usage. Customers with several active contracts receive separate preview invoice calculations.
+
+Preview does not process or bill the events and is not positioned as per-event real-time validation; the documented limit is 8 RPS per client. The source does not define configuration-snapshot consistency, event-to-contract routing, pricing precedence, balance timing, or compatibility with all contract features, and SQL-based billable metrics are excluded.
+
 ## Planning, PayGo, and trial patterns
 
 The billing-architecture guide frames implementation as five connected decisions: define the value exchange, build reliable usage data, choose customer-aligned commercial terms, distribute billing data to its consumers, and operate the system with monitoring and correction paths. This is a planning checklist, not evidence of particular schemas, limits, availability, or service guarantees.
@@ -61,3 +65,4 @@ These remaining questions require dedicated sources and are not fully answered b
 - [[source-metronome-guides-implement-metronome-planning-your-billing-architecture]] — five-lens billing-system planning checklist
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-pay-as-you-go]] — illustrative PayGo packaging and provisioning path
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — capped-credit and zero-multiplier trial patterns
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] — contract-aware pre-action pricing, merge/replace modes, multi-contract output, and simulation limits

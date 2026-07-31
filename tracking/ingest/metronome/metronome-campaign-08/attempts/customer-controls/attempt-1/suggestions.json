@@ -1,0 +1,169 @@
+{
+  "company": [
+    {
+      "update_id": "customer-controls-company-alert-enforcement-boundary",
+      "target_path": "wiki/companies/metronome.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Notifications and webhooks",
+      "proposed_markdown": "- Customer controls use threshold alerts as merchant-consumed action signals. The examples create soft and hard limits with the same `spend_threshold_reached` type, support dimension filters tied to billable-metric group keys, expose a low-remaining-commit alert, and distinguish pre-drawdown usage spend from post-drawdown invoice total. Metronome evaluates and delivers the alert, while the merchant owns the customer UI, messaging, and access blocking; no invoice finalization, payment success, or automatic service-denial guarantee follows from an alarm.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not describe the illustrated end-user interface as a Metronome-hosted customer dashboard component.",
+        "Do not turn a hard-limit notification into automatic Metronome entitlement or request enforcement."
+      ]
+    },
+    {
+      "update_id": "customer-controls-company-source-catalog",
+      "target_path": "wiki/companies/metronome.md",
+      "update_kind": "catalog_entry",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] \u2014 merchant-configured spend, dimension, commit-balance, and invoice-total alerts with access-enforcement boundaries",
+      "quote_indexes": [],
+      "warnings": [
+        "Recompute source_count from the final Campaign 08 promoted catalog."
+      ]
+    }
+  ],
+  "concepts": [
+    {
+      "update_id": "customer-controls-alert-patterns",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Customer-configured controls",
+      "proposed_markdown": "A merchant can create customer-scoped threshold alerts for billing-period spend, low remaining commit balance, and usage-invoice total. The spend-limit examples use `spend_threshold_reached` for both soft and hard limits; their names, thresholds, and merchant actions distinguish them rather than a documented native severity or enforcement field. Store returned alert IDs so webhook signals can be matched to the intended customer and rule. When a limit changes, the guide archives the previous alert before creating a replacement, without defining atomic replacement or gap behavior.\n\nSpend alerts can be scoped with `group_values`, polled with customer-alert get/list endpoints, or consumed through webhooks. A hard-limit alarm, a zero commit balance, or any other threshold remains an action signal: the merchant owns customer communication, sales workflows, service cutoff, and later restoration. The guide does not establish an end-to-end latency guarantee, automatic entitlement mutation, maximum overshoot, payment outcome, or access-denial guarantee.\n\n`spend_threshold_reached` evaluates usage-based spend before credit and commit drawdown. `invoice_total_reached` evaluates after drawdown and can be filtered to usage invoices. `low_remaining_commit_balance_reached` signals a configured commit-balance threshold, but the page does not define exactly which balances aggregate into it.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep alert evaluation, webhook delivery, merchant action, invoice state, and payment state distinct.",
+        "The source does not document automatic access enforcement or a native semantic difference between its soft and hard alert examples.",
+        "Do not reproduce the credential-looking bearer literal in the invoice-total curl example."
+      ]
+    },
+    {
+      "update_id": "customer-controls-alerts-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] \u2014 customer-configured spend, grouped-dimension, commit-balance, and invoice-total alert patterns with merchant-action boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "customer-controls-billable-metric-group-scoping",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Group-key alert scoping",
+      "proposed_markdown": "Dimension-scoped spend alerts require their `group_values` key to be a group key on the underlying billable metrics associated with the customer's contract. Products whose metric lacks the key do not contribute to that threshold. Metronome recomputes the selected usage as if the key were a presentation group, so tiered pricing, quantity rounding, and `MAX` aggregation apply to the subset. A customer can use three distinct keys for spend-threshold notifications; a fourth is blocked. When one key has more than 5,000 values for that customer, the guide calls for representative consultation rather than defining a hard maximum.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Do not confuse the three-key alert limit with the number of values per key.",
+        "The 5,000-value consultation note is specific to spend-threshold configuration and does not supersede the separate metric-cardinality latency warning near 1,000 values.",
+        "Subset repricing for an alert does not establish a mutation to actual invoice presentation."
+      ]
+    },
+    {
+      "update_id": "customer-controls-billable-metrics-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] \u2014 group-key requirements, subset repricing, three-key limit, and high-cardinality consultation for spend alerts",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "customer-controls-invoice-alert-calculation",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Calculation and timing boundary",
+      "proposed_markdown": "The customer-controls guide distinguishes two alert calculations: `spend_threshold_reached` uses usage-based spend before credit and commit drawdown, while `invoice_total_reached` evaluates the amount after drawdown and can be limited to usage invoices. These are threshold-evaluation semantics, not evidence that an invoice is finalized, delivered, collected, paid, or immutable.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Do not convert the source's phrase 'amount a customer will pay' into payment success or a final collectible amount.",
+        "The page does not define taxes, adjustments, scheduled charges, draft changes, or repeated-alarm behavior."
+      ]
+    },
+    {
+      "update_id": "customer-controls-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] \u2014 pre-drawdown spend versus post-drawdown usage-invoice alert calculation",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "customer-controls-commit-balance-alert",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Commit-balance notifications",
+      "proposed_markdown": "A merchant can create `low_remaining_commit_balance_reached` for a customer, credit type, and threshold. The resulting signal can support customer communication, sales outreach, or a merchant-owned service cutoff when the balance reaches zero. The page does not define which contract- or customer-level commits contribute, applicability or priority effects, expired-balance treatment, inclusion of credits, or automatic access enforcement.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Treat the alert as a signal; Metronome is not documented as cutting off product access or renegotiating the contract.",
+        "Do not infer aggregation semantics beyond the shown customer, credit type, and threshold fields."
+      ]
+    },
+    {
+      "update_id": "customer-controls-credits-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] \u2014 low-remaining-commit alert and merchant-owned outreach or access action",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [
+    {
+      "update_id": "customer-controls-provider-index-source",
+      "target_path": "wiki/metronome-index.md",
+      "update_kind": "catalog_entry",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] \u2014 customer-defined spend, grouped-dimension, commit-balance, and invoice-total alerts with merchant enforcement",
+      "quote_indexes": [],
+      "warnings": []
+    }
+  ],
+  "log": [
+    {
+      "update_id": "customer-controls-provider-log-entry",
+      "target_path": "wiki/metronome-log.md",
+      "update_kind": "log_entry",
+      "anchor": "Newest entry",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] \u2014 merchant-configured spend and usage controls, group-scoped calculations, commit and invoice thresholds, dashboard boundaries, and application-owned enforcement (raw SHA-256 `9a2128829a46fce304d3b48229d4f71a8fc7c9f6888f4c5a2e523b638fd58685`)",
+      "quote_indexes": [],
+      "warnings": [
+        "Coordinator should merge this item into the single Campaign 08 close entry and generate final coverage counts mechanically."
+      ]
+    }
+  ]
+}

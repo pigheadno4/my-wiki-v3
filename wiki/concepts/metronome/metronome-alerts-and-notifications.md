@@ -15,9 +15,32 @@ A customer-scoped Contract credit-balance alert with a `$0` threshold can signal
 
 The merchant owns any email, access restriction, or feature re-enablement that follows the notification. The source does not establish whether the threshold isolates the trial credit or aggregates other contract balances, how `triggered_by` classifies expiration or simultaneous triggers, or whether “real-time” implies a specific latency.
 
+## Notification types and lifecycle
+
+Metronome separates threshold, system, and offset notifications. Threshold notifications monitor conditions such as spend or available credit; system notifications follow object creation, updates, or configured timestamps; offset notifications follow user-defined schedules relative to lifecycle events.
+
+System and offset notifications are stateless. Threshold notifications are continuously evaluated, use `OK` and `IN_ALARM` as their ongoing states, and list `EVALUATING` before the initial evaluation. Evaluation occurs at least every three minutes, and the guide documents firing within five minutes after triggering usage is ingested. A return from `IN_ALARM` to `OK` may emit an optional `*_resolved` event.
+
+## Offset notifications
+
+Offset notifications apply a user-configured hour, day, week, month, or year displacement to a known system-event date. They can be managed in the UI or created with `POST /v2/notifications/create` using an ISO 8601 offset policy. The payload omits the threshold payload's `properties` field, and its `timestamp` records the source event time rather than the calculated offset fire time.
+
+Offset generation is prospective: past fire times are not replayed, moving a fire time into the past does not produce a notification, and archiving the configuration before fire time prevents it. Offsets cannot fire before `.create`, `.edit`, or `.archive` events. For recurring commits, a before-`commit.segment.start` offset longer than the one-period-ahead child-generation horizon fires when the future child commit is created rather than at the earlier requested time.
+
+## Customer-configured controls
+
+A merchant can create customer-scoped threshold alerts for billing-period spend, low remaining commit balance, and usage-invoice total. The spend-limit examples use `spend_threshold_reached` for both soft and hard limits; their names, thresholds, and merchant actions distinguish them rather than a documented native severity or enforcement field. Store returned alert IDs so webhook signals can be matched to the intended customer and rule. When a limit changes, the guide archives the previous alert before creating a replacement, without defining atomic replacement or gap behavior.
+
+Spend alerts can be scoped with `group_values`, polled with customer-alert get/list endpoints, or consumed through webhooks. A hard-limit alarm, a zero commit balance, or any other threshold remains an action signal: the merchant owns customer communication, sales workflows, service cutoff, and later restoration. The guide does not establish an end-to-end latency guarantee, automatic entitlement mutation, maximum overshoot, payment outcome, or access-denial guarantee.
+
+`spend_threshold_reached` evaluates usage-based spend before credit and commit drawdown. `invoice_total_reached` evaluates after drawdown and can be filtered to usage invoices. `low_remaining_commit_balance_reached` signals a configured commit-balance threshold, but the page does not define exactly which balances aggregate into it.
+
 ## Sources
 
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — customer-scoped trial alert, threshold, payload fields, and merchant-action boundary
+- [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] — notification families, evaluation timing, state transitions, and operating guidance
+- [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] — relative scheduling, payload timestamp semantics, prospective firing rules, and recurring-commit caveat
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] — customer-configured spend, grouped-dimension, commit-balance, and invoice-total alert patterns with merchant-action boundaries
 
 ## Related
 

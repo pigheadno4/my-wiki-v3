@@ -1,0 +1,188 @@
+{
+  "job_id": "preview-event-cost",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Preview event costs\"\ntype: source\ndate_ingested: 2026-07-31\ncanonical_url: \"https://docs.metronome.com/guides/customers-billing/optimize-customer-experience/preview-event-cost\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/customers-billing/optimize-customer-experience/preview-event-cost-2026-07-13.md\"\ntags: [metronome, event-preview, usage-events, pricing, contracts, draft-invoices]\n---\n\n## Overview\n\nMetronome's Preview Events endpoint simulates how proposed usage events would affect a customer's invoices under the customer's contract configuration without processing or billing those events. The guide positions it for pre-action cost estimates, budget planning, and what-if analysis, while documenting merge and replace modes, draft-invoice-shaped responses, transaction-ID handling, an 8-requests-per-second client limit, and exclusion of SQL-based billable metrics.\n\n## Key takeaways\n\n- Preview is a calculation path, not event ingestion or billing: the source says the submitted events are neither processed nor billed.\n- The calculation evaluates the customer's contract and can reflect tiered pricing, commits and credits, free allotments, and multiple products. It does not establish compatibility with every contract or pricing feature.\n- `merge` combines the preview events with existing usage in the billing period for incremental impact; `replace` ignores existing usage and evaluates only the proposed events.\n- The response uses draft invoice records with totals and line items. Customers with multiple active contracts receive a separate preview invoice for each contract rather than one consolidated result.\n- The endpoint is limited to 8 requests per second per client, is not intended to validate every event in real time, and rejects a preview with HTTP 400 when the evaluated customer invoice contains SQL-based billable metrics.\n- The guide and the dedicated API reference conflict on duplicate transaction IDs inside one request: this guide says they are deduplicated, while the API source says they cause an error.\n\n## Contract and pricing evaluation\n\nThe guide says preview events are evaluated against the customer's actual contract configuration. Its documented pricing cases include volume tiers and transitions, commit and credit coverage versus overage, included free usage, and costs spanning multiple products. These bullets explain intended calculation inputs but do not define pricing precedence, balance-snapshot timing, contract-version consistency, effective-dated changes, unsupported price types, or whether every optional contract feature participates.\n\nWhen a customer has multiple active contracts, the endpoint returns separate invoice records keyed by contract ID. The page does not explain event-to-contract routing, whether one event can affect several contracts, how usage filters are applied, or whether the results share one atomic configuration snapshot.\n\n## Preview modes\n\n`merge` mode combines proposed events with the customer's existing billing-period usage. The guide's free-allotment example starts at 99 of 100 included calls and previews five more, producing one additional free call and four billable calls.\n\n`replace` mode ignores existing usage and evaluates only the preview events for a clean-slate scenario. The page does not say that replace mode ignores contract terms, commits, credits, or free allotments; it says only that existing usage is ignored. It also does not define the default mode in this guide, so callers should use the dedicated API reference for request defaults.\n\n## Request and response boundary\n\nThe basic request posts an `events` array and explicit mode to `POST /v1/customers/{customer_id}/previewEvents`. Its example event supplies `event_type`, `timestamp`, and string-valued properties but no `transaction_id`. The guide does not define full field requiredness, batch-size limits, timestamp bounds, property types, authentication scope, or general validation errors.\n\nThe response is an array of draft-invoice-shaped objects containing a contract ID, period timestamps, credit type, `DRAFT` status, total, billable status, and line items with product, quantity, unit-price, and other presentation fields. Because the endpoint is explicitly a simulation that does not process or bill the events, the response must not be treated as a finalized, delivered, collectible, or necessarily persisted invoice. The guide does not define preview-record retention, whether returned IDs can be retrieved later, payment status, downstream delivery, tax behavior, or revenue-recognition effects.\n\n> [!warning] Example quantity and arithmetic mismatch\n> The request says it previews 100 compute hours, but the response shows quantity `10` and unit price `4900`; its only displayed line item has total `0` while the invoice total is `49000`. The page supplies no conversion, additional line, credit application, or other explanation that reconciles these values. Treat the response as a structural illustration, not an authoritative pricing calculation.\n\nThe shortened multiple-contract response contains JavaScript-style comments and is likewise illustrative rather than valid JSON.\n\n## Transaction-ID behavior\n\nThe guide says identical `transaction_id` values within the same preview request are deduplicated against each other and that IDs matching `/ingest` events from the prior 34 days are also deduplicated. It does not define the resulting response, whether a duplicate is silently omitted, whether payload differences matter, the exact 34-day boundary, or whether submitting a preview transaction ID reserves or persists that ID for later preview or ingest calls.\n\n> [!warning] Documentation contradiction\n> This guide says duplicate `transaction_id` values in one preview request are deduplicated. The existing dedicated Preview Events API source says duplicate IDs in the same request cause an error. Verify current endpoint behavior before relying on either same-request rule. Both sources agree that preview IDs are checked against ingested events from the preceding 34 days.\n\n## Performance and limitations\n\nThe guide documents an 8 RPS limit per client and says the endpoint is unsuitable for real-time validation of every event. It recommends caching repeated calculations and batching multiple proposed events, but does not define cache validity, maximum batch size, client identity, rate-limit headers, retry behavior, concurrency, latency, or freshness. Relevant pricing properties must be included, and both modes should be tested during development.\n\nIf SQL-based billable metrics are present on the customer invoice being evaluated, the endpoint returns HTTP 400. The page does not define whether one SQL metric excludes all active contracts, how the affected invoice is selected, the error body, mixed streaming/SQL behavior, or a fallback calculation path.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-invoicing]], [[metronome-event-ingestion]], [[metronome-usage-based-billing]], [[metronome-products-and-rate-cards]], [[metronome-customers-and-contracts]], [[metronome-billable-metrics]]\n- Related source: [[source-metronome-api-reference-invoices-preview-events]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/customers-billing/optimize-customer-experience/preview-event-cost-2026-07-13|2026-07-13 snapshot \u2014 cost-preview modes, contract pricing, draft response, deduplication, and limits]]\n",
+  "quotes": [
+    {
+      "text": "Help customers understand the financial impact of their actions before they commit to taking them. The preview events endpoint allows you to simulate how events would affect a customer's invoice without actually processing or billing for them.",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/preview-event-cost-2026-07-13.md:13 (simulation and non-processing/non-billing boundary)"
+    },
+    {
+      "text": "The preview events endpoint evaluates events against a customer's actual contract configuration, including all pricing complexity:\n\n* **Tiered pricing**: Correctly applies volume discounts and tier transitions\n* **Commits and credits**: Shows what usage is covered by commit and credit balances and what spills into overage\n* **Free allotments**: Accounts for included usage in the contract\n* **Multiple products**: Calculates costs across all products in the contract\n\n## Preview modes\n\nThere are two different ways you can choose to evaluate preview events:\n\n### Merge mode\n\nCombines preview events with the customer's existing usage for the billing period. Use this to show incremental cost impact.\n\n**Example**: A customer has used 99 API calls this month (with 100 free). Previewing 5 calls in merge mode shows 1 free and 4 billable.\n\n### Replace mode\n\nEvaluates only the preview events, ignoring existing usage. Use this for hypothetical \"clean slate\" scenarios.\n\n**Example**: Show the total monthly cost if a customer only performed the specific actions in the preview.\n\n## Set up a cost preview\n\n### Basic example\n\nPreview how 100 compute hours would affect a customer's invoice:\n\n```bash theme={null}\ncurl --request POST \\\n  --url https://api.metronome.com/v1/customers/{customer_id}/previewEvents \\\n  --header 'Authorization: Bearer <token>' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\n    \"events\": [\n      {\n        \"event_type\": \"compute_usage\",\n        \"timestamp\": \"2025-11-15T10:00:00Z\",\n        \"properties\": {\n          \"compute_hours\": \"100\",\n          \"instance_type\": \"gpu-large\"\n        }\n      }\n    ],\n    \"mode\": \"merge\"\n  }'\n```\n\n### Response structure\n\nThe endpoint returns draft invoices showing the calculated costs:\n\n```json theme={null}\n{\n  \"data\": [\n    {\n      \"id\": \"68e0bc1c-a8ec-5765-856b-f896285b4cdb\",\n      \"issued_at\": \"2025-12-02T12:00:00+00:00\",\n      \"start_timestamp\": \"2025-11-01T00:00:00+00:00\",\n      \"end_timestamp\": \"2025-12-01T00:00:00+00:00\",\n      \"customer_id\": \"46b2c479-6202-4db6-b392-5a156a9dd5c8\",\n      \"customer_custom_fields\": {\n        \"bill_customer_id\": \"0du01JDIRIUDQKDS6wm2\"\n      },\n      \"type\": \"USAGE\",\n      \"credit_type\": {\n        \"id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n        \"name\": \"USD (cents)\"\n      },\n      \"status\": \"DRAFT\",\n      \"total\": 49000,\n      \"external_invoice\": null,\n      \"contract_id\": \"688d9619-bd2c-42db-8dcb-288f02f741df\",\n      \"contract_custom_fields\": {},\n      \"line_items\": [\n        {\n          \"product_id\": \"c2ab408b-d212-4dca-a99b-f2b450abad45\",\n          \"product_type\": \"UsageProductListItem\",\n          \"product_custom_fields\": {\n            \"org_id\": \"prod_NbZryAoW6ugALt\"\n          },\n          \"product_tags\": [\n            \"compute\"\n          ],\n          \"name\": \"GPU Compute Hours\",\n          \"type\": \"usage\",\n          \"total\": 0,\n          \"credit_type\": {\n            \"id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n            \"name\": \"USD (cents)\"\n          },\n          \"starting_at\": \"2025-11-01T00:00:00+00:00\",\n          \"ending_before\": \"2025-12-01T00:00:00+00:00\",\n          \"netsuite_item_id\": \"f2b4-50ab-ad45\",\n          \"unit_price\": 4900,\n          \"quantity\": 10\n        }\n      ],\n      \"custom_fields\": {},\n      \"billable_status\": \"billable\"\n    }\n  ]\n}",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/preview-event-cost-2026-07-13.md:25-128 (contract and pricing inputs plus request/response quantity and arithmetic evidence)"
+    },
+    {
+      "text": "There are two different ways you can choose to evaluate preview events:\n\n### Merge mode\n\nCombines preview events with the customer's existing usage for the billing period. Use this to show incremental cost impact.\n\n**Example**: A customer has used 99 API calls this month (with 100 free). Previewing 5 calls in merge mode shows 1 free and 4 billable.\n\n### Replace mode\n\nEvaluates only the preview events, ignoring existing usage. Use this for hypothetical \"clean slate\" scenarios.\n\n**Example**: Show the total monthly cost if a customer only performed the specific actions in the preview.",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/preview-event-cost-2026-07-13.md:34-46 (merge and replace semantics)"
+    },
+    {
+      "text": "For customers with multiple active contracts, the endpoint returns separate invoices for each:\n\n```json theme={null}\n{\n  \"data\": [\n    {\n      \"contract_id\": \"contract-1-id\",\n      \"total\": 50000,\n      // ... invoice details for contract 1\n    },\n    {\n      \"contract_id\": \"contract-2-id\",\n      \"total\": 25000,\n      // ... invoice details for contract 2\n    }\n  ]\n}\n```\n\n### Event deduplication\n\nThe preview endpoint follows the same deduplication logic as the ingest endpoint:\n\n* Events with identical `transaction_id` values passed in the same request payload are deduplicated against each other\n* Events with identical `transaction_id` values to those passed to `/ingest` in the prior 34 days are deduplicated as well",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/preview-event-cost-2026-07-13.md:131-155 (multi-contract results and stated deduplication behavior)"
+    },
+    {
+      "text": "The endpoint has an 8 RPS rate limit per client and is not suitable for real-time validation of every event. Consider these strategies:\n\n* **Cache preview results**: When showing repeated calculations for similar usage patterns, cache the results\n* **Batch multiple events**: Preview multiple events in a single request rather than making separate calls\n\n### Accuracy tips\n\n* Include all relevant event properties that affect pricing\n* Test both `merge` and `replace` modes during development\n\n### Limitations\n\n* Customers using SQL-based billable metrics cannot use this endpoint. If SQL BMs are present on the customer invoice being evaluated when passing in events to preview, the endpoint will return a 400 error.",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/preview-event-cost-2026-07-13.md:161-173 (rate limit, operating guidance, and SQL-metric exclusion)"
+    }
+  ],
+  "suggestions": {
+    "company": [
+      {
+        "update_id": "preview-cost-company-capability-boundary",
+        "target_path": "wiki/companies/metronome.md",
+        "update_kind": "durable_fact",
+        "anchor": "- The Preview Events API can calculate draft invoices from proposed usage before processing, using either replacement or merged historical-usage semantics.",
+        "proposed_markdown": "- The Preview Events API simulates draft-invoice costs from proposed events without processing or billing them. `merge` includes existing billing-period usage, while `replace` ignores existing usage; calculation uses the customer's contract and can reflect tiers, commits and credits, free allotments, and multiple products. Multiple active contracts return separate preview invoices. The guide documents an 8 RPS per-client limit, excludes invoices with SQL billable metrics, and conflicts with the API reference on same-request duplicate transaction IDs.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Merge this into the existing Preview Events company bullet rather than duplicating it.",
+          "Do not treat preview records as processed usage, persisted invoices, finalized bills, payment state, or downstream delivery.",
+          "Preserve the same-request transaction-ID contradiction until current endpoint behavior is verified."
+        ]
+      },
+      {
+        "update_id": "preview-cost-company-source-catalog",
+        "target_path": "wiki/companies/metronome.md",
+        "update_kind": "catalog_entry",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] \u2014 pre-action cost simulation, contract pricing, preview modes, multi-contract responses, deduplication, and limits",
+        "quote_indexes": [],
+        "warnings": [
+          "Recompute source_count from the final Campaign 08 promoted catalog."
+        ]
+      }
+    ],
+    "concepts": [
+      {
+        "update_id": "preview-cost-invoicing-detail",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Event-based invoice preview",
+        "proposed_markdown": "The cost-preview guide clarifies that Preview Events simulates invoice impact without processing or billing the proposed events. Its calculation can include tiered pricing, commit and credit coverage, free allotments, and multiple products. `merge` includes existing billing-period usage; `replace` ignores existing usage. Multiple active contracts return separate draft-invoice-shaped results.\n\nThese results are previews, not finalized, delivered, collectible, or documented as persisted invoices. The guide limits the endpoint to 8 RPS per client and returns HTTP 400 when SQL billable metrics are present on the customer invoice being evaluated. Its worked response is structurally illustrative: a request for 100 compute hours produces quantity 10, unit price 4900, line-item total 0, and invoice total 49000 without reconciling the quantity or arithmetic.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not use the worked response as an authoritative pricing calculation; its quantity and totals do not reconcile.",
+          "The source does not define preview persistence, contract-routing logic, tax, payment, finalization, or downstream invoice delivery."
+        ]
+      },
+      {
+        "update_id": "preview-cost-invoicing-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] \u2014 contract-aware cost simulation, merge/replace semantics, multi-contract draft results, performance limit, and SQL-metric exclusion",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "preview-cost-event-ingestion-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Invoice preview boundary",
+        "proposed_markdown": "Preview Events is a simulation path: submitted events affect only the preview calculation and are not processed or billed. The guide says transaction IDs duplicating an `/ingest` event from the prior 34 days are deduplicated, but it does not say whether a preview reserves an ID or changes later ingest behavior. It also says duplicate IDs within one preview request are deduplicated, contradicting the dedicated API reference's statement that same-request duplicates cause an error.\n\nThe endpoint has an 8 RPS per-client limit and is not suitable for validating every event in real time. The guide recommends caching similar calculations and batching preview events, without defining cache validity, batch size, rate-limit headers, latency, or retry behavior. A customer invoice containing SQL-based billable metrics causes HTTP 400.",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the same-request duplicate-ID contradiction; do not silently choose deduplication or rejection.",
+          "Coordinator should add a reciprocal contradiction note to `wiki/sources/metronome/source-metronome-api-reference-invoices-preview-events.md`; the contract-v2 suggestion schema has no source-page category.",
+          "Do not infer that preview transaction IDs enter the ingest deduplication store."
+        ]
+      },
+      {
+        "update_id": "preview-cost-event-ingestion-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] \u2014 non-ingestion simulation boundary, transaction-ID conflict, 8 RPS limit, batching guidance, and SQL-metric exclusion",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "preview-cost-usage-billing-evaluation",
+        "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Pre-processing validation",
+        "proposed_markdown": "The cost-preview guide expands the validation use case: the simulation can model tier transitions, commit and credit coverage versus overage, free allotments, and several products using the customer's contract. Merge mode estimates incremental cost against existing billing-period usage, while replace mode tests only the proposed usage. Customers with several active contracts receive separate preview invoice calculations.\n\nPreview does not process or bill the events and is not positioned as per-event real-time validation; the documented limit is 8 RPS per client. The source does not define configuration-snapshot consistency, event-to-contract routing, pricing precedence, balance timing, or compatibility with all contract features, and SQL-based billable metrics are excluded.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The phrase 'all pricing complexity' is source language followed by four documented categories; do not generalize it into compatibility with every pricing or contract feature.",
+          "Keep preview calculation distinct from event acceptance, rating persistence, invoice finalization, and billing."
+        ]
+      },
+      {
+        "update_id": "preview-cost-usage-billing-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] \u2014 contract-aware pre-action pricing, merge/replace modes, multi-contract output, and simulation limits",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [
+      {
+        "update_id": "preview-cost-provider-index-catalog",
+        "target_path": "wiki/metronome-index.md",
+        "update_kind": "catalog_entry",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] \u2014 contract-aware event-cost simulation, preview modes, multi-contract draft output, deduplication conflict, and limits",
+        "quote_indexes": [],
+        "warnings": [
+          "No root-index entry or comparison is warranted for this Metronome-specific guide."
+        ]
+      }
+    ],
+    "log": [
+      {
+        "update_id": "preview-cost-provider-log-entry",
+        "target_path": "wiki/metronome-log.md",
+        "update_kind": "log_entry",
+        "anchor": "Newest entry",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] \u2014 contract-aware cost simulation, merge/replace modes, multi-contract draft results, non-processing/non-billing boundary, 8 RPS limit, SQL-metric exclusion, response-example defects, and same-request deduplication contradiction (raw SHA-256 `b27a060efe5d9d1a8507e143fa468a4e5890dd028bb0ccb902c8053c9d26a7d3`)",
+        "quote_indexes": [],
+        "warnings": [
+          "Coordinator should merge this item into the single Campaign 08 close entry and generate final coverage counts mechanically."
+        ]
+      }
+    ]
+  },
+  "raw_path": "raw/metronome/guides/customers-billing/optimize-customer-experience/preview-event-cost-2026-07-13.md",
+  "raw_sha256": "b27a060efe5d9d1a8507e143fa468a4e5890dd028bb0ccb902c8053c9d26a7d3",
+  "status": "candidate_ready"
+}

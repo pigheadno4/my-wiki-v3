@@ -1,0 +1,159 @@
+{
+  "company": [
+    {
+      "update_id": "spend-control-company-feature-boundary",
+      "target_path": "wiki/companies/metronome.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Notifications and webhooks",
+      "proposed_markdown": "- Spend-threshold billing attaches a charge trigger to contract spend and can payment-gate release of the resulting commit. Stripe collection can use an invoice or PaymentIntent; an external gateway instead consumes `payment_gate.external_initiate`, owns collection, and releases or cancels the commit with the workflow ID. The feature limits unpaid-revenue exposure but this guide does not establish application access blocking or a customer-wide hard cap.",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": [
+        "Keep spend thresholds distinct from prepaid-balance auto-recharge thresholds.",
+        "Do not infer product-access enforcement, cross-contract aggregation, payment success, or retry behavior."
+      ]
+    },
+    {
+      "update_id": "spend-control-company-source-catalog",
+      "target_path": "wiki/companies/metronome.md",
+      "update_kind": "catalog_entry",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-set-customer-spend-control]] \u2014 contract spend thresholds, immediate updates, Stripe and external payment gates, and enforcement boundaries",
+      "quote_indexes": [],
+      "warnings": [
+        "Recompute source_count from the final Campaign 08 promoted catalog."
+      ]
+    }
+  ],
+  "concepts": [
+    {
+      "update_id": "spend-control-new-concept",
+      "target_path": "wiki/concepts/metronome/metronome-spend-threshold-billing.md",
+      "update_kind": "durable_fact",
+      "anchor": "Create new concept page",
+      "proposed_markdown": "---\ntitle: \"Metronome Spend Threshold Billing\"\ntype: concept\ncategory: technology\ntags: [metronome, spend-thresholds, payment-gating, contracts, fraud-risk]\n---\n\n## Definition\n\nMetronome spend-threshold billing configures a contract-spend amount that triggers incremental collection. A `spend_threshold_configuration` defines the threshold, the commit product represented on the incremental invoice, enablement, and optional payment-gate behavior. This limits exposure to uncollected revenue; it is not documented as a merchant-application access control or a customer-wide hard spending cap.\n\n## Configuration and lifecycle\n\nStripe collection can use a Stripe Billing invoice or direct PaymentIntent and requires valid contract billing configuration. `is_enabled: true` requests immediate evaluation after contract creation. A threshold can be added to an existing contract or updated later, and the page says changes take effect immediately without defining synchronous evaluation, payment, concurrency, or invoice effects.\n\n## Payment gates\n\nA payment gate can delay commit release. With `EXTERNAL`, the integrator receives `payment_gate.external_initiate`, stores its `workflow_id`, collects through its own gateway, and calls the threshold-release endpoint to release the commit on success or cancel it on failure. The source does not define ordinary Stripe failure events, retries, pending-commit visibility, event ordering, workflow expiry, or idempotency.\n\n## Documentation boundaries\n\nThe source does not define spend aggregation across contracts, currency or amount denomination, equality behavior, reset periods, credit/commit treatment in the spend calculation, access enforcement, notification timing, or complete create/edit schemas. Its creation API link points to edit-contract documentation and its edit API link points to authorization, so dedicated current API references remain authoritative.\n\n## Sources\n\n- [[source-metronome-guides-customers-billing-optimize-customer-experience-set-customer-spend-control]] \u2014 contract configuration, updates, payment gates, and external collection\n\n## Related\n\n- [[metronome-customers-and-contracts]]\n- [[metronome-invoicing]]\n- [[metronome-credits-and-commits]]\n- [[metronome-integrations]]\n- [[metronome-alerts-and-notifications]]\n- [[metronome-webhooks]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "This is a distinct concept from prepaid-balance threshold recharge; do not merge their trigger calculations or failure behavior.",
+        "The source's cap and enforce language describes collection/risk exposure and does not prove usage rejection or product-access enforcement."
+      ]
+    },
+    {
+      "update_id": "spend-control-invoicing-flow",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Threshold payment flow",
+      "proposed_markdown": "Spend-threshold billing is separate from prepaid-balance recharge: accumulated contract spend reaching `threshold_amount` triggers a payment attempt, and the configured commit product determines what appears on the incremental invoice. Stripe payment can use a Billing invoice or PaymentIntent; an external gate leaves collection to the integrator, which releases or cancels the commit afterward. The page does not define invoice finalization, payment retry, pending-commit invoice state, threshold denomination, or whether an ungated failure changes customer access.",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": [
+        "Do not import prepaid-balance recharge amounts, failure disablement, or automatic-retry rules into spend thresholds without dedicated evidence."
+      ]
+    },
+    {
+      "update_id": "spend-control-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-set-customer-spend-control]] \u2014 incremental spend-threshold invoicing, Stripe payment choices, and external outcome flow",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "spend-control-integrations-external-gate",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Threshold payment-gate boundary",
+      "proposed_markdown": "Spend-threshold billing uses the same explicit external-ownership pattern as the documented threshold release route: `payment_gate_type: EXTERNAL` causes `payment_gate.external_initiate`; the integrator retains the workflow ID, collects payment independently, and calls the release endpoint to release or cancel the pending commit. For Stripe, the spend-threshold page offers invoice or PaymentIntent collection and requires a valid contract billing configuration. It does not define gateway readiness, event ordering, duplicate outcomes, expiry, retry, or idempotency.",
+      "quote_indexes": [
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "Keep spend-threshold triggers separate from prepaid-balance threshold calculations even where the payment-gate outcome route is shared."
+      ]
+    },
+    {
+      "update_id": "spend-control-integrations-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-set-customer-spend-control]] \u2014 Stripe and external spend-threshold payment-gate responsibility",
+      "quote_indexes": [
+        1,
+        2,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "spend-control-credits-commit-release",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Prepaid balance thresholds",
+      "proposed_markdown": "Spend-threshold billing is a separate contract control from prepaid-balance auto-recharge. It associates a product with the commit shown on the incremental invoice and can payment-gate that commit's release. Under the external path, the integrator stores `payment_gate.external_initiate.workflow_id`, collects payment, and calls the threshold-release endpoint to release the commit on success or cancel it on failure. The source does not define the pending commit's amount, type, schedules, ledger availability, or visibility before the outcome.",
+      "quote_indexes": [
+        1,
+        4
+      ],
+      "warnings": [
+        "Do not describe the spend-threshold commit as a prepaid-balance recharge or infer its complete lifecycle from the prepaid threshold guide."
+      ]
+    },
+    {
+      "update_id": "spend-control-credits-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-set-customer-spend-control]] \u2014 spend-triggered commit representation, optional payment gate, and external release/cancel flow",
+      "quote_indexes": [
+        1,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [
+    {
+      "update_id": "spend-control-provider-index-catalog",
+      "target_path": "wiki/metronome-index.md",
+      "update_kind": "catalog_entry",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-set-customer-spend-control]] \u2014 contract spend thresholds, incremental billing, configuration updates, and Stripe/external payment gates",
+      "quote_indexes": [],
+      "warnings": [
+        "Add [[metronome-spend-threshold-billing]] under provider concepts when the new concept and source are promoted; no root-index entry or comparison is warranted."
+      ]
+    }
+  ],
+  "log": [
+    {
+      "update_id": "spend-control-provider-log-entry",
+      "target_path": "wiki/metronome-log.md",
+      "update_kind": "log_entry",
+      "anchor": "Newest entry",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-set-customer-spend-control]] \u2014 123-line spend-threshold guide (`6ce6ff23625a045cf60d50be5fc0beface0da6f47017f44f991e31ee8520489e`), covering contract configuration, immediate changes, incremental invoice representation, Stripe/external payment gates, and enforcement/failure unknowns",
+      "quote_indexes": [],
+      "warnings": [
+        "Coordinator should merge this into the consolidated Campaign 08 close entry and compute final coverage counts mechanically."
+      ]
+    }
+  ]
+}

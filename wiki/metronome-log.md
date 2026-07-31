@@ -6,6 +6,24 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-07-31 — Metronome Campaign 08 completed
+
+- Result: ten approved source candidates from complete raw pages, including four bounded targeted retries with unchanged raw hashes; no job was rejected. The immutable three-page query audit passed 3/3 pages and 9/9 future-query tests, so no expanded audit was required.
+- Sources:
+  - [[source-metronome-guides-customers-billing-overview]] — Customers & Billing navigation across lifecycle management, dashboards and spend controls, fraud and entitlement themes, and alerts (raw SHA-256 `c122107b4e1533e19f297582807a032d0b2447a15e964d2fc0ccee817caa3cdc`)
+  - [[source-metronome-guides-customers-billing-manage-customers-manage-product-access]] — product-access navigation overview spanning customer provisioning, contract lifecycle, temporary trials, and entitlement-state notifications (raw SHA-256 `42bee2588c3e27fc0e984e047bb87578da11180a3cc9eeaf3b9dcf49907ce1a1`)
+  - [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] — notification families, webhook delivery, evaluation timing, and threshold states (raw SHA-256 `7c0125db5f4ab812a70d96d8d79b5a32942a1b05b0419820fea001b11ae57d5a`)
+  - [[source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates]] — Indian-card Stripe mandate setup, threshold and recurring configuration, invoice mapping, and responsibility boundaries (raw SHA-256 `a143201d70f01039a6a13cfc9ab4be02270bd632ce56d9fcf84ea94c9389d8f5`)
+  - [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] — relative-time offsets, payload semantics, prospective behavior, setup paths, and recurring-commit caveat (raw SHA-256 `3d638b97de733aa9366dafb8b2fdc265294b5d33a96431ea9530e6c4cda819a7`)
+  - [[source-metronome-guides-customers-billing-manage-customers-spend-trackers]] — public-beta commit-purchase accumulation, threshold-discount caps, contract retrieval, and enforcement boundaries (raw SHA-256 `8327257a20bcb8b0989cd2024d03e5a9bc1e47136d10416b44c9f38a553d47eb`)
+  - [[source-metronome-guides-customers-billing-optimize-customer-experience-set-customer-spend-control]] — contract spend thresholds, incremental billing, configuration updates, and Stripe/external payment gates (raw SHA-256 `6ce6ff23625a045cf60d50be5fc0beface0da6f47017f44f991e31ee8520489e`)
+  - [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] — contract-aware event-cost simulation, preview modes, multi-contract draft output, deduplication conflict, and limits (raw SHA-256 `b27a060efe5d9d1a8507e143fa468a4e5890dd028bb0ccb902c8053c9d26a7d3`)
+  - [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] — customer-defined spend, grouped-dimension, commit-balance, and invoice-total alerts with merchant enforcement (raw SHA-256 `9a2128829a46fce304d3b48229d4f71a8fc7c9f6888f4c5a2e523b638fd58685`)
+  - [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]] — aggregate and ledger balance retrieval, signed calculation, precision, timestamps, and manual adjustments (raw SHA-256 `2f427835858daeeb9f71ff4ce25b53a08d0b62ea9d2dc3edba5cf6f182351bae`)
+- Concepts: created [[metronome-spend-trackers]] and [[metronome-spend-threshold-billing]]; updated alerts, billable metrics, credits and commits, customer contracts, event ingestion, integrations, invoicing, usage billing, webhooks, and Stripe saved-payment-method boundaries.
+- Boundaries retained: navigation pages do not prove implementation semantics; alerts and spend controls do not automatically enforce merchant access; preview results are not processed usage or finalized invoices; mandate attachment is not payment success; spend trackers remain Public Beta.
+- Coverage after promotion: 225 collected documentation pages, 60 ingested source summaries, and 165 pending pages.
+
 ## 2026-07-30 — Metronome Campaign 07 completed
 
 - Result: ten approved jobs, sixteen worker/reviewer attempts, zero failed jobs, and zero rejected jobs; coverage is 225 raw / 50 ingested / 175 pending.

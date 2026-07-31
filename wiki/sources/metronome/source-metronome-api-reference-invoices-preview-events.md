@@ -26,6 +26,9 @@ Each preview event requires a nonempty `event_type`; it can include an RFC 3339 
 
 The preview returns invoice records rather than posting an invoice: the documented example returns `USAGE` invoices with `DRAFT` status, period timestamps, a contract ID, a credit type, a total, and usage line items. Line items include a name, total, credit type, and type, and can also carry quantity, unit price, product, commitment or credit, subscription, discount, and scheduling information when applicable. The API documents a `400` bad-request response and a `404` response when the specified resource is not found; the shared error schema requires a `message`.
 
+> [!warning] Contradiction
+> The guide [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] says duplicate transaction IDs within one Preview Events request are deduplicated, while this API reference says same-request duplicates cause an error. Preserve both claims until current endpoint behavior is verified.
+
 ## Related
 
 - Companies: [[metronome]]

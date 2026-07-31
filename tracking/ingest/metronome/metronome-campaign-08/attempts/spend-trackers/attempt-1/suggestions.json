@@ -1,0 +1,135 @@
+{
+  "company": [
+    {
+      "update_id": "spend-trackers-company-capability-boundary",
+      "target_path": "wiki/companies/metronome.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Architecture, access, and retrieval additions",
+      "proposed_markdown": "- Public-beta spend trackers sum selected contract spend over a reset period. The documented scope currently counts only commit purchases, filterable by manual versus threshold-recharge source and discounted status. A prepaid-threshold discount can reference a tracker cap and stop discounting new threshold commits until the next billing period; other internal pricing rules remain merchant-owned checks against the contract's returned `accumulated_spend`. The guide does not define usage-event tracking, alert delivery, or the payment states that enter or leave the total.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep the feature labeled Public Beta and do not imply general availability.",
+        "Do not describe the tracker as customer usage, an alert, a payment state, or automatic enforcement for manual commits."
+      ]
+    },
+    {
+      "update_id": "spend-trackers-company-source-catalog",
+      "target_path": "wiki/companies/metronome.md",
+      "update_kind": "catalog_entry",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-manage-customers-spend-trackers]] \u2014 public-beta spend accumulation, commit-purchase scope, threshold-discount caps, retrieval, and merchant enforcement",
+      "quote_indexes": [],
+      "warnings": [
+        "Recompute source_count from the final Campaign 08 promoted catalog."
+      ]
+    }
+  ],
+  "concepts": [
+    {
+      "update_id": "spend-trackers-new-concept",
+      "target_path": "wiki/concepts/metronome/metronome-spend-trackers.md",
+      "update_kind": "durable_fact",
+      "anchor": "new file",
+      "proposed_markdown": "---\ntitle: \"Metronome Spend Trackers\"\ntype: concept\ncategory: technology\ntags: [metronome, spend-trackers, contracts, commits, discounts, public-beta]\n---\n\n## Definition\n\nA Metronome spend tracker is a public-beta contract configuration that sums selected spend over a reset period. Other contract configurations can reference its alias for spend-based behavior, while merchant applications can query the accumulated total for pricing decisions that Metronome does not enforce directly.\n\n## Eligible spend and configuration\n\nTrackers can be configured during package creation, contract creation, or contract edit. Each has an alias, credit type, reset frequency, and applicable-spend specifiers. The documented eligibility is currently limited to commit purchases: a tracker can select manual commits, threshold-recharge commits, or both, and can optionally filter on whether a purchase is marked discounted. Manual commits use `spend_tracker_attributes.count_as_discounted`; threshold commits derive that classification from `discount_config`.\n\nThis is not a generic customer-usage accumulator. The page does not say that usage events, rated usage, invoice totals, payment volume, or balance consumption count toward the tracker.\n\n## Threshold-discount caps\n\nA prepaid-balance threshold's `discount_config.cap` can reference a spend-tracker alias and amount. In the documented billing-period example, once qualifying discounted manual and threshold-recharge commit spend reaches the cap, new threshold commits remain undiscounted until the next billing period. The source does not define amount scaling, exact equality semantics, concurrent cap crossings, or retroactive adjustments.\n\n## Retrieval and enforcement\n\nThe contract query returns `accumulated_spend.amount` and current-period start and exclusive-end timestamps with the tracker definition. No freshness, consistency, history, standalone endpoint, or pagination behavior is documented, and the guide's curl body appears response-shaped rather than an authoritative request schema.\n\nConfigurations designed to consume a tracker can act on it directly, as the threshold discount does. A separate internal rule is merchant-owned: for a manual payment-gated commit cap, the merchant checks the tracker before issuing the commit. The source does not document tracker alerts, webhooks, customer-facing presentation, automatic rejection of manual commits, or product-access enforcement.\n\n## Billing-state and lifecycle boundaries\n\nThe guide does not say when a commit purchase enters accumulated spend or how pending, payment-gated, failed, voided, canceled, refunded, or reversed purchases affect it. It also leaves alias uniqueness, edit and backfill behavior, period reset timing and time zone, backdated purchases, credit-type compatibility, multi-currency conversion, error handling, and tracker deletion unspecified.\n\n## Status\n\nSpend trackers are Public Beta, may introduce breaking changes before general availability, and require access through a Metronome representative.\n\n## Related\n\n- [[metronome-credits-and-commits]]\n- [[metronome-customers-and-contracts]]\n- [[metronome-alerts-and-notifications]]\n\n## Sources",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not infer a general usage metric, alert state, customer-facing UI, payment success, or balance availability from accumulated commit-purchase spend.",
+        "The source does not define which payment or commit lifecycle states contribute to accumulated_spend.",
+        "The v2/contracts/get example appears to embed response data in the curl request body; use a dedicated API reference for exact request shape."
+      ]
+    },
+    {
+      "update_id": "spend-trackers-new-concept-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-spend-trackers.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-manage-customers-spend-trackers]] \u2014 public-beta scope, eligible commit purchases, reset-period accumulation, threshold-discount integration, and merchant enforcement boundary",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "spend-trackers-credits-threshold-cap",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Prepaid balance thresholds",
+      "proposed_markdown": "A threshold `discount_config.cap` can reference a public-beta spend tracker. The documented tracker currently sums selected commit purchases by manual or threshold-recharge source and optional discounted status. When qualifying spend reaches the cap, new threshold commits remain undiscounted until the tracker resets at the next billing period. A similar cap on manually issued payment-gated commits is not automatic: the merchant must query the tracker and enforce the check before issuing the commit.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "The source does not define which pending, paid, failed, voided, canceled, refunded, or reversed commit states contribute to the tracker.",
+        "Do not conflate the automatic threshold-discount cap with merchant-owned manual-commit enforcement."
+      ]
+    },
+    {
+      "update_id": "spend-trackers-credits-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-manage-customers-spend-trackers]] \u2014 commit-purchase tracking, threshold-discount caps, reset behavior, and manual enforcement boundary",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [
+    {
+      "update_id": "spend-trackers-provider-index-source",
+      "target_path": "wiki/metronome-index.md",
+      "update_kind": "catalog_entry",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-manage-customers-spend-trackers]] \u2014 public-beta commit-purchase accumulation, threshold-discount caps, contract retrieval, and enforcement boundaries",
+      "quote_indexes": [],
+      "warnings": []
+    },
+    {
+      "update_id": "spend-trackers-provider-index-concept",
+      "target_path": "wiki/metronome-index.md",
+      "update_kind": "catalog_entry",
+      "anchor": "## Concepts",
+      "proposed_markdown": "- [[metronome-spend-trackers]] \u2014 public-beta commit-purchase accumulators, threshold-discount integration, retrieval, and billing-state unknowns",
+      "quote_indexes": [],
+      "warnings": [
+        "No root-index entry or comparison page is warranted because spend trackers are a Metronome-specific feature."
+      ]
+    }
+  ],
+  "log": [
+    {
+      "update_id": "spend-trackers-provider-log-entry",
+      "target_path": "wiki/metronome-log.md",
+      "update_kind": "log_entry",
+      "anchor": "Newest entry",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-manage-customers-spend-trackers]] and [[metronome-spend-trackers]] \u2014 public-beta spend-tracker scope, commit-purchase filters, threshold-discount caps, accumulated-spend retrieval, merchant-owned enforcement, and billing-state unknowns (raw SHA-256 `8327257a20bcb8b0989cd2024d03e5a9bc1e47136d10416b44c9f38a553d47eb`)",
+      "quote_indexes": [],
+      "warnings": [
+        "Coordinator should merge this item into the single Campaign 08 close entry and generate final coverage counts mechanically."
+      ]
+    }
+  ]
+}

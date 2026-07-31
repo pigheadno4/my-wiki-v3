@@ -1,0 +1,173 @@
+{
+  "job_id": "offset-notifications",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Offset Notifications\"\ntype: source\ndate_ingested: 2026-07-31\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/customers-billing/set-up-notifications/offset-notifications\"\nraw_files:\n  - \"metronome/guides/customers-billing/set-up-notifications/offset-notifications-2026-07-13.md\"\ntags: [metronome, offset-notifications, webhooks, customer-lifecycle, recurring-commits]\n---\n\n## Overview\n\nThis guide documents Metronome offset notifications: webhook signals scheduled before or after a known date associated with a system-notification event. It covers relative-time units, payload differences, UI and API creation, prospective-only firing behavior, and an edge case for offsets on future recurring-commit segments.\n\n## Key takeaways\n\n- An offset policy schedules a notification relative to a known date such as a commit end date or contract creation date; amounts can use hours, days, weeks, months, or years.\n- Offset policies can be configured around system-notification types. The UI supports relative examples such as three days after contract start or sixty days before a commit segment ends, while the API accepts an ISO 8601 offset amount through `POST /v2/notifications/create`.\n- Offset payloads differ from threshold payloads: the page says they omit `properties`. The payload `timestamp` is the source event's time, not the calculated offset fire time.\n- Enabling an offset is prospective. Metronome starts generating events from that point forward and does not create events for past data; a past fire time is not replayed, and archiving the offset before its fire time prevents delivery.\n- Offsets cannot be scheduled before `.create`, `.edit`, or `.archive` events. A long before-start offset on a recurring commit can be delayed because subsequent child commits are generated at most one future billing period ahead.\n- The UI instructions say the configured offset applies to all customers and sends its events to all configured webhooks.\n\n## Scheduling and payload semantics\n\nOffset amounts are relative to a source-event date, with before/after policies illustrated across hours through years. The sample `contract.start` payload includes notification and environment identifiers, contract and customer identifiers and custom fields, an `offset_id`, and `offset_duration: \"-P3DT12H\"`. It is an example rather than a complete or universally required payload schema.\n\nThe page explicitly distinguishes the source-event timestamp from the scheduled fire time. For an offset that fires three days after a contract starts, `timestamp` remains the contract start time; consumers must not interpret that field as the time the offset notification was generated or delivered. Unlike threshold-notification payloads, offset payloads do not include a `properties` field. Receivers therefore need type-aware parsing rather than assuming the threshold shape.\n\n## Creation and management\n\nIn the UI, a user selects a system-notification type, configures the relative offset, and saves it. The instructions say events then apply to all customers and are delivered to every configured webhook. The API path is `POST /v2/notifications/create`; the request supplies a name and policy containing the system-event type and an ISO 8601 offset amount, and a successful response returns the created configuration with a unique ID.\n\nThis page does not provide the complete request or response schema, requiredness, allowed event-type catalog, ISO 8601 validation and sign rules, authentication, authorization, idempotency, update or archive endpoints, error responses, or per-customer and per-webhook filtering controls.\n\n## Prospective lifecycle behavior\n\nOffset generation is not retroactive. The page documents no notification when an existing entity's fire time is already past at offset creation, when a newly created entity's calculated fire time is already past, or when an edit moves the fire time into the past. It also documents no firing after the offset configuration is archived before the scheduled time. A newly created entity can produce a notification when its fire time remains in the future.\n\nThese examples do not define behavior for every combination of existing entities, edits, archival, simultaneous changes, clock boundaries, or delivery failures. In particular, the page does not promise replay, catch-up, event ordering, exactly-once delivery, or that editing an entity after a prior offset firing will produce a second event.\n\n## Recurring-commit edge case\n\nMetronome says subsequent child commits for a recurring commit are generated at most one future billing period ahead. If a before-`commit.segment.start` offset is longer than that horizon, the future child does not yet exist at the intended scheduled time. The notification instead fires when the next child commit is created. In the monthly/90-day example, it fires approximately 30 days before the segment rather than 90 days before.\n\nThis is a documented notification-timing limitation, not a complete recurring-commit generation contract. The page does not define the exact child-creation instant, behavior for variable-length periods, retries after creation, edits to recurrence, or whether the one-period horizon applies outside this offset-notification scenario.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-alerts-and-notifications]], [[metronome-webhooks]], [[metronome-credits-and-commits]], [[metronome-customers-and-contracts]]\n- Related sources: [[source-metronome-guides-platform-configuration-setup-webhooks]], [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-create-a-pre-paid-commit]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/customers-billing/set-up-notifications/offset-notifications-2026-07-13|2026-07-13 snapshot \u2014 offset scheduling, payload, lifecycle, and recurring-commit caveat]]\n",
+  "quotes": [
+    {
+      "text": "Offset notifications allow you to schedule notifications to fire relative to a known date (e.g. a commit's end date or a contract's creation date). They're best for designing proactive, customer-centric experiences. For example, sending a \"trial credits expiring soon\" email to customers 7 days before their expiration date to encourage further adoption and usage. Offset amounts can be configured in hours, days, weeks, months, and years.",
+      "location": "line 11, offset definition and supported time units"
+    },
+    {
+      "text": "The payloads schema for offset notifications differ slightly from the payload schema for threshold notifications. Specifically, the payload for offset notifications do not include a `properties` field. Ensure your webhooks are properly configured to handle both notification types.\n</Note>\n\nOffset notifications can be configured around any of the system notification types above. A sample payload for offset notifications is below:",
+      "location": "lines 18-21, payload difference and system-notification applicability"
+    },
+    {
+      "text": "The timestamp included in the offset payload is the time associated with the source event itself, not the offset. For example, for an offset configured to fire 3 days after the contract started, the timestamp will be the contract start time itself, *not* contract start time + 3 days.",
+      "location": "line 42, source-event timestamp boundary"
+    },
+    {
+      "text": "Offset notifications can be enabled and managed through both the UI and the API.\n\n<Frame>\n  <img src=\"https://mintcdn.com/metronome-b35a6a36/phb9Acjv7jlF___r/images/set-up-notification/offset_create.png?fit=max&auto=format&n=phb9Acjv7jlF___r&q=85&s=d7f226206d47cd73ee32a20cea1de3a0\" alt=\"Create offset notification interface showing contract end notification configuration\" width=\"2780\" height=\"2182\" data-path=\"images/set-up-notification/offset_create.png\" />\n</Frame>\n\n**In the UI**\n\n1. Navigate to the **Notifications** tab\n2. Click **Create Notification**\n3. Choose any of the above system notification types\n4. Configure offset details (e.g. 3 days after contract starts, 60 days before commit segment ends)\n5. Click **Save**\n6. You will begin receiving notifications about this offset event for all customers to all configured webhooks\n7. Ensure your webhooks are set up to properly handle the payloads for these notifications.\n\n**Via API**\n\n1. Call `POST /v2/notifications/create`\n2. Pass in the name of the offset and the offset policy, including type of system event you'd like to create an offset and the associated offset amount in ISO-8601 format\n3. A successful response will return details about the created offset including the notification configuration with its unique ID",
+      "location": "lines 46-66, UI and API creation flows"
+    },
+    {
+      "text": "When you enable an offset notification, Metronome starts generating events from that point forward. It does not go back and create events for past data. See the table below for examples of scenarios under which offset notifications will or will not fire.\n\n| **Scenario**                                                                             | **Will the notification fire?**                 | **Example**                                                                                                                                                                                            |\n| ---------------------------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |\n| Offset time for an existing entity is already in the past at the time of offset creation | No                                              | A `credit.end - 3d` offset is configured on May 20, but an existing credit ends May 22. The offset fire time (May 19) has already passed, so nothing is sent.                                          |\n| Entity is created but offset fire time is already in the past                            | No                                              | A credit is created on May 15 with an end date of May 30. A matching offset (`-30d`) was defined earlier. Since May 1 has already passed, no notification is sent.                                     |\n| Entity is edited and new offset fire time is in the past                                 | No                                              | A commit originally ended on May 25 with an offset for `-5d` which fired on May 20. On May 22, the end date is edited to May 23. The offset fire time (May 18) has already passed, so nothing is sent. |\n| Offset is archived before fire time                                                      | No                                              | A `contract.end - 1d` offset is scheduled to fire on June 4. The offset config is archived on June 2. The notification does not fire.                                                                  |\n| Entity is created after offset config is defined                                         | Yes, if offset fire time is still in the future | A `commit.end - 7d` offset is configured. On May 10, a new commit is created with an end date of May 20. A notification will fire on May 13.                                                           |\n\n## Additional caveats\n\nThere are a few additional caveats for specific offset types:\n\n* Offset notifications cannot be configured to fire *before* `.create`, `.edit` and `.archive` events\n* If you've configured an offset notification to fire before `commit.segment.start`, there is an edge case to be aware of when using this offset type alongside Metronome's recurring commits feature.\n  * For recurring commits, Metronome only generates subsequent child commits at most one future billing period ahead. This means if you have an offset configured to fire before a commit segment starts and that offset duration is *longer than one billing period*, the notification will not fire at its scheduled time. Instead it will fire at the time the next child commit is created. For example, you've set up a monthly recurring commit and configured an offset notification to fire 90 days before a commit segment starts, the offset for that recurring commit will not fire 90 days before the future child commit segment starts because the child commit does not exist yet. Instead, it will fire \\~30 days before the future child commit segment starts at the time the next child commit is created as that is when the next billing period becomes available.",
+      "location": "lines 70-86, prospective behavior, firing scenarios, and recurring-commit caveat"
+    }
+  ],
+  "suggestions": {
+    "company": [
+      {
+        "update_id": "offset-company-scheduling-boundary",
+        "target_path": "wiki/companies/metronome.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Notifications and webhooks",
+        "proposed_markdown": "- Offset notifications schedule a system-event signal before or after a known date using hour-through-year units. They are prospective rather than backfilled, and the payload timestamp remains the source event time rather than the offset fire time. Before-`commit.segment.start` offsets longer than a recurring commit's one-period child-generation horizon fire only when the future child is created.",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "Do not interpret the payload timestamp as notification generation or delivery time.",
+          "Keep the recurring-commit horizon scoped to this page's offset-timing caveat rather than treating it as a complete generation SLA."
+        ]
+      },
+      {
+        "update_id": "offset-company-source-catalog",
+        "target_path": "wiki/companies/metronome.md",
+        "update_kind": "catalog_entry",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] \u2014 relative-time policy, payload timestamp, prospective firing, UI/API setup, and recurring-commit timing caveat",
+        "quote_indexes": [],
+        "warnings": [
+          "Recompute source_count from the final Campaign 08 promoted catalog."
+        ]
+      }
+    ],
+    "concepts": [
+      {
+        "update_id": "offset-alerts-policy-and-lifecycle",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Offset notifications",
+        "proposed_markdown": "Offset notifications apply a user-configured hour, day, week, month, or year displacement to a known system-event date. They can be managed in the UI or created with `POST /v2/notifications/create` using an ISO 8601 offset policy. The payload omits the threshold payload's `properties` field, and its `timestamp` records the source event time rather than the calculated offset fire time.\n\nOffset generation is prospective: past fire times are not replayed, moving a fire time into the past does not produce a notification, and archiving the configuration before fire time prevents it. Offsets cannot fire before `.create`, `.edit`, or `.archive` events. For recurring commits, a before-`commit.segment.start` offset longer than the one-period-ahead child-generation horizon fires when the future child commit is created rather than at the earlier requested time.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The examples do not define every edit, archive, concurrency, or clock-boundary case.",
+          "Do not infer replay, exactly-once delivery, per-customer filtering, or an end-to-end delivery-time guarantee."
+        ]
+      },
+      {
+        "update_id": "offset-alerts-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] \u2014 relative scheduling, payload timestamp semantics, prospective firing rules, and recurring-commit caveat",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "offset-webhooks-payload-and-broadcast",
+        "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Payload evolution",
+        "proposed_markdown": "Offset-notification payloads omit the `properties` field used by threshold payloads, so receivers must parse notification types without assuming one universal shape. Their `timestamp` is the source event time, not the offset fire or delivery time. The UI workflow says a configured offset produces events for all customers to every configured webhook.",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The page does not define the complete offset payload schema or per-webhook filtering API.",
+          "Delivery retries, acknowledgment, deduplication, ordering, and signature verification remain governed by the dedicated webhook setup source."
+        ]
+      },
+      {
+        "update_id": "offset-webhooks-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] \u2014 offset-specific payload shape, source-event timestamp semantics, and all-configured-webhooks UI behavior",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "offset-credits-child-generation-horizon",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Lifecycle",
+        "proposed_markdown": "For offset-notification scheduling, Metronome says subsequent recurring-commit child commits are generated at most one future billing period ahead. A before-`commit.segment.start` offset longer than that horizon cannot fire at the requested earlier time because the child does not yet exist; it fires when the next child is created. This page does not establish the exact child-creation instant or a general recurring-commit generation SLA outside the offset scenario.",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Keep the one-period-ahead statement explicitly source-scoped to the documented offset-notification edge case."
+        ]
+      },
+      {
+        "update_id": "offset-credits-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] \u2014 recurring-child generation horizon and before-segment offset timing limitation",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [
+      {
+        "update_id": "offset-provider-index-catalog",
+        "target_path": "wiki/metronome-index.md",
+        "update_kind": "catalog_entry",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] \u2014 relative-time offsets, payload semantics, prospective behavior, setup paths, and recurring-commit caveat",
+        "quote_indexes": [],
+        "warnings": [
+          "No root-index entry or comparison is warranted for this provider-specific notification guide."
+        ]
+      }
+    ],
+    "log": [
+      {
+        "update_id": "offset-provider-log-entry",
+        "target_path": "wiki/metronome-log.md",
+        "update_kind": "log_entry",
+        "anchor": "Newest entry",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] \u2014 86-line offset-notification guide (`3d638b97de733aa9366dafb8b2fdc265294b5d33a96431ea9530e6c4cda819a7`), covering relative policies, source-event timestamps, payload differences, prospective-only firing, UI/API creation, and the recurring-child timing limitation",
+        "quote_indexes": [],
+        "warnings": [
+          "Coordinator should generate the final consolidated Campaign 08 log entry and coverage counts at campaign close."
+        ]
+      }
+    ]
+  },
+  "raw_path": "raw/metronome/guides/customers-billing/set-up-notifications/offset-notifications-2026-07-13.md",
+  "raw_sha256": "3d638b97de733aa9366dafb8b2fdc265294b5d33a96431ea9530e6c4cda819a7",
+  "status": "candidate_ready"
+}

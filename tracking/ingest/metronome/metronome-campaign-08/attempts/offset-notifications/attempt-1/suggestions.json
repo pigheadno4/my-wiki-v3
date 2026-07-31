@@ -1,0 +1,143 @@
+{
+  "company": [
+    {
+      "update_id": "offset-company-scheduling-boundary",
+      "target_path": "wiki/companies/metronome.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Notifications and webhooks",
+      "proposed_markdown": "- Offset notifications schedule a system-event signal before or after a known date using hour-through-year units. They are prospective rather than backfilled, and the payload timestamp remains the source event time rather than the offset fire time. Before-`commit.segment.start` offsets longer than a recurring commit's one-period child-generation horizon fire only when the future child is created.",
+      "quote_indexes": [
+        0,
+        2,
+        4
+      ],
+      "warnings": [
+        "Do not interpret the payload timestamp as notification generation or delivery time.",
+        "Keep the recurring-commit horizon scoped to this page's offset-timing caveat rather than treating it as a complete generation SLA."
+      ]
+    },
+    {
+      "update_id": "offset-company-source-catalog",
+      "target_path": "wiki/companies/metronome.md",
+      "update_kind": "catalog_entry",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] \u2014 relative-time policy, payload timestamp, prospective firing, UI/API setup, and recurring-commit timing caveat",
+      "quote_indexes": [],
+      "warnings": [
+        "Recompute source_count from the final Campaign 08 promoted catalog."
+      ]
+    }
+  ],
+  "concepts": [
+    {
+      "update_id": "offset-alerts-policy-and-lifecycle",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Offset notifications",
+      "proposed_markdown": "Offset notifications apply a user-configured hour, day, week, month, or year displacement to a known system-event date. They can be managed in the UI or created with `POST /v2/notifications/create` using an ISO 8601 offset policy. The payload omits the threshold payload's `properties` field, and its `timestamp` records the source event time rather than the calculated offset fire time.\n\nOffset generation is prospective: past fire times are not replayed, moving a fire time into the past does not produce a notification, and archiving the configuration before fire time prevents it. Offsets cannot fire before `.create`, `.edit`, or `.archive` events. For recurring commits, a before-`commit.segment.start` offset longer than the one-period-ahead child-generation horizon fires when the future child commit is created rather than at the earlier requested time.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The examples do not define every edit, archive, concurrency, or clock-boundary case.",
+        "Do not infer replay, exactly-once delivery, per-customer filtering, or an end-to-end delivery-time guarantee."
+      ]
+    },
+    {
+      "update_id": "offset-alerts-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] \u2014 relative scheduling, payload timestamp semantics, prospective firing rules, and recurring-commit caveat",
+      "quote_indexes": [
+        0,
+        2,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "offset-webhooks-payload-and-broadcast",
+      "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Payload evolution",
+      "proposed_markdown": "Offset-notification payloads omit the `properties` field used by threshold payloads, so receivers must parse notification types without assuming one universal shape. Their `timestamp` is the source event time, not the offset fire or delivery time. The UI workflow says a configured offset produces events for all customers to every configured webhook.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "The page does not define the complete offset payload schema or per-webhook filtering API.",
+        "Delivery retries, acknowledgment, deduplication, ordering, and signature verification remain governed by the dedicated webhook setup source."
+      ]
+    },
+    {
+      "update_id": "offset-webhooks-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] \u2014 offset-specific payload shape, source-event timestamp semantics, and all-configured-webhooks UI behavior",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "offset-credits-child-generation-horizon",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Lifecycle",
+      "proposed_markdown": "For offset-notification scheduling, Metronome says subsequent recurring-commit child commits are generated at most one future billing period ahead. A before-`commit.segment.start` offset longer than that horizon cannot fire at the requested earlier time because the child does not yet exist; it fires when the next child is created. This page does not establish the exact child-creation instant or a general recurring-commit generation SLA outside the offset scenario.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Keep the one-period-ahead statement explicitly source-scoped to the documented offset-notification edge case."
+      ]
+    },
+    {
+      "update_id": "offset-credits-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] \u2014 recurring-child generation horizon and before-segment offset timing limitation",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [
+    {
+      "update_id": "offset-provider-index-catalog",
+      "target_path": "wiki/metronome-index.md",
+      "update_kind": "catalog_entry",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] \u2014 relative-time offsets, payload semantics, prospective behavior, setup paths, and recurring-commit caveat",
+      "quote_indexes": [],
+      "warnings": [
+        "No root-index entry or comparison is warranted for this provider-specific notification guide."
+      ]
+    }
+  ],
+  "log": [
+    {
+      "update_id": "offset-provider-log-entry",
+      "target_path": "wiki/metronome-log.md",
+      "update_kind": "log_entry",
+      "anchor": "Newest entry",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] \u2014 86-line offset-notification guide (`3d638b97de733aa9366dafb8b2fdc265294b5d33a96431ea9530e6c4cda819a7`), covering relative policies, source-event timestamps, payload differences, prospective-only firing, UI/API creation, and the recurring-child timing limitation",
+      "quote_indexes": [],
+      "warnings": [
+        "Coordinator should generate the final consolidated Campaign 08 log entry and coverage counts at campaign close."
+      ]
+    }
+  ]
+}

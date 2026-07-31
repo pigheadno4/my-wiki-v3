@@ -50,6 +50,10 @@ The Preview Events API provides a separate, non-ingestion path for testing how s
 
 Dashboard test-event entry is a separate Sandbox-only path. Its transaction ID must be unique, its timestamp must be within the prior 34 days, and its event type and properties must match the configured billable metric. Production events use the API.
 
+Preview Events is a simulation path: submitted events affect only the preview calculation and are not processed or billed. The guide says transaction IDs duplicating an `/ingest` event from the prior 34 days are deduplicated, but it does not say whether a preview reserves an ID or changes later ingest behavior. It also says duplicate IDs within one preview request are deduplicated, contradicting the dedicated API reference's statement that same-request duplicates cause an error.
+
+The endpoint has an 8 RPS per-client limit and is not suitable for validating every event in real time. The guide recommends caching similar calculations and batching preview events, without defining cache validity, batch size, rate-limit headers, latency, or retry behavior. A customer invoice containing SQL-based billable metrics causes HTTP 400.
+
 ## Architecture-planning checklist
 
 Before selecting an ingest design, identify usage origins and reliable delivery, choose event or batch cadence from generation and change behavior, plan for peak volume and velocity, carry grouping keys required by pricing dimensions, and retain contextual fields that make spend interpretable. This planning source does not itself define schemas, transport, throughput, cardinality, freshness, replay, or correction guarantees.
@@ -68,6 +72,7 @@ Before selecting an ingest design, identify usage origins and reliable delivery,
 - [[source-metronome-guides-implement-metronome-core-concepts-send-usage-events]] — producer-side event representation, retry and DLQ behavior, resilience testing, and heartbeat guidance
 - [[source-metronome-guides-get-started-how-metronome-works]] — one-event-to-many-metrics relationship and instrumentation boundary
 - [[source-metronome-guides-implement-metronome-planning-your-billing-architecture]] — data-origin, cadence, scale, dimension, and context checklist
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] — non-ingestion simulation boundary, transaction-ID conflict, 8 RPS limit, batching guidance, and SQL-metric exclusion
 
 ## Related
 

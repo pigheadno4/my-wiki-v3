@@ -15,6 +15,8 @@ A receiver must expose a public HTTPS endpoint and return a successful status su
 
 Retries and multiple configured destinations can produce duplicate deliveries. Consumers should therefore use the notification `id` as a deduplication key.
 
+The notification lifecycle guide confirms asynchronous JSON delivery for all notification types over HTTPS POST. It describes exponential-backoff retries with jitter for up to 48 hours and at-least-once delivery, so receivers must tolerate duplicates and make processing idempotent.
+
 ## Authenticity and authoritative data
 
 Webhook payloads contain minimal event information. A consumer can treat the notification as a change hint and retrieve authoritative details from the corresponding Metronome API, or verify the webhook directly.
@@ -35,6 +37,8 @@ Product architecture may require timely notifications for balance alerts, tier c
 
 The trial example delivers `alerts.low_remaining_contract_credit_and_commit_balance_reached` with fields including `credit_type_id`, `remaining_balance`, and `triggered_by`. The merchant consumes it as an action signal. Alert scope and trigger semantics live in [[metronome-alerts-and-notifications]], while this page's dedicated webhook source remains authoritative for signature verification, delivery retries, ordering, and deduplication.
 
+Offset-notification payloads omit the `properties` field used by threshold payloads, so receivers must parse notification types without assuming one universal shape. Their `timestamp` is the source event time, not the offset fire or delivery time. The UI workflow says a configured offset produces events for all customers to every configured webhook.
+
 ## Sources
 
 - [[source-metronome-guides-platform-configuration-setup-webhooks]] — event families, delivery semantics, deduplication, and signature verification
@@ -44,6 +48,8 @@ The trial example delivers `alerts.low_remaining_contract_credit_and_commit_bala
 - [[source-metronome-guides-implement-metronome-planning-your-billing-architecture]] — notification needs as an architecture consideration
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — manual payment-status and action-required notifications
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — trial balance-alert delivery example
+- [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] — asynchronous HTTPS delivery, jittered retries, at-least-once semantics, and idempotent receiver guidance
+- [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] — offset-specific payload shape, source-event timestamp semantics, and all-configured-webhooks UI behavior
 
 ## Related
 

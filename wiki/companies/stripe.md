@@ -2,7 +2,7 @@
 title: "Stripe"
 type: company
 tags: [stripe, payment-gateway, payment-intents, checkout, subscriptions, elements, webhooks, payment-links]
-source_count: 651
+source_count: 652
 ---
 
 ## Stripe
@@ -696,3 +696,4 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 - [[source-stripe-subscriptions-mixed-interval]] — Mixed interval subscriptions: item-level periods, interval alignment rules, dunning behavior, limitations
 - [[source-stripe-subscriptions-coupons]] — Coupons and promotion codes: duration behaviors, stackable discounts, promo code restrictions, update rules
 - [[source-stripe-bizum-accept-payment]] — Bizum accept-a-payment: 4 integration paths, Direct API phone collection, iOS/Android SDK
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates]] — Metronome-documented Indian-card flow in which Stripe creates and manages the SetupIntent mandate, reports action-required handling, and owns mandate lifecycle

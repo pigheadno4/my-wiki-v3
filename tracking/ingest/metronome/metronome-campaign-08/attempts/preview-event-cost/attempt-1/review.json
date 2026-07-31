@@ -1,0 +1,65 @@
+{
+  "job_id": "preview-event-cost",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full-source review finds the candidate accurate, comprehensive, and carefully bounded. It correctly identifies the request/response defect: the request previews 100 compute hours, while the response shows quantity 10, unit price 4900, line-item total 0, and invoice total 49000 without a documented conversion or credit/application line that reconciles all fields. It also preserves the genuine same-request transaction-ID contradiction: this guide says duplicates are deduplicated, while the dedicated API source says they cause an error; both retain the prior-34-day ingest-history check. Merge and replace semantics, actual-contract pricing inputs, separate results for multiple active contracts, 8 RPS limit, batching/cache guidance, and SQL-billable-metric HTTP 400 exclusion are accurately represented. The candidate consistently keeps simulation distinct from ingestion, persisted rating or billing, finalized invoice state, delivery, payment, tax, and revenue recognition. Canonical URL, raw_files entry, path-qualified raw link, exact hash, candidate/receipt equality, target anchors, related links, contradiction warning, and all ten suggestion schemas validate. One targeted evidence defect prevents approval: `preview-cost-invoicing-detail` records the exact quantity and total mismatch, but none of its cited grounding quotes includes raw lines 52-128 containing the request and response values. Its claim is true from the full raw, yet its structured quote mapping does not support it. The candidate and the other nine suggestions require no factual change.",
+  "required_changes": [
+    "Extend grounding quote index 1 from its current raw lines 25-30 excerpt through raw line 128, preserving a byte-exact contiguous excerpt and updating its location to lines 25-128. This retains the contract/pricing evidence while adding the request and response fields that establish the 100-versus-10 quantity and line-item-total-versus-invoice-total mismatch. `preview-cost-invoicing-detail` already cites quote index 1, so preserve that suggestion and all other candidate and suggestion text unchanged."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "preview-cost-company-capability-boundary",
+      "verdict": "approved",
+      "reason": "Accurately merges the simulation, merge/replace, contract-pricing, multi-contract, rate-limit, SQL-metric, and duplicate-ID boundaries into the existing company fact."
+    },
+    {
+      "update_id": "preview-cost-company-source-catalog",
+      "verdict": "approved",
+      "reason": "Valid exhaustive provider source-catalog entry with the required final source-count warning."
+    },
+    {
+      "update_id": "preview-cost-invoicing-detail",
+      "verdict": "rejected",
+      "reason": "The proposed markdown is factually correct, but its exact arithmetic and quantity defect is not present in any cited grounding quote; extend quote index 1 through raw line 128, then retain this update unchanged."
+    },
+    {
+      "update_id": "preview-cost-invoicing-source-link",
+      "verdict": "approved",
+      "reason": "Provides the required reciprocal citation for the contract-aware simulation, modes, multi-contract output, rate limit, and SQL-metric exclusion."
+    },
+    {
+      "update_id": "preview-cost-event-ingestion-boundary",
+      "verdict": "approved",
+      "reason": "Correctly separates preview from ingestion, preserves both sides of the duplicate-ID contradiction, and avoids inferring preview-ID persistence or reservation."
+    },
+    {
+      "update_id": "preview-cost-event-ingestion-source-link",
+      "verdict": "approved",
+      "reason": "Valid reciprocal citation for the non-ingestion boundary, transaction-ID conflict, operating limit, batching guidance, and SQL exclusion."
+    },
+    {
+      "update_id": "preview-cost-usage-billing-evaluation",
+      "verdict": "approved",
+      "reason": "Accurately adds contract-aware pre-action pricing and merge/replace behavior while explicitly withholding unsupported compatibility, routing, snapshot, persistence, and billing guarantees."
+    },
+    {
+      "update_id": "preview-cost-usage-billing-source-link",
+      "verdict": "approved",
+      "reason": "Provides the required reciprocal citation for the durable usage-billing simulation facts."
+    },
+    {
+      "update_id": "preview-cost-provider-index-catalog",
+      "verdict": "approved",
+      "reason": "Valid provider-index source entry with no unwarranted root-index or comparison proposal."
+    },
+    {
+      "update_id": "preview-cost-provider-log-entry",
+      "verdict": "approved",
+      "reason": "Valid campaign log material preserving the correct hash, response defects, duplicate-ID contradiction, simulation boundary, and coordinator merge warning."
+    }
+  ],
+  "reviewer_identity": "sol-review-preview-event-cost-a1",
+  "reviewer_model": "gpt-5.6-sol"
+}

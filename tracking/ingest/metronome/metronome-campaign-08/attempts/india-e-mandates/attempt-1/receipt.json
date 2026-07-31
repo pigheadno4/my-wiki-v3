@@ -1,0 +1,155 @@
+{
+  "job_id": "india-e-mandates",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"India e-mandate support for Stripe invoices\"\ntype: source\ndate_ingested: 2026-07-31\ncanonical_url: \"https://docs.metronome.com/guides/customers-billing/optimize-customer-experience/india-e-mandates\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/customers-billing/optimize-customer-experience/india-e-mandates-2026-07-13.md\"\ntags: [metronome, stripe, india, e-mandates, recurring-payments, off-session-payments]\n---\n\n## Overview\n\nMetronome documents how invoices for Indian credit cards can use a mandate created and managed in Stripe. The merchant collects the card on-session and confirms a Stripe SetupIntent, waits for the resulting mandate to become active, stores the mandate ID in a Metronome contract custom field, and maps that field to the Stripe invoice default-mandate setting. The page presents this as an implementation for RBI pre-authorization requirements; it is not an independent statement of those regulatory requirements.\n\n## Key takeaways\n\n- Stripe creates the mandate during on-session SetupIntent confirmation and owns its status and lifecycle.\n- Threshold-triggered recharges use a sporadic interval and a maximum amount, while recurring fees use their corresponding cadence and can use fixed or maximum amounts according to whether the charge is known or variable.\n- A new mandate can remain pending for up to 30 minutes. The integration must wait for active status; an inactive mandate cannot be used and requires new customer authorization.\n- A Metronome contract custom field can be mapped to Stripe `invoice.payment_settings` \u2192 `default_mandate`; invoices sent to Stripe then attempt to attach that mandate. Attachment does not guarantee successful payment.\n- Stripe can emit `invoice.payment_action_required`. Metronome does not expose a mandate-management API or manage mandate lifecycle events, so the integrator must update mandates in Stripe and act before retrying.\n\n## Setup and configuration\n\n### Create the mandate in Stripe\n\nCollect the Indian card while the customer is on-session and confirm a Stripe SetupIntent so the customer can authenticate. The example configures card `mandate_options` with `amount_type`, `amount`, `currency`, `interval`, `reference`, and `start_date`; its sample values are illustrative and do not establish regulatory limits or general defaults.\n\nFor threshold billing, the guide uses `interval: sporadic`, `amount_type: maximum`, and an amount high enough for variable recharge amounts. For subscriptions or recurring fees, the interval should match the recurrence, while `amount_type` is fixed for a known amount or maximum for a variable amount.\n\n### Wait for active status\n\nA mandate may remain `pending` for up to 30 minutes. Readiness can be detected from Stripe's `mandate.updated` event or by retrieving the mandate ID from the SetupIntent and polling. If the mandate becomes `inactive`, the customer must authorize a new one.\n\n### Map the mandate into invoice delivery\n\nCreate a contract custom field such as `stripe_mandate_id`, map it through the Metronome entity-mapping UI to Stripe `invoice.payment_settings` \u2192 `default_mandate`, and populate it with the Stripe mandate ID when creating the contract. The guide says all invoices sent to Stripe attempt to attach that mandate.\n\n## Payment action and failure\n\nAfter an invoice is created with the mandate, its Stripe PaymentIntent can require customer action, signaled by Stripe's `invoice.payment_action_required` event. The guide says customer approval completes payment and releases the balance, while no response or an inactive mandate enters the normal failure flow and requires a newly authorized active mandate before a future recharge can succeed. The balance-release and future-recharge wording is explicit for the documented recharge flow and should not be generalized into a separate subscription-entitlement or invoice-retry guarantee.\n\n## Responsibility boundaries\n\nMandates are created and managed entirely in Stripe. In this integration, SetupIntent setup is required because the page characterizes every charge, including the first, as off-session. Metronome stores and returns the contract custom-field value, maps it into Stripe invoice settings, and surfaces payment failures through its normal failure path; it does not expose a mandate API or manage mandate lifecycle events. The integrator owns replacing or updating the mandate in Stripe and taking appropriate action before retrying.\n\n## Documentation boundaries\n\n> [!warning] Regional and regulatory scope\n> The page labels the flow RBI-compliant and links to Stripe's RBI e-mandate guide, but it does not define RBI rules, eligibility, customer-notification duties, mandate limits, exemptions, or legal-compliance scope. Do not infer those details from the sample amount or configuration.\n\nThe page does not define the exact Metronome webhook or failure state, retry mechanics, idempotency, amount denomination for the SetupIntent example, which invoice classes are eligible, or whether mandate attachment can fail independently. Its statement that invoices attempt to attach the mandate is not a payment-success guarantee.\n\n## Related\n\n- Companies: [[metronome]], [[stripe]]\n- Concepts: [[metronome-invoicing]], [[metronome-integrations]], [[metronome-credits-and-commits]], [[metronome-subscriptions]], [[stripe-saved-payment-methods]]\n- Related sources: [[source-metronome-integrations-invoice-integrations-stripe]], [[source-metronome-guides-customers-billing-optimize-customer-experience-prepaid-balance-thresholds]], [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/customers-billing/optimize-customer-experience/india-e-mandates-2026-07-13|2026-07-13 snapshot \u2014 Indian-card Stripe mandate setup, mapping, and responsibility boundaries]]\n",
+  "quotes": [
+    {
+      "text": "When collecting the user's card on-session, create a mandate using a Stripe `SetupIntent`. The user completes authentication during confirmation, and Stripe creates the mandate for that payment method.",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/india-e-mandates-2026-07-13.md:19 (on-session SetupIntent and Stripe mandate creation)"
+    },
+    {
+      "text": "**For threshold billing customers:**\n\n* Set `interval` to `sporadic` \u2014 recharges are triggered by a balance threshold, not a fixed cadence.\n* Set `amount_type` to `maximum` - support varying charge amounts.\n* Set `amount` to a sufficiently high value - account for variance in recharge amounts over time.\n\n**For subscriptions and recurring fees (e.g. monthly PayGo):**\n\n* Set `interval` to the corresponding recurrence (e.g. `month`).\n* Set `amount_type` to `fixed` if the recurring fee is known, or `maximum` if it is variable.\n* Set `amount` to the known recurring fee or a sufficiently high maximum.",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/india-e-mandates-2026-07-13.md:35-45 (threshold and recurring mandate options)"
+    },
+    {
+      "text": "A mandate may remain in `pending` for up to 30 minutes after creation. You can check readiness in two ways:\n\n* Listen to the `mandate.updated` webhook from Stripe and wait until `status` becomes `active`.\n* Retrieve the mandate by ID from the `SetupIntent` and poll until it is `active`.\n\nIf the mandate transitions to `inactive`, it cannot be used. The customer will need to authorize a new mandate.",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/india-e-mandates-2026-07-13.md:49-54 (mandate activation and replacement)"
+    },
+    {
+      "text": "On the Metronome contract, create a custom field (e.g. `stripe_mandate_id`). Via the entity mapping UI, map this contract custom field to the Stripe `invoice.payment_settings` \u2192 `default_mandate` field.\n\n### 4. Provision the customer in Metronome\n\nCreate the Metronome contract. Populate the `stripe_mandate_id` custom field with the mandate ID created in step 1. All invoices sent to Stripe will attempt to attach this mandate.",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/india-e-mandates-2026-07-13.md:58-62 (contract custom-field mapping and invoice attachment)"
+    },
+    {
+      "text": "After the invoice is created with the associated mandate, the `paymentIntent` may transition to an `action_required` state. Stripe will issue a [`invoice.payment_action_required` webhook](https://docs.stripe.com/api/events/types#event_types-invoice.payment_action_required).\n\n### 6. Confirm payment\n\n* If the customer approves the charge, the payment succeeds and the balance is released.\n* If the customer does not respond or the mandate becomes inactive, the payment fails and enters the normal failure workflow. A new mandate must be collected and activated before future recharge attempts can succeed.\n\n## Limitations\n\n* Mandates must be created and managed entirely in Stripe. Metronome does not expose an API for interacting with mandates other than returning the set custom field value.\n* Mandates must be set up via a `SetupIntent` since all charges, including the first one, are off-session.\n* Metronome does not manage mandate lifecycle events. Payment failures are surfaced through the normal webhook and failure path. It is your responsibility to update the mandate in Stripe and take appropriate action before retrying.",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/india-e-mandates-2026-07-13.md:66-77 (action required, outcomes, and ownership boundaries)"
+    }
+  ],
+  "suggestions": {
+    "company": [
+      {
+        "update_id": "india-e-mandates-company-invoicing-boundary",
+        "target_path": "wiki/companies/metronome.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Invoicing options",
+        "proposed_markdown": "For Indian-card invoices, Metronome documents a Stripe-mandate flow in which the merchant confirms an on-session SetupIntent, waits for the Stripe mandate to become active, and stores its ID in a contract custom field mapped to Stripe `invoice.payment_settings.default_mandate`. Stripe owns mandate creation and lifecycle; Metronome attempts to attach the mapped mandate to invoices but exposes no mandate-management API. Customer action or mandate replacement can therefore remain necessary before payment or a later recharge succeeds.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not treat attempted mandate attachment as guaranteed payment success.",
+          "Do not generalize the source's RBI-compliant label into regulatory requirements, eligibility, limits, or legal advice."
+        ]
+      },
+      {
+        "update_id": "india-e-mandates-company-source-catalog",
+        "target_path": "wiki/companies/metronome.md",
+        "update_kind": "catalog_entry",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates]] \u2014 Indian-card Stripe mandate setup, invoice mapping, action-required flow, and lifecycle responsibility",
+        "quote_indexes": [],
+        "warnings": [
+          "Recompute source_count from the final Campaign 08 promoted catalog."
+        ]
+      }
+    ],
+    "concepts": [
+      {
+        "update_id": "india-e-mandates-invoicing-flow",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Native Stripe invoice delivery",
+        "proposed_markdown": "### India card e-mandates\n\nFor Indian-card invoices, the documented flow collects the card on-session and confirms a Stripe SetupIntent, then waits for the mandate to become active. Threshold recharges use a sporadic interval and maximum amount; subscriptions and recurring fees use their recurrence cadence and a fixed amount when known or maximum when variable. A mandate may remain pending for up to 30 minutes; an inactive mandate is unusable and requires new customer authorization.\n\nThe contract stores the Stripe mandate ID in a custom field mapped to `invoice.payment_settings.default_mandate`. Invoices sent to Stripe attempt to attach the mandate, but attachment is not a payment-success guarantee. Stripe can issue `invoice.payment_action_required`; no response or an inactive mandate enters the normal failure flow.\n\nStripe owns mandate creation and lifecycle. Metronome returns the custom-field value and maps it into invoice delivery but exposes no mandate-management API. The page requires SetupIntent setup for this integration because it characterizes all charges, including the first, as off-session. The integrator must update or replace the mandate in Stripe and act before retrying.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source does not establish RBI rules, mandate eligibility, notification duties, regulatory thresholds, exemptions, or legal-compliance scope.",
+          "The confirmation section explicitly describes balance release and future recharge attempts; do not generalize those phrases into subscription entitlement or retry guarantees.",
+          "Treat the example mandate amount and date as illustrative, not as defaults or regulatory limits."
+        ]
+      },
+      {
+        "update_id": "india-e-mandates-invoicing-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates]] \u2014 Indian-card Stripe mandate creation, activation, invoice mapping, customer action, and ownership boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "india-e-mandates-integration-responsibility",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Native Stripe invoicing boundary",
+        "proposed_markdown": "For the Indian-card mandate flow, Stripe owns SetupIntent confirmation, mandate creation, status changes, and `invoice.payment_action_required`. Metronome's role is limited to storing and returning a contract custom-field value, mapping it to Stripe's invoice `default_mandate`, attempting attachment on invoices sent to Stripe, and surfacing payment failures through its normal failure path. Metronome does not expose a mandate-management API or manage lifecycle events; the integrator must wait for active status and replace or update the Stripe mandate before retrying when necessary.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source does not name the exact Metronome webhook, failure state, retry API, or idempotency behavior.",
+          "Keep Stripe's mandate lifecycle distinct from Metronome's invoice mapping and failure surfacing."
+        ]
+      },
+      {
+        "update_id": "india-e-mandates-integrations-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates]] \u2014 Stripe mandate ownership, Metronome contract-field mapping, action-required handling, and retry boundary",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [
+      {
+        "update_id": "india-e-mandates-provider-index-catalog",
+        "target_path": "wiki/metronome-index.md",
+        "update_kind": "catalog_entry",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates]] \u2014 Indian-card Stripe mandate setup, threshold and recurring configuration, invoice mapping, and responsibility boundaries",
+        "quote_indexes": [],
+        "warnings": [
+          "No root-index entry or comparison page is warranted because this is a Metronome-specific Stripe integration guide, not a cross-provider comparison."
+        ]
+      }
+    ],
+    "log": [
+      {
+        "update_id": "india-e-mandates-provider-log-entry",
+        "target_path": "wiki/metronome-log.md",
+        "update_kind": "log_entry",
+        "anchor": "Newest entry",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates]] \u2014 Indian-card Stripe mandate creation, activation, threshold-versus-recurring options, contract-field mapping, action-required handling, and provider responsibility boundaries (raw SHA-256 `a143201d70f01039a6a13cfc9ab4be02270bd632ce56d9fcf84ea94c9389d8f5`)",
+        "quote_indexes": [],
+        "warnings": [
+          "Coordinator should merge this item into the single Campaign 08 close entry and generate final coverage counts mechanically."
+        ]
+      }
+    ]
+  },
+  "raw_path": "raw/metronome/guides/customers-billing/optimize-customer-experience/india-e-mandates-2026-07-13.md",
+  "raw_sha256": "a143201d70f01039a6a13cfc9ab4be02270bd632ce56d9fcf84ea94c9389d8f5",
+  "status": "candidate_ready"
+}

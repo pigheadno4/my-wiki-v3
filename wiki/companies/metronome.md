@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 50
+source_count: 60
 ---
 
 ## Overview
@@ -27,7 +27,7 @@ The documentation home is a navigation overview. The SDK walkthrough adds an int
 - Billable metrics filter and aggregate events; products and rate cards turn those measurements into prices.
 - Customer contracts apply the rate card and produce draft invoices that update with usage.
 - The architecture guide orders the full flow as usage events, billable-metric quantities, product and rate-card pricing, customer contract terms, and invoice generation. It distinguishes event-time alert evaluation and on-demand API views from cycle-close invoice finalization and downstream delivery.
-- The Preview Events API can calculate draft invoices from proposed usage before processing, using either replacement or merged historical-usage semantics.
+- The Preview Events API simulates draft-invoice costs from proposed events without processing or billing them. `merge` includes existing billing-period usage, while `replace` ignores existing usage; calculation uses the customer's contract and can reflect tiers, commits and credits, free allotments, and multiple products. Multiple active contracts return separate preview invoices. The guide documents an 8 RPS per-client limit, excludes invoices with SQL billable metrics, and conflicts with the API reference on same-request duplicate transaction IDs.
 - High-volume ingestion supports batches of 100 events, with documented infrastructure capacity up to 110,000 events per second and a default 5,000-events-per-second limit. Metronome recommends event sampling, queue and retry controls, and dead-letter queues around the producer pipeline.
 
 The ingest endpoint reference separately advertises support for 100,000 events per second and a 34-day historical and deduplication window. It documents only a `200 Success` response without per-event results or errors, so partial-batch, retry, duplicate-response, and exact cutoff semantics remain unspecified.
@@ -84,6 +84,8 @@ Existing contracts can schedule invoice delivery changes among Stripe, NetSuite,
 
 Stripe Tax can calculate tax when Stripe finalizes a Metronome-created invoice. The setup depends on linked customers with addresses, Stripe product tax codes, and a Metronome `stripe_product_id` mapping; threshold and payment-gated flows require explicit API tax configuration.
 
+For Indian-card invoices, Metronome documents a Stripe-mandate flow in which the merchant confirms an on-session SetupIntent, waits for the Stripe mandate to become active, and stores its ID in a contract custom field mapped to Stripe `invoice.payment_settings.default_mandate`. Stripe owns mandate creation and lifecycle; Metronome attempts to attach the mapped mandate to invoices but exposes no mandate-management API. Customer action or mandate replacement can therefore remain necessary before payment or a later recharge succeeds.
+
 ## Stripe Dashboard app
 
 - The Metronome Stripe App embeds revenue and usage summaries, linked-customer management, and contract creation in the Stripe Dashboard.
@@ -95,6 +97,10 @@ Stripe Tax can calculate tax when Stripe finalizes a Metronome-created invoice. 
 - Webhook categories span thresholds, contract and balance-object lifecycles, invoices, integration failures, marketplace disablement, and payment gating.
 - Receivers should acknowledge quickly, process asynchronously, and deduplicate by notification ID because retries can continue for up to two days.
 - Authenticity can be established by retrieving authoritative API data or verifying an HMAC-SHA256 signature over the request date and exact body bytes.
+- Notifications divide into threshold, system, and offset families. System and offset notifications are stateless scheduled signals; threshold notifications are continuously evaluated, use `OK` and `IN_ALARM` as ongoing states, and have an `EVALUATING` condition before initial evaluation. Thresholds are evaluated at least every three minutes, with firing documented within five minutes after triggering usage is ingested.
+- Offset notifications schedule a system-event signal before or after a known date using hour-through-year units. They are prospective rather than backfilled, and the payload timestamp remains the source event time rather than the offset fire time. Before-`commit.segment.start` offsets longer than a recurring commit's one-period child-generation horizon fire only when the future child is created.
+- Spend-threshold billing attaches a charge trigger to contract spend and can payment-gate release of the resulting commit. Stripe collection can use an invoice or PaymentIntent; an external gateway instead consumes `payment_gate.external_initiate`, owns collection, and releases or cancels the commit with the workflow ID. The feature limits unpaid-revenue exposure but this guide does not establish application access blocking or a customer-wide hard cap.
+- Customer controls use threshold alerts as merchant-consumed action signals. The examples create soft and hard limits with the same `spend_threshold_reached` type, support dimension filters tied to billable-metric group keys, expose a low-remaining-commit alert, and distinguish pre-drawdown usage spend from post-drawdown invoice total. Metronome evaluates and delivers the alert, while the merchant owns the customer UI, messaging, and access blocking; no invoice finalization, payment success, or automatic service-denial guarantee follows from an alarm.
 
 ## Security principles
 
@@ -125,6 +131,8 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 - RBAC documents admin, member, and viewer roles, SSO claim mapping with default denial, full access for existing users when SSO is absent, and immutable role selection for newly created tokens. Its relationship to the authentication guide's default inherited permissions remains unresolved.
 - `GET /v1/billable-metrics/{billable_metric_id}` retrieves one metric, including archived configuration, while the customer-scoped list endpoint supports cursor pagination, current-plan filtering, and archived inclusion. Their schemas retain `UNIQUE`, SQL discrimination, filter, grouping, and example contradictions.
 - A manual Stripe-gated commit edits an existing contract, releases balance after payment success, voids both invoices and creates no commit after failure, and requires a new request for retry. Payment retry and webhook-delivery retry are distinct.
+- Public-beta spend trackers sum selected contract spend over a reset period. The documented scope currently counts only commit purchases, filterable by manual versus threshold-recharge source and discounted status. A prepaid-threshold discount can reference a tracker cap and stop discounting new threshold commits until the next billing period; other internal pricing rules remain merchant-owned checks against the contract's returned `accumulated_spend`. The guide does not define usage-event tracking, alert delivery, or the payment states that enter or leave the total.
+- Customer balance retrieval has two documented levels: `/getNetBalance` returns one filtered customer aggregate, while `listBalances` exposes individual credit and commit ledgers whose signed entries determine each remaining balance. Values may be fractional even in USD cents, and invoice-deduction timestamps use the usage service-period end rather than establishing invoice finalization or payment time.
 
 ## Reporting and data export
 
@@ -137,8 +145,8 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 50
-- Documentation pages pending ingest: 175
+- Ingested source summaries: 60
+- Documentation pages pending ingest: 165
 
 ## Sources
 
@@ -192,6 +200,16 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — capped-credit and zero-multiplier trial patterns
 - [[source-metronome-api-reference-billable-metrics-get-a-billable-metric]] — single-metric retrieval and archive visibility
 - [[source-metronome-api-reference-billable-metrics-get-billable-metrics-for-a-customer]] — customer-scoped metric discovery, filters, and pagination
+- [[source-metronome-guides-customers-billing-overview]] — navigation map for customer lifecycle, customer-facing billing controls, fraud and entitlement themes, and notifications
+- [[source-metronome-guides-customers-billing-manage-customers-manage-product-access]] — product-access navigation through contract terms, usage- and payment-based entitlement status, lifecycle guides, trials, and notifications
+- [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] — threshold, system, and offset notification behavior, delivery, scheduling, and states
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates]] — Indian-card Stripe mandate setup, invoice mapping, action-required flow, and lifecycle responsibility
+- [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] — relative-time policy, payload timestamp, prospective firing, UI/API setup, and recurring-commit timing caveat
+- [[source-metronome-guides-customers-billing-manage-customers-spend-trackers]] — public-beta spend accumulation, commit-purchase scope, threshold-discount caps, retrieval, and merchant enforcement
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-set-customer-spend-control]] — contract spend thresholds, immediate updates, Stripe and external payment gates, and enforcement boundaries
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] — pre-action cost simulation, contract pricing, preview modes, multi-contract responses, deduplication, and limits
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] — merchant-configured spend, dimension, commit-balance, and invoice-total alerts with access-enforcement boundaries
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]] — customer aggregate and per-balance ledger retrieval, signed arithmetic, precision, effective time, and manual adjustments
 
 ## Related
 

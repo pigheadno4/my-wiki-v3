@@ -56,6 +56,10 @@ Because usage-event structures target particular metrics, changing the producer 
 
 The retrieval schemas preserve the create-schema conflicts: `UNIQUE` remains unexplained, SQL and standard configuration have no discriminator, and include/exclude precedence, empty `not_in_values`, aggregation-key requiredness, and group-key limits remain undefined. The customer-list example also uses `aggregation_key: bytes` without a matching property-filter name and shows conflicting `group_by` and `group_keys` values.
 
+## Group-key alert scoping
+
+Dimension-scoped spend alerts require their `group_values` key to be a group key on the underlying billable metrics associated with the customer's contract. Products whose metric lacks the key do not contribute to that threshold. Metronome recomputes the selected usage as if the key were a presentation group, so tiered pricing, quantity rounding, and `MAX` aggregation apply to the subset. A customer can use three distinct keys for spend-threshold notifications; a fourth is blocked. When one key has more than 5,000 values for that customer, the guide calls for representative consultation rather than defining a hard maximum.
+
 ## Sources
 
 - [[source-metronome-guides-get-started-developer-sdks]] — metric definition, filters, aggregation operations, grouping, and creation-time boundary
@@ -71,6 +75,7 @@ The retrieval schemas preserve the create-schema conflicts: `UNIQUE` remains une
 - [[source-metronome-api-reference-billable-metrics-create-a-billable-metric]] — create schema, SQL exclusivity, filters, aggregation contradictions, nested groups, and UUID response
 - [[source-metronome-api-reference-billable-metrics-get-a-billable-metric]] — single-metric retrieval, archive visibility, and response-schema boundaries
 - [[source-metronome-api-reference-billable-metrics-get-billable-metrics-for-a-customer]] — customer-scoped pagination, filters, deprecated fields, and example defects
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] — group-key requirements, subset repricing, three-key limit, and high-cardinality consultation for spend alerts
 
 ## Related
 

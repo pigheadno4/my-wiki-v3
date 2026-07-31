@@ -1,0 +1,140 @@
+{
+  "company": [
+    {
+      "update_id": "remaining-balance-company-retrieval-boundary",
+      "target_path": "wiki/companies/metronome.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Architecture, access, and retrieval additions",
+      "proposed_markdown": "- Customer balance retrieval has two documented levels: `/getNetBalance` returns one filtered customer aggregate, while `listBalances` exposes individual credit and commit ledgers whose signed entries determine each remaining balance. Values may be fractional even in USD cents, and invoice-deduction timestamps use the usage service-period end rather than establishing invoice finalization or payment time.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Treat the guide's real-time wording as descriptive; it publishes no freshness or consistency SLA.",
+        "Do not imply cross-currency aggregation, contract scope, or entitlement enforcement."
+      ]
+    },
+    {
+      "update_id": "remaining-balance-company-source-catalog",
+      "target_path": "wiki/companies/metronome.md",
+      "update_kind": "catalog_entry",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]] \u2014 customer aggregate and per-balance ledger retrieval, signed arithmetic, precision, effective time, and manual adjustments",
+      "quote_indexes": [],
+      "warnings": [
+        "Coordinator should recompute source_count mechanically at campaign close."
+      ]
+    }
+  ],
+  "concepts": [
+    {
+      "update_id": "remaining-balance-credits-ledger-calculation",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Drawdown and invoice attribution",
+      "proposed_markdown": "### Balance retrieval and ledger calculation\n\n`/getNetBalance` returns one customer-level remaining-balance sum with filters for balance type, currency, pending charges, and custom fields. `listBalances` supports individual credit and commit views: each balance has a ledger, and summing its positive and negative entries produces that ledger's remaining balance. Values can be fractional; for USD the unit is cents, so `0.8` represents $0.008 and must not be silently truncated.\n\nLedger entries carry a type, signed amount, and effective timestamp. One invoice-deduction entry exists for every invoice that consumes a balance, and its timestamp is the usage invoice's service-period end. Positive and negative manual entries can correct or migrate balances. Credit, prepaid-commit, and postpaid-commit ledgers have distinct start, drawdown, rollover, expiration, true-up, manual, and seat-adjustment types; the guide gives identical descriptions for `prepaid_segment_expiration` and `prepaid_commit_expiration` without distinguishing their trigger boundaries.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "Do not infer response schemas, cutoff operators, currency conversion, cross-contract aggregation, ledger ordering, snapshot consistency, or read-after-write behavior.",
+        "The complete credit/prepaid/postpaid type catalog is explicit in raw lines 71-193 and must be retained during coordinator merge even though not every table row is included in the five grounding excerpts."
+      ]
+    },
+    {
+      "update_id": "remaining-balance-credits-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]] \u2014 aggregate and detailed balance APIs, signed-ledger arithmetic, precision, effective time, entry types, and manual adjustments",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "remaining-balance-customers-api-view",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Contract and invoice behavior",
+      "proposed_markdown": "### Customer balance views\n\nMetronome documents `/getNetBalance` as a customer-scoped single aggregate with filters for balance type, currency, pending charges, and custom fields. `listBalances` provides the detailed per-credit or per-commit alternative. The page does not define whether the aggregate crosses all customer contracts, how customer- and contract-level balances interact, how hierarchy affects the result, or whether reads are snapshot-consistent.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Do not promote customer-scoped wording into a cross-contract or hierarchy aggregation guarantee."
+      ]
+    },
+    {
+      "update_id": "remaining-balance-customers-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]] \u2014 customer aggregate and individual credit-or-commit balance views",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "remaining-balance-invoicing-deduction-time",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Credit and commit application",
+      "proposed_markdown": "A credit or commit ledger has one deduction entry for each invoice that consumes that balance. The deduction's effective timestamp is always the end of the usage invoice's service period, and Metronome says that timestamp can support balance views including or excluding pending charges. This does not make the ledger timestamp an invoice creation, finalization, delivery, collection, or payment timestamp, and the guide does not define how `pending` maps to invoice states.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Keep service-period effective time separate from invoice lifecycle and observation time."
+      ]
+    },
+    {
+      "update_id": "remaining-balance-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]] \u2014 per-invoice balance deductions, service-period effective timestamps, and pending-charge display boundary",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [
+    {
+      "update_id": "remaining-balance-provider-index-catalog",
+      "target_path": "wiki/metronome-index.md",
+      "update_kind": "catalog_entry",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]] \u2014 aggregate and ledger balance retrieval, signed calculation, precision, timestamps, and manual adjustments",
+      "quote_indexes": [],
+      "warnings": [
+        "Provider-specific source belongs only in the Metronome index; do not add it to the root index."
+      ]
+    }
+  ],
+  "log": [
+    {
+      "update_id": "remaining-balance-provider-log-entry",
+      "target_path": "wiki/metronome-log.md",
+      "update_kind": "log_entry",
+      "anchor": "Newest entry",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]] \u2014 complete 193-line balance guide covering customer aggregation, signed credit and commit ledgers, fractional amounts, effective timestamps, entry types, and manual adjustments; raw SHA-256 `2f427835858daeeb9f71ff4ce25b53a08d0b62ea9d2dc3edba5cf6f182351bae` verified",
+      "quote_indexes": [],
+      "warnings": [
+        "Coordinator should consolidate the Campaign 08 log entry and coverage counts mechanically at campaign close."
+      ]
+    }
+  ]
+}
