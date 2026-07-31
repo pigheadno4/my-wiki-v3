@@ -17,6 +17,7 @@ from scripts.ingest_pilot.state import (
     save_jobs,
     write_attempt_file,
 )
+from scripts.ingest_pilot.coordinator import status
 
 
 class PilotStateTests(unittest.TestCase):
@@ -113,7 +114,7 @@ class PilotStateTests(unittest.TestCase):
         self.assertEqual(
             load_campaign(self.root, self.campaign_id),
             {
-                "schema_version": 1,
+                "schema_version": 2,
                 "campaign_id": self.campaign_id,
                 "provider": "metronome",
                 "state": "active",
@@ -123,6 +124,44 @@ class PilotStateTests(unittest.TestCase):
                 "mode": "dry_run",
             },
         )
+        self.assertEqual([job["contract_version"] for job in jobs], [2] * 5)
+
+    def test_status_renders_a_schema_v1_campaign_without_migrating_it(self):
+        paths = campaign_paths(self.root, self.campaign_id)
+        paths["campaign_dir"].mkdir(parents=True)
+        campaign = {
+            "schema_version": 1,
+            "campaign_id": self.campaign_id,
+            "provider": "metronome",
+            "state": "active",
+            "worker_concurrency": 5,
+            "max_attempts": 3,
+            "review_concurrency": 1,
+            "mode": "dry_run",
+        }
+        legacy_job = {
+            "job_id": "security-principles",
+            "raw_path": "raw/metronome/guides/platform-configuration/security-principles-2026-07-13.md",
+            "raw_sha256": "0" * 64,
+            "source_target": "wiki/sources/metronome/source-metronome-guides-platform-configuration-security-principles.md",
+            "canonical_url": "https://docs.metronome.com/guides/platform-configuration/security-principles.md",
+            "state": "queued",
+            "attempt": 0,
+            "queue_position": 1,
+            "last_event": "initialized",
+            "failure_reason": None,
+        }
+        paths["campaign"].write_text(json.dumps(campaign, indent=2) + "\n", encoding="utf-8")
+        paths["jobs"].write_text(json.dumps([legacy_job], indent=2) + "\n", encoding="utf-8")
+        campaign_before = paths["campaign"].read_bytes()
+        jobs_before = paths["jobs"].read_bytes()
+
+        rendered = status(self.root, self.campaign_id)
+
+        self.assertEqual(rendered["campaign_id"], self.campaign_id)
+        self.assertIn("- Queued: 1", rendered["monitor"])
+        self.assertEqual(paths["campaign"].read_bytes(), campaign_before)
+        self.assertEqual(paths["jobs"].read_bytes(), jobs_before)
 
     def test_initialize_preserves_portable_worker_routing_metadata(self):
         manifest = deepcopy(self.manifest)

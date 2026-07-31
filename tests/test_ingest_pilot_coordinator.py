@@ -120,20 +120,31 @@ class CoordinatorTests(unittest.TestCase):
             "verdict": verdict,
             "reason": "Grounded and complete",
             "required_changes": [],
+            "review_scope": "full",
+            "retry_review_scope": None,
+            "shared_update_decisions": [],
         }
         result.update(overrides)
         path = self.root / f"{job_id}-review-result.json"
         path.write_text(json.dumps(result), encoding="utf-8")
         return path
 
-    def make_reviewing(self, job_id, attempt):
+    def make_reviewing(self, job_id, attempt, suggestions=None):
         init_campaign(self.root, self.manifest)
         jobs = load_jobs(self.root, self.campaign_id)
         job = next(job for job in jobs if job["job_id"] == job_id)
         job["attempt"] = attempt
         job["state"] = "reviewing"
         job["last_event"] = "review_started"
+        job["reviewer_identity"] = "reviewer-a"
+        job["reviewer_model"] = "Sol"
         save_jobs(self.root, self.campaign_id, jobs)
+        attempt_dir = self.attempt(job_id, attempt)
+        attempt_dir.mkdir(parents=True)
+        attempt_dir.joinpath("suggestions.json").write_text(
+            json.dumps(suggestions or {"company": [], "concepts": [], "index": [], "log": []}),
+            encoding="utf-8",
+        )
 
     def test_valid_worker_result_persists_candidate_and_emits_review_order(self):
         self.start_five()
@@ -224,7 +235,10 @@ class CoordinatorTests(unittest.TestCase):
         run_once(
             self.root,
             self.campaign_id,
-            review_result_path=self.write_review("job-1", 1, "changes_requested"),
+            review_result_path=self.write_review(
+                "job-1", 1, "changes_requested",
+                required_changes=["Revise the source page"], retry_review_scope="full",
+            ),
         )
 
         job = load_jobs(self.root, self.campaign_id)[0]
@@ -239,7 +253,10 @@ class CoordinatorTests(unittest.TestCase):
         run_once(
             self.root,
             self.campaign_id,
-            review_result_path=self.write_review("job-1", 3, "changes_requested"),
+            review_result_path=self.write_review(
+                "job-1", 3, "changes_requested",
+                required_changes=["Revise the source page"], retry_review_scope="full",
+            ),
         )
 
         self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["state"], "rejected")
@@ -256,6 +273,90 @@ class CoordinatorTests(unittest.TestCase):
         job = load_jobs(self.root, self.campaign_id)[0]
         self.assertEqual(job["state"], "rejected")
         self.assertEqual(job["failure_reason"], "Not grounded")
+
+    def test_approved_review_requires_no_changes_and_no_retry_scope(self):
+        self.make_reviewing("job-1", attempt=1)
+        for overrides in (
+            {"required_changes": ["Revise the source page"]},
+            {"retry_review_scope": "targeted"},
+        ):
+            with self.subTest(overrides=overrides):
+                with self.assertRaisesRegex(PilotError, "review result is invalid"):
+                    run_once(
+                        self.root,
+                        self.campaign_id,
+                        review_result_path=self.write_review("job-1", 1, "approved", **overrides),
+                    )
+
+    def test_changes_requested_requires_changes_and_a_retry_scope(self):
+        self.make_reviewing("job-1", attempt=1)
+        for overrides in (
+            {},
+            {"required_changes": ["Revise the source page"], "retry_review_scope": None},
+            {"required_changes": ["Revise the source page"], "retry_review_scope": "partial"},
+        ):
+            with self.subTest(overrides=overrides):
+                with self.assertRaisesRegex(PilotError, "review result is invalid"):
+                    run_once(
+                        self.root,
+                        self.campaign_id,
+                        review_result_path=self.write_review("job-1", 1, "changes_requested", **overrides),
+                    )
+
+    def test_review_scope_must_be_full_or_targeted(self):
+        self.make_reviewing("job-1", attempt=1)
+
+        with self.assertRaisesRegex(PilotError, "review result is invalid"):
+            run_once(
+                self.root,
+                self.campaign_id,
+                review_result_path=self.write_review("job-1", 1, "approved", review_scope="partial"),
+            )
+
+    def test_review_decisions_match_current_attempt_suggestions(self):
+        suggestion = {
+            "update_id": "concept-billing-link",
+            "target_path": "wiki/concepts/metronome/metronome-billing.md",
+            "update_kind": "durable_fact",
+            "anchor": "## Sources",
+            "proposed_markdown": "- [[source-job-1]] — documented billing behavior",
+            "quote_indexes": [0],
+            "warnings": [],
+        }
+        self.make_reviewing("job-1", attempt=1, suggestions={
+            "company": [], "concepts": [suggestion], "index": [], "log": [],
+        })
+        invalid_decision_sets = (
+            [],
+            [{"update_id": "concept-billing-link", "verdict": "approved"}],
+            [{"update_id": "concept-billing-link", "verdict": "deferred", "reason": "Later"}],
+            [{"update_id": "other-update", "verdict": "approved", "reason": "Grounded"}],
+            [
+                {"update_id": "concept-billing-link", "verdict": "approved", "reason": "Grounded"},
+                {"update_id": "concept-billing-link", "verdict": "rejected", "reason": "Duplicate"},
+            ],
+        )
+        for decisions in invalid_decision_sets:
+            with self.subTest(decisions=decisions):
+                with self.assertRaisesRegex(PilotError, "review result is invalid"):
+                    run_once(
+                        self.root,
+                        self.campaign_id,
+                        review_result_path=self.write_review(
+                            "job-1", 1, "approved", shared_update_decisions=decisions,
+                        ),
+                    )
+
+        output = run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review("job-1", 1, "approved", shared_update_decisions=[{
+                "update_id": "concept-billing-link", "verdict": "approved", "reason": "Grounded",
+            }]),
+        )
+        review = json.loads(self.attempt("job-1", 1).joinpath("review.json").read_text(encoding="utf-8"))
+        self.assertEqual(output["jobs"][0]["state"], "approved")
+        self.assertEqual(review["shared_update_decisions"][0]["update_id"], "concept-billing-link")
 
     def test_parallel_assignments_are_required_before_state_mutation_and_distinct(self):
         parallel = dict(self.manifest)
@@ -442,8 +543,20 @@ class CoordinatorTests(unittest.TestCase):
                 job["reviewer_identity"] = "reviewer-a"
                 job["reviewer_model"] = "Sol"
                 save_jobs(self.root, self.campaign_id, jobs)
+                attempt = self.attempt(job_id, 1)
+                attempt.joinpath("suggestions.json").write_text(
+                    json.dumps({"company": [], "concepts": [], "index": [], "log": []}),
+                    encoding="utf-8",
+                )
 
-                run_once(self.root, self.campaign_id, review_result_path=self.write_review(job_id, 1, verdict))
+                review_kwargs = (
+                    {"required_changes": ["Revise the source page"], "retry_review_scope": "full"}
+                    if verdict == "changes_requested" else {}
+                )
+                run_once(
+                    self.root, self.campaign_id,
+                    review_result_path=self.write_review(job_id, 1, verdict, **review_kwargs),
+                )
 
                 review = json.loads(self.attempt(job_id, 1).joinpath("review.json").read_text(encoding="utf-8"))
                 self.assertEqual(review["verdict"], verdict)

@@ -20,8 +20,15 @@ from .state import (
 from .validator import ValidationError, validate_worker_result
 
 
-REVIEW_RESULT_KEYS = {"job_id", "attempt", "verdict", "reason", "required_changes"}
+LEGACY_REVIEW_RESULT_KEYS = {"job_id", "attempt", "verdict", "reason", "required_changes"}
+REVIEW_RESULT_KEYS = {
+    "job_id", "attempt", "verdict", "reason", "required_changes",
+    "review_scope", "retry_review_scope", "shared_update_decisions",
+}
 REVIEW_VERDICTS = {"approved", "changes_requested", "rejected"}
+REVIEW_SCOPES = {"full", "targeted"}
+SHARED_UPDATE_DECISION_KEYS = {"update_id", "verdict", "reason"}
+SHARED_UPDATE_DECISION_VERDICTS = {"approved", "rejected"}
 
 
 def _json_bytes(value: Any) -> bytes:
@@ -111,6 +118,52 @@ def _apply_worker_result(
     )
 
 
+def _validate_review_result(result: dict, expected_scope: str, suggestion_ids: set[str]) -> None:
+    if set(result) != REVIEW_RESULT_KEYS:
+        raise PilotError("review result must use the fixed schema")
+    verdict = result["verdict"]
+    reason = result["reason"]
+    changes = result["required_changes"]
+    review_scope = result["review_scope"]
+    retry_scope = result["retry_review_scope"]
+    decisions = result["shared_update_decisions"]
+    if (
+        verdict not in REVIEW_VERDICTS
+        or not isinstance(reason, str)
+        or not reason.strip()
+        or not isinstance(changes, list)
+        or not all(isinstance(change, str) and change.strip() for change in changes)
+        or review_scope not in REVIEW_SCOPES
+        or review_scope != expected_scope
+    ):
+        raise PilotError("review result is invalid")
+    if verdict == "approved" and (changes or retry_scope is not None):
+        raise PilotError("review result is invalid")
+    if verdict == "changes_requested" and (
+        not changes or retry_scope not in REVIEW_SCOPES
+    ):
+        raise PilotError("review result is invalid")
+    if verdict == "rejected" and retry_scope is not None:
+        raise PilotError("review result is invalid")
+    if not isinstance(decisions, list):
+        raise PilotError("review result is invalid")
+    decision_ids = []
+    for decision in decisions:
+        if not isinstance(decision, dict) or set(decision) != SHARED_UPDATE_DECISION_KEYS:
+            raise PilotError("review result is invalid")
+        update_id = decision["update_id"]
+        if (
+            not isinstance(update_id, str)
+            or decision["verdict"] not in SHARED_UPDATE_DECISION_VERDICTS
+            or not isinstance(decision["reason"], str)
+            or not decision["reason"].strip()
+        ):
+            raise PilotError("review result is invalid")
+        decision_ids.append(update_id)
+    if len(set(decision_ids)) != len(decision_ids) or set(decision_ids) != suggestion_ids:
+        raise PilotError("review result is invalid")
+
+
 def _apply_review_result(
     root: Path,
     campaign_id: str,
@@ -120,7 +173,8 @@ def _apply_review_result(
     max_attempts: int,
 ) -> tuple[Dict[str, Any], list[tuple[Path, str, bytes]]]:
     result = _load_result(result_path)
-    if set(result) != REVIEW_RESULT_KEYS:
+    review_keys = REVIEW_RESULT_KEYS if campaign.get("schema_version", 1) == 2 else LEGACY_REVIEW_RESULT_KEYS
+    if set(result) != review_keys:
         raise PilotError("review result must use the fixed schema")
     job = _job(jobs, result["job_id"])
     if job["state"] != "reviewing" or result["attempt"] != job["attempt"]:
@@ -137,7 +191,19 @@ def _apply_review_result(
     verdict = result["verdict"]
     reason = result["reason"]
     changes = result["required_changes"]
-    if verdict not in REVIEW_VERDICTS or not isinstance(reason, str) or not reason or not isinstance(changes, list):
+    if campaign.get("schema_version", 1) == 2:
+        attempt_dir = (
+            root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
+            / job["job_id"] / f"attempt-{job['attempt']}"
+        )
+        suggestions = _load_result(attempt_dir / "suggestions.json")
+        suggestion_ids = {
+            suggestion["update_id"]
+            for category in suggestions.values()
+            for suggestion in category
+        }
+        _validate_review_result(result, job.get("next_review_scope", "full"), suggestion_ids)
+    elif verdict not in REVIEW_VERDICTS or not isinstance(reason, str) or not reason or not isinstance(changes, list):
         raise PilotError("review result is invalid")
     files = []
     if "reviewer_identity" in job:
@@ -166,6 +232,7 @@ def _apply_review_result(
     job["queue_position"] = max(item["queue_position"] for item in jobs) + 1
     job["last_event"] = "changes_requested"
     job["failure_reason"] = None
+    job["next_review_scope"] = result.get("retry_review_scope", "full")
     return {"event": "changes_requested", "job_id": job["job_id"], "reason": reason}, files
 
 

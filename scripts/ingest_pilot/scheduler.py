@@ -43,6 +43,7 @@ def worker_orders(
             "raw_sha256": job["raw_sha256"],
             "source_target": job["source_target"],
             "canonical_url": job["canonical_url"],
+            "contract_version": job.get("contract_version", 1),
             "result_contract": {
                 "top_level_keys": WORKER_RESULT_KEYS,
                 "quote_required_keys": ["text", "location"],
@@ -80,6 +81,10 @@ def review_order(jobs: List[dict]) -> Optional[Dict[str, object]]:
         "raw_path": job["raw_path"],
         "raw_sha256": job["raw_sha256"],
         "source_target": job["source_target"],
+        "contract_version": job.get("contract_version", 1),
+        "review_scope": job.get("next_review_scope", "full"),
+        "prior_attempt": job["attempt"] - 1 if job["attempt"] > 1 else None,
+        "preferred_reviewer_identity": job.get("reviewer_identity"),
     }
 
 
@@ -96,6 +101,10 @@ def _review_orders(jobs: List[dict], limit: int) -> List[Dict[str, object]]:
             "raw_path": job["raw_path"],
             "raw_sha256": job["raw_sha256"],
             "source_target": job["source_target"],
+            "contract_version": job.get("contract_version", 1),
+            "review_scope": job.get("next_review_scope", "full"),
+            "prior_attempt": job["attempt"] - 1 if job["attempt"] > 1 else None,
+            "preferred_reviewer_identity": job.get("reviewer_identity"),
         }
         for job in candidates[:max(0, limit)]
     ]

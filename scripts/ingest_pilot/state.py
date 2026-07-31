@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Mapping, Union
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 WORKER_TIERS = {"standard", "strong"}
 
 
@@ -202,6 +202,7 @@ def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> No
                 "raw_sha256": source["raw_sha256"],
                 "source_target": source["source_target"],
                 "canonical_url": source["canonical_url"],
+                "contract_version": 2,
                 **routing_metadata[position - 1],
                 "state": "queued",
                 "attempt": 0,
