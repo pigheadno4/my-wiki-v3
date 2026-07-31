@@ -130,6 +130,9 @@ def _approved_shared_updates(root: Path, campaign_id: str, jobs: list) -> Dict[s
                 for quote in receipt["quotes"]
             )
             or review["job_id"] != job_id
+            or isinstance(review["attempt"], bool)
+            or not isinstance(review["attempt"], int)
+            or review["attempt"] < 1
             or review["attempt"] != attempt
             or review["verdict"] != "approved"
             or not isinstance(review["reason"], str)
@@ -219,7 +222,11 @@ def _approved_shared_updates(root: Path, campaign_id: str, jobs: list) -> Dict[s
                     "job_id": job_id,
                     "attempt": attempt,
                     "update_id": suggestion["update_id"],
+                    "update_kind": suggestion["update_kind"],
+                    "anchor": suggestion["anchor"],
                     "proposed_markdown": suggestion["proposed_markdown"],
+                    "quote_indexes": suggestion["quote_indexes"],
+                    "warnings": suggestion["warnings"],
                 })
     return plan
 
@@ -359,8 +366,11 @@ def _apply_review_result(
     review_keys = REVIEW_RESULT_KEYS if campaign.get("schema_version", 1) == 2 else LEGACY_REVIEW_RESULT_KEYS
     if set(result) != review_keys:
         raise PilotError("review result must use the fixed schema")
+    attempt = result.get("attempt")
+    if isinstance(attempt, bool) or not isinstance(attempt, int) or attempt < 1:
+        raise PilotError("review result does not match a reviewing job")
     job = _job(jobs, result["job_id"])
-    if job["state"] != "reviewing" or result["attempt"] != job["attempt"]:
+    if job["state"] != "reviewing" or attempt != job["attempt"]:
         raise PilotError("review result does not match a reviewing job")
     is_schema_v2 = campaign.get("schema_version", 1) == 2
     if campaign["review_concurrency"] > 1 and (
@@ -626,6 +636,10 @@ def run_once(
         events.append(review_event)
         pending_files.extend(files)
         changes_requested = review_event["event"] == "changes_requested"
+    if total_subagent_slots is None and campaign.get("schema_version", 1) == 2:
+        projected_review = review_order(jobs)
+        if projected_review is not None:
+            _assignment_by_job(reviewer_assignments, [projected_review], "reviewer")
     review_orders = []
     if changes_requested and total_subagent_slots is None:
         orders = []
@@ -682,6 +696,7 @@ def complete_campaign(root: Path, campaign_id: str, coordinator_repairs: int) ->
     jobs = load_jobs(root, campaign_id)
     if any(job.get("state") not in {"approved", "rejected"} for job in jobs):
         raise PilotError("campaign completion requires only terminal approved or rejected jobs")
+    _campaign_payload(root, campaign_id)
     campaign["state"] = "complete"
     campaign["completed_at"] = _utc_now()
     campaign["coordinator_repairs"] = coordinator_repairs

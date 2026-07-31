@@ -410,6 +410,31 @@ class CoordinatorTests(unittest.TestCase):
                 with self.assertRaisesRegex(PilotError, "terminal"):
                     complete_campaign(self.root, self.campaign_id, 0)
 
+    def test_complete_validates_approved_evidence_before_persisting_completion_and_can_retry(self):
+        self.make_reviewing("job-1", attempt=1)
+        run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review("job-1", 1, "approved"),
+        )
+        jobs = load_jobs(self.root, self.campaign_id)
+        for job in jobs[1:]:
+            job["state"] = "rejected"
+        save_jobs(self.root, self.campaign_id, jobs)
+        review_path = self.attempt("job-1", 1) / "review.json"
+        evidence = review_path.read_bytes()
+        review_path.unlink()
+
+        with self.assertRaisesRegex(PilotError, "cannot read result"):
+            complete_campaign(self.root, self.campaign_id, 0)
+
+        campaign_path = self.root / "tracking/ingest/metronome" / self.campaign_id / "campaign.json"
+        self.assertEqual(json.loads(campaign_path.read_text(encoding="utf-8"))["state"], "active")
+
+        review_path.write_bytes(evidence)
+        output = complete_campaign(self.root, self.campaign_id, 0)
+        self.assertEqual(output["campaign_state"], "complete")
+
     def test_changes_requested_queues_fresh_attempt_at_tail(self):
         self.make_reviewing("job-1", attempt=1)
         initial_tail = max(job["queue_position"] for job in load_jobs(self.root, self.campaign_id))
@@ -571,6 +596,18 @@ class CoordinatorTests(unittest.TestCase):
                 self.root,
                 self.campaign_id,
                 review_result_path=self.write_review("job-1", 1, "approved", review_scope="full"),
+            )
+
+        self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["state"], "reviewing")
+
+    def test_review_result_boolean_attempt_is_rejected_without_transitioning_job(self):
+        self.make_reviewing("job-1", attempt=1)
+
+        with self.assertRaisesRegex(PilotError, "review result does not match a reviewing job"):
+            run_once(
+                self.root,
+                self.campaign_id,
+                review_result_path=self.write_review("job-1", True, "approved"),
             )
 
         self.assertEqual(load_jobs(self.root, self.campaign_id)[0]["state"], "reviewing")
@@ -738,8 +775,18 @@ class CoordinatorTests(unittest.TestCase):
 
         self.assertEqual(output["shared_update_plan"], {
             "wiki/concepts/metronome/metronome-billing.md": [
-                {"job_id": "job-1", "attempt": 1, "update_id": "billing-a", "proposed_markdown": "- [[source-job-1]] — billing fact A"},
-                {"job_id": "job-2", "attempt": 1, "update_id": "billing-b", "proposed_markdown": "- [[source-job-2]] — billing fact B"},
+                {
+                    "job_id": "job-1", "attempt": 1, "update_id": "billing-a",
+                    "update_kind": "durable_fact", "anchor": "## Sources",
+                    "proposed_markdown": "- [[source-job-1]] — billing fact A",
+                    "quote_indexes": [0], "warnings": [],
+                },
+                {
+                    "job_id": "job-2", "attempt": 1, "update_id": "billing-b",
+                    "update_kind": "durable_fact", "anchor": "## Sources",
+                    "proposed_markdown": "- [[source-job-2]] — billing fact B",
+                    "quote_indexes": [0], "warnings": [],
+                },
             ],
         })
         self.assertFalse((self.root / "wiki").exists())
@@ -822,6 +869,31 @@ class CoordinatorTests(unittest.TestCase):
                 worker_assignments={},
             )
         self.assertEqual(load_jobs(self.root, self.campaign_id), before_reviews)
+
+    def test_serial_ready_candidate_requires_reviewer_assignment_before_worker_attempt_mutation(self):
+        serial = dict(self.manifest)
+        serial["worker_concurrency"] = 1
+        init_campaign(self.root, serial)
+        jobs = load_jobs(self.root, self.campaign_id)
+        jobs[0].update({"attempt": 1, "state": "candidate_ready", "last_event": "candidate_ready"})
+        save_jobs(self.root, self.campaign_id, jobs)
+        attempts = self.root / "tracking/ingest/metronome" / self.campaign_id / "attempts"
+        before_jobs = load_jobs(self.root, self.campaign_id)
+        before_attempt_paths = sorted(path.relative_to(attempts) for path in attempts.rglob("*"))
+
+        with self.assertRaisesRegex(PilotError, "reviewer assignments"):
+            run_once(self.root, self.campaign_id)
+
+        self.assertEqual(load_jobs(self.root, self.campaign_id), before_jobs)
+        self.assertEqual(sorted(path.relative_to(attempts) for path in attempts.rglob("*")), before_attempt_paths)
+
+        output = run_once(
+            self.root,
+            self.campaign_id,
+            reviewer_assignments=[{"identity": "reviewer-a", "model": "Sol"}],
+        )
+        self.assertEqual(output["review_order"]["job_id"], "job-1")
+        self.assertEqual(load_jobs(self.root, self.campaign_id)[1]["state"], "running")
 
     def test_parallel_review_result_without_assignment_fails_closed(self):
         parallel = dict(self.manifest)
