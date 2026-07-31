@@ -103,3 +103,28 @@ coordinator, the intended allocation is:
 Backend capacity is discovered at runtime. The campaign's configured
 concurrency is a ceiling, not a promise that every platform exposes that many
 native agents.
+
+## Campaign 08 mature-mode routing and operation
+
+Campaign 08 and later Metronome campaigns use simplified production mode only
+after the exact campaign manifest is approved. Sol is the default worker.
+Terra is limited to genuinely templated, isolated pages that need no semantic
+update to a shared concept; every first attempt still receives an independent
+complete-source Sol review by an agent other than its worker.
+
+Keep three dynamic sub-agent slots beside the coordinator. A completed worker
+or reviewer immediately releases its slot for a ready review or the next
+queued worker; do not wait for a batch barrier. For a bounded unchanged-hash
+retry covering only links, frontmatter, wording, or an already-identified
+omitted field, use targeted diff review and prefer the Sol reviewer that
+requested the change. If that reviewer is unavailable, another Sol reviewer
+may perform the same targeted check; any factual, uncertain, or broader
+correction receives a full complete-source review.
+
+The coordinator remains the only canonical writer and explicitly completes
+the campaign after its terminal approval and campaign-close checks. It records
+only `started_at` and `completed_at`, consumes the reviewer-approved
+`shared_update_plan` by grouping updates by exact target, applies each shared
+target once, and runs the campaign-close wiki, capsule, and predetermined
+three-page query-audit validations once. The coordinator does not perform a
+default third full-source reread.
