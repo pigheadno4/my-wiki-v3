@@ -22,7 +22,7 @@ from toml_compat import load_toml  # noqa: E402
 APPENDIX_A_INVENTORY = (
     ('paypal/paypal-messaging-components', 'https://github.com/paypal/paypal-messaging-components', 'web-component', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('paypal/paypal-checkout-components', 'https://github.com/paypal/paypal-checkout-components', 'web-component', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
-    ('paypal/paypal-android', 'https://github.com/paypal/paypal-android', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('paypal/paypal-android', 'https://github.com/paypal/paypal-android', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('paypal/paypal-sdk-release', 'https://github.com/paypal/paypal-sdk-release', 'release-index', 'tier2', 'github-release', False, 'releases-and-default-branch', 'monthly'),
     ('paypal/paypal-js', 'https://github.com/paypal/paypal-js', 'web-sdk', 'tier1', 'monorepo-packages', True, 'releases-and-default-branch', 'weekly'),
     ('paypal/paypal-ios', 'https://github.com/paypal/paypal-ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
@@ -720,7 +720,7 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(380, capsule.max_packet_files)
         self.assertEqual(3500000, capsule.max_packet_utf8_bytes)
 
-    def test_stripe_native_sdks_use_tagged_tree_profiles(self):
+    def test_native_sdks_use_tagged_tree_profiles(self):
         repos = {
             repo.id: repo
             for repo in load_registry(
@@ -729,6 +729,14 @@ class RegistryTests(unittest.TestCase):
         }
 
         for repo_id, package, major, pinned, root_count, include_count in (
+            (
+                "paypal/paypal-android",
+                "paypal-android",
+                "2",
+                "2.3.0",
+                6,
+                47,
+            ),
             (
                 "stripe/stripe-ios",
                 "stripe-ios",
