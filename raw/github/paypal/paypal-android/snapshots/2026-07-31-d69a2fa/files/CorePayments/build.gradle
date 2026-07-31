@@ -1,0 +1,98 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlinAndroid
+    alias libs.plugins.kotlinParcelize
+    alias libs.plugins.kotlinSerialization
+    alias libs.plugins.binaryCompatibilityValidator
+}
+
+android {
+    namespace 'com.paypal.android.corepayments'
+    java {
+        toolchain {
+            languageVersion = modules.kotlinToolchainLanguageVersion
+        }
+    }
+
+    defaultConfig {
+        compileSdk modules.androidCompileSdk
+        minSdkVersion modules.androidMinSdkVersion
+        targetSdkVersion modules.androidTargetVersion
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+        buildConfigField "String", "CLIENT_SDK_VERSION", "\"${requireExists(rootProject.version)}\""
+    }
+
+    buildTypes {
+        release {
+            version = rootProject.version
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility modules.sourceCompatibility
+        targetCompatibility modules.targetCompatibility
+    }
+
+    kotlinOptions {
+        jvmTarget = modules.kotlinJvmTarget
+    }
+
+    lintOptions {
+        lintConfig file('../lint.xml')
+        abortOnError true
+        warningsAsErrors true
+    }
+    packagingOptions {
+        // Ref: https://stackoverflow.com/a/44767574
+        exclude 'META-INF/AL2.0'
+        exclude 'META-INF/LGPL2.1'
+    }
+
+    // Ref: https://stackoverflow.com/a/37593189
+    testOptions {
+        unitTests {
+            includeAndroidResources true
+            all {
+                // workaround for spying on java.net.URL in Http module
+                // Ref: https://mockk.io/doc/md/jdk16-access-exceptions.html
+                jvmArgs("--add-opens", "java.base/java.io=ALL-UNNAMED")
+                jvmArgs("--add-opens", "java.base/java.net=ALL-UNNAMED")
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation libs.androidx.coreKtx
+    implementation libs.androidx.appcompat
+    implementation libs.kotlin.stdLib
+    implementation libs.kotlinx.coroutinesAndroid
+    implementation libs.kotlinx.serializationJson
+
+    testImplementation libs.json
+    testImplementation libs.jsonAssert
+    testImplementation libs.junit
+    testImplementation libs.mockk
+    testImplementation libs.robolectric
+    testImplementation libs.kotlinx.coroutinesTest
+    testImplementation libs.androidx.test.core
+
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
+    androidTestImplementation libs.kotlinx.coroutinesTest
+}
+
+static def requireExists(String value) {
+    if (value) return value
+    throw new Exception("Error in CorePayments/build.gradle: Variable does not exist.")
+}
+
+project.ext.name = "core-payments"
+project.ext.version = rootProject.version
+project.ext.pom_name = "PayPal SDK - CorePayments"
+project.ext.pom_desc = "CorePayments library for PayPal payment methods"
+
+apply from: rootProject.file("gradle/gradle-publish.gradle")

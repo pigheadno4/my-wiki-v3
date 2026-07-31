@@ -1,0 +1,51 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlinAndroid
+    alias libs.plugins.binaryCompatibilityValidator
+}
+
+android {
+    namespace 'com.paypal.android.venmo'
+    java {
+        toolchain {
+            languageVersion = modules.kotlinToolchainLanguageVersion
+        }
+    }
+
+    defaultConfig {
+        compileSdk modules.androidCompileSdk
+        minSdkVersion modules.androidMinSdkVersion
+        targetSdkVersion modules.androidTargetVersion
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            version = rootProject.version
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility modules.sourceCompatibility
+        targetCompatibility modules.targetCompatibility
+    }
+
+    kotlinOptions {
+        jvmTarget = modules.kotlinJvmTarget
+    }
+    namespace 'com.paypal.android.venmo'
+}
+
+dependencies {
+    implementation libs.androidx.coreKtx
+    implementation libs.androidx.appcompat
+    implementation libs.android.material
+
+    testImplementation libs.junit
+
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
+}

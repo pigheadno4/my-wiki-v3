@@ -362,6 +362,31 @@
   Release: [manifest](raw/github/paypal/paypal-js/releases/react-paypal-js/10.0.0/2026-07-22/manifest.json)
   Comparison: [manifest](tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/9.3.0--10.0.0/comparison.json)
 
+## `github-c2ebe224d536e16acded`
+
+- Repository: `paypal/paypal-android`
+- SHA: `d69a2fad7a96155e71f2681dc7cbfa9957fff544`
+- Collection date: `2026-07-31`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/manifest.json)
+- Packet: [review packet](tracking/github/repos/paypal/paypal-android/ingest-packets/github-c2ebe224d536e16acded/packet.md)
+- Review priority: `high`
+- Required reading: `245` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `paypal-android@2.3.0` (recommended `full`)
+  Release: [manifest](raw/github/paypal/paypal-android/releases/paypal-android/2.3.0/2026-07-31/manifest.json)
+  Comparison: Not applicable
+
 ## `github-c2f5968bcd8357fc29d5`
 
 - Repository: `paypal/paypal-js`

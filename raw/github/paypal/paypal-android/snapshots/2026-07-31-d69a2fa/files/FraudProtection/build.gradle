@@ -1,0 +1,70 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlinAndroid
+    alias libs.plugins.binaryCompatibilityValidator
+}
+
+android {
+    namespace 'com.paypal.android.fraudprotection'
+    java {
+        toolchain {
+            languageVersion = modules.kotlinToolchainLanguageVersion
+        }
+    }
+
+    defaultConfig {
+        compileSdk modules.androidCompileSdk
+        minSdkVersion modules.androidMinSdkVersion
+        targetSdkVersion modules.androidTargetVersion
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            version = rootProject.version
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility modules.sourceCompatibility
+        targetCompatibility modules.targetCompatibility
+    }
+
+    kotlinOptions {
+        jvmTarget = modules.kotlinJvmTarget
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+    namespace 'com.paypal.android.fraudprotection'
+}
+
+dependencies {
+    implementation files('libs/android-magnessdk-5.5.1.jar')
+
+    api project(':CorePayments')
+    implementation libs.kotlin.stdLib
+    implementation libs.androidx.coreKtx
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.preferenceKtx
+
+    testImplementation libs.junit
+    testImplementation libs.mockk
+    testImplementation libs.jsonAssert
+    testImplementation libs.robolectric
+
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
+}
+
+
+project.ext.name = "fraud-protection"
+project.ext.version = rootProject.version
+project.ext.pom_name = "PayPal SDK - Fraud Protection"
+project.ext.pom_desc = "Library for PayPal's fraud protection"
+
+apply from: rootProject.file("gradle/gradle-publish.gradle")

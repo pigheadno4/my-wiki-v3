@@ -513,6 +513,7 @@ class GitHubIngestPacketTests(unittest.TestCase):
         native_files = {
             "android/build.gradle": "dependencies {}\n",
             "android/gradle.properties": "StripeSdkVersion=1\n",
+            "android/gradle/libs.versions.toml": "[versions]\nkotlin = '2.0.0'\n",
             "android/src/main/AndroidManifest.xml": "<manifest />\n",
             "ios/StripeSdk.xcodeproj/project.pbxproj": "// project\n",
             "ios/StripeSdk.xcodeproj/xcshareddata/xcschemes/Tests.xcscheme": "<Scheme />\n",
@@ -573,6 +574,29 @@ class GitHubIngestPacketTests(unittest.TestCase):
         classified = {row["path"]: row["classification"] for row in rows}
         for path in sources:
             self.assertEqual("public-source", classified[path])
+
+    def test_graphql_operations_are_classified_as_public_source(self):
+        path = "CardPayments/src/main/res/raw/update_setup_token.graphql"
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            path: "mutation UpdateSetupToken { updateSetupToken { id } }\n",
+        }
+        current = {
+            "package.json": self.manifest_content("10.1.0"),
+            path: "mutation UpdateSetupToken { updateSetupToken { id status } }\n",
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            (UpstreamChange("modified", path, path),),
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        self.assertEqual("public-source", classified[path])
 
     def test_typescript_module_sources_are_classified_as_public_source(self):
         prior = {

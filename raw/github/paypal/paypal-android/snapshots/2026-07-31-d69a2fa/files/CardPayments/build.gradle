@@ -1,0 +1,80 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlinAndroid
+    alias libs.plugins.kotlinParcelize
+    alias libs.plugins.kotlinSerialization
+    alias libs.plugins.binaryCompatibilityValidator
+}
+
+android {
+    namespace 'com.paypal.android.cardpayments'
+    java {
+        toolchain {
+            languageVersion = modules.kotlinToolchainLanguageVersion
+        }
+    }
+
+    defaultConfig {
+        compileSdk modules.androidCompileSdk
+        minSdkVersion modules.androidMinSdkVersion
+        targetSdkVersion modules.androidTargetVersion
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            version = rootProject.version
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility modules.sourceCompatibility
+        targetCompatibility modules.targetCompatibility
+    }
+
+    kotlinOptions {
+        jvmTarget = modules.kotlinJvmTarget
+    }
+
+    lintOptions {
+        lintConfig file('../lint.xml')
+        abortOnError true
+        warningsAsErrors true
+    }
+
+    testOptions.unitTests.includeAndroidResources true
+}
+
+dependencies {
+    api project(':CorePayments')
+    implementation libs.kotlin.stdLib
+    implementation libs.androidx.coreKtx
+    implementation libs.androidx.appcompat
+    implementation libs.kotlinx.coroutinesAndroid
+    implementation libs.kotlinx.serializationJson
+    implementation libs.braintree.browserSwitch
+    implementation libs.lifecycle.commonJava8
+    implementation libs.lifecycle.runtimeKtx
+
+    testImplementation libs.junit
+    testImplementation libs.mockk
+    testImplementation libs.jsonAssert
+    testImplementation libs.robolectric
+    testImplementation libs.kotlinx.coroutinesTest
+    testImplementation libs.androidx.test.core
+    testImplementation libs.strikt.core
+    testImplementation libs.strikt.mockk
+
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
+}
+
+project.ext.name = "card-payments"
+project.ext.version = rootProject.version
+project.ext.pom_name = "PayPal SDK - CardPayments"
+project.ext.pom_desc = "Library for PayPal card payment methods"
+
+apply from: rootProject.file("gradle/gradle-publish.gradle")

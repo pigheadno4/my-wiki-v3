@@ -1,0 +1,154 @@
+buildscript {
+    ext.modules = [
+            "sdkVersionName"      : "2.3.0",
+            "demoAppVersionCode"  : 4,
+            "androidMinSdkVersion": 23,
+            "androidTargetVersion": 35,
+            "androidCompileSdk": 35,
+            "sourceCompatibility": JavaVersion.VERSION_1_8,
+            "targetCompatibility": JavaVersion.VERSION_1_8,
+            "kotlinJvmTarget": JavaVersion.VERSION_1_8.toString(),
+            "kotlinToolchainLanguageVersion": JavaLanguageVersion.of(17)
+    ]
+}
+
+plugins {
+    alias libs.plugins.android.application apply false
+    alias libs.plugins.android.library apply false
+    alias libs.plugins.dagger.hilt apply false
+    alias libs.plugins.detekt
+    alias libs.plugins.gradlePlayPublisher apply false
+    alias libs.plugins.kotlinAndroid apply false
+    alias libs.plugins.kotlinParcelize apply false
+    alias libs.plugins.kotlinKapt apply false
+    alias libs.plugins.nexus.publishPlugin
+    alias libs.plugins.binaryCompatibilityValidator apply false
+}
+
+version modules.sdkVersionName // we add it here so that nexus automatically chooses staging or snapshot repo
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            // Ref: https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/#configuration
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
+
+            username = System.getenv('SONATYPE_NEXUS_USERNAME') ?: ''
+            password = System.getenv('SONATYPE_NEXUS_PASSWORD') ?: ''
+            repositoryDescription = "Paypal Android SDK"
+            packageGroup = "com.paypal"
+        }
+    }
+    transitionCheckOptions {
+        // give nexus sonatype more time to close the staging repository
+        delayBetween.set(Duration.ofSeconds(20))
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+dependencies {
+    detektPlugins libs.detekt.formatting
+    detektPlugins libs.detekt.rulesLibraries
+}
+
+detekt {
+    toolVersion = libs.versions.detektVersion.get()
+    config = files("detekt/detekt-config.yml")
+    input = files(
+            "CorePayments/src",
+            "CardPayments/src",
+            "PayPalWebPayments/src",
+            "FraudProtection/src",
+            "Demo/src"
+    )
+    autoCorrect = project.hasProperty('detektAutoCorrect')
+    reports {
+        html {
+            enabled = true
+            destination = file("build/reports/detekt_report.html")
+        }
+    }
+}
+
+subprojects {
+    group = "com.paypal.android"
+}
+
+task incrementSnapshotVersion {
+    doLast {
+        def topLevelGradleFile = file('./build.gradle')
+        def topLevelGradleFileText = topLevelGradleFile.getText('UTF-8')
+        def matcher = topLevelGradleFileText =~ /"sdkVersionName"\s*: "(.*)",/
+        def versionString = matcher[0][1]
+
+        def (major, minor, patch) = versionString.tokenize('.')
+
+        // check if patch version ends with beta and a single/multi-digit number
+        def isBetaVersion = patch.matches(/[0-9]+-beta\d+$/)
+        if (isBetaVersion) {
+            def betaMatcher = patch =~ /[0-9]+-beta(\d+)$/
+            def betaVersion = betaMatcher[0][1].toInteger()
+            // capture beginning of beta patch string and increment beta version
+            def newBeta = patch.replaceFirst(/([0-9.]+-beta)\d+$/, '$1' + (betaVersion + 1))
+            def newVersion = "$major.$minor.${newBeta}-SNAPSHOT"
+            def updatedScript =
+                    topLevelGradleFileText.replaceFirst(/("sdkVersionName"\s*: )".*",/, '$1"' + newVersion + '",')
+            topLevelGradleFile.write(updatedScript, 'UTF-8')
+
+        } else {
+            def patchInteger = (patch.endsWith('-SNAPSHOT') ? patch - '-SNAPSHOT' : patch).toInteger()
+            def newVersion = "$major.$minor.${patchInteger + 1}-SNAPSHOT"
+            def updatedScript =
+                    topLevelGradleFileText.replaceFirst(/("sdkVersionName"\s*: )".*",/, '$1"' + newVersion + '",')
+            topLevelGradleFile.write(updatedScript, 'UTF-8')
+        }
+    }
+}
+
+//./gradlew -PversionParam=0.0.1 changeReleaseVersion
+task changeReleaseVersion {
+    doLast {
+        def topLevelGradleFile = file('./build.gradle')
+        def topLevelGradleFileText = topLevelGradleFile.getText('UTF-8')
+        def updatedScript =
+                topLevelGradleFileText.replaceFirst(/("sdkVersionName"\s*: )".*",/, '$1"' + versionParam + '",')
+        topLevelGradleFile.write(updatedScript, 'UTF-8')
+    }
+}
+
+task getDemoAppVersionCode {
+    doLast {
+        def topLevelGradleFile = file('./build.gradle')
+        def topLevelGradleFileText = topLevelGradleFile.getText('UTF-8')
+
+        def matcher = topLevelGradleFileText =~ /"demoAppVersionCode"\s*: ([0-9]*),/
+        def versionCode = matcher[0][1].toInteger()
+        println(versionCode)
+    }
+}
+
+//./gradlew -PdemoAppVersionCodeParam=0.0.1 changeReleaseVersion
+task setDemoAppVersionCode {
+    doLast {
+        def topLevelGradleFile = file('./build.gradle')
+        def topLevelGradleFileText = topLevelGradleFile.getText('UTF-8')
+        def updatedScript =
+                topLevelGradleFileText.replaceFirst(/("demoAppVersionCode"\s*: )[0-9]*,/, '$1' + demoAppVersionCodeParam + ',')
+        topLevelGradleFile.write(updatedScript, 'UTF-8')
+    }
+}
+
+//./gradlew -PversionParam=0.0.1 changeReleaseVersion
+task updateCHANGELOGVersion {
+    doLast {
+        def date = new Date()
+        def formattedDate = date.format('yyyy-MM-dd')
+        def changelogFile = new File('CHANGELOG.md')
+        def changelogFileText = changelogFile.text.replaceFirst("## unreleased", "## " + versionParam + " ($formattedDate)")
+        changelogFile.write(changelogFileText)
+    }
+}
