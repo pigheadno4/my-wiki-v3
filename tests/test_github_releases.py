@@ -400,6 +400,45 @@ class GitHubReleasesTests(unittest.TestCase):
         self.assertEqual("v5.0.425", candidates[0].tag)
         self.assertEqual(commit_sha, candidates[0].commit_sha)
 
+    def test_tagged_tree_tracks_map_stripe_native_tag_forms(self):
+        commit_sha = commit_file(self.repo, "README.md", "one\n", "initial")
+        tag(self.repo, "26.4.1")
+        tag(self.repo, "v23.13.1")
+        self._publish_and_clone()
+
+        for package, selector, expected_version, expected_tag in (
+            ("stripe-ios", "package:stripe-ios@26", "26.4.1", "26.4.1"),
+            (
+                "stripe-android",
+                "package:stripe-android@23",
+                "23.13.1",
+                "v23.13.1",
+            ),
+        ):
+            with self.subTest(package=package):
+                config = self._config(
+                    capsules=(
+                        CapsuleConfig(
+                            id=package + "-source",
+                            adapter="tagged-tree-v1",
+                            focus_packages=(package,),
+                            dependency_scope="configured-repository-paths",
+                        ),
+                    )
+                )
+
+                candidates = discover_release_candidates(
+                    config,
+                    self.clone,
+                    self._track(selector=selector),
+                )
+
+                self.assertEqual(1, len(candidates))
+                self.assertEqual(package, candidates[0].package)
+                self.assertEqual(expected_version, candidates[0].version)
+                self.assertEqual(expected_tag, candidates[0].tag)
+                self.assertEqual(commit_sha, candidates[0].commit_sha)
+
     def test_package_track_does_not_map_plain_tags_for_ambiguous_capsule_packages(self):
         commit_file(self.repo, "README.md", "one\n", "initial")
         tag(self.repo, "v5.0.425")
