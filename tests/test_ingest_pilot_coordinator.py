@@ -587,6 +587,89 @@ class CoordinatorTests(unittest.TestCase):
         self.assertEqual(output["jobs"][0]["state"], "approved")
         self.assertEqual(review["shared_update_decisions"][0]["update_id"], "concept-billing-link")
 
+    def test_status_groups_only_reviewer_approved_shared_updates(self):
+        approved_billing_updates = (
+            ("job-1", "billing-a", "- [[source-job-1]] — billing fact A"),
+            ("job-2", "billing-b", "- [[source-job-2]] — billing fact B"),
+        )
+        self.make_reviewing("job-1", attempt=1)
+        jobs = load_jobs(self.root, self.campaign_id)
+        for job_id, update_id, proposed_markdown in approved_billing_updates:
+            job = next(job for job in jobs if job["job_id"] == job_id)
+            job["attempt"] = 1
+            job["state"] = "approved"
+            job["last_event"] = "review_approved"
+            attempt = self.attempt(job_id, 1)
+            attempt.mkdir(parents=True, exist_ok=True)
+            suggestions = {
+                "company": [{
+                    "update_id": f"{update_id}-company",
+                    "target_path": "wiki/companies/metronome.md",
+                    "update_kind": "durable_fact",
+                    "anchor": "## Overview",
+                    "proposed_markdown": "- unnecessary company update",
+                    "quote_indexes": [0],
+                    "warnings": [],
+                }],
+                "concepts": [{
+                    "update_id": update_id,
+                    "target_path": "wiki/concepts/metronome/metronome-billing.md",
+                    "update_kind": "durable_fact",
+                    "anchor": "## Sources",
+                    "proposed_markdown": proposed_markdown,
+                    "quote_indexes": [0],
+                    "warnings": [],
+                }],
+                "index": [],
+                "log": [],
+            }
+            attempt.joinpath("suggestions.json").write_text(json.dumps(suggestions), encoding="utf-8")
+            attempt.joinpath("review.json").write_text(json.dumps({
+                "job_id": job_id,
+                "attempt": 1,
+                "verdict": "approved",
+                "reason": "Grounded and complete",
+                "required_changes": [],
+                "review_scope": "full",
+                "retry_review_scope": None,
+                "shared_update_decisions": [
+                    {"update_id": f"{update_id}-company", "verdict": "rejected", "reason": "Unnecessary"},
+                    {"update_id": update_id, "verdict": "approved", "reason": "Grounded"},
+                ],
+                "reviewer_identity": "reviewer-a",
+                "reviewer_model": "Sol",
+            }), encoding="utf-8")
+        save_jobs(self.root, self.campaign_id, jobs)
+
+        output = status(self.root, self.campaign_id)
+
+        self.assertEqual(output["shared_update_plan"], {
+            "wiki/concepts/metronome/metronome-billing.md": [
+                {"job_id": "job-1", "attempt": 1, "update_id": "billing-a", "proposed_markdown": "- [[source-job-1]] — billing fact A"},
+                {"job_id": "job-2", "attempt": 1, "update_id": "billing-b", "proposed_markdown": "- [[source-job-2]] — billing fact B"},
+            ],
+        })
+        self.assertFalse((self.root / "wiki").exists())
+
+        jobs[0]["queue_position"] = 2
+        jobs[1]["queue_position"] = 1
+        save_jobs(self.root, self.campaign_id, jobs)
+        self.assertEqual(
+            [update["job_id"] for update in status(self.root, self.campaign_id)["shared_update_plan"]
+             ["wiki/concepts/metronome/metronome-billing.md"]],
+            ["job-2", "job-1"],
+        )
+
+        campaign_path = self.root / "tracking/ingest/metronome" / self.campaign_id / "campaign.json"
+        campaign = json.loads(campaign_path.read_text(encoding="utf-8"))
+        campaign["schema_version"] = 1
+        campaign_path.write_text(json.dumps(campaign), encoding="utf-8")
+        self.attempt("job-1", 1).joinpath("suggestions.json").write_text(
+            json.dumps({"company": ["historical string suggestion"]}), encoding="utf-8",
+        )
+
+        self.assertEqual(status(self.root, self.campaign_id)["shared_update_plan"], {})
+
     def test_parallel_assignments_are_required_before_state_mutation_and_distinct(self):
         parallel = dict(self.manifest)
         parallel["review_concurrency"] = 2

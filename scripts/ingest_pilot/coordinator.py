@@ -17,7 +17,7 @@ from .state import (
     save_jobs,
     write_attempt_file,
 )
-from .validator import ValidationError, validate_worker_result
+from .validator import TARGET_PREFIXES, UPDATE_KINDS, ValidationError, validate_worker_result
 
 
 LEGACY_REVIEW_RESULT_KEYS = {"job_id", "attempt", "verdict", "reason", "required_changes"}
@@ -29,6 +29,12 @@ REVIEW_VERDICTS = {"approved", "changes_requested", "rejected"}
 REVIEW_SCOPES = {"full", "targeted"}
 SHARED_UPDATE_DECISION_KEYS = {"update_id", "verdict", "reason"}
 SHARED_UPDATE_DECISION_VERDICTS = {"approved", "rejected"}
+SUGGESTION_CATEGORIES = ("company", "concepts", "index", "log")
+SUGGESTION_ITEM_KEYS = {
+    "update_id", "target_path", "update_kind", "anchor",
+    "proposed_markdown", "quote_indexes", "warnings",
+}
+REVIEW_EVIDENCE_KEYS = REVIEW_RESULT_KEYS | {"reviewer_identity", "reviewer_model"}
 
 
 def _json_bytes(value: Any) -> bytes:
@@ -52,13 +58,144 @@ def _load_result(path: Path) -> Dict[str, Any]:
     return value
 
 
+def _approved_shared_updates(root: Path, campaign_id: str, jobs: list) -> Dict[str, list[dict]]:
+    """Group only the current reviewer-approved schema-v2 shared updates."""
+    campaign = load_campaign(root, campaign_id)
+    if campaign.get("schema_version", 1) != 2:
+        return {}
+
+    plan: Dict[str, list[dict]] = {}
+    ordered_jobs = []
+    for position, job in enumerate(jobs):
+        if job.get("state") != "approved":
+            continue
+        queue_position = job.get("queue_position")
+        if (
+            isinstance(queue_position, bool)
+            or not isinstance(queue_position, int)
+            or queue_position < 1
+        ):
+            raise PilotError("approved shared update evidence is invalid")
+        ordered_jobs.append((queue_position, position, job))
+    for _, _, job in sorted(ordered_jobs):
+        attempt = job.get("attempt")
+        job_id = job.get("job_id")
+        if (
+            not isinstance(job_id, str)
+            or not job_id
+            or isinstance(attempt, bool)
+            or not isinstance(attempt, int)
+            or attempt < 1
+        ):
+            raise PilotError("approved shared update evidence is invalid")
+        attempt_dir = (
+            root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
+            / job_id / f"attempt-{attempt}"
+        )
+        suggestions = _load_result(attempt_dir / "suggestions.json")
+        review = _load_result(attempt_dir / "review.json")
+        if set(suggestions) != set(SUGGESTION_CATEGORIES) or set(review) != REVIEW_EVIDENCE_KEYS:
+            raise PilotError("approved shared update evidence is invalid")
+        if (
+            review["job_id"] != job_id
+            or review["attempt"] != attempt
+            or review["verdict"] != "approved"
+            or not isinstance(review["reason"], str)
+            or not review["reason"].strip()
+            or not isinstance(review["required_changes"], list)
+            or review["required_changes"]
+            or not isinstance(review["review_scope"], str)
+            or review["review_scope"] not in REVIEW_SCOPES
+            or review["retry_review_scope"] is not None
+            or not isinstance(review["reviewer_identity"], str)
+            or not review["reviewer_identity"].strip()
+            or not isinstance(review["reviewer_model"], str)
+            or not review["reviewer_model"].strip()
+            or not isinstance(review["shared_update_decisions"], list)
+        ):
+            raise PilotError("approved shared update evidence is invalid")
+
+        flattened = []
+        for category in SUGGESTION_CATEGORIES:
+            category_suggestions = suggestions[category]
+            if not isinstance(category_suggestions, list):
+                raise PilotError("approved shared update evidence is invalid")
+            for suggestion in category_suggestions:
+                if (
+                    not isinstance(suggestion, dict)
+                    or set(suggestion) != SUGGESTION_ITEM_KEYS
+                    or not isinstance(suggestion["update_id"], str)
+                    or not suggestion["update_id"]
+                    or not isinstance(suggestion["target_path"], str)
+                    or not suggestion["target_path"]
+                    or not suggestion["target_path"].startswith(TARGET_PREFIXES[category])
+                    or not suggestion["target_path"].endswith(".md")
+                    or "/../" in f"/{suggestion['target_path']}"
+                    or suggestion["target_path"].startswith("/")
+                    or not isinstance(suggestion["update_kind"], str)
+                    or suggestion["update_kind"] not in UPDATE_KINDS
+                    or not isinstance(suggestion["anchor"], str)
+                    or not suggestion["anchor"].strip()
+                    or not isinstance(suggestion["proposed_markdown"], str)
+                    or not suggestion["proposed_markdown"].strip()
+                    or not isinstance(suggestion["quote_indexes"], list)
+                    or any(
+                        isinstance(index, bool) or not isinstance(index, int) or index < 0
+                        for index in suggestion["quote_indexes"]
+                    )
+                    or len(set(suggestion["quote_indexes"])) != len(suggestion["quote_indexes"])
+                    or (
+                        not suggestion["quote_indexes"]
+                        and suggestion["update_kind"] not in {
+                            "catalog_entry", "log_entry", "calculated_count",
+                        }
+                    )
+                    or not isinstance(suggestion["warnings"], list)
+                    or not all(isinstance(warning, str) for warning in suggestion["warnings"])
+                ):
+                    raise PilotError("approved shared update evidence is invalid")
+                flattened.append(suggestion)
+        suggestion_ids = [suggestion["update_id"] for suggestion in flattened]
+        decisions = review["shared_update_decisions"]
+        if len(set(suggestion_ids)) != len(suggestion_ids) or len(decisions) != len(suggestion_ids):
+            raise PilotError("approved shared update evidence is invalid")
+        approved_ids = set()
+        for decision in decisions:
+            if (
+                not isinstance(decision, dict)
+                or set(decision) != SHARED_UPDATE_DECISION_KEYS
+                or not isinstance(decision["update_id"], str)
+                or decision["update_id"] not in suggestion_ids
+                or not isinstance(decision["verdict"], str)
+                or decision["verdict"] not in SHARED_UPDATE_DECISION_VERDICTS
+                or not isinstance(decision["reason"], str)
+                or not decision["reason"].strip()
+            ):
+                raise PilotError("approved shared update evidence is invalid")
+            if decision["verdict"] == "approved":
+                approved_ids.add(decision["update_id"])
+        if len({decision["update_id"] for decision in decisions}) != len(decisions):
+            raise PilotError("approved shared update evidence is invalid")
+        for suggestion in flattened:
+            if suggestion["update_id"] in approved_ids:
+                plan.setdefault(suggestion["target_path"], []).append({
+                    "job_id": job_id,
+                    "attempt": attempt,
+                    "update_id": suggestion["update_id"],
+                    "proposed_markdown": suggestion["proposed_markdown"],
+                })
+    return plan
+
+
 def _campaign_payload(root: Path, campaign_id: str) -> Dict[str, Any]:
     campaign = load_campaign(root, campaign_id)
+    jobs = load_jobs(root, campaign_id)
     return {
         "campaign_id": campaign["campaign_id"],
         "campaign_state": campaign["state"],
-        "jobs": load_jobs(root, campaign_id),
+        "jobs": jobs,
         "monitor": render_monitor(root, campaign_id),
+        "shared_update_plan": _approved_shared_updates(root, campaign_id, jobs),
     }
 
 
