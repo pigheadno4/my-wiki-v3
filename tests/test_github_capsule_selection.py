@@ -29,6 +29,7 @@ from github_capsule_selection import (  # noqa: E402
 )
 import github_capsule_selection  # noqa: E402
 from github_git_tree import GitObjectReadError, GitTree  # noqa: E402
+from github_registry import load_registry  # noqa: E402
 from tests.github_test_support import (  # noqa: E402
     add_submodule_marker,
     commit_files,
@@ -230,6 +231,49 @@ class CapsuleSelectionTests(unittest.TestCase):
                 (),
                 versions={"stripe-ios": "26.4.1"},
             )
+
+    def test_braintree_android_policy_excludes_binary_ui_asset(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(
+            item for item in repos if item.id == "braintree/braintree_android"
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        files = {
+            root + "/Evidence.kt": "public class Evidence\n"
+            for root in capsule.default_required_roots
+        }
+        files.update({path: "evidence\n" for path in capsule.include_paths})
+        files[
+            "UIComponents/src/main/res/drawable/paypal_logo.xml"
+        ] = "<vector />\n"
+        files[
+            "UIComponents/src/main/res/drawable-xxhdpi/"
+            "card_fields_cc_discover.png"
+        ] = b"\x89PNG\x00binary"
+        files["Demo/src/main/java/Demo.kt"] = "class Demo\n"
+        files["TestUtils/src/main/java/TestHelper.kt"] = "class TestHelper\n"
+
+        result = resolve_capsule(
+            self.tree(files),
+            capsule,
+            (),
+            versions={"braintree-android": "5.30.0"},
+        )
+        selected = {item.path for item in result.files}
+
+        self.assertIn(
+            "UIComponents/src/main/res/drawable/paypal_logo.xml",
+            selected,
+        )
+        self.assertIn("UIComponents/src/main/AndroidManifest.xml", selected)
+        self.assertNotIn(
+            "UIComponents/src/main/res/drawable-xxhdpi/"
+            "card_fields_cc_discover.png",
+            selected,
+        )
+        self.assertNotIn("Demo/src/main/java/Demo.kt", selected)
+        self.assertNotIn("TestUtils/src/main/java/TestHelper.kt", selected)
 
     def test_exact_classification_precedence_exclusions_and_file_metadata(self):
         package = manifest(

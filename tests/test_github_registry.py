@@ -38,7 +38,7 @@ APPENDIX_A_INVENTORY = (
     ('paypal-examples/paypal-android-sdk-demo-app', 'https://github.com/paypal-examples/paypal-android-sdk-demo-app', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
     ('paypal-examples/paypal-sdk-server-side-integration', 'https://github.com/paypal-examples/paypal-sdk-server-side-integration', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
     ('paypal-examples/paypal-ios-sdk-demo-app', 'https://github.com/paypal-examples/paypal-ios-sdk-demo-app', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
-    ('braintree/braintree_android', 'https://github.com/braintree/braintree_android', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('braintree/braintree_android', 'https://github.com/braintree/braintree_android', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/braintree_ios', 'https://github.com/braintree/braintree_ios', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('braintree/web-sdk-github-actions', 'https://github.com/braintree/web-sdk-github-actions', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('braintree/mobile-sdk-tooling', 'https://github.com/braintree/mobile-sdk-tooling', 'tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
@@ -555,6 +555,102 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(420, capsule.max_packet_files)
         self.assertEqual(3500000, capsule.max_packet_utf8_bytes)
 
+    def test_braintree_android_uses_the_reviewed_tagged_tree_profile(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(
+            item for item in repos if item.id == "braintree/braintree_android"
+        )
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:braintree-android@5",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("5.30.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("braintree-android-public-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("braintree-android",), capsule.focus_packages)
+        self.assertEqual(
+            "configured-repository-paths",
+            capsule.dependency_scope,
+        )
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(
+            {
+                "AmericanExpress/src/main",
+                "BraintreeCore/src/main",
+                "Card/src/main",
+                "DataCollector/src/main",
+                "GooglePay/src/main",
+                "LocalPayment/src/main",
+                "PayPal/src/main",
+                "PayPalMessaging/src/main",
+                "SEPADirectDebit/src/main",
+                "ShopperInsights/src/main",
+                "SharedUtils/src/main",
+                "ThreeDSecure/src/main",
+                "UIComponents/src/main/java",
+                "UIComponents/src/main/res/drawable",
+                "UIComponents/src/main/res/layout",
+                "UIComponents/src/main/res/values",
+                "Venmo/src/main",
+            },
+            set(capsule.default_required_roots),
+        )
+        self.assertEqual(
+            {
+                "README.md",
+                "CHANGELOG.md",
+                "v5_MIGRATION_GUIDE.md",
+                "v4_MIGRATION_GUIDE.md",
+                "v4.9.0+_MIGRATION_GUIDE.md",
+                "APP_LINK_SETUP.md",
+                "DEPENDENCIES.md",
+                "LICENSE",
+                "settings.gradle",
+                "build.gradle",
+                "gradle.properties",
+                "UIComponents/src/main/AndroidManifest.xml",
+                "AmericanExpress/build.gradle",
+                "BraintreeCore/build.gradle",
+                "Card/build.gradle",
+                "DataCollector/build.gradle",
+                "GooglePay/build.gradle",
+                "LocalPayment/build.gradle",
+                "PayPal/build.gradle",
+                "PayPalMessaging/build.gradle",
+                "SEPADirectDebit/build.gradle",
+                "ShopperInsights/build.gradle",
+                "SharedUtils/build.gradle",
+                "ThreeDSecure/build.gradle",
+                "UIComponents/build.gradle",
+                "Venmo/build.gradle",
+                "BraintreeCore/proguard.pro",
+                "GooglePay/proguard.pro",
+                "ThreeDSecure/proguard.pro",
+            },
+            set(capsule.include_paths),
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(500, capsule.max_capsule_files)
+        self.assertEqual(5000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(550, capsule.max_packet_files)
+        self.assertEqual(6000000, capsule.max_packet_utf8_bytes)
+        self.assertNotIn(
+            "UIComponents/src/main/res/drawable-xxhdpi",
+            capsule.default_required_roots,
+        )
+
     def test_braintree_web_drop_in_uses_the_reviewed_public_source_capsule(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
         drop_in = next(
@@ -736,6 +832,14 @@ class RegistryTests(unittest.TestCase):
                 "2.3.0",
                 6,
                 47,
+            ),
+            (
+                "braintree/braintree_android",
+                "braintree-android",
+                "5",
+                "5.30.0",
+                17,
+                29,
             ),
             (
                 "stripe/stripe-ios",
