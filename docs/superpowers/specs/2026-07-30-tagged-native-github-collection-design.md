@@ -20,10 +20,12 @@ Collection creates immutable raw evidence and review packets only. It does not e
 
 The design is based on the exact release trees at:
 
-| Repository | Release | SHA | Files | Primary source | Test-related files |
+| Repository | Release | Commit SHA | Files | Primary source | Test-related files |
 | --- | --- | --- | ---: | ---: | ---: |
-| `stripe/stripe-ios` | `26.4.1` | `e61afc0e1677560f6d1238411e74b85e1a54e15f` | 10,213 | 2,403 Swift | approximately 1,365 |
-| `stripe/stripe-android` | `23.13.1` | `db6e5112d67f6de4cb2e5048fbecd251d9f23d10` | 13,339 | 4,840 Kotlin and 19 Java | approximately 4,551 |
+| `stripe/stripe-ios` | `26.4.1` | `d9252fd0a4a6d369fa45bb06f74c4e818c914f91` | 10,213 | 2,403 Swift | approximately 1,365 |
+| `stripe/stripe-android` | `23.13.1` | `dc874ce7c62dd433664ec4e312efeb9300c21795` | 13,339 | 4,840 Kotlin and 19 Java | approximately 4,551 |
+
+Both releases use annotated tags. The iOS tag object is `e61afc0e1677560f6d1238411e74b85e1a54e15f`; the Android tag object is `db6e5112d67f6de4cb2e5048fbecd251d9f23d10`. Immutable snapshots and work items use the peeled commit SHA, while release records retain the upstream tag identity.
 
 Stripe iOS is organized as framework roots such as `StripePaymentSheet`, `StripePayments`, `StripeApplePay`, and `StripeConnect`. Its distribution declarations are `Package.swift`, `modules.yaml`, and module podspecs.
 

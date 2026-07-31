@@ -524,7 +524,7 @@ python3 scripts/collect_github_repos.py collect \
   --dry-run
 ```
 
-Confirm the resolved tag is `26.4.1` and SHA is `e61afc0e1677560f6d1238411e74b85e1a54e15f`.
+Confirm the resolved tag is `26.4.1`, tag object is `e61afc0e1677560f6d1238411e74b85e1a54e15f`, and peeled commit SHA is `d9252fd0a4a6d369fa45bb06f74c4e818c914f91`.
 
 - [ ] **Step 3: Collect iOS**
 
@@ -596,7 +596,7 @@ python3 scripts/collect_github_repos.py collect \
   --dry-run
 ```
 
-Confirm the resolved tag is `v23.13.1` and SHA is `db6e5112d67f6de4cb2e5048fbecd251d9f23d10`.
+Confirm the resolved tag is `v23.13.1`, tag object is `db6e5112d67f6de4cb2e5048fbecd251d9f23d10`, and peeled commit SHA is `dc874ce7c62dd433664ec4e312efeb9300c21795`.
 
 - [ ] **Step 3: Collect Android**
 
