@@ -545,6 +545,37 @@ class GitHubIngestPacketTests(unittest.TestCase):
         for path in native_files:
             self.assertEqual("build-configuration", classified[path])
 
+    def test_android_proguard_rules_are_build_configuration(self):
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            "android/proguard.pro": "-keep class com.example.** { *; }\n",
+        }
+        current = {
+            "package.json": self.manifest_content("10.1.0"),
+            "android/proguard.pro": "-keep class com.example.** { *; }\n",
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            (
+                UpstreamChange(
+                    "modified",
+                    "android/proguard.pro",
+                    "android/proguard.pro",
+                ),
+            ),
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        self.assertEqual(
+            "build-configuration",
+            classified["android/proguard.pro"],
+        )
+
     def test_objective_c_sources_are_classified_as_public_source(self):
         sources = {
             "ios/WidgetManager.m": "@implementation WidgetManager\n@end\n",
