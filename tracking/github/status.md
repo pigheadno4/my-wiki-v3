@@ -440,6 +440,31 @@
   Release: [manifest](raw/github/paypal/paypal-checkout-components/releases/checkout-components/4.1.47/2026-07-23/manifest.json)
   Comparison: Not applicable
 
+## `github-d17bdc90cb232420fcbc`
+
+- Repository: `stripe/stripe-android`
+- SHA: `dc874ce7c62dd433664ec4e312efeb9300c21795`
+- Collection date: `2026-07-31`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/stripe/stripe-android/snapshots/2026-07-31-dc874ce/manifest.json)
+- Packet: [review packet](tracking/github/repos/stripe/stripe-android/ingest-packets/github-d17bdc90cb232420fcbc/packet.md)
+- Review priority: `high`
+- Required reading: `55` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-android@23.13.1` (recommended `full`)
+  Release: [manifest](raw/github/stripe/stripe-android/releases/stripe-android/23.13.1/2026-07-31/manifest.json)
+  Comparison: Not applicable
+
 ## `github-d784ed22413ba025c631`
 
 - Repository: `stripe/react-stripe-js`
