@@ -239,7 +239,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-android-card-payments]] — Android SDK: CardClient, WebPayments, deprecated NativePayments, FraudProtection, 3DS SCA
 - [[source-github-paypal-android]] — GitHub paypal-android: CardClient source, instance state, Demo ViewModels, Venmo funding source contradiction
 - [[source-paypal-ios-card-payments]] — iOS SDK: CardClient/CardDelegate, WebPayments, PaymentButtons (UIKit+SwiftUI), FraudProtection
-- [[source-github-paypal-ios]] — GitHub paypal-ios: CardClient source, paylater case naming gotcha, vault support, Demo ViewModels
+- [[source-github-paypal-ios]] — cumulative GitHub paypal-ios evidence through `paypal-ios@2.0.1`: v2 Result/async APIs, checkout and card vaulting, 3DS, cancellation fixes, buttons, fraud data, and no native Venmo funding-source case
+- [[changelog-github-paypal-ios]] — package-qualified paypal-ios history: v1 delegate boundary, v2 migration, and exact `2.0.1` deep-link cancellation fixes
 - [[source-paypal-ios-in-app-purchases]] — iOS in-app purchases: Apple external payment entitlement, 3 options (Payment Link, Buttons, Custom Checkout)
 - [[source-paypal-expanded-checkout-customize-overview]] — Expanded Checkout customization catalog: 14 features, expanded vs standard comparison
 - [[source-paypal-expanded-checkout-3d-secure]] — 3D Secure: liability shift, 36-country eligibility table, card brand/currency restrictions

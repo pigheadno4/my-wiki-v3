@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-07-31] ingest | GitHub paypal/paypal-ios - `paypal-ios@2.0.1`
+
+- Full serial ingest of `github-5c8c7287ce91fe6f34c2` from exact SHA `2008a6de7c00a2ae53c669932d5fb19674c35b1e`.
+- Migrated the legacy delegate-era source into the canonical PayPal/GitHub hierarchy and added a separate package-qualified changelog while preserving the older findings.
+- Recorded the complete 145-file bounded capsule: v2 `Result` and async APIs, card and PayPal checkout/vault flows, 3DS, buttons, fraud data, privacy manifests, demos, and build metadata.
+- Isolated the exact `2.0.1` deep-link cancellation fixes from the broader `2.0.0` delegate-to-Result migration.
+- Confirmed that the native checkout and button funding-source enums do not expose Venmo, and updated the PayPal company, iOS SDK, Vault concept, and provider index without changing source count.
+
 ## [2026-07-31] ingest | GitHub stripe/stripe-ios - `stripe-ios@26.4.1`
 
 - Full serial ingest of `github-7ecc6c2199897656ffe3` from exact SHA `d9252fd0a4a6d369fa45bb06f74c4e818c914f91`.

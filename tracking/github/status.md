@@ -55,10 +55,10 @@
 - Repository: `paypal/paypal-ios`
 - SHA: `2008a6de7c00a2ae53c669932d5fb19674c35b1e`
 - Collection date: `2026-07-31`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

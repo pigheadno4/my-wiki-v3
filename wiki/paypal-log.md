@@ -6,6 +6,15 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-07-31] ingest | paypal/paypal-ios `2.0.1`
+
+- Approved and processed work item `github-5c8c7287ce91fe6f34c2` in full mode.
+- Read the complete 148-path ingest assignment, including the 145-file, 281,036-byte exact-SHA capsule at `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/manifest.json`; tests and fixtures were excluded by policy.
+- Preserved the older delegate-era review and added the v2 `Result`/async migration, public domain errors, error-based cancellation handling, card and PayPal vault flows, PaymentButtons, fraud data, and privacy evidence.
+- Isolated the exact `2.0.1` deep-link cancellation fixes from the broader `2.0.0` migration.
+- Confirmed the native PayPal checkout and button funding-source enums do not expose Venmo; a stale comment is not capability evidence.
+- Recorded the PayPal vault `usage_type` discrepancy and repository license metadata mismatch without changing PayPal's source count.
+
 ## [2026-07-30] ingest | paypal/paypal-js React `10.2.1`
 
 - Approved and processed work item `github-ca78b4ec339be0d6bdb8` in delta mode.

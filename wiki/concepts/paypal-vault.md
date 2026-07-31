@@ -118,10 +118,11 @@ Uses `PayPalWebCheckoutClient` (browser-based web checkout) — not `CardClient`
 
 ## Save PayPal Wallet (during purchase, iOS SDK)
 
-Uses `PayPalWebCheckoutClient` — same pattern as Android but Swift/SwiftUI:
+Uses `PayPalWebCheckoutClient` - same pattern as Android but Swift/SwiftUI. The older product guide below uses the version 1 delegate API; `paypal-ios@2.0.1` uses completion `Result` or async/await instead.
 
 - **Button**: `PayPalButton.Representable()` (SwiftUI)
-- **Delegate**: `PayPalWebCheckoutDelegate` — `payPal(_:didFinishWithResult:)`, `payPal(_:didFinishWithError:)`, `payPalDidCancel(_:)`
+- **Version 2 result**: `start(request:completion:)` returns `Result<PayPalWebCheckoutResult, CoreSDKError>`; async `start(request:)` is also available
+- **Version 1 history**: `PayPalWebCheckoutDelegate` with success, failure, and cancellation callbacks
 - **Availability**: 35 countries (unlike iOS card vault which says US only)
 - **Returning payer**: `vault.id` as payment source — same as Android
 - **Snippet uses `environment: .live`** — may require live environment testing
@@ -132,7 +133,8 @@ Same server-side payload and `customer.id` returning payer pattern as Android SD
 
 - **UI**: SwiftUI `Toggle` (vs Android Compose `Checkbox`)
 - **Client**: `CardClient(config: coreConfig)` — no `activity` context needed
-- **Callbacks**: `CardDelegate` protocol (vs `ApproveOrderListener`)
+- **Version 2 result**: `approveOrder(request:completion:)` returns `Result<CardResult, CoreSDKError>`; async `approveOrder(request:)` is also available
+- **Version 1 history**: `CardDelegate` callbacks remain relevant only to 1.x integrations
 - **SCA enum**: `.scaAlways` / `.scaWhenRequired` (vs `SCA.SCA_ALWAYS`)
 
 > [!warning] Contradiction — iOS card vault availability
@@ -160,20 +162,27 @@ Uses `window.paypal.Buttons({ createVaultSetupToken, onApprove })` — same Butt
 
 ## Save PayPal for Purchase Later (iOS SDK)
 
-Uses `PayPalWebCheckoutClient.vault()` + `PayPalVaultDelegate` — same client as web payments:
+Uses `PayPalWebCheckoutClient.vault()` - the same client as web payments:
 
 - **Module**: `PayPalWebPayments`
 - **Request**: `PayPalVaultRequest(setupTokenID:)` — no `fundingSource` param
-- **Delegate**: `PayPalVaultDelegate` via `vaultDelegate` property — `paypal(_:didFinishWithVaultResult:)`, `paypal(_:didFinishWithVaultError:)`, `paypalDidCancel(_:)`
-- **`usage_type: PLATFORM`** — consistent with Android PayPal purchase-later; both differ from during-purchase (`MERCHANT`)
+- **Version 2 result**: `vault(_:completion:)` returns `Result<PayPalVaultResult, CoreSDKError>`; async `vault(_:)` is also available
+- **Cancellation**: reported as `PayPalError.vaultCanceledError`, not a separate delegate callback
+- **Version 1 history**: the older guide uses `PayPalVaultDelegate` via `vaultDelegate`
+- **Usage-type discrepancy**: the older guide uses `PLATFORM`, while the `2.0.1` repository demo uses `MERCHANT`
 - **`environment: .sandbox`** — unlike iOS card purchase-later which uses `.live`
+
+> [!warning] iOS PayPal vault `usage_type` discrepancy
+> The older iOS purchase-later guide sends `PLATFORM`; the `paypal-ios@2.0.1` demo sends `MERCHANT`. This may reflect platform-facilitated versus direct-merchant context or documentation drift. Verify the merchant model before choosing a value.
 
 ## Save Cards for Purchase Later (iOS SDK)
 
-Swift equivalent of Android cards purchase-later. Uses `CardClient.vault()` and `CardVaultDelegate`:
+Swift equivalent of Android cards purchase-later. Uses `CardClient.vault()`:
 
 - **Installation**: CardPayments framework via SPM (`https://github.com/paypal/paypal-ios/`)
-- **Delegate**: `CardVaultDelegate` — `didFinishWithVaultResult`, `didFinishWithVaultError`, `cardVaultDidCancel`, `cardThreeDSecureWillLaunch/DidFinish`
+- **Version 2 result**: `vault(_:completion:)` returns `Result<CardVaultResult, CoreSDKError>`; async `vault(_:)` is also available
+- **Cancellation**: reported as `CardError.threeDSecureCanceledError` when the 3DS challenge is canceled
+- **Version 1 history**: the older guide uses `CardVaultDelegate` callbacks
 - **Setup token status**: `CREATED` (same as Android, no payer action for cards)
 - **Returning customer**: `customer.id` in setup token request body
 - **`environemnt: .live` typo** — same as iOS card during-purchase guide
@@ -312,3 +321,5 @@ The `customer.id` is a PayPal-generated identifier — store it against the paye
 - [[source-paypal-save-cards-js-sdk]] — Card vault JS SDK: checkbox UX, SCA_ALWAYS/SCA_WHEN_REQUIRED with vault, usage_type/customer_type/permit_multiple_payment_tokens fields, 14 test cards
 - [[source-github-paypal-js]] — versioned core v10.0.1 legacy Buttons setup-token approval types plus React Braintree billing-agreement, checkout-with-vault, and Pay Later evidence
 - [[source-github-paypal-checkout-components]] — package-qualified runtime, Venmo setup-token, and eligibility evidence
+- [[source-github-paypal-ios]] — cumulative native iOS evidence through `paypal-ios@2.0.1`, including v2 Result/async APIs, cancellation handling, and the no-native-Venmo enum boundary
+- [[changelog-github-paypal-ios]] — package-qualified iOS major-version and patch history

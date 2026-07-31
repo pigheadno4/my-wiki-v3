@@ -7,182 +7,144 @@ tags: [paypal, ios, mobile, swift, card-payments, web-payments, fraud-protection
 
 ## PayPal iOS SDK
 
-The PayPal Mobile iOS SDK enables merchants to accept PayPal, credit, and debit card payments in iOS apps. Written in Swift; distributed via Swift Package Manager and CocoaPods.
+The PayPal iOS SDK provides native Swift modules for cards, browser-based PayPal checkout, PayPal-branded buttons, vault approval, and device data collection. The latest ingested package is `paypal-ios@2.0.1`; this is wiki ingest status, not a claim about the latest upstream release.
 
-Repo: <https://github.com/paypal/paypal-ios>
+Repository: <https://github.com/paypal/paypal-ios>
 
-## Available Modules
+## Requirements and Modules
 
-| Module | SPM product | CocoaPods pod | Purpose |
-| ------ | ----------- | ------------- | ------- |
-| `CardPayments` | `CardPayments` | `PayPal/CardPayments` | Inline card fields in merchant UI |
-| `PayPalWebPayments` | `PayPalWebPayments` | `PayPal/PayPalWebPayments` | Browser-based PayPal checkout inside app |
-| `PaymentButtons` | `PaymentButtons` | `PayPal/PaymentButtons` | PayPal-branded buttons (UIKit + SwiftUI) |
-| `FraudProtection` | `FraudProtection` | `PayPal/FraudProtection` | Device fingerprinting via `PayPalDataCollector` |
+| Module | Purpose |
+| --- | --- |
+| `CorePayments` | Configuration, networking, analytics, errors, and web authentication |
+| `CardPayments` | Card order approval, 3DS, and card vault without purchase |
+| `PayPalWebPayments` | Browser-based PayPal checkout and PayPal vault approval |
+| `PaymentButtons` | PayPal, Pay Later, and PayPal Credit buttons for UIKit and SwiftUI |
+| `FraudProtection` | Device data collection through Magnes |
 
-## Core Pattern
+The package supports Swift Package Manager and CocoaPods. The `2.0.1` source requires iOS 14+, Swift 5.9+, Xcode 15+, and macOS Ventura 13.
 
-All modules share a `CoreConfig`:
+## Shared Configuration
 
 ```swift
 let config = CoreConfig(clientID: "CLIENT_ID", environment: .sandbox)
-```
-
-Each module creates its own client from `CoreConfig`:
-
-```swift
-let cardClient = CardClient(config: config)           // no Context needed — unlike Android
-let webClient = PayPalWebCheckoutClient(config: config)
+let cardClient = CardClient(config: config)
+let payPalClient = PayPalWebCheckoutClient(config: config)
 let dataCollector = PayPalDataCollector(config: config)
 ```
 
+Unlike Android, the iOS `CardClient` does not take an Android-style context or activity.
+
+## Version 2 Result Model
+
+Version 2 replaces the version 1 delegate APIs with `Result<Success, CoreSDKError>` completion handlers and async/await overloads.
+
+```swift
+cardClient.approveOrder(request: request) { result in
+    switch result {
+    case .success(let cardResult):
+        // Capture or authorize on the merchant server.
+    case .failure(let error):
+        // Handle CoreSDKError, including cancellation.
+    }
+}
+
+let checkoutResult = try await payPalClient.start(request: request)
+```
+
+Cancellation is an error in v2, not a separate delegate callback:
+
+- card 3DS: `CardError.threeDSecureCanceledError`
+- PayPal checkout: `PayPalError.checkoutCanceledError`
+- PayPal vault: `PayPalError.vaultCanceledError`
+
+`CoreSDKError` is equatable. `CardError`, `PayPalError`, and `NetworkingError` are public for domain-specific handling.
+
 ## Card Payments
 
-Server creates order → client builds `Card` + `CardRequest` → `cardClient.approveOrder(request:)` → `CardDelegate` callbacks → server captures/authorizes.
+The server creates an order, the app builds `Card` and `CardRequest`, and `CardClient.approveOrder` confirms the card payment source. If PayPal returns `PAYER_ACTION_REQUIRED`, the SDK presents 3DS authentication. The merchant server must still capture or authorize after SDK approval.
 
 ```swift
-let card = Card(number: "4111...", expirationMonth: "01", expirationYear: "2027",
-                securityCode: "123", cardholderName: "Jane Doe", billingAddress: address)
-let request = CardRequest(orderID: orderID, card: card, sca: .scaAlways)
-cardClient.approveOrder(request: request)
+let request = CardRequest(orderID: orderID, card: card, sca: .scaWhenRequired)
+let result = try await cardClient.approveOrder(request: request)
 ```
 
-SCA controlled via `sca` param: `.scaWhenRequired` (default) or `.scaAlways`.
+`CardResult` includes the order ID, optional status, and whether 3DS was attempted. SCA options are `.scaWhenRequired` and `.scaAlways`.
 
-`CardDelegate` protocol methods:
-
-- `didFinishWithResult(_ result: CardResult)` → capture/authorize on server
-- `didFinishWithError(_ error: CoreSDKError)`
-- `cardDidCancel()`
-- `cardThreeDSecureWillLaunch()` / `cardThreeDSecureDidFinish()`
-
-## Vault (Card Without Purchase)
-
-`CardClient` also supports vault-without-purchase — saving a card to a setup token without an immediate charge:
-
-```swift
-cardClient.vault(vaultRequest) { result in
-    // CardVaultResult: setupTokenID, status, didAttemptThreeDSecureAuthentication
-}
-```
-
-## Web Payments
-
-Browser-based checkout. Funding sources: `.paypal`, `.payLater`, `.paypalCredit`.
-
-> [!warning] Case name gotcha
-> The source code uses `paylater` (lowercase L), not `.payLater`. A `// NEXT_MAJOR_VERSION: rename to 'payLater'` comment indicates this will be a breaking change in the next major version. Use `.paylater` now.
+## PayPal Web Checkout
 
 ```swift
 let request = PayPalWebCheckoutRequest(orderID: orderID, fundingSource: .paypal)
-payPalWebCheckoutClient.start(request: request)
+let result = try await payPalClient.start(request: request)
 ```
 
-Implement `PayPalWebCheckoutDelegate` for result callbacks.
+Release `2.0.1` corrects cancellation recognition in deep-link returns for both checkout and PayPal vault flows.
+
+### Funding-source boundary
+
+At `2.0.1`, `PayPalWebCheckoutFundingSource` exposes only `.paypal`, `.paylater`, and `.paypalCredit`. The lowercase `.paylater` case and its future-rename comment remain; `.payLater` is not the current source case.
+
+The native funding-source and button enums contain no Venmo case. A stale comment mentioning `.venmo` is not an implementation. Therefore the native SDK source does not establish native Venmo support; use separately supported web/JavaScript SDK evidence and verify merchant eligibility when proposing Venmo for a native app.
+
+## Vault Without Purchase
+
+### PayPal wallet
+
+`PayPalWebCheckoutClient.vault(PayPalVaultRequest(setupTokenID:))` approves a server-created setup token and returns `PayPalVaultResult(tokenID, approvalSessionID)` through a completion handler or async/await. The `2.0.1` demo creates its setup token with `usage_type: MERCHANT`.
+
+Older iOS product guidance uses `usage_type: PLATFORM`. Treat this as a context-sensitive or documentation discrepancy until PayPal confirms the correct value for the merchant model.
+
+### Cards
+
+`CardClient.vault(CardVaultRequest)` attaches card data to a server-created setup token, can launch 3DS, and returns `CardVaultResult`. The merchant server upgrades the setup token to a payment token.
+
+## Save During Purchase
+
+For PayPal or card save-during-purchase, the merchant includes `store_in_vault: ON_SUCCESS` in the Orders API payment source. The client still runs the normal checkout or card approval flow, and the merchant stores returned vault/customer identifiers after the server completes the order.
+
+Availability, country support, reference-transaction approval, and card PCI obligations must be verified independently from the SDK source.
 
 ## Payment Buttons
 
-`PaymentButton` supports full customisation: `color`, `edges`, `size`, `label`, `fundingSource`. Works in both UIKit and SwiftUI:
-
-```swift
-// SwiftUI
-PayPalButton.Representable(...)   // wraps UIKit button for SwiftUI
-```
-
-SwiftUI support via `Representable` — not available on Android (Android uses XML layout or Compose).
+The SDK provides `PayPalButton`, `PayPalPayLaterButton`, and `PayPalCreditButton`. They are UIKit controls with SwiftUI `Representable` wrappers. Configuration covers color, edges, size, label, and funding source. There is no native Venmo button in the `2.0.1` source.
 
 ## Fraud Protection
 
-```swift
-let clientMetadataID = await dataCollector.collectDeviceData()
-```
+`PayPalDataCollector.collectDeviceData()` returns JSON containing a correlation ID. It uses Magnes and a Keychain-stored device identifier. The FraudProtection privacy manifest declares device-ID collection for app functionality and marks it as not linked to the user and not used for tracking.
 
-No location consent flag required (unlike Android's `PayPalDataCollectorRequest(hasUserLocationConsent:)`).
+## Version 1 Historical API
 
-## iOS vs Android — key differences
+Existing 1.x integrations may still use `CardDelegate`, `CardVaultDelegate`, `PayPalWebCheckoutDelegate`, and `PayPalVaultDelegate`. These delegate signatures remain important maintenance knowledge but are not current version 2 APIs. Follow the repository migration guide before moving a 1.x integration to 2.x.
 
-| Aspect | iOS | Android |
-| ------ | --- | ------- |
-| Package manager | Swift Package Manager / CocoaPods | Maven Central / Gradle |
-| `CardClient` constructor | `CardClient(config:)` — no Context | `CardClient(context, config)` |
-| Result handling | `CardDelegate` protocol | `ApproveOrderListener` interface |
-| 3DS SCA enum | `.scaWhenRequired` / `.scaAlways` | `SCA.SCA_WHEN_REQUIRED` / `SCA.SCA_ALWAYS` |
-| SwiftUI buttons | `PayPalButton.Representable()` | Not available (XML/Compose) |
-| Fraud protection | No location consent flag | `hasUserLocationConsent` required |
-| Deprecated module | None | `paypal-native-payments` (EOL July 2025) |
+## Messages Module
 
-## Messages Module (Pay Later Messaging)
+Pay Later messaging is a separate package, [paypal/paypal-messages-ios](https://github.com/paypal/paypal-messages-ios). Its `PayPalMessageView` supports UIKit and SwiftUI and is not the same module as native payment checkout.
 
-The Messages Module is a separate standalone package: [paypal/paypal-messages-ios](https://github.com/paypal/paypal-messages-ios) v1.2.0. Recommended to integrate via the umbrella SDK but usable standalone.
+See [[source-github-paypal-messages-ios]] for its versioned API evidence.
 
-Key API: `PayPalMessageView` (UIControl) + `PayPalMessageView.Representable` (SwiftUI). Config via `PayPalMessageConfig(data:style:)`.
+## iOS vs Android
 
-Offer types: `payLaterShortTerm` (Pay in 4), `payLaterLongTerm` (Pay Monthly), `payLaterPayIn1` (deferred), `payPalCreditNoInterest`.
-
-See [[source-github-paypal-messages-ios]] for full API reference.
-
-## Relevant Companies
-
-- [[paypal]] — PayPal company overview
-
-## PayPal Wallet Vault (Save During Purchase)
-
-Uses `PayPalWebCheckoutClient` — same client as non-vault web payments, with vault payload added:
-
-- Create Order with `payment_source.paypal.attributes.vault.store_in_vault: ON_SUCCESS`
-- `PayPalButton.Representable()` triggers order creation; `PayPalWebCheckoutClient.start(request:)` launches browser checkout
-- Capture response contains `vault.id` + `customer.id` — store both
-- Returning payer: pass `vault.id` as payment source in next Create Order
-- **35 countries** (unlike iOS card vault: US only)
-
-See [[source-paypal-save-paypal-ios-sdk]] for full detail.
-
-## PayPal Wallet Vault Without Purchase (Save for Later)
-
-Uses `PayPalWebCheckoutClient.vault()` — same client as web payments, vault-specific method:
-
-- Module: `PayPalWebPayments`
-- `PayPalVaultRequest(setupTokenID:)` — not `PayPalWebCheckoutRequest(orderID:fundingSource:)`
-- `paypalClient.vaultDelegate = self` → `PayPalVaultDelegate` protocol
-- `usage_type: PLATFORM` (vs `MERCHANT` for during-purchase)
-- Setup token: `PAYER_ACTION_REQUIRED`
-
-See [[source-paypal-save-paypal-purchase-later-ios-sdk]] for full detail.
-
-## Card Vault Without Purchase (Save for Later)
-
-Uses `CardClient.vault()` — not `approveOrder(request:)`:
-
-- `CardVaultRequest(setupTokenID:card:)` — setup token from server, card from payer input
-- `cardClient.vaultDelegate = self` → `CardVaultDelegate` protocol
-- Callbacks: `didFinishWithVaultResult`, `didFinishWithVaultError`, `cardVaultDidCancel`, `cardThreeDSecureWillLaunch/DidFinish`
-- Returning customer: `customer.id` in setup token request body
-- Setup token response status: `CREATED`
-
-See [[source-paypal-save-cards-purchase-later-ios-sdk]] for full detail.
-
-## Card Vault (Save During Purchase)
-
-Extends the base card payments integration. Key additions:
-
-- SwiftUI `Toggle` for save-card opt-in
-- Create Order with `payment_source.card.attributes.vault.store_in_vault: ON_SUCCESS`
-- Returning payer: `customer.id` in `payment_source.card.attributes.customer` (same as Android)
-- `CardClient.approveOrder(request:)` unchanged — vault happens server-side after capture
-- RTAU available for keeping saved cards current
-
-> [!warning] Availability
-> Docs state US only — contradicts Android SDK (35 countries). Verify before deploying globally.
-
-See [[source-paypal-save-cards-ios-sdk]] for full detail.
+| Aspect | iOS 2.x | Android |
+| --- | --- | --- |
+| Distribution | Swift Package Manager / CocoaPods | Maven Central / Gradle |
+| `CardClient` construction | `CardClient(config:)` | Requires Android context/activity in the reviewed API |
+| Result handling | Completion `Result` and async/await | Listener/callback APIs in the reviewed Android source |
+| 3DS SCA | `.scaWhenRequired` / `.scaAlways` | `SCA_WHEN_REQUIRED` / `SCA_ALWAYS` |
+| Buttons | UIKit plus SwiftUI wrappers | Views/Compose surfaces vary by module version |
 
 ## Sources
 
-- [[source-paypal-ios-card-payments]] — official iOS integration guide (docs layer)
-- [[source-paypal-save-paypal-purchase-later-ios-sdk]] — PayPal Wallet vault without purchase: `PayPalVaultDelegate`, `PayPalVaultRequest`, `usage_type: PLATFORM`
-- [[source-paypal-save-cards-purchase-later-ios-sdk]] — Card vault without purchase: `CardVaultDelegate`, `cardVaultDidCancel`, `CREATED` setup token status
-- [[source-paypal-save-paypal-ios-sdk]] — PayPal Wallet vault during purchase: `PayPalWebCheckoutClient`, `PayPalWebCheckoutDelegate`, 35 countries, `vault.id` for returning payers
-- [[source-paypal-save-cards-ios-sdk]] — card vault during purchase: SwiftUI Toggle, CardDelegate, US-only availability contradiction
-- [[source-github-paypal-ios]] — GitHub source: `CardClient` constructor, `paylater` case name gotcha, vault support, Demo ViewModels
-- [[source-paypal-ios-in-app-purchases]] — iOS in-app purchase flow (browser-redirect, Apple external payment entitlement)
-- [[source-github-paypal-messages-ios]] — GitHub paypal-messages-ios: PayPalMessageConfig API, offer types, delegates, SwiftUI/UIKit integration
+- [[source-github-paypal-ios]] - cumulative package-qualified source through `paypal-ios@2.0.1`
+- [[changelog-github-paypal-ios]] - major-version and patch release ledger
+- [[source-paypal-ios-card-payments]] - older official iOS integration guide
+- [[source-paypal-save-paypal-purchase-later-ios-sdk]] - older PayPal vault-without-purchase delegate guidance
+- [[source-paypal-save-cards-purchase-later-ios-sdk]] - older card vault delegate guidance
+- [[source-paypal-save-paypal-ios-sdk]] - PayPal save-during-purchase guidance
+- [[source-paypal-save-cards-ios-sdk]] - card save-during-purchase guidance
+- [[source-paypal-ios-in-app-purchases]] - iOS policy-sensitive browser payment patterns
+- [[source-github-paypal-messages-ios]] - separate Pay Later messaging package
+
+## Related
+
+- [[paypal]] - PayPal company overview
+- [[paypal-vault]] - setup tokens, payment tokens, and stored-credential flows
+- [[source-github-paypal-android]] - independently versioned Android SDK evidence
