@@ -76,7 +76,7 @@ APPENDIX_A_INVENTORY = (
     ('metronome-industries/mintlify-docs', 'https://github.com/Metronome-Industries/mintlify-docs', 'docs-source', 'tier2', 'commit', False, 'default-branch', 'monthly'),
     ('metronome-industries/terraform-provider-metronome', 'https://github.com/Metronome-Industries/terraform-provider-metronome', 'terraform-provider', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-node-api-library', 'https://github.com/Adyen/adyen-node-api-library', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('adyen/adyen-react-native', 'https://github.com/Adyen/adyen-react-native', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('adyen/adyen-react-native', 'https://github.com/Adyen/adyen-react-native', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-web', 'https://github.com/Adyen/adyen-web', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-android', 'https://github.com/Adyen/adyen-android', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-ios', 'https://github.com/Adyen/adyen-ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
@@ -921,6 +921,60 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(3000000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(380, capsule.max_packet_files)
         self.assertEqual(3500000, capsule.max_packet_utf8_bytes)
+
+    def test_adyen_react_native_uses_the_cross_platform_public_source_profile(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        react_native = next(
+            repo for repo in repos if repo.id == "adyen/adyen-react-native"
+        )
+
+        self.assertTrue(react_native.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:@adyen/react-native@2",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("2.12.0",),
+                ),
+            ),
+            react_native.version_tracks,
+        )
+        self.assertEqual(1, len(react_native.capsules))
+        capsule = react_native.capsules[0]
+        self.assertEqual("adyen-react-native-public-source", capsule.id)
+        self.assertEqual("npm-tracked-source-v1", capsule.adapter)
+        self.assertEqual(("@adyen/react-native",), capsule.focus_packages)
+        self.assertEqual("internal-runtime-closure", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(
+            ("android/src/main", "example/src", "ios", "src"),
+            capsule.default_required_roots,
+        )
+        self.assertEqual(("lib/",), capsule.default_generated_target_paths)
+        self.assertEqual(15, len(capsule.include_paths))
+        self.assertTrue(
+            {
+                "adyen-react-native.podspec",
+                "android/build.gradle",
+                "android/dependencies.gradle",
+                "app.plugin.js",
+                "docs/Architecture.md",
+                "docs/Compatibility.md",
+                "docs/Configuration.md",
+                "docs/v2-MigrationGuide.md",
+                "example/README.md",
+                "example/package.json",
+            }.issubset(set(capsule.include_paths))
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(420, capsule.max_capsule_files)
+        self.assertEqual(4000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(470, capsule.max_packet_files)
+        self.assertEqual(5000000, capsule.max_packet_utf8_bytes)
 
     def test_native_sdks_use_tagged_tree_profiles(self):
         repos = {
