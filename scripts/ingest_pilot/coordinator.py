@@ -45,6 +45,24 @@ SUGGESTION_ITEM_KEYS = {
 REVIEW_EVIDENCE_KEYS = REVIEW_RESULT_KEYS | {"reviewer_identity", "reviewer_model"}
 
 
+def _shared_update_decision(decision: object) -> Optional[tuple[str, str]]:
+    """Return an update ID and verdict for compact or legacy review evidence."""
+    if isinstance(decision, str) and decision:
+        return decision, "approved"
+    if (
+        isinstance(decision, dict)
+        and set(decision) == SHARED_UPDATE_DECISION_KEYS
+        and isinstance(decision.get("update_id"), str)
+        and decision["update_id"]
+        and isinstance(decision.get("verdict"), str)
+        and decision["verdict"] in SHARED_UPDATE_DECISION_VERDICTS
+        and isinstance(decision.get("reason"), str)
+        and decision["reason"].strip()
+    ):
+        return decision["update_id"], decision["verdict"]
+    return None
+
+
 def _json_bytes(value: Any) -> bytes:
     return (json.dumps(value, indent=2, sort_keys=False) + "\n").encode("utf-8")
 
@@ -200,21 +218,16 @@ def _approved_shared_updates(root: Path, campaign_id: str, jobs: list) -> Dict[s
         if len(set(suggestion_ids)) != len(suggestion_ids) or len(decisions) != len(suggestion_ids):
             raise PilotError("approved shared update evidence is invalid")
         approved_ids = set()
+        decision_ids = []
         for decision in decisions:
-            if (
-                not isinstance(decision, dict)
-                or set(decision) != SHARED_UPDATE_DECISION_KEYS
-                or not isinstance(decision["update_id"], str)
-                or decision["update_id"] not in suggestion_ids
-                or not isinstance(decision["verdict"], str)
-                or decision["verdict"] not in SHARED_UPDATE_DECISION_VERDICTS
-                or not isinstance(decision["reason"], str)
-                or not decision["reason"].strip()
-            ):
+            normalized = _shared_update_decision(decision)
+            if normalized is None or normalized[0] not in suggestion_ids:
                 raise PilotError("approved shared update evidence is invalid")
-            if decision["verdict"] == "approved":
-                approved_ids.add(decision["update_id"])
-        if len({decision["update_id"] for decision in decisions}) != len(decisions):
+            update_id, decision_verdict = normalized
+            decision_ids.append(update_id)
+            if decision_verdict == "approved":
+                approved_ids.add(update_id)
+        if len(set(decision_ids)) != len(decisions):
             raise PilotError("approved shared update evidence is invalid")
         for suggestion in flattened:
             if suggestion["update_id"] in approved_ids:
@@ -338,18 +351,10 @@ def _validate_review_result(result: dict, expected_scope: str, suggestion_ids: s
         raise PilotError("review result is invalid")
     decision_ids = []
     for decision in decisions:
-        if not isinstance(decision, dict) or set(decision) != SHARED_UPDATE_DECISION_KEYS:
+        normalized = _shared_update_decision(decision)
+        if normalized is None:
             raise PilotError("review result is invalid")
-        update_id = decision["update_id"]
-        if (
-            not isinstance(update_id, str)
-            or not isinstance(decision["verdict"], str)
-            or decision["verdict"] not in SHARED_UPDATE_DECISION_VERDICTS
-            or not isinstance(decision["reason"], str)
-            or not decision["reason"].strip()
-        ):
-            raise PilotError("review result is invalid")
-        decision_ids.append(update_id)
+        decision_ids.append(normalized[0])
     if len(set(decision_ids)) != len(decision_ids) or set(decision_ids) != suggestion_ids:
         raise PilotError("review result is invalid")
 

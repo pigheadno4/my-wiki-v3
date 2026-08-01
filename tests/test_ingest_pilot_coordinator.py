@@ -700,6 +700,58 @@ class CoordinatorTests(unittest.TestCase):
         self.assertEqual(output["jobs"][0]["state"], "approved")
         self.assertEqual(review["shared_update_decisions"][0]["update_id"], "concept-billing-link")
 
+    def test_compact_review_uses_ids_for_approvals_and_details_only_for_rejections(self):
+        approved = {
+            "update_id": "concept-approved",
+            "target_path": "wiki/concepts/metronome/metronome-billing.md",
+            "update_kind": "durable_fact",
+            "anchor": "## Sources",
+            "proposed_markdown": "- [[source-job-1]] — approved billing fact",
+            "quote_indexes": [0],
+            "warnings": [],
+        }
+        rejected = {
+            "update_id": "concept-rejected",
+            "target_path": "wiki/concepts/metronome/metronome-billing.md",
+            "update_kind": "durable_fact",
+            "anchor": "## Sources",
+            "proposed_markdown": "- duplicated billing fact",
+            "quote_indexes": [0],
+            "warnings": [],
+        }
+        self.make_reviewing("job-1", attempt=1, suggestions={
+            "company": [], "concepts": [approved, rejected], "index": [], "log": [],
+        })
+
+        output = run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review(
+                "job-1",
+                1,
+                "approved",
+                shared_update_decisions=[
+                    "concept-approved",
+                    {
+                        "update_id": "concept-rejected",
+                        "verdict": "rejected",
+                        "reason": "Duplicates an existing concept fact",
+                    },
+                ],
+            ),
+        )
+
+        self.assertEqual(output["jobs"][0]["state"], "approved")
+        self.assertEqual(list(output["shared_update_plan"]), [
+            "wiki/concepts/metronome/metronome-billing.md",
+        ])
+        self.assertEqual(
+            [item["update_id"] for item in output["shared_update_plan"][
+                "wiki/concepts/metronome/metronome-billing.md"
+            ]],
+            ["concept-approved"],
+        )
+
     def test_status_groups_only_reviewer_approved_shared_updates(self):
         approved_billing_updates = (
             ("job-1", "billing-a", "- [[source-job-1]] — billing fact A"),

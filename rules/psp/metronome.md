@@ -128,3 +128,32 @@ only `started_at` and `completed_at`, consumes the reviewer-approved
 target once, and runs the campaign-close wiki, capsule, and predetermined
 three-page query-audit validations once. The coordinator does not perform a
 default third full-source reread.
+
+## Campaign 09 compact production mode
+
+Campaign 09 and later retain the same worker, reviewer, targeted-retry, and
+three-page audit quality gates, but remove avoidable approval and close-stage
+work:
+
+- A reviewer may list an approved shared update as its `update_id` string in
+  `shared_update_decisions`. Only a rejected update needs the legacy object
+  with `update_id`, `verdict: rejected`, and a concise `reason`. Legacy detailed
+  approval objects remain valid for existing campaign evidence.
+- Workers leave the `company`, `index`, and `log` suggestion arrays empty.
+  At campaign close, the coordinator derives one company catalog entry and one
+  provider-index entry per approved source from the canonical source wikilink
+  and title, writes one consolidated campaign-log entry from the manifest and
+  approved job records, and recomputes counts from the promoted corpus. These
+  mechanical entries do not require per-entry reviewer prose.
+- Workers continue to suggest only fact-bearing concept changes, reciprocal
+  source links, and contradictions that require semantic judgment.
+- The coordinator groups approved concept suggestions by exact target and
+  applies each target once. Do not spawn a separate shared-close proposal
+  agent by default. Request a narrow additional review only for an actual
+  conflict or unresolved semantic uncertainty.
+
+This is a throughput simplification, not a weaker content gate: first attempts
+still receive full-source independent Sol review, bounded unchanged-hash fixes
+still receive targeted review, canonical sources must still equal approved
+candidates, and the existing close validators and immutable query sample still
+run once.
