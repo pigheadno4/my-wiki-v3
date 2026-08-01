@@ -23,6 +23,10 @@ The overview emphasizes optionality: organizations can use simpler integrated in
 
 ## Calculation and timing boundary
 
+### Legacy Plans one-time invoice charge
+
+Metronome's deprecated Plans API exposes bearer-authenticated `POST /v1/customers/{customer_id}/addCharge`. The required path `customer_id` is UUID-formatted; the `requestBody` is not itself marked required, while its payload schema requires `charge_id`, `price`, `quantity`, `invoice_start_timestamp`, `customer_plan_id`, and `description`. The charge must be on a product outside the current plan, and that product must have only fixed charges. The caller supplies the numeric price, which must match the invoice currency, with USD cents given only as an example. The target invoice is described through the customer, customer plan, and invoice start timestamp rather than an invoice ID, and HTTP 200 has an empty object schema. The page directs new clients to Contracts but does not identify the replacement endpoint, map the payload, define eligible invoice states or duplicate behavior, or document line-item creation, downstream delivery, tax, discounts, credits, commits, payment, accounting, or reconciliation effects.
+
 ## Commercial Billings measure
 
 For Metronome's own consumption pricing, Billings are the total value of invoices generated through Metronome whether invoiced automatically or manually. The stated exclusions are current-period finalized invoices voided before Metronome invoices the platform customer, non-production draft invoices used for testing or demonstration, and zero-dollar invoices used to track free-trial credits. The source does not define currency aggregation, tax, discounts, refunds, or other adjustments. [[source-metronome-guides-platform-configuration-metronome-pricing-model]]
@@ -31,6 +35,10 @@ The architecture guide orders invoice generation as usage receipt, billable-metr
 
 The customer-controls guide distinguishes two alert calculations: `spend_threshold_reached` uses usage-based spend before credit and commit drawdown, while `invoice_total_reached` evaluates the amount after drawdown and can be limited to usage invoices. These are threshold-evaluation semantics, not evidence that an invoice is finalized, delivered, collected, paid, or immutable.
 
+## Shared Plan and Contract invoice surface
+
+Metronome documents shared invoice operations for Plans and Contracts: customer-scoped retrieval of one or all invoices plus regeneration and voiding. Contract-targeted invoices may carry commit, credit, or usage details, while Plan invoices are generally scoped to plan-level billing events. Documented invoice fields include plan identity and generation-time plan custom fields, invoice adjustments, and charge sub-line items; non-tiered nonzero charges may expose a unit `price`, while tiered detail uses `tier_period` and `tiers`. The page does not specify HTTP methods, API version prefixes, pagination, target-selection mechanics, lifecycle preconditions, monetary units or currency, enum values, ordering, downstream-provider effects, or how the plan fields behave for contract invoices.
+
 ## Event-based invoice preview
 
 Metronome exposes `POST /v1/customers/{customer_id}/previewEvents` to calculate draft invoices from supplied usage events and the customer's current contract configuration before those events are processed. The request can replace historical usage or merge with it, and the response returns draft invoice records with totals and line items. Contracts using SQL billable metrics are excluded from this preview capability.
@@ -38,6 +46,10 @@ Metronome exposes `POST /v1/customers/{customer_id}/previewEvents` to calculate 
 The cost-preview guide clarifies that Preview Events simulates invoice impact without processing or billing the proposed events. Its calculation can include tiered pricing, commit and credit coverage, free allotments, and multiple products. `merge` includes existing billing-period usage; `replace` ignores existing usage. Multiple active contracts return separate draft-invoice-shaped results.
 
 These results are previews, not finalized, delivered, collectible, or documented as persisted invoices. The guide limits the endpoint to 8 RPS per client and returns HTTP 400 when SQL billable metrics are present on the customer invoice being evaluated. Its worked response is structurally illustrative: a request for 100 compute hours produces quantity 10, unit price 4900, line-item total 0, and invoice total 49000 without reconciling the quantity or arithmetic.
+
+## Revenue-reporting invoice classification
+
+Metronome's financial-reporting guide classifies `CONTRACT_SCHEDULED` invoices as scheduled charges including prepaid purchases, `CONTRACT_USAGE` invoices as usage charges, and `CONTRACT_TRUEUP` invoices as postpaid true-up charges. Invoice service-period timestamps select the target ERP accounting period, `line_items.product_id` maps the amount to a product or ERP SKU, and a populated `line_items.commit_id` joins to `balances.id` so `balances.type` classifies the amount as `credit`, `prepaid`, or `postpaid`. A null commit ID leaves on-demand versus overage classification to client-defined contract or commit metadata. The guide maps `FINALIZED` invoices to recognized-revenue reporting and `DRAFT` invoices to accrued-revenue reporting, with finalized and draft invoices transferred in separate export tables. It does not define metadata completeness, void and correction handling, downstream posting state, journal entries, or whether those status filters satisfy a particular accounting standard or close control.
 
 ## Dashboard lifecycle overview
 
@@ -55,8 +67,15 @@ For invoices already issued before a customer was provisioned in Metronome, `/v1
 
 For incorrect usage on a current-period `DRAFT` invoice, the credit-memo guide directs the merchant to send a negative quantity or value matching the affected product's billable metric. For a previous-period `finalized` invoice, Metronome says usage events cannot be corrected or adjusted; the documented alternatives are a future credit or an external A/R credit memo. When the whole invoice is wrong, the guide separately gives a credit-and-rebill sequence of negative usage, corrected usage, voiding, and regeneration. A Metronome void does not void a downstream invoice, and historical usage submission is limited to 34 days; older re-bills remain entirely in the invoicing and A/R system.
 
+Metronome exposes `POST /v1/invoices/void` under the OpenAPI document's global HTTP bearer scheme. The operation does not mark `requestBody` itself as required; within its JSON object schema, `id` is required and UUID-formatted. The HTTP 200 schema defines but does not require top-level `data`, requires `id` only within `data`, and shows an example containing `data.id`; status and other invoice fields are not documented, but the page does not exclude additional actual response fields. The operation description says voiding permanently and immediately sets the invoice status to `voided`, prevents collection, removes it from customer billing, and stops payment processing, and presents correcting billing errors, cancelling incorrect charges, and handling disputed invoices that should not be collected as intended uses rather than a complete eligibility-state contract. The page does not define eligible starting states, repeated-call or idempotency behavior, errors, concurrency handling, webhooks, or downstream reconciliation. Because the separate correction guide says a Metronome void does not void a downstream invoice, do not extend this endpoint's effect to Stripe, ERP, marketplace, payment refund, A/R, tax, revenue, or ledger changes without separate evidence.
+
 > [!warning] Documentation ambiguity
 > The finalized-period example prohibits usage-event correction for finalized invoices, while the following re-bill sequence instructs readers to negate and replace usage before voiding without stating the starting invoice state or reconciling that order with finalized-invoice immutability. Verify state preconditions and operation order before implementation.
+
+Metronome exposes globally bearer-secured `POST /v1/invoices/regenerate` to regenerate a voided invoice. The operation recalculates from up-to-date rates, available balances, and other fees regardless of billing period, and says an invoice attached to a contract with a billing provider will be distributed according to that configuration. The JSON object schema requires a UUID-formatted `id` within the object, although `requestBody` itself is not marked required. HTTP 200 defines a non-required top-level `data` property whose object requires UUID-formatted `id` when present, and the example contains `data.id`. The page does not define the new invoice's state or amounts, calculation as-of or atomicity semantics, balance and ledger reconciliation, distribution timing or outcome, downstream voiding, payment or refund effects, error responses, or endpoint-specific repeated-call, concurrency, and timeout-recovery behavior. Apply the separately documented API-wide `Idempotency-Key` contract for POST operations without treating this page's omission as evidence of unsupported idempotency, and do not assume a changed key is safe after uncertain regeneration state. Its billing-period wording does not establish that corrected usage can bypass the separately documented 34-day historical-submission limit.
+
+> [!warning] Documentation contradiction
+> The prose says the regenerated invoice ID is distinct from the previously voided invoice, but the request and response examples reuse the same UUID. The schema constrains UUID format only and does not resolve equality. Verify runtime identity behavior before relying on either interpretation.
 
 Credits and commits apply at invoice line-item level. Covered usage, its negative application line, and uncovered overage remain separate so product-level precommitted and overage spend stays attributable. A commit can record an invoiced amount without sending a downstream invoice, and scheduled commit charges can be consolidated onto a usage statement when the contract enables that behavior.
 
@@ -104,6 +123,10 @@ The contract stores the Stripe mandate ID in a custom field mapped to `invoice.p
 
 Stripe owns mandate creation and lifecycle. Metronome returns the custom-field value and maps it into invoice delivery but exposes no mandate-management API. The page requires SetupIntent setup for this integration because it characterizes all charges, including the first, as off-session. The integrator must update or replace the mandate in Stripe and act before retrying.
 
+## Custom downstream invoice delivery
+
+Metronome's recommended API pattern for a non-native downstream provider listens for `invoice.finalized`, then uses the webhook's `customer_id` to query `/listInvoices` for finalized invoices in the associated billing period, transforms the returned invoice and line-item fields, and upserts them into the destination. The guide says finalization occurs after the grace period and that `invoice.finalized` must be enabled through a Metronome representative. Its QuickBooks example requires a preexisting downstream customer and at least one item. This is a recommended integration sequence, not an exactly-once or complete synchronization contract: the source does not define webhook ordering or duplicate handling, invoice-list pagination or consistency, how several matches are selected, destination idempotency, partial-failure recovery, replay, downstream status synchronization, payment collection, tax, credit-memo behavior, or reconciliation.
+
 ## Scheduled provider routing
 
 Scheduled and commit charges can optionally consolidate onto a usage invoice when the exclusive service-period end day matches the scheduled invoice date and the usage invoice has not finalized. Metronome reevaluates this at contract creation and later changes; this does not make the creation-time consolidation setting editable.
@@ -130,6 +153,18 @@ Metronome's go-live checklist asks teams to understand the draft-to-grace-period
 - Related platform: [[stripe]]
 
 ## Sources
+
+- [[source-metronome-api-reference-invoices-regenerate-an-invoice]] - invoice regeneration contract, recalculation and distribution side effects, identity contradiction, and retry boundaries
+
+- [[source-metronome-api-reference-invoices-add-a-one-time-charge]] — deprecated Plans one-time-charge request contract, invoice-selection context, caller-supplied price, and empty response boundary
+
+- [[source-metronome-plans-shared-endpoints-invoices]] - shared Plan and Contract invoice operations, plan context, adjustments, sub-line items, and tier-schema boundaries
+
+- [[source-metronome-api-reference-invoices-void-an-invoice]] — invoice void endpoint contract, immediate status-transition wording, success-response limit, and downstream boundary
+
+- [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition]] - invoice-type and line-item classification, finalized-versus-draft revenue reporting, and downstream journal-entry boundary
+
+- [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]] — finalized-invoice API export and downstream transformation flow with QuickBooks-specific prerequisites and unresolved delivery semantics
 
 - [[source-metronome-integrations-tax-integrations-avalara]] — third-party Avalara calculation on draft Stripe invoices and finalization responsibility boundary
 

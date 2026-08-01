@@ -1,0 +1,41 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "void-invoice-endpoint-contract",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "after the first paragraph under ### Credit, correction, and re-bill state boundaries",
+      "proposed_markdown": "Metronome exposes bearer-authenticated `POST /v1/invoices/void`, whose JSON body requires an invoice `id` as a UUID-formatted string and whose HTTP 200 schema returns only `data.id`. The operation description says it permanently and immediately sets the invoice status to `voided`, preventing collection, removing it from customer billing, and stopping payment processing. The response does not include the new status, and the page does not define eligible starting states, repeated-call or idempotency behavior, errors, webhooks, or downstream reconciliation. Because the separate correction guide says a Metronome void does not void a downstream invoice, do not extend this endpoint's effect to Stripe, ERP, marketplace, payment refund, A/R, tax, revenue, or ledger changes without separate evidence.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Scope the documented void effect to the Metronome invoice; this page does not establish downstream invoice cancellation or payment refund behavior.",
+        "Do not infer eligible invoice states, idempotency, error handling, webhook behavior, or accounting and reconciliation effects from the success-only schema.",
+        "The success response returns only `data.id`; it does not expose the resulting status despite the prose saying the status change is applied immediately."
+      ]
+    },
+    {
+      "update_id": "void-invoice-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-invoices-void-an-invoice]] \u2014 invoice void endpoint contract, immediate status-transition wording, success-response limit, and downstream boundary",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

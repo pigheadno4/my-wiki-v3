@@ -1,0 +1,45 @@
+{
+  "action": "spawn_worker",
+  "job_id": "void-an-invoice",
+  "attempt": 2,
+  "raw_path": "raw/metronome/api-reference/invoices/void-an-invoice-2026-07-13.md",
+  "raw_sha256": "640e3ff5d2ecb18704a5e328f51be80c314e3d2e8747483549ce798fa46cac49",
+  "source_target": "wiki/sources/metronome/source-metronome-api-reference-invoices-void-an-invoice.md",
+  "canonical_url": "https://docs.metronome.com/api-reference/invoices/void-an-invoice",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location."
+  ],
+  "retry_context": {
+    "prior_attempt": 1,
+    "review_scope": "full",
+    "required_changes": [
+      "Correct the candidate's request and response semantics throughout Overview, Key takeaways, Endpoint contract, and the paragraph following the table. State that the OpenAPI requestBody is not itself marked required, while id is required within the JSON object schema and is UUID-formatted. State that the HTTP 200 schema defines but does not require top-level data, requires id only within data, and shows an example containing data.id; say that status and other invoice fields are not documented rather than asserting that the actual response cannot contain them. Preserve the same-UUID example observation and all downstream, state, error, idempotency, concurrency, webhook, accounting, and reconciliation unknowns.",
+      "Add a source-faithful sentence to the candidate saying the operation description presents voiding for correcting billing errors, cancelling incorrect charges, or handling disputed invoices that should not be collected, without treating those examples as a complete eligibility-state contract. Revise only void-invoice-endpoint-contract to include that bounded intended-use statement and the same precise requestBody/data requiredness and documented-field boundaries. Preserve its update ID, target, anchor, reciprocal source-link suggestion, Metronome-only scope, downstream warning, and remaining unknowns.",
+      "Replace or expand the five grounding excerpts so every material candidate and suggestion claim is directly covered: retain the exact effect-and-intended-use text at line 11; include lines 18-27 for the route declaration and global bearerAuth application; include lines 100-115 for operationId, request-body schema, and request example; include lines 116-134 for the complete 200 schema and response example; and retain lines 135-139 for the bearer scheme definition. Use byte-exact text and exact line ranges, keep three to five excerpts total, and update quote indexes only if positions change."
+    ],
+    "prior_reviewer_identity": "c11-sol-r4"
+  },
+  "recommended_worker_tier": "strong",
+  "routing_reason": "invoice state transition semantics require precise treatment",
+  "worker_identity": "c11-sol-w4",
+  "worker_model": "gpt-5.6-sol"
+}

@@ -157,3 +157,12 @@ still receive full-source independent Sol review, bounded unchanged-hash fixes
 still receive targeted review, canonical sources must still equal approved
 candidates, and the existing close validators and immutable query sample still
 run once.
+
+## Campaign 11 worker routing
+
+Campaign 11 and later Metronome production campaigns use Sol for every worker.
+Terra remains disabled for Metronome production ingest unless a separately
+approved future pilot demonstrates that it can meet the same concept-update and
+quote-grounding gate. This changes only worker routing; the existing independent
+Sol review, retry, coordinator ownership, and campaign-close gates remain the
+same.

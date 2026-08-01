@@ -1,0 +1,70 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "custom-invoice-managed-integration-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "durable_fact",
+      "anchor": "before ## Workato connector boundary",
+      "proposed_markdown": "## Managed custom-invoice integration boundary\n\nFor billing systems outside Metronome's native integrations, Metronome documents data exports or a managed integration built on Data Export or Metronome APIs. In the QuickBooks example, the implementer owns external application and OAuth setup, external customer and item creation or lookup, storage of external identifiers in Metronome custom fields, invoice transformation, and the destination upsert. Metronome supplies the finalized-invoice event and invoice data; the selected billing system stores its customer, item, and created invoice objects. The overall pattern may inform other use cases, but the named credentials, object mappings, fields, and request are QBO-specific. The page does not assign hosting, operational support, payment collection, tax, retries, idempotency, reconciliation, or ongoing object-synchronization ownership. Workato is an optional orchestration recommendation, not a documented complete implementation of those responsibilities.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not generalize QuickBooks credentials, object types, field mappings, or API behavior to other billing providers.",
+        "Do not infer who hosts or operates a managed integration, or assign payment, tax, retry, idempotency, reconciliation, or ongoing synchronization behavior that the source does not define.",
+        "Do not present Workato as a complete implementation of the QuickBooks flow; this page recommends it as an orchestration option and describes the connector only as an API wrapper."
+      ]
+    },
+    {
+      "update_id": "custom-invoice-integrations-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]] \u2014 managed non-native invoice integration routes, QuickBooks object mapping, finalized-invoice export flow, and system-ownership boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "custom-invoice-finalized-export-flow",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "before ## Scheduled provider routing",
+      "proposed_markdown": "## Custom downstream invoice delivery\n\nMetronome's recommended API pattern for a non-native downstream provider listens for `invoice.finalized`, then uses the webhook's `customer_id` to query `/listInvoices` for finalized invoices in the associated billing period, transforms the returned invoice and line-item fields, and upserts them into the destination. The guide says finalization occurs after the grace period and that `invoice.finalized` must be enabled through a Metronome representative. Its QuickBooks example requires a preexisting downstream customer and at least one item. This is a recommended integration sequence, not an exactly-once or complete synchronization contract: the source does not define webhook ordering or duplicate handling, invoice-list pagination or consistency, how several matches are selected, destination idempotency, partial-failure recovery, replay, downstream status synchronization, payment collection, tax, credit-memo behavior, or reconciliation.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not treat the webhook payload's invoice_id as the documented lookup path; the page explicitly uses customer_id plus finalized status and a billing-period range.",
+        "Do not infer exactly-once delivery, idempotent upsert, selection behavior for multiple invoices, downstream status synchronization, payment, tax, correction, or reconciliation semantics."
+      ]
+    },
+    {
+      "update_id": "custom-invoice-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]] \u2014 finalized-invoice API export and downstream transformation flow with QuickBooks-specific prerequisites and unresolved delivery semantics",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

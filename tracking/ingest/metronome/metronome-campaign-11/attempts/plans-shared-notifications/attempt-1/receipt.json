@@ -1,0 +1,65 @@
+{
+  "job_id": "plans-shared-notifications",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Shared Plan and Contract Alert Endpoints\"\ntype: source\ndate_ingested: 2026-08-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/plans-shared-endpoints/notifications\"\nraw_files:\n  - \"metronome/plans-shared-endpoints/notifications-2026-07-13.md\"\ntags: [metronome, alerts, notifications, plans, contracts, api]\n---\n\n## Overview\n\nThis Metronome documentation overview identifies a shared alert endpoint surface for Plans and Contracts. It inventories creation, customer retrieval and listing, reset, and archival routes, then lists the alert types supported when targeting plans.\n\n## Key takeaways\n\n- The documented alert endpoints are shared by Plans and Contracts, although their input and response parameters can differ by targeted entity.\n- The overview lists five unversioned route labels: `/alerts/create`, `/customer-alerts/get`, `/customer-alerts/list`, `/customer-alerts/reset`, and `/alerts/archive`.\n- For plans, `alert_type` can identify low credit balance, low remaining plan days, low remaining credit percentage, or a usage-threshold condition.\n- This page does not supply HTTP methods, version prefixes, request or response schemas, authentication, errors, state-transition rules, or the parameter differences between Plans and Contracts.\n\n## Shared endpoint inventory\n\n| Route label | Documented purpose |\n| --- | --- |\n| `/alerts/create` | Create an alert configuration for a plan or contract. |\n| `/customer-alerts/get` | Retrieve one customer alert configuration. |\n| `/customer-alerts/list` | List a customer's active alerts. |\n| `/customer-alerts/reset` | Clear an alert's triggered state. |\n| `/alerts/archive` | Archive a configuration so it no longer triggers. |\n\nThe source presents these as shared endpoints but does not identify which request or response fields vary by entity. It also does not state whether every operation uses the same customer scope or whether archived configurations remain retrievable.\n\n## Plan alert types\n\nThe plan-targeted `alert_type` values listed by the page are:\n\n- `low_credit_balance_reached`\n- `low_remaining_days_in_plan_reached`\n- `low_remaining_credit_percentage_reached`\n- `usage_threshold_reached`\n\nThe page does not define each condition's threshold unit, evaluation cadence, state model, payload, supported filters, or whether this list is exhaustive across other alert surfaces. It points to the Contracts version of the creation documentation but does not enumerate the Contract-specific parameter differences.\n\n## Documentation boundary\n\nThe route labels here omit HTTP methods and API version prefixes. The dedicated reset reference documents `POST /v1/customer-alerts/reset`; this overview's `/customer-alerts/reset` label should therefore be treated as navigation-level endpoint identification rather than a replacement for the versioned API contract in [[source-metronome-api-reference-alerts-reset-a-threshold-notification]].\n\nNo direct contradiction with the existing Metronome alert and notification material was found. This page adds the shared Plan-and-Contract endpoint inventory and the four plan-targeted alert types, while the existing lifecycle and API sources remain authoritative for evaluation, webhook delivery, and operation-specific schemas.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-alerts-and-notifications]], [[metronome-customers-and-contracts]]\n- Related sources: [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]], [[source-metronome-api-reference-alerts-reset-a-threshold-notification]]\n\n## Raw Sources\n\n- [[raw/metronome/plans-shared-endpoints/notifications-2026-07-13|2026-07-13 snapshot - shared Plan and Contract alert endpoints and plan alert types]]\n",
+  "quotes": [
+    {
+      "text": "Metronome supports a shared set of Alert endpoints that allow you to create, retrieve, and manage alert configurations related to both **Plans** and **Contracts**.",
+      "location": "line 11, shared Plans and Contracts alert endpoint scope"
+    },
+    {
+      "text": "While these endpoints are shared between Plans and Contracts, note that some input and response parameters differ slightly depending on the entity you are targeting.",
+      "location": "line 13, entity-specific parameter differences"
+    },
+    {
+      "text": "| `/alerts/create`         | Creates a new alert configuration for a plan or contract.      |\n| `/customer-alerts/get`   | Retrieves a specific alert configuration for a given customer. |\n| `/customer-alerts/list`  | Lists all active alerts for a customer.                        |\n| `/customer-alerts/reset` | Resets an alert, clearing its triggered state.                 |\n| `/alerts/archive`        | Archives an alert configuration so it no longer triggers.      |",
+      "location": "Available Endpoints table, lines 19-23"
+    },
+    {
+      "text": "When using these endpoints, the `alert_type` field determines what condition triggers the alert.\n\nThe supported values for `alert_type` when using plans include:\n\n* `low_credit_balance_reached`\n* `low_remaining_days_in_plan_reached`\n* `low_remaining_credit_percentage_reached`\n* `usage_threshold_reached`",
+      "location": "Supported Alert Types section, lines 27-34"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "plans-shared-notifications-alert-endpoint-surface",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Notification types and lifecycle",
+        "proposed_markdown": "### Shared Plan and Contract endpoint surface\n\nMetronome documents a shared alert endpoint family for Plans and Contracts: `/alerts/create`, `/customer-alerts/get`, `/customer-alerts/list`, `/customer-alerts/reset`, and `/alerts/archive`. The shared overview says entity-targeted input and response parameters can differ, but it does not identify which fields vary or provide HTTP methods, version prefixes, or operation schemas. For plan targeting, it lists `low_credit_balance_reached`, `low_remaining_days_in_plan_reached`, `low_remaining_credit_percentage_reached`, and `usage_threshold_reached` as supported `alert_type` values. Its unversioned `/customer-alerts/reset` route label does not replace the dedicated reference's `POST /v1/customer-alerts/reset` contract.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Treat the endpoint strings as unversioned route labels; use dedicated API references for methods, versioned paths, and schemas.",
+          "Do not assume Plan and Contract inputs or responses are interchangeable; the source says differences exist but does not enumerate them.",
+          "Do not infer threshold units, evaluation behavior, or payload semantics from the alert_type names alone."
+        ]
+      },
+      {
+        "update_id": "plans-shared-notifications-alerts-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-plans-shared-endpoints-notifications]] - shared Plan and Contract alert routes, entity-specific parameter boundary, and plan-targeted alert types",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/plans-shared-endpoints/notifications-2026-07-13.md",
+  "raw_sha256": "6df588128566f8fc0ae1f979da31313ce2e73fec83e3fc7781f795f871d5605c",
+  "status": "candidate_ready"
+}

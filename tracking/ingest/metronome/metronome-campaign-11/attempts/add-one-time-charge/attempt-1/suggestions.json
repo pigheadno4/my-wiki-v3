@@ -1,0 +1,71 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "legacy-one-time-charge-invoice-contract",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Calculation and timing boundary",
+      "proposed_markdown": "### Legacy Plans one-time invoice charge\n\nMetronome's deprecated Plans API exposes bearer-authenticated `POST /v1/customers/{customer_id}/addCharge`. The required path `customer_id` is UUID-formatted; the `requestBody` is not itself marked required, while its payload schema requires `charge_id`, `price`, `quantity`, `invoice_start_timestamp`, `customer_plan_id`, and `description`. The charge must be on a product outside the current plan, and that product must have only fixed charges. The caller supplies the numeric price, which must match the invoice currency, with USD cents given only as an example. The target invoice is described through the customer, customer plan, and invoice start timestamp rather than an invoice ID, and HTTP 200 has an empty object schema. The page directs new clients to Contracts but does not identify the replacement endpoint, map the payload, define eligible invoice states or duplicate behavior, or document line-item creation, downstream delivery, tax, discounts, credits, commits, payment, accounting, or reconciliation effects.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep this endpoint scoped to deprecated Plans; the page does not define the Contracts replacement or migration mapping.",
+        "Do not infer request-body requiredness from the payload's required properties: the OpenAPI requestBody object itself has no required flag.",
+        "Do not treat the empty HTTP 200 schema as evidence of invoice state, line-item identity, finalization, downstream delivery, payment, or accounting effects."
+      ]
+    },
+    {
+      "update_id": "legacy-one-time-charge-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-invoices-add-a-one-time-charge]] \u2014 deprecated Plans one-time-charge request contract, invoice-selection context, caller-supplied price, and empty response boundary",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "legacy-one-time-charge-fixed-product-pricing",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "after the one-time-charge bullet under ## Enterprise design",
+      "proposed_markdown": "- The deprecated Plans `addCharge` endpoint adds a narrower legacy rule: its `charge_id` must be on a product outside the current plan, and that product must have only fixed charges. The caller supplies numeric `price` and `quantity`; the price must match the target invoice's currency, with USD cents given only as an example. The page does not establish non-USD denomination, positivity, precision, rounding, rate-card precedence, catalog-price validation, or how the restriction maps to Contracts, so it must not be generalized into current Contract pricing behavior.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Treat the product restriction and caller-supplied price as legacy Plans endpoint semantics, not a general Contracts rule.",
+        "The page gives USD cents as an example and does not define denomination for other invoice currencies or numeric validation."
+      ]
+    },
+    {
+      "update_id": "legacy-one-time-charge-products-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-invoices-add-a-one-time-charge]] \u2014 deprecated Plans fixed-product eligibility and invoice-currency price boundary for one-time charges",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

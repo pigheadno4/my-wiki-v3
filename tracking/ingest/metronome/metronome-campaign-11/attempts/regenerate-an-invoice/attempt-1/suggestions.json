@@ -1,0 +1,69 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "regenerate-invoice-endpoint-contract",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "after the Documentation ambiguity callout under ### Credit, correction, and re-bill state boundaries",
+      "proposed_markdown": "Metronome exposes globally bearer-secured `POST /v1/invoices/regenerate` to regenerate a voided invoice. The operation recalculates from up-to-date rates, available balances, and other fees regardless of billing period, and says an invoice attached to a contract with a billing provider will be distributed according to that configuration. The JSON object schema requires a UUID-formatted `id` within the object, although `requestBody` itself is not marked required. HTTP 200 defines a non-required top-level `data` property whose object requires UUID-formatted `id` when present, and the example contains `data.id`. The page does not define the new invoice's state or amounts, calculation as-of or atomicity semantics, balance and ledger reconciliation, distribution timing or outcome, downstream voiding, payment or refund effects, error responses, or endpoint-specific repeated-call, concurrency, and timeout-recovery behavior. Apply the separately documented API-wide `Idempotency-Key` contract for POST operations without treating this page's omission as evidence of unsupported idempotency, and do not assume a changed key is safe after uncertain regeneration state. Its billing-period wording does not establish that corrected usage can bypass the separately documented 34-day historical-submission limit.\n\n> [!warning] Documentation contradiction\n> The prose says the regenerated invoice ID is distinct from the previously voided invoice, but the request and response examples reuse the same UUID. The schema constrains UUID format only and does not resolve equality. Verify runtime identity behavior before relying on either interpretation.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Preserve the internal identity contradiction: the prose says the new ID is distinct, while both examples reuse the same UUID and the schema does not resolve it.",
+        "Do not overstate OpenAPI requiredness: requestBody is not marked required, top-level data is not required, and id is required only within the respective object schemas.",
+        "Do not infer invoice state, exact calculation time, atomic balance or ledger effects, downstream voiding, delivery success, payment, refund, tax, revenue, error responses, or endpoint-specific replay and post-error resource behavior beyond the separately documented API-wide idempotency contract.",
+        "Do not treat regardless of billing period as permission to submit corrected historical usage beyond the separately documented 34-day window."
+      ]
+    },
+    {
+      "update_id": "regenerate-invoice-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-invoices-regenerate-an-invoice]] - invoice regeneration contract, recalculation and distribution side effects, identity contradiction, and retry boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "regenerated-invoice-provider-distribution",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "durable_fact",
+      "anchor": "after the first paragraph under ## Billing-provider transitions",
+      "proposed_markdown": "The invoice-regeneration endpoint says that when the voided invoice is attached to a contract with a billing provider, the regenerated invoice is distributed according to that configuration. The page does not identify the provider, the configuration-resolution time, the regenerated invoice's state, synchronous versus asynchronous timing, delivery identifiers, webhooks, failures, retries, or duplicate-delivery behavior. This distribution statement does not void or cancel the old downstream invoice: the separate credit-and-rebill guide assigns that step to the merchant, while stating specifically that a regenerated invoice using the Metronome Stripe integration is sent to Stripe automatically. Do not extend regeneration to payment collection, refunds, tax, A/R, revenue, or ledger reconciliation without separate evidence.",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "Treat regeneration distribution and downstream cancellation as separate operations; this endpoint page does not cancel the old downstream invoice.",
+        "Do not infer provider identity, configuration-resolution time, delivery timing, success, retry, webhook, duplicate-delivery, payment, refund, tax, revenue, or ledger behavior."
+      ]
+    },
+    {
+      "update_id": "regenerated-invoice-integrations-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-invoices-regenerate-an-invoice]] - configured billing-provider distribution for regenerated invoices and bounded downstream side effects",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

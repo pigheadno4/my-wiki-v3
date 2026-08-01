@@ -1,0 +1,101 @@
+{
+  "job_id": "add-one-time-charge",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Add a One-Time Charge\"\ntype: source\ndate_ingested: 2026-08-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/invoices/add-a-one-time-charge\"\nraw_files:\n  - \"metronome/api-reference/invoices/add-a-one-time-charge-2026-07-13.md\"\ntags: [metronome, invoices, one-time-charges, plans, api]\n---\n\n## Overview\n\nThis API reference defines the deprecated Plans operation `POST /v1/customers/{customer_id}/addCharge` for adding a one-time charge to an invoice. The documented request identifies the target through a customer UUID, customer-plan UUID, and invoice start timestamp rather than an invoice ID, and it supplies the charge, price, quantity, and description. Metronome directs new clients to Contracts, but this page does not identify the replacement operation or migration mapping.\n\n## Key takeaways\n\n- The endpoint is a deprecated Plans surface; new clients are directed to Contracts without a documented replacement on this page.\n- The path requires UUID-formatted `customer_id`. The OpenAPI `requestBody` is not itself marked required, while its referenced payload schema requires `charge_id`, `price`, `quantity`, `invoice_start_timestamp`, `customer_plan_id`, and `description`.\n- `charge_id` must refer to a charge on a product that is not on the current plan, and that product must have only fixed charges.\n- `price` is a number that must match the invoice currency; the page gives USD cents only as an example. `quantity` is also a number, but neither field has documented positivity, integer, range, precision, or rounding constraints.\n- HTTP 200 is documented as an empty object schema and returns no charge, line-item, invoice, or status fields.\n\n## Endpoint contract\n\n| Attribute | Documented value |\n| --- | --- |\n| Production server | `https://api.metronome.com/v1` |\n| Method and path | `POST /customers/{customer_id}/addCharge`, yielding `POST /v1/customers/{customer_id}/addCharge` against the documented server |\n| Authentication | HTTP bearer scheme |\n| Path parameter | Required `customer_id` string in UUID format |\n| Request body | JSON using `AddOneTimeChargePayload`; the `requestBody` object has no `required: true`, while the payload object requires all six documented properties |\n| Success response | HTTP 200 with an object marked `x-stainless-empty-object: true` and no documented properties |\n| Operation ID | `addOneTimeCharge` |\n\n## Invoice selection and charge constraints\n\nThe payload requires `invoice_start_timestamp`, described as the target invoice's `start_timestamp`, and `customer_plan_id`, described as the customer plan to which the charge is added. Together with path-level `customer_id`, those fields are the only documented invoice-selection context; the schema has no invoice ID. The page does not define matching behavior when no invoice or multiple invoices share the supplied context, eligible invoice states, whether a draft or finalized invoice can be changed, or whether the operation creates a new line item versus merging with an existing one.\n\n`charge_id` is a UUID-formatted Metronome charge ID. Its referenced charge must belong to a product that is not on the current plan, and that product must have only fixed charges. The page does not define how \"current plan\" is selected, whether the charge must belong to the supplied customer plan, whether \"only fixed charges\" is evaluated at product or version level, or how this legacy Plans restriction maps to Contracts.\n\n## Pricing semantics\n\nThe caller supplies numeric `price` and `quantity` plus a string `description`. The only price-unit rule on this page is that the price matches the invoice currency, with USD cents given as an example. It does not document currency discovery, non-USD denomination, tax inclusion, discounts, credits or commits, price precedence, catalog validation, negative or zero values, decimal precision, quantity units, rounding, or recalculation. Accordingly, this endpoint is not evidence that the supplied price changes product, plan, contract, or rate-card pricing outside this invoice charge.\n\n## Success and documentation boundaries\n\nThe documented 200 response is an empty JSON object schema, so it provides no returned charge ID, line-item ID, invoice ID, amount, status, or finalization result. The page also does not define error responses, authorization scopes, rate limits, idempotency or duplicate suppression, concurrency behavior, atomicity, webhook events, audit-history effects, downstream invoice synchronization, payment collection, refunds, tax, accounting, or reconciliation. Bearer authentication is documented, but credential issuance and permission granularity are not.\n\nNo direct contradiction with the existing invoicing or product-and-rate-card concepts was found when the operation is kept within its deprecated Plans scope. Existing Contract-based one-time and fixed-product guidance should not be treated as the undocumented replacement contract for this endpoint.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-invoicing]], [[metronome-products-and-rate-cards]], [[metronome-customers-and-contracts]]\n- Related source: [[source-metronome-guides-pricing-packaging-billing-model-guides-enterprise-commit]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/invoices/add-a-one-time-charge-2026-07-13|2026-07-13 snapshot \u2014 deprecated Plans one-time-charge endpoint, payload, pricing rule, and empty success response]]\n",
+  "quotes": [
+    {
+      "text": "> Add a one time charge to the specified invoice. This is a Plans (deprecated) endpoint. New clients should implement using Contracts.",
+      "location": "raw/metronome/api-reference/invoices/add-a-one-time-charge-2026-07-13.md:11 (purpose, Plans deprecation, and Contracts direction)"
+    },
+    {
+      "text": "````yaml /openapi.plans.json post /customers/{customer_id}/addCharge\nopenapi: 3.0.1\ninfo:\n  title: Metronome\n  version: 1.0.0\nservers:\n  - url: https://api.metronome.com/v1\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "raw/metronome/api-reference/invoices/add-a-one-time-charge-2026-07-13.md:18-27 (route declaration, production server, and applied bearer authentication)"
+    },
+    {
+      "text": "  /customers/{customer_id}/addCharge:\n    post:\n      tags:\n        - Invoices\n      summary: Add a one time charge\n      description: >\n        Add a one time charge to the specified invoice. This is a Plans\n        (deprecated) endpoint. New clients should implement using Contracts.\n      operationId: addOneTimeCharge\n      parameters:\n        - $ref: '#/components/parameters/CustomerId'\n      requestBody:\n        description: One time charge creation request\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/AddOneTimeChargePayload'\n            example:\n              charge_id: 5ae4b726-1ebe-439c-9190-9831760ba195\n              price: 250\n              quantity: 1\n              description: One time charge\n              invoice_start_timestamp: '2024-01-01T00:00:00Z'\n              customer_plan_id: a23b3cf4-47fb-4c3f-bb3d-9e64f7704015\n      responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                x-stainless-empty-object: true",
+      "location": "raw/metronome/api-reference/invoices/add-a-one-time-charge-2026-07-13.md:92-123 (operation, request example, requestBody requiredness boundary, and empty HTTP 200 schema)"
+    },
+    {
+      "text": "  parameters:\n    CustomerId:\n      name: customer_id\n      in: path\n      required: true\n      schema:\n        type: string\n        format: uuid\n      example: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\n  schemas:\n    AddOneTimeChargePayload:\n      required:\n        - charge_id\n        - price\n        - quantity\n        - invoice_start_timestamp\n        - customer_plan_id\n        - description\n      type: object\n      properties:\n        charge_id:\n          description: >-\n            The Metronome ID of the charge to add to the invoice. Note that the\n            charge must be on a product that is not on the current plan, and the\n            product must have only fixed charges.\n          type: string\n          format: uuid",
+      "location": "raw/metronome/api-reference/invoices/add-a-one-time-charge-2026-07-13.md:125-151 (required path parameter, required payload properties, and charge/product constraints)"
+    },
+    {
+      "text": "        price:\n          description: >-\n            The price of the charge. This price will match the currency on the\n            invoice, e.g. USD cents.\n          type: number\n        quantity:\n          type: number\n        description:\n          type: string\n        customer_plan_id:\n          description: The Metronome ID of the customer plan to add the charge to.\n          type: string\n          format: uuid\n        invoice_start_timestamp:\n          description: The start_timestamp of the invoice to add the charge to.\n          type: string\n          format: date-time\n  securitySchemes:\n    bearerAuth:\n      type: http\n      scheme: bearer",
+      "location": "raw/metronome/api-reference/invoices/add-a-one-time-charge-2026-07-13.md:152-172 (price and quantity types, invoice selection fields, and bearer scheme)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "legacy-one-time-charge-invoice-contract",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Calculation and timing boundary",
+        "proposed_markdown": "### Legacy Plans one-time invoice charge\n\nMetronome's deprecated Plans API exposes bearer-authenticated `POST /v1/customers/{customer_id}/addCharge`. The required path `customer_id` is UUID-formatted; the `requestBody` is not itself marked required, while its payload schema requires `charge_id`, `price`, `quantity`, `invoice_start_timestamp`, `customer_plan_id`, and `description`. The charge must be on a product outside the current plan, and that product must have only fixed charges. The caller supplies the numeric price, which must match the invoice currency, with USD cents given only as an example. The target invoice is described through the customer, customer plan, and invoice start timestamp rather than an invoice ID, and HTTP 200 has an empty object schema. The page directs new clients to Contracts but does not identify the replacement endpoint, map the payload, define eligible invoice states or duplicate behavior, or document line-item creation, downstream delivery, tax, discounts, credits, commits, payment, accounting, or reconciliation effects.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this endpoint scoped to deprecated Plans; the page does not define the Contracts replacement or migration mapping.",
+          "Do not infer request-body requiredness from the payload's required properties: the OpenAPI requestBody object itself has no required flag.",
+          "Do not treat the empty HTTP 200 schema as evidence of invoice state, line-item identity, finalization, downstream delivery, payment, or accounting effects."
+        ]
+      },
+      {
+        "update_id": "legacy-one-time-charge-invoicing-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-invoices-add-a-one-time-charge]] \u2014 deprecated Plans one-time-charge request contract, invoice-selection context, caller-supplied price, and empty response boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "legacy-one-time-charge-fixed-product-pricing",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "after the one-time-charge bullet under ## Enterprise design",
+        "proposed_markdown": "- The deprecated Plans `addCharge` endpoint adds a narrower legacy rule: its `charge_id` must be on a product outside the current plan, and that product must have only fixed charges. The caller supplies numeric `price` and `quantity`; the price must match the target invoice's currency, with USD cents given only as an example. The page does not establish non-USD denomination, positivity, precision, rounding, rate-card precedence, catalog-price validation, or how the restriction maps to Contracts, so it must not be generalized into current Contract pricing behavior.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat the product restriction and caller-supplied price as legacy Plans endpoint semantics, not a general Contracts rule.",
+          "The page gives USD cents as an example and does not define denomination for other invoice currencies or numeric validation."
+        ]
+      },
+      {
+        "update_id": "legacy-one-time-charge-products-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-invoices-add-a-one-time-charge]] \u2014 deprecated Plans fixed-product eligibility and invoice-currency price boundary for one-time charges",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/invoices/add-a-one-time-charge-2026-07-13.md",
+  "raw_sha256": "10c9181c948df1ca0705647683a8851d33caf2ad19a03d47bca190cdf75cd918",
+  "status": "candidate_ready"
+}

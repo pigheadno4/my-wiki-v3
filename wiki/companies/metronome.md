@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 80
+source_count: 90
 ---
 
 ## Overview
@@ -145,8 +145,8 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 80
-- Documentation pages pending ingest: 145
+- Ingested source summaries: 90
+- Documentation pages pending ingest: 135
 
 ## Sources
 
@@ -230,6 +230,16 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 - [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]] — contract migration, historical invoice periods, balance effects, preview, and reporting breakdowns
 - [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-sql-editor]] — SQL metric query surface, output fallback, breakdown granularity, and scheduled swaps
 - [[source-metronome-guides-implement-metronome-production-checklist]] — go-live checks across ingestion, pricing, provisioning, invoicing, security, webhooks, and exports
+- [[source-metronome-plans-shared-endpoints-notifications]] — shared Plan and Contract alert routes, entity-specific parameter boundaries, and Plan alert types
+- [[source-metronome-plans-shared-endpoints-invoices]] — shared Plan and Contract invoice operations, adjustments, sub-line items, and tier detail
+- [[source-metronome-guides-reporting-insights-financial-reporting-reconcile-data]] — Data Export and API reconciliation patterns across Metronome, Salesforce, and Stripe
+- [[source-metronome-api-reference-invoices-void-an-invoice]] — invoice void endpoint, requiredness boundaries, intended uses, and downstream unknowns
+- [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition]] — revenue-reporting categories, invoice and ledger query model, and accounting ownership boundary
+- [[source-metronome-api-reference-notifications-list-system-notification-event-types]] — lifecycle event-type discovery, response taxonomy, and webhook-publication status
+- [[source-metronome-api-reference-invoices-regenerate-an-invoice]] — invoice regeneration, recalculation and distribution wording, and identity contradiction
+- [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]] — finalized-invoice export flow, QuickBooks transformation, and integration ownership boundaries
+- [[source-metronome-api-reference-invoices-add-a-one-time-charge]] — deprecated Plans one-time charge contract, product restriction, and empty response boundary
+- [[source-metronome-guides-reporting-insights-in-app-reporting]] — report generation, beta dashboards, ARR calculations, defaults, and freshness limits
 
 ## Related
 

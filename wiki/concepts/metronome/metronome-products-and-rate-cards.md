@@ -46,6 +46,7 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 
 - Product tags can group products that are priced, discounted, or packaged similarly, allowing contract overrides to target a group instead of enumerating product IDs.
 - Every invoice charge is associated with a product, including one-time charges and upfront payments for prepaid commitments; the guide models these as fixed products.
+- The deprecated Plans `addCharge` endpoint adds a narrower legacy rule: its `charge_id` must be on a product outside the current plan, and that product must have only fixed charges. The caller supplies numeric `price` and `quantity`; the price must match the target invoice's currency, with USD cents given only as an example. The page does not establish non-USD denomination, positivity, precision, rounding, rate-card precedence, catalog-price validation, or how the restriction maps to Contracts, so it must not be generalized into current Contract pricing behavior.
 - Every credit or commit is associated with a fixed product for invoice-line and reporting attribution; eligible usage can be restricted separately by product IDs, product tags, or specifiers.
 - Product custom fields can retain ERP SKU identifiers for reconciliation and revenue-recognition mapping.
 - A commit edit can target usage through direct product IDs or tags, or through pricing and presentation-group specifiers, but the direct selectors and `specifiers` cannot be combined.
@@ -71,6 +72,8 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 - Trial packaging can use `entitled: false` for merchant-enforced feature restriction or a time-bounded multiplier `0` for uncapped free usage, after which list pricing resumes. Overlapping-override precedence, missing-rate behavior, and automatic product gating remain unknown.
 
 ## Sources
+
+- [[source-metronome-api-reference-invoices-add-a-one-time-charge]] — deprecated Plans fixed-product eligibility and invoice-currency price boundary for one-time charges
 
 - [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]] — fiat support, API denomination, custom-unit conversion setup, and saved-rate unit immutability
 

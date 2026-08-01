@@ -51,6 +51,8 @@ Spend-threshold billing uses the same explicit external-ownership pattern as the
 
 Metronome can schedule contract invoice delivery among Stripe, NetSuite, and AWS, Azure, or GCP Marketplace. Marketplace-involved transitions must start next period because marketplace billing covers a complete period; Stripe and NetSuite changes can also correct the current period while the invoice remains a draft.
 
+The invoice-regeneration endpoint says that when the voided invoice is attached to a contract with a billing provider, the regenerated invoice is distributed according to that configuration. The page does not identify the provider, the configuration-resolution time, the regenerated invoice's state, synchronous versus asynchronous timing, delivery identifiers, webhooks, failures, retries, or duplicate-delivery behavior. This distribution statement does not void or cancel the old downstream invoice: the separate credit-and-rebill guide assigns that step to the merchant, while stating specifically that a regenerated invoice using the Metronome Stripe integration is sent to Stripe automatically. Do not extend regeneration to payment collection, refunds, tax, A/R, revenue, or ledger reconciliation without separate evidence.
+
 Metronome owns the provider schedule and invoice routing. The guide does not document how destination accounts are provisioned, reconciled, or checked for readiness before a scheduled segment becomes active.
 
 The architecture overview names payment systems and marketplaces as the contract's delivery destination and says finalized invoices are sent to a selected downstream system at cycle close. It does not allocate configuration, payment collection, retry, or failure responsibilities, so the dedicated integration sources remain authoritative.
@@ -63,6 +65,10 @@ Customer creation can attach configurations for Stripe, NetSuite, AWS Marketplac
 
 The optional tax-provider field lists Anrok, Avalara, and Stripe. The source limits Stripe tax calculation in this customer-creation structure to Stripe configurations using payment-intent collection methods. A separately feature-flagged revenue-system configuration currently enumerates NetSuite and expects a provider-specific customer identifier.
 
+## Managed custom-invoice integration boundary
+
+For billing systems outside Metronome's native integrations, Metronome documents data exports or a managed integration built on Data Export or Metronome APIs. In the QuickBooks example, the implementer owns external application and OAuth setup, external customer and item creation or lookup, storage of external identifiers in Metronome custom fields, invoice transformation, and the destination upsert. Metronome supplies the finalized-invoice event and invoice data; the selected billing system stores its customer, item, and created invoice objects. The overall pattern may inform other use cases, but the named credentials, object mappings, fields, and request are QBO-specific. The page does not assign hosting, operational support, payment collection, tax, retries, idempotency, reconciliation, or ongoing object-synchronization ownership. Workato is an optional orchestration recommendation, not a documented complete implementation of those responsibilities.
+
 ## Workato connector boundary
 
 Metronome documents an SDK-like Workato connector for performing actions on Metronome endpoints. It gives third-party invoicing, customer provisioning, and contract provisioning as example workflows. Setup requires generating a Metronome API token and pasting it into a Workato connection, and a unique connection is required for each Metronome environment. The page does not enumerate the connector's available actions, endpoint coverage, API-token permissions, workflow triggers, data mappings, error handling, retry behavior, or connection-rotation procedure; it therefore does not establish complete endpoint coverage or broader Workato capabilities.
@@ -72,6 +78,10 @@ Metronome documents an SDK-like Workato connector for performing actions on Metr
 The Metronome (Actions) destination connects one selected Segment source using a Metronome API token and maps Segment event fields into Metronome's usage-event format. Additional Destination Actions can pair mappings with triggers containing any number of conditions, such as excluding company-domain user emails. The page calls these action configurations `subscriptions`; in this context they are Segment conditional-delivery rules, not Metronome billing subscriptions or customer contracts. It does not define token scope or rotation, trigger overlap or evaluation order, duplicate delivery, retries, batching, response handling, replay, or observability.
 
 ## Sources
+
+- [[source-metronome-api-reference-invoices-regenerate-an-invoice]] - configured billing-provider distribution for regenerated invoices and bounded downstream side effects
+
+- [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]] — managed non-native invoice integration routes, QuickBooks object mapping, finalized-invoice export flow, and system-ownership boundaries
 
 - [[source-metronome-integrations-platform-integrations-workato-connector]] — SDK-like Workato connector setup with a Metronome API token and the unique-connection requirement for each Metronome environment
 
