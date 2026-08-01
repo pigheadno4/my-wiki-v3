@@ -79,7 +79,7 @@ APPENDIX_A_INVENTORY = (
     ('adyen/adyen-react-native', 'https://github.com/Adyen/adyen-react-native', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-web', 'https://github.com/Adyen/adyen-web', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-android', 'https://github.com/Adyen/adyen-android', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
-    ('adyen/adyen-ios', 'https://github.com/Adyen/adyen-ios', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('adyen/adyen-ios', 'https://github.com/Adyen/adyen-ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-magento2', 'https://github.com/Adyen/adyen-magento2', 'commerce-plugin', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-pos-mobile-ios', 'https://github.com/Adyen/adyen-pos-mobile-ios', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-pos-mobile-ios-test', 'https://github.com/Adyen/adyen-pos-mobile-ios-test', 'test-tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
@@ -519,6 +519,59 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
         self.assertEqual(340, capsule.max_capsule_files)
         self.assertEqual(3000000, capsule.max_capsule_utf8_bytes)
+
+    def test_adyen_ios_uses_the_reviewed_complete_swift_source_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(item for item in repos if item.id == "adyen/adyen-ios")
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:adyen-ios@5",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("5.25.1",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("adyen-ios-public-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("adyen-ios",), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(56, len(capsule.default_required_roots))
+        self.assertEqual(38, len(capsule.include_paths))
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(750, capsule.max_capsule_files)
+        self.assertEqual(4000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(800, capsule.max_packet_files)
+        self.assertEqual(5000000, capsule.max_packet_utf8_bytes)
+
+        required = set(capsule.default_required_roots)
+        includes = set(capsule.include_paths)
+        self.assertTrue({
+            "Adyen/Core",
+            "AdyenActions/Components",
+            "AdyenCard/Components",
+            "AdyenComponents/Apple Pay",
+            "AdyenDropIn/Components",
+            "AdyenSession/API",
+            "Demo/Common/IntegrationExamples",
+        }.issubset(required))
+        self.assertTrue({
+            "Adyen/Assets/Generated/LocalizationKey.swift",
+            "Demo/Configuration+secrets.swift",
+            "Demo/Configuration.swift",
+            "Package.swift",
+            "MIGRATION.md",
+        }.issubset(includes))
 
     def test_braintree_web_uses_the_reviewed_public_source_capsule(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
