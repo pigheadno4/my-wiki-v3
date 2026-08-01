@@ -62,6 +62,7 @@ Failed recurring charges require dunning — a retry sequence to recover the pay
 | PayPal | Vault (setup token → payment token) + `usage_pattern` | Payment Method Token |
 | Stripe | Setup Intents → Payment Methods + `setup_future_usage` | Payment Method ID |
 | Adyen | Recurring API with `shopperReference` + `recurringDetailReference` | Recurring Detail |
+| Braintree iOS PayPal | Vault or checkout-with-vault consent → Braintree nonce/server vault | Braintree payment-method nonce/token |
 
 See platform-specific concept pages for integration details:
 
@@ -78,6 +79,7 @@ See platform-specific concept pages for integration details:
 
 - **Stripe**: See [[stripe-subscriptions]] for full Subscriptions API, Checkout integration, customer portal, flexible billing mode, and provisioning pattern
 - **PayPal**: See [[paypal-subscriptions]] for Subscriptions API + vault-based recurring
+- **Braintree iOS**: [[braintree-ios-sdk]] can collect PayPal billing-agreement consent and recurring-plan metadata, but the merchant server still owns token storage and later charges. An Apple Pay recurring request shown by the demo is not, by itself, a recurring-payment engine.
 
 ## Open Questions
 

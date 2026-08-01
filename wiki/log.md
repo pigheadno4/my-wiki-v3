@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-08-01] ingest | GitHub braintree/braintree_ios - `braintree-ios@7.9.0`
+
+- Full serial ingest of `github-2968099ae6a7549cd6a9` from exact SHA `4e987ca19f03b65a0d303b4c3ec95e0c723be971`.
+- Established the cumulative iOS source and package-qualified changelog from the complete 285-file bounded capsule plus release and snapshot manifests.
+- Recorded modular authorization/nonce architecture, PayPal checkout and vault, separate Venmo app/browser and multi-use vaulting, Apple Pay, cards, 3DS, Shopper Insights, UI components, and merchant-server boundaries.
+- Isolated exact `7.9.0` scope to the BraintreeUIComponents iOS 16 target correction; broader v7 migration findings remain cumulative context.
+- Created the Braintree iOS SDK concept and updated the Braintree company and provider index.
+
 ## [2026-08-01] ingest | GitHub braintree/braintree_android - `braintree-android@5.30.0`
 
 - Full serial ingest of `github-8bf8fabdfdc1687790bd` from exact SHA `51f183a48557d0fd00eefa541712df0c4f21ee28`.

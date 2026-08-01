@@ -53,6 +53,12 @@ This hook presents messaging content; it is not a payment session and does not p
 
 Unlike standard PayPal buttons, merchants pass amount and currency rather than implementing `createOrder`. The Braintree SDK creates the payment session. After approval, the merchant calls `tokenizePayment()` and sends the resulting payment-method nonce to its server for processing with a Braintree server SDK, not PayPal's Orders API.
 
+## Braintree iOS Evidence
+
+The independently retained `braintree-ios@7.9.0` source exposes native `BTPayPalCheckoutRequest` and `BTPayPalVaultRequest` flows. Checkout can request billing-agreement consent and carry recurring-plan metadata; Vault can also carry recurring-plan metadata. Both return a Braintree PayPal account nonce for server processing rather than a PayPal Orders API order.
+
+The optional PayPal app-switch API is beta in the retained source and documented there as production-only. Braintree iOS v7 removed its separate PayPal Native Checkout module and directs merchants to the PayPal web flow. These native-wrapper findings belong to [[braintree-ios-sdk]] and must not be merged with standalone `paypal/paypal-ios` behavior.
+
 ## Braintree Web Evidence
 
 The independently retained `braintree-web@3.143.0` source confirms the client-side half of this boundary. Its `paypalCheckoutV6` component loads PayPal Web SDK v6, creates one-time, Pay Later, checkout-with-vault, and billing-agreement sessions, exposes eligible-method lookup, and converts approval data into a Braintree payment-method nonce.
@@ -66,5 +72,5 @@ The same release expands the PayPal Checkout v6 session payload with locale, lan
 ## Related
 
 - Companies: [[paypal]], [[braintree]]
-- Concepts: [[paypal-checkout]], [[paypal-vault]], [[braintree-web-sdk]]
-- Sources: [[source-github-paypal-js]], [[source-github-braintree-web]]
+- Concepts: [[paypal-checkout]], [[paypal-vault]], [[braintree-web-sdk]], [[braintree-ios-sdk]]
+- Sources: [[source-github-paypal-js]], [[source-github-braintree-web]], [[source-github-braintree-ios]]

@@ -55,10 +55,10 @@
 - Repository: `braintree/braintree_ios`
 - SHA: `4e987ca19f03b65a0d303b4c3ec95e0c723be971`
 - Collection date: `2026-08-01`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

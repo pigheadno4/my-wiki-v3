@@ -1,13 +1,13 @@
 ---
 title: "Braintree"
 type: company
-tags: [braintree, payments, checkout, javascript-sdk, android-sdk]
-source_count: 3
+tags: [braintree, payments, checkout, javascript-sdk, android-sdk, ios-sdk]
+source_count: 4
 ---
 
 ## Overview
 
-Braintree is represented in this wiki by three independently versioned repositories: the modular Braintree Web SDK, the prebuilt Braintree Web Drop-in UI, and the native Braintree Android SDK. All produce or support Braintree payment-method nonces for server processing, but their package versions and evidence histories must remain separate.
+Braintree is represented in this wiki by four independently versioned repositories: the modular Braintree Web SDK, the prebuilt Braintree Web Drop-in UI, and the native Braintree Android and iOS SDKs. All produce or support Braintree payment-method nonces for server processing, but their package versions and evidence histories must remain separate.
 
 ## Web SDK Surface
 
@@ -29,6 +29,12 @@ The repository schedules Drop-in deprecation for 2026-09-01 and unsupported stat
 
 PayPal and Venmo are separate Braintree modules. Venmo can launch the Venmo app or a mobile browser and supports conditional multi-use vaulting with a customer-scoped client token. This is distinct from the standalone `paypal/paypal-android` SDK, whose retained `2.3.0` source does not establish a native Venmo path.
 
+## iOS SDK Surface
+
+`braintree-ios@7.9.0` provides modular native clients for cards, PayPal, Venmo, Apple Pay, local payments, SEPA, 3D Secure, fraud data, Shopper Insights, messaging, and payment UI. It requires iOS 16+, Xcode 16.2+, and Swift 5.10+.
+
+PayPal supports separate checkout and vault requests, including billing-agreement consent and recurring metadata. Venmo is a separate native Braintree module using universal-link app switch with browser fallback and conditional multi-use vaulting. Apple Pay support creates and tokenizes a native payment request; the demo's recurring sheet does not by itself establish later merchant charges.
+
 ## Versioned Implementation Knowledge
 
 The retained history begins with `braintree-web@3.143.0` and currently reaches `3.144.0` at exact SHA `41460fba05c1ea1222e795b36a10765a6699b8e7`. The newer release adds PayPal View/Edit Funding Instrument, expands PayPal Checkout v6 session options, and prevents failed incognito detection from aborting Venmo creation while preserving the 23-component architecture.
@@ -37,11 +43,12 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Knowledge Status
 
-- Ingested cumulative GitHub repository sources: 3
-- Ingested package releases: 4
+- Ingested cumulative GitHub repository sources: 4
+- Ingested package releases: 5
 - Latest retained Braintree Web release: `braintree-web@3.144.0` at `41460fba05c1ea1222e795b36a10765a6699b8e7`
 - Latest retained Drop-in release: `braintree-web-drop-in@1.47.0` at `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`
 - Latest retained Android release: `braintree-android@5.30.0` at `51f183a48557d0fd00eefa541712df0c4f21ee28`
+- Latest retained iOS release: `braintree-ios@7.9.0` at `4e987ca19f03b65a0d303b4c3ec95e0c723be971`
 
 ## Sources
 
@@ -51,6 +58,8 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - [[changelog-github-braintree-web-drop-in]] - package-qualified Drop-in release ledger
 - [[source-github-braintree-android]] - cumulative native Android implementation baseline
 - [[changelog-github-braintree-android]] - package-qualified Android release ledger
+- [[source-github-braintree-ios]] - cumulative native iOS implementation baseline
+- [[changelog-github-braintree-ios]] - package-qualified iOS release ledger
 
 ## Related
 
@@ -59,4 +68,5 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - [[braintree-web-sdk]] — browser SDK concept
 - [[braintree-web-drop-in]] - prebuilt checkout UI and migration boundary
 - [[braintree-android-sdk]] - native Android request, launcher, nonce, PayPal, and Venmo model
+- [[braintree-ios-sdk]] - native iOS nonce, PayPal, Venmo, Apple Pay, and migration model
 - [[paypal-braintree-integration]] — Braintree PayPal v6 processing boundary

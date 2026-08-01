@@ -6,6 +6,14 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-01] ingest | braintree/braintree_ios `7.9.0`
+
+- Approved and processed work item `github-2968099ae6a7549cd6a9` in full mode.
+- Read and hash-verified the complete 285-file, 1,063,508-byte exact-SHA capsule at `raw/github/braintree/braintree_ios/snapshots/2026-08-01-4e987ca/manifest.json` plus its release record and snapshot manifest.
+- Established the cumulative iOS source and release ledger; recorded authorization and nonce boundaries, modular payment clients, PayPal checkout/vault/app switch, native Venmo app/browser and vaulting rules, Apple Pay, cards, 3DS, Shopper Insights, UI components, and server responsibilities.
+- Isolated exact `7.9.0` scope to the BraintreeUIComponents iOS 16 deployment-target correction and kept broader v7 migration behavior as cumulative baseline context.
+- Created the iOS SDK concept and updated Braintree, PayPal/Braintree, recurring-payment, company, and provider-index knowledge without conflating standalone PayPal iOS evidence.
+
 ## [2026-08-01] ingest | braintree/braintree_android `5.30.0`
 
 - Approved and processed work item `github-8bf8fabdfdc1687790bd` in full mode.

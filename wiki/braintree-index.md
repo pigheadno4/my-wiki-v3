@@ -16,12 +16,15 @@ Operations history: [[braintree-log]]
 - [[changelog-github-braintree-web-drop-in]] - package-qualified Drop-in release ledger beginning at `1.47.0` (github-repo, 2026-07-28)
 - [[source-github-braintree-android]] - `braintree-android@5.30.0` native clients, nonce flow, PayPal, Venmo, cards, 3DS, redirect handling, and exact release changes (github-repo, 2026-08-01)
 - [[changelog-github-braintree-android]] - package-qualified Braintree Android release ledger beginning at `5.30.0` (github-repo, 2026-08-01)
+- [[source-github-braintree-ios]] - `braintree-ios@7.9.0` modular native clients, nonce flow, PayPal, Venmo, Apple Pay, cards, 3DS, UI, and v7 migration boundary (github-repo, 2026-08-01)
+- [[changelog-github-braintree-ios]] - package-qualified Braintree iOS release ledger beginning at `7.9.0` (github-repo, 2026-08-01)
 
 ## Concepts
 
 - [[braintree-web-sdk]] — modular client/nonce architecture and exact-version evidence boundaries
 - [[braintree-web-drop-in]] - prebuilt checkout UI, pinned SDK dependency, and scheduled deprecation
 - [[braintree-android-sdk]] - native Android request/launcher/result architecture and PayPal/Venmo boundary
+- [[braintree-ios-sdk]] - native iOS authorization/nonce architecture and PayPal/Venmo/Apple Pay boundary
 
 ## Cross-Cutting Concepts
 
