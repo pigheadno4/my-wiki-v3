@@ -7,7 +7,7 @@ from pathlib import Path
 import re
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
-from github_canonical import canonical_json_bytes, safe_policy_path
+from github_canonical import canonical_json_bytes, safe_policy_path, wiki_slug
 from github_registry import RepoConfig, load_registry, validate_enabled_policy
 from github_ingest_packets import (
     PackagePacketInput,
@@ -874,7 +874,7 @@ def _validate_work_items(
         if repo is None:
             errors.append(item.work_item_id + ": repository is absent from registry")
             continue
-        name = item.repo_id.split("/", 1)[1]
+        name = wiki_slug(item.repo_id.split("/", 1)[1])
         source_path = "wiki/sources/" + repo.company + "/github/source-github-" + name + ".md"
         changelog_path = "wiki/sources/" + repo.company + "/github/changelog-github-" + name + ".md"
         source = source_pages.get(source_path)

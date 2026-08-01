@@ -50,6 +50,31 @@
   Release: [manifest](raw/github/braintree/braintree-web/releases/braintree-web/3.144.0/2026-07-28/manifest.json)
   Comparison: [manifest](tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.143.0--3.144.0/comparison.json)
 
+## `github-2968099ae6a7549cd6a9`
+
+- Repository: `braintree/braintree_ios`
+- SHA: `4e987ca19f03b65a0d303b4c3ec95e0c723be971`
+- Collection date: `2026-08-01`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/braintree/braintree_ios/snapshots/2026-08-01-4e987ca/manifest.json)
+- Packet: [review packet](tracking/github/repos/braintree/braintree_ios/ingest-packets/github-2968099ae6a7549cd6a9/packet.md)
+- Review priority: `normal`
+- Required reading: `288` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree-ios@7.9.0` (recommended `full`)
+  Release: [manifest](raw/github/braintree/braintree_ios/releases/braintree-ios/7.9.0/2026-08-01/manifest.json)
+  Comparison: Not applicable
+
 ## `github-5c8c7287ce91fe6f34c2`
 
 - Repository: `paypal/paypal-ios`

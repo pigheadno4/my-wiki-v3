@@ -13,6 +13,7 @@ from github_canonical import (  # noqa: E402
     readable_label,
     safe_policy_path,
     validate_npm_package_name,
+    wiki_slug,
 )
 
 
@@ -101,6 +102,16 @@ class ReadableLabelTests(unittest.TestCase):
 
     def test_truncation_does_not_leave_a_separator_at_the_boundary(self):
         self.assertEqual("a" * 39 + "-", readable_label("a" * 39 + "-tail"))
+
+
+class WikiSlugTests(unittest.TestCase):
+    def test_normalizes_repository_names_to_wiki_filename_slugs(self):
+        self.assertEqual("braintree-android", wiki_slug("braintree_android"))
+        self.assertEqual("paypal-typescript-sdk", wiki_slug("PayPal.TypeScript_SDK"))
+
+    def test_rejects_values_without_an_ascii_slug(self):
+        with self.assertRaises(ValueError):
+            wiki_slug("支付")
 
 
 if __name__ == "__main__":

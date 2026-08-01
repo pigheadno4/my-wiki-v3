@@ -11,7 +11,7 @@ import tempfile
 import threading
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
-from github_canonical import canonical_json_bytes, safe_policy_path
+from github_canonical import canonical_json_bytes, safe_policy_path, wiki_slug
 from github_capsule_policy import (
     CAPSULE_ADAPTERS,
     NPM_CAPSULE_ADAPTER,
@@ -847,6 +847,7 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
     if (
         filename
         in (
+            "cartfile",
             "dependencies.gradle",
             "gradle.properties",
             "modules.yaml",
@@ -859,6 +860,7 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
                 ".gradle",
                 ".gradle.kts",
                 ".podspec",
+                ".plist",
                 ".pro",
                 ".pbxproj",
                 ".toml",
@@ -1262,7 +1264,7 @@ def _aggregate_recommendation(packages: Sequence[dict]) -> PacketRecommendation:
 
 
 def _wiki_paths(root: Path, config: RepoConfig) -> Tuple[Tuple[str, ...], Tuple[str, ...]]:
-    repo = config.id.split("/", 1)[1]
+    repo = wiki_slug(config.id.split("/", 1)[1])
     paths = (
         "wiki/sources/"
         + config.company
@@ -1280,6 +1282,15 @@ def _wiki_paths(root: Path, config: RepoConfig) -> Tuple[Tuple[str, ...], Tuple[
     return context, expected
 
 
+def _legacy_wiki_paths(config: RepoConfig) -> Tuple[str, str]:
+    repo = config.id.split("/", 1)[1]
+    base = "wiki/sources/" + config.company + "/github/"
+    return (
+        base + "source-github-" + repo + ".md",
+        base + "changelog-github-" + repo + ".md",
+    )
+
+
 def _validate_wiki_paths(
     root: Path,
     config: RepoConfig,
@@ -1290,11 +1301,13 @@ def _validate_wiki_paths(
     stored_expected = tuple(expected)
     current_context, current_expected = _wiki_paths(root, config)
     canonical = set(current_context) | set(current_expected)
+    stored = set(stored_context) | set(stored_expected)
+    legacy = set(_legacy_wiki_paths(config))
     if (
         len(stored_context) != len(set(stored_context))
         or len(stored_expected) != len(set(stored_expected))
         or set(stored_context) & set(stored_expected)
-        or set(stored_context) | set(stored_expected) != canonical
+        or (stored != canonical and stored != legacy)
     ):
         raise PacketBuildError("wiki generation context is invalid")
     for path in stored_context:

@@ -511,10 +511,12 @@ class GitHubIngestPacketTests(unittest.TestCase):
 
     def test_native_package_metadata_is_classified_as_build_configuration(self):
         native_files = {
+            "Cartfile": "github \"example/dependency\"\n",
             "android/build.gradle": "dependencies {}\n",
             "android/gradle.properties": "StripeSdkVersion=1\n",
             "android/gradle/libs.versions.toml": "[versions]\nkotlin = '2.0.0'\n",
             "android/src/main/AndroidManifest.xml": "<manifest />\n",
+            "ios/Info.plist": "<?xml version=\"1.0\"?><plist />\n",
             "ios/StripeSdk.xcodeproj/project.pbxproj": "// project\n",
             "ios/StripeSdk.xcodeproj/xcshareddata/xcschemes/Tests.xcscheme": "<Scheme />\n",
             "widget.podspec": "Pod::Spec.new do |spec|\nend\n",

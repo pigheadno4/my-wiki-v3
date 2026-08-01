@@ -275,6 +275,44 @@ class CapsuleSelectionTests(unittest.TestCase):
         self.assertNotIn("Demo/src/main/java/Demo.kt", selected)
         self.assertNotIn("TestUtils/src/main/java/TestHelper.kt", selected)
 
+    def test_braintree_ios_policy_excludes_binary_ui_asset(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(
+            item for item in repos if item.id == "braintree/braintree_ios"
+        )
+        capsule = repo.capsules[0]
+        files = {
+            root + "/Evidence.swift": "public struct Evidence {}\n"
+            for root in capsule.default_required_roots
+        }
+        files.update({path: "evidence\n" for path in capsule.include_paths})
+        files[
+            "Sources/BraintreeUIComponents/Resources/Assets.xcassets/"
+            "CardBrandImages/AmericanExpressLogo.imageset/AmericanExpressLogo.pdf"
+        ] = b"%PDF-1.4\x00binary"
+
+        result = resolve_capsule(
+            self.tree(files),
+            capsule,
+            (),
+            versions={"braintree-ios": "7.9.0"},
+        )
+        selected = {item.path for item in result.files}
+
+        self.assertIn(
+            "Sources/BraintreeUIComponents/CardFields/Evidence.swift",
+            selected,
+        )
+        self.assertIn(
+            "Sources/BraintreeUIComponents/VenmoButton.swift",
+            selected,
+        )
+        self.assertNotIn(
+            "Sources/BraintreeUIComponents/Resources/Assets.xcassets/"
+            "CardBrandImages/AmericanExpressLogo.imageset/AmericanExpressLogo.pdf",
+            selected,
+        )
+
     def test_exact_classification_precedence_exclusions_and_file_metadata(self):
         package = manifest(
             main="./main.js",

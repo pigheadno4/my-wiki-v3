@@ -10,6 +10,7 @@ _NPM_COMPONENT = r"[a-z0-9._~-]+"
 _NPM_UNSCOPED = re.compile(r"[a-z0-9][a-z0-9._~-]*\Z")
 _NPM_SCOPED = re.compile(r"@[a-z0-9][a-z0-9._~-]*/" + _NPM_COMPONENT + r"\Z")
 _LABEL_UNSAFE = re.compile(r"[^a-z0-9._-]+")
+_WIKI_SLUG_UNSAFE = re.compile(r"[^a-z0-9]+")
 
 
 def canonical_json_bytes(value: Any) -> bytes:
@@ -66,10 +67,28 @@ def readable_label(value: str, max_bytes: int = 40) -> str:
     return label or "capsule"[:max_bytes]
 
 
+def wiki_slug(value: str) -> str:
+    """Normalize a repository name to the wiki's lowercase-hyphenated slug."""
+    if not isinstance(value, str):
+        raise TypeError("wiki slug must be a string")
+    ascii_lower = "".join(
+        chr(ord(character) + (ord("a") - ord("A")))
+        if "A" <= character <= "Z"
+        else character
+        for character in value
+        if ord(character) < 128
+    )
+    slug = _WIKI_SLUG_UNSAFE.sub("-", ascii_lower).strip("-")
+    if not slug:
+        raise ValueError("wiki slug must contain an ASCII letter or digit")
+    return slug
+
+
 __all__ = [
     "canonical_json_bytes",
     "canonical_sha256",
     "readable_label",
     "safe_policy_path",
     "validate_npm_package_name",
+    "wiki_slug",
 ]
