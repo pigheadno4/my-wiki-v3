@@ -6,6 +6,14 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-01] ingest | Adyen/adyen-android `5.20.0`
+
+- Approved and processed work item `github-b241eb5a8bcbadf2be62` in full mode.
+- Read the complete 1,199-file, 3,670,837-byte exact-SHA capsule plus release and snapshot records at `raw/github/adyen/adyen-android/snapshots/2026-08-01-5314fad/manifest.json`.
+- Established the cumulative native source and package-qualified release ledger at exact SHA `5314fad1389a8def9d8e3377f27f7405e303faba`.
+- Recorded Drop-in, Sessions, View and Compose Components, cards and encryption, stored and partial payments, actions, local payment methods, analytics, and delegated dependency boundaries.
+- Isolated the exact `5.20.0` compile and target SDK 36 change from broader cumulative SDK behavior; created [[adyen-android-sdk]] and updated [[co-badged-cards]], the Adyen company page, and provider index.
+
 ## [2026-08-01] ingest | Adyen/adyen-ios `5.25.1`
 
 - Approved and processed work item `github-0f505b736a8fbe7628ca` in full mode.

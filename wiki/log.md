@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-08-01] ingest | GitHub Adyen/adyen-android - `adyen-android@5.20.0`
+
+- Full serial ingest of `github-b241eb5a8bcbadf2be62` from exact SHA `5314fad1389a8def9d8e3377f27f7405e303faba`.
+- Established the cumulative native Android source and package-qualified changelog from the complete 1,199-file capsule plus release and snapshot records.
+- Recorded Drop-in, Sessions, View and Compose Components, cards and encryption, partial payments, actions, local payment methods, analytics, and delegated dependency boundaries.
+- Isolated exact `5.20.0` scope to compile and target SDK 36; broader SDK architecture remains cumulative baseline knowledge.
+- Created the Adyen Android SDK concept, added Android dual-brand evidence, and updated the Adyen company and provider index.
+
 ## [2026-08-01] ingest | GitHub Adyen/adyen-ios - `adyen-ios@5.25.1`
 
 - Full serial ingest of `github-0f505b736a8fbe7628ca` from exact SHA `5f6779b31299e3067de3a5279a816f3b8d2fbdf3`.

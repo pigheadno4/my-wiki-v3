@@ -39,6 +39,12 @@ The retained `@adyen/adyen-web@6.41.0` source includes an accessible dual-brand 
 
 This is version-qualified SDK implementation evidence. It does not independently establish regulatory scope, merchant enablement, or the current Adyen integration procedure.
 
+## Adyen Android implementation evidence
+
+The retained `adyen-android@5.20.0` Card Component performs BIN lookup, exposes detected brand information, and uses `DualBrandData.selectedBrand` when constructing the submitted card payment method. Its retained card delegate also suppresses installment options when the selected funding source is debit.
+
+This proves a version-qualified Android selection and submission path, not current regulatory scope or merchant enablement. The backend response, supported brands, configuration, and shopper card still determine whether the dual-brand path is available.
+
 ## Test Cards
 
 | Number | Brand |
@@ -52,3 +58,4 @@ Tokens: `tok_visa_cartesBancaires`, `tok_mastercard_cartesBancaires`
 
 - [[source-stripe-co-badged-cards-compliance]] — primary source: regulation scope, integration guides (all Elements, mobile, Terminal), test cards
 - [[source-github-adyen-web]] — Adyen Web `6.41.0` dual-brand selector and split-funding-source implementation evidence
+- [[source-github-adyen-android]] — Adyen Android `5.20.0` dual-brand selection and submitted-brand evidence

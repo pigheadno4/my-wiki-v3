@@ -414,10 +414,10 @@
 - Repository: `adyen/adyen-android`
 - SHA: `5314fad1389a8def9d8e3377f27f7405e303faba`
 - Collection date: `2026-08-01`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None
