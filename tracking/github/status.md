@@ -100,6 +100,31 @@
   Release: [manifest](raw/github/braintree/braintree_ios/releases/braintree-ios/7.9.0/2026-08-01/manifest.json)
   Comparison: Not applicable
 
+## `github-43baf5daaf3a92e79a79`
+
+- Repository: `adyen/adyen-react-native`
+- SHA: `2912c913266b2d1df73882980303b563ea04ab63`
+- Collection date: `2026-08-01`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/adyen/adyen-react-native/snapshots/2026-08-01-2912c91/manifest.json)
+- Packet: [review packet](tracking/github/repos/adyen/adyen-react-native/ingest-packets/github-43baf5daaf3a92e79a79/packet.md)
+- Review priority: `high`
+- Required reading: `304` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/react-native@2.12.0` (recommended `full`)
+  Release: [manifest](raw/github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-08-01/manifest.json)
+  Comparison: Not applicable
+
 ## `github-5c8c7287ce91fe6f34c2`
 
 - Repository: `paypal/paypal-ios`
