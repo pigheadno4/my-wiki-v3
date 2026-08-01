@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 70
+source_count: 80
 ---
 
 ## Overview
@@ -145,8 +145,8 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 70
-- Documentation pages pending ingest: 155
+- Ingested source summaries: 80
+- Documentation pages pending ingest: 145
 
 ## Sources
 
@@ -220,6 +220,16 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 - [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]] — future credits, external A/R credit memos, invoice-state corrections, re-billing, and refunds
 - [[source-metronome-api-reference-security-get-services]] — authenticated service registry, directional IP usage labels, and allowlisting boundaries
 - [[source-metronome-api-reference-alerts-reset-a-threshold-notification]] — threshold-state reset, asynchronous reassessment, empty success response, and retry unknowns
+- [[source-metronome-integrations-platform-integrations-workato-connector]] — SDK-like Workato connector setup, API-token connection, example workflows, and per-environment boundary
+- [[source-metronome-guides-platform-configuration-audit-logs]] — action attribution, outcomes, request correlation, and audit-evidence limitations
+- [[source-metronome-guides-platform-configuration-single-sign-on-sso]] — SAML 2.0 team login, identity-provider access control, retained users, and password cutover
+- [[source-metronome-guides-platform-configuration-allowlist]] — service-registry polling, allowlist automation, stale-rule risk, and layered-security boundaries
+- [[source-metronome-integrations-platform-integrations-segment]] — Segment destination setup, event-field mappings, transaction-ID default, and conditional actions
+- [[source-metronome-integrations-tax-integrations-avalara]] — Avalara through Stripe's third-party tax-app framework, mappings, draft setting, and native Stripe Tax boundary
+- [[source-metronome-integrations-tax-integrations-anrok]] — Anrok calculation and compliance modes, Stripe invoice configuration, and provider boundaries
+- [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]] — contract migration, historical invoice periods, balance effects, preview, and reporting breakdowns
+- [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-sql-editor]] — SQL metric query surface, output fallback, breakdown granularity, and scheduled swaps
+- [[source-metronome-guides-implement-metronome-production-checklist]] — go-live checks across ingestion, pricing, provisioning, invoicing, security, webhooks, and exports
 
 ## Related
 

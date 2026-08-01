@@ -1,0 +1,26 @@
+{
+  "job_id": "import-existing-invoices",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full-source review finds the source candidate accurate, complete, and carefully bounded for the assigned migration guide. It correctly recreates the original contract start and starting balances while deferring automatic invoice generation, imports the earlier periods through POST /v1/contracts/createHistoricalInvoices using quantities priced from the contract, preserves preview as a dry run, records optional hourly or daily quantity breakdowns, and keeps imported invoices out of the Stripe integration. It also correctly separates this worked migration from the credit-memo guide's future-credit, external A/R memo, payment-refund, negative-usage, void, and credit-and-rebill flows, while leaving invoice state, collection, tax, non-Stripe delivery, overlap, atomicity, idempotency, and partial failure unknown. The canonical URL and nested raw_files value match the trusted order, the path-qualified raw backlink resolves, the source target is absent, all related links resolve, the raw SHA-256 matches, candidate.md equals receipt.source_page, suggestions.json equals receipt.suggestions, and all five quotes are byte-exact at their cited locations. Five of the six submitted concept updates are valid and non-conflicting. Two shared-update defects prevent approval. First, historical-invoice-import-invoicing-flow broadly calls the migration path distinct from correcting an incorrect invoice, but the dedicated createHistoricalInvoices API reference separately describes this endpoint as suitable for both billing migrations and correcting past billing periods; the update must distinguish this guide's worked migration from the credit-memo guide's correction/rebill mechanics without denying the endpoint's separately documented correction use. Second, the source contributes a durable fact to metronome-credits-and-commits by saying imported invoice quantities and contract unit prices calculate effects on customer credit and commit balances, yet no bounded fact update or reciprocal source citation is proposed for that existing related concept. No candidate-page rewrite, new concept, comparison, contradiction callout, company update, index update, or log update is otherwise required.",
+  "required_changes": [
+    "Revise only historical-invoice-import-invoicing-flow so it says this guide's worked migration is distinct from the credit-memo guide's draft or finalized correction, external A/R memo, refund, and credit-and-rebill mechanics, while preserving that the separate createHistoricalInvoices API reference describes the endpoint as suitable for both billing migrations and correcting past billing periods. Do not claim the endpoint cannot support correction; state that the sources do not establish the correction workflow, invoice-state preconditions, or reconciliation behavior. Preserve the remaining calculation, preview, access, Stripe-exclusion, and unknown-state boundaries and preserve the other five submitted suggestions unchanged.",
+    "Add a durable_fact suggestion and reciprocal_source_link suggestion for wiki/concepts/metronome/metronome-credits-and-commits.md, grounded in quote 1. State only that historical invoice import combines supplied line-item quantities with contract unit prices to calculate invoice totals and effects on the customer's credit and commit balances. Preserve as unknown the resulting ledger-entry types and timestamps, ordering against existing deductions, rollback or reversal behavior, preview persistence, and any relationship to correction or credit-and-rebill. Link [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]] from that concept's Sources section with the same bounded balance-effect description. Preserve the candidate page unchanged."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "full",
+  "shared_update_decisions": [
+    "historical-invoice-import-contract-boundary",
+    "historical-invoice-import-contract-source-link",
+    {
+      "update_id": "historical-invoice-import-invoicing-flow",
+      "verdict": "rejected",
+      "reason": "The calculation, preview, Stripe-exclusion, and unknown-state boundaries are valid, but the broad correction distinction conflicts with the dedicated endpoint reference's separate statement that createHistoricalInvoices is suitable for correcting past billing periods."
+    },
+    "historical-invoice-import-invoicing-source-link",
+    "historical-invoice-import-reporting-breakdowns",
+    "historical-invoice-import-reporting-source-link"
+  ],
+  "reviewer_identity": "sol-review-import-invoices-a1",
+  "reviewer_model": "gpt-5.6-sol"
+}

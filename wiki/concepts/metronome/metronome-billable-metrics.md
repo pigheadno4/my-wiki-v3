@@ -30,6 +30,18 @@ The Basic Filters editor always creates a streaming billable metric. Its worked 
 - One usage event can contribute to multiple billable metrics. The architecture guide does not define matching precedence or safeguards against unintended multi-product charging, so this cardinality should not be interpreted as automatic charge deduplication.
 - Dimensional pricing can map one metric to one product and then many rates. Rate combinations depend on product pricing keys whose properties originate as group keys on the underlying metric; the rate-card guide does not supersede metric creation or immutability rules.
 
+## SQL query, output, and timing semantics
+
+- SQL metrics query `events` through `event_type`, `timestamp`, and `properties.field_name`; Metronome applies customer and billing-period filtering. The concept currently leaves SQL output rules undefined; replace that boundary with the documented multi-column rule: `value` is preferred, the first returned column is the fallback when `value` is absent, other columns can become pricing or presentation keys, and unused extra columns are summed over. The page does not define the quantity-column rule for a one-column result or runtime behavior for missing, duplicate, or nonnumeric quantity columns.
+
+> [!warning] Cross-source SQL output contradiction
+> The earlier create-metrics guide and its source summary call `value` required, while the SQL Editor guide documents first-column fallback for a multi-column result without `value`. Treat `value` as preferred rather than universally mandatory for that documented multi-column case, and add a reciprocal contradiction warning to the earlier source summary.
+
+- The SQL Editor documents `COUNT`, `SUM`, `MAX`, `MIN`, `AVG`, timestamp-based `EARLIEST` and `LATEST`, and `COUNT DISTINCT`, plus bounded math, logic, `DATE_TRUNC` to hour or day, and `CAST`. This aligns with the neighboring guides’ direction to use SQL for distinct counts but does not reconcile their `UNIQUE` label or the API enum.
+- In the guide’s simple `SUM` example, the default `hour` breakdown incurs each event as usage is ingested. For that example only, `service period` moves the full quantity of 30 and its cost to the final period window, applies the final $20 price to the full quantity, and requires a credit or commit to cover the last instant of the period. These outcomes do not establish the behavior of every non-additive aggregation, overlapping schedule, late-event, or invoice-finalization case.
+- SQL metric swaps may be scheduled within a billing period. In the guide’s two-SQL-metric average example, the combined value after the swap is the new metric through the current day plus the old metric through the swap day minus the new metric through the swap day; the new metric’s pre-swap term is zero in that example, and the documented incurred quantities are example-scoped. The page does not define exact cutoff inclusivity, timezones, one-SQL/one-streaming transitions, `service period` interactions, falling values, negative adjustments, late corrections, finalized-invoice behavior, or subsequent-period behavior.
+- The documented SQL item list does not identify a dialect or define literal Unicode-versus-ASCII comparison syntax, type coercion, null behavior, precision, output limits, tie handling, or error semantics.
+
 ## Lifecycle boundary
 
 Contract usage filters impose upstream schema requirements. For streaming metrics, the filter key must be an existing group key and must join pricing and presentation keys in one compound key when those dimensions coexist. For SQL metrics, the filter key must be present as an underlying event property.
@@ -63,6 +75,8 @@ The retrieval schemas preserve the create-schema conflicts: `UNIQUE` remains une
 Dimension-scoped spend alerts require their `group_values` key to be a group key on the underlying billable metrics associated with the customer's contract. Products whose metric lacks the key do not contribute to that threshold. Metronome recomputes the selected usage as if the key were a presentation group, so tiered pricing, quantity rounding, and `MAX` aggregation apply to the subset. A customer can use three distinct keys for spend-threshold notifications; a fourth is blocked. When one key has more than 5,000 values for that customer, the guide calls for representative consultation rather than defining a hard maximum.
 
 ## Sources
+
+- [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-sql-editor]] — SQL functions and outputs, breakdown granularity, scheduled metric swaps, and unresolved SQL-runtime boundaries
 
 - [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-basic-filters]] — Basic Filters event matching, property existence, grouped `COUNT`, streaming aggregation set, and unresolved `UNIQUE` boundary
 - [[source-metronome-guides-events-send-usage-events]] — required event fields plus string-property representation and precision rationale

@@ -6,6 +6,24 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-01 — Metronome Campaign 10 completed
+
+- Result: ten approved source pages from complete raw pages across sixteen worker/reviewer attempts; six full reviews requested semantic corrections, no targeted-review shortcut was used, and no job was rejected. The immutable three-page audit passed 3/3 pages and 9/9 future-query tests, so no expanded audit was required.
+- Sources:
+  - [[source-metronome-integrations-platform-integrations-workato-connector]] — SDK-like Workato connector setup, API-token connection, example workflows, and per-environment boundary (raw SHA-256 `12b7d512419d74b31334bb091e1462ce41a164cfd5fff855b075fd960f9ce499`)
+  - [[source-metronome-guides-platform-configuration-audit-logs]] — action attribution, outcomes, request correlation, and audit-evidence limitations (raw SHA-256 `98cfb48e35f0c94a32eac2e577bf8123f1a7a614010fa2c6b837cf358ebd012a`)
+  - [[source-metronome-guides-platform-configuration-single-sign-on-sso]] — SAML 2.0 team login, identity-provider access control, retained users, and password cutover (raw SHA-256 `35facd1f2b955251b2fa3468eecc6eaddf2689abce75fa3f5f54c83fdeade837`)
+  - [[source-metronome-guides-platform-configuration-allowlist]] — registry polling, allowlist automation, stale-rule risk, and layered-security boundaries (raw SHA-256 `29bed40bf7af74ba13e224024839a8d527c3f5e5eb58ed64b566cbf8f87b5e46`)
+  - [[source-metronome-integrations-platform-integrations-segment]] — Segment destination setup, event-field mappings, transaction-ID default, and conditional actions (raw SHA-256 `e40b344b8ac5ff29c4875474fba52fcd55eac53613ecae7a3c7c6c96289f6048`)
+  - [[source-metronome-integrations-tax-integrations-avalara]] — Avalara through Stripe's third-party tax-app framework, mappings, draft setting, and native Stripe Tax boundary (raw SHA-256 `669af4d8d1bd834e66ef476bc757315c1771076659d5058b5caa1826468e6e73`)
+  - [[source-metronome-integrations-tax-integrations-anrok]] — Anrok calculation and compliance modes, Stripe invoice configuration, and provider boundaries (raw SHA-256 `efc6f41253304c312756134c96025738dc1b5c9871945b3a5fffb6b9cf54f4bc`)
+  - [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]] — contract migration, historical invoice periods, calculated balance effects, preview, and reporting breakdowns (raw SHA-256 `957691618bac7d40ab232998265c5722da477dd7d07495ec1814c6074272d3a5`)
+  - [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-sql-editor]] — SQL query surface, output fallback, breakdown granularity, and scheduled metric swaps (raw SHA-256 `edc85071e55d41fcd4f39b9112d38c742d31e52f42a28058d5f25cfcf59fed4f`)
+  - [[source-metronome-guides-implement-metronome-production-checklist]] — bounded readiness checks across ingestion, pricing, provisioning, invoices, controls, webhooks, and exports (raw SHA-256 `b65117c3c1f7847ad97e02d3b3bea9dd5b11dbd7cc45fc8e1cbef9f7733e7e9a`)
+- Concepts: updated billable metrics, credits and commits, customers and contracts, event ingestion, integrations, invoicing, reporting, security, webhooks, and Stripe Tax; no new concept page was required.
+- Boundaries retained: Workato examples do not prove complete endpoint coverage; audit visibility is not authorization or tamper-proof evidence; allowlisting is a layered control rather than authentication; Segment adapter requirements do not replace the direct-ingest schema; Avalara and Anrok third-party tax modes remain distinct from native Stripe Tax; historical import is not reduced to either migration-only or an undocumented correction workflow; SQL SUM outcomes stay example-scoped; production-checklist recommendations are not guarantees.
+- Coverage after promotion: 225 collected documentation pages, 80 ingested source summaries, and 145 pending pages.
+
 ## 2026-08-01 — Metronome Campaign 09 completed
 
 - Result: ten approved source pages from complete raw pages across thirteen worker/reviewer attempts; three reviews requested bounded corrections, no job was rejected, and one coordinator formatting repair prevented a JSON array from being interpreted as a wikilink. The immutable three-page audit passed 3/3 pages and 9/9 future-query tests, so no expanded audit was required.

@@ -47,6 +47,10 @@ The dashboard quickstart describes a draft invoice accumulating usage during the
 
 For a product rated in a custom pricing unit, Metronome first burns down applicable credits and prepaid commits with access schedules in that unit. If no applicable matching balance remains, the invoice receives a conversion line item that calculates the residual cost in the rate card's fiat currency; the converted fiat amount becomes the total due in the example. This does not establish conversion formula direction, precision, rounding, tax, finalization, delivery, collection, or payment-success behavior.
 
+### Historical invoice import
+
+For invoices already issued before a customer was provisioned in Metronome, `/v1/contracts/createHistoricalInvoices` accepts service periods and usage-line-item quantities, combines them with contract unit prices, and calculates invoice totals plus credit and commit balance effects. `preview: true` dry-runs the comparison before saving, and imported invoices are available through the Contracts page or API. Metronome does not send these invoices to its Stripe integration. This guide's worked migration is distinct from the credit-memo guide's mechanics for draft or finalized invoice corrections, external A/R credit memos, payment refunds, and credit-and-rebill. A separate `createHistoricalInvoices` API reference describes the endpoint as ideal for both billing migrations and correcting past billing periods, but the sources do not establish the correction workflow, its invoice-state preconditions, or its reconciliation behavior. This page does not define imported invoice state, finalization, collection, tax, downstream delivery beyond Stripe, idempotency, or partial failure.
+
 ### Credit, correction, and re-bill state boundaries
 
 For incorrect usage on a current-period `DRAFT` invoice, the credit-memo guide directs the merchant to send a negative quantity or value matching the affected product's billable metric. For a previous-period `finalized` invoice, Metronome says usage events cannot be corrected or adjusted; the documented alternatives are a future credit or an external A/R credit memo. When the whole invoice is wrong, the guide separately gives a credit-and-rebill sequence of negative usage, corrected usage, voiding, and regeneration. A Metronome void does not void a downstream invoice, and historical usage submission is limited to 34 days; older re-bills remain entirely in the invoicing and A/R system.
@@ -74,6 +78,8 @@ A separate manual payment-gated commit flow attempts payment for a one-off commi
 
 ## Native Stripe invoice delivery
 
+For Avalara AvaTax on Stripe-delivered invoices, Metronome must leave the Stripe invoice in draft so Avalara can calculate and apply tax before finalization. This differs from the Stripe Tax guide's usual recommendation to avoid retaining drafts when tax should calculate on sync, but the settings are provider-specific rather than contradictory. The Avalara page confirms tax line items on the finalized invoice after processing without defining who finalizes it, processing latency, retry behavior, or a guard against taxless finalization.
+
 - Stripe connections are scoped to a Metronome environment; sandbox connects to Stripe test mode.
 - Customer billing configuration selects the Stripe customer and collection method. Multi-account customer setup requires `delivery_method_id`; contract creation selects among the customer's configured providers with `billing_provider_configuration_id`, obtained from `/getCustomerBillingProviderConfigurations`.
 - Adding Stripe to an existing contract does not send earlier finalized invoices retroactively.
@@ -83,6 +89,12 @@ A separate manual payment-gated commit flow attempts payment for a one-off commi
 Metronome receives Stripe invoice-status changes through webhooks and exposes mapped external status through its invoice API and data export. No external status appears in Metronome when the integration deliberately leaves the Stripe invoice as a draft.
 
 For Stripe Tax, Metronome supplies the linked customer and product mapping, and Stripe calculates tax when the invoice is finalized. Retaining Stripe invoices as drafts defers calculation until manual finalization. Collection method controls what happens after finalization and is independent of whether tax is applied.
+
+### Anrok-through-Stripe invoice tax behavior
+
+In the primary Anrok provider mode, Anrok calculates arrears tax inline through the Stripe app without requiring **Leave invoices as drafts**. Prepaid-balance and spend-threshold flows use the documented `tax_type: "STRIPE"` and `payment_type: "INVOICE"` values in `payment_gate_config`; the guide does not define the `tax_type` enum's general semantics, and the `STRIPE` literal is not reliable evidence of calculator identity because the documented active provider in this mode is Anrok. A finalized Stripe invoice is verified through `automatic_tax.enabled: true`, `provider: "anrok"`, and `status: "complete"`.
+
+This provider-specific flow is distinct both from native Stripe Tax and from the separate mode in which Stripe Tax calculates while Anrok handles compliance, filing, and reporting. Where product mapping is implemented, the guide creates `stripe_product_id` on Metronome **Product** but maps from `ContractProduct.stripe_product_id`; that terminology remains unresolved. The guide does not define invoice-finalization timing, retries, fallback, correction, filing, remittance, or the legal or operational semantics of `liability.type`.
 
 ### India card e-mandates
 
@@ -107,6 +119,10 @@ A contract can schedule invoice routing among Stripe, NetSuite, and AWS, Azure, 
 
 Decimal quantities are moved into descriptions while Stripe line-item quantities become `1`; invoices over 250 line items collapse into one Stripe item. The guide also documents a maximum-charge error and no native Stripe credit-memo support. These transformations mean the Metronome invoice remains the detailed billing record when Stripe representation is compressed.
 
+## Go-live verification boundary
+
+Metronome's go-live checklist asks teams to understand the draft-to-grace-period-to-finalized lifecycle, enable and test `invoice.finalized`, confirm the chosen integration's delivery path, and exercise an event-to-invoice-to-webhook-to-payment cycle with a production test customer. It also asks teams to confirm sandbox-to-production migration and document rollback procedures. This is a verification exercise, not evidence of provider-specific collection ownership, payment finality, delivery timing, test isolation, future invoice accuracy, or rollback success. [[source-metronome-guides-implement-metronome-production-checklist]]
+
 ## Related
 
 - Company: [[metronome]]
@@ -114,6 +130,12 @@ Decimal quantities are moved into descriptions while Stripe line-item quantities
 - Related platform: [[stripe]]
 
 ## Sources
+
+- [[source-metronome-integrations-tax-integrations-avalara]] — third-party Avalara calculation on draft Stripe invoices and finalization responsibility boundary
+
+- [[source-metronome-integrations-tax-integrations-anrok]] — provider-specific inline arrears tax, threshold configuration values, finalized-invoice verification, and separation from native Stripe Tax and compliance-only coexistence
+
+- [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]] - historical invoice calculation, preview, contract-balance effects, and Stripe-delivery exclusion
 
 - [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]] — custom-unit balance drawdown, conversion-line-item fallback, and fiat total-due boundary
 - [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]] — future credits, external A/R credit memos, draft versus finalized correction, void-and-regenerate re-billing, and refund ownership

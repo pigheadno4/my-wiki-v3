@@ -1,0 +1,77 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "production-checklist-event-readiness-conflicts",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "durable_fact",
+      "anchor": "before ## Sources",
+      "proposed_markdown": "## Production-readiness checklist boundary\n\nMetronome's go-live checklist recommends queueing usage events, sampling `searchEvents` to confirm active-metric matching, load-testing expected peaks, and injecting ingestion failures. It also places `properties` under required fields, directly contradicting the dedicated ingest reference's optional `properties` schema. Separately, the checklist asks teams to exercise 14-day backdating, while the dedicated ingest sources document a 34-day historical-ingest window. The checklist does not call 14 days a maximum, so days 15\u201334 remain outside its stated test coverage rather than forming mutually exclusive limits or a retention conflict. [[source-metronome-guides-implement-metronome-production-checklist]]",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Do not change the API-level required-field set or 34-day boundary to match this checklist without resolving the properties contradiction; the 14-day item is a narrower test, not a competing maximum.",
+        "Queueing, sampling, load tests, and fault injection are readiness recommendations, not guarantees of accurate, exactly-once, or lossless billing."
+      ]
+    },
+    {
+      "update_id": "production-checklist-invoice-dry-run",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "before ## Related",
+      "proposed_markdown": "## Go-live verification boundary\n\nMetronome's go-live checklist asks teams to understand the draft-to-grace-period-to-finalized lifecycle, enable and test `invoice.finalized`, confirm the chosen integration's delivery path, and exercise an event-to-invoice-to-webhook-to-payment cycle with a production test customer. It also asks teams to confirm sandbox-to-production migration and document rollback procedures. This is a verification exercise, not evidence of provider-specific collection ownership, payment finality, delivery timing, test isolation, future invoice accuracy, or rollback success. [[source-metronome-guides-implement-metronome-production-checklist]]",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Do not convert one successful production dry run into a payment, delivery, lifecycle, invoice-accuracy, or rollback guarantee.",
+        "The checklist does not define provider-specific collection, retry, or settlement behavior."
+      ]
+    },
+    {
+      "update_id": "production-checklist-security-environment",
+      "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+      "update_kind": "durable_fact",
+      "anchor": "before ## Sources",
+      "proposed_markdown": "## Production-environment checklist boundary\n\nMetronome's go-live checklist recommends creating and securely storing a production API token, enabling IP allowlisting when required, and pointing API calls to `https://api.metronome.com`. It does not define token scope, expiry, rotation, storage controls, allowlist maintenance, or evidence sufficient to establish secure, auditable, or reconciled billing. [[source-metronome-guides-implement-metronome-production-checklist]]",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Do not treat possession of a production token, use of the production origin, or optional allowlisting as proof of least privilege, request authenticity, auditability, or reconciliation.",
+        "Continue to use the dedicated authentication and allowlisting sources for mechanism details."
+      ]
+    },
+    {
+      "update_id": "production-checklist-webhook-readiness",
+      "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+      "update_kind": "durable_fact",
+      "anchor": "before ## Sources",
+      "proposed_markdown": "## Go-live webhook and retry checks\n\nMetronome's go-live checklist places three checks in its webhook-and-error-handling section: keep the endpoint online and verify signatures with the Metronome webhook secret, make processing safe on duplicate deliveries, and exercise a policy worded as retry on `5xx` or network failure, backoff on `429`, and dead-letter plus alert on `4xx`. The source does not identify that status policy's direction or owner, so it must not be labeled either a webhook-receiver contract or Metronome's outbound-delivery contract. The dedicated webhook guide remains authoritative: Metronome retries outbound delivery responses above `299`. Webhook-delivery retry, API-call retry, and payment retry remain distinct, and these checks do not guarantee timely delivery, revenue preservation, processing success, event ordering, or payment recovery. [[source-metronome-guides-implement-metronome-production-checklist]]",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Preserve the checklist policy's unresolved direction; do not characterize its 5xx, 429, and 4xx handling as receiver behavior or as a replacement for the dedicated outbound-webhook rule for every response above 299.",
+        "Keep webhook delivery retry distinct from API-call retry and payment retry; idempotency does not establish exactly-once delivery, ordering, or lossless revenue."
+      ]
+    },
+    {
+      "update_id": "production-checklist-export-reconciliation",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "before ## Sources",
+      "proposed_markdown": "## Go-live export checks\n\nMetronome's go-live checklist recommends enabling Data Export in production, confirming that the destination receives data, sampling invoice, customer, and usage objects, and defining a finance reconciliation process. These checks express an operational objective; they do not establish export completeness, freshness, retention, exactly-once delivery, accounting correctness, or a general audit guarantee, so the dedicated export delivery and table-grain rules still apply. [[source-metronome-guides-implement-metronome-production-checklist]]",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "The page's auditability and independent-reconciliation language is rationale, not a guarantee of complete, timely, duplicate-free, or accounting-correct exports."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

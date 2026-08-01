@@ -1,0 +1,34 @@
+{
+  "job_id": "production-checklist",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full-source review found the candidate broadly accurate and appropriately cautious about checklist recommendations versus guarantees across metering, pricing, provisioning, invoicing, credentials, webhooks, monitoring, export, and rollback. The production raw SHA-256 matches the trusted order; all five excerpts are byte-exact at their stated lines; candidate.md equals receipt.source_page; suggestions.json equals receipt.suggestions; the canonical URL, nested raw_files value, path-qualified raw backlink, absent source target, and all related links pass. Three factual-grounding defects prevent approval. First, properties is a direct documentation contradiction: the checklist includes properties under all required fields, while the dedicated ingest OpenAPI schema requires only customer_id, event_type, timestamp, and transaction_id and leaves properties optional. The 14/34-day difference is not itself a direct contradiction: the checklist asks teams to test backdating through 14 days, while the API and scale guide document support through 34 days; both can be true, and the narrower checklist test must not be restated as a competing maximum or retention contract. Second, production-checklist-invoice-dry-run cites only quote 2 at lines 119-121, which contains lifecycle, invoice.finalized, and delivery-path checks but not the proposed production test-customer event-to-invoice-to-webhook-to-payment exercise at lines 181-188. The quote set also omits the pricing, customer/contract, and final rollback sections summarized by the candidate. Third, the checklist places a client-style retry policy (5xx/network retry, 429 backoff, 4xx DLQ and alert) inside its webhook section, while the dedicated webhook source says Metronome retries any delivery response above 299. The candidate usefully says the checklist does not replace that outbound contract, but the webhook concept proposal calls all of these receiver checks and therefore blurs retry direction and ownership. Security and export proposals are bounded and promotion-safe. No new concept, comparison, company, index, or log suggestion is otherwise required.",
+  "required_changes": [
+    "Revise the candidate and production-checklist-event-readiness-conflicts to separate the direct properties required/optional contradiction from the narrower 14-day checklist test. State that the dedicated ingest sources document a 34-day historical-ingest window, the checklist does not call 14 days a maximum, and its test leaves days 15-34 outside the stated checklist coverage. Do not describe 14 and 34 as mutually exclusive limits or a retention conflict.",
+    "Replace or consolidate the grounding excerpts, preserving three to five byte-exact quotes with exact line ranges, so they cover pricing and product setup, customer and contract provisioning, and the final production dry run and rollback as well as the existing event, invoice, security, webhook, monitoring, and export claims. Update quote indexes so production-checklist-invoice-dry-run cites an excerpt containing lines 181-188 in addition to any lifecycle excerpt it needs.",
+    "Revise the candidate webhook paragraph and production-checklist-webhook-readiness to preserve the checklist's placement and wording but explicitly mark the 5xx/network, 429, and 4xx retry policy as directionally ambiguous. Do not label that policy as a webhook receiver or Metronome outbound-delivery contract; retain the dedicated webhook guide's rule that Metronome retries responses above 299, and keep webhook delivery retry distinct from API-call retry and payment retry. Preserve the security and export suggestions unchanged."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "full",
+  "shared_update_decisions": [
+    {
+      "update_id": "production-checklist-event-readiness-conflicts",
+      "verdict": "rejected",
+      "reason": "It correctly captures the properties schema contradiction and readiness controls, but incorrectly treats the checklist's narrower 14-day test as a competing 34-day maximum or retention contract."
+    },
+    {
+      "update_id": "production-checklist-invoice-dry-run",
+      "verdict": "rejected",
+      "reason": "Its lifecycle boundary is sound, but the cited quote does not contain the production dry-run and payment-cycle facts used by the proposal."
+    },
+    "production-checklist-security-environment",
+    {
+      "update_id": "production-checklist-webhook-readiness",
+      "verdict": "rejected",
+      "reason": "The signature and idempotency checks are valid, but calling the checklist's 5xx, 429, and 4xx policy receiver checks blurs an unresolved retry-direction ambiguity and conflicts with the dedicated outbound rule for responses above 299."
+    },
+    "production-checklist-export-reconciliation"
+  ],
+  "reviewer_identity": "sol-review-production-a1",
+  "reviewer_model": "gpt-5.6-sol"
+}

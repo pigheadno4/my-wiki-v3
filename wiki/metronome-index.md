@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 70 |
-| Documentation pages pending ingest | 155 |
+| Source summaries ingested | 80 |
+| Documentation pages pending ingest | 145 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -93,6 +93,16 @@ Operational evidence:
 - [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]] — future-credit versus A/R memo boundary, invoice-state corrections, re-billing, and refund ownership
 - [[source-metronome-api-reference-security-get-services]] — bearer-authenticated service registry, IP direction labels, schema, and notice boundary
 - [[source-metronome-api-reference-alerts-reset-a-threshold-notification]] — customer-alert reset, asynchronous reassessment, empty `200`, and idempotency unknowns
+- [[source-metronome-integrations-platform-integrations-workato-connector]] — Workato connector installation, API-token connection, example workflows, and environment isolation
+- [[source-metronome-guides-platform-configuration-audit-logs]] — action attribution, outcome visibility, request correlation, and audit-evidence boundaries
+- [[source-metronome-guides-platform-configuration-single-sign-on-sso]] — SAML team login, identity-provider access removal, retained metadata, and password-login cutover
+- [[source-metronome-guides-platform-configuration-allowlist]] — registry polling, network-rule automation, stale-allowlist risk, and notice wording
+- [[source-metronome-integrations-platform-integrations-segment]] — Segment source/token setup, explicit event mappings, default message ID, and conditional actions
+- [[source-metronome-integrations-tax-integrations-avalara]] — Avalara tax-app workflow, metadata mapping, draft requirement, and native Stripe Tax distinction
+- [[source-metronome-integrations-tax-integrations-anrok]] — Anrok tax calculation and compliance modes with Stripe invoice configuration
+- [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]] — historical contract/invoice migration, calculated totals, balance effects, preview, and breakdowns
+- [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-sql-editor]] — SQL inputs and functions, output-column fallback, granularity, and scheduled metric swaps
+- [[source-metronome-guides-implement-metronome-production-checklist]] — bounded production-readiness checks for usage, pricing, contracts, invoices, controls, and operations
 
 ## Concepts
 

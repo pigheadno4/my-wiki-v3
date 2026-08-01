@@ -1,0 +1,72 @@
+{
+  "job_id": "billable-metrics-sql-editor",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Create SQL Billable Metrics\"\ntype: source\ndate_ingested: 2026-08-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/implement-metronome/core-concepts/billable-metrics-sql-editor\"\nraw_files:\n  - \"metronome/guides/implement-metronome/core-concepts/billable-metrics-sql-editor-2026-07-13.md\"\ntags: [metronome, billable-metrics, sql, aggregation, usage-based-billing]\n---\n\n## Overview\n\nThis guide defines the SQL Editor query surface for Metronome billable metrics, including event-field access, result-column selection, supported functions, and a daily-storage example. It also explains product-level `hour` versus `service period` breakdown granularity and illustrates how quantities accrue when one SQL metric is scheduled to replace another during a billing period.\n\n## Key takeaways\n\n- SQL billable metrics query Metronome's `events` table. Queries filter and aggregate usage, while Metronome supplies the individual-customer and billing-period filtering.\n- For a multi-column result, Metronome uses a column named `value` as the metric quantity when present and otherwise uses the first returned column. Remaining columns can become downstream group keys; unused extra columns are summed over to produce one quantity.\n- The documented SQL surface includes eight aggregation forms, arithmetic and comparison operators, conditional and membership logic, `DATE_TRUNC` to hour or day, and `CAST`. The page does not identify the SQL dialect or define type, null, precision, tie, or error semantics.\n- SQL breakdown granularity is selected on the product. The default `hour` mode incurs costs through the period as usage is ingested; `service period` places the full period quantity and cost in the final time window.\n- A product's SQL metric can be changed effective during a billing period. The worked two-SQL-metric average example preserves the old metric's value at the swap and then incurs only increases in the documented combined value.\n\n## Query inputs and output selection\n\nQueries read `event_type`, `timestamp`, and event properties through `properties.field_name` from the `events` table. Metronome says the query author does not need to add customer or billing-period filtering, but the page does not expose that injected predicate, its boundary inclusivity, timezone, or behavior for late, corrected, or backdated events.\n\nFor a result with more than one column, `value` is preferred as the quantity column; if it is absent, the first returned column is used. Therefore this page does not make a `value` alias mandatory. Other returned columns can serve as presentation or pricing group keys, and extra columns not selected for either purpose are summed over to create a single metric quantity. The page does not define duplicate column names, nonnumeric quantity handling, output-row or group-cardinality limits, or whether column ordering remains stable through validation.\n\n## Supported SQL surface\n\nThe documented aggregations are `COUNT`, `SUM`, `MAX`, `MIN`, `AVG`, `EARLIEST`, `LATEST`, and `COUNT DISTINCT`; `EARLIEST` and `LATEST` select by `timestamp`. Arithmetic supports `+`, `-`, `*`, and `/`; the comparison list renders `=`, `!=`, `>`, `<`, `\u2265`, and `\u2264`. Scalar math includes `LEAST`, `GREATEST`, `ROUND`, `CEIL`, and `FLOOR`. Logic includes `AND`, `OR`, `NOT`, `CASE WHEN`, `IS NULL`, `IS NOT NULL`, `IN`, and `NOT IN`. `DATE_TRUNC` is documented only for truncating `timestamp` to `hour` or `day`, and `CAST` is listed without supported target types.\n\nThe neighboring create-metrics guide shows distinct counting as `count(distinct \u2026)`, while this page labels the supported aggregation `COUNT DISTINCT`. The Basic Filters guide's instruction to use a SQL metric for `UNIQUE` is directionally consistent with distinct-count support here, but these pages do not define `UNIQUE` as a SQL function or reconcile it with the create API's separate `UNIQUE` aggregation enum. The rendered `\u2265` and `\u2264` glyphs also should not be assumed to prove that literal Unicode operators, ASCII `>=` and `<=`, or both are accepted.\n\n## Daily-storage example\n\nThe example filters `storage_heartbeat` events, groups by truncated day, `user_id`, and `region`, takes the maximum `storage_used` within each observed day and group, and divides the sum of those daily maxima by the sum of one `num_days` marker per group. The output aliases the calculation to `value`, returns `user_id` for invoice presentation, and returns `region` for dimensional pricing. It therefore computes an average of per-observed-day maxima, not a general average of every storage reading. The page does not specify whether days without events enter the denominator, how division precision or rounding is handled, or what happens when values are absent or nonnumeric. It recommends previewing against existing usage before saving.\n\n## Breakdown granularity\n\nA product backed by a SQL metric defaults to `hour` granularity. In the guide's three-event `SUM` example, values 5, 10, and 15 arrive before a January 15 rate change, so each is priced at the earlier $10 rate; a day-2-only credit or commit applies only to the day-2 quantity and spend, and invoice breakdowns show each day's quantity and cost separately.\n\nWith `service period` granularity, the example's full quantity of 30 is incurred in the billing period's final time window and uses the final $20 price. A credit or commit must cover the last instant of the period to apply, and invoice breakdowns place the cost in that last window. These are documented example outcomes; the page does not define exact time-window boundaries, final-price selection under overlapping schedules, late-event recalculation, invoice-finalization effects, or how non-additive aggregations behave in every case.\n\n## Scheduled metric transitions\n\nThe guide says SQL billable metrics are swappable on products and a swap may take effect at any point in a billing period. Its example changes from SQL Metric A, averaging `value` on `average_metric_v1` events, to SQL Metric B, averaging `value_new` on `average_metric_v2` events, effective March 15.\n\nBefore the swap, Metric A's cumulative average produces an incurred quantity of 4 on March 1 and then 1 more on March 2 when the average rises to 5. After the swap, the combined value is defined as B through the current day, plus A through the swap day, minus B through the swap day. In the example, B's pre-swap value is zero; the reported March 15 increment of 10 corresponds to a combined value of 15 after 5 was already incurred, and B's average rising from 10 to 11 on March 16 produces one additional unit.\n\nThe worked transition has two SQL metrics and does not define exact effective-time inclusivity, timezones, transitions where only one side is SQL, interactions with `service period` granularity, falling combined values or negative adjustments, late-event corrections, finalized-invoice behavior, or subsequent billing periods. The heading's broader \"to or from a SQL billable metric\" wording should not be used alone to infer every streaming-to-SQL or SQL-to-streaming transition contract.\n\n## Consistency and documentation boundaries\n\nThe Basic Filters and create-metrics sources direct distinct counts to SQL, which is consistent with this page's `COUNT DISTINCT` support. They also reserve `COUNT`, `SUM`, `MAX`, and `LATEST` as the documented streaming aggregation set; this page's broader SQL function list does not contradict that editor boundary.\n\nThe existing create-metrics source summary and shared billable-metrics concept describe `value` as a required SQL output column. This page explicitly documents first-column fallback when a multi-column query has no `value` column, so that wiki wording is too strong and should be corrected. No other direct contradiction with the two adjacent source summaries was found.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-billable-metrics]], [[metronome-products-and-rate-cards]], [[metronome-credits-and-commits]], [[metronome-invoicing]]\n- Related sources: [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-basic-filters]], [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/implement-metronome/core-concepts/billable-metrics-sql-editor-2026-07-13|2026-07-13 snapshot \u2014 SQL query surface, output selection, aggregation, product granularity, and scheduled metric transitions]]\n",
+  "quotes": [
+    {
+      "text": "Metronome handles filtering down the SQL queries for individual customers over the course of their billing period. You do not need to include this logic in your queries - simply focus on filtering and aggregation!",
+      "location": "line 13, Metronome-managed customer and billing-period filtering"
+    },
+    {
+      "text": "If your query returns more than one column, Metronome first looks for a column called `value` to use as the column for the metric quantity. If no column `value` exists, Metronome uses the first column returned in the query. Any other columns returned can be used as group keys in downstream pricing and packaging.",
+      "location": "line 24, quantity-column precedence and group-key outputs"
+    },
+    {
+      "text": "* **Aggregations**\n  * `COUNT`: Counts the number of rows\n  * `SUM`: Sums numbers\n  * `MAX`: Takes the maximum of numbers\n  * `MIN`: Takes the minimum of numbers\n  * `AVG`: Averages numbers\n  * `EARLIEST`: Returns the earliest value of a column based on its `timestamp`\n  * `LATEST`: Returns the latest value of a column based on its `timestamp`\n  * `COUNT DISTINCT`: Counts the distinct values in the expression",
+      "location": "lines 36-44, complete documented SQL aggregation list"
+    },
+    {
+      "text": "When you create a Product backed by a SQL billable metric, you can select a SQL breakdown granularity. The default value is `hour`, which is appropriate for most use cases. With `hour` granularity, costs are incurred continuously throughout the billing period as usage is ingested. If you want to use the latest value of a metric, or otherwise have a metric that does not make sense when broken down hourly, you can use `service period`.",
+      "location": "line 104, product-level hour and service-period granularity"
+    },
+    {
+      "text": "If you want to change the metric you're using to bill your customers, you can schedule a change to the billable metric associated with a usage product. SQL billable metrics are swappable on products, and the swap can be scheduled to take effect at any point in a billing period \u2014 not only at a billing period boundary.",
+      "location": "line 124, effective-dated SQL metric swap support"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "billable-metrics-sql-editor-semantics",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Lifecycle boundary",
+        "proposed_markdown": "## SQL query, output, and timing semantics\n\n- SQL metrics query `events` through `event_type`, `timestamp`, and `properties.field_name`; Metronome applies customer and billing-period filtering. For multi-column results, `value` is preferred but not required because the first column is the documented fallback. Other columns can become pricing or presentation keys, while unused extra columns are summed over. Correct the existing wording that calls `value` required.\n- The SQL Editor documents `COUNT`, `SUM`, `MAX`, `MIN`, `AVG`, timestamp-based `EARLIEST` and `LATEST`, and `COUNT DISTINCT`, plus bounded math, logic, `DATE_TRUNC` to hour or day, and `CAST`. This aligns with the neighboring guides' direction to use SQL for distinct counts but does not reconcile their `UNIQUE` label or the API enum.\n- A SQL-backed product defaults to `hour` breakdown granularity; `service period` moves the full quantity and cost to the final period window, uses the final price, and requires a credit or commit to cover the last instant. SQL metric swaps may be scheduled within a billing period; the two-SQL-metric example preserves the old value at the cutoff and increments a combined value based on the new metric after the swap.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer a SQL dialect, literal Unicode-versus-ASCII comparison syntax, type coercion, null behavior, precision, output limits, or tie handling from the supported-item list.",
+          "Do not call the `value` output alias mandatory; this source explicitly documents first-column fallback.",
+          "Keep the hour and service-period pricing and credit effects scoped to the documented SUM example where appropriate.",
+          "Do not generalize the two-SQL-metric swap example to every SQL/streaming combination, cutoff boundary, late-event adjustment, negative delta, or finalized-invoice case."
+        ]
+      },
+      {
+        "update_id": "billable-metrics-sql-editor-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-sql-editor]] \u2014 SQL functions and outputs, breakdown granularity, scheduled metric swaps, and unresolved SQL-runtime boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/implement-metronome/core-concepts/billable-metrics-sql-editor-2026-07-13.md",
+  "raw_sha256": "edc85071e55d41fcd4f39b9112d38c742d31e52f42a28058d5f25cfcf59fed4f",
+  "status": "candidate_ready"
+}
