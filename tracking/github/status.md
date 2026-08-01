@@ -1,5 +1,30 @@
 # GitHub repository ingest status
 
+## `github-0f505b736a8fbe7628ca`
+
+- Repository: `adyen/adyen-ios`
+- SHA: `5f6779b31299e3067de3a5279a816f3b8d2fbdf3`
+- Collection date: `2026-08-01`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/manifest.json)
+- Packet: [review packet](tracking/github/repos/adyen/adyen-ios/ingest-packets/github-0f505b736a8fbe7628ca/packet.md)
+- Review priority: `normal`
+- Required reading: `689` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen-ios@5.25.1` (recommended `full`)
+  Release: [manifest](raw/github/adyen/adyen-ios/releases/adyen-ios/5.25.1/2026-08-01/manifest.json)
+  Comparison: Not applicable
+
 ## `github-1ab2662d292502a53058`
 
 - Repository: `braintree/braintree-web`
