@@ -1,13 +1,13 @@
 ---
 title: "Braintree"
 type: company
-tags: [braintree, payments, checkout, javascript-sdk]
-source_count: 2
+tags: [braintree, payments, checkout, javascript-sdk, android-sdk]
+source_count: 3
 ---
 
 ## Overview
 
-Braintree is represented in this wiki by two independently versioned browser repositories: the modular Braintree Web SDK and the prebuilt Braintree Web Drop-in UI. Both produce or support Braintree payment-method nonces for server processing, but their package versions and evidence histories must remain separate.
+Braintree is represented in this wiki by three independently versioned repositories: the modular Braintree Web SDK, the prebuilt Braintree Web Drop-in UI, and the native Braintree Android SDK. All produce or support Braintree payment-method nonces for server processing, but their package versions and evidence histories must remain separate.
 
 ## Web SDK Surface
 
@@ -23,18 +23,25 @@ Braintree is represented in this wiki by two independently versioned browser rep
 
 The repository schedules Drop-in deprecation for 2026-09-01 and unsupported status for 2027-09-01 and directs merchants to migrate to the modular Braintree SDK. Its notice says processing will be supported for one year after deprecation, while processing on unsupported SDKs may be suspended at any time. Current support status should be rechecked for time-sensitive guidance.
 
+## Android SDK Surface
+
+`braintree-android@5.30.0` provides modular native clients for cards, PayPal, Venmo, Google Pay, local payments, SEPA, 3D Secure, fraud data, and payment-method presentation. Redirect-capable methods use a request/launcher/result pattern with app-link or deep-link return handling before nonce tokenization.
+
+PayPal and Venmo are separate Braintree modules. Venmo can launch the Venmo app or a mobile browser and supports conditional multi-use vaulting with a customer-scoped client token. This is distinct from the standalone `paypal/paypal-android` SDK, whose retained `2.3.0` source does not establish a native Venmo path.
+
 ## Versioned Implementation Knowledge
 
 The retained history begins with `braintree-web@3.143.0` and currently reaches `3.144.0` at exact SHA `41460fba05c1ea1222e795b36a10765a6699b8e7`. The newer release adds PayPal View/Edit Funding Instrument, expands PayPal Checkout v6 session options, and prevents failed incognito detection from aborting Venmo creation while preserving the 23-component architecture.
 
-Repository evidence is not current enablement guidance. PayPal and Fastlane modules also have delegated-runtime boundaries, and legacy source modules should not be treated as recommendations for new integrations.
+Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastlane modules have configuration or delegated-runtime boundaries, and legacy source modules should not be treated as recommendations for new integrations.
 
 ## Knowledge Status
 
-- Ingested cumulative GitHub repository sources: 2
-- Ingested package releases: 3
+- Ingested cumulative GitHub repository sources: 3
+- Ingested package releases: 4
 - Latest retained Braintree Web release: `braintree-web@3.144.0` at `41460fba05c1ea1222e795b36a10765a6699b8e7`
 - Latest retained Drop-in release: `braintree-web-drop-in@1.47.0` at `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`
+- Latest retained Android release: `braintree-android@5.30.0` at `51f183a48557d0fd00eefa541712df0c4f21ee28`
 
 ## Sources
 
@@ -42,6 +49,8 @@ Repository evidence is not current enablement guidance. PayPal and Fastlane modu
 - [[changelog-github-braintree-web]] — package-qualified release ledger
 - [[source-github-braintree-web-drop-in]] - cumulative Drop-in implementation baseline
 - [[changelog-github-braintree-web-drop-in]] - package-qualified Drop-in release ledger
+- [[source-github-braintree-android]] - cumulative native Android implementation baseline
+- [[changelog-github-braintree-android]] - package-qualified Android release ledger
 
 ## Related
 
@@ -49,4 +58,5 @@ Repository evidence is not current enablement guidance. PayPal and Fastlane modu
 - [[braintree-log]] — collection and ingest history
 - [[braintree-web-sdk]] — browser SDK concept
 - [[braintree-web-drop-in]] - prebuilt checkout UI and migration boundary
+- [[braintree-android-sdk]] - native Android request, launcher, nonce, PayPal, and Venmo model
 - [[paypal-braintree-integration]] — Braintree PayPal v6 processing boundary

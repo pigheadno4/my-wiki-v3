@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-08-01] ingest | GitHub braintree/braintree_android - `braintree-android@5.30.0`
+
+- Full serial ingest of `github-8bf8fabdfdc1687790bd` from exact SHA `51f183a48557d0fd00eefa541712df0c4f21ee28`.
+- Established the cumulative Android source and package-qualified changelog from the complete 388-file bounded capsule.
+- Recorded native request/launcher/result and nonce architecture, cards, 3DS, PayPal checkout/vault, separate Venmo app/browser and multi-use vault behavior, Shopper Insights, and payment-method enablement boundaries.
+- Isolated exact `5.30.0` changes: public suspend APIs, Visa Checkout removal and deprecation, Android API 37 build targets, and PayPal/Venmo button sizing.
+- Created the Braintree Android SDK concept and updated the Braintree company and provider index.
+
 ## [2026-07-31] ingest | GitHub paypal/paypal-android - `paypal-android@2.3.0`
 
 - Full serial ingest of `github-c2ebe224d536e16acded` from exact SHA `d69a2fad7a96155e71f2681dc7cbfa9957fff544`.
