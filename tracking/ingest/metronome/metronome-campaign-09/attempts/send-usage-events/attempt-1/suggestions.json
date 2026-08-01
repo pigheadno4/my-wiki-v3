@@ -1,0 +1,82 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "send-usage-events-heartbeat-idempotency-scope-tension",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Scale, observability, and recovery",
+      "proposed_markdown": "> [!warning] Heartbeat idempotency scope\n> The send-events guide says only one event with a given `transaction_id` is processed in its heartbeat section, but the same page specifically limits later duplicate suppression to the next 34 days after an event is accepted. Use deterministic period IDs for duplicate sends within that documented window; do not infer permanent global uniqueness or safe reuse behavior after day 34.",
+      "quote_indexes": [
+        1,
+        4
+      ],
+      "warnings": [
+        "Place this near the existing heartbeat bullet and consolidate rather than duplicate the 34-day boundary already present on the page.",
+        "The source does not define whether exactly 34 days is inclusive or how a reused ID with a different payload is handled."
+      ]
+    },
+    {
+      "update_id": "send-usage-events-event-ingestion-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-events-send-usage-events]] \u2014 alternate canonical events-guide route for event fields, string-property guidance, direct-ingest retry handling, heartbeat IDs, and the 34-day scope tension",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "This route substantially overlaps the existing implement-metronome/core-concepts send-events source; retain the distinct canonical citation without implying a second ingestion protocol."
+      ]
+    },
+    {
+      "update_id": "send-usage-events-api-idempotency-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-events-send-usage-events]] \u2014 34-day transaction-ID duplicate suppression, retry reuse, deterministic heartbeat IDs, and the unqualified-versus-windowed guarantee tension",
+      "quote_indexes": [
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep usage-event transaction IDs distinct from HTTP Idempotency-Key and resource uniqueness mechanisms.",
+        "Do not generalize the event-specific retry statement to non-ingest POST operations or permanent uniqueness."
+      ]
+    },
+    {
+      "update_id": "send-usage-events-billable-metrics-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-events-send-usage-events]] \u2014 required event fields plus string-property representation and precision rationale",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "Do not treat the string recommendation as a complete OpenAPI acceptance schema."
+      ]
+    },
+    {
+      "update_id": "send-usage-events-customers-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-events-send-usage-events]] \u2014 customer-ID and ingest-alias attribution for usage events",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "This guide does not define alias uniqueness, reassignment, removal, conflict behavior, or unmatched-event behavior."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

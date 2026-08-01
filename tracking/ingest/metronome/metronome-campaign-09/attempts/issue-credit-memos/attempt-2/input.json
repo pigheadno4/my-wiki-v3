@@ -1,0 +1,45 @@
+{
+  "action": "spawn_worker",
+  "job_id": "issue-credit-memos",
+  "attempt": 2,
+  "raw_path": "raw/metronome/guides/invoices/invoice-optimization/issue-credit-memos-2026-07-13.md",
+  "raw_sha256": "e21b6730a2334f3f4665dba5b0488e5790d5dba5e6bbaede6fee06a6aa7a608f",
+  "source_target": "wiki/sources/metronome/source-metronome-guides-invoices-invoice-optimization-issue-credit-memos.md",
+  "canonical_url": "https://docs.metronome.com/guides/invoices/invoice-optimization/issue-credit-memos",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location."
+  ],
+  "retry_context": {
+    "prior_attempt": 1,
+    "review_scope": "full",
+    "required_changes": [
+      "Add the missing A/R capability branch to the decision boundaries and credit-and-rebill discussion: when the customer-A/R system cannot void or cancel the downstream invoice, the guide says a credit memo is required. Keep that memo externally owned and distinct from a Metronome future credit, a negative usage event, invoice regeneration, and a payment refund.",
+      "Add an explicit documentation-conflict callout explaining that this source calls external invoicing/customer-A/R voiding, cancellation, and regeneration the only beyond-34-day credit-and-rebill option, while [[source-metronome-guides-events-high-volume-ingestion]] says corrections beyond 34 days are handled by Metronome operations. Do not infer that the two routes are interchangeable or assign an undocumented scope; direct implementers to verify whether the difference is self-service invoice re-billing versus operations-assisted usage correction.",
+      "Extend the shared concept plan so wiki/concepts/metronome/metronome-event-ingestion.md preserves that 34-day scope conflict at its existing recovery boundary, with a reciprocal source citation. Ground the new fact in a byte-exact quote covering raw line 130 and keep the worker receipt within the required three-to-five-quote limit by consolidating or replacing an existing quote and updating affected quote_indexes. Preserve the six submitted suggestions unless the revised quote indexes require mechanical changes."
+    ],
+    "prior_reviewer_identity": "sol-review-issue-credit-memos-a1"
+  },
+  "recommended_worker_tier": "strong",
+  "routing_reason": "future and historical billing corrections require precise invoice and revenue boundaries",
+  "worker_identity": "sol-issue-credit-memos-a2",
+  "worker_model": "gpt-5.6-sol"
+}

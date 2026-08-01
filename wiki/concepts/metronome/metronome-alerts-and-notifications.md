@@ -17,6 +17,10 @@ The merchant owns any email, access restriction, or feature re-enablement that f
 
 ## Notification types and lifecycle
 
+### Manual threshold reset
+
+`POST /v1/customer-alerts/reset` accepts a Metronome customer UUID and threshold-notification UUID, clears cached evaluation state, and immediately initiates a fresh assessment against current thresholds. The reassessment runs in the background: `200` confirms reset and initiation but returns no body and does not reveal the resulting alert state. A breached threshold may produce a new webhook notification. The page does not define eligible current states, archived-alert behavior, an `EVALUATING` transition, completion signaling, error responses, duplicate suppression, retry safety, idempotency, concurrent-reset ordering, or whether repeated resets re-emit alarms. Its `requestBody` also lacks `required: true` even though both object properties are required.
+
 Metronome separates threshold, system, and offset notifications. Threshold notifications monitor conditions such as spend or available credit; system notifications follow object creation, updates, or configured timestamps; offset notifications follow user-defined schedules relative to lifecycle events.
 
 System and offset notifications are stateless. Threshold notifications are continuously evaluated, use `OK` and `IN_ALARM` as their ongoing states, and list `EVALUATING` before the initial evaluation. Evaluation occurs at least every three minutes, and the guide documents firing within five minutes after triggering usage is ingested. A return from `IN_ALARM` to `OK` may emit an optional `*_resolved` event.
@@ -29,6 +33,8 @@ Offset generation is prospective: past fire times are not replayed, moving a fir
 
 ## Customer-configured controls
 
+Credit and commit threshold notifications can monitor remaining balance, percent remaining, or days remaining. Custom fields can narrow a policy to a subset of commits or credits; the worked UI example selects **Contract credit balance** at `$0`, filters credit entities by `credit_type: free_trial`, and scopes the notification to selected customers. The guide presents product cutoff, renewal, and upsell as downstream use cases, but does not establish automatic access enforcement, entitlement mutation, customer communication, or sales action.
+
 A merchant can create customer-scoped threshold alerts for billing-period spend, low remaining commit balance, and usage-invoice total. The spend-limit examples use `spend_threshold_reached` for both soft and hard limits; their names, thresholds, and merchant actions distinguish them rather than a documented native severity or enforcement field. Store returned alert IDs so webhook signals can be matched to the intended customer and rule. When a limit changes, the guide archives the previous alert before creating a replacement, without defining atomic replacement or gap behavior.
 
 Spend alerts can be scoped with `group_values`, polled with customer-alert get/list endpoints, or consumed through webhooks. A hard-limit alarm, a zero commit balance, or any other threshold remains an action signal: the merchant owns customer communication, sales workflows, service cutoff, and later restoration. The guide does not establish an end-to-end latency guarantee, automatic entitlement mutation, maximum overshoot, payment outcome, or access-denial guarantee.
@@ -36,6 +42,9 @@ Spend alerts can be scoped with `group_values`, polled with customer-alert get/l
 `spend_threshold_reached` evaluates usage-based spend before credit and commit drawdown. `invoice_total_reached` evaluates after drawdown and can be filtered to usage invoices. `low_remaining_commit_balance_reached` signals a configured commit-balance threshold, but the page does not define exactly which balances aggregate into it.
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-alerts]] — remaining-balance, percent-remaining, and days-remaining thresholds with custom-field scoping and enforcement boundaries
+- [[source-metronome-api-reference-alerts-reset-a-threshold-notification]] — customer-scoped threshold reset, cached-state clearing, asynchronous reassessment, empty `200` response, and retry unknowns
 
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — customer-scoped trial alert, threshold, payload fields, and merchant-action boundary
 - [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] — notification families, evaluation timing, state transitions, and operating guidance

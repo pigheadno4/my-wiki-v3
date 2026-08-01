@@ -6,6 +6,24 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-01 — Metronome Campaign 09 completed
+
+- Result: ten approved source pages from complete raw pages across thirteen worker/reviewer attempts; three reviews requested bounded corrections, no job was rejected, and one coordinator formatting repair prevented a JSON array from being interpreted as a wikilink. The immutable three-page audit passed 3/3 pages and 9/9 future-query tests, so no expanded audit was required.
+- Sources:
+  - [[source-metronome-guides-pricing-packaging-billing-model-guides-guides-home]] — billing-model navigation for pay-as-you-go, enterprise commits, usage subscriptions, and pre-paid credits (raw SHA-256 `c0e56629644cd181e7deb54cb6af94c7c806298739c131d34468f18d45ac49dc`)
+  - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-alerts]] — credit and commit threshold dimensions, custom-field filtering, and action boundaries (raw SHA-256 `d814acd9f7edd119e1c1a5dc305dd20b8b1c75304249fe9a5de0ed4a6c2af2ac`)
+  - [[source-metronome-guides-pricing-packaging-overview]] — pricing-and-packaging navigation across billing models, changes, credits, commits, and examples (raw SHA-256 `54ccfe03556452023711ff149fad16153f31ed289ff0233a76a17f69c7e6afaf`)
+  - [[source-metronome-guides-platform-configuration-metronome-pricing-model]] — platform fee and consumption accounting for accepted events, generated billings, and exported rows (raw SHA-256 `a2fa7ab4ec7a6da68ec7dd8bd7f2205228e388f82a29d6b3c9ce446c1fd46008`)
+  - [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-basic-filters]] — Basic Filters matching, property requirements, grouped counting, and streaming aggregation boundaries (raw SHA-256 `d934d873c509b5962de5ef14414c4919ec279c9142edccf507a4ae1907e5a89f`)
+  - [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]] — fiat denomination, custom-unit rates, balance drawdown, and residual invoice conversion (raw SHA-256 `be3d1ee69264848cf3d8869d3ca7b1f61767378abfe17b266362e21bed3623fe`)
+  - [[source-metronome-guides-events-send-usage-events]] — event fields, customer attribution, retry policy, heartbeat IDs, and duplicate-suppression scope (raw SHA-256 `5fdd07cf1b27bb098d4facfe48a50a3043623e2476475d20d0a3965b0f4fba56`)
+  - [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]] — future credits, external A/R memos, invoice-state corrections, re-billing, and refund ownership (raw SHA-256 `e21b6730a2334f3f4665dba5b0488e5790d5dba5e6bbaede6fee06a6aa7a608f`)
+  - [[source-metronome-api-reference-security-get-services]] — bearer-authenticated service registry, IP direction labels, schema, and notice boundary (raw SHA-256 `ed652135505abf971cbed018ce28264543434c7828f64bbd26c648c99ad1a5fa`)
+  - [[source-metronome-api-reference-alerts-reset-a-threshold-notification]] — threshold reset, asynchronous reassessment, empty success response, and idempotency unknowns (raw SHA-256 `c25a9c284ee921af560595ff488771555905e4db2e067e311b7931bd59b9735a`)
+- Concepts: created [[metronome-currencies-and-custom-pricing-units]]; updated alerts, API idempotency, billable metrics, credits and commits, customer contracts, event ingestion, invoicing, products and rate cards, reporting, security, and usage-based-billing boundaries.
+- Boundaries retained: navigation pages do not prove implementation semantics; Metronome's own platform-pricing terms are distinct from merchant-configured end-user pricing; non-USD denomination follows the documented Metronome encoding rather than inferred ISO minor-unit scaling; finalized-invoice correction and beyond-34-day routes remain explicitly ambiguous; event transaction IDs are not treated as permanent global uniqueness.
+- Coverage after promotion: 225 collected documentation pages, 70 ingested source summaries, and 155 pending pages.
+
 ## 2026-07-31 — Metronome Campaign 08 completed
 
 - Result: ten approved source candidates from complete raw pages, including four bounded targeted retries with unchanged raw hashes; no job was rejected. The immutable three-page query audit passed 3/3 pages and 9/9 future-query tests, so no expanded audit was required.

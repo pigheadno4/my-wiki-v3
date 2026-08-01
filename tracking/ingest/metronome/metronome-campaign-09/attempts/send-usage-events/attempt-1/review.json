@@ -1,0 +1,18 @@
+{
+  "job_id": "send-usage-events",
+  "attempt": 1,
+  "verdict": "approved",
+  "reason": "Full-source review passed. The candidate accurately preserves the four required string-labelled fields, optional properties object, customer-ID and ingest-alias attribution, application-defined event types, single-property-versus-SQL aggregation boundary, RFC 3339 four-digit-year timestamp rule, invoice and usage-query selection role, and rejection only when a timestamp is more than 24 hours in the future. It correctly scopes accepted transaction-ID duplicate suppression to the next 34 days and explicitly quarantines the same page's unqualified heartbeat statement that only one event with a given ID is processed; it does not infer an inclusive cutoff, permanent uniqueness, safe post-window reuse, payload-collision behavior, or duplicate response semantics. The producer-side boundaries are faithful: a reliable queue is recommended but its delivery and acknowledgement design is unspecified; network and 5xx failures can be partially ingested and are retried until 200 with original transaction IDs; repeated 429 responses receive increasing exponential delays; other 4xx payload failures are not auto-retried and instead go to a dead-letter queue with an alarm and investigation; queue logging, representative-coordinated trial failure injection, deterministic per-node per-minute heartbeat IDs, two-or-more redundant heartbeats per measurement period, schema-change testing, and asynchronous customer provisioning are all accurately bounded. The candidate appropriately treats the existing implement-metronome/core-concepts route as materially overlapping evidence rather than a second ingestion product or retry protocol, and its page-scoped unknowns cover the missing request and response schemas, payload and rate limits, historical timestamp limits, ordering and atomicity, retry parameters and terminal behavior, queue semantics, Segment guarantees, retention, matching visibility, and invoice recalculation timing without inventing behavior. The raw SHA-256 and trusted canonical URL match; candidate.md equals receipt.source_page; suggestions.json equals receipt.suggestions; all five grounding quotes are byte-exact and exactly match their cited line ranges; the path-qualified raw link and every company, concept, and related-source link resolve; all suggestion targets and anchors exist; and the targeted wiki validator passes. No contradiction with current wiki content is introduced. All five concept suggestions are grounded and semantically valid: the durable event-ingestion warning preserves the 34-day-versus-unqualified heartbeat tension, and the four reciprocal citations retain this distinct route without broadening transaction IDs into API-wide idempotency, string guidance into a complete endpoint schema, or alias attribution into undocumented lifecycle guarantees. Company, index, and log arrays are correctly empty for Campaign 09 compact production mode.",
+  "required_changes": [],
+  "review_scope": "full",
+  "retry_review_scope": null,
+  "shared_update_decisions": [
+    "send-usage-events-heartbeat-idempotency-scope-tension",
+    "send-usage-events-event-ingestion-source-link",
+    "send-usage-events-api-idempotency-source-link",
+    "send-usage-events-billable-metrics-source-link",
+    "send-usage-events-customers-source-link"
+  ],
+  "reviewer_identity": "sol-review-send-usage-events-a1",
+  "reviewer_model": "gpt-5.6-sol"
+}

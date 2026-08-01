@@ -1,0 +1,94 @@
+{
+  "job_id": "metronome-pricing-model",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome's Pricing Model\"\ntype: source\ndate_ingested: 2026-08-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/platform-configuration/metronome-pricing-model\"\nraw_files:\n  - \"metronome/guides/platform-configuration/metronome-pricing-model-2026-07-13.md\"\ntags: [metronome, platform-pricing, consumption-pricing, usage-metering, data-export]\n---\n\n## Overview\n\nThis page defines how Metronome meters charges to organizations that use the platform. It separates a fixed annual platform fee from consumption-based charges, defines the commercial meanings of Events and Billings, and explains how exported data rows accumulate. These are terms on the customer's Metronome invoice and order form, not the pricing that the customer configures in Metronome for its own end users.\n\n## Key takeaways\n\n- Metronome pricing combines an annual platform fee with consumption-based charges that begin on the production go-live date; the platform fee is outside the consumption categories.\n- An order-form Consumption Commitment is a prepaid, non-refundable minimum against consumption-based platform charges, and unused value expires without refund or credit at the end of the applicable service term.\n- For commercial metering, an Event is each discrete JSON object submitted to and accepted by Metronome, while Billings are the total value of invoices generated through Metronome subject to three stated exclusions.\n- A Row Exported is any row written to the configured Data Export destination. Incremental tables count new or updated rows per sync, while every row in every full snapshot export counts again.\n- Data Export tables are labeled Standard or Premium, but the page warns that not every Premium table may currently be available.\n\n## Commercial pricing boundary\n\nThe annual platform fee provides access to the services and does not count toward Percentage of Billings, Events-based, Data Export, or Invoice Row Updates consumption categories. Consumption-based charges accrue only after production go-live. The page does not provide actual fee amounts, unit rates, tiers, included allowances, overage treatment, invoice timing, payment terms, or the consumption categories present in a particular order form. It names Invoice Row Updates as a charge category but does not define how those updates are counted.\n\nThe capitalized Consumption Commitment is a commercial term between Metronome and the organization buying its services. This page does not describe the separate credit and commit objects that a Metronome customer can configure for its own customers, nor does it define application priority, ledgers, access schedules, or invoice schedules for those objects.\n\n## Event and Billings boundaries\n\nAn Event is counted at the accepted JSON-object boundary of the ingestion API. The examples of an API call, storage measurement, data transfer, or another billable action illustrate what one submitted event may represent; they do not establish that Metronome observes or counts those underlying actions without an accepted event object. The page does not state how rejected, retried, or duplicate submissions affect commercial event counts.\n\nBillings include the total value of invoices generated through Metronome whether they are invoiced automatically or manually. The page excludes three cases: current-period finalized invoices voided before Metronome invoices the customer, non-production drafts used for testing or demonstration, and zero-dollar invoices used for free-trial-credit tracking. It does not define currency conversion or aggregation, tax treatment, discounts, credits, refunds, partial voids, or treatment outside those exclusions.\n\n## Data Export row accounting\n\nData Export continuously sends Metronome billing and usage data to a configured warehouse or object-storage destination. One Row Exported is one written row across any schema table. Incremental tables count only rows that are new or updated in a sync cycle; snapshot tables re-export the full table, so each row counts in each cycle even if it was exported before.\n\nThe Standard category lists contract, contract-modification, contract-pricing, payment, alert, finalized-invoice, customer, event, and core-entity tables. The Premium category lists draft invoices and line items, draft and finalized breakdown tables, and finalized and draft Rated Events. The page explicitly says some Premium tables may not currently be available and directs readers to a Metronome representative for current availability; it does not specify entitlements, prices, table-level rollout status, destinations, cadence, freshness, or delivery guarantees.\n\n## Unknowns\n\n- Exact annual and consumption fees, unit definitions beyond Events and exported rows, included volumes, thresholds, and rate tiers.\n- Which consumption categories and commitments apply to a specific customer or order form.\n- How Percentage of Billings and Invoice Row Updates are calculated beyond the Billings definition and the category name.\n- How duplicate, rejected, retried, corrected, or backfilled activity affects Metronome's commercial usage totals.\n- Current availability and commercial eligibility for each Premium Data Export table.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-usage-based-billing]], [[metronome-event-ingestion]], [[metronome-invoicing]], [[metronome-reporting-and-analytics]], [[metronome-credits-and-commits]]\n- Related sources: [[source-metronome-api-reference-usage-ingest-events]], [[source-metronome-guides-reporting-insights-data-export-overview]], [[source-metronome-guides-reporting-insights-data-export-database-reference]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/platform-configuration/metronome-pricing-model-2026-07-13|2026-07-13 snapshot \u2014 Metronome platform pricing, usage metrics, and export-row accounting]]\n",
+  "quotes": [
+    {
+      "text": "* **Annual platform fee:** A fixed fee charged for access to the services. This fee doesn't count toward any consumption-based charge categories (Percentage of Billings, Events-based, Data Export, or Invoice Row Updates).\n* **Consumption-based charges:** Variable fees that depend on your usage of the services. These start accruing on your go-live date in the production instance.",
+      "location": "raw/metronome/guides/platform-configuration/metronome-pricing-model-2026-07-13.md:19-20 (two-part pricing structure and production start boundary)"
+    },
+    {
+      "text": "If your order form includes a **Consumption Commitment**, this is a pre-paid, non-refundable minimum commitment against your consumption-based charges. Any unused portion expires at the end of the Initial Service Term or any Renewal Service Term without refund or credit.",
+      "location": "raw/metronome/guides/platform-configuration/metronome-pricing-model-2026-07-13.md:22 (order-form commitment terms)"
+    },
+    {
+      "text": "An **Event** is a single usage event\u2014each discrete JSON object submitted to and accepted by Metronome through the [ingestion API](/api-reference/ingest/ingest). Each event represents one measurable interaction on your platform, such as:",
+      "location": "raw/metronome/guides/platform-configuration/metronome-pricing-model-2026-07-13.md:28 (commercial Event definition)"
+    },
+    {
+      "text": "**Billings** are the total value of all invoices you generate through Metronome, whether invoiced automatically or generated by Metronome and invoiced manually.\n\nThe following are excluded from your Billings total:\n\n* Invoices finalized within the current Metronome billing period that you void before Metronome invoices you\n* Invoices drafted in a non-production instance (for example, a Sandbox environment) for testing or demonstration\n* Zero-dollar invoices used to track free trial credits",
+      "location": "raw/metronome/guides/platform-configuration/metronome-pricing-model-2026-07-13.md:37-43 (Billings definition and exclusions)"
+    },
+    {
+      "text": "A **Row Exported** is one row of data written by Metronome to your configured export destination, across any table type in the Data Export schema.\n\nHow rows accumulate depends on the table type:\n\n| Table type      | Behavior                                                                                                               |\n| --------------- | ---------------------------------------------------------------------------------------------------------------------- |\n| **Incremental** | Only new or updated rows are exported in each sync cycle.                                                              |\n| **Snapshot**    | All rows in the table are re-exported in each sync cycle. Each row in each full export cycle counts as a Row Exported. |",
+      "location": "raw/metronome/guides/platform-configuration/metronome-pricing-model-2026-07-13.md:51-58 (exported-row definition and incremental versus snapshot counting)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "metronome-pricing-model-commercial-pricing-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Pricing and packaging patterns",
+        "proposed_markdown": "## Metronome commercial pricing boundary\n\nMetronome's own customer pricing is distinct from the prices merchants configure for their end users. It combines an annual platform fee, excluded from consumption charge categories, with consumption-based charges that begin at production go-live. An order-form Consumption Commitment is a prepaid, non-refundable minimum against those platform-usage charges; unused value expires at the end of the applicable service term. This commercial commitment must not be treated as a Metronome credit or commit object configured for a merchant's customer. [[source-metronome-guides-platform-configuration-metronome-pricing-model]]",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "Add only after the source page is promoted.",
+          "Keep Metronome's order-form Consumption Commitment separate from customer-level or contract-level commit and credit objects."
+        ]
+      },
+      {
+        "update_id": "metronome-pricing-model-commercial-event-count",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Event contract",
+        "proposed_markdown": "## Commercial event-count boundary\n\nFor Metronome's platform-pricing terminology, one Event is each discrete JSON object submitted to and accepted through the ingestion API. Examples such as API calls, storage measurements, and data transfers describe what an accepted object may represent; this source does not define how rejected, retried, or duplicate submissions affect commercial counts. [[source-metronome-guides-platform-configuration-metronome-pricing-model]]",
+        "quote_indexes": [
+          2
+        ],
+        "warnings": [
+          "Add only after the source page is promoted.",
+          "Do not infer duplicate, retry, rejection, or underlying-activity counting behavior from this pricing definition."
+        ]
+      },
+      {
+        "update_id": "metronome-pricing-model-billings-count-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Calculation and timing boundary",
+        "proposed_markdown": "## Commercial Billings measure\n\nFor Metronome's own consumption pricing, Billings are the total value of invoices generated through Metronome whether invoiced automatically or manually. The stated exclusions are current-period finalized invoices voided before Metronome invoices the platform customer, non-production draft invoices used for testing or demonstration, and zero-dollar invoices used to track free-trial credits. The source does not define currency aggregation, tax, discounts, refunds, or other adjustments. [[source-metronome-guides-platform-configuration-metronome-pricing-model]]",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "Add only after the source page is promoted.",
+          "This is a measure used for Metronome's platform charges, not an invoice lifecycle or payment-status definition."
+        ]
+      },
+      {
+        "update_id": "metronome-pricing-model-export-row-counting",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Delivery and freshness",
+        "proposed_markdown": "## Commercial export-row accounting\n\nMetronome defines one Row Exported as one row written to a configured Data Export destination across any schema table. Incremental tables count new or updated rows in each sync; snapshot tables re-export the whole table, and every row in every full cycle counts again. This usage measure is separate from transfer cadence, freshness, destination delivery semantics, and table availability. [[source-metronome-guides-platform-configuration-metronome-pricing-model]]",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Add only after the source page is promoted.",
+          "Do not equate exported-row billing counts with unique records or current-state row counts."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/platform-configuration/metronome-pricing-model-2026-07-13.md",
+  "raw_sha256": "a2fa7ab4ec7a6da68ec7dd8bd7f2205228e388f82a29d6b3c9ce446c1fd46008",
+  "status": "candidate_ready"
+}

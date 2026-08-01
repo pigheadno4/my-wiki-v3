@@ -11,6 +11,8 @@ A Metronome billable metric defines a per-customer aggregation over a selected s
 
 ## Matching and aggregation
 
+The Basic Filters editor always creates a streaming billable metric. Its worked API-call example matches event type `api_request`, filters `status` to `success`, requires `user_id` to exist, uses `COUNT`, and groups the result by `user_id`; the equivalent API payload expresses those choices with `event_type_filter.in_values`, `property_filters`, `aggregation_type`, and nested `group_keys`. The example does not define general multi-filter boolean rules, include/exclude precedence, coercion, duplicate handling, time windows, late events, or when matching begins.
+
 - The create API allows either a SQL string or standard filter/aggregation fields; SQL is mutually exclusive with aggregation type, event-type filter, property filters, aggregation key, and group keys.
 - All supplied property filters must pass. Event and property filters support include and exclude lists, while property filters also control existence.
 - `event_type_filter` limits matching by event type and can be omitted to consider all event types.
@@ -61,6 +63,9 @@ The retrieval schemas preserve the create-schema conflicts: `UNIQUE` remains une
 Dimension-scoped spend alerts require their `group_values` key to be a group key on the underlying billable metrics associated with the customer's contract. Products whose metric lacks the key do not contribute to that threshold. Metronome recomputes the selected usage as if the key were a presentation group, so tiered pricing, quantity rounding, and `MAX` aggregation apply to the subset. A customer can use three distinct keys for spend-threshold notifications; a fourth is blocked. When one key has more than 5,000 values for that customer, the guide calls for representative consultation rather than defining a hard maximum.
 
 ## Sources
+
+- [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-basic-filters]] — Basic Filters event matching, property existence, grouped `COUNT`, streaming aggregation set, and unresolved `UNIQUE` boundary
+- [[source-metronome-guides-events-send-usage-events]] — required event fields plus string-property representation and precision rationale
 
 - [[source-metronome-guides-get-started-developer-sdks]] — metric definition, filters, aggregation operations, grouping, and creation-time boundary
 - [[source-metronome-guides-events-design-usage-events]] — future metric flexibility and the non-retroactive processing boundary

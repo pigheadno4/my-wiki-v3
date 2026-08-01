@@ -111,6 +111,8 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 
 ## Sources
 
+- [[source-metronome-guides-events-send-usage-events]] — customer-ID and ingest-alias attribution for usage events
+
 - [[source-metronome-guides-get-started-developer-sdks]] — customer aliases, basic contract provisioning, and introductory invoice behavior
 - [[source-metronome-api-reference-contracts-create-a-contract]] — create endpoint, request families, conditional requirements, and response boundary
 - [[source-metronome-api-reference-contracts-get-contract-edit-history]] — cross-channel contract change history and response structure

@@ -18,6 +18,10 @@ Metronome data export exposes billing and operational data as warehouse tables f
 
 ## Delivery and freshness
 
+## Commercial export-row accounting
+
+Metronome defines one Row Exported as one row written to a configured Data Export destination across any schema table. Incremental tables count new or updated rows in each sync; snapshot tables re-export the whole table, and every row in every full cycle counts again. This usage measure is separate from transfer cadence, freshness, destination delivery semantics, and table availability. [[source-metronome-guides-platform-configuration-metronome-pricing-model]]
+
 - One export destination is configured across all Metronome environments, so Production and Sandbox cannot use distinct destinations.
 - Selected incremental tables transfer every two hours with four-hour average freshness; the listed snapshot tables and some other exports transfer every 24 hours with 24-hour average freshness.
 - Object-storage destinations produce append-only Parquet files with at-least-once semantics. Consumers must resolve repeated primary keys from updates or retries by selecting the most recent row.

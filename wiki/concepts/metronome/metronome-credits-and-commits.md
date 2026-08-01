@@ -29,6 +29,12 @@ For offset-notification scheduling, Metronome says subsequent recurring-commit c
 
 ## Drawdown and invoice attribution
 
+Credits and prepaid commits at contract or customer level can carry access schedules in custom pricing units or selected currencies. Usage priced in a custom unit burns down applicable balances whose access schedules use that same unit; when none remains, invoice conversion to the rate card's fiat currency covers the residual usage. A CHF-paid prepaid commit granting Cloud Compute Tokens illustrates differing payment and access denominations, but the guide does not define arbitrary balance conversion, applicability priority, exchange rates, precision, or rounding.
+
+### Future-credit versus credit-memo boundary
+
+A Metronome credit can grant relief on future billing at customer scope, where it can apply across existing contracts on the account, or at contract scope. This does not alter the past transaction or invoice. When charges and associated revenue must be reversed, the credit-memo guide instead assigns the memo to the external customer-A/R system; the resulting A/R invoice can differ from the Metronome invoice line, with the memo serving as the audit record. The source does not establish that a future credit reverses historical revenue.
+
 - Credits and prepaid commits draw down before postpaid commits; lower numeric priorities consume first.
 - The same usage can apply to only one credit or commit, with any remainder continuing as postpaid fulfillment or overage.
 - Application occurs at invoice line-item level. Covered usage, the negative balance-application line, and uncovered overage remain separately attributable.
@@ -106,9 +112,15 @@ The guides contain example-level inconsistencies that should be checked against 
 
 ## Commit-balance notifications
 
+Threshold notifications can monitor credit and commit remaining balance, percent remaining, or days remaining. A custom field can narrow the evaluated objects; the example filters credit entities to `credit_type: free_trial` and creates a `$0` **Contract credit balance** notification for selected customers. The page does not define balance aggregation, percent denomination or rounding, day-count boundaries, missing-field behavior, or whether these dimensions have identical semantics for credits and commits.
+
 A merchant can create `low_remaining_commit_balance_reached` for a customer, credit type, and threshold. The resulting signal can support customer communication, sales outreach, or a merchant-owned service cutoff when the balance reaches zero. The page does not define which contract- or customer-level commits contribute, applicability or priority effects, expired-balance treatment, inclusion of credits, or automatic access enforcement.
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-alerts]] — credit and commit threshold dimensions, free-trial custom-field filtering, and access-action boundary
+- [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]] — custom-unit access schedules, matching-unit balance drawdown, and residual fiat conversion boundary
+- [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]] — future customer- or contract-level credit boundary versus external A/R credit memos
 
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-enterprise-commit]] — enterprise commitment design, schedules, rollover, discounts, and lifecycle examples
 - [[source-metronome-api-reference-contracts-create-a-contract]] — current create-contract request schema and conditional constraints

@@ -1,0 +1,70 @@
+{
+  "job_id": "get-services",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Security Service Registry API\"\ntype: source\ndate_ingested: 2026-08-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/security/get-services\"\nraw_files:\n  - \"metronome/api-reference/security/get-services-2026-07-13.md\"\ntags: [metronome, api-security, ip-allowlisting, firewall-configuration, service-registry]\n---\n\n## Overview\n\nThis API reference documents the bearer-authenticated `GET /v1/services` endpoint on Metronome's production API. The endpoint returns named services and IP strings intended for security allowlisting and firewall configuration, with a direction label indicating how each service uses those IPs. The page defines the successful response schema but does not publish current registry values, error responses, refresh mechanics, or a complete network-security policy.\n\n## Key takeaways\n\n- `GET https://api.metronome.com/v1/services` inherits the document-level HTTP bearer requirement and has no documented parameters or request body.\n- A 200 response is an object with a required `services` array. Every service item requires `name`, `usage`, and `ips`.\n- `name` is a string; `usage` is restricted to `makes_connections_from` or `accepts_connections_at`; and `ips` is an array of strings. The schema does not define whether an IP string is a host address, CIDR range, or another notation.\n- Metronome says new IPs typically appear in the registry 30 days or more before first use. The word \"typically\" does not establish a guaranteed notice period.\n- The page documents no non-200 responses, token-scope requirement, rate limit, cache lifetime, polling cadence, change notification, removal lead time, or fallback behavior.\n\n## Endpoint and authentication boundary\n\nThe production server is `https://api.metronome.com`, the route is `GET /v1/services`, and the operation ID is `getServices-v1` under the Security tag. The OpenAPI document declares HTTP bearer authentication at the document level. The operation defines no path or query parameters and no request body.\n\nBearer authentication governs access to this API call, but this page does not identify the permission or endpoint scope a token needs. It also does not define token creation, rotation, expiry, archival, or invalid-token responses; the dedicated authentication reference owns those controls.\n\n## Service registry schema\n\nThe only documented response is 200 Success with `application/json`. Its top-level object requires `services`, an array whose items reference the `Service` schema. Each `Service` object requires all three documented properties: string `name`, enum `usage`, and string-array `ips`.\n\nThe two permitted `usage` values are `makes_connections_from` and `accepts_connections_at`. Their labels express opposite connection directions, but the page supplies no field descriptions or examples that define the actor perspective, protocol, port, environment, or whether one service can appear in multiple records. Although the narrative calls the values IP ranges, the schema gives each `ips` item only `type: string`; it supplies no IP or CIDR format, validation pattern, uniqueness rule, minimum array size, or address-family indication.\n\nThe OpenAPI schema requires the `services` property and each item's three fields, but it sets no `minItems` on either array and no `minLength` on `name` or an `ips` string. It also provides no registry version, generation timestamp, effective-from time, retirement time, pagination, ordering, or stable-identifier field.\n\n## Operational security boundaries\n\nMetronome presents the registry as an input to allowlists and firewall rules and says new IPs typically appear 30 days or more before first use. This does not define how often a consumer must poll, how quickly changes become visible, how removals are announced, how long old IPs remain valid, or what to do when retrieval fails. The page also does not state that registry membership proves a request's authenticity or replaces TLS, bearer authentication, or webhook signature verification.\n\nRelated webhook documentation makes a narrower statement that changes to its published webhook IP list receive at least 30 days' notice. This generic registry page instead says new IPs \"typically\" appear 30 days or more before first use. Those statements are not a direct contradiction because their scopes and wording differ, but they should not be collapsed into one universal guarantee.\n\n## Errors, unknowns, and contradictions\n\n- Only the 200 response is defined; there are no 401, 403, 404, 429, or 5xx schemas and no documented error object.\n- Current service names, IP values, environments, protocols, ports, address families, and directional interpretation are absent because the page includes no example response.\n- Completeness, ordering, pagination, caching, freshness, polling, versioning, update notification, IP addition and removal timelines, and failure recovery are unspecified.\n- No direct contradiction with the existing Metronome security material was found. The 30-day wording difference above remains a source-scoped operational boundary rather than a contradiction.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-security-principles]], [[metronome-webhooks]]\n- Related sources: [[source-metronome-api-reference-authentication]], [[source-metronome-guides-platform-configuration-security-principles]], [[source-metronome-guides-platform-configuration-setup-webhooks]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/security/get-services-2026-07-13|2026-07-13 snapshot \u2014 bearer-authenticated service registry and IP allowlisting schema]]\n",
+  "quotes": [
+    {
+      "text": "Gets Metronome's service registry with associated IP addresses for security allowlisting and firewall configuration. Use this endpoint to maintain an up-to-date list of IPs that your systems should trust for Metronome communications. Returns service names and their current IP ranges, with new IPs typically appearing 30+ days before first use to ensure smooth allowlist updates.",
+      "location": "line 11, purpose and IP-change lead-time statement"
+    },
+    {
+      "text": "security:\n  - bearerAuth: []",
+      "location": "lines 26-27, document-level bearer security requirement"
+    },
+    {
+      "text": "  /v1/services:\n    get:\n      tags:\n        - Security\n      summary: Get services\n      description: >\n        Gets Metronome's service registry with associated IP addresses for\n        security allowlisting and firewall configuration. Use this endpoint to\n        maintain an up-to-date list of IPs that your systems should trust for\n        Metronome communications. Returns service names and their current IP\n        ranges, with new IPs typically appearing 30+ days before first use to\n        ensure smooth allowlist updates.\n      operationId: getServices-v1",
+      "location": "lines 88-100, method, route, tag, description, and operation ID"
+    },
+    {
+      "text": "      responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - services\n                properties:\n                  services:\n                    type: array\n                    items:\n                      $ref: '#/components/schemas/Service'",
+      "location": "lines 101-114, sole documented response and required services array"
+    },
+    {
+      "text": "    Service:\n      type: object\n      required:\n        - name\n        - usage\n        - ips\n      properties:\n        name:\n          type: string\n        usage:\n          type: string\n          enum:\n            - makes_connections_from\n            - accepts_connections_at\n        ips:\n          type: array\n          items:\n            type: string",
+      "location": "lines 117-134, required Service fields and field types"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "get-services-security-registry-schema",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Authenticated service communication",
+        "proposed_markdown": "Metronome exposes a bearer-authenticated `GET /v1/services` registry for security allowlisting and firewall configuration. A successful response requires a `services` array; each item requires string `name`, enum `usage` (`makes_connections_from` or `accepts_connections_at`), and string-array `ips`. The page says new IPs typically appear 30 days or more before first use, but it defines neither the IP-string notation nor polling, freshness, removal, failure-recovery, protocol, port, environment, or directional-perspective semantics. Registry membership is not documented as message authentication or as a replacement for webhook signature verification.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the word typically; do not convert the generic registry lead time into a guaranteed 30-day notice period.",
+          "Do not infer CIDR notation, an exhaustive or nonempty registry, IP exclusivity, ports, protocols, environments, or the actor perspective of the usage enum.",
+          "Keep network allowlisting separate from TLS, bearer-token authorization, and per-message webhook signature verification."
+        ]
+      },
+      {
+        "update_id": "get-services-security-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-security-get-services]] \u2014 bearer-authenticated service registry, directional usage labels, IP strings, and allowlisting boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/security/get-services-2026-07-13.md",
+  "raw_sha256": "ed652135505abf971cbed018ce28264543434c7828f64bbd26c648c99ad1a5fa",
+  "status": "candidate_ready"
+}

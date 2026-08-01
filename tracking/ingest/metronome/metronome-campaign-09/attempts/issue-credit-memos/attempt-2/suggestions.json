@@ -1,0 +1,99 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "issue-credit-memos-credits-future-versus-ar-memo",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Drawdown and invoice attribution",
+      "proposed_markdown": "### Future-credit versus credit-memo boundary\n\nA Metronome credit can grant relief on future billing at customer scope, where it can apply across existing contracts on the account, or at contract scope. This does not alter the past transaction or invoice. When charges and associated revenue must be reversed, the credit-memo guide instead assigns the memo to the external customer-A/R system; the resulting A/R invoice can differ from the Metronome invoice line, with the memo serving as the audit record. The source does not establish that a future credit reverses historical revenue.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Keep a Metronome future credit distinct from an ERP-style A/R credit memo and from a payment refund.",
+        "The worked future-credit JSON has an ending_before timestamp in 2020 before its 2024 starting_at timestamp; do not copy those dates."
+      ]
+    },
+    {
+      "update_id": "issue-credit-memos-credits-reciprocal-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]] \u2014 future customer- or contract-level credit boundary versus external A/R credit memos",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Add only after the source page is promoted."
+      ]
+    },
+    {
+      "update_id": "issue-credit-memos-invoicing-state-and-rebill-boundaries",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Credit and commit application",
+      "proposed_markdown": "### Credit, correction, and re-bill state boundaries\n\nFor incorrect usage on a current-period `DRAFT` invoice, the credit-memo guide directs the merchant to send a negative quantity or value matching the affected product's billable metric. For a previous-period `finalized` invoice, Metronome says usage events cannot be corrected or adjusted; the documented alternatives are a future credit or an external A/R credit memo. When the whole invoice is wrong, the guide separately gives a credit-and-rebill sequence of negative usage, corrected usage, voiding, and regeneration. A Metronome void does not void a downstream invoice, and historical usage submission is limited to 34 days; older re-bills remain entirely in the invoicing and A/R system.\n\n> [!warning] Documentation ambiguity\n> The finalized-period example prohibits usage-event correction for finalized invoices, while the following re-bill sequence instructs readers to negate and replace usage before voiding without stating the starting invoice state or reconciling that order with finalized-invoice immutability. Verify state preconditions and operation order before implementation.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Do not describe draft correction, future credit, external credit memo, invoice void/regeneration, and payment refund as interchangeable operations.",
+        "The source does not define accounting entries, tax treatment, downstream atomicity, failure recovery, or the exact 34-day cutoff."
+      ]
+    },
+    {
+      "update_id": "issue-credit-memos-invoicing-reciprocal-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]] \u2014 future credits, external A/R credit memos, draft versus finalized correction, void-and-regenerate re-billing, and refund ownership",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Add only after the source page is promoted."
+      ]
+    },
+    {
+      "update_id": "issue-credit-memos-event-ingestion-correction-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Scale, observability, and recovery",
+      "proposed_markdown": "A correction guide applies compensating usage only while the current-period invoice is `DRAFT`: send a new event with a negative quantity or value that matches the affected product's billable metric. For a previous-period `finalized` invoice, it says usage events cannot be corrected or adjusted; use a future credit or an external A/R credit memo instead. Its separate full-invoice re-bill flow negates and replaces usage before voiding and regeneration, but does not reconcile that ordering with the finalized-invoice rule, so the invoice-state precondition remains ambiguous.\n\n> [!warning] Documentation scope conflict\n> [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]] calls external invoicing/customer-A/R voiding, cancellation, and regeneration the only credit-and-rebill option beyond 34 days, while [[source-metronome-guides-events-high-volume-ingestion]] says corrections beyond 34 days are handled by Metronome operations. The documentation does not establish whether these are separate self-service invoice re-billing and operations-assisted usage-correction scopes. Do not treat the routes as interchangeable; verify the applicable route with Metronome.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "Treat the negative event as a compensating event, not evidence that the original event is mutated or deleted.",
+        "Verify credit-and-rebill state preconditions before applying the sequence to a finalized invoice.",
+        "Preserve the unresolved beyond-34-day scope conflict and both source links at the concept's existing recovery boundary."
+      ]
+    },
+    {
+      "update_id": "issue-credit-memos-event-ingestion-reciprocal-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]] \u2014 negative usage-event correction for draft invoices, the finalized-invoice boundary, and the conflicting beyond-34-day credit-and-rebill route",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "Add only after the source page is promoted.",
+        "Keep the source citation reciprocal with the documentation-conflict fact at the recovery boundary."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

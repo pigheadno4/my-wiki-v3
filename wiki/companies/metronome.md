@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 60
+source_count: 70
 ---
 
 ## Overview
@@ -145,8 +145,8 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 60
-- Documentation pages pending ingest: 165
+- Ingested source summaries: 70
+- Documentation pages pending ingest: 155
 
 ## Sources
 
@@ -210,6 +210,16 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] — pre-action cost simulation, contract pricing, preview modes, multi-contract responses, deduplication, and limits
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] — merchant-configured spend, dimension, commit-balance, and invoice-total alerts with access-enforcement boundaries
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]] — customer aggregate and per-balance ledger retrieval, signed arithmetic, precision, effective time, and manual adjustments
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-guides-home]] — navigation routes for pay-as-you-go, enterprise commits, usage subscriptions, and pre-paid credits
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-alerts]] — credit and commit threshold dimensions, custom-field scoping, and downstream action boundary
+- [[source-metronome-guides-pricing-packaging-overview]] — pricing-and-packaging navigation across billing models, changes, credits, commits, and examples
+- [[source-metronome-guides-platform-configuration-metronome-pricing-model]] — Metronome platform fees, consumption commitment, Events, Billings, and exported-row accounting
+- [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-basic-filters]] — streaming metric filters, property existence, grouped counting, and API representation
+- [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]] — supported currencies, API denomination, custom-unit pricing, balance drawdown, and invoice conversion
+- [[source-metronome-guides-events-send-usage-events]] — usage-event fields, direct-ingest retries, heartbeat IDs, customer attribution, and 34-day duplicate suppression
+- [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]] — future credits, external A/R credit memos, invoice-state corrections, re-billing, and refunds
+- [[source-metronome-api-reference-security-get-services]] — authenticated service registry, directional IP usage labels, and allowlisting boundaries
+- [[source-metronome-api-reference-alerts-reset-a-threshold-notification]] — threshold-state reset, asynchronous reassessment, empty success response, and retry unknowns
 
 ## Related
 
@@ -230,3 +240,4 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 - [[metronome-api-idempotency]] — platform-specific retry keys, conflict behavior, retention, and cached errors
 - [[metronome-subscriptions]] — subscription pricing, contract configuration, transitions, and cancellation
 - [[metronome-alerts-and-notifications]] — alert-definition semantics and merchant-action boundary
+- [[metronome-currencies-and-custom-pricing-units]] — Metronome-specific fiat denomination, custom-unit rate setup, matching-balance drawdown, and invoice conversion

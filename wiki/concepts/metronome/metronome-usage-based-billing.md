@@ -11,6 +11,10 @@ Metronome's documentation presents usage-oriented billing as a pricing and packa
 
 ## Pricing and packaging patterns
 
+## Metronome commercial pricing boundary
+
+Metronome's own customer pricing is distinct from the prices merchants configure for their end users. It combines an annual platform fee, excluded from consumption charge categories, with consumption-based charges that begin at production go-live. An order-form Consumption Commitment is a prepaid, non-refundable minimum against those platform-usage charges; unused value expires at the end of the applicable service term. This commercial commitment must not be treated as a Metronome credit or commit object configured for a merchant's customer. [[source-metronome-guides-platform-configuration-metronome-pricing-model]]
+
 | Pattern | Landing-page description |
 | --- | --- |
 | Pay as you go | Charge customers in arrears for what they use. |
@@ -56,6 +60,8 @@ This page describes the Metronome-specific implementation surface. For the cross
 These remaining questions require dedicated sources and are not fully answered by the landing page or the currently ingested implementation guides.
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-overview]] — navigation overview identifying pay-as-you-go, subscriptions, enterprise commits, hybrid approaches, pricing changes, and credits-and-commits as the documented pricing-and-packaging areas
 
 - [[source-metronome-guides-get-started-home]] — documentation landing page and pricing-model routes
 - [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]] — event aggregation, product and rate-card roles, contract overrides, and metric testing

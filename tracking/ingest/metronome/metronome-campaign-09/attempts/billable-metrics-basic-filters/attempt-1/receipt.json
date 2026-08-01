@@ -1,0 +1,72 @@
+{
+  "job_id": "billable-metrics-basic-filters",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Create Streaming Billable Metrics\"\ntype: source\ndate_ingested: 2026-08-01\ncanonical_url: \"https://docs.metronome.com/guides/implement-metronome/core-concepts/billable-metrics-basic-filters\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/implement-metronome/core-concepts/billable-metrics-basic-filters-2026-07-13.md\"\ntags: [metronome, billable-metrics, streaming-metrics, filters, aggregation]\n---\n\n## Overview\n\nThis guide shows how to create a streaming billable metric with Metronome's Basic Filters editor or an equivalent API request. Its worked example matches successful `api_request` events, requires a `user_id`, counts the matched calls, and groups the result by user.\n\n## Key takeaways\n\n- Every metric defined with the Basic Filters editor is a streaming billable metric; the editor supplies structured filters and aggregations over the usage stream.\n- In the worked `API Calls` metric, the event type is `api_request`, `status` must be in `success`, and `user_id` must exist. Metronome uses `user_id` as a group key, so the count is broken out by user.\n- Streaming billable metrics support `COUNT`, `SUM`, `MAX`, and `LATEST`. The example selects `COUNT`; the guide directs `UNIQUE` aggregation to a SQL billable metric.\n- The equivalent create request represents the event match as `event_type_filter.in_values`, represents both property conditions under `property_filters`, sets `aggregation_type` to `COUNT`, and uses the compound-array form `group_keys: [[\"user_id\"]]`.\n\n## Matching, filtering, and grouping\n\nThe UI flow selects `api_request` as the event type. It applies an `In` filter that admits `status: success` and an `Exists` filter for `user_id`. The latter property is also configured as a group key. For this example, the resulting metric counts successful API calls and breaks that count out by `user_id`.\n\nThe equivalent API payload makes the `status` condition explicit as both `exists: true` and `in_values: [\"success\"]`; it represents `user_id` with `exists: true`. The page demonstrates these conditions together but does not define general boolean composition across several property filters, include/exclude precedence, case sensitivity, type coercion, or behavior for malformed property values. It also does not explain whether the UI adds `exists: true` automatically when an `In` filter is selected.\n\n## Aggregation and streaming boundaries\n\nThe example uses `COUNT` to count calls rather than sum or average a property. The guide lists four streaming aggregation types: `COUNT`, `SUM`, `MAX`, and `LATEST`; it sends `UNIQUE` to the SQL metric path. It does not define the aggregation key requirements or value handling for `SUM`, `MAX`, and `LATEST`, nor the ordering rule for `LATEST`.\n\n> [!warning] Aggregation contract mismatch\n> This guide presents `COUNT`, `SUM`, `MAX`, and `LATEST` as the streaming set and directs `UNIQUE` to a SQL billable metric. The create and retrieval API references also enumerate `UNIQUE` in `aggregation_type` without defining its semantics or reconciling whether it is a supported streaming operation. Treat streaming `UNIQUE` support as unresolved.\n\nAll Basic Filters metrics are identified as streaming, but this page does not specify ingestion-to-aggregation latency, throughput, event ordering, duplicate handling, billing-period windows, late-event behavior, historical backfill or reflow, metric editability, or when a saved metric begins matching events. The API sample documents the create payload only; it does not show the response, errors, idempotency, authentication scope, or persistence guarantees.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-billable-metrics]], [[metronome-event-ingestion]], [[metronome-usage-based-billing]]\n- Related sources: [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]], [[source-metronome-api-reference-billable-metrics-create-a-billable-metric]], [[source-metronome-api-reference-billable-metrics-get-a-billable-metric]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/implement-metronome/core-concepts/billable-metrics-basic-filters-2026-07-13|2026-07-13 snapshot \u2014 Basic Filters setup, event matching, aggregation, grouping, and equivalent API payload]]\n",
+  "quotes": [
+    {
+      "text": "The streaming`Basic Filters` editor is a structured query builder designed to provide out-of-the-box filters and aggregations on your usage stream. All metrics defined with the Basic Filters editor are created as streaming billable metrics.",
+      "location": "line 40, Basic Filters editor and streaming-metric boundary"
+    },
+    {
+      "text": "5. Select the event type (for example, `api_request`).\n6. Set filters:\n\n   <List marker=\"lower-roman\">\n     * **Property 1**\n         <List marker=\"disc\">\n           * `property_name`: \"status\"\n           * `operator`: \"In\"\n           * `value`: \"success\" (This ensures Metronome only counts successful API calls.)\n         </List>\n     * **Property 2**\n         <List marker=\"disc\">\n           * `property_name`: \"user\\_id\"\n           * `operator`: \"Exists\"\n           * (Metronome uses this as a group key to display API calls broken out by user.)\n         </List>\n   </List>",
+      "location": "lines 50-66, event type and property-filter example"
+    },
+    {
+      "text": "7. Choose the aggregation method:\n\n   * To count the number of API calls, not sum or average them, select \"Count\".\n\n   Streaming billable metrics support four aggregation types: `COUNT`, `SUM`, `MAX`, and `LATEST`. For other aggregation types, such as `UNIQUE`, use a [SQL billable metric](/guides/implement-metronome/core-concepts/billable-metrics-sql-editor).",
+      "location": "lines 67-71, COUNT example and supported streaming aggregation set"
+    },
+    {
+      "text": "This billable metric counts all successful API calls broken out by `user_id`, providing a simple but effective measure of platform usage across an organization.",
+      "location": "line 79, worked metric result"
+    },
+    {
+      "text": "Prefer using the API? Here is an example request to set up the same metric:\n\n```bash theme={null}\ncurl -X POST https://api.metronome.com/v1/billable-metrics/create \\\n -H \"Authorization: Bearer <TOKEN>\" \\\n -H \"Content-Type: application/json\" \\\n -d '{\n    \"name\":\"API Calls\",\n    \"event_type_filter\": {\n      \"in_values\": [\"api_request\"]\n    },\n    \"property_filters\": [\n      {\n        \"name\": \"status\",\n        \"exists\": true,\n        \"in_values\": [\"success\"]\n      },\n      {\n        \"name\": \"user_id\",\n        \"exists\": true\n      }\n    ],\n    \"aggregation_type\": \"COUNT\",\n    \"group_keys\": [[\"user_id\"]]\n  }'\n```",
+      "location": "lines 81-106, equivalent create-billable-metric API request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "billable-metrics-basic-filters-matching-example",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Matching and aggregation",
+        "proposed_markdown": "The Basic Filters editor always creates a streaming billable metric. Its worked API-call example matches event type `api_request`, filters `status` to `success`, requires `user_id` to exist, uses `COUNT`, and groups the result by `user_id`; the equivalent API payload expresses those choices with `event_type_filter.in_values`, `property_filters`, `aggregation_type`, and nested `group_keys`. The example does not define general multi-filter boolean rules, include/exclude precedence, coercion, duplicate handling, time windows, late events, or when matching begins.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the worked example separate from undocumented general filter-composition semantics.",
+          "Do not infer ingestion latency, deduplication, retroactivity, reflow, or metric-edit behavior from this page."
+        ]
+      },
+      {
+        "update_id": "billable-metrics-basic-filters-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-basic-filters]] \u2014 Basic Filters event matching, property existence, grouped `COUNT`, streaming aggregation set, and unresolved `UNIQUE` boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source supports the four-operation streaming set and SQL direction for `UNIQUE`; API schemas separately enumerate `UNIQUE` without defining it."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/implement-metronome/core-concepts/billable-metrics-basic-filters-2026-07-13.md",
+  "raw_sha256": "d934d873c509b5962de5ef14414c4919ec279c9142edccf507a4ae1907e5a89f",
+  "status": "candidate_ready"
+}

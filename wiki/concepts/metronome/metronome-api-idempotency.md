@@ -36,6 +36,8 @@ For periodic usage heartbeats, the event guide gives a concrete deterministic pa
 
 ## Sources
 
+- [[source-metronome-guides-events-send-usage-events]] — 34-day transaction-ID duplicate suppression, retry reuse, deterministic heartbeat IDs, and the unqualified-versus-windowed guarantee tension
+
 - [[source-metronome-api-reference-idempotency]] — mechanism selection, key lifetimes, conflict behavior, cached errors, and retry guidance
 - [[source-metronome-api-reference-status-codes]] — API-wide conflict, rate-limit, and server-error recovery guidance
 - [[source-metronome-guides-implement-metronome-core-concepts-send-usage-events]] — direct-ingest retry safety and deterministic heartbeat identifiers

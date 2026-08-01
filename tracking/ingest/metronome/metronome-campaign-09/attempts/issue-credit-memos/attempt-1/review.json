@@ -1,0 +1,23 @@
+{
+  "job_id": "issue-credit-memos",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full-source review finds the candidate accurate and unusually careful on the main semantic boundaries: a Metronome credit applies to future billing rather than altering the past transaction or invoice; a historical reversal of charges and associated revenue uses a credit memo in the external customer-A/R system; negative usage corrects a current-period DRAFT invoice; finalized previous-period usage cannot be corrected and instead requires a future credit or external credit memo; refunds remain owned by the ERP, CRM, or payment processor; and Metronome voiding does not propagate downstream. It also correctly quarantines the future-credit example's impossible 2024 starting_at / 2020 ending_before schedule, preserves the undocumented finalized-invoice precondition in the negate-replace-void-regenerate sequence, and keeps accounting, tax, payment, idempotency, cutoff, failure-recovery, and transactional-reconciliation behavior unknown. Canonical URL, raw_files entry, path-qualified raw link, exact raw hash, all five byte-exact quotes and cited locations, candidate/receipt equality, suggestions/receipt equality, related links, source-target absence, all six concept targets and anchors, and the Campaign 09 empty company/index/log arrays validate. Two content issues prevent approval. First, the credit-and-rebill summary omits the guide's explicit branch that an A/R system unable to void or cancel invoices requires a credit memo; without it, the decision table can leave the reader with no documented downstream action when the manual void/cancel step is unavailable. Second, the candidate presents this guide's beyond-34-day external-only re-bill route without reconciling the existing high-volume-ingestion source and metronome-event-ingestion concept, which say corrections beyond 34 days are handled by Metronome operations. These statements may refer to different scopes (self-service invoice re-billing versus operations-assisted usage correction), but the documentation does not establish that distinction, so the wiki must preserve it as an unresolved scope conflict rather than silently treating both as a single rule.",
+  "required_changes": [
+    "Add the missing A/R capability branch to the decision boundaries and credit-and-rebill discussion: when the customer-A/R system cannot void or cancel the downstream invoice, the guide says a credit memo is required. Keep that memo externally owned and distinct from a Metronome future credit, a negative usage event, invoice regeneration, and a payment refund.",
+    "Add an explicit documentation-conflict callout explaining that this source calls external invoicing/customer-A/R voiding, cancellation, and regeneration the only beyond-34-day credit-and-rebill option, while [[source-metronome-guides-events-high-volume-ingestion]] says corrections beyond 34 days are handled by Metronome operations. Do not infer that the two routes are interchangeable or assign an undocumented scope; direct implementers to verify whether the difference is self-service invoice re-billing versus operations-assisted usage correction.",
+    "Extend the shared concept plan so wiki/concepts/metronome/metronome-event-ingestion.md preserves that 34-day scope conflict at its existing recovery boundary, with a reciprocal source citation. Ground the new fact in a byte-exact quote covering raw line 130 and keep the worker receipt within the required three-to-five-quote limit by consolidating or replacing an existing quote and updating affected quote_indexes. Preserve the six submitted suggestions unless the revised quote indexes require mechanical changes."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "full",
+  "shared_update_decisions": [
+    "issue-credit-memos-credits-future-versus-ar-memo",
+    "issue-credit-memos-credits-reciprocal-source-link",
+    "issue-credit-memos-invoicing-state-and-rebill-boundaries",
+    "issue-credit-memos-invoicing-reciprocal-source-link",
+    "issue-credit-memos-event-ingestion-correction-boundary",
+    "issue-credit-memos-event-ingestion-reciprocal-source-link"
+  ],
+  "reviewer_identity": "sol-review-issue-credit-memos-a1",
+  "reviewer_model": "gpt-5.6-sol"
+}

@@ -15,6 +15,8 @@ Access is denied until explicitly granted and can be controlled at field level. 
 
 ## Authenticated service communication
 
+Metronome exposes a bearer-authenticated `GET /v1/services` registry for security allowlisting and firewall configuration. A successful response requires a `services` array; each item requires string `name`, enum `usage` (`makes_connections_from` or `accepts_connections_at`), and string-array `ips`. The page says new IPs typically appear 30 days or more before first use, but it defines neither the IP-string notation nor polling, freshness, removal, failure-recovery, protocol, port, environment, or directional-perspective semantics. Registry membership is not documented as message authentication or as a replacement for webhook signature verification.
+
 Communication between systems, or between an actor and a system, is authenticated. The documentation describes forwarding the same security token through downstream service calls so that each service can independently verify the request and grant the relevant access.
 
 ## Credential lifetime
@@ -37,6 +39,8 @@ Metronome documents three built-in roles: admin, member, and viewer. With SSO, a
 New API tokens can be assigned a selected role at creation, and that role cannot later be changed. The authentication reference separately says tokens inherit the creating user's permissions by default. These may describe default inheritance versus explicit RBAC assignment, but the sources do not define precedence; retain both as source-scoped facts.
 
 ## Sources
+
+- [[source-metronome-api-reference-security-get-services]] — bearer-authenticated service registry, directional usage labels, IP strings, and allowlisting boundaries
 
 - [[source-metronome-guides-platform-configuration-security-principles]] — least privilege, zero trust, and short-lived credential principles
 - [[source-metronome-api-reference-authentication]] — customer bearer-token creation, use, scoping, and archival

@@ -23,6 +23,10 @@ The overview emphasizes optionality: organizations can use simpler integrated in
 
 ## Calculation and timing boundary
 
+## Commercial Billings measure
+
+For Metronome's own consumption pricing, Billings are the total value of invoices generated through Metronome whether invoiced automatically or manually. The stated exclusions are current-period finalized invoices voided before Metronome invoices the platform customer, non-production draft invoices used for testing or demonstration, and zero-dollar invoices used to track free-trial credits. The source does not define currency aggregation, tax, discounts, refunds, or other adjustments. [[source-metronome-guides-platform-configuration-metronome-pricing-model]]
+
 The architecture guide orders invoice generation as usage receipt, billable-metric quantity calculation, contract pricing with base-rate-card overrides, and customer-facing invoice generation. It separately describes event-time alert evaluation, on-demand API-backed views, and cycle-close invoice finalization and delivery. The first two contexts do not establish that an invoice is finalized, and the page gives no latency, delivery, collection, retry, or failure-state guarantees.
 
 The customer-controls guide distinguishes two alert calculations: `spend_threshold_reached` uses usage-based spend before credit and commit drawdown, while `invoice_total_reached` evaluates the amount after drawdown and can be limited to usage invoices. These are threshold-evaluation semantics, not evidence that an invoice is finalized, delivered, collected, paid, or immutable.
@@ -40,6 +44,15 @@ These results are previews, not finalized, delivered, collectible, or documented
 The dashboard quickstart describes a draft invoice accumulating usage during the billing period, followed by a 24-hour grace period before finalization. With a billing provider connected, it says the invoice is pushed within approximately one hour after finalization. Payment collection and paid or failed status remain the billing provider's responsibility.
 
 ## Credit and commit application
+
+For a product rated in a custom pricing unit, Metronome first burns down applicable credits and prepaid commits with access schedules in that unit. If no applicable matching balance remains, the invoice receives a conversion line item that calculates the residual cost in the rate card's fiat currency; the converted fiat amount becomes the total due in the example. This does not establish conversion formula direction, precision, rounding, tax, finalization, delivery, collection, or payment-success behavior.
+
+### Credit, correction, and re-bill state boundaries
+
+For incorrect usage on a current-period `DRAFT` invoice, the credit-memo guide directs the merchant to send a negative quantity or value matching the affected product's billable metric. For a previous-period `finalized` invoice, Metronome says usage events cannot be corrected or adjusted; the documented alternatives are a future credit or an external A/R credit memo. When the whole invoice is wrong, the guide separately gives a credit-and-rebill sequence of negative usage, corrected usage, voiding, and regeneration. A Metronome void does not void a downstream invoice, and historical usage submission is limited to 34 days; older re-bills remain entirely in the invoicing and A/R system.
+
+> [!warning] Documentation ambiguity
+> The finalized-period example prohibits usage-event correction for finalized invoices, while the following re-bill sequence instructs readers to negate and replace usage before voiding without stating the starting invoice state or reconciling that order with finalized-invoice immutability. Verify state preconditions and operation order before implementation.
 
 Credits and commits apply at invoice line-item level. Covered usage, its negative application line, and uncovered overage remain separate so product-level precommitted and overage spend stays attributable. A commit can record an invoiced amount without sending a downstream invoice, and scheduled commit charges can be consolidated onto a usage statement when the contract enables that behavior.
 
@@ -101,6 +114,9 @@ Decimal quantities are moved into descriptions while Stripe line-item quantities
 - Related platform: [[stripe]]
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]] — custom-unit balance drawdown, conversion-line-item fallback, and fiat total-due boundary
+- [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]] — future credits, external A/R credit memos, draft versus finalized correction, void-and-regenerate re-billing, and refund ownership
 
 - [[source-metronome-guides-invoices-overview]] — Stripe, marketplace, and ERP invoicing options
 - [[source-metronome-api-reference-invoices-preview-events]] — draft-invoice previews calculated from proposed usage events

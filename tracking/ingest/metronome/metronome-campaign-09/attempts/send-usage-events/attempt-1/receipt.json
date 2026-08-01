@@ -1,0 +1,112 @@
+{
+  "job_id": "send-usage-events",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Send Usage Events (Events Guide)\"\ntype: source\ndate_ingested: 2026-08-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/events/send-usage-events\"\nraw_files:\n  - \"metronome/guides/events/send-usage-events-2026-07-13.md\"\ntags: [metronome, usage-events, event-ingestion, idempotency, retries, billable-metrics]\n---\n\n## Overview\n\nThis guide defines the event fields and producer-side operating practices for sending usage data to Metronome through `/ingest` or a Segment connection. Its direct-API guidance combines event-level transaction IDs with a reliable queue, status-specific retries, dead-letter handling, audit logging, resilience tests, deterministic heartbeat IDs, and asynchronous customer provisioning.\n\n## Key takeaways\n\n- A usage event has four required fields\u2014`transaction_id`, `customer_id`, `timestamp`, and `event_type`\u2014plus an optional `properties` object. The page labels all four required values as strings.\n- Once Metronome accepts an event, later events with the same `transaction_id` during the next 34 days are ignored as duplicates. The page does not define the exact boundary or the response for a duplicate.\n- `customer_id` can be a Metronome customer ID or one of that customer's ingest aliases. `timestamp` must be a four-digit-year RFC 3339 string, drives time-range selection for usage queries and invoices, and is rejected when it is more than 24 hours in the future.\n- The guide recommends representing every `properties` key and value as a string to avoid floating-point precision loss; it says Metronome uses arbitrary-precision decimals internally. This recommendation is not a complete endpoint-schema definition.\n- For direct `/ingest` delivery, use a reliable queue. Retry network and `5xx` failures until `200`, use increasing exponential delays for repeated `429` responses, and send other `4xx` payload failures to a dead-letter queue instead of automatically retrying them.\n\n## Event fields and identity boundaries\n\n`transaction_id` is the event's duplicate-suppression identity. The documented guarantee is acceptance-relative: after one event is accepted, subsequent uses of that ID within the next 34 days are ignored. The source does not say whether the window is inclusive at exactly 34 days, whether it is measured from first acceptance or later duplicate attempts, how a different payload using the same ID is handled, whether an ID can be safely reused after the window, or how duplicates are represented in the HTTP response.\n\n`customer_id` attributes billable usage to a customer and can carry either the Metronome customer identifier or an ingest alias such as an application account number. One customer can have multiple aliases. The page does not define alias format, uniqueness across customers, reassignment, removal, conflict responses, or the behavior of an event whose alias has not yet been attached.\n\n`timestamp` is the occurrence time used to select events for usage queries and invoice production. This guide rejects timestamps more than 24 hours in the future but does not specify the permitted historical age, precision, timezone-offset normalization, leap-second behavior, or whether exactly 24 hours ahead is accepted.\n\n`event_type` and `properties` describe the event for downstream metrics. The guide permits application-defined event types and recommends string representation for all property keys and values. It does not define property-count, key-length, value-length, nesting, null, boolean, array, or top-level additional-field behavior. Its email example says one property can be aggregated by default, while a derived expression such as `num_recipients * size` requires a SQL-based billable metric.\n\n## Queue, retry, and failure handling\n\nFor direct API delivery, the guide recommends a reliable queue such as Amazon SQS or RabbitMQ with a worker that forwards queued events to Metronome. Queue choice, delivery semantics, visibility timeouts, ordering, concurrency, retention, poison-message policy, and worker acknowledgement timing remain implementation-owned and undocumented here.\n\nA network error or `5xx` response can leave a batch partially ingested, so the guide says to retry the call until a `200` is received. Retry safety depends on preserving each event's original `transaction_id`; it must not be generalized to new IDs, non-ingest writes, or permanent uniqueness beyond the stated 34-day duplicate window. The source does not define batch size, partial-result visibility, a retry deadline, maximum attempts, client timeout, or how to reconcile a response lost after server acceptance.\n\nFor `429`, back off and retry after a delay, increasing the delay exponentially if rate limiting continues. The guide does not define a starting delay, multiplier, cap, jitter, retry header, rate-limit scope, or terminal condition. For every other `4xx`, it says not to auto-retry: isolate the event in a dead-letter queue, alarm, investigate the payload, and resolve the defect. It does not specify whether a mixed batch must be split before reprocessing or how a corrected event should preserve or replace its transaction ID.\n\nEnable message-queue logging during initial integration and whenever the event structure changes so sent events can be audited. Metronome can configure a trial API failure rate in Sandbox or Production; the page recommends 20% and requires coordinating the rate and test window with a representative. It does not state which status or network failures are injected, whether acceptance can precede an injected failure, or whether the test affects Segment delivery.\n\n## Heartbeats, schema changes, and critical paths\n\nFor a per-node, per-minute heartbeat, the guide proposes `<node id>_<floor(unix_now()/60)>` so duplicate sends for the same node and minute share an ID. It recommends two or more heartbeats per measurement period: duplicate suppression prevents double counting while redundant sends reduce the chance that timer imprecision or delay leaves a gap. The page does not define clock-skew tolerance, node-ID escaping or collision resistance, measurement-period alignment, late-arrival behavior, or aggregation across nodes.\n\n> [!warning] Idempotency wording tension\n> The heartbeat section says Metronome guarantees that only one event with a given `transaction_id` is processed, while the same page specifically bounds later duplicate suppression to the next 34 days after acceptance. Treat the heartbeat statement as applying to duplicate sends within the documented window, not as proof of permanent global uniqueness.\n\nChanging an event's structure can stop the specific billable metrics it targets from recording usage, so the guide recommends representative-assisted validation and testing for schema changes. Because ingest aliases can match events sent before or after Metronome customer creation, it also recommends keeping Metronome off the critical customer-creation path: create the application customer first and create the matching Metronome record asynchronously. The page does not define the retention or eventual-attribution guarantees needed to turn that recommendation into a complete provisioning design.\n\n## Documentation overlap and unknowns\n\nThis canonical route substantially overlaps the already ingested `implement-metronome/core-concepts/send-usage-events` guide. The route and raw snapshot are distinct evidence, but they do not establish two ingestion products or two retry protocols. No contradiction with the current Metronome wiki was found; the current concepts already preserve the 34-day boundary, string-property recommendation, partial-failure retry behavior, heartbeat pattern, and asynchronous provisioning guidance.\n\nBeyond the boundaries above, this page does not document authentication, request-array or response schemas, maximum events or bytes per call, endpoint throughput, numeric rate limits, historical timestamp limits, ordering, atomicity, Segment retry or idempotency behavior, data retention, event-search consistency, metric-match results, or invoice recalculation timing. Use the dedicated API and high-volume sources for those concerns.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-event-ingestion]], [[metronome-api-idempotency]], [[metronome-billable-metrics]], [[metronome-customers-and-contracts]]\n- Related sources: [[source-metronome-guides-implement-metronome-core-concepts-send-usage-events]], [[source-metronome-api-reference-usage-ingest-events]], [[source-metronome-api-reference-idempotency]], [[source-metronome-guides-events-design-usage-events]], [[source-metronome-guides-events-high-volume-ingestion]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/events/send-usage-events-2026-07-13|2026-07-13 snapshot \u2014 event fields, queueing, retry boundaries, heartbeat idempotency, and asynchronous provisioning]]\n",
+  "quotes": [
+    {
+      "text": "A usage event is a JSON object with the following fields:\n\n```jsx theme={null}\n{\n  \"transaction_id\": string, // (required) unique identifier for this event\n  \"customer_id\":    string, // (required) which customer the event applies to\n  \"timestamp\":      string, // (required) when the event happened\n  \"event_type\":     string, // (required) the kind of event, such as page_view or sent_email\n  \"properties\":     object, // (optional) key/value pairs with event details\n}\n```\n",
+      "location": "raw/metronome/guides/events/send-usage-events-2026-07-13.md:21-31 (complete documented usage-event shape)"
+    },
+    {
+      "text": "Metronome uses the\u00a0`transaction_id`\u00a0to ignore duplicate events. Once a usage event is accepted with a given transaction ID, subsequent events within the next 34 days with the same ID are treated as duplicates and ignored.\n\n### `customer_id`\n\nThe\u00a0`customer_id`\u00a0specifies which of your customers is responsible for any billing associated with the event. There are two ways to identify a Metronome customer in usage events: a customer ID or an\u00a0*ingest alias*. Ingest aliases are useful when sending events using an identifier from your system, such as an email address or account number.\n\nEach customer in Metronome may have multiple ingest aliases, and usage events with a\u00a0`customer_id`\u00a0matching any of those aliases can be attributed towards that customer's usage.\n\n### `timestamp`\n\nThe\u00a0`timestamp`\u00a0must be an\u00a0[RFC 3339](https://www.ietf.org/rfc/rfc3339.txt)\u00a0string with a 4-digit year, such as\u00a0`2025-01-23T01:23:45Z`. When querying usage data or producing an invoice, this field is used to select only events that happened in a certain time range. Timestamps more than 24 hours in the future are rejected by the API.\n",
+      "location": "raw/metronome/guides/events/send-usage-events-2026-07-13.md:35-45 (deduplication window, customer identity and aliases, and timestamp semantics)"
+    },
+    {
+      "text": "All keys and values in the\u00a0`properties`\u00a0map should be represented as strings, even though the values are often numeric. This prevents the loss of precision that often occurs in systems that use floating point numbers. Internally, Metronome uses arbitrary precision decimals to provide exact results of computation. Again, we advise sharing more data here than you might need initially so you can flexibly utilize this later on if need be.\n",
+      "location": "raw/metronome/guides/events/send-usage-events-2026-07-13.md:53 (string-property recommendation and precision rationale)"
+    },
+    {
+      "text": "If usage events are lost on their way to Metronome, you\u2019ll lose revenue. If you're sending events through the API, you need to be resilient to failures such as network issues or process crashes. A good way to gain this resilience is to put your usage events on a reliable queue such as\u00a0[Amazon SQS](https://aws.amazon.com/sqs/)\u00a0or\u00a0[RabbitMQ](https://www.rabbitmq.com/), and have a process pull from that queue and push events to Metronome.\n\nIf your call to the Metronome\u00a0`/ingest`\u00a0endpoint fails with a network error or a\u00a0`5xx`\u00a0HTTP status code, some of your events may have been ingested, but others may not. Always retry a failed call to\u00a0`/ingest`\u00a0until you receive a\u00a0`200`\u00a0status code. The unique\u00a0`transaction_id`\u00a0in each event prevents duplicate processing, so retries are always safe.\n\nIf your call to the Metronome `/ingest` endpoint fails with a `429`\u00a0HTTP status code, you have exceeded one of our rate limits. In this case, you should back off and retry the call after a delay. If the request continues to be rate-limited, wait for an exponentially increasing amount of time between retries.\n\n<Warning>\n  Avoid auto-retries on 4xx If a call to\u00a0`/ingest`\u00a0fails with a\u00a0`4xx`\u00a0HTTP\n  status code (besides `429`), this indicates an issue with the payload.\u00a0**Do\n  not**\u00a0automatically retry such a call. Instead, put the event aside in a\u00a0[dead\n  letter queue](https://en.wikipedia.org/wiki/Dead_letter_queue)\u00a0and trigger an\n  alarm so you can investigate the failure and resolve the issue.\n",
+      "location": "raw/metronome/guides/events/send-usage-events-2026-07-13.md:57-68 (reliable queue, partial-failure retries, rate-limit backoff, and dead-letter boundary)"
+    },
+    {
+      "text": "Usage events typically fall into one of two categories: an event that occurs when a user takes some action, or a periodic \"heartbeat\" that measures the current state\u2014a common approach in infrastructure services. For example, a service selling computation might send a per-node heartbeat to Metronome each minute describing the CPU and disk utilization on that node. These events could be aggregated into the metrics \"CPU minutes\" and \"gigabyte minutes.\"\n\nIt's important for heartbeat events to ensure that usage is only counted once. This is accomplished by choosing a deterministic\u00a0`transaction_id`\u00a0for duplicate events to have the same ID. Metronome guarantees that only one event with a given\u00a0`transaction_id`\u00a0is processed.\n\nIn the example of a per-node per-minute heartbeat, you might structure a transaction ID as follows:\n\n```\n<node id>_<floor(unix_now()/60)>\n```\n\nwhere\u00a0`unix_now()`\u00a0is a function that returns the number of seconds since the\u00a0[Unix epoch](https://en.wikipedia.org/wiki/Unix_time). By including both the node ID and a minute-granularity timestamp in the transaction ID, it's guaranteed that duplicate events from the same node in the same minute is ignored.\n\nUsing this type of\u00a0`transaction_id`\u00a0means you also don't have to worry about sending events too often. We recommend sending\u00a0*two or more heartbeats*\u00a0per measurement period. Duplicates are safely ignored, and by using this approach, you decrease the risk of missing a measurement period due to timer imprecision or a temporary delay.\n",
+      "location": "raw/metronome/guides/events/send-usage-events-2026-07-13.md:98-110 (deterministic heartbeat identity and redundant-send guidance)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "send-usage-events-heartbeat-idempotency-scope-tension",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Scale, observability, and recovery",
+        "proposed_markdown": "> [!warning] Heartbeat idempotency scope\n> The send-events guide says only one event with a given `transaction_id` is processed in its heartbeat section, but the same page specifically limits later duplicate suppression to the next 34 days after an event is accepted. Use deterministic period IDs for duplicate sends within that documented window; do not infer permanent global uniqueness or safe reuse behavior after day 34.",
+        "quote_indexes": [
+          1,
+          4
+        ],
+        "warnings": [
+          "Place this near the existing heartbeat bullet and consolidate rather than duplicate the 34-day boundary already present on the page.",
+          "The source does not define whether exactly 34 days is inclusive or how a reused ID with a different payload is handled."
+        ]
+      },
+      {
+        "update_id": "send-usage-events-event-ingestion-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-events-send-usage-events]] \u2014 alternate canonical events-guide route for event fields, string-property guidance, direct-ingest retry handling, heartbeat IDs, and the 34-day scope tension",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This route substantially overlaps the existing implement-metronome/core-concepts send-events source; retain the distinct canonical citation without implying a second ingestion protocol."
+        ]
+      },
+      {
+        "update_id": "send-usage-events-api-idempotency-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-events-send-usage-events]] \u2014 34-day transaction-ID duplicate suppression, retry reuse, deterministic heartbeat IDs, and the unqualified-versus-windowed guarantee tension",
+        "quote_indexes": [
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep usage-event transaction IDs distinct from HTTP Idempotency-Key and resource uniqueness mechanisms.",
+          "Do not generalize the event-specific retry statement to non-ingest POST operations or permanent uniqueness."
+        ]
+      },
+      {
+        "update_id": "send-usage-events-billable-metrics-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-events-send-usage-events]] \u2014 required event fields plus string-property representation and precision rationale",
+        "quote_indexes": [
+          0,
+          2
+        ],
+        "warnings": [
+          "Do not treat the string recommendation as a complete OpenAPI acceptance schema."
+        ]
+      },
+      {
+        "update_id": "send-usage-events-customers-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-events-send-usage-events]] \u2014 customer-ID and ingest-alias attribution for usage events",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "This guide does not define alias uniqueness, reassignment, removal, conflict behavior, or unmatched-event behavior."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/events/send-usage-events-2026-07-13.md",
+  "raw_sha256": "5fdd07cf1b27bb098d4facfe48a50a3043623e2476475d20d0a3965b0f4fba56",
+  "status": "candidate_ready"
+}

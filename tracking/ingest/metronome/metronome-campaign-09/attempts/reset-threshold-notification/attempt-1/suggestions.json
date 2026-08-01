@@ -1,0 +1,41 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "reset-threshold-notification-alerts-reset-lifecycle",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Notification types and lifecycle",
+      "proposed_markdown": "### Manual threshold reset\n\n`POST /v1/customer-alerts/reset` accepts a Metronome customer UUID and threshold-notification UUID, clears cached evaluation state, and immediately initiates a fresh assessment against current thresholds. The reassessment runs in the background: `200` confirms reset and initiation but returns no body and does not reveal the resulting alert state. A breached threshold may produce a new webhook notification. The page does not define eligible current states, archived-alert behavior, an `EVALUATING` transition, completion signaling, error responses, duplicate suppression, retry safety, idempotency, concurrent-reset ordering, or whether repeated resets re-emit alarms. Its `requestBody` also lacks `required: true` even though both object properties are required.",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "Treat HTTP 200 as reset and re-evaluation initiation, not completed evaluation or webhook delivery.",
+        "Do not infer that reset enters EVALUATING, changes the threshold, deletes alert history, retracts an earlier webhook, or is safe to retry.",
+        "The use case after threshold modifications does not establish an in-place notification-update API."
+      ]
+    },
+    {
+      "update_id": "reset-threshold-notification-alerts-reciprocal-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-alerts-reset-a-threshold-notification]] \u2014 customer-scoped threshold reset, cached-state clearing, asynchronous reassessment, empty `200` response, and retry unknowns",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "Add only after the source page is promoted."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

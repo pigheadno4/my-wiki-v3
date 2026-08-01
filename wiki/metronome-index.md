@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 60 |
-| Documentation pages pending ingest | 165 |
+| Source summaries ingested | 70 |
+| Documentation pages pending ingest | 155 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -83,6 +83,16 @@ Operational evidence:
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] — contract-aware event-cost simulation, preview modes, multi-contract draft output, deduplication conflict, and limits
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] — customer-defined spend, grouped-dimension, commit-balance, and invoice-total alerts with merchant enforcement
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]] — aggregate and ledger balance retrieval, signed calculation, precision, timestamps, and manual adjustments
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-guides-home]] — billing-model navigation for pay-as-you-go, enterprise commits, usage subscriptions, and pre-paid credits
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-alerts]] — balance, percentage, and days-remaining notifications with custom-field filtering and action boundaries
+- [[source-metronome-guides-pricing-packaging-overview]] — pricing-and-packaging navigation across billing models, pricing changes, credits, commits, and examples
+- [[source-metronome-guides-platform-configuration-metronome-pricing-model]] — platform fee and consumption accounting for accepted events, generated billings, and exported rows
+- [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-basic-filters]] — Basic Filters matching, property requirements, grouped `COUNT`, and streaming aggregation boundary
+- [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]] — fiat denomination, custom-unit rate setup, balance drawdown, and residual invoice conversion
+- [[source-metronome-guides-events-send-usage-events]] — required event fields, customer attribution, retry policy, heartbeat IDs, and duplicate-suppression scope
+- [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]] — future-credit versus A/R memo boundary, invoice-state corrections, re-billing, and refund ownership
+- [[source-metronome-api-reference-security-get-services]] — bearer-authenticated service registry, IP direction labels, schema, and notice boundary
+- [[source-metronome-api-reference-alerts-reset-a-threshold-notification]] — customer-alert reset, asynchronous reassessment, empty `200`, and idempotency unknowns
 
 ## Concepts
 
@@ -102,6 +112,7 @@ Operational evidence:
 - [[metronome-alerts-and-notifications]] — alert definitions, trial-balance triggers, and merchant action boundary
 - [[metronome-spend-trackers]] — public-beta commit-purchase accumulators, threshold-discount integration, retrieval, and billing-state unknowns
 - [[metronome-spend-threshold-billing]] — contract-level incremental collection with optional commit-release payment gating, distinct from product-access enforcement and a customer-wide cross-contract cap
+- [[metronome-currencies-and-custom-pricing-units]] — supported fiat currencies, Metronome-specific API denomination, custom-unit rates, balance drawdown, and invoice conversion
 
 ## Related platforms
 

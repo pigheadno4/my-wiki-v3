@@ -11,6 +11,10 @@ Metronome event ingestion accepts application usage payloads through the `/inges
 
 ## Event contract
 
+## Commercial event-count boundary
+
+For Metronome's platform-pricing terminology, one Event is each discrete JSON object submitted to and accepted through the ingestion API. Examples such as API calls, storage measurements, and data transfers describe what an accepted object may represent; this source does not define how rejected, retried, or duplicate submissions affect commercial counts. [[source-metronome-guides-platform-configuration-metronome-pricing-model]]
+
 - `POST /v1/ingest` is bearer authenticated and accepts a JSON array containing one to 100 events.
 - `transaction_id` is the event's required, nonempty idempotency key, with a maximum length of 128 characters; Metronome documents a 34-day duplicate-detection window.
 - `timestamp` is required and RFC 3339 formatted. The API reference permits historical events up to 34 days in the past.
@@ -34,6 +38,14 @@ One event can feed multiple billable metrics. Metronome presents this separation
 The ingest reference documents only a `200 Success` response without a body schema. It does not define partial-batch acceptance, validation errors, duplicate indicators, ordering, retry semantics, future timestamps, payload-collision behavior, or whether the 34-day cutoff is inclusive.
 
 ## Scale, observability, and recovery
+
+A correction guide applies compensating usage only while the current-period invoice is `DRAFT`: send a new event with a negative quantity or value that matches the affected product's billable metric. For a previous-period `finalized` invoice, it says usage events cannot be corrected or adjusted; use a future credit or an external A/R credit memo instead. Its separate full-invoice re-bill flow negates and replaces usage before voiding and regeneration, but does not reconcile that ordering with the finalized-invoice rule, so the invoice-state precondition remains ambiguous.
+
+> [!warning] Documentation scope conflict
+> [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]] calls external invoicing/customer-A/R voiding, cancellation, and regeneration the only credit-and-rebill option beyond 34 days, while [[source-metronome-guides-events-high-volume-ingestion]] says corrections beyond 34 days are handled by Metronome operations. The documentation does not establish whether these are separate self-service invoice re-billing and operations-assisted usage-correction scopes. Do not treat the routes as interchangeable; verify the applicable route with Metronome.
+
+> [!warning] Heartbeat idempotency scope
+> The send-events guide says only one event with a given `transaction_id` is processed in its heartbeat section, but the same page specifically limits later duplicate suppression to the next 34 days after an event is accepted. Use deterministic period IDs for duplicate sends within that documented window; do not infer permanent global uniqueness or safe reuse behavior after day 34.
 
 - The API reference advertises support for 100,000 events per second and says capacity can scale beyond that figure. The separate high-volume guide describes infrastructure capacity up to 110,000 events per second and a default account limit of 5,000 events per second that can be increased by contacting Metronome; these are different scopes, not one interchangeable limit.
 - High-volume producers can batch up to 100 events in one ingest request.
@@ -59,6 +71,9 @@ The endpoint has an 8 RPS per-client limit and is not suitable for validating ev
 Before selecting an ingest design, identify usage origins and reliable delivery, choose event or batch cadence from generation and change behavior, plan for peak volume and velocity, carry grouping keys required by pricing dimensions, and retain contextual fields that make spend interpretable. This planning source does not itself define schemas, transport, throughput, cardinality, freshness, replay, or correction guarantees.
 
 ## Sources
+
+- [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]] — negative usage-event correction for draft invoices, the finalized-invoice boundary, and the conflicting beyond-34-day credit-and-rebill route
+- [[source-metronome-guides-events-send-usage-events]] — alternate canonical events-guide route for event fields, string-property guidance, direct-ingest retry handling, heartbeat IDs, and the 34-day scope tension
 
 - [[source-metronome-guides-get-started-developer-sdks]] — SDK ingestion example, payload fields, limits, deduplication, and matching sequence
 - [[source-metronome-guides-events-design-usage-events]] — event-design principles, cadence tradeoffs, and contextual-property examples

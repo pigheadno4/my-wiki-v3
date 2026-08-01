@@ -1,0 +1,91 @@
+{
+  "job_id": "credit-commit-alerts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Credit and Commit Threshold Notifications\"\ntype: source\ndate_ingested: 2026-08-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/pricing-packaging/apply-credits-and-commits/alerts\"\nraw_files:\n  - \"metronome/guides/pricing-packaging/apply-credits-and-commits/alerts-2026-07-13.md\"\ntags: [metronome, credits, commits, threshold-notifications, entitlements, upsell]\n---\n\n## Overview\n\nThis guide describes threshold notifications on Metronome credit and commit balances. It presents access, renewal, and upsell use cases; names supported balance dimensions; and gives a UI workflow for narrowing a zero-balance credit alert with a custom field.\n\n## Key takeaways\n\n- Metronome supports notifications based on remaining credit or commit balance, percent remaining, and days remaining.\n- These notifications can inform entitlement workflows when prepaid customers cannot use the product after exhausting balance, or sales workflows when a commitment is nearly exhausted. The page does not say that the notification itself blocks product access, changes an entitlement, or renegotiates a commitment.\n- Custom fields can narrow a notification to a subset of credits or commits. The worked example selects credits with `credit_type: free_trial`, uses the **Contract credit balance** notification type, and sets its threshold to `$0` for selected customers.\n\n## Threshold dimensions and use cases\n\nThe guide identifies three notification dimensions for credits and commits: remaining balance, percent remaining, and days remaining. A prepaid PayGo example says a customer that cannot pay in arrears should be cut off after its credit or commit balance reaches zero. A separate annual-commit example uses early 90% consumption as a signal for renewal or upsell discussions.\n\nThese examples establish notification use cases, not an end-to-end enforcement or sales automation contract. The page does not specify whether Metronome automatically denies product requests, mutates entitlement state, contacts a customer, opens a sales workflow, or performs a renewal or upsell. It also does not define evaluation cadence, delivery channel, latency, retries, ordering, repeated-trigger behavior, or recovery after balance increases.\n\n## Custom-field filtering workflow\n\nThe UI example first adds a `credit_type` custom field to credit entities and assigns values such as `free_trial`. The user then creates a notification, chooses **Contract credit balance**, enters a `$0` threshold, applies an advanced filter where `credit_type` equals `free_trial`, and selects the customers in scope.\n\nThe example does not define API request or response fields, supported operators, case sensitivity, missing-field behavior, multiple-filter semantics, or whether the selected balance aggregates multiple matching credits. The page likewise does not define the denominator or rounding for percent remaining, the date basis or time zone for days remaining, or whether the available dimensions behave identically for credits and commits.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-alerts-and-notifications]], [[metronome-credits-and-commits]], [[metronome-customers-and-contracts]]\n- Related sources: [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]], [[source-metronome-guides-customers-billing-manage-customers-manage-product-access]], [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]], [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/pricing-packaging/apply-credits-and-commits/alerts-2026-07-13|2026-07-13 snapshot \u2014 credit and commit threshold dimensions, use cases, and custom-field filtering]]\n",
+  "quotes": [
+    {
+      "text": "Threshold notifications on credits and commitments can power entitlement, upsell use cases, and more. For example, for some business models where PayGo customers must prepay for all usage and cannot pay in arrears, customers should be cut off from further using the product if there\u2019s no remaining credit or commit balance. Threshold notifications are just one of the many mechanisms Metronome provides to [manage access to your product](/guides/customers-billing/manage-customers/manage-product-access).",
+      "location": "line 11, entitlement and prepaid-balance use case"
+    },
+    {
+      "text": "It\u2019s also useful to know when a customer has almost exhausted their commitment so that sales can drive renewal or upsell conversations. For example, if 90% of the commitment was used in the first few months of a year-long contract, it benefits both parties to renegotiate and increase the size of the commitment.",
+      "location": "line 13, renewal and upsell use case"
+    },
+    {
+      "text": "Metronome supports [notifying](/guides/customers-billing/set-up-notifications/create-and-manage-notifications) on credit and commit remaining balance, percent remaining balance, and days remaining.",
+      "location": "line 15, supported threshold dimensions"
+    },
+    {
+      "text": "Metronome supports using custom fields to filter notifications down to a subset of commits or credits. For example, to add a threshold notification for a customer that fires when their free trial credit is fully consumed:\n\n1. Add a `credit_type` [custom field](/api-reference/custom-fields) to the credit entity and set the relevant value on each object. For example, `free_trial`.\n2. Navigate to **Notifications** > click **Add Notification**.\n3. Name the notification.\n4. Select the **Contract credit balance** notification type and enter a \\$0 value.\n5. Click **Advanced filters** > select `credit_type` as the custom field key and enter `free_trial` as the value.\n6. Select the customers to whom this notification should apply.",
+      "location": "lines 17-24, custom-field-scoped free-trial alert workflow"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "credit-commit-alerts-threshold-dimensions-and-filtering",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Customer-configured controls",
+        "proposed_markdown": "Credit and commit threshold notifications can monitor remaining balance, percent remaining, or days remaining. Custom fields can narrow a policy to a subset of commits or credits; the worked UI example selects **Contract credit balance** at `$0`, filters credit entities by `credit_type: free_trial`, and scopes the notification to selected customers. The guide presents product cutoff, renewal, and upsell as downstream use cases, but does not establish automatic access enforcement, entitlement mutation, customer communication, or sales action.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep notification evaluation separate from webhook delivery and merchant product-access enforcement.",
+          "Do not infer percent calculation, day-count timing, filter operators, aggregation scope, or repeated-trigger behavior from the UI example."
+        ]
+      },
+      {
+        "update_id": "credit-commit-alerts-alerts-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-alerts]] \u2014 remaining-balance, percent-remaining, and days-remaining thresholds with custom-field scoping and enforcement boundaries",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "credit-commit-alerts-credit-commit-scoping",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Commit-balance notifications",
+        "proposed_markdown": "Threshold notifications can monitor credit and commit remaining balance, percent remaining, or days remaining. A custom field can narrow the evaluated objects; the example filters credit entities to `credit_type: free_trial` and creates a `$0` **Contract credit balance** notification for selected customers. The page does not define balance aggregation, percent denomination or rounding, day-count boundaries, missing-field behavior, or whether these dimensions have identical semantics for credits and commits.",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not treat the selected customer's alert as proof of contract-level versus customer-level balance aggregation.",
+          "A zero-balance signal may support merchant cutoff, but this source does not document automatic Metronome access enforcement."
+        ]
+      },
+      {
+        "update_id": "credit-commit-alerts-credits-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-alerts]] \u2014 credit and commit threshold dimensions, free-trial custom-field filtering, and access-action boundary",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/pricing-packaging/apply-credits-and-commits/alerts-2026-07-13.md",
+  "raw_sha256": "d814acd9f7edd119e1c1a5dc305dd20b8b1c75304249fe9a5de0ed4a6c2af2ac",
+  "status": "candidate_ready"
+}

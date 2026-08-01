@@ -1,0 +1,122 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "currency-custom-pricing-units-new-concept",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "durable_fact",
+      "anchor": "new file",
+      "proposed_markdown": "---\ntitle: \"Metronome Currencies and Custom Pricing Units\"\ntype: concept\ncategory: technology\ntags: [metronome, currencies, custom-pricing-units, rate-cards, credits, commits, invoicing]\n---\n\n## Definition\n\nMetronome rate cards use one fiat currency and can price products in that currency or a named custom pricing unit. A custom-unit rate defines a conversion from the rate card's underlying fiat currency, supports balances denominated in the same custom unit, and converts residual unbalanced usage to fiat on an invoice.\n\n## Fiat currencies and API denomination\n\nThe documented supported set is USD, AUD, BRL, CAD, CHF, CZK, EUR, GBP, INR, MXN, NGN, NOK, PLN, SEK, TRY, ZAR, NZD, and SGD. USD API values use cents, so $1.00 is `100`; every other listed fiat currency uses whole units, so EUR 10.00 is `10`, not `1000`. The API reflects this through `USD (cents)` versus an unqualified code such as `EUR`. Do not apply a universal divide-by-100 rule.\n\n> [!warning] Denomination wording\n> The source calls all monetary values the currency's smallest denomination, but then explicitly defines non-USD values as whole currency units. Preserve the concrete Metronome encoding instead of inferring conventional ISO minor-unit scaling for non-USD currencies. The page does not define general precision, integer-only storage, or rounding.\n\n## Rate-card setup and immutability\n\nCustom units are created and named in the Metronome app for invoice presentation. A rate card selects one fiat currency, and each product rate uses either that fiat currency or a custom pricing unit with a conversion from the underlying fiat currency. Once a product's rate is saved in one pricing unit, that rate's pricing unit cannot be changed. The source does not define the required replacement or migration path or its effects on contracts and invoices.\n\n## Credits, commits, and invoice conversion\n\nCustomer- or contract-level credits and prepaid commits can have access schedules in custom units or selected currencies. Usage priced in a custom unit first burns down applicable balances with schedules in that same unit. If none remains, Metronome adds a conversion line item and calculates the residual cost in the rate card's fiat currency. A CHF-paid commit granting Cloud Compute Tokens illustrates that payment currency and access unit can differ; it does not prove arbitrary cross-currency balance conversion.\n\n## Boundaries and unknowns\n\nThe guide does not define custom-unit creation APIs, precision, conversion formula direction, rounding, exchange-rate sourcing or timing, rate-card currency mutation, mixed-rate resolution, balance priority, tax, invoice lifecycle, collection, refund, or revaluation behavior. Its supported-currency list and denomination behavior are dated documentation evidence, not an evergreen capability guarantee.\n\n## Related\n\n- [[metronome-products-and-rate-cards]]\n- [[metronome-credits-and-commits]]\n- [[metronome-invoicing]]\n\n## Sources",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not treat the opening smallest-denomination phrase as proof of conventional ISO minor-unit scaling for non-USD Metronome values; the same page explicitly specifies whole units.",
+        "Do not infer foreign-exchange sourcing, rounding, precision, arbitrary cross-currency balance conversion, or invoice payment behavior.",
+        "The supported-currency list is a dated documentation snapshot and may drift."
+      ]
+    },
+    {
+      "update_id": "currency-custom-pricing-units-new-concept-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]] \u2014 supported currencies, Metronome-specific denomination, rate-card custom units, matching-balance drawdown, and residual fiat conversion",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "currency-custom-pricing-units-rate-card-boundaries",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Rate cards and rates",
+      "proposed_markdown": "- The currency guide enumerates 18 fiat currencies and defines Metronome-specific API scaling: USD uses cents, while every other listed fiat currency uses whole units. One rate card carries one fiat currency; a product rate can use that currency or a custom pricing unit with a conversion from the underlying fiat currency. After a product rate is saved in one pricing unit, that rate's unit cannot be changed. The guide does not define replacement, effective-dating, contract migration, precision, rounding, or invoice-recalculation behavior.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Replace or consolidate the existing shorter USD-cents/non-USD-whole-units and one-fiat-currency bullets instead of duplicating them.",
+        "Do not infer ISO minor-unit behavior, universal divide-by-100 scaling, or a supported rate-unit migration path."
+      ]
+    },
+    {
+      "update_id": "currency-custom-pricing-units-rate-card-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]] \u2014 fiat support, API denomination, custom-unit conversion setup, and saved-rate unit immutability",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "currency-custom-pricing-units-credit-commit-drawdown",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Drawdown and invoice attribution",
+      "proposed_markdown": "Credits and prepaid commits at contract or customer level can carry access schedules in custom pricing units or selected currencies. Usage priced in a custom unit burns down applicable balances whose access schedules use that same unit; when none remains, invoice conversion to the rate card's fiat currency covers the residual usage. A CHF-paid prepaid commit granting Cloud Compute Tokens illustrates differing payment and access denominations, but the guide does not define arbitrary balance conversion, applicability priority, exchange rates, precision, or rounding.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "The CHF-paid commit example is not evidence of arbitrary cross-currency aggregation or automatic foreign-exchange behavior.",
+        "Keep this general custom-unit drawdown fact distinct from the existing prepaid-threshold conversion flow."
+      ]
+    },
+    {
+      "update_id": "currency-custom-pricing-units-credit-commit-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]] \u2014 custom-unit access schedules, matching-unit balance drawdown, and residual fiat conversion boundary",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "currency-custom-pricing-units-invoice-conversion",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Credit and commit application",
+      "proposed_markdown": "For a product rated in a custom pricing unit, Metronome first burns down applicable credits and prepaid commits with access schedules in that unit. If no applicable matching balance remains, the invoice receives a conversion line item that calculates the residual cost in the rate card's fiat currency; the converted fiat amount becomes the total due in the example. This does not establish conversion formula direction, precision, rounding, tax, finalization, delivery, collection, or payment-success behavior.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Do not describe the conversion line item as invoice finalization, delivery, collection, or payment success.",
+        "Do not infer conversion arithmetic, exchange-rate sourcing, or rounding from the illustrated invoice."
+      ]
+    },
+    {
+      "update_id": "currency-custom-pricing-units-invoice-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]] \u2014 custom-unit balance drawdown, conversion-line-item fallback, and fiat total-due boundary",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}
