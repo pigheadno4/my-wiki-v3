@@ -409,6 +409,31 @@
   Release: [manifest](raw/github/paypal/paypal-js/releases/react-paypal-js/8.9.2/2026-07-22/manifest.json)
   Comparison: Not applicable
 
+## `github-b241eb5a8bcbadf2be62`
+
+- Repository: `adyen/adyen-android`
+- SHA: `5314fad1389a8def9d8e3377f27f7405e303faba`
+- Collection date: `2026-08-01`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/adyen/adyen-android/snapshots/2026-08-01-5314fad/manifest.json)
+- Packet: [review packet](tracking/github/repos/adyen/adyen-android/ingest-packets/github-b241eb5a8bcbadf2be62/packet.md)
+- Review priority: `high`
+- Required reading: `1202` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen-android@5.20.0` (recommended `full`)
+  Release: [manifest](raw/github/adyen/adyen-android/releases/adyen-android/5.20.0/2026-08-01/manifest.json)
+  Comparison: Not applicable
+
 ## `github-bd7fe849961b5c6b9964`
 
 - Repository: `paypal/paypal-js`

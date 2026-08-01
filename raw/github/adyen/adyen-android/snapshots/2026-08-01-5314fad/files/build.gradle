@@ -1,0 +1,87 @@
+import com.android.build.gradle.LibraryPlugin
+import org.jetbrains.kotlin.gradle.plugin.KotlinAndroidPluginWrapper
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+    alias libs.plugins.android.application apply false
+    alias libs.plugins.android.library apply false
+    alias libs.plugins.jetbrains.kotlin.android apply false
+    alias libs.plugins.kover apply false
+    alias libs.plugins.ksp apply false
+    alias libs.plugins.hilt apply false
+    alias libs.plugins.detekt
+    alias libs.plugins.dokka
+    alias libs.plugins.sonarqube
+    alias libs.plugins.binary.compatibility.validator
+}
+
+apply from: "config/gradle/dokkaRoot.gradle"
+apply from: "config/gradle/sonarcloud.gradle"
+apply from: "config/gradle/apiValidator.gradle"
+apply from: "config/gradle/dependencyList.gradle"
+
+ext {
+    if (project.hasProperty("version-name")) {
+        versionName = project.property("version-name")
+    } else {
+        versionName = "develop"
+    }
+    checkoutRedirectScheme = "adyencheckout"
+}
+
+subprojects {
+    def javaVersion = 11
+
+    plugins.withType(com.android.build.gradle.BasePlugin).configureEach {
+        android {
+            if (project.hasProperty("strip-resources") && project.property("strip-resources") == "true") {
+                defaultConfig {
+                    resConfigs "en", "xxhdpi"
+                }
+
+                buildTypes {
+                    debug {
+                        crunchPngs false
+                    }
+                }
+            }
+
+            compileOptions {
+                sourceCompatibility = javaVersion
+                targetCompatibility = javaVersion
+            }
+
+            packagingOptions {
+                excludes += "/META-INF/{AL2.0,LGPL2.1}"
+                merges += "META-INF/LICENSE.md"
+                merges += "META-INF/LICENSE-notice.md"
+            }
+        }
+    }
+
+    plugins.withType(LibraryPlugin).configureEach {
+        dependencies {
+            lintChecks project(':lint')
+        }
+    }
+
+    plugins.withType(KotlinAndroidPluginWrapper).configureEach {
+        kotlin {
+            jvmToolchain(javaVersion)
+        }
+    }
+
+    tasks.withType(KotlinCompile).configureEach {
+        kotlinOptions {
+            freeCompilerArgs += [
+                '-opt-in=kotlin.RequiresOptIn',
+            ]
+        }
+    }
+
+    tasks.withType(Test).configureEach {
+        useJUnitPlatform()
+    }
+}
+
+apply from: file('config/gradle/dependencyGraph.gradle')

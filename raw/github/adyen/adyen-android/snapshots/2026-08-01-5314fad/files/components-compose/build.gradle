@@ -1,0 +1,50 @@
+/*
+ * Copyright (c) 2023 Adyen N.V.
+ *
+ * This file is open source and available under the MIT license. See the LICENSE file for more info.
+ *
+ * Created by oscars on 1/6/2023.
+ */
+
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+}
+
+// Maven artifact
+ext.mavenArtifactId = "components-compose"
+ext.mavenArtifactName = "Adyen checkout components compose"
+ext.mavenArtifactDescription = "Compose compat Adyen checkout components."
+
+apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
+
+android {
+    namespace 'com.adyen.checkout.components.compose'
+    compileSdk libs.versions.compile.sdk.get().toInteger()
+
+    defaultConfig {
+        minSdk libs.versions.min.sdk.get().toInteger()
+        targetSdk libs.versions.target.sdk.get().toInteger()
+
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+    }
+}
+
+dependencies {
+    // Checkout
+    api project(':components-core')
+    api project(':sessions-core')
+    api project(':ui-core')
+
+    implementation platform(libs.compose.bom)
+    implementation libs.compose.viewmodel
+}

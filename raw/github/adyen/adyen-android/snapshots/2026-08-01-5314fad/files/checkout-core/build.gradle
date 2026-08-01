@@ -1,0 +1,46 @@
+/*
+ * Copyright (c) 2020 Adyen N.V.
+ *
+ * This file is open source and available under the MIT license. See the LICENSE file for more info.
+ *
+ * Created by caiof on 17/12/2020.
+ */
+
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.parcelize
+}
+
+ext.mavenArtifactId = "checkout-core"
+ext.mavenArtifactName = "Adyen Checkout Core module"
+ext.mavenArtifactDescription = "Core module for Adyen Checkout products."
+
+apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
+
+android {
+    namespace 'com.adyen.checkout.core'
+    compileSdk libs.versions.compile.sdk.get().toInteger()
+
+    defaultConfig {
+        minSdk libs.versions.min.sdk.get().toInteger()
+        targetSdk libs.versions.target.sdk.get().toInteger()
+
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        consumerProguardFiles "consumer-rules.pro"
+    }
+}
+
+dependencies {
+    // Dependencies
+    api libs.androidx.annotation
+    api libs.bundles.kotlin.coroutines
+    implementation libs.okhttp
+    api libs.parcelize
+
+    //Tests
+    testImplementation libs.json
+    testImplementation libs.bundles.junit
+    androidTestImplementation libs.bundles.androidx.test
+    androidTestImplementation libs.bundles.espresso
+}

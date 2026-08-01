@@ -1,0 +1,43 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.parcelize
+}
+
+// Maven artifact
+ext.mavenArtifactId = "cse"
+ext.mavenArtifactName = "Adyen Client Side Encryption"
+ext.mavenArtifactDescription = "Adyen Client Side Encryption for Adyen's Checkout API."
+
+apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
+
+android {
+    namespace 'com.adyen.checkout.cse'
+    compileSdk libs.versions.compile.sdk.get().toInteger()
+
+    defaultConfig {
+        minSdk libs.versions.min.sdk.get().toInteger()
+        targetSdk libs.versions.target.sdk.get().toInteger()
+
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    testFixtures {
+        enable = true
+    }
+}
+
+dependencies {
+    // Checkout
+    api project(':checkout-core')
+
+    //Tests
+    testImplementation libs.json
+    testImplementation libs.bundles.junit
+    testImplementation libs.bundles.mockito
+    testImplementation libs.jose4j
+
+    testFixturesImplementation libs.bundles.junit
+    testFixturesImplementation libs.bundles.mockito
+}
