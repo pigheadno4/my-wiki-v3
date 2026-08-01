@@ -12,10 +12,12 @@ Operations history: [[adyen-log]]
 
 - [[source-github-adyen-web]] — cumulative `@adyen/adyen-web@6.41.0` implementation baseline: Drop-in, Components, Sessions, cards, 3DS2, accessibility, and Fastlane adapter (github-repo, 2026-07-26)
 - [[changelog-github-adyen-web]] — package-qualified Adyen Web release ledger beginning at `6.41.0` (github-repo, 2026-07-26)
+- [[source-github-adyen-ios]] — cumulative `adyen-ios@5.25.1` native baseline: Drop-in, Session, Components, cards, actions, encryption, Apple Pay, and app handoffs (github-repo, 2026-08-01)
+- [[changelog-github-adyen-ios]] — package-qualified Adyen iOS release ledger beginning at `5.25.1` (github-repo, 2026-08-01)
 
 ## Concepts
 
-No Adyen-specific concept page has yet met the multi-source creation threshold.
+- [[adyen-ios-sdk]] — native iOS architecture, integration modes, payment and server boundaries, and delegated dependencies
 
 ## Cross-cutting concepts
 

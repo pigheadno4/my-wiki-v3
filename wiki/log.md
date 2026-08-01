@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-08-01] ingest | GitHub Adyen/adyen-ios - `adyen-ios@5.25.1`
+
+- Full serial ingest of `github-0f505b736a8fbe7628ca` from exact SHA `5f6779b31299e3067de3a5279a816f3b8d2fbdf3`.
+- Established the cumulative native iOS source and package-qualified changelog from the complete 686-file capsule plus release and snapshot records.
+- Recorded Drop-in and Components, Session and advanced server flows, cards and encryption, Apple Pay, stored and partial payments, actions, native app handoffs, analytics, privacy, and delegated dependency boundaries.
+- Isolated exact `5.25.1` scope to the cross-platform Component form-layout fix; broader SDK architecture remains cumulative baseline knowledge.
+- Created the Adyen iOS SDK concept and updated the Adyen company and provider index.
+
 ## [2026-08-01] ingest | GitHub braintree/braintree_ios - `braintree-ios@7.9.0`
 
 - Full serial ingest of `github-2968099ae6a7549cd6a9` from exact SHA `4e987ca19f03b65a0d303b4c3ec95e0c723be971`.

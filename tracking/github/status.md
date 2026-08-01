@@ -5,10 +5,10 @@
 - Repository: `adyen/adyen-ios`
 - SHA: `5f6779b31299e3067de3a5279a816f3b8d2fbdf3`
 - Collection date: `2026-08-01`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None
