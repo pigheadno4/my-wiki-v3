@@ -78,7 +78,7 @@ APPENDIX_A_INVENTORY = (
     ('adyen/adyen-node-api-library', 'https://github.com/Adyen/adyen-node-api-library', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-react-native', 'https://github.com/Adyen/adyen-react-native', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-web', 'https://github.com/Adyen/adyen-web', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
-    ('adyen/adyen-android', 'https://github.com/Adyen/adyen-android', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('adyen/adyen-android', 'https://github.com/Adyen/adyen-android', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-ios', 'https://github.com/Adyen/adyen-ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-magento2', 'https://github.com/Adyen/adyen-magento2', 'commerce-plugin', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-pos-mobile-ios', 'https://github.com/Adyen/adyen-pos-mobile-ios', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
@@ -571,6 +571,59 @@ class RegistryTests(unittest.TestCase):
             "Demo/Configuration.swift",
             "Package.swift",
             "MIGRATION.md",
+        }.issubset(includes))
+
+    def test_adyen_android_uses_the_reviewed_complete_kotlin_source_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(item for item in repos if item.id == "adyen/adyen-android")
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:adyen-android@5",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("5.20.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("adyen-android-public-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("adyen-android",), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(53, len(capsule.default_required_roots))
+        self.assertEqual(133, len(capsule.include_paths))
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(1250, capsule.max_capsule_files)
+        self.assertEqual(5000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(1300, capsule.max_packet_files)
+        self.assertEqual(6000000, capsule.max_packet_utf8_bytes)
+
+        required = set(capsule.default_required_roots)
+        includes = set(capsule.include_paths)
+        self.assertTrue({
+            "components-core/src/main/java",
+            "drop-in/src/main/java",
+            "sessions-core/src/main/java",
+            "card/src/main/java",
+            "googlepay/src/main/java",
+            "example-app/src/main/java",
+        }.issubset(required))
+        self.assertTrue({
+            "README.md",
+            "settings.gradle",
+            "gradle/libs.versions.toml",
+            "drop-in/build.gradle",
+            "example-app/src/main/AndroidManifest.xml",
+            "card/src/main/res/values/strings.xml",
         }.issubset(includes))
 
     def test_braintree_web_uses_the_reviewed_public_source_capsule(self):
