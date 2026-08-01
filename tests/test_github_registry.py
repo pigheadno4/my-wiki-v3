@@ -944,16 +944,16 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(1, len(react_native.capsules))
         capsule = react_native.capsules[0]
         self.assertEqual("adyen-react-native-public-source", capsule.id)
-        self.assertEqual("npm-tracked-source-v1", capsule.adapter)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
         self.assertEqual(("@adyen/react-native",), capsule.focus_packages)
-        self.assertEqual("internal-runtime-closure", capsule.dependency_scope)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
         self.assertEqual("policy-bounded", capsule.changed_path_policy)
         self.assertEqual(
             ("android/src/main", "example/src", "ios", "src"),
             capsule.default_required_roots,
         )
-        self.assertEqual(("lib/",), capsule.default_generated_target_paths)
-        self.assertEqual(15, len(capsule.include_paths))
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(16, len(capsule.include_paths))
         self.assertTrue(
             {
                 "adyen-react-native.podspec",
@@ -966,6 +966,7 @@ class RegistryTests(unittest.TestCase):
                 "docs/v2-MigrationGuide.md",
                 "example/README.md",
                 "example/package.json",
+                "package.json",
             }.issubset(set(capsule.include_paths))
         )
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)

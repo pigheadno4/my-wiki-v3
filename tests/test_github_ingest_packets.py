@@ -519,6 +519,7 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "ios/Info.plist": "<?xml version=\"1.0\"?><plist />\n",
             "ios/StripeSdk.xcodeproj/project.pbxproj": "// project\n",
             "ios/StripeSdk.xcodeproj/xcshareddata/xcschemes/Tests.xcscheme": "<Scheme />\n",
+            "ios/StripeSdk.xctestplan": "{}\n",
             "widget.podspec": "Pod::Spec.new do |spec|\nend\n",
         }
         prior = {

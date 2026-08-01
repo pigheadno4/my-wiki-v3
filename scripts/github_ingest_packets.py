@@ -866,6 +866,7 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
                 ".toml",
                 ".xcprivacy",
                 ".xcscheme",
+                ".xctestplan",
                 ".xml",
             )
         )

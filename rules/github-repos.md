@@ -30,7 +30,7 @@ For the focused PayPal JS pilot, changed tests and fixtures remain excluded by c
 
 ### Tagged repository profile
 
-Use `tagged-tree-v1` when one semantic Git tag maps to one package-qualified release identity but the repository does not expose an NPM workspace. The adapter resolves the exact tag and emits one synthetic root package; repository roots, literal includes, exclusions, and limits remain reviewed data in `tracking/github/repo-registry.toml`.
+Use `tagged-tree-v1` when one semantic Git tag maps to one package-qualified release identity but the repository does not expose a release-valid NPM workspace. This includes a reviewed repository whose tagged manifest intentionally retains a local development placeholder while its GitHub release and published package identify the same release and Git SHA. The adapter resolves the exact tag and emits one synthetic root package; repository roots, literal includes, exclusions, and limits remain reviewed data in `tracking/github/repo-registry.toml`.
 
 The adapter does not run language parsers, package managers, or builds, and it does not create a synthetic `package.json`. A tagged capsule is bounded public API, implementation, build, and example evidence rather than a complete repository mirror. Missing implementation needed for a later approved query must be collected as an immutable supplement tied to the existing release SHA.
 
