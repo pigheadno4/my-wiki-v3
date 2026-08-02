@@ -27,15 +27,14 @@ Raw files are NEVER modified — they are immutable source documents.
 
 Find raw files with no reference in any wiki source page. This is the primary mechanism for seeing files added directly to `raw/` — **including everything the PSP fetcher drops in** (see `psp-collection.md`). A raw page without a source summary is informational: it may be an intentional `raw_reference`, an unresolved `semantic_triage` page, or a future source candidate. It is not a backlog that must reach zero.
 
-- How: list all **top-level files** in `raw/` (i.e., `raw/*.md` — not files inside subdirectories or `raw/assets/`). For each, search `wiki/sources/` for its filename in `raw_files:` frontmatter. If not found anywhere, it's an orphan. This covers dated raw files and legacy flat GitHub stubs.
+- How: list all **top-level files** in `raw/` (i.e., `raw/*.md` — not files inside subdirectories or `raw/assets/`). For each, search `wiki/sources/` for its filename in `raw_files:` frontmatter. If not found anywhere, record it as an informational inventory entry. This covers dated raw files and legacy flat GitHub stubs.
 - Also check legacy detail subdirectories in `raw/` that lack their corresponding legacy stub file (e.g., `raw/github-stripe-node/` exists but `raw/github-stripe-node.md` does not). New nested GitHub snapshots under `raw/github/` are validated separately below.
-- Triage: present raw files without source summaries as a numbered list. For each page that needs a routing decision, propose one of:
-  - **Raw reference**: retain as navigation-only raw with no routine source generation.
-  - **Semantic triage**: queue one complete strong-model read to decide its disposition after approval.
-  - **Link**: attach to an existing related source page (prepend to `raw_files:` newest-first + add content to the page body).
-  - **New**: create a new source page via the ingest workflow.
-- Action: user approves per-file routing or promotion, then execute. Run the full ingest workflow **one source at a time** per `ingest.md` for each approved new source.
-- Example: `raw/stripe-connect-overview-2026-06-02.md` has no reference → propose creating a new source page, or linking to existing `source-stripe-platform-guide.md` if it covers the same topic.
+- Triage: present raw files without source summaries as a numbered list. For each page that needs a routing decision, propose one of the common dispositions:
+  - **`raw_reference`**: retain as navigation-only raw with no routine source generation.
+  - **`semantic_triage`**: queue one complete strong-model read to decide its disposition after approval.
+  - **`source_required`**: queue full source generation plus independent review after approval.
+- Action: user approves each routing decision or promotion. Only for approved `source_required` pages, choose during execution whether to attach the raw evidence to an existing related source page or create a new source page. Run the full ingest workflow **one source at a time** per `ingest.md`.
+- Example: `raw/stripe-connect-overview-2026-06-02.md` has no source summary → record it as an informational inventory entry, propose a disposition, and decide between linking and creating only if `source_required` is approved.
 
 #### Nested provider capsules
 
