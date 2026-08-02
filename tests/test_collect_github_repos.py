@@ -1,4 +1,5 @@
 import json
+import io
 import subprocess
 import sys
 import tempfile
@@ -6,6 +7,7 @@ import unittest
 from dataclasses import replace
 from pathlib import Path
 from unittest import mock
+from contextlib import redirect_stdout
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,9 +23,11 @@ from collect_github_repos import (  # noqa: E402
     collect_one,
     compare_one,
     fail_ingest,
+    main,
     next_ingest,
     parse_package_release,
     retry_one,
+    regenerate_status,
     supplement_one,
 )
 from github_capsule_policy import CapsuleConfig  # noqa: E402
@@ -873,6 +877,57 @@ class CollectGitHubReposTests(unittest.TestCase):
         self.assertEqual(item.work_item_id, selected.work_item_id)
         self.assertEqual("ingesting", selected.state)
         self.assertEqual("ingesting", claimed.state)
+
+    def test_status_approval_and_next_ingest_include_attachment_required_reading(self):
+        self.collect()
+        item = load_work_items(self.root / "tracking/github/work-items.json")[0]
+        supplement = supplement_one(
+            self.root,
+            self.config,
+            self.sha,
+            ("packages/paypal-js/src/index.ts",),
+            clone_source=self.remote,
+            collection_date="2026-07-21",
+        )
+        attachment = github_work_items.publish_evidence_attachment(
+            self.root,
+            item,
+            supplement.manifest_path.resolve().relative_to(
+                self.root.resolve()
+            ).as_posix(),
+        )
+        linked = replace(
+            item,
+            evidence_attachments=(attachment.relative_path,),
+        )
+        save_work_items(
+            self.root / "tracking/github/work-items.json",
+            (linked,),
+        )
+
+        status = regenerate_status(self.root)
+        packet = json.loads(
+            (self.root / linked.ingest_packet).read_text(encoding="utf-8")
+        )
+        self.assertIn(attachment.relative_path, status)
+        self.assertIn(
+            "Required reading: `"
+            + str(len(packet["required_reading"]) + len(attachment.required_reading))
+            + "` files",
+            status,
+        )
+
+        approve_one(self.root, linked.work_item_id, "full")
+        output = io.StringIO()
+        with mock.patch("collect_github_repos.PROJECT_ROOT", self.root), redirect_stdout(output):
+            self.assertEqual(0, main(["next-ingest"]))
+        payload = json.loads(output.getvalue())
+
+        self.assertEqual("ingesting", payload["state"])
+        self.assertEqual(
+            packet["required_reading"] + list(attachment.required_reading),
+            payload["required_reading"],
+        )
 
     def test_retry_requires_failure_state_and_returns_to_discovered(self):
         self.collect()

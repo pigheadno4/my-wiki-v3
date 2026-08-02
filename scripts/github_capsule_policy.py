@@ -32,6 +32,7 @@ DEFAULT_EXCLUDED_CATEGORIES = ("fixtures", "stories", "tests")
 EXCLUDED_CATEGORIES = frozenset(DEFAULT_EXCLUDED_CATEGORIES)
 _CAPSULE_ID = re.compile(r"[a-z0-9][a-z0-9-]{0,62}\Z")
 _BLOB_OID = re.compile(r"(?:[0-9a-f]{40}|[0-9a-f]{64})\Z")
+_SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 
 _CAPSULE_REQUIRED_KEYS = {"id", "adapter", "focus_packages"}
 _CAPSULE_OPTIONAL_KEYS = {
@@ -48,6 +49,7 @@ _CAPSULE_OPTIONAL_KEYS = {
     "max_packet_files",
     "max_packet_utf8_bytes",
     "package_overrides",
+    "historical_policy_hashes",
 }
 _OVERRIDE_KEYS = {"name", "required_roots", "generated_target_paths", "include_paths"}
 _ALLOWLIST_KEYS = {"path", "blob_oid", "detector_code"}
@@ -86,6 +88,7 @@ class CapsuleConfig:
     max_packet_files: int = 160
     max_packet_utf8_bytes: int = 1000000
     package_overrides: Tuple[PackageOverride, ...] = ()
+    historical_policy_hashes: Tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -198,6 +201,7 @@ def _parse_capsule(row: Dict[str, object], prefix: str) -> CapsuleConfig:
             max_packet_files=_positive_int(row, "max_packet_files", 160, prefix),
             max_packet_utf8_bytes=_positive_int(row, "max_packet_utf8_bytes", 1000000, prefix),
             package_overrides=_parse_overrides(row.get("package_overrides", []), prefix),
+            historical_policy_hashes=_policy_hashes(row.get("historical_policy_hashes", ()), prefix),
         ),
         prefix,
     )
@@ -283,6 +287,9 @@ def _normalize_capsule(capsule: CapsuleConfig, prefix: str) -> CapsuleConfig:
             prefix + " package override " + str(index),
         )
         overrides.append(normalized)
+    historical_policy_hashes = _policy_hashes(
+        capsule.historical_policy_hashes, prefix
+    )
     return CapsuleConfig(
         capsule.id,
         capsule.adapter,
@@ -296,6 +303,7 @@ def _normalize_capsule(capsule: CapsuleConfig, prefix: str) -> CapsuleConfig:
         capsule.secret_detector,
         *limits,
         tuple(sorted(overrides, key=lambda item: item.name)),
+        historical_policy_hashes,
     )
 
 
@@ -398,6 +406,13 @@ def _excluded_categories(value: object, prefix: str) -> Tuple[str, ...]:
     if any(category not in EXCLUDED_CATEGORIES for category in categories):
         raise ValueError(prefix + " excluded_categories contains an unknown category")
     return categories
+
+
+def _policy_hashes(value: object, prefix: str) -> Tuple[str, ...]:
+    hashes = _unique_strings(value, prefix + " historical_policy_hashes", allow_empty=True)
+    if any(_SHA256.fullmatch(value) is None for value in hashes):
+        raise ValueError(prefix + " historical_policy_hashes must contain SHA-256 values")
+    return hashes
 
 
 def _unique_strings(value: object, prefix: str, allow_empty: bool) -> Tuple[str, ...]:

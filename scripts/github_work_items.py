@@ -3,6 +3,7 @@
 from dataclasses import asdict, dataclass, replace
 from contextlib import contextmanager
 import fcntl
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -81,13 +82,46 @@ _WORK_ITEM_FIELDS = {
     "last_attempted_date",
     "evidence_revision",
     "ingest_packet",
+    "evidence_attachments",
 }
-_WORK_ITEM_FIELD_SETS = (
-    _WORK_ITEM_FIELDS,
-    _WORK_ITEM_FIELDS - {"ingest_packet"},
-    _WORK_ITEM_FIELDS - {"evidence_revision"},
-    _WORK_ITEM_FIELDS - {"evidence_revision", "ingest_packet"},
-)
+_WORK_ITEM_OPTIONAL_FIELDS = {
+    "evidence_revision",
+    "ingest_packet",
+    "evidence_attachments",
+}
+_WORK_ITEM_REQUIRED_FIELDS = _WORK_ITEM_FIELDS - _WORK_ITEM_OPTIONAL_FIELDS
+_ATTACHMENT_FIELDS = {
+    "attachment_type",
+    "base_snapshot_manifest",
+    "file_count",
+    "files",
+    "format_version",
+    "repository",
+    "required_reading",
+    "sha",
+    "supplement_manifest",
+    "total_bytes",
+    "work_item_id",
+}
+_SUPPLEMENT_FIELDS = {
+    "collected_date",
+    "files",
+    "format_version",
+    "identity_sha256",
+    "repository",
+    "sha",
+}
+_SUPPLEMENT_FILE_FIELDS = {
+    "classification_reason",
+    "git_blob_oid",
+    "git_mode",
+    "package",
+    "path",
+    "purpose",
+    "sha256",
+    "size",
+}
+_SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _QUEUE_THREAD_LOCK = threading.RLock()
 
 
@@ -137,12 +171,23 @@ class WorkItem:
     recommended_mode: str
     evidence_revision: str = ""
     ingest_packet: str = ""
+    evidence_attachments: Tuple[str, ...] = ()
     approved_mode: Optional[str] = None
     state: str = "discovered"
     attempts_in_run: int = 0
     consecutive_failed_runs: int = 0
     last_error: str = ""
     last_attempted_date: str = ""
+
+
+@dataclass(frozen=True)
+class EvidenceAttachment:
+    relative_path: str
+    supplement_manifest: str
+    files: Tuple[str, ...]
+    file_count: int
+    total_bytes: int
+    required_reading: Tuple[str, ...]
 
 
 def recommend_ingest_mode(signals: ChangeSignals) -> Tuple[str, Tuple[str, ...]]:
@@ -248,6 +293,78 @@ def build_work_item(
     )
     _validate_work_item(item)
     return item
+
+
+def publish_evidence_attachment(
+    root: Path,
+    item: WorkItem,
+    supplement_manifest: str,
+) -> EvidenceAttachment:
+    """Publish or reuse one canonical supplement attachment for a work item."""
+    root = Path(root).resolve()
+    _validate_work_item(item)
+    document = _build_evidence_attachment_document(
+        root, item, supplement_manifest
+    )
+    relative_path = _evidence_attachment_path(item)
+    destination = root / relative_path
+    content = canonical_json_bytes(document) + b"\n"
+    if destination.exists():
+        if not destination.is_file() or destination.is_symlink():
+            raise ValueError("evidence attachment path is unsafe")
+        if destination.read_bytes() != content:
+            raise ValueError("evidence attachment conflicts with published record")
+    else:
+        _write_atomic(destination, content)
+    return _attachment_from_document(relative_path, document)
+
+
+def load_evidence_attachment(
+    root: Path,
+    item: WorkItem,
+    attachment_path: str,
+) -> EvidenceAttachment:
+    """Load and fully verify one work-item evidence attachment."""
+    root = Path(root).resolve()
+    _validate_work_item(item)
+    _require_path(attachment_path, "evidence_attachment")
+    if attachment_path != _evidence_attachment_path(item):
+        raise ValueError("evidence attachment path does not match work item")
+    saved = root / attachment_path
+    if not saved.is_file() or saved.is_symlink():
+        raise ValueError("evidence attachment is missing")
+    document, content = _read_json_object(saved, "evidence attachment")
+    if canonical_json_bytes(document) + b"\n" != content:
+        raise ValueError("evidence attachment JSON is not canonical")
+    if set(document) != _ATTACHMENT_FIELDS or document.get("format_version") != 1:
+        raise ValueError("evidence attachment has unknown or missing fields")
+    supplement_manifest = document.get("supplement_manifest")
+    if not isinstance(supplement_manifest, str):
+        raise ValueError("evidence attachment supplement path is invalid")
+    expected = _build_evidence_attachment_document(
+        root, item, supplement_manifest
+    )
+    if document != expected:
+        raise ValueError("evidence attachment content mismatch")
+    return _attachment_from_document(attachment_path, document)
+
+
+def evidence_attachment_required_reading(
+    root: Path,
+    item: WorkItem,
+) -> Tuple[str, ...]:
+    """Return validated attachment manifests and source files in serial order."""
+    root = Path(root).resolve()
+    expected = root / _evidence_attachment_path(item)
+    if expected.exists() and not item.evidence_attachments:
+        raise ValueError("published evidence attachment is not linked")
+    reading = []
+    for attachment_path in item.evidence_attachments:
+        attachment = load_evidence_attachment(root, item, attachment_path)
+        reading.extend(attachment.required_reading)
+    if len(reading) != len(set(reading)):
+        raise ValueError("evidence attachment required reading contains duplicates")
+    return tuple(reading)
 
 
 def load_work_items(path: Path) -> Tuple[WorkItem, ...]:
@@ -546,11 +663,13 @@ def _transition_work_item_unlocked(
     if requested == "approved":
         if approved_mode not in INGEST_MODES:
             raise WorkItemStateError("approval requires full or delta mode")
+        evidence_attachment_required_reading(path.resolve().parents[2], current)
     elif approved_mode is not None:
         raise WorkItemStateError("approved_mode is only valid during approval")
     if requested == "ingesting":
         if current.approved_mode not in INGEST_MODES:
             raise WorkItemStateError("ingest cannot start without an approved mode")
+        evidence_attachment_required_reading(path.resolve().parents[2], current)
         if any(
             item.work_item_id != work_item_id and item.state == "ingesting"
             for item in items
@@ -635,6 +754,17 @@ def render_status(
                     "[review packet](" + packet_markdown + ")"
                     if item.ingest_packet
                     else "Historical item without packet"
+                ),
+                *(
+                    [
+                        "- Evidence attachment: "
+                        + ", ".join(
+                            "[manifest](" + path + ")"
+                            for path in item.evidence_attachments
+                        )
+                    ]
+                    if item.evidence_attachments
+                    else []
                 ),
                 "- Review priority: `"
                 + (summary.priority if summary is not None else "not available")
@@ -747,6 +877,12 @@ def _validate_work_item(item: WorkItem) -> None:
             or not item.ingest_packet.endswith(expected_suffix)
         ):
             raise ValueError("work-item ingest packet path is invalid")
+    attachments = _paths(item.evidence_attachments, "evidence_attachments")
+    expected_attachment = _evidence_attachment_path(item)
+    if any(path != expected_attachment for path in attachments):
+        raise ValueError("work-item evidence attachment path is invalid")
+    if len(attachments) != len(set(attachments)):
+        raise ValueError("work-item evidence attachments must be unique")
     if item.approved_mode is not None and item.approved_mode not in INGEST_MODES:
         raise ValueError("work-item approved mode is invalid")
     if item.state in ("approved", "ingesting", "ingested") and item.approved_mode is None:
@@ -785,6 +921,8 @@ def _work_item_to_dict(item: WorkItem) -> dict:
     value = asdict(item)
     if not item.ingest_packet:
         value.pop("ingest_packet")
+    if not item.evidence_attachments:
+        value.pop("evidence_attachments")
     value["package_changes"] = [asdict(change) for change in item.package_changes]
     for change in value["package_changes"]:
         change["reasons"] = list(change["reasons"])
@@ -792,7 +930,11 @@ def _work_item_to_dict(item: WorkItem) -> dict:
 
 
 def _work_item_from_dict(value: Any) -> WorkItem:
-    if not isinstance(value, dict) or set(value) not in _WORK_ITEM_FIELD_SETS:
+    if (
+        not isinstance(value, dict)
+        or not _WORK_ITEM_REQUIRED_FIELDS.issubset(value)
+        or not set(value).issubset(_WORK_ITEM_FIELDS)
+    ):
         raise ValueError("work item has unknown or missing fields")
     rows = value["package_changes"]
     if not isinstance(rows, list):
@@ -810,10 +952,146 @@ def _work_item_from_dict(value: Any) -> WorkItem:
     values = dict(value)
     values.setdefault("evidence_revision", "")
     values.setdefault("ingest_packet", "")
+    attachments = values.setdefault("evidence_attachments", [])
+    if not isinstance(attachments, list):
+        raise ValueError("evidence_attachments must be an array")
+    values["evidence_attachments"] = tuple(attachments)
     values["package_changes"] = tuple(changes)
     item = WorkItem(**values)
     _validate_work_item(item)
     return item
+
+
+def _build_evidence_attachment_document(
+    root: Path,
+    item: WorkItem,
+    supplement_manifest: str,
+) -> dict:
+    _require_path(supplement_manifest, "supplement_manifest")
+    supplement_path = root / supplement_manifest
+    supplement, _ = _read_json_object(supplement_path, "supplement manifest")
+    if (
+        set(supplement) != _SUPPLEMENT_FIELDS
+        or supplement.get("format_version") != 1
+        or supplement.get("repository") != item.repo_id
+        or supplement.get("sha") != item.sha
+        or not isinstance(supplement.get("files"), list)
+    ):
+        raise ValueError("supplement identity does not match work item")
+
+    snapshot_path = root / item.snapshot_manifest
+    snapshot, _ = _read_json_object(snapshot_path, "snapshot manifest")
+    if (
+        snapshot.get("repository") != item.repo_id
+        or snapshot.get("sha") != item.sha
+    ):
+        raise ValueError("base snapshot identity does not match work item")
+
+    file_rows = []
+    required = [supplement_manifest]
+    seen = set()
+    supplement_identity_rows = []
+    for source_row in supplement["files"]:
+        if (
+            not isinstance(source_row, dict)
+            or set(source_row) != _SUPPLEMENT_FILE_FIELDS
+        ):
+            raise ValueError("supplement file row is invalid")
+        source_path = source_row.get("path")
+        digest = source_row.get("sha256")
+        size = source_row.get("size")
+        if (
+            not isinstance(source_path, str)
+            or not safe_policy_path(source_path)
+            or source_path in seen
+            or not isinstance(digest, str)
+            or _SHA256.fullmatch(digest) is None
+            or not isinstance(size, int)
+            or size < 0
+        ):
+            raise ValueError("supplement file row is invalid")
+        seen.add(source_path)
+        full_path = (
+            Path(supplement_manifest).parent / "files" / source_path
+        ).as_posix()
+        _require_path(full_path, "attachment file")
+        saved = root / full_path
+        if not saved.is_file() or saved.is_symlink():
+            raise ValueError("attachment file is missing " + full_path)
+        content = saved.read_bytes()
+        if len(content) != size:
+            raise ValueError("attachment file size mismatch " + full_path)
+        if hashlib.sha256(content).hexdigest() != digest:
+            raise ValueError("attachment file hash mismatch " + full_path)
+        file_rows.append({"path": full_path, "sha256": digest, "size": size})
+        supplement_identity_rows.append({"path": source_path, "sha256": digest})
+        required.append(full_path)
+
+    if not file_rows:
+        raise ValueError("evidence attachment must contain files")
+    expected_supplement_identity = hashlib.sha256(
+        canonical_json_bytes(
+            {
+                "files": supplement_identity_rows,
+                "repository": item.repo_id,
+                "sha": item.sha,
+            }
+        )
+    ).hexdigest()
+    if supplement.get("identity_sha256") != expected_supplement_identity:
+        raise ValueError("supplement identity hash mismatch")
+    return {
+        "attachment_type": "source-supplement-v1",
+        "base_snapshot_manifest": item.snapshot_manifest,
+        "file_count": len(file_rows),
+        "files": file_rows,
+        "format_version": 1,
+        "repository": item.repo_id,
+        "required_reading": required,
+        "sha": item.sha,
+        "supplement_manifest": supplement_manifest,
+        "total_bytes": sum(row["size"] for row in file_rows),
+        "work_item_id": item.work_item_id,
+    }
+
+
+def _attachment_from_document(
+    relative_path: str, document: dict
+) -> EvidenceAttachment:
+    files = tuple(row["path"] for row in document["files"])
+    return EvidenceAttachment(
+        relative_path,
+        document["supplement_manifest"],
+        files,
+        document["file_count"],
+        document["total_bytes"],
+        (relative_path, *tuple(document["required_reading"])),
+    )
+
+
+def _evidence_attachment_path(item: WorkItem) -> str:
+    return (
+        "tracking/github/repos/"
+        + item.repo_id
+        + "/evidence-attachments/"
+        + item.work_item_id
+        + "/attachment.json"
+    )
+
+
+def _read_json_object(path: Path, label: str) -> Tuple[dict, bytes]:
+    if not path.is_file() or path.is_symlink():
+        raise ValueError(label + " is missing")
+    try:
+        content = path.read_bytes()
+        document = json.loads(
+            content.decode("utf-8"), object_pairs_hook=_reject_duplicate_keys
+        )
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise ValueError(label + " is unreadable") from error
+    if not isinstance(document, dict):
+        raise ValueError(label + " must contain a JSON object")
+    return document, content
 
 
 def _require_same_evidence(existing: WorkItem, incoming: WorkItem) -> None:
@@ -827,6 +1105,11 @@ def _require_same_evidence(existing: WorkItem, incoming: WorkItem) -> None:
         "ingest_packet",
     )
     if any(getattr(existing, field) != getattr(incoming, field) for field in fields):
+        raise ValueError("existing work item conflicts with discovered evidence")
+    if (
+        incoming.evidence_attachments
+        and existing.evidence_attachments != incoming.evidence_attachments
+    ):
         raise ValueError("existing work item conflicts with discovered evidence")
 
 
@@ -855,6 +1138,12 @@ def _require_compatible_paths(existing: WorkItem, incoming: WorkItem) -> None:
         and existing.ingest_packet != incoming.ingest_packet
     ):
         raise ValueError("existing work item conflicts with ingest packet evidence")
+    if (
+        existing.evidence_attachments
+        and incoming.evidence_attachments
+        and existing.evidence_attachments != incoming.evidence_attachments
+    ):
+        raise ValueError("existing work item conflicts with attachment evidence")
     existing_changes = {change.release_id: change for change in existing.package_changes}
     for change in incoming.package_changes:
         prior = existing_changes[change.release_id]
@@ -890,6 +1179,9 @@ def _merge_evidence(existing: WorkItem, incoming: WorkItem) -> WorkItem:
         package_changes=tuple(merged_changes),
         snapshot_manifest=incoming.snapshot_manifest or existing.snapshot_manifest,
         ingest_packet=incoming.ingest_packet or existing.ingest_packet,
+        evidence_attachments=(
+            incoming.evidence_attachments or existing.evidence_attachments
+        ),
         recommended_mode=mode,
     )
 

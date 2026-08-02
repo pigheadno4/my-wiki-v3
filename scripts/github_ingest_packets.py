@@ -27,6 +27,7 @@ from github_versions import parse_semver
 
 _WORK_ITEM_ID = re.compile(r"^github-[0-9a-f]{20}$")
 _OBJECT_ID = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
+_SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _SOURCE_SUFFIXES = (
     ".c",
     ".cc",
@@ -177,6 +178,7 @@ def build_ingest_packet(
     packet_kind: str,
     wiki_context_override: Optional[Sequence[str]] = None,
     expected_wiki_targets_override: Optional[Sequence[str]] = None,
+    capsule_policy_sha256_override: Optional[str] = None,
 ) -> IngestPacket:
     """Build one canonical packet without publishing or changing queue state."""
     root = Path(root).resolve()
@@ -197,6 +199,10 @@ def build_ingest_packet(
     current = _load_snapshot(root, snapshot_manifest, config.id)
     capsule = config.capsules[0]
     policy_hash = build_effective_policy(capsule, (), (), ()).policy_hash
+    if capsule_policy_sha256_override is not None:
+        if _SHA256.fullmatch(capsule_policy_sha256_override) is None:
+            raise PacketBuildError("packet policy hash override is invalid")
+        policy_hash = capsule_policy_sha256_override
     package_documents = []
     all_required = set()
     all_unclassified = []
@@ -384,6 +390,23 @@ def load_packet_summary(root: Path, packet_path: str) -> PacketSummary:
         len(unclassified),
         len(gaps),
     )
+
+
+def load_packet_required_reading(
+    root: Path, packet_path: str
+) -> Tuple[str, ...]:
+    """Load the canonical packet's safe, unique serial-reading paths."""
+    _, document, content = _load_json(Path(root).resolve(), packet_path)
+    if canonical_json_bytes(document) + b"\n" != content:
+        raise PacketBuildError("packet JSON is not canonical")
+    required = document.get("required_reading")
+    if (
+        not isinstance(required, list)
+        or any(not isinstance(path, str) or not safe_policy_path(path) for path in required)
+        or len(required) != len(set(required))
+    ):
+        raise PacketBuildError("packet required reading is invalid")
+    return tuple(required)
 
 
 def _packet_bytes(
@@ -1484,6 +1507,7 @@ __all__ = [
     "PacketSummary",
     "build_ingest_packet",
     "load_packet_summary",
+    "load_packet_required_reading",
     "publish_queued_packet",
     "publish_review_packet",
 ]

@@ -4,7 +4,7 @@
 
 **Goal:** Enable and collect a bounded `@adyen/api-library@32.0.0` capsule with deep Checkout evidence and inventory-level coverage for all other Adyen Node API services, stopping at packet review.
 
-**Architecture:** Reuse `tagged-tree-v1` so exact configured paths, rather than recursive npm dependency closure, define the immutable snapshot. The registry retains all service implementations plus Checkout, Payment, and Recurring model trees; detailed excluded-domain evidence remains available through exact-SHA supplements.
+**Architecture:** Reuse `tagged-tree-v1` so exact configured paths, rather than recursive npm dependency closure, define the immutable snapshot. The registry retains all service implementations plus Checkout, Payment, Recurring, the exact standard notification request handler, and five exact notification model files. A canonical work-item evidence attachment makes the immutable supplement mandatory operator reading without rewriting the packet.
 
 **Tech Stack:** Python 3 `unittest`, TOML registry configuration, existing GitHub collection CLI, Git, JSON/JQ, immutable Markdown/JSON evidence.
 
@@ -13,7 +13,10 @@
 - Initial package identity is `@adyen/api-library@32.0.0`.
 - Official tag `v32.0.0` must resolve to exact SHA `99d1a0cf69c8660952baffd1437b00aae2fa4f23`.
 - Future stable v32 releases are retained; prereleases are excluded.
-- Deep coverage includes Checkout, Payment, Recurring, client, HTTP, security, webhook, and notification evidence.
+- Deep coverage includes Checkout, Payment, Recurring, client, HTTP, security, and standard payment notifications only: `src/notification/notificationRequest.ts` plus five exact `src/typings/notification/` include paths.
+- The immutable `bankingWebhookHandler.ts` and `managementWebhookHandler.ts` are inventory-only; future `src/notification/` siblings are excluded.
+- The linked attachment manifest, supplement manifest, and all five supplement files are serial required reading; approval and `next-ingest` validate them.
+- `src/webhooks.ts` and `src/typings/index.ts` are inventory-only barrels; the eleven broader `src/typings/*Webhooks/` families require exact-SHA supplements for detailed claims.
 - Inventory coverage retains every `src/services/` implementation without every non-checkout generated model tree.
 - Snapshot limits are 620 files and 3,500,000 UTF-8 bytes; packet limits are 700 files and 5,000,000 UTF-8 bytes; per-file limit is 512,000 bytes.
 - Tests, mocks, fixtures, lockfiles, build output, and `sdk-generation-log/` are excluded.
@@ -70,7 +73,6 @@ def test_adyen_node_uses_checkout_deep_and_domain_inventory_profile(self):
             "src/constants",
             "src/helpers",
             "src/httpClient",
-            "src/notification",
             "src/security",
             "src/services",
             "src/typings/checkout",
@@ -89,14 +91,24 @@ def test_adyen_node_uses_checkout_deep_and_domain_inventory_profile(self):
             "src/client.ts",
             "src/config.ts",
             "src/index.ts",
+            "src/notification/notificationRequest.ts",
             "src/service.ts",
             "src/typings/index.ts",
+            "src/typings/notification/amount.ts",
+            "src/typings/notification/models.ts",
+            "src/typings/notification/notification.ts",
+            "src/typings/notification/notificationItem.ts",
+            "src/typings/notification/notificationRequestItem.ts",
             "src/webhooks.ts",
             "tsconfig.json",
         ),
         capsule.include_paths,
     )
     self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+    self.assertEqual(
+        ("35829dc91506c9d75f2227a2d1fee3e2ede206ea84184245748a9d179bd2e197",),
+        capsule.historical_policy_hashes,
+    )
     self.assertEqual(512000, capsule.max_file_bytes)
     self.assertEqual(620, capsule.max_capsule_files)
     self.assertEqual(3500000, capsule.max_capsule_utf8_bytes)
@@ -147,7 +159,6 @@ default_required_roots=[
   "src/constants",
   "src/helpers",
   "src/httpClient",
-  "src/notification",
   "src/security",
   "src/services",
   "src/typings/checkout",
@@ -164,8 +175,14 @@ include_paths=[
   "src/client.ts",
   "src/config.ts",
   "src/index.ts",
+  "src/notification/notificationRequest.ts",
   "src/service.ts",
   "src/typings/index.ts",
+  "src/typings/notification/amount.ts",
+  "src/typings/notification/models.ts",
+  "src/typings/notification/notification.ts",
+  "src/typings/notification/notificationItem.ts",
+  "src/typings/notification/notificationRequestItem.ts",
   "src/webhooks.ts",
   "tsconfig.json",
 ]
@@ -176,6 +193,7 @@ max_capsule_files=620
 max_capsule_utf8_bytes=3500000
 max_packet_files=700
 max_packet_utf8_bytes=5000000
+historical_policy_hashes=["35829dc91506c9d75f2227a2d1fee3e2ede206ea84184245748a9d179bd2e197"]
 ```
 
 - [ ] **Step 4: Run focused and registry regression tests**
@@ -266,12 +284,22 @@ find raw/github/adyen/adyen-node-api-library/snapshots -path '*/files/src/servic
 find raw/github/adyen/adyen-node-api-library/snapshots -path '*/files/src/typings/checkout/*' -type f | wc -l
 find raw/github/adyen/adyen-node-api-library/snapshots -path '*/files/src/typings/balancePlatform/*' -type f | wc -l
 find raw/github/adyen/adyen-node-api-library/snapshots \( -path '*/__tests__/*' -o -path '*/__mocks__/*' -o -name '*.test.ts' -o -name '*.spec.ts' \) -type f | wc -l
+find raw/github/adyen/adyen-node-api-library/supplements -path '*/files/src/typings/notification/*' -type f | wc -l
+jq '[.files[].size] | add' raw/github/adyen/adyen-node-api-library/supplements/*/manifest.json
+jq -e '(.files | length == 5) and ([.files[].path] | sort == ["src/typings/notification/amount.ts", "src/typings/notification/models.ts", "src/typings/notification/notification.ts", "src/typings/notification/notificationItem.ts", "src/typings/notification/notificationRequestItem.ts"])' raw/github/adyen/adyen-node-api-library/supplements/*/manifest.json
 ```
 
 Expected: SHA matches `99d1a0cf69c8660952baffd1437b00aae2fa4f23`;
-total files are at most 620; total retained bytes are at most 3,500,000;
-service and Checkout trees are present; and both the Balance Platform model-tree
-count and excluded test/mock count are zero.
+the immutable base snapshot remains 545 files and 2,357,166 bytes; the exact-SHA
+`src/typings/notification/` supplement contains exactly five files and 21,450
+bytes; and the reviewed base-plus-supplement boundary is 550 files and
+2,378,616 bytes, under the 620-file and 3,500,000-byte limits. Service and
+Checkout trees are present; the standard notification handler and five-file
+model tree are self-contained; `src/webhooks.ts` and `src/typings/index.ts`
+remain inventory-only; no broader `*Webhooks/` tree is collected; and both the
+Balance Platform model-tree count and excluded test/mock count are zero.
+The base snapshot's Banking and Management webhook handlers are inventory-only;
+future source policy selects only `notificationRequest.ts` from that directory.
 
 - [ ] **Step 5: Review the canonical packet and lifecycle state**
 
@@ -279,11 +307,18 @@ Run:
 
 ```bash
 python3 scripts/collect_github_repos.py status
+jq '.work_items[] | select(.work_item_id == "github-2957d7d341f9f6cb5ecc") | {evidence_attachments,state,approved_mode}' tracking/github/work-items.json
+jq '{work_item_id,repository,sha,base_snapshot_manifest,supplement_manifest,file_count,total_bytes,required_reading}' tracking/github/repos/adyen/adyen-node-api-library/evidence-attachments/github-2957d7d341f9f6cb5ecc/attachment.json
 jq '{work_item_id,repository,to_sha,recommendation,required_reading_count:(.required_reading|length),unclassified_count:(.unclassified_changes|length),evidence_gap_count:(.evidence_gaps|length)}' tracking/github/repos/adyen/adyen-node-api-library/ingest-packets/*/packet.json
 jq '.work_items[] | select(.repo_id == "adyen/adyen-node-api-library") | {work_item_id,repo_id,state,recommended_mode,approved_mode,sha}' tracking/github/work-items.json
 ```
 
-Read both generated `packet.json` and `packet.md` in full. Expected: exact package and SHA identity, deterministic full-baseline recommendation, no unclassified retained changes, no blocking Checkout evidence gap, and state `awaiting_approval` with no approved mode.
+Read both generated `packet.json` and `packet.md` in full, then read the linked
+attachment manifest, supplement manifest, and five supplement files serially.
+Expected: exact package and SHA identity, deterministic full-baseline
+recommendation, 555 combined required-reading paths, no unclassified retained
+changes, no blocking Checkout evidence gap, and state `awaiting_approval` with
+no approved mode.
 
 - [ ] **Step 6: Verify no wiki ingest occurred**
 
@@ -307,7 +342,8 @@ git commit -m "data: collect Adyen Node API Library 32.0.0"
 - [ ] **Step 8: Report packet findings and stop**
 
 Report package identity, release date, exact SHA, retained file and byte counts,
-deep and inventory coverage, excluded categories, required-reading count,
+deep and inventory coverage, the standard notification supplement, excluded
+broader webhook families, required-reading count,
 unclassified and evidence-gap counts, recommendation, work-item ID, validation
 results, and commit hash. Explicitly state that ingest has not started.
 

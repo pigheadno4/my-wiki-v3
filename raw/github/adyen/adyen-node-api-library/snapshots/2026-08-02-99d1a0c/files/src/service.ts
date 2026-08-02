@@ -1,0 +1,96 @@
+/*
+ *                       ######
+ *                       ######
+ * ############    ####( ######  #####. ######  ############   ############
+ * #############  #####( ######  #####. ######  #############  #############
+ *        ######  #####( ######  #####. ######  #####  ######  #####  ######
+ * ###### ######  #####( ######  #####. ######  #####  #####   #####  ######
+ * ###### ######  #####( ######  #####. ######  #####          #####  ######
+ * #############  #############  #############  #############  #####  ######
+ *  ############   ############  #############   ############  #####  ######
+ *                                      ######
+ *                               #############
+ *                               ############
+ * Adyen NodeJS API Library
+ * Copyright (c) 2020 Adyen B.V.
+ * This file is open source and available under the MIT license.
+ * See the LICENSE file for more info.
+ */
+
+import Client from "./client";
+import Config, { EnvironmentEnum, RegionEnum } from "./config";
+
+/**
+ * Base Service class for all API services.
+ * Handles the setup of the endpoint URL for the API requests.
+ */
+class Service {
+    public apiKeyRequired = false;
+    public client: Client;
+
+    protected constructor(client: Client) {
+        this.client = client;
+    }
+
+    /**
+     * Constructs the base URL for API requests based on environment and endpoint type.
+     * - For non-LIVE environments, replaces '-live' with '-test'.
+     * - For LIVE environment, requires a liveEndpointUrlPrefix.
+     * - Handles special cases for 'pal-' and 'checkout-' endpoints.
+     * @param url - The original endpoint URL.
+     * @returns The formatted endpoint URL.
+     * @throws Error if url is not provided or liveEndpointUrlPrefix is missing for LIVE environment.
+     */    
+    protected createBaseUrl(url: string): string {
+        const config: Config = this.client.config;
+
+        if(!url) {
+            throw new Error("Endpoint URL must be provided.");
+        }
+
+        // handle TEST urls
+        if (config.environment !== EnvironmentEnum.LIVE) {
+            return url.replace("-live", "-test");
+        }
+
+        // handle LIVE urls
+        if (url.includes("/authe/")) {
+            return url.replace("https://test.adyen.com/", "https://authe-live.adyen.com/");
+        }
+
+        if (url.includes("pal-")) {
+            // LIVE pal URL must provide prefix
+            if(!config.liveEndpointUrlPrefix) {
+                throw new Error("Live endpoint URL prefix must be provided for LIVE environment.");
+            }
+            return url.replace("https://pal-test.adyen.com/pal/servlet/",
+                    `https://${this.client.config.liveEndpointUrlPrefix}-pal-live.adyenpayments.com/pal/servlet/`);
+        }
+
+        if (url.includes("checkout-")) {
+            // LIVE checkout URL must provide prefix
+            if(!config.liveEndpointUrlPrefix) {
+                throw new Error("Live endpoint URL prefix must be provided for LIVE environment.");
+            }
+            if (url.includes("/possdk/v68")) {
+                return url.replace("https://checkout-test.adyen.com/",
+                  `https://${this.client.config.liveEndpointUrlPrefix}-checkout-live.adyenpayments.com/`);
+            }
+
+            return url.replace("https://checkout-test.adyen.com/",
+                    `https://${this.client.config.liveEndpointUrlPrefix}-checkout-live.adyenpayments.com/checkout/`);
+        }
+
+        if (url.includes("https://device-api-test.adyen.com")) {
+            if (!config.region || config.region === RegionEnum.EU) {
+                return url.replace("https://device-api-test.adyen.com", "https://device-api-live.adyen.com");
+            }
+            return url.replace("https://device-api-test.adyen.com",
+                    `https://device-api-live-${config.region.toLowerCase()}.adyen.com`);
+        }
+
+        return url.replace("-test", "-live");
+    }
+}
+
+export default Service;

@@ -81,6 +81,16 @@ tracking/github/repos/<company>/<repo>/ingest-packets/<work-item-id>/
 
 When an approved query needs a source file excluded from the bounded snapshot, collect a separate immutable supplement under `raw/github/<company>/<repo>/supplements/`. A supplement never modifies or replaces the accepted snapshot.
 
+When a supplement changes the evidence required to review an existing work
+item, publish a canonical evidence attachment under
+`tracking/github/repos/<company>/<repo>/evidence-attachments/<work-item-id>/`
+and link it through the work item's `evidence_attachments` field. The attachment
+records the base snapshot, supplement manifest, files, hashes, counts, and
+bytes. Generated status and `next-ingest` combine packet reading with attachment
+reading. Approval and ingest transitions must revalidate every linked
+attachment and fail if a published attachment is missing, unlinked, unsafe, or
+tampered.
+
 ## Collection procedure
 
 Use `scripts/collect_github_repos.py` for the focused operations:
@@ -120,7 +130,12 @@ The required operator sequence is:
 collect -> review packet -> user approve -> next-ingest
 ```
 
-Run `status` to see the packet link, priority, required-reading count, unclassified-change count, and evidence-gap count. Read both packet files before approval. `next-ingest` returns the selected work item and its packet summary; it is a lifecycle transition, not permission to skip packet evidence.
+Run `status` to see the packet and attachment links, priority, combined
+required-reading count, unclassified-change count, and evidence-gap count. Read
+both packet files and every linked attachment's serial required reading before
+approval. `next-ingest` returns the selected work item, packet summary, and
+combined required-reading list; it is a lifecycle transition, not permission
+to skip packet or attachment evidence.
 
 `compare` creates or reuses the package comparison and writes `review-packet.json` plus `review-packet.md` beside it. It is an ad hoc review operation only: it must not create or advance a work item, approve ingest, or edit wiki pages.
 
@@ -147,6 +162,7 @@ For every ingest, read the complete current cumulative source page first.
 For `full` ingest, also read in full:
 
 - every path in the packet's `required_reading` and `wiki_context`;
+- every path in each linked evidence attachment's serial required reading;
 - the complete current snapshot, including every retained file;
 - all listed release and comparison history; and
 - relevant prior-version source and changelog context.
@@ -156,6 +172,7 @@ A full ingest adds the new package or major-version knowledge to the stable sour
 For `delta` ingest, also read in full:
 
 - every path in the packet's `required_reading`;
+- every path in each linked evidence attachment's serial required reading;
 - every path in the packet's `wiki_context`;
 - each changed retained source, documentation, example, and story file; and
 - every linked release note, comparison, and affected history section.
