@@ -67,6 +67,7 @@ Drop-in and Component analytics are enabled by default from the 5.x line. `Analy
 - [[source-github-adyen-android]] - cumulative exact-SHA repository evidence
 - [[changelog-github-adyen-android]] - package-qualified release ledger
 - [[adyen-ios-sdk]] - independently versioned native iOS SDK
+- [[adyen-react-native-sdk]] - wrapper baseline that pins Adyen Android `5.19.0`, not this page's newer `5.20.0`
 - [[source-github-adyen-web]] - independently versioned browser SDK
 - [[co-badged-cards]] - version-qualified dual-brand implementation evidence
 - [[adyen]] - company and knowledge-status page

@@ -16,11 +16,14 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-ios]] — package-qualified Adyen iOS release ledger beginning at `5.25.1` (github-repo, 2026-08-01)
 - [[source-github-adyen-android]] — cumulative `adyen-android@5.20.0` native baseline: Drop-in, Sessions, View and Compose Components, cards, actions, encryption, and delegated SDKs (github-repo, 2026-08-01)
 - [[changelog-github-adyen-android]] — package-qualified Adyen Android release ledger beginning at `5.20.0` (github-repo, 2026-08-01)
+- [[source-github-adyen-react-native]] — cumulative `@adyen/react-native@2.12.0` wrapper baseline: Drop-in, Components, Sessions, embedded CardView, wallets, actions, and native dependency boundaries (github-repo, 2026-08-02)
+- [[changelog-github-adyen-react-native]] — package-qualified Adyen React Native release ledger beginning at `2.12.0` (github-repo, 2026-08-02)
 
 ## Concepts
 
 - [[adyen-ios-sdk]] — native iOS architecture, integration modes, payment and server boundaries, and delegated dependencies
 - [[adyen-android-sdk]] — native Android architecture, integration modes, View and Compose surfaces, server boundaries, and delegated dependencies
+- [[adyen-react-native-sdk]] — React Native wrapper architecture, flows, platform setup, and native SDK boundaries
 
 ## Cross-cutting concepts
 

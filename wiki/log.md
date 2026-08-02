@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-08-02] ingest | GitHub Adyen/adyen-react-native - `@adyen/react-native@2.12.0`
+
+- Full serial ingest of `github-43baf5daaf3a92e79a79` from exact SHA `2912c913266b2d1df73882980303b563ea04ab63` after reading and hash-verifying all 304 required evidence files.
+- Established the cumulative React Native wrapper source and package-qualified changelog from the complete 301-file capsule plus release and snapshot records.
+- Recorded Drop-in, Components, Sessions and advanced server callbacks, embedded CardView, actions, wallets, platform setup, and native dependency boundaries.
+- Isolated exact `2.12.0` PayByBank, Apple Pay capability, lifecycle-fix, and dependency changes from broader cumulative wrapper behavior.
+- Created the Adyen React Native SDK concept and updated the Adyen company and provider index.
+
 ## [2026-08-01] ingest | GitHub Adyen/adyen-android - `adyen-android@5.20.0`
 
 - Full serial ingest of `github-b241eb5a8bcbadf2be62` from exact SHA `5314fad1389a8def9d8e3377f27f7405e303faba`.

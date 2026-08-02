@@ -6,6 +6,14 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-02] ingest | Adyen/adyen-react-native `2.12.0`
+
+- Approved and processed work item `github-43baf5daaf3a92e79a79` in full mode.
+- Read and hash-verified all 304 required evidence files, including the complete 301-file, 651,593-byte exact-SHA capsule at `raw/github/adyen/adyen-react-native/snapshots/2026-08-01-2912c91/manifest.json`.
+- Established the cumulative React Native source and package-qualified release ledger at exact SHA `2912c913266b2d1df73882980303b563ea04ab63`.
+- Recorded Drop-in, Components, Session and advanced flows, embedded Fabric CardView, actions, cards, wallets, platform setup, and merchant-server boundaries.
+- Isolated exact `2.12.0` features, fixes, and native dependency updates from broader cumulative wrapper behavior; created [[adyen-react-native-sdk]] and linked the independently versioned iOS and Android evidence.
+
 ## [2026-08-01] ingest | Adyen/adyen-android `5.20.0`
 
 - Approved and processed work item `github-b241eb5a8bcbadf2be62` in full mode.

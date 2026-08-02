@@ -64,5 +64,6 @@ The SDK can identify native iOS, React Native, or Flutter wrappers for analytics
 - [[source-github-adyen-ios]] - cumulative exact-SHA repository evidence
 - [[changelog-github-adyen-ios]] - package-qualified release ledger
 - [[source-github-adyen-web]] - independently versioned browser SDK
+- [[adyen-react-native-sdk]] - wrapper baseline that pins Adyen iOS `5.25.1`
 - [[co-badged-cards]] - cross-provider card-network choice
 - [[adyen]] - company and knowledge-status page

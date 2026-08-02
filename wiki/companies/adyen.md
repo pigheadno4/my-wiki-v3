@@ -1,13 +1,13 @@
 ---
 title: "Adyen"
 type: company
-tags: [adyen, payments, checkout, web-sdk, ios-sdk, android-sdk]
-source_count: 3
+tags: [adyen, payments, checkout, web-sdk, ios-sdk, android-sdk, react-native-sdk]
+source_count: 4
 ---
 
 ## Overview
 
-Adyen is represented in this wiki by independently versioned Web, iOS, and Android checkout SDKs. The retained sources cover browser and native Drop-in and Components, Session and advanced checkout flows, cards, 3D Secure 2 actions, stored and partial payments, wallets, accessibility, analytics, and client-side data boundaries.
+Adyen is represented in this wiki by independently versioned Web, iOS, Android, and React Native checkout SDKs. The retained sources cover browser, native, and cross-platform Drop-in and Components, Session and advanced checkout flows, cards, 3D Secure 2 actions, stored and partial payments, wallets, accessibility, analytics, and client-side data boundaries.
 
 ## Web checkout surface
 
@@ -35,12 +35,18 @@ The retained `adyen-android@5.20.0` baseline provides View and Jetpack Compose v
 
 Card support includes BIN lookup, dual-brand selection, installments, address fields, storage choice, scanning, and public-key encryption. Google Pay, Cash App Pay, Twint, WeChat Pay, and 3DS2 cross separately versioned runtime boundaries and require independent eligibility and dependency evidence.
 
+## React Native checkout surface
+
+The retained `@adyen/react-native@2.12.0` baseline wraps Adyen iOS `5.25.1` and Adyen Android `5.19.0`. It exposes Drop-in, individual Components, Sessions and advanced callbacks, follow-up actions, embedded Fabric card UI, Apple Pay, Google Pay, instant payments, and client-side encryption.
+
+The wrapper does not merge the native repositories' histories. Native behavior remains package- and version-qualified, and final payment status remains a merchant-server or Session concern. Apple Pay recurring request configuration is wallet-sheet metadata, not proof of a recurring billing engine.
+
 ## Knowledge status
 
-- Ingested cumulative GitHub repository sources: 3
-- Ingested package releases: 3
-- Retained package releases: `@adyen/adyen-web@6.41.0`; `adyen-ios@5.25.1`; `adyen-android@5.20.0`
-- Latest ingest: `adyen-android@5.20.0` at exact SHA `5314fad1389a8def9d8e3377f27f7405e303faba`
+- Ingested cumulative GitHub repository sources: 4
+- Ingested package releases: 4
+- Retained package releases: `@adyen/adyen-web@6.41.0`; `adyen-ios@5.25.1`; `adyen-android@5.20.0`; `@adyen/react-native@2.12.0`
+- Latest ingest: `@adyen/react-native@2.12.0` at exact SHA `2912c913266b2d1df73882980303b563ea04ab63`
 
 ## Sources
 
@@ -50,6 +56,8 @@ Card support includes BIN lookup, dual-brand selection, installments, address fi
 - [[changelog-github-adyen-ios]] — package-qualified native release ledger
 - [[source-github-adyen-android]] — cumulative Adyen Android implementation baseline
 - [[changelog-github-adyen-android]] — package-qualified native release ledger
+- [[source-github-adyen-react-native]] — cumulative Adyen React Native wrapper baseline
+- [[changelog-github-adyen-react-native]] — package-qualified wrapper release ledger
 
 ## Related
 
@@ -58,3 +66,4 @@ Card support includes BIN lookup, dual-brand selection, installments, address fi
 - [[co-badged-cards]] — cross-provider network-choice concept
 - [[adyen-ios-sdk]] — native SDK architecture and merchant-server boundaries
 - [[adyen-android-sdk]] — native Android architecture and merchant-server boundaries
+- [[adyen-react-native-sdk]] — cross-platform wrapper, native dependency, and merchant-server boundaries

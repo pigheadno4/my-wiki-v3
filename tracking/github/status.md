@@ -105,10 +105,10 @@
 - Repository: `adyen/adyen-react-native`
 - SHA: `2912c913266b2d1df73882980303b563ea04ab63`
 - Collection date: `2026-08-01`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None
