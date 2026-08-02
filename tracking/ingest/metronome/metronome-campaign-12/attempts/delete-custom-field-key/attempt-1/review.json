@@ -1,0 +1,36 @@
+{
+  "job_id": "delete-custom-field-key",
+  "review_scope": "full_classification",
+  "complete_raw_read": true,
+  "reviewer_is_distinct": true,
+  "decision": "source_required",
+  "agrees_with_worker": true,
+  "grounding_quotes": [
+    {
+      "text": "Removes a custom field key from the allowlist for a specific entity type, preventing future use of that key across all instances of the entity. Existing values for this key on entity instances will no longer be accessible once the key is removed.",
+      "location": "lines 11-11",
+      "supports": "The operation has durable destructive semantics across every instance of an entity type and makes pre-existing values inaccessible, which is material behavior rather than navigation-only metadata."
+    },
+    {
+      "text": "  /v1/customFields/removeKey:\n    post:\n      tags:\n        - Custom fields\n      summary: Delete a custom field key",
+      "location": "lines 88-92",
+      "supports": "The page identifies a concrete POST operation and endpoint for deleting a custom-field key."
+    },
+    {
+      "text": "      requestBody:\n        description: Remove a key from the allow list for an entity\n        content:\n          application/json:\n            schema:\n              type: object\n              required:\n                - entity\n                - key\n              properties:\n                entity:\n                  $ref: '#/components/schemas/ManagedEntity'\n                key:\n                  type: string",
+      "location": "lines 99-112",
+      "supports": "The request contract requires both an entity and key, with the entity constrained by the ManagedEntity schema."
+    },
+    {
+      "text": "            example:\n              entity: customer\n              key: x_account_id\n      responses:\n        '200':\n          description: Success",
+      "location": "lines 113-118",
+      "supports": "The page provides a concrete request example and documents HTTP 200 as the successful response."
+    },
+    {
+      "text": "    ManagedEntity:\n      type: string\n      enum:\n        - alert\n        - billable_metric\n        - charge\n        - commit\n        - contract_credit\n        - contract_product\n        - contract\n        - customer\n        - discount\n        - invoice\n        - professional_service\n        - product\n        - rate_card\n        - scheduled_charge\n        - subscription\n        - package_commit\n        - package_credit\n        - package_subscription\n        - package_scheduled_charge",
+      "location": "lines 121-142",
+      "supports": "The operation applies to a defined set of managed entity types, so its integration scope is durable and specific."
+    }
+  ],
+  "reason": "A source summary is required because this endpoint page records consequential deletion behavior that cannot be inferred from documentation navigation: removing an allowlisted key prevents its future use across all instances of the selected entity type and makes existing values inaccessible. The page also supplies the actionable API contract, including POST path, required entity and key inputs, supported managed-entity scope, and success response."
+}
