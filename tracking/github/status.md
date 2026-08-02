@@ -75,6 +75,31 @@
   Release: [manifest](raw/github/braintree/braintree-web/releases/braintree-web/3.144.0/2026-07-28/manifest.json)
   Comparison: [manifest](tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.143.0--3.144.0/comparison.json)
 
+## `github-2957d7d341f9f6cb5ecc`
+
+- Repository: `adyen/adyen-node-api-library`
+- SHA: `99d1a0cf69c8660952baffd1437b00aae2fa4f23`
+- Collection date: `2026-08-02`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/adyen/adyen-node-api-library/snapshots/2026-08-02-99d1a0c/manifest.json)
+- Packet: [review packet](tracking/github/repos/adyen/adyen-node-api-library/ingest-packets/github-2957d7d341f9f6cb5ecc/packet.md)
+- Review priority: `high`
+- Required reading: `548` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/api-library@32.0.0` (recommended `full`)
+  Release: [manifest](raw/github/adyen/adyen-node-api-library/releases/api-library/32.0.0/2026-08-02/manifest.json)
+  Comparison: Not applicable
+
 ## `github-2968099ae6a7549cd6a9`
 
 - Repository: `braintree/braintree_ios`
