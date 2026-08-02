@@ -80,10 +80,10 @@
 - Repository: `adyen/adyen-node-api-library`
 - SHA: `99d1a0cf69c8660952baffd1437b00aae2fa4f23`
 - Collection date: `2026-08-02`
-- State: `awaiting_approval`
+- State: `approved`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None
