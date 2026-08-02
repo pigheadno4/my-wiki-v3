@@ -39,11 +39,11 @@ This source is the Custom Fields overview. The five related endpoint raw pages b
 
 ## Related raw API references
 
-- [[raw/metronome/api-reference/custom-fields/create-a-custom-field-key-2026-07-13|raw/metronome/api-reference/custom-fields/create-a-custom-field-key-2026-07-13.md]] — not summarized
-- [[raw/metronome/api-reference/custom-fields/delete-a-custom-field-key-2026-07-13|raw/metronome/api-reference/custom-fields/delete-a-custom-field-key-2026-07-13.md]] — not summarized
-- [[raw/metronome/api-reference/custom-fields/delete-custom-fields-2026-07-13|raw/metronome/api-reference/custom-fields/delete-custom-fields-2026-07-13.md]] — not summarized
-- [[raw/metronome/api-reference/custom-fields/list-custom-field-keys-2026-07-13|raw/metronome/api-reference/custom-fields/list-custom-field-keys-2026-07-13.md]] — not summarized
-- [[raw/metronome/api-reference/custom-fields/set-custom-field-values-2026-07-13|raw/metronome/api-reference/custom-fields/set-custom-field-values-2026-07-13.md]] — not summarized
+- [[raw/metronome/api-reference/custom-fields/create-a-custom-field-key-2026-07-13|raw/metronome/api-reference/custom-fields/create-a-custom-field-key-2026-07-13.md]] — raw reference; not summarized
+- [[raw/metronome/api-reference/custom-fields/delete-a-custom-field-key-2026-07-13|raw/metronome/api-reference/custom-fields/delete-a-custom-field-key-2026-07-13.md]] — raw reference; not summarized
+- [[raw/metronome/api-reference/custom-fields/delete-custom-fields-2026-07-13|raw/metronome/api-reference/custom-fields/delete-custom-fields-2026-07-13.md]] — raw reference; not summarized
+- [[raw/metronome/api-reference/custom-fields/list-custom-field-keys-2026-07-13|raw/metronome/api-reference/custom-fields/list-custom-field-keys-2026-07-13.md]] — raw reference; not summarized
+- [[raw/metronome/api-reference/custom-fields/set-custom-field-values-2026-07-13|raw/metronome/api-reference/custom-fields/set-custom-field-values-2026-07-13.md]] — raw reference; not summarized
 
 ## Raw Sources
 
