@@ -1,0 +1,42 @@
+{
+  "job_id": "create-custom-field-key",
+  "raw_path": "raw/metronome/api-reference/custom-fields/create-a-custom-field-key-2026-07-13.md",
+  "raw_sha256": "54ffdb826b8aeddafd3226aa1e7e3b8b6ca41835ea27cddefdcf478daf9e5231",
+  "complete_read": true,
+  "classification": "source_required",
+  "reason": "The page contains durable endpoint-specific semantics that are not merely navigational: it defines uniqueness enforcement and its failure behavior, identifies downstream invoice propagation, specifies required request fields, and enumerates the supported managed entity values. Treating it only as a raw reference would omit facts needed to implement and reason about the API contract.",
+  "risk": "If this page remains navigation-only, future answers may miss the duplicate-value failure condition, omit the required enforce_uniqueness field, over- or under-state supported entity types, or fail to account for which custom fields propagate to invoices.",
+  "missed_durable_facts": [
+    "A custom field key can enforce uniqueness, and setting a value already used for that key fails.",
+    "Custom fields on customers, contracts, invoices, products, commits, scheduled charges, and subscriptions are passed down to the invoice.",
+    "The add-key request requires entity, key, and enforce_uniqueness; key is a string and enforce_uniqueness is a boolean.",
+    "The ManagedEntity schema enumerates the supported entity identifiers, including alert, billable_metric, customer, contract, invoice, product, subscription, and package-level entity types."
+  ],
+  "grounding_quotes": [
+    {
+      "text": "Creates a new custom field key for a given entity (e.g. billable metric, contract, alert).",
+      "location": "lines 11-11",
+      "supports": "The endpoint creates a custom field key for a specified Metronome entity."
+    },
+    {
+      "text": "- Specify whether the key should enforce uniqueness. If the key is set to enforce uniqueness and you attempt to set a custom field value for the key that already exists, it will fail.",
+      "location": "lines 17-17",
+      "supports": "Uniqueness enforcement has an explicit duplicate-value failure behavior."
+    },
+    {
+      "text": "- Custom fields for customers, contracts, invoices, products, commits, scheduled charges, and subscriptions are passed down to the invoice.",
+      "location": "lines 22-22",
+      "supports": "Custom fields on the listed entity types propagate to invoices."
+    },
+    {
+      "text": "              required:\n                - entity\n                - key\n                - enforce_uniqueness\n              properties:\n                entity:\n                  $ref: '#/components/schemas/ManagedEntity'\n                key:\n                  type: string\n                enforce_uniqueness:\n                  type: boolean",
+      "location": "lines 148-158",
+      "supports": "The request schema requires entity, key, and enforce_uniqueness and defines the scalar field types."
+    },
+    {
+      "text": "      enum:\n        - alert\n        - billable_metric\n        - charge\n        - commit\n        - contract_credit\n        - contract_product\n        - contract\n        - customer\n        - discount\n        - invoice\n        - professional_service\n        - product\n        - rate_card\n        - scheduled_charge\n        - subscription\n        - package_commit\n        - package_credit\n        - package_subscription\n        - package_scheduled_charge",
+      "location": "lines 170-189",
+      "supports": "ManagedEntity is constrained to an explicit set of supported entity identifiers."
+    }
+  ]
+}
