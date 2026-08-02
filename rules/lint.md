@@ -23,16 +23,18 @@ Run `python scripts/validate_wiki.py` across the wiki. It checks, **outside the 
 
 Raw files are NEVER modified — they are immutable source documents.
 
-### a. Orphan raw files (ingest queue)
+### a. Raw files without source summaries (informational inventory)
 
-Find raw files with no reference in any wiki source page. This is the primary mechanism for catching files added directly to `raw/` — **including everything the PSP fetcher drops in** (see `psp-collection.md`).
+Find raw files with no reference in any wiki source page. This is the primary mechanism for seeing files added directly to `raw/` — **including everything the PSP fetcher drops in** (see `psp-collection.md`). A raw page without a source summary is informational: it may be an intentional `raw_reference`, an unresolved `semantic_triage` page, or a future source candidate. It is not a backlog that must reach zero.
 
 - How: list all **top-level files** in `raw/` (i.e., `raw/*.md` — not files inside subdirectories or `raw/assets/`). For each, search `wiki/sources/` for its filename in `raw_files:` frontmatter. If not found anywhere, it's an orphan. This covers dated raw files and legacy flat GitHub stubs.
 - Also check legacy detail subdirectories in `raw/` that lack their corresponding legacy stub file (e.g., `raw/github-stripe-node/` exists but `raw/github-stripe-node.md` does not). New nested GitHub snapshots under `raw/github/` are validated separately below.
-- Triage: present all orphan raw files as a numbered list. For each, propose one of:
+- Triage: present raw files without source summaries as a numbered list. For each page that needs a routing decision, propose one of:
+  - **Raw reference**: retain as navigation-only raw with no routine source generation.
+  - **Semantic triage**: queue one complete strong-model read to decide its disposition after approval.
   - **Link**: attach to an existing related source page (prepend to `raw_files:` newest-first + add content to the page body).
   - **New**: create a new source page via the ingest workflow.
-- Action: user approves per-file, then execute. Run the full ingest workflow **one source at a time** per `ingest.md` for each new source.
+- Action: user approves per-file routing or promotion, then execute. Run the full ingest workflow **one source at a time** per `ingest.md` for each approved new source.
 - Example: `raw/stripe-connect-overview-2026-06-02.md` has no reference → propose creating a new source page, or linking to existing `source-stripe-platform-guide.md` if it covers the same topic.
 
 #### Nested provider capsules
@@ -45,7 +47,7 @@ For Metronome, run:
 python3 scripts/validate_metronome_capsule.py
 ```
 
-The command recursively reconciles `raw/metronome/` against `wiki/sources/metronome/`. Pending orphan paths are the expected ingest queue and do not make the command fail. Duplicate canonical URLs, missing raw versions, disagreement between `raw_files:` and `## Raw Sources`, index drift, or an incorrect company `source_count` are structural errors and return a nonzero exit code.
+The command recursively reconciles `raw/metronome/` against `wiki/sources/metronome/`. Raw paths without source summaries are informational and do not make the command fail; they may be intentional `raw_reference` pages, unresolved `semantic_triage` pages, or future source candidates, and their count need not reach zero. Duplicate canonical URLs, missing raw versions, disagreement between `raw_files:` and `## Raw Sources`, index drift, or an incorrect company `source_count` remain structural errors and return a nonzero exit code.
 
 #### Nested GitHub repository snapshots
 

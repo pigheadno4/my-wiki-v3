@@ -11,7 +11,7 @@
 
    **Concept page trust rule**: treat concept pages as a fast index, not a source of truth. Concept pages summarize and can drift from the raw content over time. If a query asks for specific values (API limits, error codes, field names, exact timelines, endpoint paths), always verify against the raw file or source page summary — do not cite concept page values as final answers without verification. Use concept pages to identify *which* source pages to read next.
 
-3. **Deep dive into raw files when needed**: if the source summary lacks sufficient detail, read the corresponding raw files (via `raw_files:` frontmatter) for the full original content. Raw files are the source of truth.
+3. **Deep dive into raw files when needed**: if the source summary lacks sufficient detail, consult both its factual evidence (`raw_files:` frontmatter and `## Raw Sources`) and its navigation-only `## Related raw API references`. Read the relevant raw file completely for the full original content. Raw files are the source of truth; a related raw reference is not evidence until it has been read.
 
    **Triggers for raw file deep dive**:
    - Query asks for specific code samples, exact parameters, limits, or edge cases not in the summary
@@ -40,7 +40,7 @@
 
    Search a related repository only when the documented responsibility boundary requires it. Name the different repository and evidence authority in the answer. Label default-branch or untagged SHA evidence as unreleased.
 
-4. **Sweep unlinked raw files**: grep `raw/` for filenames matching the query topic. Read any relevant raw files not yet linked to a source page — they contain real content that would otherwise be silently missed. Link them to existing source pages or create new source pages as needed (one at a time, per `ingest.md`).
+4. **Sweep unlinked and related raw files**: grep `raw/` for filenames matching the query topic and inspect relevant `## Related raw API references`. Read a relevant unlinked or related raw page completely when the query needs it. Answering from raw does not itself authorize a source-page write. When the raw contributes reusable knowledge, an important boundary, or repeated query value, recommend promotion; ingest begins only after approval.
 5. Synthesize an answer with `[[wikilinks]]` citations to wiki pages.
 6. **Offer to file the answer** if it meets any of these criteria:
    - **Comparison**: answer compares two or more platforms/products → offer to file as a **comparison page** in `wiki/comparisons/`.
@@ -57,6 +57,6 @@ User asks: *"What are Stripe's chargeback fees compared to Adyen's?"*
 1. Root `index.md` → `stripe-index.md` + `adyen-index.md` → find `source-stripe-pricing-overview.md` and `source-adyen-pricing-overview.md`.
 2. Source pages mention chargeback fees but lack exact amounts or edge cases.
 3. **Deep dive triggered** (query asks for specifics) → `raw_files:` → read the corresponding raw files → find exact fee schedules.
-4. Sweep `raw/` for other files mentioning "chargeback" — find an unlinked raw file, create a source page.
-5. Synthesize → return a comparison table with `[[wikilinks]]`.
-6. Offer to file as a **comparison page** (`wiki/comparisons/stripe-vs-adyen-chargeback-fees.md`) — answer compares two platforms on a specific dimension.
+4. Sweep `raw/` and related raw references for other files mentioning "chargeback" — find an unlinked raw file, read it completely, and use it to answer without creating a source automatically.
+5. Synthesize → return a comparison table with `[[wikilinks]]`; separately recommend source promotion if the raw contribution is reusable or repeatedly valuable.
+6. Offer to file as a **comparison page** (`wiki/comparisons/stripe-vs-adyen-chargeback-fees.md`) — answer compares two platforms on a specific dimension. Any recommended raw-to-source promotion still requires separate approval.

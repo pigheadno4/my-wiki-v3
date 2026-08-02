@@ -166,3 +166,37 @@ approved future pilot demonstrates that it can meet the same concept-update and
 quote-grounding gate. This changes only worker routing; the existing independent
 Sol review, retry, coordinator ownership, and campaign-close gates remain the
 same.
+
+After the coordinator generates a worker order, dispatch that native agent and
+confirm that the dispatch returned an agent identifier before processing other
+completion events. Order generation alone is not evidence that a worker is
+active. If dispatch is interrupted, reconcile that job and its existing order
+before issuing another order. This is an operating discipline only; do not add
+a second scheduler, state schema, or monitoring layer for it.
+
+## Campaign 12 selective-ingest pilot authorization
+
+Campaign 12 is a bounded Metronome-only calibration pilot and may begin only
+after its exact manifest is explicitly approved. It runs outside the production
+campaign scheduler and schema; do not pass its manifest to
+`manage_ingest_pilot.py` or create a second scheduler, state schema, or
+monitoring layer.
+
+All five native agents are Sol: the overview worker, overview reviewer,
+create-key raw-reference auditor, delete-key semantic-triage worker, and
+delete-key semantic-triage reviewer. Dispatch exactly three simultaneous
+initial native tasks: overview source generation, the create-key raw-reference
+audit, and delete-key semantic triage. As slots free, dispatch an independent
+overview reviewer and an independent delete-key triage reviewer. Preserve the
+dispatch-confirm discipline above for every order.
+
+Only the overview task may generate a source candidate. Do not generate a
+source for create-key or delete-key during this pilot. The create-key audit
+tests its `raw_reference` classification. The delete-key task decides its
+future disposition; reviewer disagreement promotes that future disposition to
+`source_required` and is recorded once without a retry loop.
+
+The overview may list the five endpoint pages under
+`## Related raw API references`, but those navigation-only links cannot support
+overview facts. The other three classified endpoint pages receive no native
+task and no complete read in this pilot.
