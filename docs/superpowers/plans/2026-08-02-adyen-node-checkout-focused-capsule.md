@@ -4,7 +4,7 @@
 
 **Goal:** Enable and collect a bounded `@adyen/api-library@32.0.0` capsule with deep Checkout evidence and inventory-level coverage for all other Adyen Node API services, stopping at packet review.
 
-**Architecture:** Reuse `tagged-tree-v1` so exact configured paths, rather than recursive npm dependency closure, define the immutable snapshot. The registry retains all service implementations plus Checkout, Payment, Recurring, and standard notification model trees; detailed excluded-domain and broader webhook evidence remains available through exact-SHA supplements.
+**Architecture:** Reuse `tagged-tree-v1` so exact configured paths, rather than recursive npm dependency closure, define the immutable snapshot. The registry retains all service implementations plus Checkout, Payment, Recurring, and the five exact standard notification model files; detailed excluded-domain and broader webhook evidence remains available through exact-SHA supplements.
 
 **Tech Stack:** Python 3 `unittest`, TOML registry configuration, existing GitHub collection CLI, Git, JSON/JQ, immutable Markdown/JSON evidence.
 
@@ -13,7 +13,7 @@
 - Initial package identity is `@adyen/api-library@32.0.0`.
 - Official tag `v32.0.0` must resolve to exact SHA `99d1a0cf69c8660952baffd1437b00aae2fa4f23`.
 - Future stable v32 releases are retained; prereleases are excluded.
-- Deep coverage includes Checkout, Payment, Recurring, client, HTTP, security, and standard payment notifications only: `src/notification/` plus `src/typings/notification/`.
+- Deep coverage includes Checkout, Payment, Recurring, client, HTTP, security, and standard payment notifications only: `src/notification/` plus five exact `src/typings/notification/` include paths.
 - `src/webhooks.ts` and `src/typings/index.ts` are inventory-only barrels; the eleven broader `src/typings/*Webhooks/` families require exact-SHA supplements for detailed claims.
 - Inventory coverage retains every `src/services/` implementation without every non-checkout generated model tree.
 - Snapshot limits are 620 files and 3,500,000 UTF-8 bytes; packet limits are 700 files and 5,000,000 UTF-8 bytes; per-file limit is 512,000 bytes.
@@ -75,7 +75,6 @@ def test_adyen_node_uses_checkout_deep_and_domain_inventory_profile(self):
             "src/security",
             "src/services",
             "src/typings/checkout",
-            "src/typings/notification",
             "src/typings/payment",
             "src/typings/recurring",
             "src/utils",
@@ -93,6 +92,11 @@ def test_adyen_node_uses_checkout_deep_and_domain_inventory_profile(self):
             "src/index.ts",
             "src/service.ts",
             "src/typings/index.ts",
+            "src/typings/notification/amount.ts",
+            "src/typings/notification/models.ts",
+            "src/typings/notification/notification.ts",
+            "src/typings/notification/notificationItem.ts",
+            "src/typings/notification/notificationRequestItem.ts",
             "src/webhooks.ts",
             "tsconfig.json",
         ),
@@ -157,7 +161,6 @@ default_required_roots=[
   "src/security",
   "src/services",
   "src/typings/checkout",
-  "src/typings/notification",
   "src/typings/payment",
   "src/typings/recurring",
   "src/utils",
@@ -173,6 +176,11 @@ include_paths=[
   "src/index.ts",
   "src/service.ts",
   "src/typings/index.ts",
+  "src/typings/notification/amount.ts",
+  "src/typings/notification/models.ts",
+  "src/typings/notification/notification.ts",
+  "src/typings/notification/notificationItem.ts",
+  "src/typings/notification/notificationRequestItem.ts",
   "src/webhooks.ts",
   "tsconfig.json",
 ]

@@ -25,6 +25,12 @@ class TaggedWorkspaceTests(unittest.TestCase):
                 "CHANGELOG.md": "# Changes\n",
                 "Package.swift": "// package\n",
                 "StripePaymentSheet/Source/PaymentSheet.swift": "public struct PaymentSheet {}\n",
+                "src/typings/notification/amount.ts": "export class Amount {}\n",
+                "src/typings/notification/models.ts": "export * from './amount';\n",
+                "src/typings/notification/notification.ts": "export class Notification {}\n",
+                "src/typings/notification/notificationItem.ts": "export class NotificationItem {}\n",
+                "src/typings/notification/notificationRequestItem.ts": "export class NotificationRequestItem {}\n",
+                "src/typings/notification/future.ts": "export class FutureNotification {}\n",
                 "unrelated/private.swift": "internal struct Private {}\n",
             },
             "add tagged tree fixture",
@@ -72,6 +78,24 @@ class TaggedWorkspaceTests(unittest.TestCase):
         self.assertEqual((), workspace.dependency_edges)
         self.assertEqual((), workspace.external_dependencies)
         self.assertEqual((), workspace.declared_targets)
+
+    def test_exact_notification_includes_retain_only_the_approved_files(self):
+        approved_paths = (
+            "src/typings/notification/amount.ts",
+            "src/typings/notification/models.ts",
+            "src/typings/notification/notification.ts",
+            "src/typings/notification/notificationItem.ts",
+            "src/typings/notification/notificationRequestItem.ts",
+        )
+        workspace = resolve_tagged_workspace(
+            self.tree(),
+            self.capsule(include_paths=approved_paths),
+            {"stripe-ios": "26.4.1"},
+        )
+
+        owned_paths = set(workspace.packages[0].owned_paths)
+        self.assertTrue(set(approved_paths).issubset(owned_paths))
+        self.assertNotIn("src/typings/notification/future.ts", owned_paths)
 
     def test_rejects_version_identity_mismatch(self):
         with self.assertRaisesRegex(
