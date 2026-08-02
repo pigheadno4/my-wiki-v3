@@ -1,13 +1,13 @@
 ---
 title: "Adyen"
 type: company
-tags: [adyen, payments, checkout, web-sdk, ios-sdk, android-sdk, react-native-sdk]
-source_count: 4
+tags: [adyen, payments, checkout, web-sdk, ios-sdk, android-sdk, react-native-sdk, nodejs, server-sdk]
+source_count: 5
 ---
 
 ## Overview
 
-Adyen is represented in this wiki by independently versioned Web, iOS, Android, and React Native checkout SDKs. The retained sources cover browser, native, and cross-platform Drop-in and Components, Session and advanced checkout flows, cards, 3D Secure 2 actions, stored and partial payments, wallets, accessibility, analytics, and client-side data boundaries.
+Adyen is represented in this wiki by independently versioned Web, iOS, Android, React Native, and Node.js checkout SDKs. The retained sources cover browser, native, and cross-platform checkout presentation plus merchant-server Checkout API v72, request transport, notifications, recurring operations, and Cloud Device API v1.
 
 ## Web checkout surface
 
@@ -41,12 +41,18 @@ The retained `@adyen/react-native@2.12.0` baseline wraps Adyen iOS `5.25.1` and 
 
 The wrapper does not merge the native repositories' histories. Native behavior remains package- and version-qualified, and final payment status remains a merchant-server or Session concern. Apple Pay recurring request configuration is wallet-sheet metadata, not proof of a recurring billing engine.
 
+## Node.js server surface
+
+The retained `@adyen/api-library@32.0.0` baseline provides typed merchant-server clients for Checkout API v72, payment modifications, Sessions, orders, links, stored methods, notifications, and broader Adyen API families. It also introduces Cloud Device API v1 as the first-class cloud point-of-sale path with regional routing, device management, and optional Nexo message protection.
+
+The Node library does not render shopper UI. Its broader API and webhook exports are inventory evidence where the complete generated model trees were not retained; detailed non-checkout queries should trigger focused recollection.
+
 ## Knowledge status
 
-- Ingested cumulative GitHub repository sources: 4
-- Ingested package releases: 4
-- Retained package releases: `@adyen/adyen-web@6.41.0`; `adyen-ios@5.25.1`; `adyen-android@5.20.0`; `@adyen/react-native@2.12.0`
-- Latest ingest: `@adyen/react-native@2.12.0` at exact SHA `2912c913266b2d1df73882980303b563ea04ab63`
+- Ingested cumulative GitHub repository sources: 5
+- Ingested package releases: 5
+- Retained package releases: `@adyen/adyen-web@6.41.0`; `adyen-ios@5.25.1`; `adyen-android@5.20.0`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`
+- Latest ingest: `@adyen/api-library@32.0.0` at exact SHA `99d1a0cf69c8660952baffd1437b00aae2fa4f23`
 
 ## Sources
 
@@ -58,6 +64,8 @@ The wrapper does not merge the native repositories' histories. Native behavior r
 - [[changelog-github-adyen-android]] — package-qualified native release ledger
 - [[source-github-adyen-react-native]] — cumulative Adyen React Native wrapper baseline
 - [[changelog-github-adyen-react-native]] — package-qualified wrapper release ledger
+- [[source-github-adyen-node-api-library]] — cumulative Adyen Node.js server-library baseline
+- [[changelog-github-adyen-node-api-library]] — package-qualified server-library release ledger
 
 ## Related
 
@@ -67,3 +75,4 @@ The wrapper does not merge the native repositories' histories. Native behavior r
 - [[adyen-ios-sdk]] — native SDK architecture and merchant-server boundaries
 - [[adyen-android-sdk]] — native Android architecture and merchant-server boundaries
 - [[adyen-react-native-sdk]] — cross-platform wrapper, native dependency, and merchant-server boundaries
+- [[adyen-node-api-library]] — Node.js server SDK, Checkout API, Cloud Device, and query boundaries

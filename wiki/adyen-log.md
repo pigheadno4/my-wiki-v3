@@ -6,6 +6,14 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-02] ingest | Adyen/adyen-node-api-library `32.0.0`
+
+- Approved and processed work item `github-2957d7d341f9f6cb5ecc` in full mode.
+- Read and hash-verified all 548 packet paths plus the approved six-path notification supplement at exact SHA `99d1a0cf69c8660952baffd1437b00aae2fa4f23`.
+- Established the cumulative Node.js server-library source and package-qualified release ledger for `@adyen/api-library@32.0.0`.
+- Recorded Checkout API v72, request transport and idempotency, notifications and HMAC, recurring operations, Cloud Device API v1, encrypted Nexo handling, and explicit inventory-only boundaries for other API domains.
+- Isolated exact `32.0.0` Checkout breaking changes, Cloud Device introduction, and security fixes from broader cumulative library behavior; created [[adyen-node-api-library]] and updated the Adyen company and provider index.
+
 ## [2026-08-02] ingest | Adyen/adyen-react-native `2.12.0`
 
 - Approved and processed work item `github-43baf5daaf3a92e79a79` in full mode.

@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-08-02] ingest | GitHub Adyen/adyen-node-api-library - `@adyen/api-library@32.0.0`
+
+- Full serial ingest of `github-2957d7d341f9f6cb5ecc` from exact SHA `99d1a0cf69c8660952baffd1437b00aae2fa4f23` after reading and hash-verifying all 548 packet paths plus the approved notification supplement.
+- Established the cumulative Node.js server SDK source and package-qualified changelog for Checkout API v72 and Cloud Device API v1.
+- Recorded client transport, idempotency, Checkout and recurring operations, payment notifications, webhook HMAC, Cloud Device migration, and encrypted Nexo handling.
+- Isolated exact `32.0.0` breaking fields, new authorization-adjustment data, Cloud Device services, and security fixes from broader cumulative behavior.
+- Created the Adyen Node.js API Library concept and updated the Adyen company and provider index.
+
 ## [2026-08-02] ingest | GitHub Adyen/adyen-react-native - `@adyen/react-native@2.12.0`
 
 - Full serial ingest of `github-43baf5daaf3a92e79a79` from exact SHA `2912c913266b2d1df73882980303b563ea04ab63` after reading and hash-verifying all 304 required evidence files.
