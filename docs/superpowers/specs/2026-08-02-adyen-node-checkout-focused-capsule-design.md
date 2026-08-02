@@ -33,7 +33,8 @@ Retain implementation and generated request, response, and model evidence for:
 - public exports, package metadata, release notes, README, migration material,
   and repository documentation.
 
-Deep notification coverage is precisely `src/notification/` plus five exact
+Deep notification coverage is precisely
+`src/notification/notificationRequest.ts` plus five exact
 `src/typings/notification/` include paths: `amount.ts`, `models.ts`,
 `notification.ts`, `notificationItem.ts`, and `notificationRequestItem.ts`.
 Together they retain the standard payment notification request handler and
@@ -54,6 +55,13 @@ The eleven broader `src/typings/*Webhooks/` handler and model families they
 export are not deep evidence in this capsule. Their detailed paths remain
 available only through explicit exact-SHA supplements; this boundary does not
 assert that the SDK lacks those webhook APIs.
+
+The immutable v32.0.0 base snapshot also contains
+`src/notification/bankingWebhookHandler.ts` and
+`src/notification/managementWebhookHandler.ts`. These deprecated legacy
+handlers are inventory-only evidence because their broader webhook model trees
+are outside the approved deep boundary. Future policy does not recursively
+retain them or any new `src/notification/` sibling.
 
 This level can establish that a service exists, how it is instantiated and
 exported, and which endpoint methods it exposes. It must not be used for
@@ -97,7 +105,6 @@ The policy retains these recursive roots:
 - `src/services/`
 - `src/httpClient/`
 - `src/security/`
-- `src/notification/`
 - `src/helpers/`
 - `src/utils/`
 - `src/constants/`
@@ -110,6 +117,8 @@ It also retains exact public and repository-context files such as:
 - `src/index.ts`, `src/client.ts`, `src/config.ts`, `src/service.ts`,
   `src/webhooks.ts`, and `src/typings/index.ts`; the latter two are
   inventory-only barrels, not deep broader-webhook evidence;
+- `src/notification/notificationRequest.ts` as the only deep notification
+  handler source;
 - the five exact standard-notification model files listed above; and
 - `package.json`, `VERSION`, `README.md`, `LICENSE`, `tsconfig.json`, and
   relevant `doc/` Markdown; and
@@ -125,9 +134,10 @@ The published `v32.0.0` base snapshot is immutable at 545 files and
 2,357,166 bytes. The approved notification correction is an exact-SHA
 supplement of five files and 21,450 bytes, so the reviewed base-plus-supplement
 evidence is 550 files and 2,378,616 bytes. Future snapshots use exact includes
-for the five standard notification model files, so an additional file in that
-directory cannot be retained without a reviewed policy change. The published
-snapshot and queued packet are never rewritten. The capsule registers the
+for the notification request handler and five standard notification model
+files, so additional files in either directory cannot be retained without a
+reviewed policy change. The published snapshot and queued packet are never
+rewritten. The capsule registers the
 original packet policy hash only as immutable policy history, so validation can
 rebuild that packet without treating the new include paths as retroactive
 evidence. Initial hard budgets are:
@@ -161,6 +171,21 @@ any of the eleven broader webhook families:
 A temporary clone may be used for discovery, but it is not durable citation
 evidence by itself. Detailed answers must distinguish retained baseline
 evidence from newly collected supplements.
+
+## Evidence Attachment Contract
+
+The immutable packet remains unchanged. A canonical work-item
+`evidence_attachments` path links the notification supplement through
+`tracking/github/repos/<owner>/<repo>/evidence-attachments/<work-item>/attachment.json`.
+The attachment identifies the repository, exact SHA, base snapshot, supplement
+manifest, five files, per-file hashes and sizes, file count, total bytes, and
+work-item ID.
+
+Generated status links the attachment and reports packet plus attachment
+required reading. Approval and `next-ingest` revalidate the attachment and its
+source hashes; a missing, unlinked, unsafe, or tampered attachment blocks the
+lifecycle. Serial required reading includes the attachment manifest,
+supplement manifest, and all five supplement files.
 
 ## Collection Flow
 
@@ -197,7 +222,11 @@ evidence from newly collected supplements.
   `99d1a0cf69c8660952baffd1437b00aae2fa4f23`.
 - All service implementations and exports are retained for inventory coverage.
 - Checkout, Payment, Recurring, and the five exact standard notification model
-  files are retained for deep coverage.
+  files plus `notificationRequest.ts` are retained for deep coverage.
+- The supplement attachment is linked from the work item and generated status;
+  approval and `next-ingest` fail closed if it is missing or invalid.
+- The two immutable legacy notification handlers are explicitly inventory-only,
+  and future notification siblings are excluded by exact-file policy.
 - `src/webhooks.ts`, `src/typings/index.ts`, and the eleven broader webhook
   families are inventory-only; no detailed webhook claim may rely on those
   barrels without an exact-SHA supplement.

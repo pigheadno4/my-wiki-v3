@@ -89,8 +89,9 @@
 - Last error: None
 - Snapshot: [manifest](raw/github/adyen/adyen-node-api-library/snapshots/2026-08-02-99d1a0c/manifest.json)
 - Packet: [review packet](tracking/github/repos/adyen/adyen-node-api-library/ingest-packets/github-2957d7d341f9f6cb5ecc/packet.md)
+- Evidence attachment: [manifest](tracking/github/repos/adyen/adyen-node-api-library/evidence-attachments/github-2957d7d341f9f6cb5ecc/attachment.json)
 - Review priority: `high`
-- Required reading: `548` files
+- Required reading: `555` files
 - Unclassified changes: `0`
 - Evidence gaps: `0`
 

@@ -31,6 +31,10 @@ class TaggedWorkspaceTests(unittest.TestCase):
                 "src/typings/notification/notificationItem.ts": "export class NotificationItem {}\n",
                 "src/typings/notification/notificationRequestItem.ts": "export class NotificationRequestItem {}\n",
                 "src/typings/notification/future.ts": "export class FutureNotification {}\n",
+                "src/notification/notificationRequest.ts": "export class NotificationRequest {}\n",
+                "src/notification/bankingWebhookHandler.ts": "export class BankingWebhookHandler {}\n",
+                "src/notification/managementWebhookHandler.ts": "export class ManagementWebhookHandler {}\n",
+                "src/notification/future.ts": "export class FutureHandler {}\n",
                 "unrelated/private.swift": "internal struct Private {}\n",
             },
             "add tagged tree fixture",
@@ -96,6 +100,21 @@ class TaggedWorkspaceTests(unittest.TestCase):
         owned_paths = set(workspace.packages[0].owned_paths)
         self.assertTrue(set(approved_paths).issubset(owned_paths))
         self.assertNotIn("src/typings/notification/future.ts", owned_paths)
+
+    def test_exact_notification_source_include_excludes_legacy_and_future_siblings(self):
+        workspace = resolve_tagged_workspace(
+            self.tree(),
+            self.capsule(
+                include_paths=("src/notification/notificationRequest.ts",)
+            ),
+            {"stripe-ios": "26.4.1"},
+        )
+
+        owned_paths = set(workspace.packages[0].owned_paths)
+        self.assertIn("src/notification/notificationRequest.ts", owned_paths)
+        self.assertNotIn("src/notification/bankingWebhookHandler.ts", owned_paths)
+        self.assertNotIn("src/notification/managementWebhookHandler.ts", owned_paths)
+        self.assertNotIn("src/notification/future.ts", owned_paths)
 
     def test_rejects_version_identity_mismatch(self):
         with self.assertRaisesRegex(

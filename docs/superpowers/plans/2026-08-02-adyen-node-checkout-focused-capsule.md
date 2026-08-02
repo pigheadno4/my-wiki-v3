@@ -4,7 +4,7 @@
 
 **Goal:** Enable and collect a bounded `@adyen/api-library@32.0.0` capsule with deep Checkout evidence and inventory-level coverage for all other Adyen Node API services, stopping at packet review.
 
-**Architecture:** Reuse `tagged-tree-v1` so exact configured paths, rather than recursive npm dependency closure, define the immutable snapshot. The registry retains all service implementations plus Checkout, Payment, Recurring, and the five exact standard notification model files; detailed excluded-domain and broader webhook evidence remains available through exact-SHA supplements.
+**Architecture:** Reuse `tagged-tree-v1` so exact configured paths, rather than recursive npm dependency closure, define the immutable snapshot. The registry retains all service implementations plus Checkout, Payment, Recurring, the exact standard notification request handler, and five exact notification model files. A canonical work-item evidence attachment makes the immutable supplement mandatory operator reading without rewriting the packet.
 
 **Tech Stack:** Python 3 `unittest`, TOML registry configuration, existing GitHub collection CLI, Git, JSON/JQ, immutable Markdown/JSON evidence.
 
@@ -13,7 +13,9 @@
 - Initial package identity is `@adyen/api-library@32.0.0`.
 - Official tag `v32.0.0` must resolve to exact SHA `99d1a0cf69c8660952baffd1437b00aae2fa4f23`.
 - Future stable v32 releases are retained; prereleases are excluded.
-- Deep coverage includes Checkout, Payment, Recurring, client, HTTP, security, and standard payment notifications only: `src/notification/` plus five exact `src/typings/notification/` include paths.
+- Deep coverage includes Checkout, Payment, Recurring, client, HTTP, security, and standard payment notifications only: `src/notification/notificationRequest.ts` plus five exact `src/typings/notification/` include paths.
+- The immutable `bankingWebhookHandler.ts` and `managementWebhookHandler.ts` are inventory-only; future `src/notification/` siblings are excluded.
+- The linked attachment manifest, supplement manifest, and all five supplement files are serial required reading; approval and `next-ingest` validate them.
 - `src/webhooks.ts` and `src/typings/index.ts` are inventory-only barrels; the eleven broader `src/typings/*Webhooks/` families require exact-SHA supplements for detailed claims.
 - Inventory coverage retains every `src/services/` implementation without every non-checkout generated model tree.
 - Snapshot limits are 620 files and 3,500,000 UTF-8 bytes; packet limits are 700 files and 5,000,000 UTF-8 bytes; per-file limit is 512,000 bytes.
@@ -71,7 +73,6 @@ def test_adyen_node_uses_checkout_deep_and_domain_inventory_profile(self):
             "src/constants",
             "src/helpers",
             "src/httpClient",
-            "src/notification",
             "src/security",
             "src/services",
             "src/typings/checkout",
@@ -90,6 +91,7 @@ def test_adyen_node_uses_checkout_deep_and_domain_inventory_profile(self):
             "src/client.ts",
             "src/config.ts",
             "src/index.ts",
+            "src/notification/notificationRequest.ts",
             "src/service.ts",
             "src/typings/index.ts",
             "src/typings/notification/amount.ts",
@@ -157,7 +159,6 @@ default_required_roots=[
   "src/constants",
   "src/helpers",
   "src/httpClient",
-  "src/notification",
   "src/security",
   "src/services",
   "src/typings/checkout",
@@ -174,6 +175,7 @@ include_paths=[
   "src/client.ts",
   "src/config.ts",
   "src/index.ts",
+  "src/notification/notificationRequest.ts",
   "src/service.ts",
   "src/typings/index.ts",
   "src/typings/notification/amount.ts",
@@ -296,6 +298,8 @@ Checkout trees are present; the standard notification handler and five-file
 model tree are self-contained; `src/webhooks.ts` and `src/typings/index.ts`
 remain inventory-only; no broader `*Webhooks/` tree is collected; and both the
 Balance Platform model-tree count and excluded test/mock count are zero.
+The base snapshot's Banking and Management webhook handlers are inventory-only;
+future source policy selects only `notificationRequest.ts` from that directory.
 
 - [ ] **Step 5: Review the canonical packet and lifecycle state**
 
@@ -303,11 +307,18 @@ Run:
 
 ```bash
 python3 scripts/collect_github_repos.py status
+jq '.work_items[] | select(.work_item_id == "github-2957d7d341f9f6cb5ecc") | {evidence_attachments,state,approved_mode}' tracking/github/work-items.json
+jq '{work_item_id,repository,sha,base_snapshot_manifest,supplement_manifest,file_count,total_bytes,required_reading}' tracking/github/repos/adyen/adyen-node-api-library/evidence-attachments/github-2957d7d341f9f6cb5ecc/attachment.json
 jq '{work_item_id,repository,to_sha,recommendation,required_reading_count:(.required_reading|length),unclassified_count:(.unclassified_changes|length),evidence_gap_count:(.evidence_gaps|length)}' tracking/github/repos/adyen/adyen-node-api-library/ingest-packets/*/packet.json
 jq '.work_items[] | select(.repo_id == "adyen/adyen-node-api-library") | {work_item_id,repo_id,state,recommended_mode,approved_mode,sha}' tracking/github/work-items.json
 ```
 
-Read both generated `packet.json` and `packet.md` in full. Expected: exact package and SHA identity, deterministic full-baseline recommendation, no unclassified retained changes, no blocking Checkout evidence gap, and state `awaiting_approval` with no approved mode.
+Read both generated `packet.json` and `packet.md` in full, then read the linked
+attachment manifest, supplement manifest, and five supplement files serially.
+Expected: exact package and SHA identity, deterministic full-baseline
+recommendation, 555 combined required-reading paths, no unclassified retained
+changes, no blocking Checkout evidence gap, and state `awaiting_approval` with
+no approved mode.
 
 - [ ] **Step 6: Verify no wiki ingest occurred**
 

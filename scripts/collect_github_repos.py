@@ -21,6 +21,7 @@ from github_npm_workspace import WorkspacePackage
 from github_ingest_packets import (
     PackagePacketInput,
     build_ingest_packet,
+    load_packet_required_reading,
     load_packet_summary,
     publish_queued_packet,
     publish_review_packet,
@@ -53,6 +54,7 @@ from github_work_items import (
     WorkItemStateError,
     build_work_item,
     claim_next_ingest,
+    evidence_attachment_required_reading,
     finalize_collected_work_item,
     load_work_items,
     recommend_ingest_mode,
@@ -764,8 +766,20 @@ def _candidate_failure_change(
 
 def approve_one(root: Path, work_item_id: str, mode: str) -> WorkItem:
     """Record explicit user approval without starting ingest."""
+    root = Path(root).resolve()
+    current = next(
+        (
+            item
+            for item in load_work_items(root / WORK_ITEMS_PATH)
+            if item.work_item_id == work_item_id
+        ),
+        None,
+    )
+    if current is None:
+        raise WorkItemStateError("work item was not found")
+    ingest_required_reading(root, current)
     items = transition_work_item(
-        Path(root).resolve() / WORK_ITEMS_PATH,
+        root / WORK_ITEMS_PATH,
         work_item_id,
         "awaiting_approval",
         "approved",
@@ -780,6 +794,19 @@ def next_ingest(root: Path) -> WorkItem:
     selected = claim_next_ingest(Path(root).resolve() / WORK_ITEMS_PATH)
     regenerate_status(root)
     return selected
+
+
+def ingest_required_reading(root: Path, item: WorkItem) -> Tuple[str, ...]:
+    """Return the packet and attached evidence required for serial ingest."""
+    if not item.ingest_packet:
+        raise ValueError("ingest item has no packet")
+    reading = (
+        *load_packet_required_reading(root, item.ingest_packet),
+        *evidence_attachment_required_reading(root, item),
+    )
+    if len(reading) != len(set(reading)):
+        raise ValueError("ingest required reading contains duplicates")
+    return tuple(reading)
 
 
 def complete_ingest(root: Path, work_item_id: str) -> WorkItem:
@@ -950,10 +977,11 @@ def _packet_status_summaries(
         if not item.ingest_packet:
             continue
         summary = load_packet_summary(root, item.ingest_packet)
+        attachment_reading = evidence_attachment_required_reading(root, item)
         summaries[item.work_item_id] = PacketStatusSummary(
             summary.packet_path,
             summary.priority,
-            summary.required_reading_count,
+            summary.required_reading_count + len(attachment_reading),
             summary.unclassified_count,
             summary.evidence_gap_count,
         )
@@ -1334,6 +1362,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             if item.ingest_packet:
                 payload["packet_summary"] = asdict(
                     load_packet_summary(root, item.ingest_packet)
+                )
+                payload["required_reading"] = list(
+                    ingest_required_reading(root, item)
                 )
             print(json.dumps(payload, sort_keys=True))
             return 0

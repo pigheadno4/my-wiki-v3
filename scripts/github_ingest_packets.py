@@ -392,6 +392,23 @@ def load_packet_summary(root: Path, packet_path: str) -> PacketSummary:
     )
 
 
+def load_packet_required_reading(
+    root: Path, packet_path: str
+) -> Tuple[str, ...]:
+    """Load the canonical packet's safe, unique serial-reading paths."""
+    _, document, content = _load_json(Path(root).resolve(), packet_path)
+    if canonical_json_bytes(document) + b"\n" != content:
+        raise PacketBuildError("packet JSON is not canonical")
+    required = document.get("required_reading")
+    if (
+        not isinstance(required, list)
+        or any(not isinstance(path, str) or not safe_policy_path(path) for path in required)
+        or len(required) != len(set(required))
+    ):
+        raise PacketBuildError("packet required reading is invalid")
+    return tuple(required)
+
+
 def _packet_bytes(
     packet: IngestPacket, expected_kind: str
 ) -> Tuple[bytes, bytes]:
@@ -1490,6 +1507,7 @@ __all__ = [
     "PacketSummary",
     "build_ingest_packet",
     "load_packet_summary",
+    "load_packet_required_reading",
     "publish_queued_packet",
     "publish_review_packet",
 ]

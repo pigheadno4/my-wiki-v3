@@ -21,6 +21,7 @@ from github_versions import parse_package_tag, parse_semver
 from github_work_items import (
     PacketStatusSummary,
     WorkItem,
+    evidence_attachment_required_reading,
     load_work_items,
     render_status,
 )
@@ -799,8 +800,20 @@ def _validate_work_items(
     if inspection.exists:
         status = report.status_text
         packet_summaries = {}
+        attachment_reading_counts = {}
         root = report.repositories.path.parents[2]
         for item in inspection.items:
+            try:
+                attachment_reading_counts[item.work_item_id] = len(
+                    evidence_attachment_required_reading(root, item)
+                )
+            except (OSError, TypeError, ValueError) as error:
+                attachment_reading_counts[item.work_item_id] = 0
+                errors.append(
+                    item.work_item_id
+                    + ": invalid evidence attachment: "
+                    + _bounded(error)
+                )
             if not item.ingest_packet:
                 continue
             try:
@@ -810,7 +823,8 @@ def _validate_work_items(
             packet_summaries[item.work_item_id] = PacketStatusSummary(
                 summary.packet_path,
                 summary.priority,
-                summary.required_reading_count,
+                summary.required_reading_count
+                + attachment_reading_counts[item.work_item_id],
                 summary.unclassified_count,
                 summary.evidence_gap_count,
             )
@@ -828,11 +842,13 @@ def _validate_work_items(
     snapshots = {artifact.relative_path: artifact for artifact in report.snapshots}
     comparisons = {artifact.relative_path: artifact for artifact in report.comparisons}
     referenced_packets = set()
+    referenced_attachments = set()
     for page in tuple(report.source_pages) + tuple(report.changelog_pages):
         if page.error:
             errors.append(page.relative_path + ": page is unreadable: " + page.error)
     repos = {repo.id: repo for repo in report.repositories.repositories}
     for item in inspection.items:
+        referenced_attachments.update(item.evidence_attachments)
         if item.ingest_packet:
             referenced_packets.add(item.ingest_packet)
             packet = queued_packets.get(item.ingest_packet)
@@ -928,6 +944,14 @@ def _validate_work_items(
                 )
     for path in sorted(set(queued_packets) - referenced_packets):
         errors.append(path + ": queued packet has no work item")
+    attachment_paths = {
+        path.relative_to(root).as_posix()
+        for path in root.glob(
+            "tracking/github/repos/*/*/evidence-attachments/*/attachment.json"
+        )
+    }
+    for path in sorted(attachment_paths - referenced_attachments):
+        errors.append(path + ": evidence attachment has no work item")
 
 
 def _inspect_manifests(
