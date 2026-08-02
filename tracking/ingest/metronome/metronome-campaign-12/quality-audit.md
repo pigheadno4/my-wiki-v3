@@ -31,10 +31,10 @@ The raw bodies for `list-custom-field-keys`, `set-custom-field-values`, and `del
 
 - Approved candidate: `attempts/custom-fields-overview/attempt-2/candidate.md`
 - Canonical source: `wiki/sources/metronome/source-metronome-api-reference-custom-fields.md`
-- Candidate/source SHA-256: `737e54c6b0e15fec04f13f23d6a1f56534bb42f7122864da543fe8080bc399ff`
+- Candidate/source SHA-256: `8b8db7bea73988382636df09542e6dee6d79943f74bf024953c193f3c9679828`
 - Byte identity: pass (`cmp` exit 0).
 - Factual evidence: only `metronome/api-reference/custom-fields-2026-07-13.md` appears in `raw_files` and `## Raw Sources`.
-- Navigation evidence: all five endpoint snapshots appear only under `## Related raw API references`; the heading classifies them as raw references and every entry is labelled `not summarized`.
+- Navigation evidence: all five endpoint snapshots appear only under `## Related raw API references`, and every entry is labelled `raw reference; not summarized`.
 - Source boundary: pass. The overview source contains no endpoint method, request/response schema, or endpoint-specific behavior derived from the navigation-only pages.
 - Concept boundary: pass. `metronome-custom-fields.md` uses overview facts only and explicitly delegates endpoint methods, schemas, and behavior to complete reads of the relevant API references.
 
@@ -77,7 +77,7 @@ Query total: 3 pass, 0 partial, 0 fail.
 - `python3 scripts/validate_metronome_capsule.py` — pass: `225 raw, 91 sources, 134 raw pages without source summaries`; no structural error.
 - `python3 -m unittest discover -s tests` — pass: 639 tests ran in 112.029 seconds, `OK`.
 
-Each close command ran once. No correction or rerun was required.
+The original Task 6 close set ran once, and no failing check required a rerun. After the evidence-label correction, targeted source validation passed and the final integration check reran all 639 tests in 111.731 seconds, `OK`.
 
 ## Bounded next decision
 
