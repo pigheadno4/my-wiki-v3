@@ -75,7 +75,7 @@ APPENDIX_A_INVENTORY = (
     ('metronome-industries/ai-eval', 'https://github.com/Metronome-Industries/ai-eval', 'evaluation-tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('metronome-industries/mintlify-docs', 'https://github.com/Metronome-Industries/mintlify-docs', 'docs-source', 'tier2', 'commit', False, 'default-branch', 'monthly'),
     ('metronome-industries/terraform-provider-metronome', 'https://github.com/Metronome-Industries/terraform-provider-metronome', 'terraform-provider', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('adyen/adyen-node-api-library', 'https://github.com/Adyen/adyen-node-api-library', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('adyen/adyen-node-api-library', 'https://github.com/Adyen/adyen-node-api-library', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-react-native', 'https://github.com/Adyen/adyen-react-native', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-web', 'https://github.com/Adyen/adyen-web', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-android', 'https://github.com/Adyen/adyen-android', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
@@ -975,6 +975,71 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(420, capsule.max_capsule_files)
         self.assertEqual(4000000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(470, capsule.max_packet_files)
+        self.assertEqual(5000000, capsule.max_packet_utf8_bytes)
+
+    def test_adyen_node_uses_checkout_deep_and_domain_inventory_profile(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        adyen_node = next(
+            repo for repo in repos if repo.id == "adyen/adyen-node-api-library"
+        )
+
+        self.assertTrue(adyen_node.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:@adyen/api-library@32",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("32.0.0",),
+                ),
+            ),
+            adyen_node.version_tracks,
+        )
+        self.assertEqual(1, len(adyen_node.capsules))
+        capsule = adyen_node.capsules[0]
+        self.assertEqual("adyen-node-checkout-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("@adyen/api-library",), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(
+            (
+                "doc",
+                "src/constants",
+                "src/helpers",
+                "src/httpClient",
+                "src/notification",
+                "src/security",
+                "src/services",
+                "src/typings/checkout",
+                "src/typings/payment",
+                "src/typings/recurring",
+                "src/utils",
+            ),
+            capsule.default_required_roots,
+        )
+        self.assertEqual(
+            (
+                "LICENSE",
+                "README.md",
+                "VERSION",
+                "package.json",
+                "src/client.ts",
+                "src/config.ts",
+                "src/index.ts",
+                "src/service.ts",
+                "src/typings/index.ts",
+                "src/webhooks.ts",
+                "tsconfig.json",
+            ),
+            capsule.include_paths,
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(620, capsule.max_capsule_files)
+        self.assertEqual(3500000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(700, capsule.max_packet_files)
         self.assertEqual(5000000, capsule.max_packet_utf8_bytes)
 
     def test_native_sdks_use_tagged_tree_profiles(self):
