@@ -1,6 +1,6 @@
 # Metronome Campaign 12 Selective-Ingest Pilot Review
 
-Status: pending exact-manifest approval
+Status: approved
 
 Manifest: [manifest.json](manifest.json)
 
