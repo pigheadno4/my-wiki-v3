@@ -6,6 +6,15 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-02 — Metronome Campaign 12 selective-ingest pilot completed
+
+- Result: promoted the independently approved [[source-metronome-api-reference-custom-fields]] overview byte-identically and created [[metronome-custom-fields]] from overview evidence only.
+- Classification: the create-key raw-reference audit returned `source_required`, and both delete-key semantic-triage reads returned `source_required`; the final verdict is `revise_routing_rule`, so cross-provider rollout is not authorized.
+- Query quality: all three fixed queries passed. The overview question routed to the canonical overview source, while the create-key schema and delete-key consequence questions used their supplied prior-complete-read raw evidence without rereading either raw body.
+- Read boundary: the pilot used five complete reads and no retry reads. The list-key, set-values, and delete-fields raw bodies were not read; their links remain navigation-only references and do not support endpoint facts.
+- Coverage after promotion: 225 collected documentation pages, 91 source summaries, and 134 raw pages without source summaries.
+- Evidence: [quality audit](../tracking/ingest/metronome/metronome-campaign-12/quality-audit.md) and [monitor](../tracking/ingest/metronome/metronome-campaign-12/monitor.md).
+
 ## 2026-08-01 — Metronome Campaign 11 completed
 
 - Result: ten approved source pages from complete raw pages across sixteen worker attempts and sixteen independent reviews; four corrections required full rereview, two used unchanged-hash targeted review, and no job was rejected. All workers and reviewers used Sol.

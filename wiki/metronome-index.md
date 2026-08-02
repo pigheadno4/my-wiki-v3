@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 90 |
-| Documentation pages pending ingest | 135 |
+| Source summaries ingested | 91 |
+| Raw pages without source summaries | 134 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -113,6 +113,7 @@ Operational evidence:
 - [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]] — finalized-invoice export flow, QuickBooks transformation, and integration ownership boundaries
 - [[source-metronome-api-reference-invoices-add-a-one-time-charge]] — deprecated Plans one-time charge contract, product restriction, and empty response boundary
 - [[source-metronome-guides-reporting-insights-in-app-reporting]] — report generation, beta dashboards, ARR calculations, defaults, and freshness limits
+- [[source-metronome-api-reference-custom-fields]] — custom-field purpose, supported object examples, persistence, uniqueness, and invoice-line propagation
 
 ## Concepts
 
@@ -133,6 +134,7 @@ Operational evidence:
 - [[metronome-spend-trackers]] — public-beta commit-purchase accumulators, threshold-discount integration, retrieval, and billing-state unknowns
 - [[metronome-spend-threshold-billing]] — contract-level incremental collection with optional commit-release payment gating, distinct from product-access enforcement and a customer-wide cross-contract cap
 - [[metronome-currencies-and-custom-pricing-units]] — supported fiat currencies, Metronome-specific API denomination, custom-unit rates, balance drawdown, and invoice conversion
+- [[metronome-custom-fields]] — platform-object metadata, external-system mappings, uniqueness, and persistence
 
 ## Related platforms
 

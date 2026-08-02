@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 90
+source_count: 91
 ---
 
 ## Overview
@@ -145,8 +145,8 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 90
-- Documentation pages pending ingest: 135
+- Ingested source summaries: 91
+- Raw pages without source summaries: 134
 
 ## Sources
 
@@ -240,6 +240,7 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 - [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]] — finalized-invoice export flow, QuickBooks transformation, and integration ownership boundaries
 - [[source-metronome-api-reference-invoices-add-a-one-time-charge]] — deprecated Plans one-time charge contract, product restriction, and empty response boundary
 - [[source-metronome-guides-reporting-insights-in-app-reporting]] — report generation, beta dashboards, ARR calculations, defaults, and freshness limits
+- [[source-metronome-api-reference-custom-fields]] — custom-field purpose, supported object examples, persistence, uniqueness, and invoice-line propagation
 
 ## Related
 
@@ -261,3 +262,4 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 - [[metronome-subscriptions]] — subscription pricing, contract configuration, transitions, and cancellation
 - [[metronome-alerts-and-notifications]] — alert-definition semantics and merchant-action boundary
 - [[metronome-currencies-and-custom-pricing-units]] — Metronome-specific fiat denomination, custom-unit rate setup, matching-balance drawdown, and invoice conversion
+- [[metronome-custom-fields]] — platform-object metadata, external-system mappings, uniqueness, and persistence
