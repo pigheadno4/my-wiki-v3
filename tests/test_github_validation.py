@@ -130,9 +130,17 @@ class GitHubValidationTests(unittest.TestCase):
     def changelog_path(self):
         return self.root / "wiki/sources/paypal/github/changelog-github-paypal-js.md"
 
-    def write_registry(self):
+    def write_registry(self, historical_policy_hashes=(), default_required_roots=("src",)):
         path = self.root / "tracking/github/repo-registry.toml"
-        path.parent.mkdir(parents=True)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        historical_policy = (
+            "historical_policy_hashes=["
+            + ",".join(json.dumps(value) for value in historical_policy_hashes)
+            + "]\n"
+            if historical_policy_hashes
+            else ""
+        )
+        roots = ",".join(json.dumps(value) for value in default_required_roots)
         path.write_text(
             """[[repos]]
 id="paypal/paypal-js"
@@ -154,8 +162,7 @@ include_prerelease=false
 id="paypal-js-source"
 adapter="npm-tracked-source-v1"
 focus_packages=["@paypal/paypal-js"]
-default_required_roots=["src"]
-default_generated_target_paths=[]
+default_required_roots=[""" + roots + "]\n" + historical_policy + """default_generated_target_paths=[]
 """,
             encoding="utf-8",
         )
@@ -346,6 +353,17 @@ default_generated_target_paths=[]
         self.assertTrue(
             any("packet deterministic content mismatch" in item for item in errors)
         )
+
+    def test_packet_rebuild_uses_registered_historical_policy(self):
+        packet_path = self.enable_packet()
+        document = json.loads(packet_path.read_text(encoding="utf-8"))
+
+        self.write_registry(
+            historical_policy_hashes=(document["capsule_policy_sha256"],),
+            default_required_roots=("src", "types"),
+        )
+
+        self.assertEqual([], validate_github(inspect_github(self.root)))
 
     def test_packet_path_and_work_item_identity_mismatch_is_rejected(self):
         packet_path = self.enable_packet()

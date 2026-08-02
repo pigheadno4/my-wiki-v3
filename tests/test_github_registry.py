@@ -1013,6 +1013,7 @@ class RegistryTests(unittest.TestCase):
                 "src/security",
                 "src/services",
                 "src/typings/checkout",
+                "src/typings/notification",
                 "src/typings/payment",
                 "src/typings/recurring",
                 "src/utils",
@@ -1036,6 +1037,10 @@ class RegistryTests(unittest.TestCase):
             capsule.include_paths,
         )
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual(
+            ("35829dc91506c9d75f2227a2d1fee3e2ede206ea84184245748a9d179bd2e197",),
+            capsule.historical_policy_hashes,
+        )
         self.assertEqual(512000, capsule.max_file_bytes)
         self.assertEqual(620, capsule.max_capsule_files)
         self.assertEqual(3500000, capsule.max_capsule_utf8_bytes)

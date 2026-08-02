@@ -8,6 +8,7 @@ import re
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from github_canonical import canonical_json_bytes, safe_policy_path, wiki_slug
+from github_capsule_policy import build_effective_policy
 from github_registry import RepoConfig, load_registry, validate_enabled_policy
 from github_ingest_packets import (
     PackagePacketInput,
@@ -680,6 +681,22 @@ def _validate_packets(
                 errors.append(label + ": packet Markdown hash mismatch")
             try:
                 inputs = _packet_inputs(document)
+                stored_policy_hash = document.get("capsule_policy_sha256")
+                current_policy_hash = build_effective_policy(
+                    config.capsules[0], (), (), ()
+                ).policy_hash
+                allowed_policy_hashes = {
+                    current_policy_hash,
+                    *config.capsules[0].historical_policy_hashes,
+                }
+                if (
+                    not isinstance(stored_policy_hash, str)
+                    or _SHA256.fullmatch(stored_policy_hash) is None
+                    or stored_policy_hash not in allowed_policy_hashes
+                ):
+                    raise PacketBuildError(
+                        "packet policy hash is not current or registered historical policy"
+                    )
                 if kind == "ad-hoc":
                     if len(inputs) != 1 or not inputs[0].comparison_manifest:
                         raise PacketBuildError(
@@ -701,6 +718,7 @@ def _validate_packets(
                     kind,
                     document.get("wiki_context"),
                     document.get("expected_wiki_targets"),
+                    stored_policy_hash,
                 )
             except (OSError, TypeError, ValueError) as error:
                 errors.append(label + ": packet rebuild failed: " + _bounded(error))
