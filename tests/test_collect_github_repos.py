@@ -1112,6 +1112,187 @@ class CollectGitHubReposTests(unittest.TestCase):
         with self.assertRaises(CollectionUsageError):
             parse_package_release(arguments.from_release, arguments.to_release)
 
+class CommitCollectGitHubReposTests(unittest.TestCase):
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        base = Path(self.directory.name)
+        self.root = base / "wiki"
+        self.root.mkdir()
+        parent = base / "fixture"
+        parent.mkdir()
+        self.remote = create_git_repo(parent)
+        self.sha = commit_files(
+            self.remote,
+            {
+                "README.md": "# Sample integration\n",
+                "LICENSE": "Apache-2.0\n",
+                "client/button.ts": "export const button = 1;\n",
+                "client/button.test.ts": "test button\n",
+                "server/health.ts": "export const health = true;\n",
+            },
+            "initial sample",
+        )
+        self.config = RepoConfig(
+            id="paypal-examples/v6-web-sdk-sample-integration",
+            company="paypal",
+            url="https://github.com/paypal-examples/v6-web-sdk-sample-integration",
+            enabled=True,
+            repo_type="sample-app",
+            priority="tier1",
+            track="default-branch",
+            version_strategy="commit",
+            max_file_bytes=512000,
+            max_snapshot_bytes=2000000,
+            capsules=(
+                CapsuleConfig(
+                    id="paypal-v6-sample-source",
+                    adapter="commit-tree-v1",
+                    source_id="v6-web-sdk-sample-integration",
+                    dependency_scope="configured-repository-paths",
+                    changed_path_policy="policy-bounded",
+                    default_required_roots=("client", "server"),
+                    include_paths=("LICENSE", "README.md"),
+                    excluded_categories=("tests", "fixtures"),
+                    max_capsule_files=100,
+                    max_capsule_utf8_bytes=1000000,
+                    max_packet_files=150,
+                    max_packet_utf8_bytes=1500000,
+                ),
+            ),
+        )
+
+    def collect(self, mode="backfill", **overrides):
+        values = {
+            "release_mode": mode,
+            "clone_source": self.remote,
+            "collection_date": "2026-08-03",
+        }
+        values.update(overrides)
+        return collect_one(self.root, self.config, **values)
+
+    def test_commit_dry_run_and_disabled_policy_publish_nothing(self):
+        result = self.collect(dry_run=True)
+
+        self.assertEqual("discovered", result.state)
+        self.assertEqual(("default-branch@" + self.sha[:7],), result.ref_ids)
+        self.assertEqual(4, result.inventory.selected_file_count)
+        self.assertEqual(1, result.inventory.excluded_file_count)
+        self.assertEqual((), result.snapshot_paths)
+        self.assertEqual((), result.work_item_ids)
+        self.assertFalse((self.root / "raw").exists())
+        self.assertFalse((self.root / "tracking").exists())
+
+        disabled = replace(self.config, enabled=False)
+        allowed = collect_one(
+            self.root,
+            disabled,
+            release_mode="backfill",
+            dry_run=True,
+            clone_source=self.remote,
+            collection_date="2026-08-03",
+        )
+        self.assertEqual("discovered", allowed.state)
+        with self.assertRaisesRegex(CollectionUsageError, "disabled"):
+            collect_one(
+                self.root,
+                disabled,
+                release_mode="backfill",
+                clone_source=self.remote,
+                collection_date="2026-08-03",
+            )
+
+    def test_commit_collection_handles_baseline_unchanged_excluded_and_delta(self):
+        baseline = self.collect()
+        baseline_items = load_work_items(self.root / "tracking/github/work-items.json")
+
+        self.assertEqual("awaiting_approval", baseline.state)
+        self.assertEqual(1, len(baseline_items))
+        self.assertEqual((), baseline_items[0].package_changes)
+        self.assertEqual("full", baseline_items[0].ref_changes[0].recommended_mode)
+        self.assertEqual("", baseline_items[0].ref_changes[0].from_sha)
+        self.assertEqual("unchanged", self.collect().state)
+        self.assertEqual("unchanged", self.collect(mode="future").state)
+
+        excluded_sha = commit_files(
+            self.remote,
+            {"client/button.test.ts": "updated test only\n"},
+            "change excluded test",
+        )
+        excluded = self.collect(mode="future", collection_date="2026-08-04")
+        self.assertEqual("unchanged", excluded.state)
+        self.assertEqual("default-branch@" + excluded_sha[:7], excluded.ref_ids[0])
+        snapshots = self.root / "raw/github/paypal/v6-web-sdk-sample-integration/snapshots"
+        self.assertEqual(1, len(list(snapshots.glob("*/manifest.json"))))
+
+        changed_sha = commit_files(
+            self.remote,
+            {"client/button.ts": "export const button = 2;\n"},
+            "change selected client source",
+        )
+        changed = self.collect(mode="future", collection_date="2026-08-05")
+        items = load_work_items(self.root / "tracking/github/work-items.json")
+        latest = next(item for item in items if item.sha == changed_sha)
+
+        self.assertEqual("awaiting_approval", changed.state)
+        self.assertEqual("delta", latest.ref_changes[0].recommended_mode)
+        self.assertTrue(latest.ref_changes[0].comparison_manifest)
+        self.assertTrue((self.root / latest.ingest_packet).is_file())
+
+    def test_commit_broad_change_is_full_and_release_selector_is_rejected(self):
+        self.collect()
+        files = {
+            "client/generated-example-" + str(index) + ".ts": "export const value = " + str(index) + ";\n"
+            for index in range(github_work_items.BROAD_CHANGE_FILE_LIMIT + 1)
+        }
+        broad_sha = commit_files(self.remote, files, "add broad selected change")
+
+        result = self.collect(mode="future", collection_date="2026-08-04")
+        item = next(
+            value
+            for value in load_work_items(self.root / "tracking/github/work-items.json")
+            if value.sha == broad_sha
+        )
+
+        self.assertEqual("awaiting_approval", result.state)
+        self.assertEqual("full", item.ref_changes[0].recommended_mode)
+        self.assertIn("broad-change-set", item.ref_changes[0].reasons)
+        with self.assertRaisesRegex(CollectionUsageError, "does not support releases"):
+            collect_one(
+                self.root,
+                self.config,
+                release="fake-package@1.0.0",
+                clone_source=self.remote,
+                collection_date="2026-08-04",
+            )
+
+    def test_commit_failure_records_ref_identity_and_retries_without_partial_snapshot(self):
+        with mock.patch(
+            "collect_github_repos.publish_source_snapshot",
+            side_effect=OSError("injected snapshot failure"),
+        ):
+            failed = self.collect(max_attempts=1)
+
+        self.assertEqual("collection_failed", failed.state)
+        self.assertEqual(("default-branch@" + self.sha[:7],), failed.ref_ids)
+        item = load_work_items(self.root / "tracking/github/work-items.json")[0]
+        self.assertEqual((), item.package_changes)
+        self.assertEqual(self.sha, item.ref_changes[0].to_sha)
+        self.assertEqual("", item.snapshot_manifest)
+        self.assertFalse(
+            (self.root / "raw/github/paypal/v6-web-sdk-sample-integration/snapshots").exists()
+        )
+
+        retry_one(self.root, item.work_item_id)
+        recovered = self.collect(collection_date="2026-08-04")
+        recovered_item = next(
+            value
+            for value in load_work_items(self.root / "tracking/github/work-items.json")
+            if value.work_item_id == item.work_item_id
+        )
+        self.assertEqual("awaiting_approval", recovered.state)
+        self.assertTrue(recovered_item.snapshot_manifest)
+
 
 if __name__ == "__main__":
     unittest.main()

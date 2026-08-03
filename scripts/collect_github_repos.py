@@ -7,20 +7,29 @@ import hashlib
 import json
 from pathlib import Path
 import tempfile
-from typing import Callable, Dict, List, Optional, Sequence, Tuple
+from typing import Callable, Dict, List, Optional, Sequence, Tuple, Union
 from urllib.error import URLError
 
-from github_capsule_policy import TAGGED_TREE_ADAPTER
+from github_canonical import safe_policy_path
+from github_capsule_policy import COMMIT_TREE_ADAPTER, TAGGED_TREE_ADAPTER
 from github_capsule_selection import (
     resolve_capsule,
     resolve_capsule_workspace,
 )
-from github_git import GitCommandError, clone_repository, fetch_required_refs, run_git
+from github_git import (
+    GitCommandError,
+    clone_repository,
+    fetch_required_refs,
+    inspect_repository,
+    run_git,
+)
 from github_git_tree import GitObjectReadError, GitTree
 from github_npm_workspace import WorkspacePackage
 from github_ingest_packets import (
     PackagePacketInput,
+    RefPacketInput,
     build_ingest_packet,
+    build_ref_ingest_packet,
     load_packet_required_reading,
     load_packet_summary,
     publish_queued_packet,
@@ -35,6 +44,7 @@ from github_pilot_store import (
     publish_source_supplement,
     read_upstream_changes,
     write_package_comparison,
+    write_ref_comparison,
 )
 from github_registry import RepoConfig, VersionTrack, load_registry, validate_enabled_policy
 from github_releases import (
@@ -50,14 +60,18 @@ from github_work_items import (
     ChangeSignals,
     PacketStatusSummary,
     PackageChange,
+    RefChange,
+    RefChangeSignals,
     WorkItem,
     WorkItemStateError,
     build_work_item,
+    build_ref_work_item,
     claim_next_ingest,
     evidence_attachment_required_reading,
     finalize_collected_work_item,
     load_work_items,
     recommend_ingest_mode,
+    recommend_ref_ingest_mode,
     record_collection_failure,
     record_ingest_failure,
     transition_work_item,
@@ -90,6 +104,25 @@ class CollectionResult:
     snapshot_paths: Tuple[str, ...]
     work_item_ids: Tuple[str, ...]
     errors: Tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class CommitInventory:
+    selected_file_count: int
+    selected_utf8_bytes: int
+    excluded_file_count: int
+    excluded_utf8_bytes: int
+
+
+@dataclass(frozen=True)
+class CommitCollectionResult:
+    repo_id: str
+    state: str
+    ref_ids: Tuple[str, ...]
+    snapshot_paths: Tuple[str, ...]
+    work_item_ids: Tuple[str, ...]
+    errors: Tuple[str, ...]
+    inventory: CommitInventory
 
 
 @dataclass(frozen=True)
@@ -127,15 +160,20 @@ def collect_one(
     ] = fetch_release_notes,
     collection_date: Optional[str] = None,
     max_attempts: int = 3,
-) -> CollectionResult:
+) -> Union[CollectionResult, CommitCollectionResult]:
     """Collect retained package releases and create approval-gated work items."""
     if release_mode not in (None, "backfill", "future"):
         raise CollectionUsageError("release mode must be backfill or future")
     if (release_mode is None) == (release is None):
         raise CollectionUsageError("choose exactly one release mode or exact package release")
+    if config.version_strategy == "commit" and release is not None:
+        raise CollectionUsageError("commit repository does not support releases")
     if not isinstance(max_attempts, int) or not 1 <= max_attempts <= 3:
         raise CollectionUsageError("max_attempts must be between one and three")
-    readiness_errors = validate_enabled_policy(config)
+    if not config.enabled and not dry_run:
+        raise CollectionUsageError(config.id + ": repository is disabled")
+    readiness_config = replace(config, enabled=True) if not config.enabled and dry_run else config
+    readiness_errors = validate_enabled_policy(readiness_config)
     if readiness_errors:
         raise CollectionUsageError(config.id + ": " + readiness_errors[0])
     collected = collection_date or date.today().isoformat()
@@ -165,7 +203,14 @@ def collect_one(
         except Exception as error:
             last_error = error
             return _record_failed_collection(
-                root, config, context, error, collected, attempt, manual_review=True
+                root,
+                config,
+                context,
+                error,
+                collected,
+                attempt,
+                manual_review=True,
+                dry_run=dry_run,
             )
         else:
             if not dry_run:
@@ -182,6 +227,7 @@ def collect_one(
         collected,
         max_attempts,
         manual_review=False,
+        dry_run=dry_run,
     )
     if not dry_run and queue_path.exists():
         regenerate_status(root)
@@ -189,6 +235,42 @@ def collect_one(
 
 
 def _collect_attempt(
+    root: Path,
+    config: RepoConfig,
+    release_mode: Optional[str],
+    release: Optional[str],
+    dry_run: bool,
+    clone_source: Optional[Path],
+    release_notes_fetcher: Callable[
+        [RepoConfig, ReleaseCandidate], Optional[ReleaseNotesEvidence]
+    ],
+    collected_date: str,
+    context: Dict[str, object],
+) -> Union[CollectionResult, CommitCollectionResult]:
+    if config.version_strategy == "commit":
+        return _collect_commit_attempt(
+            root,
+            config,
+            release_mode,
+            dry_run,
+            clone_source,
+            collected_date,
+            context,
+        )
+    return _collect_release_attempt(
+        root,
+        config,
+        release_mode,
+        release,
+        dry_run,
+        clone_source,
+        release_notes_fetcher,
+        collected_date,
+        context,
+    )
+
+
+def _collect_release_attempt(
     root: Path,
     config: RepoConfig,
     release_mode: Optional[str],
@@ -403,6 +485,289 @@ def _collect_attempt(
             tuple(work_item_ids),
             (),
         )
+
+
+def _collect_commit_attempt(
+    root: Path,
+    config: RepoConfig,
+    release_mode: Optional[str],
+    dry_run: bool,
+    clone_source: Optional[Path],
+    collected_date: str,
+    context: Dict[str, object],
+) -> CommitCollectionResult:
+    for key in (
+        "commit_ref",
+        "inventory",
+        "prior_ref",
+        "ref_change",
+        "snapshot_manifest",
+        "work_item",
+    ):
+        context.pop(key, None)
+    if release_mode not in ("backfill", "future"):
+        raise CollectionUsageError("commit collection requires backfill or future mode")
+    effective = replace(config, url=str(clone_source)) if clone_source is not None else config
+    existing_items = load_work_items(root / WORK_ITEMS_PATH)
+    prior = _latest_accepted_ref(existing_items, config.id)
+    context["prior_ref"] = prior
+    with tempfile.TemporaryDirectory(prefix="wiki-github-commit-") as temporary:
+        clone_path = Path(temporary) / "repository"
+        clone_repository(effective, clone_path)
+        inspection = inspect_repository(effective, clone_path)
+        branch = next(
+            ref
+            for ref in inspection.refs
+            if ref.ref_kind == "branch" and ref.ref_name == inspection.default_branch
+        )
+        tree = GitTree(clone_path, branch.sha, config.max_file_bytes)
+        capsule = _one_capsule(config)
+        if capsule.adapter != COMMIT_TREE_ADAPTER:
+            raise CollectionUsageError("commit repository requires commit-tree-v1")
+        resolution = resolve_capsule(tree, capsule, config.secret_allowlist)
+        inventory = _commit_inventory(tree, resolution)
+        ref_id = "default-branch@" + branch.sha[:7]
+        context["commit_ref"] = (branch.ref_name, branch.sha, ref_id)
+        context["inventory"] = inventory
+
+        if dry_run:
+            return CommitCollectionResult(
+                config.id,
+                "discovered",
+                (ref_id,),
+                (),
+                (),
+                (),
+                inventory,
+            )
+        if prior is not None and release_mode == "backfill":
+            return CommitCollectionResult(
+                config.id, "unchanged", (ref_id,), (), (), (), inventory
+            )
+        if prior is not None and prior.sha == branch.sha:
+            return CommitCollectionResult(
+                config.id, "unchanged", (ref_id,), (), (), (), inventory
+            )
+
+        current_fingerprint = _resolution_fingerprint(resolution)
+        prior_manifest = ""
+        prior_paths: Tuple[str, ...] = ()
+        prior_excluded: Tuple[str, ...] = ()
+        if prior is not None:
+            prior_manifest = prior.snapshot_manifest
+            prior_document = _load_snapshot_document(root, prior_manifest, config.id)
+            prior_fingerprint = _snapshot_selected_fingerprint(
+                prior_document,
+                capsule.source_id,
+            )
+            if prior_fingerprint == current_fingerprint:
+                return CommitCollectionResult(
+                    config.id, "unchanged", (ref_id,), (), (), (), inventory
+                )
+            prior_paths = tuple(path for path, _ in prior_fingerprint)
+            prior_excluded = tuple(
+                sorted({str(row["path"]) for row in prior_document["excluded"]})
+            )
+
+        snapshot = publish_source_snapshot(
+            root,
+            config,
+            tree,
+            resolution,
+            collected_date,
+            (ref_id,),
+        )
+        snapshot_manifest = _relative(root, snapshot.manifest_path)
+        context["snapshot_manifest"] = snapshot_manifest
+        current_paths = tuple(item.path for item in resolution.files)
+        comparison_manifest = ""
+        selected_changes = ()
+        excluded_changes = ()
+        if prior is not None:
+            comparison = write_ref_comparison(
+                root,
+                config,
+                clone_path,
+                branch.ref_name,
+                prior.sha,
+                prior_paths,
+                branch.sha,
+                current_paths,
+            )
+            comparison_manifest = _relative(root, comparison.metadata_path)
+            selected_changes = comparison.upstream_changes
+            all_changes = read_upstream_changes(clone_path, prior.sha, branch.sha)
+            excluded_paths = set(prior_excluded) | {
+                path for path, _ in resolution.excluded
+            }
+            excluded_changes = tuple(
+                change
+                for change in all_changes
+                if any(
+                    path in excluded_paths
+                    for path in (change.old_path, change.new_path)
+                    if path
+                )
+                and change not in selected_changes
+            )
+
+        mode, reasons = recommend_ref_ingest_mode(
+            RefChangeSignals(
+                prior.sha if prior is not None else "",
+                branch.sha,
+                tuple(
+                    sorted(
+                        {
+                            path
+                            for change in selected_changes
+                            for path in (change.old_path, change.new_path)
+                            if path
+                        }
+                    )
+                ),
+            )
+        )
+        change = RefChange(
+            ref_kind="default-branch",
+            ref_name=branch.ref_name,
+            from_sha=prior.sha if prior is not None else "",
+            to_sha=branch.sha,
+            display_identity=ref_id,
+            comparison_manifest=comparison_manifest,
+            recommended_mode=mode,
+            reasons=reasons,
+        )
+        work_item = build_ref_work_item(
+            config.id,
+            branch.sha,
+            collected_date,
+            (change,),
+            snapshot_manifest,
+        )
+        context["ref_change"] = change
+        context["work_item"] = work_item
+        packet = build_ref_ingest_packet(
+            root,
+            config,
+            work_item.work_item_id,
+            snapshot_manifest,
+            RefPacketInput(
+                ref_kind="default-branch",
+                ref_name=branch.ref_name,
+                from_sha=change.from_sha,
+                to_sha=change.to_sha,
+                comparison_manifest=comparison_manifest,
+                prior_snapshot_manifest=prior_manifest,
+                upstream_changes=tuple(selected_changes),
+                excluded_changes=tuple(excluded_changes),
+            ),
+            "queued",
+        )
+        if packet.document["evidence_gaps"] or packet.document["unclassified_changes"]:
+            raise CollectionUsageError("commit packet requires manual review")
+        packet_recommendation = packet.document["recommendation"]
+        change = replace(
+            change,
+            recommended_mode=str(packet_recommendation["mode"]),
+            reasons=tuple(str(reason) for reason in packet_recommendation["reasons"]),
+        )
+        work_item = build_ref_work_item(
+            config.id,
+            branch.sha,
+            collected_date,
+            (change,),
+            snapshot_manifest,
+        )
+        packet_path = publish_queued_packet(root, config, packet)
+        work_item = replace(work_item, ingest_packet=_relative(root, packet_path))
+        finalize_collected_work_item(root / WORK_ITEMS_PATH, work_item)
+        return CommitCollectionResult(
+            config.id,
+            "awaiting_approval",
+            (ref_id,),
+            (snapshot_manifest,),
+            (work_item.work_item_id,),
+            (),
+            inventory,
+        )
+
+
+def _latest_accepted_ref(
+    items: Sequence[WorkItem],
+    repo_id: str,
+) -> Optional[WorkItem]:
+    accepted = tuple(
+        item
+        for item in items
+        if item.repo_id == repo_id
+        and item.ref_changes
+        and item.state not in ("discovered", "collection_failed", "needs_manual_review")
+    )
+    if not accepted:
+        return None
+    prior_shas = {
+        change.from_sha
+        for item in accepted
+        for change in item.ref_changes
+        if change.from_sha
+    }
+    tips = tuple(item for item in accepted if item.sha not in prior_shas)
+    candidates = tips or accepted
+    return max(candidates, key=lambda item: (item.collection_date, item.work_item_id))
+
+
+def _commit_inventory(tree: GitTree, resolution) -> CommitInventory:
+    excluded_paths = tuple(sorted({path for path, _ in resolution.excluded}))
+    sizes = {blob.path: tree.blob_size(blob.path) for blob in tree.blobs() if blob.mode in ("100644", "100755")}
+    return CommitInventory(
+        len(resolution.files),
+        sum(item.size for item in resolution.files),
+        len(excluded_paths),
+        sum(sizes[path] for path in excluded_paths),
+    )
+
+
+def _resolution_fingerprint(resolution) -> Tuple[Tuple[str, str], ...]:
+    return tuple(sorted((item.path, item.sha256) for item in resolution.files))
+
+
+def _load_snapshot_document(root: Path, relative: str, repo_id: str) -> dict:
+    path = root / relative
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        raise CollectionUsageError("accepted commit snapshot is unreadable") from None
+    if (
+        not isinstance(document, dict)
+        or document.get("repository") != repo_id
+        or not isinstance(document.get("files"), list)
+        or not isinstance(document.get("excluded"), list)
+    ):
+        raise CollectionUsageError("accepted commit snapshot is invalid")
+    return document
+
+
+def _snapshot_selected_fingerprint(
+    document: dict,
+    source_id: str,
+) -> Tuple[Tuple[str, str], ...]:
+    rows = tuple(
+        (str(row.get("path", "")), str(row.get("sha256", "")))
+        for row in document["files"]
+        if isinstance(row, dict) and row.get("package") == source_id
+    )
+    if (
+        not rows
+        or len({path for path, _ in rows}) != len(rows)
+        or any(
+            not safe_policy_path(path)
+            or len(digest) != 64
+            or any(character not in "0123456789abcdef" for character in digest)
+            for path, digest in rows
+        )
+    ):
+        raise CollectionUsageError("accepted commit snapshot has invalid selected evidence")
+    return tuple(sorted(rows))
 
 
 def _select_candidates(
@@ -646,7 +1011,19 @@ def _record_failed_collection(
     collected_date: str,
     attempts: int,
     manual_review: bool,
-) -> CollectionResult:
+    dry_run: bool = False,
+) -> Union[CollectionResult, CommitCollectionResult]:
+    if config.version_strategy == "commit":
+        return _record_failed_commit_collection(
+            root,
+            config,
+            context,
+            error,
+            collected_date,
+            attempts,
+            manual_review,
+            dry_run,
+        )
     candidates = tuple(context.get("candidates", ()))
     failed_group = tuple(context.get("group", candidates))
     changes = tuple(context.get("changes", ()))
@@ -700,6 +1077,81 @@ def _record_failed_collection(
         (),
         work_ids,
         (_bounded_error(error),),
+    )
+
+
+def _record_failed_commit_collection(
+    root: Path,
+    config: RepoConfig,
+    context: Dict[str, object],
+    error: Exception,
+    collected_date: str,
+    attempts: int,
+    manual_review: bool,
+    dry_run: bool,
+) -> CommitCollectionResult:
+    ref_context = context.get("commit_ref")
+    inventory = context.get("inventory")
+    if not isinstance(inventory, CommitInventory):
+        inventory = CommitInventory(0, 0, 0, 0)
+    state = "needs_manual_review" if manual_review else "collection_failed"
+    ref_ids: Tuple[str, ...] = ()
+    work_ids: Tuple[str, ...] = ()
+    if isinstance(ref_context, tuple) and len(ref_context) == 3:
+        ref_name, sha, ref_id = ref_context
+        ref_ids = (str(ref_id),)
+        if not dry_run:
+            change = context.get("ref_change")
+            if not isinstance(change, RefChange):
+                prior = context.get("prior_ref")
+                from_sha = prior.sha if isinstance(prior, WorkItem) else ""
+                mode, reasons = recommend_ref_ingest_mode(
+                    RefChangeSignals(from_sha, str(sha), ())
+                )
+                change = RefChange(
+                    "default-branch",
+                    str(ref_name),
+                    from_sha,
+                    str(sha),
+                    str(ref_id),
+                    "",
+                    mode,
+                    reasons,
+                )
+            item = build_ref_work_item(
+                config.id,
+                str(sha),
+                collected_date,
+                (change,),
+                str(context.get("snapshot_manifest", "")),
+            )
+            saved = record_collection_failure(
+                root / WORK_ITEMS_PATH,
+                item,
+                _bounded_error(error),
+                collected_date,
+                attempts,
+            )
+            failed = next(value for value in saved if value.work_item_id == item.work_item_id)
+            if manual_review and failed.state == "collection_failed":
+                saved = transition_work_item(
+                    root / WORK_ITEMS_PATH,
+                    failed.work_item_id,
+                    "collection_failed",
+                    "needs_manual_review",
+                )
+                failed = next(value for value in saved if value.work_item_id == item.work_item_id)
+            state = failed.state
+            work_ids = (failed.work_item_id,)
+            regenerate_status(root)
+    return CommitCollectionResult(
+        config.id,
+        state,
+        ref_ids,
+        (),
+        work_ids,
+        (_bounded_error(error),),
+        inventory,
     )
 
 
@@ -1345,6 +1797,16 @@ def _config(repos: Sequence[RepoConfig], repo_id: str) -> RepoConfig:
     return matches[0]
 
 
+def _collection_result_payload(
+    result: Union[CollectionResult, CommitCollectionResult]
+) -> dict:
+    if isinstance(result, CollectionResult):
+        return asdict(result)
+    if isinstance(result, CommitCollectionResult):
+        return asdict(result)
+    raise TypeError("result must be a collection result")
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = _parser()
     arguments = parser.parse_args(argv)
@@ -1403,7 +1865,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             release=arguments.release,
             dry_run=arguments.dry_run,
         )
-        print(json.dumps(asdict(result), sort_keys=True))
+        print(json.dumps(_collection_result_payload(result), sort_keys=True))
         return 1 if result.state in ("collection_failed", "needs_manual_review") else 0
     except (CollectionUsageError, ValueError, WorkItemStateError) as error:
         parser.error(str(error))
@@ -1411,6 +1873,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
 
 __all__ = [
+    "CommitCollectionResult",
+    "CommitInventory",
     "CollectionResult",
     "CollectionUsageError",
     "approve_one",

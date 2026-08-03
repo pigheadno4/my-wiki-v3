@@ -365,5 +365,69 @@ max_packet_utf8_bytes=1800000
         self.assertEqual([], validate_github(inspect_github(self.wiki)))
 
 
+class CommitPilotEndToEndTests(unittest.TestCase):
+    def test_commit_baseline_stops_for_approval_then_claims_serially(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            wiki = base / "wiki"
+            wiki.mkdir()
+            parent = base / "remote"
+            parent.mkdir()
+            remote = create_git_repo(parent)
+            sha = commit_files(
+                remote,
+                {
+                    "README.md": "# Commit sample\n",
+                    "client/button.ts": "export const button = true;\n",
+                    "server/health.ts": "export const health = true;\n",
+                },
+                "commit baseline",
+            )
+            config = RepoConfig(
+                id="paypal-examples/v6-web-sdk-sample-integration",
+                company="paypal",
+                url="https://github.com/paypal-examples/v6-web-sdk-sample-integration",
+                enabled=True,
+                repo_type="sample-app",
+                priority="tier1",
+                track="default-branch",
+                version_strategy="commit",
+                max_snapshot_bytes=2000000,
+                capsules=(
+                    CapsuleConfig(
+                        id="sample-source",
+                        adapter="commit-tree-v1",
+                        source_id="sample-integration",
+                        dependency_scope="configured-repository-paths",
+                        changed_path_policy="policy-bounded",
+                        default_required_roots=("client", "server"),
+                        include_paths=("README.md",),
+                        excluded_categories=("tests", "fixtures"),
+                        max_capsule_files=30,
+                        max_capsule_utf8_bytes=500000,
+                        max_packet_files=50,
+                        max_packet_utf8_bytes=800000,
+                    ),
+                ),
+            )
+
+            result = collect_one(
+                wiki,
+                config,
+                release_mode="backfill",
+                clone_source=remote,
+                collection_date="2026-08-03",
+            )
+            item = load_work_items(wiki / "tracking/github/work-items.json")[0]
+
+            self.assertEqual("awaiting_approval", result.state)
+            self.assertEqual(sha, item.sha)
+            self.assertEqual((), item.package_changes)
+            approve_one(wiki, item.work_item_id, "full")
+            claimed = next_ingest(wiki)
+            self.assertEqual(item.work_item_id, claimed.work_item_id)
+            self.assertEqual("ingesting", claimed.state)
+
+
 if __name__ == "__main__":
     unittest.main()
