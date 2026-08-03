@@ -7,6 +7,7 @@ from typing import AbstractSet, Dict, List, Mapping, NoReturn, Optional, Sequenc
 
 from github_canonical import safe_policy_path
 from github_capsule_policy import (
+    COMMIT_TREE_ADAPTER,
     NPM_CAPSULE_ADAPTER,
     SECRET_DETECTOR,
     TAGGED_TREE_ADAPTER,
@@ -16,6 +17,7 @@ from github_capsule_policy import (
     SecretAllowlist,
     build_effective_policy,
 )
+from github_commit_tree import resolve_commit_workspace
 from github_git_tree import GitBlob, GitTree
 from github_npm_workspace import (
     DeclaredTarget,
@@ -394,6 +396,10 @@ def resolve_capsule_workspace(
         if versions is None:
             raise ValueError("tagged-tree-v1 requires package versions")
         return resolve_tagged_workspace(tree, capsule, versions)
+    if capsule.adapter == COMMIT_TREE_ADAPTER:
+        if versions is not None:
+            raise ValueError("commit-tree-v1 forbids package versions")
+        return resolve_commit_workspace(tree, capsule)
     raise ValueError("unsupported capsule adapter " + capsule.adapter)
 
 
@@ -409,6 +415,15 @@ def resolve_capsule(
         raise TypeError("capsule must be a CapsuleConfig")
     if capsule.adapter == NPM_CAPSULE_ADAPTER:
         return resolve_npm_capsule(tree, capsule, allowlist, changed_paths)
+    if capsule.adapter == COMMIT_TREE_ADAPTER:
+        if versions is not None:
+            raise ValueError("commit-tree-v1 forbids package versions")
+        return _resolve_commit_capsule(
+            tree,
+            capsule,
+            allowlist,
+            changed_paths,
+        )
     if capsule.adapter != TAGGED_TREE_ADAPTER:
         raise ValueError("unsupported capsule adapter " + capsule.adapter)
     if versions is None:
@@ -419,6 +434,105 @@ def resolve_capsule(
         allowlist,
         changed_paths,
         versions,
+    )
+
+
+def _resolve_commit_capsule(
+    tree: GitTree,
+    capsule: CapsuleConfig,
+    allowlist: Sequence[SecretAllowlist],
+    changed_paths: Sequence[str],
+) -> CapsuleResolution:
+    normalized = build_effective_policy(capsule, (), (), _DETECTOR_CODES).capsule
+    workspace = resolve_commit_workspace(tree, normalized)
+    blobs_by_path = {blob.path: blob for blob in tree.blobs()}
+    package = workspace.packages[0]
+    owned_paths = frozenset(package.owned_paths)
+
+    candidate_reasons: Dict[str, Tuple[str, str, Set[str]]] = {}
+    excluded: Set[Tuple[str, str]] = set()
+    required_rows: Set[Tuple[str, str, str]] = set()
+    include_rows: Set[Tuple[str, str, str]] = set()
+
+    for path in normalized.include_paths:
+        include_rows.add((package.name, path, "capsule-policy"))
+        _select(
+            candidate_reasons,
+            package,
+            path,
+            "include-path",
+            owned_paths,
+            "missing-required-include",
+        )
+    for root in normalized.default_required_roots:
+        required_rows.add((package.name, root, "default"))
+        matching = tuple(path for path in package.owned_paths if _below_root(path, root))
+        if not matching:
+            _review(
+                "missing-required-root",
+                "source=" + package.name + " path=" + root,
+            )
+        for path in matching:
+            exclusion_reasons = _commit_exclusion_reasons(
+                path,
+                normalized.excluded_categories,
+            )
+            if exclusion_reasons and path not in candidate_reasons:
+                for reason in exclusion_reasons:
+                    excluded.add((path, reason))
+                continue
+            _select(
+                candidate_reasons,
+                package,
+                path,
+                "required-root",
+                owned_paths,
+                "invalid-workspace-resolution",
+            )
+
+    _select_changed_paths(
+        candidate_reasons,
+        workspace,
+        changed_paths,
+        normalized.changed_path_policy,
+        normalized.excluded_categories,
+        excluded,
+    )
+    excluded = {item for item in excluded if item[0] not in candidate_reasons}
+    selected_blobs = _selected_blobs(candidate_reasons, blobs_by_path)
+    effective_policy = build_effective_policy(
+        normalized,
+        allowlist,
+        tuple((path, blob.oid) for path, blob in selected_blobs),
+        _DETECTOR_CODES,
+    )
+    files, findings = _read_selected_files(
+        tree,
+        selected_blobs,
+        candidate_reasons,
+        effective_policy.capsule,
+    )
+    allowed = frozenset(
+        (item.path, item.blob_oid, item.detector_code)
+        for item in effective_policy.applicable_secret_allowlist
+    )
+    unallowlisted_findings = tuple(
+        item
+        for item in findings
+        if (item.path, item.git_blob_oid, item.detector_code) not in allowed
+    )
+    if unallowlisted_findings:
+        raise SecretFindingsBlocked(findings, unallowlisted_findings)
+
+    return CapsuleResolution(
+        workspace=workspace,
+        files=files,
+        excluded=tuple(sorted(excluded)),
+        required_roots=tuple(sorted(required_rows)),
+        generated_target_paths=(),
+        include_paths=tuple(sorted(include_rows)),
+        secret_findings=findings,
+        effective_policy=effective_policy,
     )
 
 
@@ -801,6 +915,54 @@ def _is_lfs_pointer(content: bytes) -> bool:
         or content.startswith(_LFS_HEADER + b"\n")
         or content.startswith(_LFS_HEADER + b"\r\n")
     )
+
+
+def _commit_exclusion_reasons(
+    path: str,
+    enabled_categories: Sequence[str],
+) -> Tuple[str, ...]:
+    categories = _excluded_categories(path, enabled_categories)
+    reasons = {"excluded-category:" + category for category in categories}
+    segments = tuple(segment.lower() for segment in path.split("/"))
+    filename = segments[-1]
+    suffix = "." + filename.rsplit(".", 1)[-1] if "." in filename else ""
+
+    if filename in {
+        "bun.lock",
+        "bun.lockb",
+        "composer.lock",
+        "package-lock.json",
+        "pnpm-lock.yaml",
+        "yarn.lock",
+    }:
+        reasons.add("excluded-commit-path:lockfile")
+    if suffix in {".gif", ".ico", ".jpeg", ".jpg", ".png", ".svg", ".webp"}:
+        reasons.add("excluded-commit-path:image")
+    if ".github" in segments:
+        reasons.add("excluded-commit-path:ci")
+    if filename in {
+        "docker-compose.yml",
+        "docker-compose.yaml",
+        "dockerfile",
+        "fly.toml",
+    } or "deploy" in segments or "deployment" in segments:
+        reasons.add("excluded-commit-path:deployment")
+    if any(
+        segment in {".next", "build", "coverage", "dist", "node_modules", "out", "vendor"}
+        for segment in segments
+    ):
+        reasons.add("excluded-commit-path:generated-or-dependency")
+    if filename == ".env" or (
+        filename.startswith(".env.")
+        and filename not in {".env.example", ".env.sample", ".env.template"}
+    ):
+        reasons.add("excluded-commit-path:environment")
+    if "tests" in enabled_categories and (
+        filename.startswith(("jest.config.", "playwright.config.", "vitest.config."))
+        or filename.startswith("cypress.config.")
+    ):
+        reasons.add("excluded-category:tests")
+    return tuple(sorted(reasons))
 
 
 def classify_excluded_categories(

@@ -82,6 +82,20 @@ class CapsuleSelectionTests(unittest.TestCase):
         defaults.update(values)
         return CapsuleConfig(**defaults)
 
+    def commit_capsule(self, **values):
+        defaults = {
+            "id": "commit-selection-test",
+            "adapter": "commit-tree-v1",
+            "source_id": "sample-integration",
+            "dependency_scope": "configured-repository-paths",
+            "changed_path_policy": "policy-bounded",
+            "default_required_roots": ("client/components", "server/node/src"),
+            "include_paths": (".env.sample", "README.md", "client/package.json"),
+            "excluded_categories": ("tests", "fixtures"),
+        }
+        defaults.update(values)
+        return CapsuleConfig(**defaults)
+
     def blob(self, tree, path):
         return next(item for item in tree.blobs() if item.path == path)
 
@@ -230,6 +244,112 @@ class CapsuleSelectionTests(unittest.TestCase):
                 capsule(max_capsule_utf8_bytes=10),
                 (),
                 versions={"stripe-ios": "26.4.1"},
+            )
+
+    def test_commit_dispatch_selects_payment_source_and_excludes_repository_noise(self):
+        tree = self.tree(
+            {
+                ".env.sample": "PAYPAL_CLIENT_ID=replace-me\n",
+                "README.md": "# Sample\n",
+                "client/package.json": manifest(),
+                "client/components/paypal/checkout.js": "export const checkout = true;\n",
+                "client/components/venmo/app-switch.ts": "export const venmo = true;\n",
+                "client/components/local-payments/ideal.js": "export const ideal = true;\n",
+                "client/components/paypal/checkout.test.js": "test checkout\n",
+                "client/components/jest.config.js": "module.exports = {};\n",
+                "client/components/package-lock.json": "{}\n",
+                "client/components/logo.png": b"\x89PNG\x00",
+                "client/components/.github/workflows/ci.yml": "name: CI\n",
+                "client/components/deploy/fly.toml": "app = 'sample'\n",
+                "client/components/node_modules/sdk/index.js": "generated dependency\n",
+                "client/components/dist/bundle.js": "generated output\n",
+                "client/components/.env": "PAYPAL_CLIENT_SECRET=real\n",
+                "server/node/src/orders.ts": "export const orders = true;\n",
+            }
+        )
+
+        workspace = resolve_capsule_workspace(tree, self.commit_capsule())
+        result = resolve_capsule(tree, self.commit_capsule(), ())
+        selected = {item.path: item for item in result.files}
+
+        self.assertEqual(workspace, result.workspace)
+        self.assertEqual(
+            {
+                ".env.sample",
+                "README.md",
+                "client/package.json",
+                "client/components/local-payments/ideal.js",
+                "client/components/paypal/checkout.js",
+                "client/components/venmo/app-switch.ts",
+                "server/node/src/orders.ts",
+            },
+            set(selected),
+        )
+        self.assertEqual(
+            {"sample-integration"},
+            {item.package for item in result.files},
+        )
+        self.assertTrue(
+            all(item.classification_reason in {"include-path", "required-root"} for item in result.files)
+        )
+        excluded_paths = {path for path, _ in result.excluded}
+        self.assertTrue(
+            {
+                "client/components/.env",
+                "client/components/.github/workflows/ci.yml",
+                "client/components/deploy/fly.toml",
+                "client/components/dist/bundle.js",
+                "client/components/jest.config.js",
+                "client/components/logo.png",
+                "client/components/node_modules/sdk/index.js",
+                "client/components/package-lock.json",
+                "client/components/paypal/checkout.test.js",
+            }.issubset(excluded_paths)
+        )
+
+    def test_commit_dispatch_reuses_secret_binary_and_budget_guards(self):
+        secret_tree = self.tree(
+            {
+                ".env.sample": "PAYPAL_CLIENT_ID=replace-me\n",
+                "README.md": "# Sample\n",
+                "client/package.json": manifest(),
+                "client/components/paypal/checkout.js": 'const token = "ghp_' + ("a" * 36) + '";\n',
+                "server/node/src/orders.ts": "export const orders = true;\n",
+            }
+        )
+        with self.assertRaisesRegex(ValueError, "secret-finding"):
+            resolve_capsule(secret_tree, self.commit_capsule(), ())
+
+        binary_tree = self.tree(
+            {
+                ".env.sample": "PAYPAL_CLIENT_ID=replace-me\n",
+                "README.md": "# Sample\n",
+                "client/package.json": manifest(),
+                "client/components/logo.png": b"\x89PNG\x00",
+                "server/node/src/orders.ts": "export const orders = true;\n",
+            }
+        )
+        with self.assertRaisesRegex(ValueError, "unsafe-required-file"):
+            resolve_capsule(
+                binary_tree,
+                self.commit_capsule(include_paths=("client/components/logo.png",)),
+                (),
+            )
+
+        budget_tree = self.tree(
+            {
+                ".env.sample": "PAYPAL_CLIENT_ID=replace-me\n",
+                "README.md": "# Sample\n",
+                "client/package.json": manifest(),
+                "client/components/paypal/checkout.js": "export const checkout = true;\n",
+                "server/node/src/orders.ts": "export const orders = true;\n",
+            }
+        )
+        with self.assertRaisesRegex(ValueError, "capsule-budget-exceeded"):
+            resolve_capsule(
+                budget_tree,
+                self.commit_capsule(max_capsule_files=1),
+                (),
             )
 
     def test_braintree_android_policy_excludes_binary_ui_asset(self):
