@@ -1247,6 +1247,62 @@ class RegistryTests(unittest.TestCase):
         )
         self.assertEqual(APPENDIX_A_INVENTORY, actual)
 
+    def test_paypal_v6_sample_has_complete_disabled_commit_policy(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["paypal-examples/v6-web-sdk-sample-integration"]
+
+        self.assertFalse(repo.enabled)
+        self.assertEqual("sample-app", repo.repo_type)
+        self.assertEqual("tier1", repo.priority)
+        self.assertEqual("monthly", repo.collection_frequency)
+        self.assertEqual("default-branch", repo.track)
+        self.assertEqual("commit", repo.version_strategy)
+        self.assertEqual((), repo.version_tracks)
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("commit-tree-v1", capsule.adapter)
+        self.assertEqual("v6-web-sdk-sample-integration", capsule.source_id)
+        self.assertEqual((), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(
+            (
+                "client/components",
+                "client/prebuiltPages/react/src",
+                "client/shared",
+                "server/node/src",
+            ),
+            capsule.default_required_roots,
+        )
+        self.assertEqual(
+            (
+                ".env.sample",
+                "LICENSE",
+                "README.md",
+                "client/index.html",
+                "client/package.json",
+                "client/prebuiltPages/react/README.md",
+                "client/prebuiltPages/react/package.json",
+                "client/prebuiltPages/react/tsconfig.json",
+                "client/prebuiltPages/react/vite.config.ts",
+                "server/node/README.md",
+                "server/node/package.json",
+                "server/node/tsconfig.json",
+            ),
+            capsule.include_paths,
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(320, capsule.max_capsule_files)
+        self.assertEqual(3000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(370, capsule.max_packet_files)
+        self.assertEqual(4000000, capsule.max_packet_utf8_bytes)
+
 
 if __name__ == "__main__":
     unittest.main()

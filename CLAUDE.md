@@ -24,7 +24,8 @@ my-wiki/
 │   │   ├── paypal.md
 │   │   ├── adyen.md
 │   │   └── metronome.md
-│   ├── github-repos.md        # release-driven GitHub collection and serial ingest workflow
+│   ├── github-repos.md        # common GitHub authority and strategy router
+│   ├── github/                # release, commit, and supplement workflow rules
 │   ├── ingest.md              # raw → wiki pages (NO-BATCH, concept-audit-first, templates)
 │   ├── lint.md                # wiki health, orphan ingest queue, validate_wiki.py
 │   └── query-and-synthesis.md # answer queries → comparison/analysis filing
@@ -204,8 +205,8 @@ tags: [<relevant tags>]
 | --- | --- | --- |
 | Collect raw content (manual) | user pastes text, gives a URL, or attaches images | `rules/raw-collection.md` |
 | Collect raw content (PSP bulk) | grabbing many pages from a PSP's docs (Stripe/PayPal/Adyen/…) | `rules/psp-collection.md` + `rules/psp/<psp>.md` |
-| Collect or compare a GitHub repository | registry row, repository URL, package release, snapshot, or comparison | `rules/github-repos.md` |
-| Ingest an approved GitHub work item | one approved SHA group using full or delta mode | `rules/github-repos.md` + `rules/ingest.md` |
+| Collect or compare a GitHub repository | registry row, repository URL, package release, snapshot, or comparison | `rules/github-repos.md` + routed `rules/github/<strategy>.md` |
+| Ingest an approved GitHub work item | one approved SHA group using full or delta mode | `rules/github-repos.md` + routed strategy rule + `rules/ingest.md` |
 | **Ingest a raw file → wiki pages** | any raw file ready to become wiki pages | `rules/ingest.md` ⚠️ **ONE SOURCE AT A TIME — NEVER BATCH** |
 | Lint the wiki | periodic health check, orphan sweep, accuracy/staleness | `rules/lint.md` |
 | Answer / compare / analyze | a question, comparison, or cross-cutting synthesis | `rules/query-and-synthesis.md` |
