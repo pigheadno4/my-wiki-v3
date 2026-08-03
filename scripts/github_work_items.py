@@ -30,6 +30,12 @@ FULL_SIGNAL_ORDER = (
     "payment-behavior-signal",
     "broad-change-set",
 )
+REF_FULL_SIGNAL_ORDER = (
+    "initial-commit-baseline",
+    "server-architecture-signal",
+    "payment-behavior-signal",
+    "broad-change-set",
+)
 BROAD_CHANGE_FILE_LIMIT = 25
 INGEST_MODES = ("full", "delta")
 STATES = (
@@ -66,12 +72,23 @@ _PACKAGE_CHANGE_FIELDS = {
     "recommended_mode",
     "reasons",
 }
+_REF_CHANGE_FIELDS = {
+    "ref_kind",
+    "ref_name",
+    "from_sha",
+    "to_sha",
+    "display_identity",
+    "comparison_manifest",
+    "recommended_mode",
+    "reasons",
+}
 _WORK_ITEM_FIELDS = {
     "work_item_id",
     "repo_id",
     "sha",
     "collection_date",
     "package_changes",
+    "ref_changes",
     "snapshot_manifest",
     "recommended_mode",
     "approved_mode",
@@ -89,7 +106,11 @@ _WORK_ITEM_OPTIONAL_FIELDS = {
     "ingest_packet",
     "evidence_attachments",
 }
-_WORK_ITEM_REQUIRED_FIELDS = _WORK_ITEM_FIELDS - _WORK_ITEM_OPTIONAL_FIELDS
+_WORK_ITEM_REQUIRED_FIELDS = (
+    _WORK_ITEM_FIELDS
+    - _WORK_ITEM_OPTIONAL_FIELDS
+    - {"package_changes", "ref_changes"}
+)
 _ATTACHMENT_FIELDS = {
     "attachment_type",
     "base_snapshot_manifest",
@@ -140,12 +161,31 @@ class ChangeSignals:
 
 
 @dataclass(frozen=True)
+class RefChangeSignals:
+    from_sha: str
+    to_sha: str
+    changed_paths: Tuple[str, ...]
+
+
+@dataclass(frozen=True)
 class PackageChange:
     package: str
     from_version: str
     to_version: str
     release_id: str
     release_manifest: str
+    comparison_manifest: str
+    recommended_mode: str
+    reasons: Tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class RefChange:
+    ref_kind: str
+    ref_name: str
+    from_sha: str
+    to_sha: str
+    display_identity: str
     comparison_manifest: str
     recommended_mode: str
     reasons: Tuple[str, ...]
@@ -178,6 +218,7 @@ class WorkItem:
     consecutive_failed_runs: int = 0
     last_error: str = ""
     last_attempted_date: str = ""
+    ref_changes: Tuple[RefChange, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -234,6 +275,51 @@ def recommend_ingest_mode(signals: ChangeSignals) -> Tuple[str, Tuple[str, ...]]
         )
         return "delta", (reason,)
     return "full", ("ambiguous-version-transition",)
+
+
+def recommend_ref_ingest_mode(
+    signals: RefChangeSignals,
+) -> Tuple[str, Tuple[str, ...]]:
+    """Recommend commit ingest mode from path-qualified mechanical signals."""
+    if not isinstance(signals, RefChangeSignals):
+        raise TypeError("signals must be RefChangeSignals")
+    if signals.from_sha:
+        _require_sha(signals.from_sha)
+    _require_sha(signals.to_sha)
+    changed_paths = _paths(signals.changed_paths, "changed_paths")
+
+    reasons = []
+    if not signals.from_sha:
+        reasons.append("initial-commit-baseline")
+    lowered_paths = tuple(path.lower() for path in changed_paths)
+    if any(
+        path.startswith("server/")
+        and any(token in path for token in ("/auth", "/route", "/router"))
+        for path in lowered_paths
+    ):
+        reasons.append("server-architecture-signal")
+    if any(
+        any(
+            token in path
+            for token in (
+                "order",
+                "vault",
+                "subscription",
+                "eligibility",
+                "capture",
+                "checkout",
+                "payment-flow",
+            )
+        )
+        for path in lowered_paths
+    ):
+        reasons.append("payment-behavior-signal")
+    if len(changed_paths) > BROAD_CHANGE_FILE_LIMIT:
+        reasons.append("broad-change-set")
+    ordered = tuple(code for code in REF_FULL_SIGNAL_ORDER if code in reasons)
+    if ordered:
+        return "full", ordered
+    return "delta", ("contained-commit-change",)
 
 
 def build_work_item_id(
@@ -293,6 +379,82 @@ def build_work_item(
     )
     _validate_work_item(item)
     return item
+
+
+def build_ref_work_item(
+    repo_id: str,
+    sha: str,
+    collection_date: str,
+    ref_changes: Sequence[RefChange],
+    snapshot_manifest: str,
+    evidence_revision: str = "",
+    ingest_packet: str = "",
+) -> WorkItem:
+    """Build one discovered work item from exact-SHA repository ref changes."""
+    _require_repo_id(repo_id)
+    _require_sha(sha)
+    _require_date(collection_date, "collection_date")
+    changes = tuple(sorted(ref_changes, key=lambda item: (item.ref_kind, item.ref_name)))
+    if not changes:
+        raise ValueError("ref_changes must not be empty")
+    identities = tuple((item.ref_kind, item.ref_name) for item in changes)
+    if len(identities) != len(set(identities)):
+        raise ValueError("ref_changes contain duplicate ref identities")
+    for change in changes:
+        _validate_ref_change(change)
+        if change.to_sha != sha:
+            raise ValueError("ref change to_sha must equal work-item SHA")
+    if snapshot_manifest:
+        _require_path(snapshot_manifest, "snapshot_manifest")
+    mode = "full" if any(item.recommended_mode == "full" for item in changes) else "delta"
+    item = WorkItem(
+        work_item_id=build_ref_work_item_id(
+            repo_id,
+            sha,
+            identities,
+            evidence_revision,
+        ),
+        repo_id=repo_id,
+        sha=sha,
+        collection_date=collection_date,
+        package_changes=(),
+        snapshot_manifest=snapshot_manifest,
+        recommended_mode=mode,
+        evidence_revision=evidence_revision,
+        ingest_packet=ingest_packet,
+        ref_changes=changes,
+    )
+    _validate_work_item(item)
+    return item
+
+
+def build_ref_work_item_id(
+    repo_id: str,
+    sha: str,
+    ref_identities: Sequence[Tuple[str, str]],
+    evidence_revision: str = "",
+) -> str:
+    """Build stable identity for one exact-SHA repository ref set."""
+    _require_repo_id(repo_id)
+    _require_sha(sha)
+    identities = tuple(sorted(set(ref_identities)))
+    if not identities or any(
+        not isinstance(item, tuple)
+        or len(item) != 2
+        or not all(isinstance(value, str) and value for value in item)
+        for item in identities
+    ):
+        raise ValueError("ref_identities must contain ref kind/name tuples")
+    payload = {
+        "refs": [{"kind": kind, "name": name} for kind, name in identities],
+        "repository": repo_id,
+        "sha": sha,
+    }
+    if evidence_revision:
+        if re.fullmatch(r"[0-9a-f]{64}", evidence_revision) is None:
+            raise ValueError("evidence_revision must be a SHA-256 hash")
+        payload["evidence_revision"] = evidence_revision
+    return "github-" + canonical_sha256(payload)[:20]
 
 
 def publish_evidence_attachment(
@@ -791,23 +953,40 @@ def render_status(
                 )
                 + "`",
                 "",
-                "### Package releases",
-                "",
             ]
         )
-        for change in item.package_changes:
-            lines.extend(
-                [
-                    "- `" + change.release_id + "` (recommended `" + change.recommended_mode + "`)",
-                    "  Release: [manifest](" + change.release_manifest + ")",
-                    "  Comparison: "
-                    + (
-                        "[manifest](" + change.comparison_manifest + ")"
-                        if change.comparison_manifest
-                        else "Not applicable"
-                    ),
-                ]
-            )
+        if item.package_changes:
+            lines.extend(["### Package releases", ""])
+            for change in item.package_changes:
+                lines.extend(
+                    [
+                        "- `" + change.release_id + "` (recommended `" + change.recommended_mode + "`)",
+                        "  Release: [manifest](" + change.release_manifest + ")",
+                        "  Comparison: "
+                        + (
+                            "[manifest](" + change.comparison_manifest + ")"
+                            if change.comparison_manifest
+                            else "Not applicable"
+                        ),
+                    ]
+                )
+        else:
+            lines.extend(["### Repository refs", ""])
+            for change in item.ref_changes:
+                lines.extend(
+                    [
+                        "- `" + change.display_identity + "` (recommended `" + change.recommended_mode + "`)",
+                        "  Ref: `" + change.ref_name + "`",
+                        "  From SHA: `" + (change.from_sha or "baseline") + "`",
+                        "  To SHA: `" + change.to_sha + "`",
+                        "  Comparison: "
+                        + (
+                            "[manifest](" + change.comparison_manifest + ")"
+                            if change.comparison_manifest
+                            else "Not applicable"
+                        ),
+                    ]
+                )
         lines.append("")
     return "\n".join(lines)
 
@@ -846,6 +1025,35 @@ def _validate_package_change(change: PackageChange) -> None:
         raise ValueError("reasons must be non-empty and unique")
 
 
+def _validate_ref_change(change: RefChange) -> None:
+    if not isinstance(change, RefChange):
+        raise TypeError("ref change must be RefChange")
+    if change.ref_kind != "default-branch":
+        raise ValueError("ref_kind must be default-branch")
+    if (
+        not isinstance(change.ref_name, str)
+        or not change.ref_name
+        or any(character.isspace() for character in change.ref_name)
+        or change.ref_name.startswith("/")
+        or change.ref_name.endswith("/")
+        or ".." in change.ref_name
+    ):
+        raise ValueError("ref_name is invalid")
+    if change.from_sha:
+        _require_sha(change.from_sha)
+    _require_sha(change.to_sha)
+    expected_display = change.ref_kind + "@" + change.to_sha[:7]
+    if change.display_identity != expected_display:
+        raise ValueError("display_identity must equal " + expected_display)
+    if change.comparison_manifest:
+        _require_path(change.comparison_manifest, "comparison_manifest")
+    if change.recommended_mode not in INGEST_MODES:
+        raise ValueError("recommended_mode must be full or delta")
+    reasons = _strings(change.reasons, "reasons")
+    if not reasons or len(set(reasons)) != len(reasons):
+        raise ValueError("reasons must be non-empty and unique")
+
+
 def _validate_work_item(item: WorkItem) -> None:
     if not isinstance(item, WorkItem):
         raise TypeError("work item must be WorkItem")
@@ -860,6 +1068,8 @@ def _validate_work_item(item: WorkItem) -> None:
         if any(not change.release_manifest for change in item.package_changes):
             raise ValueError("work-item state requires all release manifests")
         if any(change.from_version and not change.comparison_manifest for change in item.package_changes):
+            raise ValueError("work-item state requires all applicable comparisons")
+        if any(change.from_sha and not change.comparison_manifest for change in item.ref_changes):
             raise ValueError("work-item state requires all applicable comparisons")
     if item.state not in STATES:
         raise ValueError("work-item state is invalid")
@@ -895,24 +1105,45 @@ def _validate_work_item(item: WorkItem) -> None:
         raise ValueError("last_error is invalid")
     if item.last_attempted_date:
         _require_date(item.last_attempted_date, "last_attempted_date")
-    changes = tuple(item.package_changes)
-    if not changes:
-        raise ValueError("package_changes must not be empty")
-    if changes != tuple(sorted(changes, key=lambda value: value.release_id)):
-        raise ValueError("package_changes must be sorted")
-    for change in changes:
-        _validate_package_change(change)
-    if len({change.release_id for change in changes}) != len(changes):
-        raise ValueError("package_changes contain duplicate release IDs")
-    expected_mode = "full" if any(change.recommended_mode == "full" for change in changes) else "delta"
+    package_changes = tuple(item.package_changes)
+    ref_changes = tuple(item.ref_changes)
+    if bool(package_changes) == bool(ref_changes):
+        raise ValueError("work item must contain exactly one change family")
+    if package_changes:
+        if package_changes != tuple(sorted(package_changes, key=lambda value: value.release_id)):
+            raise ValueError("package_changes must be sorted")
+        for change in package_changes:
+            _validate_package_change(change)
+        if len({change.release_id for change in package_changes}) != len(package_changes):
+            raise ValueError("package_changes contain duplicate release IDs")
+        identity_values = tuple(change.release_id for change in package_changes)
+        expected_id = build_work_item_id(
+            item.repo_id,
+            item.sha,
+            identity_values,
+            item.evidence_revision,
+        )
+        mode_changes = package_changes
+    else:
+        if ref_changes != tuple(sorted(ref_changes, key=lambda value: (value.ref_kind, value.ref_name))):
+            raise ValueError("ref_changes must be sorted")
+        for change in ref_changes:
+            _validate_ref_change(change)
+            if change.to_sha != item.sha:
+                raise ValueError("ref change to_sha must equal work-item SHA")
+        identities = tuple((change.ref_kind, change.ref_name) for change in ref_changes)
+        if len(identities) != len(set(identities)):
+            raise ValueError("ref_changes contain duplicate ref identities")
+        expected_id = build_ref_work_item_id(
+            item.repo_id,
+            item.sha,
+            identities,
+            item.evidence_revision,
+        )
+        mode_changes = ref_changes
+    expected_mode = "full" if any(change.recommended_mode == "full" for change in mode_changes) else "delta"
     if item.recommended_mode != expected_mode:
-        raise ValueError("work-item recommended mode does not match package changes")
-    expected_id = build_work_item_id(
-        item.repo_id,
-        item.sha,
-        tuple(change.release_id for change in changes),
-        item.evidence_revision,
-    )
+        raise ValueError("work-item recommended mode does not match changes")
     if item.work_item_id != expected_id or not _WORK_ITEM_ID.fullmatch(item.work_item_id):
         raise ValueError("work-item ID is invalid")
 
@@ -923,8 +1154,14 @@ def _work_item_to_dict(item: WorkItem) -> dict:
         value.pop("ingest_packet")
     if not item.evidence_attachments:
         value.pop("evidence_attachments")
-    value["package_changes"] = [asdict(change) for change in item.package_changes]
-    for change in value["package_changes"]:
+    if item.package_changes:
+        value.pop("ref_changes")
+        change_key = "package_changes"
+    else:
+        value.pop("package_changes")
+        change_key = "ref_changes"
+    value[change_key] = [asdict(change) for change in getattr(item, change_key)]
+    for change in value[change_key]:
         change["reasons"] = list(change["reasons"])
     return value
 
@@ -936,19 +1173,24 @@ def _work_item_from_dict(value: Any) -> WorkItem:
         or not set(value).issubset(_WORK_ITEM_FIELDS)
     ):
         raise ValueError("work item has unknown or missing fields")
-    rows = value["package_changes"]
+    families = tuple(key for key in ("package_changes", "ref_changes") if key in value)
+    if len(families) != 1:
+        raise ValueError("work item must contain exactly one change family")
+    family = families[0]
+    rows = value[family]
     if not isinstance(rows, list):
-        raise ValueError("package_changes must be an array")
+        raise ValueError(family + " must be an array")
     changes = []
     for row in rows:
-        if not isinstance(row, dict) or set(row) != _PACKAGE_CHANGE_FIELDS:
-            raise ValueError("package change has unknown or missing fields")
+        expected_fields = _PACKAGE_CHANGE_FIELDS if family == "package_changes" else _REF_CHANGE_FIELDS
+        if not isinstance(row, dict) or set(row) != expected_fields:
+            raise ValueError(family[:-1] + " has unknown or missing fields")
         reasons = row["reasons"]
         if not isinstance(reasons, list):
             raise ValueError("package change reasons must be an array")
         values = dict(row)
         values["reasons"] = tuple(reasons)
-        changes.append(PackageChange(**values))
+        changes.append(PackageChange(**values) if family == "package_changes" else RefChange(**values))
     values = dict(value)
     values.setdefault("evidence_revision", "")
     values.setdefault("ingest_packet", "")
@@ -956,7 +1198,9 @@ def _work_item_from_dict(value: Any) -> WorkItem:
     if not isinstance(attachments, list):
         raise ValueError("evidence_attachments must be an array")
     values["evidence_attachments"] = tuple(attachments)
-    values["package_changes"] = tuple(changes)
+    values.setdefault("package_changes", ())
+    values.setdefault("ref_changes", ())
+    values[family] = tuple(changes)
     item = WorkItem(**values)
     _validate_work_item(item)
     return item
@@ -1100,6 +1344,7 @@ def _require_same_evidence(existing: WorkItem, incoming: WorkItem) -> None:
         "repo_id",
         "sha",
         "package_changes",
+        "ref_changes",
         "snapshot_manifest",
         "recommended_mode",
         "ingest_packet",
@@ -1114,8 +1359,8 @@ def _require_same_evidence(existing: WorkItem, incoming: WorkItem) -> None:
 
 
 def _require_same_identity(existing: WorkItem, incoming: WorkItem) -> None:
-    existing_ids = tuple(change.release_id for change in existing.package_changes)
-    incoming_ids = tuple(change.release_id for change in incoming.package_changes)
+    existing_ids = _change_identity(existing)
+    incoming_ids = _change_identity(incoming)
     if (
         existing.work_item_id != incoming.work_item_id
         or existing.repo_id != incoming.repo_id
@@ -1152,10 +1397,49 @@ def _require_compatible_paths(existing: WorkItem, incoming: WorkItem) -> None:
             current_path = getattr(change, field)
             if prior_path and current_path and prior_path != current_path:
                 raise ValueError("existing work item conflicts with package evidence")
+    existing_refs = {
+        (change.ref_kind, change.ref_name): change for change in existing.ref_changes
+    }
+    for change in incoming.ref_changes:
+        prior = existing_refs[(change.ref_kind, change.ref_name)]
+        if (
+            prior.comparison_manifest
+            and change.comparison_manifest
+            and prior.comparison_manifest != change.comparison_manifest
+        ):
+            raise ValueError("existing work item conflicts with ref evidence")
 
 
 def _merge_evidence(existing: WorkItem, incoming: WorkItem) -> WorkItem:
     _require_compatible_paths(existing, incoming)
+    if incoming.ref_changes:
+        old_changes = {
+            (change.ref_kind, change.ref_name): change
+            for change in existing.ref_changes
+        }
+        merged_refs = []
+        for change in incoming.ref_changes:
+            prior = old_changes[(change.ref_kind, change.ref_name)]
+            policy = change if change.comparison_manifest else prior
+            merged_refs.append(
+                replace(
+                    policy,
+                    comparison_manifest=(
+                        change.comparison_manifest or prior.comparison_manifest
+                    ),
+                )
+            )
+        mode = "full" if any(change.recommended_mode == "full" for change in merged_refs) else "delta"
+        return replace(
+            incoming,
+            ref_changes=tuple(merged_refs),
+            snapshot_manifest=incoming.snapshot_manifest or existing.snapshot_manifest,
+            ingest_packet=incoming.ingest_packet or existing.ingest_packet,
+            evidence_attachments=(
+                incoming.evidence_attachments or existing.evidence_attachments
+            ),
+            recommended_mode=mode,
+        )
     old_changes = {change.release_id: change for change in existing.package_changes}
     merged_changes = []
     for change in incoming.package_changes:
@@ -1184,6 +1468,12 @@ def _merge_evidence(existing: WorkItem, incoming: WorkItem) -> WorkItem:
         ),
         recommended_mode=mode,
     )
+
+
+def _change_identity(item: WorkItem) -> Tuple[object, ...]:
+    if item.package_changes:
+        return tuple(change.release_id for change in item.package_changes)
+    return tuple((change.ref_kind, change.ref_name) for change in item.ref_changes)
 
 
 def _validate_packet_summary(
@@ -1286,14 +1576,19 @@ __all__ = [
     "FULL_SIGNAL_ORDER",
     "PackageChange",
     "PacketStatusSummary",
+    "RefChange",
+    "RefChangeSignals",
     "TRANSITIONS",
     "WorkItem",
     "WorkItemStateError",
     "build_work_item",
     "build_work_item_id",
+    "build_ref_work_item",
+    "build_ref_work_item_id",
     "finalize_collected_work_item",
     "load_work_items",
     "recommend_ingest_mode",
+    "recommend_ref_ingest_mode",
     "record_collection_failure",
     "render_status",
     "save_work_items",

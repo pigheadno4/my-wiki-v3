@@ -12,14 +12,19 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import github_work_items  # noqa: E402
 from github_work_items import (  # noqa: E402
+    BROAD_CHANGE_FILE_LIMIT,
     ChangeSignals,
     PackageChange,
     PacketStatusSummary,
+    RefChange,
+    RefChangeSignals,
     WorkItemStateError,
+    build_ref_work_item,
     build_work_item,
     claim_next_ingest,
     load_work_items,
     recommend_ingest_mode,
+    recommend_ref_ingest_mode,
     record_collection_failure,
     render_status,
     save_work_items,
@@ -181,6 +186,147 @@ class GitHubWorkItemTests(unittest.TestCase):
             recommended_mode=recommended_mode,
             reasons=reasons,
         )
+
+    def ref_change(
+        self,
+        from_sha="",
+        to_sha="b" * 40,
+        recommended_mode="full",
+        reasons=("initial-commit-baseline",),
+        comparison_manifest="",
+    ):
+        return RefChange(
+            ref_kind="default-branch",
+            ref_name="main",
+            from_sha=from_sha,
+            to_sha=to_sha,
+            display_identity="default-branch@" + to_sha[:7],
+            comparison_manifest=comparison_manifest,
+            recommended_mode=recommended_mode,
+            reasons=reasons,
+        )
+
+    def ref_item(self, **overrides):
+        values = {
+            "repo_id": "paypal-examples/v6-web-sdk-sample-integration",
+            "sha": "b" * 40,
+            "collection_date": "2026-08-03",
+            "ref_changes": (self.ref_change(),),
+            "snapshot_manifest": (
+                "raw/github/paypal-examples/v6-web-sdk-sample-integration/"
+                "snapshots/2026-08-03-bbbbbbb/manifest.json"
+            ),
+        }
+        values.update(overrides)
+        return build_ref_work_item(**values)
+
+    def test_commit_work_item_round_trips_without_package_release_fields(self):
+        change = self.ref_change()
+        item = self.ref_item(ref_changes=(change,))
+
+        self.assertEqual((), item.package_changes)
+        self.assertEqual((change,), item.ref_changes)
+        save_work_items(self.path, (item,))
+        saved = json.loads(self.path.read_text(encoding="utf-8"))["work_items"][0]
+        self.assertNotIn("package_changes", saved)
+        self.assertIn("ref_changes", saved)
+        self.assertEqual((item,), load_work_items(self.path))
+
+        release_payload = github_work_items._work_item_to_dict(self.awaiting_item)
+        self.assertIn("package_changes", release_payload)
+        self.assertNotIn("ref_changes", release_payload)
+
+    def test_commit_and_package_change_families_are_mutually_exclusive(self):
+        mixed = replace(self.ref_item(), package_changes=(self.paypal_change,))
+
+        with self.assertRaisesRegex(ValueError, "exactly one change family"):
+            save_work_items(self.path, (mixed,))
+
+    def test_commit_work_item_validates_sha_identity_and_lifecycle(self):
+        comparison = (
+            "tracking/github/repos/paypal-examples/v6-web-sdk-sample-integration/"
+            "comparisons/default-branch/aaaaaaaa--bbbbbbb/comparison.json"
+        )
+        change = self.ref_change(
+            from_sha="a" * 40,
+            recommended_mode="delta",
+            reasons=("contained-commit-change",),
+            comparison_manifest=comparison,
+        )
+        item = self.ref_item(ref_changes=(change,))
+        packet = (
+            "tracking/github/repos/paypal-examples/v6-web-sdk-sample-integration/"
+            "ingest-packets/" + item.work_item_id + "/packet.json"
+        )
+        awaiting = replace(item, ingest_packet=packet, state="awaiting_approval")
+        save_work_items(self.path, (awaiting,))
+
+        approved = transition_work_item(
+            self.path,
+            item.work_item_id,
+            "awaiting_approval",
+            "approved",
+            approved_mode="delta",
+        )[0]
+        claimed = claim_next_ingest(self.path)
+        completed = transition_work_item(
+            self.path,
+            item.work_item_id,
+            "ingesting",
+            "ingested",
+        )[0]
+
+        self.assertEqual("approved", approved.state)
+        self.assertEqual("ingesting", claimed.state)
+        self.assertEqual("ingested", completed.state)
+        status = render_status((completed,))
+        self.assertIn("default-branch@bbbbbbb", status)
+        self.assertNotIn("### Package releases", status)
+
+        invalid = replace(
+            item,
+            ref_changes=(
+                replace(
+                    change,
+                    to_sha="c" * 40,
+                    display_identity="default-branch@ccccccc",
+                ),
+            ),
+        )
+        with self.assertRaisesRegex(ValueError, "to_sha must equal work-item SHA"):
+            save_work_items(self.path, (invalid,))
+
+    def test_commit_recommendations_are_mechanical(self):
+        cases = (
+            (
+                RefChangeSignals("", "b" * 40, ()),
+                ("full", ("initial-commit-baseline",)),
+            ),
+            (
+                RefChangeSignals("a" * 40, "b" * 40, ("client/components/paypal/button.ts",)),
+                ("delta", ("contained-commit-change",)),
+            ),
+            (
+                RefChangeSignals("a" * 40, "b" * 40, ("server/node/src/routes/auth.ts",)),
+                ("full", ("server-architecture-signal",)),
+            ),
+            (
+                RefChangeSignals("a" * 40, "b" * 40, ("client/components/vault/capture.ts",)),
+                ("full", ("payment-behavior-signal",)),
+            ),
+            (
+                RefChangeSignals(
+                    "a" * 40,
+                    "b" * 40,
+                    tuple("client/components/file-" + str(index) + ".ts" for index in range(BROAD_CHANGE_FILE_LIMIT + 1)),
+                ),
+                ("full", ("broad-change-set",)),
+            ),
+        )
+
+        for signals, expected in cases:
+            with self.subTest(expected=expected):
+                self.assertEqual(expected, recommend_ref_ingest_mode(signals))
 
     def test_baseline_and_major_upgrade_require_full_ingest(self):
         baseline = self.signals(from_version="", to_version="8.9.2")
