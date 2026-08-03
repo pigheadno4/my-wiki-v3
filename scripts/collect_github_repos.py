@@ -12,6 +12,11 @@ from urllib.error import URLError
 
 from github_canonical import safe_policy_path
 from github_capsule_policy import COMMIT_TREE_ADAPTER, TAGGED_TREE_ADAPTER
+from github_collection_index import (
+    checked_state_from_document,
+    load_collection_index,
+    write_collection_index,
+)
 from github_capsule_selection import (
     resolve_capsule,
     resolve_capsule_workspace,
@@ -215,6 +220,12 @@ def collect_one(
         else:
             if not dry_run:
                 regenerate_status(root)
+                if (root / "tracking/github/repo-registry.toml").exists():
+                    regenerate_collection_index(
+                        root,
+                        _checked_update(config.id, result, collected),
+                        collected,
+                    )
             return result
 
     if last_error is None:
@@ -231,6 +242,12 @@ def collect_one(
     )
     if not dry_run and queue_path.exists():
         regenerate_status(root)
+    if not dry_run and (root / "tracking/github/repo-registry.toml").exists():
+        regenerate_collection_index(
+            root,
+            _checked_update(config.id, result, collected),
+            collected,
+        )
     return result
 
 
@@ -1414,11 +1431,52 @@ def supplement_one(
 def regenerate_status(root: Path) -> str:
     """Regenerate operator Markdown from the machine queue."""
     root = Path(root).resolve()
-    return write_status_from_queue(
+    rendered = write_status_from_queue(
         root / WORK_ITEMS_PATH,
         root / STATUS_PATH,
         _packet_status_summaries(root),
     )
+    if (root / "tracking/github/repo-registry.toml").exists():
+        regenerate_collection_index(root)
+    return rendered
+
+
+def regenerate_collection_index(
+    root: Path,
+    checked_update: Optional[Dict[str, Dict[str, str]]] = None,
+    generated_date: Optional[str] = None,
+) -> dict:
+    """Regenerate repository-level scheduling state from registry and queue."""
+    root = Path(root).resolve()
+    checked = {}
+    try:
+        checked = checked_state_from_document(load_collection_index(root))
+    except (OSError, UnicodeError, ValueError, TypeError, json.JSONDecodeError):
+        pass
+    for repo_id, values in (checked_update or {}).items():
+        checked[repo_id] = {**checked.get(repo_id, {}), **values}
+    return write_collection_index(
+        root,
+        load_registry(root / "tracking/github/repo-registry.toml"),
+        load_work_items(root / WORK_ITEMS_PATH),
+        checked,
+        date.fromisoformat(generated_date) if generated_date else date.today(),
+    )
+
+
+def _checked_update(
+    repo_id: str,
+    result: Union[CollectionResult, CommitCollectionResult],
+    checked_date: str,
+) -> Dict[str, Dict[str, str]]:
+    identities = result.ref_ids if isinstance(result, CommitCollectionResult) else result.release_ids
+    return {
+        repo_id: {
+            "last_checked_date": checked_date,
+            "latest_discovered_ref": ", ".join(identities),
+            "last_error": " ".join(result.errors)[:240],
+        }
+    }
 
 
 def _packet_status_summaries(
@@ -1886,6 +1944,7 @@ __all__ = [
     "next_ingest",
     "parse_package_release",
     "regenerate_status",
+    "regenerate_collection_index",
     "retry_one",
     "supplement_one",
 ]

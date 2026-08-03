@@ -5,6 +5,7 @@ import sys
 import tempfile
 import unittest
 from dataclasses import replace
+from datetime import date
 from pathlib import Path
 
 
@@ -12,9 +13,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from github_canonical import canonical_json_bytes  # noqa: E402
+from github_collection_index import write_collection_index  # noqa: E402
 from github_ingest_packets import (  # noqa: E402
     PackagePacketInput,
+    RefPacketInput,
     build_ingest_packet,
+    build_ref_ingest_packet,
     load_packet_summary,
     publish_queued_packet,
 )
@@ -23,6 +27,8 @@ from github_validation import inspect_github, validate_github  # noqa: E402
 from github_work_items import (  # noqa: E402
     PacketStatusSummary,
     PackageChange,
+    RefChange,
+    build_ref_work_item,
     build_work_item,
     publish_evidence_attachment,
     evidence_attachment_required_reading,
@@ -374,6 +380,23 @@ default_required_roots=[""" + roots + "]\n" + historical_policy + """default_gen
         report = inspect_github(self.root)
 
         self.assertEqual([], validate_github(report))
+
+    def test_collection_index_is_validated_with_registry_and_queue(self):
+        repos = load_registry(self.root / "tracking/github/repo-registry.toml")
+        write_collection_index(
+            self.root,
+            repos,
+            (self.work_item,),
+            {},
+            date(2026, 8, 3),
+        )
+        self.assertEqual([], validate_github(inspect_github(self.root)))
+
+        (self.root / "tracking/github/collection-index.md").write_text(
+            "stale\n", encoding="utf-8"
+        )
+        errors = validate_github(inspect_github(self.root))
+        self.assertIn("tracking/github/collection-index.md is stale", errors)
 
     def test_valid_packet_enabled_work_item_has_no_errors(self):
         self.enable_packet()
@@ -789,6 +812,121 @@ default_required_roots=[""" + roots + "]\n" + historical_policy + """default_gen
         self.write_ingested_pages()
 
         self.assertEqual([], validate_github(inspect_github(self.root)))
+
+
+class CommitGitHubValidationTests(unittest.TestCase):
+    def test_valid_commit_snapshot_ref_packet_and_work_item(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            registry = root / "tracking/github/repo-registry.toml"
+            registry.parent.mkdir(parents=True)
+            registry.write_text(
+                '''[[repos]]
+id="example/sample"
+company="example"
+url="https://github.com/example/sample"
+enabled=true
+repo_type="sample-app"
+priority="tier1"
+track="default-branch"
+version_strategy="commit"
+collection_frequency="monthly"
+
+[[repos.capsules]]
+id="sample-source"
+adapter="commit-tree-v1"
+source_id="sample"
+default_required_roots=["src"]
+include_paths=["README.md"]
+max_capsule_files=10
+max_capsule_utf8_bytes=10000
+max_packet_files=20
+max_packet_utf8_bytes=20000
+''',
+                encoding="utf-8",
+            )
+            sha = "c" * 40
+            directory = root / "raw/github/example/sample/snapshots/2026-08-03-ccccccc"
+            source = b"# Sample\n"
+            source_path = directory / "files/README.md"
+            source_path.parent.mkdir(parents=True)
+            source_path.write_bytes(source)
+            manifest = directory / "manifest.json"
+            manifest_document = {
+                "author_date": "2026-08-03T00:00:00+00:00",
+                "collected_date": "2026-08-03",
+                "commit_date": "2026-08-03T00:00:00+00:00",
+                "excluded": [],
+                "files": [
+                    {
+                        "classification_reason": "repository-context",
+                        "git_blob_oid": "d" * 40,
+                        "git_mode": "100644",
+                        "package": "sample",
+                        "path": "README.md",
+                        "purpose": "repository-context",
+                        "sha256": hashlib.sha256(source).hexdigest(),
+                        "size": len(source),
+                    }
+                ],
+                "format_version": 2,
+                "repository": "example/sample",
+                "sha": sha,
+                "triggering_refs": ["default-branch@" + sha],
+            }
+            manifest.write_bytes(canonical_json_bytes(manifest_document) + b"\n")
+            manifest_relative = manifest.relative_to(root).as_posix()
+            change = RefChange(
+                "default-branch",
+                "main",
+                "",
+                sha,
+                "default-branch@" + sha[:7],
+                "",
+                "full",
+                ("initial-commit-baseline",),
+            )
+            item = build_ref_work_item(
+                "example/sample",
+                sha,
+                "2026-08-03",
+                (change,),
+                manifest_relative,
+            )
+            config = load_registry(registry)[0]
+            packet = build_ref_ingest_packet(
+                root,
+                config,
+                item.work_item_id,
+                manifest_relative,
+                RefPacketInput("default-branch", "main", "", sha, "", "", ()),
+                "queued",
+            )
+            packet_path = publish_queued_packet(root, config, packet)
+            item = replace(
+                item,
+                state="awaiting_approval",
+                ingest_packet=packet_path.resolve().relative_to(root.resolve()).as_posix(),
+            )
+            save_work_items(root / "tracking/github/work-items.json", (item,))
+            summary = load_packet_summary(root, item.ingest_packet)
+            (root / "tracking/github/status.md").write_text(
+                render_status(
+                    (item,),
+                    {
+                        item.work_item_id: PacketStatusSummary(
+                            summary.packet_path,
+                            summary.priority,
+                            summary.required_reading_count,
+                            summary.unclassified_count,
+                            summary.evidence_gap_count,
+                        )
+                    },
+                ),
+                encoding="utf-8",
+            )
+
+            self.assertEqual([], validate_github(inspect_github(root)))
 
 
 if __name__ == "__main__":

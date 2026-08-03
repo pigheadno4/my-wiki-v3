@@ -13,9 +13,12 @@ from github_registry import RepoConfig, load_registry, validate_enabled_policy
 from github_ingest_packets import (
     PackagePacketInput,
     PacketBuildError,
+    RefPacketInput,
     build_ingest_packet,
+    build_ref_ingest_packet,
     load_packet_summary,
 )
+from github_collection_index import validate_collection_index
 from github_pilot_store import UpstreamChange
 from github_versions import parse_package_tag, parse_semver
 from github_work_items import (
@@ -84,6 +87,19 @@ _COMPARISON_FIELDS = {
     "to_version",
 }
 _COMPARISON_V2_FIELDS = _COMPARISON_FIELDS | {"upstream_changes"}
+_REF_COMPARISON_FIELDS = {
+    "changed_paths",
+    "format_version",
+    "from_sha",
+    "markdown_sha256",
+    "patch_sha256",
+    "pathspecs",
+    "ref_kind",
+    "ref_name",
+    "repository",
+    "to_sha",
+    "upstream_changes",
+}
 _UPSTREAM_CHANGE_FIELDS = {"new_path", "old_path", "status"}
 
 
@@ -239,6 +255,18 @@ def validate_github(report: GitHubReport) -> List[str]:
         queued_packets,
         errors,
     )
+    root = report.repositories.path.parents[2]
+    if (
+        (root / "tracking/github/collection-index.json").exists()
+        or (root / "tracking/github/collection-index.md").exists()
+    ):
+        errors.extend(
+            validate_collection_index(
+                root,
+                report.repositories.repositories,
+                report.work_items.items,
+            )
+        )
     return _deduplicated(errors)
 
 
@@ -506,8 +534,13 @@ def _validate_comparisons(
             continue
         document = artifact.document
         version = document.get("format_version")
+        is_ref = "ref_kind" in document
         expected_fields = (
-            _COMPARISON_V2_FIELDS if version == 2 else _COMPARISON_FIELDS
+            _REF_COMPARISON_FIELDS
+            if is_ref
+            else _COMPARISON_V2_FIELDS
+            if version == 2
+            else _COMPARISON_FIELDS
         )
         if set(document) != expected_fields or version not in (1, 2):
             errors.append(label + ": comparison manifest has unknown or missing fields")
@@ -534,6 +567,12 @@ def _validate_comparisons(
                 errors.append(label + ": comparison contains unsafe " + field)
         if version == 2:
             _validate_upstream_changes(document, label, errors)
+        if is_ref and (
+            document.get("ref_kind") != "default-branch"
+            or not isinstance(document.get("ref_name"), str)
+            or not document.get("ref_name")
+        ):
+            errors.append(label + ": comparison ref identity is invalid")
         for name in ("diff.patch", "comparison.md"):
             path = artifact.path.parent / name
             if not path.is_file() or path.is_symlink():
@@ -681,7 +720,8 @@ def _validate_packets(
             if hashlib.sha256(markdown).hexdigest() != document.get("markdown_sha256"):
                 errors.append(label + ": packet Markdown hash mismatch")
             try:
-                inputs = _packet_inputs(document)
+                is_ref_packet = isinstance(document.get("ref"), dict)
+                inputs = () if is_ref_packet else _packet_inputs(document)
                 stored_policy_hash = document.get("capsule_policy_sha256")
                 current_policy_hash = build_effective_policy(
                     config.capsules[0], (), (), ()
@@ -699,28 +739,45 @@ def _validate_packets(
                         "packet policy hash is not current or registered historical policy"
                     )
                 if kind == "ad-hoc":
-                    if len(inputs) != 1 or not inputs[0].comparison_manifest:
+                    comparison_manifest = (
+                        str(document["ref"].get("comparison_manifest", ""))
+                        if is_ref_packet
+                        else inputs[0].comparison_manifest
+                        if len(inputs) == 1
+                        else ""
+                    )
+                    if not comparison_manifest:
                         raise PacketBuildError(
                             "ad-hoc packet requires one comparison"
                         )
                     comparison_path = (
-                        root / inputs[0].comparison_manifest
+                        root / comparison_manifest
                     ).parent.resolve()
                     if comparison_path != artifact.path.parent.resolve():
                         raise PacketBuildError(
                             "ad-hoc packet comparison path mismatch"
                         )
-                rebuilt = build_ingest_packet(
-                    root,
-                    config,
-                    str(work_item_id),
-                    str(document.get("snapshot_manifest", "")),
-                    inputs,
-                    kind,
-                    document.get("wiki_context"),
-                    document.get("expected_wiki_targets"),
-                    stored_policy_hash,
-                )
+                if is_ref_packet:
+                    rebuilt = build_ref_ingest_packet(
+                        root,
+                        config,
+                        str(work_item_id),
+                        str(document.get("snapshot_manifest", "")),
+                        _ref_packet_input(root, document),
+                        kind,
+                    )
+                else:
+                    rebuilt = build_ingest_packet(
+                        root,
+                        config,
+                        str(work_item_id),
+                        str(document.get("snapshot_manifest", "")),
+                        inputs,
+                        kind,
+                        document.get("wiki_context"),
+                        document.get("expected_wiki_targets"),
+                        stored_policy_hash,
+                    )
             except (OSError, TypeError, ValueError) as error:
                 errors.append(label + ": packet rebuild failed: " + _bounded(error))
                 continue
@@ -783,6 +840,49 @@ def _packet_inputs(document: dict) -> Tuple[PackagePacketInput, ...]:
             )
         )
     return tuple(inputs)
+
+
+def _ref_packet_input(root: Path, document: dict) -> RefPacketInput:
+    ref = document.get("ref")
+    if not isinstance(ref, dict):
+        raise PacketBuildError("packet ref is invalid")
+    comparison_manifest = str(ref.get("comparison_manifest", ""))
+    upstream = ()
+    if comparison_manifest:
+        comparison_path = root / comparison_manifest
+        try:
+            comparison = json.loads(comparison_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            raise PacketBuildError("ref comparison is unreadable") from error
+        upstream = _upstream_rows(comparison.get("upstream_changes"))
+    excluded_rows = document.get("excluded_changes", [])
+    if not isinstance(excluded_rows, list):
+        raise PacketBuildError("packet excluded changes must be an array")
+    excluded = _upstream_rows(excluded_rows)
+    return RefPacketInput(
+        str(ref.get("ref_kind", "")),
+        str(ref.get("ref_name", "")),
+        str(ref.get("from_sha", "")),
+        str(ref.get("to_sha", "")),
+        comparison_manifest,
+        str(ref.get("prior_snapshot_manifest", "")),
+        upstream,
+        excluded,
+    )
+
+
+def _upstream_rows(rows: object) -> Tuple[UpstreamChange, ...]:
+    if not isinstance(rows, list):
+        raise PacketBuildError("packet upstream changes must be an array")
+    changes = []
+    for row in rows:
+        if not isinstance(row, dict):
+            raise PacketBuildError("packet upstream change row is invalid")
+        values = tuple(row.get(key) for key in ("status", "old_path", "new_path"))
+        if not all(isinstance(value, str) for value in values):
+            raise PacketBuildError("packet upstream change row is invalid")
+        changes.append(UpstreamChange(*values))
+    return tuple(changes)
 
 
 def _validate_work_items(
@@ -902,6 +1002,28 @@ def _validate_work_items(
                     or document.get("to_sha") != item.sha
                 ):
                     errors.append(item.work_item_id + ": work-item comparison identity mismatch")
+        for change in item.ref_changes:
+            if change.comparison_manifest and change.comparison_manifest not in comparison_paths:
+                errors.append(
+                    item.work_item_id
+                    + ": missing comparison manifest "
+                    + change.display_identity
+                )
+            elif change.comparison_manifest:
+                comparison = comparisons.get(change.comparison_manifest)
+                document = comparison.document if comparison is not None else None
+                if document is not None and (
+                    document.get("repository") != item.repo_id
+                    or document.get("ref_kind") != change.ref_kind
+                    or document.get("ref_name") != change.ref_name
+                    or document.get("from_sha") != change.from_sha
+                    or document.get("to_sha") != change.to_sha
+                    or document.get("to_sha") != item.sha
+                ):
+                    errors.append(
+                        item.work_item_id
+                        + ": work-item ref comparison identity mismatch"
+                    )
         if item.state != "ingested":
             continue
         repo = repos.get(item.repo_id)
@@ -941,6 +1063,27 @@ def _validate_work_items(
                     item.work_item_id
                     + ": changelog omits raw evidence link for "
                     + change.release_id
+                )
+        for change in item.ref_changes:
+            if change.display_identity not in changelog.text:
+                errors.append(
+                    item.work_item_id
+                    + ": changelog omits ref identity "
+                    + change.display_identity
+                )
+            required = tuple(
+                path
+                for path in (
+                    item.snapshot_manifest,
+                    change.comparison_manifest,
+                )
+                if path
+            )
+            if any(path not in changelog.text for path in required):
+                errors.append(
+                    item.work_item_id
+                    + ": changelog omits raw evidence link for "
+                    + change.display_identity
                 )
     for path in sorted(set(queued_packets) - referenced_packets):
         errors.append(path + ": queued packet has no work item")
