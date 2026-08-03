@@ -184,6 +184,91 @@ class RegistryTests(unittest.TestCase):
             validate_enabled_policy(no_capsule),
         )
 
+    def test_enabled_commit_repository_requires_default_branch_commit_policy(self):
+        commit_capsule = CapsuleConfig(
+            id="sample-source",
+            adapter="commit-tree-v1",
+            source_id="sample",
+            dependency_scope="configured-repository-paths",
+            changed_path_policy="policy-bounded",
+        )
+        valid = self.repo(
+            id="paypal-examples/sample",
+            url="https://github.com/paypal-examples/sample",
+            track="default-branch",
+            version_strategy="commit",
+            capsules=(commit_capsule,),
+        )
+
+        self.assertEqual([], validate_enabled_policy(valid))
+
+        invalid_rows = (
+            (
+                self.repo(
+                    id="paypal-examples/sample",
+                    url="https://github.com/paypal-examples/sample",
+                    version_strategy="commit",
+                    capsules=(commit_capsule,),
+                ),
+                "default-branch tracking",
+            ),
+            (
+                self.repo(
+                    id="paypal-examples/sample",
+                    url="https://github.com/paypal-examples/sample",
+                    track="default-branch",
+                    version_strategy="commit",
+                    version_tracks=(VersionTrack("package:sample@1", "none", "none"),),
+                    capsules=(commit_capsule,),
+                ),
+                "must not define version tracks",
+            ),
+            (
+                self.repo(
+                    id="paypal-examples/sample",
+                    url="https://github.com/paypal-examples/sample",
+                    track="default-branch",
+                    version_strategy="commit",
+                ),
+                "exactly one commit capsule",
+            ),
+            (
+                self.repo(
+                    id="paypal-examples/sample",
+                    url="https://github.com/paypal-examples/sample",
+                    track="default-branch",
+                    version_strategy="commit",
+                    capsules=(CapsuleConfig(
+                        id="release-source",
+                        adapter="npm-tracked-source-v1",
+                        focus_packages=("sample",),
+                    ),),
+                ),
+                "commit-tree-v1 capsule",
+            ),
+            (
+                self.repo(
+                    id="paypal-examples/sample",
+                    url="https://github.com/paypal-examples/sample",
+                    track="default-branch",
+                    version_strategy="commit",
+                    capsules=(CapsuleConfig(
+                        id="commit-source",
+                        adapter="commit-tree-v1",
+                        dependency_scope="configured-repository-paths",
+                    ),),
+                ),
+                "safe source_id",
+            ),
+        )
+
+        for repo, message in invalid_rows:
+            with self.subTest(message=message):
+                self.assertTrue(
+                    any(message in error for error in validate_enabled_policy(repo)),
+                    validate_enabled_policy(repo),
+                )
+
     def test_registry_loads_immutable_nested_version_tracks_in_order(self):
         path = self.write_registry(
             '[[repos]]\n'
