@@ -33,7 +33,7 @@ APPENDIX_A_INVENTORY = (
     ('paypal/paypal-messages-android', 'https://github.com/paypal/paypal-messages-android', 'messaging-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('paypal/paypal-sdk-logos', 'https://github.com/paypal/paypal-sdk-logos', 'assets', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('paypal/paypal-rest-api-specifications', 'https://github.com/paypal/paypal-rest-api-specifications', 'api-specification', 'tier1', 'commit', False, 'default-branch', 'monthly'),
-    ('paypal-examples/v6-web-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-sample-integration', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
+    ('paypal-examples/v6-web-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-sample-integration', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
     ('paypal-examples/paypal-android-sdk-demo-app', 'https://github.com/paypal-examples/paypal-android-sdk-demo-app', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
     ('paypal-examples/paypal-sdk-server-side-integration', 'https://github.com/paypal-examples/paypal-sdk-server-side-integration', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
@@ -1247,14 +1247,14 @@ class RegistryTests(unittest.TestCase):
         )
         self.assertEqual(APPENDIX_A_INVENTORY, actual)
 
-    def test_paypal_v6_sample_has_complete_disabled_commit_policy(self):
+    def test_paypal_v6_sample_has_reviewed_enabled_commit_policy(self):
         repos = {
             repo.id: repo
             for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
         }
         repo = repos["paypal-examples/v6-web-sdk-sample-integration"]
 
-        self.assertFalse(repo.enabled)
+        self.assertTrue(repo.enabled)
         self.assertEqual("sample-app", repo.repo_type)
         self.assertEqual("tier1", repo.priority)
         self.assertEqual("monthly", repo.collection_frequency)
@@ -1298,10 +1298,10 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
         self.assertEqual("text-secrets-v1", capsule.secret_detector)
         self.assertEqual(512000, capsule.max_file_bytes)
-        self.assertEqual(320, capsule.max_capsule_files)
-        self.assertEqual(3000000, capsule.max_capsule_utf8_bytes)
-        self.assertEqual(370, capsule.max_packet_files)
-        self.assertEqual(4000000, capsule.max_packet_utf8_bytes)
+        self.assertEqual(300, capsule.max_capsule_files)
+        self.assertEqual(1000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(320, capsule.max_packet_files)
+        self.assertEqual(1250000, capsule.max_packet_utf8_bytes)
 
 
 if __name__ == "__main__":

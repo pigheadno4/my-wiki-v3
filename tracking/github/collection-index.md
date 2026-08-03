@@ -45,7 +45,7 @@ Generated: `2026-08-03`
 | paypal | `paypal-examples/paypal-android-sdk-demo-app` | tier1 | commit | monthly | - | - | - | `disabled` |
 | paypal | `paypal-examples/paypal-ios-sdk-demo-app` | tier1 | commit | monthly | - | - | - | `disabled` |
 | paypal | `paypal-examples/paypal-sdk-server-side-integration` | tier1 | commit | monthly | - | - | - | `disabled` |
-| paypal | `paypal-examples/v6-web-sdk-sample-integration` | tier1 | commit / commit-tree-v1 | monthly | - | - | - | `disabled` |
+| paypal | `paypal-examples/v6-web-sdk-sample-integration` | tier1 | commit / commit-tree-v1 | monthly | - | - | - | `collect-baseline` |
 | paypal | `paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration` | tier1 | commit | monthly | - | - | - | `disabled` |
 | paypal | `paypal/paypal-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-07-31 | ingested | 2026-08-07 | `wait` |
 | paypal | `paypal/paypal-checkout-components` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-07-23 | ingested | 2026-07-30 | `collect-baseline` |
