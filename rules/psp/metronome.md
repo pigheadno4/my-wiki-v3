@@ -200,3 +200,26 @@ The overview may list the five endpoint pages under
 `## Related raw API references`, but those navigation-only links cannot support
 overview facts. The other three classified endpoint pages receive no native
 task and no complete read in this pilot.
+
+## Post-Campaign 12 selective-routing calibration
+
+Campaign 12 ended with `verdict = revise_routing_rule`. The metadata-only route
+for `Create a Custom Field Key` was unsafe because the sampled page uniquely
+carried required-field, durable failure, uniqueness, managed-entity, and
+invoice-propagation facts.
+
+```text
+unsafe old route = Create a Custom Field Key -> raw_reference
+corrected metadata route = Create a Custom Field Key -> semantic_triage
+observed complete-read result = source_required
+```
+
+Apply the shared endpoint rule in `rules/ingest.md`: when metadata cannot rule
+out unique durable endpoint facts, require semantic triage rather than direct
+`raw_reference` classification. This calibration does not promote every API
+endpoint; after a complete read, another endpoint may still resolve to
+`raw_reference`.
+
+Do not alter the completed Campaign 12 manifest or evidence, reclassify the
+remaining corpus, create a routing registry, or treat this calibration as
+authorization for a new campaign.

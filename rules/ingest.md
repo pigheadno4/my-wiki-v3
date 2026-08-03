@@ -27,9 +27,17 @@ page's behavior until it is read completely through the applicable query,
 triage, or ingest workflow.
 
 Metadata classification from titles, URLs, documentation hierarchy, or an
-inventory never authorizes facts from an unread page. A query may recommend
-promotion, but only user approval changes the disposition to
-`source_required`. Once approved, a missing source is queued for generation
+inventory never authorizes facts from an unread page. Before assigning
+`raw_reference`, route an endpoint to `semantic_triage` whenever metadata
+cannot rule out that it is the sole authority for required request fields;
+durable failure or propagation behavior; deletion or lifecycle semantics;
+uniqueness or idempotency constraints; or state-transition semantics. CRUD
+shape or schema-heavy content alone cannot justify `raw_reference`. A complete
+triage read may still resolve to `raw_reference` when it finds no unique
+durable facts that warrant a curated source.
+
+A query may recommend promotion, but only user approval changes the disposition
+to `source_required`. Once approved, a missing source is queued for generation
 even when the raw hash has not changed.
 
 ## Coordinator-controlled parallel-review campaign exception
