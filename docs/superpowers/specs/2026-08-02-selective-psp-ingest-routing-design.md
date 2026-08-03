@@ -1,7 +1,7 @@
 # Selective PSP Ingest Routing Design
 
 **Date:** 2026-08-02
-**Status:** User-approved design; written specification awaiting final review
+**Status:** User-approved; Campaign 12 complete; post-pilot routing amendment approved
 **Pilot:** Metronome Campaign 12
 **Future scope:** Stripe, Adyen, PayPal, Braintree, and other provider capsules
 
@@ -97,12 +97,23 @@ to build the routing list.
 - No metadata signal of cross-endpoint, lifecycle, financial, security, or
   irreversible behavior.
 
+These signals are insufficient when the endpoint is the only plausible
+authority for durable facts that future queries need. A CRUD-shaped or
+schema-heavy page does not default to `raw_reference` merely because its facts
+are expressed as request fields, validation behavior, or endpoint-local prose.
+
 ### Default `semantic_triage` signals
 
 An apparently narrow endpoint whose title suggests cancellation, reversal,
 voiding, archiving, regeneration, retry, destructive scope, or another
 potentially important side effect. High-risk ambiguity biases toward a source,
 not toward silent deferral.
+
+Also use `semantic_triage` when metadata cannot rule out that the endpoint is
+the sole authority for required request fields or durable failure,
+propagation, deletion, lifecycle, uniqueness, idempotency, or state-transition
+semantics. Triage decides whether those facts warrant `source_required`; it
+does not assume that every endpoint needs a source.
 
 ## Routing authority
 
@@ -252,6 +263,49 @@ The pilot passes only when:
    comparison with earlier campaigns.
 
 Elapsed time is an observed outcome, not a reason to waive the quality gate.
+
+## Campaign 12 outcome and routing amendment
+
+Campaign 12 validated the layered ingest architecture but rejected the initial
+classification rule for broad provider rollout. The Custom Fields overview was
+promoted successfully, while the complete audit of `Create a Custom Field Key`
+changed its disposition from `raw_reference` to `source_required`. That page is
+the sole evidence in the sampled family for required request fields and for
+durable uniqueness, failure, managed-entity, and invoice-propagation behavior.
+The independently reviewed delete-key page also resolved to
+`source_required` because deletion makes existing values inaccessible.
+
+The correction is deliberately narrow: expand the `semantic_triage` trigger;
+do not make every API endpoint `source_required` and do not weaken complete
+source review. This amendment does not instantiate a routing registry, mutate
+the approved Campaign 12 manifest, reclassify the remaining corpus, or start a
+new ingest campaign.
+
+### Worked regression example
+
+```text
+Input metadata:
+  title = Create a Custom Field Key
+  page type = one create endpoint under an existing overview
+
+Unsafe old result:
+  raw_reference
+  reason = mechanical create endpoint dominated by request schema
+
+Required corrected result:
+  semantic_triage
+  reason = the endpoint may be the sole authority for required fields,
+           validation/failure behavior, uniqueness, or propagation semantics
+
+Observed triage result for this page:
+  source_required
+  reason = complete reading confirmed durable unique facts
+```
+
+The regression passes when the corrected rule prevents the metadata-only
+classifier from assigning `raw_reference` directly in this case. It does not
+prejudge another endpoint after triage: a page with no unique durable facts may
+still resolve to `raw_reference`.
 
 ## Multi-provider adoption
 
