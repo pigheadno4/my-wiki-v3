@@ -18,7 +18,9 @@ from github_ingest_packets import (  # noqa: E402
     IngestPacket,
     PackagePacketInput,
     PacketBuildError,
+    RefPacketInput,
     build_ingest_packet,
+    build_ref_ingest_packet,
     publish_queued_packet,
     publish_review_packet,
 )
@@ -252,6 +254,209 @@ class GitHubIngestPacketTests(unittest.TestCase):
             (package_input,),
             packet_kind,
         )
+
+    def commit_config(self):
+        return replace(
+            self.config,
+            track="default-branch",
+            version_strategy="commit",
+            capsules=(
+                CapsuleConfig(
+                    id="sample-source",
+                    adapter="commit-tree-v1",
+                    source_id="sample-integration",
+                    dependency_scope="configured-repository-paths",
+                    changed_path_policy="policy-bounded",
+                    default_required_roots=("client", "server"),
+                    max_packet_files=30,
+                    max_packet_utf8_bytes=200000,
+                ),
+            ),
+        )
+
+    def ref_comparison(self, changes):
+        directory = (
+            self.root
+            / "tracking/github/repos/acme/widgets/comparisons/default-branch/"
+            / (self.prior_sha[:7] + "--" + self.current_sha[:7])
+        )
+        patch = b"diff fixture\n"
+        markdown = b"# Ref comparison\n"
+        directory.mkdir(parents=True, exist_ok=True)
+        (directory / "diff.patch").write_bytes(patch)
+        (directory / "comparison.md").write_bytes(markdown)
+        manifest = {
+            "changed_paths": sorted(
+                {
+                    path
+                    for item in changes
+                    for path in (item.old_path, item.new_path)
+                    if path
+                }
+            ),
+            "format_version": 2,
+            "from_sha": self.prior_sha,
+            "markdown_sha256": hashlib.sha256(markdown).hexdigest(),
+            "patch_sha256": hashlib.sha256(patch).hexdigest(),
+            "pathspecs": ["client", "server"],
+            "ref_kind": "default-branch",
+            "ref_name": "main",
+            "repository": "acme/widgets",
+            "to_sha": self.current_sha,
+            "upstream_changes": [
+                {
+                    "new_path": item.new_path,
+                    "old_path": item.old_path,
+                    "status": item.status,
+                }
+                for item in changes
+            ],
+        }
+        path = directory / "comparison.json"
+        write_canonical_json(path, manifest)
+        return path
+
+    def test_ref_packet_contains_exact_commit_evidence_and_wiki_targets(self):
+        prior = self.snapshot(
+            self.prior_sha,
+            "baseline",
+            {
+                "client/button.ts": (
+                    "export const button = 1;\n",
+                    "source-capsule",
+                    "required-root",
+                    "sample-integration",
+                ),
+                "server/orders.ts": (
+                    "export const orders = 1;\n",
+                    "source-capsule",
+                    "required-root",
+                    "sample-integration",
+                ),
+            },
+            date="2026-07-27",
+        )
+        current = self.snapshot(
+            self.current_sha,
+            "current",
+            {
+                "client/button.ts": (
+                    "export const button = 2;\n",
+                    "source-capsule",
+                    "required-root",
+                    "sample-integration",
+                ),
+                "server/orders.ts": (
+                    "export const orders = 1;\n",
+                    "source-capsule",
+                    "required-root",
+                    "sample-integration",
+                ),
+            },
+            excluded=(("client/button.test.ts", "excluded-category:tests"),),
+        )
+        change = UpstreamChange("modified", "client/button.ts", "client/button.ts")
+        excluded_change = UpstreamChange(
+            "modified",
+            "client/button.test.ts",
+            "client/button.test.ts",
+        )
+        comparison = self.ref_comparison((change,))
+        packet = build_ref_ingest_packet(
+            self.root,
+            self.commit_config(),
+            "github-" + ("3" * 20),
+            self.relative(current),
+            RefPacketInput(
+                ref_kind="default-branch",
+                ref_name="main",
+                from_sha=self.prior_sha,
+                to_sha=self.current_sha,
+                comparison_manifest=self.relative(comparison),
+                prior_snapshot_manifest=self.relative(prior),
+                upstream_changes=(change,),
+                excluded_changes=(excluded_change,),
+            ),
+            "queued",
+        )
+
+        self.assertNotIn("packages", packet.document)
+        self.assertEqual("default-branch@bbbbbbb", packet.document["ref"]["display_identity"])
+        self.assertEqual("2026-07-28T00:00:00Z", packet.document["author_date"])
+        self.assertEqual("2026-07-28T00:00:00Z", packet.document["commit_date"])
+        self.assertEqual("delta", packet.document["recommendation"]["mode"])
+        self.assertEqual(["client/button.ts"], [row["path"] for row in packet.document["selected_changes"]])
+        self.assertEqual(
+            ["client/button.test.ts"],
+            [row["path"] for row in packet.document["excluded_changes"]],
+        )
+        self.assertEqual([], packet.document["evidence_gaps"])
+        self.assertEqual([], packet.document["unclassified_changes"])
+        required = packet.document["required_reading"]
+        self.assertIn(self.relative(current), required)
+        self.assertIn(self.relative(comparison), required)
+        self.assertIn(self.relative(current.parent / "files/client/button.ts"), required)
+        targets = set(packet.document["expected_wiki_targets"])
+        self.assertTrue(
+            {
+                "wiki/sources/acme/github/source-github-widgets.md",
+                "wiki/sources/acme/github/changelog-github-widgets.md",
+                "wiki/companies/acme.md",
+                "wiki/acme-index.md",
+                "wiki/acme-log.md",
+                "wiki/log.md",
+            }.issubset(targets)
+        )
+        self.assertTrue(packet.document["concept_audit_required"])
+        self.assertIn("default-branch@bbbbbbb", packet.markdown.decode("utf-8"))
+
+    def test_ref_baseline_is_full_and_reads_every_selected_file(self):
+        current = self.snapshot(
+            self.current_sha,
+            "current",
+            {
+                "client/button.ts": (
+                    "export const button = 1;\n",
+                    "source-capsule",
+                    "required-root",
+                    "sample-integration",
+                ),
+                "server/orders.ts": (
+                    "export const orders = 1;\n",
+                    "source-capsule",
+                    "required-root",
+                    "sample-integration",
+                ),
+            },
+        )
+
+        packet = build_ref_ingest_packet(
+            self.root,
+            self.commit_config(),
+            "github-" + ("4" * 20),
+            self.relative(current),
+            RefPacketInput(
+                ref_kind="default-branch",
+                ref_name="main",
+                from_sha="",
+                to_sha=self.current_sha,
+                comparison_manifest="",
+                prior_snapshot_manifest="",
+                upstream_changes=(),
+            ),
+            "queued",
+        )
+
+        self.assertEqual("full", packet.document["recommendation"]["mode"])
+        self.assertIn(
+            "initial-commit-baseline",
+            packet.document["recommendation"]["reasons"],
+        )
+        for path in ("client/button.ts", "server/orders.ts"):
+            self.assertIn(
+                self.relative(current.parent / "files" / path),
+                packet.document["required_reading"],
+            )
 
     def test_retained_diff_accounts_for_rename_without_false_add_remove(self):
         prior = {

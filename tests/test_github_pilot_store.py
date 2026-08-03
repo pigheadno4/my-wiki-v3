@@ -23,6 +23,7 @@ from github_pilot_store import (  # noqa: E402
     publish_source_supplement,
     read_upstream_changes,
     write_package_comparison,
+    write_ref_comparison,
 )
 from github_registry import RepoConfig  # noqa: E402
 from github_releases import ReleaseCandidate, ReleaseNotesEvidence  # noqa: E402
@@ -92,6 +93,30 @@ class GitHubPilotStoreTests(unittest.TestCase):
             focus_packages=("@scope/widget",),
             default_required_roots=("src",),
             default_generated_target_paths=(),
+        )
+
+    def commit_config(self):
+        return RepoConfig(
+            id="paypal-examples/v6-web-sdk-sample-integration",
+            company="paypal",
+            url="https://github.com/paypal-examples/v6-web-sdk-sample-integration",
+            enabled=True,
+            repo_type="sample-app",
+            priority="tier1",
+            track="default-branch",
+            version_strategy="commit",
+            capsules=(
+                CapsuleConfig(
+                    id="paypal-v6-sample-source",
+                    adapter="commit-tree-v1",
+                    source_id="v6-web-sdk-sample-integration",
+                    dependency_scope="configured-repository-paths",
+                    changed_path_policy="policy-bounded",
+                    default_required_roots=("client", "server"),
+                    max_packet_files=30,
+                    max_packet_utf8_bytes=200000,
+                ),
+            ),
         )
 
     def test_same_sha_reuses_one_source_snapshot(self):
@@ -458,6 +483,101 @@ class GitHubPilotStoreTests(unittest.TestCase):
             ],
             metadata["upstream_changes"],
         )
+
+    def test_ref_comparison_is_commit_qualified_idempotent_and_conflict_safe(self):
+        from_sha = commit_files(
+            self.repo,
+            {
+                "client/checkout.ts": "export const checkout = 1;\n",
+                "client/old.ts": "export const renamed = true;\n",
+                "server/deleted.ts": "export const removed = true;\n",
+                "tests/excluded.test.ts": "old test\n",
+            },
+            "add commit comparison fixture",
+        )
+        (self.repo / "client/old.ts").rename(self.repo / "client/new.ts")
+        (self.repo / "server/deleted.ts").unlink()
+        (self.repo / "client/checkout.ts").write_text(
+            "export const checkout = 2;\n", encoding="utf-8"
+        )
+        (self.repo / "client/added.ts").write_text(
+            "export const added = true;\n", encoding="utf-8"
+        )
+        (self.repo / "tests/excluded.test.ts").write_text(
+            "new test\n", encoding="utf-8"
+        )
+        subprocess.run(["git", "add", "-A"], cwd=self.repo, check=True, capture_output=True)
+        subprocess.run(
+            ["git", "commit", "-m", "change selected commit evidence"],
+            cwd=self.repo,
+            check=True,
+            capture_output=True,
+        )
+        to_sha = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=self.repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        selected_from = ("client/checkout.ts", "client/old.ts", "server/deleted.ts")
+        selected_to = ("client/added.ts", "client/checkout.ts", "client/new.ts")
+
+        first = write_ref_comparison(
+            self.root,
+            self.commit_config(),
+            self.repo,
+            "main",
+            from_sha,
+            selected_from,
+            to_sha,
+            selected_to,
+        )
+        first_bytes = tuple(
+            path.read_bytes()
+            for path in (first.patch_path, first.metadata_path, first.markdown_path)
+        )
+        second = write_ref_comparison(
+            self.root,
+            self.commit_config(),
+            self.repo,
+            "main",
+            from_sha,
+            selected_from,
+            to_sha,
+            selected_to,
+        )
+        metadata = json.loads(first.metadata_path.read_text(encoding="utf-8"))
+
+        self.assertEqual("default-branch", metadata["ref_kind"])
+        self.assertEqual("main", metadata["ref_name"])
+        self.assertNotIn("package", metadata)
+        self.assertNotIn("from_version", metadata)
+        self.assertNotIn("tests/excluded.test.ts", metadata["changed_paths"])
+        self.assertEqual(first.metadata_path.parent, second.metadata_path.parent)
+        self.assertEqual(
+            first_bytes,
+            tuple(path.read_bytes() for path in (second.patch_path, second.metadata_path, second.markdown_path)),
+        )
+        self.assertIn(
+            "comparisons/default-branch/" + from_sha[:7] + "--" + to_sha[:7],
+            first.metadata_path.as_posix(),
+        )
+
+        metadata["ref_name"] = "trunk"
+        write_canonical = canonical_json_bytes(metadata) + b"\n"
+        first.metadata_path.write_bytes(write_canonical)
+        with self.assertRaisesRegex(PilotStoreError, "conflicts"):
+            write_ref_comparison(
+                self.root,
+                self.commit_config(),
+                self.repo,
+                "main",
+                from_sha,
+                selected_from,
+                to_sha,
+                selected_to,
+            )
 
     def test_comparison_accepts_zero_padded_rename_similarity(self):
         output = (
