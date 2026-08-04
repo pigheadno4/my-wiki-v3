@@ -1303,6 +1303,44 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(320, capsule.max_packet_files)
         self.assertEqual(1900000, capsule.max_packet_utf8_bytes)
 
+    def test_paypal_server_side_sample_has_reviewed_disabled_commit_policy(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["paypal-examples/paypal-sdk-server-side-integration"]
+
+        self.assertFalse(repo.enabled)
+        self.assertEqual("sample-app", repo.repo_type)
+        self.assertEqual("tier1", repo.priority)
+        self.assertEqual("monthly", repo.collection_frequency)
+        self.assertEqual("default-branch", repo.track)
+        self.assertEqual("commit", repo.version_strategy)
+        self.assertEqual((), repo.version_tracks)
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("commit-tree-v1", capsule.adapter)
+        self.assertEqual("paypal-sdk-server-side-integration", capsule.source_id)
+        self.assertEqual((), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(
+            ("docs", "public", "src"),
+            capsule.default_required_roots,
+        )
+        self.assertEqual(
+            ("README.md", "example.env", "package.json", "tsconfig.json"),
+            capsule.include_paths,
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(50, capsule.max_capsule_files)
+        self.assertEqual(250000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(60, capsule.max_packet_files)
+        self.assertEqual(500000, capsule.max_packet_utf8_bytes)
+
 
 if __name__ == "__main__":
     unittest.main()
