@@ -278,6 +278,33 @@
   Release: [manifest](raw/github/paypal/paypal-js/releases/paypal-js/8.4.2/2026-07-22/manifest.json)
   Comparison: Not applicable
 
+## `github-849ba0a66c8ae04ad9da`
+
+- Repository: `paypal-examples/paypal-sdk-server-side-integration`
+- SHA: `5409a3b9c0b6d0049fc3be9386092759fd6a1d5c`
+- Collection date: `2026-08-04`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/paypal/paypal-sdk-server-side-integration/snapshots/2026-08-04-5409a3b/manifest.json)
+- Packet: [review packet](tracking/github/repos/paypal/paypal-sdk-server-side-integration/ingest-packets/github-849ba0a66c8ae04ad9da/packet.md)
+- Review priority: `high`
+- Required reading: `41` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@5409a3b` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `5409a3b9c0b6d0049fc3be9386092759fd6a1d5c`
+  Comparison: Not applicable
+
 ## `github-88d13a8f0c219387aab4`
 
 - Repository: `braintree/braintree-web-drop-in`
