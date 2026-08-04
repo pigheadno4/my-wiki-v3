@@ -176,6 +176,33 @@
   Release: [manifest](raw/github/paypal/paypal-ios/releases/paypal-ios/2.0.1/2026-07-31/manifest.json)
   Comparison: Not applicable
 
+## `github-6403ae7181617adc4020`
+
+- Repository: `paypal-examples/v6-web-sdk-sample-integration`
+- SHA: `b5f2df209b0bfd10b1a3cde600088ddf21e43523`
+- Collection date: `2026-08-04`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/manifest.json)
+- Packet: [review packet](tracking/github/repos/paypal/v6-web-sdk-sample-integration/ingest-packets/github-6403ae7181617adc4020/packet.md)
+- Review priority: `high`
+- Required reading: `262` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@b5f2df2` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `b5f2df209b0bfd10b1a3cde600088ddf21e43523`
+  Comparison: Not applicable
+
 ## `github-7ecc6c2199897656ffe3`
 
 - Repository: `stripe/stripe-ios`
