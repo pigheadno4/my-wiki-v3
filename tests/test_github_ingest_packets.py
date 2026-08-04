@@ -645,6 +645,69 @@ class GitHubIngestPacketTests(unittest.TestCase):
             all("package.json" not in path for path in package["required_reading"])
         )
 
+    def test_commit_web_and_environment_files_have_stable_classifications(self):
+        config = RepoConfig(
+            id="acme/widgets",
+            company="acme",
+            url="https://github.com/acme/widgets",
+            enabled=True,
+            repo_type="sample-app",
+            priority="tier1",
+            track="default-branch",
+            version_strategy="commit",
+            capsules=(
+                CapsuleConfig(
+                    id="widget-sample",
+                    adapter="commit-tree-v1",
+                    source_id="widgets",
+                    dependency_scope="configured-repository-paths",
+                    changed_path_policy="policy-bounded",
+                    default_required_roots=("client",),
+                    max_packet_files=30,
+                    max_packet_utf8_bytes=200000,
+                ),
+            ),
+        )
+        snapshot = self.snapshot(
+            self.current_sha,
+            "",
+            {
+                ".env.sample": ("CLIENT_ID=example\n", "source-capsule", "include-path", "widgets"),
+                "client/.npmrc": ("engine-strict=true\n", "source-capsule", "required-root", "widgets"),
+                "client/.nvmrc": ("22\n", "source-capsule", "required-root", "widgets"),
+                "client/index.html": ("<main></main>\n", "source-capsule", "required-root", "widgets"),
+                "client/styles.css": ("main { display: block; }\n", "source-capsule", "required-root", "widgets"),
+            },
+        )
+
+        packet = build_ref_ingest_packet(
+            self.root,
+            config,
+            "github-" + ("4" * 20),
+            self.relative(snapshot),
+            RefPacketInput(
+                "default-branch",
+                "main",
+                "",
+                self.current_sha,
+                "",
+                "",
+                (),
+            ),
+            "queued",
+        )
+
+        classified = {
+            row["path"]: row["classification"]
+            for row in packet.document["selected_changes"]
+        }
+        self.assertEqual("runtime-configuration", classified[".env.sample"])
+        self.assertEqual("build-configuration", classified["client/.npmrc"])
+        self.assertEqual("build-configuration", classified["client/.nvmrc"])
+        self.assertEqual("public-source", classified["client/index.html"])
+        self.assertEqual("public-source", classified["client/styles.css"])
+        self.assertEqual([], packet.document["unclassified_changes"])
+
     def test_typescript_config_is_classified_as_build_configuration(self):
         prior = {
             "package.json": self.manifest_content("10.0.0"),

@@ -34,11 +34,13 @@ _SOURCE_SUFFIXES = (
     ".c",
     ".cc",
     ".cpp",
+    ".css",
     ".cs",
     ".go",
     ".graphql",
     ".h",
     ".hpp",
+    ".html",
     ".java",
     ".js",
     ".jsx",
@@ -1085,6 +1087,10 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "repository-context"
     if filename == "package.json":
         return "package-manifest"
+    if filename in (".env.example", ".env.sample"):
+        return "runtime-configuration"
+    if filename in (".npmrc", ".nvmrc"):
+        return "build-configuration"
     if filename == "tsconfig.json" or (
         filename.startswith("tsconfig.") and filename.endswith(".json")
     ):
