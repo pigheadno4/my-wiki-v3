@@ -30,6 +30,13 @@ Non-card, non-PayPal-wallet payment options that PayPal supports for checkout. C
 - **Direct**: no redirect; payment completed inline (Apple Pay, Google Pay, Pay upon Invoice)
 - **Redirect**: payer sent to external bank/provider to authorize, then returned to merchant
 
+## v6 Sample Completion Boundary
+
+The `default-branch@b5f2df2` v6 sample catalog contains 46 local-method implementations. Most newer examples pass `ORDER_COMPLETE_ON_PAYMENT_APPROVAL` and retrieve the resulting order, while Bancontact, BLIK, EPS, iDEAL, P24, and SEPA explicitly capture in `onApprove`.
+
+> [!warning] Contradiction - shared sample guidance
+> The repository's shared local-method README describes auto-completion as universal, but those six retained implementations use explicit capture. Determine completion behavior from the exact method implementation and current product documentation rather than applying one repository-wide rule.
+
 ## Swish (Sweden) — Added Nov 2025
 
 > [!info] Not in APM overview table
@@ -182,6 +189,7 @@ All APMs use these 5 core webhooks: `CHECKOUT.ORDER.APPROVED`, `CHECKOUT.PAYMENT
 - [[source-paypal-apm-crypto]] — Pay with Crypto (US merchants, global buyers): ~100 cryptos, auto local-currency settlement, refunds in PYUSD, no PayPal account needed
 - [[source-paypal-apm-pay-upon-invoice]] — Pay upon Invoice/Ratepay (Germany): BNPL, 5–2500 EUR, immediate merchant funding, VAT ID required, date of birth collected, 10-day dispute window
 - [[source-paypal-apm-google-pay]] — Google Pay: 36 countries, all browsers, dual SDK, `confirmOrder`/`initiatePayerAction`, Japan PAN_ONLY override
+- [[source-github-v6-web-sdk-sample-integration]] — v6 session constructors, eligibility checks, sandbox examples, and completion discrepancy
 - [[source-paypal-apm-eps]] — EPS (Austria/EUR): same restrictions as Bancontact/BLIK (capture-only, no chargebacks, global ex RU/JP/BR)
 - [[source-paypal-apm-blik]] — BLIK (Poland/PLN): same restrictions as Bancontact (capture-only, no chargebacks, global ex RU/JP/BR)
 - [[source-paypal-apm-bancontact]] — Bancontact (Belgium): capture-only, no chargebacks, JS SDK integration (single/multi-page), Progressive Onboarding not supported for APMs

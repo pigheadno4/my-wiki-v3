@@ -51,6 +51,8 @@ In `@paypal/react-paypal-js@10.1.0`, the hook fails loudly when Google's `pay.js
 
 `confirmOrder()` returns `status: PAYER_ACTION_REQUIRED` → call `initiatePayerAction({ orderId })` → check `orderResponse.payment_source.google_pay.card.authentication_result.liability_shift` → capture if acceptable.
 
+At `default-branch@b5f2df2`, the sample does not await `initiatePayerAction()` inside Google's `onPaymentAuthorized` callback. It first returns `transactionState: "SUCCESS"` so the Google Pay sheet closes, then starts 3DS and retrieves `paymentSource.googlePay.card.authenticationResult`. The sample always captures afterward; production code may instead gate capture on the returned authentication and liability-shift values.
+
 ## Comparison with Apple Pay (via PayPal)
 
 | | Google Pay | Apple Pay |
@@ -73,3 +75,4 @@ Production onboarding: `paypal.com/bizsignup/add-product?product=payment_methods
 
 - [[source-paypal-apm-google-pay]] — Full integration guide: dual SDK, `confirmOrder`/`initiatePayerAction`, Japan PAN_ONLY override, 38 test cards across 5 countries
 - [[source-github-paypal-js]] — package-qualified Google Pay v6 types, React hook, and native-button implementation
+- [[source-github-v6-web-sdk-sample-integration]] — runnable Google Pay and post-sheet 3DS orchestration

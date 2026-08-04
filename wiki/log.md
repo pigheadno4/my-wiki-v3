@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-08-04] ingest | GitHub paypal-examples/v6-web-sdk-sample-integration - `default-branch@b5f2df2`
+
+- Full serial ingest of `github-6403ae7181617adc4020` from exact SHA `b5f2df209b0bfd10b1a3cde600088ddf21e43523` after reading and hash-verifying all 262 required paths.
+- Preserved the legacy `dd9ef8a` review, migrated the cumulative source to the PayPal/GitHub hierarchy, and created a separate commit-qualified changelog.
+- Added current HTML, React, Node, Fastlane, wallet, vault, subscription, and expanded local-method sample evidence while retaining merchant eligibility as an external boundary.
+- Recorded the contradiction between universal local-method auto-completion guidance and six explicit-capture implementations.
+
 ## [2026-08-02] ingest | GitHub Adyen/adyen-node-api-library - `@adyen/api-library@32.0.0`
 
 - Full serial ingest of `github-2957d7d341f9f6cb5ecc` from exact SHA `99d1a0cf69c8660952baffd1437b00aae2fa4f23` after reading and hash-verifying all 548 packet paths plus the approved notification supplement.

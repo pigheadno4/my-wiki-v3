@@ -39,6 +39,12 @@ These paths use `BraintreePayPalProvider`, a Braintree client token, and `paypal
 5. Merchant stores the payment token ID (`vault_id`)
 6. For each recurring charge: `ordersCreate` with `vault_id` + `stored_credential`
 
+### v6 sample server boundary at `b5f2df2`
+
+The current sample implements PayPal and card save-without-purchase by creating a setup token, collecting browser approval, and upgrading it with `VaultController.createPaymentToken()`. The resulting long-lived token is passed to a placeholder database function and deliberately not returned to the browser. Purchase-with-vault examples separately set `storeInVault: ON_SUCCESS` for PayPal and Apple Pay orders.
+
+This is orchestration evidence, not a production token store: `savePaymentTokenToDatabase()` remains unimplemented in the sample.
+
 ### Version 10.0.1 package evidence
 
 `@paypal/paypal-js@10.0.1` adds optional `vaultSetupToken` to the legacy Buttons `OnApproveData` type. Its expanded `createVaultSetupToken` JSDoc covers PayPal and Venmo vault-without-purchase: return a server-created Vault API setup token, using `payment_source.venmo` for Venmo. In these flows, `onApprove` returns `data.vaultSetupToken` while `data.orderID` is empty.
@@ -328,4 +334,5 @@ The `customer.id` is a PayPal-generated identifier — store it against the paye
 - [[source-github-paypal-ios]] — cumulative native iOS evidence through `paypal-ios@2.0.1`, including v2 Result/async APIs, cancellation handling, and the no-native-Venmo enum boundary
 - [[changelog-github-paypal-ios]] — package-qualified iOS major-version and patch history
 - [[source-github-paypal-android]] — cumulative native Android evidence through `paypal-android@2.3.0`, including v2 callbacks, manual browser completion, and the native Venmo evidence boundary
+- [[source-github-v6-web-sdk-sample-integration]] — current Web SDK setup-token, payment-token, and purchase-with-vault sample paths
 - [[changelog-github-paypal-android]] — package-qualified Android major-version and `2.3.0` callback history

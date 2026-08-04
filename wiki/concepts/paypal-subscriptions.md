@@ -52,6 +52,10 @@ PREPAID = charged before delivery; POSTPAID = charged after delivery.
 
 6-step flow: create product → create plan → show plan to buyer → buyer subscribes → activate subscription → charge automatically.
 
+### v6 sample baseline at `b5f2df2`
+
+The current sample initializes `paypal-subscriptions`, requests `RECURRING_PAYMENT` eligibility, and starts `createPayPalSubscriptionPaymentSession()`. Its Node server uses `PAYPAL_SUBSCRIPTION_PLAN_ID` when supplied; otherwise it creates a sample service product, an active USD 9.99 monthly plan, and then the subscription. This is a creation and approval example, not evidence of lifecycle management, retries, cancellation, or production eligibility.
+
 ### Billing plan structure (`billing_cycles` array)
 
 - Up to **3 cycles** per plan (e.g. trial → discounted → regular)
@@ -98,3 +102,4 @@ See [[source-paypal-payment-failures]] for full error code reference.
 - [[source-paypal-subscriptions-overview]] — Subscriptions API: 6-step flow, billing plan structure, 4 pricing models, 12 customization capabilities
 - [[source-paypal-checkout-recurring-payments-module]] — Full `usage_pattern` table, billing plan constraints, setup vs purchase paths
 - [[source-paypal-checkout-save-payment-methods-recurring]] — Save payment methods for recurring: field-level RBA schema, 7 use cases, 422 errors
+- [[source-github-v6-web-sdk-sample-integration]] — runnable v6 subscription session and sample product/plan creation

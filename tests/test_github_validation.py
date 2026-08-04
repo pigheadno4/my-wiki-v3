@@ -928,6 +928,13 @@ max_packet_utf8_bytes=20000
 
             self.assertEqual([], validate_github(inspect_github(root)))
 
+            for relative in packet.document["expected_wiki_targets"]:
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text("# Ingested target\n", encoding="utf-8")
+
+            self.assertEqual([], validate_github(inspect_github(root)))
+
 
 if __name__ == "__main__":
     unittest.main()

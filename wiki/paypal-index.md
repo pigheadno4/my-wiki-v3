@@ -22,7 +22,8 @@ Operations history: [[paypal-log]]
 - [[source-stripe-paypal-custom-payment-method]] — PayPal as CPM: low-code adapter for Checkout, EU→standard PM vs global→CPM adapter decision rule (webpage, 2026-05-08)
 - [[source-stripe-subscriptions-paypal]] — PayPal subscription: Checkout + Direct API, off_session required, billing agreement ID, mandate.updated on revoke (webpage, 2026-05-13)
 - [[stripe-paypal]] — Stripe PayPal Integration: Checkout + SetupIntents, off_session critical, BAID, mandate.updated, detach cancels billing agreement
-- [[source-github-paypal-v6-samples]] — GitHub v6 sample integration: 36 files, PayPal/card/Venmo/GPay/APay/ACH/SEPA/APMs/subscriptions (github-repo, 2026-04-17)
+- [[source-github-v6-web-sdk-sample-integration]] — cumulative v6 Web SDK samples: HTML, React, Node, PayPal, Venmo, cards, Fastlane, wallets, vault, subscriptions, and 46 local methods (`dd9ef8a` → `b5f2df2`)
+- [[changelog-github-v6-web-sdk-sample-integration]] — commit-qualified sample expansion and implementation/documentation discrepancies
 - [[source-github-paypal-js-v6]] — historical GitHub SDK v6 + React v9 review; provider, hooks, Card Fields, and corrected explicit eligibility boundary (github-repo, corrected 2026-07-23)
 - [[source-npm-react-paypal-js-v9]] — @paypal/react-paypal-js v9.1.1: SDK v6 React wrapper, PayPalProvider, hooks, SSR, v8→v9 migration (npm, 2026-04-17)
 - [[source-paypal-donate-sdk]] — PayPal Donate SDK: pop-up overlay, hosted_button_id vs business param, onComplete callback (webpage, 2026-04-17)

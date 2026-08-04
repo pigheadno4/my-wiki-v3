@@ -765,6 +765,8 @@ def _validate_packets(
                         str(document.get("snapshot_manifest", "")),
                         _ref_packet_input(root, document),
                         kind,
+                        document.get("wiki_context"),
+                        document.get("expected_wiki_targets"),
                     )
                 else:
                     rebuilt = build_ingest_packet(

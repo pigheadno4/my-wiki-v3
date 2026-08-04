@@ -62,6 +62,12 @@ Required env var unique to Fastlane:
 DOMAINS=comma-separated-domains   # domains where Fastlane will be presented
 ```
 
+### v6 sample implementation at `b5f2df2`
+
+The current v6 sample loads the Fastlane component with a browser-safe client token, looks up the buyer by email, authenticates returning members, allows saved-address selection, and obtains a single-use payment token from `FastlanePaymentComponent`. The merchant server creates the order with `paymentSource.card.singleUseToken`.
+
+The sample README names `/paypal-api/checkout/orders/create`, but its code calls `/paypal-api/checkout/orders/create-order-for-card-with-single-use-token`. Use the implementation route when reproducing this exact baseline.
+
 ## Key Distinctions vs PayPal Checkout / Vault
 
 | Aspect | Fastlane | PayPal Checkout | PayPal Vault |
@@ -79,3 +85,4 @@ DOMAINS=comma-separated-domains   # domains where Fastlane will be presented
 ## Sources
 
 - [[source-paypal-fastlane-getting-started]] — How Fastlane works: guest/member flows, swimlane diagram, Node.js setup
+- [[source-github-v6-web-sdk-sample-integration]] — current browser-token, identity, address, and single-use-token sample

@@ -6,6 +6,15 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-04] ingest | paypal-examples/v6-web-sdk-sample-integration `default-branch@b5f2df2`
+
+- Approved and processed work item `github-6403ae7181617adc4020` in full mode after serial review of all 262 required paths totaling 1,585,894 bytes.
+- Hash-verified the 257-file, 854,493-byte immutable snapshot at `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/manifest.json`; three tests, seven images, and one lockfile were excluded by policy.
+- Preserved the April 2026 `dd9ef8a` review, moved the cumulative source into the canonical PayPal/GitHub hierarchy, and added a separate `dd9ef8a` to `b5f2df2` changelog.
+- Added React v10.1.0 multi-flow, Fastlane, Google Pay 3DS, Apple Pay vaulting, expanded server routes, and 46 local-method implementations.
+- Recorded that six local-method implementations explicitly capture despite the shared README's universal auto-completion claim, and kept merchant eligibility outside the sample's evidence boundary.
+- Updated [[paypal-checkout]], [[paypal-apm]], [[paypal-fastlane]], [[paypal-google-pay]], [[paypal-apple-pay]], [[paypal-vault]], and [[paypal-subscriptions]].
+
 ## [2026-07-31] ingest | paypal/paypal-android `2.3.0`
 
 - Approved and processed work item `github-c2ebe224d536e16acded` in full mode.

@@ -81,6 +81,12 @@ PayPal supports deep-linking into the native PayPal mobile app. Requires `appSwi
 - **Web components**: `<paypal-button>`, `<paypal-pay-later-button>`, `<paypal-credit-button>`
 - **Security**: NEVER pass item total from browser; validate order on server before capture
 
+### Current v6 sample baseline at `b5f2df2`
+
+The `paypal-examples/v6-web-sdk-sample-integration` baseline combines static JavaScript, React/TypeScript, and Node.js examples. The standard PayPal flow fetches a server-owned client ID, checks PayPal, Pay Later, and Credit eligibility separately, starts the selected session with an unresolved create-order promise to preserve browser transient activation, and captures on approval.
+
+The React sample uses `@paypal/react-paypal-js@10.1.0` through `/sdk-v6` and explicitly sets `environment="sandbox"`, matching the v10 requirement below. Its dropdown gates Venmo, Pay Later, and Credit with `useEligibleMethods()` while retaining PayPal and guest card choices. These examples establish integration shape, not merchant or regional eligibility.
+
 ### Historical checkout-components runtime: `4.1.47`
 
 The exact `@paypal/checkout-components@4.1.47` snapshot implements the Zoid-based `paypal-buttons` and `paypal-checkout` components. Its decorated `createOrder` callback must return a nonempty string order ID. The alternative billing-agreement path is mutually exclusive with `createOrder` and requires `vault=true`.
@@ -146,5 +152,6 @@ See [[source-paypal-payment-failures]] for the full 19 error codes and recovery 
 - [[source-paypal-js-sdk-v6-setup]] — JS SDK v6 canonical setup: script URLs, clientToken 15min expiry, 8 components, eligibility API, Pay Later/Credit sessions, web components
 - [[source-github-paypal-checkout-components]] — historical checkout presentation, callback, funding eligibility, and Venmo runtime evidence
 - [[source-github-paypal-js]] — cumulative package-qualified repository evidence and exact source snapshots
+- [[source-github-v6-web-sdk-sample-integration]] — current runnable v6 HTML, React, and Node integration baseline
 - [[paypal-braintree-integration]] — Braintree client-token, nonce, and server-processing boundary for PayPal v6 React flows
 - [[source-paypal-security-guidelines]] — Security guidelines: CSP + SRI for SDK; load only from official CDN; validate payment events server-side before fulfilling

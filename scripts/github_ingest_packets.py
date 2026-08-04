@@ -314,6 +314,8 @@ def build_ref_ingest_packet(
     snapshot_manifest: str,
     ref_input: RefPacketInput,
     packet_kind: str,
+    wiki_context_override: Optional[Sequence[str]] = None,
+    expected_wiki_targets_override: Optional[Sequence[str]] = None,
 ) -> IngestPacket:
     """Build one canonical review packet for exact default-branch evidence."""
     root = Path(root).resolve()
@@ -411,7 +413,19 @@ def build_ref_ingest_packet(
                 str(comparison_path.parent / "diff.patch"),
             )
         )
-    wiki_context, expected_targets = _ref_wiki_paths(root, config)
+    if (wiki_context_override is None) != (
+        expected_wiki_targets_override is None
+    ):
+        raise PacketBuildError("wiki generation context override is incomplete")
+    if wiki_context_override is None:
+        wiki_context, expected_targets = _ref_wiki_paths(root, config)
+    else:
+        wiki_context, expected_targets = _validate_ref_wiki_paths(
+            root,
+            config,
+            wiki_context_override,
+            expected_wiki_targets_override or (),
+        )
     required.update(wiki_context)
     required_reading = tuple(sorted(required))
     _enforce_packet_budget(root, config.capsules[0], required_reading)
@@ -1577,6 +1591,29 @@ def _validate_wiki_paths(
         or len(stored_expected) != len(set(stored_expected))
         or set(stored_context) & set(stored_expected)
         or (stored != canonical and stored != legacy)
+    ):
+        raise PacketBuildError("wiki generation context is invalid")
+    for path in stored_context:
+        _resolve_file(root, path)
+    return stored_context, stored_expected
+
+
+def _validate_ref_wiki_paths(
+    root: Path,
+    config: RepoConfig,
+    context: Sequence[str],
+    expected: Sequence[str],
+) -> Tuple[Tuple[str, ...], Tuple[str, ...]]:
+    stored_context = tuple(context)
+    stored_expected = tuple(expected)
+    _, canonical_targets = _ref_wiki_paths(root, config)
+    canonical_context = tuple(
+        path for path in canonical_targets if path in set(stored_context)
+    )
+    if (
+        stored_expected != canonical_targets
+        or stored_context != canonical_context
+        or len(stored_context) != len(set(stored_context))
     ):
         raise PacketBuildError("wiki generation context is invalid")
     for path in stored_context:
