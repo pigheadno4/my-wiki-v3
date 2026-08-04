@@ -63,7 +63,7 @@ self.assertEqual(512000, capsule.max_file_bytes)
 self.assertEqual(50, capsule.max_capsule_files)
 self.assertEqual(250000, capsule.max_capsule_utf8_bytes)
 self.assertEqual(60, capsule.max_packet_files)
-self.assertEqual(500000, capsule.max_packet_utf8_bytes)
+self.assertEqual(900000, capsule.max_packet_utf8_bytes)
 ```
 
 - [ ] **Step 2: Run the focused test and confirm it fails**
@@ -95,8 +95,10 @@ max_file_bytes=512000
 max_capsule_files=50
 max_capsule_utf8_bytes=250000
 max_packet_files=60
-max_packet_utf8_bytes=500000
+max_packet_utf8_bytes=900000
 ```
+
+This reviewed limit includes the 754,799-byte required-reading set measured during the first publication attempt and leaves 145,201 bytes of headroom for mandatory wiki context.
 
 - [ ] **Step 4: Regenerate and validate disabled state**
 
@@ -245,4 +247,3 @@ Report the work-item ID, exact SHA, selected/excluded counts and bytes, required
 - [ ] No wiki page, approval, or ingest state is created automatically.
 - [ ] Full GitHub tests and deterministic validation pass.
 - [ ] Unrelated worktree changes remain untouched.
-

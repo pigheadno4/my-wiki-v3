@@ -52,8 +52,10 @@ max_file_bytes = 512000
 max_capsule_files = 50
 max_capsule_utf8_bytes = 250000
 max_packet_files = 60
-max_packet_utf8_bytes = 500000
+max_packet_utf8_bytes = 900000
 ```
+
+The packet limit includes mandatory existing wiki context as well as repository evidence. The first publication attempt measured 754,799 required-reading bytes, including the root `wiki/log.md`; 900,000 bytes preserves 145,201 bytes of reviewed headroom.
 
 The registry stores stable policy only. Mutable SHAs, dates, failures, and work-item states remain in generated tracking files.
 

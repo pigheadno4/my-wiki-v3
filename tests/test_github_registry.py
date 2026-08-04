@@ -1339,7 +1339,7 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(50, capsule.max_capsule_files)
         self.assertEqual(250000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(60, capsule.max_packet_files)
-        self.assertEqual(500000, capsule.max_packet_utf8_bytes)
+        self.assertEqual(900000, capsule.max_packet_utf8_bytes)
 
 
 if __name__ == "__main__":
