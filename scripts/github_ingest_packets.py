@@ -1101,7 +1101,7 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "repository-context"
     if filename == "package.json":
         return "package-manifest"
-    if filename in (".env.example", ".env.sample"):
+    if filename in (".env.example", ".env.sample", "example.env"):
         return "runtime-configuration"
     if filename in (".npmrc", ".nvmrc"):
         return "build-configuration"
@@ -1158,6 +1158,12 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "translation"
     if lowered.endswith(_DOCUMENT_SUFFIXES):
         return "documentation"
+    if (
+        lowered.endswith(".json")
+        and row.get("purpose") == "source-capsule"
+        and row.get("classification_reason") == "required-root"
+    ):
+        return "public-source"
     if lowered.endswith(_SOURCE_SUFFIXES):
         return "public-source"
     return "unclassified"

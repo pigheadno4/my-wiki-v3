@@ -662,7 +662,7 @@ class GitHubIngestPacketTests(unittest.TestCase):
                     source_id="widgets",
                     dependency_scope="configured-repository-paths",
                     changed_path_policy="policy-bounded",
-                    default_required_roots=("client",),
+                    default_required_roots=("client", "src"),
                     max_packet_files=30,
                     max_packet_utf8_bytes=200000,
                 ),
@@ -673,10 +673,12 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "",
             {
                 ".env.sample": ("CLIENT_ID=example\n", "source-capsule", "include-path", "widgets"),
+                "example.env": ("CLIENT_SECRET=example\n", "source-capsule", "include-path", "widgets"),
                 "client/.npmrc": ("engine-strict=true\n", "source-capsule", "required-root", "widgets"),
                 "client/.nvmrc": ("22\n", "source-capsule", "required-root", "widgets"),
                 "client/index.html": ("<main></main>\n", "source-capsule", "required-root", "widgets"),
                 "client/styles.css": ("main { display: block; }\n", "source-capsule", "required-root", "widgets"),
+                "src/data/products.json": ('{"sku":"sample"}\n', "source-capsule", "required-root", "widgets"),
             },
         )
 
@@ -702,10 +704,12 @@ class GitHubIngestPacketTests(unittest.TestCase):
             for row in packet.document["selected_changes"]
         }
         self.assertEqual("runtime-configuration", classified[".env.sample"])
+        self.assertEqual("runtime-configuration", classified["example.env"])
         self.assertEqual("build-configuration", classified["client/.npmrc"])
         self.assertEqual("build-configuration", classified["client/.nvmrc"])
         self.assertEqual("public-source", classified["client/index.html"])
         self.assertEqual("public-source", classified["client/styles.css"])
+        self.assertEqual("public-source", classified["src/data/products.json"])
         self.assertEqual([], packet.document["unclassified_changes"])
 
     def test_typescript_config_is_classified_as_build_configuration(self):
