@@ -36,7 +36,7 @@ APPENDIX_A_INVENTORY = (
     ('paypal-examples/v6-web-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-sample-integration', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
     ('paypal-examples/paypal-android-sdk-demo-app', 'https://github.com/paypal-examples/paypal-android-sdk-demo-app', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
-    ('paypal-examples/paypal-sdk-server-side-integration', 'https://github.com/paypal-examples/paypal-sdk-server-side-integration', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
+    ('paypal-examples/paypal-sdk-server-side-integration', 'https://github.com/paypal-examples/paypal-sdk-server-side-integration', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('paypal-examples/paypal-ios-sdk-demo-app', 'https://github.com/paypal-examples/paypal-ios-sdk-demo-app', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
     ('braintree/braintree_android', 'https://github.com/braintree/braintree_android', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/braintree_ios', 'https://github.com/braintree/braintree_ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
@@ -1303,14 +1303,14 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(320, capsule.max_packet_files)
         self.assertEqual(1900000, capsule.max_packet_utf8_bytes)
 
-    def test_paypal_server_side_sample_has_reviewed_disabled_commit_policy(self):
+    def test_paypal_server_side_sample_has_reviewed_enabled_commit_policy(self):
         repos = {
             repo.id: repo
             for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
         }
         repo = repos["paypal-examples/paypal-sdk-server-side-integration"]
 
-        self.assertFalse(repo.enabled)
+        self.assertTrue(repo.enabled)
         self.assertEqual("sample-app", repo.repo_type)
         self.assertEqual("tier1", repo.priority)
         self.assertEqual("monthly", repo.collection_frequency)
