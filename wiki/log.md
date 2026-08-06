@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-08-05] ingest | GitHub paypal-examples/paypal-sdk-server-side-integration - `default-branch@5409a3b`
+
+- Full serial ingest of `github-849ba0a66c8ae04ad9da` from exact SHA `5409a3b9c0b6d0049fc3be9386092759fd6a1d5c` after reading and hash-verifying all 41 required paths.
+- Established a cumulative historical source and separate commit-qualified changelog for the September 2023 JS SDK 5.1.x sample.
+- Added server-side Orders, partner attribution, Hosted Fields, shipping, and subscription create/activate/revise evidence to existing PayPal concepts.
+- Preserved material sample defects and kept current PayPal documentation plus the newer v6 sample authoritative.
+
 ## [2026-08-04] ingest | GitHub paypal-examples/v6-web-sdk-sample-integration - `default-branch@b5f2df2`
 
 - Full serial ingest of `github-6403ae7181617adc4020` from exact SHA `b5f2df209b0bfd10b1a3cde600088ddf21e43523` after reading and hash-verifying all 262 required paths.

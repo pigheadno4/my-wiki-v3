@@ -2,7 +2,7 @@
 title: "PayPal"
 type: company
 tags: [paypal, payment-gateway, checkout, venmo, javascript-sdk, orders-api, vault, recurring-payments, payouts, disputes, reporting, agentic-commerce]
-source_count: 160
+source_count: 161
 ---
 
 ## PayPal
@@ -26,6 +26,8 @@ Client-side SDK injected via `<script>` tag. Renders payment buttons on the page
 The package-qualified v6 surface in `@paypal/paypal-js@9.8.0` supports direct instance creation with client ID or client token, conditional components for PayPal, Venmo, guest payments, messages, subscriptions, Card Fields, Apple Pay, and Google Pay, plus eligibility hydration. `@paypal/react-paypal-js@9.3.0` exposes this integration through the `/sdk-v6` subpath. In the coordinated `10.0.0` releases, both the core v6 loader and React `PayPalProvider` require an explicit `production` or `sandbox` environment; the client ID does not choose the endpoint. Core `10.0.1` adds typed v6 DOM custom elements and legacy Buttons Venmo vault-without-purchase setup-token approval data, while React `10.1.0` requires the same environment choice for server eligibility. Core `10.0.2` corrects `/sdk-v6` resolution for condition-sensitive bundlers; React `10.1.1` only relocates v5 Storybook tooling. Core `10.0.3` adds v6 Venmo save-payment types that conflict with older product availability guidance; React `10.1.2` removes the ineffective Apple Pay disabled prop and types the Messages `TEXT` logo. Core `10.1.0` rejects inherited loader environment values and changes Messages failures to empty content, while React `10.2.0` adds Braintree Messages and corrects server eligibility naming and hydration reuse. React `10.2.1` coordinates server hydration with the client eligibility hook so no-payload SSR consumers do not issue a competing fetch.
 
 The runnable `paypal-examples/v6-web-sdk-sample-integration` baseline at `b5f2df2` combines static JavaScript, React 19/TypeScript with `@paypal/react-paypal-js@10.1.0`, and a Node server. It covers standard and advanced PayPal presentation, Venmo, cards, guest checkout, Fastlane, subscriptions, vaulting, Apple Pay, Google Pay with 3DS, and 46 local-method implementations. Sample presence proves an integration contract, not merchant or regional eligibility; its local-method README also conflicts with six implementations that explicitly capture after approval.
+
+The separate `paypal-examples/paypal-sdk-server-side-integration` baseline at `5409a3b` preserves a September 2023 JS SDK 5.1.x client/server example. Its durable patterns keep credentials, OAuth tokens, catalog prices, order creation, and capture on the merchant server; add partner attribution and connected-merchant headers; reuse a capture idempotency key for one 5xx retry; and demonstrate Hosted Fields plus subscription create, activate, and revise orchestration. It is historical sample evidence with documented API-base, order-retrieval, shipping arithmetic, subscription-validation, retry-header, and TypeScript defects, not current production guidance.
 
 The independent `paypal/paypal-checkout-components` history begins with `@paypal/checkout-components@4.1.47` and now extends through `5.0.425`. The v4 runtime implemented Zoid-based Buttons and Checkout with mobile-only secondary Venmo. The accumulated v5 runtime adds separate Card Fields, Payment Fields, Hosted Buttons, Wallet, Saved Payment Methods, Venmo, and QR component boundaries; its Venmo vault-without-purchase path is experiment-gated. These package-qualified facts do not replace current availability guidance.
 
@@ -182,6 +184,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-disputes-overview]] — Disputes overview: internal (180-day window, 20-day amicable, 10-day PayPal adjudication) vs external (chargeback + ACH return); pre-chargeback alert 20-hour refund window; 6 buyer issue types; 2 flow diagrams
 - [[source-github-v6-web-sdk-sample-integration]] — cumulative GitHub v6 sample evidence from legacy `dd9ef8a` through the 257-file `b5f2df2` baseline
 - [[changelog-github-v6-web-sdk-sample-integration]] — commit-qualified expansion history and documentation/code discrepancies
+- [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample for Orders, partners, Hosted Fields, shipping, and Subscriptions
+- [[changelog-github-paypal-sdk-server-side-integration]] — commit-qualified `5409a3b` baseline, migration boundary, and retained sample defects
 - [[source-github-paypal-js-v6]] — GitHub paypal/paypal-js: SDK v6 + React v9 source; PayPalProvider internals, session hook impl, card fields context, SSR utils, types
 - [[source-npm-react-paypal-js-v9]] — @paypal/react-paypal-js v9.1.1 (SDK v6): PayPalProvider, 8 button components, session hooks, card fields, SSR, v8→v9 migration guide
 - [[source-paypal-donate-sdk]] — Donate SDK: pop-up overlay, hosted_button_id vs business param, onComplete callback, multiple buttons on same page

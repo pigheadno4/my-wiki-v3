@@ -56,6 +56,13 @@ PREPAID = charged before delivery; POSTPAID = charged after delivery.
 
 The current sample initializes `paypal-subscriptions`, requests `RECURRING_PAYMENT` eligibility, and starts `createPayPalSubscriptionPaymentSession()`. Its Node server uses `PAYPAL_SUBSCRIPTION_PLAN_ID` when supplied; otherwise it creates a sample service product, an active USD 9.99 monthly plan, and then the subscription. This is a creation and approval example, not evidence of lifecycle management, retries, cancellation, or production eligibility.
 
+### Historical create, activate, and revise samples at `5409a3b`
+
+The September 2023 `paypal-examples/paypal-sdk-server-side-integration` baseline shows three JS SDK 5.1.x paths. The ordinary flow creates a subscription with a configured plan and defaults `application_context.user_action` to `SUBSCRIBE_NOW`. A `CONTINUE` example activates the approved subscription through `POST /v1/billing/subscriptions/{id}/activate`. A revise example sends another configured plan ID to `POST /v1/billing/subscriptions/{id}/revise`.
+
+> [!warning] Historical sample validation gaps
+> These examples are illustrative rather than production-ready. Their Fastify schemas require neither `subscriptionId` nor plan configuration; missing plan values become the literal string `"undefined"`. The revise browser ignores the server response, returns the original subscription ID, and then displays success. Use current Subscriptions documentation for supported lifecycle semantics and validation requirements.
+
 ### Billing plan structure (`billing_cycles` array)
 
 - Up to **3 cycles** per plan (e.g. trial → discounted → regular)
@@ -103,3 +110,4 @@ See [[source-paypal-payment-failures]] for full error code reference.
 - [[source-paypal-checkout-recurring-payments-module]] — Full `usage_pattern` table, billing plan constraints, setup vs purchase paths
 - [[source-paypal-checkout-save-payment-methods-recurring]] — Save payment methods for recurring: field-level RBA schema, 7 use cases, 422 errors
 - [[source-github-v6-web-sdk-sample-integration]] — runnable v6 subscription session and sample product/plan creation
+- [[source-github-paypal-sdk-server-side-integration]] — historical create, `CONTINUE` activation, and plan-revise sample with documented validation gaps

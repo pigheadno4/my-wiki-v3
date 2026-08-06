@@ -87,6 +87,15 @@ The `paypal-examples/v6-web-sdk-sample-integration` baseline combines static Jav
 
 The React sample uses `@paypal/react-paypal-js@10.1.0` through `/sdk-v6` and explicitly sets `environment="sandbox"`, matching the v10 requirement below. Its dropdown gates Venmo, Pay Later, and Credit with `useEligibleMethods()` while retaining PayPal and guest card choices. These examples establish integration shape, not merchant or regional eligibility.
 
+### Historical server-side sample at `5409a3b`
+
+The September 2023 `paypal-examples/paypal-sdk-server-side-integration` baseline uses PayPal JS SDK 5.1.x with a Fastify/TypeScript server. The browser sends cart SKU and quantity to the merchant server; the server resolves prices from its own catalog, obtains and caches an OAuth access token, creates the order, and captures or authorizes after approval. Partner examples add `PayPal-Partner-Attribution-Id` and either `PayPal-Auth-Assertion` or a payee merchant ID for connected-merchant calls.
+
+The capture helper generates one `PayPal-Request-Id` and reuses it for a single delayed retry after a 5xx response. The retry drops the original `Prefer` header, however, and Create Order does not generate an idempotency key. Treat this as a historical retry pattern rather than current production-ready code.
+
+> [!warning] Historical sample defects
+> The retained sample has several implementation defects: its custom API-base override is broken by operator precedence; the GET-order route validates a query parameter but reads the request body; its non-success path parses the response body twice; the shipping route does not require `shippingAddress`; and discount values are multiplied by 100 while other amount components are not. Preserve these defects when using the sample as version-specific evidence.
+
 ### Historical checkout-components runtime: `4.1.47`
 
 The exact `@paypal/checkout-components@4.1.47` snapshot implements the Zoid-based `paypal-buttons` and `paypal-checkout` components. Its decorated `createOrder` callback must return a nonempty string order ID. The alternative billing-agreement path is mutually exclusive with `createOrder` and requires `vault=true`.
@@ -153,5 +162,6 @@ See [[source-paypal-payment-failures]] for the full 19 error codes and recovery 
 - [[source-github-paypal-checkout-components]] — historical checkout presentation, callback, funding eligibility, and Venmo runtime evidence
 - [[source-github-paypal-js]] — cumulative package-qualified repository evidence and exact source snapshots
 - [[source-github-v6-web-sdk-sample-integration]] — current runnable v6 HTML, React, and Node integration baseline
+- [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample, partner headers, retries, shipping patches, and retained defects
 - [[paypal-braintree-integration]] — Braintree client-token, nonce, and server-processing boundary for PayPal v6 React flows
 - [[source-paypal-security-guidelines]] — Security guidelines: CSP + SRI for SDK; load only from official CDN; validate payment events server-side before fulfilling

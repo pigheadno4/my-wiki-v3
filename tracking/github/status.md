@@ -283,10 +283,10 @@
 - Repository: `paypal-examples/paypal-sdk-server-side-integration`
 - SHA: `5409a3b9c0b6d0049fc3be9386092759fd6a1d5c`
 - Collection date: `2026-08-04`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

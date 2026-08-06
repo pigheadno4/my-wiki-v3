@@ -6,6 +6,15 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-05] ingest | paypal-examples/paypal-sdk-server-side-integration `default-branch@5409a3b`
+
+- Approved and processed work item `github-849ba0a66c8ae04ad9da` in full mode after serial review of all 41 required paths.
+- Hash-verified the 36-file, 101,281-byte immutable snapshot at `raw/github/paypal/paypal-sdk-server-side-integration/snapshots/2026-08-04-5409a3b/manifest.json`; two tests totaling 4,537 bytes were excluded by policy.
+- Established a cumulative historical source and separate commit-qualified changelog for the September 2023 JS SDK 5.1.x server-side sample.
+- Added server-owned amount construction, partner headers, Hosted Fields, one-key capture retry, shipping patches, and subscription create, activate, and revise orchestration.
+- Preserved API-base precedence, order-retrieval, duplicate response parsing, shipping validation/arithmetic, subscription validation, revise-response, idempotency, and TypeScript defects as explicit warnings.
+- Updated [[paypal-checkout]], [[paypal-expanded-checkout]], and [[paypal-subscriptions]] while keeping current documentation and the newer v6 sample authoritative.
+
 ## [2026-08-04] ingest | paypal-examples/v6-web-sdk-sample-integration `default-branch@b5f2df2`
 
 - Approved and processed work item `github-6403ae7181617adc4020` in full mode after serial review of all 262 required paths totaling 1,585,894 bytes.
