@@ -1,0 +1,238 @@
+# Adyen Node Checkout-Focused Capsule Design
+
+**Date:** 2026-08-02
+**Repository:** `adyen/adyen-node-api-library`
+**Package:** `@adyen/api-library`
+**Initial release:** `32.0.0`
+**Status:** Approved design
+
+## Goal
+
+Enable version-qualified collection of the Adyen Node API Library while keeping
+serial full-read ingest practical. The retained capsule must support detailed
+Checkout questions and release comparisons, while preserving enough service
+inventory to answer rough questions about the library's other API domains.
+
+Collection ends at `awaiting_approval`. It does not edit wiki knowledge or
+begin ingest automatically.
+
+## Evidence Depth
+
+The capsule has two explicit evidence depths.
+
+### Deep Checkout coverage
+
+Retain implementation and generated request, response, and model evidence for:
+
+- Checkout payments, Sessions, modifications, payment links, donations,
+  orders, recurring operations, and utility endpoints;
+- classic Payment and Recurring APIs needed for historical or adjacent
+  checkout questions;
+- client configuration, environment selection, authentication, HTTP behavior,
+  errors, security, and standard Checkout payment notification handling; and
+- public exports, package metadata, release notes, README, migration material,
+  and repository documentation.
+
+Deep notification coverage is precisely
+`src/notification/notificationRequest.ts` plus five exact
+`src/typings/notification/` include paths: `amount.ts`, `models.ts`,
+`notification.ts`, `notificationItem.ts`, and `notificationRequestItem.ts`.
+Together they retain the standard payment notification request handler and
+every model it imports without recursively retaining future notification files.
+This evidence supports package-qualified questions about
+`@adyen/api-library@<version>` and comparisons between retained releases,
+including endpoint, method, field, model, compatibility, and migration changes.
+
+### Inventory coverage for other domains
+
+Retain every `src/services/` implementation and service export, including
+Balance Platform, Capital, Disputes, Legal Entity Management, Management,
+Open Banking, Payouts, Terminal, Transfers, and other API groups. Do not retain
+each domain's complete generated `src/typings/<domain>/` model tree.
+
+`src/webhooks.ts` and `src/typings/index.ts` are inventory-only public barrels.
+The eleven broader `src/typings/*Webhooks/` handler and model families they
+export are not deep evidence in this capsule. Their detailed paths remain
+available only through explicit exact-SHA supplements; this boundary does not
+assert that the SDK lacks those webhook APIs.
+
+The immutable v32.0.0 base snapshot also contains
+`src/notification/bankingWebhookHandler.ts` and
+`src/notification/managementWebhookHandler.ts`. These deprecated legacy
+handlers are inventory-only evidence because their broader webhook model trees
+are outside the approved deep boundary. Future policy does not recursively
+retain them or any new `src/notification/` sibling.
+
+This level can establish that a service exists, how it is instantiated and
+exported, and which endpoint methods it exposes. It must not be used for
+detailed claims about an excluded domain's complete request fields, response
+models, validation semantics, or version-to-version model changes.
+
+The eventual source page and operator packet review must call these levels
+**deep coverage** and **inventory coverage**. The registry roots encode the
+same boundary for the collector. An omitted model tree is a declared coverage
+boundary, not evidence that the SDK lacks that API capability.
+
+## Version Policy
+
+Use the existing `tagged-tree-v1` adapter with one synthetic root package.
+Although the root `package.json` validly identifies
+`@adyen/api-library@32.0.0`, `npm-tracked-source-v1` requires recursive
+internal dependency closure. The public root entrypoint exports every generated
+API model, so that adapter would defeat the approved inventory-only boundary
+and retain most of the 2,499-file source tree. `tagged-tree-v1` keeps selection
+limited to reviewed repository paths without requiring repository-specific
+collector code.
+
+Official tag `v32.0.0` resolves to exact SHA
+`99d1a0cf69c8660952baffd1437b00aae2fa4f23`.
+
+Configure one initial track:
+
+| Track | Backfill | Future | Prereleases |
+| --- | --- | --- | --- |
+| `package:@adyen/api-library@32` | latest stable | all stable | excluded |
+
+Pin `32.0.0` for the pilot so the first collection is deterministic. Future
+stable v32 releases are retained and compared in order. A future v33 major
+requires a reviewed v33 track before collection because a major transition is
+a full-ingest boundary.
+
+## Capsule Policy
+
+The policy retains these recursive roots:
+
+- `src/services/`
+- `src/httpClient/`
+- `src/security/`
+- `src/helpers/`
+- `src/utils/`
+- `src/constants/`
+- `src/typings/checkout/`
+- `src/typings/payment/`
+- `src/typings/recurring/`
+
+It also retains exact public and repository-context files such as:
+
+- `src/index.ts`, `src/client.ts`, `src/config.ts`, `src/service.ts`,
+  `src/webhooks.ts`, and `src/typings/index.ts`; the latter two are
+  inventory-only barrels, not deep broader-webhook evidence;
+- `src/notification/notificationRequest.ts` as the only deep notification
+  handler source;
+- the five exact standard-notification model files listed above; and
+- `package.json`, `VERSION`, `README.md`, `LICENSE`, `tsconfig.json`, and
+  relevant `doc/` Markdown; and
+- upstream release notes and the immutable release manifest generated by the
+  collector.
+
+Tests, mocks, fixtures, generated build output, dependencies, lockfiles,
+automation, and `sdk-generation-log/` are excluded. Changed-path selection is
+policy-bounded, so a future release cannot silently pull an unrelated generated
+model tree into the snapshot merely because that path changed.
+
+The published `v32.0.0` base snapshot is immutable at 545 files and
+2,357,166 bytes. The approved notification correction is an exact-SHA
+supplement of five files and 21,450 bytes, so the reviewed base-plus-supplement
+evidence is 550 files and 2,378,616 bytes. Future snapshots use exact includes
+for the notification request handler and five standard notification model
+files, so additional files in either directory cannot be retained without a
+reviewed policy change. The published snapshot and queued packet are never
+rewritten. The capsule registers the
+original packet policy hash only as immutable policy history, so validation can
+rebuild that packet without treating the new include paths as retroactive
+evidence. Initial hard budgets are:
+
+| Limit | Value |
+| --- | ---: |
+| Per file | 512,000 bytes |
+| Snapshot files | 620 |
+| Snapshot UTF-8 content | 3,500,000 bytes |
+| Packet files | 700 |
+| Packet UTF-8 content | 5,000,000 bytes |
+
+A budget failure stops for policy review. It does not silently truncate the
+capsule or increase a limit.
+
+## Detailed Non-Checkout Queries
+
+When a query needs detailed evidence from an inventory-only domain, including
+any of the eleven broader webhook families:
+
+1. Identify the package version or exact repository SHA relevant to the
+   question. Do not default to the current branch for a historical question.
+2. Clone or inspect that exact SHA in temporary storage and search the complete
+   repository.
+3. Preserve every supporting excluded path through
+   `collect_github_repos.py supplement --repo ... --sha ... --path ...`.
+4. Validate the immutable supplement before using it as durable wiki evidence.
+5. Update the cumulative source page serially only when the user approves an
+   ingest that includes the supplement.
+
+A temporary clone may be used for discovery, but it is not durable citation
+evidence by itself. Detailed answers must distinguish retained baseline
+evidence from newly collected supplements.
+
+## Evidence Attachment Contract
+
+The immutable packet remains unchanged. A canonical work-item
+`evidence_attachments` path links the notification supplement through
+`tracking/github/repos/<owner>/<repo>/evidence-attachments/<work-item>/attachment.json`.
+The attachment identifies the repository, exact SHA, base snapshot, supplement
+manifest, five files, per-file hashes and sizes, file count, total bytes, and
+work-item ID.
+
+Generated status links the attachment and reports packet plus attachment
+required reading. Approval and `next-ingest` revalidate the attachment and its
+source hashes; a missing, unlinked, unsafe, or tampered attachment blocks the
+lifecycle. Serial required reading includes the attachment manifest,
+supplement manifest, and all five supplement files.
+
+## Collection Flow
+
+1. Add the package-qualified v32 track and bounded capsule to the existing
+   disabled registry row, then enable it.
+2. Add focused registry tests for package identity, version policy, roots,
+   exclusions, changed-path policy, and budgets.
+3. Run registry, capsule, release, packet, work-item, and validation tests.
+4. Run `collect --repo adyen/adyen-node-api-library --mode backfill`.
+5. Validate snapshots, release records, hashes, generated status, work item,
+   and packet offline.
+6. Review both packet files and report selected file and byte counts,
+   exclusions, required reading, unclassified changes, evidence gaps, package
+   identity, release SHA, and recommended mode.
+7. Stop at `awaiting_approval`.
+
+## Failure Handling
+
+- Package/tag/SHA mismatch, missing required paths, secret findings, unsafe
+  paths, and budget overflow route to `needs_manual_review` without partial
+  publication.
+- Transient network or Git failures follow the existing bounded retry policy.
+- Inventory-only model omissions are expected policy boundaries. A missing
+  Checkout root, any approved standard-notification include path, or an
+  unclassified retained Checkout change is a blocking gap. Broader webhook
+  trees require a supplement.
+- Accepted snapshots and release records remain immutable across retries.
+
+## Acceptance Criteria
+
+- The enabled row uses the existing `tagged-tree-v1` adapter without
+  repository-specific collector code and remains limited to configured paths.
+- `@adyen/api-library@32.0.0` resolves to tag `v32.0.0` and exact SHA
+  `99d1a0cf69c8660952baffd1437b00aae2fa4f23`.
+- All service implementations and exports are retained for inventory coverage.
+- Checkout, Payment, Recurring, and the five exact standard notification model
+  files plus `notificationRequest.ts` are retained for deep coverage.
+- The supplement attachment is linked from the work item and generated status;
+  approval and `next-ingest` fail closed if it is missing or invalid.
+- The two immutable legacy notification handlers are explicitly inventory-only,
+  and future notification siblings are excluded by exact-file policy.
+- `src/webhooks.ts`, `src/typings/index.ts`, and the eleven broader webhook
+  families are inventory-only; no detailed webhook claim may rely on those
+  barrels without an exact-SHA supplement.
+- Tests, mocks, lockfiles, build output, and unrelated generated API-domain
+  model trees are absent.
+- Snapshot and packet budgets pass without automatic expansion.
+- Focused and full GitHub collection tests pass.
+- `validate_github_collection.py` passes.
+- The generated work item ends at `awaiting_approval` with no wiki edits.

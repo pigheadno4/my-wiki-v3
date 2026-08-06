@@ -1,0 +1,70 @@
+{
+  "job_id": "audit-logs-guide",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Audit Logs Guide\"\ntype: source\ndate_ingested: 2026-08-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/platform-configuration/audit-logs\"\nraw_files:\n  - \"metronome/guides/platform-configuration/audit-logs-2026-07-13.md\"\ntags: [metronome, audit-logs, security-monitoring, operational-troubleshooting]\n---\n\n## Overview\n\nThis guide describes the metadata Metronome exposes for actions taken across its system, including activity initiated through the app or API. It presents audit logs as a way to attribute changes, inspect outcomes, and investigate potentially unauthorized activity, while leaving retention, completeness, access-control, export, and tamper-resistance guarantees unspecified.\n\n## Key takeaways\n\n- Metronome says its audit log tracks actions taken anywhere in its system, with the app and API given as examples of action sources.\n- For each action, the guide lists a timestamp, the responsible user or API token, the affected resource, the action, and whether it succeeded.\n- The guide directs users to the `/auditLogs` endpoint to access the log, but it does not define the HTTP method, authentication, permissions, filters, pagination, response schema, or error behavior.\n- Example entries add a log-entry ID, actor details, `resource_type`, `resource_id`, `request_id`, and `status`; these examples illustrate token and human actors but do not establish a complete or required schema.\n- Both example timestamps contain April 32 and an extra colon-delimited time component, so they cannot be treated as valid timestamp-format examples.\n\n## Recorded action context\n\nThe guide frames one audit entry as metadata around an action: who performed it, when it occurred, what resource was affected, what operation was attempted, and whether the operation succeeded. The examples distinguish a named Developer API token from a human actor with a name and email, and they associate each action with a request ID. This supports operational attribution, but the guide does not say whether every actor field is always present, whether token names are unique or immutable, or whether a request ID is available for every action channel.\n\nThe two example actions affect the same customer resource and use `add_plan` and `change_name` as action labels. Both have `status` set to `success`; the guide does not enumerate other status values, failure metadata, before-and-after values, response bodies, or a stable action taxonomy. Its statement that the log records how the system responded is therefore narrower than a promise to preserve a complete API response.\n\n## Access and evidence boundaries\n\nThe guide links to `/auditLogs` but does not specify the endpoint's method, versioned route, bearer-token scope, RBAC requirement, sorting, filtering, pagination, polling, rate limits, or error responses. Those mechanics require the dedicated API reference and should not be inferred from this page.\n\nAudit visibility can support monitoring and investigation, but this source does not establish log retention, historical coverage, delivery latency, ordering, completeness, export format, alerting, access review, deletion behavior, immutability, cryptographic integrity, or tamper evidence. Actor attribution also does not prove that an action was authorized, and a successful status does not establish the business correctness of the resulting change.\n\nThe example timestamps are documentation defects rather than usable format evidence: `2023-04-32T18:31:55:00Z` and `2023-04-32T20:25:15:00Z` use an impossible calendar date and an extra colon-delimited component. This guide makes no explicit timestamp-format claim.\n\n## Contradictions and unknowns\n\nNo direct contradiction with the existing Metronome security, authentication, or RBAC pages was found. The authentication source's statement that a token name can help track changes and requests in audit logs is consistent with this guide's token-actor example. The existing access-control sources define authorization and credential boundaries; this guide adds after-the-action visibility and must not be used as evidence that the recorded action was authorized or that the audit record is tamper-proof.\n\n## Related\n\n- Company: [[metronome]]\n- Concept: [[metronome-security-principles]]\n- Related sources: [[source-metronome-api-reference-authentication]], [[source-metronome-guides-platform-configuration-security-principles]], [[source-metronome-guides-platform-configuration-role-based-access-rbac]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/platform-configuration/audit-logs-2026-07-13|2026-07-13 snapshot \u2014 audit action attribution, outcome visibility, example records, and documentation boundaries]]\n",
+  "quotes": [
+    {
+      "text": "The Metronome audit log tracks actions taken anywhere in the Metronome system (such as the [Metronome app](https://app.metronome.com/) or API). The log records metadata around that action, including who took it, when it occurred, and how the system responded to the action. This provides increased transparency and security, as users can monitor activity and identify any unauthorized actions or determine who made a change.",
+      "location": "line 11, stated scope, recorded context, and security purpose"
+    },
+    {
+      "text": "For each action taken, the log provides these details:\n\n* the timestamp when the action was taken\n* which user or API token took the action\n* what resource was acted upon (for example, a customer with ID 123)\n* what action was taken (for example, `add_plan`)\n* whether the action was successful",
+      "location": "lines 13-19, enumerated per-action fields"
+    },
+    {
+      "text": "You can access the Metronome audit log via the [/auditLogs](/api-reference/security/get-audit-logs) endpoint.",
+      "location": "line 21, linked audit-log access point"
+    },
+    {
+      "text": "\"timestamp\": \"2023-04-32T18:31:55:00Z\"",
+      "location": "line 29, first malformed example timestamp"
+    },
+    {
+      "text": "\"request_id\": \"71f232b6-a236-466d-b89b-f9bn0b90940b\"",
+      "location": "line 37, example request correlation identifier"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "audit-logs-security-visibility",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Sources",
+        "proposed_markdown": "## Audit visibility and attribution\n\nMetronome says its audit log tracks actions across the system, including app and API activity, and records the time, responsible user or API token, affected resource, action, and success outcome. Example entries also carry an audit-entry ID, actor details, resource type and ID, request ID, and status, and the guide links to `/auditLogs` for access. This supports monitoring and change attribution but does not establish retention, completeness, delivery order or latency, export, access permissions, immutability, tamper evidence, authorization of the recorded action, or the full endpoint schema. The two example timestamps use an impossible April 32 date and an extra colon-delimited time component, so they are not valid timestamp-format evidence.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat audit visibility as after-the-action evidence, not proof that an action was authorized or that the record is immutable or tamper-proof.",
+          "The examples are illustrative rather than a complete endpoint schema; do not infer required actor fields, status enums, retention, ordering, or completeness.",
+          "Do not use the malformed example timestamps as RFC 3339 or other timestamp-format evidence; this guide states no format."
+        ]
+      },
+      {
+        "update_id": "audit-logs-security-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-platform-configuration-audit-logs]] \u2014 cross-channel action attribution, outcome visibility, request correlation, and audit-evidence boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/platform-configuration/audit-logs-2026-07-13.md",
+  "raw_sha256": "98cfb48e35f0c94a32eac2e577bf8123f1a7a614010fa2c6b837cf358ebd012a",
+  "status": "candidate_ready"
+}

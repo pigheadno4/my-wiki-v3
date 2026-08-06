@@ -181,6 +181,56 @@ class EffectivePolicyTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "exactly one focus package"):
             build_effective_policy(capsule, (), (), ())
 
+    def test_commit_tree_policy_uses_repository_source_identity(self):
+        capsule = CapsuleConfig(
+            id="paypal-v6-sample-source",
+            adapter="commit-tree-v1",
+            source_id="v6-web-sdk-sample-integration",
+            dependency_scope="configured-repository-paths",
+            changed_path_policy="policy-bounded",
+            default_required_roots=("client/components", "server/node/src"),
+        )
+
+        payload = json.loads(build_effective_policy(capsule, (), (), ()).canonical_bytes)
+
+        self.assertEqual("exact-commit-tree-v1", payload["workspace_resolver"])
+        self.assertEqual("v6-web-sdk-sample-integration", payload["source_id"])
+        self.assertNotIn("focus_packages", payload)
+
+    def test_commit_tree_forbids_release_only_policy_fields(self):
+        invalid_capsules = (
+            CapsuleConfig(
+                id="invalid-focus",
+                adapter="commit-tree-v1",
+                source_id="sample",
+                focus_packages=("fake-package",),
+                dependency_scope="configured-repository-paths",
+            ),
+            CapsuleConfig(
+                id="invalid-generated",
+                adapter="commit-tree-v1",
+                source_id="sample",
+                dependency_scope="configured-repository-paths",
+                default_generated_target_paths=("dist/",),
+            ),
+            CapsuleConfig(
+                id="invalid-override",
+                adapter="commit-tree-v1",
+                source_id="sample",
+                dependency_scope="configured-repository-paths",
+                package_overrides=(PackageOverride("fake-package", ("src",), (), ()),),
+            ),
+        )
+
+        for capsule in invalid_capsules:
+            with self.subTest(capsule=capsule.id):
+                with self.assertRaisesRegex(ValueError, "commit-tree-v1 forbids"):
+                    build_effective_policy(capsule, (), (), ())
+
+    def test_release_tree_forbids_repository_source_identity(self):
+        with self.assertRaisesRegex(ValueError, "forbids source_id"):
+            build_effective_policy(self.capsule(source_id="sample"), (), (), ())
+
     def test_changed_path_policy_is_validated_and_hash_bound(self):
         package_owned = build_effective_policy(self.capsule(), (), (), ())
         policy_bounded = build_effective_policy(

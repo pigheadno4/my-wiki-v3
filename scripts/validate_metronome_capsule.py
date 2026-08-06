@@ -14,7 +14,7 @@ def main() -> int:
     print(
         f"Metronome capsule: {len(report.raw_files)} raw, "
         f"{len(report.sources)} sources, "
-        f"{len(report.orphan_raw_files)} pending ingest"
+        f"{len(report.orphan_raw_files)} raw pages without source summaries"
     )
     if errors:
         print("\nStructural errors:")
@@ -22,7 +22,7 @@ def main() -> int:
             print(f"- {error}")
         return 1
     if report.orphan_raw_files:
-        print("\nPending ingest:")
+        print("\nRaw pages without source summaries:")
         for path in report.orphan_raw_files:
             print(f"- {path}")
     return 0

@@ -41,7 +41,15 @@ A Metronome credit can grant relief on future billing at customer scope, where i
 - Every credit or commit uses a fixed product for invoice and reporting attribution, while product IDs, tags, or specifiers can restrict eligible usage.
 - Stripe-taxed prepaid-balance thresholds, spend thresholds, and one-off payment-gated commits require `payment_gate_type: "STRIPE"`, `tax_type: "STRIPE"`, and `stripe_config.payment_type: "INVOICE"`; account-level tax enablement does not cover these flows.
 
+### Historical invoice balance effects
+
+Historical invoice import combines supplied line-item quantities with unit prices on the contract to calculate invoice totals and effects on the customer's credit and commit balances. The guide does not define the resulting ledger-entry types or effective timestamps, ordering relative to existing deductions, rollback or reversal behavior, whether preview results persist, or any relationship between those balance effects and correction or credit-and-rebill workflows.
+
 ### Balance retrieval and ledger calculation
+
+### Revenue-reporting treatment
+
+Metronome's revenue-recognition guide treats prepaid-commit purchase invoices as deferred revenue, prepaid drawdown invoices as recognized as consumption occurs, and unused prepaid expiration as recognized at period end. Postpaid usage is recognized as the balance draws down, with any unmet minimum reported when the true-up invoice is issued. Free credits are never paid for and do not affect deferred revenue, although their drawdown may have a contra-revenue effect. For line-item-based reports, the guide says to ignore `credit_automated_invoice_deduction` and `prepaid_automated_invoice_deduction` on `CONTRACT_USAGE`, plus `postpaid_automated_invoice_deduction` and `postpaid_trueup` where invoice line items already include the amounts; include `prepaid_segment_expiration` because Metronome does not invoice that expiration, and usually ignore `credit_segment_expiration` because free-credit expiration does not affect revenue. These rules are documented report-construction guidance, not a complete merchant accounting policy.
 
 `/getNetBalance` returns one customer-level remaining-balance sum with filters for balance type, currency, pending charges, and custom fields. `listBalances` supports individual credit and commit views: each balance has a ledger, and summing its positive and negative entries produces that ledger's remaining balance. Values can be fractional; for USD the unit is cents, so `0.8` represents $0.008 and must not be silently truncated.
 
@@ -117,6 +125,10 @@ Threshold notifications can monitor credit and commit remaining balance, percent
 A merchant can create `low_remaining_commit_balance_reached` for a customer, credit type, and threshold. The resulting signal can support customer communication, sales outreach, or a merchant-owned service cutoff when the balance reaches zero. The page does not define which contract- or customer-level commits contribute, applicability or priority effects, expired-balance treatment, inclusion of credits, or automatic access enforcement.
 
 ## Sources
+
+- [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition]] - prepaid and postpaid reporting treatment, free-credit contra-revenue boundary, and ledger double-counting exclusions
+
+- [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]] — contract-priced historical-invoice totals and bounded effects on customer credit and commit balances
 
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-alerts]] — credit and commit threshold dimensions, free-trial custom-field filtering, and access-action boundary
 - [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]] — custom-unit access schedules, matching-unit balance drawdown, and residual fiat conversion boundary

@@ -1,0 +1,42 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "billable-metrics-sql-editor-semantics",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "durable_fact",
+      "anchor": "before ## Lifecycle boundary",
+      "proposed_markdown": "## SQL query, output, and timing semantics\n\n- SQL metrics query `events` through `event_type`, `timestamp`, and `properties.field_name`; Metronome applies customer and billing-period filtering. For multi-column results, `value` is preferred but not required because the first column is the documented fallback. Other columns can become pricing or presentation keys, while unused extra columns are summed over. Correct the existing wording that calls `value` required.\n- The SQL Editor documents `COUNT`, `SUM`, `MAX`, `MIN`, `AVG`, timestamp-based `EARLIEST` and `LATEST`, and `COUNT DISTINCT`, plus bounded math, logic, `DATE_TRUNC` to hour or day, and `CAST`. This aligns with the neighboring guides' direction to use SQL for distinct counts but does not reconcile their `UNIQUE` label or the API enum.\n- A SQL-backed product defaults to `hour` breakdown granularity; `service period` moves the full quantity and cost to the final period window, uses the final price, and requires a credit or commit to cover the last instant. SQL metric swaps may be scheduled within a billing period; the two-SQL-metric example preserves the old value at the cutoff and increments a combined value based on the new metric after the swap.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not infer a SQL dialect, literal Unicode-versus-ASCII comparison syntax, type coercion, null behavior, precision, output limits, or tie handling from the supported-item list.",
+        "Do not call the `value` output alias mandatory; this source explicitly documents first-column fallback.",
+        "Keep the hour and service-period pricing and credit effects scoped to the documented SUM example where appropriate.",
+        "Do not generalize the two-SQL-metric swap example to every SQL/streaming combination, cutoff boundary, late-event adjustment, negative delta, or finalized-invoice case."
+      ]
+    },
+    {
+      "update_id": "billable-metrics-sql-editor-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-sql-editor]] \u2014 SQL functions and outputs, breakdown granularity, scheduled metric swaps, and unresolved SQL-runtime boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

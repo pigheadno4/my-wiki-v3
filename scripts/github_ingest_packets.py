@@ -14,6 +14,7 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 from github_canonical import canonical_json_bytes, safe_policy_path, wiki_slug
 from github_capsule_policy import (
     CAPSULE_ADAPTERS,
+    COMMIT_TREE_ADAPTER,
     NPM_CAPSULE_ADAPTER,
     TAGGED_TREE_ADAPTER,
     CapsuleConfig,
@@ -23,19 +24,23 @@ from github_capsule_selection import classify_excluded_categories
 from github_pilot_store import UpstreamChange, _require_contained_storage_path
 from github_registry import RepoConfig
 from github_versions import parse_semver
+from github_work_items import RefChangeSignals, recommend_ref_ingest_mode
 
 
 _WORK_ITEM_ID = re.compile(r"^github-[0-9a-f]{20}$")
 _OBJECT_ID = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
+_SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _SOURCE_SUFFIXES = (
     ".c",
     ".cc",
     ".cpp",
+    ".css",
     ".cs",
     ".go",
     ".graphql",
     ".h",
     ".hpp",
+    ".html",
     ".java",
     ".js",
     ".jsx",
@@ -100,6 +105,19 @@ _COMPARISON_FIELDS = {
     "to_sha",
     "to_version",
 }
+_REF_COMPARISON_FIELDS = {
+    "changed_paths",
+    "format_version",
+    "from_sha",
+    "markdown_sha256",
+    "patch_sha256",
+    "pathspecs",
+    "ref_kind",
+    "ref_name",
+    "repository",
+    "to_sha",
+    "upstream_changes",
+}
 _REASON_ORDER = (
     "initial-package-baseline",
     "major-version-transition",
@@ -135,6 +153,18 @@ class PackagePacketInput:
     prior_snapshot_manifest: str
     upstream_changes: Tuple[UpstreamChange, ...]
     release_notes_revision: bool = False
+
+
+@dataclass(frozen=True)
+class RefPacketInput:
+    ref_kind: str
+    ref_name: str
+    from_sha: str
+    to_sha: str
+    comparison_manifest: str
+    prior_snapshot_manifest: str
+    upstream_changes: Tuple[UpstreamChange, ...]
+    excluded_changes: Tuple[UpstreamChange, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -177,6 +207,7 @@ def build_ingest_packet(
     packet_kind: str,
     wiki_context_override: Optional[Sequence[str]] = None,
     expected_wiki_targets_override: Optional[Sequence[str]] = None,
+    capsule_policy_sha256_override: Optional[str] = None,
 ) -> IngestPacket:
     """Build one canonical packet without publishing or changing queue state."""
     root = Path(root).resolve()
@@ -197,6 +228,10 @@ def build_ingest_packet(
     current = _load_snapshot(root, snapshot_manifest, config.id)
     capsule = config.capsules[0]
     policy_hash = build_effective_policy(capsule, (), (), ()).policy_hash
+    if capsule_policy_sha256_override is not None:
+        if _SHA256.fullmatch(capsule_policy_sha256_override) is None:
+            raise PacketBuildError("packet policy hash override is invalid")
+        policy_hash = capsule_policy_sha256_override
     package_documents = []
     all_required = set()
     all_unclassified = []
@@ -264,6 +299,171 @@ def build_ingest_packet(
         "to_sha": str(current.manifest["sha"]),
         "unchanged_evidence_count": unchanged_count,
         "unclassified_changes": [],
+        "wiki_context": list(wiki_context),
+        "work_item_id": work_item_id,
+    }
+    markdown = _render_markdown(document)
+    document["markdown_sha256"] = hashlib.sha256(markdown).hexdigest()
+    return IngestPacket(document, markdown)
+
+
+def build_ref_ingest_packet(
+    root: Path,
+    config: RepoConfig,
+    work_item_id: str,
+    snapshot_manifest: str,
+    ref_input: RefPacketInput,
+    packet_kind: str,
+    wiki_context_override: Optional[Sequence[str]] = None,
+    expected_wiki_targets_override: Optional[Sequence[str]] = None,
+) -> IngestPacket:
+    """Build one canonical review packet for exact default-branch evidence."""
+    root = Path(root).resolve()
+    _validate_config(config)
+    if config.capsules[0].adapter != COMMIT_TREE_ADAPTER:
+        raise PacketBuildError("ref packet requires commit-tree-v1")
+    if packet_kind not in ("queued", "ad-hoc"):
+        raise PacketBuildError("packet kind must be queued or ad-hoc")
+    if packet_kind == "queued":
+        if _WORK_ITEM_ID.fullmatch(work_item_id) is None:
+            raise PacketBuildError("queued packet work-item ID is invalid")
+    elif work_item_id:
+        raise PacketBuildError("ad-hoc packet must not carry a work-item ID")
+    _validate_ref_input(ref_input)
+
+    current = _load_snapshot(root, snapshot_manifest, config.id)
+    if current.manifest["sha"] != ref_input.to_sha:
+        raise PacketBuildError("ref target SHA does not match snapshot")
+    if not current.manifest.get("author_date") or not current.manifest.get("commit_date"):
+        raise PacketBuildError("ref snapshot requires author and commit dates")
+    prior = None
+    comparison = None
+    if ref_input.from_sha:
+        prior = _load_snapshot(root, ref_input.prior_snapshot_manifest, config.id)
+        if prior.manifest["sha"] != ref_input.from_sha:
+            raise PacketBuildError("ref prior SHA does not match snapshot")
+        comparison = _load_ref_comparison(root, ref_input.comparison_manifest, config.id, ref_input)
+    elif ref_input.prior_snapshot_manifest or ref_input.comparison_manifest:
+        raise PacketBuildError("baseline ref packet must not contain prior evidence")
+
+    retained = _retained_diff(prior, current, ref_input.upstream_changes)
+    selected_changes = [
+        row for row in retained["files"] if row["status"] != "unchanged"
+    ]
+    changed_paths = tuple(row["path"] for row in selected_changes)
+    mode, reasons = recommend_ref_ingest_mode(
+        RefChangeSignals(ref_input.from_sha, ref_input.to_sha, changed_paths)
+    )
+    priority = (
+        "high"
+        if any(
+            reason in ("server-architecture-signal", "payment-behavior-signal")
+            for reason in reasons
+        )
+        else "normal"
+    )
+    unclassified = [
+        {"path": row["path"], "reason": "unclassified-retained-evidence"}
+        for row in selected_changes
+        if row["classification"] == "unclassified"
+    ]
+    excluded_changes = _ref_excluded_change_rows(
+        ref_input.excluded_changes,
+        prior,
+        current,
+    )
+    covered_paths = set(current.files) | set(current.excluded)
+    if prior is not None:
+        covered_paths.update(prior.files)
+        covered_paths.update(prior.excluded)
+    covered_paths.update(row["path"] for row in excluded_changes)
+    evidence_gaps = []
+    for change in ref_input.upstream_changes:
+        paths = tuple(path for path in (change.old_path, change.new_path) if path)
+        if not any(path in covered_paths for path in paths):
+            evidence_gaps.append(
+                {
+                    "path": change.new_path or change.old_path,
+                    "reason": "selected-change-missing-from-snapshots",
+                }
+            )
+    required = {current.relative_path}
+    current_root = PurePosixPath(current.relative_path).parent / "files"
+    prior_root = (
+        PurePosixPath(prior.relative_path).parent / "files" if prior is not None else None
+    )
+    if mode == "full":
+        required.update(str(current_root / path) for path in current.files)
+        if prior is not None and prior_root is not None:
+            required.add(prior.relative_path)
+            required.update(str(prior_root / path) for path in prior.files)
+    else:
+        for row in selected_changes:
+            if row["status"] == "removed":
+                if prior_root is not None:
+                    required.add(str(prior_root / (row["old_path"] or row["path"])))
+            else:
+                required.add(str(current_root / row["path"]))
+    if comparison is not None:
+        comparison_path = PurePosixPath(ref_input.comparison_manifest)
+        required.update(
+            (
+                ref_input.comparison_manifest,
+                str(comparison_path.parent / "comparison.md"),
+                str(comparison_path.parent / "diff.patch"),
+            )
+        )
+    if (wiki_context_override is None) != (
+        expected_wiki_targets_override is None
+    ):
+        raise PacketBuildError("wiki generation context override is incomplete")
+    if wiki_context_override is None:
+        wiki_context, expected_targets = _ref_wiki_paths(root, config)
+    else:
+        wiki_context, expected_targets = _validate_ref_wiki_paths(
+            root,
+            config,
+            wiki_context_override,
+            expected_wiki_targets_override or (),
+        )
+    required.update(wiki_context)
+    required_reading = tuple(sorted(required))
+    _enforce_packet_budget(root, config.capsules[0], required_reading)
+    policy_hash = build_effective_policy(config.capsules[0], (), (), ()).policy_hash
+    document = {
+        "author_date": str(current.manifest.get("author_date", "")),
+        "capsule_policy_sha256": policy_hash,
+        "collection_date": str(current.manifest["collected_date"]),
+        "commit_date": str(current.manifest.get("commit_date", "")),
+        "concept_audit_required": True,
+        "evidence_gaps": evidence_gaps,
+        "excluded_changes": excluded_changes,
+        "expected_wiki_targets": list(expected_targets),
+        "format_version": 1,
+        "markdown_sha256": "",
+        "packet_kind": packet_kind,
+        "recommendation": {
+            "mode": mode,
+            "priority": priority,
+            "reasons": list(reasons),
+        },
+        "ref": {
+            "comparison_manifest": ref_input.comparison_manifest,
+            "display_identity": ref_input.ref_kind + "@" + ref_input.to_sha[:7],
+            "from_sha": ref_input.from_sha,
+            "prior_snapshot_manifest": ref_input.prior_snapshot_manifest,
+            "ref_kind": ref_input.ref_kind,
+            "ref_name": ref_input.ref_name,
+            "to_sha": ref_input.to_sha,
+        },
+        "repository": config.id,
+        "required_reading": list(required_reading),
+        "selected_changes": selected_changes,
+        "snapshot_manifest": current.relative_path,
+        "snapshot_sha256": current.manifest_sha256,
+        "to_sha": ref_input.to_sha,
+        "unchanged_evidence_count": retained["counts"]["unchanged"],
+        "unclassified_changes": unclassified,
         "wiki_context": list(wiki_context),
         "work_item_id": work_item_id,
     }
@@ -384,6 +584,23 @@ def load_packet_summary(root: Path, packet_path: str) -> PacketSummary:
         len(unclassified),
         len(gaps),
     )
+
+
+def load_packet_required_reading(
+    root: Path, packet_path: str
+) -> Tuple[str, ...]:
+    """Load the canonical packet's safe, unique serial-reading paths."""
+    _, document, content = _load_json(Path(root).resolve(), packet_path)
+    if canonical_json_bytes(document) + b"\n" != content:
+        raise PacketBuildError("packet JSON is not canonical")
+    required = document.get("required_reading")
+    if (
+        not isinstance(required, list)
+        or any(not isinstance(path, str) or not safe_policy_path(path) for path in required)
+        or len(required) != len(set(required))
+    ):
+        raise PacketBuildError("packet required reading is invalid")
+    return tuple(required)
 
 
 def _packet_bytes(
@@ -713,6 +930,50 @@ def _load_comparison(
     return document
 
 
+def _load_ref_comparison(
+    root: Path,
+    relative: str,
+    repository: str,
+    item: RefPacketInput,
+) -> dict:
+    path, document, _ = _load_json(root, relative)
+    if set(document) != _REF_COMPARISON_FIELDS or document.get("format_version") != 2:
+        raise PacketBuildError("ref comparison manifest shape is invalid")
+    identity = (
+        document.get("repository"),
+        document.get("ref_kind"),
+        document.get("ref_name"),
+        document.get("from_sha"),
+        document.get("to_sha"),
+    )
+    expected = (
+        repository,
+        item.ref_kind,
+        item.ref_name,
+        item.from_sha,
+        item.to_sha,
+    )
+    if identity != expected:
+        raise PacketBuildError("ref comparison manifest identity mismatch")
+    for name, field in (("comparison.md", "markdown_sha256"), ("diff.patch", "patch_sha256")):
+        evidence = path.parent / name
+        if not evidence.is_file() or evidence.is_symlink():
+            raise PacketBuildError("comparison evidence is missing")
+        if hashlib.sha256(evidence.read_bytes()).hexdigest() != document.get(field):
+            raise PacketBuildError("comparison evidence hash mismatch")
+    expected_changes = [
+        {
+            "new_path": change.new_path,
+            "old_path": change.old_path,
+            "status": change.status,
+        }
+        for change in item.upstream_changes
+    ]
+    if document.get("upstream_changes") != expected_changes:
+        raise PacketBuildError("ref comparison upstream changes mismatch")
+    return document
+
+
 def _load_json(root: Path, relative: str) -> Tuple[Path, dict, bytes]:
     path = _resolve_file(root, relative)
     content = path.read_bytes()
@@ -840,6 +1101,10 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "repository-context"
     if filename == "package.json":
         return "package-manifest"
+    if filename in (".env.example", ".env.sample", "example.env"):
+        return "runtime-configuration"
+    if filename in (".npmrc", ".nvmrc"):
+        return "build-configuration"
     if filename == "tsconfig.json" or (
         filename.startswith("tsconfig.") and filename.endswith(".json")
     ):
@@ -866,6 +1131,7 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
                 ".toml",
                 ".xcprivacy",
                 ".xcscheme",
+                ".xctestplan",
                 ".xml",
             )
         )
@@ -892,6 +1158,12 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "translation"
     if lowered.endswith(_DOCUMENT_SUFFIXES):
         return "documentation"
+    if (
+        lowered.endswith(".json")
+        and row.get("purpose") == "source-capsule"
+        and row.get("classification_reason") == "required-root"
+    ):
+        return "public-source"
     if lowered.endswith(_SOURCE_SUFFIXES):
         return "public-source"
     return "unclassified"
@@ -1282,6 +1554,23 @@ def _wiki_paths(root: Path, config: RepoConfig) -> Tuple[Tuple[str, ...], Tuple[
     return context, expected
 
 
+def _ref_wiki_paths(
+    root: Path,
+    config: RepoConfig,
+) -> Tuple[Tuple[str, ...], Tuple[str, ...]]:
+    repo = wiki_slug(config.id.split("/", 1)[1])
+    targets = (
+        "wiki/sources/" + config.company + "/github/source-github-" + repo + ".md",
+        "wiki/sources/" + config.company + "/github/changelog-github-" + repo + ".md",
+        "wiki/companies/" + config.company + ".md",
+        "wiki/" + config.company + "-index.md",
+        "wiki/" + config.company + "-log.md",
+        "wiki/log.md",
+    )
+    context = tuple(path for path in targets if (root / path).is_file())
+    return context, targets
+
+
 def _legacy_wiki_paths(config: RepoConfig) -> Tuple[str, str]:
     repo = config.id.split("/", 1)[1]
     base = "wiki/sources/" + config.company + "/github/"
@@ -1315,6 +1604,29 @@ def _validate_wiki_paths(
     return stored_context, stored_expected
 
 
+def _validate_ref_wiki_paths(
+    root: Path,
+    config: RepoConfig,
+    context: Sequence[str],
+    expected: Sequence[str],
+) -> Tuple[Tuple[str, ...], Tuple[str, ...]]:
+    stored_context = tuple(context)
+    stored_expected = tuple(expected)
+    _, canonical_targets = _ref_wiki_paths(root, config)
+    canonical_context = tuple(
+        path for path in canonical_targets if path in set(stored_context)
+    )
+    if (
+        stored_expected != canonical_targets
+        or stored_context != canonical_context
+        or len(stored_context) != len(set(stored_context))
+    ):
+        raise PacketBuildError("wiki generation context is invalid")
+    for path in stored_context:
+        _resolve_file(root, path)
+    return stored_context, stored_expected
+
+
 def _enforce_packet_budget(
     root: Path, capsule: CapsuleConfig, required: Sequence[str]
 ) -> None:
@@ -1337,6 +1649,35 @@ def _render_markdown(document: dict) -> bytes:
         "- Review priority: `" + recommendation["priority"] + "`",
         "",
     ]
+    if "ref" in document:
+        ref = document["ref"]
+        lines.extend(
+            [
+                "- Ref: `" + ref["display_identity"] + "` (`" + ref["ref_name"] + "`)",
+                "- Transition: `" + (ref["from_sha"] or "baseline") + "` -> `" + ref["to_sha"] + "`",
+                "- Author date: `" + document["author_date"] + "`",
+                "- Commit date: `" + document["commit_date"] + "`",
+                "",
+                "## Required reading",
+                "",
+            ]
+        )
+        lines.extend("- `" + path + "`" for path in document["required_reading"])
+        lines.extend(["", "## Selected changes", ""])
+        lines.extend(
+            "- `" + row["status"] + "` `" + row["path"] + "`"
+            for row in document["selected_changes"]
+        )
+        if not document["selected_changes"]:
+            lines.append("- None")
+        lines.extend(["", "## Excluded changes", ""])
+        lines.extend(
+            "- `" + row["status"] + "` `" + row["path"] + "`: " + row["reason"]
+            for row in document["excluded_changes"]
+        )
+        if not document["excluded_changes"]:
+            lines.append("- None")
+        return ("\n".join(lines).rstrip() + "\n").encode("utf-8")
     for package in document["packages"]:
         lines.extend(
             [
@@ -1385,6 +1726,58 @@ def _validate_config(config: RepoConfig) -> None:
         raise PacketBuildError("packet requires one repository capsule")
     if config.capsules[0].adapter not in CAPSULE_ADAPTERS:
         raise PacketBuildError("packet adapter is unsupported")
+
+
+def _validate_ref_input(item: RefPacketInput) -> None:
+    if not isinstance(item, RefPacketInput):
+        raise TypeError("ref_input must be RefPacketInput")
+    if item.ref_kind != "default-branch":
+        raise PacketBuildError("ref kind must be default-branch")
+    if (
+        not isinstance(item.ref_name, str)
+        or not item.ref_name
+        or any(character.isspace() for character in item.ref_name)
+    ):
+        raise PacketBuildError("ref name is invalid")
+    if item.from_sha and not _valid_sha(item.from_sha):
+        raise PacketBuildError("ref prior SHA is invalid")
+    if not _valid_sha(item.to_sha):
+        raise PacketBuildError("ref target SHA is invalid")
+    for changes, label in (
+        (item.upstream_changes, "upstream"),
+        (item.excluded_changes, "excluded"),
+    ):
+        if not isinstance(changes, tuple):
+            raise PacketBuildError("ref " + label + " changes must be a tuple")
+        for change in changes:
+            if not isinstance(change, UpstreamChange):
+                raise PacketBuildError("ref " + label + " change is invalid")
+            paths = tuple(path for path in (change.old_path, change.new_path) if path)
+            if not paths or any(not safe_policy_path(path) for path in paths):
+                raise PacketBuildError("ref " + label + " change path is invalid")
+
+
+def _ref_excluded_change_rows(
+    changes: Sequence[UpstreamChange],
+    prior: Optional[_LoadedSnapshot],
+    current: _LoadedSnapshot,
+) -> List[dict]:
+    exclusions = dict(prior.excluded if prior is not None else {})
+    exclusions.update(current.excluded)
+    rows = []
+    for change in sorted(changes, key=lambda value: (value.new_path or value.old_path, value.old_path)):
+        path = change.new_path or change.old_path
+        reason = exclusions.get(path) or exclusions.get(change.old_path) or "outside-capsule-policy"
+        rows.append(
+            {
+                "new_path": change.new_path,
+                "old_path": change.old_path,
+                "path": path,
+                "reason": reason,
+                "status": change.status,
+            }
+        )
+    return rows
 
 
 def _validate_package_input(
@@ -1481,8 +1874,11 @@ __all__ = [
     "PacketBuildError",
     "PacketRecommendation",
     "PacketSummary",
+    "RefPacketInput",
     "build_ingest_packet",
+    "build_ref_ingest_packet",
     "load_packet_summary",
+    "load_packet_required_reading",
     "publish_queued_packet",
     "publish_review_packet",
 ]

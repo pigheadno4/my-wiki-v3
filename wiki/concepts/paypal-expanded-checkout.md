@@ -37,6 +37,12 @@ The exact `@paypal/checkout-components@5.0.425` runtime independently exports a 
 
 The merchant's own Submit/Pay button calls `cardFields.submit()` — triggering the `createOrder` callback. This differs from Standard Checkout where clicking the PayPal button starts the flow.
 
+### Historical Hosted Fields sample at `5409a3b`
+
+The September 2023 `paypal-examples/paypal-sdk-server-side-integration` baseline demonstrates the older `paypal.HostedFields` surface. Its merchant server requests a client token from `/v1/identity/generate-token`; the browser loads `components=hosted-fields` with `data-client-token`, creates an order through the merchant server, submits the hosted card fields, and captures through the server after approval.
+
+This is historical JS SDK 5.1.x evidence. It does not establish current Expanded Checkout eligibility, current Card Fields behavior, or production readiness, and the repository's broader server implementation contains validation and response-handling defects documented in [[source-github-paypal-sdk-server-side-integration]].
+
 ### React callback freshness
 
 In `@paypal/react-paypal-js@8.9.2`, `PayPalCardFieldsProvider` and individual Card Fields proxy their callback props through a stable object. The SDK instance can therefore remain mounted while `createOrder`, `onApprove`, `onError`, and input-event callbacks read the latest React closure after component state changes. This prevents stale order quantities or stale application state without forcing the Card Fields SDK object to reinitialize.
@@ -84,3 +90,4 @@ When `data.card` is truthy (card payment), `actions.restart()` does **not** appl
 - [[source-paypal-expanded-checkout-integrate]] — Full integration guide with CardFields + 3DS code samples
 - [[source-github-paypal-js]] — package-qualified React wrapper source and Card Fields callback implementation
 - [[source-github-paypal-checkout-components]] — package-qualified checkout runtime and Card Fields interface
+- [[source-github-paypal-sdk-server-side-integration]] — historical Hosted Fields client-token, order, submit, and capture sample

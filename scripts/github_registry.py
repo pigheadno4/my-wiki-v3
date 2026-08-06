@@ -6,7 +6,14 @@ import re
 from typing import Dict, List, Optional, Sequence, Tuple
 from urllib.parse import urlsplit
 
-from github_capsule_policy import CapsuleConfig, SecretAllowlist, parse_capsules, parse_secret_allowlist
+from github_capsule_policy import (
+    COMMIT_TREE_ADAPTER,
+    CapsuleConfig,
+    SecretAllowlist,
+    build_effective_policy,
+    parse_capsules,
+    parse_secret_allowlist,
+)
 from github_versions import parse_package_tag, parse_semver
 from toml_compat import load_toml
 
@@ -165,6 +172,21 @@ def validate_enabled_policy(repo: RepoConfig) -> List[str]:
     if not repo.enabled:
         return []
     errors = []
+    if repo.version_strategy == "commit":
+        if repo.track != "default-branch":
+            errors.append("enabled commit repository requires default-branch tracking")
+        if repo.version_tracks:
+            errors.append("enabled commit repository must not define version tracks")
+        if len(repo.capsules) != 1:
+            errors.append("enabled commit repository requires exactly one commit capsule")
+        elif repo.capsules[0].adapter != COMMIT_TREE_ADAPTER:
+            errors.append("enabled commit repository requires a commit-tree-v1 capsule")
+        else:
+            try:
+                build_effective_policy(repo.capsules[0], repo.secret_allowlist, (), ())
+            except ValueError as error:
+                errors.append("enabled commit repository has invalid capsule: " + str(error))
+        return errors
     if not repo.version_tracks:
         errors.append("enabled repository requires version tracks")
     if len(repo.capsules) != 1:

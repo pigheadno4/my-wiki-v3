@@ -29,6 +29,10 @@ The implementation guide states that a customer needs at least one contract befo
 
 ## Contract and invoice behavior
 
+### Historical invoice migration
+
+A migration can recreate a contract with its original start and starting credit or commit balances while setting `usage_statement_schedule.invoice_generation_starting_at` to the first period Metronome should generate. In the worked example, a June 1 contract and August 1 generation start produce an August draft but no June or July invoices; those earlier periods are added through `/v1/contracts/createHistoricalInvoices`. The source does not establish whether imports appear in contract edit history, mutate contract terms after creation, or may overlap existing Metronome invoice periods.
+
 - A basic contract can apply predefined list prices from a rate card.
 - Contract-level terms can add negotiated discounts or commitments.
 - Contracts can modify rate-card prices and hold fixed-product prices, but the product guide does not define price precedence or contract lifecycle behavior.
@@ -110,6 +114,8 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - Commercial-design planning should make prepaid-versus-arrears terms, seat and usage interaction, commitments and overages, ramp and multi-year structures, exceeded-limit policy, and segment-specific payment terms explicit. The planning guide does not itself establish supported contract fields, lifecycle behavior, or enforcement.
 
 ## Sources
+
+- [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]] - original contract-state recreation, invoice-generation cutoff, and dedicated historical-invoice import boundary
 
 - [[source-metronome-guides-events-send-usage-events]] — customer-ID and ingest-alias attribution for usage events
 

@@ -157,3 +157,69 @@ still receive full-source independent Sol review, bounded unchanged-hash fixes
 still receive targeted review, canonical sources must still equal approved
 candidates, and the existing close validators and immutable query sample still
 run once.
+
+## Campaign 11 worker routing
+
+Campaign 11 and later Metronome production campaigns use Sol for every worker.
+Terra remains disabled for Metronome production ingest unless a separately
+approved future pilot demonstrates that it can meet the same concept-update and
+quote-grounding gate. This changes only worker routing; the existing independent
+Sol review, retry, coordinator ownership, and campaign-close gates remain the
+same.
+
+After the coordinator generates a worker order, dispatch that native agent and
+confirm that the dispatch returned an agent identifier before processing other
+completion events. Order generation alone is not evidence that a worker is
+active. If dispatch is interrupted, reconcile that job and its existing order
+before issuing another order. This is an operating discipline only; do not add
+a second scheduler, state schema, or monitoring layer for it.
+
+## Campaign 12 selective-ingest pilot authorization
+
+Campaign 12 is a bounded Metronome-only calibration pilot and may begin only
+after its exact manifest is explicitly approved. It runs outside the production
+campaign scheduler and schema; do not pass its manifest to
+`manage_ingest_pilot.py` or create a second scheduler, state schema, or
+monitoring layer.
+
+All five native agents are Sol: the overview worker, overview reviewer,
+create-key raw-reference auditor, delete-key semantic-triage worker, and
+delete-key semantic-triage reviewer. Dispatch exactly three simultaneous
+initial native tasks: overview source generation, the create-key raw-reference
+audit, and delete-key semantic triage. As slots free, dispatch an independent
+overview reviewer and an independent delete-key triage reviewer. Preserve the
+dispatch-confirm discipline above for every order.
+
+Only the overview task may generate a source candidate. Do not generate a
+source for create-key or delete-key during this pilot. The create-key audit
+tests its `raw_reference` classification. The delete-key task decides its
+future disposition; reviewer disagreement promotes that future disposition to
+`source_required` and is recorded once without a retry loop.
+
+The overview may list the five endpoint pages under
+`## Related raw API references`, but those navigation-only links cannot support
+overview facts. The other three classified endpoint pages receive no native
+task and no complete read in this pilot.
+
+## Post-Campaign 12 selective-routing calibration
+
+Campaign 12 ended with `verdict = revise_routing_rule`. The metadata-only route
+for `Create a Custom Field Key` was unsafe because the sampled page uniquely
+carried required-field, durable failure, uniqueness, managed-entity, and
+invoice-propagation facts.
+
+```text
+unsafe old route = Create a Custom Field Key -> raw_reference
+corrected metadata route = Create a Custom Field Key -> semantic_triage
+observed complete-read result = source_required
+```
+
+Apply the shared endpoint rule in `rules/ingest.md`: when metadata cannot rule
+out unique durable endpoint facts, require semantic triage rather than direct
+`raw_reference` classification. This calibration does not promote every API
+endpoint; after a complete read, another endpoint may still resolve to
+`raw_reference`.
+
+Do not alter the completed Campaign 12 manifest or evidence, reclassify the
+remaining corpus, create a routing registry, or treat this calibration as
+authorization for a new campaign.

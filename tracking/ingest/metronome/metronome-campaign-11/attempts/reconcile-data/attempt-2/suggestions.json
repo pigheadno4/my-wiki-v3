@@ -1,0 +1,42 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "reconcile-data-financial-workflows",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "before ## Sources",
+      "proposed_markdown": "## Financial reconciliation workflows\n\nMetronome documents Data Export and the API as two reconciliation paths: Data Export is the preferred bulk mechanism, while list endpoints provide lower-latency access for change-oriented dashboards. Its worked warehouse flow uses custom fields as foreign-key mappings to compare contract dates, commits, and overrides against Salesforce and the latest finalized invoice against Stripe. The example SQL selects maximum contract, commit, or override snapshots and one customer's most recent `FINALIZED` invoice, but it does not show the Salesforce-side join, custom-field predicate, Stripe record key, mismatch tolerances, pagination, or accounting sign-off. Treat complete-and-accurate-transmission language as the workflow objective, not as an export completeness or accounting guarantee; the documented cadence still applies, and object-storage exports retain their documented append-only, at-least-once duplication, and consumer-side latest-row resolution boundaries. [[source-metronome-guides-reporting-insights-financial-reporting-reconcile-data]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not present the sample SQL as a complete cross-system join or control because it omits the Salesforce-side tables, the described custom-field predicate, and the Stripe matching key.",
+        "Do not convert the page's intended complete-and-accurate reconciliation outcome into a guarantee of timely, complete, or accounting-correct exports; for object-storage exports specifically, do not claim duplicate-free delivery."
+      ]
+    },
+    {
+      "update_id": "reconcile-data-generic-billing-data-pattern",
+      "target_path": "wiki/concepts/payment-reconciliation-reporting.md",
+      "update_kind": "durable_fact",
+      "anchor": "before ## Sources",
+      "proposed_markdown": "## Billing-data reconciliation beyond processor settlement\n\nMetronome documents a billing-data reconciliation pattern that extends beyond matching processor transactions or settlement records to internal accounting data. Data Export supports warehouse-scale comparisons, while list endpoints provide lower-latency access; the worked flow maps Salesforce contract records through custom fields and compares a customer's most recent finalized Metronome invoice with Stripe. This evidence covers cross-system contract terms and invoice records, not proof of payment, settlement, or money movement. The guide does not show the Salesforce-side join, the Stripe matching key, mismatch remediation, export completeness, pagination, or accounting sign-off. [[source-metronome-guides-reporting-insights-financial-reporting-reconcile-data]]",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not treat comparison of a finalized invoice record as reconciliation of payment collection, processor settlement, payout, or cash movement.",
+        "Do not present the examples as a complete end-to-end control because the cross-system joins, matching tolerances, mismatch workflow, and accounting approval are not documented."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

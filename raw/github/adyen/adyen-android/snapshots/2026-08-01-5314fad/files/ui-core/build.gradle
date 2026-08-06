@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) 2019 Adyen N.V.
+ *
+ * This file is open source and available under the MIT license. See the LICENSE file for more info.
+ *
+ * Created by arman on 15/2/2019.
+ */
+
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.parcelize
+}
+
+// Maven artifact
+ext.mavenArtifactId = "ui-core"
+ext.mavenArtifactName = "Adyen checkout base UI component"
+ext.mavenArtifactDescription = "Adyen checkout base UI component client for Adyen's Checkout API."
+
+apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
+
+android {
+    namespace 'com.adyen.checkout.ui.core'
+    compileSdk libs.versions.compile.sdk.get().toInteger()
+
+    defaultConfig {
+        minSdk libs.versions.min.sdk.get().toInteger()
+        targetSdk libs.versions.target.sdk.get().toInteger()
+
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    testFixtures {
+        enable = true
+    }
+}
+
+dependencies {
+    // Checkout
+    api project(':components-core')
+
+    // Dependencies
+    implementation libs.androidx.appcompat
+    api libs.androidx.autofill
+    api libs.androidx.constraintlayout
+    implementation libs.androidx.recyclerview
+    api libs.material
+    implementation libs.androidx.browser
+
+    //Tests
+    testImplementation libs.json
+    testImplementation libs.bundles.junit
+    testImplementation libs.bundles.mockito
+    testImplementation libs.bundles.kotlin.coroutines.test
+    testImplementation libs.robolectric
+    testImplementation libs.bundles.mockito
+}

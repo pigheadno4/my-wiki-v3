@@ -1,0 +1,69 @@
+{
+  "job_id": "allowlist-guide",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Allowlist the Metronome API\"\ntype: source\ndate_ingested: 2026-08-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/platform-configuration/allowlist\"\nraw_files:\n  - \"metronome/guides/platform-configuration/allowlist-2026-07-13.md\"\ntags: [metronome, api-security, ip-allowlisting, service-registry, network-security]\n---\n\n## Overview\n\nThis guide describes the operational use of Metronome's service registry for IP allowlisting: poll `getServices`, apply the returned IPs through the organization's security tooling, and keep the rules current as addresses rotate. It treats IP allowlisting as an additional security layer and recommends automation, recurring tests, and an audit changelog, but it does not define a complete safe-update algorithm or network policy.\n\n## Key takeaways\n\n- Metronome says an allowlist restricts API access to a selected set of IP addresses, reducing potential unauthorized entry points.\n- The implementation flow is to poll `getServices` for Metronome API IPs and apply the response through the organization's own security protocols and network tools.\n- The guide warns that failing to poll regularly can cause loss of API access as IPs rotate in and out of service. This is a fail-closed availability risk from stale allowlist state, not a documented instruction to remove working entries when retrieval or rule updates fail.\n- New IPs are said here to appear at least 30 days before first use. The existing endpoint reference uses the weaker wording that new IPs \"typically\" appear 30 or more days before use, so the statements must remain source-scoped rather than becoming a universal guaranteed notice period.\n- IP allowlisting is only an extra layer; the guide also calls for measures such as SSO and scoped RBAC roles.\n\n## Polling and update workflow\n\nThe guide requires customer action to keep allowlisting both available and secure. It recommends automating regular `getServices` polling and allowlist updates, testing the resulting configuration regularly, and retaining a changelog of rule changes for auditing. It provides no polling interval, freshness signal, change notification, cache lifetime, removal notice, overlap period, update ordering, rollback process, or response to a failed poll, malformed or partial response, or failed network-rule deployment. Consequently, \"regularly\" cannot be converted into a specific schedule, and the source does not authorize clearing or narrowing a last-known-good allowlist solely because a registry refresh fails.\n\n## Service-registry and network boundary\n\nThis guide refers readers to `getServices` but does not restate its HTTP route, bearer-authentication requirement, response schema, or the registry's `makes_connections_from` and `accepts_connections_at` usage labels. It says to use response IPs, yet does not explain which named services or direction labels apply to a particular firewall or allowlist control. The dedicated API reference therefore owns the registry schema and direction-label facts; neither page defines actor perspective, protocols, ports, IP notation, environment mapping, or a complete inbound-versus-outbound rule design.\n\n## Security and notice boundaries\n\nIP membership limits network reachability but is not documented here as request authentication, authorization, message integrity, or a substitute for TLS, bearer-token controls, or webhook signature verification. The guide's recommendation to pair allowlisting with SSO and scoped RBAC reinforces the layered-control boundary.\n\nThe guide's \"at least 30 days\" statement and the service-registry reference's \"typically 30+ days\" statement concern the same update workflow but carry different guarantee strength. They do not prove that an observed update violates either source, but they are an operational wording tension: consumers should not infer an unconditional notice SLA, a removal lead time, or an overlap guarantee without further confirmation. No other direct contradiction with the existing service-registry source or Metronome security concept was found.\n\n## Related\n\n- Company: [[metronome]]\n- Concept: [[metronome-security-principles]]\n- Related source: [[source-metronome-api-reference-security-get-services]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/platform-configuration/allowlist-2026-07-13|2026-07-13 snapshot \u2014 IP allowlisting workflow, polling obligation, rotation risk, and layered-security guidance]]\n",
+  "quotes": [
+    {
+      "text": "Metronome supports IP allowlisting for accessing its APIs. Implementing an allowlist restricts Metronome API access to a specific set of IP addresses, enhancing security by limiting potential entry points for unauthorized access.",
+      "location": "line 11, allowlisting purpose and access restriction"
+    },
+    {
+      "text": "1. Retrieve Metronome\u2019s API IP addresses by polling the [getServices](/api-reference/security/get-services) endpoint.\n2. Use response IPs to configure your organization\u2019s allowlist in accordance with your security protocols and network security tools.",
+      "location": "lines 17-18, registry polling and customer-controlled rule application"
+    },
+    {
+      "text": "Metronome's IP addresses are subject to change. New IPs appear in the list at least 30 days before they are first used.",
+      "location": "lines 24-25, rotation and guide-specific notice wording"
+    },
+    {
+      "text": "Failure to regularly poll the `getServices` API to update your allowlist may result in losing access to Metronome APIs, as IPs get frequently rotated in and out of service.",
+      "location": "lines 27-28, polling obligation and stale-rule availability risk"
+    },
+    {
+      "text": "While IP allowlisting can add an extra layer of security, use it in conjunction with additional security measures like SSO and scoped RBAC roles.",
+      "location": "lines 30-31, layered-security boundary"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "allowlist-guide-security-operations",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Credential lifetime",
+        "proposed_markdown": "Metronome's operational allowlisting guide tells customers to poll `getServices`, apply returned IPs through their own security tooling, automate updates, test the configuration, and retain a change log. It warns that stale rules can deny access as IPs rotate, which establishes a fail-closed availability risk but not an updater algorithm: the guide supplies no polling interval, freshness marker, removal or overlap period, atomic-update or rollback procedure, or behavior for retrieval, parsing, or rule-deployment failures. It also does not map the registry's named services or `makes_connections_from` and `accepts_connections_at` labels to a particular firewall direction. The guide says new IPs appear at least 30 days before first use, whereas the endpoint reference says they typically appear 30 or more days before use; preserve this difference in guarantee strength and do not turn it into a universal notice or removal SLA. IP allowlisting remains an additional layer to use with controls such as SSO and scoped RBAC, not documented proof of request authenticity.",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer a polling cadence, fail-open or fail-closed updater action, automatic rollback, removal lead time, or safe deletion policy from the guide.",
+          "Do not collapse the guide's at-least-30-days wording and the registry reference's typically-30-plus-days wording into an unconditional universal SLA.",
+          "Do not apply every returned IP in every direction without resolving the service and usage-label perspective for the organization's actual network control."
+        ]
+      },
+      {
+        "update_id": "allowlist-guide-security-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-platform-configuration-allowlist]] \u2014 polling and automation guidance, stale-allowlist access risk, notice-wording tension, and layered-security boundaries",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/platform-configuration/allowlist-2026-07-13.md",
+  "raw_sha256": "29bed40bf7af74ba13e224024839a8d527c3f5e5eb58ed64b566cbf8f87b5e46",
+  "status": "candidate_ready"
+}

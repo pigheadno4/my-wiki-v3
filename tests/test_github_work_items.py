@@ -1,4 +1,5 @@
 import json
+import hashlib
 import sys
 import tempfile
 import unittest
@@ -11,14 +12,19 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import github_work_items  # noqa: E402
 from github_work_items import (  # noqa: E402
+    BROAD_CHANGE_FILE_LIMIT,
     ChangeSignals,
     PackageChange,
     PacketStatusSummary,
+    RefChange,
+    RefChangeSignals,
     WorkItemStateError,
+    build_ref_work_item,
     build_work_item,
     claim_next_ingest,
     load_work_items,
     recommend_ingest_mode,
+    recommend_ref_ingest_mode,
     record_collection_failure,
     render_status,
     save_work_items,
@@ -68,6 +74,73 @@ class GitHubWorkItemTests(unittest.TestCase):
             state="awaiting_approval",
         )
 
+    def write_attachment_fixture(self):
+        snapshot = self.root / self.snapshot_manifest
+        snapshot.parent.mkdir(parents=True, exist_ok=True)
+        snapshot.write_text(
+            json.dumps(
+                {
+                    "repository": self.awaiting_item.repo_id,
+                    "sha": self.awaiting_item.sha,
+                },
+                sort_keys=True,
+                separators=(",", ":"),
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        source = b"export const attached = true;\n"
+        supplement_directory = (
+            self.root
+            / "raw/github/paypal/paypal-js/supplements/2026-07-20-3caece5-attachment"
+        )
+        source_path = supplement_directory / "files/packages/paypal-js/src/attached.ts"
+        source_path.parent.mkdir(parents=True, exist_ok=True)
+        source_path.write_bytes(source)
+        digest = hashlib.sha256(source).hexdigest()
+        identity_payload = {
+            "files": [
+                {
+                    "path": "packages/paypal-js/src/attached.ts",
+                    "sha256": digest,
+                }
+            ],
+            "repository": self.awaiting_item.repo_id,
+            "sha": self.awaiting_item.sha,
+        }
+        supplement = {
+            "collected_date": "2026-07-20",
+            "files": [
+                {
+                    "classification_reason": "explicit-query-path",
+                    "git_blob_oid": "b" * 40,
+                    "git_mode": "100644",
+                    "package": "",
+                    "path": "packages/paypal-js/src/attached.ts",
+                    "purpose": "query-supplement",
+                    "sha256": digest,
+                    "size": len(source),
+                }
+            ],
+            "format_version": 1,
+            "identity_sha256": hashlib.sha256(
+                json.dumps(
+                    identity_payload, sort_keys=True, separators=(",", ":")
+                ).encode("utf-8")
+            ).hexdigest(),
+            "repository": self.awaiting_item.repo_id,
+            "sha": self.awaiting_item.sha,
+        }
+        manifest = supplement_directory / "manifest.json"
+        manifest.write_text(
+            json.dumps(supplement, sort_keys=True, separators=(",", ":")) + "\n",
+            encoding="utf-8",
+        )
+        return manifest, source_path
+
+    def relative(self, path):
+        return Path(path).resolve().relative_to(self.root.resolve()).as_posix()
+
     def signals(self, **overrides):
         values = {
             "package": "@paypal/paypal-js",
@@ -113,6 +186,147 @@ class GitHubWorkItemTests(unittest.TestCase):
             recommended_mode=recommended_mode,
             reasons=reasons,
         )
+
+    def ref_change(
+        self,
+        from_sha="",
+        to_sha="b" * 40,
+        recommended_mode="full",
+        reasons=("initial-commit-baseline",),
+        comparison_manifest="",
+    ):
+        return RefChange(
+            ref_kind="default-branch",
+            ref_name="main",
+            from_sha=from_sha,
+            to_sha=to_sha,
+            display_identity="default-branch@" + to_sha[:7],
+            comparison_manifest=comparison_manifest,
+            recommended_mode=recommended_mode,
+            reasons=reasons,
+        )
+
+    def ref_item(self, **overrides):
+        values = {
+            "repo_id": "paypal-examples/v6-web-sdk-sample-integration",
+            "sha": "b" * 40,
+            "collection_date": "2026-08-03",
+            "ref_changes": (self.ref_change(),),
+            "snapshot_manifest": (
+                "raw/github/paypal-examples/v6-web-sdk-sample-integration/"
+                "snapshots/2026-08-03-bbbbbbb/manifest.json"
+            ),
+        }
+        values.update(overrides)
+        return build_ref_work_item(**values)
+
+    def test_commit_work_item_round_trips_without_package_release_fields(self):
+        change = self.ref_change()
+        item = self.ref_item(ref_changes=(change,))
+
+        self.assertEqual((), item.package_changes)
+        self.assertEqual((change,), item.ref_changes)
+        save_work_items(self.path, (item,))
+        saved = json.loads(self.path.read_text(encoding="utf-8"))["work_items"][0]
+        self.assertNotIn("package_changes", saved)
+        self.assertIn("ref_changes", saved)
+        self.assertEqual((item,), load_work_items(self.path))
+
+        release_payload = github_work_items._work_item_to_dict(self.awaiting_item)
+        self.assertIn("package_changes", release_payload)
+        self.assertNotIn("ref_changes", release_payload)
+
+    def test_commit_and_package_change_families_are_mutually_exclusive(self):
+        mixed = replace(self.ref_item(), package_changes=(self.paypal_change,))
+
+        with self.assertRaisesRegex(ValueError, "exactly one change family"):
+            save_work_items(self.path, (mixed,))
+
+    def test_commit_work_item_validates_sha_identity_and_lifecycle(self):
+        comparison = (
+            "tracking/github/repos/paypal-examples/v6-web-sdk-sample-integration/"
+            "comparisons/default-branch/aaaaaaaa--bbbbbbb/comparison.json"
+        )
+        change = self.ref_change(
+            from_sha="a" * 40,
+            recommended_mode="delta",
+            reasons=("contained-commit-change",),
+            comparison_manifest=comparison,
+        )
+        item = self.ref_item(ref_changes=(change,))
+        packet = (
+            "tracking/github/repos/paypal-examples/v6-web-sdk-sample-integration/"
+            "ingest-packets/" + item.work_item_id + "/packet.json"
+        )
+        awaiting = replace(item, ingest_packet=packet, state="awaiting_approval")
+        save_work_items(self.path, (awaiting,))
+
+        approved = transition_work_item(
+            self.path,
+            item.work_item_id,
+            "awaiting_approval",
+            "approved",
+            approved_mode="delta",
+        )[0]
+        claimed = claim_next_ingest(self.path)
+        completed = transition_work_item(
+            self.path,
+            item.work_item_id,
+            "ingesting",
+            "ingested",
+        )[0]
+
+        self.assertEqual("approved", approved.state)
+        self.assertEqual("ingesting", claimed.state)
+        self.assertEqual("ingested", completed.state)
+        status = render_status((completed,))
+        self.assertIn("default-branch@bbbbbbb", status)
+        self.assertNotIn("### Package releases", status)
+
+        invalid = replace(
+            item,
+            ref_changes=(
+                replace(
+                    change,
+                    to_sha="c" * 40,
+                    display_identity="default-branch@ccccccc",
+                ),
+            ),
+        )
+        with self.assertRaisesRegex(ValueError, "to_sha must equal work-item SHA"):
+            save_work_items(self.path, (invalid,))
+
+    def test_commit_recommendations_are_mechanical(self):
+        cases = (
+            (
+                RefChangeSignals("", "b" * 40, ()),
+                ("full", ("initial-commit-baseline",)),
+            ),
+            (
+                RefChangeSignals("a" * 40, "b" * 40, ("client/components/paypal/button.ts",)),
+                ("delta", ("contained-commit-change",)),
+            ),
+            (
+                RefChangeSignals("a" * 40, "b" * 40, ("server/node/src/routes/auth.ts",)),
+                ("full", ("server-architecture-signal",)),
+            ),
+            (
+                RefChangeSignals("a" * 40, "b" * 40, ("client/components/vault/capture.ts",)),
+                ("full", ("payment-behavior-signal",)),
+            ),
+            (
+                RefChangeSignals(
+                    "a" * 40,
+                    "b" * 40,
+                    tuple("client/components/file-" + str(index) + ".ts" for index in range(BROAD_CHANGE_FILE_LIMIT + 1)),
+                ),
+                ("full", ("broad-change-set",)),
+            ),
+        )
+
+        for signals, expected in cases:
+            with self.subTest(expected=expected):
+                self.assertEqual(expected, recommend_ref_ingest_mode(signals))
 
     def test_baseline_and_major_upgrade_require_full_ingest(self):
         baseline = self.signals(from_version="", to_version="8.9.2")
@@ -529,6 +743,131 @@ class GitHubWorkItemTests(unittest.TestCase):
         self.assertIn("Review priority: `high`", status)
         self.assertIn("Required reading: `8` files", status)
         self.assertIn("packet.md", status)
+
+    def test_work_item_attachment_is_loaded_and_rendered_in_status(self):
+        attachment = (
+            "tracking/github/repos/paypal/paypal-js/evidence-attachments/"
+            + self.awaiting_item.work_item_id
+            + "/attachment.json"
+        )
+        document = {
+            "format_version": 1,
+            "work_items": [github_work_items._work_item_to_dict(self.awaiting_item)],
+        }
+        document["work_items"][0]["evidence_attachments"] = [attachment]
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.write_text(json.dumps(document), encoding="utf-8")
+
+        try:
+            loaded = load_work_items(self.path)[0]
+        except ValueError as error:
+            self.fail("work-item attachment field must load: " + str(error))
+        status = render_status(
+            (loaded,),
+            {
+                loaded.work_item_id: PacketStatusSummary(
+                    self.ingest_packet,
+                    "high",
+                    10,
+                    0,
+                    0,
+                )
+            },
+        )
+
+        self.assertEqual((attachment,), loaded.evidence_attachments)
+        self.assertIn("Evidence attachment: [manifest](" + attachment + ")", status)
+        self.assertIn("Required reading: `10` files", status)
+
+    def test_attachment_publication_is_deterministic_and_approval_revalidates_hashes(self):
+        publisher = getattr(github_work_items, "publish_evidence_attachment", None)
+        required_reading = getattr(
+            github_work_items, "evidence_attachment_required_reading", None
+        )
+        if publisher is None or required_reading is None:
+            self.fail("evidence attachment publication API is missing")
+        supplement, source = self.write_attachment_fixture()
+        first = publisher(self.root, self.awaiting_item, self.relative(supplement))
+        first_bytes = (self.root / first.relative_path).read_bytes()
+        second = publisher(self.root, self.awaiting_item, self.relative(supplement))
+        linked = replace(
+            self.awaiting_item,
+            evidence_attachments=(first.relative_path,),
+        )
+        save_work_items(self.path, (linked,))
+
+        self.assertEqual(first, second)
+        self.assertEqual(first_bytes, (self.root / second.relative_path).read_bytes())
+        self.assertEqual(
+            (
+                first.relative_path,
+                self.relative(supplement),
+                self.relative(source),
+            ),
+            required_reading(self.root, linked),
+        )
+
+        source.write_bytes(b"export const attached = fals;\n")
+        with self.assertRaisesRegex(ValueError, "attachment file hash mismatch"):
+            transition_work_item(
+                self.path,
+                linked.work_item_id,
+                "awaiting_approval",
+                "approved",
+                approved_mode="full",
+            )
+
+    def test_approval_rejects_a_missing_linked_attachment(self):
+        attachment = (
+            "tracking/github/repos/paypal/paypal-js/evidence-attachments/"
+            + self.awaiting_item.work_item_id
+            + "/attachment.json"
+        )
+        document = {
+            "format_version": 1,
+            "work_items": [github_work_items._work_item_to_dict(self.awaiting_item)],
+        }
+        document["work_items"][0]["evidence_attachments"] = [attachment]
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.write_text(json.dumps(document), encoding="utf-8")
+
+        with self.assertRaisesRegex(ValueError, "evidence attachment is missing"):
+            transition_work_item(
+                self.path,
+                self.awaiting_item.work_item_id,
+                "awaiting_approval",
+                "approved",
+                approved_mode="full",
+            )
+
+    def test_approval_rejects_a_published_but_unlinked_attachment(self):
+        supplement, _ = self.write_attachment_fixture()
+        publisher = getattr(github_work_items, "publish_evidence_attachment", None)
+        if publisher is None:
+            self.fail("evidence attachment publication API is missing")
+        publisher(self.root, self.awaiting_item, self.relative(supplement))
+        save_work_items(self.path, (self.awaiting_item,))
+
+        with self.assertRaisesRegex(ValueError, "published evidence attachment is not linked"):
+            transition_work_item(
+                self.path,
+                self.awaiting_item.work_item_id,
+                "awaiting_approval",
+                "approved",
+                approved_mode="full",
+            )
+
+    def test_work_item_rejects_an_unsafe_attachment_path(self):
+        document = {
+            "format_version": 1,
+            "work_items": [github_work_items._work_item_to_dict(self.awaiting_item)],
+        }
+        document["work_items"][0]["evidence_attachments"] = ["../attachment.json"]
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.write_text(json.dumps(document), encoding="utf-8")
+
+        with self.assertRaisesRegex(ValueError, "unsafe path"):
+            load_work_items(self.path)
 
     def test_approval_states_require_published_evidence(self):
         incomplete = replace(self.awaiting_item, snapshot_manifest="")

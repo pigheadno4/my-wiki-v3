@@ -1,0 +1,71 @@
+{
+  "job_id": "void-an-invoice",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Void an Invoice\"\ntype: source\ndate_ingested: 2026-08-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/invoices/void-an-invoice\"\nraw_files:\n  - \"metronome/api-reference/invoices/void-an-invoice-2026-07-13.md\"\ntags: [metronome, invoices, invoice-voiding, billing-corrections, api]\n---\n\n## Overview\n\nThis API reference defines Metronome's invoice-void operation. A bearer-authenticated `POST /v1/invoices/void` request accepts one invoice UUID, and the documented success response returns that invoice ID. The operation description calls the cancellation permanent and immediate, but the page does not define eligible starting states, downstream-system effects, retries, or error behavior.\n\n## Key takeaways\n\n- Metronome describes voiding as setting an invoice's status to `voided`, preventing collection, removing it from customer billing, and immediately stopping payment processing.\n- The operation uses `POST /v1/invoices/void` and the OpenAPI document applies bearer authentication.\n- The JSON request requires `id`, represented as a UUID-formatted string.\n- HTTP 200 returns an object whose `data.id` is a UUID-formatted string; the documented response schema does not return the invoice status or any other invoice fields.\n- The page does not specify which invoice states can be voided, repeated-call behavior, idempotency, concurrency handling, validation failures, authorization failures, not-found behavior, webhook effects, or downstream reconciliation.\n\n## Endpoint contract\n\n| Attribute | Documented value |\n| --- | --- |\n| Method and path | `POST /v1/invoices/void` |\n| Authentication | HTTP bearer scheme |\n| Request body | JSON object with required `id` string in UUID format |\n| Success response | HTTP 200 with `data.id` in UUID format |\n| Operation ID | `voidInvoice-v1` |\n\nThe request example and success response use the same invoice UUID. The description says the status change is applied immediately, but the 200 schema contains only the returned ID, so this page does not provide response-body evidence of the new status. It also does not document whether the endpoint returns the existing result when the invoice is already voided.\n\n## Scope and system boundaries\n\nThe page's statements about preventing collection, removing the invoice from customer billing, and stopping payment processing do not identify a downstream billing provider, ERP, marketplace, payment processor, or customer-A/R system. A separate Metronome correction guide says that voiding in Metronome does not void a downstream invoice and requires the downstream invoice to be voided or cancelled separately. Accordingly, this endpoint must not be treated as evidence that Stripe, an ERP, a marketplace, or another A/R system is updated, or that a collected payment is refunded, tax is reversed, revenue is adjusted, or ledger and credit effects are reconciled.\n\n## Contradictions and unknowns\n\nNo direct contradiction with the existing invoicing concept or credit-and-rebill source was found when the API description is scoped to the Metronome invoice. The broad payment-processing language would conflict with the documented downstream boundary only if it were extended beyond Metronome, which this API page does not explicitly do. The page also leaves invoice-state preconditions, downstream propagation, payment and accounting consequences, response status visibility, error responses, idempotency, and partial-failure recovery undocumented.\n\n## Related\n\n- Company: [[metronome]]\n- Concept: [[metronome-invoicing]]\n- Related source: [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/invoices/void-an-invoice-2026-07-13|2026-07-13 snapshot \u2014 invoice void endpoint, request, success response, and operation boundaries]]\n",
+  "quotes": [
+    {
+      "text": "Permanently cancels an invoice by setting its status to voided, preventing collection and removing it from customer billing. Use this to correct billing errors, cancel incorrect charges, or handle disputed invoices that should not be collected. Returns the voided invoice ID with the status change applied immediately to stop any payment processing.",
+      "location": "line 11, operation effect and intended use"
+    },
+    {
+      "text": "````yaml /openapi.json post /v1/invoices/void",
+      "location": "line 18, OpenAPI method and route declaration"
+    },
+    {
+      "text": "requestBody:\n        description: The invoice id to void\n        content:\n          application/json:\n            schema:\n              type: object\n              required:\n                - id\n              properties:\n                id:\n                  description: The invoice id to void\n                  type: string\n                  format: uuid",
+      "location": "lines 101-113, required request body and invoice ID format"
+    },
+    {
+      "text": "responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                properties:\n                  data:\n                    required:\n                      - id\n                    type: object\n                    properties:\n                      id:\n                        type: string\n                        format: uuid",
+      "location": "lines 116-131, success response schema"
+    },
+    {
+      "text": "components:\n  securitySchemes:\n    bearerAuth:\n      type: http\n      scheme: bearer",
+      "location": "lines 135-139, HTTP bearer security-scheme definition"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "void-invoice-endpoint-contract",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "after the first paragraph under ### Credit, correction, and re-bill state boundaries",
+        "proposed_markdown": "Metronome exposes bearer-authenticated `POST /v1/invoices/void`, whose JSON body requires an invoice `id` as a UUID-formatted string and whose HTTP 200 schema returns only `data.id`. The operation description says it permanently and immediately sets the invoice status to `voided`, preventing collection, removing it from customer billing, and stopping payment processing. The response does not include the new status, and the page does not define eligible starting states, repeated-call or idempotency behavior, errors, webhooks, or downstream reconciliation. Because the separate correction guide says a Metronome void does not void a downstream invoice, do not extend this endpoint's effect to Stripe, ERP, marketplace, payment refund, A/R, tax, revenue, or ledger changes without separate evidence.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Scope the documented void effect to the Metronome invoice; this page does not establish downstream invoice cancellation or payment refund behavior.",
+          "Do not infer eligible invoice states, idempotency, error handling, webhook behavior, or accounting and reconciliation effects from the success-only schema.",
+          "The success response returns only `data.id`; it does not expose the resulting status despite the prose saying the status change is applied immediately."
+        ]
+      },
+      {
+        "update_id": "void-invoice-invoicing-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-invoices-void-an-invoice]] \u2014 invoice void endpoint contract, immediate status-transition wording, success-response limit, and downstream boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/invoices/void-an-invoice-2026-07-13.md",
+  "raw_sha256": "640e3ff5d2ecb18704a5e328f51be80c314e3d2e8747483549ce798fa46cac49",
+  "status": "candidate_ready"
+}

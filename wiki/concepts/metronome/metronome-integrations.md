@@ -31,6 +31,14 @@ For the Indian-card mandate flow, Stripe owns SetupIntent confirmation, mandate 
 
 Metronome creates and maps the Stripe invoice, while Stripe Tax calculates and applies tax when Stripe finalizes it. Metronome supplies the linked Stripe customer and a line-item product mapping; Stripe uses the customer address for jurisdiction and the Stripe product tax code for classification. Leaving the invoice as a draft defers automatic tax until manual finalization.
 
+## Avalara tax-app boundary
+
+For Stripe-delivered invoices using Avalara, AvaTax integrates through Stripe's Marketplace app and third-party tax-app framework rather than directly with Metronome. The guide creates the case-sensitive `TaxCode` custom field on Metronome `Product`, while its mapping row sends `ContractProduct.TaxCode` to `invoiceitem.metadata.TaxCode`; Stripe hosts the draft invoice and integration settings; Avalara calculates tax from the customer address and line-item code and owns unresolved rate-accuracy questions. The guide requires **Leave invoices as drafts** to remain on so Avalara can calculate and apply tax before finalization, but it does not define finalization ownership, processing time, retries, or safeguards against finalizing without tax.
+
+## Anrok tax-app boundary
+
+For the primary Anrok path, Metronome creates the Stripe invoice and supplies linked-customer and mapped-product context, Stripe hosts the installed Anrok app and automatic-tax provider selection, and Anrok calculates tax and handles compliance instead of Stripe's native tax engine. Stripe customer addresses determine jurisdiction; each Metronome Product carries `stripe_product_id`, mapped from `ContractProduct.stripe_product_id` to `invoiceitem.price.product`. The Product-versus-`ContractProduct` terminology is unresolved in this guide as it is in the native Stripe Tax guide. Arrears tax calculates inline without requiring invoices to remain drafts; prepaid-balance and spend thresholds use `tax_type: "STRIPE"` and `payment_type: "INVOICE"`, where `STRIPE` is the documented `tax_type` value for this Anrok-through-Stripe threshold configuration, while the guide does not define the enum's general semantics. The literal is not reliable evidence of calculator identity because the documented active provider in this mode is Anrok. The guide separately permits Stripe Tax to calculate while Anrok consumes Stripe transaction data for compliance, filing, and reporting; it does not define transfer timing, completeness, reconciliation, correction, filing cadence, or failure handling for that hybrid mode.
+
 ## Threshold payment-gate boundary
 
 For a Stripe-gated prepaid threshold, Metronome initiates the configured Stripe invoice or PaymentIntent and releases the recharge commit only after successful payment. With `payment_gate_type: EXTERNAL`, Metronome emits `payment_gate.external_initiate`, while the integrator owns collection and must call the threshold-release endpoint with the workflow ID to release or cancel the commit. The guide does not document external-gateway readiness, retry, or idempotency behavior.
@@ -42,6 +50,8 @@ Spend-threshold billing uses the same explicit external-ownership pattern as the
 ## Billing-provider transitions
 
 Metronome can schedule contract invoice delivery among Stripe, NetSuite, and AWS, Azure, or GCP Marketplace. Marketplace-involved transitions must start next period because marketplace billing covers a complete period; Stripe and NetSuite changes can also correct the current period while the invoice remains a draft.
+
+The invoice-regeneration endpoint says that when the voided invoice is attached to a contract with a billing provider, the regenerated invoice is distributed according to that configuration. The page does not identify the provider, the configuration-resolution time, the regenerated invoice's state, synchronous versus asynchronous timing, delivery identifiers, webhooks, failures, retries, or duplicate-delivery behavior. This distribution statement does not void or cancel the old downstream invoice: the separate credit-and-rebill guide assigns that step to the merchant, while stating specifically that a regenerated invoice using the Metronome Stripe integration is sent to Stripe automatically. Do not extend regeneration to payment collection, refunds, tax, A/R, revenue, or ledger reconciliation without separate evidence.
 
 Metronome owns the provider schedule and invoice routing. The guide does not document how destination accounts are provisioned, reconciled, or checked for readiness before a scheduled segment becomes active.
 
@@ -55,7 +65,31 @@ Customer creation can attach configurations for Stripe, NetSuite, AWS Marketplac
 
 The optional tax-provider field lists Anrok, Avalara, and Stripe. The source limits Stripe tax calculation in this customer-creation structure to Stripe configurations using payment-intent collection methods. A separately feature-flagged revenue-system configuration currently enumerates NetSuite and expects a provider-specific customer identifier.
 
+## Managed custom-invoice integration boundary
+
+For billing systems outside Metronome's native integrations, Metronome documents data exports or a managed integration built on Data Export or Metronome APIs. In the QuickBooks example, the implementer owns external application and OAuth setup, external customer and item creation or lookup, storage of external identifiers in Metronome custom fields, invoice transformation, and the destination upsert. Metronome supplies the finalized-invoice event and invoice data; the selected billing system stores its customer, item, and created invoice objects. The overall pattern may inform other use cases, but the named credentials, object mappings, fields, and request are QBO-specific. The page does not assign hosting, operational support, payment collection, tax, retries, idempotency, reconciliation, or ongoing object-synchronization ownership. Workato is an optional orchestration recommendation, not a documented complete implementation of those responsibilities.
+
+## Workato connector boundary
+
+Metronome documents an SDK-like Workato connector for performing actions on Metronome endpoints. It gives third-party invoicing, customer provisioning, and contract provisioning as example workflows. Setup requires generating a Metronome API token and pasting it into a Workato connection, and a unique connection is required for each Metronome environment. The page does not enumerate the connector's available actions, endpoint coverage, API-token permissions, workflow triggers, data mappings, error handling, retry behavior, or connection-rotation procedure; it therefore does not establish complete endpoint coverage or broader Workato capabilities.
+
+## Segment event-delivery integration
+
+The Metronome (Actions) destination connects one selected Segment source using a Metronome API token and maps Segment event fields into Metronome's usage-event format. Additional Destination Actions can pair mappings with triggers containing any number of conditions, such as excluding company-domain user emails. The page calls these action configurations `subscriptions`; in this context they are Segment conditional-delivery rules, not Metronome billing subscriptions or customer contracts. It does not define token scope or rotation, trigger overlap or evaluation order, duplicate delivery, retries, batching, response handling, replay, or observability.
+
 ## Sources
+
+- [[source-metronome-api-reference-invoices-regenerate-an-invoice]] - configured billing-provider distribution for regenerated invoices and bounded downstream side effects
+
+- [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]] — managed non-native invoice integration routes, QuickBooks object mapping, finalized-invoice export flow, and system-ownership boundaries
+
+- [[source-metronome-integrations-platform-integrations-workato-connector]] — SDK-like Workato connector setup with a Metronome API token and the unique-connection requirement for each Metronome environment
+
+- [[source-metronome-integrations-platform-integrations-segment]] - Segment source and token setup, usage-event field mappings, transaction-ID default, and conditional Destination Actions
+
+- [[source-metronome-integrations-tax-integrations-avalara]] — Stripe-hosted Avalara path, TaxCode metadata mapping, draft-invoice requirement, and rate-accuracy ownership
+
+- [[source-metronome-integrations-tax-integrations-anrok]] — Anrok-through-Stripe responsibility, customer and product mapping, invoice modes, and compliance-only coexistence with Stripe Tax
 
 - [[source-metronome-guides-get-started-stripe-marketplace-app]] — embedded Stripe Dashboard app, customer management, contract creation, and invoicing boundary
 - [[source-metronome-integrations-invoice-integrations-stripe]] — native invoice delivery, account routing, mappings, status synchronization, and Stripe limits

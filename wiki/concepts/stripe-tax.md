@@ -46,9 +46,15 @@ Stripe Tax supports both the newer Accounts v2 API (GA for Connect, public previ
 
 ## Metronome invoice integration
 
+Avalara AvaTax is a separate tax engine for Metronome-created Stripe invoices. It runs through Stripe's third-party tax-app framework, uses `invoiceitem.metadata.TaxCode`, and requires the invoice to remain in draft while Avalara calculates tax. Stripe's **Use automatic tax** setting is enabled for that framework, but this wording does not make Avalara a Stripe Tax calculation. The native Stripe Tax setup instead maps a Stripe product ID and derives classification from that Stripe product's tax code.
+
 For Metronome-created Stripe invoices, Stripe Tax calculates and applies tax when the Stripe invoice is finalized. The integration requires Stripe Tax activation and registration, a linked Stripe customer with an address and Taxable status, and a mapped Stripe product with the appropriate tax code.
 
 Metronome stores the Stripe product ID in `stripe_product_id` and maps it to `invoiceitem.price.product`. Multiple Metronome products can reuse one Stripe product when they share a tax code, so the custom field must not enforce uniqueness. Threshold and one-off payment-gated flows require explicit Stripe tax settings rather than account-level enablement alone.
+
+## Anrok compliance-only coexistence
+
+A Metronome integration guide documents a separate mode in which Stripe Tax performs the tax calculation while Anrok picks up Stripe transaction data for compliance, filing, and reporting. This differs from selecting Anrok as Stripe's third-party automatic-tax calculation provider. The guide does not establish that both engines calculate one invoice, nor does it define transaction-transfer timing, completeness, reconciliation, corrections, filing cadence, remittance, or failure handling.
 
 ## Payment Intents: Full Tax API
 
@@ -103,6 +109,10 @@ Use `stripe.taxRates.create()` when you need hard-coded rates instead of automat
 - **Tax reporting**: Dashboard exports; payment mode needs 2 exports (line item + totals); subscription mode uses Stripe Billing exports
 
 ## Sources
+
+- [[source-metronome-integrations-tax-integrations-avalara]] — boundary between native Stripe Tax and Avalara through Stripe's third-party tax-app framework
+
+- [[source-metronome-integrations-tax-integrations-anrok]] — distinction between Anrok as third-party calculator and Stripe Tax calculation with Anrok compliance, filing, and reporting
 
 - [[source-stripe-checkout-taxes]] — Stripe Tax + Checkout: automatic_tax param, new/existing customer flows, Accounts v2 + Customers v1, customer_update, wallet constraints
 - [[source-stripe-checkout-shipping]] — Shipping tax: `tax_code: 'txcd_92010001'` for ShippingRate objects

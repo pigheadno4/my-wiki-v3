@@ -33,10 +33,10 @@ APPENDIX_A_INVENTORY = (
     ('paypal/paypal-messages-android', 'https://github.com/paypal/paypal-messages-android', 'messaging-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('paypal/paypal-sdk-logos', 'https://github.com/paypal/paypal-sdk-logos', 'assets', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('paypal/paypal-rest-api-specifications', 'https://github.com/paypal/paypal-rest-api-specifications', 'api-specification', 'tier1', 'commit', False, 'default-branch', 'monthly'),
-    ('paypal-examples/v6-web-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-sample-integration', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
+    ('paypal-examples/v6-web-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-sample-integration', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
     ('paypal-examples/paypal-android-sdk-demo-app', 'https://github.com/paypal-examples/paypal-android-sdk-demo-app', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
-    ('paypal-examples/paypal-sdk-server-side-integration', 'https://github.com/paypal-examples/paypal-sdk-server-side-integration', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
+    ('paypal-examples/paypal-sdk-server-side-integration', 'https://github.com/paypal-examples/paypal-sdk-server-side-integration', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('paypal-examples/paypal-ios-sdk-demo-app', 'https://github.com/paypal-examples/paypal-ios-sdk-demo-app', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
     ('braintree/braintree_android', 'https://github.com/braintree/braintree_android', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/braintree_ios', 'https://github.com/braintree/braintree_ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
@@ -75,11 +75,11 @@ APPENDIX_A_INVENTORY = (
     ('metronome-industries/ai-eval', 'https://github.com/Metronome-Industries/ai-eval', 'evaluation-tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('metronome-industries/mintlify-docs', 'https://github.com/Metronome-Industries/mintlify-docs', 'docs-source', 'tier2', 'commit', False, 'default-branch', 'monthly'),
     ('metronome-industries/terraform-provider-metronome', 'https://github.com/Metronome-Industries/terraform-provider-metronome', 'terraform-provider', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('adyen/adyen-node-api-library', 'https://github.com/Adyen/adyen-node-api-library', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('adyen/adyen-react-native', 'https://github.com/Adyen/adyen-react-native', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('adyen/adyen-node-api-library', 'https://github.com/Adyen/adyen-node-api-library', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
+    ('adyen/adyen-react-native', 'https://github.com/Adyen/adyen-react-native', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-web', 'https://github.com/Adyen/adyen-web', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
-    ('adyen/adyen-android', 'https://github.com/Adyen/adyen-android', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
-    ('adyen/adyen-ios', 'https://github.com/Adyen/adyen-ios', 'mobile-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('adyen/adyen-android', 'https://github.com/Adyen/adyen-android', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
+    ('adyen/adyen-ios', 'https://github.com/Adyen/adyen-ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-magento2', 'https://github.com/Adyen/adyen-magento2', 'commerce-plugin', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-pos-mobile-ios', 'https://github.com/Adyen/adyen-pos-mobile-ios', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-pos-mobile-ios-test', 'https://github.com/Adyen/adyen-pos-mobile-ios-test', 'test-tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
@@ -183,6 +183,91 @@ class RegistryTests(unittest.TestCase):
             "enabled repository requires exactly one capsule",
             validate_enabled_policy(no_capsule),
         )
+
+    def test_enabled_commit_repository_requires_default_branch_commit_policy(self):
+        commit_capsule = CapsuleConfig(
+            id="sample-source",
+            adapter="commit-tree-v1",
+            source_id="sample",
+            dependency_scope="configured-repository-paths",
+            changed_path_policy="policy-bounded",
+        )
+        valid = self.repo(
+            id="paypal-examples/sample",
+            url="https://github.com/paypal-examples/sample",
+            track="default-branch",
+            version_strategy="commit",
+            capsules=(commit_capsule,),
+        )
+
+        self.assertEqual([], validate_enabled_policy(valid))
+
+        invalid_rows = (
+            (
+                self.repo(
+                    id="paypal-examples/sample",
+                    url="https://github.com/paypal-examples/sample",
+                    version_strategy="commit",
+                    capsules=(commit_capsule,),
+                ),
+                "default-branch tracking",
+            ),
+            (
+                self.repo(
+                    id="paypal-examples/sample",
+                    url="https://github.com/paypal-examples/sample",
+                    track="default-branch",
+                    version_strategy="commit",
+                    version_tracks=(VersionTrack("package:sample@1", "none", "none"),),
+                    capsules=(commit_capsule,),
+                ),
+                "must not define version tracks",
+            ),
+            (
+                self.repo(
+                    id="paypal-examples/sample",
+                    url="https://github.com/paypal-examples/sample",
+                    track="default-branch",
+                    version_strategy="commit",
+                ),
+                "exactly one commit capsule",
+            ),
+            (
+                self.repo(
+                    id="paypal-examples/sample",
+                    url="https://github.com/paypal-examples/sample",
+                    track="default-branch",
+                    version_strategy="commit",
+                    capsules=(CapsuleConfig(
+                        id="release-source",
+                        adapter="npm-tracked-source-v1",
+                        focus_packages=("sample",),
+                    ),),
+                ),
+                "commit-tree-v1 capsule",
+            ),
+            (
+                self.repo(
+                    id="paypal-examples/sample",
+                    url="https://github.com/paypal-examples/sample",
+                    track="default-branch",
+                    version_strategy="commit",
+                    capsules=(CapsuleConfig(
+                        id="commit-source",
+                        adapter="commit-tree-v1",
+                        dependency_scope="configured-repository-paths",
+                    ),),
+                ),
+                "safe source_id",
+            ),
+        )
+
+        for repo, message in invalid_rows:
+            with self.subTest(message=message):
+                self.assertTrue(
+                    any(message in error for error in validate_enabled_policy(repo)),
+                    validate_enabled_policy(repo),
+                )
 
     def test_registry_loads_immutable_nested_version_tracks_in_order(self):
         path = self.write_registry(
@@ -520,6 +605,112 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(340, capsule.max_capsule_files)
         self.assertEqual(3000000, capsule.max_capsule_utf8_bytes)
 
+    def test_adyen_ios_uses_the_reviewed_complete_swift_source_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(item for item in repos if item.id == "adyen/adyen-ios")
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:adyen-ios@5",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("5.25.1",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("adyen-ios-public-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("adyen-ios",), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(56, len(capsule.default_required_roots))
+        self.assertEqual(38, len(capsule.include_paths))
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(750, capsule.max_capsule_files)
+        self.assertEqual(4000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(800, capsule.max_packet_files)
+        self.assertEqual(5000000, capsule.max_packet_utf8_bytes)
+
+        required = set(capsule.default_required_roots)
+        includes = set(capsule.include_paths)
+        self.assertTrue({
+            "Adyen/Core",
+            "AdyenActions/Components",
+            "AdyenCard/Components",
+            "AdyenComponents/Apple Pay",
+            "AdyenDropIn/Components",
+            "AdyenSession/API",
+            "Demo/Common/IntegrationExamples",
+        }.issubset(required))
+        self.assertTrue({
+            "Adyen/Assets/Generated/LocalizationKey.swift",
+            "Demo/Configuration+secrets.swift",
+            "Demo/Configuration.swift",
+            "Package.swift",
+            "MIGRATION.md",
+        }.issubset(includes))
+
+    def test_adyen_android_uses_the_reviewed_complete_kotlin_source_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(item for item in repos if item.id == "adyen/adyen-android")
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:adyen-android@5",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("5.20.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("adyen-android-public-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("adyen-android",), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(53, len(capsule.default_required_roots))
+        self.assertEqual(133, len(capsule.include_paths))
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(1250, capsule.max_capsule_files)
+        self.assertEqual(5000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(1300, capsule.max_packet_files)
+        self.assertEqual(6000000, capsule.max_packet_utf8_bytes)
+
+        required = set(capsule.default_required_roots)
+        includes = set(capsule.include_paths)
+        self.assertTrue({
+            "components-core/src/main/java",
+            "drop-in/src/main/java",
+            "sessions-core/src/main/java",
+            "card/src/main/java",
+            "googlepay/src/main/java",
+            "example-app/src/main/java",
+        }.issubset(required))
+        self.assertTrue({
+            "README.md",
+            "settings.gradle",
+            "gradle/libs.versions.toml",
+            "drop-in/build.gradle",
+            "example-app/src/main/AndroidManifest.xml",
+            "card/src/main/res/values/strings.xml",
+        }.issubset(includes))
+
     def test_braintree_web_uses_the_reviewed_public_source_capsule(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
         braintree = next(repo for repo in repos if repo.id == "braintree/braintree-web")
@@ -816,6 +1007,135 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(380, capsule.max_packet_files)
         self.assertEqual(3500000, capsule.max_packet_utf8_bytes)
 
+    def test_adyen_react_native_uses_the_cross_platform_public_source_profile(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        react_native = next(
+            repo for repo in repos if repo.id == "adyen/adyen-react-native"
+        )
+
+        self.assertTrue(react_native.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:@adyen/react-native@2",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("2.12.0",),
+                ),
+            ),
+            react_native.version_tracks,
+        )
+        self.assertEqual(1, len(react_native.capsules))
+        capsule = react_native.capsules[0]
+        self.assertEqual("adyen-react-native-public-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("@adyen/react-native",), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(
+            ("android/src/main", "example/src", "ios", "src"),
+            capsule.default_required_roots,
+        )
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(16, len(capsule.include_paths))
+        self.assertTrue(
+            {
+                "adyen-react-native.podspec",
+                "android/build.gradle",
+                "android/dependencies.gradle",
+                "app.plugin.js",
+                "docs/Architecture.md",
+                "docs/Compatibility.md",
+                "docs/Configuration.md",
+                "docs/v2-MigrationGuide.md",
+                "example/README.md",
+                "example/package.json",
+                "package.json",
+            }.issubset(set(capsule.include_paths))
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(420, capsule.max_capsule_files)
+        self.assertEqual(4000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(470, capsule.max_packet_files)
+        self.assertEqual(5000000, capsule.max_packet_utf8_bytes)
+
+    def test_adyen_node_uses_checkout_deep_and_domain_inventory_profile(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        adyen_node = next(
+            repo for repo in repos if repo.id == "adyen/adyen-node-api-library"
+        )
+
+        self.assertTrue(adyen_node.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:@adyen/api-library@32",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("32.0.0",),
+                ),
+            ),
+            adyen_node.version_tracks,
+        )
+        self.assertEqual(1, len(adyen_node.capsules))
+        capsule = adyen_node.capsules[0]
+        self.assertEqual("adyen-node-checkout-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("@adyen/api-library",), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(
+            (
+                "doc",
+                "src/constants",
+                "src/helpers",
+                "src/httpClient",
+                "src/security",
+                "src/services",
+                "src/typings/checkout",
+                "src/typings/payment",
+                "src/typings/recurring",
+                "src/utils",
+            ),
+            capsule.default_required_roots,
+        )
+        self.assertEqual(
+            (
+                "LICENSE",
+                "README.md",
+                "VERSION",
+                "package.json",
+                "src/client.ts",
+                "src/config.ts",
+                "src/index.ts",
+                "src/notification/notificationRequest.ts",
+                "src/service.ts",
+                "src/typings/index.ts",
+                "src/typings/notification/amount.ts",
+                "src/typings/notification/models.ts",
+                "src/typings/notification/notification.ts",
+                "src/typings/notification/notificationItem.ts",
+                "src/typings/notification/notificationRequestItem.ts",
+                "src/webhooks.ts",
+                "tsconfig.json",
+            ),
+            capsule.include_paths,
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual(
+            ("35829dc91506c9d75f2227a2d1fee3e2ede206ea84184245748a9d179bd2e197",),
+            capsule.historical_policy_hashes,
+        )
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(620, capsule.max_capsule_files)
+        self.assertEqual(3500000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(700, capsule.max_packet_files)
+        self.assertEqual(5000000, capsule.max_packet_utf8_bytes)
+
     def test_native_sdks_use_tagged_tree_profiles(self):
         repos = {
             repo.id: repo
@@ -926,6 +1246,100 @@ class RegistryTests(unittest.TestCase):
             for repo in repos
         )
         self.assertEqual(APPENDIX_A_INVENTORY, actual)
+
+    def test_paypal_v6_sample_has_reviewed_enabled_commit_policy(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["paypal-examples/v6-web-sdk-sample-integration"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual("sample-app", repo.repo_type)
+        self.assertEqual("tier1", repo.priority)
+        self.assertEqual("monthly", repo.collection_frequency)
+        self.assertEqual("default-branch", repo.track)
+        self.assertEqual("commit", repo.version_strategy)
+        self.assertEqual((), repo.version_tracks)
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("commit-tree-v1", capsule.adapter)
+        self.assertEqual("v6-web-sdk-sample-integration", capsule.source_id)
+        self.assertEqual((), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(
+            (
+                "client/components",
+                "client/prebuiltPages/react/src",
+                "client/shared",
+                "server/node/src",
+            ),
+            capsule.default_required_roots,
+        )
+        self.assertEqual(
+            (
+                ".env.sample",
+                "LICENSE",
+                "README.md",
+                "client/index.html",
+                "client/package.json",
+                "client/prebuiltPages/react/README.md",
+                "client/prebuiltPages/react/package.json",
+                "client/prebuiltPages/react/tsconfig.json",
+                "client/prebuiltPages/react/vite.config.ts",
+                "server/node/README.md",
+                "server/node/package.json",
+                "server/node/tsconfig.json",
+            ),
+            capsule.include_paths,
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(300, capsule.max_capsule_files)
+        self.assertEqual(1000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(320, capsule.max_packet_files)
+        self.assertEqual(1900000, capsule.max_packet_utf8_bytes)
+
+    def test_paypal_server_side_sample_has_reviewed_enabled_commit_policy(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["paypal-examples/paypal-sdk-server-side-integration"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual("sample-app", repo.repo_type)
+        self.assertEqual("tier1", repo.priority)
+        self.assertEqual("monthly", repo.collection_frequency)
+        self.assertEqual("default-branch", repo.track)
+        self.assertEqual("commit", repo.version_strategy)
+        self.assertEqual((), repo.version_tracks)
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("commit-tree-v1", capsule.adapter)
+        self.assertEqual("paypal-sdk-server-side-integration", capsule.source_id)
+        self.assertEqual((), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(
+            ("docs", "public", "src"),
+            capsule.default_required_roots,
+        )
+        self.assertEqual(
+            ("README.md", "example.env", "package.json", "tsconfig.json"),
+            capsule.include_paths,
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(50, capsule.max_capsule_files)
+        self.assertEqual(250000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(60, capsule.max_packet_files)
+        self.assertEqual(900000, capsule.max_packet_utf8_bytes)
 
 
 if __name__ == "__main__":

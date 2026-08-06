@@ -1,0 +1,63 @@
+/*
+ * Copyright (c) 2019 Adyen N.V.
+ *
+ * This file is open source and available under the MIT license. See the LICENSE file for more info.
+ *
+ * Created by caiof on 8/2/2019.
+ */
+
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.parcelize
+}
+
+// Maven artifact
+ext.mavenArtifactId = "components-core"
+ext.mavenArtifactName = "Adyen Checkout Components Core"
+ext.mavenArtifactDescription = "Adyen checkout Components Core module."
+
+apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
+
+android {
+    namespace 'com.adyen.checkout.components.core'
+    compileSdk libs.versions.compile.sdk.get().toInteger()
+
+    defaultConfig {
+        minSdk libs.versions.min.sdk.get().toInteger()
+        targetSdk libs.versions.target.sdk.get().toInteger()
+
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    testFixtures {
+        enable = true
+    }
+}
+
+dependencies {
+    // Checkout
+    api project(':checkout-core')
+
+    // Dependencies
+    api libs.androidx.activity
+    api libs.androidx.fragment
+    api libs.bundles.androidx.lifecycle
+
+    //Tests
+    testImplementation testFixtures(project(':test-core'))
+    testImplementation libs.json
+    testImplementation libs.bundles.junit
+    testImplementation libs.androidx.test.lifecycle
+    testImplementation libs.bundles.kotlin.coroutines.test
+    testImplementation libs.bundles.mockito
+    testImplementation libs.robolectric
+
+    androidTestImplementation libs.bundles.androidx.test
+    androidTestImplementation libs.bundles.mockito.android
+    androidTestImplementation libs.bundles.espresso
+
+    testFixturesImplementation libs.bundles.junit
+    testFixturesImplementation libs.bundles.mockito
+}

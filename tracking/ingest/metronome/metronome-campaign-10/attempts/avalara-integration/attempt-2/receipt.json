@@ -1,0 +1,123 @@
+{
+  "job_id": "avalara-integration",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Configure Avalara AvaTax with Metronome and Stripe\"\ntype: source\ndate_ingested: 2026-08-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/integrations/tax-integrations/avalara\"\nraw_files:\n  - \"metronome/integrations/tax-integrations/avalara-2026-07-13.md\"\ntags: [metronome, stripe, avalara, avatax, tax-integration, invoicing]\n---\n\n## Overview\n\nThis guide configures Avalara AvaTax for invoices that Metronome delivers through Stripe. Avalara is not connected directly to Metronome: its Stripe Marketplace app uses Stripe's third-party tax-app framework, while Metronome supplies line-item tax-code metadata and keeps the Stripe invoice in draft for tax calculation before finalization.\n\n## Key takeaways\n\n- Install and connect the Avalara AvaTax app in Stripe, select Avalara as the tax provider, enable automatic tax, complete applicable tax registrations, and connect the Stripe account to Metronome.\n- Every Metronome customer must be linked to a Stripe customer that has an `address` and is marked Taxable; the address determines jurisdiction, and a missing address causes tax application to fail.\n- Create a case-sensitive Metronome Product custom field named `TaxCode`, populate it with Avalara codes, and map `ContractProduct.TaxCode` to `invoiceitem.metadata.TaxCode`.\n- Turn **Leave invoices as drafts** on. Avalara requires the Stripe invoice to remain a draft while it calculates and applies tax before finalization.\n- Avalara determines the rate from the customer address and line-item tax code. Missing codes receive a default rate and can be misclassified; Avalara support owns unresolved rate-accuracy questions.\n\n## Responsibility and prerequisites\n\nMetronome remains the usage-billing and invoice-origin system and passes configured `TaxCode` metadata into the Stripe invoice. Stripe is the invoice provider and hosts the Avalara app and third-party tax-app framework. Avalara calculates tax from the Stripe customer location and line-item classification; the source directs unresolved rate-accuracy issues to Avalara support.\n\nThe setup requires an installed AvaTax app connected to an Avalara account, Avalara selected under **Settings > Tax > Integrations**, **Use automatic tax** enabled, and registrations completed in applicable sales-tax, VAT, and GST jurisdictions. The Stripe account must be connected to Metronome, each Metronome customer must be linked to a Stripe customer ID, and each Stripe customer must have an `address` and Taxable status.\n\nThe phrase **Use automatic tax** is a Stripe setting used by the third-party app framework here; it does not make Avalara Stripe's native Stripe Tax calculation engine or product. The existing Stripe Tax guide documents Stripe's own tax engine and a different product mapping.\n\n## Tax-code metadata mapping\n\nCreate a Product custom field named exactly `TaxCode` and assign each product its Avalara tax code. The documented entity mapping is:\n\n| Stripe vendor entity | Stripe vendor key | Metronome entity | Metronome key |\n| --- | --- | --- | --- |\n| `invoiceitem.metadata` | `TaxCode` | `ContractProduct` | `TaxCode` |\n\nThe setup prose names the custom-field entity **Product**, while the mapping row names **ContractProduct**. This matches the same terminology split documented by the Stripe Tax source but is not reconciled here; verify the mapping context rather than assuming those are interchangeable API entities.\n\nIf metadata lacks `TaxCode`, the guide first says standard state sales tax applies for the customer's jurisdiction and later describes Avalara applying a default rate that may misclassify the item. These statements support explicit codes as the safe configuration, but do not define the default code, rate, or behavior outside state-sales-tax contexts.\n\n## Draft invoice flow\n\nSet **Leave invoices as drafts** to on in the Metronome Stripe integration settings. The documented test generates an invoice in Metronome, inspects the draft in Stripe, and checks that tax line items appear on the finalized Stripe invoice after Avalara processes it.\n\nThis is provider-specific behavior: the existing Stripe Tax guide generally recommends not retaining drafts when tax should calculate on sync, whereas Avalara requires the draft interval to calculate before finalization. The sources do not conflict because they describe different tax engines. This Avalara page does not identify who or what finalizes the invoice, how long processing takes, how failures are retried, or how a draft without tax is prevented from finalizing.\n\n## Testing and troubleshooting\n\nTest with a Metronome sandbox connected to a Stripe sandbox, a linked Stripe customer with a valid address, and an invoice generated from Metronome. If tax is missing or the invoice fails, check customer location data, Taxable status, the draft-invoice setting, the saved entity mapping, product `TaxCode` values, and Stripe's default tax behavior. Escalate setup issues to the Metronome representative and rate-accuracy issues to Avalara support.\n\nA 0% rate is not necessarily an error: the guide notes that some products, including SaaS in some states, can be exempt. The source does not document exemption-certificate handling, tax-registration lifecycle, address-validation rules, rounding, inclusive versus exclusive default behavior, invoice-finalization ownership, payment collection, refunds, credit notes, filing, remittance, reconciliation, webhook behavior, retry semantics, or historical correction.\n\n## Related\n\n- Companies: [[metronome]], [[stripe]]\n- Concepts: [[metronome-invoicing]], [[metronome-integrations]], [[stripe-tax]]\n- Related sources: [[source-metronome-integrations-invoice-integrations-stripe]], [[source-metronome-integrations-tax-integrations-stripe-tax]]\n\n## Raw Sources\n\n- [[raw/metronome/integrations/tax-integrations/avalara-2026-07-13|2026-07-13 snapshot \u2014 Avalara AvaTax setup, metadata mapping, draft-invoice requirement, and responsibility boundaries]]\n",
+  "quotes": [
+    {
+      "text": "If you use **Stripe** as your invoice provider, Avalara integrates through Stripe rather than directly with Metronome through the [Avalara AvaTax app](https://marketplace.stripe.com/apps/avalara-avatax) from the Stripe App Marketplace. This uses Stripe's [third-party tax app framework](https://docs.stripe.com/tax/third-party-apps) for inline tax calculation.",
+      "location": "line 13, integration path and ownership boundary"
+    },
+    {
+      "text": "The Customer Address field is the `address` object on the [Stripe Customer object](https://docs.stripe.com/api/customers/object#customer_object-address), which determines tax jurisdiction. Failure to assign a Customer Address results in failure to apply tax.",
+      "location": "line 25, jurisdiction input and missing-address failure"
+    },
+    {
+      "text": "| `invoiceitem.metadata` | `TaxCode`         | `ContractProduct` | `TaxCode`     |",
+      "location": "line 42, exact entity-mapping row"
+    },
+    {
+      "text": "Set **\"Leave invoices as drafts\"** to **ON** in your Stripe integration settings (under **Connections > Integrations > Stripe > Settings**).\n\n<Note>\n  Avalara requires invoices to remain in draft so it can calculate and apply tax before finalization.\n</Note>",
+      "location": "lines 52-56, required draft setting and calculation timing"
+    },
+    {
+      "text": "Avalara determines tax rates based on the customer's address and the tax code assigned to the line item. Some products\u2014like SaaS in certain states\u2014may be tax-exempt, which results in a 0% rate. Verify the tax code you've assigned by checking the [Avalara tax code catalog](https://taxcode.avatax.avalara.com/).\n\nIf the rate still seems incorrect, contact Avalara support directly, as tax rate accuracy is managed on their side.",
+      "location": "lines 75-77, rate inputs, exemption boundary, and Avalara support ownership"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "avalara-metronome-integration-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Threshold payment-gate boundary",
+        "proposed_markdown": "## Avalara tax-app boundary\n\nFor Stripe-delivered invoices using Avalara, AvaTax integrates through Stripe's Marketplace app and third-party tax-app framework rather than directly with Metronome. The guide creates the case-sensitive `TaxCode` custom field on Metronome `Product`, while its mapping row sends `ContractProduct.TaxCode` to `invoiceitem.metadata.TaxCode`; Stripe hosts the draft invoice and integration settings; Avalara calculates tax from the customer address and line-item code and owns unresolved rate-accuracy questions. The guide requires **Leave invoices as drafts** to remain on so Avalara can calculate and apply tax before finalization, but it does not define finalization ownership, processing time, retries, or safeguards against finalizing without tax.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not describe Avalara as directly integrated with Metronome or as Stripe Tax; the source identifies Stripe's third-party tax-app framework.",
+          "The source names Product for custom-field creation but ContractProduct in the mapping row; preserve that unresolved terminology boundary."
+        ]
+      },
+      {
+        "update_id": "avalara-metronome-integrations-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-tax-integrations-avalara]] \u2014 Stripe-hosted Avalara path, TaxCode metadata mapping, draft-invoice requirement, and rate-accuracy ownership",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "avalara-metronome-invoicing-draft-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Native Stripe invoice delivery",
+        "proposed_markdown": "For Avalara AvaTax on Stripe-delivered invoices, Metronome must leave the Stripe invoice in draft so Avalara can calculate and apply tax before finalization. This differs from the Stripe Tax guide's usual recommendation to avoid retaining drafts when tax should calculate on sync, but the settings are provider-specific rather than contradictory. The Avalara page confirms tax line items on the finalized invoice after processing without defining who finalizes it, processing latency, retry behavior, or a guard against taxless finalization.",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": [
+          "Preserve the provider-specific distinction: Avalara requires drafts on, while the existing Stripe Tax source describes Stripe's own tax engine and a different normal setting."
+        ]
+      },
+      {
+        "update_id": "avalara-metronome-invoicing-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-tax-integrations-avalara]] \u2014 third-party Avalara calculation on draft Stripe invoices and finalization responsibility boundary",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "avalara-stripe-tax-product-boundary",
+        "target_path": "wiki/concepts/stripe-tax.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Metronome invoice integration",
+        "proposed_markdown": "Avalara AvaTax is a separate tax engine for Metronome-created Stripe invoices. It runs through Stripe's third-party tax-app framework, uses `invoiceitem.metadata.TaxCode`, and requires the invoice to remain in draft while Avalara calculates tax. Stripe's **Use automatic tax** setting is enabled for that framework, but this wording does not make Avalara a Stripe Tax calculation. The native Stripe Tax setup instead maps a Stripe product ID and derives classification from that Stripe product's tax code.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not merge Avalara's metadata TaxCode mapping or draft requirement into the native Stripe Tax setup."
+        ]
+      },
+      {
+        "update_id": "avalara-stripe-tax-source-link",
+        "target_path": "wiki/concepts/stripe-tax.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-tax-integrations-avalara]] \u2014 boundary between native Stripe Tax and Avalara through Stripe's third-party tax-app framework",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/integrations/tax-integrations/avalara-2026-07-13.md",
+  "raw_sha256": "669af4d8d1bd834e66ef476bc757315c1771076659d5058b5caa1826468e6e73",
+  "status": "candidate_ready"
+}

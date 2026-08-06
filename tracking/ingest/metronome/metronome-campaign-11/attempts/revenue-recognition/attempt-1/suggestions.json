@@ -1,0 +1,104 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "revenue-recognition-reporting-model",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "before ## Sources",
+      "proposed_markdown": "## Revenue-recognition reporting model\n\nMetronome documents daily-granularity transaction and ledger data, available through APIs or Data Export, for merchant-owned revenue-recognition workflows by product and category. The reporting categories are on-demand usage, prepaid-commit drawdown, postpaid-commit drawdown, overage, and credit drawdown. In the guide's query model, invoice line items and selected balance-ledger entries supply the amounts; `FINALIZED` invoices form the recognized-revenue report and `DRAFT` invoices form the accrued-revenue report. Automated invoice-deduction and postpaid-true-up ledger entries are excluded when the same amount already appears in invoice line items, while `prepaid_segment_expiration` is included because Metronome does not invoice that expiration. Metronome explicitly does not create revenue journal entries. The page does not define a governing accounting standard, performance obligations, allocation, close controls, corrections, or auditor approval, and invoice status plus exported data is not by itself proof of accounting correctness. Existing export grain, freshness, at-least-once delivery, and latest-row-selection cautions still apply.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Present the recognition timing and status mappings as Metronome's documented reporting model, not as independent accounting advice or proof of compliance with a specific standard.",
+        "Preserve Metronome's explicit boundary that it supplies data but does not create revenue journal entries.",
+        "Do not override the existing Data Export cadence, grain, nullability, snapshot, at-least-once, and latest-row-selection cautions.",
+        "Verify the source's unresolved association between postpaid automated deductions and `CONTRACT_TRUEUP` line items before implementing a production query."
+      ]
+    },
+    {
+      "update_id": "revenue-recognition-reporting-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition]] - revenue categories, invoice and ledger query model, finalized-versus-draft reporting, and journal-entry ownership boundary",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "revenue-recognition-credit-commit-treatment",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ### Balance retrieval and ledger calculation",
+      "proposed_markdown": "### Revenue-reporting treatment\n\nMetronome's revenue-recognition guide treats prepaid-commit purchase invoices as deferred revenue, prepaid drawdown invoices as recognized as consumption occurs, and unused prepaid expiration as recognized at period end. Postpaid usage is recognized as the balance draws down, with any unmet minimum reported when the true-up invoice is issued. Free credits are never paid for and do not affect deferred revenue, although their drawdown may have a contra-revenue effect. For line-item-based reports, the guide says to ignore `credit_automated_invoice_deduction` and `prepaid_automated_invoice_deduction` on `CONTRACT_USAGE`, plus `postpaid_automated_invoice_deduction` and `postpaid_trueup` where invoice line items already include the amounts; include `prepaid_segment_expiration` because Metronome does not invoice that expiration, and usually ignore `credit_segment_expiration` because free-credit expiration does not affect revenue. These rules are documented report-construction guidance, not a complete merchant accounting policy.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Do not collapse free credits and paid prepaid commits; the source distinguishes their deferred- and contra-revenue effects.",
+        "Apply ledger exclusions only in the stated line-item reporting context so the same amounts are not counted twice.",
+        "Do not present vendor wording about entitlement to recognize revenue as a substitute for contract-specific accounting policy or auditor judgment.",
+        "The page does not reconcile monthly postpaid drawdown with its statement that the automated deduction duplicates `CONTRACT_TRUEUP` line items; preserve this uncertainty."
+      ]
+    },
+    {
+      "update_id": "revenue-recognition-credits-commits-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition]] - prepaid and postpaid reporting treatment, free-credit contra-revenue boundary, and ledger double-counting exclusions",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "revenue-recognition-invoice-classification",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "before ## Dashboard lifecycle overview",
+      "proposed_markdown": "## Revenue-reporting invoice classification\n\nMetronome's financial-reporting guide classifies `CONTRACT_SCHEDULED` invoices as scheduled charges including prepaid purchases, `CONTRACT_USAGE` invoices as usage charges, and `CONTRACT_TRUEUP` invoices as postpaid true-up charges. Invoice service-period timestamps select the target ERP accounting period, `line_items.product_id` maps the amount to a product or ERP SKU, and a populated `line_items.commit_id` joins to `balances.id` so `balances.type` classifies the amount as `credit`, `prepaid`, or `postpaid`. A null commit ID leaves on-demand versus overage classification to client-defined contract or commit metadata. The guide maps `FINALIZED` invoices to recognized-revenue reporting and `DRAFT` invoices to accrued-revenue reporting, with finalized and draft invoices transferred in separate export tables. It does not define metadata completeness, void and correction handling, downstream posting state, journal entries, or whether those status filters satisfy a particular accounting standard or close control.",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not treat `FINALIZED` or `DRAFT` as a standalone accounting conclusion; the source documents report filters and leaves journal-entry creation downstream.",
+        "Do not infer on-demand versus overage when `commit_id` is null without the client-defined metadata the guide requires.",
+        "Do not infer void, regeneration, correction, refund, downstream payment, or ERP-posting behavior from this page.",
+        "Do not generalize the page's one-or-more-line-items statement to `DRAFT_INCOMPLETE` export rows, which the separate database reference says can lack totals and line items."
+      ]
+    },
+    {
+      "update_id": "revenue-recognition-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition]] - invoice-type and line-item classification, finalized-versus-draft revenue reporting, and downstream journal-entry boundary",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

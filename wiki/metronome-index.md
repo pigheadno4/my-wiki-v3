@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 70 |
-| Documentation pages pending ingest | 155 |
+| Source summaries ingested | 91 |
+| Raw pages without source summaries | 134 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -93,6 +93,27 @@ Operational evidence:
 - [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]] — future-credit versus A/R memo boundary, invoice-state corrections, re-billing, and refund ownership
 - [[source-metronome-api-reference-security-get-services]] — bearer-authenticated service registry, IP direction labels, schema, and notice boundary
 - [[source-metronome-api-reference-alerts-reset-a-threshold-notification]] — customer-alert reset, asynchronous reassessment, empty `200`, and idempotency unknowns
+- [[source-metronome-integrations-platform-integrations-workato-connector]] — Workato connector installation, API-token connection, example workflows, and environment isolation
+- [[source-metronome-guides-platform-configuration-audit-logs]] — action attribution, outcome visibility, request correlation, and audit-evidence boundaries
+- [[source-metronome-guides-platform-configuration-single-sign-on-sso]] — SAML team login, identity-provider access removal, retained metadata, and password-login cutover
+- [[source-metronome-guides-platform-configuration-allowlist]] — registry polling, network-rule automation, stale-allowlist risk, and notice wording
+- [[source-metronome-integrations-platform-integrations-segment]] — Segment source/token setup, explicit event mappings, default message ID, and conditional actions
+- [[source-metronome-integrations-tax-integrations-avalara]] — Avalara tax-app workflow, metadata mapping, draft requirement, and native Stripe Tax distinction
+- [[source-metronome-integrations-tax-integrations-anrok]] — Anrok tax calculation and compliance modes with Stripe invoice configuration
+- [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]] — historical contract/invoice migration, calculated totals, balance effects, preview, and breakdowns
+- [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-sql-editor]] — SQL inputs and functions, output-column fallback, granularity, and scheduled metric swaps
+- [[source-metronome-guides-implement-metronome-production-checklist]] — bounded production-readiness checks for usage, pricing, contracts, invoices, controls, and operations
+- [[source-metronome-plans-shared-endpoints-notifications]] — shared Plan and Contract alert routes, entity-specific parameter boundaries, and Plan alert types
+- [[source-metronome-plans-shared-endpoints-invoices]] — shared Plan and Contract invoice operations, adjustments, sub-line items, and tier detail
+- [[source-metronome-guides-reporting-insights-financial-reporting-reconcile-data]] — Data Export and API reconciliation patterns across Metronome, Salesforce, and Stripe
+- [[source-metronome-api-reference-invoices-void-an-invoice]] — invoice void endpoint, requiredness boundaries, intended uses, and downstream unknowns
+- [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition]] — revenue-reporting categories, invoice and ledger query model, and accounting ownership boundary
+- [[source-metronome-api-reference-notifications-list-system-notification-event-types]] — lifecycle event-type discovery, response taxonomy, and webhook-publication status
+- [[source-metronome-api-reference-invoices-regenerate-an-invoice]] — invoice regeneration, recalculation and distribution wording, and identity contradiction
+- [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]] — finalized-invoice export flow, QuickBooks transformation, and integration ownership boundaries
+- [[source-metronome-api-reference-invoices-add-a-one-time-charge]] — deprecated Plans one-time charge contract, product restriction, and empty response boundary
+- [[source-metronome-guides-reporting-insights-in-app-reporting]] — report generation, beta dashboards, ARR calculations, defaults, and freshness limits
+- [[source-metronome-api-reference-custom-fields]] — custom-field purpose, supported object examples, persistence, uniqueness, and invoice-line propagation
 
 ## Concepts
 
@@ -113,6 +134,7 @@ Operational evidence:
 - [[metronome-spend-trackers]] — public-beta commit-purchase accumulators, threshold-discount integration, retrieval, and billing-state unknowns
 - [[metronome-spend-threshold-billing]] — contract-level incremental collection with optional commit-release payment gating, distinct from product-access enforcement and a customer-wide cross-contract cap
 - [[metronome-currencies-and-custom-pricing-units]] — supported fiat currencies, Metronome-specific API denomination, custom-unit rates, balance drawdown, and invoice conversion
+- [[metronome-custom-fields]] — platform-object metadata, external-system mappings, uniqueness, and persistence
 
 ## Related platforms
 

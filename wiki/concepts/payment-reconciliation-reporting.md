@@ -102,6 +102,10 @@ HTTP 429 → read `Retry-After` header, use exponential backoff.
 - [[stripe]] — reporting dashboard + sigma (SQL-based analytics)
 - **Adyen** — settlement detail reports, DataTeam reports
 
+## Billing-data reconciliation beyond processor settlement
+
+Metronome documents a billing-data reconciliation pattern that extends beyond matching processor transactions or settlement records to internal accounting data. Data Export supports warehouse-scale comparisons, while list endpoints provide lower-latency access; the worked flow maps Salesforce contract records through custom fields and compares a customer's most recent finalized Metronome invoice with Stripe. This evidence covers cross-system contract terms and invoice records, not proof of payment, settlement, or money movement. The guide does not show the Salesforce-side join, the Stripe matching key, mismatch remediation, export completeness, pagination, or accounting sign-off. [[source-metronome-guides-reporting-insights-financial-reporting-reconcile-data]]
+
 ## Sources
 
 - [[source-paypal-reports-analytics]] — Reports & Analytics overview, integration options, SFTP automation

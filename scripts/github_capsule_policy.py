@@ -9,13 +9,16 @@ from github_canonical import canonical_json_bytes, canonical_sha256, safe_policy
 
 NPM_CAPSULE_ADAPTER = "npm-tracked-source-v1"
 TAGGED_TREE_ADAPTER = "tagged-tree-v1"
-CAPSULE_ADAPTERS = frozenset((NPM_CAPSULE_ADAPTER, TAGGED_TREE_ADAPTER))
+COMMIT_TREE_ADAPTER = "commit-tree-v1"
+CAPSULE_ADAPTERS = frozenset((NPM_CAPSULE_ADAPTER, TAGGED_TREE_ADAPTER, COMMIT_TREE_ADAPTER))
 CAPSULE_ADAPTER = NPM_CAPSULE_ADAPTER
 NPM_DEPENDENCY_SCOPE = "internal-runtime-closure"
 TAGGED_TREE_DEPENDENCY_SCOPE = "configured-repository-paths"
+COMMIT_TREE_DEPENDENCY_SCOPE = "configured-repository-paths"
 DEPENDENCY_SCOPES = {
     NPM_CAPSULE_ADAPTER: NPM_DEPENDENCY_SCOPE,
     TAGGED_TREE_ADAPTER: TAGGED_TREE_DEPENDENCY_SCOPE,
+    COMMIT_TREE_ADAPTER: COMMIT_TREE_DEPENDENCY_SCOPE,
 }
 DEPENDENCY_SCOPE = NPM_DEPENDENCY_SCOPE
 DEFAULT_CHANGED_PATH_POLICY = "package-owned"
@@ -25,6 +28,7 @@ CATEGORY_CLASSIFIER = "excluded-categories-v1"
 WORKSPACE_RESOLVERS = {
     NPM_CAPSULE_ADAPTER: "npm-workspaces-v1",
     TAGGED_TREE_ADAPTER: "single-tagged-tree-v1",
+    COMMIT_TREE_ADAPTER: "exact-commit-tree-v1",
 }
 WORKSPACE_RESOLVER = WORKSPACE_RESOLVERS[NPM_CAPSULE_ADAPTER]
 DEFAULT_REQUIRED_ROOTS = ("src",)
@@ -32,9 +36,12 @@ DEFAULT_EXCLUDED_CATEGORIES = ("fixtures", "stories", "tests")
 EXCLUDED_CATEGORIES = frozenset(DEFAULT_EXCLUDED_CATEGORIES)
 _CAPSULE_ID = re.compile(r"[a-z0-9][a-z0-9-]{0,62}\Z")
 _BLOB_OID = re.compile(r"(?:[0-9a-f]{40}|[0-9a-f]{64})\Z")
+_SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 
-_CAPSULE_REQUIRED_KEYS = {"id", "adapter", "focus_packages"}
+_CAPSULE_REQUIRED_KEYS = {"id", "adapter"}
 _CAPSULE_OPTIONAL_KEYS = {
+    "focus_packages",
+    "source_id",
     "dependency_scope",
     "changed_path_policy",
     "default_required_roots",
@@ -48,6 +55,7 @@ _CAPSULE_OPTIONAL_KEYS = {
     "max_packet_files",
     "max_packet_utf8_bytes",
     "package_overrides",
+    "historical_policy_hashes",
 }
 _OVERRIDE_KEYS = {"name", "required_roots", "generated_target_paths", "include_paths"}
 _ALLOWLIST_KEYS = {"path", "blob_oid", "detector_code"}
@@ -72,7 +80,8 @@ class SecretAllowlist:
 class CapsuleConfig:
     id: str
     adapter: str
-    focus_packages: Tuple[str, ...]
+    focus_packages: Tuple[str, ...] = ()
+    source_id: str = ""
     dependency_scope: str = DEPENDENCY_SCOPE
     changed_path_policy: str = DEFAULT_CHANGED_PATH_POLICY
     default_required_roots: Tuple[str, ...] = DEFAULT_REQUIRED_ROOTS
@@ -86,6 +95,7 @@ class CapsuleConfig:
     max_packet_files: int = 160
     max_packet_utf8_bytes: int = 1000000
     package_overrides: Tuple[PackageOverride, ...] = ()
+    historical_policy_hashes: Tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -174,7 +184,8 @@ def _parse_capsule(row: Dict[str, object], prefix: str) -> CapsuleConfig:
         CapsuleConfig(
             id=_required_string(row, "id", prefix),
             adapter=adapter,
-            focus_packages=_strings(row, "focus_packages", prefix, required=True),
+            focus_packages=_strings(row, "focus_packages", prefix),
+            source_id=_optional_string(row, "source_id", "", prefix, allow_empty=True),
             dependency_scope=_optional_string(
                 row,
                 "dependency_scope",
@@ -198,6 +209,7 @@ def _parse_capsule(row: Dict[str, object], prefix: str) -> CapsuleConfig:
             max_packet_files=_positive_int(row, "max_packet_files", 160, prefix),
             max_packet_utf8_bytes=_positive_int(row, "max_packet_utf8_bytes", 1000000, prefix),
             package_overrides=_parse_overrides(row.get("package_overrides", []), prefix),
+            historical_policy_hashes=_policy_hashes(row.get("historical_policy_hashes", ()), prefix),
         ),
         prefix,
     )
@@ -240,7 +252,23 @@ def _normalize_capsule(capsule: CapsuleConfig, prefix: str) -> CapsuleConfig:
             + " adapter must be one of "
             + ", ".join(sorted(CAPSULE_ADAPTERS))
         )
-    focus_packages = _package_names(capsule.focus_packages, prefix + " focus_packages", required=True)
+    focus_packages = _package_names(
+        capsule.focus_packages,
+        prefix + " focus_packages",
+        required=capsule.adapter != COMMIT_TREE_ADAPTER,
+    )
+    source_id = capsule.source_id
+    if capsule.adapter == COMMIT_TREE_ADAPTER:
+        if focus_packages:
+            raise ValueError(prefix + " commit-tree-v1 forbids focus_packages")
+        if not isinstance(source_id, str) or not safe_policy_path(source_id):
+            raise ValueError(prefix + " commit-tree-v1 requires a safe source_id")
+        if capsule.default_generated_target_paths:
+            raise ValueError(prefix + " commit-tree-v1 forbids generated target paths")
+        if capsule.package_overrides:
+            raise ValueError(prefix + " commit-tree-v1 forbids package overrides")
+    elif source_id:
+        raise ValueError(prefix + " " + capsule.adapter + " forbids source_id")
     if capsule.adapter == TAGGED_TREE_ADAPTER and len(focus_packages) != 1:
         raise ValueError(prefix + " tagged-tree-v1 requires exactly one focus package")
     dependency_scope = DEPENDENCY_SCOPES[capsule.adapter]
@@ -283,19 +311,28 @@ def _normalize_capsule(capsule: CapsuleConfig, prefix: str) -> CapsuleConfig:
             prefix + " package override " + str(index),
         )
         overrides.append(normalized)
+    historical_policy_hashes = _policy_hashes(
+        capsule.historical_policy_hashes, prefix
+    )
     return CapsuleConfig(
-        capsule.id,
-        capsule.adapter,
-        focus_packages,
-        dependency_scope,
-        capsule.changed_path_policy,
-        required_roots,
-        generated_targets,
-        include_paths,
-        excluded_categories,
-        capsule.secret_detector,
-        *limits,
-        tuple(sorted(overrides, key=lambda item: item.name)),
+        id=capsule.id,
+        adapter=capsule.adapter,
+        focus_packages=focus_packages,
+        source_id=source_id,
+        dependency_scope=dependency_scope,
+        changed_path_policy=capsule.changed_path_policy,
+        default_required_roots=required_roots,
+        default_generated_target_paths=generated_targets,
+        include_paths=include_paths,
+        excluded_categories=excluded_categories,
+        secret_detector=capsule.secret_detector,
+        max_file_bytes=limits[0],
+        max_capsule_files=limits[1],
+        max_capsule_utf8_bytes=limits[2],
+        max_packet_files=limits[3],
+        max_packet_utf8_bytes=limits[4],
+        package_overrides=tuple(sorted(overrides, key=lambda item: item.name)),
+        historical_policy_hashes=historical_policy_hashes,
     )
 
 
@@ -324,11 +361,10 @@ def _normalize_allowlist(item: SecretAllowlist, prefix: str) -> SecretAllowlist:
 
 
 def _policy_payload(capsule: CapsuleConfig, allowlist: Tuple[SecretAllowlist, ...]) -> Dict[str, object]:
-    return {
+    payload = {
         "adapter": capsule.adapter,
         "category_classifier": CATEGORY_CLASSIFIER,
         "changed_path_policy": capsule.changed_path_policy,
-        "focus_packages": list(capsule.focus_packages),
         "id": capsule.id,
         "dependency_scope": capsule.dependency_scope,
         "default_required_roots": list(capsule.default_required_roots),
@@ -356,6 +392,11 @@ def _policy_payload(capsule: CapsuleConfig, allowlist: Tuple[SecretAllowlist, ..
             for item in allowlist
         ],
     }
+    if capsule.adapter == COMMIT_TREE_ADAPTER:
+        payload["source_id"] = capsule.source_id
+    else:
+        payload["focus_packages"] = list(capsule.focus_packages)
+    return payload
 
 
 def _candidate_blob_keys(value: Sequence[Tuple[str, str]]) -> set:
@@ -400,6 +441,13 @@ def _excluded_categories(value: object, prefix: str) -> Tuple[str, ...]:
     return categories
 
 
+def _policy_hashes(value: object, prefix: str) -> Tuple[str, ...]:
+    hashes = _unique_strings(value, prefix + " historical_policy_hashes", allow_empty=True)
+    if any(_SHA256.fullmatch(value) is None for value in hashes):
+        raise ValueError(prefix + " historical_policy_hashes must contain SHA-256 values")
+    return hashes
+
+
 def _unique_strings(value: object, prefix: str, allow_empty: bool) -> Tuple[str, ...]:
     if not isinstance(value, (tuple, list)) or not all(isinstance(item, str) for item in value):
         raise ValueError(prefix + " must be an array of strings")
@@ -441,10 +489,13 @@ def _required_string(row: Dict[str, object], key: str, prefix: str) -> str:
     return value
 
 
-def _optional_string(row: Dict[str, object], key: str, default: str, prefix: str) -> str:
+def _optional_string(
+    row: Dict[str, object], key: str, default: str, prefix: str, allow_empty: bool = False
+) -> str:
     value = row.get(key, default)
-    if not isinstance(value, str) or not value:
-        raise ValueError(prefix + " " + key + " must be a non-empty string")
+    if not isinstance(value, str) or (not allow_empty and not value):
+        qualifier = "a string" if allow_empty else "a non-empty string"
+        raise ValueError(prefix + " " + key + " must be " + qualifier)
     return value
 
 
@@ -467,6 +518,7 @@ def _prefix(repository_index: int) -> str:
 
 
 __all__ = [
+    "COMMIT_TREE_ADAPTER",
     "CapsuleConfig",
     "EffectivePolicy",
     "PackageOverride",

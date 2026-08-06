@@ -1,0 +1,97 @@
+{
+  "job_id": "segment-integration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Segment Integration\"\ntype: source\ndate_ingested: 2026-08-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/integrations/platform-integrations/segment\"\nraw_files:\n  - \"metronome/integrations/platform-integrations/segment-2026-07-13.md\"\ntags: [metronome, segment, usage-events, event-ingestion, idempotency, integrations]\n---\n\n## Overview\n\nThis guide configures Segment's Metronome (Actions) destination to send usage events into Metronome. It covers destination setup, the Segment-side mapping contract, the default transaction-ID mapping, and condition-based Destination Actions; it does not define the direct `/ingest` transport or Segment's delivery guarantees.\n\n## Key takeaways\n\n- Setup selects Metronome (Actions) from Segment's Destinations Catalog, attaches a Segment source, names the destination, and stores a Metronome API token in its settings.\n- The destination requires explicit mappings for `transaction_id`, `customer_id`, `timestamp`, `event_type`, and `properties`, even when source and destination property names match. This is stricter than the direct ingest schema's optional `properties` field and should be treated as a Segment adapter requirement, not a replacement API schema.\n- Segment's default mapping uses `messageId` as Metronome's `transaction_id`; a user can instead map any Segment event field. The page's unqualified exactly-once wording does not extend Metronome's separately documented 34-day duplicate-suppression window.\n- Destination Actions can add mappings with conditional triggers that determine which Segment data reaches Metronome. The page calls these actions `subscriptions`, meaning Segment destination routing rules rather than Metronome customer billing subscriptions or contracts.\n\n## Setup and mapping contract\n\nThe setup flow creates a Metronome (Actions) destination for a selected Segment source and authenticates it with a Metronome API token. The page does not define token permissions, environment binding, rotation, secret handling, validation, or whether one destination can safely target several Metronome environments.\n\nWithin Segment, every one of the five listed Metronome fields needs a mapping: string-valued `transaction_id`, `customer_id`, `timestamp`, and `event_type`, plus an object-valued `properties`. `timestamp` is described as RFC 3339. The direct event guide and ingest API reference describe `properties` as optional, so the requirement here is specific to configuring this destination. It does not prove that direct `/ingest` payloads must always contain `properties`.\n\nThe page says `customer_id` identifies the Metronome customer to which the event applies, but it does not state whether the Segment mapping may use a Metronome customer UUID, an ingest alias, or both. It also does not establish an automatic mapping from Segment `userId`, anonymous IDs, or any other identity field; that choice remains part of the explicit mapping.\n\nThe worked `analytics.track` event is present as text, but the resulting field mapping appears only in an image. The captured source therefore does not provide byte-readable evidence for the example's individual mapping expressions, and those expressions should not be reconstructed from the example payload alone.\n\n## Transaction identity and conditional delivery\n\nThe default configuration maps Segment `messageId` to Metronome `transaction_id`, while allowing another Segment field to be chosen. The guide says this field ensures exactly-once processing but gives no time window, collision behavior, replay behavior, or duplicate response. Dedicated Metronome event sources bound duplicate suppression to 34 days after acceptance, so this page must not be read as evidence of permanent global uniqueness.\n\nAdditional Destination Actions let users create more trigger-and-mapping combinations. A trigger can contain any number of conditions; the example excludes events when `User ID` contains the company's email domain. This is a routing example, not evidence that email filtering, a specific user field, or a particular trigger is required. It also does not document trigger evaluation order, overlap between actions, duplicate delivery when several triggers match, failure handling, retry behavior, ordering, backfill, or observability.\n\n## Field and delivery boundaries\n\n> [!warning] Segment mapping versus direct-ingest schema\n> This guide calls all five mappings required, including `properties`, while the direct usage-event guide and ingest API reference call `properties` optional. Preserve the scopes separately: Segment requires an explicit mapping slot for this destination, but that does not change the base `/ingest` event schema.\n\nThe source provides no request batching, payload-size, throughput, timeout, response, retry, partial-ingestion, dead-letter, rate-limit, timestamp-window, customer-alias, or event-property limit for Segment delivery. Direct `/ingest` queue and retry guidance must not be assumed to describe Segment's managed destination, and the source does not say whether Segment retries preserve `messageId`.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-integrations]], [[metronome-event-ingestion]], [[metronome-api-idempotency]], [[metronome-customers-and-contracts]]\n- Related sources: [[source-metronome-guides-events-send-usage-events]], [[source-metronome-guides-implement-metronome-core-concepts-send-usage-events]], [[source-metronome-api-reference-usage-ingest-events]]\n\n## Raw Sources\n\n- [[raw/metronome/integrations/platform-integrations/segment-2026-07-13|2026-07-13 snapshot - Segment destination setup, required mappings, transaction-ID default, and conditional Destination Actions]]\n",
+  "quotes": [
+    {
+      "text": "1. From the **Segment Destinations** page, click **Add Destination**. Search for and select **Metronome (Actions)** within the **Destinations Catalog**.\n2. Click on **Configure Metronome (Actions)** , select the source you'd like to connect to, and give the destination a name (for example,  *Metronome Instance #1*).\n3. Enter your Metronome API token on the **Settings** pane in the **API Token** box and save the changes.",
+      "location": "raw/metronome/integrations/platform-integrations/segment-2026-07-13.md:15-17 (destination setup and authentication)"
+    },
+    {
+      "text": "Map your Segment events to the Metronome usage event format. The five fields listed are the required fields for Metronome. To start, click the **Mappings** tab at the top of the **Settings** pane. You have a set of mappings by default. To add to or change them, choose **Edit Mapping** from the ellipsis dropdown.\n\n<Warning>\n  **ALL MAPPINGS ARE REQUIRED**\n\n  You must specify a mapping even if the property name doesn't differ between the Segment event and the Metronome payload.\n</Warning>",
+      "location": "raw/metronome/integrations/platform-integrations/segment-2026-07-13.md:25-31 (Segment-side mapping requirement)"
+    },
+    {
+      "text": "* `transaction_id` (string) - unique identifier for each event\n* `customer_id` (string) - which customer in Metronome the event applies to\n* `timestamp` (string) - when the event happened, in [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format\n* `event_type` (string) - the kind of event, for example `page_view` or `cpu_used`\n* `properties` (object) - key/value pairs with details of the event",
+      "location": "raw/metronome/integrations/platform-integrations/segment-2026-07-13.md:35-39 (five mapped destination fields and types)"
+    },
+    {
+      "text": "  Metronome usage events require the `transaction_id` field to ensure all events are processed exactly once. The default mapping uses the [Segment `messageId` field](https://segment.com/docs/guides/duplicate-data/) as the Metronome `transaction_id`. This is probably ideal for most users, but if you want to control the Metronome `transaction_id` manually, you can provide a mapping to any field in the Segment event.",
+      "location": "raw/metronome/integrations/platform-integrations/segment-2026-07-13.md:69 (default and custom transaction-ID mapping)"
+    },
+    {
+      "text": "The integration supports [Destination Actions](https://segment.com/docs/connections/destinations/#destination-actions), allowing users to create  *subscriptions*. This means that the Metronome (Actions) destination sends data to Metronome based on a set of conditions known as  *triggers*. Create additional triggers and mappings by clicking on the **New Mapping** button on the **Mapping** pane. You can set a trigger for any number of conditions. For example, create a condition to trigger events to Metronome only when the `User ID` field is not an email address from your company (does not contain `@company.com`).",
+      "location": "raw/metronome/integrations/platform-integrations/segment-2026-07-13.md:74 (conditional Destination Actions and example trigger)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "segment-integration-event-mapping-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Processing boundary",
+        "proposed_markdown": "## Segment destination mapping boundary\n\nMetronome's Segment integration uses the Metronome (Actions) destination and requires explicit mappings for `transaction_id`, `customer_id`, RFC 3339 `timestamp`, `event_type`, and `properties`, even when source and destination names match. The default maps Segment `messageId` to `transaction_id`, while another Segment field may be selected manually. This is an adapter-specific mapping contract: unlike the direct `/ingest` schema, which treats `properties` as optional, the Segment destination requires a mapping slot for it. The page's unqualified exactly-once wording does not replace the separately documented 34-day duplicate-suppression boundary, and it does not define whether Segment retries preserve `messageId`.",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep the Segment destination's required mapping slots distinct from the direct `/ingest` event schema; do not make `properties` globally required.",
+          "Do not turn the page's unqualified exactly-once wording into permanent uniqueness; preserve the existing 34-day boundary.",
+          "The example mapping is image-only, so do not infer individual field expressions beyond the documented default `messageId` mapping."
+        ]
+      },
+      {
+        "update_id": "segment-integration-event-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-platform-integrations-segment]] - Segment destination setup, explicit five-field mapping contract, default `messageId` transaction identity, and managed-delivery unknowns",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "segment-integration-routing-actions",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Sources",
+        "proposed_markdown": "## Segment event-delivery integration\n\nThe Metronome (Actions) destination connects one selected Segment source using a Metronome API token and maps Segment event fields into Metronome's usage-event format. Additional Destination Actions can pair mappings with triggers containing any number of conditions, such as excluding company-domain user emails. The page calls these action configurations `subscriptions`; in this context they are Segment conditional-delivery rules, not Metronome billing subscriptions or customer contracts. It does not define token scope or rotation, trigger overlap or evaluation order, duplicate delivery, retries, batching, response handling, replay, or observability.",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": [
+          "Do not classify Segment Destination Action subscriptions as Metronome billing subscriptions or contracts.",
+          "Treat the company-email filter as an example trigger, not a required or built-in routing policy."
+        ]
+      },
+      {
+        "update_id": "segment-integration-integrations-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-platform-integrations-segment]] - Segment source and token setup, usage-event field mappings, transaction-ID default, and conditional Destination Actions",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/integrations/platform-integrations/segment-2026-07-13.md",
+  "raw_sha256": "e40b344b8ac5ff29c4875474fba52fcd55eac53613ecae7a3c7c6c96289f6048",
+  "status": "candidate_ready"
+}

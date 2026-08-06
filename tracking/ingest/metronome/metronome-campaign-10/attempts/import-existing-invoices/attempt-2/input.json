@@ -1,0 +1,44 @@
+{
+  "action": "spawn_worker",
+  "job_id": "import-existing-invoices",
+  "attempt": 2,
+  "raw_path": "raw/metronome/guides/invoices/invoice-optimization/import-existing-invoices-2026-07-13.md",
+  "raw_sha256": "957691618bac7d40ab232998265c5722da477dd7d07495ec1814c6074272d3a5",
+  "source_target": "wiki/sources/metronome/source-metronome-guides-invoices-invoice-optimization-import-existing-invoices.md",
+  "canonical_url": "https://docs.metronome.com/guides/invoices/invoice-optimization/import-existing-invoices",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location."
+  ],
+  "retry_context": {
+    "prior_attempt": 1,
+    "review_scope": "full",
+    "required_changes": [
+      "Revise only historical-invoice-import-invoicing-flow so it says this guide's worked migration is distinct from the credit-memo guide's draft or finalized correction, external A/R memo, refund, and credit-and-rebill mechanics, while preserving that the separate createHistoricalInvoices API reference describes the endpoint as suitable for both billing migrations and correcting past billing periods. Do not claim the endpoint cannot support correction; state that the sources do not establish the correction workflow, invoice-state preconditions, or reconciliation behavior. Preserve the remaining calculation, preview, access, Stripe-exclusion, and unknown-state boundaries and preserve the other five submitted suggestions unchanged.",
+      "Add a durable_fact suggestion and reciprocal_source_link suggestion for wiki/concepts/metronome/metronome-credits-and-commits.md, grounded in quote 1. State only that historical invoice import combines supplied line-item quantities with contract unit prices to calculate invoice totals and effects on the customer's credit and commit balances. Preserve as unknown the resulting ledger-entry types and timestamps, ordering against existing deductions, rollback or reversal behavior, preview persistence, and any relationship to correction or credit-and-rebill. Link [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]] from that concept's Sources section with the same bounded balance-effect description. Preserve the candidate page unchanged."
+    ],
+    "prior_reviewer_identity": "sol-review-import-invoices-a1"
+  },
+  "recommended_worker_tier": "strong",
+  "routing_reason": "historical invoice import changes contract and reporting state without ordinary usage processing",
+  "worker_identity": "sol-import-invoices-a2",
+  "worker_model": "gpt-5.6-sol"
+}

@@ -12,14 +12,25 @@ Operations history: [[adyen-log]]
 
 - [[source-github-adyen-web]] — cumulative `@adyen/adyen-web@6.41.0` implementation baseline: Drop-in, Components, Sessions, cards, 3DS2, accessibility, and Fastlane adapter (github-repo, 2026-07-26)
 - [[changelog-github-adyen-web]] — package-qualified Adyen Web release ledger beginning at `6.41.0` (github-repo, 2026-07-26)
+- [[source-github-adyen-ios]] — cumulative `adyen-ios@5.25.1` native baseline: Drop-in, Session, Components, cards, actions, encryption, Apple Pay, and app handoffs (github-repo, 2026-08-01)
+- [[changelog-github-adyen-ios]] — package-qualified Adyen iOS release ledger beginning at `5.25.1` (github-repo, 2026-08-01)
+- [[source-github-adyen-android]] — cumulative `adyen-android@5.20.0` native baseline: Drop-in, Sessions, View and Compose Components, cards, actions, encryption, and delegated SDKs (github-repo, 2026-08-01)
+- [[changelog-github-adyen-android]] — package-qualified Adyen Android release ledger beginning at `5.20.0` (github-repo, 2026-08-01)
+- [[source-github-adyen-react-native]] — cumulative `@adyen/react-native@2.12.0` wrapper baseline: Drop-in, Components, Sessions, embedded CardView, wallets, actions, and native dependency boundaries (github-repo, 2026-08-02)
+- [[changelog-github-adyen-react-native]] — package-qualified Adyen React Native release ledger beginning at `2.12.0` (github-repo, 2026-08-02)
+- [[source-github-adyen-node-api-library]] — cumulative `@adyen/api-library@32.0.0` server baseline: Checkout API v72, transport, notifications, recurring operations, and Cloud Device API v1 (github-repo, 2026-08-02)
+- [[changelog-github-adyen-node-api-library]] — package-qualified Adyen Node.js API Library release ledger beginning at `32.0.0` (github-repo, 2026-08-02)
 
 ## Concepts
 
-No Adyen-specific concept page has yet met the multi-source creation threshold.
+- [[adyen-ios-sdk]] — native iOS architecture, integration modes, payment and server boundaries, and delegated dependencies
+- [[adyen-android-sdk]] — native Android architecture, integration modes, View and Compose surfaces, server boundaries, and delegated dependencies
+- [[adyen-react-native-sdk]] — React Native wrapper architecture, flows, platform setup, and native SDK boundaries
+- [[adyen-node-api-library]] — Node.js server SDK, Checkout API v72, Cloud Device, transport, and evidence boundaries
 
 ## Cross-cutting concepts
 
-- [[co-badged-cards]] — includes version-qualified Adyen Web dual-brand and split-funding-source implementation evidence
+- [[co-badged-cards]] — includes version-qualified Adyen Web and Android dual-brand implementation evidence
 
 ## Operations
 

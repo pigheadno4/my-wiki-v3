@@ -1,0 +1,236 @@
+export interface ApplePayConfiguration {
+  /**  The merchant identifier for apple pay. */
+  merchantID: string;
+  /** The merchant name. This value will be used to generate a single *PKPaymentSummaryItem* if `summaryItems` is not provided. */
+  merchantName?: string;
+  /** The flag to toggle onboarding. */
+  allowOnboarding?: boolean;
+  /** The line items for this payment. The last element of this array must contain the same value as `amount` on the Checkout `\payments` API request. **WARNING**: Adyen uses integer minor units, whereas Apple uses `NSDecimalNumber`. */
+  summaryItems?: ApplePaySummaryItem[];
+  /** A list of fields that you need for a shipping contact in order to process the transaction. The list is empty by default. */
+  requiredShippingContactFields?: ApplePayAddressFields[];
+  /** A list of fields that you need for a billing contact in order to process the transaction. The list is empty by default. */
+  requiredBillingContactFields?: ApplePayAddressFields[];
+  /** Billing contact information for the user. */
+  billingContact?: ApplePayPaymentContact;
+  /** Shipping contact information for the user. */
+  shippingContact?: ApplePayPaymentContact;
+  /** An optional value that indicates how to ship purchased items. The default value is shipping. */
+  shippingType?: ApplePayShippingType;
+  /** A list of supported merchant capabilities. `threeDSecure` is always included regardless of this value. The default is `undefined`, which allows both debit and credit cards. Use `['debit']` to allow debit cards only, greying out credit cards in the Apple Pay sheet. */
+  merchantCapabilities?: ApplePayMerchantCapability[];
+  /** A list of two-letter country codes for limiting payment to cards from specific countries or regions. */
+  supportedCountries?: string[];
+  /** The list of shipping methods available for a payment request. */
+  shippingMethods?: ApplePayShippingMethod[];
+  /** An optional request to set up a recurring payment, typically a subscription. */
+  recurringPaymentRequest?: ApplePayRecurringPaymentRequest;
+  /** Enable the coupon code entry field in the Apple Pay sheet (iOS 15+). */
+  supportsCouponCode?: boolean;
+  /** Pre-fill the coupon code field with this value (iOS 15+). */
+  couponCode?: string;
+  /**
+   * Called when the shopper selects or updates a shipping contact.
+   * Call `resolve({ paymentSummaryItems, shippingMethods, errors })` to update the sheet.
+   */
+  onShippingContactChange?: (
+    contact: ApplePayPaymentContact,
+    resolve: (update: ApplePayShippingContactUpdateRequest) => void
+  ) => void;
+  /**
+   * Called when the shopper selects a shipping method.
+   * Call `resolve({ paymentSummaryItems, errors })` to update the sheet.
+   */
+  onShippingMethodChange?: (
+    shippingMethod: ApplePayShippingMethod,
+    resolve: (update: ApplePayShippingMethodUpdateRequest) => void
+  ) => void;
+  /**
+   * Called when the shopper enters or changes a coupon code (iOS 15+).
+   * Call `resolve({ paymentSummaryItems, shippingMethods, errors })` to update the sheet.
+   */
+  onCouponCodeChange?: (
+    couponCode: string,
+    resolve: (update: ApplePayCouponCodeUpdateRequest) => void
+  ) => void;
+  /**
+   * Called after the shopper authorizes the payment, before it is submitted to Adyen.
+   * Call `actions.resolve()` to proceed or `actions.reject(errors?)` to show validation errors in the sheet.
+   */
+  onAuthorize?: (
+    payment: ApplePayPaymentAuthorization,
+    actions: ApplePayAuthorizationActions
+  ) => void;
+}
+
+/** Collection of values for address field visibility. */
+export type ApplePayShippingType =
+  | 'shipping'
+  | 'delivery'
+  | 'storePickup'
+  | 'servicePickup';
+
+/** Supported Apple Pay merchant capabilities. `threeDSecure` is always included by the SDK. */
+export type ApplePayMerchantCapability = 'debit' | 'credit';
+
+/** Collection of values for address field visibility. */
+export type ApplePayAddressFields =
+  | 'postalAddress'
+  | 'name'
+  | 'phoneticName'
+  | 'phone'
+  | 'email';
+
+/** An object that defines a summary item in a payment request—for example, total, tax, discount, or grand total. */
+export interface ApplePaySummaryItem {
+  /** A short, localized description of the summary item. */
+  label: string;
+  /** The amount associated with the summary item. */
+  amount: number | string;
+  /** The summary item’s type that indicates whether the amount is final. */
+  type?: 'pending' | 'final';
+}
+
+export interface ApplePayShippingMethod extends ApplePaySummaryItem {
+  /** A client-defined value used to identify this shipping method. */
+  identifier?: string;
+  /** Additional description of the shipping method. */
+  detail?: string;
+  /** The start date of expected delivery range in ISO 8601 date format (ex. 2025-04-21). */
+  startDate?: string;
+  /** The end date of expected delivery range in ISO 8601 date format (ex. 2025-04-21). */
+  endDate?: string;
+}
+
+/** An object that defines a summary item in a payment request—for example, total, tax, discount, or grand total. */
+export interface ApplePayPaymentContact {
+  /** A phone number for the contact. */
+  phoneNumber?: string;
+  /** An email address for the contact. */
+  emailAddress?: string;
+  /** The contact’s given name. */
+  givenName?: string;
+  /** The contact’s family name. */
+  familyName?: string;
+  /** The phonetic spelling of the contact’s given name. */
+  phoneticGivenName?: string;
+  /** The phonetic spelling of the contact’s family name. */
+  phoneticFamilyName?: string;
+  /** The street portion of the address for the contact. */
+  addressLines?: string[];
+  /** Additional information associated with the location, typically defined at the city or town level (such as district or neighborhood), in a postal address. */
+  subLocality?: string;
+  /** The city for the contact. */
+  locality?: string;
+  /** The zip code or postal code, where applicable, for the contact. */
+  postalCode?: string;
+  /** The zip code or postal code, where applicable, for the contact. */
+  subAdministrativeArea?: string;
+  /** The subadministrative area (such as a county or other region) in a postal address. */
+  administrativeArea?: string;
+  /** The state for the contact. */
+  country?: string;
+  /** The contact’s two-letter ISO 3166 country code. */
+  countryCode?: string;
+}
+
+/** An object that represents a request to set up a recurring payment, typically a subscription. */
+export interface ApplePayRecurringPaymentRequest {
+  /** A description of the recurring payment, for example "Apple News+". */
+  description: string;
+  /** The regular billing cycle, for example "$9.99 monthly". */
+  regularBilling: ApplePayRecurringSummaryItem;
+  /** A URL that links to a page on your web site where the user can manage the payment method for this recurring payment, including deleting it. */
+  managementURL: string;
+  /** Optional, trial billing cycle, for example "$1.99 for the first six months". */
+  trialBilling?: ApplePayRecurringSummaryItem;
+  /** Optional, localized billing agreement to be displayed to the user prior to payment authorization. */
+  billingAgreement?: string;
+  /** Optional URL to receive lifecycle notifications for the merchant-specific payment token issued for this request, if applicable. If this property is not set, notifications will not be sent when lifecycle changes occur for the token, for example when the token is deleted. */
+  tokenNotificationURL?: string;
+}
+
+/** An object that defines a summary item for a payment that occurs repeatedly at a specified interval, such as a subscription. */
+export interface ApplePayRecurringSummaryItem extends ApplePaySummaryItem {
+  /** The timestamp in ISO 8601 date format (ex. 2025-04-21) at which the first payment will be taken. The default value is null which requests the first payment as part of the initial transaction. */
+  startDate?: string;
+  /** The interval at which payments will be taken (daily, weekly, monthly, yearly, etc.). The default value is NSCalendarUnitMonth. */
+  intervalUnit?: ApplePayCalendarUnit;
+  /** The number of intervals between payments. Default is 1. */
+  intervalCount?: number;
+  /**The timestamp in ISO 8601 date format (ex. 2025-04-21) which the recurring payments will end. The default value is null which specifies no end date. */
+  endDate?: string;
+}
+
+/** A type that indicates calendrical units, such as year, month, day, and hour. */
+export type ApplePayCalendarUnit = `year` | `month` | `day` | `hour` | `minute`;
+
+/** An error object describing why a field in the Apple Pay sheet is invalid. */
+export interface ApplePayError {
+  /**
+   * The category of the error.
+   * - `shippingAddress` — an invalid field in the shipping postal address.
+   * - `billingAddress` — an invalid field in the billing postal address.
+   * - `contactField` — an invalid contact field (phone, email, name, etc.).
+   * - `couponCode` — an invalid or unrecognised coupon code (iOS 15+).
+   */
+  type: 'shippingAddress' | 'billingAddress' | 'contactField' | 'couponCode';
+  /**
+   * For `shippingAddress` / `billingAddress`: the CNPostalAddress key of the invalid field
+   * (e.g. `"postalCode"`, `"city"`, `"street"`, `"country"`, `"countryCode"`).
+   * For `contactField`: the PKContactField name
+   * (e.g. `"phoneNumber"`, `"emailAddress"`, `"name"`, `"postalAddress"`).
+   */
+  field?: string;
+  /** A localized description shown in the Apple Pay sheet. */
+  message: string;
+}
+
+/** Data passed to the shipping contact callback. */
+export interface ApplePayShippingContactUpdateRequest {
+  /** Updated payment summary items. If omitted, the current items are kept. */
+  paymentSummaryItems?: ApplePaySummaryItem[];
+  /** Updated shipping methods. If omitted, the current methods are kept. */
+  shippingMethods?: ApplePayShippingMethod[];
+  /** Validation errors to display in the sheet. */
+  errors?: ApplePayError[];
+}
+
+/** Payload received from the native coupon code event. */
+export interface ApplePayCouponCodeEvent {
+  couponCode: string;
+}
+
+/** Data passed to the coupon code callback. */
+export interface ApplePayCouponCodeUpdateRequest {
+  /** Updated payment summary items. If omitted, the current items are kept. */
+  paymentSummaryItems?: ApplePaySummaryItem[];
+  /** Updated shipping methods. If omitted, the current methods are kept. */
+  shippingMethods?: ApplePayShippingMethod[];
+  /** Validation errors to display in the sheet. */
+  errors?: ApplePayError[];
+}
+
+/** Data passed to the shipping method callback. */
+export interface ApplePayShippingMethodUpdateRequest {
+  /** Updated payment summary items. If omitted, the current items are kept. */
+  paymentSummaryItems?: ApplePaySummaryItem[];
+}
+
+/** Actions passed to the `onAuthorize` callback. */
+export interface ApplePayAuthorizationActions {
+  /** Approve the payment and proceed to submission. */
+  resolve: () => void;
+  /** Reject the payment with optional field-level errors shown in the sheet. */
+  reject: (errors?: ApplePayError[]) => void;
+}
+
+/** Payment details provided in the authorization callback. */
+export interface ApplePayPaymentAuthorization {
+  /** The billing contact if requested. */
+  billingContact?: ApplePayPaymentContact;
+  /** The shipping contact if requested. */
+  shippingContact?: ApplePayPaymentContact;
+  /** The selected shipping method, if any. */
+  shippingMethod?: ApplePayShippingMethod;
+}

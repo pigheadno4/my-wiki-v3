@@ -1,0 +1,36 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.parcelize
+}
+
+// Maven artifact
+ext.mavenArtifactId = "online-banking-jp"
+ext.mavenArtifactName = "Adyen Online Banking Japan Component"
+ext.mavenArtifactDescription = "Adyen checkout Online Banking Japan Component client for Adyen's Checkout API."
+
+apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
+
+android {
+    namespace 'com.adyen.checkout.onlinebankingjp'
+    compileSdk libs.versions.compile.sdk.get().toInteger()
+
+    defaultConfig {
+        minSdk libs.versions.min.sdk.get().toInteger()
+        targetSdk libs.versions.target.sdk.get().toInteger()
+
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    api project(':econtext')
+
+    testImplementation libs.bundles.junit
+    testImplementation libs.bundles.mockito
+}

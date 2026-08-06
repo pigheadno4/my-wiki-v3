@@ -44,6 +44,8 @@ Both PayPal JS SDK (`components=applepay`) and Apple Pay JS SDK (`applepay.cdn-a
 4. If `APPROVED`: subscribe to `VAULT.PAYMENT-TOKEN.CREATED` webhook to get `vault_id`
 5. Subsequent merchant-initiated charges use `vault_id` + `stored_credential` (`payment_initiator: "MERCHANT"`, `usage: "SUBSEQUENT"`)
 
+The `default-branch@b5f2df2` sample includes both one-time and purchase-with-vault variants. Both validate the merchant, confirm the PayPal order with Apple's payment token and contact data, and capture. The vault variant creates the order with `paymentSource.applePay.attributes.vault.storeInVault: ON_SUCCESS`. This demonstrates the request shape but does not prove account approval or production eligibility.
+
 ## Key Request Fields
 
 | Field | First save | Returning payer | Merchant-initiated |
@@ -69,3 +71,4 @@ Account Settings → Payment Method → Enable Apple Pay → Get Started → sub
 - [[source-paypal-apm-apple-pay]] — One-time checkout integration: domain validation, 4 SDK touchpoints, `ApplePaySession`, non-Safari browser support, go-live onboarding
 - [[source-paypal-save-applepay-js-sdk]] — Save Apple Pay vault integration: request/response samples, APPROVED vs VAULTED status, webhook, platform headers, go-live steps
 - [[source-github-paypal-js]] — package-qualified React v10.1.2 Apple Pay button behavior
+- [[source-github-v6-web-sdk-sample-integration]] — runnable merchant validation, confirm, capture, and purchase-with-vault examples

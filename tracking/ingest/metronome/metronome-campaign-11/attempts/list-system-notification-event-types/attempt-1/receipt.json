@@ -1,0 +1,88 @@
+{
+  "job_id": "list-system-notification-event-types",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome List System Notification Event Types\"\ntype: source\ndate_ingested: 2026-08-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/notifications/list-system-notification-event-types\"\nraw_files:\n  - \"metronome/api-reference/notifications/list-system-notification-event-types-2026-07-13.md\"\ntags: [metronome, api-reference, notifications, lifecycle-events, offset-notifications]\n---\n\n## Overview\n\nThis API reference documents `POST /v2/notifications/system/list`, which lists available read-only system lifecycle event-type configurations that can be used when creating offset notifications. It defines bearer authentication and the successful response shape, including the lifecycle policy and optional webhook-publication status, but does not enumerate the complete event-type catalog.\n\n## Key takeaways\n\n- The endpoint lists system lifecycle event types for notifications; the documentation describes them as read-only and usable when creating offset notifications.\n- The operation is `POST /v2/notifications/system/list` on `https://api.metronome.com` and uses bearer authentication.\n- A successful `200` response requires a `data` array and may include a nullable string `cursor`.\n- Every returned configuration requires `type` and `policy`; `policy.type` is a lifecycle-event string, with `contract.create` and `contract.start` shown only as examples.\n- A configuration may include `is_enabled`, described as whether webhook publishing for that lifecycle event is enabled. The example response omits this optional field.\n\n## Endpoint contract\n\nThe OpenAPI operation is identified as `listSystemNotificationConfigs-v2` and is tagged **Notifications**. Its documented production server is `https://api.metronome.com`, with HTTP bearer authentication. The page supplies no request body, query parameters, or request-side cursor field.\n\nThe successful response is an `application/json` object whose required `data` property contains `LifecycleEventSystemNotificationConfig` items. The top-level `cursor` is optional and nullable, but the page does not define how a caller supplies it, whether another page can be requested, or what a non-null value means.\n\n## Returned configuration\n\nEach configuration requires:\n\n- `type`: a string indicating a system lifecycle event notification.\n- `policy`: an object whose required string `type` identifies the lifecycle event. The schema gives `contract.create` and `contract.start` as examples rather than an exhaustive allowed-value list.\n\nThe optional boolean `is_enabled` is described only as whether webhook publishing for the lifecycle event is enabled. The example contains `type: SYSTEM_LIFECYCLE_EVENT`, `policy.type: contract.create`, and `cursor: null`; it does not establish that every returned `type` has the same value or that `contract.create` is the only available policy.\n\n## Documentation boundary\n\nThis page does not define the complete event-type catalog, request fields, pagination inputs, error responses, authorization scopes, rate limits, idempotency, ordering, filtering, or how event-type availability changes. It also does not document how `is_enabled` is set or changed, whether disabled configurations remain in the list, offset-creation validation, webhook delivery behavior, or lifecycle-event payloads. No direct contradiction with the existing notification or webhook concepts was found.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-alerts-and-notifications]], [[metronome-webhooks]]\n- Related sources: [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]], [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]], [[source-metronome-guides-platform-configuration-setup-webhooks]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/notifications/list-system-notification-event-types-2026-07-13|2026-07-13 snapshot - system lifecycle event-type listing contract and response schema]]\n",
+  "quotes": [
+    {
+      "text": "List available system lifecycle event types for notifications. These are read-only event types that can be used when creating offset notifications.",
+      "location": "raw/metronome/api-reference/notifications/list-system-notification-event-types-2026-07-13.md:11 (read-only event-type purpose and offset-notification use)"
+    },
+    {
+      "text": "/v2/notifications/system/list:\n    post:\n      tags:\n        - Notifications\n      summary: List system notification event types\n      description: >-\n        List available system lifecycle event types for notifications. These are\n        read-only event types that can be used when creating offset\n        notifications.\n      operationId: listSystemNotificationConfigs-v2",
+      "location": "raw/metronome/api-reference/notifications/list-system-notification-event-types-2026-07-13.md:87-96 (HTTP path, tag, description, and operation ID)"
+    },
+    {
+      "text": "data:\n                    type: array\n                    items:\n                      $ref: >-\n                        #/components/schemas/LifecycleEventSystemNotificationConfig\n                  cursor:\n                    type: string\n                    nullable: true\n              example:\n                data:\n                  - type: SYSTEM_LIFECYCLE_EVENT\n                    policy:\n                      type: contract.create\n                cursor: null",
+      "location": "raw/metronome/api-reference/notifications/list-system-notification-event-types-2026-07-13.md:107-120 (data array, nullable cursor, and example response)"
+    },
+    {
+      "text": "LifecycleEventSystemNotificationConfig:\n      type: object\n      required:\n        - type\n        - policy\n      properties:\n        type:\n          type: string\n          description: Indicates this is a system lifecycle event notification\n        is_enabled:\n          type: boolean\n          description: >-\n            Whether or not webhook publishing for this lifecycle event is\n            enabled\n        policy:\n          $ref: '#/components/schemas/LifecycleEventSystemPolicy'\n    LifecycleEventSystemPolicy:\n      type: object\n      required:\n        - type\n      properties:\n        type:\n          type: string\n          description: >-\n            The type of lifecycle event (e.g., \"contract.create\",\n            \"contract.start\")",
+      "location": "raw/metronome/api-reference/notifications/list-system-notification-event-types-2026-07-13.md:123-148 (configuration fields, webhook-publication flag, and policy examples)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "system-notification-event-types-discovery-contract",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Offset notifications",
+        "proposed_markdown": "### System lifecycle event-type discovery\n\n`POST /v2/notifications/system/list` lists available read-only system lifecycle event-type configurations that can be used when creating offset notifications. A successful response requires a `data` array and may include a nullable string `cursor`; each configuration requires `type` and `policy`, while the policy requires a lifecycle-event `type`. The schema gives `contract.create` and `contract.start` only as examples, and the response example shows `SYSTEM_LIFECYCLE_EVENT` with `contract.create`. An optional `is_enabled` field reports whether webhook publishing for the lifecycle event is enabled. The page does not provide a request body, pagination input, exhaustive event-type catalog, enablement control, or offset-validation semantics.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Treat `contract.create`, `contract.start`, and `SYSTEM_LIFECYCLE_EVENT` as schema examples, not exhaustive enumerations.",
+          "Do not infer request-side pagination, enablement mutation, offset-creation validation, or lifecycle-event delivery semantics."
+        ]
+      },
+      {
+        "update_id": "system-notification-event-types-alerts-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-notifications-list-system-notification-event-types]] - read-only system lifecycle event-type discovery, response schema, and offset-notification applicability",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "system-notification-event-types-webhook-publication-state",
+        "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Definition",
+        "proposed_markdown": "### System lifecycle publication status\n\nThe system notification event-type listing schema permits an optional `is_enabled` boolean on each lifecycle-event configuration, described as whether webhook publishing for that lifecycle event is enabled. The example omits the field, and this listing reference does not define how enablement is set or changed, whether disabled configurations are returned, or any delivery, retry, ordering, deduplication, or payload behavior.",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "Do not treat `is_enabled` as a documented mutation control or as proof of successful webhook delivery.",
+          "Keep delivery mechanics governed by the dedicated webhook setup source."
+        ]
+      },
+      {
+        "update_id": "system-notification-event-types-webhooks-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-notifications-list-system-notification-event-types]] - optional lifecycle-event webhook-publication status and its documented control boundary",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/notifications/list-system-notification-event-types-2026-07-13.md",
+  "raw_sha256": "92e8e204c0584f61d984df6bc80064ecd4cfbb1a84168b2a3b5fc4c098f88925",
+  "status": "candidate_ready"
+}

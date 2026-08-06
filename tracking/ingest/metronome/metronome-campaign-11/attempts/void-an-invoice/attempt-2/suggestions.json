@@ -1,0 +1,41 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "void-invoice-endpoint-contract",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "after the first paragraph under ### Credit, correction, and re-bill state boundaries",
+      "proposed_markdown": "Metronome exposes `POST /v1/invoices/void` under the OpenAPI document's global HTTP bearer scheme. The operation does not mark `requestBody` itself as required; within its JSON object schema, `id` is required and UUID-formatted. The HTTP 200 schema defines but does not require top-level `data`, requires `id` only within `data`, and shows an example containing `data.id`; status and other invoice fields are not documented, but the page does not exclude additional actual response fields. The operation description says voiding permanently and immediately sets the invoice status to `voided`, prevents collection, removes it from customer billing, and stops payment processing, and presents correcting billing errors, cancelling incorrect charges, and handling disputed invoices that should not be collected as intended uses rather than a complete eligibility-state contract. The page does not define eligible starting states, repeated-call or idempotency behavior, errors, concurrency handling, webhooks, or downstream reconciliation. Because the separate correction guide says a Metronome void does not void a downstream invoice, do not extend this endpoint's effect to Stripe, ERP, marketplace, payment refund, A/R, tax, revenue, or ledger changes without separate evidence.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Scope the documented void effect to the Metronome invoice; this page does not establish downstream invoice cancellation or payment refund behavior.",
+        "Do not infer eligible invoice states, idempotency, error handling, concurrency behavior, webhook behavior, or accounting and reconciliation effects from the success-only documentation.",
+        "The 200 schema does not require top-level `data`; it requires `id` only within `data`, and status or other invoice fields are not documented rather than explicitly prohibited."
+      ]
+    },
+    {
+      "update_id": "void-invoice-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-invoices-void-an-invoice]] \u2014 invoice void endpoint contract, immediate status-transition wording, success-response limit, and downstream boundary",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

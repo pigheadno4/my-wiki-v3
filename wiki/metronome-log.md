@@ -6,6 +6,54 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-02 — Metronome Campaign 12 selective-ingest pilot completed
+
+- Result: promoted the independently approved [[source-metronome-api-reference-custom-fields]] overview byte-identically and created [[metronome-custom-fields]] from overview evidence only.
+- Classification: the create-key raw-reference audit returned `source_required`, and both delete-key semantic-triage reads returned `source_required`; the final verdict is `revise_routing_rule`, so cross-provider rollout is not authorized.
+- Query quality: all three fixed queries passed. The overview question routed to the canonical overview source, while the create-key schema and delete-key consequence questions used their supplied prior-complete-read raw evidence without rereading either raw body.
+- Read boundary: the pilot used five complete reads and no retry reads. The list-key, set-values, and delete-fields raw bodies were not read; their links remain navigation-only references and do not support endpoint facts.
+- Coverage after promotion: 225 collected documentation pages, 91 source summaries, and 134 raw pages without source summaries.
+- Evidence: [quality audit](../tracking/ingest/metronome/metronome-campaign-12/quality-audit.md) and [monitor](../tracking/ingest/metronome/metronome-campaign-12/monitor.md).
+
+## 2026-08-01 — Metronome Campaign 11 completed
+
+- Result: ten approved source pages from complete raw pages across sixteen worker attempts and sixteen independent reviews; four corrections required full rereview, two used unchanged-hash targeted review, and no job was rejected. All workers and reviewers used Sol.
+- Sources:
+  - [[source-metronome-plans-shared-endpoints-notifications]] — shared Plan and Contract alert routes, entity-specific parameter boundaries, and Plan alert types (raw SHA-256 `6df588128566f8fc0ae1f979da31313ce2e73fec83e3fc7781f795f871d5605c`)
+  - [[source-metronome-plans-shared-endpoints-invoices]] — shared Plan and Contract invoice operations, adjustments, sub-line items, and tier detail (raw SHA-256 `8a61a8f4729d60da2071fe385a9888c3423a687e48c7164968f03fbda94e69aa`)
+  - [[source-metronome-guides-reporting-insights-financial-reporting-reconcile-data]] — Data Export and API reconciliation patterns across Metronome, Salesforce, and Stripe (raw SHA-256 `4b1ea7a4112883d7d3ece76485a3e2f6b13fb34aef301cb7c4221ed4255c2ab2`)
+  - [[source-metronome-api-reference-invoices-void-an-invoice]] — invoice void endpoint, OpenAPI requiredness, intended uses, and downstream unknowns (raw SHA-256 `640e3ff5d2ecb18704a5e328f51be80c314e3d2e8747483549ce798fa46cac49`)
+  - [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition]] — revenue categories, invoice and ledger query model, and downstream accounting ownership (raw SHA-256 `3af1b4a46ea87650dab7709269d6e7e10d89195ab7fbf5f37888b3c2740a132b`)
+  - [[source-metronome-api-reference-notifications-list-system-notification-event-types]] — lifecycle event-type discovery, response taxonomy, and webhook-publication status (raw SHA-256 `92e8e204c0584f61d984df6bc80064ecd4cfbb1a84168b2a3b5fc4c098f88925`)
+  - [[source-metronome-api-reference-invoices-regenerate-an-invoice]] — regeneration, recalculation and distribution wording, and invoice-ID contradiction (raw SHA-256 `3b72f09da3d09b82ff40ce731776e67728d8f26b4b238000f75c08f4d896052e`)
+  - [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]] — finalized-invoice export, QuickBooks transformation, and integration ownership boundaries (raw SHA-256 `072923acb1509ae155263bafdae861c2c1cdcc17f4ceec282c3501309c1e71a9`)
+  - [[source-metronome-api-reference-invoices-add-a-one-time-charge]] — deprecated Plans one-time charge contract, product restriction, and empty response boundary (raw SHA-256 `10c9181c948df1ca0705647683a8851d33caf2ad19a03d47bca190cdf75cd918`)
+  - [[source-metronome-guides-reporting-insights-in-app-reporting]] — report generation, beta dashboards, ARR calculations, defaults, and freshness limits (raw SHA-256 `2b0aacc8bcf12478480762506a6484347b6bf4015a63077af03c3b6e37c5d886`)
+- Concepts: updated alerts and notifications, credits and commits, integrations, invoicing, products and rate cards, reporting and analytics, webhooks, and generic payment-reconciliation reporting; no new concept page was required.
+- Boundaries retained: shared route labels are not complete versioned API contracts; Metronome invoice voiding and regeneration do not prove downstream payment or accounting effects; regenerated-invoice ID examples conflict with the prose; revenue-recognition guidance remains a merchant-owned reporting model rather than accounting advice; report, dashboard, Data Export, and API freshness semantics remain separate; finalized-invoice comparison is not proof of payment or settlement.
+- Independent audit: the immutable sample passed 3/3 pages and 9/9 queries with no expansion. Its initial close check found stale body-level company counts; one bounded coordinator repair changed 80/145 to 90/135 and a scoped mechanical recheck passed without repeating the semantic audit.
+- Operational note: the final worker order was marked running before its native dispatch was issued; the coordinator detected and dispatched the existing attempt without creating a duplicate. This delayed wall-clock completion but caused no content, state, or write conflict.
+- Routing finding: all-Sol workers did not reduce the six-review correction count relative to Campaign 10; two Campaign 11 corrections were mechanical and used targeted review, while four required full rereview.
+- Coverage after promotion: 225 collected documentation pages, 90 ingested source summaries, and 135 pending pages.
+
+## 2026-08-01 — Metronome Campaign 10 completed
+
+- Result: ten approved source pages from complete raw pages across sixteen worker/reviewer attempts; six full reviews requested semantic corrections, no targeted-review shortcut was used, and no job was rejected. The immutable three-page audit passed 3/3 pages and 9/9 future-query tests, so no expanded audit was required.
+- Sources:
+  - [[source-metronome-integrations-platform-integrations-workato-connector]] — SDK-like Workato connector setup, API-token connection, example workflows, and per-environment boundary (raw SHA-256 `12b7d512419d74b31334bb091e1462ce41a164cfd5fff855b075fd960f9ce499`)
+  - [[source-metronome-guides-platform-configuration-audit-logs]] — action attribution, outcomes, request correlation, and audit-evidence limitations (raw SHA-256 `98cfb48e35f0c94a32eac2e577bf8123f1a7a614010fa2c6b837cf358ebd012a`)
+  - [[source-metronome-guides-platform-configuration-single-sign-on-sso]] — SAML 2.0 team login, identity-provider access control, retained users, and password cutover (raw SHA-256 `35facd1f2b955251b2fa3468eecc6eaddf2689abce75fa3f5f54c83fdeade837`)
+  - [[source-metronome-guides-platform-configuration-allowlist]] — registry polling, allowlist automation, stale-rule risk, and layered-security boundaries (raw SHA-256 `29bed40bf7af74ba13e224024839a8d527c3f5e5eb58ed64b566cbf8f87b5e46`)
+  - [[source-metronome-integrations-platform-integrations-segment]] — Segment destination setup, event-field mappings, transaction-ID default, and conditional actions (raw SHA-256 `e40b344b8ac5ff29c4875474fba52fcd55eac53613ecae7a3c7c6c96289f6048`)
+  - [[source-metronome-integrations-tax-integrations-avalara]] — Avalara through Stripe's third-party tax-app framework, mappings, draft setting, and native Stripe Tax boundary (raw SHA-256 `669af4d8d1bd834e66ef476bc757315c1771076659d5058b5caa1826468e6e73`)
+  - [[source-metronome-integrations-tax-integrations-anrok]] — Anrok calculation and compliance modes, Stripe invoice configuration, and provider boundaries (raw SHA-256 `efc6f41253304c312756134c96025738dc1b5c9871945b3a5fffb6b9cf54f4bc`)
+  - [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]] — contract migration, historical invoice periods, calculated balance effects, preview, and reporting breakdowns (raw SHA-256 `957691618bac7d40ab232998265c5722da477dd7d07495ec1814c6074272d3a5`)
+  - [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-sql-editor]] — SQL query surface, output fallback, breakdown granularity, and scheduled metric swaps (raw SHA-256 `edc85071e55d41fcd4f39b9112d38c742d31e52f42a28058d5f25cfcf59fed4f`)
+  - [[source-metronome-guides-implement-metronome-production-checklist]] — bounded readiness checks across ingestion, pricing, provisioning, invoices, controls, webhooks, and exports (raw SHA-256 `b65117c3c1f7847ad97e02d3b3bea9dd5b11dbd7cc45fc8e1cbef9f7733e7e9a`)
+- Concepts: updated billable metrics, credits and commits, customers and contracts, event ingestion, integrations, invoicing, reporting, security, webhooks, and Stripe Tax; no new concept page was required.
+- Boundaries retained: Workato examples do not prove complete endpoint coverage; audit visibility is not authorization or tamper-proof evidence; allowlisting is a layered control rather than authentication; Segment adapter requirements do not replace the direct-ingest schema; Avalara and Anrok third-party tax modes remain distinct from native Stripe Tax; historical import is not reduced to either migration-only or an undocumented correction workflow; SQL SUM outcomes stay example-scoped; production-checklist recommendations are not guarantees.
+- Coverage after promotion: 225 collected documentation pages, 80 ingested source summaries, and 145 pending pages.
+
 ## 2026-08-01 — Metronome Campaign 09 completed
 
 - Result: ten approved source pages from complete raw pages across thirteen worker/reviewer attempts; three reviews requested bounded corrections, no job was rejected, and one coordinator formatting repair prevented a JSON array from being interpreted as a wikilink. The immutable three-page audit passed 3/3 pages and 9/9 future-query tests, so no expanded audit was required.

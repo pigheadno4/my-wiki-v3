@@ -1,0 +1,26 @@
+{
+  "job_id": "avalara-integration",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full-source review finds the candidate otherwise accurate, complete, and well bounded. It correctly distinguishes Avalara AvaTax as the tax engine reached through its Stripe Marketplace app and Stripe's third-party tax-app framework, preserves the required Stripe/Metronome prerequisites, records the exact `invoiceitem.metadata.TaxCode` to `ContractProduct.TaxCode` mapping row, requires **Leave invoices as drafts** to remain on for this Avalara flow, and leaves finalization ownership, latency, retry, taxless-finalization safeguards, exemption handling, filing, remittance, refunds, credit notes, and historical correction unknown. It also correctly separates this flow from native Stripe Tax's `stripe_product_id` product mapping and usual draft-off recommendation. However, the candidate's sentence that **Use automatic tax** 'does not make this a Stripe Tax integration' is too absolute: the assigned Stripe Tax raw source itself calls Avalara's third-party-app route a 'Stripe Tax integration', while distinguishing it from Stripe Tax as Stripe's own tax product. The durable Metronome-integrations suggestion also collapses an explicit documentation ambiguity by saying Metronome maps a Product custom field even though the setup creates the field on `Product` and the mapping row names `ContractProduct`; its warning correctly says not to assume those labels are interchangeable. The canonical URL and nested raw_files value match the trusted order, the path-qualified raw backlink resolves, the target is absent, related wikilinks resolve, the raw SHA-256 matches, candidate.md equals receipt.source_page, suggestions.json equals receipt.suggestions, and all five quotes are byte-exact at the cited locations. The other five concept suggestions are grounded, appropriately placed, and non-conflicting; no new concept or contradiction callout is required.",
+  "required_changes": [
+    "In the candidate's responsibility section, replace the claim that **Use automatic tax** 'does not make this a Stripe Tax integration' with the narrower, source-faithful boundary that this setting does not make Avalara Stripe's native Stripe Tax calculation engine or product. Name the UI location exactly as **Settings > Tax > Integrations** rather than 'Stripe Tax integrations'. Preserve the distinction that Avalara runs through Stripe's third-party tax-app framework, and preserve all other candidate text.",
+    "Revise only `avalara-metronome-integration-boundary` so it does not collapse the documented entity labels: state that the guide creates the case-sensitive `TaxCode` custom field on Metronome `Product`, while its mapping row sends `ContractProduct.TaxCode` to `invoiceitem.metadata.TaxCode`. Retain the existing warning that the source does not reconcile `Product` and `ContractProduct`, plus all responsibility, draft-setting, rate-accuracy, and unknown-finalization boundaries. Preserve the update ID and the other five suggestions unchanged."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "full",
+  "shared_update_decisions": [
+    {
+      "update_id": "avalara-metronome-integration-boundary",
+      "verdict": "rejected",
+      "reason": "The boundary, draft requirement, and unknowns are valid, but the proposed sentence says Metronome maps a Product custom field even though the source creates the field on Product and names ContractProduct in the mapping row; preserve that unresolved split in the fact itself."
+    },
+    "avalara-metronome-integrations-source-link",
+    "avalara-metronome-invoicing-draft-boundary",
+    "avalara-metronome-invoicing-source-link",
+    "avalara-stripe-tax-product-boundary",
+    "avalara-stripe-tax-source-link"
+  ],
+  "reviewer_identity": "sol-review-avalara-a1",
+  "reviewer_model": "gpt-5.6-sol"
+}

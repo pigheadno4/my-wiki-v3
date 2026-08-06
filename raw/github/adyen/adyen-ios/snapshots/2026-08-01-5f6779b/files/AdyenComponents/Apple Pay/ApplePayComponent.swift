@@ -1,0 +1,150 @@
+//
+// Copyright (c) 2019 Adyen N.V.
+//
+// This file is open source and available under the MIT license. See the LICENSE file for more info.
+//
+
+@_spi(AdyenInternal) import Adyen
+import Foundation
+import PassKit
+
+/// A component that handles Apple Pay payments.
+public class ApplePayComponent: NSObject, PresentableComponent, PaymentComponent, FinalizableComponent {
+
+    internal let paymentRequest: PKPaymentRequest
+
+    internal var applePayPayment: ApplePayPayment
+
+    internal var state: State = .initial
+
+    internal let applePayPaymentMethod: ApplePayPaymentMethod
+
+    /// The context object for this component.
+    @_spi(AdyenInternal)
+    public let context: AdyenContext
+
+    /// The Apple Pay payment method.
+    public var paymentMethod: PaymentMethod {
+        applePayPaymentMethod
+    }
+
+    internal let configuration: Configuration
+
+    internal var paymentAuthorizationViewController: PKPaymentAuthorizationViewController?
+
+    /// The delegate of the component.
+    public weak var delegate: PaymentComponentDelegate?
+
+    /// The delegate changes of ApplePay payment state.
+    public weak var applePayDelegate: ApplePayComponentDelegate?
+    
+    /// The delegate for handling Apple Pay authorization validation.
+    public weak var authorizationDelegate: ApplePayAuthorizationDelegate?
+    
+    /// Initializes the component.
+    ///
+    /// - Important: After receiving a payment response, you must call `finalizeIfNeeded(with:completion:)`
+    ///   regardless of whether the payment succeeded or failed. This ensures the Apple Pay sheet
+    ///   displays the correct status to the user.
+    ///
+    ///   The dismissal behavior depends on the `dismissesAutomatically` configuration:
+    ///   - When `true`: The component automatically dismisses the Apple Pay sheet. Do not dismiss it yourself.
+    ///   - When `false` (default flow): Dismiss the view controller yourself within the
+    ///     `finalizeIfNeeded(with:completion:)` completion block.
+    ///
+    /// - Note: Do not reuse this component after a payment is authorized. It can be re-presented if the user cancels before authorizing.
+    ///
+    /// - Parameter paymentMethod: The Apple Pay payment method. Must include country code.
+    /// - Parameter context: The context object for this component.
+    /// - Parameter configuration: Apple Pay component configuration
+    /// - Throws: `ApplePayComponent.Error.userCannotMakePayment`.
+    /// if user can't make payments on any of the payment request’s supported networks.
+    /// - Throws: `ApplePayComponent.Error.deviceDoesNotSupportApplyPay` if the current device's hardware doesn't support ApplePay.
+    /// - Throws: `ApplePayComponent.Error.userCannotMakePayment` if user can't make payments on any of the supported networks.
+    public init(
+        paymentMethod: ApplePayPaymentMethod,
+        context: AdyenContext,
+        configuration: Configuration
+    ) throws {
+        guard PKPaymentAuthorizationViewController.canMakePayments() else {
+            throw Error.deviceDoesNotSupportApplyPay
+        }
+        let supportedNetworks = paymentMethod.supportedNetworks()
+        guard configuration.allowOnboarding || Self.canMakePaymentWith(supportedNetworks) else {
+            throw Error.userCannotMakePayment
+        }
+
+        var configuration = configuration
+        self.paymentRequest = configuration.paymentRequest(with: supportedNetworks)
+        guard let viewController = PKPaymentAuthorizationViewController(paymentRequest: paymentRequest) else {
+            throw UnknownError(
+                errorDescription: "Failed to instantiate PKPaymentAuthorizationViewController because of unknown error"
+            )
+        }
+        self.configuration = configuration
+        self.context = context
+        self.paymentAuthorizationViewController = viewController
+        self.applePayPaymentMethod = paymentMethod
+        self.applePayPayment = configuration.applePayPayment
+        super.init()
+
+        paymentAuthorizationViewController?.delegate = self
+        sendInitialAnalytics()
+    }
+
+    public var viewController: UIViewController {
+        createPaymentAuthorizationViewController()
+    }
+
+    public func didFinalize(with success: Bool, completion: (() -> Void)?) {
+        if case let .submitted(paymentAuthorizationCompletion) = state {
+            state = .finalized(completion)
+            let result = PKPaymentAuthorizationResult(status: success ? .success : .failure, errors: nil)
+            paymentAuthorizationCompletion(result)
+        } else {
+            state = .initial
+            completion?()
+        }
+    }
+
+    internal func update(payment: Payment?) throws {
+        guard let payment else {
+            throw ApplePayComponent.Error.negativeGrandTotal
+        }
+
+        applePayPayment = try ApplePayPayment(payment: payment, brand: applePayPayment.brand)
+    }
+
+    // MARK: - Private
+
+    private func createPaymentAuthorizationViewController() -> PKPaymentAuthorizationViewController {
+        if paymentAuthorizationViewController == nil {
+            paymentAuthorizationViewController = PKPaymentAuthorizationViewController(paymentRequest: paymentRequest)
+            paymentAuthorizationViewController?.delegate = self
+            state = .initial
+        }
+        if paymentAuthorizationViewController?.isViewLoaded == false {
+            sendDidLoadEvent()
+        }
+        
+        return paymentAuthorizationViewController!
+    }
+
+    private static func canMakePaymentWith(_ networks: [PKPaymentNetwork]) -> Bool {
+        guard !networks.isEmpty else { return false }
+        return PKPaymentAuthorizationViewController.canMakePayments(usingNetworks: networks)
+    }
+}
+
+extension ApplePayComponent {
+
+    internal enum State {
+        case initial
+        case submitted((PKPaymentAuthorizationResult) -> Void)
+        case finalized((() -> Void)?)
+    }
+
+}
+
+@_spi(AdyenInternal)
+extension ApplePayComponent: TrackableComponent {}

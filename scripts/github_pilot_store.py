@@ -82,6 +82,8 @@ class ComparisonRecord:
     patch_path: Path
     metadata_path: Path
     markdown_path: Path
+    ref_kind: str = ""
+    ref_name: str = ""
 
 
 @dataclass(frozen=True)
@@ -521,6 +523,156 @@ def write_package_comparison(
     )
 
 
+def write_ref_comparison(
+    root: Path,
+    config: RepoConfig,
+    repo_root: Path,
+    ref_name: str,
+    from_sha: str,
+    from_paths: Sequence[str],
+    to_sha: str,
+    to_paths: Sequence[str],
+) -> ComparisonRecord:
+    """Write one generated comparison for selected default-branch evidence."""
+    if not _OBJECT_ID.fullmatch(from_sha) or not _OBJECT_ID.fullmatch(to_sha):
+        raise PilotStoreError("comparison SHA is invalid")
+    if (
+        not isinstance(ref_name, str)
+        or not ref_name
+        or any(character.isspace() for character in ref_name)
+    ):
+        raise PilotStoreError("comparison ref name is invalid")
+    pathspecs = tuple(sorted(set(from_paths) | set(to_paths)))
+    if not pathspecs or any(not safe_policy_path(path) for path in pathspecs):
+        raise PilotStoreError("comparison paths are invalid")
+    upstream_changes = read_upstream_changes(repo_root, from_sha, to_sha, pathspecs)
+    patch = _run_git_bytes(
+        repo_root,
+        ("diff", "--no-ext-diff", "--unified=3", from_sha, to_sha, "--")
+        + pathspecs,
+    )
+    changed_paths = _changed_path_union(upstream_changes)
+    if len(config.capsules) != 1:
+        raise PilotStoreError("comparison requires exactly one capsule policy")
+    capsule = config.capsules[0]
+    if len(changed_paths) > capsule.max_packet_files:
+        raise PilotStoreError("comparison exceeds max_packet_files")
+    if len(patch) > capsule.max_packet_utf8_bytes:
+        raise PilotStoreError("comparison exceeds max_packet_utf8_bytes")
+    comparison_root = (
+        _tracking_repository_root(Path(root).resolve(), config)
+        / "comparisons"
+        / "default-branch"
+        / (from_sha[:7] + "--" + to_sha[:7])
+    )
+    metadata = {
+        "changed_paths": list(changed_paths),
+        "format_version": 2,
+        "from_sha": from_sha,
+        "pathspecs": list(pathspecs),
+        "ref_kind": "default-branch",
+        "ref_name": ref_name,
+        "repository": config.id,
+        "to_sha": to_sha,
+        "upstream_changes": [
+            {
+                "new_path": item.new_path,
+                "old_path": item.old_path,
+                "status": item.status,
+            }
+            for item in upstream_changes
+        ],
+    }
+    markdown = _ref_comparison_markdown(metadata)
+    markdown_bytes = markdown.encode("utf-8")
+    metadata["markdown_sha256"] = hashlib.sha256(markdown_bytes).hexdigest()
+    metadata["patch_sha256"] = hashlib.sha256(patch).hexdigest()
+    comparison_evidence = tuple(
+        CapsuleFile(
+            path=path,
+            content=content,
+            sha256=hashlib.sha256(content).hexdigest(),
+            size=len(content),
+            purpose="repository-comparison",
+            git_blob_oid=hashlib.sha256(content).hexdigest(),
+            git_mode="100644",
+            package=capsule.source_id,
+            classification_reason="generated-comparison",
+        )
+        for path, content in (("diff.patch", patch), ("comparison.md", markdown_bytes))
+    )
+    scan_evidence_files(comparison_evidence, config.secret_allowlist)
+    existing = _existing_ref_comparison(comparison_root, metadata)
+    if existing is not None:
+        return existing
+    comparison_root.parent.mkdir(parents=True, exist_ok=True)
+    staging = Path(tempfile.mkdtemp(prefix=".comparison-", dir=str(comparison_root.parent)))
+    try:
+        _write_bytes_atomic(staging / "diff.patch", patch)
+        _write_bytes_atomic(staging / "comparison.json", canonical_json_bytes(metadata) + b"\n")
+        _write_bytes_atomic(staging / "comparison.md", markdown_bytes)
+        os.replace(str(staging), str(comparison_root))
+    except Exception:
+        _clean_owned(staging)
+        winner = _existing_ref_comparison(comparison_root, metadata)
+        if winner is not None:
+            return winner
+        raise
+    return ComparisonRecord(
+        "",
+        "",
+        "",
+        from_sha,
+        to_sha,
+        changed_paths,
+        upstream_changes,
+        comparison_root / "diff.patch",
+        comparison_root / "comparison.json",
+        comparison_root / "comparison.md",
+        "default-branch",
+        ref_name,
+    )
+
+
+def _existing_ref_comparison(
+    comparison_root: Path,
+    expected: dict,
+) -> Optional[ComparisonRecord]:
+    if not comparison_root.exists():
+        return None
+    if comparison_root.is_symlink() or not comparison_root.is_dir():
+        raise PilotStoreError("comparison destination is unsafe")
+    manifest_path = comparison_root / "comparison.json"
+    patch_path = comparison_root / "diff.patch"
+    markdown_path = comparison_root / "comparison.md"
+    if any(
+        not path.is_file() or path.is_symlink()
+        for path in (manifest_path, patch_path, markdown_path)
+    ):
+        raise PilotStoreError("comparison destination is incomplete")
+    manifest = _read_json(manifest_path)
+    if (
+        manifest != expected
+        or hashlib.sha256(patch_path.read_bytes()).hexdigest() != manifest.get("patch_sha256")
+        or hashlib.sha256(markdown_path.read_bytes()).hexdigest() != manifest.get("markdown_sha256")
+    ):
+        raise PilotStoreError("comparison destination conflicts with generated evidence")
+    return ComparisonRecord(
+        "",
+        "",
+        "",
+        str(manifest["from_sha"]),
+        str(manifest["to_sha"]),
+        tuple(str(path) for path in manifest["changed_paths"]),
+        _upstream_changes_from_manifest(manifest),
+        patch_path,
+        manifest_path,
+        markdown_path,
+        str(manifest["ref_kind"]),
+        str(manifest["ref_name"]),
+    )
+
+
 def _existing_comparison(
     comparison_root: Path, expected: dict
 ) -> Optional[ComparisonRecord]:
@@ -828,6 +980,39 @@ def _comparison_markdown(metadata: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _ref_comparison_markdown(metadata: dict) -> str:
+    lines = [
+        "# GitHub repository ref comparison",
+        "",
+        "- Repository: `" + str(metadata["repository"]) + "`",
+        "- Ref: `" + str(metadata["ref_kind"]) + "/" + str(metadata["ref_name"]) + "`",
+        "- From SHA: `" + str(metadata["from_sha"]) + "`",
+        "- To SHA: `" + str(metadata["to_sha"]) + "`",
+        "- Patch: [diff.patch](diff.patch)",
+        "",
+        "## Changed paths",
+        "",
+    ]
+    changed = metadata["changed_paths"]
+    lines.extend("- `" + str(path) + "`" for path in changed)
+    if not changed:
+        lines.append("- None")
+    lines.extend(["", "## Upstream changes", ""])
+    for row in metadata["upstream_changes"]:
+        old_path = str(row["old_path"])
+        new_path = str(row["new_path"])
+        status = str(row["status"])
+        label = (
+            "`" + old_path + "` -> `" + new_path + "`"
+            if status == "renamed"
+            else "`" + (new_path or old_path) + "`"
+        )
+        lines.append("- `" + status + "`: " + label)
+    if not metadata["upstream_changes"]:
+        lines.append("- None")
+    return "\n".join(lines) + "\n"
+
+
 def read_upstream_changes(
     repo_root: Path,
     from_sha: str,
@@ -1051,4 +1236,5 @@ __all__ = [
     "publish_source_snapshot",
     "publish_source_supplement",
     "write_package_comparison",
+    "write_ref_comparison",
 ]

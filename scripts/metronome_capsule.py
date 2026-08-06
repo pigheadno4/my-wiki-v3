@@ -12,6 +12,9 @@ from validate_wiki import WIKILINK_RE, parse_frontmatter, split_frontmatter
 
 METRONOME_SOURCE = "https://docs.metronome.com/"
 RAW_SOURCES_HEADING = re.compile(r"^## Raw Sources\s*$", re.MULTILINE)
+RELATED_RAW_HEADING = re.compile(
+    r"^## Related raw API references\s*$", re.MULTILINE
+)
 NEXT_HEADING = re.compile(r"^##\s+", re.MULTILINE)
 
 
@@ -22,6 +25,7 @@ class SourceRecord:
     canonical_url: str
     raw_files: Tuple[str, ...]
     raw_source_files: Tuple[str, ...]
+    related_raw_files: Tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -34,8 +38,8 @@ class CapsuleReport:
     inspection_errors: Tuple[str, ...]
 
 
-def _raw_source_files(body: str) -> Tuple[str, ...]:
-    heading = RAW_SOURCES_HEADING.search(body)
+def _section_raw_files(body: str, heading_pattern: re.Pattern[str]) -> Tuple[str, ...]:
+    heading = heading_pattern.search(body)
     if heading is None:
         return ()
     section_start = heading.end()
@@ -48,6 +52,14 @@ def _raw_source_files(body: str) -> Tuple[str, ...]:
             target = target[len("raw/"):]
         paths.append(target + ("" if target.endswith(".md") else ".md"))
     return tuple(paths)
+
+
+def _raw_source_files(body: str) -> Tuple[str, ...]:
+    return _section_raw_files(body, RAW_SOURCES_HEADING)
+
+
+def _related_raw_files(body: str) -> Tuple[str, ...]:
+    return _section_raw_files(body, RELATED_RAW_HEADING)
 
 
 def _source_record(root: Path, path: Path, errors: List[str]) -> SourceRecord:
@@ -68,6 +80,7 @@ def _source_record(root: Path, path: Path, errors: List[str]) -> SourceRecord:
         canonical_url=canonical_url,
         raw_files=raw_files,
         raw_source_files=_raw_source_files(body),
+        related_raw_files=_related_raw_files(body),
     )
 
 
@@ -164,6 +177,37 @@ def validate_capsule(report: CapsuleReport) -> List[str]:
             errors.append(f"{source.path}: raw_files entries do not exist: {missing}")
         if source.raw_files != source.raw_source_files:
             errors.append(f"{source.path}: raw_files and Raw Sources differ or are out of order")
+
+        related_outside = [
+            path for path in source.related_raw_files
+            if not path.startswith("metronome/")
+        ]
+        if related_outside:
+            errors.append(
+                f"{source.path}: related raw references must stay inside metronome/"
+            )
+        related_missing = [
+            path for path in source.related_raw_files
+            if path not in raw_files
+        ]
+        if related_missing:
+            errors.append(
+                f"{source.path}: related raw references do not exist: {related_missing}"
+            )
+        related_duplicates = sorted({
+            path for path in source.related_raw_files
+            if source.related_raw_files.count(path) > 1
+        })
+        if related_duplicates:
+            errors.append(
+                f"{source.path}: duplicate related raw references: {related_duplicates}"
+            )
+        evidence_overlap = sorted(set(source.raw_files) & set(source.related_raw_files))
+        if evidence_overlap:
+            errors.append(
+                f"{source.path}: raw files appear in both Raw Sources and "
+                f"Related raw API references: {evidence_overlap}"
+            )
 
     indexed = set(report.index_source_stems)
     for stem in sorted(source_stems - indexed):

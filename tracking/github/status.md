@@ -1,5 +1,30 @@
 # GitHub repository ingest status
 
+## `github-0f505b736a8fbe7628ca`
+
+- Repository: `adyen/adyen-ios`
+- SHA: `5f6779b31299e3067de3a5279a816f3b8d2fbdf3`
+- Collection date: `2026-08-01`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/manifest.json)
+- Packet: [review packet](tracking/github/repos/adyen/adyen-ios/ingest-packets/github-0f505b736a8fbe7628ca/packet.md)
+- Review priority: `normal`
+- Required reading: `689` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen-ios@5.25.1` (recommended `full`)
+  Release: [manifest](raw/github/adyen/adyen-ios/releases/adyen-ios/5.25.1/2026-08-01/manifest.json)
+  Comparison: Not applicable
+
 ## `github-1ab2662d292502a53058`
 
 - Repository: `braintree/braintree-web`
@@ -50,6 +75,32 @@
   Release: [manifest](raw/github/braintree/braintree-web/releases/braintree-web/3.144.0/2026-07-28/manifest.json)
   Comparison: [manifest](tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.143.0--3.144.0/comparison.json)
 
+## `github-2957d7d341f9f6cb5ecc`
+
+- Repository: `adyen/adyen-node-api-library`
+- SHA: `99d1a0cf69c8660952baffd1437b00aae2fa4f23`
+- Collection date: `2026-08-02`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/adyen/adyen-node-api-library/snapshots/2026-08-02-99d1a0c/manifest.json)
+- Packet: [review packet](tracking/github/repos/adyen/adyen-node-api-library/ingest-packets/github-2957d7d341f9f6cb5ecc/packet.md)
+- Evidence attachment: [manifest](tracking/github/repos/adyen/adyen-node-api-library/evidence-attachments/github-2957d7d341f9f6cb5ecc/attachment.json)
+- Review priority: `high`
+- Required reading: `555` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/api-library@32.0.0` (recommended `full`)
+  Release: [manifest](raw/github/adyen/adyen-node-api-library/releases/api-library/32.0.0/2026-08-02/manifest.json)
+  Comparison: Not applicable
+
 ## `github-2968099ae6a7549cd6a9`
 
 - Repository: `braintree/braintree_ios`
@@ -75,6 +126,31 @@
   Release: [manifest](raw/github/braintree/braintree_ios/releases/braintree-ios/7.9.0/2026-08-01/manifest.json)
   Comparison: Not applicable
 
+## `github-43baf5daaf3a92e79a79`
+
+- Repository: `adyen/adyen-react-native`
+- SHA: `2912c913266b2d1df73882980303b563ea04ab63`
+- Collection date: `2026-08-01`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/adyen/adyen-react-native/snapshots/2026-08-01-2912c91/manifest.json)
+- Packet: [review packet](tracking/github/repos/adyen/adyen-react-native/ingest-packets/github-43baf5daaf3a92e79a79/packet.md)
+- Review priority: `high`
+- Required reading: `304` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/react-native@2.12.0` (recommended `full`)
+  Release: [manifest](raw/github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-08-01/manifest.json)
+  Comparison: Not applicable
+
 ## `github-5c8c7287ce91fe6f34c2`
 
 - Repository: `paypal/paypal-ios`
@@ -98,6 +174,33 @@
 
 - `paypal-ios@2.0.1` (recommended `full`)
   Release: [manifest](raw/github/paypal/paypal-ios/releases/paypal-ios/2.0.1/2026-07-31/manifest.json)
+  Comparison: Not applicable
+
+## `github-6403ae7181617adc4020`
+
+- Repository: `paypal-examples/v6-web-sdk-sample-integration`
+- SHA: `b5f2df209b0bfd10b1a3cde600088ddf21e43523`
+- Collection date: `2026-08-04`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/manifest.json)
+- Packet: [review packet](tracking/github/repos/paypal/v6-web-sdk-sample-integration/ingest-packets/github-6403ae7181617adc4020/packet.md)
+- Review priority: `high`
+- Required reading: `262` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@b5f2df2` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `b5f2df209b0bfd10b1a3cde600088ddf21e43523`
   Comparison: Not applicable
 
 ## `github-7ecc6c2199897656ffe3`
@@ -173,6 +276,33 @@
 
 - `@paypal/paypal-js@8.4.2` (recommended `full`)
   Release: [manifest](raw/github/paypal/paypal-js/releases/paypal-js/8.4.2/2026-07-22/manifest.json)
+  Comparison: Not applicable
+
+## `github-849ba0a66c8ae04ad9da`
+
+- Repository: `paypal-examples/paypal-sdk-server-side-integration`
+- SHA: `5409a3b9c0b6d0049fc3be9386092759fd6a1d5c`
+- Collection date: `2026-08-04`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/paypal/paypal-sdk-server-side-integration/snapshots/2026-08-04-5409a3b/manifest.json)
+- Packet: [review packet](tracking/github/repos/paypal/paypal-sdk-server-side-integration/ingest-packets/github-849ba0a66c8ae04ad9da/packet.md)
+- Review priority: `high`
+- Required reading: `41` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@5409a3b` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `5409a3b9c0b6d0049fc3be9386092759fd6a1d5c`
   Comparison: Not applicable
 
 ## `github-88d13a8f0c219387aab4`
@@ -382,6 +512,31 @@
 
 - `@paypal/react-paypal-js@8.9.2` (recommended `full`)
   Release: [manifest](raw/github/paypal/paypal-js/releases/react-paypal-js/8.9.2/2026-07-22/manifest.json)
+  Comparison: Not applicable
+
+## `github-b241eb5a8bcbadf2be62`
+
+- Repository: `adyen/adyen-android`
+- SHA: `5314fad1389a8def9d8e3377f27f7405e303faba`
+- Collection date: `2026-08-01`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/adyen/adyen-android/snapshots/2026-08-01-5314fad/manifest.json)
+- Packet: [review packet](tracking/github/repos/adyen/adyen-android/ingest-packets/github-b241eb5a8bcbadf2be62/packet.md)
+- Review priority: `high`
+- Required reading: `1202` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen-android@5.20.0` (recommended `full`)
+  Release: [manifest](raw/github/adyen/adyen-android/releases/adyen-android/5.20.0/2026-08-01/manifest.json)
   Comparison: Not applicable
 
 ## `github-bd7fe849961b5c6b9964`

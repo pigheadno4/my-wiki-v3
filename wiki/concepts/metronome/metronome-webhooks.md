@@ -7,6 +7,10 @@ tags: [metronome, webhooks, notifications, integrations]
 
 ## Definition
 
+### System lifecycle publication status
+
+The system notification event-type listing schema permits an optional `is_enabled` boolean on each lifecycle-event configuration, described as whether webhook publishing for that lifecycle event is enabled. The example omits the field, and this listing reference does not define how enablement is set or changed, whether disabled configurations are returned, or any delivery, retry, ordering, deduplication, or payload behavior.
+
 Metronome webhooks deliver HTTP POST notifications when billing and configuration events occur. Documented event families include usage thresholds, contract and balance-object lifecycle events, invoices, integration failures, marketplace disablement, and payment-gating workflows.
 
 ## Delivery model
@@ -39,7 +43,13 @@ The trial example delivers `alerts.low_remaining_contract_credit_and_commit_bala
 
 Offset-notification payloads omit the `properties` field used by threshold payloads, so receivers must parse notification types without assuming one universal shape. Their `timestamp` is the source event time, not the offset fire or delivery time. The UI workflow says a configured offset produces events for all customers to every configured webhook.
 
+## Go-live webhook and retry checks
+
+Metronome's go-live checklist places three checks in its webhook-and-error-handling section: keep the endpoint online and verify signatures with the Metronome webhook secret, make processing safe on duplicate deliveries, and exercise a policy worded as retry on `5xx` or network failure, backoff on `429`, and dead-letter plus alert on `4xx`. The source does not identify that status policy's direction or owner, so it must not be labeled either a webhook-receiver contract or Metronome's outbound-delivery contract. The dedicated webhook guide remains authoritative: Metronome retries outbound delivery responses above `299`. Webhook-delivery retry, API-call retry, and payment retry remain distinct, and these checks do not guarantee timely delivery, revenue preservation, processing success, event ordering, or payment recovery. [[source-metronome-guides-implement-metronome-production-checklist]]
+
 ## Sources
+
+- [[source-metronome-api-reference-notifications-list-system-notification-event-types]] - optional lifecycle-event webhook-publication status and its documented control boundary
 
 - [[source-metronome-guides-platform-configuration-setup-webhooks]] — event families, delivery semantics, deduplication, and signature verification
 - [[source-metronome-guides-get-started-metronome-dashboard-quickstart]] — payment-status notification use for payment-gated commits

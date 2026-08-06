@@ -45,11 +45,21 @@ class MetronomeCapsuleTests(unittest.TestCase):
         canonical_url="https://docs.metronome.com/guides/home",
         raw_files=("metronome/guides/home-2026-07-13.md",),
         raw_links=("metronome/guides/home-2026-07-13.md",),
+        related_links=(),
     ):
         raw_list = "\n".join(f'  - "{path}"' for path in raw_files)
         links = "\n".join(
             f"- [[raw/{Path(path).with_suffix('').as_posix()}|snapshot]]"
             for path in raw_links
+        )
+        related = "\n".join(
+            f"- [[raw/{Path(path).with_suffix('').as_posix()}|API reference]]"
+            for path in related_links
+        )
+        related_section = (
+            "\n## Related raw API references\n\n"
+            f"{related}\n"
+            if related_links else ""
         )
         path = root / "wiki" / "sources" / "metronome" / name
         path.write_text(
@@ -65,7 +75,8 @@ class MetronomeCapsuleTests(unittest.TestCase):
             "---\n\n"
             "## Overview\n\nSummary.\n\n"
             "## Raw Sources\n\n"
-            f"{links}\n",
+            f"{links}\n"
+            f"{related_section}",
             encoding="utf-8",
         )
 
@@ -92,6 +103,73 @@ class MetronomeCapsuleTests(unittest.TestCase):
 
             self.assertEqual((), report.orphan_raw_files)
             self.assertEqual([], validate_capsule(report))
+
+    def test_related_raw_reference_is_valid_navigation_but_remains_uningested(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = "source-metronome-guides-home"
+            self.make_capsule(root, source_count=1, index_links=(source,))
+            evidence = self.write_raw(root)
+            related = self.write_raw(root, "guides/create-widget-2026-07-13.md")
+            self.write_source(root, related_links=(related,))
+
+            report = inspect_capsule(root)
+
+            self.assertEqual((related,), report.orphan_raw_files)
+            self.assertEqual((related,), report.sources[0].related_raw_files)
+            self.assertEqual([], validate_capsule(report))
+
+    def test_related_raw_reference_must_exist(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = "source-metronome-guides-home"
+            self.make_capsule(root, source_count=1, index_links=(source,))
+            self.write_raw(root)
+            self.write_source(
+                root,
+                related_links=("metronome/guides/missing-2026-07-13.md",),
+            )
+
+            errors = validate_capsule(inspect_capsule(root))
+
+            self.assertTrue(any("related raw references do not exist" in error for error in errors))
+
+    def test_related_raw_reference_must_stay_inside_metronome(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = "source-metronome-guides-home"
+            self.make_capsule(root, source_count=1, index_links=(source,))
+            self.write_raw(root)
+            self.write_source(root, related_links=("stripe/api/widget-2026-07-13.md",))
+
+            errors = validate_capsule(inspect_capsule(root))
+
+            self.assertTrue(any("related raw references must stay inside metronome/" in error for error in errors))
+
+    def test_duplicate_related_raw_reference_is_an_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = "source-metronome-guides-home"
+            self.make_capsule(root, source_count=1, index_links=(source,))
+            related = self.write_raw(root, "guides/create-widget-2026-07-13.md")
+            self.write_raw(root)
+            self.write_source(root, related_links=(related, related))
+
+            errors = validate_capsule(inspect_capsule(root))
+
+            self.assertTrue(any("duplicate related raw references" in error for error in errors))
+
+    def test_related_raw_reference_cannot_duplicate_factual_raw_source(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = "source-metronome-guides-home"
+            self.make_capsule(root, source_count=1, index_links=(source,))
+            evidence = self.write_raw(root)
+            self.write_source(root, related_links=(evidence,))
+
+            errors = validate_capsule(inspect_capsule(root))
+
+            self.assertTrue(any("both Raw Sources and Related raw API references" in error for error in errors))
 
     def test_duplicate_canonical_url_is_an_error(self):
         with tempfile.TemporaryDirectory() as tmp:

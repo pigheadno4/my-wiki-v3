@@ -1,0 +1,68 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "anrok-stripe-tax-provider-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "durable_fact",
+      "anchor": "before ## Threshold payment-gate boundary",
+      "proposed_markdown": "## Anrok tax-app boundary\n\nFor the primary Anrok path, Metronome creates the Stripe invoice and supplies linked-customer and mapped-product context, Stripe hosts the installed Anrok app and automatic-tax provider selection, and Anrok calculates tax and handles compliance instead of Stripe's native tax engine. Stripe customer addresses determine jurisdiction; each Metronome Product carries `stripe_product_id`, mapped from `ContractProduct.stripe_product_id` to `invoiceitem.price.product`. The Product-versus-`ContractProduct` terminology is unresolved in this guide as it is in the native Stripe Tax guide. Arrears tax calculates inline without requiring invoices to remain drafts; prepaid-balance and spend thresholds use `tax_type: \"STRIPE\"` and `payment_type: \"INVOICE\"`, where the `STRIPE` literal identifies the documented Stripe invoice path and does not prove that Stripe's native engine is the selected calculator. The guide separately permits Stripe Tax to calculate while Anrok consumes Stripe transaction data for compliance, filing, and reporting; it does not define transfer timing, completeness, reconciliation, correction, filing cadence, or failure handling for that hybrid mode.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep Anrok-as-calculator and Stripe-Tax-plus-Anrok-compliance as two distinct operating modes; the guide does not say both engines calculate one invoice.",
+        "Do not interpret `tax_type: STRIPE` as provider identity when Anrok is selected through Stripe's tax-app framework.",
+        "Preserve the unresolved Product versus ContractProduct mapping terminology rather than treating the labels as interchangeable."
+      ]
+    },
+    {
+      "update_id": "anrok-metronome-integrations-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-integrations-tax-integrations-anrok]] \u2014 Anrok-through-Stripe responsibility, customer and product mapping, invoice modes, and compliance-only coexistence with Stripe Tax",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "stripe-tax-anrok-compliance-coexistence",
+      "target_path": "wiki/concepts/stripe-tax.md",
+      "update_kind": "durable_fact",
+      "anchor": "before ## Payment Intents: Full Tax API",
+      "proposed_markdown": "## Anrok compliance-only coexistence\n\nA Metronome integration guide documents a separate mode in which Stripe Tax performs the tax calculation while Anrok picks up Stripe transaction data for compliance, filing, and reporting. This differs from selecting Anrok as Stripe's third-party automatic-tax calculation provider. The guide does not establish that both engines calculate one invoice, nor does it define transaction-transfer timing, completeness, reconciliation, corrections, filing cadence, remittance, or failure handling.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "Keep the compliance-only coexistence mode separate from Anrok-as-calculator and do not infer dual calculation.",
+        "Do not infer transaction-sync guarantees, filing cadence, remittance ownership, or correction behavior from the statement that Anrok picks up Stripe transaction data."
+      ]
+    },
+    {
+      "update_id": "stripe-tax-anrok-source-link",
+      "target_path": "wiki/concepts/stripe-tax.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-integrations-tax-integrations-anrok]] \u2014 distinction between Anrok as third-party calculator and Stripe Tax calculation with Anrok compliance, filing, and reporting",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

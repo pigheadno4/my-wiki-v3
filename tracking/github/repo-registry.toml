@@ -340,11 +340,26 @@ id="paypal-examples/v6-web-sdk-sample-integration"
 collection_frequency="monthly"
 company="paypal"
 url="https://github.com/paypal-examples/v6-web-sdk-sample-integration"
-enabled=false
+enabled=true
 repo_type="sample-app"
 priority="tier1"
 track="default-branch"
 version_strategy="commit"
+[[repos.capsules]]
+id="paypal-v6-sample-source"
+adapter="commit-tree-v1"
+source_id="v6-web-sdk-sample-integration"
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=["client/components","client/prebuiltPages/react/src","client/shared","server/node/src"]
+include_paths=[".env.sample","LICENSE","README.md","client/index.html","client/package.json","client/prebuiltPages/react/README.md","client/prebuiltPages/react/package.json","client/prebuiltPages/react/tsconfig.json","client/prebuiltPages/react/vite.config.ts","server/node/README.md","server/node/package.json","server/node/tsconfig.json"]
+excluded_categories=["tests","fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=512000
+max_capsule_files=300
+max_capsule_utf8_bytes=1000000
+max_packet_files=320
+max_packet_utf8_bytes=1900000
 [[repos]]
 id="paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration"
 collection_frequency="monthly"
@@ -370,11 +385,26 @@ id="paypal-examples/paypal-sdk-server-side-integration"
 collection_frequency="monthly"
 company="paypal"
 url="https://github.com/paypal-examples/paypal-sdk-server-side-integration"
-enabled=false
+enabled=true
 repo_type="sample-app"
 priority="tier1"
 track="default-branch"
 version_strategy="commit"
+[[repos.capsules]]
+id="paypal-server-side-sample-source"
+adapter="commit-tree-v1"
+source_id="paypal-sdk-server-side-integration"
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=["docs","public","src"]
+include_paths=["README.md","example.env","package.json","tsconfig.json"]
+excluded_categories=["tests","fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=512000
+max_capsule_files=50
+max_capsule_utf8_bytes=250000
+max_packet_files=60
+max_packet_utf8_bytes=900000
 [[repos]]
 id="paypal-examples/paypal-ios-sdk-demo-app"
 collection_frequency="monthly"
@@ -1162,21 +1192,117 @@ id="adyen/adyen-node-api-library"
 collection_frequency="monthly"
 company="adyen"
 url="https://github.com/Adyen/adyen-node-api-library"
-enabled=false
+enabled=true
 repo_type="server-sdk"
 priority="tier2"
 track="releases-and-default-branch"
 version_strategy="semver-tags"
+[[repos.version_tracks]]
+selector="package:@adyen/api-library@32"
+backfill="latest-stable"
+future="all-stable"
+include_prerelease=false
+pinned_versions=["32.0.0"]
+[[repos.capsules]]
+id="adyen-node-checkout-source"
+adapter="tagged-tree-v1"
+focus_packages=["@adyen/api-library"]
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=[
+  "doc",
+  "src/constants",
+  "src/helpers",
+  "src/httpClient",
+  "src/security",
+  "src/services",
+  "src/typings/checkout",
+  "src/typings/payment",
+  "src/typings/recurring",
+  "src/utils",
+]
+default_generated_target_paths=[]
+include_paths=[
+  "LICENSE",
+  "README.md",
+  "VERSION",
+  "package.json",
+  "src/client.ts",
+  "src/config.ts",
+  "src/index.ts",
+  "src/notification/notificationRequest.ts",
+  "src/service.ts",
+  "src/typings/index.ts",
+  "src/typings/notification/amount.ts",
+  "src/typings/notification/models.ts",
+  "src/typings/notification/notification.ts",
+  "src/typings/notification/notificationItem.ts",
+  "src/typings/notification/notificationRequestItem.ts",
+  "src/webhooks.ts",
+  "tsconfig.json",
+]
+excluded_categories=["tests", "fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=512000
+max_capsule_files=620
+max_capsule_utf8_bytes=3500000
+max_packet_files=700
+max_packet_utf8_bytes=5000000
+historical_policy_hashes=["35829dc91506c9d75f2227a2d1fee3e2ede206ea84184245748a9d179bd2e197"]
 [[repos]]
 id="adyen/adyen-react-native"
 collection_frequency="weekly"
 company="adyen"
 url="https://github.com/Adyen/adyen-react-native"
-enabled=false
+enabled=true
 repo_type="mobile-sdk"
 priority="tier1"
 track="releases-and-default-branch"
 version_strategy="semver-tags"
+[[repos.version_tracks]]
+selector="package:@adyen/react-native@2"
+backfill="latest-stable"
+future="all-stable"
+include_prerelease=false
+pinned_versions=["2.12.0"]
+[[repos.capsules]]
+id="adyen-react-native-public-source"
+adapter="tagged-tree-v1"
+focus_packages=["@adyen/react-native"]
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=[
+  "src",
+  "android/src/main",
+  "ios",
+  "example/src",
+]
+default_generated_target_paths=[]
+include_paths=[
+  "CONTRIBUTING.md",
+  "adyen-react-native.podspec",
+  "android/build.gradle",
+  "android/dependencies.gradle",
+  "android/gradle.properties",
+  "app.plugin.js",
+  "docs/Architecture.md",
+  "docs/Compatibility.md",
+  "docs/Configuration.md",
+  "docs/Customization.md",
+  "docs/Error codes.md",
+  "docs/Localization.md",
+  "docs/v2-MigrationGuide.md",
+  "example/README.md",
+  "example/package.json",
+  "package.json",
+]
+excluded_categories=["tests", "fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=512000
+max_capsule_files=420
+max_capsule_utf8_bytes=4000000
+max_packet_files=470
+max_packet_utf8_bytes=5000000
 [[repos]]
 id="adyen/adyen-web"
 collection_frequency="weekly"
@@ -1225,21 +1351,349 @@ id="adyen/adyen-android"
 collection_frequency="weekly"
 company="adyen"
 url="https://github.com/Adyen/adyen-android"
-enabled=false
+enabled=true
 repo_type="mobile-sdk"
 priority="tier1"
 track="releases-and-default-branch"
 version_strategy="semver-tags"
+[[repos.version_tracks]]
+selector="package:adyen-android@5"
+backfill="latest-stable"
+future="all-stable"
+include_prerelease=false
+pinned_versions=["5.20.0"]
+[[repos.capsules]]
+id="adyen-android-public-source"
+adapter="tagged-tree-v1"
+focus_packages=["adyen-android"]
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=[
+  "3ds2/src/main/java",
+  "ach/src/main/java",
+  "action-core/src/main/java",
+  "await/src/main/java",
+  "bacs/src/main/java",
+  "bcmc/src/main/java",
+  "blik/src/main/java",
+  "boleto/src/main/java",
+  "card/src/main/java",
+  "card-scanning/src/main/java",
+  "cashapppay/src/main/java",
+  "checkout-core/src/main/java",
+  "components-compose/src/main/java",
+  "components-core/src/main/java",
+  "convenience-stores-jp/src/main/java",
+  "cse/src/main/java",
+  "dotpay/src/main/java",
+  "drop-in/src/main/java",
+  "drop-in-compose/src/main/java",
+  "econtext/src/main/java",
+  "entercash/src/main/java",
+  "eps/src/main/java",
+  "example-app/src/main/java",
+  "giftcard/src/main/java",
+  "googlepay/src/main/java",
+  "ideal/src/main/java",
+  "instant/src/main/java",
+  "issuer-list/src/main/java",
+  "lint/src/main/java",
+  "mbway/src/main/java",
+  "meal-voucher-fr/src/main/java",
+  "molpay/src/main/java",
+  "online-banking-core/src/main/java",
+  "online-banking-cz/src/main/java",
+  "online-banking-jp/src/main/java",
+  "online-banking-pl/src/main/java",
+  "online-banking-sk/src/main/java",
+  "openbanking/src/main/java",
+  "paybybank/src/main/java",
+  "paybybank-us/src/main/java",
+  "payeasy/src/main/java",
+  "payto/src/main/java",
+  "qr-code/src/main/java",
+  "redirect/src/main/java",
+  "sepa/src/main/java",
+  "sessions-core/src/main/java",
+  "seven-eleven/src/main/java",
+  "twint/src/main/java",
+  "twint-action/src/main/java",
+  "ui-core/src/main/java",
+  "upi/src/main/java",
+  "voucher/src/main/java",
+  "wechatpay/src/main/java",
+]
+default_generated_target_paths=[]
+include_paths=[
+  "README.md",
+  "LICENSE",
+  "settings.gradle",
+  "build.gradle",
+  "gradle/libs.versions.toml",
+  "gradle.properties",
+  "3ds2/src/main/AndroidManifest.xml",
+  "3ds2/build.gradle",
+  "ach/src/main/AndroidManifest.xml",
+  "ach/src/main/res/values/strings.xml",
+  "ach/build.gradle",
+  "action-core/build.gradle",
+  "await/src/main/AndroidManifest.xml",
+  "await/src/main/res/values/strings.xml",
+  "await/build.gradle",
+  "bacs/src/main/AndroidManifest.xml",
+  "bacs/src/main/res/values/strings.xml",
+  "bacs/build.gradle",
+  "bcmc/src/main/AndroidManifest.xml",
+  "bcmc/build.gradle",
+  "blik/src/main/AndroidManifest.xml",
+  "blik/src/main/res/values/strings.xml",
+  "blik/build.gradle",
+  "boleto/src/main/AndroidManifest.xml",
+  "boleto/src/main/res/values/strings.xml",
+  "boleto/build.gradle",
+  "card/src/main/AndroidManifest.xml",
+  "card/src/main/res/values/strings.xml",
+  "card/build.gradle",
+  "card-scanning/src/main/AndroidManifest.xml",
+  "card-scanning/build.gradle",
+  "cashapppay/src/main/AndroidManifest.xml",
+  "cashapppay/src/main/res/values/strings.xml",
+  "cashapppay/build.gradle",
+  "checkout-core/src/main/AndroidManifest.xml",
+  "checkout-core/build.gradle",
+  "components-compose/src/main/AndroidManifest.xml",
+  "components-compose/build.gradle",
+  "components-core/src/main/AndroidManifest.xml",
+  "components-core/build.gradle",
+  "convenience-stores-jp/src/main/AndroidManifest.xml",
+  "convenience-stores-jp/build.gradle",
+  "cse/src/main/AndroidManifest.xml",
+  "cse/build.gradle",
+  "dotpay/src/main/AndroidManifest.xml",
+  "dotpay/build.gradle",
+  "drop-in/src/main/AndroidManifest.xml",
+  "drop-in/src/main/res/values/strings.xml",
+  "drop-in/build.gradle",
+  "drop-in-compose/src/main/AndroidManifest.xml",
+  "drop-in-compose/build.gradle",
+  "econtext/src/main/AndroidManifest.xml",
+  "econtext/src/main/res/values/strings.xml",
+  "econtext/build.gradle",
+  "entercash/src/main/AndroidManifest.xml",
+  "entercash/build.gradle",
+  "eps/src/main/AndroidManifest.xml",
+  "eps/build.gradle",
+  "example-app/src/main/AndroidManifest.xml",
+  "example-app/src/main/res/values/strings.xml",
+  "example-app/build.gradle",
+  "giftcard/src/main/AndroidManifest.xml",
+  "giftcard/src/main/res/values/strings.xml",
+  "giftcard/build.gradle",
+  "googlepay/src/main/AndroidManifest.xml",
+  "googlepay/build.gradle",
+  "ideal/src/main/AndroidManifest.xml",
+  "ideal/build.gradle",
+  "instant/src/main/AndroidManifest.xml",
+  "instant/build.gradle",
+  "issuer-list/src/main/AndroidManifest.xml",
+  "issuer-list/build.gradle",
+  "lint/build.gradle",
+  "mbway/src/main/AndroidManifest.xml",
+  "mbway/src/main/res/values/strings.xml",
+  "mbway/build.gradle",
+  "meal-voucher-fr/src/main/AndroidManifest.xml",
+  "meal-voucher-fr/src/main/res/values/strings.xml",
+  "meal-voucher-fr/build.gradle",
+  "molpay/src/main/AndroidManifest.xml",
+  "molpay/build.gradle",
+  "online-banking-core/src/main/AndroidManifest.xml",
+  "online-banking-core/src/main/res/values/strings.xml",
+  "online-banking-core/build.gradle",
+  "online-banking-cz/src/main/AndroidManifest.xml",
+  "online-banking-cz/build.gradle",
+  "online-banking-jp/src/main/AndroidManifest.xml",
+  "online-banking-jp/build.gradle",
+  "online-banking-pl/src/main/AndroidManifest.xml",
+  "online-banking-pl/build.gradle",
+  "online-banking-sk/src/main/AndroidManifest.xml",
+  "online-banking-sk/build.gradle",
+  "openbanking/src/main/AndroidManifest.xml",
+  "openbanking/build.gradle",
+  "paybybank/src/main/AndroidManifest.xml",
+  "paybybank/src/main/res/values/strings.xml",
+  "paybybank/build.gradle",
+  "paybybank-us/src/main/AndroidManifest.xml",
+  "paybybank-us/src/main/res/values/strings.xml",
+  "paybybank-us/build.gradle",
+  "payeasy/src/main/AndroidManifest.xml",
+  "payeasy/build.gradle",
+  "payto/src/main/AndroidManifest.xml",
+  "payto/src/main/res/values/strings.xml",
+  "payto/build.gradle",
+  "qr-code/src/main/AndroidManifest.xml",
+  "qr-code/src/main/res/values/strings.xml",
+  "qr-code/build.gradle",
+  "redirect/src/main/AndroidManifest.xml",
+  "redirect/build.gradle",
+  "sepa/src/main/AndroidManifest.xml",
+  "sepa/src/main/res/values/strings.xml",
+  "sepa/build.gradle",
+  "sessions-core/src/main/AndroidManifest.xml",
+  "sessions-core/build.gradle",
+  "seven-eleven/src/main/AndroidManifest.xml",
+  "seven-eleven/build.gradle",
+  "twint/src/main/AndroidManifest.xml",
+  "twint/src/main/res/values/strings.xml",
+  "twint/build.gradle",
+  "twint-action/src/main/AndroidManifest.xml",
+  "twint-action/build.gradle",
+  "ui-core/src/main/AndroidManifest.xml",
+  "ui-core/src/main/res/values/strings.xml",
+  "ui-core/build.gradle",
+  "upi/src/main/AndroidManifest.xml",
+  "upi/src/main/res/values/strings.xml",
+  "upi/build.gradle",
+  "voucher/src/main/AndroidManifest.xml",
+  "voucher/src/main/res/values/strings.xml",
+  "voucher/build.gradle",
+  "wechatpay/src/main/AndroidManifest.xml",
+  "wechatpay/build.gradle",
+]
+excluded_categories=["tests", "fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=512000
+max_capsule_files=1250
+max_capsule_utf8_bytes=5000000
+max_packet_files=1300
+max_packet_utf8_bytes=6000000
 [[repos]]
 id="adyen/adyen-ios"
 collection_frequency="weekly"
 company="adyen"
 url="https://github.com/Adyen/adyen-ios"
-enabled=false
+enabled=true
 repo_type="mobile-sdk"
 priority="tier1"
 track="releases-and-default-branch"
 version_strategy="semver-tags"
+[[repos.version_tracks]]
+selector="package:adyen-ios@5"
+backfill="latest-stable"
+future="all-stable"
+include_prerelease=false
+pinned_versions=["5.25.1"]
+[[repos.capsules]]
+id="adyen-ios-public-source"
+adapter="tagged-tree-v1"
+focus_packages=["adyen-ios"]
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=[
+  "Adyen/Analytics",
+  "Adyen/Core",
+  "Adyen/Formatters",
+  "Adyen/Helpers",
+  "Adyen/Model",
+  "Adyen/UI",
+  "Adyen/Utilities",
+  "Adyen/Validators",
+  "AdyenActions/Actions",
+  "AdyenActions/Components",
+  "AdyenActions/Protocols",
+  "AdyenActions/UI",
+  "AdyenActions/Utilities",
+  "AdyenCard/Components",
+  "AdyenCard/Form",
+  "AdyenCard/Formatters",
+  "AdyenCard/Utilities",
+  "AdyenCard/Validators",
+  "AdyenCardScanner/Sources",
+  "AdyenCashAppPay/CashAppPayButton",
+  "AdyenComponents/ACH Direct Debit",
+  "AdyenComponents/Affirm",
+  "AdyenComponents/Apple Pay",
+  "AdyenComponents/Atome",
+  "AdyenComponents/BACS Direct Debit",
+  "AdyenComponents/BLIK",
+  "AdyenComponents/BasicPersonalInfoFormComponent",
+  "AdyenComponents/Boleto",
+  "AdyenComponents/Doku",
+  "AdyenComponents/Instant",
+  "AdyenComponents/Issuer List",
+  "AdyenComponents/MB Way",
+  "AdyenComponents/OnlineBanking",
+  "AdyenComponents/PayByBank",
+  "AdyenComponents/PayTo",
+  "AdyenComponents/Qiwi Wallet",
+  "AdyenComponents/SEPA Direct Debit",
+  "AdyenComponents/UPI",
+  "AdyenDropIn/Components",
+  "AdyenDropIn/Models",
+  "AdyenDropIn/Presentation",
+  "AdyenDropIn/Utilities",
+  "AdyenDropIn/Views",
+  "AdyenEncryption/Extensions",
+  "AdyenEncryption/JOSE",
+  "AdyenEncryption/Model",
+  "AdyenEncryption/Payload",
+  "AdyenSession/API",
+  "AdyenSwiftUI/Present View Controller",
+  "AdyenWeChatPay/WeChatPayActionComponent",
+  "Demo/Common/Configuration",
+  "Demo/Common/Helpers",
+  "Demo/Common/IntegrationExamples",
+  "Demo/Common/Models",
+  "Demo/Common/Networking",
+  "Demo/Common/PresentationDelegates",
+]
+default_generated_target_paths=[]
+include_paths=[
+  "README.md",
+  "MIGRATION.md",
+  "Package.swift",
+  "Adyen.podspec",
+  "Cartfile",
+  "LICENSE",
+  "Adyen/PrivacyInfo.xcprivacy",
+  "Adyen/Assets/Generated/LocalizationKey.swift",
+  "AdyenActions/AdyenActionComponent.swift",
+  "AdyenCashAppPay/CashAppPayComponent.swift",
+  "AdyenCashAppPay/CashAppPayConfiguration.swift",
+  "AdyenCashAppPay/CashAppPayDetails.swift",
+  "AdyenDelegatedAuthentication/AdyenDelegatedAuthentication.swift",
+  "AdyenDropIn/DropInComponent.swift",
+  "AdyenDropIn/DropInComponentExtensions.swift",
+  "AdyenEncryption/AnyEncryptor.swift",
+  "AdyenEncryption/BankDetailsEncryptor.swift",
+  "AdyenEncryption/CardEncryptor.swift",
+  "AdyenSession/AdyenSession+ActionComponentDelegate.swift",
+  "AdyenSession/AdyenSession+DropInComponentDelegate.swift",
+  "AdyenSession/AdyenSession+PartialPaymentDelegate.swift",
+  "AdyenSession/AdyenSession+PaymentComponentDelegate.swift",
+  "AdyenSession/AdyenSession+StoredPaymentMethodsDelegate.swift",
+  "AdyenSession/AdyenSession.swift",
+  "AdyenSession/AdyenSessionDelegate.swift",
+  "AdyenSession/AdyenSessionResult.swift",
+  "AdyenTwint/TwintComponent.swift",
+  "AdyenTwint/TwintDetails.swift",
+  "Demo/Configuration+secrets.swift",
+  "Demo/Configuration.swift",
+  "Demo/SwiftUI/AppDelegate.swift",
+  "Demo/SwiftUI/ComponentsView.swift",
+  "Demo/SwiftUI/ComponentsViewModel.swift",
+  "Demo/SwiftUI/SceneDelegate.swift",
+  "Demo/UIKit/AppDelegate.swift",
+  "Demo/UIKit/ComponentsView.swift",
+  "Demo/UIKit/ComponentsViewController.swift",
+  "Demo/UIKit/UIView+Helpers.swift",
+]
+excluded_categories=["tests", "fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=512000
+max_capsule_files=750
+max_capsule_utf8_bytes=4000000
+max_packet_files=800
+max_packet_utf8_bytes=5000000
 [[repos]]
 id="adyen/adyen-magento2"
 collection_frequency="monthly"

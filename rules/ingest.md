@@ -8,6 +8,38 @@
 
 This is the single most important rule. Batching produces shallow summaries, missed details, and malformed pages. It was confirmed in smoke testing: **no batch, process one by one, read the full raw content, then ingest.**
 
+## Selective-ingest routing boundary
+
+Complete canonical raw collection does not require routine source generation
+for every page. Use these three dispositions:
+
+```text
+source_required  = full source generation plus independent review
+raw_reference    = navigation-only raw; no routine source generation
+semantic_triage  = one complete strong-model read to decide the disposition
+```
+
+`## Raw Sources` records raw pages read completely and used as factual evidence
+for a source body. `## Related raw API references` records navigation-only raw
+pages that were not used as factual evidence. A related raw page may establish
+that a documentation target exists, but it cannot support claims about that
+page's behavior until it is read completely through the applicable query,
+triage, or ingest workflow.
+
+Metadata classification from titles, URLs, documentation hierarchy, or an
+inventory never authorizes facts from an unread page. Before assigning
+`raw_reference`, route an endpoint to `semantic_triage` whenever metadata
+cannot rule out that it is the sole authority for required request fields;
+durable failure or propagation behavior; deletion or lifecycle semantics;
+uniqueness or idempotency constraints; or state-transition semantics. CRUD
+shape or schema-heavy content alone cannot justify `raw_reference`. A complete
+triage read may still resolve to `raw_reference` when it finds no unique
+durable facts that warrant a curated source.
+
+A query may recommend promotion, but only user approval changes the disposition
+to `source_required`. Once approved, a missing source is queued for generation
+even when the raw hash has not changed.
+
 ## Coordinator-controlled parallel-review campaign exception
 
 The default above remains mandatory for ordinary ingest. A campaign may defer

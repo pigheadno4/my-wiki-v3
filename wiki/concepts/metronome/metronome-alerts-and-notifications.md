@@ -17,6 +17,10 @@ The merchant owns any email, access restriction, or feature re-enablement that f
 
 ## Notification types and lifecycle
 
+### Shared Plan and Contract endpoint surface
+
+Metronome documents a shared alert endpoint family for Plans and Contracts: `/alerts/create`, `/customer-alerts/get`, `/customer-alerts/list`, `/customer-alerts/reset`, and `/alerts/archive`. The shared overview says entity-targeted input and response parameters can differ, but it does not identify which fields vary or provide HTTP methods, version prefixes, or operation schemas. For plan targeting, it lists `low_credit_balance_reached`, `low_remaining_days_in_plan_reached`, `low_remaining_credit_percentage_reached`, and `usage_threshold_reached` as supported `alert_type` values. Its unversioned `/customer-alerts/reset` route label does not replace the dedicated reference's `POST /v1/customer-alerts/reset` contract.
+
 ### Manual threshold reset
 
 `POST /v1/customer-alerts/reset` accepts a Metronome customer UUID and threshold-notification UUID, clears cached evaluation state, and immediately initiates a fresh assessment against current thresholds. The reassessment runs in the background: `200` confirms reset and initiation but returns no body and does not reveal the resulting alert state. A breached threshold may produce a new webhook notification. The page does not define eligible current states, archived-alert behavior, an `EVALUATING` transition, completion signaling, error responses, duplicate suppression, retry safety, idempotency, concurrent-reset ordering, or whether repeated resets re-emit alarms. Its `requestBody` also lacks `required: true` even though both object properties are required.
@@ -26,6 +30,10 @@ Metronome separates threshold, system, and offset notifications. Threshold notif
 System and offset notifications are stateless. Threshold notifications are continuously evaluated, use `OK` and `IN_ALARM` as their ongoing states, and list `EVALUATING` before the initial evaluation. Evaluation occurs at least every three minutes, and the guide documents firing within five minutes after triggering usage is ingested. A return from `IN_ALARM` to `OK` may emit an optional `*_resolved` event.
 
 ## Offset notifications
+
+### System lifecycle event-type discovery
+
+`POST /v2/notifications/system/list` lists available read-only system lifecycle event-type configurations that can be used when creating offset notifications. A successful response requires a `data` array and may include a nullable string `cursor`; each configuration requires `type` and `policy`, while the policy requires a lifecycle-event `type`. The schema gives `contract.create` and `contract.start` only as examples, and the response example shows `SYSTEM_LIFECYCLE_EVENT` with `contract.create`. An optional `is_enabled` field reports whether webhook publishing for the lifecycle event is enabled. The page does not provide a request body, pagination input, exhaustive event-type catalog, enablement control, or offset-validation semantics.
 
 Offset notifications apply a user-configured hour, day, week, month, or year displacement to a known system-event date. They can be managed in the UI or created with `POST /v2/notifications/create` using an ISO 8601 offset policy. The payload omits the threshold payload's `properties` field, and its `timestamp` records the source event time rather than the calculated offset fire time.
 
@@ -42,6 +50,10 @@ Spend alerts can be scoped with `group_values`, polled with customer-alert get/l
 `spend_threshold_reached` evaluates usage-based spend before credit and commit drawdown. `invoice_total_reached` evaluates after drawdown and can be filtered to usage invoices. `low_remaining_commit_balance_reached` signals a configured commit-balance threshold, but the page does not define exactly which balances aggregate into it.
 
 ## Sources
+
+- [[source-metronome-plans-shared-endpoints-notifications]] - shared Plan and Contract alert routes, entity-specific parameter boundary, and plan-targeted alert types
+
+- [[source-metronome-api-reference-notifications-list-system-notification-event-types]] - read-only system lifecycle event-type discovery, response schema, and offset-notification applicability
 
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-alerts]] — remaining-balance, percent-remaining, and days-remaining thresholds with custom-field scoping and enforcement boundaries
 - [[source-metronome-api-reference-alerts-reset-a-threshold-notification]] — customer-scoped threshold reset, cached-state clearing, asynchronous reassessment, empty `200` response, and retry unknowns

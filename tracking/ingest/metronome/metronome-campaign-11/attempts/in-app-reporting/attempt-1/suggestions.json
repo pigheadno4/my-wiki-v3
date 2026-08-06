@@ -1,0 +1,42 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "in-app-reporting-access-arr-dashboard",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Delivery and freshness",
+      "proposed_markdown": "### In-app reports and dashboards\n\nMetronome's app exposes standard and custom reports as generated CSVs from the Reports tab. Both require Solutions Architect enablement; custom reporting is paid and its reporting engine can query the same tables available through Data Export. A user selects date filters and triggers a report, or can arrange a custom report for app execution or cron scheduling after requirements, sample review, and approval. Most reports generate in one to two hours, larger reports can take up to ten hours, and report data updates once per day, so a run can be stale and require retriggering. The page does not define report roles, file or row limits, cutoff time, retention, link expiry, scheduling semantics, failure behavior, or service levels. \u201cSame tables\u201d does not make report CSV delivery inherit Data Export transfer cadence, destination availability, append-only behavior, at-least-once semantics, or exact row grains.\n\nThe separately documented in-app dashboards are beta and require account enablement. Basic Revenue Overview summarizes invoiced amounts, usage and subscription revenue, commits and credits, and customer consumption; Committed & Run Rate ARR defines ARR, movement, NRR, GRR, and logo classifications; Filterable Customer List supports customer search and sorting. Committed ARR annualizes balance-schedule items and scheduled charges over their durations, with CPU commitments converted through the associated rate-card conversion. Run Rate ARR annualizes average usage and subscription revenue over a configurable trailing completed-month window, uses available history for newer customers, and continues to calculate a moving average for churned customers whose latest month is zero. Movement compares a configurable current and base period; GRR excludes expansion while NRR includes it.\n\nThe ARR dashboard defaults include excluding `credit` commits and commits or charges shorter than 30 days, a 12-month movement lookback, excluding `credit_drawdown` from run-rate revenue, and a three-completed-month run-rate average. Its caveats say only contract data and finalized invoices are used, invoices are prorated by day across months, and non-USD fiat is unsupported. The page calls customer-detail exploration \u201creal time\u201d but gives no dashboard refresh cadence, latency, API, permissions, caching, correction, retention, availability, or accounting-standard guarantee. The once-daily update warning is stated for generated reports, not explicitly for dashboards; Data Export timing and API-powered merchant dashboards remain separate surfaces.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep generated-report timing separate from dashboard freshness: the once-daily data update and one-to-ten-hour generation window are stated for reports, while dashboard real-time wording has no measurable latency.",
+        "Do not transfer Data Export destination cadence, row grains, append-only delivery, or at-least-once semantics to custom-report CSVs merely because the reporting engine can query the same tables.",
+        "Treat the ARR formulas, default filters, finalized-invoice scope, day proration, and non-USD exclusion as this beta dashboard's documented methodology, not as an accounting-standard guarantee or a universal Metronome revenue definition.",
+        "Preserve access boundaries: report enablement uses a Solutions Architect, custom reports are paid, and dashboards require beta account enablement; roles, plan pricing, and permissions are not documented."
+      ]
+    },
+    {
+      "update_id": "in-app-reporting-concept-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-reporting-insights-in-app-reporting]] \u2014 report enablement and CSV timing, custom-report scope, beta dashboards, ARR definitions and filters, and calculation limits",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

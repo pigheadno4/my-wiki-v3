@@ -1,0 +1,119 @@
+{
+  "job_id": "import-existing-invoices",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Import Existing Invoices into Metronome\"\ntype: source\ndate_ingested: 2026-08-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/invoices/invoice-optimization/import-existing-invoices\"\nraw_files:\n  - \"metronome/guides/invoices/invoice-optimization/import-existing-invoices-2026-07-13.md\"\ntags: [metronome, invoices, historical-invoices, contracts, billing-migration, reporting]\n---\n\n## Overview\n\nThis guide documents a migration path for bringing an externally provisioned contract and its already-issued invoices into Metronome. The worked flow separates the contract's original start from the date Metronome begins generating invoices, then imports earlier invoice periods through a dedicated historical-invoice endpoint.\n\n## Key takeaways\n\n- Create the contract with its original start and balances, but set `usage_statement_schedule.invoice_generation_starting_at` to the first period Metronome should invoice; in the example, contract creation generates an August draft and does not generate June or July invoices.\n- `POST /v1/contracts/createHistoricalInvoices` accepts historical invoice periods and usage-line-item quantities. Metronome applies the contract's unit prices to calculate invoice totals and effects on customer credit and commit balances.\n- `preview: true` is a dry run for comparing existing and imported invoices before saving. The page does not document the non-preview request, response schema, validation errors, idempotency, or partial-import behavior.\n- Optional `subtotals_with_quantity` windows plus invoice `breakdown_granularity` preserve hourly or daily quantities; Metronome sums those windows for the billing-period invoice.\n- Imported invoices are available from the Contracts page or API, but Metronome does not send them to its Stripe integration, preventing duplicate invoice delivery through that route.\n\n## Migration sequence\n\nThe example starts with an external monthly contract effective June 1, 2024 whose June and July invoices were already issued outside Metronome. It recreates the contract with the original start and any starting commit or credit balances, while setting `invoice_generation_starting_at` to August 1. That produces an August draft without automatically recreating June and July; the earlier periods are supplied separately to the historical-invoice endpoint.\n\nThis page does not establish whether historical invoice import appears in `getEditHistory`, mutates the contract itself after creation, or can overlap periods that already have Metronome invoices. It also does not define ordering, concurrency, atomicity across the `invoices` array, retry safety, or uniqueness controls.\n\n## Historical invoice inputs and calculation\n\nEach worked invoice identifies the customer, contract, credit type, inclusive service-period start, exclusive service-period end, issue date, and usage line items. Each line item supplies a product, its own inclusive and exclusive bounds, and a quantity. Metronome combines those quantities with contract unit prices to calculate the invoice amount and the effects on credit and commit balances; the guide does not document direct amount overrides, taxes, discounts, rounding, currency rules, or reconciliation when the calculated result differs from the externally issued invoice.\n\nThe `preview` option performs a dry run so differences can be checked before saving. The source does not state whether preview results are persisted, how a caller commits an accepted preview, or what response fields and invoice states the endpoint returns.\n\n## Optional time breakdowns\n\nFor hourly or daily usage-and-cost retrieval, a line item can replace its single `quantity` with time-windowed `subtotals_with_quantity` and set the invoice's `breakdown_granularity`. Metronome sums the window subtotals when generating the invoice for the full billing period. The page does not define permitted granularity values beyond hourly or daily, window coverage and overlap validation, missing-window behavior, time-zone rules, or whether these breakdowns appear in Data Export.\n\n## Operational boundaries\n\nThis is an import of invoices already issued outside Metronome, not the credit-memo guide's correction of an incorrect draft or finalized invoice, its credit-and-rebill sequence, a payment refund, or an external A/R credit memo. The source also does not say that importing an invoice changes external A/R, payment, revenue-recognition, tax, or collection state.\n\nImported invoices can be viewed on the Contracts page or through the API. Metronome explicitly excludes them from the Stripe integration to avoid duplicate customer invoices; that exclusion does not establish behavior for NetSuite, marketplace, custom ERP, or other delivery paths.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-invoicing]], [[metronome-customers-and-contracts]], [[metronome-reporting-and-analytics]], [[metronome-credits-and-commits]]\n- Related sources: [[source-metronome-api-reference-contracts-create-a-contract]], [[source-metronome-api-reference-contracts-get-contract-edit-history]], [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]], [[source-metronome-guides-invoices-overview]], [[source-metronome-guides-reporting-insights-data-export-database-reference]], [[source-metronome-integrations-invoice-integrations-stripe]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/invoices/invoice-optimization/import-existing-invoices-2026-07-13|2026-07-13 snapshot - historical contract and invoice import, preview, time breakdowns, and Stripe-delivery boundary]]\n",
+  "quotes": [
+    {
+      "text": "First, create the contract using the `/contracts/create` endpoint, entering the original contract details (for example, starting commit/credit balances and start date). Set the `usage_statement_schedule.invoice_generation_starting_at` field to indicate when Metronome should begin generating invoices. In our example, that date is August 1, 2024, since the customer hasn't been billed for August yet.",
+      "location": "raw/metronome/guides/invoices/invoice-optimization/import-existing-invoices-2026-07-13.md:21 (original contract state and invoice-generation start)"
+    },
+    {
+      "text": "With the contract created, Metronome generates a draft invoice for August. No invoices are created for June and July.\n\n## Import the invoices\n\nAfter creating the contract, import the corresponding invoices with the `/contracts/createHistoricalInvoices` endpoint. All you'll need is the quantities for each line item on the invoice. Metronome combines these with the unit prices specified on the contract to calculate the total amount on the invoice and the effects on the customer's credit and commit balances.",
+      "location": "raw/metronome/guides/invoices/invoice-optimization/import-existing-invoices-2026-07-13.md:40-44 (generation cutoff and historical-invoice calculation)"
+    },
+    {
+      "text": "Use the `preview` option to perform a dry run of the import to verify any differences between the existing and imported invoices before saving them.",
+      "location": "raw/metronome/guides/invoices/invoice-optimization/import-existing-invoices-2026-07-13.md:94 (dry-run boundary)"
+    },
+    {
+      "text": "To use Metronome to retrieve hourly or daily breakdowns of customer usage and costs, specify time-windowed quantities by populating the `subtotals_with_quantity` field of the line item in lieu of the `quantity` field. Specify the `breakdown_granularity` of the invoice. When generating the invoice for the entire billing period, Metronome sums up the subtotals of each window.",
+      "location": "raw/metronome/guides/invoices/invoice-optimization/import-existing-invoices-2026-07-13.md:101 (time-windowed reporting detail)"
+    },
+    {
+      "text": "Metronome doesn't send imported invoices to the Stripe integration. This prevents sending duplicate invoices to customers.",
+      "location": "raw/metronome/guides/invoices/invoice-optimization/import-existing-invoices-2026-07-13.md:142 (Stripe-delivery exclusion)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "historical-invoice-import-contract-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Contract and invoice behavior",
+        "proposed_markdown": "### Historical invoice migration\n\nA migration can recreate a contract with its original start and starting credit or commit balances while setting `usage_statement_schedule.invoice_generation_starting_at` to the first period Metronome should generate. In the worked example, a June 1 contract and August 1 generation start produce an August draft but no June or July invoices; those earlier periods are added through `/v1/contracts/createHistoricalInvoices`. The source does not establish whether imports appear in contract edit history, mutate contract terms after creation, or may overlap existing Metronome invoice periods.",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "Do not classify historical invoice creation as a contract edit or claim that it appears in `getEditHistory`; the source does not say so.",
+          "Do not infer overlap handling, atomicity, retry safety, or uniqueness behavior."
+        ]
+      },
+      {
+        "update_id": "historical-invoice-import-contract-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]] - original contract-state recreation, invoice-generation cutoff, and dedicated historical-invoice import boundary",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "historical-invoice-import-invoicing-flow",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ### Credit, correction, and re-bill state boundaries",
+        "proposed_markdown": "### Historical invoice import\n\nFor invoices already issued before a customer was provisioned in Metronome, `/v1/contracts/createHistoricalInvoices` accepts service periods and usage-line-item quantities, combines them with contract unit prices, and calculates invoice totals plus credit and commit balance effects. `preview: true` dry-runs the comparison before saving, and imported invoices are available through the Contracts page or API. Metronome does not send these invoices to its Stripe integration. This migration path is distinct from correcting an incorrect invoice, issuing an external A/R credit memo, refunding payment, or executing a credit-and-rebill flow; the page does not define imported invoice state, finalization, collection, tax, downstream delivery beyond Stripe, idempotency, or partial failure.",
+        "quote_indexes": [
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Keep historical migration separate from the existing credit-memo and re-bill decision tree.",
+          "Do not infer external A/R, payment, revenue, tax, or non-Stripe delivery effects.",
+          "The guide supplies quantities for contract-based calculation; it does not document arbitrary monetary-total import."
+        ]
+      },
+      {
+        "update_id": "historical-invoice-import-invoicing-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]] - historical invoice calculation, preview, contract-balance effects, and Stripe-delivery exclusion",
+        "quote_indexes": [
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "historical-invoice-import-reporting-breakdowns",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Query model",
+        "proposed_markdown": "### Imported-invoice time breakdowns\n\nA historical invoice line item can replace one period-level `quantity` with time-windowed `subtotals_with_quantity` and set invoice `breakdown_granularity` so Metronome can retrieve hourly or daily usage-and-cost breakdowns; the billing-period invoice sums the window subtotals. The source says imported invoices are accessible on the Contracts page or through the API, but does not establish Data Export table coverage, snapshot behavior, freshness, permitted granularity values beyond hourly or daily, or validation for gaps and overlaps.",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "Do not describe the optional breakdown as event ingestion or assume it appears in warehouse Data Export.",
+          "Do not infer time-zone, window-contiguity, overlap, or missing-window rules."
+        ]
+      },
+      {
+        "update_id": "historical-invoice-import-reporting-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]] - optional hourly or daily historical invoice quantities and API or Contracts-page access boundary",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/invoices/invoice-optimization/import-existing-invoices-2026-07-13.md",
+  "raw_sha256": "957691618bac7d40ab232998265c5722da477dd7d07495ec1814c6074272d3a5",
+  "status": "candidate_ready"
+}

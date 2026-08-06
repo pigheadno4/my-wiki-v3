@@ -29,6 +29,10 @@ Metronome recommends working backward from billing and operational outcomes, the
 
 Keeping available context in `properties` preserves future options. In the documentation's CDN example, `domain` supports per-domain usage breakdowns and `data_center` supports later regional metrics and pricing.
 
+## Segment destination mapping boundary
+
+Metronome's Segment integration uses the Metronome (Actions) destination and requires explicit mappings for `transaction_id`, `customer_id`, RFC 3339 `timestamp`, `event_type`, and `properties`, even when source and destination names match. The default maps Segment `messageId` to `transaction_id`, while another Segment field may be selected manually. This is an adapter-specific mapping contract: unlike the direct `/ingest` schema, which treats `properties` as optional, the Segment destination requires a mapping slot for it. The page's unqualified exactly-once wording does not replace the separately documented 34-day duplicate-suppression boundary, and it does not define whether Segment retries preserve `messageId`.
+
 ## Processing boundary
 
 An accepted event is not automatically billable. It must match a billable metric and a customer before it contributes to billing. New streaming metrics match later events by default; the create-metrics guide says Metronome retains raw events and can perform a representative-assisted reflow for earlier events, without documenting service guarantees.
@@ -70,7 +74,13 @@ The endpoint has an 8 RPS per-client limit and is not suitable for validating ev
 
 Before selecting an ingest design, identify usage origins and reliable delivery, choose event or batch cadence from generation and change behavior, plan for peak volume and velocity, carry grouping keys required by pricing dimensions, and retain contextual fields that make spend interpretable. This planning source does not itself define schemas, transport, throughput, cardinality, freshness, replay, or correction guarantees.
 
+## Production-readiness checklist boundary
+
+Metronome's go-live checklist recommends queueing usage events, sampling `searchEvents` to confirm active-metric matching, load-testing expected peaks, and injecting ingestion failures. It also places `properties` under required fields, directly contradicting the dedicated ingest reference's optional `properties` schema. Separately, the checklist asks teams to exercise 14-day backdating, while the dedicated ingest sources document a 34-day historical-ingest window. The checklist does not call 14 days a maximum, so days 15–34 remain outside its stated test coverage rather than forming mutually exclusive limits or a retention conflict. [[source-metronome-guides-implement-metronome-production-checklist]]
+
 ## Sources
+
+- [[source-metronome-integrations-platform-integrations-segment]] - Segment destination setup, explicit five-field mapping contract, default `messageId` transaction identity, and managed-delivery unknowns
 
 - [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]] — negative usage-event correction for draft invoices, the finalized-invoice boundary, and the conflicting beyond-34-day credit-and-rebill route
 - [[source-metronome-guides-events-send-usage-events]] — alternate canonical events-guide route for event fields, string-property guidance, direct-ingest retry handling, heartbeat IDs, and the 34-day scope tension

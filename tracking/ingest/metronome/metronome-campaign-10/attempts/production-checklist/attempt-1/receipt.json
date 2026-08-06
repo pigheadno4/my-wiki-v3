@@ -1,0 +1,107 @@
+{
+  "job_id": "production-checklist",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Go-Live Checklist\"\ntype: source\ndate_ingested: 2026-08-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/implement-metronome/production-checklist\"\nraw_files:\n  - \"metronome/guides/implement-metronome/production-checklist-2026-07-13.md\"\ntags: [metronome, production-readiness, usage-events, invoicing, webhooks]\n---\n\n## Overview\n\nThis guide is a go-live readiness worksheet for a Metronome billing integration. It recommends checks across usage ingestion, pricing, customer and contract provisioning, invoicing, credentials, webhooks, monitoring, data export, and an end-to-end production exercise; completing the list is not presented as a certification or guarantee of accurate, secure, lossless, or auditable billing.\n\n## Key takeaways\n\n- For metering readiness, the checklist asks teams to inspect event fields, use `transaction_id` idempotency, sample event-to-metric matching, queue delivery, exercise backdating, load-test peak traffic, and inject ingestion failures.\n- It asks teams to verify products, metric mappings, rate-card details, customer aliases, contracts, billing frequency, and the intended downstream integration before launch.\n- Invoice readiness is framed as understanding the draft-to-grace-period-to-finalized lifecycle, enabling and testing `invoice.finalized`, and confirming the delivery path; the page does not define provider-specific payment collection, retry, or settlement behavior.\n- Its production-environment checks cover secure storage of a production API token, optional IP allowlisting, and use of `https://api.metronome.com`, but those checks do not prove credential scoping, rotation, authorization, reconciliation, or audit guarantees.\n- It recommends signature verification, idempotent webhook handling, retry/backoff and dead-letter handling, alert and error-rate monitoring, data-export reconciliation, a production dry run, and documented rollback procedures. These are recommendations, not guarantees that notifications are timely, failures are recovered, revenue is preserved, exports are complete, or rollback will succeed.\n\n## Metering and commercial configuration readiness\n\nThe checklist treats usage delivery and event-to-metric matching as the foundation for invoice validation. It calls for `transaction_id`, `customer_id` or an alias, `timestamp`, `event_type`, and `properties`; it also recommends retaining extensive metadata, sampling `searchEvents`, queueing usage through a reliable message system, testing expected peak load, and simulating ingestion failures. Product and pricing checks then cover product type, conversions and group keys, usage-product-to-metric mapping, currency, rates, tiers or changes, customer and alias creation, and contract association with the intended rate card and billing frequency.\n\nTwo checklist statements conflict with the dedicated ingestion evidence. This page places `properties` under \u201call required event fields,\u201d while [[source-metronome-api-reference-usage-ingest-events]] documents four required fields and treats `properties` as optional. It also asks teams to test backdated usage up to 14 days, whereas the ingest reference and [[source-metronome-guides-events-high-volume-ingestion]] document a 34-day historical-ingest window. Preserve these as source-scoped tensions and verify production behavior rather than generalizing the checklist wording.\n\n## Invoicing, security, and integration readiness\n\nThe invoice section asks teams to understand the draft, grace-period, and finalized stages, enable and test `invoice.finalized`, and confirm the selected integration's delivery path. A production dry run is expected to send events, inspect invoice totals, observe a webhook, and confirm payment processing for a test customer. This exercise can expose integration defects, but it does not establish payment-provider ownership, lifecycle timing, delivery semantics, payment finality, isolation from real customers, or universal success criteria; those remain governed by the dedicated invoicing and integration sources.\n\nFor the production environment, the guide recommends creating and securely storing a production token, enabling IP allowlisting when required, and pointing API calls at the production origin. It does not define token permissions, expiry, rotation, secret-storage controls, allowlist update mechanics, environment separation beyond the endpoint check, or what evidence makes billing \u201csecure\u201d or \u201cauditable.\u201d [[source-metronome-api-reference-authentication]] and [[metronome-security-principles]] remain the more specific sources for token and access boundaries.\n\n## Webhook, monitoring, export, and rollback checks\n\nThe webhook section asks for an online endpoint that verifies signatures with the Metronome webhook secret and handles duplicate delivery idempotently. Its retry-on-`5xx` or network failure, backoff-on-`429`, and dead-letter-plus-alert-on-`4xx` bullets are checklist requirements for the integration's error handling; they do not replace [[source-metronome-guides-platform-configuration-setup-webhooks]], which defines Metronome's outbound webhook verification, retry, and deduplication mechanics. Webhook retries are also not payment retries.\n\nOperational monitoring should cover spend, credit, and commit alerts, alert webhooks, webhook delivery, and ingestion error rates. The data-export section asks teams to enable export, confirm destination receipt, inspect invoice, customer, and usage objects, and define finance reconciliation. This page does not define export cadence, freshness, at-least-once duplication, table coverage, completeness, or retention, so \u201cauditable record\u201d and independent reconciliation are goals rather than guaranteed outcomes; [[source-metronome-guides-reporting-insights-data-export-overview]] supplies the delivery caveats.\n\nThe final production exercise includes confirming migration from sandbox, running one test-customer cycle, and documenting rollback. The guide does not specify rollback triggers, reversible operations, data cleanup, event or webhook isolation, restoration targets, approval gates, or how one successful cycle predicts peak-load or failure-path behavior.\n\n## Contradictions and unknowns\n\n> [!warning] Event-schema and backdating conflicts\n> The checklist calls `properties` required and gives a 14-day backdating test, while the dedicated ingest sources treat `properties` as optional and document a 34-day historical window. Verify the applicable production contract and do not collapse these figures or requiredness statements.\n\nNo direct contradiction was found with the existing invoice-lifecycle, authentication, webhook, alert, or export summaries when the checklist is treated as readiness advice. Its stronger rationale phrases\u2014charged what was used, secure and auditable billing, no usage or revenue loss, timely alerting, and independent reconciliation\u2014are not service guarantees and must not override the dedicated sources' documented limits and unknowns.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-event-ingestion]], [[metronome-api-idempotency]], [[metronome-billable-metrics]], [[metronome-products-and-rate-cards]], [[metronome-customers-and-contracts]], [[metronome-invoicing]], [[metronome-integrations]], [[metronome-security-principles]], [[metronome-webhooks]], [[metronome-alerts-and-notifications]], [[metronome-reporting-and-analytics]]\n- Related sources: [[source-metronome-api-reference-usage-ingest-events]], [[source-metronome-guides-events-high-volume-ingestion]], [[source-metronome-guides-get-started-metronome-dashboard-quickstart]], [[source-metronome-api-reference-authentication]], [[source-metronome-guides-platform-configuration-setup-webhooks]], [[source-metronome-guides-reporting-insights-data-export-overview]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/implement-metronome/production-checklist-2026-07-13|2026-07-13 snapshot \u2014 production-readiness recommendations and evidence boundaries]]\n",
+  "quotes": [
+    {
+      "text": "A go-live readiness checklist to validate your Metronome billing integration before launching in production.",
+      "location": "line 60, page purpose"
+    },
+    {
+      "text": "  * all required event [fields](/api-reference/usage/ingest-events) are present:\n    * `transaction_id`\n    * `customer_id` (or alias)\n    * `timestamp`\n    * `event_type`\n    * `properties`\n      Follow a maximalist approach for properties: send as much metadata as possible, even if not pricing-relevant today, to future-proof your integration.\n  * [idempotency](/api-reference/idempotency) is enabled for ingest events via [`transaction_id`](/guides/get-started/core-concepts/send-usage-events#heartbeat-event-idempotence%E2%80%8B). Visit the docs [here](/guides/get-started/core-concepts/send-usage-events#heartbeat-event-idempotence%E2%80%8B) for guidance on choosing a good `transaction_id`.\n  * billable metrics are active and correctly match events by sampling Metronome\u2019s [searchEvents](/api-reference/usage/search-events) endpoint.\n  * usage events are queued through a reliable message queue (e.g., SQS, RabbitMQ) and that backdated usage up to 14 days is correctly ingested.\n  * the ingestion pipeline is load tested to handle expected peak throughput.\n  * fault injection tests are performed by simulating ingestion failures. Coordinate with  Metronome if you need help setting this up.",
+      "location": "lines 69-80, usage and metering checklist"
+    },
+    {
+      "text": "  * that the invoice lifecycle is understood by your teams (draft \u2192 grace period \u2192 finalized).\n  * that the `invoice.finalized` webhook is enabled and tested.\n  * the delivery path is confirmed for your chosen [integration](https://metronome.com/integrations).",
+      "location": "lines 119-121, invoicing and integration checks"
+    },
+    {
+      "text": "  * the production API token is created and stored securely.\n  * IP [allowlisting](/guides/platform-configuration/allowlist) is enabled, if required.\n  * all API endpoints point to production URLs (`https://api.metronome.com`)",
+      "location": "lines 131-133, production environment checks"
+    },
+    {
+      "text": "  * the webhook endpoint is online and secured with signature verification using your Metronome webhook secret.\n  * your retry/backoff policy is functional: retry on 5xx/network, backoff on 429, DLQ + alert on 4xx.\n  * webhook processing is idempotent (safe on duplicate deliveries).\n</Checklist>\n\n***\n\n## Set up monitoring\n\nYou can\u2019t improve what you can\u2019t see. Alerts keep you ahead of customer balance issues.\n\nVerify and check that:\n\n<Checklist>\n  * spend, credit, and commit alerts are configured.\n  * webhook notifications are firing for alerts in a timely manner.\n  * monitoring is in place on webhook delivery and ingest error rates.\n</Checklist>\n\n***\n\n## Configure data export\n\nData Export provides an auditable record of invoices, usage, and customer data outside Metronome. Enabling it ensures finance and RevOps can reconcile billing independently.\n\nVerify and check that:\n\n<Checklist>\n  * Data Export is enabled for your production environment.\n  * the export destination (e.g., warehouse, S3) is configured and receiving data.\n  * sample exports contain the expected objects (invoices, customers, usage).\n  * reconciliation processes are defined so finance can validate invoice data against exported usage.",
+      "location": "lines 145-176, webhook, monitoring, and data-export checks"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "production-checklist-event-readiness-conflicts",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Sources",
+        "proposed_markdown": "## Production-readiness checklist boundary\n\nMetronome's go-live checklist recommends queueing usage events, sampling `searchEvents` to confirm active-metric matching, load-testing expected peaks, and injecting ingestion failures. It also places `properties` under required fields and asks teams to exercise 14-day backdating; the dedicated ingest reference instead treats `properties` as optional and documents a 34-day historical window. Preserve both as a documentation conflict and verify the production contract rather than treating the checklist as a schema or retention guarantee. [[source-metronome-guides-implement-metronome-production-checklist]]",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "Do not change the API-level required-field set or 34-day boundary to match this checklist without resolving the source conflict.",
+          "Queueing, sampling, load tests, and fault injection are readiness recommendations, not guarantees of accurate, exactly-once, or lossless billing."
+        ]
+      },
+      {
+        "update_id": "production-checklist-invoice-dry-run",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Related",
+        "proposed_markdown": "## Go-live verification boundary\n\nMetronome's go-live checklist asks teams to understand the draft-to-grace-period-to-finalized lifecycle, enable and test `invoice.finalized`, confirm the chosen integration's delivery path, and exercise an event-to-invoice-to-webhook-to-payment cycle with a production test customer. This is a verification exercise, not evidence of provider-specific collection ownership, payment finality, delivery timing, test isolation, future invoice accuracy, or rollback success. [[source-metronome-guides-implement-metronome-production-checklist]]",
+        "quote_indexes": [
+          2
+        ],
+        "warnings": [
+          "Do not convert one successful production dry run into a payment, delivery, lifecycle, or invoice-accuracy guarantee.",
+          "The checklist does not define provider-specific collection, retry, or settlement behavior."
+        ]
+      },
+      {
+        "update_id": "production-checklist-security-environment",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Sources",
+        "proposed_markdown": "## Production-environment checklist boundary\n\nMetronome's go-live checklist recommends creating and securely storing a production API token, enabling IP allowlisting when required, and pointing API calls to `https://api.metronome.com`. It does not define token scope, expiry, rotation, storage controls, allowlist maintenance, or evidence sufficient to establish secure, auditable, or reconciled billing. [[source-metronome-guides-implement-metronome-production-checklist]]",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "Do not treat possession of a production token, use of the production origin, or optional allowlisting as proof of least privilege, request authenticity, auditability, or reconciliation.",
+          "Continue to use the dedicated authentication and allowlisting sources for mechanism details."
+        ]
+      },
+      {
+        "update_id": "production-checklist-webhook-readiness",
+        "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Sources",
+        "proposed_markdown": "## Go-live receiver checks\n\nMetronome's go-live checklist asks teams to keep the webhook endpoint online, verify signatures with the Metronome webhook secret, make processing safe on duplicates, and exercise retry, backoff, dead-letter, and alert handling. These are integration-readiness checks; the dedicated webhook guide remains authoritative for Metronome's outbound signature construction, retry schedule, and notification-ID deduplication, and none of the checklist items guarantees timely delivery, revenue preservation, processing success, event ordering, or payment retry. [[source-metronome-guides-implement-metronome-production-checklist]]",
+        "quote_indexes": [
+          2,
+          4
+        ],
+        "warnings": [
+          "Do not interpret the checklist's 5xx, 429, and 4xx policy as a replacement for the dedicated outbound-webhook delivery contract.",
+          "Webhook retry and idempotency do not establish payment retry, exactly-once delivery, ordering, or lossless revenue."
+        ]
+      },
+      {
+        "update_id": "production-checklist-export-reconciliation",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Sources",
+        "proposed_markdown": "## Go-live export checks\n\nMetronome's go-live checklist recommends enabling Data Export in production, confirming that the destination receives data, sampling invoice, customer, and usage objects, and defining a finance reconciliation process. These checks express an operational objective; they do not establish export completeness, freshness, retention, exactly-once delivery, accounting correctness, or a general audit guarantee, so the dedicated export delivery and table-grain rules still apply. [[source-metronome-guides-implement-metronome-production-checklist]]",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "The page's auditability and independent-reconciliation language is rationale, not a guarantee of complete, timely, duplicate-free, or accounting-correct exports."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/implement-metronome/production-checklist-2026-07-13.md",
+  "raw_sha256": "b65117c3c1f7847ad97e02d3b3bea9dd5b11dbd7cc45fc8e1cbef9f7733e7e9a",
+  "status": "candidate_ready"
+}

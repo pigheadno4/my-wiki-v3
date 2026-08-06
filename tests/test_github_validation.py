@@ -5,6 +5,7 @@ import sys
 import tempfile
 import unittest
 from dataclasses import replace
+from datetime import date
 from pathlib import Path
 
 
@@ -12,9 +13,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from github_canonical import canonical_json_bytes  # noqa: E402
+from github_collection_index import write_collection_index  # noqa: E402
 from github_ingest_packets import (  # noqa: E402
     PackagePacketInput,
+    RefPacketInput,
     build_ingest_packet,
+    build_ref_ingest_packet,
     load_packet_summary,
     publish_queued_packet,
 )
@@ -23,7 +27,11 @@ from github_validation import inspect_github, validate_github  # noqa: E402
 from github_work_items import (  # noqa: E402
     PacketStatusSummary,
     PackageChange,
+    RefChange,
+    build_ref_work_item,
     build_work_item,
+    publish_evidence_attachment,
+    evidence_attachment_required_reading,
     render_status,
     save_work_items,
 )
@@ -130,9 +138,17 @@ class GitHubValidationTests(unittest.TestCase):
     def changelog_path(self):
         return self.root / "wiki/sources/paypal/github/changelog-github-paypal-js.md"
 
-    def write_registry(self):
+    def write_registry(self, historical_policy_hashes=(), default_required_roots=("src",)):
         path = self.root / "tracking/github/repo-registry.toml"
-        path.parent.mkdir(parents=True)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        historical_policy = (
+            "historical_policy_hashes=["
+            + ",".join(json.dumps(value) for value in historical_policy_hashes)
+            + "]\n"
+            if historical_policy_hashes
+            else ""
+        )
+        roots = ",".join(json.dumps(value) for value in default_required_roots)
         path.write_text(
             """[[repos]]
 id="paypal/paypal-js"
@@ -154,8 +170,7 @@ include_prerelease=false
 id="paypal-js-source"
 adapter="npm-tracked-source-v1"
 focus_packages=["@paypal/paypal-js"]
-default_required_roots=["src"]
-default_generated_target_paths=[]
+default_required_roots=[""" + roots + "]\n" + historical_policy + """default_generated_target_paths=[]
 """,
             encoding="utf-8",
         )
@@ -166,6 +181,70 @@ default_generated_target_paths=[]
 
     def write_release_manifest(self):
         self.write_json(self.release_manifest_path, self.release_manifest)
+
+    def enable_attachment(self):
+        packet_path = self.enable_packet()
+        source = b"export const attached = true;\n"
+        directory = (
+            self.root
+            / "raw/github/paypal/paypal-js/supplements/2026-07-21-aaaaaaa-attachment"
+        )
+        source_path = directory / "files/packages/paypal-js/src/attached.ts"
+        source_path.parent.mkdir(parents=True, exist_ok=True)
+        source_path.write_bytes(source)
+        digest = hashlib.sha256(source).hexdigest()
+        identity = hashlib.sha256(
+            canonical_json_bytes(
+                {
+                    "files": [
+                        {
+                            "path": "packages/paypal-js/src/attached.ts",
+                            "sha256": digest,
+                        }
+                    ],
+                    "repository": "paypal/paypal-js",
+                    "sha": self.sha,
+                }
+            )
+        ).hexdigest()
+        manifest = directory / "manifest.json"
+        self.write_json(
+            manifest,
+            {
+                "collected_date": "2026-07-21",
+                "files": [
+                    {
+                        "classification_reason": "explicit-query-path",
+                        "git_blob_oid": "c" * 40,
+                        "git_mode": "100644",
+                        "package": "",
+                        "path": "packages/paypal-js/src/attached.ts",
+                        "purpose": "query-supplement",
+                        "sha256": digest,
+                        "size": len(source),
+                    }
+                ],
+                "format_version": 1,
+                "identity_sha256": identity,
+                "repository": "paypal/paypal-js",
+                "sha": self.sha,
+            },
+        )
+        item = replace(
+            self.work_item,
+            ingest_packet=self.relative(packet_path),
+        )
+        attachment = publish_evidence_attachment(
+            self.root,
+            item,
+            self.relative(manifest),
+        )
+        self.work_item = replace(
+            item,
+            evidence_attachments=(attachment.relative_path,),
+        )
+        self.save_work_items()
+        return attachment, source_path
 
     def write_comparison(
         self,
@@ -227,7 +306,12 @@ default_generated_target_paths=[]
             summaries[self.work_item.work_item_id] = PacketStatusSummary(
                 packet.packet_path,
                 packet.priority,
-                packet.required_reading_count,
+                packet.required_reading_count
+                + len(
+                    evidence_attachment_required_reading(
+                        self.root, self.work_item
+                    )
+                ),
                 packet.unclassified_count,
                 packet.evidence_gap_count,
             )
@@ -297,6 +381,23 @@ default_generated_target_paths=[]
 
         self.assertEqual([], validate_github(report))
 
+    def test_collection_index_is_validated_with_registry_and_queue(self):
+        repos = load_registry(self.root / "tracking/github/repo-registry.toml")
+        write_collection_index(
+            self.root,
+            repos,
+            (self.work_item,),
+            {},
+            date(2026, 8, 3),
+        )
+        self.assertEqual([], validate_github(inspect_github(self.root)))
+
+        (self.root / "tracking/github/collection-index.md").write_text(
+            "stale\n", encoding="utf-8"
+        )
+        errors = validate_github(inspect_github(self.root))
+        self.assertIn("tracking/github/collection-index.md is stale", errors)
+
     def test_valid_packet_enabled_work_item_has_no_errors(self):
         self.enable_packet()
 
@@ -346,6 +447,17 @@ default_generated_target_paths=[]
         self.assertTrue(
             any("packet deterministic content mismatch" in item for item in errors)
         )
+
+    def test_packet_rebuild_uses_registered_historical_policy(self):
+        packet_path = self.enable_packet()
+        document = json.loads(packet_path.read_text(encoding="utf-8"))
+
+        self.write_registry(
+            historical_policy_hashes=(document["capsule_policy_sha256"],),
+            default_required_roots=("src", "types"),
+        )
+
+        self.assertEqual([], validate_github(inspect_github(self.root)))
 
     def test_packet_path_and_work_item_identity_mismatch_is_rejected(self):
         packet_path = self.enable_packet()
@@ -592,6 +704,39 @@ default_generated_target_paths=[]
 
         self.assertTrue(any("supplement file hash mismatch" in item for item in errors))
 
+    def test_missing_linked_evidence_attachment_is_rejected(self):
+        attachment, _ = self.enable_attachment()
+        (self.root / attachment.relative_path).unlink()
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(
+            any("evidence attachment is missing" in item for item in errors)
+        )
+
+    def test_tampered_linked_evidence_attachment_file_is_rejected(self):
+        _, source = self.enable_attachment()
+        source.write_bytes(b"export const attached = fals;\n")
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(
+            any("attachment file hash mismatch" in item for item in errors)
+        )
+
+    def test_attachment_work_item_linkage_mismatch_is_rejected(self):
+        attachment, _ = self.enable_attachment()
+        path = self.root / attachment.relative_path
+        document = json.loads(path.read_text(encoding="utf-8"))
+        document["work_item_id"] = "github-" + "f" * 20
+        self.write_json(path, document)
+
+        errors = validate_github(inspect_github(self.root))
+
+        self.assertTrue(
+            any("evidence attachment content mismatch" in item for item in errors)
+        )
+
     def test_unsafe_snapshot_paths_are_rejected(self):
         self.snapshot_manifest["files"][0]["path"] = "../escape.md"
         self.write_json(self.snapshot_manifest_path, self.snapshot_manifest)
@@ -667,6 +812,128 @@ default_generated_target_paths=[]
         self.write_ingested_pages()
 
         self.assertEqual([], validate_github(inspect_github(self.root)))
+
+
+class CommitGitHubValidationTests(unittest.TestCase):
+    def test_valid_commit_snapshot_ref_packet_and_work_item(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            registry = root / "tracking/github/repo-registry.toml"
+            registry.parent.mkdir(parents=True)
+            registry.write_text(
+                '''[[repos]]
+id="example/sample"
+company="example"
+url="https://github.com/example/sample"
+enabled=true
+repo_type="sample-app"
+priority="tier1"
+track="default-branch"
+version_strategy="commit"
+collection_frequency="monthly"
+
+[[repos.capsules]]
+id="sample-source"
+adapter="commit-tree-v1"
+source_id="sample"
+default_required_roots=["src"]
+include_paths=["README.md"]
+max_capsule_files=10
+max_capsule_utf8_bytes=10000
+max_packet_files=20
+max_packet_utf8_bytes=20000
+''',
+                encoding="utf-8",
+            )
+            sha = "c" * 40
+            directory = root / "raw/github/example/sample/snapshots/2026-08-03-ccccccc"
+            source = b"# Sample\n"
+            source_path = directory / "files/README.md"
+            source_path.parent.mkdir(parents=True)
+            source_path.write_bytes(source)
+            manifest = directory / "manifest.json"
+            manifest_document = {
+                "author_date": "2026-08-03T00:00:00+00:00",
+                "collected_date": "2026-08-03",
+                "commit_date": "2026-08-03T00:00:00+00:00",
+                "excluded": [],
+                "files": [
+                    {
+                        "classification_reason": "repository-context",
+                        "git_blob_oid": "d" * 40,
+                        "git_mode": "100644",
+                        "package": "sample",
+                        "path": "README.md",
+                        "purpose": "repository-context",
+                        "sha256": hashlib.sha256(source).hexdigest(),
+                        "size": len(source),
+                    }
+                ],
+                "format_version": 2,
+                "repository": "example/sample",
+                "sha": sha,
+                "triggering_refs": ["default-branch@" + sha],
+            }
+            manifest.write_bytes(canonical_json_bytes(manifest_document) + b"\n")
+            manifest_relative = manifest.relative_to(root).as_posix()
+            change = RefChange(
+                "default-branch",
+                "main",
+                "",
+                sha,
+                "default-branch@" + sha[:7],
+                "",
+                "full",
+                ("initial-commit-baseline",),
+            )
+            item = build_ref_work_item(
+                "example/sample",
+                sha,
+                "2026-08-03",
+                (change,),
+                manifest_relative,
+            )
+            config = load_registry(registry)[0]
+            packet = build_ref_ingest_packet(
+                root,
+                config,
+                item.work_item_id,
+                manifest_relative,
+                RefPacketInput("default-branch", "main", "", sha, "", "", ()),
+                "queued",
+            )
+            packet_path = publish_queued_packet(root, config, packet)
+            item = replace(
+                item,
+                state="awaiting_approval",
+                ingest_packet=packet_path.resolve().relative_to(root.resolve()).as_posix(),
+            )
+            save_work_items(root / "tracking/github/work-items.json", (item,))
+            summary = load_packet_summary(root, item.ingest_packet)
+            (root / "tracking/github/status.md").write_text(
+                render_status(
+                    (item,),
+                    {
+                        item.work_item_id: PacketStatusSummary(
+                            summary.packet_path,
+                            summary.priority,
+                            summary.required_reading_count,
+                            summary.unclassified_count,
+                            summary.evidence_gap_count,
+                        )
+                    },
+                ),
+                encoding="utf-8",
+            )
+
+            self.assertEqual([], validate_github(inspect_github(root)))
+
+            for relative in packet.document["expected_wiki_targets"]:
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text("# Ingested target\n", encoding="utf-8")
+
+            self.assertEqual([], validate_github(inspect_github(root)))
 
 
 if __name__ == "__main__":

@@ -1,0 +1,541 @@
+# GitHub ingest packet
+
+- Repository: `paypal-examples/v6-web-sdk-sample-integration`
+- Work item: `github-6403ae7181617adc4020`
+- Snapshot: `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/manifest.json`
+- Recommended mode: `full`
+- Review priority: `high`
+
+- Ref: `default-branch@b5f2df2` (`main`)
+- Transition: `baseline` -> `b5f2df209b0bfd10b1a3cde600088ddf21e43523`
+- Author date: `2026-07-15T21:42:24-05:00`
+- Commit date: `2026-07-15T21:42:24-05:00`
+
+## Required reading
+
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/.env.sample`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/LICENSE`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/README.md`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/applepayPayments/README.md`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/applepayPayments/oneTimePayment/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/applepayPayments/oneTimePayment/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/applepayPayments/oneTimePaymentWithVault/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/applepayPayments/oneTimePaymentWithVault/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/bankAchPayments/oneTimePayment/html/src/recommended/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/bankAchPayments/oneTimePayment/html/src/recommended/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/cardFields/oneTimePayment/html/README.md`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/cardFields/oneTimePayment/html/src/advanced/threeDSecure/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/cardFields/oneTimePayment/html/src/advanced/threeDSecure/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/cardFields/oneTimePayment/html/src/recommended/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/cardFields/oneTimePayment/html/src/recommended/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/cardFields/savePayment/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/cardFields/savePayment/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/fastlane/html/README.md`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/fastlane/html/src/fastlane.css`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/fastlane/html/src/fastlane.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/fastlane/html/src/fastlaneSdkComponent.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/fastlane/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/googlepayPayments/oneTimePayment/html/src/README.md`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/googlepayPayments/oneTimePayment/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/googlepayPayments/oneTimePayment/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/googlepayPayments/threeDSecure/html/src/README.md`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/googlepayPayments/threeDSecure/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/googlepayPayments/threeDSecure/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/README.md`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/afterpayPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/afterpayPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/alfamartPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/alfamartPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/alipayPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/alipayPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/bancontactPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/bancontactPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/bizumPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/bizumPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/blikPayLaterPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/blikPayLaterPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/blikPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/blikPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/boletobancarioPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/boletobancarioPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/dokuPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/dokuPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/dragonpayPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/dragonpayPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/epsPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/epsPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/estoniaBanksPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/estoniaBanksPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/fiuuPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/fiuuPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/floaPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/floaPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/fpxPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/fpxPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/gopayPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/gopayPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/idealPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/idealPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/indomaretPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/indomaretPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/indonesiaBanksPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/indonesiaBanksPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/jeniuspayPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/jeniuspayPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/klarnaPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/klarnaPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/kredivoPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/kredivoPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/latviaBanksPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/latviaBanksPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/linkajaPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/linkajaPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/lithuaniaBanksPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/lithuaniaBanksPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/mbwayPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/mbwayPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/multibancoPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/multibancoPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/mybankPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/mybankPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/ovoPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/ovoPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/oxxopayPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/oxxopayPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/p24Payments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/p24Payments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/paysafecardPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/paysafecardPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/payseraPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/payseraPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/payuPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/payuPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/pixInternationalPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/pixInternationalPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/scalapayPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/scalapayPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/sepaPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/sepaPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/skrillPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/skrillPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/swishPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/swishPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/thailandBanksPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/thailandBanksPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/trustlyPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/trustlyPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/twintPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/twintPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/verkkopankkiPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/verkkopankkiPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/wechatpayPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/wechatpayPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/weroPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/weroPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/zipPayments/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/zipPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalGuestPayments/html/README.md`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalGuestPayments/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalGuestPayments/html/src/onload/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalGuestPayments/html/src/onload/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalGuestPayments/html/src/recommended/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalGuestPayments/html/src/recommended/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalGuestPayments/html/src/shipping/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalGuestPayments/html/src/shipping/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalMessages/html/README.md`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalMessages/html/src/advanced/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalMessages/html/src/advanced/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalMessages/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalMessages/html/src/recommended/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalMessages/html/src/recommended/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/README.md`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/directAppSwitch/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/directAppSwitch/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/hydrateEligibleMethods/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/hydrateEligibleMethods/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/merchantAsyncValidation/README.md`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/merchantAsyncValidation/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/merchantAsyncValidation/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/paymentHandler/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/paymentHandler/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/redirect/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/redirect/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/.npmrc`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/.nvmrc`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/README.md`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/package.json`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/src/merchant-example/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/src/merchant-example/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/src/paypal-iframe/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/src/paypal-iframe/integration.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/vite-merchant-example.config.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/vite-paypal-iframe.config.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/.npmrc`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/.nvmrc`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/README.md`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/package.json`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/src/merchant-example/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/src/merchant-example/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/src/partner-iframe/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/src/partner-iframe/integration.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/vite-merchant-example.config.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/vite-partner-iframe.config.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/recommended/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/html/src/recommended/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/typescript/.npmrc`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/typescript/eslint.config.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/typescript/package.json`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/typescript/src/alert.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/typescript/src/app.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/typescript/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/typescript/src/orders.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/typescript/tsconfig.json`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePayment/typescript/vite.config.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePaymentWithVault/html/src/recommended/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/oneTimePaymentWithVault/html/src/recommended/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/savePayment/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalPayments/savePayment/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalSubscriptions/html/src/recommended/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/paypalSubscriptions/html/src/recommended/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/venmoPayments/oneTimePayment/html/README.md`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/venmoPayments/oneTimePayment/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/venmoPayments/oneTimePayment/html/src/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/index.html`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/package.json`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/README.md`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/package.json`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/App.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/components/ErrorBoundary.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/components/ErrorTest.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/components/PaymentMethodDropdown.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/components/PaymentModal.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/components/ProductDisplay.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/constants/products.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/hooks/useCardFieldsValidation.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/hooks/useCartTotals.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/hooks/useProducts.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/hooks/useQuantityChange.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/main.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/pages/BaseCardFieldsCheckout.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/pages/BaseCart.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/pages/BaseCheckout.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/pages/BaseProduct.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/pages/BaseStaticButtons.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/pages/CardFieldsSavePaymentSettings.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/pages/ErrorBoundary.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/pages/Home.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/pages/SavePaymentSettings.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/paymentFlowCheckoutPages/ApplePayOneTimePaymentCheckout.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/paymentFlowCheckoutPages/CardFieldsOneTimePaymentCheckout.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/paymentFlowCheckoutPages/DropdownOneTimePaymentCheckout.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/paymentFlowCheckoutPages/GooglePayOneTimePaymentCheckout.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/paymentFlowCheckoutPages/OneTimePaymentCheckout.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/paymentFlowCheckoutPages/SubscriptionCheckout.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/paymentFlowCheckoutPages/VaultWithPurchaseCheckout.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/payments/oneTimePayment/components/PayPalCardFieldsOneTimePayment.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/payments/savePayment/components/PayPalCardFieldsSavePayment.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/paypalMessages/PayPalMessages.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/paypalMessages/PayPalMessagesDemo.tsx`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/styles/Cart.css`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/styles/Checkout.css`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/styles/Modal.css`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/styles/Product.css`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/styles/StaticButtons.css`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/types/index.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/utils.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/src/vite-env.d.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/tsconfig.json`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/prebuiltPages/react/vite.config.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/shared/alert-component.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/shared/styles.css`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/README.md`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/package.json`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/checkNodeVersion.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/customApiEndpoints/authorization.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/customApiEndpoints/constants.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/customApiEndpoints/createSubscriptionProduct.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/customApiEndpoints/customApiError.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/customApiEndpoints/findEligibleMethods.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/middleware/crossOriginOpenerPolicyMiddleware.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/middleware/errorMiddleware.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/paypalServerSdkClient.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/productCatalog.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/routes/authRouteHandler.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/routes/findEligibleMethodsRouteHandler.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/routes/index.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/routes/ordersRouteHandler.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/routes/productsRouteHandler.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/routes/subscriptionsRouteHandler.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/routes/vaultRouteHandler.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/src/server.ts`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/server/node/tsconfig.json`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/manifest.json`
+- `wiki/companies/paypal.md`
+- `wiki/log.md`
+- `wiki/paypal-index.md`
+- `wiki/paypal-log.md`
+
+## Selected changes
+
+- `added` `.env.sample`
+- `added` `LICENSE`
+- `added` `README.md`
+- `added` `client/components/applepayPayments/README.md`
+- `added` `client/components/applepayPayments/oneTimePayment/html/src/app.js`
+- `added` `client/components/applepayPayments/oneTimePayment/html/src/index.html`
+- `added` `client/components/applepayPayments/oneTimePaymentWithVault/html/src/app.js`
+- `added` `client/components/applepayPayments/oneTimePaymentWithVault/html/src/index.html`
+- `added` `client/components/bankAchPayments/oneTimePayment/html/src/recommended/app.js`
+- `added` `client/components/bankAchPayments/oneTimePayment/html/src/recommended/index.html`
+- `added` `client/components/cardFields/oneTimePayment/html/README.md`
+- `added` `client/components/cardFields/oneTimePayment/html/src/advanced/threeDSecure/app.js`
+- `added` `client/components/cardFields/oneTimePayment/html/src/advanced/threeDSecure/index.html`
+- `added` `client/components/cardFields/oneTimePayment/html/src/recommended/app.js`
+- `added` `client/components/cardFields/oneTimePayment/html/src/recommended/index.html`
+- `added` `client/components/cardFields/savePayment/html/src/app.js`
+- `added` `client/components/cardFields/savePayment/html/src/index.html`
+- `added` `client/components/fastlane/html/README.md`
+- `added` `client/components/fastlane/html/src/fastlane.css`
+- `added` `client/components/fastlane/html/src/fastlane.js`
+- `added` `client/components/fastlane/html/src/fastlaneSdkComponent.js`
+- `added` `client/components/fastlane/html/src/index.html`
+- `added` `client/components/googlepayPayments/oneTimePayment/html/src/README.md`
+- `added` `client/components/googlepayPayments/oneTimePayment/html/src/app.js`
+- `added` `client/components/googlepayPayments/oneTimePayment/html/src/index.html`
+- `added` `client/components/googlepayPayments/threeDSecure/html/src/README.md`
+- `added` `client/components/googlepayPayments/threeDSecure/html/src/app.js`
+- `added` `client/components/googlepayPayments/threeDSecure/html/src/index.html`
+- `added` `client/components/localPaymentMethods/README.md`
+- `added` `client/components/localPaymentMethods/afterpayPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/afterpayPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/alfamartPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/alfamartPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/alipayPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/alipayPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/bancontactPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/bancontactPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/bizumPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/bizumPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/blikPayLaterPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/blikPayLaterPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/blikPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/blikPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/boletobancarioPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/boletobancarioPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/dokuPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/dokuPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/dragonpayPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/dragonpayPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/epsPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/epsPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/estoniaBanksPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/estoniaBanksPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/fiuuPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/fiuuPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/floaPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/floaPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/fpxPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/fpxPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/gopayPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/gopayPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/idealPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/idealPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/indomaretPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/indomaretPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/indonesiaBanksPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/indonesiaBanksPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/jeniuspayPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/jeniuspayPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/klarnaPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/klarnaPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/kredivoPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/kredivoPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/latviaBanksPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/latviaBanksPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/linkajaPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/linkajaPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/lithuaniaBanksPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/lithuaniaBanksPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/mbwayPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/mbwayPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/multibancoPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/multibancoPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/mybankPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/mybankPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/ovoPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/ovoPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/oxxopayPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/oxxopayPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/p24Payments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/p24Payments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/paysafecardPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/paysafecardPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/payseraPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/payseraPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/payuPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/payuPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/pixInternationalPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/pixInternationalPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/scalapayPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/scalapayPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/sepaPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/sepaPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/skrillPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/skrillPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/swishPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/swishPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/thailandBanksPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/thailandBanksPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/trustlyPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/trustlyPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/twintPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/twintPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/verkkopankkiPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/verkkopankkiPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/wechatpayPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/wechatpayPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/weroPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/weroPayments/html/src/index.html`
+- `added` `client/components/localPaymentMethods/zipPayments/html/src/app.js`
+- `added` `client/components/localPaymentMethods/zipPayments/html/src/index.html`
+- `added` `client/components/paypalGuestPayments/html/README.md`
+- `added` `client/components/paypalGuestPayments/html/src/index.html`
+- `added` `client/components/paypalGuestPayments/html/src/onload/app.js`
+- `added` `client/components/paypalGuestPayments/html/src/onload/index.html`
+- `added` `client/components/paypalGuestPayments/html/src/recommended/app.js`
+- `added` `client/components/paypalGuestPayments/html/src/recommended/index.html`
+- `added` `client/components/paypalGuestPayments/html/src/shipping/app.js`
+- `added` `client/components/paypalGuestPayments/html/src/shipping/index.html`
+- `added` `client/components/paypalMessages/html/README.md`
+- `added` `client/components/paypalMessages/html/src/advanced/app.js`
+- `added` `client/components/paypalMessages/html/src/advanced/index.html`
+- `added` `client/components/paypalMessages/html/src/index.html`
+- `added` `client/components/paypalMessages/html/src/recommended/app.js`
+- `added` `client/components/paypalMessages/html/src/recommended/index.html`
+- `added` `client/components/paypalPayments/oneTimePayment/html/README.md`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/directAppSwitch/app.js`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/directAppSwitch/index.html`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/hydrateEligibleMethods/app.js`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/hydrateEligibleMethods/index.html`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/merchantAsyncValidation/README.md`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/merchantAsyncValidation/app.js`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/merchantAsyncValidation/index.html`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/paymentHandler/app.js`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/paymentHandler/index.html`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/redirect/app.js`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/redirect/index.html`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/.npmrc`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/.nvmrc`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/README.md`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/package.json`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/src/merchant-example/app.js`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/src/merchant-example/index.html`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/src/paypal-iframe/index.html`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/src/paypal-iframe/integration.js`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/vite-merchant-example.config.js`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframe/vite-paypal-iframe.config.js`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/.npmrc`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/.nvmrc`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/README.md`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/package.json`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/src/merchant-example/app.js`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/src/merchant-example/index.html`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/src/partner-iframe/index.html`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/src/partner-iframe/integration.js`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/vite-merchant-example.config.js`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/advanced/sandboxedIframeRedirect/vite-partner-iframe.config.js`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/index.html`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/recommended/app.js`
+- `added` `client/components/paypalPayments/oneTimePayment/html/src/recommended/index.html`
+- `added` `client/components/paypalPayments/oneTimePayment/typescript/.npmrc`
+- `added` `client/components/paypalPayments/oneTimePayment/typescript/eslint.config.js`
+- `added` `client/components/paypalPayments/oneTimePayment/typescript/package.json`
+- `added` `client/components/paypalPayments/oneTimePayment/typescript/src/alert.ts`
+- `added` `client/components/paypalPayments/oneTimePayment/typescript/src/app.ts`
+- `added` `client/components/paypalPayments/oneTimePayment/typescript/src/index.html`
+- `added` `client/components/paypalPayments/oneTimePayment/typescript/src/orders.ts`
+- `added` `client/components/paypalPayments/oneTimePayment/typescript/tsconfig.json`
+- `added` `client/components/paypalPayments/oneTimePayment/typescript/vite.config.js`
+- `added` `client/components/paypalPayments/oneTimePaymentWithVault/html/src/recommended/app.js`
+- `added` `client/components/paypalPayments/oneTimePaymentWithVault/html/src/recommended/index.html`
+- `added` `client/components/paypalPayments/savePayment/html/src/app.js`
+- `added` `client/components/paypalPayments/savePayment/html/src/index.html`
+- `added` `client/components/paypalSubscriptions/html/src/recommended/app.js`
+- `added` `client/components/paypalSubscriptions/html/src/recommended/index.html`
+- `added` `client/components/venmoPayments/oneTimePayment/html/README.md`
+- `added` `client/components/venmoPayments/oneTimePayment/html/src/app.js`
+- `added` `client/components/venmoPayments/oneTimePayment/html/src/index.html`
+- `added` `client/index.html`
+- `added` `client/package.json`
+- `added` `client/prebuiltPages/react/README.md`
+- `added` `client/prebuiltPages/react/package.json`
+- `added` `client/prebuiltPages/react/src/App.tsx`
+- `added` `client/prebuiltPages/react/src/components/ErrorBoundary.tsx`
+- `added` `client/prebuiltPages/react/src/components/ErrorTest.tsx`
+- `added` `client/prebuiltPages/react/src/components/PaymentMethodDropdown.tsx`
+- `added` `client/prebuiltPages/react/src/components/PaymentModal.tsx`
+- `added` `client/prebuiltPages/react/src/components/ProductDisplay.tsx`
+- `added` `client/prebuiltPages/react/src/constants/products.ts`
+- `added` `client/prebuiltPages/react/src/hooks/useCardFieldsValidation.ts`
+- `added` `client/prebuiltPages/react/src/hooks/useCartTotals.ts`
+- `added` `client/prebuiltPages/react/src/hooks/useProducts.ts`
+- `added` `client/prebuiltPages/react/src/hooks/useQuantityChange.ts`
+- `added` `client/prebuiltPages/react/src/main.tsx`
+- `added` `client/prebuiltPages/react/src/pages/BaseCardFieldsCheckout.tsx`
+- `added` `client/prebuiltPages/react/src/pages/BaseCart.tsx`
+- `added` `client/prebuiltPages/react/src/pages/BaseCheckout.tsx`
+- `added` `client/prebuiltPages/react/src/pages/BaseProduct.tsx`
+- `added` `client/prebuiltPages/react/src/pages/BaseStaticButtons.tsx`
+- `added` `client/prebuiltPages/react/src/pages/CardFieldsSavePaymentSettings.tsx`
+- `added` `client/prebuiltPages/react/src/pages/ErrorBoundary.tsx`
+- `added` `client/prebuiltPages/react/src/pages/Home.tsx`
+- `added` `client/prebuiltPages/react/src/pages/SavePaymentSettings.tsx`
+- `added` `client/prebuiltPages/react/src/paymentFlowCheckoutPages/ApplePayOneTimePaymentCheckout.tsx`
+- `added` `client/prebuiltPages/react/src/paymentFlowCheckoutPages/CardFieldsOneTimePaymentCheckout.tsx`
+- `added` `client/prebuiltPages/react/src/paymentFlowCheckoutPages/DropdownOneTimePaymentCheckout.tsx`
+- `added` `client/prebuiltPages/react/src/paymentFlowCheckoutPages/GooglePayOneTimePaymentCheckout.tsx`
+- `added` `client/prebuiltPages/react/src/paymentFlowCheckoutPages/OneTimePaymentCheckout.tsx`
+- `added` `client/prebuiltPages/react/src/paymentFlowCheckoutPages/SubscriptionCheckout.tsx`
+- `added` `client/prebuiltPages/react/src/paymentFlowCheckoutPages/VaultWithPurchaseCheckout.tsx`
+- `added` `client/prebuiltPages/react/src/payments/oneTimePayment/components/PayPalCardFieldsOneTimePayment.tsx`
+- `added` `client/prebuiltPages/react/src/payments/savePayment/components/PayPalCardFieldsSavePayment.tsx`
+- `added` `client/prebuiltPages/react/src/paypalMessages/PayPalMessages.tsx`
+- `added` `client/prebuiltPages/react/src/paypalMessages/PayPalMessagesDemo.tsx`
+- `added` `client/prebuiltPages/react/src/styles/Cart.css`
+- `added` `client/prebuiltPages/react/src/styles/Checkout.css`
+- `added` `client/prebuiltPages/react/src/styles/Modal.css`
+- `added` `client/prebuiltPages/react/src/styles/Product.css`
+- `added` `client/prebuiltPages/react/src/styles/StaticButtons.css`
+- `added` `client/prebuiltPages/react/src/types/index.ts`
+- `added` `client/prebuiltPages/react/src/utils.ts`
+- `added` `client/prebuiltPages/react/src/vite-env.d.ts`
+- `added` `client/prebuiltPages/react/tsconfig.json`
+- `added` `client/prebuiltPages/react/vite.config.ts`
+- `added` `client/shared/alert-component.js`
+- `added` `client/shared/styles.css`
+- `added` `server/node/README.md`
+- `added` `server/node/package.json`
+- `added` `server/node/src/checkNodeVersion.ts`
+- `added` `server/node/src/customApiEndpoints/authorization.ts`
+- `added` `server/node/src/customApiEndpoints/constants.ts`
+- `added` `server/node/src/customApiEndpoints/createSubscriptionProduct.ts`
+- `added` `server/node/src/customApiEndpoints/customApiError.ts`
+- `added` `server/node/src/customApiEndpoints/findEligibleMethods.ts`
+- `added` `server/node/src/middleware/crossOriginOpenerPolicyMiddleware.ts`
+- `added` `server/node/src/middleware/errorMiddleware.ts`
+- `added` `server/node/src/paypalServerSdkClient.ts`
+- `added` `server/node/src/productCatalog.ts`
+- `added` `server/node/src/routes/authRouteHandler.ts`
+- `added` `server/node/src/routes/findEligibleMethodsRouteHandler.ts`
+- `added` `server/node/src/routes/index.ts`
+- `added` `server/node/src/routes/ordersRouteHandler.ts`
+- `added` `server/node/src/routes/productsRouteHandler.ts`
+- `added` `server/node/src/routes/subscriptionsRouteHandler.ts`
+- `added` `server/node/src/routes/vaultRouteHandler.ts`
+- `added` `server/node/src/server.ts`
+- `added` `server/node/tsconfig.json`
+
+## Excluded changes
+
+- None

@@ -1,0 +1,135 @@
+{
+  "name": "@adyen/react-native",
+  "version": "2.0.0-local.1",
+  "description": "Wraps Adyen Checkout Drop-In and Components for iOS and Android for convenient use with React Native",
+  "license": "MIT",
+  "author": "Adyen",
+  "homepage": "https://adyen.com",
+  "repository": "https://github.com/Adyen/adyen-react-native",
+  "bugs": {
+    "url": "https://support.adyen.com/"
+  },
+  "keywords": [
+    "adyen",
+    "adyen-ios",
+    "adyen-android",
+    "checkout",
+    "payment",
+    "payments",
+    "components"
+  ],
+  "react-native": "src/index.ts",
+  "main": "./lib/commonjs/index.js",
+  "module": "lib/module/index.js",
+  "source": "./src/index.ts",
+  "types": "./lib/typescript/src/index.d.ts",
+  "files": [
+    "lib",
+    "android",
+    "ios",
+    "src",
+    "cpp",
+    "app.plugin.js",
+    "*.podspec",
+    "LICENSE",
+    "!ios/build",
+    "!android/build",
+    "!android/gradle",
+    "!android/gradlew",
+    "!android/gradlew.bat",
+    "!android/local.properties",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__",
+    "!**/.*"
+  ],
+  "scripts": {
+    "app": "yarn workspace @adyen/react-native-example",
+    "test": "jest",
+    "typecheck": "tsc",
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "clean": "git clean -fxd",
+    "prepare": "./scripts/set-version.sh && bob build",
+    "start": "rm yarn.lock && yarn && yarn prepare && husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.6.0",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@eslint/compat": "^1.2.7",
+    "@eslint/eslintrc": "^3.3.3",
+    "@eslint/js": "^9.39.2",
+    "@expo/config-plugins": "^10.0.2",
+    "@react-native-community/cli": "15.0.1",
+    "@react-native/babel-preset": "0.85.0",
+    "@react-native/eslint-config": "0.85.0",
+    "@react-native/jest-preset": "0.85.0",
+    "@types/jest": "^29.5.5",
+    "@types/react": "^19.0.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-jest": "^27.0.1",
+    "eslint-plugin-prettier": "^5.5.4",
+    "expo-module-scripts": "^4.1.0",
+    "husky": "^9.0.11",
+    "jest": "^29.7.0",
+    "prettier": "^3.8.1",
+    "react": "19.2.3",
+    "react-native": "0.85.0",
+    "react-native-builder-bob": "^0.41.0",
+    "react-test-renderer": "19.2.3",
+    "typescript": "^6.0.3"
+  },
+  "peerDependencies": {
+    "expo": ">=52",
+    "react": "*",
+    "react-native": ">=0.76.0"
+  },
+  "peerDependenciesMeta": {
+    "expo": {
+      "optional": true
+    }
+  },
+  "workspaces": [
+    "example"
+  ],
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      "typescript"
+    ]
+  },
+  "jest": {
+    "preset": "react-native",
+    "testPathIgnorePatterns": [
+      "e2e-tests"
+    ],
+    "modulePathIgnorePatterns": [
+      "_mock_",
+      "<rootDir>/example/node_modules",
+      "<rootDir>/lib/"
+    ]
+  },
+  "packageManager": "yarn@4.17.0",
+  "codegenConfig": {
+    "name": "AdyenPaymentSpec",
+    "type": "all",
+    "jsSrcsDir": "src/specs",
+    "android": {
+      "javaPackageName": "com.adyenreactnativesdk.react"
+    },
+    "ios": {
+      "componentProvider": {
+        "PlatformPayView": "ADYPlatformPayView",
+        "CardView": "ADYCardView"
+      }
+    }
+  }
+}

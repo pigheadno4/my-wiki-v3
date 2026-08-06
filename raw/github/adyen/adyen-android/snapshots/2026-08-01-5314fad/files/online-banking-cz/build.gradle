@@ -1,0 +1,41 @@
+/*
+ * Copyright (c) 2022 Adyen N.V.
+ *
+ * This file is open source and available under the MIT license. See the LICENSE file for more info.
+ *
+ * Created by atef on 23/8/2022.
+ */
+
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.parcelize
+}
+
+ext.mavenArtifactId = "online-banking-cz"
+ext.mavenArtifactName = "Adyen checkout Online Banking Czech Republic"
+ext.mavenArtifactDescription = "Adyen checkout Online Banking Czech Republic component client for Adyen's Checkout API."
+
+apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
+
+android {
+    namespace 'com.adyen.checkout.onlinebankingcz'
+    compileSdk libs.versions.compile.sdk.get().toInteger()
+
+    defaultConfig {
+        minSdk libs.versions.min.sdk.get().toInteger()
+        targetSdk libs.versions.target.sdk.get().toInteger()
+
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        consumerProguardFiles "consumer-rules.pro"
+    }
+}
+
+dependencies {
+    // Checkout
+    api project(':action-core')
+    api project(':online-banking-core')
+
+    testImplementation libs.bundles.junit
+    testImplementation libs.bundles.mockito
+}

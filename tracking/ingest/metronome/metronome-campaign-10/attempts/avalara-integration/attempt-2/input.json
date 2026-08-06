@@ -1,0 +1,44 @@
+{
+  "action": "spawn_worker",
+  "job_id": "avalara-integration",
+  "attempt": 2,
+  "raw_path": "raw/metronome/integrations/tax-integrations/avalara-2026-07-13.md",
+  "raw_sha256": "669af4d8d1bd834e66ef476bc757315c1771076659d5058b5caa1826468e6e73",
+  "source_target": "wiki/sources/metronome/source-metronome-integrations-tax-integrations-avalara.md",
+  "canonical_url": "https://docs.metronome.com/integrations/tax-integrations/avalara",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location."
+  ],
+  "retry_context": {
+    "prior_attempt": 1,
+    "review_scope": "full",
+    "required_changes": [
+      "In the candidate's responsibility section, replace the claim that **Use automatic tax** 'does not make this a Stripe Tax integration' with the narrower, source-faithful boundary that this setting does not make Avalara Stripe's native Stripe Tax calculation engine or product. Name the UI location exactly as **Settings > Tax > Integrations** rather than 'Stripe Tax integrations'. Preserve the distinction that Avalara runs through Stripe's third-party tax-app framework, and preserve all other candidate text.",
+      "Revise only `avalara-metronome-integration-boundary` so it does not collapse the documented entity labels: state that the guide creates the case-sensitive `TaxCode` custom field on Metronome `Product`, while its mapping row sends `ContractProduct.TaxCode` to `invoiceitem.metadata.TaxCode`. Retain the existing warning that the source does not reconcile `Product` and `ContractProduct`, plus all responsibility, draft-setting, rate-accuracy, and unknown-finalization boundaries. Preserve the update ID and the other five suggestions unchanged."
+    ],
+    "prior_reviewer_identity": "sol-review-avalara-a1"
+  },
+  "recommended_worker_tier": "strong",
+  "routing_reason": "tax-code mapping and invoice-setting ownership require cross-system responsibility boundaries",
+  "worker_identity": "sol-avalara-a2",
+  "worker_model": "gpt-5.6-sol"
+}

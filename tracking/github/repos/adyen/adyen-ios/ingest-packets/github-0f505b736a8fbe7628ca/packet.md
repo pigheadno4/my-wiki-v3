@@ -1,0 +1,709 @@
+# GitHub ingest packet
+
+- Repository: `adyen/adyen-ios`
+- Work item: `github-0f505b736a8fbe7628ca`
+- Snapshot: `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/manifest.json`
+- Recommended mode: `full`
+- Review priority: `normal`
+
+## `adyen-ios`
+
+- Version: `baseline` -> `5.25.1`
+- Recommendation: `full` / `normal`
+- Unchanged retained files: `0`
+
+### Required reading
+
+- `raw/github/adyen/adyen-ios/releases/adyen-ios/5.25.1/2026-08-01/manifest.json`
+- `raw/github/adyen/adyen-ios/releases/adyen-ios/5.25.1/2026-08-01/release-notes.md`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen.podspec`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Analytics/AnalyticsProvider/AnalyticsFlavor.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Analytics/AnalyticsProvider/AnalyticsProvider.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Analytics/AnalyticsProvider/AnalyticsProviderProtocol.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Analytics/AnalyticsProvider/EventAnalyticsProvider.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Analytics/Models/AdyenAnalytics.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Analytics/Models/AnalyticsConstants.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Analytics/Models/AnalyticsData.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Analytics/Models/AnalyticsEventDataSource.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Analytics/Models/AnalyticsEventError.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Analytics/Models/AnalyticsEventInfo.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Analytics/Models/AnalyticsEventLog.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Analytics/Models/AnalyticsValidationError.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Analytics/Models/ThreadSafeAnalyticsEventDataSource.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Analytics/Requests/AnalyticsRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Analytics/Requests/InitialAnalyticsRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Assets/Generated/LocalizationKey.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/APIClient/APIContext.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/APIClient/AnalyticsEnvironment.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/APIClient/Environment.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/APIClient/Requests/APIRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/APIClient/Requests/AppleWalletPassRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/APIClient/Requests/ClientKeyRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/APIClient/Requests/OrderStatusRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/APIClient/Requests/PaymentStatusRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/APIClient/Responses/AppleWalletPassResponse.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/APIClient/Responses/ClientKeyResponse.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/APIClient/Responses/OrderStatusResponse.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/APIClient/Responses/PaymentStatusResponse.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/AdyenContext/AdyenContext.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Components/AbstractPersonalInformationComponent/AbstractPersonalInformationComponent+Extensions.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Components/AbstractPersonalInformationComponent/AbstractPersonalInformationComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Components/AbstractPersonalInformationComponent/AddressFormItemInjector.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Components/AbstractPersonalInformationComponent/EmailFormItemInjector.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Components/AbstractPersonalInformationComponent/FormItemInjector.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Components/AbstractPersonalInformationComponent/NameFormItemInjector.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Components/AbstractPersonalInformationComponent/PhoneFormItemInjector.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Components/AlreadyPaidPaymentComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Components/AnyCashAppPayConfiguration.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Components/Base/ActionComponentData.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Components/Base/BasicComponentConfiguration.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Components/Base/PartialPaymentError.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Components/Base/PresentableComponentWrapper.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Components/Installment/InstallmentOptions.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Components/InstantPaymentComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Components/StoredPaymentMethodComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/ActionComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/AdyenSessionAware.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/AnyDropInComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/Component.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/Details.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/DeviceDependent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/DropInComponentDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/LoadingComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/PartialPaymentComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/PartialPaymentDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/PaymentAwareComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/PaymentComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/PaymentComponentBuilder.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/PaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/PresentableComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/PresentationDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/ReadyToSubmitPaymentComponentDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/StorePaymentMethodFieldAware.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/StoredPaymentMethodsDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/SubmittableComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/TrackableComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Core Protocols/ViewControllerPresenter.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Errors/APIError.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Errors/AppleWalletError.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Errors/ComponentError.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Errors/UnknownError.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Models/CardType.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Models/DisplayInformation.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Models/ShopperInteraction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/ACHDirectDebitPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/Abstract/AnyCardPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/Abstract/AnyPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/Abstract/AnyPaymentMethodDecoder.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/Abstract/PaymentMethodType.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/Abstract/PaymentMethods.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/AffirmPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/ApplePayPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/AtomePaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/BACSDirectDebitPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/BCMCPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/BLIKPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/BoletoPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/CardPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/CashAppPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/DokuPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/EContextPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/GiftCardPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/InstantPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/IssuerListPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/MBWayPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/MealVoucherPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/OnlineBankingPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/PayByBankUSPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/PayToPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/QiwiWalletPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/SEPADirectDebitPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/StoredBCMCPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/StoredBLIKPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/StoredCashAppPayPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/StoredInstantPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/StoredPayByBankUSPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/StoredPayPalPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/StoredTwintPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/TwintPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/UPIPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/Payment Methods/WeChatPayPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/ToolBar/CancellableToolBar.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Core/ToolBar/ModalToolbar.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Formatters/AmountFormatter.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Formatters/BrazilSocialSecurityNumberFormatter.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Formatters/Formatter.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Formatters/IBANFormatter.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Formatters/NumericFormatter.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/AdyenCancellable.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/AdyenDependencies.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/AdyenScope.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/AdyenSdkVersion.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/ArrayHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/BundleHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/CheckoutPlatformParams.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/ImageLoader/ImageLoader+DependencyKey.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/ImageLoader/ImageLoader.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/ImageLoader/ImageLoaderProvider.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/ImageLoader/UIImageView+ImageLoading.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/KeyedDecodingContainerHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/NSConstraintHelper.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/NSTextAlignmentHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/ResultHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/StringHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/TimeIntervalHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/UIApplicationHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/UIButtonHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/UIColorHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/UIFontHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/UIImageViewHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/UILabelHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/UIProgressViewHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/UIViewAnimation.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/UIViewConstraintsHelper.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/UIViewControllerHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/UIViewHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/UIViewRoundingHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/URLHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Helpers/URLSchemeChecking.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Model/Amount.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Model/AnyEncodable.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Model/Balance.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Model/BrowserInfo.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Model/DelegatedAuthenticationData.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Model/Installments.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Model/PartialPaymentOrder.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Model/Payment.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Model/PaymentComponentData.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Model/PostalAddress.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Model/PrefilledShopperInformation.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Model/SDKData.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Model/ShopperInformation.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/PrivacyInfo.xcprivacy`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Dimensions.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/FormItemViewBuilder.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/FormView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/FormViewController+ViewProtocol.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/FormViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/FormViewItemManager.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Address/AddressStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Address/AddressViewModel.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Address/DefaultAddressViewModelBuilder.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Address/FormAddressItem+Configuration.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Address/FormAddressItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Address/FormPostalCodeItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Address/FormRegionPickerItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Address/Picker/FormAddressPickerItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Address/Picker/FormAddressPickerItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Basic Items/FormAttributedLabelItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Basic Items/FormContainerItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Basic Items/FormLabelItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Basic Items/FormVerticalStackItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Button/FormButtonItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Button/FormButtonItemStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Button/FormButtonItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Button/SearchButton/FormSearchButtonItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Button/SearchButton/FormSearchButtonItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Error/FormErrorItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Error/FormErrorItemStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Error/FormErrorItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/FormImageItem/FormImageItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/FormItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/FormItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Phone Number/FormPhoneNumberItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Phone Number/FormPhoneNumberItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Phone Number/Phone Extension Picker/FormPhoneExtensionPickerItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Phone Number/Phone Extension Picker/FormPhoneExtensionPickerItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Segmented Control/FormSegmentedControlItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/SelectableFormItem/SelectableFormItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/SelectableFormItem/SelectableFormItemStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/SelectableFormItem/SelectableFormItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Separator/FormSeparatorItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Separator/FormSeparatorItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Spacer/FormSpacerItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Spacer/FormSpacerItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Split/FormSplitItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Split/FormSplitItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Text/FormTextInputItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Text/FormTextInputItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Text/FormTextItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Text/FormTextItemStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Text/FormTextItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Text/TextField.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Toggle/FormToggleItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Toggle/FormToggleItemStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Toggle/FormToggleItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Value Pickers/Abstract/BaseFormPickerItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Value Pickers/Abstract/BaseFormPickerItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Value Pickers/Abstract/BasePickerInputControl.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Value Pickers/Identifier Picker/FormStringPickerItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Value Pickers/Issuer List Picker/FormIssuerPickerItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Value/FormValueItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Value/FormValueItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Value/Picker/FormPickerItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Value/Picker/FormPickerItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Value/Picker/FormPickerSearchViewController+EmptyView+Style.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Value/Picker/FormPickerSearchViewController+EmptyView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Value/Picker/FormPickerSearchViewController+Style.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Value/Picker/FormPickerSearchViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Value/Selectable/FormSelectableValueItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Value/Selectable/FormSelectableValueItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Value/Validatable/FormValidatableValueItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Form/Items/Value/Validatable/FormValidatableValueItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/List/CoreListDataSource.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/List/DiffableListDataSource.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/List/ListCell.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/List/ListFooterView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/List/ListHeaderView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/List/ListItem+Icon.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/List/ListItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/List/ListItemStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/List/ListItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/List/ListSection.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/List/ListSectionFooterStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/List/ListSectionHeaderStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/List/ListViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Styles/ApplePayStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Styles/ButtonStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Styles/CoreColors.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Styles/CoreFonts.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Styles/CornerRadiusStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Styles/FormComponentStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Styles/ImageStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Styles/ListComponentStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Styles/NavigationStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Styles/ProgressViewStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Styles/SegmentedControlStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Styles/TextStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Styles/ViewStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/View Controllers/ADYViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/View Controllers/AddressLookup/AddressLookupProvider.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/View Controllers/AddressLookup/AddressLookupStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/View Controllers/AddressLookup/AddressLookupViewController+ViewModel.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/View Controllers/AddressLookup/AddressLookupViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/View Controllers/AddressLookup/Form/AddressInputFormViewController+ViewModel.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/View Controllers/AddressLookup/Form/AddressInputFormViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/View Controllers/AddressLookup/Search/AddressLookupSearchViewController+EmptyView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/View Controllers/AddressLookup/Search/AddressLookupSearchViewController+Style.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/View Controllers/AddressLookup/Search/AddressLookupSearchViewController+ViewModel.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/View Controllers/AddressLookup/Search/AddressLookupSearchViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/View Controllers/SearchViewController/SearchViewController+InterfaceState.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/View Controllers/SearchViewController/SearchViewController+ViewModel.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/View Controllers/SearchViewController/SearchViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/View Controllers/SecuredViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/View Controllers/ViewControllerDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Views/ContainerView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Views/CopyLabelView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Views/EmptyStateView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Views/LinkTextView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Views/LoadingView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Views/SubmitButton.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Views/SupportedPaymentMethodsView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Views/UISearchBar+Prominent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/UI/Views/UIView+Accessibility.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/AdyenCoder.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/Analytics.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/AppLauncher.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/BundleSPMExtension.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/Completion.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/Debugging/Assertion.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/Debugging/Logger.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/External/AllCountriesPhoneExtensions.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/External/AllRegions.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/External/LocalizableRegionRepository.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/External/LogoURLProvider.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/External/PhoneExtensionsRepository.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/IBANSpecification.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/KeyboardObserver.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/LazyOptional.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/Localization.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/LocalizationParameters.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/Non SPM Bundle Extension/CoreBundleExtension.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/Observable/AdyenObservable.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/Observable/AdyenObserver.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/Observable/EventPublisher.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/Observable/Observation.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/Observable/ObservationManager.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/PublicKeyProvider/PublicKeyConsumer.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/PublicKeyProvider/PublicKeyProvider.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/SizeUtilities.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/Throttler.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Utilities/ViewIdentifierBuilder.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Validators/AddressAnalyticsValidationError.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Validators/BalanceChecker.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Validators/BrazilSocialSecurityNumberValidator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Validators/ClientKeyValidator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Validators/CountryCodeValidator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Validators/CurrencyCodeValidator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Validators/DateValidator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Validators/EmailValidator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Validators/IBANValidator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Validators/LengthValidator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Validators/NumericStringValidator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Validators/PhoneNumberValidator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Validators/PostalCodeValidator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Validators/RegularExpressionValidator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Validators/ValidationError.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Adyen/Validators/Validator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/Action.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/AnyVoucherAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/AwaitAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/BoletoVoucherAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/DocumentAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/DokuVoucherAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/EContextATMVoucherAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/EContextStoresVoucherAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/MultibancoVoucherAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/OXXOVoucherAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/QRCodeAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/RedireactableAwaitAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/RedirectAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/SDKAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/ThreeDS2Action.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/ThreeDS2ChallengeAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/ThreeDS2FingerprintAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/TwintSDKAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/TwintSDKData.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/VoucherAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/WeChatPaySDKAction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Actions/WeChatPaySDKData.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/AdyenActionComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/3DS2 SDK Adapters/AnyAuthenticationRequestParameters.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/3DS2 SDK Adapters/AnyChallengeResult.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/3DS2 SDK Adapters/ChallengeParameters.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/3DS2 SDK Adapters/FingerprintServiceParameters.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/3DS2 SDK Adapters/LegacySDK/ADYServiceAdapter.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/3DS2 SDK Adapters/LegacySDK/AnyADYTransaction.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/3DS2 SDK Adapters/LegacySDK/ThreeDSServiceLegacy.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/3DS2 SDK Adapters/ThreeDSServiceChallengeError.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/3DS2 SDK Adapters/ThreeDSServiceFingerprintError.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/3DS2 SDK Adapters/ThreeDSServiceProvider.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/3DS2 SDK Adapters/ThreeDSServiceable.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/3DS2 SDK Adapters/UnknownError+ThreeDSServiceable.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/API/Submit3DS2FingerprintRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/API/Submit3DS2FingerprintResponse.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/Action handlers/3DS2 Without Delegated Authentication/ThreeDS2CoreActionHandler.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/Action handlers/3DS2+Delegated Authentication/ThreeDS2PlusDACoreActionHandler.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/Action handlers/3DS2+Delegated Authentication/ThreeDS2PlusDAScreenPresenter.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/Action handlers/AnyThreeDS2ActionHandler.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/Action handlers/ThreeDS2ClassicActionHandler+Initializers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/Action handlers/ThreeDS2ClassicActionHandler.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/Action handlers/ThreeDS2CompactActionHandler+Initializers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/Action handlers/ThreeDS2CompactActionHandler.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/Action handlers/ThreeDSActionHandlerResult.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/Fingerprint Submitter/ThreeDS2FingerprintSubmitter.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/PaymentInfo.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/ThreeDS2Component.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/ThreeDS2ComponentChallengeToken.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/ThreeDS2ComponentFingerprint.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/ThreeDS2ComponentFingerprintToken.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/ThreeDS2ComponentThreeDSConfiguration.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/ThreeDS2Details.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/3DS2/ThreeDSResult.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Await/AwaitActionDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Await/AwaitComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Await/PollingComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Await/PollingHandlerProvider.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Base/ActionNavigationBar.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Base/AnyWeChatPaySDKActionComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Document/DocumentComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Document/ShareableComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/QRCode/ExpirationTimer.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/QRCode/QRCodeActionComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Redirect/BrowserComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Redirect/NativeRedirectResultRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Redirect/OpenExternalAppDetector+DependencyKey.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Redirect/OpenExternalAppDetector.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Redirect/RedirectComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Redirect/RedirectDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Redirect/RedirectListener.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/SDK/Twint+Injectable.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/SDK/TwintSDKActionComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Voucher/AppleWalletPassProvider.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Voucher/VoucherComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Voucher/VoucherComponentExtensions.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Components/Voucher/VoucherShareableViewProvider.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Protocols/ActionHandlingComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/UI Style/ActionComponentStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/UI Style/AwaitComponentStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/UI Style/DelegatedAuthenticationComponentStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/UI Style/DocumentComponentStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/UI Style/QRCodeComponentStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/UI Style/RedirectComponentStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/UI Style/VoucherComponentStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/Await/AwaitComponentViewModel.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/Await/AwaitView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/Await/AwaitViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/DelegatedAuthentication/DAApprovalViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/DelegatedAuthentication/DAErrorViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/DelegatedAuthentication/DARegistrationViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/DelegatedAuthentication/DelegatedAuthenticationErrorView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/DelegatedAuthentication/DelegatedAuthenticationView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/DelegatedAuthentication/ViewHelpers/UIImageViewHelper.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/DelegatedAuthentication/ViewHelpers/UILabelHelper.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/DelegatedAuthentication/ViewHelpers/UIStackViewHelper.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/Document/DocumentActionView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/Document/DocumentActionViewModel.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/QR Code/Extensions/String+QRCode.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/QR Code/Models/QRCodeFlowType.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/QR Code/Models/QRCodeViewStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/QR Code/QRCodeViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/QR Code/QRCodeViewModel.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/QR Code/Views/QRCodeView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/Voucher/ShareableVoucherView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/Voucher/VoucherCardLayer.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/Voucher/VoucherCardView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/Voucher/VoucherSeparatorView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/Voucher/VoucherView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/Voucher/VoucherViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/UI/View Controllers/Voucher/VoucherViewModel.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Utilities/BundleSPMExtension.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenActions/Utilities/Non SPM Bundle Extension/ActionsBundleExtension.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/BCMC/BCMCComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/Card/CardAnalyticsConfiguration.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/Card/CardComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/Card/CardComponentConfiguration.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/Card/CardComponentDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/Card/CardComponentExtensions.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/Card/CardDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/Card/CardScannerController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/Card/CardViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/Card/CardViewControllerItemsProvider.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/Card/CoBadgedCardAnalyticsConfiguration.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/Card/DummyCardScannerController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/Card/ThreeDS2SdkVersion.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/GiftCardComponent/GiftCardComponent+Extensions.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/GiftCardComponent/GiftCardComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/GiftCardComponent/GiftCardConfirmationPaymentMethod.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/GiftCardComponent/GiftCardDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/GiftCardComponent/MealVoucherDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/GiftCardComponent/PartialPaymentMethodDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/KCP/KCPDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/Stored Card/StoredCardAlertManager.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/Stored Card/StoredCardComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Components/Stored Card/StoredCardConfiguration.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Form/DualBrandAccessoryView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Form/FormCardExpiryDateItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Form/FormCardLogosItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Form/FormCardNumberContainerItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Form/FormCardNumberItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Form/FormCardNumberItemView+ScanCard.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Form/FormCardNumberItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Form/FormCardSecurityCodeItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Form/FormCardSecurityCodeItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Form/Installments/FormCardInstallmentsItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Form/Installments/InstallmentPickerElement.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Formatters/CardExpiryDateFormatter.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Formatters/CardNumberFormatter.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Formatters/CardSecurityCodeFormatter.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Utilities/BinLookup/BinLookupRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Utilities/BinLookup/BinLookupResponse.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Utilities/BinLookup/BinLookupService.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Utilities/BundleSPMExtension.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Utilities/CardType/BinInfoProvider.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Utilities/CardType/CardBrand.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Utilities/CardType/CardTypeDetector.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Utilities/CardType/FallbackCardBrandProvider.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Utilities/Non SPM Bundle Extension/CardBundleExtension.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Validators/CardExpiryDateValidator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Validators/CardHolderNameValidator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Validators/CardKCPValidators.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Validators/CardNumberValidator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Validators/CardPublicKeyValidator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Validators/CardSecurityCodeValidator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCard/Validators/CardValidationError.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCardScanner/Sources/CaptureSessionManager.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCardScanner/Sources/CardImageParser.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCardScanner/Sources/CardScanner.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCardScanner/Sources/CardScannerAssembler.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCardScanner/Sources/CardScannerOverlayView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCardScanner/Sources/CardScannerViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCardScanner/Sources/CardScannerViewModel.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCardScanner/Sources/Extensions/AVCaptureVideoOrientation+Extensions.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCardScanner/Sources/Formatters/ExpirationDateFormatter.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCardScanner/Sources/Models/CardScannerError.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCardScanner/Sources/Models/CreditCard.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCardScanner/Sources/Protocols/AppOpener.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCardScanner/Sources/ROIView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCashAppPay/CashAppPayButton/CashAppPayButtonItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCashAppPay/CashAppPayButton/CashAppPayButtonItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCashAppPay/CashAppPayComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCashAppPay/CashAppPayConfiguration.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenCashAppPay/CashAppPayDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/ACH Direct Debit/ACHDirectDebitComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/ACH Direct Debit/ACHDirectDebitDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Affirm/AffirmComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Affirm/AffirmDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Apple Pay/ApplePayComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Apple Pay/ApplePayComponentDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Apple Pay/ApplePayComponentError.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Apple Pay/ApplePayComponentExtensions.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Apple Pay/ApplePayConfiguration.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Apple Pay/ApplePayDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Apple Pay/ApplePayNetworksProvider.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Apple Pay/ApplePayPayment.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Atome/AtomeAddressViewModelBuilder.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Atome/AtomeComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Atome/AtomeDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/BACS Direct Debit/BACSDirectDebitComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/BACS Direct Debit/BACSDirectDebitDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/BACS Direct Debit/Factories/BACSItemsFactory.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/BACS Direct Debit/Models/BACSDirectDebitData.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/BACS Direct Debit/Scenes/Confirmation/BACSConfirmationPresenter.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/BACS Direct Debit/Scenes/Confirmation/BACSConfirmationViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/BACS Direct Debit/Scenes/Input/BACSInputFormViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/BACS Direct Debit/Scenes/Input/BACSInputPresenter.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/BACS Direct Debit/Trackers/BACSDirectDebitComponentTracker.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/BLIK/BLIKComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/BLIK/BLIKDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/BasicPersonalInfoFormComponent/BasicPersonalInfoFormComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/BasicPersonalInfoFormComponent/BasicPersonalInfoFormDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Boleto/BoletoComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Boleto/BoletoComponentExtensions.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Boleto/BoletoDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Doku/DokuComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Doku/DokuDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Instant/InstantComponents.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Issuer List/IssuerListComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Issuer List/IssuerListDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Issuer List/IssuerListEmptyView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/MB Way/MBWayComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/MB Way/MBWayDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/OnlineBanking/OnlineBankingComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/OnlineBanking/OnlineBankingDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/PayByBank/US/PayByBankUSComponent+Configuration.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/PayByBank/US/PayByBankUSComponent+ConfirmationViewController+Model.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/PayByBank/US/PayByBankUSComponent+ConfirmationViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/PayByBank/US/PayByBankUSComponent+Style.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/PayByBank/US/PayByBankUSComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/PayTo/PayToComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/PayTo/PayToDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/PayTo/PayToFormPickerItemView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/PayTo/PayToItemsProvider.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/PayTo/PayToPayIdentifier.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Qiwi Wallet/QiwiWalletComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/Qiwi Wallet/QiwiWalletDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/SEPA Direct Debit/SEPADirectDebitComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/SEPA Direct Debit/SEPADirectDebitDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/UPI/UPIComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/UPI/UPIComponentDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenComponents/UPI/UPIFlowType.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDelegatedAuthentication/AdyenDelegatedAuthentication.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/Components/PaymentMethodListComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/Components/PreApplePayComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/Components/PreselectedPaymentMethodComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/DropInComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/DropInComponentExtensions.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/Models/DropInAnalyticsConfiguration.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/Models/DropInComponentStyle.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/Models/DropInConfiguration.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/Presentation/DimmingPresentationController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/Presentation/DropInNavigationController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/Presentation/ModalViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/Presentation/NavigationDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/Presentation/SlideInPresentationAnimator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/Presentation/WrapperViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/Utilities/ComponentManager+PaymentComponentBuilder.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/Utilities/ComponentManager.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/Utilities/ComponentSections.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenDropIn/Views/PreApplePayView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/AnyEncryptor.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/BankDetailsEncryptor.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/CardEncryptor.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/Extensions/DataExtension.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/Extensions/IntegerExtension.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/Extensions/JSONEncoder+SortedKeys.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/Extensions/StringExtension.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/JOSE/Encryption Algorithms/CommonCryptoHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/JOSE/Encryption Algorithms/Content Encryption Algorithms/JWAA256CBCHS512Algorithm.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/JOSE/Encryption Algorithms/Content Encryption Algorithms/JWAEncryptionAlgorithm.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/JOSE/Encryption Algorithms/JSON Web Encryption/JSONWebEncryption.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/JOSE/Encryption Algorithms/JSON Web Encryption/JSONWebEncryptionGenerator.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/JOSE/Encryption Algorithms/Key Encryption Algorithms/RSAOAEP256Algorithm.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/Model/Card.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/Model/EncryptedCard.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/Payload/BankPayload.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/Payload/BinPayload.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/Payload/CardPayload.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenEncryption/Payload/Payload.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSession/API/Disable Stored Payments/DisableStoredPaymentMethodRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSession/API/Partial Payments API/Balance check/BalanceCheckRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSession/API/Partial Payments API/Cancel Order/CancelOrderRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSession/API/Partial Payments API/Create Order/CreateOrderRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSession/API/Payment Details/PaymentDetailsRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSession/API/Payments/PaymentsRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSession/API/SelfRetainingAPIClient.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSession/API/Session Setup/SessionSetupRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSession/API/SessionAPIClient.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSession/AdyenSession+ActionComponentDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSession/AdyenSession+DropInComponentDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSession/AdyenSession+PartialPaymentDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSession/AdyenSession+PaymentComponentDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSession/AdyenSession+StoredPaymentMethodsDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSession/AdyenSession.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSession/AdyenSessionDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSession/AdyenSessionResult.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenSwiftUI/Present View Controller/FullScreenViewControllerPresenter.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenTwint/TwintComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenTwint/TwintDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenWeChatPay/WeChatPayActionComponent/WeChatPayActionComponent.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/AdyenWeChatPay/WeChatPayActionComponent/WeChatPayAdditionalDetails.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Cartfile`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Configuration/AnalyticsSettingsView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Configuration/ApplePaySettingsView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Configuration/CardComponentSettingsView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Configuration/ConfigurationView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Configuration/ConfigurationViewModel.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Configuration/DropInSettingsView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Configuration/SearchBar.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Helpers/APIClientHelper.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Helpers/CodingHelpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/IntegrationExamples/AdvancedFlow/Components/ApplePayComponentAdvancedFlowExample.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/IntegrationExamples/AdvancedFlow/Components/CardComponentAdvancedFlowExample.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/IntegrationExamples/AdvancedFlow/Components/InstantPaymentComponentAdvancedFlowExample.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/IntegrationExamples/AdvancedFlow/Components/IssuerListComponentAdvancedFlowExample.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/IntegrationExamples/AdvancedFlow/DropIn/DropInAdvancedFlowExample.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/IntegrationExamples/ComponentCreationError.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/IntegrationExamples/DemoAddressLookupProvider.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/IntegrationExamples/MapkitAddressLookupProvider.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/IntegrationExamples/Protocols/InitialDataAdvancedFlowProtocol.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/IntegrationExamples/Protocols/InitialDataFlowProtocol.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/IntegrationExamples/Protocols/PresenterExampleProtocol.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/IntegrationExamples/Session/Components/ApplePayComponentExample.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/IntegrationExamples/Session/Components/CardComponentExample.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/IntegrationExamples/Session/Components/InstantPaymentComponentExample.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/IntegrationExamples/Session/Components/IssuerListComponentExample.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/IntegrationExamples/Session/DropIn/DropInExample.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Models/ComponentsItem.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Models/ExampleContainer.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Networking/APIRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Networking/BalanceCheckRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Networking/CancelOrderRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Networking/CreateOrderRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Networking/DefaultAPIClient.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Networking/DisableStoredPaymentMethodRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Networking/Environment.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Networking/PaymentDetailsRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Networking/PaymentMethodsRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Networking/PaymentsRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/Networking/SessionRequest.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Common/PresentationDelegates/BACSDirectDebitPresentationDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Configuration+secrets.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/Configuration.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/SwiftUI/AppDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/SwiftUI/ComponentsView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/SwiftUI/ComponentsViewModel.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/SwiftUI/SceneDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/UIKit/AppDelegate.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/UIKit/ComponentsView.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/UIKit/ComponentsViewController.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Demo/UIKit/UIView+Helpers.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/LICENSE`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/MIGRATION.md`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/Package.swift`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/files/README.md`
+- `raw/github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/manifest.json`
+
+### Upstream changes
+
+- None

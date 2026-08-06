@@ -1,0 +1,45 @@
+{
+  "action": "spawn_worker",
+  "job_id": "anrok-integration",
+  "attempt": 2,
+  "raw_path": "raw/metronome/integrations/tax-integrations/anrok-2026-07-13.md",
+  "raw_sha256": "efc6f41253304c312756134c96025738dc1b5c9871945b3a5fffb6b9cf54f4bc",
+  "source_target": "wiki/sources/metronome/source-metronome-integrations-tax-integrations-anrok.md",
+  "canonical_url": "https://docs.metronome.com/integrations/tax-integrations/anrok",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location."
+  ],
+  "retry_context": {
+    "prior_attempt": 1,
+    "review_scope": "full",
+    "required_changes": [
+      "In the candidate's invoice-flow discussion and in anrok-stripe-tax-provider-boundary, replace the claim that tax_type: STRIPE identifies the Stripe invoice path with the narrower source-faithful statement that STRIPE is the documented tax_type value for this Anrok-through-Stripe threshold configuration, while the guide does not define the enum's general semantics. Preserve the important conclusion that the literal is not reliable evidence of calculator identity, because the documented active provider in this mode is Anrok. Preserve the update ID and all other candidate and suggestion boundaries.",
+      "Add a durable_fact suggestion targeting wiki/concepts/metronome/metronome-invoicing.md for the provider-specific invoice behavior: Anrok calculates arrears tax inline through the Stripe app without requiring Leave invoices as drafts; prepaid-balance and spend-threshold flows use the documented tax_type: STRIPE and payment_type: INVOICE values without defining the tax_type enum generally; and a finalized invoice is verified through automatic_tax.enabled, provider: anrok, and status: complete. Keep this distinct from native Stripe Tax and from Stripe-Tax-calculation-plus-Anrok-compliance mode, preserve the Product/ContractProduct ambiguity where mapping is mentioned, and do not infer finalization timing, retries, fallback, correction, filing, remittance, or liability.type semantics.",
+      "Add the matching reciprocal_source_link suggestion under wiki/concepts/metronome/metronome-invoicing.md for [[source-metronome-integrations-tax-integrations-anrok]], grounded in the existing quotes. Keep company, index, and log arrays empty and preserve the three already-approved suggestions unchanged."
+    ],
+    "prior_reviewer_identity": "sol-review-anrok-a1"
+  },
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Stripe product mapping and tax configuration span Metronome Anrok and Stripe responsibility boundaries",
+  "worker_identity": "sol-anrok-a2",
+  "worker_model": "gpt-5.6-sol"
+}
