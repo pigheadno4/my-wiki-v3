@@ -19,7 +19,7 @@ Adyen is represented in this wiki by independently versioned Web, iOS, Android, 
 
 ## Versioned implementation knowledge
 
-The retained `@adyen/adyen-web@6.41.0` baseline records funding-source-aware cards, Click to Pay and installment conditions, 3DS2 URL and message-origin checks, stored-method filtering, screen-reader behavior, and a PayPal Fastlane adapter.
+The retained Adyen Web history currently runs through `@adyen/adyen-web@6.42.0`. It records funding-source-aware cards, Click to Pay and installment conditions, 3DS2 URL and message-origin checks, stored-method filtering, screen-reader behavior, and a PayPal Fastlane adapter. The retained deltas add OpenInvoice focus isolation, keyboard and IME fixes, Drop-in payment-list analytics, country-aware partial US postal validation, and internal 3DS passkey iframe permissions.
 
 Repository evidence is not current product eligibility guidance. In particular, the PayPal dependency establishes an adapter boundary; delegated PayPal runtime behavior belongs to the separate PayPal repository history.
 
@@ -50,9 +50,9 @@ The Node library does not render shopper UI. Its broader API and webhook exports
 ## Knowledge status
 
 - Ingested cumulative GitHub repository sources: 5
-- Ingested package releases: 5
-- Retained package releases: `@adyen/adyen-web@6.41.0`; `adyen-ios@5.25.1`; `adyen-android@5.20.0`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`
-- Latest ingest: `@adyen/api-library@32.0.0` at exact SHA `99d1a0cf69c8660952baffd1437b00aae2fa4f23`
+- Ingested package releases: 7
+- Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `adyen-android@5.20.0`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`
+- Latest ingest: `@adyen/adyen-web@6.42.0` at exact SHA `1e157f8bc62b9519d68becedd9c1267180810e77`
 
 ## Sources
 

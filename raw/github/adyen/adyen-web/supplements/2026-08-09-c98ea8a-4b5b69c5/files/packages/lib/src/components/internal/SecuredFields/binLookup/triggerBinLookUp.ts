@@ -1,0 +1,217 @@
+import { httpPost } from '../../../../core/Services/http';
+import { CardBinValueData, CardErrorData } from '../lib/types';
+import { DEFAULT_CARD_GROUP_TYPES } from '../lib/constants';
+import { SF_ErrorCodes } from '../../../../core/Errors/constants';
+import { BinLookupResponse, BinLookupResponseRaw, BrandObject } from '../../../Card/types';
+import type CardElement from '../../../Card';
+import type CustomCardElement from '../../../CustomCard';
+import { TxVariants } from '../../../tx-variants';
+
+if (process.env.NODE_ENV === 'development') {
+    window.mockBinCount = 0; // Set to 0 to turn off mocking, 1 to turn it on
+}
+
+export const triggerBinLookUp = (element: CardElement | CustomCardElement) => {
+    let currentRequestId: string | null = null;
+
+    return (callbackObj: CardBinValueData) => {
+        // Allow way for merchant to disallow binLookup by specifically setting the prop to false
+        if (element.props.doBinLookup === false) {
+            if (element.props.onBinValue) element.props.onBinValue(callbackObj);
+            return;
+        }
+
+        // Do binLookup when encryptedBin property is present (and only if the merchant is using a clientKey)
+        if (callbackObj.encryptedBin && 'clientKey' in element.props && element.props.clientKey) {
+            // Store id of request we're about to make
+            currentRequestId = callbackObj.uuid ?? null;
+
+            void httpPost(
+                {
+                    loadingContext: element.props.loadingContext,
+                    path: `v3/bin/binLookup?token=${element.props.clientKey}`
+                },
+                {
+                    type: 'brand' in element.props ? element.props.brand : TxVariants.card,
+                    supportedBrands: element.props.brands || DEFAULT_CARD_GROUP_TYPES,
+                    encryptedBin: callbackObj.encryptedBin,
+                    requestId: callbackObj.uuid // Pass id of request
+                }
+            ).then((data: BinLookupResponseRaw) => {
+                // If response is the one we were waiting for...
+                if (data?.requestId === currentRequestId) {
+                    if (process.env.NODE_ENV === 'development') {
+                        // TODO mocking
+                        if (window.mockBinCount >= 1) {
+                            switch (window.mockBinCount) {
+                                case 1:
+                                    console.log('\n### triggerBinLookUp::mock first response:: ');
+                                    data.brands = [
+                                        {
+                                            brand: 'mc',
+                                            cvcPolicy: 'optional',
+                                            enableLuhnCheck: true,
+                                            // showExpiryDate: true, // deprecated in /binLookup v3
+                                            expiryDatePolicy: 'optional',
+                                            // panLength: 16,
+                                            supported: true,
+                                            healthcare: true
+                                        }
+                                    ];
+                                    // data.issuingCountryCode = 'KR'; // needed to mock korean_local_card
+                                    // increment to alter second response
+                                    window.mockBinCount++;
+
+                                    break;
+                                case 2:
+                                    console.log('\n### triggerBinLookUp::mock second response:: ');
+                                    // data.brands = null;
+                                    data.brands = [
+                                        {
+                                            brand: 'maestro',
+                                            cvcPolicy: 'required',
+                                            enableLuhnCheck: true,
+                                            showExpiryDate: true,
+                                            supported: true,
+                                            showSocialSecurityNumber: false,
+                                            healthcare: false
+                                            // panLength: 16
+                                        }
+                                    ];
+                                    break;
+                                default:
+                            }
+                        }
+                        // TODO end
+                    }
+
+                    if (data.brands?.length) {
+                        const mappedResponse = data.brands.reduce(
+                            (acc, item) => {
+                                // All brand strings end up in the detectedBrands array
+                                acc.detectedBrands.push(item.brand);
+                                // Also add the paymentMethodVariants (more granular description of the txvariant)
+                                acc.paymentMethodVariants.push(item.paymentMethodVariant);
+                                // Add healthcare to the healthcare array, keyed by brand (only when the field is present)
+                                if (item.healthcare !== undefined) {
+                                    acc.healthcare.push({ [item.brand]: item.healthcare });
+                                }
+
+                                // Add supported brand objects to the supportedBrands array
+                                if (item.supported === true) {
+                                    acc.supportedBrands.push(item);
+                                    return acc;
+                                }
+
+                                return acc;
+                            },
+                            {
+                                supportedBrands: [] as BrandObject[],
+                                detectedBrands: [] as string[],
+                                paymentMethodVariants: [] as (string | undefined)[],
+                                healthcare: [] as Record<string, boolean>[]
+                            }
+                        );
+
+                        const hasHealthcareData = mappedResponse.healthcare.length > 0;
+
+                        /**
+                         * supportedBrands = merchant supports this brand(s); we have detected the card number to be of this brand(s); carry on!
+                         */
+                        if (mappedResponse.supportedBrands.length) {
+                            // ...call processBinLookupResponse with, a simplified, response object if it contains at least one supported brand
+                            element.processBinLookupResponse({
+                                issuingCountryCode: data.issuingCountryCode ?? '',
+                                supportedBrands: mappedResponse.supportedBrands,
+                                ...(data.showSocialSecurityNumber ? { showSocialSecurityNumber: data.showSocialSecurityNumber } : {})
+                            });
+
+                            // Inform merchant of the result
+                            element.onBinLookup({
+                                type: callbackObj.type,
+                                detectedBrands: mappedResponse.detectedBrands,
+                                // supportedBrands contains the subset of this.props.brands that matches the card number that the shopper has typed
+                                supportedBrands: mappedResponse.supportedBrands.map(item => item.brand),
+                                paymentMethodVariants: mappedResponse.paymentMethodVariants,
+                                supportedBrandsRaw: mappedResponse.supportedBrands, // full supportedBrands data (for customCard comp)
+                                brands: element.props.brands || DEFAULT_CARD_GROUP_TYPES,
+                                issuingCountryCode: data.issuingCountryCode,
+                                ...(hasHealthcareData && { healthcare: mappedResponse.healthcare })
+                            });
+
+                            return;
+                        }
+
+                        /**
+                         * detectedBrands = no brands the merchant supports were found; what we did detect the shopper to be entering was this brand;
+                         * error!
+                         */
+                        if (mappedResponse.detectedBrands.length) {
+                            const errObj: CardErrorData = {
+                                type: 'card',
+                                fieldType: 'encryptedCardNumber',
+                                error: SF_ErrorCodes.ERROR_MSG_UNSUPPORTED_CARD_ENTERED,
+                                detectedBrands: mappedResponse.detectedBrands
+                            };
+                            element.handleUnsupportedCard(errObj);
+
+                            // Inform merchant of the result
+                            element.onBinLookup({
+                                type: callbackObj.type,
+                                detectedBrands: mappedResponse.detectedBrands,
+                                supportedBrands: null,
+                                paymentMethodVariants: mappedResponse.paymentMethodVariants,
+                                ...(hasHealthcareData && { healthcare: mappedResponse.healthcare }),
+                                brands: element.props.brands || DEFAULT_CARD_GROUP_TYPES
+                            });
+
+                            return;
+                        }
+                    } else {
+                        /**
+                         *  BIN not in DB (a failed lookup will just contain a requestId)
+                         */
+                        element.onBinLookup({
+                            type: callbackObj.type,
+                            detectedBrands: null,
+                            supportedBrands: null,
+                            brands: element.props.brands || DEFAULT_CARD_GROUP_TYPES
+                        });
+
+                        // Reset the UI and let the native, regex branding happen (for the generic card)
+                        // For a single-branded card we need to pass a boolean to prompt resetting the brand logo to the 'base' type
+                        element.processBinLookupResponse({} as BinLookupResponse, true);
+                    }
+                } else if (!data?.requestId) {
+                    // Some other kind of error on the backend
+                    // @ts-ignore: update this parameter type to match Adyen's error type
+                    element.props.onError?.(data || { errorType: 'binLookup', message: 'unknownError' });
+                }
+                // Else - response with wrong requestId
+            });
+        } else if (currentRequestId) {
+            /**
+             * If onBinValue callback is called AND we have been doing binLookup BUT passed object doesn't have an encryptedBin property
+             * - then THE NUMBER OF DIGITS IN NUMBER FIELD HAS DROPPED BELOW THRESHOLD for BIN lookup - so reset the UI
+             */
+            element.processBinLookupResponse(null, true);
+
+            currentRequestId = null; // Ignore any pending responses
+
+            // Reset any errors
+            const errObj: CardErrorData = {
+                type: 'card',
+                fieldType: 'encryptedCardNumber',
+                error: ''
+            };
+            element.handleUnsupportedCard(errObj);
+
+            // CustomCard needs this to reset the UI
+            element.onBinLookup({
+                isReset: true
+            });
+        }
+
+        if (element.props.onBinValue) element.props.onBinValue(callbackObj);
+    };
+};

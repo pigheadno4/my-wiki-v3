@@ -1,5 +1,17 @@
 # Wiki Log
 
+## [2026-08-09] ingest | GitHub Adyen/adyen-web `6.42.0`
+
+- Delta-ingested `@adyen/adyen-web@6.42.0` from work item `github-b307f27febbff4df8e80` at exact SHA `1e157f8bc62b9519d68becedd9c1267180810e77`.
+- Added Drop-in payment-list analytics, partial US billing-address validation, and internal 3DS2 iframe permissions for WebAuthn and SPC while preserving both 6.41.x layers.
+- Updated the cumulative source, package-qualified changelog, Adyen company summary, provider index, and provider log without changing source count.
+
+## [2026-08-09] ingest | GitHub Adyen/adyen-web `6.41.1`
+
+- Delta-ingested `@adyen/adyen-web@6.41.1` from work item `github-60b7545cc0ad3999d886` at exact SHA `c98ea8a7fe3c504075509755a0eda2264042d076`.
+- Preserved the `6.41.0` baseline and added OpenInvoice focus isolation, Enter-key submission protection, IME address-input handling, internal BIN lookup typing, and dependency updates.
+- Updated the cumulative source, package-qualified changelog, Adyen company summary, provider index, and provider log without changing source count.
+
 ## [2026-08-08] ingest | GitHub stripe/stripe-node `22.4.0`
 
 - Full-ingested work item `github-e923ffd86b6fd634a620` at exact SHA `57626dcdfb94164fc9f112dfaa3c57aec5130e4f` and migrated the legacy root source into the Stripe/GitHub hierarchy.

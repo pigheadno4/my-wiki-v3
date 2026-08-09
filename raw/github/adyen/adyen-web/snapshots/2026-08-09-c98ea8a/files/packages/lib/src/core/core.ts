@@ -1,0 +1,454 @@
+import Language from '../language';
+import UIElement from '../components/internal/UIElement/UIElement';
+import RiskModule from './RiskModule';
+import PaymentMethods from './ProcessResponse/PaymentMethods';
+import getComponentForAction from './ProcessResponse/PaymentAction';
+import Analytics from './Analytics';
+import { assertConfigurationPropertiesAreValid, processGlobalOptions } from './utils';
+import Session from './CheckoutSession';
+import { hasOwnProperty } from '../utils/hasOwnProperty';
+import { Resources } from './Context/Resources';
+import { SRPanel } from './Errors/SRPanel';
+import registry, { NewableComponent } from './core.registry';
+import { cleanupFinalResult, sanitizeResponse, verifyPaymentDidNotFail } from '../components/internal/UIElement/utils';
+import AdyenCheckoutError, { IMPLEMENTATION_ERROR } from './Errors/AdyenCheckoutError';
+import { THREEDS2_FULL } from '../components/ThreeDS2/constants';
+import { defaultProps } from './core.defaultProps';
+import { resolveEnvironments } from './Environment';
+import { LIBRARY_BUNDLE_TYPE, LIBRARY_VERSION } from './config';
+
+import type { PaymentAction, PaymentAmount, PaymentResponseData } from '../types/global-types';
+import type { CoreConfiguration, ICore, AdditionalDetailsData, CoreModules } from './types';
+import type { UIElementProps } from '../components/internal/UIElement/types';
+import { AnalyticsLogEvent, LogEventType } from './Analytics/events/AnalyticsLogEvent';
+import CancelError from './Errors/CancelError';
+import { AnalyticsService } from './Analytics/AnalyticsService';
+import { AnalyticsEventQueue } from './Analytics/AnalyticsEventQueue';
+import { isAmountValid } from '../utils/amount-util';
+import { LanguageService } from '../language/LanguageService';
+
+class Core implements ICore {
+    public session?: Session;
+    public paymentMethodsResponse: PaymentMethods;
+    public modules: CoreModules;
+    public options: CoreConfiguration;
+
+    public analyticsContext: string;
+    public loadingContext: string;
+    public cdnImagesUrl: string;
+    public cdnTranslationsUrl: string;
+
+    private components: UIElement[] = [];
+
+    public static readonly metadata: { version: string; bundleType: string } = {
+        version: LIBRARY_VERSION,
+        bundleType: LIBRARY_BUNDLE_TYPE
+    };
+
+    public static readonly registry = registry;
+
+    public static setBundleType(type: string): void {
+        Core.metadata.bundleType = type;
+    }
+
+    public static register(...items: NewableComponent[]) {
+        registry.add(...items);
+    }
+
+    /**
+     * Used internally by the PaymentMethod components to auto-register themselves
+     * @internal
+     */
+    public register(...items: NewableComponent[]) {
+        registry.add(...items);
+    }
+
+    public getComponent(txVariant: string) {
+        return registry.getComponent(txVariant);
+    }
+
+    constructor(props: CoreConfiguration) {
+        assertConfigurationPropertiesAreValid(props);
+
+        this.createFromAction = this.createFromAction.bind(this);
+        this.update = this.update.bind(this);
+
+        this.setOptions({ ...defaultProps, ...props });
+
+        const { apiUrl, analyticsUrl, cdnImagesUrl, cdnTranslationsUrl } = resolveEnvironments(
+            this.options.environment,
+            this.options._environmentUrls
+        );
+
+        this.loadingContext = apiUrl;
+        this.analyticsContext = analyticsUrl;
+        this.cdnImagesUrl = cdnImagesUrl;
+        this.cdnTranslationsUrl = cdnTranslationsUrl;
+
+        this.session = this.options.session && new Session(this.options.session, this.options.clientKey, this.loadingContext);
+
+        const clientKeyType = this.options.clientKey?.substring(0, 4);
+        if ((clientKeyType === 'test' || clientKeyType === 'live') && !this.loadingContext.includes(clientKeyType)) {
+            throw new AdyenCheckoutError(
+                'IMPLEMENTATION_ERROR',
+                `Error: you are using a ${clientKeyType} clientKey against the ${this.options._environmentUrls?.api || this.options.environment} environment`
+            );
+        }
+        if (clientKeyType === 'pub.') {
+            console.debug(
+                `The value you are passing as your "clientKey" looks like an originKey (${this.options.clientKey?.substring(0, 12)}..). Although this is supported it is not the recommended way to integrate. To generate a clientKey, see the documentation (https://docs.adyen.com/development-resources/client-side-authentication/migrate-from-origin-key-to-client-key/) for more details.`
+            );
+        }
+
+        if (this.options.exposeLibraryMetadata) {
+            window['AdyenWebMetadata'] = Core.metadata;
+        }
+    }
+
+    public async initialize(): Promise<this> {
+        await this.initializeCore();
+        this.validateCoreConfiguration();
+        this.createCoreModules();
+        this.assignLocaleToCore();
+        void this.requestAnalyticsAttemptId();
+        await this.requestTranslations();
+        return this;
+    }
+
+    private async initializeCore(): Promise<this> {
+        if (this.session) {
+            return this.session
+                .setupSession(this.options)
+                .then(sessionResponse => {
+                    const { amount, shopperLocale, countryCode, paymentMethods, ...rest } = sessionResponse;
+
+                    this.setOptions({
+                        ...rest,
+                        amount: this.options.order ? this.options.order.remainingAmount : amount,
+                        locale: this.options.locale || shopperLocale,
+                        countryCode: this.options.countryCode || countryCode
+                    });
+
+                    this.createPaymentMethodsList(paymentMethods);
+
+                    return this;
+                })
+                .catch(error => {
+                    if (this.options.onError) this.options.onError(error);
+                    return Promise.reject(error);
+                });
+        }
+
+        this.createPaymentMethodsList();
+        return Promise.resolve(this);
+    }
+
+    private validateCoreConfiguration(): void {
+        // @ts-ignore This property does not exist, although merchants might be using when migrating from v5 to v6
+        if (this.options.paymentMethodsConfiguration) {
+            console.warn('WARNING:  "paymentMethodsConfiguration" is supported only by Drop-in.');
+        }
+
+        if (!this.options.countryCode) {
+            throw new AdyenCheckoutError(IMPLEMENTATION_ERROR, 'You must specify a countryCode when initializing checkout.');
+        }
+    }
+
+    /**
+     * Method used when handling redirects. It submits details using 'onAdditionalDetails' or the Sessions flow if available.
+     *
+     * @public
+     * @see {https://docs.adyen.com/online-payments/build-your-integration/?platform=Web&integration=Components&version=5.55.1#handle-the-redirect}
+     * @param details - Details object containing the redirectResult
+     */
+    public submitDetails(details: AdditionalDetailsData['data']): void {
+        let promise = null;
+
+        if (this.options.onAdditionalDetails) {
+            promise = new Promise((resolve, reject) => {
+                this.options.onAdditionalDetails({ data: details }, undefined, { resolve, reject });
+            });
+        }
+
+        if (this.session) {
+            promise = this.session.submitDetails(details).catch(error => {
+                this.options.onError?.(error);
+                return Promise.reject(error);
+            });
+        }
+
+        if (!promise) {
+            this.options.onError?.(
+                new AdyenCheckoutError(
+                    'IMPLEMENTATION_ERROR',
+                    'It can not submit the details. The callback "onAdditionalDetails" or the Session is not setup correctly.'
+                )
+            );
+            return;
+        }
+
+        promise
+            .then(sanitizeResponse)
+            .then(verifyPaymentDidNotFail)
+            .then(this.afterAdditionalDetails)
+            .then((response: PaymentResponseData) => {
+                cleanupFinalResult(response);
+                this.options.onPaymentCompleted?.(response);
+            })
+            .catch((e: PaymentResponseData | Error) => {
+                if (e instanceof CancelError) {
+                    return;
+                }
+
+                cleanupFinalResult(e as PaymentResponseData);
+                this.options.onPaymentFailed?.(e as PaymentResponseData);
+            });
+    }
+
+    private readonly afterAdditionalDetails = (response: PaymentResponseData): Promise<PaymentResponseData | Error> => {
+        /**
+         * After the user is redirected back, a request to `/details` or `/paymentDetails` will be made.
+         * Typically, the response will not include an action object, except for the case of `paybybank_pix` payment method.
+         * In terms of `paybybank_pix`, the action UIElement will be created and passed to the `afterAdditionalDetails` callback, allowing it to be mounted on the page.
+         */
+        if (this.options.afterAdditionalDetails && response?.action) {
+            const actionEle = this.createFromAction(response.action);
+            this.options.afterAdditionalDetails(actionEle);
+            return Promise.reject(new CancelError('Handled by afterAdditionalDetails'));
+        }
+        return Promise.resolve(response);
+    };
+
+    /**
+     * Instantiates a new element component ready to be mounted from an action object
+     *
+     * @param action - action defining the component with the component data
+     * @param options - options that will be merged to the global Checkout props
+     * @returns new UIElement
+     */
+    public createFromAction(action: PaymentAction, options = {}): UIElement {
+        if (!action || !action.type) {
+            if (hasOwnProperty(action, 'action') && hasOwnProperty(action, 'resultCode')) {
+                throw new Error(
+                    'createFromAction::Invalid Action - the passed action object itself has an "action" property and ' +
+                        'a "resultCode": have you passed in the whole response object by mistake?'
+                );
+            }
+            throw new Error('createFromAction::Invalid Action - the passed action object does not have a "type" property');
+        }
+
+        if (action.type) {
+            // 'threeDS2' OR 'qrCode', 'voucher', 'redirect', 'await', 'bankTransfer`
+            const component = action.type === THREEDS2_FULL ? `${action.type}${action.subtype}` : action.paymentMethodType;
+
+            const event = new AnalyticsLogEvent({
+                type: LogEventType.action,
+                subType: AnalyticsLogEvent.getSubtypeFromActionType(action.type),
+                message: `${component} action was handled by the SDK`,
+                component
+            });
+            this.modules.analytics.sendAnalytics(event);
+
+            const props = {
+                ...this.getCorePropsForComponent(),
+                ...options
+            };
+
+            return getComponentForAction(this, registry, action, props);
+        }
+
+        return this.handleCreateError();
+    }
+
+    /**
+     * Updates global configurations, resets the internal state and remounts each element.
+     *
+     * @param props - props to update
+     * @param options - Can be used to avoid remounting the elements
+     * @returns this - the Core instance
+     */
+    public update(props: Partial<Omit<CoreConfiguration, 'session'>> = {}, { shouldReinitializeCheckout = true } = {}): Promise<this> {
+        if (shouldReinitializeCheckout) {
+            this.setOptions(props);
+
+            return this.initialize().then(() => {
+                this.components.forEach(component => {
+                    // We update only with the new options that have been received
+                    const newProps: Partial<UIElementProps> = {
+                        ...(props.order?.remainingAmount ? { amount: props.order.remainingAmount } : { amount: this.options.amount }),
+                        ...(this.session && { session: this.session }),
+                        ...props
+                    };
+                    component.update(newProps);
+                });
+                return this;
+            });
+        }
+
+        const { amount, secondaryAmount } = props;
+
+        if (amount || secondaryAmount) {
+            this.triggerAmountUpdate(amount, secondaryAmount);
+        }
+
+        return Promise.resolve(this);
+    }
+
+    /**
+     * Validates and propagates amount updates to all mounted components.
+     *
+     * @param amount - Primary payment amount object (required)
+     * @param secondaryAmount - Optional secondary amount for display purposes (e.g., converted currency)
+     * @internal
+     */
+    private triggerAmountUpdate(amount: PaymentAmount, secondaryAmount?: PaymentAmount): void {
+        if (!isAmountValid(amount)) {
+            console.warn('Core update(): Update canceled. Invalid amount object');
+            return;
+        }
+
+        if (secondaryAmount && !isAmountValid(secondaryAmount)) {
+            console.warn('Core update(): Update canceled. Invalid secondary amount object');
+            return;
+        }
+
+        this.setOptions({
+            amount,
+            ...(secondaryAmount && { secondaryAmount })
+        });
+
+        this.components.forEach(component => {
+            component.updateAmount(amount, secondaryAmount);
+        });
+    }
+
+    /**
+     * Remove the reference of a component
+     * @param component - reference to the component to be removed
+     * @returns this - the element instance
+     * // TODO: Do we need this?
+     */
+    public remove = (component): this => {
+        this.components = this.components.filter(c => c._id !== component._id);
+        component.unmount();
+
+        return this;
+    };
+
+    /**
+     * @internal
+     * Create or update the config object passed when AdyenCheckout is initialised (environment, clientKey, etc...)
+     */
+    private setOptions = (options: CoreConfiguration): void => {
+        this.options = {
+            ...this.options,
+            ...options,
+            locale: options?.locale || this.options?.locale,
+            // Make environment lowercase to ensure consistency
+            environment: String.prototype.toLowerCase.apply(options?.environment || this.options?.environment)
+        };
+    };
+
+    /**
+     * @internal
+     * @returns props for a new UIElement
+     */
+    public getCorePropsForComponent(): any {
+        const globalOptions = processGlobalOptions(this.options);
+
+        return {
+            ...globalOptions,
+            core: this,
+            i18n: this.modules.i18n,
+            modules: this.modules,
+            session: this.session,
+            loadingContext: this.loadingContext,
+            cdnContext: this.cdnImagesUrl,
+            createFromAction: this.createFromAction
+        };
+    }
+
+    public storeElementReference(element: UIElement) {
+        if (element) {
+            this.components.push(element);
+        }
+    }
+
+    /**
+     * @internal
+     */
+    private handleCreateError(paymentMethod?): never {
+        const paymentMethodName = paymentMethod?.name ?? 'The passed payment method';
+        const errorMessage = paymentMethod
+            ? `${paymentMethodName} is not a valid Checkout Component. What was passed as a txVariant was: ${JSON.stringify(
+                  paymentMethod
+              )}. Check if this payment method is configured in the Backoffice or if the txVariant is a valid one`
+            : 'No Payment Method component was passed';
+
+        throw new Error(errorMessage);
+    }
+
+    private createPaymentMethodsList(paymentMethodsResponse?: PaymentMethods): void {
+        this.paymentMethodsResponse = new PaymentMethods(this.options.paymentMethodsResponse || paymentMethodsResponse, this.options);
+    }
+
+    private createCoreModules(): void {
+        if (this.modules) {
+            if (process.env.NODE_ENV === 'development') {
+                console.warn('Core: Core modules are already created.');
+            }
+            return;
+        }
+
+        this.modules = Object.freeze({
+            risk: new RiskModule(this, { ...this.options, loadingContext: this.loadingContext }),
+            analytics: new Analytics({
+                eventQueue: new AnalyticsEventQueue(),
+                service: new AnalyticsService({
+                    analyticsContext: this.analyticsContext,
+                    clientKey: this.options.clientKey
+                }),
+                enabled: this.options.analytics?.enabled,
+                analyticsData: this.options.analytics?.analyticsData
+            }),
+            resources: new Resources(this.cdnImagesUrl),
+            i18n: new Language({
+                locale: this.options.locale,
+                customTranslations: this.options.translations,
+                service: new LanguageService({
+                    cdnUrl: this.cdnTranslationsUrl,
+                    sdkVersion: Core.metadata.version
+                }),
+                onError: this.options?.onError
+            }),
+            srPanel: new SRPanel(this, { ...this.options.srConfig })
+        });
+    }
+
+    /**
+     * Retrieve the parsed locale from the i18n module and assigns it to the core options.
+     */
+    private assignLocaleToCore(): void {
+        this.options.locale = this.modules.i18n.locale;
+    }
+
+    /**
+     * Request translations to the CDN. If an error occurs, it will be logged to the console in development mode.
+     */
+    private async requestTranslations(): Promise<void> {
+        try {
+            await this.modules.i18n.requestTranslations();
+        } catch (error: unknown) {
+            console.warn('Core - requestTranslations(): Something went wrong.', error);
+        }
+    }
+
+    private async requestAnalyticsAttemptId(): Promise<void> {
+        await this.modules.analytics.setUp({
+            locale: this.options.locale,
+            ...(this.session?.id && { sessionId: this.session.id })
+        });
+    }
+}
+
+export default Core;

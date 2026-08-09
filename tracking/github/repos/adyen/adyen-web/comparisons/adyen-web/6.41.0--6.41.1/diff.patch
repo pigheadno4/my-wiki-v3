@@ -1,0 +1,1958 @@
+diff --git a/packages/lib/CHANGELOG.md b/packages/lib/CHANGELOG.md
+index 0ff7efc1..376214d6 100644
+--- a/packages/lib/CHANGELOG.md
++++ b/packages/lib/CHANGELOG.md
+@@ -1,5 +1,17 @@
+ # @adyen/adyen-web
+ 
++## 6.41.1
++
++### Patch Changes
++
++- Fixed: Internal types for triggerBinLookup and CardElement ([#4089](https://github.com/Adyen/adyen-web/pull/4089))
++
++- Fixed: focus moving to the wrong component when multiple OpenInvoice-based components (e.g. AfterPay, RatePay, FacilyPay, Atome) are rendered on the same page and a validation error occurs ([#4109](https://github.com/Adyen/adyen-web/pull/4109))
++
++- Fixed: Prevent payment submission when press enter inside active element (select, dualBrandSelector) ([#4114](https://github.com/Adyen/adyen-web/pull/4114))
++
++- Fixed: Duplicate characters when typing in address fields using an IME ([#4095](https://github.com/Adyen/adyen-web/pull/4095))
++
+ ## 6.41.0
+ 
+ ### Minor Changes
+diff --git a/packages/lib/package.json b/packages/lib/package.json
+index 456b9d7b..de0cff55 100644
+--- a/packages/lib/package.json
++++ b/packages/lib/package.json
+@@ -1,6 +1,6 @@
+ {
+     "name": "@adyen/adyen-web",
+-    "version": "6.41.0",
++    "version": "6.41.1",
+     "license": "MIT",
+     "homepage": "https://docs.adyen.com/checkout",
+     "type": "module",
+@@ -92,54 +92,54 @@
+         "@rollup/plugin-replace": "6.0.3",
+         "@rollup/plugin-terser": "1.0.0",
+         "@size-limit/preset-big-lib": "12.1.0",
+-        "@storybook/addon-a11y": "10.4.3",
+-        "@storybook/addon-docs": "10.4.3",
+-        "@storybook/preact-vite": "10.4.3",
+-        "@swc/core": "1.15.40",
++        "@storybook/addon-a11y": "10.4.6",
++        "@storybook/addon-docs": "10.4.6",
++        "@storybook/preact-vite": "10.4.6",
++        "@swc/core": "1.15.43",
+         "@testing-library/jest-dom": "6.9.1",
+         "@testing-library/preact": "3.2.4",
+         "@testing-library/preact-hooks": "1.1.0",
+         "@testing-library/user-event": "14.6.1",
+         "@types/jest": "30.0.0",
+-        "autoprefixer": "10.5.0",
+-        "cssnano": "8.0.1",
++        "autoprefixer": "10.5.2",
++        "cssnano": "8.0.2",
+         "dotenv": "17.4.2",
+-        "eslint": "10.4.1",
++        "eslint": "10.6.0",
+         "eslint-plugin-import": "2.32.0",
+         "eslint-plugin-jsx-a11y": "6.10.2",
+         "eslint-plugin-react": "7.37.5",
+-        "eslint-plugin-storybook": "10.4.3",
++        "eslint-plugin-storybook": "10.4.6",
+         "eslint-plugin-testing-library": "7.16.2",
+-        "globals": "17.6.0",
++        "globals": "17.7.0",
+         "jest": "30.4.2",
+         "jest-environment-jsdom": "30.4.1",
+         "jest-fixed-jsdom": "^0.0.11",
+         "jest-mock-extended": "4.0.1",
+         "msw": "2.14.6",
+         "msw-storybook-addon": "2.0.7",
+-        "postcss": "8.5.15",
+-        "rollup": "4.61.1",
++        "postcss": "8.5.16",
++        "rollup": "4.62.2",
+         "rollup-plugin-dts": "6.4.1",
+         "rollup-plugin-postcss": "4.0.2",
+         "rollup-plugin-stylelint": "1.0.0",
+         "rollup-plugin-swc3": "0.12.1",
+-        "sass": "1.100.0",
++        "sass": "1.101.0",
+         "size-limit": "12.1.0",
+-        "storybook": "10.4.3",
+-        "stylelint": "17.13.0",
++        "storybook": "10.4.6",
++        "stylelint": "17.14.0",
+         "stylelint-config-standard-scss": "17.0.0",
+         "ts-jest": "29.4.11",
+         "tslib": "2.8.1",
+         "typescript": "6.0.3",
+-        "typescript-eslint": "8.61.0",
++        "typescript-eslint": "8.62.1",
+         "vite": "6.4.3",
+-        "vite-plugin-stylelint": "6.1.0",
++        "vite-plugin-stylelint": "6.3.0",
+         "whatwg-fetch": "3.6.20"
+     },
+     "dependencies": {
+-        "@paypal/paypal-js": "10.0.0",
++        "@paypal/paypal-js": "10.0.2",
+         "@types/applepayjs": "14.0.9",
+-        "@types/googlepay": "0.7.10",
++        "@types/googlepay": "0.7.11",
+         "classnames": "2.5.1",
+         "preact": "10.29.2"
+     },
+diff --git a/packages/lib/src/components/AfterPay/AfterPay.test.ts b/packages/lib/src/components/AfterPay/AfterPay.test.ts
+index fd303865..3dafa6af 100644
+--- a/packages/lib/src/components/AfterPay/AfterPay.test.ts
++++ b/packages/lib/src/components/AfterPay/AfterPay.test.ts
+@@ -378,4 +378,38 @@ describe('AfterPay', () => {
+         expect(screen.getByText('Enter the city')).toBeInTheDocument();
+         expect(within(<HTMLElement>consentCheckboxContainer).getByAltText('Error')).toBeInTheDocument();
+     });
++
++    test('should focus a field within the submitted instance (not another instance) when multiple OpenInvoice-based components are rendered on the same page', async () => {
++        const user = userEvent.setup();
++
++        const buildAfterPay = () =>
++            new AfterPay(setupCoreMock(), {
++                countryCode: 'NL',
++                modules: { resources: global.resources },
++                i18n: global.i18n,
++                onSubmit: jest.fn(),
++                loadingContext: 'https://checkoutshopper-live.adyen.com/checkoutshopper/'
++            });
++
++        // Render two independent AfterPay instances on the same page, as can happen when a merchant shows
++        // multiple OpenInvoice-based payment methods (AfterPay, RatePay, FacilyPay, Atome, ...) at once.
++        render(buildAfterPay().render());
++        render(buildAfterPay().render());
++
++        const payButtons = screen.getAllByRole('button', { name: 'Confirm purchase' });
++        expect(payButtons).toHaveLength(2);
++
++        // Submit the SECOND instance with an empty form, triggering validation errors on it
++        await user.click(payButtons[1]);
++
++        const firstNameInputs = screen.getAllByLabelText('First name');
++        expect(firstNameInputs).toHaveLength(2);
++
++        // Focus must move to the first invalid field of the instance that was actually submitted (the second
++        // one), not to the first instance rendered on the page.
++        await waitFor(() => {
++            expect(firstNameInputs[1]).toHaveFocus();
++        });
++        expect(firstNameInputs[0]).not.toHaveFocus();
++    });
+ });
+diff --git a/packages/lib/src/components/Card/Card.tsx b/packages/lib/src/components/Card/Card.tsx
+index 49814ea8..45fbbbb6 100644
+--- a/packages/lib/src/components/Card/Card.tsx
++++ b/packages/lib/src/components/Card/Card.tsx
+@@ -2,7 +2,7 @@ import { h } from 'preact';
+ import CardInput from './components/CardInput';
+ import collectBrowserInfo from '../../utils/browserInfo';
+ import { BinLookupResponse, CardElementData, CardConfiguration } from './types';
+-import triggerBinLookUp from '../internal/SecuredFields/binLookup/triggerBinLookUp';
++import { triggerBinLookUp } from '../internal/SecuredFields/binLookup/triggerBinLookUp';
+ import { CardBinLookupData, CardConfigSuccessData, CardFocusData } from '../internal/SecuredFields/lib/types';
+ import { fieldTypeToSnakeCase, isSecuredField } from '../internal/SecuredFields/utils';
+ import { notFalsy, reject } from '../../utils/commonUtils';
+@@ -12,7 +12,7 @@ import { ClickToPayCheckoutPayload, IClickToPayService } from '../internal/Click
+ import ClickToPayWrapper from './components/ClickToPayWrapper';
+ import { ComponentFocusObject, PaymentMethodBrand } from '../../types/global-types';
+ import { TxVariants } from '../tx-variants';
+-import type { UIElementStatus } from '../internal/UIElement/types';
++import type { ComponentMethodsRef, UIElementStatus } from '../internal/UIElement/types';
+ import UIElement from '../internal/UIElement';
+ import PayButton from '../internal/PayButton';
+ import type { ICore } from '../../core/types';
+@@ -30,7 +30,7 @@ export class CardElement extends UIElement<CardConfiguration> {
+     /**
+      * Reference to the 'ClickToPayComponent'
+      */
+-    private clickToPayRef = null;
++    private clickToPayRef: ComponentMethodsRef | null = null;
+ 
+     constructor(checkout: ICore, props?: CardConfiguration) {
+         super(checkout, props);
+@@ -60,12 +60,12 @@ export class CardElement extends UIElement<CardConfiguration> {
+             this.componentRef.setStatus(status, props);
+         }
+         if (this.clickToPayRef?.setStatus) {
+-            this.clickToPayRef.setStatus(status, props);
++            this.clickToPayRef.setStatus(status);
+         }
+         return this;
+     }
+ 
+-    private setClickToPayRef = ref => {
++    private readonly setClickToPayRef = (ref: ComponentMethodsRef) => {
+         this.clickToPayRef = ref;
+     };
+ 
+@@ -220,7 +220,7 @@ export class CardElement extends UIElement<CardConfiguration> {
+         this.props.onBrand?.(event);
+     };
+ 
+-    processBinLookupResponse(binLookupResponse: BinLookupResponse, isReset = false) {
++    processBinLookupResponse(binLookupResponse: BinLookupResponse | null, isReset = false) {
+         if (this.componentRef?.processBinLookupResponse) this.componentRef.processBinLookupResponse(binLookupResponse, isReset);
+         return this;
+     }
+@@ -230,7 +230,7 @@ export class CardElement extends UIElement<CardConfiguration> {
+         return this;
+     }
+ 
+-    private handleClickToPaySubmit = (payload: ClickToPayCheckoutPayload) => {
++    private readonly handleClickToPaySubmit = (payload: ClickToPayCheckoutPayload) => {
+         this.setState({ data: { ...payload }, valid: {}, errors: {}, isValid: true });
+         this.submit();
+     };
+@@ -243,14 +243,14 @@ export class CardElement extends UIElement<CardConfiguration> {
+         }
+     }
+ 
+-    private onConfigSuccess = (obj: CardConfigSuccessData) => {
++    private readonly onConfigSuccess = (obj: CardConfigSuccessData) => {
+         const event = new AnalyticsInfoEvent({ component: this.type, type: InfoEventType.configured });
+         this.submitAnalytics(event);
+ 
+         this.props.onConfigSuccess?.(obj);
+     };
+ 
+-    private onFocus = (obj: ComponentFocusObject) => {
++    private readonly onFocus = (obj: ComponentFocusObject) => {
+         const event = new AnalyticsInfoEvent({
+             component: this.type,
+             type: InfoEventType.focus,
+@@ -266,7 +266,7 @@ export class CardElement extends UIElement<CardConfiguration> {
+         }
+     };
+ 
+-    private onBlur = (obj: ComponentFocusObject) => {
++    private readonly onBlur = (obj: ComponentFocusObject) => {
+         const event = new AnalyticsInfoEvent({
+             component: this.type,
+             type: InfoEventType.unfocus,
+@@ -365,7 +365,7 @@ export class CardElement extends UIElement<CardConfiguration> {
+                 onSubmitAnalytics={this.submitAnalytics}
+                 onChange={this.setState}
+                 onSubmit={this.submit}
+-                handleKeyDown={this.handleKeyDown}
++                handleKeyPress={this.handleKeyPress}
+                 payButton={this.payButton}
+                 onBrand={this.onBrand}
+                 onBinValue={this.onBinValue}
+diff --git a/packages/lib/src/components/Card/components/CardInput/types.ts b/packages/lib/src/components/Card/components/CardInput/types.ts
+index 166527ae..90398547 100644
+--- a/packages/lib/src/components/Card/components/CardInput/types.ts
++++ b/packages/lib/src/components/Card/components/CardInput/types.ts
+@@ -128,7 +128,7 @@ export interface CardInputProps {
+     onFocus?: (e) => void;
+     onLoad?: (o: CardLoadData) => void;
+     onSubmitAnalytics: (event: AbstractAnalyticsEvent) => void;
+-    handleKeyDown?: (event: KeyboardEvent) => void;
++    handleKeyPress?: (obj: KeyboardEvent) => void;
+     onAddressLookup?: OnAddressLookupType;
+     onAddressSelected?: OnAddressSelectedType;
+     addressSearchDebounceMs?: number;
+diff --git a/packages/lib/src/components/Card/components/CardInput/utils.ts b/packages/lib/src/components/Card/components/CardInput/utils.ts
+index 518f7858..6c17d969 100644
+--- a/packages/lib/src/components/Card/components/CardInput/utils.ts
++++ b/packages/lib/src/components/Card/components/CardInput/utils.ts
+@@ -160,7 +160,7 @@ export const extractPropsForSFP = (props: CardInputProps): Pick<SFPProps, 'clien
+         onAutoComplete: props.onAutoComplete,
+         onBinValue: props.onBinValue,
+         onConfigSuccess: props.onConfigSuccess,
+-        handleKeyDown: props.handleKeyDown,
++        handleKeyPress: props.handleKeyPress,
+         onError: props.onError,
+         onFieldValid: props.onFieldValid,
+         onLoad: props.onLoad,
+diff --git a/packages/lib/src/components/ClickToPay/ClickToPay.test.ts b/packages/lib/src/components/ClickToPay/ClickToPay.test.ts
+index b332db73..53154174 100644
+--- a/packages/lib/src/components/ClickToPay/ClickToPay.test.ts
++++ b/packages/lib/src/components/ClickToPay/ClickToPay.test.ts
+@@ -104,7 +104,7 @@ test('should reject isAvailable if shopper account is not found', async () => {
+     await expect(element.isAvailable()).rejects.toBeFalsy();
+ });
+ 
+-describe('Click to Pay: ENTER keydown should perform an action only within the CtP Component and should not propagate the event up to UIElement', () => {
++describe('Click to Pay: ENTER keypress should perform an action only within the CtP Component and should not propagate the event up to UIElement', () => {
+     test('[Login form] should trigger shopper email lookup when ENTER key is pressed', async () => {
+         // It's not possible to wait for onChange because it's not called.
+         // Hence, add some delay between individual keystrokes, which yields to the event loop and allows pending state updates to be processed.
+diff --git a/packages/lib/src/components/CustomCard/CustomCard.tsx b/packages/lib/src/components/CustomCard/CustomCard.tsx
+index f40d7fe2..26dc6f71 100644
+--- a/packages/lib/src/components/CustomCard/CustomCard.tsx
++++ b/packages/lib/src/components/CustomCard/CustomCard.tsx
+@@ -2,7 +2,7 @@ import { h } from 'preact';
+ import UIElement from '../internal/UIElement';
+ import CustomCardInput from './CustomCardInput';
+ import collectBrowserInfo from '../../utils/browserInfo';
+-import triggerBinLookUp from '../internal/SecuredFields/binLookup/triggerBinLookUp';
++import { triggerBinLookUp } from '../internal/SecuredFields/binLookup/triggerBinLookUp';
+ import { CardBinLookupData, CardFocusData } from '../internal/SecuredFields/lib/types';
+ import { BrandObject } from '../Card/types';
+ import { getCardImageUrl, fieldTypeToSnakeCase } from '../internal/SecuredFields/utils';
+@@ -140,7 +140,7 @@ export class CustomCard extends UIElement<CustomCardConfiguration> {
+                 }}
+                 {...this.props}
+                 {...this.state}
+-                handleKeyDown={this.handleKeyDown}
++                handleKeyPress={this.handleKeyPress}
+                 rootNode={this._node}
+                 onChange={this.setState}
+                 onBinValue={this.onBinValue}
+diff --git a/packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx b/packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx
+index 8384e8ee..38942c81 100644
+--- a/packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx
++++ b/packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx
+@@ -34,7 +34,7 @@ interface SecuredFieldsProps {
+     onConfigSuccess?: () => {};
+     onChange: (data) => void;
+     onSubmitAnalytics?: (event: AbstractAnalyticsEvent) => void;
+-    handleKeyDown?: (event: KeyboardEvent) => void;
++    handleKeyPress?: (obj: KeyboardEvent) => void;
+     onError?: () => {};
+     onFieldValid?: () => {};
+     onFocus?: (e) => {};
+@@ -172,6 +172,7 @@ const extractPropsForSFP = (props: SecuredFieldsProps) => {
+         brandsConfiguration: props.brandsConfiguration,
+         clientKey: props.clientKey,
+         forceCompat: props.forceCompat,
++        // countryCode: props.countryCode, // only used for korean cards when koreanAuthenticationRequired is true
+         i18n: props.i18n,
+         implementationType: props.implementationType,
+         keypadFix: props.keypadFix,
+@@ -184,12 +185,14 @@ const extractPropsForSFP = (props: SecuredFieldsProps) => {
+         onAutoComplete: props.onAutoComplete,
+         onBinValue: props.onBinValue,
+         onBrand: props.onBrand,
++        // onChange // set directly
+         onConfigSuccess: props.onConfigSuccess,
+-        handleKeyDown: props.handleKeyDown,
++        handleKeyPress: props.handleKeyPress,
+         onError: props.onError,
+         onFieldValid: props.onFieldValid,
+         onFocus: props.onFocus,
+         onLoad: props.onLoad,
++        // render // set directly
+         rootNode: props.rootNode,
+         showWarnings: props.showWarnings,
+         styles: props.styles,
+diff --git a/packages/lib/src/components/Dropin/Dropin.test.ts b/packages/lib/src/components/Dropin/Dropin.test.ts
+index 842d220a..05db46e1 100644
+--- a/packages/lib/src/components/Dropin/Dropin.test.ts
++++ b/packages/lib/src/components/Dropin/Dropin.test.ts
+@@ -432,7 +432,7 @@ describe('Dropin', () => {
+             await waitFor(() => expect(screen.getByRole('button', { name: 'Continue to AliPay' })).toBeVisible());
+ 
+             const alipayHeader = screen.getByText('AliPay');
+-            fireEvent.keyDown(alipayHeader, { key: 'Enter', code: 'Enter', charCode: 13 });
++            fireEvent.keyPress(alipayHeader, { key: 'Enter', code: 'Enter', charCode: 13 });
+ 
+             expect(onEnterKeyPressedMock).toHaveBeenCalledTimes(1);
+         });
+diff --git a/packages/lib/src/components/Dropin/Dropin.tsx b/packages/lib/src/components/Dropin/Dropin.tsx
+index 0f57bf42..7e1b482f 100644
+--- a/packages/lib/src/components/Dropin/Dropin.tsx
++++ b/packages/lib/src/components/Dropin/Dropin.tsx
+@@ -1,4 +1,4 @@
+-import { h, TargetedKeyboardEvent } from 'preact';
++import { h } from 'preact';
+ import UIElement from '../internal/UIElement/UIElement';
+ import defaultProps from './defaultProps';
+ import DropinComponent from '../../components/Dropin/components/DropinComponent';
+@@ -234,14 +234,14 @@ class DropinElement extends UIElement<DropinConfiguration> implements IDropin {
+         this.dropinRef.closeActivePaymentMethod();
+     }
+ 
+-    protected handleKeyDown(e: TargetedKeyboardEvent<HTMLInputElement> | KeyboardEvent) {
++    protected handleKeyPress(e: h.JSX.TargetedKeyboardEvent<HTMLInputElement> | KeyboardEvent) {
+         if (e.key === 'Enter' || e.code === 'Enter') {
+             // If the active element has role="radio", we're on a header in the PMList, in which case we don't want to validate the form, or, prevent the default behaviour
+             const isPMHeader = document?.activeElement?.getAttribute('role') === 'radio';
+             if (isPMHeader) {
+                 return;
+             }
+-            super.handleKeyDown(e);
++            super.handleKeyPress(e);
+         }
+     }
+ 
+diff --git a/packages/lib/src/components/Dropin/components/PaymentMethod/DisableOneClickConfirmation.tsx b/packages/lib/src/components/Dropin/components/PaymentMethod/DisableOneClickConfirmation.tsx
+index e50ee3bc..4ee3c0e5 100644
+--- a/packages/lib/src/components/Dropin/components/PaymentMethod/DisableOneClickConfirmation.tsx
++++ b/packages/lib/src/components/Dropin/components/PaymentMethod/DisableOneClickConfirmation.tsx
+@@ -28,6 +28,7 @@ const DisableOneClickConfirmation = ({ id, open, onDisable, onCancel }) => {
+                         )}
+                         disabled={!open}
+                         onClick={onDisable}
++                        onKeyPress={stopPropagationForActionKeys}
+                         onKeyDown={stopPropagationForActionKeys}
+                     >
+                         {i18n.get('storedPaymentMethod.disable.confirmButton')}
+@@ -41,6 +42,7 @@ const DisableOneClickConfirmation = ({ id, open, onDisable, onCancel }) => {
+                         )}
+                         disabled={!open}
+                         onClick={onCancel}
++                        onKeyPress={stopPropagationForActionKeys}
+                         onKeyDown={stopPropagationForActionKeys}
+                     >
+                         {i18n.get('storedPaymentMethod.disable.cancelButton')}
+diff --git a/packages/lib/src/components/Dropin/components/PaymentMethod/OrderPaymentMethods.tsx b/packages/lib/src/components/Dropin/components/PaymentMethod/OrderPaymentMethods.tsx
+index 51ef0d32..a1a70dd3 100644
+--- a/packages/lib/src/components/Dropin/components/PaymentMethod/OrderPaymentMethods.tsx
++++ b/packages/lib/src/components/Dropin/components/PaymentMethod/OrderPaymentMethods.tsx
+@@ -58,6 +58,7 @@ export const OrderPaymentMethods = ({ order, orderStatus, onOrderCancel, brandLo
+                                             : undefined
+                                     }
+                                     label={i18n.get('storedPaymentMethod.disable.button')}
++                                    onKeyPress={stopPropagationForActionKeys}
+                                     onKeyDown={stopPropagationForActionKeys}
+                                     onClick={() => {
+                                         onOrderCancel({ order });
+diff --git a/packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodItem/PaymentMethodItem.tsx b/packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodItem/PaymentMethodItem.tsx
+index 9c0ccd12..ddb2a3af 100644
+--- a/packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodItem/PaymentMethodItem.tsx
++++ b/packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodItem/PaymentMethodItem.tsx
+@@ -128,6 +128,7 @@ class PaymentMethodItem extends Component<Readonly<PaymentMethodItemProps>> {
+                             inline
+                             variant="link"
+                             onClick={this.toggleDisableConfirmation}
++                            onKeyPress={stopPropagationForActionKeys}
+                             onKeyDown={stopPropagationForActionKeys}
+                             ariaExpanded={this.state.showDisableStoredPaymentMethodConfirmation}
+                             ariaControls={disableConfirmationId}
+diff --git a/packages/lib/src/components/Dropin/stories/dropin/customization.scss b/packages/lib/src/components/Dropin/stories/dropin/customization.scss
+index 5d45dee3..9bda6c81 100644
+--- a/packages/lib/src/components/Dropin/stories/dropin/customization.scss
++++ b/packages/lib/src/components/Dropin/stories/dropin/customization.scss
+@@ -29,7 +29,7 @@
+     }
+ }
+ 
+-::backdrop {
++#donation-dialog::backdrop {
+   background-image: linear-gradient(
+                   45deg,
+                   white,
+diff --git a/packages/lib/src/components/Giftcard/Giftcard.tsx b/packages/lib/src/components/Giftcard/Giftcard.tsx
+index 1d5e1f97..678729a5 100644
+--- a/packages/lib/src/components/Giftcard/Giftcard.tsx
++++ b/packages/lib/src/components/Giftcard/Giftcard.tsx
+@@ -175,7 +175,7 @@ export class GiftcardElement extends UIElement<GiftCardConfiguration> {
+                     this.componentRef = ref;
+                 }}
+                 {...this.props}
+-                handleKeyDown={this.handleKeyDown}
++                handleKeyPress={this.handleKeyPress}
+                 showPayButton={this.props.showPayButton}
+                 onChange={this.setState}
+                 makeBalanceCheck={() => this.onBalanceCheck()}
+diff --git a/packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx b/packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx
+index 68e94d72..05f13d41 100644
+--- a/packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx
++++ b/packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx
+@@ -25,7 +25,7 @@ interface GiftcardComponentProps extends Partial<Pick<SFPProps, 'clientKey' | 'l
+     expiryDateRequired?: boolean;
+     fieldsLayoutComponent: FunctionComponent<GiftcardFieldsProps>;
+     placeholders?: Placeholders;
+-    handleKeyDown?: (event: KeyboardEvent) => void;
++    handleKeyPress?: (o: KeyboardEvent) => void;
+     onSubmitAnalytics?: (event: AbstractAnalyticsEvent) => void;
+ }
+ 
+diff --git a/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx b/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx
+index e46e7bbd..1929a8e6 100644
+--- a/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx
++++ b/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx
+@@ -67,7 +67,7 @@ class DoChallenge3DS2 extends Component<DoChallenge3DS2Props, DoChallenge3DS2Sta
+         window.removeEventListener('message', this.processMessageHandler);
+     }
+ 
+-    render({ acsURL, cReqData, iframeSizeArr, onFormSubmit }, { base64URLencodedData, status }) {
++    render({ acsURL, cReqData, iframeSizeArr, onFormSubmit }: DoChallenge3DS2Props, { base64URLencodedData, status }: DoChallenge3DS2State) {
+         const [width, height] = iframeSizeArr;
+ 
+         return (
+@@ -85,7 +85,7 @@ class DoChallenge3DS2 extends Component<DoChallenge3DS2Props, DoChallenge3DS2Sta
+                     action={acsURL}
+                     target={iframeName}
+                     inputName={'creq'}
+-                    inputValue={base64URLencodedData}
++                    inputValue={base64URLencodedData ?? ''}
+                     onFormSubmit={onFormSubmit}
+                 />
+             </div>
+diff --git a/packages/lib/src/components/internal/Address/Address.test.tsx b/packages/lib/src/components/internal/Address/Address.test.tsx
+index c5a05f8c..95310340 100644
+--- a/packages/lib/src/components/internal/Address/Address.test.tsx
++++ b/packages/lib/src/components/internal/Address/Address.test.tsx
+@@ -76,6 +76,20 @@ describe('Address', () => {
+         expect(await screen.findByLabelText('Country/Region')).toBeInTheDocument();
+     });
+ 
++    test('should maintain spaces while typing but trim and collapse them on blur', async () => {
++        const user = userEvent.setup();
++        const requiredFields = ['street', 'houseNumberOrName', 'postalCode', 'country'];
++
++        customRender(<Address specifications={addressSpecificationsMock} requiredFields={requiredFields} />);
++
++        const street = screen.getByLabelText('Street');
++        await user.type(street, '  Simon   Carmiggeltstraat  ');
++        expect(street).toHaveValue('  Simon   Carmiggeltstraat  ');
++
++        await user.tab();
++        await waitFor(() => expect(street).toHaveValue('Simon Carmiggeltstraat'));
++    });
++
+     test('should show the address as readOnly', () => {
+         const requiredFields = ['street', 'houseNumberOrName', 'postalCode', 'country'];
+ 
+diff --git a/packages/lib/src/components/internal/Address/validate.formats.test.ts b/packages/lib/src/components/internal/Address/validate.formats.test.ts
+index 71430bb0..77708b8f 100644
+--- a/packages/lib/src/components/internal/Address/validate.formats.test.ts
++++ b/packages/lib/src/components/internal/Address/validate.formats.test.ts
+@@ -1,4 +1,22 @@
+-import { countrySpecificFormatters } from './validate.formats';
++import { addressFormatters, countrySpecificFormatters } from './validate.formats';
++
++describe('addressFormatters', () => {
++    describe.each(['street', 'houseNumberOrName', 'city'])('%s formatterFn', field => {
++        const format = addressFormatters[field].formatterFn;
++
++        test('should not trim trailing or leading spaces', () => {
++            expect(format?.('  Main Road  ')).toBe('  Main Road  ');
++        });
++
++        test('should not collapse consecutive spaces', () => {
++            expect(format?.('Main   Road')).toBe('Main   Road');
++        });
++
++        test('should strip special characters without touching spaces', () => {
++            expect(format?.('  Main@ Ro#ad  ')).toBe('  Main Road  ');
++        });
++    });
++});
+ 
+ describe('countrySpecificFormatters', () => {
+     describe('BR postalCode formatterFn', () => {
+diff --git a/packages/lib/src/components/internal/Address/validate.formats.ts b/packages/lib/src/components/internal/Address/validate.formats.ts
+index c65f50ef..1e837a98 100644
+--- a/packages/lib/src/components/internal/Address/validate.formats.ts
++++ b/packages/lib/src/components/internal/Address/validate.formats.ts
+@@ -1,6 +1,6 @@
+ import { CountryFormatRules, FormatRules } from '../../../utils/Validator/types';
+ import { Formatter } from '../../../utils/useForm/types';
+-import { getFormattingRegEx, SPECIAL_CHARS, trimValWithOneSpace } from '../../../utils/validator-utils';
++import { getFormattingRegEx, SPECIAL_CHARS } from '../../../utils/validator-utils';
+ 
+ const asCountryFormatRules = <T extends CountryFormatRules>(rules: T): T & CountryFormatRules => rules;
+ 
+@@ -15,7 +15,7 @@ const createFormatByDigits = (digits: number): Formatter => {
+ };
+ 
+ const specialCharsRegEx = getFormattingRegEx(SPECIAL_CHARS);
+-const formattingFn = val => trimValWithOneSpace(val).replace(specialCharsRegEx, '');
++const formattingFn = (val: string) => val.replace(specialCharsRegEx, '');
+ 
+ export const addressFormatters: FormatRules = {
+     postalCode: {
+diff --git a/packages/lib/src/components/internal/BaseElement/BaseElement.ts b/packages/lib/src/components/internal/BaseElement/BaseElement.ts
+index b98eaa2e..0ee74ab2 100644
+--- a/packages/lib/src/components/internal/BaseElement/BaseElement.ts
++++ b/packages/lib/src/components/internal/BaseElement/BaseElement.ts
+@@ -1,4 +1,4 @@
+-import { ComponentChild, h, render, TargetedKeyboardEvent } from 'preact';
++import { ComponentChild, h, render } from 'preact';
+ import uuid from '../../../utils/uuid';
+ import AdyenCheckoutError from '../../../core/Errors/AdyenCheckoutError';
+ import { NO_CHECKOUT_ATTEMPT_ID } from '../../../core/Analytics/constants';
+@@ -47,7 +47,7 @@ abstract class BaseElement<P extends BaseElementProps> implements IBaseElement {
+         this.core = checkout;
+         this.buildElementProps(props);
+ 
+-        this.handleKeyDown = this.handleKeyDown.bind(this);
++        this.handleKeyPress = this.handleKeyPress.bind(this);
+     }
+ 
+     protected buildElementProps(componentProps?: P) {
+@@ -70,11 +70,13 @@ abstract class BaseElement<P extends BaseElementProps> implements IBaseElement {
+         return {};
+     }
+ 
+-    protected submitAnalytics(_analyticsObj?: AbstractAnalyticsEvent) {
++    /* eslint-disable-next-line */
++    protected submitAnalytics(analyticsObj?: AbstractAnalyticsEvent) {
+         return null;
+     }
+ 
+-    protected handleKeyDown(_e: TargetedKeyboardEvent<HTMLInputElement>) {
++    /* eslint-disable-next-line */
++    protected handleKeyPress(e: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) {
+         return null;
+     }
+ 
+@@ -143,7 +145,7 @@ abstract class BaseElement<P extends BaseElementProps> implements IBaseElement {
+         this._node = node;
+ 
+         // Add listener for key press events, notably 'Enter' key presses
+-        on(this._node, 'keydown', this.handleKeyDown, false);
++        on(this._node, 'keypress', this.handleKeyPress, false);
+ 
+         this._component = this.render();
+ 
+@@ -170,7 +172,7 @@ abstract class BaseElement<P extends BaseElementProps> implements IBaseElement {
+      */
+     public unmount(): this {
+         // Remove listener
+-        off(this._node, 'keydown', this.handleKeyDown);
++        off(this._node, 'keypress', this.handleKeyPress);
+ 
+         if (this._node) {
+             render(null, this._node);
+diff --git a/packages/lib/src/components/internal/Button/Button.tsx b/packages/lib/src/components/internal/Button/Button.tsx
+index 776143f9..241e6a3f 100644
+--- a/packages/lib/src/components/internal/Button/Button.tsx
++++ b/packages/lib/src/components/internal/Button/Button.tsx
+@@ -62,7 +62,8 @@ class Button extends Component<ButtonProps, ButtonState> {
+             onMouseLeave,
+             onFocus,
+             onBlur,
+-            onKeyDown
++            onKeyDown,
++            onKeyPress
+         }: ButtonProps = this.props;
+         const { completed } = this.state;
+         const { i18n } = useCoreContext();
+@@ -148,6 +149,7 @@ class Button extends Component<ButtonProps, ButtonState> {
+                 onKeyDown={onKeyDown}
+                 onFocus={onFocus}
+                 onBlur={onBlur}
++                onKeyPress={onKeyPress}
+             >
+                 {buttonText}
+                 {status !== 'loading' && status !== 'redirect' && this.props.children}
+diff --git a/packages/lib/src/components/internal/Button/CopyButton.tsx b/packages/lib/src/components/internal/Button/CopyButton.tsx
+index f053d99d..67fcf4ec 100644
+--- a/packages/lib/src/components/internal/Button/CopyButton.tsx
++++ b/packages/lib/src/components/internal/Button/CopyButton.tsx
+@@ -1,4 +1,4 @@
+-import { h, TargetedMouseEvent } from 'preact';
++import { h } from 'preact';
+ import { useCallback } from 'preact/hooks';
+ import Button from './Button';
+ import { ButtonProps } from './types';
+@@ -14,7 +14,7 @@ export interface CopyButtonProps extends Omit<ButtonProps, 'variant' | 'onClickC
+      */
+     text: string;
+     copiedLabel?: string;
+-    onClick?: (e: TargetedMouseEvent<HTMLButtonElement>) => void;
++    onClick?: (e: h.JSX.TargetedMouseEvent<HTMLButtonElement>) => void;
+ }
+ 
+ const CopyButton = (props: Readonly<CopyButtonProps>) => {
+@@ -36,6 +36,7 @@ const CopyButton = (props: Readonly<CopyButtonProps>) => {
+             variant="action"
+             onClick={onClick}
+             // Workaround: See ADR-0001-uielement-keyboard-event-propagation-workaround
++            onKeyPress={stopPropagationForActionKeys}
+             onKeyDown={stopPropagationForActionKeys}
+             icon={props.icon ?? getImage({ imageFolder: 'components/' })(`${PREFIX}copy`)}
+             label={props.label ?? i18n.get('button.copy')}
+diff --git a/packages/lib/src/components/internal/Button/CopyIconButton.tsx b/packages/lib/src/components/internal/Button/CopyIconButton.tsx
+index e895ed0a..ded43010 100644
+--- a/packages/lib/src/components/internal/Button/CopyIconButton.tsx
++++ b/packages/lib/src/components/internal/Button/CopyIconButton.tsx
+@@ -5,8 +5,8 @@ import { ButtonProps } from './types';
+ import { useCoreContext } from '../../../core/Context/CoreProvider';
+ import copyToClipboard from '../../../utils/clipboard';
+ import { SingletonTooltipProvider, useTooltip } from '../Tooltip/SingletonTooltipProvider';
+-import { stopPropagationForActionKeys } from './stopPropagationForActionKeys';
+ import './CopyIconButton.scss';
++import { stopPropagationForActionKeys } from './stopPropagationForActionKeys';
+ 
+ export interface CopyIconButtonProps extends ButtonProps {
+     /**
+@@ -25,6 +25,7 @@ const CopyIconButton = (props: Readonly<CopyIconButtonProps>) => {
+         showTooltip({ anchorRef, text: i18n.get('button.copied') });
+     }, [props.text, i18n, showTooltip]);
+ 
++    // We need it because onKeyPress does not trigger for Esc key
+     const onKeyDown = useCallback(
+         (event: KeyboardEvent) => {
+             stopPropagationForActionKeys(event);
+@@ -52,6 +53,8 @@ const CopyIconButton = (props: Readonly<CopyIconButtonProps>) => {
+             onFocus={handleShowTooltip}
+             onBlur={hideTooltip}
+             onClick={onClick}
++            // It's ok to have both, browsers will fire only one click event for enter/space key pressed.
++            onKeyPress={stopPropagationForActionKeys}
+             onKeyDown={onKeyDown}
+         >
+             <svg
+diff --git a/packages/lib/src/components/internal/Button/types.ts b/packages/lib/src/components/internal/Button/types.ts
+index 9e7095e0..2ec54785 100644
+--- a/packages/lib/src/components/internal/Button/types.ts
++++ b/packages/lib/src/components/internal/Button/types.ts
+@@ -27,6 +27,7 @@ export interface ButtonProps {
+     rel?: string;
+     onClick?: (e: TargetedMouseEvent<HTMLButtonElement | HTMLAnchorElement>, callbacks?: { complete?: () => void }) => void;
+     onKeyDown?: (event: KeyboardEvent) => void;
++    onKeyPress?: (event: KeyboardEvent) => void;
+     buttonRef?: Ref<HTMLButtonElement>;
+     onMouseEnter?: (event: MouseEvent) => void;
+     onMouseLeave?: (event: MouseEvent) => void;
+diff --git a/packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx b/packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx
+index d337872c..a634aa7e 100644
+--- a/packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx
+@@ -1,4 +1,4 @@
+-import { h, TargetedKeyboardEvent } from 'preact';
++import { h } from 'preact';
+ import { useCallback, useEffect } from 'preact/hooks';
+ import { CtpState } from './services/ClickToPayService';
+ import useClickToPayContext from './context/useClickToPayContext';
+@@ -37,13 +37,13 @@ const ClickToPayComponent = ({ onDisplayCardComponent }: Readonly<ClickToPayComp
+     }, [ctpState]);
+ 
+     /**
+-     * We capture the ENTER keydown within the ClickToPay component because we do not want to propagate the event up to the UIElement
++     * We capture the ENTER keypress within the ClickToPay component because we do not want to propagate the event up to the UIElement
+      * UIElement would perform the payment flow (by calling .submit), which is not relevant/supported by Click to Pay
+      */
+-    const handleEnterKeyPress = useCallback((event: TargetedKeyboardEvent<HTMLInputElement>) => {
++    const handleEnterKeyPress = useCallback((event: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
+         if (event.key === 'Enter') {
+             event.preventDefault(); // Prevent <form> submission if Component is placed inside a form
+-            event.stopPropagation(); // Prevent global BaseElement keydown event to be triggered
++            event.stopPropagation(); // Prevent global BaseElement keypress event to be triggered
+         }
+     }, []);
+ 
+diff --git a/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx b/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx
+index f3597e14..1e8ab9b5 100644
+--- a/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx
+@@ -1,4 +1,4 @@
+-import { h, TargetedKeyboardEvent } from 'preact';
++import { h } from 'preact';
+ import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+ import { loginValidationRules } from './validate';
+ import { useCoreContext } from '../../../../../core/Context/CoreProvider';
+@@ -58,8 +58,8 @@ const CtPLoginInput = (props: Readonly<CtPLoginInputProps>): h.JSX.Element => {
+         props.onSetInputHandlers(loginInputHandlersRef.current);
+     }, [validateInput, props.onSetInputHandlers]);
+ 
+-    const handleOnKeyDown = useCallback(
+-        (event: TargetedKeyboardEvent<HTMLInputElement>) => {
++    const handleOnKeyPress = useCallback(
++        (event: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
+             if (event.key === 'Enter') {
+                 void props.onPressEnter();
+             }
+@@ -88,7 +88,7 @@ const CtPLoginInput = (props: Readonly<CtPLoginInputProps>): h.JSX.Element => {
+                     disabled={props.disabled}
+                     onInput={handleChangeFor('shopperLogin', 'input')}
+                     onBlur={handleChangeFor('shopperLogin', 'blur')}
+-                    onKeyDown={handleOnKeyDown}
++                    onKeyPress={handleOnKeyPress}
+                     autocomplete={'email'}
+                 />
+             </Field>
+diff --git a/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx b/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx
+index 1aa84d42..b2c825b1 100644
+--- a/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx
+@@ -1,4 +1,4 @@
+-import { h, TargetedKeyboardEvent } from 'preact';
++import { h } from 'preact';
+ import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+ import { otpValidationRules } from './validate';
+ import CtPResendOtpLink from './CtPResendOtpLink';
+@@ -96,8 +96,8 @@ const CtPOneTimePasswordInput = (props: Readonly<CtPOneTimePasswordInputProps>):
+         [i18n]
+     );
+ 
+-    const handleOnKeyDown = useCallback(
+-        (event: TargetedKeyboardEvent<HTMLInputElement>) => {
++    const handleOnKeyPress = useCallback(
++        (event: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
+             if (event.key === 'Enter') {
+                 void props.onPressEnter();
+             }
+@@ -132,7 +132,7 @@ const CtPOneTimePasswordInput = (props: Readonly<CtPOneTimePasswordInputProps>):
+                     disabled={props.disabled}
+                     onInput={handleChangeFor('otp', 'input')}
+                     onBlur={handleChangeFor('otp', 'blur')}
+-                    onKeyDown={handleOnKeyDown}
++                    onKeyPress={handleOnKeyPress}
+                     setRef={(ref: HTMLInputElement) => {
+                         inputRef.current = ref;
+                     }}
+diff --git a/packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx b/packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx
+index 22cacb99..abc4ef86 100644
+--- a/packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx
+@@ -1,4 +1,4 @@
+-import { h, TargetedKeyboardEvent } from 'preact';
++import { h } from 'preact';
+ import classnames from 'classnames';
+ import CtPLogoutLink from './CtPLogoutLink';
+ import { CtPBrand } from '../CtPBrand';
+@@ -6,7 +6,7 @@ import useClickToPayContext from '../../context/useClickToPayContext';
+ import './CtPSection.scss';
+ 
+ interface CtPSectionProps {
+-    onEnterKeyPress: (event: TargetedKeyboardEvent<HTMLInputElement>) => void;
++    onEnterKeyPress: (event: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => void;
+     children?: h.JSX.Element[];
+ }
+ 
+@@ -17,7 +17,7 @@ const CtPSection = ({ children, onEnterKeyPress }: Readonly<CtPSectionProps>): h
+         // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+         <div
+             className={classnames('adyen-checkout-ctp__section', { 'adyen-checkout-ctp__section--standalone': isStandaloneComponent })}
+-            onKeyDown={onEnterKeyPress}
++            onKeyPress={onEnterKeyPress}
+         >
+             <div className="adyen-checkout-ctp__section-brand">
+                 <CtPBrand />
+diff --git a/packages/lib/src/components/internal/ClickToPay/context/ClickToPayProvider.tsx b/packages/lib/src/components/internal/ClickToPay/context/ClickToPayProvider.tsx
+index 95f0321a..b6921384 100644
+--- a/packages/lib/src/components/internal/ClickToPay/context/ClickToPayProvider.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/context/ClickToPayProvider.tsx
+@@ -6,7 +6,7 @@ import { ClickToPayCheckoutPayload, IClickToPayService, IdentityLookupParams } f
+ import ShopperCard from '../models/ShopperCard';
+ import { ClickToPayProps } from '../types';
+ import AdyenCheckoutError from '../../../../core/Errors/AdyenCheckoutError';
+-import { UIElementStatus } from '../../UIElement/types';
++import { ComponentMethodsRef, UIElementStatus } from '../../UIElement/types';
+ 
+ type ClickToPayProviderRef = {
+     setStatus?(status: UIElementStatus): void;
+@@ -17,7 +17,7 @@ export type ClickToPayProviderProps = {
+     clickToPayService: IClickToPayService | null;
+     configuration: ClickToPayProps;
+     children: any;
+-    setClickToPayRef(ref): void;
++    setClickToPayRef(ref: ComponentMethodsRef): void;
+     onSubmit(payload: ClickToPayCheckoutPayload): void;
+     onSetStatus(status: UIElementStatus): void;
+     onError(error: AdyenCheckoutError): void;
+@@ -37,12 +37,14 @@ const ClickToPayProvider = ({
+     const [ctpState, setCtpState] = useState<CtpState>(clickToPayService?.state || CtpState.NotAvailable);
+     const [isCtpPrimaryPaymentMethod, setIsCtpPrimaryPaymentMethod] = useState<boolean>(true);
+     const [status, setStatus] = useState<UIElementStatus>('ready');
+-    const clickToPayRef = useRef<ClickToPayProviderRef>({});
+     const isOnReadyInvoked = useRef<boolean>(false);
+ 
++    const clickToPayRef = useRef<ClickToPayProviderRef>({
++        setStatus
++    });
++
+     useEffect(() => {
+         setClickToPayRef(clickToPayRef.current);
+-        clickToPayRef.current.setStatus = setStatus;
+     }, []);
+ 
+     useEffect(() => {
+diff --git a/packages/lib/src/components/internal/FormFields/InputBase.tsx b/packages/lib/src/components/internal/FormFields/InputBase.tsx
+index ee8e1ca4..a58c46f6 100644
+--- a/packages/lib/src/components/internal/FormFields/InputBase.tsx
++++ b/packages/lib/src/components/internal/FormFields/InputBase.tsx
+@@ -11,6 +11,7 @@ import {
+ import { useCallback } from 'preact/hooks';
+ import classNames from 'classnames';
+ import { ARIA_CONTEXT_SUFFIX, ARIA_ERROR_SUFFIX } from '../../../core/Errors/constants';
++import { trimValWithOneSpace } from '../../../utils/validator-utils';
+ import Language from '../../../language';
+ import { AutocompleteValue } from './types';
+ import './FormFields.scss';
+@@ -58,16 +59,36 @@ export default function InputBase({ setRef, ...props }: Readonly<InputBaseProps>
+ 
+     const handleInput = useCallback(
+         (event: TargetedInputEvent<HTMLInputElement>) => {
+-            props.onInput(event);
++            props.onInput?.(event);
+         },
+         [props.onInput]
+     );
+ 
+-    const handleKeyDown = useCallback(
++    /**
++     *  Event is fired when a key that produces a character value is pressed down.
++     *  ENTER keypress also triggers this event.
++     *
++     *  TODO: 'keypress' event is deprecated
++     *  https://developer.mozilla.org/en-US/docs/Web/API/Element/keypress_event
++     */
++    const handleKeyPress = useCallback(
++        (event: TargetedKeyboardEvent<HTMLInputElement>) => {
++            if (props?.onKeyPress) props.onKeyPress(event);
++        },
++        [props?.onKeyPress]
++    );
++
++    /**
++     * Event is fired when certain keys are pressed (keys that do not output characters):
++     * Backspace, Arrow keys, Shift, Ctrl, Command, Option, Esc
++     *
++     * Exception: ENTER keypress triggers 'onKeyPress' AND 'onKeyUp'
++     */
++    const handleKeyUp = useCallback(
+         (event: TargetedKeyboardEvent<HTMLInputElement>) => {
+-            if (props?.onKeyDown) props.onKeyDown(event);
++            if (props?.onKeyUp) props.onKeyUp(event);
+         },
+-        [props?.onKeyDown]
++        [props?.onKeyUp]
+     );
+ 
+     const handleBlur = useCallback(
+@@ -75,7 +96,8 @@ export default function InputBase({ setRef, ...props }: Readonly<InputBaseProps>
+             props?.onBlurHandler?.(event); // From Field component
+ 
+             if (props.trimOnBlur) {
+-                (event.target as HTMLInputElement).value = (event.target as HTMLInputElement).value.trim(); // needed to trim trailing spaces in field (leading spaces can be done via formatting)
++                const input = event.target as HTMLInputElement;
++                input.value = trimValWithOneSpace(input.value);
+             }
+ 
+             props?.onBlur?.(event);
+@@ -98,7 +120,7 @@ export default function InputBase({ setRef, ...props }: Readonly<InputBaseProps>
+             'adyen-checkout__input--invalid': isInvalid,
+             'adyen-checkout__input--valid': isValid
+         },
+-        classNameModifiers.map(m => `adyen-checkout__input--${m}`)
++        (classNameModifiers ?? []).map(m => `adyen-checkout__input--${m}`)
+     );
+ 
+     // Don't spread classNameModifiers etc to input element (it ends up as an attribute on the element itself)
+@@ -135,7 +157,8 @@ export default function InputBase({ setRef, ...props }: Readonly<InputBaseProps>
+             onInput={handleInput}
+             onBlur={handleBlur}
+             onFocus={handleFocus}
+-            onKeyDown={handleKeyDown}
++            onKeyUp={handleKeyUp}
++            onKeyPress={handleKeyPress}
+             disabled={disabled}
+             ref={setRef}
+         />
+diff --git a/packages/lib/src/components/internal/Modal/Modal.tsx b/packages/lib/src/components/internal/Modal/Modal.tsx
+index fc7898fa..b6d62558 100644
+--- a/packages/lib/src/components/internal/Modal/Modal.tsx
++++ b/packages/lib/src/components/internal/Modal/Modal.tsx
+@@ -59,13 +59,13 @@ const Modal = ({
+     useEffect(() => {
+         if (!modalContainerRef.current) return;
+ 
+-        const suppressKeyDown = (event: KeyboardEvent) => {
++        const suppressKeyPress = (event: KeyboardEvent) => {
+             if (event.key === 'Enter' || event.code === 'Enter') event.stopPropagation();
+         };
+ 
+-        modalContainerRef.current.addEventListener('keydown', suppressKeyDown, { capture: true });
++        modalContainerRef.current.addEventListener('keypress', suppressKeyPress, { capture: true });
+         return () => {
+-            modalContainerRef.current.removeEventListener('keydown', suppressKeyDown);
++            modalContainerRef.current.removeEventListener('keypress', suppressKeyPress);
+         };
+     }, [modalContainerRef.current]);
+ 
+diff --git a/packages/lib/src/components/internal/OpenInvoice/OpenInvoice.tsx b/packages/lib/src/components/internal/OpenInvoice/OpenInvoice.tsx
+index bf373f48..d5a517a4 100644
+--- a/packages/lib/src/components/internal/OpenInvoice/OpenInvoice.tsx
++++ b/packages/lib/src/components/internal/OpenInvoice/OpenInvoice.tsx
+@@ -42,6 +42,7 @@ export default function OpenInvoice(props: Readonly<OpenInvoiceProps>) {
+     }
+ 
+     const isValidating = useRef(false);
++    const containerRef = useRef<HTMLDivElement>(null);
+ 
+     const initialActiveFieldsets: OpenInvoiceActiveFieldsets = getInitialActiveFieldsets(visibility, props.data);
+     const [activeFieldsets, setActiveFieldsets] = useState<OpenInvoiceActiveFieldsets>(initialActiveFieldsets);
+@@ -82,7 +83,7 @@ export default function OpenInvoice(props: Readonly<OpenInvoiceProps>) {
+ 
+     openInvoiceRef.current.setStatus = setStatus;
+ 
+-    useSRPanelForOpenInvoiceErrors({ errors, data, props, isValidating });
++    useSRPanelForOpenInvoiceErrors({ errors, data, props, isValidating, containerRef });
+ 
+     useEffect(() => {
+         const fieldsetsAreValid: boolean = checkFieldsets();
+@@ -113,6 +114,7 @@ export default function OpenInvoice(props: Readonly<OpenInvoiceProps>) {
+     };
+     return (
+         <div
++            ref={containerRef}
+             className={classNames({
+                 'adyen-checkout__open-invoice': true,
+                 'adyen-checkout__open-invoice--loading': status === 'loading'
+diff --git a/packages/lib/src/components/internal/OpenInvoice/useSRPanelForOpenInvoiceErrors.ts b/packages/lib/src/components/internal/OpenInvoice/useSRPanelForOpenInvoiceErrors.ts
+index f9aa79f2..9355e90d 100644
+--- a/packages/lib/src/components/internal/OpenInvoice/useSRPanelForOpenInvoiceErrors.ts
++++ b/packages/lib/src/components/internal/OpenInvoice/useSRPanelForOpenInvoiceErrors.ts
+@@ -18,9 +18,10 @@ interface UseSRPanelForErrorsProps {
+     data: OpenInvoiceStateData;
+     props: OpenInvoiceProps;
+     isValidating: MutableRef<boolean>;
++    containerRef: MutableRef<HTMLDivElement | null>;
+ }
+ 
+-const useSRPanelForOpenInvoiceErrors = ({ errors, data, props, isValidating }: UseSRPanelForErrorsProps) => {
++const useSRPanelForOpenInvoiceErrors = ({ errors, data, props, isValidating, containerRef }: UseSRPanelForErrorsProps) => {
+     // Relates to onBlur errors
+     const [sortedErrorList, setSortedErrorList] = useState(null);
+     // Get the previous value (Relates to onBlur errors)
+@@ -126,7 +127,9 @@ const useSRPanelForOpenInvoiceErrors = ({ errors, data, props, isValidating }: U
+                     }
+ 
+                     // Focus first field in error, if required
+-                    if (shouldMoveFocusSR) setFocusOnField('.adyen-checkout__open-invoice', fieldToFocus, focusContextSelector);
++                    // Use the component's own container ref (rather than a global class selector) so that, when multiple
++                    // OpenInvoice-based components are rendered on the same page, focus moves within the correct instance
++                    if (shouldMoveFocusSR && containerRef.current) setFocusOnField(containerRef.current, fieldToFocus, focusContextSelector);
+                     // Remove 'showValidation' mode - allowing time for collation of all the fields in error whilst it is 'showValidation' mode (some errors come in a second render pass)
+                     setTimeout(() => {
+                         isValidating.current = false;
+diff --git a/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts b/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts
+index e4fea1e3..2314857a 100644
+--- a/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts
++++ b/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts
+@@ -14,7 +14,7 @@ import {
+     CardAutoCompleteData,
+     CardConfigSuccessData,
+     CardLoadData,
+-    SFKeyDownObj,
++    SFKeyPressObj,
+     SFFieldType
+ } from '../lib/types';
+ import { CSFReturnObject, CSFSetupObject } from '../lib/CSF/types';
+@@ -32,24 +32,24 @@ import { TxVariants } from '../../../tx-variants';
+  */
+ class SecuredFieldsProvider extends Component<SFPProps, SFPState> {
+     private csfLoadFailTimeout: number;
+-    private readonly csfLoadFailTimeoutMS: number;
+-    private readonly csfConfigFailTimeout: number;
+-    private readonly csfConfigFailTimeoutMS: number;
++    private csfLoadFailTimeoutMS: number;
++    private csfConfigFailTimeout: number;
++    private csfConfigFailTimeoutMS: number;
+     private numCharsInField: object;
+     private rootNode: HTMLElement;
+     private numDateFields: number;
+     private csf: CSFReturnObject;
+-    private readonly handleOnLoad: (obj: CardLoadData) => void;
+-    private readonly handleOnConfigSuccess: (obj: CardConfigSuccessData) => void;
+-    private readonly handleOnFieldValid: (obj: CardFieldValidData) => void;
+-    private readonly handleOnAllValid: (obj: CardAllValidData) => void;
+-    private readonly handleOnBrand: (obj: CardBrandData) => void;
+-    private readonly handleFocus: (obj: CardFocusData) => void;
+-    private readonly handleOnError: (obj: CardErrorData, hasUnsupportedCard?: boolean) => void;
+-    private readonly handleOnAutoComplete: (obj: CardAutoCompleteData) => void;
+-    private readonly handleOnNoDataRequired: () => void;
+-    private readonly handleOnTouchstartIOS: (obj) => void;
+-    private readonly handleKeyDown: (obj: SFKeyDownObj) => void;
++    private handleOnLoad: (obj: CardLoadData) => void;
++    private handleOnConfigSuccess: (obj: CardConfigSuccessData) => void;
++    private handleOnFieldValid: (obj: CardFieldValidData) => void;
++    private handleOnAllValid: (obj: CardAllValidData) => void;
++    private handleOnBrand: (obj: CardBrandData) => void;
++    private handleFocus: (obj: CardFocusData) => void;
++    private handleOnError: (obj: CardErrorData, hasUnsupportedCard?: boolean) => void;
++    private handleOnAutoComplete: (obj: CardAutoCompleteData) => void;
++    private handleOnNoDataRequired: () => void;
++    private handleOnTouchstartIOS: (obj) => void;
++    private handleKeyPressed: (obj: SFKeyPressObj) => void;
+     public state: SFPState;
+     public props: SFPProps;
+     private issuingCountryCode: string;
+@@ -89,7 +89,7 @@ class SecuredFieldsProvider extends Component<SFPProps, SFPState> {
+         this.handleOnNoDataRequired = handlers.handleOnNoDataRequired.bind(this);
+         this.handleOnAutoComplete = handlers.handleOnAutoComplete.bind(this);
+         this.handleOnTouchstartIOS = handlers.handleOnTouchstartIOS.bind(this); // Only called when iOS detected
+-        this.handleKeyDown = handlers.handleKeyDown.bind(this);
++        this.handleKeyPressed = handlers.handleKeyPressed.bind(this);
+ 
+         this.processBinLookupResponse = this.processBinLookupResponse.bind(this);
+ 
+@@ -185,7 +185,7 @@ class SecuredFieldsProvider extends Component<SFPProps, SFPState> {
+                 onAdditionalSFConfig: this.props.onAdditionalSFConfig,
+                 onAdditionalSFRemoved: this.props.onAdditionalSFRemoved,
+                 onTouchstartIOS: this.handleOnTouchstartIOS,
+-                onKeyDown: this.handleKeyDown
++                onKeyPressed: this.handleKeyPressed
+             },
+             isKCP: this.state.hasKoreanFields,
+             legacyInputMode: this.props.legacyInputMode,
+diff --git a/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProviderHandlers.ts b/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProviderHandlers.ts
+index 4d9c6ba1..426d678f 100644
+--- a/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProviderHandlers.ts
++++ b/packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProviderHandlers.ts
+@@ -19,7 +19,7 @@ import {
+     CardAutoCompleteData,
+     CardConfigSuccessData,
+     CardLoadData,
+-    SFKeyDownObj
++    SFKeyPressObj
+ } from '../lib/types';
+ import { existy } from '../../../../utils/commonUtils';
+ import AdyenCheckoutError from '../../../../core/Errors/AdyenCheckoutError';
+@@ -222,15 +222,15 @@ function handleOnAutoComplete(cbObj: CardAutoCompleteData): void {
+     this.props.onAutoComplete(cbObj);
+ }
+ 
+-function handleKeyDown(obj: SFKeyDownObj): void {
++function handleKeyPressed(obj: SFKeyPressObj): void {
+     if (obj.action === 'enterKeyPressed') {
+-        const kb = new KeyboardEvent('keydown', {
++        const kb = new KeyboardEvent('keypress', {
+             bubbles: true,
+             cancelable: true,
+             key: 'Enter',
+             code: 'Enter'
+         });
+-        this.props.handleKeyDown?.(kb);
++        this.props.handleKeyPress?.(kb);
+     }
+ }
+ 
+@@ -253,5 +253,5 @@ export default {
+     handleOnError,
+     handleOnNoDataRequired,
+     handleOnTouchstartIOS,
+-    handleKeyDown
++    handleKeyPressed
+ };
+diff --git a/packages/lib/src/components/internal/SecuredFields/SFP/defaultProps.ts b/packages/lib/src/components/internal/SecuredFields/SFP/defaultProps.ts
+index 705bb559..6ff32a2e 100644
+--- a/packages/lib/src/components/internal/SecuredFields/SFP/defaultProps.ts
++++ b/packages/lib/src/components/internal/SecuredFields/SFP/defaultProps.ts
+@@ -21,7 +21,7 @@ export default {
+     onBinValue: () => {},
+     onFocus: () => {},
+     onAutoComplete: () => {},
+-    handleKeyDown: () => {},
++    handleKeyPress: () => {},
+ 
+     // Customization
+     styles: {}
+diff --git a/packages/lib/src/components/internal/SecuredFields/SFP/types.ts b/packages/lib/src/components/internal/SecuredFields/SFP/types.ts
+index e498b385..2e804f1e 100644
+--- a/packages/lib/src/components/internal/SecuredFields/SFP/types.ts
++++ b/packages/lib/src/components/internal/SecuredFields/SFP/types.ts
+@@ -62,7 +62,7 @@ export interface SFPProps {
+     onLoad?: (cbObj: CardLoadData) => void;
+     onStateUpdate?: (obj: SFPState) => void;
+     onSubmitAnalytics?: (event: AbstractAnalyticsEvent) => void;
+-    handleKeyDown?: (event: KeyboardEvent) => void;
++    handleKeyPress?: (obj: KeyboardEvent) => void;
+     rootNode?: HTMLElement; // Specific to SecuredFieldsInput
+     showWarnings?: boolean;
+     styles?: StylesObject;
+diff --git a/packages/lib/src/components/internal/SecuredFields/binLookup/triggerBinLookUp.test.tsx b/packages/lib/src/components/internal/SecuredFields/binLookup/triggerBinLookUp.test.tsx
+index d144b779..b5013574 100644
+--- a/packages/lib/src/components/internal/SecuredFields/binLookup/triggerBinLookUp.test.tsx
++++ b/packages/lib/src/components/internal/SecuredFields/binLookup/triggerBinLookUp.test.tsx
+@@ -1,8 +1,11 @@
+ import { h } from 'preact';
+-import triggerBinLookUp from './triggerBinLookUp';
++import { triggerBinLookUp } from './triggerBinLookUp';
+ import { httpPost } from '../../../../core/Services/http';
+-import UIElement from '../../UIElement';
+ import { DEFAULT_CARD_GROUP_TYPES } from '../lib/constants';
++import { setupCoreMock } from '../../../../../config/testMocks/setup-core-mock';
++import { SF_ErrorCodes } from '../../../../core/Errors/constants';
++import { TxVariants } from '../../../tx-variants';
++import CardElement from '../../../Card';
+ 
+ jest.mock('../../../../core/Services/http');
+ 
+@@ -11,7 +14,7 @@ const mockProcessBinLookupResponse = jest.fn();
+ const mockOnError = jest.fn();
+ const mockHandleUnsupportedCard = jest.fn();
+ 
+-class MockUIElement extends UIElement {
++class MockCardElement extends CardElement {
+     public processBinLookupResponse = mockProcessBinLookupResponse;
+     public onBinLookup = mockOnBinLookup;
+     public handleUnsupportedCard = mockHandleUnsupportedCard;
+@@ -24,6 +27,7 @@ const clientKey = 'test';
+ const loadingContext = 'test';
+ const visa = 'visa';
+ const httpPostMock = httpPost as jest.Mock;
++const core = setupCoreMock();
+ 
+ beforeEach(() => {
+     httpPostMock.mockImplementation(jest.fn(() => Promise.resolve({})));
+@@ -36,9 +40,8 @@ afterEach(() => {
+ describe('triggerBinLookUp', () => {
+     describe('Turning off the doBinLookup flag ', () => {
+         test('should call the onBinValue callback if doBinLookup is false and onBinValue exists', () => {
+-            // @ts-ignore test
+-            const mockUIElement = new MockUIElement(global.core, { onBinValue: mockOnBinLookup, doBinLookup: false });
+-            triggerBinLookUp(mockUIElement)({ type: '', binValue: '' });
++            const mockCardElement = new MockCardElement(core, { onBinValue: mockOnBinLookup, doBinLookup: false });
++            triggerBinLookUp(mockCardElement)({ type: '', binValue: '' });
+ 
+             expect(mockOnBinLookup).toHaveBeenCalledWith({ type: '', binValue: '' });
+         });
+@@ -46,19 +49,17 @@ describe('triggerBinLookUp', () => {
+ 
+     describe('Performing binLookUp', () => {
+         test('should call the onBinValue callback if it exists', () => {
+-            // @ts-ignore test
+-            const mockUIElement = new MockUIElement(global.core, { onBinValue: mockOnBinLookup });
++            const mockCardElement = new MockCardElement(core, { onBinValue: mockOnBinLookup });
+             const bin = { type: '', binValue: '' };
+-            triggerBinLookUp(mockUIElement)(bin);
++            triggerBinLookUp(mockCardElement)(bin);
+ 
+             expect(mockOnBinLookup).toHaveBeenCalledWith(bin);
+         });
+ 
+         test('should call the correct binLookup endpoint with the given brands from UIElement', () => {
+-            // @ts-ignore test
+-            const mockUIElement = new MockUIElement(global.core, { clientKey, loadingContext, brand: visa, brands: [visa], onError: mockOnError });
++            const mockCardElement = new MockCardElement(core, { clientKey, loadingContext, brand: visa, brands: [visa], onError: mockOnError });
+             const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: '123456789' };
+-            const lookUpBin = triggerBinLookUp(mockUIElement);
++            const lookUpBin = triggerBinLookUp(mockCardElement);
+             lookUpBin(bin);
+ 
+             expect(httpPostMock).toHaveBeenCalledWith(
+@@ -73,10 +74,9 @@ describe('triggerBinLookUp', () => {
+         });
+ 
+         test('should call the correct binLookup endpoint with the predefined brands', () => {
+-            // @ts-ignore test
+-            const mockUIElement = new MockUIElement(global.core, { clientKey, loadingContext, brand: visa, onError: mockOnError });
++            const mockCardElement = new MockCardElement(core, { clientKey, loadingContext, brand: visa, onError: mockOnError });
+             const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: '123456789' };
+-            const lookUpBin = triggerBinLookUp(mockUIElement);
++            const lookUpBin = triggerBinLookUp(mockCardElement);
+             lookUpBin(bin);
+ 
+             expect(httpPostMock).toHaveBeenCalledWith(
+@@ -90,38 +90,84 @@ describe('triggerBinLookUp', () => {
+             );
+         });
+ 
++        test('should default the request type to "card" when no brand prop is set on the UIElement', () => {
++            const mockCardElement = new MockCardElement(core, { clientKey, loadingContext, onError: mockOnError });
++            const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: '123456789' };
++            const lookUpBin = triggerBinLookUp(mockCardElement);
++            lookUpBin(bin);
++
++            expect(httpPostMock).toHaveBeenCalledWith(
++                { loadingContext, path: `v3/bin/binLookup?token=${clientKey}` },
++                expect.objectContaining({ type: TxVariants.card })
++            );
++        });
++
++        test('should not perform a binLookup when there is an encryptedBin but no clientKey, but should still call onBinValue', () => {
++            const mockCardElement = new MockCardElement(core, { loadingContext, onBinValue: mockOnBinLookup });
++            // Ensure there is no clientKey on the props
++            delete mockCardElement.props.clientKey;
++            const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: '123456789' };
++            const lookUpBin = triggerBinLookUp(mockCardElement);
++            lookUpBin(bin);
++
++            expect(httpPostMock).not.toHaveBeenCalled();
++            expect(mockOnBinLookup).toHaveBeenCalledWith(bin);
++        });
++
+         describe('Handling the binLookUp response', () => {
+             test('should call the onError callback if the response does not contain the matching requestId', async () => {
+-                // @ts-ignore test
+-                const mockUIElement = new MockUIElement(global.core, {
++                const mockCardElement = new MockCardElement(core, {
+                     clientKey,
+                     loadingContext,
+-                    // @ts-ignore test
+                     brands: [visa],
+                     onError: mockOnError
+                 });
+                 const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: '123456789' };
+-                const lookUpBin = triggerBinLookUp(mockUIElement);
++                const lookUpBin = triggerBinLookUp(mockCardElement);
+                 lookUpBin(bin);
+                 await new Promise(process.nextTick);
+                 expect(mockOnError).toHaveBeenCalledWith({});
+             });
+ 
++            test('should call the onError callback with a default error object when the response is empty (null)', async () => {
++                httpPostMock.mockImplementation(jest.fn(() => Promise.resolve(null)));
++
++                const mockCardElement = new MockCardElement(core, { clientKey, loadingContext, brands: [visa], onError: mockOnError });
++                const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: '123456789' };
++                const lookUpBin = triggerBinLookUp(mockCardElement);
++                lookUpBin(bin);
++                await new Promise(process.nextTick);
++
++                expect(mockOnError).toHaveBeenCalledWith({ errorType: 'binLookup', message: 'unknownError' });
++            });
++
++            test('should not call the onError callback when the response contains a non-matching requestId', async () => {
++                httpPostMock.mockImplementation(jest.fn(() => Promise.resolve({ requestId: 'some-other-id' })));
++
++                const mockCardElement = new MockCardElement(core, { clientKey, loadingContext, brands: [visa], onError: mockOnError });
++                const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: '123456789' };
++                const lookUpBin = triggerBinLookUp(mockCardElement);
++                lookUpBin(bin);
++                await new Promise(process.nextTick);
++
++                expect(mockOnError).not.toHaveBeenCalled();
++                expect(mockOnBinLookup).not.toHaveBeenCalled();
++                expect(mockProcessBinLookupResponse).not.toHaveBeenCalled();
++            });
++
+             describe('BinLookup response.requestId matches the provided requestId', () => {
+                 describe('BinLookup does not return any brands', () => {
+                     test('should call the UIElement onBinLookup and processBinLookupResponse with correct data', async () => {
+                         const requestId = '123456789';
+                         httpPostMock.mockImplementation(jest.fn(() => Promise.resolve({ requestId })));
+ 
+-                        // @ts-ignore test
+-                        const mockUIElement = new MockUIElement(global.core, {
++                        const mockCardElement = new MockCardElement(core, {
+                             clientKey,
+                             loadingContext,
+-                            // @ts-ignore test
+                             brands: [visa, 'mc']
+                         });
+                         const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: requestId };
+-                        const lookUpBin = triggerBinLookUp(mockUIElement);
++                        const lookUpBin = triggerBinLookUp(mockCardElement);
+                         lookUpBin(bin);
+                         await new Promise(process.nextTick);
+ 
+@@ -139,15 +185,13 @@ describe('triggerBinLookUp', () => {
+                         const requestId = '123456789';
+                         httpPostMock.mockImplementation(jest.fn(() => Promise.resolve({ requestId, brands: [{ brand: visa, supported: true }] })));
+ 
+-                        // @ts-ignore test
+-                        const mockUIElement = new MockUIElement(global.core, {
++                        const mockCardElement = new MockCardElement(core, {
+                             clientKey,
+                             loadingContext,
+-                            // @ts-ignore test
+                             brands: [visa, 'mc']
+                         });
+                         const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: requestId };
+-                        const lookUpBin = triggerBinLookUp(mockUIElement);
++                        const lookUpBin = triggerBinLookUp(mockCardElement);
+                         lookUpBin(bin);
+                         await new Promise(process.nextTick);
+ 
+@@ -169,15 +213,13 @@ describe('triggerBinLookUp', () => {
+                             jest.fn(() => Promise.resolve({ requestId, showSocialSecurityNumber: true, brands: [{ brand: visa, supported: true }] }))
+                         );
+ 
+-                        // @ts-ignore test
+-                        const mockUIElement = new MockUIElement(global.core, {
++                        const mockCardElement = new MockCardElement(core, {
+                             clientKey,
+                             loadingContext,
+-                            // @ts-ignore test
+                             brands: [visa, 'mc']
+                         });
+                         const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: requestId };
+-                        const lookUpBin = triggerBinLookUp(mockUIElement);
++                        const lookUpBin = triggerBinLookUp(mockCardElement);
+                         lookUpBin(bin);
+                         await new Promise(process.nextTick);
+ 
+@@ -192,14 +234,13 @@ describe('triggerBinLookUp', () => {
+                             jest.fn(() => Promise.resolve({ requestId, brands: [{ brand: visa, supported: true, healthcare: true }] }))
+                         );
+ 
+-                        const mockUIElement = new MockUIElement(global.core, {
++                        const mockCardElement = new MockCardElement(core, {
+                             clientKey,
+                             loadingContext,
+-                            // @ts-ignore test
+                             brands: [visa, 'mc']
+                         });
+                         const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: requestId };
+-                        const lookUpBin = triggerBinLookUp(mockUIElement);
++                        const lookUpBin = triggerBinLookUp(mockCardElement);
+                         lookUpBin(bin);
+                         await new Promise(process.nextTick);
+ 
+@@ -210,14 +251,13 @@ describe('triggerBinLookUp', () => {
+                         const requestId = '123456789';
+                         httpPostMock.mockImplementation(jest.fn(() => Promise.resolve({ requestId, brands: [{ brand: visa, supported: true }] })));
+ 
+-                        const mockUIElement = new MockUIElement(global.core, {
++                        const mockCardElement = new MockCardElement(core, {
+                             clientKey,
+                             loadingContext,
+-                            // @ts-ignore test
+                             brands: [visa, 'mc']
+                         });
+                         const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: requestId };
+-                        const lookUpBin = triggerBinLookUp(mockUIElement);
++                        const lookUpBin = triggerBinLookUp(mockCardElement);
+                         lookUpBin(bin);
+                         await new Promise(process.nextTick);
+ 
+@@ -225,23 +265,119 @@ describe('triggerBinLookUp', () => {
+                         const callArg = mockOnBinLookup.mock.calls[0][0];
+                         expect(callArg).not.toHaveProperty('healthcare');
+                     });
++
++                    test('should propagate the issuingCountryCode to both processBinLookupResponse and onBinLookup', async () => {
++                        const requestId = '123456789';
++                        httpPostMock.mockImplementation(
++                            jest.fn(() => Promise.resolve({ requestId, issuingCountryCode: 'NL', brands: [{ brand: visa, supported: true }] }))
++                        );
++
++                        const mockCardElement = new MockCardElement(core, { clientKey, loadingContext, brands: [visa, 'mc'] });
++                        const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: requestId };
++                        triggerBinLookUp(mockCardElement)(bin);
++                        await new Promise(process.nextTick);
++
++                        expect(mockProcessBinLookupResponse).toHaveBeenCalledWith(expect.objectContaining({ issuingCountryCode: 'NL' }));
++                        expect(mockOnBinLookup).toHaveBeenCalledWith(expect.objectContaining({ issuingCountryCode: 'NL' }));
++                    });
++
++                    test('should default issuingCountryCode to an empty string for processBinLookupResponse when absent from the response', async () => {
++                        const requestId = '123456789';
++                        httpPostMock.mockImplementation(jest.fn(() => Promise.resolve({ requestId, brands: [{ brand: visa, supported: true }] })));
++
++                        const mockCardElement = new MockCardElement(core, { clientKey, loadingContext, brands: [visa, 'mc'] });
++                        const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: requestId };
++                        triggerBinLookUp(mockCardElement)(bin);
++                        await new Promise(process.nextTick);
++
++                        expect(mockProcessBinLookupResponse).toHaveBeenCalledWith(expect.objectContaining({ issuingCountryCode: '' }));
++                    });
++
++                    test('should propagate the paymentMethodVariants to onBinLookup', async () => {
++                        const requestId = '123456789';
++                        httpPostMock.mockImplementation(
++                            jest.fn(() => Promise.resolve({ requestId, brands: [{ brand: visa, supported: true, paymentMethodVariant: 'vpay' }] }))
++                        );
++
++                        const mockCardElement = new MockCardElement(core, { clientKey, loadingContext, brands: [visa, 'mc'] });
++                        const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: requestId };
++                        triggerBinLookUp(mockCardElement)(bin);
++                        await new Promise(process.nextTick);
++
++                        expect(mockOnBinLookup).toHaveBeenCalledWith(expect.objectContaining({ paymentMethodVariants: ['vpay'] }));
++                    });
++
++                    test('should only include supported brands in supportedBrands while all brands are reported in detectedBrands', async () => {
++                        const requestId = '123456789';
++                        httpPostMock.mockImplementation(
++                            jest.fn(() =>
++                                Promise.resolve({
++                                    requestId,
++                                    brands: [
++                                        { brand: visa, supported: true },
++                                        { brand: 'mc', supported: false }
++                                    ]
++                                })
++                            )
++                        );
++
++                        const mockCardElement = new MockCardElement(core, { clientKey, loadingContext, brands: [visa, 'mc'] });
++                        const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: requestId };
++                        triggerBinLookUp(mockCardElement)(bin);
++                        await new Promise(process.nextTick);
++
++                        expect(mockOnBinLookup).toHaveBeenCalledWith(
++                            expect.objectContaining({
++                                detectedBrands: [visa, 'mc'],
++                                supportedBrands: [visa]
++                            })
++                        );
++                        expect(mockProcessBinLookupResponse).toHaveBeenCalledWith(
++                            expect.objectContaining({ supportedBrands: [{ brand: visa, supported: true }] })
++                        );
++                    });
+                 });
+ 
+                 describe('BinLookup returns detected but unsupported brands', () => {
++                    test('should call handleUnsupportedCard with the unsupported card error and onBinLookup with supportedBrands set to null', async () => {
++                        const requestId = '123456789';
++                        httpPostMock.mockImplementation(jest.fn(() => Promise.resolve({ requestId, brands: [{ brand: visa, supported: false }] })));
++
++                        const mockCardElement = new MockCardElement(core, { clientKey, loadingContext, brands: ['mc'] });
++                        const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: requestId };
++                        triggerBinLookUp(mockCardElement)(bin);
++                        await new Promise(process.nextTick);
++
++                        expect(mockHandleUnsupportedCard).toHaveBeenCalledWith({
++                            type: 'card',
++                            fieldType: 'encryptedCardNumber',
++                            error: SF_ErrorCodes.ERROR_MSG_UNSUPPORTED_CARD_ENTERED,
++                            detectedBrands: [visa]
++                        });
++                        expect(mockOnBinLookup).toHaveBeenCalledWith(
++                            expect.objectContaining({
++                                detectedBrands: [visa],
++                                supportedBrands: null,
++                                brands: ['mc']
++                            })
++                        );
++                        // processBinLookupResponse should NOT be called on the unsupported path
++                        expect(mockProcessBinLookupResponse).not.toHaveBeenCalled();
++                    });
++
+                     test('should call the UIElement onBinLookup with healthcare when the unsupported brand has healthcare', async () => {
+                         const requestId = '123456789';
+                         httpPostMock.mockImplementation(
+                             jest.fn(() => Promise.resolve({ requestId, brands: [{ brand: visa, supported: false, healthcare: true }] }))
+                         );
+ 
+-                        const mockUIElement = new MockUIElement(global.core, {
++                        const mockCardElement = new MockCardElement(core, {
+                             clientKey,
+                             loadingContext,
+-                            // @ts-ignore test
+                             brands: ['mc']
+                         });
+                         const bin = { binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: requestId };
+-                        const lookUpBin = triggerBinLookUp(mockUIElement);
++                        const lookUpBin = triggerBinLookUp(mockCardElement);
+                         lookUpBin(bin);
+                         await new Promise(process.nextTick);
+ 
+@@ -251,5 +387,48 @@ describe('triggerBinLookUp', () => {
+                 });
+             });
+         });
++
++        describe('Resetting the UI when the number of digits drops below the binLookup threshold', () => {
++            test('should reset the UI when a subsequent callback has no encryptedBin after a lookup was performed', async () => {
++                const requestId = '123456789';
++                httpPostMock.mockImplementation(jest.fn(() => Promise.resolve({ requestId, brands: [{ brand: visa, supported: true }] })));
++
++                const mockCardElement = new MockCardElement(core, { clientKey, loadingContext, brands: [visa, 'mc'] });
++                const lookUpBin = triggerBinLookUp(mockCardElement);
++
++                // First call performs a lookup and stores the currentRequestId
++                lookUpBin({ binValue: '', type: '', encryptedBin: 'xxx-xxx', uuid: requestId });
++                await new Promise(process.nextTick);
++
++                jest.clearAllMocks();
++
++                // Second call has no encryptedBin => the shopper has deleted digits => reset the UI
++                lookUpBin({ binValue: '', type: '' });
++
++                expect(mockProcessBinLookupResponse).toHaveBeenCalledWith(null, true);
++                expect(mockHandleUnsupportedCard).toHaveBeenCalledWith({
++                    type: 'card',
++                    fieldType: 'encryptedCardNumber',
++                    error: ''
++                });
++                expect(mockOnBinLookup).toHaveBeenCalledWith({ isReset: true });
++                // No new lookup request should be fired
++                expect(httpPostMock).not.toHaveBeenCalled();
++            });
++
++            test('should not reset the UI when no lookup has previously been performed', () => {
++                const mockCardElement = new MockCardElement(core, { clientKey, loadingContext, brands: [visa], onBinValue: mockOnBinLookup });
++                const lookUpBin = triggerBinLookUp(mockCardElement);
++
++                // No encryptedBin and no prior lookup => neither a lookup nor a reset should happen
++                lookUpBin({ binValue: '', type: '' });
++
++                expect(httpPostMock).not.toHaveBeenCalled();
++                expect(mockProcessBinLookupResponse).not.toHaveBeenCalled();
++                expect(mockHandleUnsupportedCard).not.toHaveBeenCalled();
++                // onBinValue is still invoked at the end of the callback
++                expect(mockOnBinLookup).toHaveBeenCalledWith({ binValue: '', type: '' });
++            });
++        });
+     });
+ });
+diff --git a/packages/lib/src/components/internal/SecuredFields/binLookup/triggerBinLookUp.ts b/packages/lib/src/components/internal/SecuredFields/binLookup/triggerBinLookUp.ts
+index 9055ec5b..f4833199 100644
+--- a/packages/lib/src/components/internal/SecuredFields/binLookup/triggerBinLookUp.ts
++++ b/packages/lib/src/components/internal/SecuredFields/binLookup/triggerBinLookUp.ts
+@@ -2,35 +2,38 @@ import { httpPost } from '../../../../core/Services/http';
+ import { CardBinValueData, CardErrorData } from '../lib/types';
+ import { DEFAULT_CARD_GROUP_TYPES } from '../lib/constants';
+ import { SF_ErrorCodes } from '../../../../core/Errors/constants';
+-import { BinLookupResponseRaw, BrandObject } from '../../../Card/types';
++import { BinLookupResponse, BinLookupResponseRaw, BrandObject } from '../../../Card/types';
++import type CardElement from '../../../Card';
++import type CustomCardElement from '../../../CustomCard';
++import { TxVariants } from '../../../tx-variants';
+ 
+ if (process.env.NODE_ENV === 'development') {
+     window.mockBinCount = 0; // Set to 0 to turn off mocking, 1 to turn it on
+ }
+ 
+-export default parent => {
++export const triggerBinLookUp = (element: CardElement | CustomCardElement) => {
+     let currentRequestId: string | null = null;
+ 
+     return (callbackObj: CardBinValueData) => {
+         // Allow way for merchant to disallow binLookup by specifically setting the prop to false
+-        if (parent.props.doBinLookup === false) {
+-            if (parent.props.onBinValue) parent.props.onBinValue(callbackObj);
++        if (element.props.doBinLookup === false) {
++            if (element.props.onBinValue) element.props.onBinValue(callbackObj);
+             return;
+         }
+ 
+         // Do binLookup when encryptedBin property is present (and only if the merchant is using a clientKey)
+-        if (callbackObj.encryptedBin && parent.props.clientKey) {
++        if (callbackObj.encryptedBin && 'clientKey' in element.props && element.props.clientKey) {
+             // Store id of request we're about to make
+-            currentRequestId = callbackObj.uuid;
++            currentRequestId = callbackObj.uuid ?? null;
+ 
+             void httpPost(
+                 {
+-                    loadingContext: parent.props.loadingContext,
+-                    path: `v3/bin/binLookup?token=${parent.props.clientKey}`
++                    loadingContext: element.props.loadingContext,
++                    path: `v3/bin/binLookup?token=${element.props.clientKey}`
+                 },
+                 {
+-                    type: parent.props.brand,
+-                    supportedBrands: parent.props.brands || DEFAULT_CARD_GROUP_TYPES,
++                    type: 'brand' in element.props ? element.props.brand : TxVariants.card,
++                    supportedBrands: element.props.brands || DEFAULT_CARD_GROUP_TYPES,
+                     encryptedBin: callbackObj.encryptedBin,
+                     requestId: callbackObj.uuid // Pass id of request
+                 }
+@@ -117,21 +120,21 @@ export default parent => {
+                          */
+                         if (mappedResponse.supportedBrands.length) {
+                             // ...call processBinLookupResponse with, a simplified, response object if it contains at least one supported brand
+-                            parent.processBinLookupResponse({
+-                                issuingCountryCode: data.issuingCountryCode,
++                            element.processBinLookupResponse({
++                                issuingCountryCode: data.issuingCountryCode ?? '',
+                                 supportedBrands: mappedResponse.supportedBrands,
+                                 ...(data.showSocialSecurityNumber ? { showSocialSecurityNumber: data.showSocialSecurityNumber } : {})
+                             });
+ 
+                             // Inform merchant of the result
+-                            parent.onBinLookup({
++                            element.onBinLookup({
+                                 type: callbackObj.type,
+                                 detectedBrands: mappedResponse.detectedBrands,
+                                 // supportedBrands contains the subset of this.props.brands that matches the card number that the shopper has typed
+                                 supportedBrands: mappedResponse.supportedBrands.map(item => item.brand),
+                                 paymentMethodVariants: mappedResponse.paymentMethodVariants,
+                                 supportedBrandsRaw: mappedResponse.supportedBrands, // full supportedBrands data (for customCard comp)
+-                                brands: parent.props.brands || DEFAULT_CARD_GROUP_TYPES,
++                                brands: element.props.brands || DEFAULT_CARD_GROUP_TYPES,
+                                 issuingCountryCode: data.issuingCountryCode,
+                                 ...(hasHealthcareData && { healthcare: mappedResponse.healthcare })
+                             });
+@@ -150,16 +153,16 @@ export default parent => {
+                                 error: SF_ErrorCodes.ERROR_MSG_UNSUPPORTED_CARD_ENTERED,
+                                 detectedBrands: mappedResponse.detectedBrands
+                             };
+-                            parent.handleUnsupportedCard(errObj);
++                            element.handleUnsupportedCard(errObj);
+ 
+                             // Inform merchant of the result
+-                            parent.onBinLookup({
++                            element.onBinLookup({
+                                 type: callbackObj.type,
+                                 detectedBrands: mappedResponse.detectedBrands,
+                                 supportedBrands: null,
+                                 paymentMethodVariants: mappedResponse.paymentMethodVariants,
+                                 ...(hasHealthcareData && { healthcare: mappedResponse.healthcare }),
+-                                brands: parent.props.brands || DEFAULT_CARD_GROUP_TYPES
++                                brands: element.props.brands || DEFAULT_CARD_GROUP_TYPES
+                             });
+ 
+                             return;
+@@ -168,31 +171,30 @@ export default parent => {
+                         /**
+                          *  BIN not in DB (a failed lookup will just contain a requestId)
+                          */
+-                        parent.onBinLookup({
++                        element.onBinLookup({
+                             type: callbackObj.type,
+                             detectedBrands: null,
+                             supportedBrands: null,
+-                            brands: parent.props.brands || DEFAULT_CARD_GROUP_TYPES
++                            brands: element.props.brands || DEFAULT_CARD_GROUP_TYPES
+                         });
+ 
+                         // Reset the UI and let the native, regex branding happen (for the generic card)
+                         // For a single-branded card we need to pass a boolean to prompt resetting the brand logo to the 'base' type
+-                        parent.processBinLookupResponse({}, true);
+-                    }
+-                } else {
+-                    if (!data?.requestId) {
+-                        // Some other kind of error on the backend
+-                        parent.props.onError(data || { errorType: 'binLookup', message: 'unknownError' });
++                        element.processBinLookupResponse({} as BinLookupResponse, true);
+                     }
+-                    // Else - response with wrong requestId
++                } else if (!data?.requestId) {
++                    // Some other kind of error on the backend
++                    // @ts-ignore: update this parameter type to match Adyen's error type
++                    element.props.onError?.(data || { errorType: 'binLookup', message: 'unknownError' });
+                 }
++                // Else - response with wrong requestId
+             });
+         } else if (currentRequestId) {
+             /**
+              * If onBinValue callback is called AND we have been doing binLookup BUT passed object doesn't have an encryptedBin property
+              * - then THE NUMBER OF DIGITS IN NUMBER FIELD HAS DROPPED BELOW THRESHOLD for BIN lookup - so reset the UI
+              */
+-            parent.processBinLookupResponse(null, true);
++            element.processBinLookupResponse(null, true);
+ 
+             currentRequestId = null; // Ignore any pending responses
+ 
+@@ -202,14 +204,14 @@ export default parent => {
+                 fieldType: 'encryptedCardNumber',
+                 error: ''
+             };
+-            parent.handleUnsupportedCard(errObj);
++            element.handleUnsupportedCard(errObj);
+ 
+             // CustomCard needs this to reset the UI
+-            parent.onBinLookup({
++            element.onBinLookup({
+                 isReset: true
+             });
+         }
+ 
+-        if (parent.props.onBinValue) parent.props.onBinValue(callbackObj);
++        if (element.props.onBinValue) element.props.onBinValue(callbackObj);
+     };
+ };
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/configureCallbacks.ts b/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/configureCallbacks.ts
+index 135ea92f..65e8307c 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/configureCallbacks.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/configureCallbacks.ts
+@@ -28,5 +28,5 @@ export function configureCallbacks(callbacksObj: Partial<CSFCallbacksConfig> = {
+ 
+     this.callbacks.onTouchstartIOS = callbacksObj.onTouchstartIOS ? callbacksObj.onTouchstartIOS : noop;
+ 
+-    this.callbacks.onKeyDown = callbacksObj.onKeyDown ? callbacksObj.onKeyDown : noop;
++    this.callbacks.onKeyPressed = callbacksObj.onKeyPressed ? callbacksObj.onKeyPressed : noop;
+ }
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.test.ts b/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.test.ts
+index fa7c0f6a..d6eae4ac 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.test.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.test.ts
+@@ -21,7 +21,7 @@ const myCSF = {
+     callbacks: {
+         onLoad: jest.fn(() => {}),
+         onTouchstartIOS: jest.fn(() => {}),
+-        onKeyDown: jest.fn(() => {})
++        onKeyPressed: jest.fn(() => {})
+     },
+     createSecuredFields,
+     setupSecuredField,
+@@ -68,7 +68,7 @@ describe('Testing CSFs setupSecuredField functionality', () => {
+             onEncryptionCallback: null,
+             onValidationCallback: null,
+             onAutoCompleteCallback: null,
+-            onKeyDownCallback: null,
++            onKeyPressedCallback: null,
+             onIframeLoaded: cbFn => {
+                 MySecuredField.onIframeLoadedCallback = cbFn;
+                 return MySecuredField;
+@@ -105,8 +105,8 @@ describe('Testing CSFs setupSecuredField functionality', () => {
+                 MySecuredField.onAutoCompleteCallback = cbFn;
+                 return MySecuredField;
+             },
+-            onKeyDown: cbFn => {
+-                MySecuredField.onKeyDownCallback = cbFn;
++            onKeyPressed: cbFn => {
++                MySecuredField.onKeyPressedCallback = cbFn;
+                 return MySecuredField;
+             }
+         };
+@@ -312,10 +312,10 @@ describe('Testing CSFs setupSecuredField functionality', () => {
+         MySecuredField.onAutoCompleteCallback(dummyObj);
+         expect(myCSF.processAutoComplete).toHaveBeenCalledWith(dummyObj);
+ 
+-        // onKeyDownCallback
+-        expect(MySecuredField.onKeyDownCallback).not.toEqual(null);
++        // onKeyPressedCallback
++        expect(MySecuredField.onKeyPressedCallback).not.toEqual(null);
+ 
+-        MySecuredField.onKeyDownCallback(dummyObjWithNumKey);
+-        expect(myCSF.callbacks.onKeyDown).toHaveBeenCalledWith(dummyObj); // checking that numKey prop gets removed
++        MySecuredField.onKeyPressedCallback(dummyObjWithNumKey);
++        expect(myCSF.callbacks.onKeyPressed).toHaveBeenCalledWith(dummyObj); // checking that numKey prop gets removed
+     });
+ });
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.ts b/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.ts
+index 9b4cfdb4..57460e1d 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.ts
+@@ -301,9 +301,9 @@ export function setupSecuredField(pItem: HTMLElement, cvcPolicy?: CVCPolicyType,
+             .onAutoComplete((pFeedbackObj: SFFeedbackObj): void => {
+                 this.processAutoComplete(pFeedbackObj);
+             })
+-            .onKeyDown((pFeedbackObj: SFFeedbackObj): void => {
++            .onKeyPressed((pFeedbackObj: SFFeedbackObj): void => {
+                 const { numKey, ...rest } = pFeedbackObj;
+-                this.callbacks.onKeyDown(rest);
++                this.callbacks.onKeyPressed(rest);
+             });
+ 
+         // Store reference to securedField in this.state (under fieldType)
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/CSF/types.ts b/packages/lib/src/components/internal/SecuredFields/lib/CSF/types.ts
+index 5ce5caed..1fddeacc 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/CSF/types.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/CSF/types.ts
+@@ -90,7 +90,7 @@ export interface CSFCallbacksConfig {
+     onAdditionalSFConfig?: (callbackObj: object) => void;
+     onAdditionalSFRemoved?: (callbackObj: object) => void;
+     onTouchstartIOS?: (callbackObj: object) => void;
+-    onKeyDown?: (callbackObj: object) => void;
++    onKeyPressed?: (callbackObj: object) => void;
+ }
+ 
+ export interface CSFStateObject {
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/securedField/AbstractSecuredField.ts b/packages/lib/src/components/internal/SecuredFields/lib/securedField/AbstractSecuredField.ts
+index 2addebad..b4b2bc4c 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/securedField/AbstractSecuredField.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/securedField/AbstractSecuredField.ts
+@@ -37,7 +37,7 @@ abstract class AbstractSecuredField {
+     protected onTouchstartCallback: RtnType_callbackFn;
+     protected onShiftTabCallback: RtnType_callbackFn;
+     protected onAutoCompleteCallback: RtnType_callbackFn;
+-    protected onKeyDownCallback: RtnType_callbackFn;
++    protected onKeyPressedCallback: RtnType_callbackFn;
+ 
+     protected constructor() {
+         this.sfConfig = {};
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts b/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts
+index f53d2a39..486ee108 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts
+@@ -540,7 +540,7 @@ describe('SecuredField handling placeholders from the placeholders config', () =
+         });
+ 
+         test('Check callback is called after "enterKeyPressed" action', () => {
+-            card.onKeyDown(myCallback);
++            card.onKeyPressed(myCallback);
+ 
+             // Set action
+             data.action = 'enterKeyPressed';
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts b/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts
+index 8036538e..7d7924a1 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts
+@@ -285,7 +285,7 @@ class SecuredField extends AbstractSecuredField {
+                 break;
+ 
+             case 'enterKeyPressed':
+-                this.onKeyDownCallback(feedbackObj);
++                this.onKeyPressedCallback(feedbackObj);
+                 break;
+ 
+             case 'encryptionError': {
+@@ -406,8 +406,8 @@ class SecuredField extends AbstractSecuredField {
+         return this;
+     }
+ 
+-    onKeyDown(callbackFn: RtnType_callbackFn): SecuredField {
+-        this.onKeyDownCallback = callbackFn;
++    onKeyPressed(callbackFn: RtnType_callbackFn): SecuredField {
++        this.onKeyPressedCallback = callbackFn;
+         return this;
+     }
+     //------------------------------------
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/types.ts b/packages/lib/src/components/internal/SecuredFields/lib/types.ts
+index fa7ba727..2046910b 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/types.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/types.ts
+@@ -120,8 +120,8 @@ export interface CardAutoCompleteData {
+ 
+ export interface CardBinLookupData {
+     type?: string;
+-    detectedBrands?: string[];
+-    supportedBrands?: string[];
++    detectedBrands?: string[] | null;
++    supportedBrands?: string[] | null;
+     brands?: string[];
+     issuingCountryCode?: string;
+     healthcare?: Record<string, boolean>[];
+@@ -130,6 +130,7 @@ export interface CardBinLookupData {
+     rootNode?: HTMLElement;
+     isReset?: boolean; // Used internally - not propagated to merchant callback
+     dualBrandingType?: string; // Whether dual brands can just be displayed or whether a selection mechanism is mandated under EU law
++    paymentMethodVariants?: (string | undefined)[];
+ }
+ 
+ export interface CardBinValueData {
+@@ -348,7 +349,7 @@ export interface SFPlaceholdersObject {
+     [ENCRYPTED_PWD_FIELD]?: string;
+ }
+ 
+-export interface SFKeyDownObj {
++export interface SFKeyPressObj {
+     fieldType: string;
+     action: string;
+ }
+diff --git a/packages/lib/src/components/internal/SegmentedControl/SegmentedControl.tsx b/packages/lib/src/components/internal/SegmentedControl/SegmentedControl.tsx
+index 214e97ed..ac550c9a 100644
+--- a/packages/lib/src/components/internal/SegmentedControl/SegmentedControl.tsx
++++ b/packages/lib/src/components/internal/SegmentedControl/SegmentedControl.tsx
+@@ -68,6 +68,7 @@ export const SegmentedControl = <T,>({
+                     key={value}
+                     onClick={(event: MouseEvent) => onChange(value, event)}
+                     // Workaround: See ADR-0001-uielement-keyboard-event-propagation-workaround
++                    onKeyPress={stopPropagationForActionKeys}
+                     onKeyDown={stopPropagationForActionKeys}
+                     className={cx('adyen-checkout__segmented-control-segment', {
+                         'adyen-checkout__segmented-control-segment--selected': selectedValue === value
+diff --git a/packages/lib/src/components/internal/UIElement/UIElement.tsx b/packages/lib/src/components/internal/UIElement/UIElement.tsx
+index 175c6632..7a71178e 100644
+--- a/packages/lib/src/components/internal/UIElement/UIElement.tsx
++++ b/packages/lib/src/components/internal/UIElement/UIElement.tsx
+@@ -1,4 +1,4 @@
+-import { createRef, h, RefObject, TargetedKeyboardEvent } from 'preact';
++import { createRef, h, RefObject } from 'preact';
+ import { Resources } from '../../../core/Context/Resources';
+ import AdyenCheckoutError, { NETWORK_ERROR } from '../../../core/Errors/AdyenCheckoutError';
+ import { hasOwnProperty } from '../../../utils/hasOwnProperty';
+@@ -524,7 +524,7 @@ export abstract class UIElement<P extends UIElementProps = UIElementProps> exten
+         this.handleSuccessResult(response);
+     }
+ 
+-    protected handleKeyDown(e: TargetedKeyboardEvent<HTMLInputElement> | KeyboardEvent) {
++    protected handleKeyPress(e: h.JSX.TargetedKeyboardEvent<HTMLInputElement> | KeyboardEvent) {
+         if (e.key === 'Enter' || e.code === 'Enter') {
+             e.preventDefault(); // Prevent <form> submission if Component is placed inside a form
+ 
+@@ -533,7 +533,7 @@ export abstract class UIElement<P extends UIElementProps = UIElementProps> exten
+     }
+ 
+     /**
+-     * Handle Enter key pressed from a UIElement (called via handleKeyDown)
++     * Handle Enter key pressed from a UIElement (called via handleKeyPress)
+      * @param obj
+      */
+     protected onEnterKeyPressed(activeElement: Element, component: UIElement) {
+diff --git a/packages/lib/src/utils/validator-utils.ts b/packages/lib/src/utils/validator-utils.ts
+index 61db60c7..7c79a0d3 100644
+--- a/packages/lib/src/utils/validator-utils.ts
++++ b/packages/lib/src/utils/validator-utils.ts
+@@ -51,5 +51,5 @@ export const validateForSpecialChars = (name: string) => {
+     return CHARACTER_PATTERNS.noSpecialChars.test(name) || hasNoLength;
+ };
+ 
+-// Trim start and never allow more than 1 space on the end
+-export const trimValWithOneSpace = (val: string) => val.trimStart().replace(/\s+/g, ' ');
++// Trim both ends and never allow more than 1 space in between
++export const trimValWithOneSpace = (val: string) => val.trim().replace(/\s+/g, ' ');

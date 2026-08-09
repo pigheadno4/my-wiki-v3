@@ -1,0 +1,164 @@
+import { Component, h, TargetedMouseEvent } from 'preact';
+import classNames from 'classnames';
+import Spinner from '../Spinner';
+import { useCoreContext } from '../../../core/Context/CoreProvider';
+import { ButtonProps, ButtonState } from './types';
+import './Button.scss';
+
+class Button extends Component<ButtonProps, ButtonState> {
+    public static readonly defaultProps = {
+        status: 'default',
+        variant: 'primary',
+        disabled: false,
+        label: '',
+        inline: false,
+        target: '_self'
+    };
+
+    public onClick = (e: TargetedMouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
+        if (!this.props.disabled) {
+            this.props.onClick?.(e, { complete: this.complete });
+        }
+    };
+
+    public complete = (delay = 1_000) => {
+        this.setState({ completed: true });
+        setTimeout(() => {
+            this.setState({ completed: false });
+        }, delay);
+    };
+
+    private readonly buttonStatusSRLabel = (status: string): string => {
+        const srLabels: Record<string, string> = {
+            loading: 'loading',
+            redirect: 'payButton.redirecting'
+        };
+
+        return srLabels[status] || '';
+    };
+
+    render() {
+        const {
+            id,
+            classNameModifiers = [],
+            disabled,
+            href,
+            icon,
+            onClickCompletedIcon,
+            inline,
+            label,
+            ariaLabel,
+            ariaLabelledBy,
+            ariaDescribedBy,
+            ariaExpanded,
+            ariaControls,
+            status,
+            variant,
+            buttonRef,
+            onClickCompletedLabel,
+            onMouseEnter,
+            onMouseLeave,
+            onFocus,
+            onBlur,
+            onKeyDown,
+            onKeyPress
+        }: ButtonProps = this.props;
+        const { completed } = this.state;
+        const { i18n } = useCoreContext();
+
+        const buttonIcon =
+            onClickCompletedIcon || icon ? (
+                <img
+                    className="adyen-checkout__button__icon"
+                    src={this.state.completed ? (onClickCompletedIcon ?? icon) : icon}
+                    alt=""
+                    aria-hidden="true"
+                />
+            ) : (
+                ''
+            );
+
+        const modifiers = [
+            ...classNameModifiers,
+            ...(variant === 'primary' ? [] : [variant]),
+            ...(inline ? ['inline'] : []),
+            ...(completed ? ['completed'] : []),
+            ...(status === 'loading' || status === 'redirect' ? ['loading'] : [])
+        ];
+
+        const buttonClasses = classNames(['adyen-checkout__button', ...modifiers.map(m => `adyen-checkout__button--${m}`)]);
+
+        const buttonStates = {
+            loading: (
+                <span aria-hidden="true" className="adyen-checkout__button__content">
+                    <Spinner size="medium" inline />
+                </span>
+            ),
+            redirect: (
+                <span aria-hidden="true" className="adyen-checkout__button__content">
+                    <Spinner size="medium" inline />
+                    {i18n.get('payButton.redirecting')}
+                </span>
+            ),
+            default: (
+                <span className="adyen-checkout__button__content">
+                    {buttonIcon}
+                    <span className="adyen-checkout__button__text">{this.state.completed ? (onClickCompletedLabel ?? label) : label}</span>
+                </span>
+            )
+        };
+
+        const buttonText = buttonStates[status] || buttonStates.default;
+
+        if (href) {
+            return (
+                <a
+                    className={buttonClasses}
+                    href={href}
+                    target={this.props.target}
+                    rel={this.props.rel}
+                    aria-disabled={disabled}
+                    onClick={(e: TargetedMouseEvent<HTMLAnchorElement>) => {
+                        if (disabled) {
+                            e.preventDefault();
+                        }
+                    }}
+                >
+                    {buttonText}
+                </a>
+            );
+        }
+
+        return (
+            <button
+                ref={buttonRef}
+                id={id}
+                className={buttonClasses}
+                type="button"
+                disabled={disabled}
+                onClick={this.onClick}
+                aria-label={ariaLabel}
+                aria-labelledby={ariaLabelledBy}
+                aria-describedby={ariaDescribedBy}
+                aria-expanded={ariaExpanded}
+                aria-controls={ariaControls}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                onKeyDown={onKeyDown}
+                onFocus={onFocus}
+                onBlur={onBlur}
+                onKeyPress={onKeyPress}
+            >
+                {buttonText}
+                {status !== 'loading' && status !== 'redirect' && this.props.children}
+                <span role="status" aria-live="polite" className="adyen-checkout__button__text--sr-only">
+                    {i18n.get(this.buttonStatusSRLabel(status))}
+                </span>
+            </button>
+        );
+    }
+}
+
+export default Button;

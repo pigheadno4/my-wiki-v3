@@ -1,0 +1,1433 @@
+diff --git a/packages/lib/.size-limit.cjs b/packages/lib/.size-limit.cjs
+index 2fb078e9..5f6e4579 100644
+--- a/packages/lib/.size-limit.cjs
++++ b/packages/lib/.size-limit.cjs
+@@ -32,7 +32,7 @@ module.exports = [
+     {
+         name: 'UMD',
+         path: 'dist/umd/adyen.js',
+-        limit: '129 KB',
++        limit: '131 KB',
+         running: false
+     },
+     /**
+@@ -42,7 +42,7 @@ module.exports = [
+         name: 'Auto',
+         path: 'auto/auto.js',
+         import: '{ AdyenCheckout, Dropin }',
+-        limit: '136 KB',
++        limit: '138 KB',
+         running: false
+     },
+     /**
+@@ -59,14 +59,14 @@ module.exports = [
+         name: 'ESM - Core + Card',
+         path: 'dist/es/index.js',
+         import: '{ AdyenCheckout, Card }',
+-        limit: '79 KB',
++        limit: '81 KB',
+         running: false
+     },
+     {
+         name: 'ESM - Core + Dropin with Card',
+         path: 'dist/es/index.js',
+         import: '{ AdyenCheckout, Dropin, Card }',
+-        limit: '85 KB',
++        limit: '87 KB',
+         running: false
+     }
+ ];
+diff --git a/packages/lib/CHANGELOG.md b/packages/lib/CHANGELOG.md
+index 376214d6..79ea7a68 100644
+--- a/packages/lib/CHANGELOG.md
++++ b/packages/lib/CHANGELOG.md
+@@ -1,5 +1,17 @@
+ # @adyen/adyen-web
+ 
++## 6.42.0
++
++### Minor Changes
++
++- Improved: the 3DS2 iframe to add attributes which enable WebAuthn and SPC challenges. ([#4116](https://github.com/Adyen/adyen-web/pull/4116))
++
++- New: Drop-in emits a new `paymentListDisplayed` analytics event reporting the payment methods it rendered (`availablePaymentMethods`, each with `displayMode`) in display order, plus the `/paymentMethods` items it did not render (`unavailablePaymentMethods`). ([#4081](https://github.com/Adyen/adyen-web/pull/4081))
++
++### Patch Changes
++
++- Fixed: US postal code validation & postal code formatting for partial billing address mode ([#4111](https://github.com/Adyen/adyen-web/pull/4111))
++
+ ## 6.41.1
+ 
+ ### Patch Changes
+diff --git a/packages/lib/package.json b/packages/lib/package.json
+index de0cff55..606588d9 100644
+--- a/packages/lib/package.json
++++ b/packages/lib/package.json
+@@ -1,6 +1,6 @@
+ {
+     "name": "@adyen/adyen-web",
+-    "version": "6.41.1",
++    "version": "6.42.0",
+     "license": "MIT",
+     "homepage": "https://docs.adyen.com/checkout",
+     "type": "module",
+@@ -117,7 +117,7 @@
+         "jest-mock-extended": "4.0.1",
+         "msw": "2.14.6",
+         "msw-storybook-addon": "2.0.7",
+-        "postcss": "8.5.16",
++        "postcss": "8.5.18",
+         "rollup": "4.62.2",
+         "rollup-plugin-dts": "6.4.1",
+         "rollup-plugin-postcss": "4.0.2",
+diff --git a/packages/lib/src/components/Card/Card.test.tsx b/packages/lib/src/components/Card/Card.test.tsx
+index 9c186924..c792c514 100644
+--- a/packages/lib/src/components/Card/Card.test.tsx
++++ b/packages/lib/src/components/Card/Card.test.tsx
+@@ -9,6 +9,7 @@ import { CardFocusData } from '../internal/SecuredFields/lib/types';
+ import { mock } from 'jest-mock-extended';
+ import { AmountProvider } from '../../core/Context/AmountProvider';
+ import { ICore } from '../../types';
++import { FALLBACK_VALUE } from '../internal/Address/constants';
+ 
+ describe('Card', () => {
+     describe('formatProps', function () {
+@@ -320,6 +321,20 @@ describe('Card', () => {
+             // we need to wait here for the screen to render / hook to trigger
+             await waitFor(() => expect(card.formatData().paymentMethod.holderName).toContain(''));
+         });
++
++        test('should send stateOrProvince as "N/A" in the billingAddress when in partial address mode', async () => {
++            const core = setupCoreMock();
++
++            const card = new CardElement(core, {
++                ...props,
++                billingAddressRequired: true,
++                billingAddressMode: 'partial',
++                data: { billingAddress: { country: 'US', postalCode: '95014' } }
++            });
++            render(card.render());
++
++            await waitFor(() => expect(card.formatData().billingAddress?.stateOrProvince).toBe(FALLBACK_VALUE));
++        });
+     });
+ 
+     describe('isValid', () => {
+diff --git a/packages/lib/src/components/Dropin/Dropin.test.ts b/packages/lib/src/components/Dropin/Dropin.test.ts
+index 05db46e1..392e480b 100644
+--- a/packages/lib/src/components/Dropin/Dropin.test.ts
++++ b/packages/lib/src/components/Dropin/Dropin.test.ts
+@@ -7,15 +7,17 @@ import ThreeDS2DeviceFingerprint from '../ThreeDS2/ThreeDS2DeviceFingerprint';
+ import ThreeDS2Challenge from '../ThreeDS2/ThreeDS2Challenge';
+ import Dropin from './Dropin';
+ import Fastlane from '../PayPalFastlane';
++import Card from '../Card';
+ import { SRPanel } from '../../core/Errors/SRPanel';
+ 
+ import type { CoreConfiguration, ICore } from '../../core/types';
+ import type { OrderStatus, PaymentActionsType } from '../../types/global-types';
+ import { setupCoreMock } from '../../../config/testMocks/setup-core-mock';
+ import { InfoEventType } from '../../core/Analytics/events/AnalyticsInfoEvent';
++import PaymentMethods from '../../core/ProcessResponse/PaymentMethods';
+ import getOrderStatus from '../../core/Services/order-status';
+ 
+-jest.mock('../../core/Services/order-status', () => jest.fn());
++jest.mock('../../core/Services/order-status');
+ 
+ async function createAdyenCheckout(configuration) {
+     return await AdyenCheckout(configuration);
+@@ -213,6 +215,16 @@ describe('Dropin', () => {
+             dropin.setStatus('error');
+             expect(await screen.findByText(/An unknown error occurred/i)).toBeTruthy();
+         });
++
++        test('should show the Error status when preparing Drop-in data fails', async () => {
++            (getOrderStatus as jest.Mock).mockRejectedValueOnce(new Error('Network request failed'));
++
++            const dropin = new Dropin(checkout, { order: { orderData: 'xxx', pspReference: 'yyy' } });
++            render(dropin.render());
++
++            expect(await screen.findByText(/An unknown error occurred/i)).toBeTruthy();
++            expect(screen.queryByText(/Network request failed/i)).not.toBeInTheDocument();
++        });
+     });
+ 
+     describe('Complying with local regulations', () => {
+@@ -305,6 +317,229 @@ describe('Dropin', () => {
+             const dropin = new Dropin(core, {});
+             expect(dropin.core.modules.analytics.sendFlavor).toHaveBeenCalledWith('dropin');
+         });
++
++        test('should report all baseline PMs as unavailable on "ready" event when no component handles them', async () => {
++            const core = setupCoreMock({
++                paymentMethods: new PaymentMethods({
++                    paymentMethods: [
++                        { name: 'AliPay', type: 'alipay' },
++                        { name: 'KakaoPay', type: 'kakaopay' }
++                    ]
++                })
++            });
++
++            const dropin = new Dropin(core);
++            render(dropin.render());
++
++            await waitFor(() =>
++                expect(core.modules.analytics.sendAnalytics).toHaveBeenCalledWith(
++                    expect.objectContaining({
++                        type: InfoEventType.PaymentListDisplayed,
++                        component: 'dropin',
++                        availablePaymentMethods: [],
++                        unavailablePaymentMethods: [
++                            expect.objectContaining({ paymentMethodType: 'alipay', displayMode: 'regular' }),
++                            expect.objectContaining({ paymentMethodType: 'kakaopay', displayMode: 'regular' })
++                        ]
++                    })
++                )
++            );
++        });
++
++        test('should not include PII fields on stored payment method entries on "ready" event', async () => {
++            const core = setupCoreMock({
++                paymentMethods: new PaymentMethods({
++                    paymentMethods: [],
++                    storedPaymentMethods: [
++                        {
++                            id: 'stored-1',
++                            type: 'scheme',
++                            name: 'Visa',
++                            supportedShopperInteractions: ['Ecommerce'],
++                            lastFour: '1234',
++                            holderName: 'John Doe',
++                            shopperEmail: 'john@example.com'
++                        }
++                    ]
++                })
++            });
++
++            const dropin = new Dropin(core);
++            render(dropin.render());
++
++            await waitFor(() =>
++                expect(core.modules.analytics.sendAnalytics).toHaveBeenCalledWith(
++                    expect.objectContaining({
++                        type: InfoEventType.PaymentListDisplayed,
++                        component: 'dropin',
++                        unavailablePaymentMethods: [{ paymentMethodType: 'scheme', displayMode: 'stored' }]
++                    })
++                )
++            );
++        });
++
++        test('should emit the "ready" event exactly once per mount', async () => {
++            const core = setupCoreMock();
++            const dropin = new Dropin(core);
++            render(dropin.render());
++
++            await waitFor(() =>
++                expect(core.modules.analytics.sendAnalytics).toHaveBeenCalledWith(
++                    expect.objectContaining({ type: InfoEventType.PaymentListDisplayed })
++                )
++            );
++
++            const readyCallCount = jest
++                .mocked(core.modules.analytics.sendAnalytics)
++                .mock.calls.filter(([event]) => (event as { type?: InfoEventType }).type === InfoEventType.PaymentListDisplayed).length;
++            expect(readyCallCount).toBe(1);
++        });
++
++        test('should report filtered-out stored PMs as unavailable and kept ones as rendered in the "ready" event', async () => {
++            const config = getAdyenCheckoutConfiguration({
++                paymentMethodsResponse: {
++                    paymentMethods: [],
++                    storedPaymentMethods: [
++                        {
++                            id: 'stored-visa',
++                            type: 'scheme',
++                            name: 'VISA',
++                            brand: 'visa',
++                            lastFour: '1111',
++                            expiryMonth: '03',
++                            expiryYear: '2030',
++                            supportedShopperInteractions: ['Ecommerce', 'ContAuth']
++                        },
++                        {
++                            id: 'stored-mc',
++                            type: 'scheme',
++                            name: 'Mastercard',
++                            brand: 'mc',
++                            lastFour: '4444',
++                            expiryMonth: '12',
++                            expiryYear: '2028',
++                            supportedShopperInteractions: ['Ecommerce', 'ContAuth']
++                        },
++                        {
++                            id: 'stored-ach',
++                            type: 'ach',
++                            name: 'ACH Direct Debit',
++                            supportedShopperInteractions: ['Ecommerce']
++                        }
++                    ]
++                }
++            });
++            const checkout = await createAdyenCheckout(config);
++            const sendAnalyticsSpy = jest.spyOn(checkout.modules.analytics, 'sendAnalytics');
++
++            const dropin = new Dropin(checkout, {
++                paymentMethodComponents: [Card],
++                filterStoredPaymentMethods: pms => pms.filter(pm => pm.type === 'scheme')
++            });
++            render(dropin.render());
++
++            const flushPromises = () => new Promise(process.nextTick);
++            await flushPromises();
++
++            await waitFor(() =>
++                expect(sendAnalyticsSpy).toHaveBeenCalledWith(
++                    expect.objectContaining({
++                        type: InfoEventType.PaymentListDisplayed,
++                        component: 'dropin',
++                        availablePaymentMethods: [
++                            { paymentMethodType: 'scheme', brands: ['visa'], displayMode: 'stored' },
++                            { paymentMethodType: 'scheme', brands: ['mc'], displayMode: 'stored' }
++                        ],
++                        unavailablePaymentMethods: [{ paymentMethodType: 'ach', displayMode: 'stored' }]
++                    })
++                )
++            );
++        });
++
++        test('should report paymentMethods in render order, not API response order', async () => {
++            const config = getAdyenCheckoutConfiguration({
++                paymentMethodsResponse: {
++                    paymentMethods: [],
++                    storedPaymentMethods: [
++                        {
++                            id: 'stored-visa',
++                            type: 'scheme',
++                            name: 'VISA',
++                            brand: 'visa',
++                            supportedShopperInteractions: ['Ecommerce', 'ContAuth']
++                        },
++                        {
++                            id: 'stored-mc',
++                            type: 'scheme',
++                            name: 'Mastercard',
++                            brand: 'mc',
++                            supportedShopperInteractions: ['Ecommerce', 'ContAuth']
++                        }
++                    ]
++                }
++            });
++            const checkout = await createAdyenCheckout(config);
++            const sendAnalyticsSpy = jest.spyOn(checkout.modules.analytics, 'sendAnalytics');
++
++            const dropin = new Dropin(checkout, {
++                paymentMethodComponents: [Card],
++                filterStoredPaymentMethods: pms => [...pms].reverse()
++            });
++            render(dropin.render());
++
++            const flushPromises = () => new Promise(process.nextTick);
++            await flushPromises();
++
++            await waitFor(() =>
++                expect(sendAnalyticsSpy).toHaveBeenCalledWith(
++                    expect.objectContaining({
++                        type: InfoEventType.PaymentListDisplayed,
++                        component: 'dropin',
++                        availablePaymentMethods: [
++                            { paymentMethodType: 'scheme', brands: ['mc'], displayMode: 'stored' },
++                            { paymentMethodType: 'scheme', brands: ['visa'], displayMode: 'stored' }
++                        ]
++                    })
++                )
++            );
++        });
++
++        test('should ignore properties injected via filterStoredPaymentMethods in the "ready" event', async () => {
++            const config = getAdyenCheckoutConfiguration({
++                paymentMethodsResponse: {
++                    paymentMethods: [],
++                    storedPaymentMethods: [
++                        {
++                            id: 'stored-visa',
++                            type: 'scheme',
++                            name: 'VISA',
++                            supportedShopperInteractions: ['Ecommerce', 'ContAuth']
++                        }
++                    ]
++                }
++            });
++            const checkout = await createAdyenCheckout(config);
++            const sendAnalyticsSpy = jest.spyOn(checkout.modules.analytics, 'sendAnalytics');
++
++            const dropin = new Dropin(checkout, {
++                paymentMethodComponents: [Card],
++                filterStoredPaymentMethods: pms => pms.map(pm => ({ ...pm, injectedField: 'should-be-ignored' }))
++            });
++            render(dropin.render());
++
++            const flushPromises = () => new Promise(process.nextTick);
++            await flushPromises();
++
++            await waitFor(() =>
++                expect(sendAnalyticsSpy).toHaveBeenCalledWith(
++                    expect.objectContaining({
++                        type: InfoEventType.PaymentListDisplayed,
++                        component: 'dropin',
++                        availablePaymentMethods: [{ paymentMethodType: 'scheme', displayMode: 'stored' }]
++                    })
++                )
++            );
++        });
+     });
+ 
+     describe('Dropin with Fastlane', () => {
+diff --git a/packages/lib/src/components/Dropin/components/DropinComponent.tsx b/packages/lib/src/components/Dropin/components/DropinComponent.tsx
+index ee190d6f..7ba329f8 100644
+--- a/packages/lib/src/components/Dropin/components/DropinComponent.tsx
++++ b/packages/lib/src/components/Dropin/components/DropinComponent.tsx
+@@ -13,8 +13,11 @@ import type {
+     DropinStatus,
+     DropinStatusProps,
+     onOrderCancelData,
+-    onOrderCancelInternalCallback
++    onOrderCancelInternalCallback,
++    PaymentMethodDisplayMode
+ } from '../types';
++import splitPaymentMethods from '../elements/splitPaymentMethods';
++import { createAvailablePaymentsList, createUnavailablePaymentsList, type PaymentMethodDisplayModeEntry } from '../utils/paymentMethodsAnalytics';
+ import UIElement from '../../internal/UIElement';
+ import { AnalyticsInfoEvent, InfoEventType, UiTarget } from '../../../core/Analytics/events/AnalyticsInfoEvent';
+ import { DropinSuccessState } from './DropinSuccessState';
+@@ -42,8 +45,8 @@ export class DropinComponent extends Component<DropinComponentProps, DropinCompo
+         const [storedElementsPromises, elementsPromises, instantPaymentsPromises, fastlanePaymentElementPromise] = this.props.onCreateElements();
+         const orderStatusPromise = order ? getOrderStatus({ clientKey, loadingContext }, order) : null;
+ 
+-        void Promise.all([storedElementsPromises, elementsPromises, instantPaymentsPromises, fastlanePaymentElementPromise, orderStatusPromise]).then(
+-            ([storedPaymentElements, elements, instantPaymentElements, fastlanePaymentElement, orderStatus]) => {
++        void Promise.all([storedElementsPromises, elementsPromises, instantPaymentsPromises, fastlanePaymentElementPromise, orderStatusPromise])
++            .then(([storedPaymentElements, elements, instantPaymentElements, fastlanePaymentElement, orderStatus]) => {
+                 this.setState({
+                     orderStatus,
+                     elements,
+@@ -55,12 +58,58 @@ export class DropinComponent extends Component<DropinComponentProps, DropinCompo
+                 this.setStatus('ready');
+ 
+                 this.props.onElementsCreated([...instantPaymentElements, ...storedPaymentElements, ...elements, ...fastlanePaymentElement]);
+-            }
+-        );
++
++                this.reportPaymentMethodList({
++                    fastlane: fastlanePaymentElement,
++                    instant: instantPaymentElements,
++                    stored: storedPaymentElements,
++                    regular: elements
++                });
++            })
++            .catch(() => {
++                this.setStatus('error');
++            });
+ 
+         this.onOrderCancel = this.getOnOrderCancel();
+     };
+ 
++    /**
++     * Builds and sends the payment list displayed analytics event.
++     */
++    private reportPaymentMethodList = (availableElementsByDisplayMode: Record<PaymentMethodDisplayMode, UIElement[]>): void => {
++        try {
++            const { paymentMethods, storedPaymentMethods, instantPaymentMethods, fastlanePaymentMethod } = splitPaymentMethods(
++                this.props.core.paymentMethodsResponse,
++                this.props.instantPaymentTypes ?? []
++            );
++
++            const paymentMethodDisplayModes: PaymentMethodDisplayModeEntry[] = [
++                { displayMode: 'fastlane', paymentMethods: fastlanePaymentMethod ? [fastlanePaymentMethod] : [] },
++                { displayMode: 'instant', paymentMethods: instantPaymentMethods },
++                { displayMode: 'stored', paymentMethods: storedPaymentMethods },
++                { displayMode: 'regular', paymentMethods: paymentMethods }
++            ];
++
++            const availablePaymentMethods = createAvailablePaymentsList(
++                paymentMethodDisplayModes.map(e => e.displayMode),
++                availableElementsByDisplayMode,
++                this.props.core
++            );
++
++            const unavailablePaymentMethods = createUnavailablePaymentsList(paymentMethodDisplayModes, availableElementsByDisplayMode);
++
++            const dropinPaymentListDisplayedEvent = new AnalyticsInfoEvent({
++                type: InfoEventType.PaymentListDisplayed,
++                component: 'dropin',
++                availablePaymentMethods,
++                unavailablePaymentMethods
++            });
++            this.props.core.modules.analytics.sendAnalytics(dropinPaymentListDisplayedEvent);
++        } catch (error) {
++            console.warn('Drop-in: failed to report payment method list analytics', error);
++        }
++    };
++
+     public setStatus = (status: DropinStatus['type'], props: DropinStatusProps = {}) => {
+         this.setState({ status: { type: status, props } });
+     };
+diff --git a/packages/lib/src/components/Dropin/types.ts b/packages/lib/src/components/Dropin/types.ts
+index 5de32c1a..4963f672 100644
+--- a/packages/lib/src/components/Dropin/types.ts
++++ b/packages/lib/src/components/Dropin/types.ts
+@@ -32,6 +32,8 @@ type NonMappedPaymentMethodsMap = {
+ 
+ export type PaymentMethodsConfiguration = PaymentMethodsConfigurationMap & PaymentActionTypesMap & NonMappedPaymentMethodsMap;
+ 
++export type PaymentMethodDisplayMode = 'fastlane' | 'instant' | 'stored' | 'regular';
++
+ export type InstantPaymentTypes = 'paywithgoogle' | 'googlepay' | 'applepay';
+ 
+ export interface DropinConfiguration extends UIElementProps {
+diff --git a/packages/lib/src/components/Dropin/utils/paymentMethodsAnalytics.test.ts b/packages/lib/src/components/Dropin/utils/paymentMethodsAnalytics.test.ts
+new file mode 100644
+index 00000000..cbc26eed
+--- /dev/null
++++ b/packages/lib/src/components/Dropin/utils/paymentMethodsAnalytics.test.ts
+@@ -0,0 +1,247 @@
++import { mock } from 'jest-mock-extended';
++import UIElement from '../../internal/UIElement/UIElement';
++import { createAvailablePaymentsList, createUnavailablePaymentsList, type PaymentMethodDisplayModeEntry } from './paymentMethodsAnalytics';
++import type { ICore } from '../../../core/types';
++import type { PaymentMethod, StoredPaymentMethod } from '../../../core/ProcessResponse/PaymentMethods/PaymentMethods';
++import type { PaymentMethodDisplayMode } from '../types';
++
++const emptyReadyByMode: Record<PaymentMethodDisplayMode, UIElement[]> = {
++    fastlane: [],
++    instant: [],
++    stored: [],
++    regular: []
++};
++
++describe('createAvailablePaymentsList', () => {
++    const alipay: PaymentMethod = { _id: 'alipay-id', type: 'alipay', name: 'AliPay' };
++    const kakaopay: PaymentMethod = { _id: 'kakao-id', type: 'kakaopay', name: 'KakaoPay' };
++    const stored1: StoredPaymentMethod = {
++        type: 'scheme',
++        name: 'Visa',
++        id: 'stored-1',
++        supportedShopperInteractions: [],
++        storedPaymentMethodId: 'stored-1'
++    };
++
++    let core: ICore;
++
++    beforeEach(() => {
++        core = {
++            paymentMethodsResponse: {
++                findById: jest.fn().mockImplementation((id: string) => {
++                    if (id === 'alipay-id') return alipay;
++                    if (id === 'kakao-id') return kakaopay;
++                    return undefined;
++                }),
++                findStoredPaymentMethod: jest.fn().mockImplementation((id: string) => {
++                    if (id === 'stored-1') return stored1;
++                    return undefined;
++                })
++            }
++        } as unknown as ICore;
++    });
++
++    test('returns empty array when no modes have ready elements', () => {
++        const result = createAvailablePaymentsList(['fastlane', 'instant', 'stored', 'regular'], emptyReadyByMode, core);
++        expect(result).toEqual([]);
++    });
++
++    test('preserves order from display modes parameter', () => {
++        const alipayEl = mock<UIElement>({ props: { paymentMethodId: 'alipay-id' } });
++        const kakaoEl = mock<UIElement>({ props: { paymentMethodId: 'kakao-id' } });
++
++        const readyByMode: Record<PaymentMethodDisplayMode, UIElement[]> = {
++            ...emptyReadyByMode,
++            instant: [alipayEl],
++            regular: [kakaoEl]
++        };
++
++        const result = createAvailablePaymentsList(['fastlane', 'instant', 'stored', 'regular'], readyByMode, core);
++
++        expect(result).toHaveLength(2);
++        expect(result[0]).toMatchObject({ paymentMethodType: 'alipay', displayMode: 'instant' });
++        expect(result[1]).toMatchObject({ paymentMethodType: 'kakaopay', displayMode: 'regular' });
++    });
++
++    test('resolves ready payment methods across different display modes and kinds', () => {
++        const alipayEl = mock<UIElement>({ props: { paymentMethodId: 'alipay-id' } });
++        const kakaoEl = mock<UIElement>({ props: { paymentMethodId: 'kakao-id' } });
++        const storedEl = mock<UIElement>({ props: { storedPaymentMethodId: 'stored-1' } });
++
++        const readyByMode: Record<PaymentMethodDisplayMode, UIElement[]> = {
++            ...emptyReadyByMode,
++            instant: [alipayEl],
++            stored: [storedEl],
++            regular: [kakaoEl]
++        };
++
++        const result = createAvailablePaymentsList(['fastlane', 'instant', 'stored', 'regular'], readyByMode, core);
++
++        expect(result).toHaveLength(3);
++        expect(result[0]).toMatchObject({ paymentMethodType: 'alipay', displayMode: 'instant' });
++        expect(result[1]).toMatchObject({ paymentMethodType: 'scheme', displayMode: 'stored' });
++        expect(result[2]).toMatchObject({ paymentMethodType: 'kakaopay', displayMode: 'regular' });
++
++        expect(core.paymentMethodsResponse.findById).toHaveBeenCalledWith('alipay-id');
++        expect(core.paymentMethodsResponse.findById).toHaveBeenCalledWith('kakao-id');
++        expect(core.paymentMethodsResponse.findStoredPaymentMethod).toHaveBeenCalledWith('stored-1');
++    });
++});
++
++describe('createUnavailablePaymentsList', () => {
++    const alipay: PaymentMethod = { _id: 'alipay-id', type: 'alipay', name: 'AliPay' };
++    const kakaopay: PaymentMethod = { _id: 'kakao-id', type: 'kakaopay', name: 'KakaoPay' };
++
++    test('returns empty array when all baseline PMs are ready', () => {
++        const alipayEl = mock<UIElement>({ props: { paymentMethodId: 'alipay-id' } });
++
++        const displayModeEntries: PaymentMethodDisplayModeEntry[] = [{ displayMode: 'regular', paymentMethods: [alipay] }];
++        const readyByMode: Record<PaymentMethodDisplayMode, UIElement[]> = { ...emptyReadyByMode, regular: [alipayEl] };
++
++        expect(createUnavailablePaymentsList(displayModeEntries, readyByMode)).toEqual([]);
++    });
++
++    test('includes PMs absent from readyByMode', () => {
++        const ideal: PaymentMethod = { _id: 'ideal-id', type: 'ideal', name: 'iDEAL' };
++        const idealEl = mock<UIElement>({ props: { paymentMethodId: 'ideal-id' } });
++
++        const displayModeEntries: PaymentMethodDisplayModeEntry[] = [{ displayMode: 'regular', paymentMethods: [alipay, ideal, kakaopay] }];
++        const readyByMode: Record<PaymentMethodDisplayMode, UIElement[]> = { ...emptyReadyByMode, regular: [idealEl] };
++
++        const result = createUnavailablePaymentsList(displayModeEntries, readyByMode);
++
++        expect(result).toHaveLength(2);
++        expect(result[0]).toMatchObject({ paymentMethodType: 'alipay', displayMode: 'regular' });
++        expect(result[1]).toMatchObject({ paymentMethodType: 'kakaopay', displayMode: 'regular' });
++    });
++
++    test('uses storedPaymentMethodId for stored section id matching', () => {
++        const stored: StoredPaymentMethod = {
++            type: 'scheme',
++            name: 'Visa',
++            id: 'stored-1',
++            supportedShopperInteractions: [],
++            storedPaymentMethodId: 'stored-1'
++        };
++        const storedEl = mock<UIElement>({ props: { storedPaymentMethodId: 'stored-1' } });
++
++        const displayModeEntries: PaymentMethodDisplayModeEntry[] = [{ displayMode: 'stored', paymentMethods: [stored] }];
++        const readyByMode: Record<PaymentMethodDisplayMode, UIElement[]> = { ...emptyReadyByMode, stored: [storedEl] };
++
++        expect(createUnavailablePaymentsList(displayModeEntries, readyByMode)).toEqual([]);
++    });
++
++    test('excludes upi sub-variants when the upi parent is ready', () => {
++        const upi: PaymentMethod = { _id: 'upi-id', type: 'upi', name: 'UPI' };
++        const upiIntent: PaymentMethod = { _id: 'upi-intent-id', type: 'upi_intent', name: 'UPI Intent' };
++        const upiEl = mock<UIElement>({ props: { paymentMethodId: 'upi-id' } });
++
++        const displayModeEntries: PaymentMethodDisplayModeEntry[] = [{ displayMode: 'regular', paymentMethods: [upi, upiIntent] }];
++        const readyByMode: Record<PaymentMethodDisplayMode, UIElement[]> = { ...emptyReadyByMode, regular: [upiEl] };
++
++        expect(createUnavailablePaymentsList(displayModeEntries, readyByMode)).toEqual([]);
++    });
++
++    test('includes standalone upi sub-variants when no upi parent exists in the baseline', () => {
++        const upiIntent: PaymentMethod = { _id: 'upi-intent-id', type: 'upi_intent', name: 'UPI Intent' };
++        const displayModeEntries: PaymentMethodDisplayModeEntry[] = [{ displayMode: 'regular', paymentMethods: [upiIntent] }];
++
++        const result = createUnavailablePaymentsList(displayModeEntries, emptyReadyByMode);
++
++        expect(result).toHaveLength(1);
++        expect(result[0]).toMatchObject({ paymentMethodType: 'upi_intent', displayMode: 'regular' });
++    });
++});
++
++describe('analytics payment method sanitization', () => {
++    test('picks only the fixed set of safe fields', () => {
++        const scheme = {
++            _id: 'scheme-id',
++            type: 'scheme',
++            name: 'Card',
++            brands: ['visa', 'mc'],
++            brand: 'visa',
++            issuers: [{ id: 'issuer-1', name: 'Bank' }],
++            configuration: { merchantId: 'test' },
++            fundingSource: 'debit',
++            group: { name: 'Cards', paymentMethodData: 'data', type: 'scheme' }
++        } as unknown as PaymentMethod;
++        const schemeEl = mock<UIElement>({ props: { paymentMethodId: 'scheme-id' } });
++        const core = {
++            paymentMethodsResponse: { findById: jest.fn().mockReturnValue(scheme) }
++        } as unknown as ICore;
++
++        const [result] = createAvailablePaymentsList(['regular'], { ...emptyReadyByMode, regular: [schemeEl] }, core);
++
++        expect(result.paymentMethodType).toBe('scheme');
++        expect(result.brands).toEqual(['visa', 'mc']);
++        expect(result.fundingSource).toBe('debit');
++        expect(result.displayMode).toBe('regular');
++        expect(result).not.toHaveProperty('name');
++        expect(result).not.toHaveProperty('issuers');
++        expect(result).not.toHaveProperty('configuration');
++        expect(result).not.toHaveProperty('group');
++        expect(result).not.toHaveProperty('brand');
++    });
++
++    test('omits optional fields when absent on the raw object', () => {
++        const alipay = { _id: 'alipay-id', type: 'alipay', name: 'AliPay' } as PaymentMethod;
++        const alipayEl = mock<UIElement>({ props: { paymentMethodId: 'alipay-id' } });
++        const core = {
++            paymentMethodsResponse: { findById: jest.fn().mockReturnValue(alipay) }
++        } as unknown as ICore;
++
++        const [result] = createAvailablePaymentsList(['instant'], { ...emptyReadyByMode, instant: [alipayEl] }, core);
++
++        expect(result).not.toHaveProperty('brands');
++        expect(result).not.toHaveProperty('brand');
++        expect(result).not.toHaveProperty('fundingSource');
++        expect(result).not.toHaveProperty('name');
++    });
++
++    test('normalizes a single "brand" string into a "brands" array for payment methods like giftcard', () => {
++        const giftcard = { _id: 'giftcard-id', type: 'giftcard', name: 'My Store Loyalty Card', brand: 'mystore_loyal' } as PaymentMethod;
++        const giftcardEl = mock<UIElement>({ props: { paymentMethodId: 'giftcard-id' } });
++        const core = {
++            paymentMethodsResponse: { findById: jest.fn().mockReturnValue(giftcard) }
++        } as unknown as ICore;
++
++        const [result] = createAvailablePaymentsList(['regular'], { ...emptyReadyByMode, regular: [giftcardEl] }, core);
++
++        expect(result).toEqual({ paymentMethodType: 'giftcard', brands: ['mystore_loyal'], displayMode: 'regular' });
++        expect(result).not.toHaveProperty('brand');
++    });
++
++    test('strips PII and internal fields from stored payment methods', () => {
++        const stored = {
++            type: 'scheme',
++            name: 'Visa',
++            id: 'stored-1',
++            supportedShopperInteractions: [],
++            storedPaymentMethodId: 'stored-1',
++            isStoredPaymentMethod: true,
++            holderName: 'John Doe',
++            shopperEmail: 'john@example.com',
++            lastFour: '1234',
++            iban: 'NL02ABNA0123456789',
++            ownerName: 'John Doe',
++            label: 'Visa **** 1234'
++        } as unknown as StoredPaymentMethod;
++
++        const displayModeEntries: PaymentMethodDisplayModeEntry[] = [{ displayMode: 'stored', paymentMethods: [stored] }];
++
++        const [result] = createUnavailablePaymentsList(displayModeEntries, emptyReadyByMode);
++
++        expect(result).not.toHaveProperty('holderName');
++        expect(result).not.toHaveProperty('shopperEmail');
++        expect(result).not.toHaveProperty('lastFour');
++        expect(result).not.toHaveProperty('iban');
++        expect(result).not.toHaveProperty('ownerName');
++        expect(result).not.toHaveProperty('label');
++        expect(result).not.toHaveProperty('storedPaymentMethodId');
++        expect(result).not.toHaveProperty('isStoredPaymentMethod');
++        expect(result).not.toHaveProperty('name');
++        expect(result.paymentMethodType).toBe('scheme');
++        expect(result.displayMode).toBe('stored');
++    });
++});
+diff --git a/packages/lib/src/components/Dropin/utils/paymentMethodsAnalytics.ts b/packages/lib/src/components/Dropin/utils/paymentMethodsAnalytics.ts
+new file mode 100644
+index 00000000..359d7209
+--- /dev/null
++++ b/packages/lib/src/components/Dropin/utils/paymentMethodsAnalytics.ts
+@@ -0,0 +1,79 @@
++import { optionallyFilterUpiSubTxVariants } from '../elements/filters';
++import type { ICore } from '../../../core/types';
++import type UIElement from '../../internal/UIElement';
++import type { PaymentMethod, StoredPaymentMethod } from '../../../core/ProcessResponse/PaymentMethods/PaymentMethods';
++import type { PaymentMethodDisplayMode } from '../types';
++import type { AnalyticsPaymentMethod } from '../../../core/Analytics/events/AnalyticsInfoEvent';
++
++export interface PaymentMethodDisplayModeEntry {
++    displayMode: PaymentMethodDisplayMode;
++    paymentMethods: Array<PaymentMethod | StoredPaymentMethod>;
++}
++
++/**
++ * Maps a raw /paymentMethods entry to the analytics-safe shape.
++ * Allow-list only: StoredPaymentMethod carries PII (holderName, shopperEmail, …) that must never reach analytics.
++ */
++function toAnalyticsPaymentMethod(
++    paymentMethod: PaymentMethod | StoredPaymentMethod,
++    displayMode: PaymentMethodDisplayMode
++): AnalyticsPaymentMethod<PaymentMethodDisplayMode> {
++    const { type, brand, brands, fundingSource } = paymentMethod;
++    const brandFallback = brand !== undefined ? [brand] : undefined;
++    const normalizedBrands = brands ?? brandFallback;
++    return {
++        paymentMethodType: type,
++        ...(normalizedBrands !== undefined && { brands: normalizedBrands }),
++        ...(fundingSource !== undefined && { fundingSource }),
++        displayMode
++    };
++}
++
++/**
++ * Payment methods present in the /paymentMethods response that Drop-in did not render,
++ * for any reason, EXCEPT UPI sub-variants collapsed into a rendered `upi` parent.
++ */
++export function createUnavailablePaymentsList(
++    displayModeEntries: PaymentMethodDisplayModeEntry[],
++    elementsByDisplayMode: Record<PaymentMethodDisplayMode, UIElement[]>
++): AnalyticsPaymentMethod<PaymentMethodDisplayMode>[] {
++    return displayModeEntries.flatMap(entry => {
++        const isStored = entry.displayMode === 'stored';
++
++        const readyIds = new Set(
++            (elementsByDisplayMode[entry.displayMode] || []).map(element =>
++                isStored ? element.props.storedPaymentMethodId : element.props.paymentMethodId
++            )
++        );
++
++        return optionallyFilterUpiSubTxVariants(entry.paymentMethods)
++            .filter(paymentMethod => {
++                const id = isStored ? (paymentMethod as StoredPaymentMethod).storedPaymentMethodId : (paymentMethod as PaymentMethod)._id;
++                return !readyIds.has(id);
++            })
++            .map(paymentMethod => toAnalyticsPaymentMethod(paymentMethod, entry.displayMode));
++    });
++}
++
++/**
++ * Builds the ordered list of ready payment methods for the Drop-in analytics event
++ * preserving the ordered display mode's parameter order.
++ */
++export function createAvailablePaymentsList(
++    orderedDisplayModes: PaymentMethodDisplayMode[],
++    elementsByDisplayMode: Record<PaymentMethodDisplayMode, UIElement[]>,
++    core: ICore
++): AnalyticsPaymentMethod<PaymentMethodDisplayMode>[] {
++    return orderedDisplayModes.flatMap(displayMode =>
++        (elementsByDisplayMode[displayMode] || [])
++            .map(element => {
++                const isStored = displayMode === 'stored';
++                const id = isStored ? element.props.storedPaymentMethodId : element.props.paymentMethodId;
++                if (!id) return undefined;
++
++                const raw = isStored ? core.paymentMethodsResponse.findStoredPaymentMethod(id) : core.paymentMethodsResponse.findById(id);
++                return raw ? toAnalyticsPaymentMethod(raw, displayMode) : undefined;
++            })
++            .filter((paymentMethod): paymentMethod is AnalyticsPaymentMethod<PaymentMethodDisplayMode> => paymentMethod !== undefined)
++    );
++}
+diff --git a/packages/lib/src/components/ThreeDS2/callSubmit3DS2Fingerprint.ts b/packages/lib/src/components/ThreeDS2/callSubmit3DS2Fingerprint.ts
+index 7c5765b9..43080f23 100644
+--- a/packages/lib/src/components/ThreeDS2/callSubmit3DS2Fingerprint.ts
++++ b/packages/lib/src/components/ThreeDS2/callSubmit3DS2Fingerprint.ts
+@@ -100,7 +100,7 @@ export default function callSubmit3DS2Fingerprint({ data }): void {
+              */
+             if (resData.action?.type === 'threeDS2') {
+                 // Ensure challengeWindowSize is propagated if there was a (merchant defined) handleAction call proceeding this one that had it set as an option
+-                return actionHandler.handleAction(resData.action, pick('challengeWindowSize').from(this.props));
++                return actionHandler.handleAction(resData.action, pick('challengeWindowSize', 'usePasskeyIFrameAttributes').from(this.props));
+             }
+ 
+             /**
+diff --git a/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.test.tsx b/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.test.tsx
+new file mode 100644
+index 00000000..b447fb7e
+--- /dev/null
++++ b/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.test.tsx
+@@ -0,0 +1,60 @@
++import { h } from 'preact';
++import { render } from '@testing-library/preact';
++import DoChallenge3DS2 from './DoChallenge3DS2';
++import { PASSKEY_3DS2_IFRAME_ALLOW, PASSKEY_VISA_IFRAME_ALLOW, PASSKEY_VISA_IFRAME_SANDBOX } from '../../constants';
++
++let mockIframeProps: any = {};
++
++jest.mock('../../../internal/IFrame', () => ({
++    __esModule: true,
++    default: function MockIframe(props: Record<string, unknown>) {
++        mockIframeProps = props;
++        return null;
++    }
++}));
++
++const defaultProps = {
++    acsURL: 'https://pal-test.adyen.com/threeds2simulator/acs/challenge.shtml',
++    cReqData: {
++        acsTransID: '4bc7960d',
++        messageVersion: '2.1.0',
++        threeDSServerTransID: '3fc4ead',
++        messageType: 'CReq',
++        challengeWindowSize: '02'
++    },
++    iframeSizeArr: ['390px', '400px'],
++    postMessageDomain: 'https://checkoutshopper-test.adyen.com',
++    onCompleteChallenge: jest.fn(),
++    onErrorChallenge: jest.fn(),
++    onActionHandled: jest.fn(),
++    onFormSubmit: jest.fn()
++};
++
++describe('DoChallenge3DS2', () => {
++    describe('Passkey iframe attributes', () => {
++        beforeEach(() => {
++            mockIframeProps = {};
++        });
++
++        test('should set default allow attribute and no sandbox when usePasskeyIFrameAttributes is not set', () => {
++            render(<DoChallenge3DS2 {...defaultProps} />);
++
++            expect(mockIframeProps.allow).toBe(PASSKEY_3DS2_IFRAME_ALLOW);
++            expect(mockIframeProps.sandbox).toBeUndefined();
++        });
++
++        test('should set default allow attribute and no sandbox when usePasskeyIFrameAttributes is false', () => {
++            render(<DoChallenge3DS2 {...defaultProps} usePasskeyIFrameAttributes={false} />);
++
++            expect(mockIframeProps.allow).toBe(PASSKEY_3DS2_IFRAME_ALLOW);
++            expect(mockIframeProps.sandbox).toBeUndefined();
++        });
++
++        test('should set Visa passkey allow and sandbox attributes when usePasskeyIFrameAttributes is true', () => {
++            render(<DoChallenge3DS2 {...defaultProps} usePasskeyIFrameAttributes={true} />);
++
++            expect(mockIframeProps.allow).toBe(PASSKEY_VISA_IFRAME_ALLOW);
++            expect(mockIframeProps.sandbox).toBe(PASSKEY_VISA_IFRAME_SANDBOX);
++        });
++    });
++});
+diff --git a/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx b/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx
+index 1929a8e6..19a8b6bd 100644
+--- a/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx
++++ b/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx
+@@ -6,7 +6,7 @@ import ThreeDS2Form from '../Form';
+ import getProcessMessageHandler from '../../../../utils/get-process-message-handler';
+ import { encodeBase64URL } from '../utils';
+ import promiseTimeout from '../../../../utils/promiseTimeout';
+-import { CHALLENGE_TIMEOUT, CHALLENGE_TIMEOUT_REJECT_OBJECT, THREEDS2_NUM } from '../../constants';
++import { CHALLENGE_TIMEOUT, CHALLENGE_TIMEOUT_REJECT_OBJECT, THREEDS2_NUM, PASSKEY_VISA_IFRAME_ALLOW, PASSKEY_3DS2_IFRAME_ALLOW, PASSKEY_VISA_IFRAME_SANDBOX } from '../../constants';
+ import { DoChallenge3DS2Props, DoChallenge3DS2State } from './types';
+ import { ThreeDS2FlowObject } from '../../types';
+ 
+@@ -67,7 +67,7 @@ class DoChallenge3DS2 extends Component<DoChallenge3DS2Props, DoChallenge3DS2Sta
+         window.removeEventListener('message', this.processMessageHandler);
+     }
+ 
+-    render({ acsURL, cReqData, iframeSizeArr, onFormSubmit }: DoChallenge3DS2Props, { base64URLencodedData, status }: DoChallenge3DS2State) {
++    render({ acsURL, cReqData, iframeSizeArr, onFormSubmit, usePasskeyIFrameAttributes }: DoChallenge3DS2Props, { base64URLencodedData, status }: DoChallenge3DS2State) {
+         const [width, height] = iframeSizeArr;
+ 
+         return (
+@@ -79,7 +79,14 @@ class DoChallenge3DS2 extends Component<DoChallenge3DS2Props, DoChallenge3DS2Sta
+             >
+                 {status !== 'iframeLoaded' && <Spinner />}
+ 
+-                <Iframe name={iframeName} width={width} height={height} callback={this.iframeCallback} />
++                <Iframe
++                    name={iframeName}
++                    width={width}
++                    height={height}
++                    callback={this.iframeCallback}
++                    allow={usePasskeyIFrameAttributes ? PASSKEY_VISA_IFRAME_ALLOW : PASSKEY_3DS2_IFRAME_ALLOW}
++                    sandbox={usePasskeyIFrameAttributes ? PASSKEY_VISA_IFRAME_SANDBOX : undefined}
++                />
+                 <ThreeDS2Form
+                     name={'cReqForm'}
+                     action={acsURL}
+diff --git a/packages/lib/src/components/ThreeDS2/components/Challenge/PrepareChallenge3DS2.test.tsx b/packages/lib/src/components/ThreeDS2/components/Challenge/PrepareChallenge3DS2.test.tsx
+index 326fcb2d..e5f5ec9e 100644
+--- a/packages/lib/src/components/ThreeDS2/components/Challenge/PrepareChallenge3DS2.test.tsx
++++ b/packages/lib/src/components/ThreeDS2/components/Challenge/PrepareChallenge3DS2.test.tsx
+@@ -44,9 +44,12 @@ const completeFunction = jest.fn();
+ 
+ let mockCallbacks: any = {};
+ 
++let mockDoChallengeProps: any = {};
++
+ jest.mock('./DoChallenge3DS2', () => ({
+     __esModule: true,
+     default: function MockDoChallenge(props) {
++        mockDoChallengeProps = props;
+         mockCallbacks = {
+             onCompleteChallenge: props.onCompleteChallenge,
+             onErrorChallenge: props.onErrorChallenge
+@@ -70,6 +73,7 @@ describe('PrepareChallenge3DS2 - Happy flow', () => {
+         onError = jest.fn();
+         onSubmitAnalytics = jest.fn();
+         mockCallbacks = {};
++        mockDoChallengeProps = {};
+     });
+ 
+     test('should not throw an error when passing correct properties', () => {
+@@ -116,6 +120,7 @@ describe('PrepareChallenge3DS2 - flow completes with errors that are considered
+         onError = jest.fn();
+         onSubmitAnalytics = jest.fn();
+         mockCallbacks = {};
++        mockDoChallengeProps = {};
+     });
+ 
+     test('should fire timeout analytics when challenge times out', async () => {
+@@ -195,6 +200,7 @@ describe('PrepareChallenge3DS2 - unhappy flows', () => {
+         });
+ 
+         onSubmitAnalytics = jest.fn(() => {});
++        mockDoChallengeProps = {};
+     });
+ 
+     test('should call onError and onSubmitAnalytics when token is missing from props', () => {
+@@ -350,3 +356,36 @@ describe('PrepareChallenge3DS2 - unhappy flows', () => {
+         expect(onSubmitAnalytics).toHaveBeenCalledTimes(1);
+     });
+ });
++
++describe('PrepareChallenge3DS2 - usePasskeyIFrameAttributes', () => {
++    beforeEach(() => {
++        onError = jest.fn();
++        onSubmitAnalytics = jest.fn();
++        mockCallbacks = {};
++        mockDoChallengeProps = {};
++    });
++
++    test('should pass usePasskeyIFrameAttributes to DoChallenge3DS2 when set to true', () => {
++        prepareProps();
++
++        renderPrepareChallenge({ ...propsMaster, usePasskeyIFrameAttributes: true });
++
++        expect(mockDoChallengeProps.usePasskeyIFrameAttributes).toBe(true);
++    });
++
++    test('should pass usePasskeyIFrameAttributes to DoChallenge3DS2 when set to false', () => {
++        prepareProps();
++
++        renderPrepareChallenge({ ...propsMaster, usePasskeyIFrameAttributes: false });
++
++        expect(mockDoChallengeProps.usePasskeyIFrameAttributes).toBe(false);
++    });
++
++    test('should not pass usePasskeyIFrameAttributes to DoChallenge3DS2 when not set', () => {
++        prepareProps();
++
++        renderPrepareChallenge(propsMaster);
++
++        expect(mockDoChallengeProps.usePasskeyIFrameAttributes).toBeUndefined();
++    });
++});
+diff --git a/packages/lib/src/components/ThreeDS2/components/Challenge/PrepareChallenge3DS2.tsx b/packages/lib/src/components/ThreeDS2/components/Challenge/PrepareChallenge3DS2.tsx
+index 56ba1312..9583b27a 100644
+--- a/packages/lib/src/components/ThreeDS2/components/Challenge/PrepareChallenge3DS2.tsx
++++ b/packages/lib/src/components/ThreeDS2/components/Challenge/PrepareChallenge3DS2.tsx
+@@ -350,6 +350,7 @@ class PrepareChallenge3DS2 extends Component<PrepareChallenge3DS2Props, PrepareC
+                     {...challengeData}
+                     onActionHandled={this.props.onActionHandled}
+                     onFormSubmit={this.onFormSubmit}
++                    usePasskeyIFrameAttributes={this.props.usePasskeyIFrameAttributes}
+                 />
+             );
+         }
+diff --git a/packages/lib/src/components/ThreeDS2/components/Challenge/types.ts b/packages/lib/src/components/ThreeDS2/components/Challenge/types.ts
+index 826780ed..c21256ad 100644
+--- a/packages/lib/src/components/ThreeDS2/components/Challenge/types.ts
++++ b/packages/lib/src/components/ThreeDS2/components/Challenge/types.ts
+@@ -8,6 +8,7 @@ export interface DoChallenge3DS2Props extends ChallengeData {
+     onErrorChallenge: (rejectObject: ThreeDS2FlowObject) => void;
+     onActionHandled: (rtnObj: ActionHandledReturnObject) => void;
+     onFormSubmit: (msg: string) => void;
++    usePasskeyIFrameAttributes?: boolean;
+ }
+ 
+ export interface DoChallenge3DS2State {
+diff --git a/packages/lib/src/components/ThreeDS2/constants.ts b/packages/lib/src/components/ThreeDS2/constants.ts
+index b68831d6..c737cdb6 100644
+--- a/packages/lib/src/components/ThreeDS2/constants.ts
++++ b/packages/lib/src/components/ThreeDS2/constants.ts
+@@ -42,6 +42,10 @@ export const FAILED_METHOD_STATUS_RESOLVE_OBJECT_TIMEOUT: ThreeDS2FlowObject = {
+     errorCode: TIMEOUT
+ };
+ 
++export const PASSKEY_3DS2_IFRAME_ALLOW = 'payment *; publickey-credentials-get *';
++export const PASSKEY_VISA_IFRAME_ALLOW = 'payment *; publickey-credentials-get *; publickey-credentials-create *';
++export const PASSKEY_VISA_IFRAME_SANDBOX = 'allow-forms allow-same-origin allow-scripts allow-pointer-lock allow-popups';
++
+ // Re. EMV 3-D Specification: EMVCo_3DS_Spec_210_1017.pdf
+ export const CHALLENGE_WINDOW_SIZES = {
+     '01': ['250px', '400px'],
+diff --git a/packages/lib/src/components/ThreeDS2/types.ts b/packages/lib/src/components/ThreeDS2/types.ts
+index 77bb98a8..a105b6e9 100644
+--- a/packages/lib/src/components/ThreeDS2/types.ts
++++ b/packages/lib/src/components/ThreeDS2/types.ts
+@@ -38,6 +38,12 @@ interface ThreeDS2Configuration extends UIElementProps {
+     token?: string;
+     type?: string;
+     challengeWindowSize?: ChallengeWindowSize;
++    /**
++     * @internal Visa Passkey only. Requires isMDFlow.
++     * When true, adds sandbox and allow attributes to the challenge iframe
++     * for WebAuthn credential creation/retrieval.
++     */
++    usePasskeyIFrameAttributes?: boolean;
+ }
+ 
+ export interface ThreeDS2DeviceFingerprintConfiguration extends ThreeDS2Configuration {
+@@ -174,6 +180,12 @@ export type ThreeDS2ConfigProps = {
+     readonly clientKey: string;
+     readonly paymentMethodType: string;
+     readonly challengeWindowSize?: ChallengeWindowSize;
++    /**
++     * @internal Visa Passkey only. Requires isMDFlow.
++     * When true, adds sandbox and allow attributes to the challenge iframe
++     * for WebAuthn credential creation/retrieval.
++     */
++    readonly usePasskeyIFrameAttributes?: boolean;
+     readonly isMDFlow?: boolean;
+     readonly modules?: {
+         readonly analytics?: IAnalytics;
+@@ -187,4 +199,4 @@ export type ThreeDS2ConfigProps = {
+     readonly i18n?: Language;
+ };
+ 
+-export type ThreeDS2ActionProps = CardConfiguration & Pick<ThreeDS2ConfigProps, 'isMDFlow' | 'on3DS2RedirectFlowComplete'>;
++export type ThreeDS2ActionProps = CardConfiguration & Pick<ThreeDS2ConfigProps, 'isMDFlow' | 'on3DS2RedirectFlowComplete' | 'usePasskeyIFrameAttributes'>;
+diff --git a/packages/lib/src/components/internal/Address/Address.test.tsx b/packages/lib/src/components/internal/Address/Address.test.tsx
+index 95310340..f0fc0bd5 100644
+--- a/packages/lib/src/components/internal/Address/Address.test.tsx
++++ b/packages/lib/src/components/internal/Address/Address.test.tsx
+@@ -3,7 +3,7 @@ import Address from './Address';
+ import getDataset from '../../../core/Services/get-dataset';
+ import { AddressSpecifications } from './types';
+ import { AddressData } from '../../../types';
+-import { FALLBACK_VALUE } from './constants';
++import { FALLBACK_VALUE, PARTIAL_ADDRESS_SCHEMA } from './constants';
+ import { render, screen, waitFor } from '@testing-library/preact';
+ import userEvent from '@testing-library/user-event';
+ import { CoreProvider } from '../../../core/Context/CoreProvider';
+@@ -323,6 +323,58 @@ describe('Address', () => {
+             });
+         });
+ 
++        test('should regionalize the postal code label in partial address mode using the country from the merchant config', async () => {
++            const allowedCountries = Object.keys(countrySpecificFormatters);
++            customRender(
++                <Address
++                    data={{ country: 'US' }}
++                    specifications={PARTIAL_ADDRESS_SCHEMA}
++                    requiredFields={['postalCode']}
++                    allowedCountries={allowedCountries}
++                />
++            );
++
++            expect(await screen.findByRole('textbox', { name: /Zip code/ })).toBeInTheDocument();
++        });
++
++        describe.each`
++            countryCode | raw                | expected
++            ${'US'}     | ${'1234599999999'} | ${'12345'}
++            ${'BR'}     | ${'12345678999'}   | ${'12345678'}
++            ${'PL'}     | ${'99-99999999'}   | ${'99-999'}
++            ${'us'}     | ${'1234599999999'} | ${'12345'}
++            ${'br'}     | ${'12345678999'}   | ${'12345678'}
++        `('Format post code in partial address mode', ({ countryCode, raw, expected }) => {
++            it(`should format the post code being typed for ${countryCode}, using the country from the merchant config`, async () => {
++                const user = userEvent.setup();
++                customRender(<Address data={{ country: countryCode }} specifications={PARTIAL_ADDRESS_SCHEMA} requiredFields={['postalCode']} />);
++
++                const postCode = await screen.findByRole('textbox', { name: /code/ });
++                await user.type(postCode, raw);
++                expect(postCode).toHaveValue(expected);
++            });
++        });
++
++        test('should regionalize the postal code label in partial address mode when the country is in lowercase', async () => {
++            customRender(<Address data={{ country: 'us' }} specifications={PARTIAL_ADDRESS_SCHEMA} requiredFields={['postalCode']} />);
++            expect(await screen.findByRole('textbox', { name: /Zip code/ })).toBeInTheDocument();
++        });
++
++        test('should emit an uppercased country when the merchant configures it in lowercase', async () => {
++            const onChangeMock = jest.fn();
++            customRender(
++                <Address data={{ country: 'us' }} specifications={PARTIAL_ADDRESS_SCHEMA} requiredFields={['postalCode']} onChange={onChangeMock} />
++            );
++            await waitFor(() =>
++                expect(onChangeMock).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ country: 'US' }) }))
++            );
++        });
++
++        test('should preselect the country in the country dropdown when the country is in lowercase', async () => {
++            customRender(<Address data={{ country: 'us' }} allowedCountries={['US', 'CA']} onChange={jest.fn()} />);
++            expect(await screen.findByRole('combobox', { name: 'Country/Region' })).toHaveValue('United States');
++        });
++
+         test("should show proper 'Zip Code' label for US", async () => {
+             const allowedCountries = Object.keys(countrySpecificFormatters);
+             const countryCode = 'US';
+diff --git a/packages/lib/src/components/internal/Address/Address.tsx b/packages/lib/src/components/internal/Address/Address.tsx
+index 50f6e1cd..4d3192a4 100644
+--- a/packages/lib/src/components/internal/Address/Address.tsx
++++ b/packages/lib/src/components/internal/Address/Address.tsx
+@@ -9,7 +9,7 @@ import { AddressData } from '../../../types/global-types';
+ import FieldContainer from './components/FieldContainer';
+ import useForm from '../../../utils/useForm';
+ import Specifications from './Specifications';
+-import { ADDRESS_SCHEMA, FALLBACK_VALUE } from './constants';
++import { ADDRESS_SCHEMA, COUNTRY, FALLBACK_VALUE } from './constants';
+ import { getMaxLengthByFieldAndCountry } from '../../../utils/validator-utils';
+ import { useCoreContext } from '../../../core/Context/CoreProvider';
+ import AddressSearch from './components/AddressSearch';
+@@ -46,20 +46,23 @@ export default function Address(props: Readonly<AddressProps>) {
+ 
+     const showAddressFields = props.onAddressLookup ? hasSelectedAddress || useManualAddress : true;
+ 
++    // In partial address mode the country field is not rendered, so it is absent from the address schema.
++    // The country the merchant configured must still be part of the form data for country dependent rules to be applied.
++    const merchantCountry = (props.data as AddressData)?.country;
++    const formSchema = merchantCountry && !requiredFieldsSchema.includes(COUNTRY) ? [...requiredFieldsSchema, COUNTRY] : requiredFieldsSchema;
++    const defaultData = useMemo<AddressData>(
++        () => (merchantCountry ? { ...props.data, country: merchantCountry.toUpperCase() } : (props.data)),
++        [props.data, merchantCountry]
++    );
++
+     const { data, errors, valid, isValid, handleChangeFor, triggerValidation, setData, mergeData } = useForm<AddressData>({
+-        schema: requiredFieldsSchema,
+-        defaultData: props.data,
++        schema: formSchema,
++        defaultData,
+         // Ensure any passed validation rules are merged with the default ones
+         rules: { ...getAddressValidationRules(specifications), ...props.validationRules },
+         formatters: addressFormatters
+     });
+ 
+-    // In partial address mode, country is not in the form schema but we need it for regionalized labels.
+-    // Store the merchant's country config once at mount, then use it if form data doesn't have country.
+-    const initialCountryRef = useRef<string | undefined>((props.data as AddressData)?.country);
+-    const effectiveCountry = (data.country || initialCountryRef.current)?.toUpperCase();
+-    const dataWithCountry = useMemo(() => ({ ...data, country: effectiveCountry }), [data, effectiveCountry]);
+-
+     const setSearchData = useCallback(
+         (selectedAddress: AddressData) => {
+             const propsKeysToProcess = ADDRESS_SCHEMA;
+@@ -145,19 +148,14 @@ export default function Address(props: Readonly<AddressProps>) {
+             const isOptional = optionalFields.includes(cur);
+             const isRequired = requiredFields.includes(cur);
+             const newValue = data[cur];
+-            const initialValue = props.data[cur];
++            const initialValue = defaultData[cur];
+             // recover default data values which are not requiredFields, or prefill with 'N/A'
+-            const fallbackValue = !isRequired && !newValue && !!initialValue ? initialValue : FALLBACK_VALUE;
++            const fallbackValue = !isRequired && initialValue ? initialValue : FALLBACK_VALUE;
+             const value = (isOptional && !newValue) || !isRequired ? fallbackValue : newValue;
+             if (value?.length) acc[cur] = value;
+             return acc;
+         }, {});
+ 
+-        // In partial address mode, ensure country is included in output for regionalized labels/validation.
+-        if (!(processedData as AddressData).country && initialCountryRef.current) {
+-            (processedData as AddressData).country = initialCountryRef.current;
+-        }
+-
+         props.onChange({ data: processedData, valid, errors, isValid });
+     }, [data, valid, errors, isValid]);
+ 
+@@ -172,7 +170,7 @@ export default function Address(props: Readonly<AddressProps>) {
+                 key={fieldName}
+                 allowedCountries={props.allowedCountries}
+                 classNameModifiers={[...classNameModifiers, fieldName]}
+-                data={dataWithCountry}
++                data={data}
+                 errors={errors}
+                 valid={valid}
+                 fieldName={fieldName}
+@@ -180,7 +178,7 @@ export default function Address(props: Readonly<AddressProps>) {
+                 onBlur={handleChangeFor(fieldName, 'blur')}
+                 onDropdownChange={handleChangeFor(fieldName, 'blur')}
+                 specifications={specifications}
+-                maxLength={getMaxLengthByFieldAndCountry(countrySpecificFormatters, fieldName, effectiveCountry, true)}
++                maxLength={getMaxLengthByFieldAndCountry(countrySpecificFormatters, fieldName, data.country, true)}
+                 trimOnBlur={true}
+                 disabled={!enabledFields.includes(fieldName)}
+                 addressType={addressType}
+diff --git a/packages/lib/src/components/internal/Address/validate.formats.ts b/packages/lib/src/components/internal/Address/validate.formats.ts
+index 1e837a98..5c4ec86e 100644
+--- a/packages/lib/src/components/internal/Address/validate.formats.ts
++++ b/packages/lib/src/components/internal/Address/validate.formats.ts
+@@ -1,3 +1,4 @@
++import { FormatterContext } from '../../../utils/Formatters/types';
+ import { CountryFormatRules, FormatRules } from '../../../utils/Validator/types';
+ import { Formatter } from '../../../utils/useForm/types';
+ import { getFormattingRegEx, SPECIAL_CHARS } from '../../../utils/validator-utils';
+@@ -19,7 +20,7 @@ const formattingFn = (val: string) => val.replace(specialCharsRegEx, '');
+ 
+ export const addressFormatters: FormatRules = {
+     postalCode: {
+-        formatterFn: (val, context) => {
++        formatterFn: (val: string, context: FormatterContext) => {
+             const country = context.state.data.country;
+ 
+             // Country specific formatting rule
+diff --git a/packages/lib/src/components/internal/Address/validate.test.ts b/packages/lib/src/components/internal/Address/validate.test.ts
+index d8a7410a..dab4ff32 100644
+--- a/packages/lib/src/components/internal/Address/validate.test.ts
++++ b/packages/lib/src/components/internal/Address/validate.test.ts
+@@ -63,11 +63,20 @@ describe('validatePostalCode', () => {
+         expect(result).toBe(true);
+     });
+ 
+-    // It fails because createPatternByDigits actually just check if there's at least X amount of digits
+-    // it('should return false for an invalid US postal code with more than 5 digits without a hyphen', () => {
+-    //     const result = validatePostalCode('1234567', 'US', validatorRules);
+-    //     expect(result).toBe(false);
+-    // });
++    it('should return false for an invalid US postal code with more than 5 digits without a hyphen', () => {
++        const result = validatePostalCode('1234567', 'US', validatorRules);
++        expect(result).toBe(false);
++    });
++
++    it('should return true for a valid 9-digit US postal code with a hyphen', () => {
++        const result = validatePostalCode('12345-6789', 'US', validatorRules);
++        expect(result).toBe(true);
++    });
++
++    it('should return false for an invalid 9-digit US postal code', () => {
++        const result = validatePostalCode('12345-678', 'US', validatorRules);
++        expect(result).toBe(false);
++    });
+ 
+     // General
+     it('should return null if the postal code is empty', () => {
+diff --git a/packages/lib/src/components/internal/Address/validate.ts b/packages/lib/src/components/internal/Address/validate.ts
+index 40ed5174..11bc608d 100644
+--- a/packages/lib/src/components/internal/Address/validate.ts
++++ b/packages/lib/src/components/internal/Address/validate.ts
+@@ -71,7 +71,7 @@ const postalCodePatterns = {
+     SE: createPatternByDigits(5),
+     SG: createPatternByDigits(6),
+     SK: createPatternByDigits(5),
+-    US: createPatternByDigits(5)
++    US: { pattern: /^\d{5}(?:-\d{4})?$/ }
+ };
+ 
+ /**
+diff --git a/packages/lib/src/components/internal/IFrame/Iframe.tsx b/packages/lib/src/components/internal/IFrame/Iframe.tsx
+index 3ba29865..2bee6db8 100644
+--- a/packages/lib/src/components/internal/IFrame/Iframe.tsx
++++ b/packages/lib/src/components/internal/IFrame/Iframe.tsx
+@@ -12,6 +12,7 @@ interface IframeProps {
+     allow?: string;
+     name?: string;
+     title?: string;
++    sandbox?: string;
+     classNameModifiers?: string[];
+     callback?: (contentWindow) => void;
+ }
+@@ -58,7 +59,7 @@ class Iframe extends Component<Readonly<IframeProps>> {
+         }
+     }
+ 
+-    render({ name, src, width, height, minWidth, minHeight, allow, title, classNameModifiers }: IframeProps) {
++    render({ name, src, width, height, minWidth, minHeight, allow, title, sandbox, classNameModifiers }: IframeProps) {
+         const validClassNameModifiers = classNameModifiers.filter(m => !!m);
+ 
+         return (
+@@ -82,6 +83,7 @@ class Iframe extends Component<Readonly<IframeProps>> {
+                 referrerpolicy="origin"
+                 min-width={minWidth}
+                 min-height={minHeight}
++                sandbox={sandbox}
+                 /* eslint-enable react/no-unknown-property */
+             />
+         );
+diff --git a/packages/lib/src/core/Analytics/events/AnalyticsInfoEvent.ts b/packages/lib/src/core/Analytics/events/AnalyticsInfoEvent.ts
+index f0a079e0..1eb26ce0 100644
+--- a/packages/lib/src/core/Analytics/events/AnalyticsInfoEvent.ts
++++ b/packages/lib/src/core/Analytics/events/AnalyticsInfoEvent.ts
+@@ -1,6 +1,13 @@
+ import { AbstractAnalyticsEvent, AnalyticsEventCategory } from './AbstractAnalyticsEvent';
+ import { mapErrorCodesForAnalytics } from '../utils';
+ 
++export type AnalyticsPaymentMethod<DisplayMode extends string = string> = {
++    paymentMethodType: string;
++    brands?: string[];
++    fundingSource?: 'debit' | 'credit' | 'prepaid';
++    displayMode: DisplayMode;
++};
++
+ type AnalyticsInfoEventProps = {
+     type: InfoEventType;
+     component: string;
+@@ -16,6 +23,8 @@ type AnalyticsInfoEventProps = {
+     cdnUrl?: string;
+     selectedValue?: string;
+     presentedValues?: Array<string>;
++    availablePaymentMethods?: AnalyticsPaymentMethod[];
++    unavailablePaymentMethods?: AnalyticsPaymentMethod[];
+ };
+ 
+ export enum UiTarget {
+@@ -70,7 +79,8 @@ export enum InfoEventType {
+     OtpFailed = 'otpFailed',
+     AddressSelectorClicked = 'addressSelectorClicked',
+     AddressSelectorClosed = 'addressSelectorClosed',
+-    AddressChanged = 'addressChanged'
++    AddressChanged = 'addressChanged',
++    PaymentListDisplayed = 'paymentListDisplayed'
+ }
+ 
+ export class AnalyticsInfoEvent extends AbstractAnalyticsEvent {
+@@ -94,6 +104,8 @@ export class AnalyticsInfoEvent extends AbstractAnalyticsEvent {
+     private readonly validationErrorCode?: string;
+     private readonly validationErrorMessage?: string;
+     private readonly presentedValues?: string[];
++    private readonly availablePaymentMethods?: AnalyticsPaymentMethod[];
++    private readonly unavailablePaymentMethods?: AnalyticsPaymentMethod[];
+ 
+     /**
+      *  Third party script URL's (e.g. Apple Pay)
+@@ -116,6 +128,8 @@ export class AnalyticsInfoEvent extends AbstractAnalyticsEvent {
+         if (props.validationErrorCode) this.validationErrorCode = props.validationErrorCode;
+         if (props.validationErrorMessage) this.validationErrorMessage = props.validationErrorMessage;
+         if (props.presentedValues) this.presentedValues = props.presentedValues;
++        if (props.availablePaymentMethods) this.availablePaymentMethods = props.availablePaymentMethods;
++        if (props.unavailablePaymentMethods) this.unavailablePaymentMethods = props.unavailablePaymentMethods;
+         if (this.type === InfoEventType.rendered) {
+             this.configData = this.createAnalyticsConfigData(props?.configData);
+         }
+diff --git a/packages/lib/src/core/ProcessResponse/PaymentAction/actionTypes.ts b/packages/lib/src/core/ProcessResponse/PaymentAction/actionTypes.ts
+index f35af9e1..6bc620c0 100644
+--- a/packages/lib/src/core/ProcessResponse/PaymentAction/actionTypes.ts
++++ b/packages/lib/src/core/ProcessResponse/PaymentAction/actionTypes.ts
+@@ -67,6 +67,7 @@ const actionTypes = {
+             clientKey: props.clientKey,
+             paymentMethodType: props.paymentMethodType,
+             challengeWindowSize: props.challengeWindowSize, // always pass challengeWindowSize in case it's been set directly in the handleAction config object
++            usePasskeyIFrameAttributes: props.usePasskeyIFrameAttributes,
+             isMDFlow: props.isMDFlow,
+             modules: {
+                 analytics: props.modules?.analytics,
+diff --git a/packages/lib/src/utils/Formatters/types.ts b/packages/lib/src/utils/Formatters/types.ts
+index 7c2692f0..84a8fca1 100644
+--- a/packages/lib/src/utils/Formatters/types.ts
++++ b/packages/lib/src/utils/Formatters/types.ts
+@@ -1,11 +1,10 @@
+ // Context holds state data for the input field implementing this.
+-export type FormatterFn = (
+-    value: string,
+-    context?: {
+-        state: {
+-            data: {
+-                country?: string;
+-            };
++export type FormatterFn = (value: string, context?: FormatterContext) => string;
++
++export type FormatterContext = {
++    state: {
++        data: {
++            country?: string;
+         };
+-    }
+-) => string;
++    };
++};

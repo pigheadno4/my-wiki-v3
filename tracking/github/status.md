@@ -176,6 +176,32 @@
   Release: [manifest](../../raw/github/paypal/paypal-ios/releases/paypal-ios/2.0.1/2026-07-31/manifest.json)
   Comparison: Not applicable
 
+## `github-60b7545cc0ad3999d886`
+
+- Repository: `adyen/adyen-web`
+- SHA: `c98ea8a7fe3c504075509755a0eda2264042d076`
+- Collection date: `2026-08-09`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-web/snapshots/2026-08-09-c98ea8a/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-web/ingest-packets/github-60b7545cc0ad3999d886/packet.md)
+- Evidence attachment: [manifest](repos/adyen/adyen-web/evidence-attachments/github-60b7545cc0ad3999d886/attachment.json)
+- Review priority: `high`
+- Required reading: `31` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/adyen-web@6.41.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.41.1/2026-08-09/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.41.0--6.41.1/comparison.json)
+
 ## `github-6403ae7181617adc4020`
 
 - Repository: `paypal-examples/v6-web-sdk-sample-integration`
@@ -563,6 +589,32 @@
 - `adyen-android@5.20.0` (recommended `full`)
   Release: [manifest](../../raw/github/adyen/adyen-android/releases/adyen-android/5.20.0/2026-08-01/manifest.json)
   Comparison: Not applicable
+
+## `github-b307f27febbff4df8e80`
+
+- Repository: `adyen/adyen-web`
+- SHA: `1e157f8bc62b9519d68becedd9c1267180810e77`
+- Collection date: `2026-08-09`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-web/snapshots/2026-08-09-1e157f8/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-web/ingest-packets/github-b307f27febbff4df8e80/packet.md)
+- Evidence attachment: [manifest](repos/adyen/adyen-web/evidence-attachments/github-b307f27febbff4df8e80/attachment.json)
+- Review priority: `high`
+- Required reading: `28` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/adyen-web@6.42.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.42.0/2026-08-09/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.41.1--6.42.0/comparison.json)
 
 ## `github-bd7fe849961b5c6b9964`
 

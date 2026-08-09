@@ -1,0 +1,117 @@
+# GitHub package comparison
+
+- Repository: `adyen/adyen-web`
+- Package: `@adyen/adyen-web`
+- From: `6.41.0` (`b19eec7054340a1526c87d450fd7dfff75794ed9`)
+- To: `6.41.1` (`c98ea8a7fe3c504075509755a0eda2264042d076`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `packages/lib/CHANGELOG.md`
+- `packages/lib/package.json`
+- `packages/lib/src/components/AfterPay/AfterPay.test.ts`
+- `packages/lib/src/components/Card/Card.tsx`
+- `packages/lib/src/components/Card/components/CardInput/types.ts`
+- `packages/lib/src/components/Card/components/CardInput/utils.ts`
+- `packages/lib/src/components/ClickToPay/ClickToPay.test.ts`
+- `packages/lib/src/components/CustomCard/CustomCard.tsx`
+- `packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx`
+- `packages/lib/src/components/Dropin/Dropin.test.ts`
+- `packages/lib/src/components/Dropin/Dropin.tsx`
+- `packages/lib/src/components/Dropin/components/PaymentMethod/DisableOneClickConfirmation.tsx`
+- `packages/lib/src/components/Dropin/components/PaymentMethod/OrderPaymentMethods.tsx`
+- `packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodItem/PaymentMethodItem.tsx`
+- `packages/lib/src/components/Dropin/stories/dropin/customization.scss`
+- `packages/lib/src/components/Giftcard/Giftcard.tsx`
+- `packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx`
+- `packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx`
+- `packages/lib/src/components/internal/Address/Address.test.tsx`
+- `packages/lib/src/components/internal/Address/validate.formats.test.ts`
+- `packages/lib/src/components/internal/Address/validate.formats.ts`
+- `packages/lib/src/components/internal/BaseElement/BaseElement.ts`
+- `packages/lib/src/components/internal/Button/Button.tsx`
+- `packages/lib/src/components/internal/Button/CopyButton.tsx`
+- `packages/lib/src/components/internal/Button/CopyIconButton.tsx`
+- `packages/lib/src/components/internal/Button/types.ts`
+- `packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx`
+- `packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx`
+- `packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx`
+- `packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx`
+- `packages/lib/src/components/internal/ClickToPay/context/ClickToPayProvider.tsx`
+- `packages/lib/src/components/internal/FormFields/InputBase.tsx`
+- `packages/lib/src/components/internal/Modal/Modal.tsx`
+- `packages/lib/src/components/internal/OpenInvoice/OpenInvoice.tsx`
+- `packages/lib/src/components/internal/OpenInvoice/useSRPanelForOpenInvoiceErrors.ts`
+- `packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts`
+- `packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProviderHandlers.ts`
+- `packages/lib/src/components/internal/SecuredFields/SFP/defaultProps.ts`
+- `packages/lib/src/components/internal/SecuredFields/SFP/types.ts`
+- `packages/lib/src/components/internal/SecuredFields/binLookup/triggerBinLookUp.test.tsx`
+- `packages/lib/src/components/internal/SecuredFields/binLookup/triggerBinLookUp.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/configureCallbacks.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.test.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/CSF/types.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/securedField/AbstractSecuredField.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/types.ts`
+- `packages/lib/src/components/internal/SegmentedControl/SegmentedControl.tsx`
+- `packages/lib/src/components/internal/UIElement/UIElement.tsx`
+- `packages/lib/src/utils/validator-utils.ts`
+
+## Upstream changes
+
+- `modified`: `packages/lib/CHANGELOG.md`
+- `modified`: `packages/lib/package.json`
+- `modified`: `packages/lib/src/components/AfterPay/AfterPay.test.ts`
+- `modified`: `packages/lib/src/components/Card/Card.tsx`
+- `modified`: `packages/lib/src/components/Card/components/CardInput/types.ts`
+- `modified`: `packages/lib/src/components/Card/components/CardInput/utils.ts`
+- `modified`: `packages/lib/src/components/ClickToPay/ClickToPay.test.ts`
+- `modified`: `packages/lib/src/components/CustomCard/CustomCard.tsx`
+- `modified`: `packages/lib/src/components/CustomCard/CustomCardInput/CustomCardInput.tsx`
+- `modified`: `packages/lib/src/components/Dropin/Dropin.test.ts`
+- `modified`: `packages/lib/src/components/Dropin/Dropin.tsx`
+- `modified`: `packages/lib/src/components/Dropin/components/PaymentMethod/DisableOneClickConfirmation.tsx`
+- `modified`: `packages/lib/src/components/Dropin/components/PaymentMethod/OrderPaymentMethods.tsx`
+- `modified`: `packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodItem/PaymentMethodItem.tsx`
+- `modified`: `packages/lib/src/components/Dropin/stories/dropin/customization.scss`
+- `modified`: `packages/lib/src/components/Giftcard/Giftcard.tsx`
+- `modified`: `packages/lib/src/components/Giftcard/components/GiftcardComponent.tsx`
+- `modified`: `packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx`
+- `modified`: `packages/lib/src/components/internal/Address/Address.test.tsx`
+- `modified`: `packages/lib/src/components/internal/Address/validate.formats.test.ts`
+- `modified`: `packages/lib/src/components/internal/Address/validate.formats.ts`
+- `modified`: `packages/lib/src/components/internal/BaseElement/BaseElement.ts`
+- `modified`: `packages/lib/src/components/internal/Button/Button.tsx`
+- `modified`: `packages/lib/src/components/internal/Button/CopyButton.tsx`
+- `modified`: `packages/lib/src/components/internal/Button/CopyIconButton.tsx`
+- `modified`: `packages/lib/src/components/internal/Button/types.ts`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/context/ClickToPayProvider.tsx`
+- `modified`: `packages/lib/src/components/internal/FormFields/InputBase.tsx`
+- `modified`: `packages/lib/src/components/internal/Modal/Modal.tsx`
+- `modified`: `packages/lib/src/components/internal/OpenInvoice/OpenInvoice.tsx`
+- `modified`: `packages/lib/src/components/internal/OpenInvoice/useSRPanelForOpenInvoiceErrors.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProvider.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/SFP/SecuredFieldsProviderHandlers.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/SFP/defaultProps.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/SFP/types.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/binLookup/triggerBinLookUp.test.tsx`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/binLookup/triggerBinLookUp.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/configureCallbacks.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.test.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/createSecuredFields.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/CSF/types.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/securedField/AbstractSecuredField.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/types.ts`
+- `modified`: `packages/lib/src/components/internal/SegmentedControl/SegmentedControl.tsx`
+- `modified`: `packages/lib/src/components/internal/UIElement/UIElement.tsx`
+- `modified`: `packages/lib/src/utils/validator-utils.ts`

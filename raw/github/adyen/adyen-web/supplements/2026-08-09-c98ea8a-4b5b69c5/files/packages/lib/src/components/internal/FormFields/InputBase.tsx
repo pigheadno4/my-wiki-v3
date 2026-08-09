@@ -1,0 +1,171 @@
+import {
+    h,
+    RefCallback,
+    InputHTMLAttributes,
+    GenericEventHandler,
+    TargetedInputEvent,
+    TargetedKeyboardEvent,
+    TargetedFocusEvent,
+    TargetedEvent
+} from 'preact';
+import { useCallback } from 'preact/hooks';
+import classNames from 'classnames';
+import { ARIA_CONTEXT_SUFFIX, ARIA_ERROR_SUFFIX } from '../../../core/Errors/constants';
+import { trimValWithOneSpace } from '../../../utils/validator-utils';
+import Language from '../../../language';
+import { AutocompleteValue } from './types';
+import './FormFields.scss';
+
+export interface InputBaseProps extends InputHTMLAttributes {
+    classNameModifiers?: string[];
+    isInvalid?: boolean;
+    isValid?: boolean;
+    readonly?: boolean;
+    uniqueId?: string;
+    disabled?: boolean;
+    className?: string;
+    placeholder?: string;
+    value?: string;
+    name?: string;
+    checked?: boolean;
+    setRef?: RefCallback<HTMLInputElement>;
+    trimOnBlur?: boolean;
+    i18n?: Language;
+    label?: string;
+    onBlurHandler?: GenericEventHandler<HTMLInputElement>;
+    onFocusHandler?: GenericEventHandler<HTMLInputElement>;
+    maxlength?: number | null;
+    addContextualElement?: boolean;
+    type?: string;
+    /**
+     * WCAG 2.2 autocomplete token for browser autofill.
+     * Pass undefined to omit the attribute entirely.
+     * @see https://www.w3.org/TR/WCAG22/#input-purposes
+     */
+    autocomplete: AutocompleteValue;
+}
+
+export default function InputBase({ setRef, ...props }: Readonly<InputBaseProps>) {
+    const { autoCorrect, classNameModifiers, isInvalid, isValid, readonly = null, spellcheck, type, uniqueId, disabled } = props;
+    const className = props.className;
+
+    /**
+     * To avoid confusion with misplaced/misdirected onChange handlers - InputBase only accepts onInput, onBlur & onFocus handlers.
+     * The first 2 being the means by which we expect useForm--handleChangeFor validation functionality to be applied.
+     */
+    if (Object.prototype.hasOwnProperty.call(props, 'onChange')) {
+        console.error('Error: Form fields that rely on InputBase may not have an onChange property');
+    }
+
+    const handleInput = useCallback(
+        (event: TargetedInputEvent<HTMLInputElement>) => {
+            props.onInput?.(event);
+        },
+        [props.onInput]
+    );
+
+    /**
+     *  Event is fired when a key that produces a character value is pressed down.
+     *  ENTER keypress also triggers this event.
+     *
+     *  TODO: 'keypress' event is deprecated
+     *  https://developer.mozilla.org/en-US/docs/Web/API/Element/keypress_event
+     */
+    const handleKeyPress = useCallback(
+        (event: TargetedKeyboardEvent<HTMLInputElement>) => {
+            if (props?.onKeyPress) props.onKeyPress(event);
+        },
+        [props?.onKeyPress]
+    );
+
+    /**
+     * Event is fired when certain keys are pressed (keys that do not output characters):
+     * Backspace, Arrow keys, Shift, Ctrl, Command, Option, Esc
+     *
+     * Exception: ENTER keypress triggers 'onKeyPress' AND 'onKeyUp'
+     */
+    const handleKeyUp = useCallback(
+        (event: TargetedKeyboardEvent<HTMLInputElement>) => {
+            if (props?.onKeyUp) props.onKeyUp(event);
+        },
+        [props?.onKeyUp]
+    );
+
+    const handleBlur = useCallback(
+        (event: TargetedFocusEvent<HTMLInputElement>) => {
+            props?.onBlurHandler?.(event); // From Field component
+
+            if (props.trimOnBlur) {
+                const input = event.target as HTMLInputElement;
+                input.value = trimValWithOneSpace(input.value);
+            }
+
+            props?.onBlur?.(event);
+        },
+        [props.onBlur, props.onBlurHandler]
+    );
+
+    const handleFocus = useCallback(
+        (event: TargetedEvent<HTMLInputElement>) => {
+            props?.onFocusHandler?.(event); // From Field component
+        },
+        [props.onFocusHandler]
+    );
+
+    const inputClassNames = classNames(
+        'adyen-checkout__input',
+        [`adyen-checkout__input--${type}`],
+        className,
+        {
+            'adyen-checkout__input--invalid': isInvalid,
+            'adyen-checkout__input--valid': isValid
+        },
+        (classNameModifiers ?? []).map(m => `adyen-checkout__input--${m}`)
+    );
+
+    // Don't spread classNameModifiers etc to input element (it ends up as an attribute on the element itself)
+    const {
+        classNameModifiers: cnm,
+        uniqueId: uid,
+        isInvalid: iiv,
+        isValid: iv,
+        addContextualElement: ace,
+        'aria-describedby': ariaDescribedByProp,
+        autocomplete,
+        ...restProps
+    } = props;
+
+    const internalDescribedBy = uniqueId ? `${uniqueId}${isInvalid ? ARIA_ERROR_SUFFIX : ARIA_CONTEXT_SUFFIX}` : null;
+    const extraDescribedBy = typeof ariaDescribedByProp === 'string' && ariaDescribedByProp ? ariaDescribedByProp : null;
+    const mergedAriaDescribedBy = [extraDescribedBy, internalDescribedBy].filter(Boolean).join(' ') || null;
+
+    return (
+        <input
+            id={uniqueId}
+            {...restProps}
+            // eslint-disable-next-line react/no-unknown-property -- Preact uses lowercase 'autocomplete'
+            autocomplete={autocomplete}
+            aria-required={restProps.required}
+            type={type}
+            className={inputClassNames}
+            readOnly={readonly}
+            // eslint-disable-next-line react/no-unknown-property -- Preact uses lowercase 'spellcheck'
+            spellcheck={spellcheck}
+            autoCorrect={autoCorrect}
+            aria-describedby={mergedAriaDescribedBy}
+            aria-invalid={isInvalid}
+            onInput={handleInput}
+            onBlur={handleBlur}
+            onFocus={handleFocus}
+            onKeyUp={handleKeyUp}
+            onKeyPress={handleKeyPress}
+            disabled={disabled}
+            ref={setRef}
+        />
+    );
+}
+
+InputBase.defaultProps = {
+    type: 'text',
+    classNameModifiers: []
+};

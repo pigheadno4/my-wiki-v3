@@ -1284,21 +1284,36 @@ def _package_roots(
         return ("",)
     paths = []
     for snapshot in tuple(row for row in (prior, current) if row is not None):
-        for path, metadata in snapshot.files.items():
-            if metadata.get("package") == package and path.endswith("package.json"):
-                root = path[: -len("/package.json")] if path != "package.json" else ""
-                paths.append(root)
+        manifests = [
+            path
+            for path, metadata in snapshot.files.items()
+            if metadata.get("package") == package and path.endswith("package.json")
+        ]
+        identities = [
+            path
+            for path in manifests
+            if snapshot.files[path].get("classification_reason") == "package-manifest"
+        ]
+        for path in identities or manifests:
+            root = path[: -len("/package.json")] if path != "package.json" else ""
+            paths.append(root)
     return tuple(sorted(set(paths)))
 
 
 def _package_manifest(
     root: Path, snapshot: _LoadedSnapshot, package: str
 ) -> dict:
-    matches = [
+    manifests = [
         path
         for path, row in snapshot.files.items()
         if row.get("package") == package and path.endswith("package.json")
     ]
+    identities = [
+        path
+        for path in manifests
+        if snapshot.files[path].get("classification_reason") == "package-manifest"
+    ]
+    matches = identities or manifests
     if len(matches) != 1:
         raise PacketBuildError("package snapshot must contain one package manifest")
     relative = str(

@@ -6,6 +6,20 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-09] ingest | Adyen/adyen-web `6.42.0`
+
+- Approved and processed work item `github-b307f27febbff4df8e80` in delta mode at exact SHA `1e157f8bc62b9519d68becedd9c1267180810e77`.
+- Compared `@adyen/adyen-web@6.41.1` with `6.42.0` and retained an approved five-file supplement for changed Address and shared IFrame implementation.
+- Added Drop-in payment-list analytics, country-aware partial US postal validation, and internal 3DS2 iframe permissions for WebAuthn and SPC while preserving both 6.41.x history layers.
+- Updated [[source-github-adyen-web]], its package-qualified changelog, the Adyen company page, and provider index; no concept or cross-provider comparison page required a semantic update.
+
+## [2026-08-09] ingest | Adyen/adyen-web `6.41.1`
+
+- Approved and processed work item `github-60b7545cc0ad3999d886` in delta mode at exact SHA `c98ea8a7fe3c504075509755a0eda2264042d076`.
+- Compared `@adyen/adyen-web@6.41.0` with `6.41.1` and retained an approved nine-file source supplement for changed implementation outside the standard checkout capsule.
+- Preserved the cumulative `6.41.0` knowledge and added version-qualified OpenInvoice focus isolation, Enter-key submission protection, IME address-input handling, internal BIN lookup typing, and dependency updates.
+- Updated [[source-github-adyen-web]], its package-qualified changelog, the Adyen company page, and provider index; no concept or comparison page required a semantic update.
+
 ## [2026-08-02] ingest | Adyen/adyen-node-api-library `32.0.0`
 
 - Approved and processed work item `github-2957d7d341f9f6cb5ecc` in full mode.

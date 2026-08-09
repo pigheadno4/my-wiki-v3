@@ -1245,6 +1245,53 @@ class GitHubIngestPacketTests(unittest.TestCase):
             packet.document["required_reading"],
         )
 
+    def test_nested_package_json_evidence_is_not_the_package_identity_manifest(self):
+        nested_manifest = json.dumps(
+            {"name": "@scope/widget-auto", "private": True},
+            sort_keys=True,
+        ) + "\n"
+        prior_files = {
+            "packages/widget/package.json": (
+                self.manifest_content("10.0.0"),
+                "package-manifest",
+                "package-manifest",
+                "@scope/widget",
+            ),
+            "packages/widget/auto/package.json": (
+                nested_manifest,
+                "public-source",
+                "tracked-declaration-directory",
+                "@scope/widget",
+            ),
+            "packages/widget/src/index.ts": (
+                "export const value = 1;\n",
+                "public-source",
+                "required-root",
+                "@scope/widget",
+            ),
+        }
+        current_files = dict(prior_files)
+        current_files["packages/widget/package.json"] = (
+            self.manifest_content("10.0.1"),
+            "package-manifest",
+            "package-manifest",
+            "@scope/widget",
+        )
+
+        packet = self.build(
+            prior_files,
+            current_files,
+            (
+                UpstreamChange(
+                    "modified",
+                    "packages/widget/package.json",
+                    "packages/widget/package.json",
+                ),
+            ),
+        )
+
+        self.assertEqual("10.0.1", packet.document["packages"][0]["to_version"])
+
     def test_unsupported_public_export_structure_blocks_packet(self):
         prior = {
             "package.json": self.manifest_content("10.0.0"),
