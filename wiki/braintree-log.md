@@ -6,6 +6,14 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-09] ingest | braintree/braintree_node `3.39.0`
+
+- Approved and processed work item `github-a3e31c47bd77ac327a7b` in full mode.
+- Read and hash-verified all 173 required paths, including the complete 170-file, 365,394-byte exact-SHA capsule at `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/manifest.json`.
+- Established the cumulative Node.js server source and package-qualified release ledger; recorded gateway transport, client tokens, vaulting, transaction lifecycle and idempotency, PayPal/Venmo boundaries, cards and 3DS, subscriptions, webhooks, and error semantics.
+- Isolated exact `3.39.0` scope to PayPal email validation codes, 3DS pass-through network fields, and preferred-payment-method client-token support; the upstream release-note body was unavailable.
+- Kept disputes, OAuth, onboarding, reporting, disbursement, and facilitator APIs at inventory depth and updated the Braintree company and provider index.
+
 ## [2026-08-01] ingest | braintree/braintree_ios `7.9.0`
 
 - Approved and processed work item `github-2968099ae6a7549cd6a9` in full mode.

@@ -1,0 +1,193 @@
+# GitHub ingest packet
+
+- Repository: `braintree/braintree_node`
+- Work item: `github-a3e31c47bd77ac327a7b`
+- Snapshot: `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/manifest.json`
+- Recommended mode: `full`
+- Review priority: `high`
+
+## `braintree`
+
+- Version: `baseline` -> `3.39.0`
+- Recommendation: `full` / `high`
+- Unchanged retained files: `0`
+
+### Required reading
+
+- `raw/github/braintree/braintree_node/releases/braintree/3.39.0/2026-08-09/manifest.json`
+- `raw/github/braintree/braintree_node/releases/braintree/3.39.0/2026-08-09/release-notes.md`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/CHANGELOG.md`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/LICENSE`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/README.md`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/SECURITY.md`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/index.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/account_updater_daily_report.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/ach_mandate.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/add_on.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/add_on_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/address.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/address_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/advanced_search.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/android_pay_card.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/apple_pay_card.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/attribute_setter.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/authorization_adjustment.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/bank_account_instant_verification_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/bank_account_instant_verification_jwt.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/bank_account_instant_verification_jwt_request.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/braintree_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/client_token_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/config.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/connected_merchant_paypal_status_changed.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/connected_merchant_status_transitioned.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/credentials_parser.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/credit_card.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/credit_card_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/credit_card_search.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/credit_card_verification.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/credit_card_verification_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/credit_card_verification_search.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/customer.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/customer_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/customer_search.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/customer_session_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/digest.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/disbursement.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/disbursement_details.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/disbursement_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/discount.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/discount_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/dispute.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/dispute_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/dispute_search.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/document_upload.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/document_upload_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/enriched_customer_data.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/environment.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/error_response.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/error_types.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/exceptions.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/exchange_rate_quote.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/exchange_rate_quote_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/exchange_rate_quote_payload.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/facilitated_details.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/facilitator_details.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/granted_payment_instrument_update.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/enums/index.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/enums/recommendations.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/enums/recommended_payment_option.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/graphql.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/index.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/inputs/billing_address_input.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/inputs/create_customer_session_input.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/inputs/create_local_payment_context_input.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/inputs/customer_recommendations_input.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/inputs/customer_session_input.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/inputs/index.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/inputs/monetary_amount_input.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/inputs/payer_info_input.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/inputs/paypal_payee_input.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/inputs/paypal_purchase_unit_input.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/inputs/phone_input.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/inputs/shipping_address_input.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/inputs/update_customer_session_input.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/types/customer_recommendations_payload.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/types/index.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/types/payment_options.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/types/payment_recommendation.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/unions/customer_recommendations.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql/unions/index.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/graphql_client.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/http.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/liability_shift.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/local_payment.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/local_payment_completed.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/local_payment_context.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/local_payment_context_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/local_payment_expired.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/local_payment_funded.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/local_payment_reversed.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/local_payment_type.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/merchant.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/merchant_account.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/merchant_account_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/merchant_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/meta_checkout_card.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/meta_checkout_token.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/monetary_amount.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/oauth_access_revocation.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/oauth_credentials.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/oauth_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/packages.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/paginated_response.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/paginated_response_stream.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/partner_merchant.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/payment_instrument_types.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/payment_method_customer_data_updated_metadata.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/payment_method_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/payment_method_nonce.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/payment_method_nonce_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/payment_method_parser.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/paypal_account.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/paypal_account_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/paypal_here_details.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/paypal_payment_resource_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/plan.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/plan_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/revoked_payment_method_metadata.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/risk_data.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/samsung_pay_card.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/search_response.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/search_response_stream.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/sepa_direct_debit_account.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/sepa_direct_debit_account_details.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/sepa_direct_debit_account_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/sepa_direct_debit_nonce_details.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/settlement_batch_summary.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/settlement_batch_summary_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/signature_service.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/subscription.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/subscription_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/subscription_search.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/test_values/authentication_ids.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/test_values/credit_card_defaults.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/test_values/credit_card_numbers.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/test_values/merchant_account.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/test_values/nonces.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/test_values/transaction_amounts.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/test_values/venmo_sdk.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/testing_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/three_d_secure_info.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/three_d_secure_pass_thru_network.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/transaction.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/transaction_details.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/transaction_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/transaction_line_item.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/transaction_line_item_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/transaction_review.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/transaction_search.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/unknown_payment_method.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/us_bank_account.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/us_bank_account_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/us_bank_account_verification.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/us_bank_account_verification_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/us_bank_account_verification_search.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/util.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/validation_error.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/validation_error_codes.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/validation_errors_collection.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/venmo_account.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/venmo_account_details.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/venmo_profile_data.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/visa_checkout_card.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/webhook_notification.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/webhook_notification_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/lib/braintree/webhook_testing_gateway.js`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/files/package.json`
+- `raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/manifest.json`
+
+### Upstream changes
+
+- None

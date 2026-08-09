@@ -487,6 +487,31 @@
   Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.41.0/2026-07-26/manifest.json)
   Comparison: Not applicable
 
+## `github-a3e31c47bd77ac327a7b`
+
+- Repository: `braintree/braintree_node`
+- SHA: `7a9270aaf31eb87819add64a768652243f90007c`
+- Collection date: `2026-08-09`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_node/ingest-packets/github-a3e31c47bd77ac327a7b/packet.md)
+- Review priority: `high`
+- Required reading: `173` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree@3.39.0` (recommended `full`)
+  Release: [manifest](../../raw/github/braintree/braintree_node/releases/braintree/3.39.0/2026-08-09/manifest.json)
+  Comparison: Not applicable
+
 ## `github-a9880c38e9e3a0e271a3`
 
 - Repository: `stripe/stripe-react-native`

@@ -1,13 +1,19 @@
 ---
 title: "Braintree"
 type: company
-tags: [braintree, payments, checkout, javascript-sdk, android-sdk, ios-sdk]
-source_count: 4
+tags: [braintree, payments, checkout, javascript-sdk, node-js-sdk, android-sdk, ios-sdk]
+source_count: 5
 ---
 
 ## Overview
 
-Braintree is represented in this wiki by four independently versioned repositories: the modular Braintree Web SDK, the prebuilt Braintree Web Drop-in UI, and the native Braintree Android and iOS SDKs. All produce or support Braintree payment-method nonces for server processing, but their package versions and evidence histories must remain separate.
+Braintree is represented in this wiki by five independently versioned repositories: the Node.js server SDK, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, and native Braintree Android and iOS SDKs. Client SDKs produce payment-method nonces for server processing; the Node.js SDK performs gateway operations. Their package versions and evidence histories remain separate.
+
+## Node.js Server SDK Surface
+
+`braintree@3.39.0` provides gateway configuration, client-token generation, customer and payment-method vault operations, transaction authorization and settlement, refunds and voids, PayPal and Venmo instruments, card verification and 3DS data, plans and subscriptions, and signed webhook parsing.
+
+The server SDK does not render checkout. Browser or native SDKs collect approval or payment data and return a nonce or token to the merchant server. PayPal customer sessions are restricted to authorized merchants, and legacy Venmo SDK transaction parameters warn merchants to migrate to Pay with Venmo.
 
 ## Web SDK Surface
 
@@ -43,8 +49,9 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Knowledge Status
 
-- Ingested cumulative GitHub repository sources: 4
-- Ingested package releases: 5
+- Ingested cumulative GitHub repository sources: 5
+- Ingested package releases: 6
+- Latest retained Braintree Node release: `braintree@3.39.0` at `7a9270aaf31eb87819add64a768652243f90007c`
 - Latest retained Braintree Web release: `braintree-web@3.144.0` at `41460fba05c1ea1222e795b36a10765a6699b8e7`
 - Latest retained Drop-in release: `braintree-web-drop-in@1.47.0` at `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`
 - Latest retained Android release: `braintree-android@5.30.0` at `51f183a48557d0fd00eefa541712df0c4f21ee28`
@@ -52,6 +59,8 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Sources
 
+- [[source-github-braintree-node]] - cumulative Node.js server SDK implementation baseline
+- [[changelog-github-braintree-node]] - package-qualified Node.js release ledger
 - [[source-github-braintree-web]] — cumulative Braintree Web implementation baseline
 - [[changelog-github-braintree-web]] — package-qualified release ledger
 - [[source-github-braintree-web-drop-in]] - cumulative Drop-in implementation baseline

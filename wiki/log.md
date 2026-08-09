@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-09] ingest | GitHub braintree/braintree_node `3.39.0`
+
+- Full-ingested `braintree@3.39.0` from work item `github-a3e31c47bd77ac327a7b` at exact SHA `7a9270aaf31eb87819add64a768652243f90007c` after reading and hash-verifying all 173 required paths.
+- Established the cumulative Node.js server SDK source and package-qualified changelog for gateway transport, client tokens, vaulting, transaction lifecycle, PayPal/Venmo, 3DS, subscriptions, webhooks, and errors.
+- Isolated exact `3.39.0` additions from the broader cumulative baseline and updated the Braintree company, provider index, and provider log.
+
 ## [2026-08-09] ingest | GitHub Adyen/adyen-web `6.42.0`
 
 - Delta-ingested `@adyen/adyen-web@6.42.0` from work item `github-b307f27febbff4df8e80` at exact SHA `1e157f8bc62b9519d68becedd9c1267180810e77`.

@@ -53,6 +53,8 @@ This hook presents messaging content; it is not a payment session and does not p
 
 Unlike standard PayPal buttons, merchants pass amount and currency rather than implementing `createOrder`. The Braintree SDK creates the payment session. After approval, the merchant calls `tokenizePayment()` and sends the resulting payment-method nonce to its server for processing with a Braintree server SDK, not PayPal's Orders API.
 
+The independently retained `braintree@3.39.0` Node.js source confirms the server half: `transaction.sale()` accepts a payment-method nonce or vaulted token and can submit the transaction for settlement. Its PayPal account and payment-resource gateways remain Braintree operations; they do not turn this flow into a direct PayPal Orders API integration.
+
 ## Braintree iOS Evidence
 
 The independently retained `braintree-ios@7.9.0` source exposes native `BTPayPalCheckoutRequest` and `BTPayPalVaultRequest` flows. Checkout can request billing-agreement consent and carry recurring-plan metadata; Vault can also carry recurring-plan metadata. Both return a Braintree PayPal account nonce for server processing rather than a PayPal Orders API order.
@@ -73,4 +75,4 @@ The same release expands the PayPal Checkout v6 session payload with locale, lan
 
 - Companies: [[paypal]], [[braintree]]
 - Concepts: [[paypal-checkout]], [[paypal-vault]], [[braintree-web-sdk]], [[braintree-ios-sdk]]
-- Sources: [[source-github-paypal-js]], [[source-github-braintree-web]], [[source-github-braintree-ios]]
+- Sources: [[source-github-paypal-js]], [[source-github-braintree-web]], [[source-github-braintree-node]], [[source-github-braintree-ios]]

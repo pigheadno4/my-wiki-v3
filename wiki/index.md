@@ -8,7 +8,7 @@
 - [[paypal-index]] — PayPal sources, company page, and `paypal-*` concepts
 - [[metronome-index]] — Metronome sources, company page, and `metronome-*` concepts
 - [[adyen-index]] — Adyen sources, company page, and versioned GitHub implementation knowledge
-- [[braintree-index]] — Braintree sources, company page, Web and Android SDK concepts, and versioned GitHub implementation knowledge
+- [[braintree-index]] — Braintree sources, company page, server, Web, Android, and iOS SDK knowledge, and versioned GitHub implementation history
 
 ## Overview
 
@@ -20,7 +20,7 @@
 - [[stripe]] — Stripe: developer-first payment APIs, PaymentIntents, Checkout, Subscriptions, Elements
 - [[metronome]] — Stripe-owned usage-based billing provider capsule; collection complete, 50 sources ingested through reviewed serial and coordinator-controlled parallel campaigns
 - [[adyen]] — Adyen: Web Drop-in and Components, Sessions, cards, 3DS2, and checkout actions
-- [[braintree]] — Braintree: modular Web and Android SDKs, Hosted Fields, 3DS, wallets, local payments, and nonce-based server handoff
+- [[braintree]] — Braintree: Node.js gateway operations, modular Web and native SDKs, Hosted Fields, 3DS, wallets, subscriptions, and nonce-based server handoff
 
 ## Comparisons
 
