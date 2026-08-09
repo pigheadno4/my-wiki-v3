@@ -16,7 +16,7 @@ from scripts.ingest_pilot.coordinator import (
     run_once,
     status,
 )
-from scripts.ingest_pilot.state import load_jobs, save_jobs
+from scripts.ingest_pilot.state import load_campaign, load_jobs, save_campaign, save_jobs
 
 
 class CoordinatorTests(unittest.TestCase):
@@ -183,6 +183,20 @@ class CoordinatorTests(unittest.TestCase):
         self.assertTrue(attempt.joinpath("receipt.json").is_file())
         self.assertTrue(attempt.joinpath("suggestions.json").is_file())
         self.assertEqual(output["review_order"]["job_id"], "job-1")
+
+    def test_archived_audit_only_campaign_cannot_be_resumed(self):
+        init_campaign(self.root, self.manifest)
+        campaign = load_campaign(self.root, self.campaign_id)
+        campaign["review_policy"] = "audit_only"
+        save_campaign(self.root, self.campaign_id, campaign)
+        jobs_before = load_jobs(self.root, self.campaign_id)
+
+        with self.assertRaisesRegex(PilotError, "audit_only review_policy is not authorized"):
+            status(self.root, self.campaign_id)
+        with self.assertRaisesRegex(PilotError, "audit_only review_policy is not authorized"):
+            run_once(self.root, self.campaign_id)
+
+        self.assertEqual(load_jobs(self.root, self.campaign_id), jobs_before)
 
     def test_serial_v2_review_requires_provenance_and_persists_review_evidence(self):
         self.start_five()

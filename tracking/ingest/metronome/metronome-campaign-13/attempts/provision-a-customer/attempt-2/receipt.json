@@ -1,0 +1,83 @@
+{
+  "job_id": "provision-a-customer",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Provision a customer\"\ntype: source\nreview_level: independent\ndate_ingested: 2026-08-04\ncanonical_url: \"https://docs.metronome.com/guides/customers-billing/manage-customers/provision-a-customer.md\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/customers-billing/manage-customers/provision-a-customer-2026-07-13.md\"\ntags: [metronome, customers, contracts, ingest-aliases, billing-provider-configurations, usage-filters]\n---\n\n## Overview\n\nThis guide explains Metronome customer provisioning as creation of a customer object plus one or more associated contracts. It covers prerequisites, app and API customer creation, ingest aliases, billing-provider configurations, contract terms, invoice consolidation, discounts and overrides, usage filters, and custom fields. A customer needs at least one provisioned contract before metering and rating for billing can start.\n\n## Key takeaways\n\n- Provisioning starts with usage events connected to Metronome, a billable metric, a product, and a rate card.\n- Ingest aliases map internal customer identifiers to a Metronome customer ID. They can model sub-organization hierarchies, split usage in invoice presentation, and be added retroactively so earlier alias-keyed usage is associated with the customer.\n- Billing-provider configurations are created on the customer and then assigned to contracts. Multiple configurations allow one customer to be billed in multiple systems, one per contract; the AWS example is not billed to AWS until a contract uses that provider configuration.\n- Contracts reference rate cards and can bundle commits, discounts, fixed products, and scheduled charges. The worked WidgetsExpress example combines a one-year prepaid commit with a recurring quarterly platform fee.\n- Multiple contracts can use distinct rate cards, dates, and discounts. Usage filters route events to a selected contract, with documented group-key requirements for streaming and SQL billable metrics.\n\n## Details\n\n### Prerequisites and customer creation\n\nThe page requires connected usage events, a billable metric, a product, and a rate card. The app flow is Customers \u2192 Add a customer, followed by a name, an ingest alias, and optionally a custom field on Settings. The API example posts to `/v1/customers` with `ingest_aliases`, `name`, and a `custom_fields.sfdc_account_id` value. The guide describes both sales-led workflows (for example, scheduling creation after a Salesforce CPQ opportunity closes) and product-led workflows triggered by website signup.\n\n### Ingest aliases\n\nAn ingest alias lets existing customer identifiers remain in usage payloads while Metronome associates that usage with the correct customer. The guide also uses aliases to attach enterprise sub-organizations to one parent customer and says group keys can change invoice presentation. Aliases may be set at creation or later; the retroactive example sends usage keyed by an alias first and adds that alias to an existing customer later.\n\n### Billing-provider configuration\n\nBefore configuring a billing destination, the relevant system must be connected; the page points to Stripe and AWS/Azure Marketplace integration guides. It recommends setting `customer_billing_provider_configurations` during customer creation. The AWS example includes `billing_provider: \"aws_marketplace\"`, customer/product/region configuration, and `delivery_method: \"direct_to_billing_provider\"`. The customer is created with that configuration, but billing to AWS starts only after a contract sets AWS as its `billing_provider_configuration`; if omitted initially, `/setCustomerBillingProviderConfigurations` can add one later. A BETA note says a configuration can be archived with the customer or through `/archiveCustomerBillingProviderConfigurations`; an archived configuration becomes reusable on a new customer, and an active contract using it is archived immediately and no longer bills to that destination.\n\n### Contract provisioning\n\nA contract encodes products, rates, and access duration, references a specific rate card, and can include commits, discounts, fixed products, and other terms. The app sequence selects the customer, adds a contract, fills in basic information and an AWS billing provider, then adds a prepaid commit and scheduled charge. The example contract describes a $10,000 one-year prepaid commit for cloud products plus a $1,000 quarterly platform fee, with the commit paid upfront and usage billed monthly. The `/contracts/create` example includes a customer, rate-card alias, start time, billing-provider configuration, prepaid commit schedules, recurring scheduled charges, and a monthly usage-statement schedule anchored to contract start.\n\n### Invoice consolidation\n\nThe optional `scheduled_charges_on_usage_invoices` setting applies to all contract charges, including commits. The page says consolidation is selected when the exclusive last day of the usage service period matches the scheduled invoice date and the corresponding usage invoice has not finalized. Consolidation happens when the contract is created and after future contract changes. In the `ALL` example, January's finalized invoice contains the monthly charge, February's draft invoice combines the monthly charge with January usage, and later invoices follow that model if the contract does not change.\n\n### Discounts and overrides\n\nDiscounts can be supplied at contract creation or by editing an existing contract, using credits, product-rate overrides, price tiers, and other terms. With dimensional pricing, the guide says to set overrides for each group-key/product combination. Its WidgetsExpress example overrides cloud-tagged products to 5% below the basic rate card, represented in the API example by a `multiplier` of `0.95`.\n\n### Usage filters\n\nA customer can hold several contracts at once, with distinct rate cards, dates, and discounts, while drawing on shared customer-level commits and credits. A usage filter routes usage to one contract; the example assigns `region = US` to a US contract and later schedules an update that includes both US and EU. For streaming billable metrics, the usage-filter group key must exist on the underlying metric (and in a compound group key when dimensional pricing and presentation keys are also used). For SQL billable metrics, the group key must be present as a property in the underlying events, such as `properties.region`.\n\n### Custom fields\n\nCustom fields add metadata to a contract or commit and can support downstream revenue-recognition workflows. The SFDC example maps a `salesforce_opportunity_id` to Metronome contracts and revenue derived from them.\n\n## Related\n\n- Companies: [[metronome]]\n- Concepts: [[metronome-customers-and-contracts]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/customers-billing/manage-customers/provision-a-customer-2026-07-13|2026-07-13 snapshot \u2014 Provision a customer]]\n",
+  "quotes": [
+    {
+      "text": "Provisioning your customer includes creating the customer object and configuring the associated contract that outlines their terms of use. A customer needs at least one contract provisioned to them to start metering and rating for billing. You can also configure multiple contracts per customer, if needed.",
+      "location": "raw lines 11\u201313 (opening provisioning description)"
+    },
+    {
+      "text": "Ingest aliases map your internal customer identifiers to Metronome's customer ID. When you send usage keyed on an ingest alias, Metronome automatically associates it to the correct Metronome customer. This allows you to maintain your existing customer entities without needing to swap in a Metronome customer ID.",
+      "location": "raw line 30 (Understand ingest aliases)"
+    },
+    {
+      "text": "A customer in Metronome can billed in different destinations, often depending on your billing motion. You must first create a `customer_billing_provider_configuration` on the customer and then assign it to a contract. Metronome allows you to configure multiple `customer_billing_provider_configurations` per customer, which means one customer can be billed in multiple systems - one per contract.",
+      "location": "raw line 85 (Add a billing configuration to a customer)"
+    },
+    {
+      "text": "You can provision a customer with multiple contracts simultaneously. These contracts can use distinct rate cards, have different start and end dates, discounts, and more. They can all draw down from shared customer-level commits and credits. To specify that usage should count against one contract instead of another, create a usage filter for that contract.",
+      "location": "raw line 267 (Create a usage filter)"
+    },
+    {
+      "text": "Use [custom fields](/developer-resources/custom-fields/) to add additional metadata to the contract or commit. This metadata can power downstream processes like revenue recognition workflows.",
+      "location": "raw line 314 (Add custom fields)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "provision-customer-metronome-customers-contracts",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Customer and contract provisioning",
+        "proposed_markdown": "- Provisioning creates a customer object and an associated contract; at least one contract is required to start metering and rating for billing, while multiple contracts are supported.\n- Ingest aliases map internal customer identifiers to the Metronome customer ID, can model sub-organization hierarchies, and may be added retroactively so prior alias-keyed usage is associated with the customer.\n- Customer billing-provider configurations are created on the customer and assigned to contracts; multiple configurations allow billing across systems, one per contract.",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "provision-customer-metronome-usage-filters",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Usage filters",
+        "proposed_markdown": "- A customer can have multiple contracts with distinct rate cards, dates, and discounts; usage filters route events to a selected contract and the guide documents group-key requirements for streaming and SQL billable metrics.",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "provision-customer-metronome-custom-fields",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Custom fields",
+        "proposed_markdown": "- Custom fields add metadata to contracts or commits for downstream revenue-recognition workflows; the guide gives `salesforce_opportunity_id` as an SFDC mapping example.",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "provision-customer-metronome-customers-contracts-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-manage-customers-provision-a-customer]]",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/customers-billing/manage-customers/provision-a-customer-2026-07-13.md",
+  "raw_sha256": "31ea9d75b14ff24af5676b973e1275ed193f580e64d63a06dc2db807e20ad752",
+  "status": "candidate_ready"
+}

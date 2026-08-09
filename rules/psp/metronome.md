@@ -223,3 +223,28 @@ endpoint; after a complete read, another endpoint may still resolve to
 Do not alter the completed Campaign 12 manifest or evidence, reclassify the
 remaining corpus, create a routing registry, or treat this calibration as
 authorization for a new campaign.
+
+## Post-Campaign 13 sampled-review calibration
+
+Campaign 13 tested Luna Max workers with independent full-source review on a
+fixed audit sample. Both completed audit reviews found material semantic or
+grounding problems. Promotion was held, the remaining jobs were not dispatched,
+and no candidate or shared suggestion was promoted to the canonical wiki.
+
+Preserve the campaign directory as negative-calibration evidence. Do not resume
+its queued jobs, promote its mechanically approved candidates, or initialize a
+new `audit_only` campaign. The runtime rejects `review_policy: "audit_only"`.
+
+## Post-Campaign 14 no-review calibration
+
+Campaign 14 tested five Sol-medium full-read workers against independent
+Sol-high complete-source review. The result was `0/5`: every page required a
+material semantic correction after deterministic validation, including missed
+contradictions, accounting and integration boundaries, API-schema details, or
+shared-concept updates. No canonical wiki content was promoted.
+
+Keep independent strong-model review for every Metronome source candidate and
+its shared semantic suggestions. Deterministic hash, quote, schema, URL, and
+link checks remain mandatory but do not replace semantic review. Do not resume
+Campaign 14 retries or generalize a no-review policy to another provider. Any
+future optimization requires a new bounded manifest and explicit approval.

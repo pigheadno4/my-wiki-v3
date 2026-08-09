@@ -265,6 +265,40 @@ class PilotStateTests(unittest.TestCase):
             initialize_state(self.root, explicit_null)
         self.assertFalse(campaign_paths(self.root, explicit_null["campaign_id"])["campaign"].exists())
 
+    def test_initialize_rejects_audit_only_after_failed_calibration(self):
+        manifest = deepcopy(self.manifest)
+        manifest.update({
+            "review_policy": "audit_only",
+            "worker_concurrency": 3,
+            "review_concurrency": 3,
+            "audit_job_ids": ["security-principles", "audit-logs", "setup-webhooks"],
+        })
+
+        with self.assertRaisesRegex(PilotError, "audit_only review_policy is not authorized"):
+            initialize_state(self.root, manifest)
+        self.assertFalse(campaign_paths(self.root, self.campaign_id)["campaign"].exists())
+
+    def test_initialize_rejects_unknown_review_policy_and_invalid_worker_concurrency(self):
+        unknown = deepcopy(self.manifest)
+        unknown["review_policy"] = "sometimes"
+        with self.assertRaisesRegex(PilotError, "review_policy"):
+            initialize_state(self.root, unknown)
+
+        invalid = deepcopy(self.manifest)
+        invalid["campaign_id"] = "invalid-worker-concurrency"
+        invalid["worker_concurrency"] = 0
+        with self.assertRaisesRegex(PilotError, "worker_concurrency"):
+            initialize_state(self.root, invalid)
+
+        configured = deepcopy(self.manifest)
+        configured["campaign_id"] = "configured-worker-concurrency"
+        configured["worker_concurrency"] = 3
+        initialize_state(self.root, configured)
+        self.assertEqual(
+            load_campaign(self.root, configured["campaign_id"])["worker_concurrency"],
+            3,
+        )
+
     def test_save_jobs_replaces_projection_without_rewriting_events(self):
         self.initialize_jobs()
         jobs = load_jobs(self.root, self.campaign_id)

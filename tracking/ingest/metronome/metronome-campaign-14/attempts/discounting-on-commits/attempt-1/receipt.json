@@ -1,0 +1,95 @@
+{
+  "job_id": "discounting-on-commits",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Offer discounts on commits\"\ntype: source\ndate_ingested: 2026-08-05\ncanonical_url: \"https://docs.metronome.com/guides/pricing-packaging/apply-credits-and-commits/discounting-on-commits.md\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/pricing-packaging/apply-credits-and-commits/discounting-on-commits-2026-07-13.md\"\ntags: [metronome, commits, discounts, pricing-overrides, rate-cards]\n---\n\n## Overview\n\nThis guide describes three ways to discount usage associated with commits in Metronome: bill less than the accessible prepaid value, apply commit-specific contract overrides, or define reusable commit rates on a rate card. The methods serve different pricing structures and have distinct visibility, applicability, precedence, and fallback behavior.\n\n## Key takeaways\n\n- Reducing a commit's cost basis grants more accessible prepaid value than the amount invoiced. The guide limits this approach to prepaid commits with a uniform percentage discount and says the discount is not reflected in usage-statement prices.\n- Commit-specific multiplier, overwrite, or tiered overrides can target usage funded by all commits and credits or by selected balances. Product IDs, product tags, pricing group keys, and presentation group keys can scope affected line items.\n- The documented precedence places commit-specific overwrite overrides first, followed by commit-specific multipliers, contract-level overwrites, and contract-level multipliers. Specificity by number of associated commits does not itself determine priority.\n- A rate-card commit rate provides reusable pricing for customers who consume commitments, while a commit-specific override can further discount that rate for an individual contract or selected commits.\n- Commit rates apply only to usage products, must be added alongside a list rate in the same pricing unit, and may be tiered without resetting tier quantity when consumption moves between commit and list rates.\n- If a commit or credit is configured to use a commit rate but a product has no such rate, Metronome falls back to the product's list rate and list-rate-targeting overrides; commit-rate-targeting overrides are ignored.\n\n## Cost-basis discounts\n\nA cost-basis discount separates the accessible amount from the invoiced amount. The worked commercial description grants $10,000 of prepaid spend while billing $8,000, representing a 20% discount. This does not change the prices displayed on usage statements, and the guide says it is unsuitable for postpaid commits because their invoice and access schedule amounts must match.\n\nThis method is also bounded to a uniform percentage reduction. Distinct rates relative to list price or different discounts by product require commit-specific overrides instead.\n\n## Commit-specific overrides\n\nCommit-specific overrides adjust rates while qualifying usage burns down prepaid commits, postpaid commits, or credits. They can apply whenever any such balance is consumed or be limited to identified commit, recurring-commit, credit, or recurring-credit objects. The guide documents multiplier, overwrite, and tiered forms, with product and grouping selectors available for line-item scope.\n\nThe precedence sequence is commit-specific overwrite, commit-specific multiplier, contract-level overwrite, then contract-level multiplier. Multipliers within their respective levels follow the contract's configured prioritization scheme. An override that targets one commit is not automatically preferred over an otherwise comparable override that targets all commits merely because its balance scope is narrower.\n\nThe continued-discount example combines a 0.95 contract-level multiplier for on-demand audio usage with a 0.8 commit-specific multiplier while commit A is being consumed. A second example uses product-level overwrite rates whenever any commit or credit is consumed and returns to list rates after all qualifying balances are exhausted. These prices, identifiers, and dates are illustrative rather than general platform defaults.\n\n## Rate-card commit rates\n\nRate-card commit rates centralize a standard committed-usage price so it need not be recreated as a contract override for every customer. They are supported only for usage products and must be created with a list rate in the same pricing unit. Both rates can be tiered, and the guide says tier quantity continues across commit-rate and list-rate consumption rather than resetting at the boundary.\n\nA commit or credit should select commit-rate behavior only when distinct commit rates have been configured. When a product lacks a commit rate, Metronome uses its list rate plus applicable list-rate overrides and ignores commit-rate overrides. A contract may further negotiate the shared commit rate through a commit-specific override targeting `commit_rate`; omitting commit IDs makes that override apply whenever a prepaid or postpaid commit is used.\n\n## Documentation cautions\n\n> [!warning] Example amount mismatch\n> The cost-basis prose and request introduction describe $10,000 of accessible prepaid value billed for $8,000, but the displayed USD-style request uses `amount: 100000` and `unit_price: 80000`. Under the wiki's existing Metronome USD-cent evidence, those values represent $1,000 and $800. Preserve the intended 20% pattern, but verify the example's missing order of magnitude before implementation.\n\nThe targeting prose names `any_commit_or_credit_ids`, while the displayed contract examples use `override_specifiers.commit_ids`; this page does not reconcile those request shapes. It also describes a `COMMIT_RATE` target in prose while payloads use `commit_rate`. Confirm the current endpoint schema rather than treating these spellings or placements as interchangeable. The negotiated-rate table has an unlabeled fifth column and rows whose product labels and prices do not align cleanly with its four named headers, so its numeric mapping should not be relied on without clarification.\n\nThe guide does not define validation errors, effective-date overlap behavior, retroactive recalculation, finalized-invoice handling, rounding, concurrent edits, or behavior when multiple tiered commit-specific overrides qualify. No contradiction with existing Metronome concept pages was found when the new precedence and fallback rules remain scoped to this guide; the internal example inconsistencies above still require explicit caution.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-credits-and-commits]], [[metronome-products-and-rate-cards]], [[metronome-customers-and-contracts]]\n- API boundaries: [[source-metronome-api-reference-contracts-create-a-contract]], [[source-metronome-api-reference-credits-and-commits-create-a-commit]], [[source-metronome-api-reference-credits-and-commits-edit-a-commit]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/pricing-packaging/apply-credits-and-commits/discounting-on-commits-2026-07-13|2026-07-13 snapshot \u2014 cost-basis discounts, commit-specific overrides, and rate-card commit rates]]\n",
+  "quotes": [
+    {
+      "text": "Metronome provides the flexibility to model these discounts in two primary ways:\n\n1. Reduce the cost basis for the commit\n2. Create commit-specific overrides on the customer contract\n\nFor advanced billing structures, Metronome also supports a third way to discount commits: encoding *commit rates* on a rate card.",
+      "location": "raw/metronome/guides/pricing-packaging/apply-credits-and-commits/discounting-on-commits-2026-07-13.md:13-18 (three discount-modeling approaches)"
+    },
+    {
+      "text": "When using the cost basis to encode the discount, note:\n\n* The prices reflected on usage statements are not affected by the cost basis. The 20% discount when using the commit is not visible on the usage statement.\n* Using the cost basis only works when commit rates are a uniform percentage off, not when commit rates are completely distinct from list rates or have different per-product rates.\n* This discount method is suitable when the commit is prepaid, but not for postpaid commits, where the invoice schedule amount must match the access schedule amount.\n\nIf your use case doesn't meet these criteria, you can use commit-specific overrides instead.",
+      "location": "raw/metronome/guides/pricing-packaging/apply-credits-and-commits/discounting-on-commits-2026-07-13.md:63-69 (cost-basis limitations and visibility)"
+    },
+    {
+      "text": "An alternative way of granting a discount when consuming a commit is to apply *commit-specific overrides* to encode adjusted rates when consuming a commit. You can specify whether the override should apply when consuming **all commits and credits** (prepaid commits, postpaid commits, and credits) or **only specific commits or credits** (e.g. commit\\_id A and recurring\\_credit\\_id B).\n\nYou can create commit-specific multiplier, overwrite, or tiered overrides. You can use product IDs, product tags, pricing group keys, and presentation group keys to specify which line items should get an override.\n\nCommit-specific overrides are higher priority than non-commit-specific overrides. Overrides are prioritized using the following logic:\n\n1. Commit-specific overwrite overrides.\n2. Commit-specific multiplier overrides, prioritized with your contract's prioritization scheme (lowest multiplier or explicit).\n3. Non-commit-specific (contract-level) overwrite overrides.\n4. Non-commit-specific multiplier overrides, prioritized with your contract's prioritization scheme (lowest multiplier or explicit).",
+      "location": "raw/metronome/guides/pricing-packaging/apply-credits-and-commits/discounting-on-commits-2026-07-13.md:73-82 (override scope, forms, selectors, and precedence)"
+    },
+    {
+      "text": "* Commit rates are only supported for usage products.\n* Commit rates must be added with a list rate. There is no way to just change a commit rate; you must add a list rate with it.\n* List and commit rate must be in the same pricing unit.\n* The commit rate (and the list rate) can be tiered. The tier quantity is not reset between using the commit rate and the list rate.",
+      "location": "raw/metronome/guides/pricing-packaging/apply-credits-and-commits/discounting-on-commits-2026-07-13.md:239-242 (rate-card commit-rate constraints)"
+    },
+    {
+      "text": "Only specify that a commit or credit uses the commit rate if you\u2019ve added distinct commit rates to the rate card.\n\n<Warning>\n  **FALLBACK BEHAVIOR**\n\n  If you add to a customer or contract a commit or credit that uses a commit rate and there is no commit rate for a given product, Metronome applies the list rate as well as any overrides that target list rate. Any overrides that target commit rate are ignored.\n</Warning>",
+      "location": "raw/metronome/guides/pricing-packaging/apply-credits-and-commits/discounting-on-commits-2026-07-13.md:252-258 (missing commit-rate fallback)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "discounting-commit-methods-and-precedence",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Enterprise commitment structure",
+        "proposed_markdown": "Metronome documents three discount patterns for committed usage: reduce a prepaid commit's cost basis, apply commit-specific contract overrides, or select reusable commit rates defined on a rate card. Cost-basis discounts are limited to prepaid commits with a uniform percentage reduction and do not change usage-statement prices. Commit-specific overwrite overrides take priority over commit-specific multipliers, followed by contract-level overwrites and contract-level multipliers; narrower commit association does not itself win priority.",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "Keep cost-basis discounting limited to prepaid commits; the guide says postpaid invoice and access amounts must match.",
+          "The guide lists tiered commit-specific overrides but its displayed precedence sequence explicitly enumerates only overwrite and multiplier overrides.",
+          "The cost-basis example payload appears one order of magnitude below its stated $10,000 access and $8,000 invoice amounts under documented USD-cent scaling."
+        ]
+      },
+      {
+        "update_id": "discounting-commits-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-discounting-on-commits]] \u2014 prepaid cost-basis discounts, commit-specific override scope and precedence, and commit-rate selection",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "discounting-rate-card-commit-rates",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Rate cards and rates",
+        "proposed_markdown": "Rate-card commit rates are supported only for usage products. A commit rate must be added together with a list rate in the same pricing unit; both can be tiered, and tier quantity does not reset when consumption moves between commit and list rates. If a commit or credit selects commit-rate behavior for a product without a configured commit rate, Metronome applies the list rate and list-rate overrides while ignoring commit-rate overrides.",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer rounding, effective-date overlap, retroactive invoice recalculation, or finalized-invoice behavior from this guide.",
+          "The fallback is product-specific: preserve the condition that the given product lacks a commit rate."
+        ]
+      },
+      {
+        "update_id": "discounting-rate-card-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-discounting-on-commits]] \u2014 usage-product commit-rate constraints, continuous tier quantity, negotiated overrides, and list-rate fallback",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/pricing-packaging/apply-credits-and-commits/discounting-on-commits-2026-07-13.md",
+  "raw_sha256": "96498b0b119ca2f199ea197bae0a845b9f7723c8453aadca5f43631ec32bb624",
+  "status": "candidate_ready"
+}

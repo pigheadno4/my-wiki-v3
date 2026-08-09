@@ -1,0 +1,56 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "netsuite-native-integration-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "durable_fact",
+      "anchor": "before ## Managed custom-invoice integration boundary",
+      "proposed_markdown": "## Native NetSuite integration boundary\n\nMetronome's Public Beta NetSuite integration supports two contract-selected routes. With NetSuite as `customer_billing_configuration`, Metronome sends the finalized invoice and NetSuite owns distribution, tax calculation through its own tax integration, and payment collection. With NetSuite as `revenue_system_configuration`, another provider handles billing; Metronome sends the invoice after payment is attempted and later sends available payment state. A failed first external payment still produces an `OPEN` NetSuite invoice, while a later successful payment retroactively changes it to `PAID` and creates a payment object. Customer-level configuration alone is insufficient: the relevant billing or revenue-system configuration must also be selected on the contract.\n\nThe integration targets standard NetSuite instances. Invoice-line `amount`, `quantity`, and `total` must be writable; inventory items requiring a location, custom currencies, and account hierarchy are unsupported. Metronome does not adapt the connector for instance-specific customizations. The guide recommends complete sandbox validation, documents up to 25,000 arrears invoices per month before synchronization may take longer, and says initial NetSuite object indexing can take up to one hour.\n\nProduct custom fields map Metronome products to NetSuite items. Zero-dollar prepaid-consumption invoices require a Commit Application item for negative commit-burn-down lines, and every item on one NetSuite invoice must share the same revenue treatment or the send fails. Billing-route state is stored in `external_invoice`; failures use `INVALID_REQUEST_ERROR` and `billing_provider_error`. Revenue-route state is stored in `revenue_system_invoices`; failures use `FAILED` and `error_message`. Status synchronization can lag by approximately one hour. The page documents a manual resend after correcting a bad item mapping but does not define automatic retries, idempotency, duplicate prevention, partial-failure recovery, configuration-change propagation, or end-to-end reconciliation.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Preserve the Public Beta status and do not generalize availability to unsupported custom currencies or account hierarchy.",
+        "The existing customer-creation source describes revenue-system configuration as feature-flagged, while this guide says the integration is available to all customers; verify account enablement before implementation.",
+        "The 25,000 arrears-invoices-per-month figure is a documented throughput point followed by possible delay, not a stated hard rejection limit.",
+        "Do not infer automatic retry, idempotency, duplicate prevention, or accounting reconciliation from the documented manual resend flow."
+      ]
+    },
+    {
+      "update_id": "netsuite-integrations-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-netsuite]] \u2014 Public Beta NetSuite prerequisites, contract routing, item mappings, tax ownership, synchronization state, and failure boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "netsuite-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-netsuite]] \u2014 native NetSuite billing and revenue-system routes, zero-dollar invoice mapping, state synchronization, tax boundary, and failure handling",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

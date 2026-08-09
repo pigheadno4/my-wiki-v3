@@ -1,0 +1,103 @@
+{
+  "job_id": "list-invoice-breakdowns",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome List Invoice Breakdowns API\"\ntype: source\ndate_ingested: 2026-08-05\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/invoices/list-invoice-breakdowns.md\"\nraw_files:\n  - \"metronome/api-reference/invoices/list-invoice-breakdowns-2026-07-13.md\"\ntags: [metronome, invoicing, invoice-breakdowns, usage-analytics, api]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `GET /v1/customers/{customer_id}/invoices/breakdowns`, which returns customer invoice data divided into hourly or daily time windows. The endpoint supports usage analysis, billing-detail reporting, dispute investigation, and cost monitoring while preserving invoice and line-item context for each window.\n\n## Key takeaways\n\n- `customer_id` is a required UUID path parameter. Required RFC 3339 query parameters `starting_on` and `ending_before` select windows that start on or after the first timestamp and end on or before the second.\n- `window_size` defaults to `day` and accepts case variants of hour or day. A response can cover up to 35 days for daily windows or 24 hours for hourly windows; additional results use cursor pagination.\n- Optional filters include non-void invoice `status`, `credit_type_id`, and `skip_zero_qty_line_items`. Results can be ordered by invoice `issued_at` using `date_asc` or `date_desc`, with `date_asc` documented as the default.\n- Each `BreakdownInvoice` extends the standard invoice schema with required `breakdown_start_timestamp` and `breakdown_end_timestamp` fields. The response envelope requires both the `data` array and nullable `next_page` cursor.\n- The prose says breakdowns reflect usage events that arrive after invoice finalization. It does not establish that the underlying finalized invoice total, status, balance effects, downstream invoice, or exported snapshot changes in the same way.\n\n## Request and pagination\n\nThe endpoint uses Metronome's global bearer-authentication scheme. The `limit` query parameter accepts values from 1 through 100, but the documented time coverage remains capped at 35 days for daily breakdowns and 24 hours for hourly breakdowns per response. When more results remain, the response-level `next_page` cursor can be supplied through the optional `next_page` query parameter.\n\nThe date filters apply to complete breakdown windows: `starting_on` includes windows starting at or after its RFC 3339 timestamp, while `ending_before` includes windows ending at or before its timestamp. The page does not define behavior for an inverted interval, partial boundary windows, cursor lifetime, concurrent usage updates during traversal, or a consistency snapshot across pages.\n\n## Response model\n\nA successful HTTP 200 response contains `data`, an array of `BreakdownInvoice` objects, and nullable `next_page`. Each breakdown inherits invoice identity, customer and contract context, credit type, line items, status, total, type, and other optional invoice fields. Its two additional required timestamps delimit the specific breakdown window. Line items can expose quantities, totals, products, pricing and presentation groups, discounts, applied credits or commits, subscriptions, tiers, and consolidated-invoice origin data when applicable.\n\n> [!warning] Documentation ambiguity\n> The introductory prose lists `next_page` among fields contained by each `BreakdownInvoice`, while the OpenAPI schema places it once on the response envelope beside `data`. Implement against the response schema and verify the live payload before depending on cursor placement.\n\n## Finalization and freshness boundary\n\nThe page explicitly says late usage events can cause breakdowns to reflect updated usage after invoice finalization. This is narrower than a general finalized-invoice mutation guarantee. It does not define recalculation timing, correction limits, whether prior pages or cursors remain stable, whether totals and balance applications are recomputed, whether downstream providers receive updates, or how the API behavior relates to Data Export's finalized and draft breakdown tables.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-invoicing]], [[metronome-reporting-and-analytics]], [[metronome-usage-based-billing]]\n- Related source: [[source-metronome-api-reference-pagination]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/invoices/list-invoice-breakdowns-2026-07-13|2026-07-13 snapshot \u2014 invoice-breakdown endpoint, filters, response schema, and timing boundaries]]\n",
+  "quotes": [
+    {
+      "text": "> Retrieve granular time-series breakdowns of invoice data at hourly or daily intervals. This endpoint transforms standard invoices into detailed timelines, enabling you to track usage patterns, identify consumption spikes, and provide customers with transparency into their billing details throughout the billing period.",
+      "location": "line 11, endpoint purpose and time-series scope"
+    },
+    {
+      "text": "- Time granularity: Set `window_size` to hour or day based on your analysis needs",
+      "location": "line 29, supported breakdown granularity"
+    },
+    {
+      "text": "- Response limits: Daily breakdowns return up to 35 days; hourly breakdowns return up to 24 hours per request",
+      "location": "line 30, per-response time coverage"
+    },
+    {
+      "text": "- Backdated usage: If usage events arrive after invoice finalization, breakdowns will reflect the updated usage",
+      "location": "line 33, late-usage behavior after finalization"
+    },
+    {
+      "text": "- Zero quantity filtering: Use `skip_zero_qty_line_items=true` to exclude periods with no usage",
+      "location": "line 34, zero-quantity filtering"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "invoice-breakdown-api-semantics",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Calculation and timing boundary",
+        "proposed_markdown": "## Invoice breakdown API\n\nMetronome exposes customer invoice data as hourly or daily time windows through `GET /v1/customers/{customer_id}/invoices/breakdowns`. Required RFC 3339 bounds select windows starting on or after `starting_on` and ending on or before `ending_before`. Daily responses cover up to 35 days and hourly responses up to 24 hours, with response-level `next_page` cursor pagination for additional results. Each breakdown extends the standard invoice shape with required start and end timestamps; optional filters cover non-void invoice status, credit type, and zero-quantity line items.\n\nThe page says breakdowns reflect usage events received after invoice finalization, but does not establish corresponding mutation of finalized invoice totals, status, balance effects, downstream invoices, or exports. It also inconsistently describes `next_page` as a breakdown field in prose while the OpenAPI schema places it on the response envelope.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat late-usage reflection as a breakdown-query behavior, not as proof that finalized invoice objects or downstream invoices mutate.",
+          "Use the OpenAPI response-envelope placement for next_page, but verify the live payload because the prose is inconsistent."
+        ]
+      },
+      {
+        "update_id": "invoice-breakdown-invoicing-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] \u2014 hourly or daily invoice-breakdown retrieval, date bounds, pagination, filters, response shape, and late-usage boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "invoice-breakdown-reporting-query",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ### Imported-invoice time breakdowns",
+        "proposed_markdown": "### Invoice-breakdown API query\n\nThe customer invoice-breakdown endpoint returns granular invoice and line-item timelines at hourly or daily granularity. Required RFC 3339 bounds select complete windows, daily responses cover up to 35 days and hourly responses up to 24 hours, and response-level cursor pagination retrieves additional results. `skip_zero_qty_line_items` can remove periods with no usage. Metronome says the breakdowns reflect backdated usage received after invoice finalization, but does not define recalculation latency, paginated-read consistency, mutation of finalized invoice totals, or equivalence with Data Export's draft and finalized breakdown tables.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not equate the API's late-usage behavior with Data Export freshness, snapshot replacement, or finalized-invoice mutation.",
+          "The source does not define consistency across cursor pages while usage changes."
+        ]
+      },
+      {
+        "update_id": "invoice-breakdown-reporting-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] \u2014 customer invoice time-series query, hourly and daily limits, cursor pagination, zero-quantity filtering, and late-usage boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/invoices/list-invoice-breakdowns-2026-07-13.md",
+  "raw_sha256": "e725791f879820e98b1be5c8769223cb7bd0c73b8543f2b4e3ae288cabb234af",
+  "status": "candidate_ready"
+}

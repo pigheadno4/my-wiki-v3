@@ -1,0 +1,96 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "alert-specifiers-scope-and-grouping",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Customer-configured controls",
+      "proposed_markdown": "### Alert specifiers\n\nThe `low_remaining_contract_credit_and_commit_balance_reached` alert can use `alert_specifiers` to include or exclude commits and credits by custom-field conditions. A filter with a key but no value evaluates balances separately for each unique value; multiple specifiers are OR conditions, while conditions within one specifier are AND conditions. Per-key grouping requires one specifier with one key; the guide says a customer can have up to three per-key balance alerts with up to 1K unique key-value pairs per group key. Exclusion entries are OR conditions and must target entities within the same specifier's inclusion scope. The examples use different entity labels (`ContractCredit`, `ContractCreditorCommit`, and `ContractCreditOrCommit`), so verify those labels against the current API schema.",
+      "quote_indexes": [
+        0,
+        2,
+        4
+      ],
+      "warnings": [
+        "Keep the three-alert and 1K-cardinality statements scoped to this guide; it directs readers to contact a Metronome representative for keys above 1000 values.",
+        "Do not infer that the differing entity labels in the examples are interchangeable; verify the current API schema.",
+        "This page does not define webhook delivery timing, retries, ordering, deduplication, or signature verification."
+      ]
+    },
+    {
+      "update_id": "alert-specifiers-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-create-alert-specifiers]] \u2014 alert-specifier inclusion and exclusion, per-key grouping, status retrieval, and resolved-webhook behavior",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "alert-specifiers-balance-re-evaluation",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Commit-balance notifications",
+      "proposed_markdown": "Balance alerts using `alert_specifiers` can select or exclude credits and commits by custom fields, or evaluate them separately for each unique value of one group key. Setting or updating a custom-field value on a credit or commit triggers re-evaluation of applicable balance alerts. The guide says per-key grouping supports up to three alerts for one customer and up to 1K unique key-value pairs per group key.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "Keep the grouping limits and re-evaluation behavior scoped to balance alerts using `alert_specifiers`; do not generalize them to every notification type.",
+        "The guide does not define amount denomination, broader balance aggregation rules, or delivery guarantees."
+      ]
+    },
+    {
+      "update_id": "alert-specifiers-credits-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-create-alert-specifiers]] \u2014 custom-field balance filtering, per-key grouping, exclusions, and re-evaluation triggers",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "alert-specifiers-group-webhook-payload",
+      "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Payload evolution",
+      "proposed_markdown": "For a grouped balance alert, the webhook's `alert_specifiers` payload includes the custom-field `key` and `value` that crossed the threshold. If this is the first key-value pair to cross the threshold, an additional overall-alert webhook omits the specific `value`. This source does not define delivery timing, retries, ordering, deduplication, or signature behavior for these notifications.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "Keep the payload statements scoped to the grouped `low_remaining_contract_credit_and_commit_balance_reached` examples.",
+        "Use the dedicated webhook sources for delivery, retry, deduplication, and signature mechanics."
+      ]
+    },
+    {
+      "update_id": "alert-specifiers-webhook-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-create-alert-specifiers]] \u2014 grouped alert payload key/value behavior and overall-alert notification",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

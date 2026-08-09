@@ -1,0 +1,162 @@
+{
+  "job_id": "customer-dashboards-and-reporting",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Build API-powered customer dashboards\"\ntype: source\nreview_level: independent\ndate_ingested: 2026-08-04\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting.md\"\nraw_files:\n  - \"metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-07-13.md\"\ntags: [metronome, customer-dashboards, usage-reporting, invoice-breakdowns, embeddable-dashboards]\n---\n\n## Overview\n\nThis guide shows how to build API-powered customer dashboards that expose Metronome usage, spend, and credit or commit balances inside a product. It recommends a backend-service pattern for Metronome API calls, gives usage, balance, and invoice-breakdown examples, and describes embeddable invoice, usage, and commits-and-credits dashboards.\n\n## Key takeaways\n\n- Metronome says its APIs and data export features can provide end-user visibility into usage and associated costs; embeddable dashboards show customer usage and invoices.\n- All Metronome API calls used to return data to an end-user frontend should originate in the integrator's backend, using a securely stored token; the guide says never expose API tokens to users or frontend clients.\n- The usage example calls the usage endpoint for the `CPU hours` billable metric over October 2024, grouped by region in daily windows, then prepares stacked-bar-chart data.\n- `/listBalances` with `include_balance: true` exposes the currently usable balance for each credit or commit and excludes upcoming not-yet-started segments; `/getNetBalance` is offered for a single running balance.\n- Invoice breakdowns provide hourly or daily buckets per invoice line item; credit or commit deductions appear as separate line items. Embeddable dashboards cover invoices, current-contract usage (30/60/90 days), and commits/credits.\n\n## Details\n\n### Backend integration\n\nThe guide requires Metronome APIs to be called by a backend service that returns data to the frontend. It says to authenticate with a securely stored token available to that backend and not expose tokens to users or frontend clients; its diagram is `Your Frontend App <--> Your Backend Service <--> Metronome APIs`.\n\n### Usage visibility\n\nThe guide says Metronome can slice and filter usage using event properties. Its example uses the usage endpoint for the `CPU hours` billable metric from 2024-10-01 through 2024-11-01, with `window_size` set to `day` and `group_by.key` set to `region`. The response example carries `value`, `group_key`, `group_value`, `starting_on`, `ending_before`, and `next_page`. The supplied backend pseudocode organizes entries by date and region and builds stacked-bar-chart ranges; the frontend pseudocode fetches chart data from a merchant backend.\n\n### Commitment and balance tracking\n\nThe guide's `/listBalances` example requests `include_ledgers`, `include_balance`, `starting_at`, and `include_contract_balances`. With `include_balance: true`, each credit or commit's `balance` reflects the amount available to use now, and upcoming segments that have not started are not included. The worked scenario says a $100 prepaid commit and a $5 reward credit leave the reward credit at $0, the prepaid commit at $20, and the overall balance at $20 after the stated September and October spend. Its pseudocode derives each grant's `granted` amount from access-schedule items, computes `used = granted - balance`, and totals granted, used, and remaining.\n\nFor a high-level balance display, the guide points to `/getNetBalance` and says the call returns a real-time total without parsing individual balance details.\n\n### Spend visibility\n\nThe invoice breakdown endpoint is described as returning one record for each line item on a customer's invoice in hourly or daily buckets. The guide's example requests daily October 2024 breakdowns and groups the line items by `presentation_group_values.region`. If credits or commits are consumed, the deductions appear as separate line items. The supplied pseudocode aggregates each line item by breakdown date and region and divides `total` by 100 with a comment to convert cents to dollars before charting.\n\n### Embeddable dashboards\n\nMetronome's embeddable options include:\n\n- Invoice dashboard: current and historical draft, finalized, and voided invoices up to 90 days old; clients using Metronome invoicing can manually attempt payment on outstanding invoices.\n- Usage dashboard: usage metrics attached to a customer's current contract for the past 30, 60, or 90 days.\n- Commits and credits dashboard: current and historical grants, remaining and historical balances, grant and deduction history, access schedules, and expiration dates.\n\nThe guide says to create an API token, call `/dashboards/getEmbeddableUrl` with `customer_id` and the selected dashboard, and render the returned URL in an iframe. `color_overrides` can change the palette; examples name `gray_dark` for standard text and `primary_medium` for selected text. The invoice dashboard's optional `dashboard_options` key `show_zero_usage_line_items` defaults to `false`.\n\n## Related\n- Company: [[metronome]]\n- Concepts: [[metronome-reporting-and-analytics]], [[metronome-credits-and-commits]], [[metronome-invoicing]], [[metronome-security-principles]], [[metronome-customers-and-contracts]]\n\n## Raw Sources\n- [[raw/metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-07-13|2026-07-13 snapshot \u2014 API-powered customer dashboards, usage, balances, spend, and embeddable views]]\n",
+  "quotes": [
+    {
+      "text": "Metronome integrates with your core product by providing cost visibility to end customers. This helps them optimize usage patterns and derive maximum value from your product. With your usage-based offerings, customers expect transparency into their consumption and associated costs. Metronome's APIs and data export features integrate with your product, enabling you to create end-user dashboards that provide this critical visibility.",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-07-13.md:13 (dashboard purpose and API/data-export integration)"
+    },
+    {
+      "text": "When integrating Metronome data into your application to expose to your end users, you must ensure that all Metronome APIs get called from one of your backend services to return data to your frontend application. Implement all authentication against Metronome using a securely stored [token](/api-reference/authorization) available to your backend service. Never expose Metronome API tokens to users or use them on frontend clients.",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-07-13.md:36 (backend integration pattern and token handling)"
+    },
+    {
+      "text": "The Metronome [usage endpoint](/api-reference/usage/get-batched-usage-data) provides the foundation for showing users visibility into usage from each of their billable metrics over time.",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-07-13.md:52 (usage visibility endpoint)"
+    },
+    {
+      "text": "Use the `/listBalances` endpoint to retrieve information about the prepaid commit and bonus credit from September 1st onward in one response. Because the request includes the `include_balance: true` parameter, for each commit or credit a `balance` field returns that reflects the amount of commit or credit available to use now. Note that any upcoming, not-yet-started commit or credit segments are not included in this balance as they are not available to use.",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-07-13.md:195 (balance retrieval and not-yet-started segments)"
+    },
+    {
+      "text": "Use the Metronome [invoice breakdown endpoint](/api-reference/invoices/list-invoice-breakdowns) to view spend over a given time window. The invoice breakdown endpoint gets returned for each line item on a customer's invoice in hourly or daily buckets.\n\nIf commits or credits get consumed against certain line items during the period, they display as separate line items to mark the deductions for the amount of credits used.",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-07-13.md:425-427 (invoice-breakdown buckets and deductions)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "customer-dashboard-api-patterns",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ### In-app reports and dashboards",
+        "proposed_markdown": "### API-powered customer dashboards\n\nThe customer-dashboard guide describes merchant-built views powered by Metronome APIs and data export. It uses the usage endpoint for billable-metric time series, `/listBalances` for per-credit and per-commit balances, `/getNetBalance` for a single running balance, and invoice breakdowns for hourly or daily line-item spend; credit or commit deductions appear as separate line items. It also documents embeddable invoice, usage, and commits-and-credits dashboards retrieved through `/dashboards/getEmbeddableUrl`.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The endpoint calls and chart transformations are guide examples; use the linked API references for complete request and response contracts.",
+          "Do not treat the pseudocode or its /100 conversion as universal currency, precision, or rounding semantics."
+        ]
+      },
+      {
+        "update_id": "customer-dashboard-reporting-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] \u2014 API-powered usage, balance, spend, and embeddable customer dashboards",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "customer-dashboard-backend-token-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Authenticated service communication",
+        "proposed_markdown": "### Customer-dashboard backend token boundary\n\nThe customer-dashboard guide requires all Metronome API calls that return data to an end-user frontend to originate in the integrator's backend, using a securely stored token available to that backend. It explicitly says not to expose Metronome API tokens to users or use them on frontend clients, and diagrams the path as `Your Frontend App <--> Your Backend Service <--> Metronome APIs`.\n",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "This is a dashboard-integration pattern; the guide does not define token scope, expiry, rotation, or broader authorization semantics."
+        ]
+      },
+      {
+        "update_id": "customer-dashboard-security-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] \u2014 backend-only API calls and token non-exposure requirement for end-user dashboards",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "customer-dashboard-balance-presentation",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ### Balance retrieval and ledger calculation",
+        "proposed_markdown": "### Customer-dashboard balance presentation\n\nThe dashboard guide uses `/listBalances` with `include_balance: true` to show each credit or commit's currently usable balance while excluding not-yet-started segments. Its backend pseudocode derives `granted` from access-schedule amounts, computes `used = granted - balance`, and returns per-grant and overall totals. For a summary view without ledger detail, it points to `/getNetBalance`, which it describes as returning a real-time total.\n",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "Keep the worked balances and arithmetic as a presentation example; do not infer a universal balance aggregation, precision, or currency contract from this guide."
+        ]
+      },
+      {
+        "update_id": "customer-dashboard-credits-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] \u2014 `/listBalances` and `/getNetBalance` patterns for customer-facing balance views",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "customer-dashboard-invoice-breakdowns",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Dashboard lifecycle overview",
+        "proposed_markdown": "### API-powered invoice breakdowns\n\nFor customer spend dashboards, the guide says the invoice breakdown endpoint returns hourly or daily buckets for each invoice line item. Credit and commit consumption is represented by separate deduction line items. Its example groups line items by `presentation_group_values.region`; the supplied pseudocode aggregates by breakdown timestamp and divides `total` by 100 with a comment to convert cents to dollars before charting.\n",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Keep the /100 conversion scoped to the guide's example; do not infer currency, precision, or rounding rules beyond the documented response fields."
+        ]
+      },
+      {
+        "update_id": "customer-dashboard-invoicing-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] \u2014 invoice-breakdown buckets and separate credit/commit deduction line items for spend dashboards",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "customer-dashboard-customers-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] \u2014 customer-facing `/listBalances` and `/getNetBalance` balance views",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "customer-dashboard-billable-metrics-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] \u2014 usage-endpoint charting by billable metric, event properties, and region grouping",
+        "quote_indexes": [
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-07-13.md",
+  "raw_sha256": "f2c7953bfd6cbf3ad61cda9ddb720abafa4d704d45a76bb5a73f8f8f322ea832",
+  "status": "candidate_ready"
+}

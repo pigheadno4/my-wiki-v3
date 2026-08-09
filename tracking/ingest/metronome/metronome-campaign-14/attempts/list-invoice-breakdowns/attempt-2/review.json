@@ -1,0 +1,41 @@
+{
+  "job_id": "list-invoice-breakdowns",
+  "attempt": 2,
+  "verdict": "changes_requested",
+  "reason": "The raw SHA-256 and canonical URL are exact; attempt 1 failed mechanically before producing reviewable semantic artifacts; the attempt-2 receipt reproduces the candidate and suggestions; all five quotes byte-match the raw file; the raw backlink and pagination source link resolve; no duplicate canonical source exists; and the candidate correctly identifies the response-envelope placement of next_page and avoids claiming that late usage mutates finalized invoices. Changes are still required because the candidate overstates the status filter as non-void despite an unconstrained string schema, misses a second prose-versus-schema ambiguity for zero-quantity filtering, omits the documented 404 response, blurs required versus optional inherited invoice fields, and does not explicitly reconcile the API's post-finalization late-usage behavior with the existing finalized-invoice correction and Data Export boundaries. The current quotes are exact but inadequate for the request, envelope, inheritance, error, and shared-update claims, and the concept audit omits a reciprocal usage-based-billing source link.",
+  "required_changes": [
+    "Replace the categorical claim that the optional status filter is non-void. The component is named InvoiceStatusNonVoid, but raw lines 329-335 define an unconstrained string and only describe examples such as DRAFT or FINALIZED; state this schema boundary and do not claim that VOID is rejected. Make the same correction in invoice-breakdown-api-semantics.",
+    "Add an explicit documentation-ambiguity note for skip_zero_qty_line_items: raw line 34 describes excluding periods with no usage, while raw lines 336-344 formally describe filtering zero-quantity line items from the response. Do not state that entire breakdown periods are removed unless runtime behavior is verified; revise invoice-breakdown-reporting-query accordingly.",
+    "Complete the response summary by documenting the 404 NotFound response and its required Error.message field. Clarify that the inherited Invoice schema requires id, customer_id, credit_type, line_items, status, total, and type, while contract_id and many other invoice and line-item fields are optional or configuration-dependent; replace the unqualified phrase customer and contract context with schema-faithful optionality.",
+    "Strengthen the finalization section into an explicit cross-source documentation-boundary callout. Raw lines 33 and 170-171 say API breakdowns reflect late-arriving usage after invoice finalization; wiki/sources/metronome/source-metronome-guides-invoices-invoice-optimization-issue-credit-memos.md:23-24 and 39-47 say finalized-invoice usage cannot be corrected directly, and wiki/sources/metronome/source-metronome-guides-reporting-insights-data-export-database-reference.md:47-49 says finalized export records no longer change and finalized breakdowns export as invoices finalize. Preserve these as distinct API-query, correction, and export surfaces; state that synchronization, backfill, and divergence behavior are unresolved rather than selecting one behavior.",
+    "Add source-metronome-guides-reporting-insights-data-export-database-reference and source-metronome-guides-invoices-invoice-optimization-issue-credit-memos to Related sources because the candidate relies on their finalized-breakdown and correction boundaries.",
+    "Replace or expand the grounding set, while retaining three to five total quotes, with byte-matching excerpts that actually cover the required request bounds and filters, cursor request and response placement, BreakdownInvoice inheritance and required fields, and the response/error contract. Update every suggestion's quote_indexes so each proposed fact and link description is supported by its cited excerpts; the current five quotes cover only introductory prose, granularity, limits, late usage, and the prose version of zero filtering.",
+    "Complete the concept audit with a bounded reciprocal source-link suggestion for wiki/concepts/metronome/metronome-usage-based-billing.md, limited to post-billing hourly or daily usage observability and the late-arrival boundary, because the candidate links that concept and uses the source for a durable usage-event behavior. Avoid duplicating the full endpoint contract already proposed for invoicing and reporting."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "full",
+  "shared_update_decisions": [
+    {
+      "update_id": "invoice-breakdown-api-semantics",
+      "verdict": "rejected",
+      "reason": "The proposal overstates status as non-void, omits the zero-filter prose/schema ambiguity and 404 contract, does not preserve inherited-field optionality, and cites quotes that do not contain most request or response-schema claims."
+    },
+    {
+      "update_id": "invoice-breakdown-invoicing-source-link",
+      "verdict": "rejected",
+      "reason": "The reciprocal link is relevant, but its description claims date bounds, pagination, filters, and response shape that are not supported by the cited introductory quotes; resubmit with adequate exact schema excerpts."
+    },
+    {
+      "update_id": "invoice-breakdown-reporting-query",
+      "verdict": "rejected",
+      "reason": "The proposal incorrectly collapses zero-line-item filtering into removal of no-usage periods, lacks the explicit API-versus-finalized-export boundary, and cites quotes that do not support its RFC 3339, cursor-envelope, or consistency claims."
+    },
+    {
+      "update_id": "invoice-breakdown-reporting-source-link",
+      "verdict": "rejected",
+      "reason": "The link is relevant, but its cursor-pagination and query-contract description is not adequately grounded by the selected quotes and its zero-filter wording must preserve the prose-versus-schema ambiguity."
+    }
+  ],
+  "reviewer_identity": "solh-c14-r6",
+  "reviewer_model": "gpt-5.6-sol"
+}

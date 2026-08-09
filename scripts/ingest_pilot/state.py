@@ -197,13 +197,21 @@ def _routing_metadata(source: Mapping[str, Any]) -> Dict[str, str]:
 
 
 def _review_configuration(manifest: Mapping[str, Any]) -> Dict[str, Any]:
+    review_policy = manifest.get("review_policy", "per_page")
+    if review_policy == "audit_only":
+        raise PilotError("audit_only review_policy is not authorized")
+    if review_policy != "per_page":
+        raise PilotError("review_policy must be per_page")
     review_concurrency = manifest.get("review_concurrency", 1)
     if isinstance(review_concurrency, bool) or not isinstance(review_concurrency, int) or review_concurrency < 1:
         raise PilotError("review_concurrency must be a positive integer")
     if "audit_job_ids" not in manifest:
         if review_concurrency > 1:
             raise PilotError("parallel review requires audit_job_ids")
-        return {"review_concurrency": review_concurrency}
+        configuration = {"review_concurrency": review_concurrency}
+        if "review_policy" in manifest:
+            configuration["review_policy"] = review_policy
+        return configuration
     audit_job_ids = manifest["audit_job_ids"]
     job_ids = {source.get("job_id") for source in manifest["jobs"]}
     if (
@@ -214,7 +222,13 @@ def _review_configuration(manifest: Mapping[str, Any]) -> Dict[str, Any]:
         or any(job_id not in job_ids for job_id in audit_job_ids)
     ):
         raise PilotError("audit_job_ids must contain three distinct manifest job IDs")
-    return {"review_concurrency": review_concurrency, "audit_job_ids": list(audit_job_ids)}
+    configuration = {
+        "review_concurrency": review_concurrency,
+        "audit_job_ids": list(audit_job_ids),
+    }
+    if "review_policy" in manifest:
+        configuration["review_policy"] = review_policy
+    return configuration
 
 
 def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> None:
@@ -225,6 +239,13 @@ def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> No
     if paths["campaign"].exists() or paths["jobs"].exists():
         raise PilotError("campaign is already initialized")
     review_configuration = _review_configuration(manifest_data)
+    worker_concurrency = manifest_data.get("worker_concurrency", 5)
+    if (
+        isinstance(worker_concurrency, bool)
+        or not isinstance(worker_concurrency, int)
+        or worker_concurrency < 1
+    ):
+        raise PilotError("worker_concurrency must be a positive integer")
     routing_metadata = [
         _routing_metadata(source) for source in manifest_data["jobs"]
     ]
@@ -240,7 +261,7 @@ def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> No
             "campaign_id": campaign_id,
             "provider": "metronome",
             "state": "active",
-            "worker_concurrency": 5,
+            "worker_concurrency": worker_concurrency,
             "max_attempts": 3,
             **review_configuration,
             "mode": "dry_run",

@@ -1,0 +1,27 @@
+{
+  "job_id": "netsuite-integration",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The raw SHA-256 and canonical URL match the worker order, the candidate equals the receipt source_page, all five quotes are byte-matching at the stated locations, and most availability, compatibility, routing, tax, state, and failure claims are faithful. Changes are required because the cross-source availability tension is not explicitly presented and cited as documentation ambiguity, the optional-metadata wording infers invoice-sync behavior the raw page does not establish, the concept audit omits several durable-fact and reciprocal-link updates, and the main integration suggestion overgeneralizes both payment-state timing and the approximately one-hour status latency.",
+  "required_changes": [
+    "Convert the availability caveat into an explicit `> [!warning] Documentation ambiguity` callout: this guide says the NetSuite integration is available to all Metronome customers, while `[[source-metronome-api-reference-customers-create-a-customer]]` marks the revenue-system configuration with a revenue-recognition feature flag. Keep the tension scoped to the revenue-system route, state that the sources do not resolve account enablement, and add that source to the candidate's Related sources.",
+    "Replace the inference that an invoice may still sync when the three optional reconciliation fields are absent. The raw page establishes only that the associated metadata cannot be synchronized; it does not establish whether the underlying invoice sync succeeds or fails.",
+    "Add `[[metronome-credits-and-commits]]` to the candidate's Related concepts because the source contributes durable prepaid-commit and zero-dollar-invoice behavior.",
+    "Complete the shared concept audit with bounded, nonduplicative durable-fact and reciprocal-source-link proposals for `metronome-invoicing` (the two native NetSuite routes, tax boundary, route-specific state and failures), `metronome-products-and-rate-cards` (product-to-item mapping and Commit Application mapping), `metronome-credits-and-commits` (zero-dollar commit burn-down and same-invoice revenue-treatment constraint), and `metronome-webhooks` (`invoice.invoice_sync_status`, its route-distinguishing `sync_type`, and `payment.payment_status_sync`, without importing delivery guarantees from this page). Add a reciprocal source link to `metronome-customers-and-contracts` for the customer-plus-contract routing prerequisite.",
+    "Revise `netsuite-native-integration-boundary` so it does not imply that payment state is always sent later than the invoice: describe invoices and available payment information as synchronized after the external payment attempt, with a later successful retry causing the documented retroactive `PAID` update and payment-object creation.",
+    "Revise `netsuite-native-integration-boundary` so the approximately one-hour latency is explicitly limited to billing-route `external_status` updates after NetSuite invoice-status changes. The raw page does not assign that latency to revenue-system status synchronization generally."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "full",
+  "shared_update_decisions": [
+    {
+      "update_id": "netsuite-native-integration-boundary",
+      "verdict": "rejected",
+      "reason": "The proposed section is broadly useful but overgeneralizes the approximately one-hour latency beyond the billing-route NetSuite status-update statement and implies a universally later payment-state send. It must preserve the route-specific timing boundaries."
+    },
+    "netsuite-integrations-source-link",
+    "netsuite-invoicing-source-link"
+  ],
+  "reviewer_identity": "solh-c14-r3",
+  "reviewer_model": "gpt-5.6-sol"
+}

@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "job_id",
+    "attempt",
+    "source_page",
+    "quotes",
+    "suggestions",
+    "raw_path",
+    "raw_sha256",
+    "status"
+  ],
+  "properties": {
+    "job_id": {"type": "string", "minLength": 1},
+    "attempt": {"type": "integer", "minimum": 1},
+    "source_page": {"type": "string", "minLength": 1},
+    "quotes": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["text", "location"],
+        "properties": {
+          "text": {"type": "string", "minLength": 1},
+          "location": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "suggestions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["company", "concepts", "index", "log"],
+      "properties": {
+        "company": {"$ref": "#/$defs/suggestionList"},
+        "concepts": {"$ref": "#/$defs/suggestionList"},
+        "index": {"$ref": "#/$defs/suggestionList"},
+        "log": {"$ref": "#/$defs/suggestionList"}
+      }
+    },
+    "raw_path": {"type": "string", "minLength": 1},
+    "raw_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "status": {"type": "string", "const": "candidate_ready"}
+  },
+  "$defs": {
+    "suggestionList": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/suggestion"}
+    },
+    "suggestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "update_id",
+        "target_path",
+        "update_kind",
+        "anchor",
+        "proposed_markdown",
+        "quote_indexes",
+        "warnings"
+      ],
+      "properties": {
+        "update_id": {"type": "string", "minLength": 1},
+        "target_path": {"type": "string", "minLength": 1},
+        "update_kind": {
+          "type": "string",
+          "enum": [
+            "durable_fact",
+            "reciprocal_source_link",
+            "catalog_entry",
+            "log_entry",
+            "calculated_count"
+          ]
+        },
+        "anchor": {"type": "string", "minLength": 1},
+        "proposed_markdown": {"type": "string", "minLength": 1},
+        "quote_indexes": {
+          "type": "array",
+          "items": {"type": "integer", "minimum": 0}
+        },
+        "warnings": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    }
+  }
+}

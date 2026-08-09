@@ -244,8 +244,14 @@ def _approved_shared_updates(root: Path, campaign_id: str, jobs: list) -> Dict[s
     return plan
 
 
+def _require_authorized_review_policy(campaign: Mapping[str, Any]) -> None:
+    if campaign.get("review_policy", "per_page") == "audit_only":
+        raise PilotError("audit_only review_policy is not authorized")
+
+
 def _campaign_payload(root: Path, campaign_id: str) -> Dict[str, Any]:
     campaign = load_campaign(root, campaign_id)
+    _require_authorized_review_policy(campaign)
     jobs = load_jobs(root, campaign_id)
     return {
         "campaign_id": campaign["campaign_id"],
@@ -612,6 +618,7 @@ def run_once(
     if worker_result_path is not None and review_result_path is not None:
         raise PilotError("supply either a worker result or a review result, not both")
     campaign = load_campaign(root, campaign_id)
+    _require_authorized_review_policy(campaign)
     if campaign["review_concurrency"] > 1 and total_subagent_slots is None:
         raise PilotError("parallel review requires total_subagent_slots")
     if total_subagent_slots is not None and (
