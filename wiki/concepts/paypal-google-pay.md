@@ -44,6 +44,8 @@ Three PayPal SDK touchpoints:
 
 In `@paypal/react-paypal-js@10.1.0`, the hook fails loudly when Google's `pay.js` is missing after the component mounts. It clears the client/config state, records an error explaining which script to add, and forwards that error to `onError` instead of silently leaving an empty button container.
 
+In `@paypal/react-paypal-js@10.3.0`, the TypeScript payload for server-side `fetchEligibleMethods()` adds optional `merchant_info.merchant_origin`. The release notes say previous origin overwriting caused a bug particularly in the Google Pay payments flow. Retained code proves typed request support, not a change to Google's payment sheet, PayPal's eligibility decision, or merchant availability.
+
 > [!info] Version-specific 3DS boundary
 > In the exact `@paypal/paypal-js@9.8.0` type surface, `initiatePayerAction()` is documented as a no-argument placeholder for future 3DS support. This differs from the established integration guidance above, which calls `initiatePayerAction({ orderId })`. Do not infer complete Google Pay 3DS handling from the 9.8.0 wrapper types alone; verify the deployed SDK and current product documentation.
 

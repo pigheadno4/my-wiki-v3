@@ -7,6 +7,12 @@
 - Recorded checkout, future-usage, billing, refund, webhook, retry/idempotency, TypeScript-versioning, and evidence-boundary findings, including the README/source retry-default contradiction.
 - Updated the Stripe Node concept, company page, provider index, and provider log; source count increased by one for the new changelog.
 
+## [2026-08-08] ingest | GitHub paypal/paypal-js React `10.3.0`
+
+- Delta-ingested `@paypal/react-paypal-js@10.3.0` from work item `github-9ce02cb999656064a1a6` at exact SHA `1ce6b30db4b7bcec8177a0c25aaf6408c6d523f2`.
+- Added server eligibility merchant-origin request typing, the release-noted Google Pay payments-flow impact, and response-body error diagnostics while preserving all prior package history.
+- Updated the cumulative source, changelog, PayPal Google Pay concept, company summary, provider index, and provider log without changing source counts.
+
 ## [2026-08-05] ingest | GitHub paypal-examples/paypal-sdk-server-side-integration - `default-branch@5409a3b`
 
 - Full serial ingest of `github-849ba0a66c8ae04ad9da` from exact SHA `5409a3b9c0b6d0049fc3be9386092759fd6a1d5c` after reading and hash-verifying all 41 required paths.

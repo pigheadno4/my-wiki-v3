@@ -6,6 +6,13 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-08] ingest | paypal/paypal-js React `10.3.0`
+
+- Approved and processed work item `github-9ce02cb999656064a1a6` in delta mode after serial full-read review of all 13 required paths.
+- Ingested `@paypal/react-paypal-js@10.3.0` at exact SHA `1ce6b30db4b7bcec8177a0c25aaf6408c6d523f2`; no `@paypal/paypal-js` release or dependency update is attached.
+- Added typed `merchant_info.merchant_origin` support for server eligibility requests, the release-noted Google Pay payments-flow impact, and response-body eligibility diagnostics.
+- Updated [[source-github-paypal-js]], [[changelog-github-paypal-js]], and [[paypal-google-pay]] without adding a concept, contradiction, or PayPal source count.
+
 ## [2026-08-05] ingest | paypal-examples/paypal-sdk-server-side-integration `default-branch@5409a3b`
 
 - Approved and processed work item `github-849ba0a66c8ae04ad9da` in full mode after serial review of all 41 required paths.

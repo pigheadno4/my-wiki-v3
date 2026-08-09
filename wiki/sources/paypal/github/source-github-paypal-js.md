@@ -2,9 +2,10 @@
 title: "GitHub: paypal/paypal-js"
 type: source
 date_ingested: 2026-04-13
-date_updated: 2026-07-30
+date_updated: 2026-08-08
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-08-08-1ce6b30/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-3caece5/manifest.json"
@@ -22,7 +23,7 @@ tags: [paypal, javascript-sdk, react, npm, typescript, github-repository, venmo]
 
 `paypal/paypal-js` is PayPal's JavaScript SDK monorepo. It contains two independently versioned packages: `@paypal/paypal-js`, the vanilla loader and TypeScript definitions, and `@paypal/react-paypal-js`, the React integration layer.
 
-This cumulative page preserves package-qualified historical findings. The immutable pipeline contains independent v8 baselines for `@paypal/paypal-js@8.4.2` and `@paypal/react-paypal-js@8.9.2`, the shared-SHA major transition to `@paypal/paypal-js@9.8.0` and `@paypal/react-paypal-js@9.3.0`, the coordinated `10.0.0` environment-safety transition, and every collected stable v10 patch through `@paypal/paypal-js@10.1.0` and `@paypal/react-paypal-js@10.2.1`. Each package release retains its own record even when two releases point to one repository snapshot.
+This cumulative page preserves package-qualified historical findings. The immutable pipeline contains independent v8 baselines for `@paypal/paypal-js@8.4.2` and `@paypal/react-paypal-js@8.9.2`, the shared-SHA major transition to `@paypal/paypal-js@9.8.0` and `@paypal/react-paypal-js@9.3.0`, the coordinated `10.0.0` environment-safety transition, and every collected stable v10 patch through `@paypal/paypal-js@10.1.0` and `@paypal/react-paypal-js@10.3.0`. Each package release retains its own record even when two releases point to one repository snapshot.
 
 Repository: <https://github.com/paypal/paypal-js>
 
@@ -176,12 +177,26 @@ Repository: <https://github.com/paypal/paypal-js>
 >
 > `raw/github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/files/packages/react-paypal-js/README.md:2300-2304`
 
+> "Merchants can now pass a merchant origin to the eligibility API via the server method fetchEligibleMethods."
+>
+> [React 10.3.0 release notes](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.3.0/2026-08-08/release-notes.md)
+
+> "merchant_info?: {"
+> "merchant_origin?: string;"
+> "};"
+>
+> [React 10.3.0 server eligibility helper](../../../../raw/github/paypal/paypal-js/snapshots/2026-08-08-1ce6b30/files/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.ts)
+
+> "const body = await response.text();"
+>
+> [React 10.3.0 server eligibility helper](../../../../raw/github/paypal/paypal-js/snapshots/2026-08-08-1ce6b30/files/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.ts)
+
 ## Package status
 
 | Package | Latest ingested release | Evidence status |
 | --- | --- | --- |
 | `@paypal/paypal-js` | `10.1.0` | Approved delta ingest; v8 through 10.0.3 history retained |
-| `@paypal/react-paypal-js` | `10.2.1` | Approved delta ingest; v8 through 10.2.0 history retained |
+| `@paypal/react-paypal-js` | `10.3.0` | Approved delta ingest; v8 through 10.2.1 history retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -508,6 +523,24 @@ Payload-specific calls do not wait. Server-hydrated eligibility is stored withou
 
 For server rendering, await `fetchEligibleMethods()` and pass its resolved response to `eligibleMethodsResponse`; do not pass a Promise. Consume that hydrated result by calling `useEligibleMethods()` without a payload. No public API incompatibility, payment-session change, or new payment method is reported.
 
+#### `@paypal/react-paypal-js@10.3.0`
+
+React `10.3.0` is a contained minor release at commit `1ce6b30db4b7bcec8177a0c25aaf6408c6d523f2`. It extends the TypeScript `FindEligiblePaymentMethodsRequestPayload` with optional `merchant_info.merchant_origin`. The helper already serializes the supplied payload, so the retained implementation proves typed support for sending this field rather than a new serialization path.
+
+The release note states that merchants can pass a merchant origin through `fetchEligibleMethods()` and that previous origin overwriting caused a bug particularly in the Google Pay payments flow. A typed server call can supply it as follows; the field remains optional, so existing calls remain valid.
+
+```ts
+await fetchEligibleMethods({
+  environment: "production",
+  headers,
+  payload: { merchant_info: { merchant_origin: "https://checkout.example.com" } },
+});
+```
+
+The helper also reads the response body for non-successful Eligibility API responses and includes that body after the HTTP status in the thrown error. This improves server diagnostics but may expose upstream error text to application logs, so merchants should continue controlling how server errors are logged or returned to clients.
+
+This release does not update the package's `@paypal/paypal-js ^10.1.0` dependency and does not establish a new core package release, payment method, eligibility decision, or Google Pay runtime behavior. Retained code proves the React wrapper's request typing and error construction; the origin-preservation behavior is attributed to the release note.
+
 ## Historical evidence retained from the earlier ingest
 
 The earlier repository review at commit `f59f94baefea4b2ddb38553669ed0ac4ede86167` established the legacy loader option handling above and recorded a broader v6 component set, including guest payments, card fields, messages, subscriptions, Apple Pay, and Google Pay. That snapshot did not retain an exact package-qualified release identity, so its broader surface is useful historical context but must not be attributed to `@paypal/paypal-js@8.4.2`.
@@ -532,6 +565,9 @@ See [[changelog-github-paypal-js]] for the chronological package release ledger 
 
 ## Raw Sources
 
+- [React 10.3.0 snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-08-08-1ce6b30/manifest.json) — exact-SHA source capsule
+- [React 10.3.0 release record](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.3.0/2026-08-08/manifest.json) — package-qualified release identity
+- [React 10.3.0 release notes](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.3.0/2026-08-08/release-notes.md) — merchant-origin eligibility notes
 - `raw/github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/manifest.json` — exact-SHA source capsule for React `10.2.1`
 - `raw/github/paypal/paypal-js/releases/react-paypal-js/10.2.1/2026-07-30/manifest.json` — package-qualified React `10.2.1` release record
 - `raw/github/paypal/paypal-js/releases/react-paypal-js/10.2.1/2026-07-30/release-notes.md` — SSR eligibility hydration race patch notes

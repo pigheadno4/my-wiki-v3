@@ -744,6 +744,23 @@ class GitHubWorkItemTests(unittest.TestCase):
         self.assertIn("Required reading: `8` files", status)
         self.assertIn("packet.md", status)
 
+    def test_status_links_resolve_from_tracking_github_directory(self):
+        status = render_status((self.awaiting_item,))
+
+        self.assertIn("[manifest](../../" + self.snapshot_manifest + ")", status)
+        self.assertIn(
+            "[review packet](repos/paypal/paypal-js/ingest-packets/",
+            status,
+        )
+        self.assertIn(
+            "Release: [manifest](../../" + self.paypal_change.release_manifest + ")",
+            status,
+        )
+        self.assertIn(
+            "Comparison: [manifest](repos/paypal/paypal-js/comparisons/",
+            status,
+        )
+
     def test_work_item_attachment_is_loaded_and_rendered_in_status(self):
         attachment = (
             "tracking/github/repos/paypal/paypal-js/evidence-attachments/"
@@ -776,7 +793,10 @@ class GitHubWorkItemTests(unittest.TestCase):
         )
 
         self.assertEqual((attachment,), loaded.evidence_attachments)
-        self.assertIn("Evidence attachment: [manifest](" + attachment + ")", status)
+        self.assertIn(
+            "Evidence attachment: [manifest](repos/paypal/paypal-js/evidence-attachments/",
+            status,
+        )
         self.assertIn("Required reading: `10` files", status)
 
     def test_attachment_publication_is_deterministic_and_approval_revalidates_hashes(self):

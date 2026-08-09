@@ -875,6 +875,14 @@ def render_status(
     packet_summaries: Optional[Mapping[str, PacketStatusSummary]] = None,
 ) -> str:
     """Render generated operator status from validated queue items."""
+    def status_link(path: str) -> str:
+        if path.startswith("raw/"):
+            return "../../" + path
+        tracking_prefix = "tracking/github/"
+        if path.startswith(tracking_prefix):
+            return path[len(tracking_prefix) :]
+        return path
+
     summaries = dict(packet_summaries or {})
     normalized = tuple(sorted(items, key=lambda item: item.work_item_id))
     for item in normalized:
@@ -907,13 +915,13 @@ def render_status(
                 "- Last error: " + (item.last_error or "None"),
                 "- Snapshot: "
                 + (
-                    "[manifest](" + item.snapshot_manifest + ")"
+                    "[manifest](" + status_link(item.snapshot_manifest) + ")"
                     if item.snapshot_manifest
                     else "Not published"
                 ),
                 "- Packet: "
                 + (
-                    "[review packet](" + packet_markdown + ")"
+                    "[review packet](" + status_link(packet_markdown) + ")"
                     if item.ingest_packet
                     else "Historical item without packet"
                 ),
@@ -921,7 +929,7 @@ def render_status(
                     [
                         "- Evidence attachment: "
                         + ", ".join(
-                            "[manifest](" + path + ")"
+                            "[manifest](" + status_link(path) + ")"
                             for path in item.evidence_attachments
                         )
                     ]
@@ -961,10 +969,10 @@ def render_status(
                 lines.extend(
                     [
                         "- `" + change.release_id + "` (recommended `" + change.recommended_mode + "`)",
-                        "  Release: [manifest](" + change.release_manifest + ")",
+                        "  Release: [manifest](" + status_link(change.release_manifest) + ")",
                         "  Comparison: "
                         + (
-                            "[manifest](" + change.comparison_manifest + ")"
+                            "[manifest](" + status_link(change.comparison_manifest) + ")"
                             if change.comparison_manifest
                             else "Not applicable"
                         ),
@@ -981,7 +989,7 @@ def render_status(
                         "  To SHA: `" + change.to_sha + "`",
                         "  Comparison: "
                         + (
-                            "[manifest](" + change.comparison_manifest + ")"
+                            "[manifest](" + status_link(change.comparison_manifest) + ")"
                             if change.comparison_manifest
                             else "Not applicable"
                         ),

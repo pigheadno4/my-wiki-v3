@@ -1,0 +1,64 @@
+diff --git a/packages/react-paypal-js/CHANGELOG.md b/packages/react-paypal-js/CHANGELOG.md
+index 8deb687..13acac0 100644
+--- a/packages/react-paypal-js/CHANGELOG.md
++++ b/packages/react-paypal-js/CHANGELOG.md
+@@ -1,5 +1,11 @@
+ # Changelog
+ 
++## 10.3.0
++
++### Minor Changes
++
++- 3413d0f: This change implements a new feature of the Eligibility API in response to JS SDK eligibility requests. In some cases the request merchant origin was getting overwritten. This caused a bug in particular in the Google Pay payments flow. Merchants can now pass a merchant origin to the eligibility API via the server method fetchEligibleMethods.
++
+ ## 10.2.1
+ 
+ ### Patch Changes
+diff --git a/packages/react-paypal-js/package.json b/packages/react-paypal-js/package.json
+index e87b1f2..9dca2ad 100644
+--- a/packages/react-paypal-js/package.json
++++ b/packages/react-paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@paypal/react-paypal-js",
+-  "version": "10.2.1",
++  "version": "10.3.0",
+   "description": "React components for the PayPal JS SDK",
+   "keywords": [
+     "react",
+diff --git a/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.test.ts b/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.test.ts
+index baee7a7..c75b8f5 100644
+--- a/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.test.ts
++++ b/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.test.ts
+@@ -120,6 +120,7 @@ describe("fetchEligibleMethods", () => {
+     (global.fetch as jest.Mock).mockResolvedValueOnce({
+       ok: false,
+       status: 401,
++      text: async () => "Unauthorized",
+     });
+ 
+     await expect(
+diff --git a/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.ts b/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.ts
+index d3697ed..27b1e12 100644
+--- a/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.ts
++++ b/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.ts
+@@ -62,6 +62,9 @@ export type FindEligiblePaymentMethodsRequestPayload = {
+     };
+   };
+   shopper_session_id?: string;
++  merchant_info?: {
++    merchant_origin?: string;
++  };
+ };
+ 
+ /**
+@@ -119,7 +122,8 @@ export async function fetchEligibleMethods(
+     );
+ 
+     if (!response.ok) {
+-      throw new Error(`Eligibility API error: ${response.status}`);
++      const body = await response.text();
++      throw new Error(`Eligibility API error: ${response.status} - ${body}`);
+     }
+ 
+     const data = await response.json();

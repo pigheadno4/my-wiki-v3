@@ -909,7 +909,10 @@ class CollectGitHubReposTests(unittest.TestCase):
         packet = json.loads(
             (self.root / linked.ingest_packet).read_text(encoding="utf-8")
         )
-        self.assertIn(attachment.relative_path, status)
+        self.assertIn(
+            attachment.relative_path.removeprefix("tracking/github/"),
+            status,
+        )
         self.assertIn(
             "Required reading: `"
             + str(len(packet["required_reading"]) + len(attachment.required_reading))

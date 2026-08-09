@@ -2,8 +2,10 @@
 title: "GitHub changelog: paypal/paypal-js"
 type: source
 date_ingested: 2026-07-30
+date_updated: 2026-08-08
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-08-08-1ce6b30/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-22-3caece5/manifest.json"
@@ -19,6 +21,36 @@ tags: [paypal, javascript-sdk, react, npm, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for the independently versioned packages in `paypal/paypal-js`. Detailed implementation knowledge belongs in [[source-github-paypal-js]] and the linked immutable snapshots.
+
+## Repository change set: `1ce6b30` (2026-07-31)
+
+### Package timeline
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@paypal/react-paypal-js` | `10.2.1` | `10.3.0` | 2026-07-31 | `1ce6b30db4b7bcec8177a0c25aaf6408c6d523f2` | Delta |
+
+The package-qualified release is `@paypal/react-paypal-js@10.3.0`. No `@paypal/paypal-js` package release is part of this change set.
+
+**Important change:** The TypeScript payload for server-side `fetchEligibleMethods()` now declares optional `merchant_info.merchant_origin`. The release note says merchants can pass that origin to the Eligibility API and that previous overwriting caused a bug particularly in the Google Pay payments flow. Separately, retained code shows Eligibility API errors now include the upstream response body.
+
+**Developer or merchant impact:** Typed server-rendered React integrations can supply an explicit merchant origin and receive more detailed failure diagnostics. Existing payloads remain valid because the new field is optional. Origin preservation is a release-note claim; retained implementation proves the request type and payload serialization.
+
+**Migration action:** No mandatory migration is stated. Pass `payload.merchant_info.merchant_origin` when the eligibility request must preserve an explicit merchant origin, and ensure server logging does not expose upstream error details to clients.
+
+**Updated source sections:** React version 10; [[paypal-google-pay]]; PayPal company summary; provider index and logs.
+
+**Evidence:**
+
+- [React release record](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.3.0/2026-08-08/manifest.json)
+- [React release notes](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.3.0/2026-08-08/release-notes.md)
+- [Snapshot manifest](../../../../raw/github/paypal/paypal-js/snapshots/2026-08-08-1ce6b30/manifest.json)
+- [React comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.2.1--10.3.0/comparison.json)
+- [Server eligibility helper](../../../../raw/github/paypal/paypal-js/snapshots/2026-08-08-1ce6b30/files/packages/react-paypal-js/src/v6/server/fetchEligibleMethods.ts)
+
+### Evidence boundary
+
+This patch proves the React wrapper's server request type, existing whole-payload serialization, and error construction. The origin-overwrite fix is attributed to the release note. The patch does not prove a change to PayPal's eligibility decision, Google Pay payment-session runtime, product availability, or the independently versioned `@paypal/paypal-js` package.
 
 ## Repository change set: `7ff3eee` (2026-07-29)
 
@@ -343,6 +375,9 @@ The same SHA contains `@paypal/react-paypal-js@8.9.1`, but no React release is r
 
 ## Raw Sources
 
+- [React 10.3.0 snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-08-08-1ce6b30/manifest.json) — exact-SHA source capsule
+- [React 10.3.0 release record](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.3.0/2026-08-08/manifest.json) — package-qualified release identity
+- [React 10.2.1 to 10.3.0 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.2.1--10.3.0/comparison.json)
 - `raw/github/paypal/paypal-js/snapshots/2026-07-22-59cb2ce/manifest.json` — shared exact-SHA source capsule
 - `raw/github/paypal/paypal-js/releases/paypal-js/10.0.1/2026-07-22/manifest.json` — `@paypal/paypal-js@10.0.1` release record
 - `raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.0/2026-07-22/manifest.json` — `@paypal/react-paypal-js@10.1.0` release record
