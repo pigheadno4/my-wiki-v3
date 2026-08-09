@@ -1103,7 +1103,12 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "package-manifest"
     if filename in (".env.example", ".env.sample", "example.env"):
         return "runtime-configuration"
-    if filename in (".npmrc", ".nvmrc"):
+    if filename in (
+        ".npmrc",
+        ".nvmrc",
+        "codegen_version",
+        "openapi_version",
+    ):
         return "build-configuration"
     if filename == "tsconfig.json" or (
         filename.startswith("tsconfig.") and filename.endswith(".json")

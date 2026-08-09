@@ -745,6 +745,31 @@
   Release: [manifest](raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.0/2026-07-30/manifest.json)
   Comparison: Not applicable
 
+## `github-e923ffd86b6fd634a620`
+
+- Repository: `stripe/stripe-node`
+- SHA: `57626dcdfb94164fc9f112dfaa3c57aec5130e4f`
+- Collection date: `2026-08-08`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](raw/github/stripe/stripe-node/snapshots/2026-08-08-57626dc/manifest.json)
+- Packet: [review packet](tracking/github/repos/stripe/stripe-node/ingest-packets/github-e923ffd86b6fd634a620/packet.md)
+- Review priority: `high`
+- Required reading: `69` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe@22.4.0` (recommended `full`)
+  Release: [manifest](raw/github/stripe/stripe-node/releases/stripe/22.4.0/2026-08-08/manifest.json)
+  Comparison: Not applicable
+
 ## `github-ee6197518787f8152774`
 
 - Repository: `paypal/paypal-js`

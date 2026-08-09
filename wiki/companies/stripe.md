@@ -2,7 +2,7 @@
 title: "Stripe"
 type: company
 tags: [stripe, payment-gateway, payment-intents, checkout, subscriptions, elements, webhooks, payment-links]
-source_count: 652
+source_count: 653
 ---
 
 ## Stripe
@@ -548,7 +548,8 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 - [[source-stripe-sca-readiness]] — SCA readiness: EEA scope, grandfathering (EU Dec 2020/UK Sep 2021), off-session checklist, MIT mandate, Charges API not SCA-ready
 - [[source-stripe-currencies]] — Supported currencies: minor units formatting, ISK/HUF/TWD/UGX special rules, min/max charge amounts, EEA card definition
 - [[source-stripe-react-stripejs]] — React Stripe.js reference: CheckoutElementsProvider/useCheckoutElements + Elements/useStripe/useElements/ElementsConsumer
-- [[source-github-stripe-node]] — stripe-node SDK repo v22.1.1: error taxonomy, webhook verification, retry logic, autoPagination, PaymentIntents + Checkout/Sessions APIs
+- [[source-github-stripe-node]] — cumulative `stripe` Node SDK history through `22.4.0`: server/runtime boundary, typed resources, retries/idempotency, webhooks, pagination, Checkout, PaymentIntents, SetupIntents, billing, and refunds
+- [[changelog-github-stripe-node]] — package-qualified stripe-node release history retaining `22.1.1` and `22.4.0`
 - [[source-github-react-stripe-js]] — cumulative react-stripe-js history: legacy v6.3.0 plus `@stripe/react-stripe-js@6.8.0` providers, hooks, lifecycle, SSR, compatibility, and beta Terms Element
 - [[changelog-github-react-stripe-js]] — package-qualified react-stripe-js release history
 - [[source-stripe-bizum]] — Bizum: Spain-only real-time, phone auth, 395-day refunds, 40-day evidence, onboarding required

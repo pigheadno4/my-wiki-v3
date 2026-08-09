@@ -2,6 +2,8 @@
 
 > Stripe-specific catalog. Cross-cutting pages are in the root [[index]].
 
+Operations history: [[stripe-log]]
+
 ## Company
 
 - [[stripe]]
@@ -462,7 +464,8 @@
 - [[source-stripe-sca-readiness]] — SCA readiness: EEA scope, grandfathering (EU Dec 2020/UK Sep 2021), off-session checklist, MIT mandate (webpage, 2026-05-08)
 - [[source-stripe-currencies]] — Supported currencies: minor units formatting, ISK/HUF/TWD/UGX special rules, min/max charge amounts, EEA card definition (webpage, 2026-05-08)
 - [[source-stripe-react-stripejs]] — React Stripe.js: CheckoutElementsProvider + useCheckoutElements (Checkout path), Elements + useStripe/useElements/ElementsConsumer (advanced) (webpage, 2026-05-08)
-- [[source-github-stripe-node]] — stripe-node SDK v22.1.1: error taxonomy, webhook verification, retry/idempotency, autoPagination, PaymentIntents + Checkout APIs (github-repo, 2026-05-08)
+- [[source-github-stripe-node]] — cumulative `stripe` Node SDK through `22.4.0`: server/runtime boundary, retries/idempotency, webhooks, pagination, Checkout, PaymentIntents, SetupIntents, billing, and refunds (github-repo, updated 2026-08-08)
+- [[changelog-github-stripe-node]] — package-qualified stripe-node history retaining `22.1.1` and `22.4.0` with the Dahlia API transition and checkout-relevant changes (github-repo, 2026-08-08)
 - [[source-github-react-stripe-js]] — `@stripe/react-stripe-js` legacy v6.3.0→retained v6.8.0: provider-specific Checkout hooks, lifecycle, SSR, compatibility, beta Terms Element (github-repo, updated 2026-07-30)
 - [[changelog-github-react-stripe-js]] — package-qualified `stripe/react-stripe-js` history with exact 6.8.0 release note and legacy evidence boundary (github-repo, 2026-07-30)
 - [[source-github-stripe-js]] — `@stripe/stripe-js` v8.11.0→v9.12.1: `clover`→`dahlia`, loader boundary, Checkout API reshape, Elements expansion, and typed migration findings (github-repo, 2026-07-30)
@@ -699,7 +702,7 @@
 - [[stripe-radar]] — Stripe Radar: 3 tiers, pricing model, payment methods screened, core features, dispute integration
 - [[stripe-dispute-monitoring-programs]] — Card network monitoring programs: VAMP, ECM/HECM/EFM, AusPayNet FMP thresholds and fines
 - [[stripe-high-risk-merchant-lists]] — MATCH/VMSS TMF databases: qualitative + quantitative criteria, removal rules, Stripe position
-- [[stripe-node-sdk]] — Stripe Node.js SDK: initialization, 7 error classes, webhook constructEvent, autoPaging, retry logic, PaymentIntent + Checkout methods
+- [[stripe-node-sdk]] — Stripe Node.js SDK through `22.4.0`: runtime exports, typed errors, webhook/event verification, pagination, retry/idempotency conflict, PaymentIntent + Checkout methods
 - [[stripe-currencies]] — Stripe Currencies: presentment/settlement/payment method, minor units, special cases (ISK/HUF/TWD/UGX), min/max charge amounts
 - [[stripe-declines]] — Stripe Declines: 3 failure types, outcome object fields, Radar block reasons, Adaptive Acceptance, allow list
 - [[stripe-3d-secure]] — Stripe 3D Secure: 3DS2 flow, manual trigger (any/challenge), web/iOS/Android/RN, liability shift, 6 web + 4 mobile test cards
@@ -768,6 +771,11 @@
 - [[stripe-subscriptions]] — Stripe Subscriptions: Checkout integration, webhook provisioning, customer portal, flexible billing mode, entitlements
 - [[stripe-adaptive-pricing]] — Stripe Adaptive Pricing: ML local currency, 150+ countries, 20 local PMs, 0% merchant / 2–4% customer fee, presentment_details
 - [[stripe-fx-quotes-api]] — Stripe FX Quotes API (preview): locked exchange rates, merchant fee control, Group 1/2 pricing, PaymentIntent integration, expired quote webhooks
+
+## Operations
+
+- [[stripe-log]] — provider-specific collection and ingest history
+- [GitHub collection status](../tracking/github/status.md)
 
 ## Comparisons involving Stripe
 

@@ -744,6 +744,34 @@ class GitHubIngestPacketTests(unittest.TestCase):
             classified["tsconfig.lib.json"],
         )
 
+    def test_codegen_versions_are_classified_as_build_configuration(self):
+        prior = {
+            "package.json": self.manifest_content("22.3.2"),
+            "CODEGEN_VERSION": "1.0.0\n",
+            "OPENAPI_VERSION": "2026-07-01\n",
+        }
+        current = {
+            "package.json": self.manifest_content("22.4.0"),
+            "CODEGEN_VERSION": "1.1.0\n",
+            "OPENAPI_VERSION": "2026-08-01\n",
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            (
+                UpstreamChange("modified", "CODEGEN_VERSION", "CODEGEN_VERSION"),
+                UpstreamChange("modified", "OPENAPI_VERSION", "OPENAPI_VERSION"),
+            ),
+            from_version="22.3.2",
+            to_version="22.4.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        self.assertEqual("build-configuration", classified["CODEGEN_VERSION"])
+        self.assertEqual("build-configuration", classified["OPENAPI_VERSION"])
+
     def test_eslint_configs_are_classified_as_build_configuration(self):
         prior = {
             "package.json": self.manifest_content("10.0.0"),

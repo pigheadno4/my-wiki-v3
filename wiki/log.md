@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-08-08] ingest | GitHub stripe/stripe-node `22.4.0`
+
+- Full-ingested work item `github-e923ffd86b6fd634a620` at exact SHA `57626dcdfb94164fc9f112dfaa3c57aec5130e4f` and migrated the legacy root source into the Stripe/GitHub hierarchy.
+- Preserved the validated `22.1.1` baseline, added a package-qualified changelog, and advanced the retained package/API baseline to `stripe@22.4.0` / `2026-07-29.dahlia`.
+- Recorded checkout, future-usage, billing, refund, webhook, retry/idempotency, TypeScript-versioning, and evidence-boundary findings, including the README/source retry-default contradiction.
+- Updated the Stripe Node concept, company page, provider index, and provider log; source count increased by one for the new changelog.
+
 ## [2026-08-05] ingest | GitHub paypal-examples/paypal-sdk-server-side-integration - `default-branch@5409a3b`
 
 - Full serial ingest of `github-849ba0a66c8ae04ad9da` from exact SHA `5409a3b9c0b6d0049fc3be9386092759fd6a1d5c` after reading and hash-verifying all 41 required paths.
