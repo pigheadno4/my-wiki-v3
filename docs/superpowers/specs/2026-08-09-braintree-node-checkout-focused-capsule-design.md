@@ -1,7 +1,7 @@
 # Braintree Node Checkout-Focused Capsule Design
 
 **Date:** 2026-08-09
-**Status:** Approved design, pending written-spec review
+**Status:** Approved
 **Repository:** `braintree/braintree_node`
 **Package:** `braintree`
 
