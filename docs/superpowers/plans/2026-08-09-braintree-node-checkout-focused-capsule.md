@@ -162,8 +162,8 @@ Expected: the commit contains only the registry contract test and executable Bra
 - Read: dry-run output only; no raw, tracking, or wiki file may be created or modified.
 
 **Interfaces:**
-- Consumes: executable policy committed by Task 1 and `collect --mode backfill --dry-run`.
-- Produces: verified release identity and capsule measurements for the real-collection approval decision.
+- Consumes: executable policy committed by Task 1, `collect --mode backfill --dry-run`, and the capsule resolver against the exact tag in temporary storage.
+- Produces: verified release identity and capsule measurements for the real-collection approval decision. The generic release dry-run verifies discovery and tag identity only; it does not execute capsule selection.
 
 - [ ] **Step 1: Record the pre-run repository state**
 
@@ -184,9 +184,15 @@ Run:
 python3 scripts/collect_github_repos.py collect --repo braintree/braintree_node --mode backfill --dry-run
 ```
 
-Expected: selection resolves only `braintree@3.39.0`, tag `3.39.0`, and exact commit `7a9270aaf31eb87819add64a768652243f90007c`. The capsule contains the root package evidence plus the complete `lib/` runtime, remains within all budgets, and reports no secret or identity failure.
+Expected: selection resolves only `braintree@3.39.0`, tag `3.39.0`, and exact commit `7a9270aaf31eb87819add64a768652243f90007c`. No repository evidence is published.
 
-- [ ] **Step 3: Prove the dry run published nothing**
+- [ ] **Step 3: Resolve and measure the capsule in temporary storage**
+
+Run the configured capsule resolver against the exact tag clone outside the repository.
+
+Expected: the capsule contains the root package evidence plus the complete `lib/` runtime, remains within all budgets, and reports no secret or identity failure.
+
+- [ ] **Step 4: Prove the dry run published nothing**
 
 Run:
 
@@ -198,7 +204,7 @@ jq '[.work_items[] | select(.repo_id == "braintree/braintree_node")] | length' t
 
 Expected: no Braintree Node raw directory exists, the work-item count is `0`, and repository state matches Step 1.
 
-- [ ] **Step 4: Report measurements and request the real-collection gate**
+- [ ] **Step 5: Report measurements and request the real-collection gate**
 
 Report the resolved package, tag, SHA, selected file count, selected UTF-8 bytes, exclusions, and any warnings. Do not run real collection until the user explicitly approves it after seeing this report.
 

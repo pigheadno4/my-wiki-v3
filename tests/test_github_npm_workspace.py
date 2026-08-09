@@ -737,6 +737,22 @@ class NpmWorkspaceTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "^needs-policy-review:untracked-declared-target"):
             resolve_workspace(directory_itself, self.capsule("root", generated=("dist/",)))
 
+    def test_extensionless_commonjs_main_resolves_tracked_javascript(self):
+        tree = self.tree(
+            {
+                "package.json": manifest("root", main="index"),
+                "index.js": "module.exports = {};\n",
+            }
+        )
+
+        target = resolve_workspace(
+            tree,
+            self.capsule("root", generated=()),
+        ).declared_targets[0]
+
+        self.assertEqual("tracked-required", target.status)
+        self.assertEqual(("index.js",), target.matched_paths)
+
     def test_generated_pattern_directory_matching_is_segment_safe(self):
         for target in ("./dist/*.js", "./dist/sub*.js"):
             with self.subTest(target=target):

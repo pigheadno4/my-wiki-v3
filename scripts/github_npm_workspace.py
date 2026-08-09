@@ -525,7 +525,19 @@ def _literal_declared_target(
     normalized = declared[2:] if declared.startswith("./") else declared
     if "*" in normalized or not safe_policy_path(normalized):
         _review("invalid-declaration", "unsafe " + field + " target in " + package.name)
-    status, policy, matches = _literal_status(package, normalized, generated_paths)
+    resolved = normalized
+    if (
+        field == "main"
+        and not posixpath.splitext(posixpath.basename(normalized))[1]
+        and normalized not in package.blobs
+        and normalized not in package.foreign_blobs
+        and (
+            normalized + ".js" in package.blobs
+            or normalized + ".js" in package.foreign_blobs
+        )
+    ):
+        resolved += ".js"
+    status, policy, matches = _literal_status(package, resolved, generated_paths)
     return DeclaredTarget(package.name, field, pointer, (), (), declared, status, policy, matches)
 
 

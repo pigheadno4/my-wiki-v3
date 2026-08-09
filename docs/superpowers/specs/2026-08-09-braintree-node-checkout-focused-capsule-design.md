@@ -69,9 +69,9 @@ The registry stores stable policy only. Versions, SHAs, collection dates, compar
 
 ## Collection and Comparison Flow
 
-1. Validate the registry and run a dry collection for `braintree/braintree_node`.
+1. Validate the registry and run a dry collection for `braintree/braintree_node` to verify release discovery without publication.
 2. Resolve the highest configured stable `braintree@3` release and verify package identity against the semantic tag.
-3. Select, hash, UTF-8 validate, budget-check, and secret-scan the approved runtime capsule.
+3. Before requesting publication approval, run the capsule resolver against that exact tag in temporary storage to select, hash, UTF-8 validate, budget-check, and secret-scan the approved runtime capsule. The generic release dry-run currently stops after tag verification.
 4. On explicit approval for real collection, publish the exact-SHA snapshot, release record, and full-review packet.
 5. Stop at `awaiting_approval`; collection never starts ingest or edits wiki knowledge.
 6. For future checks, compare each newer stable release with the highest retained version. Unchanged checks publish no work item.
@@ -97,7 +97,7 @@ Disputes, merchant onboarding, OAuth partner operations, document upload, settle
 
 - Registry and GitHub collection validators pass.
 - Dry run identifies `braintree@3.39.0` without publishing raw evidence or a work item.
-- The selected capsule remains within reviewed file and byte budgets and contains no secret findings.
+- Temporary exact-tag resolution proves the selected capsule remains within reviewed file and byte budgets and contains no secret findings.
 - Real collection, when separately approved, stops at `awaiting_approval` with no wiki edits.
 - The initial packet recommends full ingest and contains no unclassified retained changes or evidence gaps.
 - Existing accepted snapshots and unrelated workspace files remain untouched.
