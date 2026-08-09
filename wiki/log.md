@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-09] ingest | GitHub paypal/paypal-sdk-logos `default-branch@4c39c1e`
+
+- Full-ingested work item `github-459cb24ea09ef7b97664` at exact SHA `4c39c1ec50b15dde3af99b524fb24ec8aa9fa11b` from a hash-verified 105-file public-source capsule.
+- Preserved the exact `2.3.3` generated-SVG baseline, migrated the cumulative source into the PayPal/GitHub hierarchy, and added a separate changelog through package `2.3.7`.
+- Added rendering, versioned CDN, color fallback, rebrand/badge, release-process, evidence-boundary, and trademark-license findings without changing payment concepts.
+
 ## [2026-08-09] ingest | GitHub braintree/braintree_node `3.39.0`
 
 - Full-ingested `braintree@3.39.0` from work item `github-a3e31c47bd77ac327a7b` at exact SHA `7a9270aaf31eb87819add64a768652243f90007c` after reading and hash-verifying all 173 required paths.

@@ -2,7 +2,7 @@
 title: "PayPal"
 type: company
 tags: [paypal, payment-gateway, checkout, venmo, javascript-sdk, orders-api, vault, recurring-payments, payouts, disputes, reporting, agentic-commerce]
-source_count: 161
+source_count: 162
 ---
 
 ## PayPal
@@ -30,6 +30,8 @@ The runnable `paypal-examples/v6-web-sdk-sample-integration` baseline at `b5f2df
 The separate `paypal-examples/paypal-sdk-server-side-integration` baseline at `5409a3b` preserves a September 2023 JS SDK 5.1.x client/server example. Its durable patterns keep credentials, OAuth tokens, catalog prices, order creation, and capture on the merchant server; add partner attribution and connected-merchant headers; reuse a capture idempotency key for one 5xx retry; and demonstrate Hosted Fields plus subscription create, activate, and revise orchestration. It is historical sample evidence with documented API-base, order-retrieval, shipping arithmetic, subscription-validation, retry-header, and TypeScript defects, not current production guidance.
 
 The independent `paypal/paypal-checkout-components` history begins with `@paypal/checkout-components@4.1.47` and now extends through `5.0.425`. The v4 runtime implemented Zoid-based Buttons and Checkout with mobile-only secondary Venmo. The accumulated v5 runtime adds separate Card Fields, Payment Fields, Hosted Buttons, Wallet, Saved Payment Methods, Venmo, and QR component boundaries; its Venmo vault-without-purchase path is experiment-gated. These package-qualified facts do not replace current availability guidance.
+
+The separate `@paypal/sdk-logos` package provides inline and external-image rendering for PayPal, Venmo, card brands, wallets, and local-payment-method artwork. The retained history preserves 117 generated `2.3.3` CDN SVGs and the complete policy-selected `2.3.7` public source. Logo presence is asset evidence only: it does not establish merchant eligibility, regional availability, payment enablement, or permission to use protected marks.
 
 ### Braintree PayPal v6
 
@@ -327,7 +329,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-login-with-paypal]] — Log in with PayPal: OAuth flow, 8h token expiry, payer ID scope for payouts, app review required (webpage, 2026-04-16)
 - [[source-github-paypal-postman-collections]] — GitHub paypal/postman-collections: 3 collections (Public APIs, Checkout Flows, Partner APIs), paypal-postman-lib helper (github-repo, 2026-04-16)
 - [[source-github-paypal-rest-api-specs]] — GitHub paypal-rest-api-specifications: 13 OpenAPI 3.0.3 specs (Orders/Payments/Payouts/Subscriptions/Disputes/Invoicing/Vault/Webhooks/+5) (github-repo, 2026-04-16)
-- [[source-github-paypal-sdk-logos]] — GitHub paypal-sdk-logos: 117 SVG payment method logos (37+ methods), CDN URL pattern, LOGO_COLOR constants (github-repo, 2026-04-16)
+- [[source-github-paypal-sdk-logos]] — GitHub paypal-sdk-logos: cumulative `2.3.3` generated SVG and `2.3.7` public-source evidence, inline/external rendering, versioned CDN, colors, rebrand badges, and branding boundary (github-repo, updated 2026-08-09)
+- [[changelog-github-paypal-sdk-logos]] — Commit-qualified SDK Logos history: `2.3.3` through `2.3.7`, generated-CDN releases, and whitespace refinements (github-repo, 2026-08-09)
 - [[source-github-paypal-ts-server-sdk]] — GitHub PayPal-TypeScript-Server-SDK v2.3.0: 5 controllers (Orders/Payments/Vault/Subscriptions/TxSearch), 3 init patterns, header params (github-repo, 2026-04-16)
 - [[source-github-paypal-googlepay-component]] — GitHub paypal-googlepay-component: googlePayConfig/confirmOrder/initiatePayerAction internals, GraphQL, 3DS via ZalgoPromise (github-repo, 2026-04-16)
 - [[source-github-paypal-applepay-component]] — GitHub paypal-applepay-components: config/validateMerchant/confirmOrder, base64 session decode, countryCode uppercase fix (github-repo, 2026-04-16)

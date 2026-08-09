@@ -1,0 +1,237 @@
+# GitHub ingest packet
+
+- Repository: `paypal/paypal-sdk-logos`
+- Work item: `github-459cb24ea09ef7b97664`
+- Snapshot: `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/manifest.json`
+- Recommended mode: `full`
+- Review priority: `normal`
+
+- Ref: `default-branch@4c39c1e` (`main`)
+- Transition: `baseline` -> `4c39c1ec50b15dde3af99b524fb24ec8aa9fa11b`
+- Author date: `2026-04-22T16:10:43Z`
+- Commit date: `2026-04-22T16:10:43Z`
+
+## Required reading
+
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/CHANGELOG.md`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/CONTRIBUTING.md`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/LICENSE`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/README.md`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/SECURITY.md`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/package.json`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/constants.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/lib/components.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/lib/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/lib/util.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/applepay/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/applepay/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/applepay/mark.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/bancontact/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/bancontact/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/bancontactRebrand/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/bancontactRebrand/mark.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/bank/glyph/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/bank/glyph/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/bank/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/blik/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/blik/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/boleto/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/boleto/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/amex/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/amex/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/cb_nationale/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/cb_nationale/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/cup/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/cup/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/diners/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/diners/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/discover/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/discover/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/elo/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/elo/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/glyph/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/glyph/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/glyphRebrand/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/glyphRebrand/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/hiper/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/hiper/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/jcb/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/jcb/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/maestro/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/maestro/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/mastercard/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/mastercard/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/visa/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/card/visa/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/credit/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/credit/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/credit/mark.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/creditRebrand/badge.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/creditRebrand/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/creditRebrand/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/creditRebrand/mark.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/eps/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/eps/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/giropay/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/giropay/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/ideal/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/ideal/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/itau/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/itau/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/mercadopago/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/mercadopago/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/multibanco/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/multibanco/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/mybank/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/mybank/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/oxxo/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/oxxo/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/p24/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/p24/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/paidy/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/paidy/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/paylaterRebrand/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/paylaterRebrand/mark.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/paypal/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/paypal/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/paypal/mark.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/paypalRebrand/badge.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/paypalRebrand/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/paypalRebrand/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/payu/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/payu/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/satispay/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/satispay/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/sepa/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/sepa/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/sofort/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/sofort/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/trustly/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/trustly/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/venmo/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/venmo/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/venmoRebrand/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/venmoRebrand/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/wechatpay/index.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/logos/wechatpay/logo.jsx`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/files/src/types.js`
+- `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/manifest.json`
+- `wiki/companies/paypal.md`
+- `wiki/log.md`
+- `wiki/paypal-index.md`
+- `wiki/paypal-log.md`
+
+## Selected changes
+
+- `added` `CHANGELOG.md`
+- `added` `CONTRIBUTING.md`
+- `added` `LICENSE`
+- `added` `README.md`
+- `added` `SECURITY.md`
+- `added` `package.json`
+- `added` `src/constants.js`
+- `added` `src/index.js`
+- `added` `src/lib/components.jsx`
+- `added` `src/lib/index.js`
+- `added` `src/lib/util.js`
+- `added` `src/logos/applepay/index.js`
+- `added` `src/logos/applepay/logo.jsx`
+- `added` `src/logos/applepay/mark.jsx`
+- `added` `src/logos/bancontact/index.js`
+- `added` `src/logos/bancontact/logo.jsx`
+- `added` `src/logos/bancontactRebrand/index.js`
+- `added` `src/logos/bancontactRebrand/mark.jsx`
+- `added` `src/logos/bank/glyph/index.js`
+- `added` `src/logos/bank/glyph/logo.jsx`
+- `added` `src/logos/bank/index.js`
+- `added` `src/logos/blik/index.js`
+- `added` `src/logos/blik/logo.jsx`
+- `added` `src/logos/boleto/index.js`
+- `added` `src/logos/boleto/logo.jsx`
+- `added` `src/logos/card/amex/index.js`
+- `added` `src/logos/card/amex/logo.jsx`
+- `added` `src/logos/card/cb_nationale/index.js`
+- `added` `src/logos/card/cb_nationale/logo.jsx`
+- `added` `src/logos/card/cup/index.js`
+- `added` `src/logos/card/cup/logo.jsx`
+- `added` `src/logos/card/diners/index.js`
+- `added` `src/logos/card/diners/logo.jsx`
+- `added` `src/logos/card/discover/index.js`
+- `added` `src/logos/card/discover/logo.jsx`
+- `added` `src/logos/card/elo/index.js`
+- `added` `src/logos/card/elo/logo.jsx`
+- `added` `src/logos/card/glyph/index.js`
+- `added` `src/logos/card/glyph/logo.jsx`
+- `added` `src/logos/card/glyphRebrand/index.js`
+- `added` `src/logos/card/glyphRebrand/logo.jsx`
+- `added` `src/logos/card/hiper/index.js`
+- `added` `src/logos/card/hiper/logo.jsx`
+- `added` `src/logos/card/index.js`
+- `added` `src/logos/card/jcb/index.js`
+- `added` `src/logos/card/jcb/logo.jsx`
+- `added` `src/logos/card/maestro/index.js`
+- `added` `src/logos/card/maestro/logo.jsx`
+- `added` `src/logos/card/mastercard/index.js`
+- `added` `src/logos/card/mastercard/logo.jsx`
+- `added` `src/logos/card/visa/index.js`
+- `added` `src/logos/card/visa/logo.jsx`
+- `added` `src/logos/credit/index.js`
+- `added` `src/logos/credit/logo.jsx`
+- `added` `src/logos/credit/mark.jsx`
+- `added` `src/logos/creditRebrand/badge.jsx`
+- `added` `src/logos/creditRebrand/index.js`
+- `added` `src/logos/creditRebrand/logo.jsx`
+- `added` `src/logos/creditRebrand/mark.jsx`
+- `added` `src/logos/eps/index.js`
+- `added` `src/logos/eps/logo.jsx`
+- `added` `src/logos/giropay/index.js`
+- `added` `src/logos/giropay/logo.jsx`
+- `added` `src/logos/ideal/index.js`
+- `added` `src/logos/ideal/logo.jsx`
+- `added` `src/logos/index.js`
+- `added` `src/logos/itau/index.js`
+- `added` `src/logos/itau/logo.jsx`
+- `added` `src/logos/mercadopago/index.js`
+- `added` `src/logos/mercadopago/logo.jsx`
+- `added` `src/logos/multibanco/index.js`
+- `added` `src/logos/multibanco/logo.jsx`
+- `added` `src/logos/mybank/index.js`
+- `added` `src/logos/mybank/logo.jsx`
+- `added` `src/logos/oxxo/index.js`
+- `added` `src/logos/oxxo/logo.jsx`
+- `added` `src/logos/p24/index.js`
+- `added` `src/logos/p24/logo.jsx`
+- `added` `src/logos/paidy/index.js`
+- `added` `src/logos/paidy/logo.jsx`
+- `added` `src/logos/paylaterRebrand/index.js`
+- `added` `src/logos/paylaterRebrand/mark.jsx`
+- `added` `src/logos/paypal/index.js`
+- `added` `src/logos/paypal/logo.jsx`
+- `added` `src/logos/paypal/mark.jsx`
+- `added` `src/logos/paypalRebrand/badge.jsx`
+- `added` `src/logos/paypalRebrand/index.js`
+- `added` `src/logos/paypalRebrand/logo.jsx`
+- `added` `src/logos/payu/index.js`
+- `added` `src/logos/payu/logo.jsx`
+- `added` `src/logos/satispay/index.js`
+- `added` `src/logos/satispay/logo.jsx`
+- `added` `src/logos/sepa/index.js`
+- `added` `src/logos/sepa/logo.jsx`
+- `added` `src/logos/sofort/index.js`
+- `added` `src/logos/sofort/logo.jsx`
+- `added` `src/logos/trustly/index.js`
+- `added` `src/logos/trustly/logo.jsx`
+- `added` `src/logos/venmo/index.js`
+- `added` `src/logos/venmo/logo.jsx`
+- `added` `src/logos/venmoRebrand/index.js`
+- `added` `src/logos/venmoRebrand/logo.jsx`
+- `added` `src/logos/wechatpay/index.js`
+- `added` `src/logos/wechatpay/logo.jsx`
+- `added` `src/types.js`
+
+## Excluded changes
+
+- None

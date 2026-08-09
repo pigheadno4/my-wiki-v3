@@ -735,12 +735,11 @@ def _latest_accepted_ref(
 
 def _commit_inventory(tree: GitTree, resolution) -> CommitInventory:
     excluded_paths = tuple(sorted({path for path, _ in resolution.excluded}))
-    sizes = {blob.path: tree.blob_size(blob.path) for blob in tree.blobs() if blob.mode in ("100644", "100755")}
     return CommitInventory(
         len(resolution.files),
         sum(item.size for item in resolution.files),
         len(excluded_paths),
-        sum(sizes[path] for path in excluded_paths),
+        sum(tree.blob_size(path) for path in excluded_paths),
     )
 
 

@@ -151,6 +151,33 @@
   Release: [manifest](../../raw/github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-08-01/manifest.json)
   Comparison: Not applicable
 
+## `github-459cb24ea09ef7b97664`
+
+- Repository: `paypal/paypal-sdk-logos`
+- SHA: `4c39c1ec50b15dde3af99b524fb24ec8aa9fa11b`
+- Collection date: `2026-08-09`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-sdk-logos/ingest-packets/github-459cb24ea09ef7b97664/packet.md)
+- Review priority: `normal`
+- Required reading: `110` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@4c39c1e` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `4c39c1ec50b15dde3af99b524fb24ec8aa9fa11b`
+  Comparison: Not applicable
+
 ## `github-5c8c7287ce91fe6f34c2`
 
 - Repository: `paypal/paypal-ios`

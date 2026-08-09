@@ -6,6 +6,14 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-09] ingest | paypal/paypal-sdk-logos `default-branch@4c39c1e`
+
+- Approved and processed work item `github-459cb24ea09ef7b97664` in full mode after serial review of all 110 required paths.
+- Hash-verified the 105-file, 403,783-byte public-source capsule at `raw/github/paypal/paypal-sdk-logos/snapshots/2026-08-09-4c39c1e/manifest.json`.
+- Preserved the exact `2.3.3` generated-SVG baseline, migrated the cumulative source into the canonical PayPal/GitHub hierarchy, and added a separate commit-qualified changelog through package `2.3.7`.
+- Added inline/external rendering, CDN/color fallback, current logo/rebrand surfaces, release/deployment process, and trademark-license boundaries.
+- Recorded that logo presence does not establish merchant eligibility, regional availability, payment enablement, or protected-mark usage permission; no payment concept changed.
+
 ## [2026-08-08] ingest | paypal/paypal-js React `10.3.0`
 
 - Approved and processed work item `github-9ce02cb999656064a1a6` in delta mode after serial full-read review of all 13 required paths.

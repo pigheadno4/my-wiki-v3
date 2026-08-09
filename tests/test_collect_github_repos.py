@@ -17,6 +17,7 @@ import github_work_items  # noqa: E402
 from collect_github_repos import (  # noqa: E402
     CollectionUsageError,
     _RetainedRelease,
+    _commit_inventory,
     _parser,
     _prepare_group,
     approve_one,
@@ -1204,6 +1205,23 @@ class CommitCollectGitHubReposTests(unittest.TestCase):
                 clone_source=self.remote,
                 collection_date="2026-08-03",
             )
+
+    def test_commit_inventory_sizes_only_explicitly_excluded_paths(self):
+        tree = mock.Mock()
+        tree.blobs.side_effect = AssertionError("must not enumerate the entire tree")
+        tree.blob_size.return_value = 12
+        resolution = mock.Mock(
+            files=(mock.Mock(size=7),),
+            excluded=(("client/button.test.ts", "tests"),),
+        )
+
+        inventory = _commit_inventory(tree, resolution)
+
+        self.assertEqual(1, inventory.selected_file_count)
+        self.assertEqual(7, inventory.selected_utf8_bytes)
+        self.assertEqual(1, inventory.excluded_file_count)
+        self.assertEqual(12, inventory.excluded_utf8_bytes)
+        tree.blob_size.assert_called_once_with("client/button.test.ts")
 
     def test_commit_collection_handles_baseline_unchanged_excluded_and_delta(self):
         baseline = self.collect()
