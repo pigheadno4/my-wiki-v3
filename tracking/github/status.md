@@ -413,10 +413,10 @@
 - Repository: `paypal/paypal-typescript-server-sdk`
 - SHA: `dbdbdd06f18a06d633c66bbc27d7d7a54283e1a3`
 - Collection date: `2026-08-10`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `delta`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `delta`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

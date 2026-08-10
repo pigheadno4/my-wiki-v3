@@ -6,14 +6,22 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-10] ingest | paypal/paypal-typescript-server-sdk `@paypal/paypal-server-sdk@2.4.0`
+
+- Approved and processed work item `github-8cb8ce44195e817fa27b` in delta mode after serial review of the 65-path ingest packet.
+- Compared the 397-file, 924,075-byte exact-SHA capsule at `dbdbdd06f18a06d633c66bbc27d7d7a54283e1a3` directly with the preserved `2.3.0` baseline.
+- Added typed `ORDER_COMPLETE_ON_PAYMENT_APPROVAL` order processing and explicit default-base selection for OAuth token acquisition.
+- Classified controller authentication/response sections, read-only metadata, and normalized documentation links as generated contract clarification rather than new payment availability.
+- Preserved the `2.3.0` baseline and updated its attribution from unresolved to the upstream ESM/CommonJS build-difference fix; `2.4.0` release notes remain unavailable.
+
 ## [2026-08-10] ingest | paypal/paypal-typescript-server-sdk `@paypal/paypal-server-sdk@2.3.0`
 
 - Approved and processed work item `github-ef410a66e2c35433250d` in full mode after serial review of all 399 required paths.
 - Hash-verified the 396-file, 911,587-byte exact-SHA capsule at `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-b37cec5/manifest.json`.
 - Migrated the April README-level stub into the canonical PayPal/GitHub hierarchy and added a separate package-qualified changelog without discarding the older summary.
 - Added exact client defaults, five-controller coverage, endpoint-header boundaries, payment-source models, and full subscription lifecycle coverage; corrected the Vault controller method names.
-- Recorded that `2.3.0` has no release notes and the repository changelog ends at `2.2.0`, so baseline behavior is not attributed as a `2.3.0` addition.
-- Updated [[paypal-checkout]], [[paypal-vault]], and [[paypal-subscriptions]]. The separately collected `2.4.0` delta remains unapproved.
+- Recorded that `2.3.0` had no release notes in its collected release record, so baseline behavior was not attributed as a `2.3.0` addition at this stage.
+- Updated [[paypal-checkout]], [[paypal-vault]], and [[paypal-subscriptions]].
 
 ## [2026-08-09] ingest | paypal/paypal-sdk-logos `default-branch@4c39c1e`
 

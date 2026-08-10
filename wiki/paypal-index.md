@@ -26,8 +26,8 @@ Operations history: [[paypal-log]]
 - [[changelog-github-v6-web-sdk-sample-integration]] — commit-qualified sample expansion and implementation/documentation discrepancies
 - [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample: Orders, partner headers, Hosted Fields, shipping patches, subscriptions, and retained defects (`5409a3b`)
 - [[changelog-github-paypal-sdk-server-side-integration]] — commit-qualified historical baseline and migration cautions
-- [[source-github-paypal-typescript-server-sdk]] — cumulative `@paypal/paypal-server-sdk@2.3.0` exact-SHA baseline: Orders, Payments, Vault, Transaction Search, Subscriptions, OAuth, retries, and typed payment sources (github-repo, updated 2026-08-10)
-- [[changelog-github-paypal-typescript-server-sdk]] — package-qualified server SDK ledger beginning with the fully read `2.3.0` baseline
+- [[source-github-paypal-typescript-server-sdk]] — cumulative `@paypal/paypal-server-sdk` evidence: full `2.3.0` baseline plus `2.4.0` processing-instruction and OAuth-base delta (github-repo, updated 2026-08-10)
+- [[changelog-github-paypal-typescript-server-sdk]] — package-qualified server SDK ledger preserving `2.3.0` and the reviewed `2.4.0` delta
 - [[source-github-paypal-js-v6]] — historical GitHub SDK v6 + React v9 review; provider, hooks, Card Fields, and corrected explicit eligibility boundary (github-repo, corrected 2026-07-23)
 - [[source-npm-react-paypal-js-v9]] — @paypal/react-paypal-js v9.1.1: SDK v6 React wrapper, PayPalProvider, hooks, SSR, v8→v9 migration (npm, 2026-04-17)
 - [[source-paypal-donate-sdk]] — PayPal Donate SDK: pop-up overlay, hosted_button_id vs business param, onComplete callback (webpage, 2026-04-17)

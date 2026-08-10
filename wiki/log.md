@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-10] ingest | GitHub paypal/paypal-typescript-server-sdk `2.4.0`
+
+- Delta-ingested work item `github-8cb8ce44195e817fa27b` at exact SHA `dbdbdd06f18a06d633c66bbc27d7d7a54283e1a3` against the preserved `2.3.0` baseline.
+- Added typed `ORDER_COMPLETE_ON_PAYMENT_APPROVAL` order processing and explicit default-base OAuth token requests.
+- Kept generated authentication/response documentation, read-only markers, and normalized links separate from product-availability claims; corrected `2.3.0` attribution to its ESM/CommonJS build fix.
+
 ## [2026-08-10] ingest | GitHub paypal/paypal-typescript-server-sdk `2.3.0`
 
 - Full-ingested work item `github-ef410a66e2c35433250d` at exact SHA `b37cec58f2cdeecf5b9b7a7c15131cc5f4fff712` after reading all 399 required paths.

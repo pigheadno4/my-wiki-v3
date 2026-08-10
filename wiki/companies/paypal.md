@@ -49,7 +49,7 @@ Server-side API for order lifecycle management:
 
 Official server-side SDKs wrapping the REST API. Available for Node.js (`@paypal/paypal-server-sdk`), Java, PHP, Python, Ruby, and .Net.
 
-The exact TypeScript package baseline `@paypal/paypal-server-sdk@2.3.0` at `b37cec5` covers Orders, Payments, Vault, Transaction Search, and Subscriptions. It defaults to Sandbox with automatic retries disabled, and its generated models include cards, PayPal, Venmo, Apple Pay, Google Pay, and multiple local methods. Package model presence is not merchant-eligibility evidence.
+The exact TypeScript package baseline `@paypal/paypal-server-sdk@2.3.0` at `b37cec5` covers Orders, Payments, Vault, Transaction Search, and Subscriptions. The reviewed `2.4.0` delta at `dbdbdd0` adds typed `ORDER_COMPLETE_ON_PAYMENT_APPROVAL` order processing and explicit default-base selection for OAuth token requests. It defaults to Sandbox with automatic retries disabled, and generated model presence is not merchant-eligibility evidence.
 
 ### Venmo
 
@@ -333,8 +333,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-github-paypal-rest-api-specs]] — GitHub paypal-rest-api-specifications: 13 OpenAPI 3.0.3 specs (Orders/Payments/Payouts/Subscriptions/Disputes/Invoicing/Vault/Webhooks/+5) (github-repo, 2026-04-16)
 - [[source-github-paypal-sdk-logos]] — GitHub paypal-sdk-logos: cumulative `2.3.3` generated SVG and `2.3.7` public-source evidence, inline/external rendering, versioned CDN, colors, rebrand badges, and branding boundary (github-repo, updated 2026-08-09)
 - [[changelog-github-paypal-sdk-logos]] — Commit-qualified SDK Logos history: `2.3.3` through `2.3.7`, generated-CDN releases, and whitespace refinements (github-repo, 2026-08-09)
-- [[source-github-paypal-typescript-server-sdk]] — cumulative TypeScript Server SDK `2.3.0` exact-SHA baseline: five controllers, OAuth client, configuration, retries, and payment-source models (github-repo, updated 2026-08-10)
-- [[changelog-github-paypal-typescript-server-sdk]] — package-qualified TypeScript Server SDK release ledger beginning with the fully read `2.3.0` baseline
+- [[source-github-paypal-typescript-server-sdk]] — cumulative TypeScript Server SDK `2.3.0` baseline plus reviewed `2.4.0` delta: five controllers, OAuth client, processing instruction, configuration, retries, and payment-source models (github-repo, updated 2026-08-10)
+- [[changelog-github-paypal-typescript-server-sdk]] — package-qualified TypeScript Server SDK ledger preserving the full `2.3.0` baseline and `2.4.0` delta
 - [[source-github-paypal-googlepay-component]] — GitHub paypal-googlepay-component: googlePayConfig/confirmOrder/initiatePayerAction internals, GraphQL, 3DS via ZalgoPromise (github-repo, 2026-04-16)
 - [[source-github-paypal-applepay-component]] — GitHub paypal-applepay-components: config/validateMerchant/confirmOrder, base64 session decode, countryCode uppercase fix (github-repo, 2026-04-16)
 - [[source-github-paypal-php-server-sdk]] — GitHub PayPal-PHP-Server-SDK v2.2.0: 5 controllers, builder pattern, built-in retry/backoff/proxy (github-repo, 2026-04-16)
