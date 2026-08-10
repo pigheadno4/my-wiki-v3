@@ -74,7 +74,7 @@ $order = $response->getResult();
 ## Related Pages
 
 - [[paypal]] — company page
-- [[source-github-paypal-ts-server-sdk]] — TypeScript equivalent SDK (same API surface)
+- [[source-github-paypal-typescript-server-sdk]] — TypeScript equivalent SDK with a package-qualified `2.3.0` baseline
 - [[paypal-vault]] — Vault/Payment Tokens concept
 - [[source-github-paypal-payouts-php-sdk]] — Payouts PHP SDK (separate, older SDK)
 

@@ -52,6 +52,10 @@ PREPAID = charged before delivery; POSTPAID = charged after delivery.
 
 6-step flow: create product → create plan → show plan to buyer → buyer subscribes → activate subscription → charge automatically.
 
+### TypeScript server SDK baseline at `2.3.0`
+
+`@paypal/paypal-server-sdk@2.3.0` exposes a broad `SubscriptionsController`: product create/list/get/update; plan create/list/get/patch/activate/deactivate/pricing updates; and subscription create/list/get/patch/revise/suspend/cancel/activate/capture/transaction listing. This is typed API-surface evidence, not proof of merchant eligibility or a complete production billing implementation. See [[source-github-paypal-typescript-server-sdk]].
+
 ### v6 sample baseline at `b5f2df2`
 
 The current sample initializes `paypal-subscriptions`, requests `RECURRING_PAYMENT` eligibility, and starts `createPayPalSubscriptionPaymentSession()`. Its Node server uses `PAYPAL_SUBSCRIPTION_PLAN_ID` when supplied; otherwise it creates a sample service product, an active USD 9.99 monthly plan, and then the subscription. This is a creation and approval example, not evidence of lifecycle management, retries, cancellation, or production eligibility.
@@ -111,3 +115,4 @@ See [[source-paypal-payment-failures]] for full error code reference.
 - [[source-paypal-checkout-save-payment-methods-recurring]] — Save payment methods for recurring: field-level RBA schema, 7 use cases, 422 errors
 - [[source-github-v6-web-sdk-sample-integration]] — runnable v6 subscription session and sample product/plan creation
 - [[source-github-paypal-sdk-server-side-integration]] — historical create, `CONTINUE` activation, and plan-revise sample with documented validation gaps
+- [[source-github-paypal-typescript-server-sdk]] — package-qualified `2.3.0` controller and model surface for products, plans, and subscription lifecycle operations

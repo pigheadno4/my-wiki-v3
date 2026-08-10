@@ -6,6 +6,15 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-10] ingest | paypal/paypal-typescript-server-sdk `@paypal/paypal-server-sdk@2.3.0`
+
+- Approved and processed work item `github-ef410a66e2c35433250d` in full mode after serial review of all 399 required paths.
+- Hash-verified the 396-file, 911,587-byte exact-SHA capsule at `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-b37cec5/manifest.json`.
+- Migrated the April README-level stub into the canonical PayPal/GitHub hierarchy and added a separate package-qualified changelog without discarding the older summary.
+- Added exact client defaults, five-controller coverage, endpoint-header boundaries, payment-source models, and full subscription lifecycle coverage; corrected the Vault controller method names.
+- Recorded that `2.3.0` has no release notes and the repository changelog ends at `2.2.0`, so baseline behavior is not attributed as a `2.3.0` addition.
+- Updated [[paypal-checkout]], [[paypal-vault]], and [[paypal-subscriptions]]. The separately collected `2.4.0` delta remains unapproved.
+
 ## [2026-08-09] ingest | paypal/paypal-sdk-logos `default-branch@4c39c1e`
 
 - Approved and processed work item `github-459cb24ea09ef7b97664` in full mode after serial review of all 110 required paths.

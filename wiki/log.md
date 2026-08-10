@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-08-10] ingest | GitHub paypal/paypal-typescript-server-sdk `2.3.0`
+
+- Full-ingested work item `github-ef410a66e2c35433250d` at exact SHA `b37cec58f2cdeecf5b9b7a7c15131cc5f4fff712` after reading all 399 required paths.
+- Migrated the legacy TypeScript Server SDK stub to the PayPal/GitHub hierarchy and added a package-qualified changelog.
+- Added the five-controller surface, OAuth/configuration defaults, retry boundary, payment-source models, and complete typed subscription lifecycle; corrected the Vault method names.
+- Kept `2.3.0` feature attribution unresolved because its release notes are unavailable and the retained upstream changelog stops at `2.2.0`.
+
 ## [2026-08-09] ingest | GitHub paypal/paypal-sdk-logos `default-branch@4c39c1e`
 
 - Full-ingested work item `github-459cb24ea09ef7b97664` at exact SHA `4c39c1ec50b15dde3af99b524fb24ec8aa9fa11b` from a hash-verified 105-file public-source capsule.

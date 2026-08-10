@@ -26,6 +26,8 @@ Operations history: [[paypal-log]]
 - [[changelog-github-v6-web-sdk-sample-integration]] — commit-qualified sample expansion and implementation/documentation discrepancies
 - [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample: Orders, partner headers, Hosted Fields, shipping patches, subscriptions, and retained defects (`5409a3b`)
 - [[changelog-github-paypal-sdk-server-side-integration]] — commit-qualified historical baseline and migration cautions
+- [[source-github-paypal-typescript-server-sdk]] — cumulative `@paypal/paypal-server-sdk@2.3.0` exact-SHA baseline: Orders, Payments, Vault, Transaction Search, Subscriptions, OAuth, retries, and typed payment sources (github-repo, updated 2026-08-10)
+- [[changelog-github-paypal-typescript-server-sdk]] — package-qualified server SDK ledger beginning with the fully read `2.3.0` baseline
 - [[source-github-paypal-js-v6]] — historical GitHub SDK v6 + React v9 review; provider, hooks, Card Fields, and corrected explicit eligibility boundary (github-repo, corrected 2026-07-23)
 - [[source-npm-react-paypal-js-v9]] — @paypal/react-paypal-js v9.1.1: SDK v6 React wrapper, PayPalProvider, hooks, SSR, v8→v9 migration (npm, 2026-04-17)
 - [[source-paypal-donate-sdk]] — PayPal Donate SDK: pop-up overlay, hosted_button_id vs business param, onComplete callback (webpage, 2026-04-17)
@@ -184,7 +186,6 @@ Operations history: [[paypal-log]]
 - [[source-github-paypal-rest-api-specs]] — GitHub REST API specs: 13 OpenAPI 3.0.3 specs for full PayPal API surface (github-repo, 2026-04-16)
 - [[source-github-paypal-sdk-logos]] — GitHub SDK Logos: cumulative `2.3.3` generated SVG and `2.3.7` source evidence, inline/external rendering, versioned CDN, colors, rebrand badges, and evidence boundaries (github-repo, updated 2026-08-09)
 - [[changelog-github-paypal-sdk-logos]] — SDK Logos history: `2.3.3` through `2.3.7`, generated-CDN releases, Venmo/PP whitespace refinements, and migration guidance (github-repo, 2026-08-09)
-- [[source-github-paypal-ts-server-sdk]] — GitHub TypeScript Server SDK v2.3.0: 5 controllers, typed interfaces, OAuth2 auto-management (github-repo, 2026-04-16)
 - [[source-github-paypal-googlepay-component]] — GitHub Google Pay component: GraphQL config/confirm, 3DS ZalgoPromise, productFlow=CUSTOM_DIGITAL_WALLET (github-repo, 2026-04-16)
 - [[source-github-paypal-applepay-component]] — GitHub Apple Pay component: config/validateMerchant/confirmOrder, base64 session, countryCode uppercase fix (github-repo, 2026-04-16)
 - [[source-github-paypal-php-server-sdk]] — GitHub PHP Server SDK v2.2.0: 5 controllers, builder pattern, built-in retry/backoff/proxy (github-repo, 2026-04-16)

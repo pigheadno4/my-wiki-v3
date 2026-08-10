@@ -97,10 +97,13 @@ This closes the earlier package-only evidence gap at the source-code level, but 
 
 ## Server SDK
 
-Uses `VaultController` from `@paypal/paypal-server-sdk`:
+The exact `@paypal/paypal-server-sdk@2.3.0` baseline uses `VaultController`:
 
-- `vaultController.setupTokensCreate()` — create setup token
-- `vaultController.paymentTokensCreate()` — upgrade to payment token
+- `vaultController.createSetupToken()` — create a setup token
+- `vaultController.createPaymentToken()` — create a payment token from an approved source
+- `vaultController.listCustomerPaymentTokens()`, `getPaymentToken()`, and `deletePaymentToken()` — manage customer tokens
+
+Its generated model surface includes PayPal, Venmo, Apple Pay, card, bank, and token request/response shapes. That type coverage does not establish merchant eligibility or regional availability; the package README labels its Vault controller US-only. See [[source-github-paypal-typescript-server-sdk]].
 
 ## Eligibility
 

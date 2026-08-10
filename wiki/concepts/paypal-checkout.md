@@ -35,6 +35,8 @@ Buyer → Merchant Page (JS SDK buttons)
 | Orders REST API | Server-side order lifecycle (create, capture, authorize) |
 | PayPal Server SDK | Language-specific wrappers for the Orders REST API |
 
+The exact `@paypal/paypal-server-sdk@2.3.0` TypeScript baseline wraps Orders v2 alongside Payments v2, Vault v3, Transaction Search v1, and Subscriptions v1. Its Orders controller covers create, get, patch, confirm, authorize, capture, and tracking operations; Sandbox is the default environment and automatic retries are disabled by default. See [[source-github-paypal-typescript-server-sdk]] for the package-qualified boundary.
+
 ## Buyer Experience
 
 1. PayPal/Venmo/Card buttons appear on product, cart, or checkout pages
