@@ -3,6 +3,7 @@
 from calendar import monthrange
 from dataclasses import asdict, dataclass
 from datetime import date, timedelta
+from functools import cmp_to_key
 import json
 import os
 from pathlib import Path
@@ -11,6 +12,7 @@ from typing import Mapping, Sequence, Tuple
 
 from github_canonical import canonical_json_bytes
 from github_registry import RepoConfig
+from github_versions import compare_semver, parse_semver
 from github_work_items import WorkItem
 
 
@@ -230,7 +232,21 @@ def _build_row(
     checked: Mapping[str, str],
     today: date,
 ) -> CollectionIndexRow:
-    latest = max(items, key=lambda item: (item.collection_date, item.work_item_id), default=None)
+    order = cmp_to_key(_compare_items)
+    latest = max(items, key=order, default=None)
+    actionable_items = tuple(
+        item
+        for item in items
+        if item.state
+        in (
+            "awaiting_approval",
+            "approved",
+            "ingesting",
+            "collection_failed",
+            "needs_manual_review",
+        )
+    )
+    actionable = min(actionable_items, key=order, default=None)
     accepted = tuple(
         item
         for item in items
@@ -238,7 +254,7 @@ def _build_row(
     )
     latest_accepted = max(
         accepted,
-        key=lambda item: (item.collection_date, item.work_item_id),
+        key=order,
         default=None,
     )
     last_checked = _checked_value(checked, "last_checked_date")
@@ -253,14 +269,15 @@ def _build_row(
     comparison_base = _checked_value(checked, "comparison_base")
     if queue_is_current:
         comparison_base = _comparison_base(latest)
+    queue_item = actionable or latest
     last_error = (
-        latest.last_error
-        if queue_is_current and latest.last_error
+        queue_item.last_error
+        if queue_is_current and queue_item is not None and queue_item.last_error
         else _checked_value(checked, "last_error")
     )
     last_error = " ".join(last_error.split())[:240]
     next_due = _next_due(last_checked, repo.collection_frequency)
-    action = _next_action(repo, latest, bool(accepted), next_due, today)
+    action = _next_action(repo, queue_item, bool(accepted), next_due, today)
     adapter = repo.capsules[0].adapter if len(repo.capsules) == 1 else ""
     return CollectionIndexRow(
         repo.id,
@@ -274,11 +291,29 @@ def _build_row(
         _item_identity(latest_accepted) if latest_accepted is not None else "",
         latest_ref,
         comparison_base,
-        latest.state if latest is not None else "",
+        queue_item.state if queue_item is not None else "",
         next_due,
         action,
         last_error,
     )
+
+
+def _compare_items(left: WorkItem, right: WorkItem) -> int:
+    if left.collection_date != right.collection_date:
+        return -1 if left.collection_date < right.collection_date else 1
+    if len(left.package_changes) == len(right.package_changes) == 1:
+        left_change = left.package_changes[0]
+        right_change = right.package_changes[0]
+        if left_change.package == right_change.package:
+            left_version = parse_semver(left_change.to_version)
+            right_version = parse_semver(right_change.to_version)
+            if left_version is not None and right_version is not None:
+                comparison = compare_semver(left_version, right_version)
+                if comparison:
+                    return comparison
+    if left.work_item_id == right.work_item_id:
+        return 0
+    return -1 if left.work_item_id < right.work_item_id else 1
 
 
 def _next_action(
