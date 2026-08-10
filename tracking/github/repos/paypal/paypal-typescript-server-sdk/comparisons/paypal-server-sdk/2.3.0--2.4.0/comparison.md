@@ -1,0 +1,323 @@
+# GitHub package comparison
+
+- Repository: `paypal/paypal-typescript-server-sdk`
+- Package: `@paypal/paypal-server-sdk`
+- From: `2.3.0` (`b37cec58f2cdeecf5b9b7a7c15131cc5f4fff712`)
+- To: `2.4.0` (`dbdbdd06f18a06d633c66bbc27d7d7a54283e1a3`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `README.md`
+- `doc/controllers/orders.md`
+- `doc/controllers/payments.md`
+- `doc/controllers/subscriptions.md`
+- `doc/controllers/transaction-search.md`
+- `doc/controllers/vault.md`
+- `doc/models/address.md`
+- `doc/models/amount-with-breakdown.md`
+- `doc/models/apple-pay-card-response.md`
+- `doc/models/apple-pay-card.md`
+- `doc/models/apple-pay-tokenized-card.md`
+- `doc/models/authorization-status-with-details.md`
+- `doc/models/authorization-with-additional-data.md`
+- `doc/models/authorization.md`
+- `doc/models/bancontact-payment-object.md`
+- `doc/models/bancontact-payment-request.md`
+- `doc/models/billing-plan.md`
+- `doc/models/bin-details.md`
+- `doc/models/blik-experience-context.md`
+- `doc/models/blik-payment-object.md`
+- `doc/models/blik-payment-request.md`
+- `doc/models/capture-status-with-details.md`
+- `doc/models/captured-payment.md`
+- `doc/models/card-from-request.md`
+- `doc/models/card-payment-token-entity.md`
+- `doc/models/card-response-address.md`
+- `doc/models/card-response-with-billing-address.md`
+- `doc/models/card-response.md`
+- `doc/models/card-vault-response.md`
+- `doc/models/card-verification-details.md`
+- `doc/models/card-verification-processor-response.md`
+- `doc/models/confirm-order-request.md`
+- `doc/models/custom-error.md`
+- `doc/models/customer-vault-payment-tokens-response.md`
+- `doc/models/cycle-execution.md`
+- `doc/models/default-error.md`
+- `doc/models/eps-payment-object.md`
+- `doc/models/eps-payment-request.md`
+- `doc/models/error-details.md`
+- `doc/models/exchange-rate.md`
+- `doc/models/experience-context.md`
+- `doc/models/failed-payment-details.md`
+- `doc/models/giropay-payment-object.md`
+- `doc/models/giropay-payment-request.md`
+- `doc/models/google-pay-card-response.md`
+- `doc/models/google-pay-card.md`
+- `doc/models/ideal-payment-object.md`
+- `doc/models/ideal-payment-request.md`
+- `doc/models/link-description.md`
+- `doc/models/mobile-web-context.md`
+- `doc/models/modify-subscription-response.md`
+- `doc/models/money.md`
+- `doc/models/mybank-payment-object.md`
+- `doc/models/mybank-payment-request.md`
+- `doc/models/native-app-context.md`
+- `doc/models/net-amount-breakdown-item.md`
+- `doc/models/order-authorize-response.md`
+- `doc/models/order-confirm-application-context.md`
+- `doc/models/order-request.md`
+- `doc/models/order-tracker-response.md`
+- `doc/models/order.md`
+- `doc/models/orders-capture.md`
+- `doc/models/p24-payment-object.md`
+- `doc/models/p24-payment-request.md`
+- `doc/models/payment-authorization.md`
+- `doc/models/payment-token-response-payment-source.md`
+- `doc/models/payment-token-response.md`
+- `doc/models/payments-capture.md`
+- `doc/models/paypal-wallet-experience-context.md`
+- `doc/models/paypal-wallet-response.md`
+- `doc/models/paypal-wallet-vault-response.md`
+- `doc/models/plan-collection.md`
+- `doc/models/processing-instruction.md`
+- `doc/models/processor-response.md`
+- `doc/models/refund-status-with-details.md`
+- `doc/models/refund.md`
+- `doc/models/search-error.md`
+- `doc/models/search-response.md`
+- `doc/models/seller-payable-breakdown.md`
+- `doc/models/seller-protection.md`
+- `doc/models/seller-receivable-breakdown.md`
+- `doc/models/sepa-debit-experience-context.md`
+- `doc/models/setup-token-response-card.md`
+- `doc/models/setup-token-response-payment-source.md`
+- `doc/models/setup-token-response.md`
+- `doc/models/sofort-payment-object.md`
+- `doc/models/sofort-payment-request.md`
+- `doc/models/subscription-billing-information.md`
+- `doc/models/subscription-collection.md`
+- `doc/models/subscription-error.md`
+- `doc/models/subscription-pricing-scheme.md`
+- `doc/models/subscription-transaction-details.md`
+- `doc/models/subscription.md`
+- `doc/models/transaction-information.md`
+- `doc/models/transactions-list.md`
+- `doc/models/trustly-payment-object.md`
+- `doc/models/trustly-payment-request.md`
+- `doc/models/vault-card-experience-context.md`
+- `doc/models/vault-experience-context.md`
+- `doc/models/vault-response-customer.md`
+- `doc/models/vault-response.md`
+- `doc/models/venmo-vault-response.md`
+- `doc/models/venmo-wallet-response.md`
+- `package.json`
+- `src/client.ts`
+- `src/controllers/oAuthAuthorizationController.ts`
+- `src/controllers/transactionSearchController.ts`
+- `src/errors/customError.ts`
+- `src/errors/subscriptionError.ts`
+- `src/index.ts`
+- `src/models/address.ts`
+- `src/models/amountWithBreakdown.ts`
+- `src/models/applePayCardResponse.ts`
+- `src/models/bancontactPaymentObject.ts`
+- `src/models/bancontactPaymentRequest.ts`
+- `src/models/binDetails.ts`
+- `src/models/blikExperienceContext.ts`
+- `src/models/blikPaymentObject.ts`
+- `src/models/blikPaymentRequest.ts`
+- `src/models/cardResponseAddress.ts`
+- `src/models/cardResponseWithBillingAddress.ts`
+- `src/models/confirmOrderRequest.ts`
+- `src/models/customerVaultPaymentTokensResponse.ts`
+- `src/models/epsPaymentObject.ts`
+- `src/models/epsPaymentRequest.ts`
+- `src/models/errorDetails.ts`
+- `src/models/exchangeRate.ts`
+- `src/models/experienceContext.ts`
+- `src/models/giropayPaymentObject.ts`
+- `src/models/giropayPaymentRequest.ts`
+- `src/models/idealPaymentObject.ts`
+- `src/models/idealPaymentRequest.ts`
+- `src/models/linkDescription.ts`
+- `src/models/money.ts`
+- `src/models/mybankPaymentObject.ts`
+- `src/models/mybankPaymentRequest.ts`
+- `src/models/order.ts`
+- `src/models/orderAuthorizeResponse.ts`
+- `src/models/orderConfirmApplicationContext.ts`
+- `src/models/orderRequest.ts`
+- `src/models/p24PaymentObject.ts`
+- `src/models/p24PaymentRequest.ts`
+- `src/models/paymentTokenResponse.ts`
+- `src/models/paypalWalletExperienceContext.ts`
+- `src/models/processingInstruction.ts`
+- `src/models/searchResponse.ts`
+- `src/models/sepaDebitExperienceContext.ts`
+- `src/models/setupTokenResponse.ts`
+- `src/models/sofortPaymentObject.ts`
+- `src/models/sofortPaymentRequest.ts`
+- `src/models/trustlyPaymentObject.ts`
+- `src/models/trustlyPaymentRequest.ts`
+- `src/models/vaultCardExperienceContext.ts`
+- `src/models/vaultExperienceContext.ts`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `README.md`
+- `modified`: `doc/controllers/orders.md`
+- `modified`: `doc/controllers/payments.md`
+- `modified`: `doc/controllers/subscriptions.md`
+- `modified`: `doc/controllers/transaction-search.md`
+- `modified`: `doc/controllers/vault.md`
+- `modified`: `doc/models/address.md`
+- `modified`: `doc/models/amount-with-breakdown.md`
+- `modified`: `doc/models/apple-pay-card-response.md`
+- `modified`: `doc/models/apple-pay-card.md`
+- `modified`: `doc/models/apple-pay-tokenized-card.md`
+- `modified`: `doc/models/authorization-status-with-details.md`
+- `modified`: `doc/models/authorization-with-additional-data.md`
+- `modified`: `doc/models/authorization.md`
+- `modified`: `doc/models/bancontact-payment-object.md`
+- `modified`: `doc/models/bancontact-payment-request.md`
+- `modified`: `doc/models/billing-plan.md`
+- `modified`: `doc/models/bin-details.md`
+- `modified`: `doc/models/blik-experience-context.md`
+- `modified`: `doc/models/blik-payment-object.md`
+- `modified`: `doc/models/blik-payment-request.md`
+- `modified`: `doc/models/capture-status-with-details.md`
+- `modified`: `doc/models/captured-payment.md`
+- `modified`: `doc/models/card-from-request.md`
+- `modified`: `doc/models/card-payment-token-entity.md`
+- `modified`: `doc/models/card-response-address.md`
+- `modified`: `doc/models/card-response-with-billing-address.md`
+- `modified`: `doc/models/card-response.md`
+- `modified`: `doc/models/card-vault-response.md`
+- `modified`: `doc/models/card-verification-details.md`
+- `modified`: `doc/models/card-verification-processor-response.md`
+- `modified`: `doc/models/confirm-order-request.md`
+- `modified`: `doc/models/custom-error.md`
+- `modified`: `doc/models/customer-vault-payment-tokens-response.md`
+- `modified`: `doc/models/cycle-execution.md`
+- `modified`: `doc/models/default-error.md`
+- `modified`: `doc/models/eps-payment-object.md`
+- `modified`: `doc/models/eps-payment-request.md`
+- `modified`: `doc/models/error-details.md`
+- `modified`: `doc/models/exchange-rate.md`
+- `modified`: `doc/models/experience-context.md`
+- `modified`: `doc/models/failed-payment-details.md`
+- `modified`: `doc/models/giropay-payment-object.md`
+- `modified`: `doc/models/giropay-payment-request.md`
+- `modified`: `doc/models/google-pay-card-response.md`
+- `modified`: `doc/models/google-pay-card.md`
+- `modified`: `doc/models/ideal-payment-object.md`
+- `modified`: `doc/models/ideal-payment-request.md`
+- `modified`: `doc/models/link-description.md`
+- `modified`: `doc/models/mobile-web-context.md`
+- `modified`: `doc/models/modify-subscription-response.md`
+- `modified`: `doc/models/money.md`
+- `modified`: `doc/models/mybank-payment-object.md`
+- `modified`: `doc/models/mybank-payment-request.md`
+- `modified`: `doc/models/native-app-context.md`
+- `modified`: `doc/models/net-amount-breakdown-item.md`
+- `modified`: `doc/models/order-authorize-response.md`
+- `modified`: `doc/models/order-confirm-application-context.md`
+- `modified`: `doc/models/order-request.md`
+- `modified`: `doc/models/order-tracker-response.md`
+- `modified`: `doc/models/order.md`
+- `modified`: `doc/models/orders-capture.md`
+- `modified`: `doc/models/p24-payment-object.md`
+- `modified`: `doc/models/p24-payment-request.md`
+- `modified`: `doc/models/payment-authorization.md`
+- `modified`: `doc/models/payment-token-response-payment-source.md`
+- `modified`: `doc/models/payment-token-response.md`
+- `modified`: `doc/models/payments-capture.md`
+- `modified`: `doc/models/paypal-wallet-experience-context.md`
+- `modified`: `doc/models/paypal-wallet-response.md`
+- `modified`: `doc/models/paypal-wallet-vault-response.md`
+- `modified`: `doc/models/plan-collection.md`
+- `added`: `doc/models/processing-instruction.md`
+- `modified`: `doc/models/processor-response.md`
+- `modified`: `doc/models/refund-status-with-details.md`
+- `modified`: `doc/models/refund.md`
+- `modified`: `doc/models/search-error.md`
+- `modified`: `doc/models/search-response.md`
+- `modified`: `doc/models/seller-payable-breakdown.md`
+- `modified`: `doc/models/seller-protection.md`
+- `modified`: `doc/models/seller-receivable-breakdown.md`
+- `modified`: `doc/models/sepa-debit-experience-context.md`
+- `modified`: `doc/models/setup-token-response-card.md`
+- `modified`: `doc/models/setup-token-response-payment-source.md`
+- `modified`: `doc/models/setup-token-response.md`
+- `modified`: `doc/models/sofort-payment-object.md`
+- `modified`: `doc/models/sofort-payment-request.md`
+- `modified`: `doc/models/subscription-billing-information.md`
+- `modified`: `doc/models/subscription-collection.md`
+- `modified`: `doc/models/subscription-error.md`
+- `modified`: `doc/models/subscription-pricing-scheme.md`
+- `modified`: `doc/models/subscription-transaction-details.md`
+- `modified`: `doc/models/subscription.md`
+- `modified`: `doc/models/transaction-information.md`
+- `modified`: `doc/models/transactions-list.md`
+- `modified`: `doc/models/trustly-payment-object.md`
+- `modified`: `doc/models/trustly-payment-request.md`
+- `modified`: `doc/models/vault-card-experience-context.md`
+- `modified`: `doc/models/vault-experience-context.md`
+- `modified`: `doc/models/vault-response-customer.md`
+- `modified`: `doc/models/vault-response.md`
+- `modified`: `doc/models/venmo-vault-response.md`
+- `modified`: `doc/models/venmo-wallet-response.md`
+- `modified`: `package.json`
+- `modified`: `src/client.ts`
+- `modified`: `src/controllers/oAuthAuthorizationController.ts`
+- `modified`: `src/controllers/transactionSearchController.ts`
+- `modified`: `src/errors/customError.ts`
+- `modified`: `src/errors/subscriptionError.ts`
+- `modified`: `src/index.ts`
+- `modified`: `src/models/address.ts`
+- `modified`: `src/models/amountWithBreakdown.ts`
+- `modified`: `src/models/applePayCardResponse.ts`
+- `modified`: `src/models/bancontactPaymentObject.ts`
+- `modified`: `src/models/bancontactPaymentRequest.ts`
+- `modified`: `src/models/binDetails.ts`
+- `modified`: `src/models/blikExperienceContext.ts`
+- `modified`: `src/models/blikPaymentObject.ts`
+- `modified`: `src/models/blikPaymentRequest.ts`
+- `modified`: `src/models/cardResponseAddress.ts`
+- `modified`: `src/models/cardResponseWithBillingAddress.ts`
+- `modified`: `src/models/confirmOrderRequest.ts`
+- `modified`: `src/models/customerVaultPaymentTokensResponse.ts`
+- `modified`: `src/models/epsPaymentObject.ts`
+- `modified`: `src/models/epsPaymentRequest.ts`
+- `modified`: `src/models/errorDetails.ts`
+- `modified`: `src/models/exchangeRate.ts`
+- `modified`: `src/models/experienceContext.ts`
+- `modified`: `src/models/giropayPaymentObject.ts`
+- `modified`: `src/models/giropayPaymentRequest.ts`
+- `modified`: `src/models/idealPaymentObject.ts`
+- `modified`: `src/models/idealPaymentRequest.ts`
+- `modified`: `src/models/linkDescription.ts`
+- `modified`: `src/models/money.ts`
+- `modified`: `src/models/mybankPaymentObject.ts`
+- `modified`: `src/models/mybankPaymentRequest.ts`
+- `modified`: `src/models/order.ts`
+- `modified`: `src/models/orderAuthorizeResponse.ts`
+- `modified`: `src/models/orderConfirmApplicationContext.ts`
+- `modified`: `src/models/orderRequest.ts`
+- `modified`: `src/models/p24PaymentObject.ts`
+- `modified`: `src/models/p24PaymentRequest.ts`
+- `modified`: `src/models/paymentTokenResponse.ts`
+- `modified`: `src/models/paypalWalletExperienceContext.ts`
+- `added`: `src/models/processingInstruction.ts`
+- `modified`: `src/models/searchResponse.ts`
+- `modified`: `src/models/sepaDebitExperienceContext.ts`
+- `modified`: `src/models/setupTokenResponse.ts`
+- `modified`: `src/models/sofortPaymentObject.ts`
+- `modified`: `src/models/sofortPaymentRequest.ts`
+- `modified`: `src/models/trustlyPaymentObject.ts`
+- `modified`: `src/models/trustlyPaymentRequest.ts`
+- `modified`: `src/models/vaultCardExperienceContext.ts`
+- `modified`: `src/models/vaultExperienceContext.ts`

@@ -1,0 +1,239 @@
+# GitHub ingest packet
+
+- Repository: `paypal/paypal-typescript-server-sdk`
+- Work item: `github-8cb8ce44195e817fa27b`
+- Snapshot: `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `normal`
+
+## `@paypal/paypal-server-sdk`
+
+- Version: `2.3.0` -> `2.4.0`
+- Recommendation: `delta` / `normal`
+- Unchanged retained files: `339`
+
+### Required reading
+
+- `raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.4.0/2026-08-10/manifest.json`
+- `raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.4.0/2026-08-10/release-notes.md`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-b37cec5/manifest.json`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/CHANGELOG.md`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/README.md`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/doc/controllers/orders.md`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/doc/controllers/payments.md`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/doc/controllers/subscriptions.md`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/doc/controllers/transaction-search.md`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/doc/controllers/vault.md`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/package.json`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/client.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/controllers/oAuthAuthorizationController.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/controllers/transactionSearchController.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/errors/customError.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/errors/subscriptionError.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/index.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/address.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/amountWithBreakdown.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/applePayCardResponse.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/bancontactPaymentObject.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/bancontactPaymentRequest.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/binDetails.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/blikExperienceContext.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/blikPaymentObject.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/blikPaymentRequest.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/cardResponseAddress.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/cardResponseWithBillingAddress.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/confirmOrderRequest.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/customerVaultPaymentTokensResponse.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/epsPaymentObject.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/epsPaymentRequest.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/errorDetails.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/exchangeRate.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/experienceContext.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/giropayPaymentObject.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/giropayPaymentRequest.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/idealPaymentObject.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/idealPaymentRequest.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/linkDescription.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/money.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/mybankPaymentObject.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/mybankPaymentRequest.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/order.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/orderAuthorizeResponse.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/orderConfirmApplicationContext.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/orderRequest.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/p24PaymentObject.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/p24PaymentRequest.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/paymentTokenResponse.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/paypalWalletExperienceContext.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/processingInstruction.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/searchResponse.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/sepaDebitExperienceContext.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/setupTokenResponse.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/sofortPaymentObject.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/sofortPaymentRequest.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/trustlyPaymentObject.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/trustlyPaymentRequest.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/vaultCardExperienceContext.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/files/src/models/vaultExperienceContext.ts`
+- `raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/manifest.json`
+- `tracking/github/repos/paypal/paypal-typescript-server-sdk/comparisons/paypal-server-sdk/2.3.0--2.4.0/comparison.json`
+- `tracking/github/repos/paypal/paypal-typescript-server-sdk/comparisons/paypal-server-sdk/2.3.0--2.4.0/comparison.md`
+- `tracking/github/repos/paypal/paypal-typescript-server-sdk/comparisons/paypal-server-sdk/2.3.0--2.4.0/diff.patch`
+
+### Upstream changes
+
+- `modified` `CHANGELOG.md`: `retained-evidence`
+- `modified` `README.md`: `retained-evidence`
+- `modified` `doc/controllers/orders.md`: `retained-evidence`
+- `modified` `doc/controllers/payments.md`: `retained-evidence`
+- `modified` `doc/controllers/subscriptions.md`: `retained-evidence`
+- `modified` `doc/controllers/transaction-search.md`: `retained-evidence`
+- `modified` `doc/controllers/vault.md`: `retained-evidence`
+- `modified` `doc/models/address.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/amount-with-breakdown.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/apple-pay-card-response.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/apple-pay-card.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/apple-pay-tokenized-card.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/authorization-status-with-details.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/authorization-with-additional-data.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/authorization.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/bancontact-payment-object.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/bancontact-payment-request.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/billing-plan.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/bin-details.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/blik-experience-context.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/blik-payment-object.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/blik-payment-request.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/capture-status-with-details.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/captured-payment.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/card-from-request.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/card-payment-token-entity.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/card-response-address.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/card-response-with-billing-address.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/card-response.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/card-vault-response.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/card-verification-details.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/card-verification-processor-response.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/confirm-order-request.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/custom-error.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/customer-vault-payment-tokens-response.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/cycle-execution.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/default-error.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/eps-payment-object.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/eps-payment-request.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/error-details.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/exchange-rate.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/experience-context.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/failed-payment-details.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/giropay-payment-object.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/giropay-payment-request.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/google-pay-card-response.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/google-pay-card.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/ideal-payment-object.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/ideal-payment-request.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/link-description.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/mobile-web-context.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/modify-subscription-response.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/money.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/mybank-payment-object.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/mybank-payment-request.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/native-app-context.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/net-amount-breakdown-item.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/order-authorize-response.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/order-confirm-application-context.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/order-request.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/order-tracker-response.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/order.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/orders-capture.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/p24-payment-object.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/p24-payment-request.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/payment-authorization.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/payment-token-response-payment-source.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/payment-token-response.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/payments-capture.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/paypal-wallet-experience-context.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/paypal-wallet-response.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/paypal-wallet-vault-response.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/plan-collection.md`: `intentional-policy-exclusion`
+- `added` `doc/models/processing-instruction.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/processor-response.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/refund-status-with-details.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/refund.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/search-error.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/search-response.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/seller-payable-breakdown.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/seller-protection.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/seller-receivable-breakdown.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/sepa-debit-experience-context.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/setup-token-response-card.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/setup-token-response-payment-source.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/setup-token-response.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/sofort-payment-object.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/sofort-payment-request.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/subscription-billing-information.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/subscription-collection.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/subscription-error.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/subscription-pricing-scheme.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/subscription-transaction-details.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/subscription.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/transaction-information.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/transactions-list.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/trustly-payment-object.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/trustly-payment-request.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/vault-card-experience-context.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/vault-experience-context.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/vault-response-customer.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/vault-response.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/venmo-vault-response.md`: `intentional-policy-exclusion`
+- `modified` `doc/models/venmo-wallet-response.md`: `intentional-policy-exclusion`
+- `modified` `package.json`: `retained-evidence`
+- `modified` `src/client.ts`: `retained-evidence`
+- `modified` `src/controllers/oAuthAuthorizationController.ts`: `retained-evidence`
+- `modified` `src/controllers/transactionSearchController.ts`: `retained-evidence`
+- `modified` `src/errors/customError.ts`: `retained-evidence`
+- `modified` `src/errors/subscriptionError.ts`: `retained-evidence`
+- `modified` `src/index.ts`: `retained-evidence`
+- `modified` `src/models/address.ts`: `retained-evidence`
+- `modified` `src/models/amountWithBreakdown.ts`: `retained-evidence`
+- `modified` `src/models/applePayCardResponse.ts`: `retained-evidence`
+- `modified` `src/models/bancontactPaymentObject.ts`: `retained-evidence`
+- `modified` `src/models/bancontactPaymentRequest.ts`: `retained-evidence`
+- `modified` `src/models/binDetails.ts`: `retained-evidence`
+- `modified` `src/models/blikExperienceContext.ts`: `retained-evidence`
+- `modified` `src/models/blikPaymentObject.ts`: `retained-evidence`
+- `modified` `src/models/blikPaymentRequest.ts`: `retained-evidence`
+- `modified` `src/models/cardResponseAddress.ts`: `retained-evidence`
+- `modified` `src/models/cardResponseWithBillingAddress.ts`: `retained-evidence`
+- `modified` `src/models/confirmOrderRequest.ts`: `retained-evidence`
+- `modified` `src/models/customerVaultPaymentTokensResponse.ts`: `retained-evidence`
+- `modified` `src/models/epsPaymentObject.ts`: `retained-evidence`
+- `modified` `src/models/epsPaymentRequest.ts`: `retained-evidence`
+- `modified` `src/models/errorDetails.ts`: `retained-evidence`
+- `modified` `src/models/exchangeRate.ts`: `retained-evidence`
+- `modified` `src/models/experienceContext.ts`: `retained-evidence`
+- `modified` `src/models/giropayPaymentObject.ts`: `retained-evidence`
+- `modified` `src/models/giropayPaymentRequest.ts`: `retained-evidence`
+- `modified` `src/models/idealPaymentObject.ts`: `retained-evidence`
+- `modified` `src/models/idealPaymentRequest.ts`: `retained-evidence`
+- `modified` `src/models/linkDescription.ts`: `retained-evidence`
+- `modified` `src/models/money.ts`: `retained-evidence`
+- `modified` `src/models/mybankPaymentObject.ts`: `retained-evidence`
+- `modified` `src/models/mybankPaymentRequest.ts`: `retained-evidence`
+- `modified` `src/models/order.ts`: `retained-evidence`
+- `modified` `src/models/orderAuthorizeResponse.ts`: `retained-evidence`
+- `modified` `src/models/orderConfirmApplicationContext.ts`: `retained-evidence`
+- `modified` `src/models/orderRequest.ts`: `retained-evidence`
+- `modified` `src/models/p24PaymentObject.ts`: `retained-evidence`
+- `modified` `src/models/p24PaymentRequest.ts`: `retained-evidence`
+- `modified` `src/models/paymentTokenResponse.ts`: `retained-evidence`
+- `modified` `src/models/paypalWalletExperienceContext.ts`: `retained-evidence`
+- `added` `src/models/processingInstruction.ts`: `retained-evidence`
+- `modified` `src/models/searchResponse.ts`: `retained-evidence`
+- `modified` `src/models/sepaDebitExperienceContext.ts`: `retained-evidence`
+- `modified` `src/models/setupTokenResponse.ts`: `retained-evidence`
+- `modified` `src/models/sofortPaymentObject.ts`: `retained-evidence`
+- `modified` `src/models/sofortPaymentRequest.ts`: `retained-evidence`
+- `modified` `src/models/trustlyPaymentObject.ts`: `retained-evidence`
+- `modified` `src/models/trustlyPaymentRequest.ts`: `retained-evidence`
+- `modified` `src/models/vaultCardExperienceContext.ts`: `retained-evidence`
+- `modified` `src/models/vaultExperienceContext.ts`: `retained-evidence`
