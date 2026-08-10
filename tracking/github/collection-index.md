@@ -1,6 +1,6 @@
 # GitHub repository collection index
 
-Generated: `2026-08-09`
+Generated: `2026-08-10`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -58,7 +58,7 @@ Generated: `2026-08-09`
 | paypal | `paypal/paypal-php-server-sdk` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
 | paypal | `paypal/paypal-sdk-logos` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-09 | ingested | 2026-09-09 | `wait` |
 | paypal | `paypal/paypal-sdk-release` | tier2 | github-release | monthly | - | - | - | `disabled` |
-| paypal | `paypal/paypal-typescript-server-sdk` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
+| paypal | `paypal/paypal-typescript-server-sdk` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | - | - | - | `collect-baseline` |
 | paypal | `paypal/postman-collections` | tier2 | commit | monthly | - | - | - | `disabled` |
 | stripe | `stripe/react-stripe-js` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-07-30 | ingested | 2026-08-06 | `collect-baseline` |
 | stripe | `stripe/stripe-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-07-31 | ingested | 2026-08-07 | `collect-baseline` |
