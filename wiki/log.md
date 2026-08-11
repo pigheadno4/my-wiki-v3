@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-11] ingest | GitHub braintree/graphql-api `default-branch@3a89f42`
+
+- Full-ingested work item `github-d36f782cded039bfef90` at exact SHA `3a89f427466a0a978dbfcfd953913f4e76c3264a` after serial review of the complete schema, changelog, README, manifest, and Braintree context.
+- Established an independent GraphQL API-contract source and commit-qualified changelog covering checkout, transaction lifecycle, vaulting, PayPal, Venmo, 3DS, and recurring billing.
+- Preserved schema presence as contract evidence rather than merchant-enablement or SDK-support proof; updated the Braintree company, provider index, and provider log.
+
 ## [2026-08-11] ingest | GitHub paypal/paypal-rest-api-specifications `default-branch@90e8041`
 
 - Full-ingested work item `github-b3918bc2b2c3efa5f7d5` at exact SHA `90e8041ffe02d80c452d2b476bedd59a8d219bdc` after serial review of all 21 required paths and 13 OpenAPI contracts.

@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-11] ingest | braintree/graphql-api `default-branch@3a89f42`
+
+- Approved and processed work item `github-d36f782cded039bfef90` in full mode at exact SHA `3a89f427466a0a978dbfcfd953913f4e76c3264a`.
+- Read and hash-verified the three-file, 598,607-byte capsule containing the complete GraphQL schema, upstream changelog, and README.
+- Established an independent cumulative API-contract source and commit-qualified changelog for transactions, client tokens, vaulting, PayPal, Venmo, 3DS, recurring billing, and broader inventory-level domains.
+- Kept schema presence separate from merchant enablement and SDK implementation, and updated the Braintree company and provider index without merging this evidence into `braintree_node`.
+
 ## [2026-08-09] ingest | braintree/braintree_node `3.39.0`
 
 - Approved and processed work item `github-a3e31c47bd77ac327a7b` in full mode.

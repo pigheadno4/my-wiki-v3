@@ -1,13 +1,19 @@
 ---
 title: "Braintree"
 type: company
-tags: [braintree, payments, checkout, javascript-sdk, node-js-sdk, android-sdk, ios-sdk]
-source_count: 5
+tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, android-sdk, ios-sdk]
+source_count: 6
 ---
 
 ## Overview
 
-Braintree is represented in this wiki by five independently versioned repositories: the Node.js server SDK, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, and native Braintree Android and iOS SDKs. Client SDKs produce payment-method nonces for server processing; the Node.js SDK performs gateway operations. Their package versions and evidence histories remain separate.
+Braintree is represented in this wiki by six independently tracked repositories: the GraphQL API contract, Node.js server SDK, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, and native Braintree Android and iOS SDKs. Client SDKs produce payment-method nonces for server processing; the Node.js SDK performs gateway operations. The GraphQL schema describes a separate API contract. Their commit or package identities and evidence histories remain separate.
+
+## GraphQL API Contract
+
+The `braintree/graphql-api` baseline at exact commit `3a89f42` exposes the GraphQL contract for transaction authorization, charge, capture, partial capture, refunds and voids; client tokens, tokenization and vaulting; PayPal one-time payments and billing agreements; Venmo payment contexts; 3D Secure; and recurring billing plans and subscriptions.
+
+The schema is field-level contract evidence, not proof of merchant enablement or client-SDK support. Integration questions should combine it with the appropriate Web, Android, iOS, or server SDK source rather than treating schema presence as an end-to-end capability claim.
 
 ## Node.js Server SDK Surface
 
@@ -49,8 +55,9 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Knowledge Status
 
-- Ingested cumulative GitHub repository sources: 5
+- Ingested cumulative GitHub repository sources: 6
 - Ingested package releases: 6
+- Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`
 - Latest retained Braintree Node release: `braintree@3.39.0` at `7a9270aaf31eb87819add64a768652243f90007c`
 - Latest retained Braintree Web release: `braintree-web@3.144.0` at `41460fba05c1ea1222e795b36a10765a6699b8e7`
 - Latest retained Drop-in release: `braintree-web-drop-in@1.47.0` at `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`
@@ -59,6 +66,8 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Sources
 
+- [[source-github-graphql-api]] - commit-qualified GraphQL API contract
+- [[changelog-github-graphql-api]] - GraphQL schema history
 - [[source-github-braintree-node]] - cumulative Node.js server SDK implementation baseline
 - [[changelog-github-braintree-node]] - package-qualified Node.js release ledger
 - [[source-github-braintree-web]] — cumulative Braintree Web implementation baseline

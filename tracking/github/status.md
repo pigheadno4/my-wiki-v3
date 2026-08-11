@@ -906,10 +906,10 @@
 - Repository: `braintree/graphql-api`
 - SHA: `3a89f427466a0a978dbfcfd953913f4e76c3264a`
 - Collection date: `2026-08-11`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None
