@@ -26,7 +26,7 @@ Generated: `2026-08-11`
 | braintree | `braintree/braintree-web-drop-in` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-08-04 | ingested | 2026-08-11 | `collect-baseline` |
 | braintree | `braintree/braintree_android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-01 | ingested | 2026-08-08 | `collect-baseline` |
 | braintree | `braintree/braintree_ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-01 | ingested | 2026-08-08 | `collect-baseline` |
-| braintree | `braintree/graphql-api` | tier1 | commit | monthly | - | - | - | `disabled` |
+| braintree | `braintree/graphql-api` | tier1 | commit / commit-tree-v1 | monthly | - | - | - | `collect-baseline` |
 | braintree | `braintree/braintree_node` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-08-09 | ingested | 2026-09-09 | `wait` |
 | braintree | `braintree/braintree_php` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
 | braintree | `braintree/braintree_ruby` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
