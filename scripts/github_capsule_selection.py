@@ -466,7 +466,11 @@ def _resolve_commit_capsule(
         )
     for root in normalized.default_required_roots:
         required_rows.add((package.name, root, "default"))
-        matching = tuple(path for path in package.owned_paths if _below_root(path, root))
+        matching = tuple(
+            path
+            for path in package.owned_paths
+            if path == root or _below_root(path, root)
+        )
         if not matching:
             _review(
                 "missing-required-root",
