@@ -30,7 +30,9 @@ def resolve_commit_workspace(
     )
     owned_paths = set()
     for root in normalized.default_required_roots:
-        matches = {path for path in regular_paths if path.startswith(root + "/")}
+        matches = {root} if root in regular_paths else {
+            path for path in regular_paths if path.startswith(root + "/")
+        }
         if not matches:
             _review(
                 "missing-required-root",
