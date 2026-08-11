@@ -901,6 +901,33 @@
   Release: [manifest](../../raw/github/stripe/stripe-android/releases/stripe-android/23.13.1/2026-07-31/manifest.json)
   Comparison: Not applicable
 
+## `github-d36f782cded039bfef90`
+
+- Repository: `braintree/graphql-api`
+- SHA: `3a89f427466a0a978dbfcfd953913f4e76c3264a`
+- Collection date: `2026-08-11`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/graphql-api/snapshots/2026-08-11-3a89f42/manifest.json)
+- Packet: [review packet](repos/braintree/graphql-api/ingest-packets/github-d36f782cded039bfef90/packet.md)
+- Review priority: `normal`
+- Required reading: `8` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@3a89f42` (recommended `full`)
+  Ref: `master`
+  From SHA: `baseline`
+  To SHA: `3a89f427466a0a978dbfcfd953913f4e76c3264a`
+  Comparison: Not applicable
+
 ## `github-d784ed22413ba025c631`
 
 - Repository: `stripe/react-stripe-js`
