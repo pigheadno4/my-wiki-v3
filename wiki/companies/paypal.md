@@ -2,7 +2,7 @@
 title: "PayPal"
 type: company
 tags: [paypal, payment-gateway, checkout, venmo, javascript-sdk, orders-api, vault, recurring-payments, payouts, disputes, reporting, agentic-commerce]
-source_count: 162
+source_count: 164
 ---
 
 ## PayPal
@@ -45,9 +45,13 @@ Server-side API for order lifecycle management:
 - `POST /v2/checkout/orders/{orderID}/capture` — capture payment after buyer approval
 - Also supports retrieve, update, and authorize operations
 
+The exact `paypal/paypal-rest-api-specifications` baseline at `90e8041` supplies the machine-readable contracts for 13 API families. Orders 2.32 and Payments 2.12 declare OpenAPI 3.0.4; the other retained files declare 3.0.3. Schema branches establish request/response contracts, not merchant enablement, geography, or buyer eligibility.
+
 ### PayPal Server SDK
 
 Official server-side SDKs wrapping the REST API. Available for Node.js (`@paypal/paypal-server-sdk`), Java, PHP, Python, Ruby, and .Net.
+
+The exact TypeScript package baseline `@paypal/paypal-server-sdk@2.3.0` at `b37cec5` covers Orders, Payments, Vault, Transaction Search, and Subscriptions. The reviewed `2.4.0` delta at `dbdbdd0` adds typed `ORDER_COMPLETE_ON_PAYMENT_APPROVAL` order processing and explicit default-base selection for OAuth token requests. It defaults to Sandbox with automatic retries disabled, and generated model presence is not merchant-eligibility evidence.
 
 ### Venmo
 
@@ -80,7 +84,7 @@ Tokenization system for storing buyer payment methods for future merchant-initia
 - **Setup token**: created during buyer consent flow; expires in 3 days; holds billing plan details
 - **Payment token** (vault ID): persistent stored credential; used as `vault_id` in Orders API for subsequent charges
 - **APIs**: Payment Method Tokens v3 API (`VaultController` in server SDK)
-- **`stored_credential`**: required on recurring charge orders — includes `payment_initiator: "MERCHANT"`, `usage: "SUBSEQUENT"`, `usage_pattern`
+- **`stored_credential`**: required on recurring card charge orders — includes `payment_initiator: "MERCHANT"`, `payment_type: "RECURRING"`, and `usage: "SUBSEQUENT"`; wallet `usage_pattern` belongs to the Vault token contract
 - US buyers and merchants only (for the recurring payments module)
 
 ### Save during purchase (vault at checkout)
@@ -101,7 +105,7 @@ See [[paypal-vault]] and [[paypal-subscriptions]].
 
 Two paths for merchant-initiated recurring charges:
 
-- **Orders API + Vault**: flexible; supports all 8 `usage_pattern` values (SUBSCRIPTION/RECURRING/UNSCHEDULED/INSTALLMENT × PREPAID/POSTPAID); works with cards, PayPal Wallet, Venmo; requires `stored_credential` on every MIT
+- **Orders API + Vault**: flexible; Vault models recurring/unscheduled/subscription/installment usage patterns and Orders models each subsequent charge with `stored_credential.payment_type`; payment-source availability remains product- and merchant-dependent
 - **Subscriptions API**: structured lifecycle (create product → plan → subscribe → charge automatically); up to 3 billing cycles per plan; 4 pricing models (fixed, quantity, volume, tiered); dashboard or REST API
 
 See [[paypal-subscriptions]] and [[paypal-vault]].
@@ -122,7 +126,7 @@ See [[paypal-payouts]] and [[source-paypal-payouts-overview]].
 Two resolution paths for buyer-initiated transaction challenges:
 
 - **Resolution Center**: no-code web UI; 9 manual actions (view, message, offer, escalate, accept, evidence, appeal, etc.)
-- **Disputes API**: programmatic; base path `/v1/customer/disputes`; 9 action endpoints; HATEOAS-driven
+- **Disputes API**: programmatic; base path `/v1/customer/disputes`; the exact 1.11 contract contains 15 operations including list/get/patch and 12 response actions; HATEOAS-driven
 
 Lifecycle: INQUIRY (20 days) → CHARGEBACK → PRE_ARBITRATION → ARBITRATION → RESOLVED. Key window: buyer has 180 days to file; PayPal adjudicates within 10 days of escalation. Pre-chargeback alert: 20-hour window to refund and avoid fees.
 
@@ -328,10 +332,12 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-github-paypal-payouts-php-sdk]] — GitHub Payouts PHP SDK: PayoutsPostRequest/GetRequest/ItemGetRequest/ItemCancelRequest, PayPalHttpClient pattern (github-repo, 2026-04-16)
 - [[source-paypal-login-with-paypal]] — Log in with PayPal: OAuth flow, 8h token expiry, payer ID scope for payouts, app review required (webpage, 2026-04-16)
 - [[source-github-paypal-postman-collections]] — GitHub paypal/postman-collections: 3 collections (Public APIs, Checkout Flows, Partner APIs), paypal-postman-lib helper (github-repo, 2026-04-16)
-- [[source-github-paypal-rest-api-specs]] — GitHub paypal-rest-api-specifications: 13 OpenAPI 3.0.3 specs (Orders/Payments/Payouts/Subscriptions/Disputes/Invoicing/Vault/Webhooks/+5) (github-repo, 2026-04-16)
+- [[source-github-paypal-rest-api-specifications]] — cumulative exact-SHA REST contract evidence for 13 API families, including detailed Orders, Payments, Vault, Subscriptions, Webhooks, and Tracking coverage (github-repo, updated 2026-08-11)
+- [[changelog-github-paypal-rest-api-specifications]] — commit-qualified REST specification baseline and future delta ledger
 - [[source-github-paypal-sdk-logos]] — GitHub paypal-sdk-logos: cumulative `2.3.3` generated SVG and `2.3.7` public-source evidence, inline/external rendering, versioned CDN, colors, rebrand badges, and branding boundary (github-repo, updated 2026-08-09)
 - [[changelog-github-paypal-sdk-logos]] — Commit-qualified SDK Logos history: `2.3.3` through `2.3.7`, generated-CDN releases, and whitespace refinements (github-repo, 2026-08-09)
-- [[source-github-paypal-ts-server-sdk]] — GitHub PayPal-TypeScript-Server-SDK v2.3.0: 5 controllers (Orders/Payments/Vault/Subscriptions/TxSearch), 3 init patterns, header params (github-repo, 2026-04-16)
+- [[source-github-paypal-typescript-server-sdk]] — cumulative TypeScript Server SDK `2.3.0` baseline plus reviewed `2.4.0` delta: five controllers, OAuth client, processing instruction, configuration, retries, and payment-source models (github-repo, updated 2026-08-10)
+- [[changelog-github-paypal-typescript-server-sdk]] — package-qualified TypeScript Server SDK ledger preserving the full `2.3.0` baseline and `2.4.0` delta
 - [[source-github-paypal-googlepay-component]] — GitHub paypal-googlepay-component: googlePayConfig/confirmOrder/initiatePayerAction internals, GraphQL, 3DS via ZalgoPromise (github-repo, 2026-04-16)
 - [[source-github-paypal-applepay-component]] — GitHub paypal-applepay-components: config/validateMerchant/confirmOrder, base64 session decode, countryCode uppercase fix (github-repo, 2026-04-16)
 - [[source-github-paypal-php-server-sdk]] — GitHub PayPal-PHP-Server-SDK v2.2.0: 5 controllers, builder pattern, built-in retry/backoff/proxy (github-repo, 2026-04-16)

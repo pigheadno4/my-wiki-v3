@@ -170,6 +170,8 @@ PayPal provides two paths for dispute management:
 1. **PayPal Resolution Center** (manual) — web UI for sellers to view and respond to disputes
 2. **Disputes API** (automated) — programmatic access to list, respond to, provide evidence, escalate, accept, or appeal disputes
 
+The exact REST-contract baseline at `90e8041` defines 15 Disputes 1.11 operations: list/get/patch plus evidence, appeal, accept, adjudicate, require-evidence, escalate, message, offer, return acknowledgement, and supporting-information actions. This contract inventory is broader than older guide summaries that counted only selected actions. See [[source-github-paypal-rest-api-specifications]].
+
 ### Internal vs External disputes
 
 | Type | Filed via | Adjudicated by | Notes |
@@ -330,6 +332,7 @@ See [[source-stripe-disputes-responding]] for full evidence submission workflow.
 - [[source-paypal-disputes-api]] — Disputes API guide, test & go-live, reasons/evidence reference, test values, file types
 - [[source-paypal-disputes-overview]] — overview, setup, Resolution Center guide
 - [[source-paypal-customer-disputes]] — older disputes API coverage from developer.paypal.com
+- [[source-github-paypal-rest-api-specifications]] — exact-SHA Disputes 1.11 operation and schema contract
 - [[source-stripe-disputes-how-disputes-work]] — Stripe dispute lifecycle: EFWs, inquiries, timing, fees, LPM differences
 
 ## Open Questions

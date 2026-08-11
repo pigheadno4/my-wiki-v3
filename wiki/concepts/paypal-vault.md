@@ -97,10 +97,17 @@ This closes the earlier package-only evidence gap at the source-code level, but 
 
 ## Server SDK
 
-Uses `VaultController` from `@paypal/paypal-server-sdk`:
+The exact `@paypal/paypal-server-sdk@2.3.0` baseline uses `VaultController`:
 
-- `vaultController.setupTokensCreate()` — create setup token
-- `vaultController.paymentTokensCreate()` — upgrade to payment token
+- `vaultController.createSetupToken()` — create a setup token
+- `vaultController.createPaymentToken()` — create a payment token from an approved source
+- `vaultController.listCustomerPaymentTokens()`, `getPaymentToken()`, and `deletePaymentToken()` — manage customer tokens
+
+Its generated model surface includes PayPal, Venmo, Apple Pay, card, bank, and token request/response shapes. That type coverage does not establish merchant eligibility or regional availability; the package README labels its Vault controller US-only. See [[source-github-paypal-typescript-server-sdk]].
+
+### Exact REST contract baseline at `90e8041`
+
+Payment Method Tokens 3.4 defines create/list/get/delete payment tokens and create/get setup tokens. Its payment-source union includes card, PayPal, Venmo, and Apple Pay; wallet `usage_pattern` belongs to this Vault contract. Orders 2.32 separately uses `stored_credential.payment_type` for subsequent card charges. These schemas confirm contract shape, not rollout or merchant eligibility. See [[source-github-paypal-rest-api-specifications]].
 
 ## Eligibility
 
@@ -336,3 +343,4 @@ The `customer.id` is a PayPal-generated identifier — store it against the paye
 - [[source-github-paypal-android]] — cumulative native Android evidence through `paypal-android@2.3.0`, including v2 callbacks, manual browser completion, and the native Venmo evidence boundary
 - [[source-github-v6-web-sdk-sample-integration]] — current Web SDK setup-token, payment-token, and purchase-with-vault sample paths
 - [[changelog-github-paypal-android]] — package-qualified Android major-version and `2.3.0` callback history
+- [[source-github-paypal-rest-api-specifications]] — exact-SHA Payment Method Tokens 3.4 and Orders 2.32 schema boundary

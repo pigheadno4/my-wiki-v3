@@ -69,6 +69,40 @@ def _item(repo_id, state, mode="delta", *, day="2026-08-01"):
 
 
 class CollectionIndexTests(unittest.TestCase):
+    def test_same_day_ingested_baseline_does_not_hide_pending_delta(self):
+        baseline = replace(
+            _item("alpha/sdk", "ingested", "full"),
+            work_item_id="github-ffffffffffffffffffff",
+        )
+        delta_change = PackageChange(
+            "example-sdk",
+            "1.1.0",
+            "1.2.0",
+            "example-sdk@1.2.0",
+            "raw/release-1.2.0.json",
+            "tracking/comparison-1.1.0--1.2.0.json",
+            "delta",
+            ("contained-minor-release",),
+        )
+        delta = replace(
+            _item("alpha/sdk", "awaiting_approval", "delta"),
+            work_item_id="github-00000000000000000000",
+            package_changes=(delta_change,),
+        )
+
+        document = build_collection_index(
+            (_repo("alpha/sdk"),),
+            (baseline, delta),
+            {},
+            date(2026, 8, 3),
+        )
+        row = document["repositories"][0]
+
+        self.assertEqual("example-sdk@1.2.0", row["latest_discovered_ref"])
+        self.assertEqual("example-sdk@1.1.0", row["comparison_base"])
+        self.assertEqual("awaiting_approval", row["queue_state"])
+        self.assertEqual("review-delta", row["next_action"])
+
     def test_actions_scheduling_and_sorting(self):
         repos = (
             _repo("zeta/disabled", enabled=False, priority="tier3"),

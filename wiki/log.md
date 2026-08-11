@@ -1,5 +1,24 @@
 # Wiki Log
 
+## [2026-08-11] ingest | GitHub paypal/paypal-rest-api-specifications `default-branch@90e8041`
+
+- Full-ingested work item `github-b3918bc2b2c3efa5f7d5` at exact SHA `90e8041ffe02d80c452d2b476bedd59a8d219bdc` after serial review of all 21 required paths and 13 OpenAPI contracts.
+- Migrated the legacy source into the PayPal/GitHub hierarchy, added a commit-qualified changelog, and preserved the April raw evidence; the SHA and specification bytes were unchanged.
+- Added detailed checkout-contract coverage and corrected OpenAPI versions, Catalog/Subscriptions ownership, and the Orders `payment_type` versus Vault `usage_pattern` boundary.
+
+## [2026-08-10] ingest | GitHub paypal/paypal-typescript-server-sdk `2.4.0`
+
+- Delta-ingested work item `github-8cb8ce44195e817fa27b` at exact SHA `dbdbdd06f18a06d633c66bbc27d7d7a54283e1a3` against the preserved `2.3.0` baseline.
+- Added typed `ORDER_COMPLETE_ON_PAYMENT_APPROVAL` order processing and explicit default-base OAuth token requests.
+- Kept generated authentication/response documentation, read-only markers, and normalized links separate from product-availability claims; corrected `2.3.0` attribution to its ESM/CommonJS build fix.
+
+## [2026-08-10] ingest | GitHub paypal/paypal-typescript-server-sdk `2.3.0`
+
+- Full-ingested work item `github-ef410a66e2c35433250d` at exact SHA `b37cec58f2cdeecf5b9b7a7c15131cc5f4fff712` after reading all 399 required paths.
+- Migrated the legacy TypeScript Server SDK stub to the PayPal/GitHub hierarchy and added a package-qualified changelog.
+- Added the five-controller surface, OAuth/configuration defaults, retry boundary, payment-source models, and complete typed subscription lifecycle; corrected the Vault method names.
+- Kept `2.3.0` feature attribution unresolved because its release notes are unavailable and the retained upstream changelog stops at `2.2.0`.
+
 ## [2026-08-09] ingest | GitHub paypal/paypal-sdk-logos `default-branch@4c39c1e`
 
 - Full-ingested work item `github-459cb24ea09ef7b97664` at exact SHA `4c39c1ec50b15dde3af99b524fb24ec8aa9fa11b` from a hash-verified 105-file public-source capsule.

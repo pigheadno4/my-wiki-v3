@@ -408,6 +408,31 @@
   Release: [manifest](../../raw/github/braintree/braintree_android/releases/braintree-android/5.30.0/2026-08-01/manifest.json)
   Comparison: Not applicable
 
+## `github-8cb8ce44195e817fa27b`
+
+- Repository: `paypal/paypal-typescript-server-sdk`
+- SHA: `dbdbdd06f18a06d633c66bbc27d7d7a54283e1a3`
+- Collection date: `2026-08-10`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-dbdbdd0/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-typescript-server-sdk/ingest-packets/github-8cb8ce44195e817fa27b/packet.md)
+- Review priority: `normal`
+- Required reading: `65` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/paypal-server-sdk@2.4.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.4.0/2026-08-10/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-typescript-server-sdk/comparisons/paypal-server-sdk/2.3.0--2.4.0/comparison.json)
+
 ## `github-92e87b7fea5fb1703585`
 
 - Repository: `paypal/paypal-js`
@@ -668,6 +693,33 @@
   Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.42.0/2026-08-09/manifest.json)
   Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.41.1--6.42.0/comparison.json)
 
+## `github-b3918bc2b2c3efa5f7d5`
+
+- Repository: `paypal/paypal-rest-api-specifications`
+- SHA: `90e8041ffe02d80c452d2b476bedd59a8d219bdc`
+- Collection date: `2026-08-11`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-rest-api-specifications/snapshots/2026-08-11-90e8041/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-rest-api-specifications/ingest-packets/github-b3918bc2b2c3efa5f7d5/packet.md)
+- Review priority: `high`
+- Required reading: `21` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@90e8041` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `90e8041ffe02d80c452d2b476bedd59a8d219bdc`
+  Comparison: Not applicable
+
 ## `github-bd7fe849961b5c6b9964`
 
 - Repository: `paypal/paypal-js`
@@ -926,6 +978,31 @@
 - `@paypal/react-paypal-js@10.1.0` (recommended `full`)
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.0/2026-07-22/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.0.0--10.1.0/comparison.json)
+
+## `github-ef410a66e2c35433250d`
+
+- Repository: `paypal/paypal-typescript-server-sdk`
+- SHA: `b37cec58f2cdeecf5b9b7a7c15131cc5f4fff712`
+- Collection date: `2026-08-10`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-typescript-server-sdk/snapshots/2026-08-10-b37cec5/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-typescript-server-sdk/ingest-packets/github-ef410a66e2c35433250d/packet.md)
+- Review priority: `high`
+- Required reading: `399` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/paypal-server-sdk@2.3.0` (recommended `full`)
+  Release: [manifest](../../raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.3.0/2026-08-10/manifest.json)
+  Comparison: Not applicable
 
 ## `github-f8c98215ba0bd54e6149`
 
