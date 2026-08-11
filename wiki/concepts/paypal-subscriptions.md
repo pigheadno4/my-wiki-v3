@@ -9,7 +9,7 @@ tags: [paypal, recurring-payments, subscriptions, vault, stored-credentials, bil
 
 PayPal offers two paths for recurring payments:
 
-1. **Orders API + Vault** — flexible merchant-initiated charges using stored payment tokens; supports all `usage_pattern` types; works with cards, PayPal Wallet, Venmo
+1. **Orders API + Vault** — flexible merchant-initiated charges using stored payment tokens; the Vault token describes the usage pattern, while Orders describes each subsequent charge; works with cards, PayPal Wallet, and contract-modeled Venmo subject to product eligibility
 2. **Subscriptions API** — structured subscription management with billing plans, trial periods, and automated lifecycle (pause, cancel, reactivate); dashboard or REST API
 
 ## Vault-Based Recurring (Orders API)
@@ -28,10 +28,12 @@ See [[paypal-vault]] for full token lifecycle details.
 ```json
 {
   "payment_initiator": "MERCHANT",
-  "usage": "SUBSEQUENT",
-  "usage_pattern": "RECURRING_POSTPAID"
+  "payment_type": "RECURRING",
+  "usage": "SUBSEQUENT"
 }
 ```
+
+`usage_pattern` does not belong in the Orders `stored_credential` object. It belongs to the Payment Method Tokens wallet contract used while establishing the stored payment method.
 
 ### 8 `usage_pattern` values
 
@@ -55,6 +57,8 @@ PREPAID = charged before delivery; POSTPAID = charged after delivery.
 ### TypeScript server SDK baseline at `2.3.0`
 
 `@paypal/paypal-server-sdk@2.3.0` exposes a broad `SubscriptionsController`: product create/list/get/update; plan create/list/get/patch/activate/deactivate/pricing updates; and subscription create/list/get/patch/revise/suspend/cancel/activate/capture/transaction listing. This is typed API-surface evidence, not proof of merchant eligibility or a complete production billing implementation. See [[source-github-paypal-typescript-server-sdk]].
+
+The independent exact REST-contract baseline at `90e8041` separates Catalog Products 1.0 from Subscriptions 1.8. Catalog owns product create/list/get/patch; Subscriptions owns plan management and the subscription create/get/patch/revise/suspend/cancel/activate/outstanding-balance/transaction lifecycle. See [[source-github-paypal-rest-api-specifications]].
 
 ### v6 sample baseline at `b5f2df2`
 
@@ -116,3 +120,4 @@ See [[source-paypal-payment-failures]] for full error code reference.
 - [[source-github-v6-web-sdk-sample-integration]] — runnable v6 subscription session and sample product/plan creation
 - [[source-github-paypal-sdk-server-side-integration]] — historical create, `CONTINUE` activation, and plan-revise sample with documented validation gaps
 - [[source-github-paypal-typescript-server-sdk]] — package-qualified `2.3.0` controller and model surface for products, plans, and subscription lifecycle operations
+- [[source-github-paypal-rest-api-specifications]] — exact-SHA Catalog Products 1.0 and Subscriptions 1.8 contracts

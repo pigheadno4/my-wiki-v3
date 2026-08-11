@@ -6,6 +6,15 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-11] ingest | paypal/paypal-rest-api-specifications `default-branch@90e8041`
+
+- Approved and processed work item `github-b3918bc2b2c3efa5f7d5` in full mode after serial review of all 21 required paths and all 13 OpenAPI contracts.
+- Hash-verified the 16-file, 3,415,255-byte exact-SHA capsule at `raw/github/paypal/paypal-rest-api-specifications/snapshots/2026-08-11-90e8041/manifest.json`; the SHA and all 13 specifications match the April legacy collection.
+- Migrated the cumulative source into the canonical PayPal/GitHub hierarchy and added a separate commit-qualified changelog without discarding the older raw stub.
+- Added detailed Orders, Payments, Vault, Subscriptions, Webhooks, Tracking, and Partner Referrals contract coverage plus rough navigation for the remaining API families.
+- Corrected OpenAPI format metadata, separated Catalog Products from Subscriptions, and fixed the Orders `stored_credential.payment_type` versus Vault `usage_pattern` boundary.
+- Updated [[paypal-checkout]], [[paypal-vault]], [[paypal-subscriptions]], [[paypal-payouts]], and [[disputes]]; PayPal source count increased by one for the new changelog.
+
 ## [2026-08-10] ingest | paypal/paypal-typescript-server-sdk `@paypal/paypal-server-sdk@2.4.0`
 
 - Approved and processed work item `github-8cb8ce44195e817fa27b` in delta mode after serial review of the 65-path ingest packet.

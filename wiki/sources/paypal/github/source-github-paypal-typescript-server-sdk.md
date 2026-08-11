@@ -104,7 +104,7 @@ See [[changelog-github-paypal-typescript-server-sdk]] for the release ledger and
 - Checkout: [[paypal-checkout]]
 - Vault: [[paypal-vault]]
 - Subscriptions: [[paypal-subscriptions]]
-- REST schemas: [[source-github-paypal-rest-api-specs]]
+- REST schemas: [[source-github-paypal-rest-api-specifications]]
 - PHP server SDK: [[source-github-paypal-php-server-sdk]]
 
 ## Raw Sources

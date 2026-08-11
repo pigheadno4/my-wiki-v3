@@ -37,6 +37,8 @@ Buyer → Merchant Page (JS SDK buttons)
 
 The exact `@paypal/paypal-server-sdk@2.3.0` TypeScript baseline wraps Orders v2 alongside Payments v2, Vault v3, Transaction Search v1, and Subscriptions v1. The reviewed `2.4.0` delta adds typed `ORDER_COMPLETE_ON_PAYMENT_APPROVAL` processing instructions to create/confirm request and Order response models. Its Orders controller covers create, get, patch, confirm, authorize, capture, and tracking operations; Sandbox is the default environment and automatic retries are disabled by default. See [[source-github-paypal-typescript-server-sdk]] for the package-qualified boundary and eligibility cautions.
 
+The exact REST-contract baseline at `90e8041` independently defines Orders 2.32 create/get/patch/confirm/authorize/capture/tracking operations and Payments 2.12 authorization, capture, refund, and eligible-method operations. Orders models PayPal, Venmo, cards, Apple Pay, Google Pay, and multiple local methods, but schema presence is not merchant or buyer eligibility evidence. See [[source-github-paypal-rest-api-specifications]].
+
 ## Buyer Experience
 
 1. PayPal/Venmo/Card buttons appear on product, cart, or checkout pages
@@ -167,3 +169,4 @@ See [[source-paypal-payment-failures]] for the full 19 error codes and recovery 
 - [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample, partner headers, retries, shipping patches, and retained defects
 - [[paypal-braintree-integration]] — Braintree client-token, nonce, and server-processing boundary for PayPal v6 React flows
 - [[source-paypal-security-guidelines]] — Security guidelines: CSP + SRI for SDK; load only from official CDN; validate payment events server-side before fulfilling
+- [[source-github-paypal-rest-api-specifications]] — exact-SHA Orders, Payments, Vault, Webhooks, and supporting REST contracts

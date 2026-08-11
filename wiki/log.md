@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-11] ingest | GitHub paypal/paypal-rest-api-specifications `default-branch@90e8041`
+
+- Full-ingested work item `github-b3918bc2b2c3efa5f7d5` at exact SHA `90e8041ffe02d80c452d2b476bedd59a8d219bdc` after serial review of all 21 required paths and 13 OpenAPI contracts.
+- Migrated the legacy source into the PayPal/GitHub hierarchy, added a commit-qualified changelog, and preserved the April raw evidence; the SHA and specification bytes were unchanged.
+- Added detailed checkout-contract coverage and corrected OpenAPI versions, Catalog/Subscriptions ownership, and the Orders `payment_type` versus Vault `usage_pattern` boundary.
+
 ## [2026-08-10] ingest | GitHub paypal/paypal-typescript-server-sdk `2.4.0`
 
 - Delta-ingested work item `github-8cb8ce44195e817fa27b` at exact SHA `dbdbdd06f18a06d633c66bbc27d7d7a54283e1a3` against the preserved `2.3.0` baseline.

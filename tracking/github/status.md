@@ -698,10 +698,10 @@
 - Repository: `paypal/paypal-rest-api-specifications`
 - SHA: `90e8041ffe02d80c452d2b476bedd59a8d219bdc`
 - Collection date: `2026-08-11`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

@@ -43,6 +43,8 @@ Instant for existing PayPal/Venmo accounts. Non-accounts get 30-day claim window
 
 **API rate limit**: 400 POST requests/minute (`RATE_LIMIT_REACHED` = HTTP 429).
 
+The exact REST-contract baseline at `90e8041` confirms four Payouts 1.9 operations: create a batch, retrieve a batch, retrieve an item, and cancel an unclaimed item. Its recipient wallet enum includes PayPal and Venmo. Contract presence does not establish account approval or regional availability. See [[source-github-paypal-rest-api-specifications]].
+
 ## Country Support
 
 96 countries across 4 tiers. **Merchant cannot send payouts to India or Mexico** (receive/withdraw only). Colombia and Monaco: cross-border only. China uses country code `C2` (not `CN`).
@@ -118,3 +120,4 @@ For >15,000 payouts; no upper limit. SFTP upload to PayPal DropZone server.
 ## Sources
 
 - [[source-paypal-payouts-overview]] — Standard vs Advanced feature comparison, country/currency coverage, all integration guides, error codes, reporting, AAC
+- [[source-github-paypal-rest-api-specifications]] — exact-SHA Payouts 1.9 operation and schema contract
