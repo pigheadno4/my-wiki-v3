@@ -32,7 +32,7 @@ APPENDIX_A_INVENTORY = (
     ('paypal/paypal-messages-ios', 'https://github.com/paypal/paypal-messages-ios', 'messaging-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('paypal/paypal-messages-android', 'https://github.com/paypal/paypal-messages-android', 'messaging-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('paypal/paypal-sdk-logos', 'https://github.com/paypal/paypal-sdk-logos', 'assets', 'tier2', 'commit', True, 'default-branch', 'monthly'),
-    ('paypal/paypal-rest-api-specifications', 'https://github.com/paypal/paypal-rest-api-specifications', 'api-specification', 'tier1', 'commit', False, 'default-branch', 'monthly'),
+    ('paypal/paypal-rest-api-specifications', 'https://github.com/paypal/paypal-rest-api-specifications', 'api-specification', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('paypal-examples/v6-web-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-sample-integration', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
     ('paypal-examples/paypal-android-sdk-demo-app', 'https://github.com/paypal-examples/paypal-android-sdk-demo-app', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),

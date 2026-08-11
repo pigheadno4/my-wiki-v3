@@ -1,6 +1,6 @@
 # GitHub repository collection index
 
-Generated: `2026-08-10`
+Generated: `2026-08-11`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -22,8 +22,8 @@ Generated: `2026-08-10`
 | adyen | `adyen/release-automation-action` | tier3 | commit | on-demand | - | - | - | `disabled` |
 | braintree | `braintree/braintree-android-drop-in` | tier1 | semver-tags | weekly | - | - | - | `disabled` |
 | braintree | `braintree/braintree-ios-drop-in` | tier1 | semver-tags | weekly | - | - | - | `disabled` |
-| braintree | `braintree/braintree-web` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-08-04 | ingested | 2026-08-11 | `wait` |
-| braintree | `braintree/braintree-web-drop-in` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-08-04 | ingested | 2026-08-11 | `wait` |
+| braintree | `braintree/braintree-web` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-08-04 | ingested | 2026-08-11 | `collect-baseline` |
+| braintree | `braintree/braintree-web-drop-in` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-08-04 | ingested | 2026-08-11 | `collect-baseline` |
 | braintree | `braintree/braintree_android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-01 | ingested | 2026-08-08 | `collect-baseline` |
 | braintree | `braintree/braintree_ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-01 | ingested | 2026-08-08 | `collect-baseline` |
 | braintree | `braintree/graphql-api` | tier1 | commit | monthly | - | - | - | `disabled` |
@@ -52,7 +52,7 @@ Generated: `2026-08-10`
 | paypal | `paypal/paypal-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-07-31 | ingested | 2026-08-07 | `collect-baseline` |
 | paypal | `paypal/paypal-js` | tier1 | monorepo-packages / npm-tracked-source-v1 | weekly | 2026-08-08 | ingested | 2026-08-15 | `wait` |
 | paypal | `paypal/paypal-messaging-components` | tier1 | semver-tags | weekly | - | - | - | `disabled` |
-| paypal | `paypal/paypal-rest-api-specifications` | tier1 | commit | monthly | - | - | - | `disabled` |
+| paypal | `paypal/paypal-rest-api-specifications` | tier1 | commit / commit-tree-v1 | monthly | 2026-08-11 | awaiting_approval | 2026-09-11 | `review-full` |
 | paypal | `paypal/paypal-messages-android` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
 | paypal | `paypal/paypal-messages-ios` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
 | paypal | `paypal/paypal-php-server-sdk` | tier2 | semver-tags | monthly | - | - | - | `disabled` |

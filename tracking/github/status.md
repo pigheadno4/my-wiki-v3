@@ -693,6 +693,33 @@
   Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.42.0/2026-08-09/manifest.json)
   Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.41.1--6.42.0/comparison.json)
 
+## `github-b3918bc2b2c3efa5f7d5`
+
+- Repository: `paypal/paypal-rest-api-specifications`
+- SHA: `90e8041ffe02d80c452d2b476bedd59a8d219bdc`
+- Collection date: `2026-08-11`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-rest-api-specifications/snapshots/2026-08-11-90e8041/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-rest-api-specifications/ingest-packets/github-b3918bc2b2c3efa5f7d5/packet.md)
+- Review priority: `high`
+- Required reading: `21` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@90e8041` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `90e8041ffe02d80c452d2b476bedd59a8d219bdc`
+  Comparison: Not applicable
+
 ## `github-bd7fe849961b5c6b9964`
 
 - Repository: `paypal/paypal-js`
