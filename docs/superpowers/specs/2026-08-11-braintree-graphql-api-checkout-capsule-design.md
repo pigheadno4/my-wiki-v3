@@ -20,7 +20,7 @@ Enable the existing tier-1, monthly, commit-tracked registry entry and add one `
 
 The current commit-tree adapter requires each `default_required_roots` entry to be a directory. Extend its general path resolution so a required entry may identify either a directory prefix or an exact root-level file. Configure `schema.graphql` as the required source path and `CHANGELOG.md` plus `README.md` as required includes. This is a common compatibility improvement, not a Braintree-specific exception.
 
-Use limits sized narrowly above the observed corpus: one file may be approximately 600 KB, the complete capsule approximately 800 KB, and the packet approximately 1.5 MB. Tests and fixtures remain excluded even though none are currently present.
+Use limits sized narrowly above the observed corpus: one file may be approximately 650 KB, the complete three-file capsule approximately 800 KB, and the packet approximately 1.5 MB across at most 15 paths. The path limit covers the current snapshot, existing wiki context, and a future full comparison with prior evidence. Tests and fixtures remain excluded even though none are currently present.
 
 ## Ingest Boundary
 

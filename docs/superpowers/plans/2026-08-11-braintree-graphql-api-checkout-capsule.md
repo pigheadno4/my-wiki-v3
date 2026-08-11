@@ -14,7 +14,7 @@
 - `schema.graphql` is required evidence; do not create a derived checkout-only raw schema.
 - Deep future ingest is limited to checkout, transactions, payment methods, vaulting, PayPal, Venmo, 3D Secure, and recurring billing; other domains receive only high-level inventory.
 - Preserve existing directory-prefix behavior for every current `commit-tree-v1` capsule.
-- Per-file limit is 650,000 bytes; capsule limits are 3 files and 800,000 UTF-8 bytes; packet limits are 6 files and 1,500,000 UTF-8 bytes.
+- Per-file limit is 650,000 bytes; capsule limits are 3 files and 800,000 UTF-8 bytes; packet limits are 15 files and 1,500,000 UTF-8 bytes.
 - Missing required evidence, hash failure, strict UTF-8 failure, secret finding, or budget overflow must stop without partial publication.
 - Baseline collection stops at `awaiting_approval`; do not approve, call `next-ingest`, or edit `wiki/`.
 - Leave unrelated workspace files, including `CLAUDE copy.md`, untouched.
@@ -150,7 +150,7 @@ def test_braintree_graphql_api_has_reviewed_commit_policy(self):
     self.assertEqual(650000, capsule.max_file_bytes)
     self.assertEqual(3, capsule.max_capsule_files)
     self.assertEqual(800000, capsule.max_capsule_utf8_bytes)
-    self.assertEqual(6, capsule.max_packet_files)
+    self.assertEqual(15, capsule.max_packet_files)
     self.assertEqual(1500000, capsule.max_packet_utf8_bytes)
 ```
 
@@ -192,7 +192,7 @@ secret_detector="text-secrets-v1"
 max_file_bytes=650000
 max_capsule_files=3
 max_capsule_utf8_bytes=800000
-max_packet_files=6
+max_packet_files=15
 max_packet_utf8_bytes=1500000
 ```
 

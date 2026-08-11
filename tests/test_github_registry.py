@@ -938,7 +938,7 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(650000, capsule.max_file_bytes)
         self.assertEqual(3, capsule.max_capsule_files)
         self.assertEqual(800000, capsule.max_capsule_utf8_bytes)
-        self.assertEqual(6, capsule.max_packet_files)
+        self.assertEqual(15, capsule.max_packet_files)
         self.assertEqual(1500000, capsule.max_packet_utf8_bytes)
 
     def test_stripe_js_uses_the_root_npm_public_source_profile(self):
