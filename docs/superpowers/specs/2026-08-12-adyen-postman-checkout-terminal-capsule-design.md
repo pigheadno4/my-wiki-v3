@@ -47,9 +47,9 @@ Enable the existing tier-2, monthly, commit-tracked registry entry and configure
 9. `generateAll.sh`
 10. `.github/workflows/sync-collections.yml`
 
-The JSON files provide executable examples. The README, release notes, and generator script establish provenance and usage boundaries. The sync workflow is a required version sentinel because it names the collection files Adyen currently publishes to its Postman workspace.
+The JSON files provide executable examples. The README, release notes, and generator script establish provenance and usage boundaries. The sync workflow is a required version sentinel because it names the collection files Adyen currently publishes to its Postman workspace. The common collector also retains root `LICENSE` as repository context, so the published snapshot contains these ten policy-selected files plus that one automatic context file.
 
-Use limits narrowly above the observed corpus: 600,000 bytes per file, 10 files and 1,100,000 UTF-8 bytes per capsule, and 30 paths and 3,000,000 UTF-8 bytes per packet. Images, CI files other than the required sentinel, superseded generated collections, and unrelated API families are outside this capsule.
+Use limits narrowly above the observed corpus: 600,000 bytes per file, 11 published files and 1,100,000 UTF-8 bytes per capsule, and 30 paths and 3,000,000 UTF-8 bytes per packet. Images, CI files other than the required sentinel, superseded generated collections, and unrelated API families are outside this capsule.
 
 The source identity is the default-branch commit, expressed as `default-branch@<short-sha>`. API labels such as Checkout v72 remain evidence attributes and must not be treated as repository releases.
 
@@ -96,7 +96,7 @@ Run the focused tests, the full GitHub test suite, and `scripts/validate_github_
 ## Success Criteria
 
 - `adyen/adyen-postman` is enabled with one reviewed commit capsule.
-- The capsule contains exactly the ten approved files at one full SHA.
+- The snapshot contains exactly the ten approved policy-selected files plus the collector-retained root `LICENSE` at one full SHA.
 - Checkout v72, Recurring v68, BinLookup v54, Test Cards v1, and Terminal API JSON parse successfully.
 - The sync-workflow sentinel references the selected generated collection filenames.
 - The baseline packet recommends `full`, has no unclassified selected changes, and stops at `awaiting_approval`.

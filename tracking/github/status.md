@@ -617,6 +617,33 @@
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/9.3.0/2026-07-22/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/8.9.2--9.3.0/comparison.json)
 
+## `github-ab2d0a488d97d9590b4c`
+
+- Repository: `adyen/adyen-postman`
+- SHA: `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7`
+- Collection date: `2026-08-12`
+- State: `needs_manual_review`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `1`
+- Consecutive failed runs: `1`
+- Last error: needs-policy-review:capsule-budget-exceeded: published file count 11 exceeds max_capsule_files 10
+- Snapshot: Not published
+- Packet: Historical item without packet
+- Review priority: `not available`
+- Required reading: `not available` files
+- Unclassified changes: `not available`
+- Evidence gaps: `not available`
+
+### Repository refs
+
+- `default-branch@ecb2907` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7`
+  Comparison: Not applicable
+
 ## `github-b11f1f62c66a78b84806`
 
 - Repository: `paypal/paypal-js`

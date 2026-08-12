@@ -1250,7 +1250,7 @@ class RegistryTests(unittest.TestCase):
         )
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
         self.assertEqual(600000, capsule.max_file_bytes)
-        self.assertEqual(10, capsule.max_capsule_files)
+        self.assertEqual(11, capsule.max_capsule_files)
         self.assertEqual(1100000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(30, capsule.max_packet_files)
         self.assertEqual(3000000, capsule.max_packet_utf8_bytes)

@@ -10,11 +10,11 @@
 
 ## Global Constraints
 
-- Collect exactly five JSON evidence files and five provenance files from one resolved default-branch SHA.
+- Collect exactly five JSON evidence files and five provenance files from one resolved default-branch SHA; the common collector additionally retains root `LICENSE` as repository context.
 - The selected JSON files are Checkout v72, Recurring v68, BinLookup v54, Test Cards v1, and `in-person-payments/ipp.json`.
 - The selected provenance files are `in-person-payments/readme.md`, `README.md`, `adyendev-postman-release-notes.md`, `generateAll.sh`, and `.github/workflows/sync-collections.yml`.
 - Require Postman Collection v2.1 JSON and require the sync workflow to reference Checkout v72, Recurring v68, BinLookup v54, and Test Cards v1 before packet approval.
-- Per-file limit is 600,000 bytes; capsule limits are 10 files and 1,100,000 UTF-8 bytes; packet limits are 30 files and 3,000,000 UTF-8 bytes.
+- Per-file limit is 600,000 bytes; capsule limits are 11 published files and 1,100,000 UTF-8 bytes; packet limits are 30 files and 3,000,000 UTF-8 bytes.
 - Treat the default-branch commit as repository identity; API labels such as Checkout v72 are evidence attributes, not repository releases.
 - Missing evidence, invalid JSON, wrong Postman schema, sentinel mismatch, strict UTF-8 failure, secret finding, hash mismatch, or budget overflow blocks packet approval.
 - Baseline collection stops at `awaiting_approval`; do not approve, call `next-ingest`, or edit `wiki/`.
@@ -363,7 +363,7 @@ def test_adyen_postman_has_reviewed_checkout_terminal_policy(self):
     )
     self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
     self.assertEqual(600000, capsule.max_file_bytes)
-    self.assertEqual(10, capsule.max_capsule_files)
+    self.assertEqual(11, capsule.max_capsule_files)
     self.assertEqual(1100000, capsule.max_capsule_utf8_bytes)
     self.assertEqual(30, capsule.max_packet_files)
     self.assertEqual(3000000, capsule.max_packet_utf8_bytes)
@@ -417,7 +417,7 @@ include_paths=[
 excluded_categories=["tests", "fixtures"]
 secret_detector="text-secrets-v1"
 max_file_bytes=600000
-max_capsule_files=10
+max_capsule_files=11
 max_capsule_utf8_bytes=1100000
 max_packet_files=30
 max_packet_utf8_bytes=3000000
@@ -518,7 +518,7 @@ find tracking/github/repos/adyen/adyen-postman -type f | sort
 git status --short
 ```
 
-Verify the manifest contains exactly ten selected files, all hashes validate, total UTF-8 bytes stay within 1,100,000, the packet has zero evidence gaps and zero unclassified retained changes, and no path under `wiki/` changed. Review the packet's full required-reading list and confirm the source identity is `default-branch@<short-sha>`.
+Verify the manifest contains exactly ten policy-selected files plus root `LICENSE` as repository context, all hashes validate, total UTF-8 bytes stay within 1,100,000, the packet has zero evidence gaps and zero unclassified retained changes, and no path under `wiki/` changed. Review the packet's full required-reading list and confirm the source identity is `default-branch@<short-sha>`.
 
 - [ ] **Step 6: Commit only generated collection evidence**
 
@@ -535,4 +535,4 @@ git commit -m "data: collect Adyen Postman baseline"
 
 - [ ] **Step 7: Stop at the approval gate**
 
-Report the exact SHA, ten selected paths, selected byte count, Postman validation result, workflow sentinel result, packet findings, and work-item ID. Do not approve or ingest until the user reviews the packet and explicitly selects `full`.
+Report the exact SHA, ten policy-selected paths plus root `LICENSE`, published byte count, Postman validation result, workflow sentinel result, packet findings, and work-item ID. Do not approve or ingest until the user reviews the packet and explicitly selects `full`.
