@@ -1027,6 +1027,82 @@ class GitHubIngestPacketTests(unittest.TestCase):
             packet.document["expected_wiki_targets"],
         )
 
+    def test_extensionless_package_bin_target_is_public_source(self):
+        files = {
+            "package.json": self.manifest_content("8.0.0"),
+            "bin/cli": (
+                "#!/usr/bin/env node\n",
+                "public-source",
+                "tracked-bin-target",
+            ),
+            "src/index.ts": "export const value = 1;\n",
+        }
+        current = self.snapshot(self.current_sha, "8.0.0", files)
+        release = self.release("8.0.0", self.current_sha, "Initial release.\n")
+
+        packet = build_ingest_packet(
+            self.root,
+            self.config,
+            "github-" + ("2" * 20),
+            self.relative(current),
+            (
+                PackagePacketInput(
+                    package="@scope/widget",
+                    from_version="",
+                    to_version="8.0.0",
+                    from_sha="",
+                    to_sha=self.current_sha,
+                    release_manifest=self.relative(release),
+                    comparison_manifest="",
+                    prior_snapshot_manifest="",
+                    upstream_changes=(),
+                ),
+            ),
+            "queued",
+        )
+
+        classified = {
+            row["path"]: row["classification"]
+            for row in packet.document["packages"][0]["retained_evidence"]["files"]
+        }
+        self.assertEqual("public-source", classified["bin/cli"])
+
+    def test_keep_file_is_documentation(self):
+        files = {
+            "package.json": self.manifest_content("8.0.0"),
+            "src/index.ts": "export const value = 1;\n",
+            "src/lib/.keep": "Generated source extension directory.\n",
+        }
+        current = self.snapshot(self.current_sha, "8.0.0", files)
+        release = self.release("8.0.0", self.current_sha, "Initial release.\n")
+
+        packet = build_ingest_packet(
+            self.root,
+            self.config,
+            "github-" + ("2" * 20),
+            self.relative(current),
+            (
+                PackagePacketInput(
+                    package="@scope/widget",
+                    from_version="",
+                    to_version="8.0.0",
+                    from_sha="",
+                    to_sha=self.current_sha,
+                    release_manifest=self.relative(release),
+                    comparison_manifest="",
+                    prior_snapshot_manifest="",
+                    upstream_changes=(),
+                ),
+            ),
+            "queued",
+        )
+
+        classified = {
+            row["path"]: row["classification"]
+            for row in packet.document["packages"][0]["retained_evidence"]["files"]
+        }
+        self.assertEqual("documentation", classified["src/lib/.keep"])
+
     def test_same_major_payment_change_is_delta_with_high_priority(self):
         prior = {
             "package.json": self.manifest_content("10.0.0"),

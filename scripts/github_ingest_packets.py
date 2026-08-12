@@ -1155,10 +1155,14 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "build-configuration"
     if filename.startswith(("changelog", "history", "releases")):
         return "release-history"
+    if filename == ".keep":
+        return "documentation"
     if row.get("purpose") == "repository-context" or row.get(
         "classification_reason"
     ) == "repository-context":
         return "repository-context"
+    if row.get("classification_reason") == "tracked-bin-target":
+        return "public-source"
     if classify_excluded_categories(path, ("stories",)):
         return "story"
     segments = lowered.split("/")

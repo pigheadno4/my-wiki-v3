@@ -1,0 +1,441 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+import { APIResource } from '../../../../core/resource';
+import * as Shared from '../../../shared';
+import { APIPromise } from '../../../../core/api-promise';
+import { CursorPage, type CursorPageParams, PagePromise } from '../../../../core/pagination';
+import { RequestOptions } from '../../../../internal/request-options';
+
+/**
+ * Rate cards are used to define default pricing for products.
+ */
+export class Rates extends APIResource {
+  /**
+   * Understand the rate schedule at a given timestamp, optionally filtering the list
+   * of rates returned based on properties such as `product_id` and
+   * `pricing_group_values`. For example, you may want to display the current price
+   * for a given product in your product experience - use this endpoint to fetch that
+   * information from its source of truth in Metronome.
+   *
+   * If you want to understand the rates for a specific customer's contract,
+   * inclusive of contract-level overrides, use the `getContractRateSchedule`
+   * endpoint.
+   *
+   * @example
+   * ```ts
+   * // Automatically fetches more pages as needed.
+   * for await (const rateListResponse of client.v1.contracts.rateCards.rates.list(
+   *   {
+   *     at: '2024-01-01T00:00:00.000Z',
+   *     rate_card_id: 'f3d51ae8-f283-44e1-9933-a3cf9ad7a6fe',
+   *     selectors: [
+   *       {
+   *         product_id: 'd6300dbb-882e-4d2d-8dec-5125d16b65d0',
+   *         partial_pricing_group_values: {
+   *           region: 'us-west-2',
+   *           cloud: 'aws',
+   *         },
+   *       },
+   *     ],
+   *   },
+   * )) {
+   *   // ...
+   * }
+   * ```
+   */
+  list(
+    params: RateListParams,
+    options?: RequestOptions,
+  ): PagePromise<RateListResponsesCursorPage, RateListResponse> {
+    const { limit, next_page, ...body } = params;
+    return this._client.getAPIList('/v1/contract-pricing/rate-cards/getRates', CursorPage<RateListResponse>, {
+      query: { limit, next_page },
+      body,
+      method: 'post',
+      ...options,
+    });
+  }
+
+  /**
+   * Add a new rate
+   *
+   * This endpoint is heavily rate limited. For adding multiple rates, using the
+   * [addRates](https://docs.metronome.com/api-reference/rate-cards/add-rates)
+   * endpoint is strongly encouraged.
+   *
+   * @example
+   * ```ts
+   * const response =
+   *   await client.v1.contracts.rateCards.rates.add({
+   *     entitled: true,
+   *     product_id: '13117714-3f05-48e5-a6e9-a66093f13b4d',
+   *     rate_card_id: 'd7abd0cd-4ae9-4db7-8676-e986a4ebd8dc',
+   *     rate_type: 'FLAT',
+   *     starting_at: '2020-01-01T00:00:00.000Z',
+   *     credit_type_id: '2714e483-4ff1-48e4-9e25-ac732e8f24f2',
+   *     price: 100,
+   *   });
+   * ```
+   */
+  add(body: RateAddParams, options?: RequestOptions): APIPromise<RateAddResponse> {
+    return this._client.post('/v1/contract-pricing/rate-cards/addRate', { body, ...options });
+  }
+
+  /**
+   * Add new rates
+   *
+   * @example
+   * ```ts
+   * const response =
+   *   await client.v1.contracts.rateCards.rates.addMany({
+   *     rate_card_id: 'd7abd0cd-4ae9-4db7-8676-e986a4ebd8dc',
+   *     rates: [
+   *       {
+   *         product_id: '13117714-3f05-48e5-a6e9-a66093f13b4d',
+   *         starting_at: '2020-01-01T00:00:00.000Z',
+   *         entitled: true,
+   *         rate_type: 'FLAT',
+   *         price: 100,
+   *         pricing_group_values: {
+   *           region: 'us-west-2',
+   *           cloud: 'aws',
+   *         },
+   *       },
+   *       {
+   *         product_id: '13117714-3f05-48e5-a6e9-a66093f13b4d',
+   *         starting_at: '2020-01-01T00:00:00.000Z',
+   *         entitled: true,
+   *         rate_type: 'FLAT',
+   *         price: 120,
+   *         pricing_group_values: {
+   *           region: 'us-east-2',
+   *           cloud: 'aws',
+   *         },
+   *       },
+   *     ],
+   *   });
+   * ```
+   */
+  addMany(body: RateAddManyParams, options?: RequestOptions): APIPromise<RateAddManyResponse> {
+    return this._client.post('/v1/contract-pricing/rate-cards/addRates', { body, ...options });
+  }
+}
+
+export type RateListResponsesCursorPage = CursorPage<RateListResponse>;
+
+export interface RateListResponse {
+  entitled: boolean;
+
+  /**
+   * Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+   */
+  product_custom_fields: { [key: string]: string };
+
+  product_id: string;
+
+  product_name: string;
+
+  product_tags: Array<string>;
+
+  rate: Shared.Rate;
+
+  starting_at: string;
+
+  billing_frequency?: 'MONTHLY' | 'QUARTERLY' | 'ANNUAL' | 'WEEKLY';
+
+  /**
+   * A distinct rate on the rate card. You can choose to use this rate rather than
+   * list rate when consuming a credit or commit.
+   */
+  commit_rate?: Shared.CommitRate;
+
+  ending_before?: string;
+
+  pricing_group_values?: { [key: string]: string };
+}
+
+export interface RateAddResponse {
+  data: RateAddResponse.Data;
+}
+
+export namespace RateAddResponse {
+  export interface Data {
+    rate_type: 'FLAT' | 'PERCENTAGE' | 'SUBSCRIPTION' | 'CUSTOM' | 'TIERED' | 'TIERED_PERCENTAGE';
+
+    /**
+     * A distinct rate on the rate card. You can choose to use this rate rather than
+     * list rate when consuming a credit or commit.
+     */
+    commit_rate?: Shared.CommitRate;
+
+    credit_type?: Shared.CreditTypeData;
+
+    /**
+     * Only set for CUSTOM rate_type. This field is interpreted by custom rate
+     * processors.
+     */
+    custom_rate?: { [key: string]: unknown };
+
+    /**
+     * Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
+     * set to true.
+     */
+    is_prorated?: boolean;
+
+    /**
+     * Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type,
+     * this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
+     */
+    price?: number;
+
+    /**
+     * if pricing groups are used, this will contain the values used to calculate the
+     * price
+     */
+    pricing_group_values?: { [key: string]: string };
+
+    /**
+     * Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
+     */
+    quantity?: number;
+
+    /**
+     * Only set for TIERED rate_type.
+     */
+    tiers?: Array<Shared.Tier>;
+  }
+}
+
+export interface RateAddManyResponse {
+  /**
+   * The ID of the rate card to which the rates were added.
+   */
+  data: Shared.ID;
+}
+
+export interface RateListParams extends CursorPageParams {
+  /**
+   * Body param: inclusive starting point for the rates schedule
+   */
+  at: string;
+
+  /**
+   * Body param: ID of the rate card to get the schedule for
+   */
+  rate_card_id: string;
+
+  /**
+   * Body param: List of rate selectors, rates matching ANY of the selector will be
+   * included in the response Passing no selectors will result in all rates being
+   * returned.
+   */
+  selectors?: Array<RateListParams.Selector>;
+}
+
+export namespace RateListParams {
+  export interface Selector {
+    /**
+     * Subscription rates matching the billing frequency will be included in the
+     * response.
+     */
+    billing_frequency?: 'MONTHLY' | 'QUARTERLY' | 'ANNUAL' | 'WEEKLY';
+
+    /**
+     * List of pricing group key value pairs, rates containing the matching key / value
+     * pairs will be included in the response.
+     */
+    partial_pricing_group_values?: { [key: string]: string };
+
+    /**
+     * List of pricing group key value pairs, rates matching all of the key / value
+     * pairs will be included in the response.
+     */
+    pricing_group_values?: { [key: string]: string };
+
+    /**
+     * Rates matching the product id will be included in the response.
+     */
+    product_id?: string;
+
+    /**
+     * List of product tags, rates matching any of the tags will be included in the
+     * response.
+     */
+    product_tags?: Array<string>;
+  }
+}
+
+export interface RateAddParams {
+  entitled: boolean;
+
+  /**
+   * ID of the product to add a rate for
+   */
+  product_id: string;
+
+  /**
+   * ID of the rate card to update
+   */
+  rate_card_id: string;
+
+  rate_type: 'FLAT' | 'PERCENTAGE' | 'SUBSCRIPTION' | 'TIERED' | 'TIERED_PERCENTAGE' | 'CUSTOM';
+
+  /**
+   * inclusive effective date
+   */
+  starting_at: string;
+
+  /**
+   * Optional. Frequency to bill subscriptions with. Required for subscription type
+   * products with Flat rate.
+   */
+  billing_frequency?: 'MONTHLY' | 'QUARTERLY' | 'ANNUAL' | 'WEEKLY';
+
+  /**
+   * A distinct rate on the rate card. You can choose to use this rate rather than
+   * list rate when consuming a credit or commit.
+   */
+  commit_rate?: Shared.CommitRate;
+
+  /**
+   * The Metronome ID of the credit type to associate with price, defaults to USD
+   * (cents) if not passed. Used by all rate_types except type PERCENTAGE. PERCENTAGE
+   * rates use the credit type of associated rates.
+   */
+  credit_type_id?: string;
+
+  /**
+   * Only set for CUSTOM rate_type. This field is interpreted by custom rate
+   * processors.
+   */
+  custom_rate?: { [key: string]: unknown };
+
+  /**
+   * exclusive end date
+   */
+  ending_before?: string;
+
+  /**
+   * Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
+   * set to true.
+   */
+  is_prorated?: boolean;
+
+  /**
+   * Default price. For FLAT and SUBSCRIPTION rate_type, this must be >=0. For
+   * PERCENTAGE rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this
+   * must be >=0 and <=1.
+   */
+  price?: number;
+
+  /**
+   * Optional. List of pricing group key value pairs which will be used to calculate
+   * the price.
+   */
+  pricing_group_values?: { [key: string]: string };
+
+  /**
+   * Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
+   */
+  quantity?: number;
+
+  /**
+   * Only set for TIERED rate_type.
+   */
+  tiers?: Array<Shared.Tier>;
+}
+
+export interface RateAddManyParams {
+  rate_card_id: string;
+
+  rates: Array<RateAddManyParams.Rate>;
+}
+
+export namespace RateAddManyParams {
+  export interface Rate {
+    entitled: boolean;
+
+    /**
+     * ID of the product to add a rate for
+     */
+    product_id: string;
+
+    rate_type: 'FLAT' | 'PERCENTAGE' | 'SUBSCRIPTION' | 'TIERED' | 'TIERED_PERCENTAGE' | 'CUSTOM';
+
+    /**
+     * inclusive effective date
+     */
+    starting_at: string;
+
+    /**
+     * Optional. Frequency to bill subscriptions with. Required for subscription type
+     * products with Flat rate.
+     */
+    billing_frequency?: 'MONTHLY' | 'QUARTERLY' | 'ANNUAL' | 'WEEKLY';
+
+    /**
+     * A distinct rate on the rate card. You can choose to use this rate rather than
+     * list rate when consuming a credit or commit.
+     */
+    commit_rate?: Shared.CommitRate;
+
+    /**
+     * "The Metronome ID of the credit type to associate with price, defaults to USD
+     * (cents) if not passed. Used by all rate_types except type PERCENTAGE. PERCENTAGE
+     * rates use the credit type of associated rates."
+     */
+    credit_type_id?: string;
+
+    /**
+     * Only set for CUSTOM rate_type. This field is interpreted by custom rate
+     * processors.
+     */
+    custom_rate?: { [key: string]: unknown };
+
+    /**
+     * exclusive end date
+     */
+    ending_before?: string;
+
+    /**
+     * Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be
+     * set to true.
+     */
+    is_prorated?: boolean;
+
+    /**
+     * Default price. For FLAT and SUBSCRIPTION rate_type, this must be >=0. For
+     * PERCENTAGE rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this
+     * must be >=0 and <=1.
+     */
+    price?: number;
+
+    /**
+     * Optional. List of pricing group key value pairs which will be used to calculate
+     * the price.
+     */
+    pricing_group_values?: { [key: string]: string };
+
+    /**
+     * Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
+     */
+    quantity?: number;
+
+    /**
+     * Only set for TIERED rate_type.
+     */
+    tiers?: Array<Shared.Tier>;
+  }
+}
+
+export declare namespace Rates {
+  export {
+    type RateListResponse as RateListResponse,
+    type RateAddResponse as RateAddResponse,
+    type RateAddManyResponse as RateAddManyResponse,
+    type RateListResponsesCursorPage as RateListResponsesCursorPage,
+    type RateListParams as RateListParams,
+    type RateAddParams as RateAddParams,
+    type RateAddManyParams as RateAddManyParams,
+  };
+}

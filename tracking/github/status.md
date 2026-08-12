@@ -1109,3 +1109,28 @@
 - `@paypal/checkout-components@5.0.425` (recommended `full`)
   Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.425/2026-07-23/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/4.1.47--5.0.425/comparison.json)
+
+## `github-f8e02889b5caf0809fc7`
+
+- Repository: `metronome-industries/metronome-node`
+- SHA: `f8ac11210fbca9616a220e82ea82ac1d340ea2df`
+- Collection date: `2026-08-12`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/manifest.json)
+- Packet: [review packet](repos/metronome/metronome-node/ingest-packets/github-f8e02889b5caf0809fc7/packet.md)
+- Review priority: `high`
+- Required reading: `103` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@metronome/sdk@3.10.0` (recommended `full`)
+  Release: [manifest](../../raw/github/metronome/metronome-node/releases/sdk/3.10.0/2026-08-12/manifest.json)
+  Comparison: Not applicable

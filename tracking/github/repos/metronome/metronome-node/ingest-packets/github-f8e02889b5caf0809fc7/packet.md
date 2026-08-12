@@ -1,0 +1,123 @@
+# GitHub ingest packet
+
+- Repository: `metronome-industries/metronome-node`
+- Work item: `github-f8e02889b5caf0809fc7`
+- Snapshot: `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/manifest.json`
+- Recommended mode: `full`
+- Review priority: `high`
+
+## `@metronome/sdk`
+
+- Version: `baseline` -> `3.10.0`
+- Recommendation: `full` / `high`
+- Unchanged retained files: `0`
+
+### Required reading
+
+- `raw/github/metronome/metronome-node/releases/sdk/3.10.0/2026-08-12/manifest.json`
+- `raw/github/metronome/metronome-node/releases/sdk/3.10.0/2026-08-12/release-notes.md`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/CHANGELOG.md`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/LICENSE`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/MIGRATION.md`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/README.md`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/SECURITY.md`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/api.md`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/bin/cli`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/package.json`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/api-promise.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/client.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/core/README.md`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/core/api-promise.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/core/error.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/core/pagination.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/core/resource.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/core/uploads.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/error.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/index.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/README.md`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/builtin-types.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/detect-platform.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/errors.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/headers.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/parse.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/qs/LICENSE.md`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/qs/README.md`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/qs/formats.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/qs/index.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/qs/stringify.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/qs/types.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/qs/utils.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/request-options.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/shim-types.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/shims.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/to-file.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/types.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/uploads.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/utils.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/utils/base64.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/utils/bytes.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/utils/env.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/utils/log.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/utils/path.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/utils/query.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/utils/sleep.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/utils/uuid.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/internal/utils/values.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/lib/.keep`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/pagination.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resource.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/index.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/shared.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/alerts.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/audit-logs.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/billable-metrics.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/contracts.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/contracts/contracts.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/contracts/index.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/contracts/named-schedules.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/contracts/products.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/contracts/rate-cards.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/contracts/rate-cards/index.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/contracts/rate-cards/named-schedules.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/contracts/rate-cards/product-orders.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/contracts/rate-cards/rate-cards.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/contracts/rate-cards/rates.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/credit-grants.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/custom-fields.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/customers.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/customers/alerts.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/customers/billing-config.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/customers/commits.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/customers/credits.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/customers/customers.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/customers/index.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/customers/invoices.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/customers/named-schedules.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/customers/plans.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/dashboards.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/index.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/invoices.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/packages.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/plans.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/pricing-units.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/services.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/settings.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/settings/billing-providers.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/settings/index.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/settings/settings.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/usage.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v1/v1.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v2.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v2/contracts.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v2/index.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/v2/v2.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/resources/webhooks.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/uploads.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/files/src/version.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/manifest.json`
+
+### Upstream changes
+
+- None
