@@ -59,7 +59,7 @@ Generated: `2026-08-12`
 | paypal | `paypal/paypal-sdk-logos` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-09 | ingested | 2026-09-09 | `wait` |
 | paypal | `paypal/paypal-sdk-release` | tier2 | github-release | monthly | - | - | - | `disabled` |
 | paypal | `paypal/paypal-typescript-server-sdk` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-08-10 | ingested | 2026-09-10 | `wait` |
-| paypal | `paypal/postman-collections` | tier2 | commit | monthly | - | - | - | `disabled` |
+| paypal | `paypal/postman-collections` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-12 | awaiting_approval | 2026-09-12 | `review-full` |
 | stripe | `stripe/react-stripe-js` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-07-30 | ingested | 2026-08-06 | `collect-baseline` |
 | stripe | `stripe/stripe-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-07-31 | ingested | 2026-08-07 | `collect-baseline` |
 | stripe | `stripe/stripe-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-07-31 | ingested | 2026-08-07 | `collect-baseline` |

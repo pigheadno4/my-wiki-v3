@@ -8,9 +8,10 @@ from pathlib import Path
 from typing import Optional, Sequence
 
 
-POSTMAN_V21_SCHEMA = (
-    "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-)
+POSTMAN_SCHEMAS = {
+    "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+    "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+}
 
 
 @dataclass(frozen=True)
@@ -46,7 +47,7 @@ def validate_postman_capsule(
             raise PostmanCapsuleValidationError(
                 "wrong-postman-schema: " + relative_path
             )
-        if payload["info"].get("schema") != POSTMAN_V21_SCHEMA:
+        if payload["info"].get("schema") not in POSTMAN_SCHEMAS:
             raise PostmanCapsuleValidationError(
                 "wrong-postman-schema: " + relative_path
             )

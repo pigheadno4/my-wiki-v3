@@ -75,6 +75,33 @@
   Release: [manifest](../../raw/github/braintree/braintree-web/releases/braintree-web/3.144.0/2026-07-28/manifest.json)
   Comparison: [manifest](repos/braintree/braintree-web/comparisons/braintree-web/3.143.0--3.144.0/comparison.json)
 
+## `github-28afa4b70001aa3c42da`
+
+- Repository: `paypal/postman-collections`
+- SHA: `7f7240ab2d9417a55bf9c68355bf33bf64b1665c`
+- Collection date: `2026-08-12`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/postman-collections/snapshots/2026-08-12-7f7240a/manifest.json)
+- Packet: [review packet](repos/paypal/postman-collections/ingest-packets/github-28afa4b70001aa3c42da/packet.md)
+- Review priority: `high`
+- Required reading: `17` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@7f7240a` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `7f7240ab2d9417a55bf9c68355bf33bf64b1665c`
+  Comparison: Not applicable
+
 ## `github-2957d7d341f9f6cb5ecc`
 
 - Repository: `adyen/adyen-node-api-library`

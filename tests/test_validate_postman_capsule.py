@@ -15,6 +15,7 @@ from validate_postman_capsule import (  # noqa: E402
 
 
 SCHEMA_V21 = "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+SCHEMA_V20 = "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 
 
 def write_text(path, text):
@@ -54,6 +55,25 @@ class PostmanCapsuleValidationTests(unittest.TestCase):
         self.assertEqual(1, result.postman_file_count)
         self.assertEqual(2, result.sentinel_reference_count)
 
+    def test_accepts_v20_collections(self):
+        write_json(
+            self.snapshot / "files" / self.postman_path,
+            {"info": {"schema": SCHEMA_V20}, "item": []},
+        )
+        write_text(
+            self.snapshot / "files" / self.sentinel_path,
+            "PayPal_Checkout_Flows.json\n",
+        )
+
+        result = validate_postman_capsule(
+            self.snapshot,
+            (self.postman_path,),
+            self.sentinel_path,
+            ("PayPal_Checkout_Flows.json",),
+        )
+
+        self.assertEqual(1, result.postman_file_count)
+
     def test_rejects_invalid_json(self):
         write_text(self.snapshot / "files" / self.postman_path, "{")
 
@@ -73,7 +93,7 @@ class PostmanCapsuleValidationTests(unittest.TestCase):
             self.snapshot / "files" / self.postman_path,
             {
                 "info": {
-                    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+                    "schema": "https://example.com/not-postman-schema.json"
                 }
             },
         )
