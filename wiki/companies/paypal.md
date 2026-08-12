@@ -2,7 +2,7 @@
 title: "PayPal"
 type: company
 tags: [paypal, payment-gateway, checkout, venmo, javascript-sdk, orders-api, vault, recurring-payments, payouts, disputes, reporting, agentic-commerce]
-source_count: 164
+source_count: 165
 ---
 
 ## PayPal
@@ -65,6 +65,8 @@ PayPal-owned peer-to-peer payment network; surfaced as a payment button option i
 - **Sandbox**: Full sandbox environment with personal and business test accounts creatable from Developer Dashboard.
 - **Button placement**: Recommended on product detail pages, cart pages, and checkout pages.
 - **Checkout flow**: Two-step — create order on server, capture order after buyer approves.
+
+The exact `paypal/postman-collections` baseline at `7f7240a` contains 204 requests across Checkout Flows, Public APIs, and Partner APIs, plus reusable Postman authentication and diagnostics helpers. It is runnable example evidence: the repository is a backup of PayPal's Postman workspace, direct JSON imports do not receive updates, and neither request nor stored-response presence proves merchant enablement or current product availability.
 
 ## Checkout Integration Flow
 
@@ -331,7 +333,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-payouts-overview]] — Payouts: Standard (96 countries, 20+ currencies, self-serve) vs Advanced (240+ countries, 50+ currencies, enterprise, multiple rails)
 - [[source-github-paypal-payouts-php-sdk]] — GitHub Payouts PHP SDK: PayoutsPostRequest/GetRequest/ItemGetRequest/ItemCancelRequest, PayPalHttpClient pattern (github-repo, 2026-04-16)
 - [[source-paypal-login-with-paypal]] — Log in with PayPal: OAuth flow, 8h token expiry, payer ID scope for payouts, app review required (webpage, 2026-04-16)
-- [[source-github-paypal-postman-collections]] — GitHub paypal/postman-collections: 3 collections (Public APIs, Checkout Flows, Partner APIs), paypal-postman-lib helper (github-repo, 2026-04-16)
+- [[source-github-postman-collections]] — cumulative GitHub Postman evidence: 204 Checkout, Public API, and Partner requests plus helper scripts at exact commit `7f7240a`
+- [[changelog-github-postman-collections]] — commit-qualified Postman collection history and workspace-sync boundary
 - [[source-github-paypal-rest-api-specifications]] — cumulative exact-SHA REST contract evidence for 13 API families, including detailed Orders, Payments, Vault, Subscriptions, Webhooks, and Tracking coverage (github-repo, updated 2026-08-11)
 - [[changelog-github-paypal-rest-api-specifications]] — commit-qualified REST specification baseline and future delta ledger
 - [[source-github-paypal-sdk-logos]] — GitHub paypal-sdk-logos: cumulative `2.3.3` generated SVG and `2.3.7` public-source evidence, inline/external rendering, versioned CDN, colors, rebrand badges, and branding boundary (github-repo, updated 2026-08-09)

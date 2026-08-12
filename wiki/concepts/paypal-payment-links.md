@@ -24,6 +24,8 @@ All are no-code. Buy Button and Shopping Cart Button require basic HTML editing 
 
 Endpoint: `POST /v1/checkout/payment-resources` — returns `PLB-*` ID; payment link URL is in `links[]` with `rel: "payment_link"`. PUT is full replace. DELETE is permanent. Must enable "Payment Links & Buttons" in app credentials.
 
+The `paypal/postman-collections` baseline at `7f7240a` provides create, list, retrieve, replace, and delete payment-resource examples. This is runnable payload evidence only; current enablement and endpoint behavior remain governed by product documentation and the live API.
+
 ## Integration Options
 
 > [!info] API scope limitation
@@ -62,3 +64,4 @@ Both support: hosted payment page, discounts, taxes, PCI compliance, Dashboard o
 
 - [[source-paypal-payment-links-overview]] — 4-option comparison, Payment Links vs Invoicing table
 - [[source-paypal-invoicing-overview]] — Invoicing detailed docs
+- [[source-github-postman-collections]] — exact-commit Payment Resources API request examples

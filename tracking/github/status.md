@@ -80,10 +80,10 @@
 - Repository: `paypal/postman-collections`
 - SHA: `7f7240ab2d9417a55bf9c68355bf33bf64b1665c`
 - Collection date: `2026-08-12`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

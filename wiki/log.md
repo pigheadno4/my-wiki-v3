@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-12] ingest | GitHub paypal/postman-collections `default-branch@7f7240a`
+
+- Full-ingested work item `github-28afa4b70001aa3c42da` at exact SHA `7f7240ab2d9417a55bf9c68355bf33bf64b1665c` after serial review of the complete 204-request Postman capsule and helper library.
+- Migrated the April stub into the PayPal/GitHub hierarchy and added cumulative and commit-qualified sources for Checkout Flows, Public APIs, and Partner APIs.
+- Added focused checkout, vault, subscription, and Payment Resources workflow evidence while preserving the workspace-backup, example-only, and limited-release boundaries.
+
 ## [2026-08-12] ingest | GitHub adyen/adyen-postman `default-branch@ecb2907`
 
 - Full-ingested work item `github-ab2d0a488d97d9590b4c` at exact SHA `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7` after serial review of the complete Postman capsule.

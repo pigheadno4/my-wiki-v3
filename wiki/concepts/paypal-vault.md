@@ -39,6 +39,8 @@ These paths use `BraintreePayPalProvider`, a Braintree client token, and `paypal
 5. Merchant stores the payment token ID (`vault_id`)
 6. For each recurring charge: `ordersCreate` with `vault_id` + `stored_credential`
 
+The `paypal/postman-collections` baseline at `7f7240a` preserves both sides of this distinction as runnable sequences. Save-for-later creates a setup token and payment token before using `vault_id`; save-during-purchase puts `attributes.vault.store_in_vault` on the initial Order and later reuses the vaulted method. The examples cover PayPal and card paths, including 3DS card variants, but do not prove merchant eligibility or replace current stored-credential requirements.
+
 ### v6 sample server boundary at `b5f2df2`
 
 The current sample implements PayPal and card save-without-purchase by creating a setup token, collecting browser approval, and upgrading it with `VaultController.createPaymentToken()`. The resulting long-lived token is passed to a placeholder database function and deliberately not returned to the browser. Purchase-with-vault examples separately set `storeInVault: ON_SUCCESS` for PayPal and Apple Pay orders.
@@ -344,3 +346,4 @@ The `customer.id` is a PayPal-generated identifier — store it against the paye
 - [[source-github-v6-web-sdk-sample-integration]] — current Web SDK setup-token, payment-token, and purchase-with-vault sample paths
 - [[changelog-github-paypal-android]] — package-qualified Android major-version and `2.3.0` callback history
 - [[source-github-paypal-rest-api-specifications]] — exact-SHA Payment Method Tokens 3.4 and Orders 2.32 schema boundary
+- [[source-github-postman-collections]] — exact-commit setup-token, payment-token, save-during-purchase, and returning-buyer sequences

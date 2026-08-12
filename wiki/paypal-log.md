@@ -6,6 +6,14 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-12] ingest | paypal/postman-collections `default-branch@7f7240a`
+
+- Approved and processed work item `github-28afa4b70001aa3c42da` in full mode after serial review of all 17 required paths and all 204 requests.
+- Hash-verified the 12-file, 6,678,470-byte exact-SHA capsule at `raw/github/paypal/postman-collections/snapshots/2026-08-12-7f7240a/manifest.json`.
+- Migrated the April stub into the canonical PayPal/GitHub hierarchy and added a separate commit-qualified changelog without treating the legacy clone as a comparable managed snapshot.
+- Added runnable Checkout, saved-payment, subscription, Payment Resources, partner, and helper-library evidence while keeping REST specifications, current product documentation, and live responses authoritative.
+- Updated [[paypal-checkout]], [[paypal-vault]], [[paypal-subscriptions]], and [[paypal-payment-links]]; PayPal source count increased by one for the new changelog.
+
 ## [2026-08-11] ingest | paypal/paypal-rest-api-specifications `default-branch@90e8041`
 
 - Approved and processed work item `github-b3918bc2b2c3efa5f7d5` in full mode after serial review of all 21 required paths and all 13 OpenAPI contracts.

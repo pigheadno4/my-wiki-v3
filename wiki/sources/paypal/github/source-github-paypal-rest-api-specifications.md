@@ -120,7 +120,7 @@ The repository includes Redocly preview/bundle commands, Redocly and Spectral li
 - Payouts: [[paypal-payouts]]
 - Disputes: [[disputes]]
 - Server SDK: [[source-github-paypal-typescript-server-sdk]]
-- Request examples: [[source-github-paypal-postman-collections]]
+- Request examples: [[source-github-postman-collections]]
 - History: [[changelog-github-paypal-rest-api-specifications]]
 
 ## Raw Sources
