@@ -308,6 +308,8 @@ git commit -m "feat: validate Postman evidence capsules"
 **Files:**
 - Modify: `tests/test_github_registry.py`
 - Modify: `tracking/github/repo-registry.toml`
+- Regenerate: `tracking/github/collection-index.json`
+- Regenerate: `tracking/github/collection-index.md`
 
 **Interfaces:**
 - Consumes: existing exact-file support in `commit-tree-v1` and `load_registry(path)`.
@@ -426,15 +428,19 @@ max_packet_utf8_bytes=3000000
 ```bash
 python3 -m unittest tests.test_github_registry.RegistryTests.test_adyen_postman_has_reviewed_checkout_terminal_policy
 python3 -m unittest discover -s tests -p 'test_github_*.py'
+python3 scripts/collect_github_repos.py status > /private/tmp/adyen-postman-registry-status.md
 python3 scripts/validate_github_collection.py
 ```
 
-Expected: all tests pass and existing evidence remains valid.
+Expected: all tests pass, the generated index lists Adyen Postman as enabled with `collect-baseline`, and existing evidence remains valid.
 
 - [ ] **Step 5: Commit the registry profile**
 
 ```bash
-git add tests/test_github_registry.py tracking/github/repo-registry.toml
+git add tests/test_github_registry.py \
+  tracking/github/repo-registry.toml \
+  tracking/github/collection-index.json \
+  tracking/github/collection-index.md
 git diff --cached --check
 git commit -m "feat: enable Adyen Postman collection"
 ```
