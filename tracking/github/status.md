@@ -622,19 +622,19 @@
 - Repository: `adyen/adyen-postman`
 - SHA: `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7`
 - Collection date: `2026-08-12`
-- State: `needs_manual_review`
+- State: `awaiting_approval`
 - Recommended mode: `full`
 - Evidence revision: `initial`
 - Approved mode: `not approved`
-- Attempts in run: `1`
-- Consecutive failed runs: `1`
-- Last error: needs-policy-review:capsule-budget-exceeded: published file count 11 exceeds max_capsule_files 10
-- Snapshot: Not published
-- Packet: Historical item without packet
-- Review priority: `not available`
-- Required reading: `not available` files
-- Unclassified changes: `not available`
-- Evidence gaps: `not available`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-postman/snapshots/2026-08-12-ecb2907/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-postman/ingest-packets/github-ab2d0a488d97d9590b4c/packet.md)
+- Review priority: `high`
+- Required reading: `16` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
 
 ### Repository refs
 
