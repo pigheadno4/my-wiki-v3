@@ -78,6 +78,12 @@ The independent `paypal-messages-ios@1.2.0` package renders Pay Later and PayPal
 
 This package is promotional presentment, not payment execution. Its click opens a learn-more/application modal; checkout still requires a separate payment integration. See [[source-github-paypal-messages-ios]].
 
+### Native Android Messages
+
+The independent `paypal-messages-android@1.3.0` package presents Pay Later and PayPal Credit promotion through `PayPalMessageView`; a Compose wrapper is present but the retained development guide explicitly says the Jetpack view does not currently work. The README also recommends sandbox use until an official release.
+
+Like iOS, Android Messages is promotional presentment rather than payment execution. The `1.3.0` capsule adds rendered-language analytics and `%bold%` message styling, but also preserves version-qualified callback, environment-update, and shared-state risks. See [[source-github-paypal-messages-android]] and [[changelog-github-paypal-messages-android]].
+
 ## Available Countries (beyond US)
 
 Pay Later offerings differ by country — Australia, France, Germany, Italy, Spain, UK each have their own products. Check the Expanded Checkout eligibility page for which countries support Pay Later.
@@ -91,3 +97,5 @@ Pay Later offerings differ by country — Australia, France, Germany, Italy, Spa
 - [[source-paypal-pay-later]] — Pay Later by country (US, AU, CA, FR, DE): product tables, purchase ranges, eligibility, bilingual support (CA)
 - [[source-github-paypal-js]] — package-qualified React v10.1.2 Messages typing and v10.2.0 Braintree Messages hook behavior
 - [[source-github-paypal-messages-ios]] — native iOS Pay Later and PayPal Credit message configuration, rendering, modal, and lifecycle
+- [[source-github-paypal-messages-android]] — native Android message view, modal, callbacks, caching, analytics, availability warning, and `1.3.0` source risks
+- [[changelog-github-paypal-messages-android]] — managed Android `1.3.0` release plus cumulative earlier stable context

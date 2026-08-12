@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-08-12] ingest | GitHub paypal/paypal-messages-android `paypal-messages-android@1.3.0`
+
+- Full-ingested work item `github-39a4005f41fbb0234224` at exact SHA `f1aa138cc6822cc11d68ac4bfdee3cf183aedbc2` after serial review of all 126 required paths.
+- Migrated the April source into the canonical PayPal/GitHub hierarchy and added a package-qualified changelog for native rendering, configuration, modal behavior, callbacks, caching, analytics, localization, and branding.
+- Preserved the development/sandbox warning, non-working Jetpack guidance, callback/environment/shared-state risks, and release/build/license metadata conflicts instead of treating the stable tag as general-availability proof.
+- Preserved the product boundary: Android Messages promotes financing but does not execute checkout payments. PayPal source count increased by one for the new changelog, not for a duplicate repository source.
+
 ## [2026-08-12] ingest | GitHub paypal/paypal-messages-ios `paypal-messages-ios@1.2.0`
 
 - Full-ingested work item `github-b94b44c30164dfad8034` at exact SHA `432d6b832714b2615106c3f2a748ac61654d8bbd` after serial review of all 69 required paths.

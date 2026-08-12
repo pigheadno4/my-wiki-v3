@@ -2,7 +2,7 @@
 title: "PayPal"
 type: company
 tags: [paypal, payment-gateway, checkout, venmo, javascript-sdk, orders-api, vault, recurring-payments, payouts, disputes, reporting, agentic-commerce]
-source_count: 166
+source_count: 167
 ---
 
 ## PayPal
@@ -34,6 +34,8 @@ The independent `paypal/paypal-checkout-components` history begins with `@paypal
 The separate `@paypal/sdk-logos` package provides inline and external-image rendering for PayPal, Venmo, card brands, wallets, and local-payment-method artwork. The retained history preserves 117 generated `2.3.3` CDN SVGs and the complete policy-selected `2.3.7` public source. Logo presence is asset evidence only: it does not establish merchant eligibility, regional availability, payment enablement, or permission to use protected marks.
 
 The independent `paypal-messages-ios@1.2.0` package renders Pay Later and PayPal Credit promotion for UIKit and SwiftUI. It uses merchant and transaction context to fetch a message and web-backed learn-more/application modal, but does not execute checkout payments. Buyer-country override requires PayPal approval, and public offer enums are not eligibility evidence.
+
+The Android counterpart, `paypal-messages-android@1.3.0`, provides a native message view and a Compose wrapper, but its README still recommends sandbox use and its development guide says the Jetpack view does not currently work. The exact source also preserves modal callback, environment-update, and shared-state risks. GitHub, Gradle, POM, and license metadata conflict, so package installation and licensing require live verification.
 
 ### Braintree PayPal v6
 
@@ -325,7 +327,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-save-cards-ios-sdk]] — Save Cards iOS SDK: SwiftUI Toggle, `CardDelegate`, US-only availability (contradicts Android/JS SDK 35-country support)
 - [[source-paypal-save-paypal-android-sdk]] — Save PayPal Wallet Android SDK: `PayPalWebCheckoutClient`, deep link scheme, `vault.id` for returning payers
 - [[source-paypal-save-cards-android-sdk]] — Save Cards Android SDK: Compose checkbox, `customer.id` in Create Order for returning payers, `ApproveOrderListener` 3DS callbacks, RTAU
-- [[source-github-paypal-messages-android]] — GitHub paypal-messages-android v1.3.0: PayPalMessageConfig/Callbacks API, Compose support, int-indexed enums
+- [[source-github-paypal-messages-android]] — GitHub paypal-messages-android `1.3.0`: view/configuration lifecycle, modal callbacks, caching, analytics, availability warning, and source risks
+- [[changelog-github-paypal-messages-android]] — managed `1.3.0` baseline plus cumulative earlier stable context and metadata conflicts
 - [[source-github-paypal-messages-ios]] — GitHub paypal-messages-ios `1.2.0`: PayPalMessageView/Delegate API, SwiftUI support, caching, modal, and analytics
 - [[changelog-github-paypal-messages-ios]] — managed `1.2.0` baseline plus cumulative `1.0.0` and `1.1.0` release context
 - [[source-paypal-subscriptions-overview]] — Subscriptions: 6-step flow, REST API vs dashboard, 12 customization capabilities, 4 pricing models (fixed/quantity/volume/tiered); volume vs tiered distinction; single currency per plan

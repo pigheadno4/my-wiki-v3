@@ -6,6 +6,14 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-12] ingest | paypal/paypal-messages-android `paypal-messages-android@1.3.0`
+
+- Approved and processed work item `github-39a4005f41fbb0234224` in full mode after serial review of all 126 required paths.
+- Hash-bounded the 123-file exact-SHA capsule at `f1aa138cc6822cc11d68ac4bfdee3cf183aedbc2`; this managed SHA differs from the April manual collection, whose raw stub remains preserved.
+- Migrated the cumulative source into the canonical PayPal/GitHub hierarchy and added a package-qualified changelog; PayPal source count increased by one for that new changelog.
+- Added view/configuration, XML, modal, callback, cache, analytics, localization, and branding evidence while retaining the sandbox-only recommendation and the development guide's non-working Jetpack warning.
+- Recorded exact-source callback/environment/shared-state risks and conflicting GitHub/Gradle/POM/license metadata. Updated [[paypal-pay-later]] and [[paypal-android-sdk]].
+
 ## [2026-08-12] ingest | paypal/paypal-messages-ios `paypal-messages-ios@1.2.0`
 
 - Approved and processed work item `github-b94b44c30164dfad8034` in full mode after serial review of all 69 required paths.

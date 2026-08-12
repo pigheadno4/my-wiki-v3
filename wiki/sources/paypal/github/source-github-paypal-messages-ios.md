@@ -110,7 +110,7 @@ The retained changelog establishes the stable `1.0.0`, `1.1.0`, and `1.2.0` hist
 - Company: [[paypal]]
 - Product concept: [[paypal-pay-later]]
 - Parent mobile SDK: [[paypal-ios-sdk]]
-- Android counterpart: [[source-github-paypal-messages-android]] (pending serial ingest)
+- Android counterpart: [[source-github-paypal-messages-android]]
 - Release history: [[changelog-github-paypal-messages-ios]]
 
 ## Raw Sources

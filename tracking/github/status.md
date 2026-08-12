@@ -158,10 +158,10 @@
 - Repository: `paypal/paypal-messages-android`
 - SHA: `f1aa138cc6822cc11d68ac4bfdee3cf183aedbc2`
 - Collection date: `2026-08-12`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None
