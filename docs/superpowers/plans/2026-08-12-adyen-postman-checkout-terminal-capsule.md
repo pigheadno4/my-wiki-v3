@@ -445,7 +445,65 @@ git diff --cached --check
 git commit -m "feat: enable Adyen Postman collection"
 ```
 
-### Task 3: Publish and review the immutable baseline
+### Task 3: Classify workflow and shell evidence generically
+
+**Files:**
+- Modify: `tests/test_github_ingest_packets.py`
+- Modify: `scripts/github_ingest_packets.py`
+
+**Interfaces:**
+- Consumes: retained commit-snapshot paths and `_classify_file(path, row)`.
+- Produces: GitHub workflow `.yml` and `.yaml` files classified as `build-configuration`, and `.sh` files classified as `public-source` for every repository.
+
+- [ ] **Step 1: Extend the commit classification contract**
+
+Add `.github/workflows/sync.yml` and `generateAll.sh` to `test_commit_web_and_environment_files_have_stable_classifications`, then assert:
+
+```python
+self.assertEqual(
+    "build-configuration",
+    classified[".github/workflows/sync.yml"],
+)
+self.assertEqual("public-source", classified["generateAll.sh"])
+```
+
+- [ ] **Step 2: Run the focused test and verify it fails**
+
+```bash
+python3 -m unittest tests.test_github_ingest_packets.GitHubIngestPacketTests.test_commit_web_and_environment_files_have_stable_classifications
+```
+
+Expected: FAIL because both paths are currently `unclassified`.
+
+- [ ] **Step 3: Add the two generic classifier rules**
+
+Add `.sh` to `_SOURCE_SUFFIXES`. In `_classify_file`, before the general build-file block, add:
+
+```python
+if lowered.startswith(".github/workflows/") and filename.endswith(
+    (".yml", ".yaml")
+):
+    return "build-configuration"
+```
+
+- [ ] **Step 4: Run focused and packet regression tests**
+
+```bash
+python3 -m unittest tests.test_github_ingest_packets.GitHubIngestPacketTests.test_commit_web_and_environment_files_have_stable_classifications
+python3 -m unittest tests.test_github_ingest_packets
+```
+
+Expected: all tests pass.
+
+- [ ] **Step 5: Commit the classifier change**
+
+```bash
+git add scripts/github_ingest_packets.py tests/test_github_ingest_packets.py
+git diff --cached --check
+git commit -m "fix: classify collected workflow and shell evidence"
+```
+
+### Task 4: Publish and review the immutable baseline
 
 **Files:**
 - Generate: `raw/github/adyen/adyen-postman/snapshots/<date>-<short-sha>/`

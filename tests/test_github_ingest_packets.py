@@ -678,6 +678,18 @@ class GitHubIngestPacketTests(unittest.TestCase):
                 "client/.nvmrc": ("22\n", "source-capsule", "required-root", "widgets"),
                 "client/index.html": ("<main></main>\n", "source-capsule", "required-root", "widgets"),
                 "client/styles.css": ("main { display: block; }\n", "source-capsule", "required-root", "widgets"),
+                ".github/workflows/sync.yml": (
+                    "name: Sync\n",
+                    "source-capsule",
+                    "include-path",
+                    "widgets",
+                ),
+                "generateAll.sh": (
+                    "#!/bin/sh\n",
+                    "source-capsule",
+                    "include-path",
+                    "widgets",
+                ),
                 "src/data/products.json": ('{"sku":"sample"}\n', "source-capsule", "required-root", "widgets"),
             },
         )
@@ -709,6 +721,11 @@ class GitHubIngestPacketTests(unittest.TestCase):
         self.assertEqual("build-configuration", classified["client/.nvmrc"])
         self.assertEqual("public-source", classified["client/index.html"])
         self.assertEqual("public-source", classified["client/styles.css"])
+        self.assertEqual(
+            "build-configuration",
+            classified[".github/workflows/sync.yml"],
+        )
+        self.assertEqual("public-source", classified["generateAll.sh"])
         self.assertEqual("public-source", classified["src/data/products.json"])
         self.assertEqual([], packet.document["unclassified_changes"])
 

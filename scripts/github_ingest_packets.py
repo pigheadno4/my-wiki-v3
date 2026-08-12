@@ -54,6 +54,7 @@ _SOURCE_SUFFIXES = (
     ".py",
     ".rb",
     ".rs",
+    ".sh",
     ".swift",
     ".api",
     ".ts",
@@ -1112,6 +1113,10 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "build-configuration"
     if filename == "tsconfig.json" or (
         filename.startswith("tsconfig.") and filename.endswith(".json")
+    ):
+        return "build-configuration"
+    if lowered.startswith(".github/workflows/") and filename.endswith(
+        (".yml", ".yaml")
     ):
         return "build-configuration"
     if (
