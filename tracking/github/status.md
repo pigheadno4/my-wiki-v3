@@ -153,6 +153,31 @@
   Release: [manifest](../../raw/github/braintree/braintree_ios/releases/braintree-ios/7.9.0/2026-08-01/manifest.json)
   Comparison: Not applicable
 
+## `github-39a4005f41fbb0234224`
+
+- Repository: `paypal/paypal-messages-android`
+- SHA: `f1aa138cc6822cc11d68ac4bfdee3cf183aedbc2`
+- Collection date: `2026-08-12`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messages-android/ingest-packets/github-39a4005f41fbb0234224/packet.md)
+- Review priority: `normal`
+- Required reading: `126` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `paypal-messages-android@1.3.0` (recommended `full`)
+  Release: [manifest](../../raw/github/paypal/paypal-messages-android/releases/paypal-messages-android/1.3.0/2026-08-12/manifest.json)
+  Comparison: Not applicable
+
 ## `github-43baf5daaf3a92e79a79`
 
 - Repository: `adyen/adyen-react-native`
@@ -772,6 +797,31 @@
   Ref: `main`
   From SHA: `baseline`
   To SHA: `90e8041ffe02d80c452d2b476bedd59a8d219bdc`
+  Comparison: Not applicable
+
+## `github-b94b44c30164dfad8034`
+
+- Repository: `paypal/paypal-messages-ios`
+- SHA: `432d6b832714b2615106c3f2a748ac61654d8bbd`
+- Collection date: `2026-08-12`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messages-ios/snapshots/2026-08-12-432d6b8/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messages-ios/ingest-packets/github-b94b44c30164dfad8034/packet.md)
+- Review priority: `normal`
+- Required reading: `69` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `paypal-messages-ios@1.2.0` (recommended `full`)
+  Release: [manifest](../../raw/github/paypal/paypal-messages-ios/releases/paypal-messages-ios/1.2.0/2026-08-12/manifest.json)
   Comparison: Not applicable
 
 ## `github-bd7fe849961b5c6b9964`

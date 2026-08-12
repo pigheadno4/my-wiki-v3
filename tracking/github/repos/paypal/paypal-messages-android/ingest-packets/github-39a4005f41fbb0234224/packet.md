@@ -1,0 +1,146 @@
+# GitHub ingest packet
+
+- Repository: `paypal/paypal-messages-android`
+- Work item: `github-39a4005f41fbb0234224`
+- Snapshot: `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/manifest.json`
+- Recommended mode: `full`
+- Review priority: `normal`
+
+## `paypal-messages-android`
+
+- Version: `baseline` -> `1.3.0`
+- Recommendation: `full` / `normal`
+- Unchanged retained files: `0`
+
+### Required reading
+
+- `raw/github/paypal/paypal-messages-android/releases/paypal-messages-android/1.3.0/2026-08-12/manifest.json`
+- `raw/github/paypal/paypal-messages-android/releases/paypal-messages-android/1.3.0/2026-08-12/release-notes.md`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/CHANGELOG.md`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/DEVELOPMENT.md`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/LICENSE`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/PROGUARD.md`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/README.md`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/build.gradle`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/demo/build.gradle`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/demo/proguard-rules.pro`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/demo/src/main/AndroidManifest.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/demo/src/main/java/com/paypal/messagesdemo/Dropdown.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/demo/src/main/java/com/paypal/messagesdemo/JetpackActivity.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/demo/src/main/java/com/paypal/messagesdemo/JetpackComposableActivity.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/demo/src/main/java/com/paypal/messagesdemo/XmlActivity.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/demo/src/main/java/com/paypal/messagesdemo/composables/CircularIndicator.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/demo/src/main/java/com/paypal/messagesdemo/composables/FilledButton.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/demo/src/main/java/com/paypal/messagesdemo/composables/InputField.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/demo/src/main/java/com/paypal/messagesdemo/composables/OfferOptions.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/demo/src/main/java/com/paypal/messagesdemo/composables/RadioOptions.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/demo/src/main/java/com/paypal/messagesdemo/composables/StyledTextField.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/demo/src/main/java/com/paypal/messagesdemo/composables/SwitchOption.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/demo/src/main/java/com/paypal/messagesdemo/ui/Color.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/demo/src/main/java/com/paypal/messagesdemo/ui/Theme.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/demo/src/main/java/com/paypal/messagesdemo/ui/Type.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/gradle.properties`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/build.gradle`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/consumer-rules.pro`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/pom.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/proguard-rules.pro`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/AndroidManifest.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/Logo.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/LogoAsset.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/ModalFragment.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/PayPalComposableMessage.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/PayPalComposableModal.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/PayPalMessageView.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/PayPalModalActivity.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/RoundedWebView.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/analytics/AnalyticsComponent.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/analytics/AnalyticsEvent.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/analytics/AnalyticsLogger.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/analytics/AnalyticsPayload.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/analytics/CloudEvent.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/analytics/ComponentType.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/analytics/EventType.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/analytics/GlobalAnalytics.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/analytics/IntegrationIdentifier.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/Channel.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/PayPalEnvironment.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/PayPalLanguage.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/PayPalLocale.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/PayPalMessageOfferType.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/PayPalMessagePageType.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/ProductGroup.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/message/PayPalMessageConfig.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/message/PayPalMessageData.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/message/PayPalMessageEventsCallbacks.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/message/PayPalMessageStyle.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/message/PayPalMessageViewStateCallbacks.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/message/style/PayPalMessageAlignment.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/message/style/PayPalMessageColor.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/message/style/PayPalMessageLogoType.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/modal/ModalCloseButton.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/modal/ModalConfig.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/config/modal/ModalEvents.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/data/ModalDisplayManager.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/data/PayPalMessageDataProvider.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/extensions/Gson.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/extensions/Int.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/io/Api.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/io/ApiClient.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/io/ApiHashData.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/io/ApiMessageData.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/io/ApiResult.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/io/LocalStorage.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/io/OkHttpCompat.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/io/OnActionCompleted.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/utils/ContextCompatWrapper.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/utils/KoverExcludeGenerated.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/utils/LogCat.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/utils/PayPalErrors.kt`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/bottom_sheet_dialog_rounded.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/custom_progress.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/custom_progress_faster.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/ic_close.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_alternative_grayscale.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_alternative_monochrome.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_alternative_standard.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_alternative_white.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_credit_alternative_grayscale.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_credit_alternative_monochrome.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_credit_alternative_standard.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_credit_alternative_white.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_credit_inline_grayscale.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_credit_inline_monochrome.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_credit_inline_standard.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_credit_inline_white.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_credit_primary_grayscale.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_credit_primary_monochrome.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_credit_primary_standard.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_credit_primary_white.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_inline_grayscale.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_inline_monochrome.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_inline_standard.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_inline_white.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_paypal_color.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_paypal_monochrome.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_primary_grayscale.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_primary_monochrome.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_primary_standard.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/logo_primary_white.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/rounded_corner_bottomsheetdialog.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/rounded_dialog.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/drawable/rounded_dialog_loading.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/layout/paypal_message_modal_sheet_layout.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/layout/paypal_message_view.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/values/attrs.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/values/colors.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/values/strings.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/values/styles.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/values/themes.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/res/xml/network_security_config.xml`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/package.json`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/settings.gradle`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/manifest.json`
+
+### Upstream changes
+
+- None

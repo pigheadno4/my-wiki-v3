@@ -29,8 +29,8 @@ APPENDIX_A_INVENTORY = (
     ('paypal/postman-collections', 'https://github.com/paypal/postman-collections', 'api-collection', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('paypal/paypal-typescript-server-sdk', 'https://github.com/paypal/PayPal-TypeScript-Server-SDK', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('paypal/paypal-php-server-sdk', 'https://github.com/paypal/PayPal-PHP-Server-SDK', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('paypal/paypal-messages-ios', 'https://github.com/paypal/paypal-messages-ios', 'messaging-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('paypal/paypal-messages-android', 'https://github.com/paypal/paypal-messages-android', 'messaging-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('paypal/paypal-messages-ios', 'https://github.com/paypal/paypal-messages-ios', 'messaging-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
+    ('paypal/paypal-messages-android', 'https://github.com/paypal/paypal-messages-android', 'messaging-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('paypal/paypal-sdk-logos', 'https://github.com/paypal/paypal-sdk-logos', 'assets', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('paypal/paypal-rest-api-specifications', 'https://github.com/paypal/paypal-rest-api-specifications', 'api-specification', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('paypal-examples/v6-web-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-sample-integration', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
@@ -573,6 +573,64 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual((self.repo(),), select_repos(repos))
         self.assertEqual((disabled,), select_repos(repos, company="stripe", enabled_only=False))
         self.assertEqual((disabled,), select_repos(repos, repo_id="stripe/stripe-ios", enabled_only=False))
+
+    def test_paypal_messages_ios_uses_the_reviewed_release_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(item for item in repos if item.id == "paypal/paypal-messages-ios")
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:paypal-messages-ios@1",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("1.2.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("paypal-messages-ios-public-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("paypal-messages-ios",), capsule.focus_packages)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertIn("Sources/PayPalMessages/Config", capsule.default_required_roots)
+        self.assertIn("Sources/PayPalMessages/IO", capsule.default_required_roots)
+        self.assertIn("Demo/Demo/Components", capsule.default_required_roots)
+        self.assertIn("Sources/PayPalMessages/PayPalMessageView.swift", capsule.include_paths)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+
+    def test_paypal_messages_android_uses_the_reviewed_release_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(item for item in repos if item.id == "paypal/paypal-messages-android")
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:paypal-messages-android@1",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("1.3.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("paypal-messages-android-public-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("paypal-messages-android",), capsule.focus_packages)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertIn("library/src/main/java", capsule.default_required_roots)
+        self.assertIn("library/src/main/res", capsule.default_required_roots)
+        self.assertIn("demo/src/main/java", capsule.default_required_roots)
+        self.assertIn("library/src/main/AndroidManifest.xml", capsule.include_paths)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
 
     def test_adyen_web_uses_the_reviewed_bounded_public_source_capsule(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
