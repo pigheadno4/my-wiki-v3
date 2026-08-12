@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-08-12] ingest | GitHub paypal/paypal-messages-ios `paypal-messages-ios@1.2.0`
+
+- Full-ingested work item `github-b94b44c30164dfad8034` at exact SHA `432d6b832714b2615106c3f2a748ac61654d8bbd` after serial review of all 69 required paths.
+- Migrated the April source for the same exact SHA into the canonical PayPal/GitHub hierarchy and added a package-qualified changelog for UIKit/SwiftUI rendering, configuration, merchant-profile caching, modal behavior, callbacks, analytics, localization, and accessibility.
+- Preserved the legacy raw stub and increased PayPal's source count by one for the new changelog, not for a duplicate repository source.
+- Preserved the product boundary: this SDK presents Pay Later and PayPal Credit promotions but does not execute checkout payments; public offer types do not prove merchant or buyer eligibility.
+
 ## [2026-08-12] ingest | GitHub Metronome-Industries/metronome-node `@metronome/sdk@3.10.0`
 
 - Full-ingested work item `github-f8e02889b5caf0809fc7` at exact SHA `f8ac11210fbca9616a220e82ea82ac1d340ea2df` from the complete 103-path retained SDK capsule.

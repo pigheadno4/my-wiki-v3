@@ -6,6 +6,14 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-12] ingest | paypal/paypal-messages-ios `paypal-messages-ios@1.2.0`
+
+- Approved and processed work item `github-b94b44c30164dfad8034` in full mode after serial review of all 69 required paths.
+- Hash-bounded the 66-file exact-SHA capsule at `432d6b832714b2615106c3f2a748ac61654d8bbd`; it matches the April 2026 manual collection rather than representing a newer upstream release.
+- Migrated the cumulative source into the canonical PayPal/GitHub hierarchy, preserved the legacy raw stub, and added a package-qualified changelog; PayPal source count increased by one for that new changelog.
+- Added configuration, UIKit/SwiftUI rendering, merchant-profile caching, modal, delegate, analytics, localization, and accessibility evidence while preserving the boundary that Messages promotes financing but does not execute checkout.
+- Updated [[paypal-pay-later]] and [[paypal-ios-sdk]]. The independently versioned Android counterpart remains outside this serial ingest item.
+
 ## [2026-08-12] ingest | paypal/postman-collections `default-branch@7f7240a`
 
 - Approved and processed work item `github-28afa4b70001aa3c42da` in full mode after serial review of all 17 required paths and all 204 requests.

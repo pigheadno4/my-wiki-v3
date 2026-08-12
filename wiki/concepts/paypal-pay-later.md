@@ -72,6 +72,12 @@ For the v6 React web component, `@paypal/react-paypal-js@10.1.2` expands the typ
 
 For Braintree integrations, `@paypal/react-paypal-js@10.2.0` adds `useBraintreePayPalMessages()`. The hook asynchronously creates a Messages instance from Braintree's shared `paypalCheckoutV6` object, then exposes readiness, loading, error, and content-fetch state. Returned content can update its amount without a new fetch. An empty failure sentinel is still passed to `<paypal-message>` so the element can collapse while the hook exposes the fetch error.
 
+### Native iOS Messages
+
+The independent `paypal-messages-ios@1.2.0` package renders Pay Later and PayPal Credit promotion in UIKit or through a SwiftUI wrapper. It accepts client ID, environment, amount, placement, preferred offer, buyer country, language/locale, and style context; PayPal's response can still select a generic message. Buyer-country override requires PayPal approval.
+
+This package is promotional presentment, not payment execution. Its click opens a learn-more/application modal; checkout still requires a separate payment integration. See [[source-github-paypal-messages-ios]].
+
 ## Available Countries (beyond US)
 
 Pay Later offerings differ by country — Australia, France, Germany, Italy, Spain, UK each have their own products. Check the Expanded Checkout eligibility page for which countries support Pay Later.
@@ -84,3 +90,4 @@ Pay Later offerings differ by country — Australia, France, Germany, Italy, Spa
 
 - [[source-paypal-pay-later]] — Pay Later by country (US, AU, CA, FR, DE): product tables, purchase ranges, eligibility, bilingual support (CA)
 - [[source-github-paypal-js]] — package-qualified React v10.1.2 Messages typing and v10.2.0 Braintree Messages hook behavior
+- [[source-github-paypal-messages-ios]] — native iOS Pay Later and PayPal Credit message configuration, rendering, modal, and lifecycle

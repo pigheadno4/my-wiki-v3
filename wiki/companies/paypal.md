@@ -2,7 +2,7 @@
 title: "PayPal"
 type: company
 tags: [paypal, payment-gateway, checkout, venmo, javascript-sdk, orders-api, vault, recurring-payments, payouts, disputes, reporting, agentic-commerce]
-source_count: 165
+source_count: 166
 ---
 
 ## PayPal
@@ -32,6 +32,8 @@ The separate `paypal-examples/paypal-sdk-server-side-integration` baseline at `5
 The independent `paypal/paypal-checkout-components` history begins with `@paypal/checkout-components@4.1.47` and now extends through `5.0.425`. The v4 runtime implemented Zoid-based Buttons and Checkout with mobile-only secondary Venmo. The accumulated v5 runtime adds separate Card Fields, Payment Fields, Hosted Buttons, Wallet, Saved Payment Methods, Venmo, and QR component boundaries; its Venmo vault-without-purchase path is experiment-gated. These package-qualified facts do not replace current availability guidance.
 
 The separate `@paypal/sdk-logos` package provides inline and external-image rendering for PayPal, Venmo, card brands, wallets, and local-payment-method artwork. The retained history preserves 117 generated `2.3.3` CDN SVGs and the complete policy-selected `2.3.7` public source. Logo presence is asset evidence only: it does not establish merchant eligibility, regional availability, payment enablement, or permission to use protected marks.
+
+The independent `paypal-messages-ios@1.2.0` package renders Pay Later and PayPal Credit promotion for UIKit and SwiftUI. It uses merchant and transaction context to fetch a message and web-backed learn-more/application modal, but does not execute checkout payments. Buyer-country override requires PayPal approval, and public offer enums are not eligibility evidence.
 
 ### Braintree PayPal v6
 
@@ -324,7 +326,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-save-paypal-android-sdk]] — Save PayPal Wallet Android SDK: `PayPalWebCheckoutClient`, deep link scheme, `vault.id` for returning payers
 - [[source-paypal-save-cards-android-sdk]] — Save Cards Android SDK: Compose checkbox, `customer.id` in Create Order for returning payers, `ApproveOrderListener` 3DS callbacks, RTAU
 - [[source-github-paypal-messages-android]] — GitHub paypal-messages-android v1.3.0: PayPalMessageConfig/Callbacks API, Compose support, int-indexed enums
-- [[source-github-paypal-messages-ios]] — GitHub paypal-messages-ios v1.3.0: PayPalMessageView/Delegate API, SwiftUI support, iOS vs Android differences
+- [[source-github-paypal-messages-ios]] — GitHub paypal-messages-ios `1.2.0`: PayPalMessageView/Delegate API, SwiftUI support, caching, modal, and analytics
+- [[changelog-github-paypal-messages-ios]] — managed `1.2.0` baseline plus cumulative `1.0.0` and `1.1.0` release context
 - [[source-paypal-subscriptions-overview]] — Subscriptions: 6-step flow, REST API vs dashboard, 12 customization capabilities, 4 pricing models (fixed/quantity/volume/tiered); volume vs tiered distinction; single currency per plan
 - [[source-paypal-invoicing-overview]] — Invoicing: 4-step flow (draft→send→view→pay), REST API vs dashboard, QR payment + refunds + reminders; multi-country
 - [[source-paypal-magnes]] — Magnes (limited release): mobile device fingerprinting SDK (iOS/Android); PayPal-Client-Metadata-Id bridge; formerly "Dyson"; FraudNet is non-mobile equivalent

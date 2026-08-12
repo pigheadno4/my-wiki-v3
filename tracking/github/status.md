@@ -804,10 +804,10 @@
 - Repository: `paypal/paypal-messages-ios`
 - SHA: `432d6b832714b2615106c3f2a748ac61654d8bbd`
 - Collection date: `2026-08-12`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None
