@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-08-12] analysis | PayPal Messages iOS `1.2.0` vs Android `1.3.0`
+
+- Compared the independently versioned exact-SHA mobile Messages baselines without merging their source histories.
+- Established the shared promotional-only product boundary, platform integration differences, and version-aware query path through each source page and changelog.
+- Recommended iOS as the stronger baseline and kept Android in sandbox/controlled-pilot scope because of its repository warning and exact-source callback, configuration, and shared-state risks.
+- Corrected the iOS source: `setConfig` does not replace environment or partner identity fields at `1.2.0`.
+
 ## [2026-08-12] ingest | GitHub paypal/paypal-messages-android `paypal-messages-android@1.3.0`
 
 - Full-ingested work item `github-39a4005f41fbb0234224` at exact SHA `f1aa138cc6822cc11d68ac4bfdee3cf183aedbc2` after serial review of all 126 required paths.

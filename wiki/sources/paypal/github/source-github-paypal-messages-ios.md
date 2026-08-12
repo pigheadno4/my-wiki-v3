@@ -71,7 +71,9 @@ Supported preferred offers are short-term Pay Later, long-term Pay Later, Pay in
 
 ## Rendering and Update Lifecycle
 
-Creating `PayPalMessageView` triggers a message fetch. Changes to identity, environment, amount, placement, offer, buyer country, localization, logo type, channel, or cache policy queue a refetch. Color and alignment changes only rerender the retained response. `setConfig` is preferred for coordinated multi-field changes and always refetches.
+Creating `PayPalMessageView` triggers a message fetch. Changes to identity, environment, amount, placement, offer, buyer country, localization, logo type, channel, or cache policy queue a refetch. Color and alignment changes only rerender the retained response.
+
+`setConfig` always queues a refetch, but its exact `1.2.0` implementation does not copy `environment`, `merchantID`, or `partnerAttributionID` from the replacement config. It is therefore not a complete environment or partner-identity replacement. Set those public view properties explicitly or rebuild the view when that context changes; do not assume `setConfig` alone applies them.
 
 Before requesting content, the SDK retrieves and caches a merchant-profile hash by client ID plus merchant ID. A hard TTL forces refresh; crossing the soft TTL returns cached data while refreshing in the background. A disabled merchant profile suppresses the hash.
 
@@ -111,6 +113,7 @@ The retained changelog establishes the stable `1.0.0`, `1.1.0`, and `1.2.0` hist
 - Product concept: [[paypal-pay-later]]
 - Parent mobile SDK: [[paypal-ios-sdk]]
 - Android counterpart: [[source-github-paypal-messages-android]]
+- Cross-platform analysis: [[analysis-paypal-messages-ios-vs-android]]
 - Release history: [[changelog-github-paypal-messages-ios]]
 
 ## Raw Sources

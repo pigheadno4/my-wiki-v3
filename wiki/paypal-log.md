@@ -6,6 +6,13 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-12] analysis | PayPal Messages iOS `1.2.0` vs Android `1.3.0`
+
+- Compared the approved iOS and Android exact-SHA baselines while preserving separate package-qualified source and changelog histories.
+- Added a reusable mobile integration analysis covering the shared promotional-only contract, platform UI paths, configuration replacement gaps, modal callbacks, caching, analytics state, and rollout readiness.
+- Recommended iOS as the stronger candidate after application QA; retained Android as sandbox/controlled-pilot scope at `1.3.0` because the repository warns it is still in development and the source exposes callback and shared-state risks.
+- Corrected the iOS `setConfig` guidance: the exact implementation omits environment, merchant ID, and partner attribution ID.
+
 ## [2026-08-12] ingest | paypal/paypal-messages-android `paypal-messages-android@1.3.0`
 
 - Approved and processed work item `github-39a4005f41fbb0234224` in full mode after serial review of all 126 required paths.

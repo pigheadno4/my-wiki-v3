@@ -215,6 +215,10 @@ Operations history: [[paypal-log]]
 - [[paypal-payment-links]] — PayPal Payment Links and Buttons: 4 no-code options (link/buy button/cart/QR), vs Invoicing comparison
 - [[paypal-subscriptions]] — PayPal Subscriptions & Recurring: Orders API vault path, 8 usage_pattern values, Subscriptions API billing plan structure, 4 pricing models
 
+## Analyses
+
+- [[analysis-paypal-messages-ios-vs-android]] — PayPal Messages iOS `1.2.0` vs Android `1.3.0`: shared product boundary, platform differences, exact-source risks, and rollout recommendation
+
 ## Comparisons involving PayPal
 
 See the root [[index]] Comparisons section (e.g. Stripe vs PayPal).

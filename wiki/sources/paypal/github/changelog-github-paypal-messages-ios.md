@@ -21,6 +21,8 @@ Package-qualified release ledger for `paypal/paypal-messages-ios`. Durable integ
 
 The exact release adds `language_rendered` analytics and bold styling for server message substrings marked with `%bold%`. Merchant impact is primarily analytics fidelity and message presentation; no checkout-payment API was added.
 
+The exact source also exposes a version-qualified configuration risk: `PayPalMessageViewModel.updateConfig()` omits `environment`, `merchantID`, and `partnerAttributionID`. A full config replacement therefore does not replace those fields through `setConfig`; see [[source-github-paypal-messages-ios]] and [[analysis-paypal-messages-ios-vs-android]].
+
 Evidence: `raw/github/paypal/paypal-messages-ios/releases/paypal-messages-ios/1.2.0/2026-08-12/manifest.json`, release notes, and the exact-SHA snapshot manifest.
 
 ## `paypal-messages-ios@1.1.0` - Cumulative Context (2026-02-27)

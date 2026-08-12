@@ -34,6 +34,7 @@
 - [[analysis-paypal-pay-later-ca-integration-guide]] — PayPal Pay Later CA button + message integration: biweekly Pay in 4, CAD, bilingual en_CA/fr_CA
 - [[analysis-paypal-pay-later-multi-country-integration-guide]] — PayPal Pay Later button + message integration for US, FR, GB, IT, ES: per-country products, cross-border messaging, funding eligibility
 - [[analysis-paypal-sdk-v5-vs-v6-multi-country]] — PayPal JS SDK v5 vs v6 multi-country switching: runtime config, React v8→v9, Pay Later messaging, performance patterns, SSR
+- [[analysis-paypal-messages-ios-vs-android]] — PayPal Messages native mobile comparison: shared contract, configuration traps, callback/state risks, and platform rollout guidance
 
 ## Concepts (generic)
 

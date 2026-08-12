@@ -115,6 +115,7 @@ The retained cumulative changelog establishes stable history from `1.0.0` throug
 - Product concept: [[paypal-pay-later]]
 - Android checkout SDK: [[paypal-android-sdk]]
 - iOS counterpart: [[source-github-paypal-messages-ios]]
+- Cross-platform analysis: [[analysis-paypal-messages-ios-vs-android]]
 - Release history: [[changelog-github-paypal-messages-android]]
 
 ## Raw Sources
