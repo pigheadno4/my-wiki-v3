@@ -27,6 +27,8 @@ Webhook payloads contain minimal event information. A consumer can treat the not
 
 For signature verification, compute HMAC-SHA256 over `X-Metronome-Date`, a newline, and the exact request-body bytes using the secret unique to that webhook. Compare the result with `Metronome-Webhook-Signature`, reject requests older than five minutes, and avoid reserializing parsed JSON before verification.
 
+`@metronome/sdk@3.10.0` implements that contract through `client.webhooks.verifySignature()` and `unwrap()`. The helper also rejects timestamps more than five minutes in the future, uses a timing-resistant signature comparison, and verifies before JSON parsing; it does not implement delivery deduplication or processing idempotency. [[source-github-metronome-node]]
+
 ## Payload evolution
 
 Metronome may add backward-compatible fields without notice. Integrations should validate the documented fields they require rather than rejecting payloads solely because additional fields appear.
@@ -48,6 +50,8 @@ Offset-notification payloads omit the `properties` field used by threshold paylo
 Metronome's go-live checklist places three checks in its webhook-and-error-handling section: keep the endpoint online and verify signatures with the Metronome webhook secret, make processing safe on duplicate deliveries, and exercise a policy worded as retry on `5xx` or network failure, backoff on `429`, and dead-letter plus alert on `4xx`. The source does not identify that status policy's direction or owner, so it must not be labeled either a webhook-receiver contract or Metronome's outbound-delivery contract. The dedicated webhook guide remains authoritative: Metronome retries outbound delivery responses above `299`. Webhook-delivery retry, API-call retry, and payment retry remain distinct, and these checks do not guarantee timely delivery, revenue preservation, processing success, event ordering, or payment recovery. [[source-metronome-guides-implement-metronome-production-checklist]]
 
 ## Sources
+
+- [[source-github-metronome-node]] - exact Node SDK raw-body, timestamp-tolerance, HMAC, and parsing behavior
 
 - [[source-metronome-api-reference-notifications-list-system-notification-event-types]] - optional lifecycle-event webhook-publication status and its documented control boundary
 

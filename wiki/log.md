@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-12] ingest | GitHub Metronome-Industries/metronome-node `@metronome/sdk@3.10.0`
+
+- Full-ingested work item `github-f8e02889b5caf0809fc7` at exact SHA `f8ac11210fbca9616a220e82ea82ac1d340ea2df` from the complete 103-path retained SDK capsule.
+- Established the cumulative Node/TypeScript SDK source and package-qualified changelog for runtime support, transport, retries, pagination, generated API resources, usage ingestion, contracts, pricing, billing providers, and webhook verification.
+- Added exact `3.10.0` field changes and preserved the stale `api.md` Payments listing as a conflict with the source tree and `3.7.0` removal history.
+
 ## [2026-08-12] ingest | GitHub paypal/postman-collections `default-branch@7f7240a`
 
 - Full-ingested work item `github-28afa4b70001aa3c42da` at exact SHA `7f7240ab2d9417a55bf9c68355bf33bf64b1665c` after serial review of the complete 204-request Postman capsule and helper library.

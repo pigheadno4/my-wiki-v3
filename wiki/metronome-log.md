@@ -6,6 +6,14 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-12 — GitHub full ingest: `@metronome/sdk@3.10.0`
+
+- Full-ingested work item `github-f8e02889b5caf0809fc7` at exact SHA `f8ac11210fbca9616a220e82ea82ac1d340ea2df` after complete review of the 103-path Node/TypeScript SDK capsule.
+- Added [[source-github-metronome-node]] and [[changelog-github-metronome-node]] for package/runtime behavior, transport and retry defaults, generated V1/V2 resources, usage ingestion, contracts, pricing, billing providers, and webhook verification.
+- Recorded `3.10.0` additions for rate-card conversions, commit cost basis, and customer-commit applicability, plus the removed transition field and retained major-version migration boundaries.
+- Preserved the evidence conflict where `api.md` lists removed Payments methods while the exact source tree omits that resource and the `3.7.0` changelog records its removal.
+- Coverage after promotion: 225 collected documentation pages, 93 source summaries, and 134 documentation raw pages without source summaries.
+
 ## 2026-08-02 — Metronome Campaign 12 selective-ingest pilot completed
 
 - Result: promoted the independently approved [[source-metronome-api-reference-custom-fields]] overview byte-identically and created [[metronome-custom-fields]] from overview evidence only.

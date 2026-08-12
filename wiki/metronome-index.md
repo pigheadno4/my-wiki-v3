@@ -12,7 +12,7 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 91 |
+| Source summaries ingested | 93 |
 | Raw pages without source summaries | 134 |
 | Collection failures | 0 |
 
@@ -23,6 +23,8 @@ Operational evidence:
 
 ## Sources
 
+- [[source-github-metronome-node]] - `@metronome/sdk@3.10.0` server client, runtime, transport, generated API surface, and webhook helper
+- [[changelog-github-metronome-node]] - package-qualified Node SDK release and upgrade history
 - [[source-metronome-guides-get-started-home]] — documentation entry point, getting-started routes, and four pricing/packaging models
 - [[source-metronome-guides-get-started-developer-sdks]] — SDK installation and an introductory event-to-invoice implementation path
 - [[source-metronome-guides-events-design-usage-events]] — event-design principles, cadence tradeoffs, contextual properties, and future-only metric changes

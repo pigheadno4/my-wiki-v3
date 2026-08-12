@@ -39,6 +39,7 @@ A Metronome credit can grant relief on future billing at customer scope, where i
 - The same usage can apply to only one credit or commit, with any remainder continuing as postpaid fulfillment or overage.
 - Application occurs at invoice line-item level. Covered usage, the negative balance-application line, and uncovered overage remain separately attributable.
 - Every credit or commit uses a fixed product for invoice and reporting attribution, while product IDs, tags, or specifiers can restrict eligible usage.
+- The `@metronome/sdk@3.10.0` commit model adds optional `cost_basis`, defined as the ratio of amount paid to credit granted. Its V2 customer-commit edit accepts `applicable_contract_ids`, where null applies to all customer contracts; the field cannot be edited for postpaid or contract-level commits. [[source-github-metronome-node]]
 - Stripe-taxed prepaid-balance thresholds, spend thresholds, and one-off payment-gated commits require `payment_gate_type: "STRIPE"`, `tax_type: "STRIPE"`, and `stripe_config.payment_type: "INVOICE"`; account-level tax enablement does not cover these flows.
 
 ### Historical invoice balance effects
@@ -125,6 +126,8 @@ Threshold notifications can monitor credit and commit remaining balance, percent
 A merchant can create `low_remaining_commit_balance_reached` for a customer, credit type, and threshold. The resulting signal can support customer communication, sales outreach, or a merchant-owned service cutoff when the balance reaches zero. The page does not define which contract- or customer-level commits contribute, applicability or priority effects, expired-balance treatment, inclusion of credits, or automatic access enforcement.
 
 ## Sources
+
+- [[source-github-metronome-node]] - exact `3.10.0` commit cost-basis and contract-applicability types
 
 - [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition]] - prepaid and postpaid reporting treatment, free-credit contra-revenue boundary, and ledger double-counting exclusions
 

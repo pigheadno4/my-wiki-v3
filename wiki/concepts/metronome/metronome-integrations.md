@@ -9,6 +9,10 @@ tags: [metronome, integrations, stripe, invoicing]
 
 Metronome integrations connect its usage-billing and contract workflows to external systems. The Metronome Stripe App is an embedded management interface inside the Stripe Dashboard; it is distinct from the native Stripe invoicing integration that delivers invoices to Stripe.
 
+## TypeScript SDK boundary
+
+`@metronome/sdk@3.10.0` is a generated server-side TypeScript and JavaScript client with no runtime dependencies. It defaults bearer authentication from `METRONOME_BEARER_TOKEN`, supports configurable fetch, proxy, timeout, retry, logging, raw-response, and pagination behavior, and exposes both typed resources and generic HTTP methods. Its generated types prove an exact package's client surface, not feature enablement or current service behavior. React Native is explicitly unsupported in this release. [[source-github-metronome-node]]
+
 ## Stripe App boundary
 
 - The app requires a Metronome production environment, Stripe Dashboard access, and a configured Metronome Stripe integration.
@@ -78,6 +82,8 @@ Metronome documents an SDK-like Workato connector for performing actions on Metr
 The Metronome (Actions) destination connects one selected Segment source using a Metronome API token and maps Segment event fields into Metronome's usage-event format. Additional Destination Actions can pair mappings with triggers containing any number of conditions, such as excluding company-domain user emails. The page calls these action configurations `subscriptions`; in this context they are Segment conditional-delivery rules, not Metronome billing subscriptions or customer contracts. It does not define token scope or rotation, trigger overlap or evaluation order, duplicate delivery, retries, batching, response handling, replay, or observability.
 
 ## Sources
+
+- [[source-github-metronome-node]] - exact `@metronome/sdk@3.10.0` package, runtime, transport, generated API, and evidence boundaries
 
 - [[source-metronome-api-reference-invoices-regenerate-an-invoice]] - configured billing-provider distribution for regenerated invoices and bounded downstream side effects
 
