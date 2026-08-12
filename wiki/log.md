@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-12] ingest | GitHub adyen/adyen-postman `default-branch@ecb2907`
+
+- Full-ingested work item `github-ab2d0a488d97d9590b4c` at exact SHA `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7` after serial review of the complete Postman capsule.
+- Added cumulative and commit-qualified sources for Checkout v72, Recurring v68, BIN Lookup v54, Test Card v1, and 82 Terminal API examples.
+- Created the Adyen Terminal API concept, corrected the legacy recurring boundary, and updated the Adyen company, provider index, and provider log.
+
 ## [2026-08-11] ingest | GitHub braintree/graphql-api `default-branch@3a89f42`
 
 - Full-ingested work item `github-d36f782cded039bfef90` at exact SHA `3a89f427466a0a978dbfcfd953913f4e76c3264a` after serial review of the complete schema, changelog, README, manifest, and Braintree context.

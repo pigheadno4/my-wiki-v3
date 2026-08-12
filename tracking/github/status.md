@@ -622,10 +622,10 @@
 - Repository: `adyen/adyen-postman`
 - SHA: `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7`
 - Collection date: `2026-08-12`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

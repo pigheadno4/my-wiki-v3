@@ -6,6 +6,14 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-12] ingest | adyen/adyen-postman `default-branch@ecb2907`
+
+- Approved and processed work item `github-ab2d0a488d97d9590b4c` in full mode at exact SHA `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7`.
+- Read the complete 11-file, 851,723-byte snapshot plus packet, manifest, provider context, and collection scripts; parsed all 60 Checkout and 82 Terminal request examples.
+- Established [[source-github-adyen-postman]] and its commit-qualified changelog for Checkout v72, Recurring v68, BIN Lookup v54, Test Card v1, and Terminal API.
+- Created [[adyen-terminal-api]], corrected [[recurring-payments]] to distinguish preferred Checkout recurring endpoints from the legacy Recurring API, and updated the Adyen company and provider index.
+- Preserved API-example evidence as exact-commit request guidance rather than merchant eligibility, enablement, or current-production proof.
+
 ## [2026-08-09] ingest | Adyen/adyen-web `6.42.0`
 
 - Approved and processed work item `github-b307f27febbff4df8e80` in delta mode at exact SHA `1e157f8bc62b9519d68becedd9c1267180810e77`.

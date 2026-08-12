@@ -15,7 +15,7 @@ Generated: `2026-08-12`
 | adyen | `adyen/adyen-magento2` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
 | adyen | `adyen/adyen-node-api-library` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-02 | ingested | 2026-09-02 | `wait` |
 | adyen | `adyen/adyen-php-api-library` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
-| adyen | `adyen/adyen-postman` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-12 | awaiting_approval | 2026-09-12 | `review-full` |
+| adyen | `adyen/adyen-postman` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-12 | ingested | 2026-09-12 | `wait` |
 | adyen | `adyen/adyen-wechatpay-ios` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
 | adyen | `adyen/adyen-pos-mobile-ios-test` | tier3 | commit | on-demand | - | - | - | `disabled` |
 | adyen | `adyen/adyen-sdk-automation` | tier3 | commit | on-demand | - | - | - | `disabled` |
