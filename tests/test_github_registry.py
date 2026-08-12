@@ -83,7 +83,7 @@ APPENDIX_A_INVENTORY = (
     ('adyen/adyen-magento2', 'https://github.com/Adyen/adyen-magento2', 'commerce-plugin', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-pos-mobile-ios', 'https://github.com/Adyen/adyen-pos-mobile-ios', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-pos-mobile-ios-test', 'https://github.com/Adyen/adyen-pos-mobile-ios-test', 'test-tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
-    ('adyen/adyen-postman', 'https://github.com/Adyen/adyen-postman', 'api-collection', 'tier2', 'commit', False, 'default-branch', 'monthly'),
+    ('adyen/adyen-postman', 'https://github.com/Adyen/adyen-postman', 'api-collection', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('adyen/adyen-php-api-library', 'https://github.com/Adyen/adyen-php-api-library', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-sdk-automation', 'https://github.com/Adyen/adyen-sdk-automation', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('adyen/release-automation-action', 'https://github.com/Adyen/release-automation-action', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
@@ -1206,6 +1206,54 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(3500000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(700, capsule.max_packet_files)
         self.assertEqual(5000000, capsule.max_packet_utf8_bytes)
+
+    def test_adyen_postman_has_reviewed_checkout_terminal_policy(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["adyen/adyen-postman"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual("api-collection", repo.repo_type)
+        self.assertEqual("tier2", repo.priority)
+        self.assertEqual("monthly", repo.collection_frequency)
+        self.assertEqual("default-branch", repo.track)
+        self.assertEqual("commit", repo.version_strategy)
+        self.assertEqual((), repo.version_tracks)
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("adyen-postman-checkout-terminal", capsule.id)
+        self.assertEqual("commit-tree-v1", capsule.adapter)
+        self.assertEqual("adyen-postman", capsule.source_id)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(
+            (
+                "in-person-payments/ipp.json",
+                "postman/BinLookupService-v54.json",
+                "postman/CheckoutService-v72.json",
+                "postman/RecurringService-v68.json",
+                "postman/TestCardService-v1.json",
+            ),
+            capsule.default_required_roots,
+        )
+        self.assertEqual(
+            (
+                ".github/workflows/sync-collections.yml",
+                "README.md",
+                "adyendev-postman-release-notes.md",
+                "generateAll.sh",
+                "in-person-payments/readme.md",
+            ),
+            capsule.include_paths,
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual(600000, capsule.max_file_bytes)
+        self.assertEqual(10, capsule.max_capsule_files)
+        self.assertEqual(1100000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(30, capsule.max_packet_files)
+        self.assertEqual(3000000, capsule.max_packet_utf8_bytes)
 
     def test_native_sdks_use_tagged_tree_profiles(self):
         repos = {
