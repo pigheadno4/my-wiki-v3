@@ -20,6 +20,9 @@ class GitCommandError(RuntimeError):
     """A bounded, actionable failure from a Git subprocess."""
 
     def __init__(self, args: Sequence[str], returncode: int, stderr: Optional[str]):
+        self.args = tuple(args)
+        self.returncode = returncode
+        self.stderr = stderr
         command = "git " + " ".join(args)
         detail = (stderr or "").strip()
         if len(detail) > _ERROR_STDERR_LIMIT:
@@ -96,6 +99,17 @@ def fetch_required_refs(config: RepoConfig, clone_path: Path, selectors: Sequenc
         if refspec not in fetched:
             run_git(["fetch", "--depth=1", "--no-tags", "origin", refspec], clone_path)
             fetched.add(refspec)
+
+
+def fetch_commit_history(clone_path: Path, sha: str) -> None:
+    """Fetch the ancestry required to validate and compare an exact commit boundary."""
+    if run_git(["rev-parse", "--is-shallow-repository"], clone_path) != "true":
+        return
+    destination = "refs/github-collection/commits/" + sha.lower()
+    run_git(
+        ["fetch", "--unshallow", "--no-tags", "origin", sha + ":" + destination],
+        clone_path,
+    )
 
 
 def inspect_repository(config: RepoConfig, clone_path: Path) -> RepoInspection:

@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import github_work_items  # noqa: E402
+import collect_github_repos  # noqa: E402
 from collect_github_repos import (  # noqa: E402
     CollectionUsageError,
     _RetainedRelease,
@@ -1026,6 +1027,18 @@ class CollectGitHubReposTests(unittest.TestCase):
                 "@paypal/paypal-js@10.0.0",
             ]
         )
+        boundary = parser.parse_args(
+            [
+                "collect-ref",
+                "--repo",
+                "paypal/paypal-messages-ios",
+                "--from",
+                "a" * 40,
+                "--to",
+                "b" * 40,
+                "--dry-run",
+            ]
+        )
         approve = parser.parse_args(
             ["approve", "--item", "github-" + "a" * 20, "--mode", "delta"]
         )
@@ -1049,6 +1062,9 @@ class CollectGitHubReposTests(unittest.TestCase):
 
         self.assertEqual("backfill", collect.release_mode)
         self.assertEqual("@paypal/paypal-js@10.0.0", release.release)
+        self.assertEqual("a" * 40, boundary.from_sha)
+        self.assertEqual("b" * 40, boundary.to_sha)
+        self.assertTrue(boundary.dry_run)
         self.assertEqual("delta", approve.mode)
         self.assertEqual("complete-ingest", completed.command)
         self.assertEqual("grounding failed", failed.error)
@@ -1115,6 +1131,185 @@ class CollectGitHubReposTests(unittest.TestCase):
         )
         with self.assertRaises(CollectionUsageError):
             parse_package_release(arguments.from_release, arguments.to_release)
+
+class ExactRefBoundaryCollectionTests(unittest.TestCase):
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        base = Path(self.directory.name)
+        self.root = base / "wiki"
+        self.root.mkdir()
+        parent = base / "fixture"
+        parent.mkdir()
+        self.remote = create_git_repo(parent)
+        self.before_sha = commit_files(
+            self.remote,
+            {
+                "README.md": "# Messages\n\nUse the PayPal SDK.\n",
+                "CHANGELOG.md": "# Changes\n",
+                "LICENSE": "MIT\n",
+                "src/Message.swift": "public struct Message {}\n",
+            },
+            "released baseline",
+        )
+        run_git(self.remote, "branch", "unrelated", self.before_sha)
+        run_git(self.remote, "checkout", "unrelated")
+        self.unrelated_sha = commit_files(
+            self.remote,
+            {"README.md": "# Unrelated history\n"},
+            "unrelated branch",
+        )
+        run_git(self.remote, "checkout", "main")
+        self.after_sha = commit_files(
+            self.remote,
+            {
+                "README.md": (
+                    "# Messages\n\nBraintree account and SDK required; PPCP unsupported.\n"
+                )
+            },
+            "document Braintree requirement",
+        )
+        self.config = RepoConfig(
+            id="alpha/example",
+            company="alpha",
+            url="https://github.com/alpha/example",
+            enabled=True,
+            repo_type="messaging-sdk",
+            priority="tier2",
+            track="releases-and-default-branch",
+            version_strategy="semver-tags",
+            max_file_bytes=512000,
+            max_snapshot_bytes=2000000,
+            version_tracks=(
+                VersionTrack(
+                    "package:example-messages@1",
+                    "latest-stable",
+                    "all-stable",
+                ),
+            ),
+            capsules=(
+                CapsuleConfig(
+                    id="example-messages-public-source",
+                    adapter="tagged-tree-v1",
+                    focus_packages=("example-messages",),
+                    dependency_scope="configured-repository-paths",
+                    changed_path_policy="policy-bounded",
+                    default_required_roots=("src",),
+                    include_paths=("README.md", "CHANGELOG.md", "LICENSE"),
+                    excluded_categories=("tests", "fixtures"),
+                    max_capsule_files=20,
+                    max_capsule_utf8_bytes=200000,
+                    max_packet_files=30,
+                    max_packet_utf8_bytes=300000,
+                ),
+            ),
+        )
+
+    def collect(self, **overrides):
+        values = {
+            "clone_source": self.remote,
+            "collection_date": "2026-08-13",
+        }
+        values.update(overrides)
+        return collect_github_repos.collect_ref_boundary(
+            self.root,
+            self.config,
+            self.before_sha,
+            self.after_sha,
+            **values,
+        )
+
+    def test_collects_exact_boundary_without_release_records(self):
+        result = self.collect()
+        items = load_work_items(self.root / "tracking/github/work-items.json")
+
+        self.assertEqual("awaiting_approval", result.state)
+        self.assertEqual(("default-branch@" + self.after_sha[:7],), result.ref_ids)
+        self.assertEqual(2, len(result.snapshot_paths))
+        self.assertEqual(1, len(items))
+        self.assertEqual((), items[0].package_changes)
+        self.assertEqual(self.before_sha, items[0].ref_changes[0].from_sha)
+        self.assertEqual(self.after_sha, items[0].ref_changes[0].to_sha)
+        self.assertTrue(items[0].ref_changes[0].comparison_manifest)
+        self.assertFalse(
+            (self.root / "raw/github/alpha/example/releases").exists()
+        )
+        packet = json.loads(
+            (self.root / items[0].ingest_packet).read_text(encoding="utf-8")
+        )
+        self.assertEqual([], packet["evidence_gaps"])
+        self.assertEqual([], packet["unclassified_changes"])
+
+    def test_rerun_reuses_snapshots_and_work_item(self):
+        first = self.collect()
+        snapshot_root = self.root / "raw/github/alpha/example/snapshots"
+        manifests_before = tuple(sorted(snapshot_root.glob("*/manifest.json")))
+
+        second = self.collect()
+        manifests_after = tuple(sorted(snapshot_root.glob("*/manifest.json")))
+
+        self.assertEqual("awaiting_approval", first.state)
+        self.assertEqual("unchanged", second.state)
+        self.assertEqual(manifests_before, manifests_after)
+        self.assertEqual(
+            1,
+            len(load_work_items(self.root / "tracking/github/work-items.json")),
+        )
+
+    def test_dry_run_and_disabled_policy_publish_nothing(self):
+        dry = self.collect(dry_run=True)
+        self.assertEqual("discovered", dry.state)
+        self.assertFalse((self.root / "raw").exists())
+        self.assertFalse((self.root / "tracking").exists())
+
+        disabled = replace(self.config, enabled=False)
+        allowed = collect_github_repos.collect_ref_boundary(
+            self.root,
+            disabled,
+            self.before_sha,
+            self.after_sha,
+            dry_run=True,
+            clone_source=self.remote,
+            collection_date="2026-08-13",
+        )
+        self.assertEqual("discovered", allowed.state)
+        with self.assertRaisesRegex(CollectionUsageError, "disabled"):
+            collect_github_repos.collect_ref_boundary(
+                self.root,
+                disabled,
+                self.before_sha,
+                self.after_sha,
+                clone_source=self.remote,
+                collection_date="2026-08-13",
+            )
+
+    def test_rejects_invalid_identical_and_non_ancestor_boundaries(self):
+        with self.assertRaisesRegex(CollectionUsageError, "full lowercase Git SHA"):
+            collect_github_repos.collect_ref_boundary(
+                self.root,
+                self.config,
+                self.before_sha[:7],
+                self.after_sha,
+                clone_source=self.remote,
+            )
+        with self.assertRaisesRegex(CollectionUsageError, "must differ"):
+            collect_github_repos.collect_ref_boundary(
+                self.root,
+                self.config,
+                self.before_sha,
+                self.before_sha,
+                clone_source=self.remote,
+            )
+        with self.assertRaisesRegex(CollectionUsageError, "must be an ancestor"):
+            collect_github_repos.collect_ref_boundary(
+                self.root,
+                self.config,
+                self.unrelated_sha,
+                self.after_sha,
+                clone_source=self.remote,
+                max_attempts=1,
+            )
+
 
 class CommitCollectGitHubReposTests(unittest.TestCase):
     def setUp(self):

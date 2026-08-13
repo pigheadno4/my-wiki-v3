@@ -6,12 +6,17 @@ from datetime import date
 import hashlib
 import json
 from pathlib import Path
+import re
 import tempfile
 from typing import Callable, Dict, List, Optional, Sequence, Tuple, Union
 from urllib.error import URLError
 
 from github_canonical import safe_policy_path
-from github_capsule_policy import COMMIT_TREE_ADAPTER, TAGGED_TREE_ADAPTER
+from github_capsule_policy import (
+    COMMIT_TREE_ADAPTER,
+    TAGGED_TREE_ADAPTER,
+    CapsuleConfig,
+)
 from github_collection_index import (
     checked_state_from_document,
     load_collection_index,
@@ -24,6 +29,7 @@ from github_capsule_selection import (
 from github_git import (
     GitCommandError,
     clone_repository,
+    fetch_commit_history,
     fetch_required_refs,
     inspect_repository,
     run_git,
@@ -95,6 +101,7 @@ RETRYABLE_ERRORS = (
     OSError,
 )
 PUBLIC_EXPORT_FIELDS = ("main", "module", "types", "typings", "exports")
+_FULL_SHA = re.compile(r"[0-9a-f]{40}")
 
 
 class CollectionUsageError(ValueError):
@@ -249,6 +256,361 @@ def collect_one(
             collected,
         )
     return result
+
+
+def collect_ref_boundary(
+    root: Path,
+    config: RepoConfig,
+    from_sha: str,
+    to_sha: str,
+    dry_run: bool = False,
+    clone_source: Optional[Path] = None,
+    collection_date: Optional[str] = None,
+    max_attempts: int = 3,
+) -> CommitCollectionResult:
+    """Collect one explicit ancestor-to-descendant repository boundary."""
+    from_sha = _require_boundary_sha(from_sha, "from SHA")
+    to_sha = _require_boundary_sha(to_sha, "to SHA")
+    if from_sha == to_sha:
+        raise CollectionUsageError("from SHA and to SHA must differ")
+    if not isinstance(max_attempts, int) or not 1 <= max_attempts <= 3:
+        raise CollectionUsageError("max_attempts must be between one and three")
+    if not config.enabled and not dry_run:
+        raise CollectionUsageError(config.id + ": repository is disabled")
+    readiness_config = replace(config, enabled=True) if not config.enabled else config
+    readiness_errors = validate_enabled_policy(readiness_config)
+    if readiness_errors:
+        raise CollectionUsageError(config.id + ": " + readiness_errors[0])
+    capsule = _one_capsule(config)
+    if capsule.adapter not in (COMMIT_TREE_ADAPTER, TAGGED_TREE_ADAPTER):
+        raise CollectionUsageError(
+            "exact-ref collection requires commit-tree-v1 or tagged-tree-v1"
+        )
+
+    root = Path(root).resolve()
+    collected = collection_date or date.today().isoformat()
+    context: Dict[str, object] = {}
+    last_error: Optional[Exception] = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            result = _collect_ref_boundary_attempt(
+                root,
+                config,
+                from_sha,
+                to_sha,
+                dry_run,
+                clone_source,
+                collected,
+                context,
+            )
+        except RETRYABLE_ERRORS as error:
+            last_error = error
+            if attempt < max_attempts:
+                continue
+            break
+        except CollectionUsageError:
+            raise
+        except Exception as error:
+            last_error = error
+            return _record_failed_commit_collection(
+                root,
+                config,
+                context,
+                error,
+                collected,
+                attempt,
+                manual_review=True,
+                dry_run=dry_run,
+            )
+        else:
+            if not dry_run:
+                regenerate_status(root)
+                if (root / "tracking/github/repo-registry.toml").exists():
+                    regenerate_collection_index(root, generated_date=collected)
+            return result
+
+    if last_error is None:
+        raise RuntimeError("exact-ref collection attempt ended without a result")
+    result = _record_failed_commit_collection(
+        root,
+        config,
+        context,
+        last_error,
+        collected,
+        max_attempts,
+        manual_review=False,
+        dry_run=dry_run,
+    )
+    if not dry_run and (root / "tracking/github/repo-registry.toml").exists():
+        regenerate_collection_index(root, generated_date=collected)
+    return result
+
+
+def _collect_ref_boundary_attempt(
+    root: Path,
+    config: RepoConfig,
+    from_sha: str,
+    to_sha: str,
+    dry_run: bool,
+    clone_source: Optional[Path],
+    collected_date: str,
+    context: Dict[str, object],
+) -> CommitCollectionResult:
+    effective = replace(config, url=str(clone_source)) if clone_source is not None else config
+    existing_items = load_work_items(root / WORK_ITEMS_PATH)
+    existing = next(
+        (
+            item
+            for item in existing_items
+            if item.repo_id == config.id
+            and item.sha == to_sha
+            and any(
+                change.from_sha == from_sha and change.to_sha == to_sha
+                for change in item.ref_changes
+            )
+            and item.state
+            not in ("discovered", "collection_failed", "needs_manual_review")
+        ),
+        None,
+    )
+    if existing is not None:
+        return CommitCollectionResult(
+            config.id,
+            "unchanged",
+            ("default-branch@" + to_sha[:7],),
+            (),
+            (),
+            (),
+            CommitInventory(0, 0, 0, 0),
+        )
+
+    with tempfile.TemporaryDirectory(prefix="wiki-github-ref-") as temporary:
+        clone_path = Path(temporary) / "repository"
+        clone_repository(effective, clone_path)
+        fetch_required_refs(
+            effective,
+            clone_path,
+            ("commit:" + from_sha, "commit:" + to_sha),
+        )
+        fetch_commit_history(clone_path, to_sha)
+        try:
+            run_git(["merge-base", "--is-ancestor", from_sha, to_sha], clone_path)
+        except GitCommandError as error:
+            if error.returncode == 1:
+                raise CollectionUsageError(
+                    "from SHA must be an ancestor of to SHA"
+                ) from error
+            raise
+
+        default_branch = run_git(["symbolic-ref", "--short", "HEAD"], clone_path)
+        ref_id = "default-branch@" + to_sha[:7]
+        context["commit_ref"] = (default_branch, to_sha, ref_id)
+        changes = read_upstream_changes(clone_path, from_sha, to_sha)
+        changed_paths = tuple(
+            sorted(
+                {
+                    path
+                    for change in changes
+                    for path in (change.old_path, change.new_path)
+                    if path
+                }
+            )
+        )
+        mode, reasons = recommend_ref_ingest_mode(
+            RefChangeSignals(from_sha, to_sha, changed_paths)
+        )
+        preliminary_change = RefChange(
+            "default-branch",
+            default_branch,
+            from_sha,
+            to_sha,
+            ref_id,
+            "",
+            mode,
+            reasons,
+        )
+        context["ref_change"] = preliminary_change
+
+        capsule = _one_capsule(config)
+        before_tree = GitTree(clone_path, from_sha, config.max_file_bytes)
+        after_tree = GitTree(clone_path, to_sha, config.max_file_bytes)
+        before_changed = tuple(
+            sorted({change.old_path for change in changes if change.old_path})
+        )
+        after_changed = tuple(
+            sorted({change.new_path for change in changes if change.new_path})
+        )
+        before_resolution = resolve_capsule(
+            before_tree,
+            capsule,
+            config.secret_allowlist,
+            changed_paths=before_changed,
+            versions=_ref_capsule_versions(capsule, from_sha),
+        )
+        after_resolution = resolve_capsule(
+            after_tree,
+            capsule,
+            config.secret_allowlist,
+            changed_paths=after_changed,
+            versions=_ref_capsule_versions(capsule, to_sha),
+        )
+        inventory = _commit_inventory(after_tree, after_resolution)
+        context["inventory"] = inventory
+        if dry_run:
+            return CommitCollectionResult(
+                config.id,
+                "discovered",
+                (ref_id,),
+                (),
+                (),
+                (),
+                inventory,
+            )
+
+        before_snapshot = publish_source_snapshot(
+            root,
+            config,
+            before_tree,
+            before_resolution,
+            collected_date,
+            ("default-branch@" + from_sha[:7],),
+        )
+        after_snapshot = publish_source_snapshot(
+            root,
+            config,
+            after_tree,
+            after_resolution,
+            collected_date,
+            (ref_id,),
+        )
+        prior_manifest = _relative(root, before_snapshot.manifest_path)
+        snapshot_manifest = _relative(root, after_snapshot.manifest_path)
+        context["prior_ref"] = _boundary_prior_item(
+            config.id, from_sha, collected_date, prior_manifest
+        )
+        context["snapshot_manifest"] = snapshot_manifest
+
+        before_paths = tuple(item.path for item in before_resolution.files)
+        after_paths = tuple(item.path for item in after_resolution.files)
+        comparison = write_ref_comparison(
+            root,
+            config,
+            clone_path,
+            default_branch,
+            from_sha,
+            before_paths,
+            to_sha,
+            after_paths,
+        )
+        comparison_manifest = _relative(root, comparison.metadata_path)
+        selected_changes = comparison.upstream_changes
+        excluded_paths = {
+            path for path, _ in before_resolution.excluded
+        } | {path for path, _ in after_resolution.excluded}
+        excluded_changes = tuple(
+            change
+            for change in changes
+            if change not in selected_changes
+            and any(
+                path in excluded_paths
+                for path in (change.old_path, change.new_path)
+                if path
+            )
+        )
+        change = replace(
+            preliminary_change,
+            comparison_manifest=comparison_manifest,
+        )
+        work_item = build_ref_work_item(
+            config.id,
+            to_sha,
+            collected_date,
+            (change,),
+            snapshot_manifest,
+        )
+        packet = build_ref_ingest_packet(
+            root,
+            config,
+            work_item.work_item_id,
+            snapshot_manifest,
+            RefPacketInput(
+                "default-branch",
+                default_branch,
+                from_sha,
+                to_sha,
+                comparison_manifest,
+                prior_manifest,
+                tuple(selected_changes),
+                tuple(excluded_changes),
+            ),
+            "queued",
+        )
+        if packet.document["evidence_gaps"] or packet.document["unclassified_changes"]:
+            raise CollectionUsageError("exact-ref packet requires manual review")
+        recommendation = packet.document["recommendation"]
+        change = replace(
+            change,
+            recommended_mode=str(recommendation["mode"]),
+            reasons=tuple(str(reason) for reason in recommendation["reasons"]),
+        )
+        work_item = build_ref_work_item(
+            config.id,
+            to_sha,
+            collected_date,
+            (change,),
+            snapshot_manifest,
+        )
+        context["ref_change"] = change
+        context["work_item"] = work_item
+        packet_path = publish_queued_packet(root, config, packet)
+        work_item = replace(work_item, ingest_packet=_relative(root, packet_path))
+        finalize_collected_work_item(root / WORK_ITEMS_PATH, work_item)
+        return CommitCollectionResult(
+            config.id,
+            "awaiting_approval",
+            (ref_id,),
+            (prior_manifest, snapshot_manifest),
+            (work_item.work_item_id,),
+            (),
+            inventory,
+        )
+
+
+def _require_boundary_sha(value: str, label: str) -> str:
+    if not isinstance(value, str) or _FULL_SHA.fullmatch(value) is None:
+        raise CollectionUsageError(label + " must be a full lowercase Git SHA")
+    return value
+
+
+def _ref_capsule_versions(capsule: CapsuleConfig, sha: str):
+    if capsule.adapter == TAGGED_TREE_ADAPTER:
+        return {capsule.focus_packages[0]: "unreleased-" + sha[:7]}
+    return None
+
+
+def _boundary_prior_item(
+    repo_id: str,
+    sha: str,
+    collection_date: str,
+    snapshot_manifest: str,
+) -> WorkItem:
+    change = RefChange(
+        "default-branch",
+        "boundary-base",
+        "",
+        sha,
+        "default-branch@" + sha[:7],
+        "",
+        "full",
+        ("initial-commit-baseline",),
+    )
+    return build_ref_work_item(
+        repo_id,
+        sha,
+        collection_date,
+        (change,),
+        snapshot_manifest,
+    )
 
 
 def _collect_attempt(
@@ -1817,6 +2179,12 @@ def _parser() -> argparse.ArgumentParser:
     selection.add_argument("--release")
     collect.add_argument("--dry-run", action="store_true")
 
+    collect_ref = commands.add_parser("collect-ref")
+    collect_ref.add_argument("--repo", required=True)
+    collect_ref.add_argument("--from", dest="from_sha", required=True)
+    collect_ref.add_argument("--to", dest="to_sha", required=True)
+    collect_ref.add_argument("--dry-run", action="store_true")
+
     commands.add_parser("status")
 
     compare = commands.add_parser("compare")
@@ -1915,6 +2283,16 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             )
             print(json.dumps(asdict(record), sort_keys=True, default=str))
             return 0
+        if arguments.command == "collect-ref":
+            result = collect_ref_boundary(
+                root,
+                config,
+                arguments.from_sha,
+                arguments.to_sha,
+                dry_run=arguments.dry_run,
+            )
+            print(json.dumps(_collection_result_payload(result), sort_keys=True))
+            return 1 if result.state in ("collection_failed", "needs_manual_review") else 0
         result = collect_one(
             root,
             config,
@@ -1936,6 +2314,7 @@ __all__ = [
     "CollectionUsageError",
     "approve_one",
     "collect_one",
+    "collect_ref_boundary",
     "complete_ingest",
     "compare_one",
     "main",

@@ -21,6 +21,7 @@ from github_canonical import canonical_json_bytes  # noqa: E402
 from github_registry import RepoConfig, load_registry  # noqa: E402
 from github_work_items import (  # noqa: E402
     PackageChange,
+    RefChange,
     WorkItem,
 )
 
@@ -69,6 +70,45 @@ def _item(repo_id, state, mode="delta", *, day="2026-08-01"):
 
 
 class CollectionIndexTests(unittest.TestCase):
+    def test_ingested_ref_boundary_does_not_replace_last_package_release(self):
+        release = replace(
+            _item("alpha/sdk", "ingested", "full", day="2026-08-01"),
+            work_item_id="github-release0000000000000",
+        )
+        ref_change = RefChange(
+            "default-branch",
+            "main",
+            "b" * 40,
+            "c" * 40,
+            "default-branch@ccccccc",
+            "tracking/ref-comparison.json",
+            "delta",
+            ("contained-default-branch-change",),
+        )
+        boundary = WorkItem(
+            "github-boundary0000000000",
+            "alpha/sdk",
+            "c" * 40,
+            "2026-08-02",
+            (),
+            "raw/ref-snapshot.json",
+            "delta",
+            approved_mode="delta",
+            state="ingested",
+            ref_changes=(ref_change,),
+        )
+
+        document = build_collection_index(
+            (_repo("alpha/sdk"),),
+            (release, boundary),
+            {},
+            date(2026, 8, 3),
+        )
+        row = document["repositories"][0]
+
+        self.assertEqual("example-sdk@1.1.0", row["last_accepted_ref"])
+        self.assertEqual("default-branch@ccccccc", row["latest_discovered_ref"])
+
     def test_same_day_ingested_baseline_does_not_hide_pending_delta(self):
         baseline = replace(
             _item("alpha/sdk", "ingested", "full"),

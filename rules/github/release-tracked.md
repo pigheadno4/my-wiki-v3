@@ -33,9 +33,12 @@ Use:
 ```bash
 python3 scripts/collect_github_repos.py collect --repo <owner/repo> --release <package@version>
 python3 scripts/collect_github_repos.py compare --repo <owner/repo> --from <package@version> --to <package@version>
+python3 scripts/collect_github_repos.py collect-ref --repo <owner/repo> --from <full-sha> --to <full-sha>
 ```
 
 `compare` writes an ad hoc review packet beside the comparison. It does not create or advance a work item.
+
+`collect-ref` is the exception for a reviewed untagged boundary. It records default-branch evidence independently of package release history. The generated index may show this boundary as current queue activity, but an accepted ref boundary must not replace the repository's last accepted package release identity.
 
 ## Collection procedure
 
