@@ -43,6 +43,14 @@ Card tokenization selects GraphQL when the remote Braintree configuration enable
 
 The 3D Secure module performs a v2 lookup and optional Cardinal challenge around a card nonce. It requires the merchant configuration JWT and a request delegate; 3D Secure v1 is explicitly unsupported.
 
+## Prebuilt iOS Drop-in
+
+`BraintreeDropIn@9.14.0` is an independently versioned UIKit payment-selection package, not part of the `braintree-ios@7.9.0` release. It supports iOS 12+, Xcode 15+, and Swift 5.9 and requires the older `braintree_ios` 5.27 dependency line. Do not apply modular v7 behavior to this Drop-in baseline without a compatible release.
+
+Drop-in can present cards, PayPal, Venmo, Apple Pay, saved methods, vault management, and card 3D Secure. Most selections return a nonce for merchant-server processing. Apple Pay is an exception: selection returns only the method type, after which the merchant presents the Apple Pay sheet and tokenizes the payment separately. Venmo is listed only when remote configuration enables it and the Venmo app is available for app switch; the default generated Venmo request sets `vault = true`.
+
+The repository includes SwiftUI wrapper examples but does not officially support SwiftUI. A future cross-platform mobile Drop-in comparison should combine this source with the independently ingested Android Drop-in evidence.
+
 ## Version Boundary
 
 The v7 migration moves request properties into initializers, changes feature clients to direct authorization initializers, renames Local Payment and 3D Secure start methods, requires universal-link handling for Venmo, and removes PayPal Native Checkout. Exact release `7.9.0` only aligns the BraintreeUIComponents minimum deployment target with iOS 16; broader v7 behavior comes from the cumulative exact-SHA baseline.
@@ -51,6 +59,8 @@ The v7 migration moves request properties into initializers, changes feature cli
 
 - [[source-github-braintree-ios]] - cumulative exact-SHA implementation evidence
 - [[changelog-github-braintree-ios]] - package-qualified release ledger
+- [[source-github-braintree-ios-drop-in]] - independently versioned prebuilt iOS Drop-in baseline
+- [[changelog-github-braintree-ios-drop-in]] - package-qualified iOS Drop-in release ledger
 - [[braintree-android-sdk]] - independently versioned native Android SDK
 - [[braintree-web-sdk]] - independently versioned browser SDK
 - [[paypal-braintree-integration]] - Braintree PayPal processing boundary

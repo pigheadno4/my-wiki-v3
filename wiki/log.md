@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-13] ingest | GitHub braintree/braintree-ios-drop-in `BraintreeDropIn@9.14.0`
+
+- Full-ingested work item `github-92242b9e450d596215e2` at exact SHA `d951d104ac960188824bda191be2f57c57351a31` after serial review and hash audit of the complete 203-file retained capsule.
+- Added independently versioned cumulative and package-qualified sources for the prebuilt iOS payment-selection UI, nonce handoff, cards, PayPal, Venmo, Apple Pay, vaulting, 3DS, and device data.
+- Preserved its `braintree_ios` 5.27.0 dependency boundary instead of attributing separately collected `braintree-ios@7.9.0` modular behavior to Drop-in.
+
 ## [2026-08-13] ingest | GitHub paypal/paypal-messages-android `develop@0424354`
 
 - Delta-ingested work item `github-fed285eccd42cc9507d5` across exact SHAs `1d2238c` to `0424354`; only `README.md` changed.

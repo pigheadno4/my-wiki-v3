@@ -542,10 +542,10 @@
 - Repository: `braintree/braintree-ios-drop-in`
 - SHA: `d951d104ac960188824bda191be2f57c57351a31`
 - Collection date: `2026-08-13`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None
