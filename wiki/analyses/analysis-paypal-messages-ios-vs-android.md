@@ -2,7 +2,7 @@
 title: "PayPal Messages: iOS vs Android"
 type: analysis
 date_created: 2026-08-12
-date_updated: 2026-08-12
+date_updated: 2026-08-13
 tags: [paypal, pay-later, messaging, ios, android, mobile-sdk, github-repository]
 ---
 
@@ -12,6 +12,8 @@ The PayPal Messages iOS and Android repositories implement the same product role
 
 At the retained baselines, iOS is the stronger integration candidate. Android `1.3.0` should remain a sandbox or controlled-pilot option because its README says the library is still under development and the exact source contains callback, configuration, and shared-state risks. This is a version-qualified repository assessment, not a claim about a later upstream release.
 
+Both repositories now have untagged `develop` README evidence stating that native Messages is Braintree-only: the merchant needs a Braintree account and Braintree SDK integration, and PPCP SDK integrations are unsupported. This policy evidence does not change the shared boundary that Messages presents promotions rather than executing checkout.
+
 ## Evidence Baselines
 
 | Platform | Package baseline | Exact SHA | Release date | Evidence status |
@@ -20,6 +22,8 @@ At the retained baselines, iOS is the stronger integration candidate. Android `1
 | Android | `paypal-messages-android@1.3.0` | `f1aa138cc6822cc11d68ac4bfdee3cf183aedbc2` | 2026-03-25 | Latest ingested; repository still recommends sandbox use |
 
 Both releases add rendered-language analytics and `%bold%` message rendering. The different package versions do not imply that Android has a newer product contract than iOS; the repositories are independently versioned.
+
+The policy histories also differ. iOS `fdd1868` is directly based on its released `1.2.0` tree. Android `0424354` is directly based on historical SHA `1d2238c`, not released `1.3.0` SHA `f1aa138`. Both comparisons change only `README.md`, so neither establishes a code-level compatibility change or a package version that enforces the policy.
 
 ## Shared Product Contract
 
@@ -79,8 +83,8 @@ These findings identify code-level risk; they are not evidence that every mercha
 ## Merchant Integration Recommendation
 
 1. Treat Messages as a promotional surface, never as the payment integration.
-2. Confirm merchant approval, supported market, and offer eligibility outside these repositories.
-3. Pair the message with a separate PayPal checkout SDK or approved web checkout flow.
+2. Treat a Braintree account and Braintree SDK integration as the documented native Messages merchant prerequisite; PPCP SDK integrations are documented as unsupported.
+3. Confirm merchant approval, supported market, buyer eligibility, and the separately supported checkout flow outside these repositories.
 4. On iOS, run application-level QA around config replacement, modal events, caching, analytics, accessibility, and privacy disclosure before rollout.
 5. On Android `1.3.0`, keep usage in sandbox or a controlled pilot until official availability and the retained callback/state risks are resolved or disproved for the chosen artifact.
 6. For cross-platform parity, define the common business contract centrally but gate platform rollout independently.
@@ -92,6 +96,7 @@ For a question about current behavior, first search the cumulative source page a
 ## Evidence Boundary
 
 - This analysis compares the two exact managed snapshots above; it does not claim they remain latest upstream.
+- The Braintree-only conclusions come from separate untagged README snapshots. They are documentation-policy evidence, not additions to the managed package baselines.
 - Repository source establishes implementation behavior, not merchant enablement, buyer eligibility, or general availability.
 - Android publication coordinates and licensing remain unresolved because retained release, Gradle, POM, and license metadata conflict.
 - Tests were excluded from the managed capsules by collection policy, so source review does not replace application or artifact testing.
@@ -109,6 +114,8 @@ For a question about current behavior, first search the cumulative source page a
 ## Key Raw Evidence
 
 - `raw/github/paypal/paypal-messages-ios/snapshots/2026-08-12-432d6b8/files/Sources/PayPalMessages/PayPalMessageViewModel.swift:174` - iOS config replacement fields
+- `raw/github/paypal/paypal-messages-ios/snapshots/2026-08-13-fdd1868/files/README.md:5` - iOS Braintree-only policy
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/files/README.md:5` - Android Braintree-only policy
 - `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/README.md:15` - Android development and sandbox boundary
 - `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/DEVELOPMENT.md:37` - Android XML/Jetpack guidance
 - `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/PayPalMessageView.kt:102` - Android config replacement fields

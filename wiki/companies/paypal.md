@@ -35,7 +35,7 @@ The separate `@paypal/sdk-logos` package provides inline and external-image rend
 
 The independent `paypal-messages-ios@1.2.0` package renders Pay Later and PayPal Credit promotion for UIKit and SwiftUI. It uses merchant and transaction context to fetch a message and web-backed learn-more/application modal, but does not execute checkout payments. Buyer-country override requires PayPal approval, and public offer enums are not eligibility evidence. A later untagged `develop` README commit, `fdd1868`, states that native iOS Messages requires a Braintree account and Braintree SDK integration and does not support PPCP SDK integrations; no source code changed and no package release contains this evidence yet.
 
-The Android counterpart, `paypal-messages-android@1.3.0`, provides a native message view and a Compose wrapper, but its README still recommends sandbox use and its development guide says the Jetpack view does not currently work. The exact source also preserves modal callback, environment-update, and shared-state risks. GitHub, Gradle, POM, and license metadata conflict, so package installation and licensing require live verification.
+The Android counterpart, `paypal-messages-android@1.3.0`, provides a native message view and a Compose wrapper, but its README still recommends sandbox use and its development guide says the Jetpack view does not currently work. The exact source also preserves modal callback, environment-update, and shared-state risks. A parallel untagged `develop` README commit, `0424354`, requires a Braintree account and Braintree SDK integration and excludes PPCP SDK integrations; it descends from historical SHA `1d2238c`, not the `1.3.0` release tree, and changes no implementation file. GitHub, Gradle, POM, and license metadata conflict, so package installation and licensing require live verification.
 
 ### Braintree PayPal v6
 
@@ -327,8 +327,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-save-cards-ios-sdk]] — Save Cards iOS SDK: SwiftUI Toggle, `CardDelegate`, US-only availability (contradicts Android/JS SDK 35-country support)
 - [[source-paypal-save-paypal-android-sdk]] — Save PayPal Wallet Android SDK: `PayPalWebCheckoutClient`, deep link scheme, `vault.id` for returning payers
 - [[source-paypal-save-cards-android-sdk]] — Save Cards Android SDK: Compose checkbox, `customer.id` in Create Order for returning payers, `ApproveOrderListener` 3DS callbacks, RTAU
-- [[source-github-paypal-messages-android]] — GitHub paypal-messages-android `1.3.0`: view/configuration lifecycle, modal callbacks, caching, analytics, availability warning, and source risks
-- [[changelog-github-paypal-messages-android]] — managed `1.3.0` baseline plus cumulative earlier stable context and metadata conflicts
+- [[source-github-paypal-messages-android]] — GitHub paypal-messages-android: released `1.3.0` behavior plus parallel untagged Braintree-only policy
+- [[changelog-github-paypal-messages-android]] — managed `1.3.0`, cumulative stable context, metadata conflicts, and untagged policy boundary
 - [[source-github-paypal-messages-ios]] — GitHub paypal-messages-ios `1.2.0`: PayPalMessageView/Delegate API, SwiftUI support, caching, modal, and analytics
 - [[changelog-github-paypal-messages-ios]] — managed `1.2.0` baseline plus cumulative `1.0.0` and `1.1.0` release context
 - [[source-paypal-subscriptions-overview]] — Subscriptions: 6-step flow, REST API vs dashboard, 12 customization capabilities, 4 pricing models (fixed/quantity/volume/tiered); volume vs tiered distinction; single currency per plan

@@ -6,6 +6,13 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-13] ingest | paypal/paypal-messages-android `develop@0424354`
+
+- Delta-ingested work item `github-fed285eccd42cc9507d5` from historical SHA `1d2238c` to untagged `develop` SHA `0424354`.
+- Verified that `README.md` is the only changed path and that this ref line is separate from released `paypal-messages-android@1.3.0` SHA `f1aa138`.
+- Recorded the Braintree-account and Braintree-SDK requirements and the exclusion of PPCP SDK integrations without claiming a package release or code-level enforcement.
+- Updated [[source-github-paypal-messages-android]], [[changelog-github-paypal-messages-android]], [[paypal-pay-later]], [[paypal-android-sdk]], and [[analysis-paypal-messages-ios-vs-android]]. No source count changed.
+
 ## [2026-08-13] ingest | paypal/paypal-messages-ios `develop@fdd1868`
 
 - Delta-ingested work item `github-63997abe9a7d60c5179b` from released `1.2.0` SHA `432d6b8` to untagged `develop` SHA `fdd1868`.

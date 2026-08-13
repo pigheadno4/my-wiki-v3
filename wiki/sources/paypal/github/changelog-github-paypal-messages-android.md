@@ -2,9 +2,11 @@
 title: "GitHub changelog: paypal/paypal-messages-android"
 type: source
 date_ingested: 2026-08-12
-date_updated: 2026-08-12
+date_updated: 2026-08-13
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/manifest.json"
+  - "github/paypal/paypal-messages-android/snapshots/2026-08-13-1d2238c/manifest.json"
   - "github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/manifest.json"
 tags: [paypal, android, kotlin, messaging, pay-later, changelog, github-repository]
 ---
@@ -12,6 +14,18 @@ tags: [paypal, android, kotlin, messaging, pay-later, changelog, github-reposito
 ## Overview
 
 Package-qualified release ledger for `paypal/paypal-messages-android`. Durable integration and architecture guidance belongs in [[source-github-paypal-messages-android]].
+
+## Untagged `default-branch@0424354` (`develop`) - Braintree Policy Boundary (2026-05-29)
+
+| Ref | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `develop` | historical `1d2238c` tree | untagged documentation commit | `0424354a5fa0ab697275186fe101d105838ac03e` | Delta |
+
+The only changed path is `README.md`. It adds that the component is intended for the Braintree SDK only, requires both a Braintree account and Braintree SDK integration, and does not support PPCP SDK integrations.
+
+This ref line is not based on the separately released `paypal-messages-android@1.3.0` SHA `f1aa138`. It is documentation-policy evidence, not a semantic release, a `1.3.0` change, or proof of code-level compatibility enforcement.
+
+Evidence: `raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/manifest.json` and `tracking/github/repos/paypal/paypal-messages-android/comparisons/default-branch/1d2238c--0424354/comparison.json`.
 
 ## `paypal-messages-android@1.3.0` - Change Set `f1aa138` (2026-03-25)
 
@@ -47,6 +61,11 @@ These conflicts are preserved for future release comparisons. They are not resol
 
 ## Raw Sources
 
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/manifest.json`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/files/README.md`
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-1d2238c/manifest.json`
+- `tracking/github/repos/paypal/paypal-messages-android/comparisons/default-branch/1d2238c--0424354/comparison.json`
+- `tracking/github/repos/paypal/paypal-messages-android/comparisons/default-branch/1d2238c--0424354/diff.patch`
 - `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/manifest.json`
 - `raw/github/paypal/paypal-messages-android/releases/paypal-messages-android/1.3.0/2026-08-12/manifest.json`
 - `raw/github/paypal/paypal-messages-android/releases/paypal-messages-android/1.3.0/2026-08-12/release-notes.md`

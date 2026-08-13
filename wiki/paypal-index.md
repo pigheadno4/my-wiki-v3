@@ -122,8 +122,8 @@ Operations history: [[paypal-log]]
 - [[source-paypal-pay-later]] — Pay Later by country (US/AU/CA/FR/DE): product tables, purchase ranges, eligibility; CA bilingual; DE Pay in 30 unique (webpage, 2026-04-13)
 - [[source-github-paypal-messages-ios]] — GitHub paypal-messages-ios: released `1.2.0` behavior plus untagged `fdd1868` Braintree-only documentation policy (github-repo, 2026-08-13)
 - [[changelog-github-paypal-messages-ios]] — iOS Messages ledger: managed `1.2.0`, cumulative earlier context, and untagged `develop@fdd1868` policy boundary (github-repo, 2026-08-13)
-- [[source-github-paypal-messages-android]] — GitHub paypal-messages-android `1.3.0`: native view/configuration, modal callbacks, cache/analytics, sandbox warning, Compose limitation, and exact-SHA risks (github-repo, 2026-08-12)
-- [[changelog-github-paypal-messages-android]] — package-qualified Android Messages ledger: managed `1.3.0`, cumulative earlier stable context, and metadata conflicts (github-repo, 2026-08-12)
+- [[source-github-paypal-messages-android]] — GitHub paypal-messages-android: released `1.3.0` behavior plus parallel untagged `0424354` Braintree-only policy (github-repo, 2026-08-13)
+- [[changelog-github-paypal-messages-android]] — Android Messages ledger: managed `1.3.0`, cumulative context, and untagged `develop@0424354` policy boundary (github-repo, 2026-08-13)
 - [[source-paypal-pay-with-venmo]] — Pay with Venmo: mobile app-switch + desktop QR code flows, US/USD only, supported features table; enable-funding=venmo required (webpage, 2026-04-14)
 - [[source-paypal-save-payment-methods]] — Save payment methods overview + JS SDK PayPal/Venmo vault + purchase-later overview: 4 paths (JS SDK/Tokens API/Android/iOS), no Venmo for purchase-later (webpage, 2026-04-14)
 - [[source-paypal-save-applepay-js-sdk]] — Save Apple Pay JS SDK: vault flow, APPROVED vs VAULTED status, VAULT.PAYMENT-TOKEN.CREATED webhook, merchant-initiated recurring, go-live onboarding (webpage, 2026-04-14)
@@ -217,7 +217,7 @@ Operations history: [[paypal-log]]
 
 ## Analyses
 
-- [[analysis-paypal-messages-ios-vs-android]] — PayPal Messages iOS `1.2.0` vs Android `1.3.0`: shared product boundary, platform differences, exact-source risks, and rollout recommendation
+- [[analysis-paypal-messages-ios-vs-android]] — PayPal Messages iOS vs Android: released baselines, Braintree-only untagged policy, platform risks, and rollout recommendation
 
 ## Comparisons involving PayPal
 

@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-13] ingest | GitHub paypal/paypal-messages-android `develop@0424354`
+
+- Delta-ingested work item `github-fed285eccd42cc9507d5` across exact SHAs `1d2238c` to `0424354`; only `README.md` changed.
+- Added the Braintree-only documentation policy while keeping released `paypal-messages-android@1.3.0` SHA `f1aa138` as a separate evidence line.
+- Updated the cumulative source, changelog, PayPal company/index/log, Android and Pay Later concepts, and the cross-platform analysis. No source count changed.
+
 ## [2026-08-13] ingest | GitHub paypal/paypal-messages-ios `develop@fdd1868`
 
 - Delta-ingested work item `github-63997abe9a7d60c5179b` across exact SHAs `432d6b8` to `fdd1868` after confirming that only `README.md` changed.

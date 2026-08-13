@@ -84,6 +84,8 @@ This package is promotional presentment, not payment execution. Its click opens 
 
 The independent `paypal-messages-android@1.3.0` package presents Pay Later and PayPal Credit promotion through `PayPalMessageView`; a Compose wrapper is present but the retained development guide explicitly says the Jetpack view does not currently work. The README also recommends sandbox use until an official release.
 
+A parallel untagged `develop` README commit, `0424354`, documents the same Braintree-only merchant boundary as iOS: a Braintree account and Braintree SDK integration are required, and PPCP SDK integrations are unsupported. Its comparison begins at historical SHA `1d2238c`, not released `1.3.0` SHA `f1aa138`; only documentation changed.
+
 Like iOS, Android Messages is promotional presentment rather than payment execution. The `1.3.0` capsule adds rendered-language analytics and `%bold%` message styling, but also preserves version-qualified callback, environment-update, and shared-state risks. See [[source-github-paypal-messages-android]] and [[changelog-github-paypal-messages-android]].
 
 ## Available Countries (beyond US)

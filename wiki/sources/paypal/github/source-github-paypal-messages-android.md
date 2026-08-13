@@ -2,9 +2,11 @@
 title: "GitHub: paypal/paypal-messages-android"
 type: source
 date_ingested: 2026-04-14
-date_updated: 2026-08-12
+date_updated: 2026-08-13
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/manifest.json"
+  - "github/paypal/paypal-messages-android/snapshots/2026-08-13-1d2238c/manifest.json"
   - "github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/manifest.json"
   - "github-paypal-messages-android.md"
 tags: [paypal, android, kotlin, messaging, pay-later, paypal-credit, views, compose, github-repository]
@@ -25,6 +27,7 @@ Repository: <https://github.com/paypal/paypal-messages-android>
 - The README says the library is still in development and recommends sandbox use until an official release is available. A stable tag and publication automation do not establish general availability.
 - `1.3.0` is the latest ingested release, not a claim that it remains latest upstream.
 - Public offer enums and buyer-country inputs do not establish merchant approval, buyer eligibility, geography, or the offer PayPal will return.
+- Untagged `develop` commit `0424354` changes only `README.md` from historical SHA `1d2238c`. It is a parallel documentation-policy line, not a descendant comparison from released `1.3.0` SHA `f1aa138`.
 
 ## Grounding Excerpts
 
@@ -32,9 +35,9 @@ Repository: <https://github.com/paypal/paypal-messages-android>
 >
 > `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/README.md:16`
 
-> "The PayPalMessages Library is available for Android SDK 23+."
+> "This messaging component is intended for use with the Braintree SDK only."
 >
-> `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/README.md:22`
+> `raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/files/README.md:5`
 
 > "The Jetpack view does not currently work to show PayPalMessages"
 >
@@ -45,6 +48,11 @@ Repository: <https://github.com/paypal/paypal-messages-android>
 > `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/files/library/src/main/java/com/paypal/messages/ModalFragment.kt:396`
 
 ## Requirements and Distribution
+
+At untagged `develop` commit `0424354`, the README says native Android Messages is intended only for the Braintree SDK: merchants must have a Braintree account and integrate the Braintree SDK, while PPCP SDK integrations are unsupported.
+
+> [!warning] Parallel untagged policy boundary
+> The comparison establishing this statement is `1d2238c` to `0424354`, not `paypal-messages-android@1.3.0` SHA `f1aa138` to `0424354`. Only `README.md` changed. Treat the statement as repository documentation policy at that untagged ref, not as a `1.3.0` feature, a later release, or proof of code-level enforcement.
 
 The README sets Android SDK 23+ and says the library is published to Maven Central. The retained build identifies group `com.paypal.messages` and artifact `paypal-messages`, but its version sources conflict with the release record: the GitHub tag is `1.3.0`, root Gradle metadata says `1.1.14`, and the checked-in POM says `1.1.10`. Verify the live Maven coordinate/version before installation rather than inferring `com.paypal.messages:paypal-messages:1.3.0` from this capsule alone.
 
@@ -109,6 +117,8 @@ Merchant-profile data uses soft and hard TTL behavior: fresh cache is reused, so
 
 The retained cumulative changelog establishes stable history from `1.0.0` through `1.1.0`, while the managed release record establishes `1.3.0` and compares it to `1.2.0`. Only `1.3.0` has an immutable managed release snapshot. See [[changelog-github-paypal-messages-android]].
 
+The separate `1d2238c` to `0424354` comparison records the Braintree-only README policy on a parallel untagged line without fabricating a package version or connecting it to the `1.3.0` release tree.
+
 ## Related
 
 - Company: [[paypal]]
@@ -120,6 +130,11 @@ The retained cumulative changelog establishes stable history from `1.0.0` throug
 
 ## Raw Sources
 
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/manifest.json` - untagged `develop` policy snapshot
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/files/README.md` - Braintree-account, Braintree-SDK, and PPCP-support boundary
+- `raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-1d2238c/manifest.json` - direct prior snapshot for the policy comparison
+- `tracking/github/repos/paypal/paypal-messages-android/comparisons/default-branch/1d2238c--0424354/comparison.json` - exact ref comparison metadata
+- `tracking/github/repos/paypal/paypal-messages-android/comparisons/default-branch/1d2238c--0424354/diff.patch` - README-only patch
 - `raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/manifest.json` - exact-SHA bounded source capsule
 - `raw/github/paypal/paypal-messages-android/releases/paypal-messages-android/1.3.0/2026-08-12/manifest.json` - package-qualified release record
 - `raw/github/paypal/paypal-messages-android/releases/paypal-messages-android/1.3.0/2026-08-12/release-notes.md` - exact `1.3.0` release notes

@@ -1217,10 +1217,10 @@
 - Repository: `paypal/paypal-messages-android`
 - SHA: `0424354a5fa0ab697275186fe101d105838ac03e`
 - Collection date: `2026-08-13`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `delta`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `delta`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

@@ -73,6 +73,8 @@ See [[source-github-paypal-ios]] for the current iOS SDK baseline. iOS version 2
 
 The Messages Module is a separate standalone library: [paypal/paypal-messages-android](https://github.com/paypal/paypal-messages-android), with approved baseline `paypal-messages-android@1.3.0` at SHA `f1aa138cc6822cc11d68ac4bfdee3cf183aedbc2`. It promotes Pay Later and PayPal Credit but does not execute checkout payments.
 
+On a separate untagged `develop` line, README commit `0424354` requires a Braintree account and Braintree SDK integration and says PPCP SDK integrations are unsupported. The direct comparison starts at historical SHA `1d2238c`, not the `1.3.0` release tree, and changes no implementation file.
+
 Key API: `PayPalMessageView` (FrameLayout) for XML layouts; `PayPalComposableMessage` for Jetpack Compose. Config via `PayPalMessageConfig(data, style, viewStateCallbacks, eventsCallbacks)`.
 
 > [!info] Availability
