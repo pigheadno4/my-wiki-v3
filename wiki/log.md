@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-13] ingest | GitHub braintree/braintree-android-drop-in `drop-in@6.17.0`
+
+- Full-ingested work item `github-64aa2131b6b057d2f41c` at exact SHA `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7` after serial review and hash audit of the complete 168-path retained packet.
+- Added independently versioned cumulative and package-qualified sources for the prebuilt Android payment-selection UI, nonce handoff, cards, PayPal, Venmo, Google Pay, vaulting, 3DS, device data, and redirects.
+- Preserved its Braintree Android `4.50.0` dependency boundary instead of attributing separately collected `braintree-android@5.30.0` modular behavior to Drop-in.
+
 ## [2026-08-13] ingest | GitHub braintree/braintree-ios-drop-in `BraintreeDropIn@9.14.0`
 
 - Full-ingested work item `github-92242b9e450d596215e2` at exact SHA `d951d104ac960188824bda191be2f57c57351a31` after serial review and hash audit of the complete 203-file retained capsule.

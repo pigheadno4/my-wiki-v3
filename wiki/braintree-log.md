@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-13] ingest | braintree/braintree-android-drop-in `drop-in@6.17.0`
+
+- Approved and processed work item `github-64aa2131b6b057d2f41c` in full mode at exact SHA `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7`.
+- Read and hash-audited the complete 168-path, 506,105-byte retained packet, including implementation, public API, demo, localization, Gradle metadata, migration guidance, changelog, and presentation resources.
+- Established an independent cumulative source and package-qualified changelog for payment selection, nonce handoff, cards, PayPal, Venmo, Google Pay, saved methods, vault management, 3DS, device data, and redirect handling.
+- Preserved the critical dependency boundary: `6.17.0` pins Braintree Android `4.50.0` and must not inherit behavior from the independently retained `braintree-android@5.30.0` source.
+
 ## [2026-08-13] ingest | braintree/braintree-ios-drop-in `BraintreeDropIn@9.14.0`
 
 - Approved and processed work item `github-92242b9e450d596215e2` in full mode at exact SHA `d951d104ac960188824bda191be2f57c57351a31`.

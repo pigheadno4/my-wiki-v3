@@ -340,10 +340,10 @@
 - Repository: `braintree/braintree-android-drop-in`
 - SHA: `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7`
 - Collection date: `2026-08-13`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None
