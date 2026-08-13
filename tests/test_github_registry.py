@@ -956,21 +956,33 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual("configured-repository-paths", capsule.dependency_scope)
         self.assertEqual("policy-bounded", capsule.changed_path_policy)
         self.assertEqual(
-            ("Demo/Application", "Sources/BraintreeDropIn"),
-            capsule.default_required_roots,
+            {
+                "Demo/Application/Settings",
+                "Demo/Application/SwiftUI",
+                "Sources/BraintreeDropIn",
+            },
+            set(capsule.default_required_roots),
         )
         self.assertEqual((), capsule.default_generated_target_paths)
         self.assertEqual(
-            (
+            {
                 "BraintreeDropIn.podspec",
                 "BraintreeDropIn.xcodeproj/project.pbxproj",
                 "CHANGELOG.md",
                 "DEVELOPMENT.md",
+                "Demo/Application/DemoAppDelegate.swift",
+                "Demo/Application/DemoBaseViewController.swift",
+                "Demo/Application/DemoContainerViewController.swift",
+                "Demo/Application/DemoDropInView.swift",
+                "Demo/Application/DemoDropInViewController.swift",
+                "Demo/Application/DemoMerchantAPIClient.swift",
+                "Demo/Application/DemoPurchaseButton.swift",
+                "Demo/Application/ViewHelpers.swift",
                 "LICENSE",
                 "Package.swift",
                 "README.md",
-            ),
-            capsule.include_paths,
+            },
+            set(capsule.include_paths),
         )
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
         self.assertEqual("text-secrets-v1", capsule.secret_detector)
@@ -1008,26 +1020,74 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual("configured-repository-paths", capsule.dependency_scope)
         self.assertEqual("policy-bounded", capsule.changed_path_policy)
         self.assertEqual(
-            ("Demo/src/main", "Drop-In/src/main"),
-            capsule.default_required_roots,
+            {
+                "Demo/src/main/java",
+                "Demo/src/main/res/layout",
+                "Demo/src/main/res/menu",
+                "Demo/src/main/res/values",
+                "Demo/src/main/res/xml",
+                "Drop-In/src/main/java",
+                "Drop-In/src/main/res/anim",
+                "Drop-In/src/main/res/drawable",
+                "Drop-In/src/main/res/drawable-v21",
+                "Drop-In/src/main/res/layout",
+                "Drop-In/src/main/res/values",
+                "Drop-In/src/main/res/values-ar",
+                "Drop-In/src/main/res/values-cs",
+                "Drop-In/src/main/res/values-da",
+                "Drop-In/src/main/res/values-de",
+                "Drop-In/src/main/res/values-el",
+                "Drop-In/src/main/res/values-es",
+                "Drop-In/src/main/res/values-es-rXC",
+                "Drop-In/src/main/res/values-fi",
+                "Drop-In/src/main/res/values-fr",
+                "Drop-In/src/main/res/values-fr-rCA",
+                "Drop-In/src/main/res/values-fr-rXC",
+                "Drop-In/src/main/res/values-he",
+                "Drop-In/src/main/res/values-hu",
+                "Drop-In/src/main/res/values-id",
+                "Drop-In/src/main/res/values-it",
+                "Drop-In/src/main/res/values-iw",
+                "Drop-In/src/main/res/values-ja",
+                "Drop-In/src/main/res/values-ko",
+                "Drop-In/src/main/res/values-land",
+                "Drop-In/src/main/res/values-nb",
+                "Drop-In/src/main/res/values-nl",
+                "Drop-In/src/main/res/values-pl",
+                "Drop-In/src/main/res/values-pt",
+                "Drop-In/src/main/res/values-ru",
+                "Drop-In/src/main/res/values-sk",
+                "Drop-In/src/main/res/values-sv",
+                "Drop-In/src/main/res/values-th",
+                "Drop-In/src/main/res/values-v16",
+                "Drop-In/src/main/res/values-v21",
+                "Drop-In/src/main/res/values-w700dp",
+                "Drop-In/src/main/res/values-zh-rCN",
+                "Drop-In/src/main/res/values-zh-rHK",
+                "Drop-In/src/main/res/values-zh-rTW",
+                "Drop-In/src/main/res/values-zh-rXC",
+            },
+            set(capsule.default_required_roots),
         )
         self.assertEqual((), capsule.default_generated_target_paths)
         self.assertEqual(
-            (
+            {
                 "ACKNOWLEDGEMENTS.md",
                 "CHANGELOG.md",
                 "CONTRIBUTING.md",
                 "DEVELOPMENT.md",
                 "Demo/build.gradle",
+                "Demo/src/main/AndroidManifest.xml",
                 "Drop-In/build.gradle",
+                "Drop-In/src/main/AndroidManifest.xml",
                 "LICENSE",
                 "README.md",
                 "build.gradle",
                 "gradle.properties",
                 "settings.gradle",
                 "v6_MIGRATION_GUIDE.md",
-            ),
-            capsule.include_paths,
+            },
+            set(capsule.include_paths),
         )
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
         self.assertEqual("text-secrets-v1", capsule.secret_detector)

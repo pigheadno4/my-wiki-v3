@@ -23,6 +23,8 @@
 
 **Approved implementation note:** The shared release parser originally enforced npm lowercase naming for every adapter. Before Task 1, add case-sensitive unscoped release identities for `tagged-tree-v1` while preserving npm-package-name validation for `npm-tracked-source-v1`. This is required to retain the exact Swift package identity `BraintreeDropIn@9.14.0`.
 
+**Measurement correction:** The first temporary capsule resolution found PNG assets beneath the broad iOS and Android demo/runtime roots. The final policy therefore uses text-only implementation, demo, and Android XML resource subroots; it retains iOS Swift demo code and Android Java/Kotlin plus manifests, layouts, animations, XML drawables, core values, and all existing localization values while excluding image catalogs and density PNGs.
+
 ## File Structure
 
 - Modify `tests/test_github_registry.py`: executable contract for both Drop-in registry policies.
@@ -69,8 +71,12 @@ self.assertEqual("braintree-ios-drop-in-public-source", capsule.id)
 self.assertEqual("tagged-tree-v1", capsule.adapter)
 self.assertEqual(("BraintreeDropIn",), capsule.focus_packages)
 self.assertEqual(
-    ("Demo/Application", "Sources/BraintreeDropIn"),
-    capsule.default_required_roots,
+    {
+        "Demo/Application/Settings",
+        "Demo/Application/SwiftUI",
+        "Sources/BraintreeDropIn",
+    },
+    set(capsule.default_required_roots),
 )
 self.assertEqual(
     (
@@ -78,6 +84,14 @@ self.assertEqual(
         "BraintreeDropIn.xcodeproj/project.pbxproj",
         "CHANGELOG.md",
         "DEVELOPMENT.md",
+        "Demo/Application/DemoAppDelegate.swift",
+        "Demo/Application/DemoBaseViewController.swift",
+        "Demo/Application/DemoContainerViewController.swift",
+        "Demo/Application/DemoDropInView.swift",
+        "Demo/Application/DemoDropInViewController.swift",
+        "Demo/Application/DemoMerchantAPIClient.swift",
+        "Demo/Application/DemoPurchaseButton.swift",
+        "Demo/Application/ViewHelpers.swift",
         "LICENSE",
         "Package.swift",
         "README.md",
@@ -105,8 +119,32 @@ self.assertEqual("braintree-android-drop-in-public-source", capsule.id)
 self.assertEqual("tagged-tree-v1", capsule.adapter)
 self.assertEqual(("drop-in",), capsule.focus_packages)
 self.assertEqual(
-    ("Demo/src/main", "Drop-In/src/main"),
-    capsule.default_required_roots,
+    {
+        "Demo/src/main/java",
+        "Demo/src/main/res/layout",
+        "Demo/src/main/res/menu",
+        "Demo/src/main/res/values",
+        "Demo/src/main/res/xml",
+        "Drop-In/src/main/java",
+        "Drop-In/src/main/res/anim",
+        "Drop-In/src/main/res/drawable",
+        "Drop-In/src/main/res/drawable-v21",
+        "Drop-In/src/main/res/layout",
+        "Drop-In/src/main/res/values",
+    },
+    set(capsule.default_required_roots).intersection({
+        "Demo/src/main/java",
+        "Demo/src/main/res/layout",
+        "Demo/src/main/res/menu",
+        "Demo/src/main/res/values",
+        "Demo/src/main/res/xml",
+        "Drop-In/src/main/java",
+        "Drop-In/src/main/res/anim",
+        "Drop-In/src/main/res/drawable",
+        "Drop-In/src/main/res/drawable-v21",
+        "Drop-In/src/main/res/layout",
+        "Drop-In/src/main/res/values",
+    }),
 )
 self.assertEqual(
     (
@@ -115,7 +153,9 @@ self.assertEqual(
         "CONTRIBUTING.md",
         "DEVELOPMENT.md",
         "Demo/build.gradle",
+        "Demo/src/main/AndroidManifest.xml",
         "Drop-In/build.gradle",
+        "Drop-In/src/main/AndroidManifest.xml",
         "LICENSE",
         "README.md",
         "build.gradle",
@@ -126,6 +166,8 @@ self.assertEqual(
     capsule.include_paths,
 )
 ```
+
+The Android contract additionally enumerates every `Drop-In/src/main/res/values-*` text directory present in `6.17.0`; broad `Demo/src/main` and `Drop-In/src/main` roots are forbidden because they include PNG assets.
 
 For both capsules assert `dependency_scope == "configured-repository-paths"`, `changed_path_policy == "policy-bounded"`, no generated targets, `excluded_categories == ("fixtures", "tests")`, `secret_detector == "text-secrets-v1"`, a 512,000-byte per-file limit, 500 capsule files / 5,000,000 UTF-8 bytes, and 550 packet files / 6,000,000 UTF-8 bytes.
 
