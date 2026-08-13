@@ -20,8 +20,8 @@ Generated: `2026-08-13`
 | adyen | `adyen/adyen-pos-mobile-ios-test` | tier3 | commit | on-demand | - | - | - | `disabled` |
 | adyen | `adyen/adyen-sdk-automation` | tier3 | commit | on-demand | - | - | - | `disabled` |
 | adyen | `adyen/release-automation-action` | tier3 | commit | on-demand | - | - | - | `disabled` |
-| braintree | `braintree/braintree-android-drop-in` | tier1 | semver-tags | weekly | - | - | - | `disabled` |
-| braintree | `braintree/braintree-ios-drop-in` | tier1 | semver-tags | weekly | - | - | - | `disabled` |
+| braintree | `braintree/braintree-android-drop-in` | tier1 | semver-tags / tagged-tree-v1 | weekly | - | - | - | `collect-baseline` |
+| braintree | `braintree/braintree-ios-drop-in` | tier1 | semver-tags / tagged-tree-v1 | weekly | - | - | - | `collect-baseline` |
 | braintree | `braintree/braintree-web` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-08-04 | ingested | 2026-08-11 | `collect-baseline` |
 | braintree | `braintree/braintree-web-drop-in` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-08-04 | ingested | 2026-08-11 | `collect-baseline` |
 | braintree | `braintree/braintree_android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-01 | ingested | 2026-08-08 | `collect-baseline` |
