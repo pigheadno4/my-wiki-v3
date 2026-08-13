@@ -1174,7 +1174,11 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
     segments = lowered.split("/")
     if any(segment in ("example", "examples", "demo", "demos", "sample", "samples") for segment in segments):
         return "example"
-    if any(segment in ("locale", "locales", "i18n", "translations") for segment in segments):
+    if any(
+        segment in ("locale", "locales", "i18n", "translations")
+        or segment.endswith(".lproj")
+        for segment in segments
+    ):
         return "translation"
     if lowered.endswith(_DOCUMENT_SUFFIXES):
         return "documentation"

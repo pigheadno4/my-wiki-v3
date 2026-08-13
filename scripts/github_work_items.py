@@ -16,7 +16,7 @@ from github_canonical import (
     canonical_json_bytes,
     canonical_sha256,
     safe_policy_path,
-    validate_npm_package_name,
+    validate_release_package_name,
 )
 from github_versions import parse_semver
 
@@ -1530,7 +1530,7 @@ def _require_path(value: str, label: str) -> None:
 
 
 def _require_package(value: str) -> None:
-    if not validate_npm_package_name(value):
+    if not validate_release_package_name(value):
         raise ValueError("package name is invalid")
 
 

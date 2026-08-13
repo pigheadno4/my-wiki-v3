@@ -80,9 +80,11 @@ def run_git(args: Sequence[str], cwd: Optional[Path] = None) -> str:
 
 def clone_repository(config: RepoConfig, destination: Path) -> None:
     """Create the required partial no-checkout clone for later exact resolution."""
-    run_git(
-        ["clone", "--filter=blob:none", "--no-checkout", "--no-tags", config.url, str(destination)]
-    )
+    source = Path(config.url)
+    options = ["clone", "--no-checkout", "--no-tags"]
+    if not source.exists():
+        options.insert(1, "--filter=blob:none")
+    run_git(options + [config.url, str(destination)])
 
 
 def fetch_required_refs(config: RepoConfig, clone_path: Path, selectors: Sequence[str]) -> None:

@@ -656,6 +656,12 @@ class GitHubIngestPacketTests(unittest.TestCase):
                     "required-root",
                     "stripe-ios",
                 ),
+                "Native/Resources/ar.lproj/Checkout.strings": (
+                    '"checkout" = "Checkout";\n',
+                    "public-source",
+                    "required-root",
+                    "stripe-ios",
+                ),
             },
         )
         release = self.release(
@@ -707,6 +713,10 @@ class GitHubIngestPacketTests(unittest.TestCase):
         self.assertEqual(
             "public-source",
             classified["Native/api/native.api"],
+        )
+        self.assertEqual(
+            "translation",
+            classified["Native/Resources/ar.lproj/Checkout.strings"],
         )
         self.assertTrue(
             any(

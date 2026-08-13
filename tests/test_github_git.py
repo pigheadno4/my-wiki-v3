@@ -240,6 +240,15 @@ class GitResolutionTests(unittest.TestCase):
 
         self.assertEqual("main", run_git(["symbolic-ref", "--short", "HEAD"], destination))
         self.assertFalse((destination / "README.md").exists())
+        promisor = subprocess.run(
+            ["git", "config", "--get", "remote.origin.promisor"],
+            cwd=str(destination),
+            check=False,
+            text=True,
+            capture_output=True,
+        )
+        self.assertEqual(1, promisor.returncode)
+        self.assertEqual("", promisor.stdout)
 
     def test_clone_fetch_inspect_and_resolve_selected_local_remote_refs(self):
         historical_sha = commit_file(self.repo, "README.md", "historical\n", "historical")
