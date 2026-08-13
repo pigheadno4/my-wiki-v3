@@ -281,6 +281,33 @@
   Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.41.1/2026-08-09/manifest.json)
   Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.41.0--6.41.1/comparison.json)
 
+## `github-63997abe9a7d60c5179b`
+
+- Repository: `paypal/paypal-messages-ios`
+- SHA: `fdd18681f486a3b2f1c60e3c47f8669f55a73a96`
+- Collection date: `2026-08-13`
+- State: `awaiting_approval`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messages-ios/snapshots/2026-08-13-fdd1868/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messages-ios/ingest-packets/github-63997abe9a7d60c5179b/packet.md)
+- Review priority: `normal`
+- Required reading: `12` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@fdd1868` (recommended `delta`)
+  Ref: `develop`
+  From SHA: `432d6b832714b2615106c3f2a748ac61654d8bbd`
+  To SHA: `fdd18681f486a3b2f1c60e3c47f8669f55a73a96`
+  Comparison: [manifest](repos/paypal/paypal-messages-ios/comparisons/default-branch/432d6b8--fdd1868/comparison.json)
+
 ## `github-6403ae7181617adc4020`
 
 - Repository: `paypal-examples/v6-web-sdk-sample-integration`
@@ -1184,3 +1211,30 @@
 - `@metronome/sdk@3.10.0` (recommended `full`)
   Release: [manifest](../../raw/github/metronome/metronome-node/releases/sdk/3.10.0/2026-08-12/manifest.json)
   Comparison: Not applicable
+
+## `github-fed285eccd42cc9507d5`
+
+- Repository: `paypal/paypal-messages-android`
+- SHA: `0424354a5fa0ab697275186fe101d105838ac03e`
+- Collection date: `2026-08-13`
+- State: `awaiting_approval`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messages-android/ingest-packets/github-fed285eccd42cc9507d5/packet.md)
+- Review priority: `normal`
+- Required reading: `12` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@0424354` (recommended `delta`)
+  Ref: `develop`
+  From SHA: `1d2238c9e5ec3564ad5d8060c474e008ab7bf779`
+  To SHA: `0424354a5fa0ab697275186fe101d105838ac03e`
+  Comparison: [manifest](repos/paypal/paypal-messages-android/comparisons/default-branch/1d2238c--0424354/comparison.json)
