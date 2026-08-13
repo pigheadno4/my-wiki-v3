@@ -2,9 +2,15 @@
 
 import re
 from dataclasses import dataclass
-from typing import Dict, Iterable, Sequence, Tuple
+from typing import Callable, Dict, Iterable, Sequence, Tuple
 
-from github_canonical import canonical_json_bytes, canonical_sha256, safe_policy_path, validate_npm_package_name
+from github_canonical import (
+    canonical_json_bytes,
+    canonical_sha256,
+    safe_policy_path,
+    validate_npm_package_name,
+    validate_release_package_name,
+)
 
 
 NPM_CAPSULE_ADAPTER = "npm-tracked-source-v1"
@@ -252,10 +258,22 @@ def _normalize_capsule(capsule: CapsuleConfig, prefix: str) -> CapsuleConfig:
             + " adapter must be one of "
             + ", ".join(sorted(CAPSULE_ADAPTERS))
         )
+    package_validator = (
+        validate_release_package_name
+        if capsule.adapter == TAGGED_TREE_ADAPTER
+        else validate_npm_package_name
+    )
+    package_schema = (
+        "release-package-name-v1"
+        if capsule.adapter == TAGGED_TREE_ADAPTER
+        else "npm-package-name-v1"
+    )
     focus_packages = _package_names(
         capsule.focus_packages,
         prefix + " focus_packages",
         required=capsule.adapter != COMMIT_TREE_ADAPTER,
+        validator=package_validator,
+        schema=package_schema,
     )
     source_id = capsule.source_id
     if capsule.adapter == COMMIT_TREE_ADAPTER:
@@ -411,10 +429,16 @@ def _candidate_blob_keys(value: Sequence[Tuple[str, str]]) -> set:
     return candidates
 
 
-def _package_names(value: object, prefix: str, required: bool = False) -> Tuple[str, ...]:
+def _package_names(
+    value: object,
+    prefix: str,
+    required: bool = False,
+    validator: Callable[[str], bool] = validate_npm_package_name,
+    schema: str = "npm-package-name-v1",
+) -> Tuple[str, ...]:
     names = _unique_strings(value, prefix, allow_empty=not required)
-    if any(not validate_npm_package_name(name) for name in names):
-        raise ValueError(prefix + " must contain npm-package-name-v1 values")
+    if any(not validator(name) for name in names):
+        raise ValueError(prefix + " must contain " + schema + " values")
     return names
 
 

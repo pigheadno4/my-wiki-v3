@@ -9,6 +9,7 @@ from typing import Any
 _NPM_COMPONENT = r"[a-z0-9._~-]+"
 _NPM_UNSCOPED = re.compile(r"[a-z0-9][a-z0-9._~-]*\Z")
 _NPM_SCOPED = re.compile(r"@[a-z0-9][a-z0-9._~-]*/" + _NPM_COMPONENT + r"\Z")
+_RELEASE_UNSCOPED = re.compile(r"[A-Za-z0-9][A-Za-z0-9._~-]*\Z")
 _LABEL_UNSAFE = re.compile(r"[^a-z0-9._-]+")
 _WIKI_SLUG_UNSAFE = re.compile(r"[^a-z0-9]+")
 
@@ -36,6 +37,15 @@ def validate_npm_package_name(name: str) -> bool:
     if name.startswith("@"):
         return _NPM_SCOPED.fullmatch(name) is not None
     return _NPM_UNSCOPED.fullmatch(name) is not None
+
+
+def validate_release_package_name(name: str) -> bool:
+    """Validate a package identity used by a non-npm release adapter."""
+    if not isinstance(name, str) or not name.isascii() or len(name) > 214:
+        return False
+    if name.startswith("@"):
+        return validate_npm_package_name(name)
+    return _RELEASE_UNSCOPED.fullmatch(name) is not None
 
 
 def safe_policy_path(path: str) -> bool:

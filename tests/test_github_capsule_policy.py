@@ -181,6 +181,28 @@ class EffectivePolicyTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "exactly one focus package"):
             build_effective_policy(capsule, (), (), ())
 
+    def test_tagged_tree_policy_accepts_case_sensitive_release_identity(self):
+        capsule = CapsuleConfig(
+            id="braintree-ios-drop-in-source",
+            adapter="tagged-tree-v1",
+            focus_packages=("BraintreeDropIn",),
+            dependency_scope="configured-repository-paths",
+        )
+
+        policy = build_effective_policy(capsule, (), (), ())
+
+        self.assertEqual(("BraintreeDropIn",), policy.capsule.focus_packages)
+
+    def test_npm_policy_still_rejects_case_sensitive_package_name(self):
+        capsule = CapsuleConfig(
+            id="invalid-npm-source",
+            adapter="npm-tracked-source-v1",
+            focus_packages=("BraintreeDropIn",),
+        )
+
+        with self.assertRaisesRegex(ValueError, "npm-package-name-v1"):
+            build_effective_policy(capsule, (), (), ())
+
     def test_commit_tree_policy_uses_repository_source_identity(self):
         capsule = CapsuleConfig(
             id="paypal-v6-sample-source",
