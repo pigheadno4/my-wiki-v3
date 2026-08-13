@@ -1,0 +1,226 @@
+# GitHub ingest packet
+
+- Repository: `braintree/braintree-ios-drop-in`
+- Work item: `github-92242b9e450d596215e2`
+- Snapshot: `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/manifest.json`
+- Recommended mode: `full`
+- Review priority: `normal`
+
+## `BraintreeDropIn`
+
+- Version: `baseline` -> `9.14.0`
+- Recommendation: `full` / `normal`
+- Unchanged retained files: `0`
+
+### Required reading
+
+- `raw/github/braintree/braintree-ios-drop-in/releases/braintreedropin/9.14.0/2026-08-13/manifest.json`
+- `raw/github/braintree/braintree-ios-drop-in/releases/braintreedropin/9.14.0/2026-08-13/release-notes.md`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/BraintreeDropIn.podspec`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/BraintreeDropIn.xcodeproj/project.pbxproj`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/CHANGELOG.md`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/DEVELOPMENT.md`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Demo/Application/DemoAppDelegate.swift`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Demo/Application/DemoBaseViewController.swift`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Demo/Application/DemoContainerViewController.swift`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Demo/Application/DemoDropInView.swift`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Demo/Application/DemoDropInViewController.swift`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Demo/Application/DemoMerchantAPIClient.swift`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Demo/Application/DemoPurchaseButton.swift`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Demo/Application/Settings/DemoSettings.swift`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Demo/Application/Settings/Settings.bundle/Root.plist`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Demo/Application/SwiftUI/ContentView.swift`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Demo/Application/SwiftUI/DropInRepresentable.swift`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Demo/Application/ViewHelpers.swift`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/LICENSE`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Package.swift`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/README.md`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/BTAPIClient_Internal_Category.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/BTCardFormViewController.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/BTCardFormViewController.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/BTDropInBaseViewController.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/BTDropInBaseViewController.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/BTDropInController.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/BTDropInUICustomization.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/BTDropInUIUtilities.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/BTDropInUIUtilities.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/BTPaymentMethodNonce+DropIn.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/BTPaymentMethodNonce+DropIn.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/BTPaymentSelectionViewController.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/BTPaymentSelectionViewController.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/BTUIKBarButtonItem_Internal_Declaration.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/BTVaultManagementViewController.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/BTVaultManagementViewController.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKBarButtonItem.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKBarButtonItem.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKCardListLabel.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKCardListLabel.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKCardNumberFormField.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKCardNumberFormField.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKCardholderNameFormField.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKCardholderNameFormField.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKCollectionReusableView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKCollectionReusableView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKExpiryFormField.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKExpiryFormField.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKFormField.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKFormField.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKInputAccessoryToolbar.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKInputAccessoryToolbar.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKMobileCountryCodeFormField.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKMobileCountryCodeFormField.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKMobileNumberFormField.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKMobileNumberFormField.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKPaymentOptionCardView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKPaymentOptionCardView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKPostalCodeFormField.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKPostalCodeFormField.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKSecurityCodeFormField.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKSecurityCodeFormField.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKSwitchFormField.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKSwitchFormField.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKTextField.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Components/BTUIKTextField.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Custom Views/BTDropInPaymentSelectionCell.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Custom Views/BTDropInPaymentSelectionCell.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Custom Views/BTEnrollmentVerificationViewController.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Custom Views/BTEnrollmentVerificationViewController.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Custom Views/BTPaymentSelectionHeaderView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Custom Views/BTPaymentSelectionHeaderView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Custom Views/BTUIPaymentMethodCollectionViewCell.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Custom Views/BTUIPaymentMethodCollectionViewCell.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Custom Views/BTVaultedPaymentMethodsTableViewCell.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Custom Views/BTVaultedPaymentMethodsTableViewCell.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Helpers/BTConfiguration+DropIn.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Helpers/BTConfiguration+DropIn.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Helpers/BTUIKAppearance.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Helpers/BTUIKAppearance.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Helpers/BTUIKViewUtil.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Helpers/BTUIKViewUtil.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Helpers/BTUIKVisualAssetType.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Helpers/UIColor+BTUIK.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Helpers/UIColor+BTUIK.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Helpers/UIFont+BTUIK.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Helpers/UIFont+BTUIK.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Info.plist`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Localization/BTDropInLocalization.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Localization/BTDropInLocalization_Internal.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Models/BTDropInRequest.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Models/BTDropInResult.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Models/BTDropInResult_Internal.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Models/BTUIKCardExpirationValidator.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Models/BTUIKCardExpirationValidator.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Models/BTUIKCardExpiryFormat.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Models/BTUIKCardExpiryFormat.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Models/BTUIKCardType.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Models/BTUIKCardType.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Models/BTUIKUtil.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Models/BTUIKUtil.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/PrivacyInfo.xcprivacy`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Public/BraintreeDropIn/BTDropInController.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Public/BraintreeDropIn/BTDropInLocalization.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Public/BraintreeDropIn/BTDropInPaymentMethodType.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Public/BraintreeDropIn/BTDropInRequest.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Public/BraintreeDropIn/BTDropInResult.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Public/BraintreeDropIn/BTDropInUICustomization.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Public/BraintreeDropIn/BraintreeDropIn.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/ar.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/da.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/de.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/en.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/es.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/fr-CA.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/fr.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/he.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/id.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/it.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/ja.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/ko.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/nb.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/nl.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/pl.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/pt.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/ru.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/sk.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/sv.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/th.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/zh-Hans.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/zh-Hant-HK.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Resources/zh-Hant.lproj/BTUI.strings`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKAmExVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKAmExVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKApplePayMarkVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKApplePayMarkVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKCVVBackVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKCVVBackVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKCVVFrontVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKCVVFrontVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKCardVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKCardVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKDinersClubVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKDinersClubVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKDiscoverVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKDiscoverVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKHiperVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKHiperVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKHipercardVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKHipercardVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKJCBVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKJCBVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKMaestroVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKMaestroVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKMasterCardVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKMasterCardVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKPayPalMonogramCardView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKPayPalMonogramCardView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKPayPalWordmarkCompactVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKPayPalWordmarkCompactVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKPayPalWordmarkVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKPayPalWordmarkVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKUnionPayVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKUnionPayVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKUnknownCardVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKUnknownCardVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKVenmoMonogramCardView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKVenmoMonogramCardView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKVenmoWordmarkVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKVenmoWordmarkVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKVisaVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/BTUIKVisaVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeAmExVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeAmExVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeApplePayMarkVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeApplePayMarkVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeDinersClubVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeDinersClubVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeDiscoverVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeDiscoverVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeHiperVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeHiperVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeHipercardVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeHipercardVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeJCBVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeJCBVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeMaestroVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeMaestroVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeMasterCardVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeMasterCardVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargePayPalMonogramCardView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargePayPalMonogramCardView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeUnionPayVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeUnionPayVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeUnknownCardVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeUnknownCardVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeVenmoMonogramCardView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeVenmoMonogramCardView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeVisaVectorArtView.h`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/files/Sources/BraintreeDropIn/Vector Art/Large/BTUIKLargeVisaVectorArtView.m`
+- `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/manifest.json`
+
+### Upstream changes
+
+- None

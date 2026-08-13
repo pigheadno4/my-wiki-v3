@@ -1,13 +1,13 @@
 ---
 title: "Adyen"
 type: company
-tags: [adyen, payments, checkout, web-sdk, ios-sdk, android-sdk, react-native-sdk, nodejs, server-sdk]
-source_count: 5
+tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, react-native-sdk, nodejs, server-sdk]
+source_count: 6
 ---
 
 ## Overview
 
-Adyen is represented in this wiki by independently versioned Web, iOS, Android, React Native, and Node.js checkout SDKs. The retained sources cover browser, native, and cross-platform checkout presentation plus merchant-server Checkout API v72, request transport, notifications, recurring operations, and Cloud Device API v1.
+Adyen is represented in this wiki by independently versioned Web, iOS, Android, React Native, and Node.js checkout SDKs plus exact-commit Postman API examples. The retained sources cover browser, native, and cross-platform checkout presentation; merchant-server Checkout API v72; and Terminal API payment and shopper-interaction messages.
 
 ## Web checkout surface
 
@@ -47,12 +47,18 @@ The retained `@adyen/api-library@32.0.0` baseline provides typed merchant-server
 
 The Node library does not render shopper UI. Its broader API and webhook exports are inventory evidence where the complete generated model trees were not retained; detailed non-checkout queries should trigger focused recollection.
 
+## Postman API examples
+
+The retained `adyen/adyen-postman` baseline at commit `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7` contains generated Checkout v72, Recurring v68, BIN Lookup v54, and Test Card v1 collections plus an unversioned Terminal API collection. Checkout examples cover Sessions, payments, details, modifications, orders, links, stored methods, and utilities. Terminal examples cover 82 payment, refund, input, display, reconciliation, card-acquisition, tipping, instalment, and gift-card requests.
+
+These examples show request shape and intended flow, not current account eligibility. The legacy Recurring collection recommends Checkout recurring endpoints when possible. Terminal capture, recurring token charges, and authorization adjustments belong to Checkout API, while fleet and store administration belong to Management API.
+
 ## Knowledge status
 
-- Ingested cumulative GitHub repository sources: 5
+- Ingested cumulative GitHub repository sources: 6
 - Ingested package releases: 7
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `adyen-android@5.20.0`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`
-- Latest ingest: `@adyen/adyen-web@6.42.0` at exact SHA `1e157f8bc62b9519d68becedd9c1267180810e77`
+- Latest ingest: `adyen/adyen-postman` `default-branch@ecb2907` at exact SHA `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7`
 
 ## Sources
 
@@ -66,6 +72,8 @@ The Node library does not render shopper UI. Its broader API and webhook exports
 - [[changelog-github-adyen-react-native]] — package-qualified wrapper release ledger
 - [[source-github-adyen-node-api-library]] — cumulative Adyen Node.js server-library baseline
 - [[changelog-github-adyen-node-api-library]] — package-qualified server-library release ledger
+- [[source-github-adyen-postman]] — cumulative Checkout, recurring, BIN lookup, test-card, and Terminal API examples
+- [[changelog-github-adyen-postman]] — commit-qualified Postman collection history
 
 ## Related
 
@@ -76,3 +84,4 @@ The Node library does not render shopper UI. Its broader API and webhook exports
 - [[adyen-android-sdk]] — native Android architecture and merchant-server boundaries
 - [[adyen-react-native-sdk]] — cross-platform wrapper, native dependency, and merchant-server boundaries
 - [[adyen-node-api-library]] — Node.js server SDK, Checkout API, Cloud Device, and query boundaries
+- [[adyen-terminal-api]] — Nexo terminal messages, in-person flows, and API-family boundaries

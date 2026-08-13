@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import re
 from typing import Optional, Tuple
 
-from github_canonical import validate_npm_package_name
+from github_canonical import validate_release_package_name
 
 
 _NUMERIC_IDENTIFIER = r"(?:0|[1-9][0-9]*)"
@@ -110,7 +110,7 @@ def parse_package_tag(tag: str) -> Optional[Tuple[str, str]]:
     package_name, separator, version = tag.rpartition("@")
     if (
         not separator
-        or not validate_npm_package_name(package_name)
+        or not validate_release_package_name(package_name)
         or parse_semver(version) is None
     ):
         return None

@@ -22,6 +22,7 @@ For Metronome's platform-pricing terminology, one Event is each discrete JSON ob
 - Customer creation accepts up to 2,000 ingest aliases of 1–128 characters each; the older `external_id` alias field is deprecated.
 - `event_type` is a required nonempty string, and optional `properties` can contain metering and grouping data. The endpoint schema treats the map as an object, while the implementation guide recommends representing every property key and value as a string to avoid floating-point precision loss; Metronome says it computes with arbitrary-precision decimals internally.
 - The dashboard quickstart describes `transaction_id`, `customer_id`, `event_type`, and `timestamp` as required and permits up to 2,000 event properties.
+- In `@metronome/sdk@3.10.0`, the typed call shape is `client.v1.usage.ingest({ usage: [...] })`; `properties` remains optional in the generated event interface. The SDK surface does not replace the endpoint's batch, account-limit, or partial-ingest guidance. [[source-github-metronome-node]]
 
 ## Event design
 
@@ -59,6 +60,7 @@ A correction guide applies compensating usage only while the current-period invo
 - For direct API delivery, the implementation guide says to retry network and `5xx` failures until `200` because a failed call can be partially ingested. On `429`, back off with increasing exponential delays; move other `4xx` payload failures to a dead-letter queue instead of automatically retrying them.
 - Metronome can configure a chosen trial API failure rate in Sandbox or Production; the guide recommends 20%. Producers should log message-queue traffic during initial integration and whenever the event structure changes.
 - Periodic heartbeat events should use a deterministic transaction ID such as `<node id>_<floor(unix_now()/60)>` and send at least two heartbeats per measurement period. Duplicate IDs are ignored, reducing the chance that timer imprecision or delay leaves a measurement gap.
+- The Node SDK's generic client retries connection and timeout failures plus HTTP 408, 409, 429, and `5xx` responses twice by default. That transport policy is broader than the endpoint-specific producer guidance above; preserve deterministic transaction IDs and do not infer that every retried mutation is idempotent. [[source-github-metronome-node]]
 
 ## Invoice preview boundary
 
@@ -79,6 +81,8 @@ Before selecting an ingest design, identify usage origins and reliable delivery,
 Metronome's go-live checklist recommends queueing usage events, sampling `searchEvents` to confirm active-metric matching, load-testing expected peaks, and injecting ingestion failures. It also places `properties` under required fields, directly contradicting the dedicated ingest reference's optional `properties` schema. Separately, the checklist asks teams to exercise 14-day backdating, while the dedicated ingest sources document a 34-day historical-ingest window. The checklist does not call 14 days a maximum, so days 15–34 remain outside its stated test coverage rather than forming mutually exclusive limits or a retention conflict. [[source-metronome-guides-implement-metronome-production-checklist]]
 
 ## Sources
+
+- [[source-github-metronome-node]] - exact Node SDK ingest call shape and generic retry boundary
 
 - [[source-metronome-integrations-platform-integrations-segment]] - Segment destination setup, explicit five-field mapping contract, default `messageId` transaction identity, and managed-delivery unknowns
 

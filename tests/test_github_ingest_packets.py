@@ -274,6 +274,25 @@ class GitHubIngestPacketTests(unittest.TestCase):
             ),
         )
 
+    def tagged_config(self):
+        return replace(
+            self.config,
+            version_strategy="semver-tags",
+            capsules=(
+                CapsuleConfig(
+                    id="widget-tagged-source",
+                    adapter="tagged-tree-v1",
+                    focus_packages=("@scope/widget",),
+                    dependency_scope="configured-repository-paths",
+                    changed_path_policy="policy-bounded",
+                    default_required_roots=("src",),
+                    include_paths=("README.md", "CHANGELOG.md"),
+                    max_packet_files=30,
+                    max_packet_utf8_bytes=200000,
+                ),
+            ),
+        )
+
     def ref_comparison(self, changes):
         directory = (
             self.root
@@ -409,6 +428,60 @@ class GitHubIngestPacketTests(unittest.TestCase):
         )
         self.assertTrue(packet.document["concept_audit_required"])
         self.assertIn("default-branch@bbbbbbb", packet.markdown.decode("utf-8"))
+
+    def test_ref_packet_accepts_tagged_tree_capsule_without_release_evidence(self):
+        prior = self.snapshot(
+            self.prior_sha,
+            "1.0.0",
+            {
+                "README.md": ("# Before\n", "repository-context", "include-path"),
+                "CHANGELOG.md": ("# Changes\n", "repository-context", "include-path"),
+                "src/message.swift": "let value = 1\n",
+            },
+            date="2026-07-27",
+        )
+        current = self.snapshot(
+            self.current_sha,
+            "unreleased-bbbbbbb",
+            {
+                "README.md": ("# After\n", "repository-context", "include-path"),
+                "CHANGELOG.md": ("# Changes\n", "repository-context", "include-path"),
+                "src/message.swift": "let value = 1\n",
+            },
+        )
+        change = UpstreamChange("modified", "README.md", "README.md")
+        comparison = self.ref_comparison((change,))
+
+        packet = build_ref_ingest_packet(
+            self.root,
+            self.tagged_config(),
+            "github-" + ("5" * 20),
+            self.relative(current),
+            RefPacketInput(
+                ref_kind="default-branch",
+                ref_name="main",
+                from_sha=self.prior_sha,
+                to_sha=self.current_sha,
+                comparison_manifest=self.relative(comparison),
+                prior_snapshot_manifest=self.relative(prior),
+                upstream_changes=(change,),
+                excluded_changes=(),
+            ),
+            "queued",
+        )
+
+        self.assertIn("ref", packet.document)
+        self.assertNotIn("packages", packet.document)
+        self.assertNotIn("release_manifest", json.dumps(packet.document))
+        required = packet.document["required_reading"]
+        self.assertIn(self.relative(prior), required)
+        self.assertIn(self.relative(current), required)
+        self.assertIn(self.relative(comparison), required)
+        self.assertIn(
+            self.relative(comparison.parent / "comparison.md"),
+            required,
+        )
+        self.assertIn(self.relative(comparison.parent / "diff.patch"), required)
 
     def test_ref_baseline_is_full_and_reads_every_selected_file(self):
         current = self.snapshot(
@@ -583,6 +656,12 @@ class GitHubIngestPacketTests(unittest.TestCase):
                     "required-root",
                     "stripe-ios",
                 ),
+                "Native/Resources/ar.lproj/Checkout.strings": (
+                    '"checkout" = "Checkout";\n',
+                    "public-source",
+                    "required-root",
+                    "stripe-ios",
+                ),
             },
         )
         release = self.release(
@@ -635,6 +714,10 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "public-source",
             classified["Native/api/native.api"],
         )
+        self.assertEqual(
+            "translation",
+            classified["Native/Resources/ar.lproj/Checkout.strings"],
+        )
         self.assertTrue(
             any(
                 path.endswith("/files/Native/Source/Checkout.swift")
@@ -678,6 +761,18 @@ class GitHubIngestPacketTests(unittest.TestCase):
                 "client/.nvmrc": ("22\n", "source-capsule", "required-root", "widgets"),
                 "client/index.html": ("<main></main>\n", "source-capsule", "required-root", "widgets"),
                 "client/styles.css": ("main { display: block; }\n", "source-capsule", "required-root", "widgets"),
+                ".github/workflows/sync.yml": (
+                    "name: Sync\n",
+                    "source-capsule",
+                    "include-path",
+                    "widgets",
+                ),
+                "generateAll.sh": (
+                    "#!/bin/sh\n",
+                    "source-capsule",
+                    "include-path",
+                    "widgets",
+                ),
                 "src/data/products.json": ('{"sku":"sample"}\n', "source-capsule", "required-root", "widgets"),
             },
         )
@@ -709,6 +804,11 @@ class GitHubIngestPacketTests(unittest.TestCase):
         self.assertEqual("build-configuration", classified["client/.nvmrc"])
         self.assertEqual("public-source", classified["client/index.html"])
         self.assertEqual("public-source", classified["client/styles.css"])
+        self.assertEqual(
+            "build-configuration",
+            classified[".github/workflows/sync.yml"],
+        )
+        self.assertEqual("public-source", classified["generateAll.sh"])
         self.assertEqual("public-source", classified["src/data/products.json"])
         self.assertEqual([], packet.document["unclassified_changes"])
 
@@ -743,6 +843,79 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "build-configuration",
             classified["tsconfig.lib.json"],
         )
+
+    def test_agent_plugin_and_mcp_manifests_are_runtime_configuration(self):
+        config = RepoConfig(
+            id="acme/widgets",
+            company="acme",
+            url="https://github.com/acme/widgets",
+            enabled=True,
+            repo_type="developer-tooling",
+            priority="tier2",
+            track="default-branch",
+            version_strategy="commit",
+            capsules=(
+                CapsuleConfig(
+                    id="widget-tools",
+                    adapter="commit-tree-v1",
+                    source_id="widgets",
+                    dependency_scope="configured-repository-paths",
+                    changed_path_policy="policy-bounded",
+                    default_required_roots=("tools",),
+                    max_packet_files=30,
+                    max_packet_utf8_bytes=200000,
+                ),
+            ),
+        )
+        manifest_paths = (
+            "gemini-extension.json",
+            "providers/claude/plugin/.claude-plugin/plugin.json",
+            "providers/claude/plugin/.mcp.json",
+            "providers/codex/plugin/.app.json",
+            "providers/codex/plugin/.codex-plugin/plugin.json",
+            "providers/cursor/plugin/.cursor-plugin/plugin.json",
+            "providers/cursor/plugin/mcp.json",
+            "providers/grok/plugin/.grok-plugin/plugin.json",
+            "providers/grok/plugin/.mcp.json",
+            "tools/modelcontextprotocol/manifest.json",
+            "tools/modelcontextprotocol/server.json",
+        )
+        files = {
+            path: ('{"name":"tool"}\n', "source-capsule", "include-path", "widgets")
+            for path in manifest_paths
+        }
+        files["custom.json"] = (
+            '{"name":"custom"}\n',
+            "source-capsule",
+            "include-path",
+            "widgets",
+        )
+        snapshot = self.snapshot(self.current_sha, "", files)
+
+        packet = build_ref_ingest_packet(
+            self.root,
+            config,
+            "github-" + ("5" * 20),
+            self.relative(snapshot),
+            RefPacketInput(
+                "default-branch",
+                "main",
+                "",
+                self.current_sha,
+                "",
+                "",
+                (),
+            ),
+            "queued",
+        )
+
+        classified = {
+            row["path"]: row["classification"]
+            for row in packet.document["selected_changes"]
+        }
+        for path in manifest_paths:
+            self.assertEqual("runtime-configuration", classified[path])
+        self.assertEqual("unclassified", classified["custom.json"])
 
     def test_codegen_versions_are_classified_as_build_configuration(self):
         prior = {
@@ -1009,6 +1182,82 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "wiki/sources/acme/github/source-github-widgets.md",
             packet.document["expected_wiki_targets"],
         )
+
+    def test_extensionless_package_bin_target_is_public_source(self):
+        files = {
+            "package.json": self.manifest_content("8.0.0"),
+            "bin/cli": (
+                "#!/usr/bin/env node\n",
+                "public-source",
+                "tracked-bin-target",
+            ),
+            "src/index.ts": "export const value = 1;\n",
+        }
+        current = self.snapshot(self.current_sha, "8.0.0", files)
+        release = self.release("8.0.0", self.current_sha, "Initial release.\n")
+
+        packet = build_ingest_packet(
+            self.root,
+            self.config,
+            "github-" + ("2" * 20),
+            self.relative(current),
+            (
+                PackagePacketInput(
+                    package="@scope/widget",
+                    from_version="",
+                    to_version="8.0.0",
+                    from_sha="",
+                    to_sha=self.current_sha,
+                    release_manifest=self.relative(release),
+                    comparison_manifest="",
+                    prior_snapshot_manifest="",
+                    upstream_changes=(),
+                ),
+            ),
+            "queued",
+        )
+
+        classified = {
+            row["path"]: row["classification"]
+            for row in packet.document["packages"][0]["retained_evidence"]["files"]
+        }
+        self.assertEqual("public-source", classified["bin/cli"])
+
+    def test_keep_file_is_documentation(self):
+        files = {
+            "package.json": self.manifest_content("8.0.0"),
+            "src/index.ts": "export const value = 1;\n",
+            "src/lib/.keep": "Generated source extension directory.\n",
+        }
+        current = self.snapshot(self.current_sha, "8.0.0", files)
+        release = self.release("8.0.0", self.current_sha, "Initial release.\n")
+
+        packet = build_ingest_packet(
+            self.root,
+            self.config,
+            "github-" + ("2" * 20),
+            self.relative(current),
+            (
+                PackagePacketInput(
+                    package="@scope/widget",
+                    from_version="",
+                    to_version="8.0.0",
+                    from_sha="",
+                    to_sha=self.current_sha,
+                    release_manifest=self.relative(release),
+                    comparison_manifest="",
+                    prior_snapshot_manifest="",
+                    upstream_changes=(),
+                ),
+            ),
+            "queued",
+        )
+
+        classified = {
+            row["path"]: row["classification"]
+            for row in packet.document["packages"][0]["retained_evidence"]["files"]
+        }
+        self.assertEqual("documentation", classified["src/lib/.keep"])
 
     def test_same_major_payment_change_is_delta_with_high_priority(self):
         prior = {

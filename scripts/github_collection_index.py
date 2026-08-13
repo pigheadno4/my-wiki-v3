@@ -257,6 +257,13 @@ def _build_row(
         key=order,
         default=None,
     )
+    accepted_packages = tuple(item for item in accepted if item.package_changes)
+    latest_accepted_package = max(
+        accepted_packages,
+        key=order,
+        default=None,
+    )
+    accepted_identity = latest_accepted_package or latest_accepted
     last_checked = _checked_value(checked, "last_checked_date")
     if not last_checked and latest is not None:
         last_checked = latest.collection_date
@@ -288,7 +295,7 @@ def _build_row(
         adapter,
         repo.collection_frequency,
         last_checked,
-        _item_identity(latest_accepted) if latest_accepted is not None else "",
+        _item_identity(accepted_identity) if accepted_identity is not None else "",
         latest_ref,
         comparison_base,
         queue_item.state if queue_item is not None else "",

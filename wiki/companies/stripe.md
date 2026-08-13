@@ -2,7 +2,7 @@
 title: "Stripe"
 type: company
 tags: [stripe, payment-gateway, payment-intents, checkout, subscriptions, elements, webhooks, payment-links]
-source_count: 653
+source_count: 655
 ---
 
 ## Stripe
@@ -52,6 +52,10 @@ The `@stripe/stripe-js` npm package is the web loader and TypeScript declaration
 `stripe-android` is the native Android SDK behind Stripe's prebuilt and low-level mobile payment surfaces. The cumulative source preserves the legacy `23.8.0` capsule and adds the approved `23.13.1` baseline: builder-first PaymentSheet, FlowController, Embedded Payment Element, direct Intent APIs, Google Pay, and specialized Connect, Identity, Financial Connections, Crypto Onramp, messaging, and card-scan modules. A completed SDK result can still represent a processing payment, so fulfillment remains webhook-gated. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
 
 `stripe-ios` is the native Swift SDK behind Stripe's prebuilt and low-level iOS payment surfaces. The cumulative source preserves the legacy `25.14.0` capsule and adds the approved `26.4.1` baseline: PaymentSheet, FlowController, Embedded Payment Element, CustomerSheet, Apple Pay, low-level Intent and 3DS APIs, and specialized Connect, Identity, Financial Connections, Issuing, and alpha Crypto Onramp modules. Version 26 requires iOS 15+, and a completed SDK result can still represent a processing payment, so fulfillment remains event-gated. See [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
+
+### AI Developer and Token-Billing Tooling
+
+The `stripe/ai` repository supplies independently versioned LLM token-billing packages, a local bridge to Stripe's remote MCP server, TypeScript and Python agent toolkits, provider-specific agent skills/plugins, and integration benchmarks. At the retained SHA, token billing is private preview, the Stripe AI SDK proxy does not support tool calling, native token-meter delivery is fire-and-forget, and the agent toolkits require remote MCP availability. See [[source-github-ai]] and [[changelog-github-ai]].
 
 ### Express Checkout Element
 
@@ -122,6 +126,8 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 - [[changelog-github-stripe-ios]] — package-qualified iOS release history, iOS 15 migration boundary, and exact v26.4.1 Alipay result fix
 - [[source-github-stripe-react-native]] — stripe-react-native cumulative SDK source: legacy v0.65.1 plus v0.72.0 PaymentSheet, Embedded Payment Element, Platform Pay, Connect, onramp, and Link Controller
 - [[changelog-github-stripe-react-native]] — package-qualified release history and v0.72.0 explicit Link SetupIntent confirmation migration
+- [[source-github-ai]] — exact-SHA Stripe AI implementation baseline: LLM token billing, MCP bridge, agent toolkits, skills/plugins, and benchmarks
+- [[changelog-github-ai]] — package-qualified `stripe/ai` component baseline and future comparison rules
 - [[source-stripe-billing-benchmarks]] — billing benchmarking: k-NN peer matching, ≥5 subs access, peer eligibility ≥100 subs, 7 metrics benchmarked, percentile display
 - [[source-stripe-billing-analytics]] — billing analytics: MRR + 6 growth components, ARPU, LTV, cohort retention, configurable settings, 3 CSV reports
 - [[source-stripe-subscriptions-backdate]] — backdating: classic vs flexible line items, 3 patterns (charge/no-charge/anchor), coupon duration counts from backdate not API call

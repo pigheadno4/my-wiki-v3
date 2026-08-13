@@ -120,8 +120,10 @@ Operations history: [[paypal-log]]
 - [[source-github-fastlane-sample-application]] — GitHub fastlane-sample-application: 3 clients × 6 servers, Quick Start vs Flexible HTML, 3 token functions, all language implementations (github-repo, 2026-04-13)
 - [[source-paypal-fxaas-overview]] — FXaaS overview: contract-based rate locking, 100+ display currencies, 25 holding currencies, Orders v2 compatible payment methods (webpage, 2026-04-13)
 - [[source-paypal-pay-later]] — Pay Later by country (US/AU/CA/FR/DE): product tables, purchase ranges, eligibility; CA bilingual; DE Pay in 30 unique (webpage, 2026-04-13)
-- [[source-github-paypal-messages-ios]] — GitHub paypal-messages-ios v1.2.0: PayPalMessageConfig/Style/Data API, offer types, delegates, SwiftUI+UIKit integration (github-repo, 2026-04-14)
-- [[source-github-paypal-messages-android]] — GitHub paypal-messages-android v1.3.0: PayPalMessageConfig/Callbacks API, Compose support, int-indexed enums, Android vs iOS differences (github-repo, 2026-04-14)
+- [[source-github-paypal-messages-ios]] — GitHub paypal-messages-ios: released `1.2.0` behavior plus untagged `fdd1868` Braintree-only documentation policy (github-repo, 2026-08-13)
+- [[changelog-github-paypal-messages-ios]] — iOS Messages ledger: managed `1.2.0`, cumulative earlier context, and untagged `develop@fdd1868` policy boundary (github-repo, 2026-08-13)
+- [[source-github-paypal-messages-android]] — GitHub paypal-messages-android: released `1.3.0` behavior plus parallel untagged `0424354` Braintree-only policy (github-repo, 2026-08-13)
+- [[changelog-github-paypal-messages-android]] — Android Messages ledger: managed `1.3.0`, cumulative context, and untagged `develop@0424354` policy boundary (github-repo, 2026-08-13)
 - [[source-paypal-pay-with-venmo]] — Pay with Venmo: mobile app-switch + desktop QR code flows, US/USD only, supported features table; enable-funding=venmo required (webpage, 2026-04-14)
 - [[source-paypal-save-payment-methods]] — Save payment methods overview + JS SDK PayPal/Venmo vault + purchase-later overview: 4 paths (JS SDK/Tokens API/Android/iOS), no Venmo for purchase-later (webpage, 2026-04-14)
 - [[source-paypal-save-applepay-js-sdk]] — Save Apple Pay JS SDK: vault flow, APPROVED vs VAULTED status, VAULT.PAYMENT-TOKEN.CREATED webhook, merchant-initiated recurring, go-live onboarding (webpage, 2026-04-14)
@@ -184,7 +186,8 @@ Operations history: [[paypal-log]]
 - [[source-paypal-agent-ready]] — PayPal Agent Ready: ACP protocol, Braintree+ChatGPT integration, MCP complete_checkout tool, allowance validation, transaction tracking (webpage, 2026-04-18)
 - [[source-github-paypal-payouts-php-sdk]] — GitHub Payouts PHP SDK: 4 request classes, PayPalHttpClient pattern (github-repo, 2026-04-16)
 - [[source-paypal-login-with-paypal]] — Log in with PayPal integration: OAuth flow, token exchange, scopes, go-live review (webpage, 2026-04-16)
-- [[source-github-paypal-postman-collections]] — GitHub Postman collections: Public APIs + Checkout Flows + Partner APIs, paypal-postman-lib (github-repo, 2026-04-16)
+- [[source-github-postman-collections]] — GitHub Postman collections: 204 Checkout, Public API, and Partner requests plus helper scripts at `7f7240a` (github-repo, updated 2026-08-12)
+- [[changelog-github-postman-collections]] — Postman collection history: first managed exact-commit baseline and workspace-sync boundary (github-repo, 2026-08-12)
 - [[source-github-paypal-sdk-logos]] — GitHub SDK Logos: cumulative `2.3.3` generated SVG and `2.3.7` source evidence, inline/external rendering, versioned CDN, colors, rebrand badges, and evidence boundaries (github-repo, updated 2026-08-09)
 - [[changelog-github-paypal-sdk-logos]] — SDK Logos history: `2.3.3` through `2.3.7`, generated-CDN releases, Venmo/PP whitespace refinements, and migration guidance (github-repo, 2026-08-09)
 - [[source-github-paypal-googlepay-component]] — GitHub Google Pay component: GraphQL config/confirm, 3DS ZalgoPromise, productFlow=CUSTOM_DIGITAL_WALLET (github-repo, 2026-04-16)
@@ -211,6 +214,10 @@ Operations history: [[paypal-log]]
 - [[paypal-login-with-paypal]] — Log in with PayPal: OAuth/OpenID SSO, 8h token, payer ID scope for payouts, live app review required
 - [[paypal-payment-links]] — PayPal Payment Links and Buttons: 4 no-code options (link/buy button/cart/QR), vs Invoicing comparison
 - [[paypal-subscriptions]] — PayPal Subscriptions & Recurring: Orders API vault path, 8 usage_pattern values, Subscriptions API billing plan structure, 4 pricing models
+
+## Analyses
+
+- [[analysis-paypal-messages-ios-vs-android]] — PayPal Messages iOS vs Android: released baselines, Braintree-only untagged policy, platform risks, and rollout recommendation
 
 ## Comparisons involving PayPal
 

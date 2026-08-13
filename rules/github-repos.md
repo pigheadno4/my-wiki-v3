@@ -42,6 +42,7 @@ Generated comparisons and packets are navigation and review evidence. Exact clai
 ```bash
 python3 scripts/collect_github_repos.py collect --repo <owner/repo> --mode backfill
 python3 scripts/collect_github_repos.py collect --repo <owner/repo> --mode future
+python3 scripts/collect_github_repos.py collect-ref --repo <owner/repo> --from <full-sha> --to <full-sha>
 python3 scripts/collect_github_repos.py status
 python3 scripts/collect_github_repos.py approve --item <id> --mode <full|delta>
 python3 scripts/collect_github_repos.py next-ingest
@@ -51,6 +52,8 @@ python3 scripts/collect_github_repos.py retry --item <id>
 ```
 
 Collection may discover and download more than one upstream item, but it must stop at `awaiting_approval`. Collection never approves, starts ingest, or edits wiki knowledge.
+
+Use `collect-ref` only for a reviewed ancestor-to-descendant boundary, including an untagged documentation or policy change. It stores immutable snapshots for both exact SHAs, compares the selected capsule, and creates one approval-gated ref work item. It does not create a package release record or imply that the ending commit was released.
 
 The required operator sequence is:
 

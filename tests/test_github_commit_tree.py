@@ -94,10 +94,28 @@ class CommitWorkspaceTests(unittest.TestCase):
         self.assertEqual((), workspace.external_dependencies)
         self.assertEqual((), workspace.declared_targets)
 
+    def test_resolves_exact_file_as_required_path(self):
+        workspace = resolve_commit_workspace(
+            self.tree(),
+            self.capsule(
+                default_required_roots=("README.md",),
+                include_paths=(".env.sample",),
+            ),
+        )
+
+        self.assertEqual(
+            (".env.sample", "README.md"),
+            workspace.packages[0].owned_paths,
+        )
+
     def test_rejects_missing_required_root_and_include(self):
         for capsule, expected in (
             (
                 self.capsule(default_required_roots=("missing/source",)),
+                "missing-required-root",
+            ),
+            (
+                self.capsule(default_required_roots=("missing.graphql",)),
                 "missing-required-root",
             ),
             (

@@ -1,0 +1,10 @@
+// NOTE: The values on this enum are meant to be managed by the CI or constants for the library.
+// If any of the names are changed the CI should be updated as well.
+public enum BuildInfo {
+    /// Library version
+    public internal(set) static var version: String = "1.2.0"
+    /// Message rendering environment
+    public static let integrationType: String = "NATIVE_IOS"
+    /// Default message content channel
+    public static let channel: String = "UPSTREAM"
+}

@@ -15,6 +15,11 @@ import threading
 from typing import Dict, List, Optional, Sequence, Tuple
 
 from github_canonical import canonical_json_bytes, safe_policy_path
+from github_capsule_policy import (
+    COMMIT_TREE_ADAPTER,
+    TAGGED_TREE_ADAPTER,
+    CapsuleConfig,
+)
 from github_capsule_selection import (
     CapsuleFile,
     CapsuleResolution,
@@ -33,6 +38,16 @@ _ARTIFACT_THREAD_LOCK = threading.RLock()
 
 class PilotStoreError(ValueError):
     """A focused pilot artifact is invalid or cannot be published safely."""
+
+
+def _ref_evidence_owner(capsule: CapsuleConfig) -> str:
+    if capsule.adapter == COMMIT_TREE_ADAPTER:
+        return capsule.source_id
+    if capsule.adapter == TAGGED_TREE_ADAPTER and len(capsule.focus_packages) == 1:
+        return capsule.focus_packages[0]
+    raise PilotStoreError(
+        "ref comparison requires commit-tree-v1 or tagged-tree-v1"
+    )
 
 
 @dataclass(frozen=True)
@@ -596,7 +611,7 @@ def write_ref_comparison(
             purpose="repository-comparison",
             git_blob_oid=hashlib.sha256(content).hexdigest(),
             git_mode="100644",
-            package=capsule.source_id,
+            package=_ref_evidence_owner(capsule),
             classification_reason="generated-comparison",
         )
         for path, content in (("diff.patch", patch), ("comparison.md", markdown_bytes))

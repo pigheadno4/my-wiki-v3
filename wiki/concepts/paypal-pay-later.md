@@ -72,6 +72,22 @@ For the v6 React web component, `@paypal/react-paypal-js@10.1.2` expands the typ
 
 For Braintree integrations, `@paypal/react-paypal-js@10.2.0` adds `useBraintreePayPalMessages()`. The hook asynchronously creates a Messages instance from Braintree's shared `paypalCheckoutV6` object, then exposes readiness, loading, error, and content-fetch state. Returned content can update its amount without a new fetch. An empty failure sentinel is still passed to `<paypal-message>` so the element can collapse while the hook exposes the fetch error.
 
+### Native iOS Messages
+
+The independent `paypal-messages-ios@1.2.0` package renders Pay Later and PayPal Credit promotion in UIKit or through a SwiftUI wrapper. It accepts client ID, environment, amount, placement, preferred offer, buyer country, language/locale, and style context; PayPal's response can still select a generic message. Buyer-country override requires PayPal approval.
+
+An untagged `develop` documentation commit after `1.2.0`, `fdd1868`, changes the native iOS integration policy to Braintree-only: a merchant must have a Braintree account and integrate the Braintree SDK, and PPCP SDK integrations are unsupported. Only `README.md` changed, so this is policy evidence rather than a demonstrated runtime compatibility change or package release.
+
+This package is promotional presentment, not payment execution. Its click opens a learn-more/application modal; checkout still requires a separate payment integration. See [[source-github-paypal-messages-ios]].
+
+### Native Android Messages
+
+The independent `paypal-messages-android@1.3.0` package presents Pay Later and PayPal Credit promotion through `PayPalMessageView`; a Compose wrapper is present but the retained development guide explicitly says the Jetpack view does not currently work. The README also recommends sandbox use until an official release.
+
+A parallel untagged `develop` README commit, `0424354`, documents the same Braintree-only merchant boundary as iOS: a Braintree account and Braintree SDK integration are required, and PPCP SDK integrations are unsupported. Its comparison begins at historical SHA `1d2238c`, not released `1.3.0` SHA `f1aa138`; only documentation changed.
+
+Like iOS, Android Messages is promotional presentment rather than payment execution. The `1.3.0` capsule adds rendered-language analytics and `%bold%` message styling, but also preserves version-qualified callback, environment-update, and shared-state risks. See [[source-github-paypal-messages-android]] and [[changelog-github-paypal-messages-android]].
+
 ## Available Countries (beyond US)
 
 Pay Later offerings differ by country — Australia, France, Germany, Italy, Spain, UK each have their own products. Check the Expanded Checkout eligibility page for which countries support Pay Later.
@@ -84,3 +100,6 @@ Pay Later offerings differ by country — Australia, France, Germany, Italy, Spa
 
 - [[source-paypal-pay-later]] — Pay Later by country (US, AU, CA, FR, DE): product tables, purchase ranges, eligibility, bilingual support (CA)
 - [[source-github-paypal-js]] — package-qualified React v10.1.2 Messages typing and v10.2.0 Braintree Messages hook behavior
+- [[source-github-paypal-messages-ios]] — native iOS Pay Later and PayPal Credit message configuration, rendering, modal, and lifecycle
+- [[source-github-paypal-messages-android]] — native Android message view, modal, callbacks, caching, analytics, availability warning, and `1.3.0` source risks
+- [[changelog-github-paypal-messages-android]] — managed Android `1.3.0` release plus cumulative earlier stable context

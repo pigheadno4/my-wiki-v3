@@ -11,6 +11,7 @@ from github_canonical import safe_policy_path
 
 
 DEFAULT_MAX_BLOB_BYTES = 512000
+_CAT_FILE_ATTEMPTS = 3
 _OBJECT_ID_LENGTHS = (40, 64)
 _HEX = frozenset("0123456789abcdef")
 
@@ -171,19 +172,24 @@ def _parse_ls_tree_entry(value: bytes) -> GitBlob:
 
 def _run_git_bytes(args: Sequence[str], cwd: Path) -> bytes:
     command = ["git"] + list(args)
-    try:
-        result = subprocess.run(
-            command,
-            cwd=str(cwd),
-            check=True,
-            capture_output=True,
-            env=_git_environment(),
-        )
-    except subprocess.CalledProcessError:
-        raise GitCommandRejectedError("Git object command was rejected") from None
-    except (subprocess.SubprocessError, OSError):
-        raise GitObjectReadError("Git object command failed") from None
-    return result.stdout
+    attempts = _CAT_FILE_ATTEMPTS if args and args[0] == "cat-file" else 1
+    for attempt in range(attempts):
+        try:
+            result = subprocess.run(
+                command,
+                cwd=str(cwd),
+                check=True,
+                capture_output=True,
+                env=_git_environment(),
+            )
+        except subprocess.CalledProcessError:
+            if attempt + 1 < attempts:
+                continue
+            raise GitCommandRejectedError("Git object command was rejected") from None
+        except (subprocess.SubprocessError, OSError):
+            raise GitObjectReadError("Git object command failed") from None
+        return result.stdout
+    raise AssertionError("unreachable Git object retry state")
 
 
 def _git_environment() -> dict:

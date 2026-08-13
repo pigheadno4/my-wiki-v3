@@ -8,7 +8,7 @@
 - [[paypal-index]] — PayPal sources, company page, and `paypal-*` concepts
 - [[metronome-index]] — Metronome sources, company page, and `metronome-*` concepts
 - [[adyen-index]] — Adyen sources, company page, and versioned GitHub implementation knowledge
-- [[braintree-index]] — Braintree sources, company page, server, Web, Android, and iOS SDK knowledge, and versioned GitHub implementation history
+- [[braintree-index]] — Braintree sources, company page, server, Web, Android, iOS SDK and native Drop-in knowledge, and versioned GitHub implementation history
 
 ## Overview
 
@@ -34,6 +34,7 @@
 - [[analysis-paypal-pay-later-ca-integration-guide]] — PayPal Pay Later CA button + message integration: biweekly Pay in 4, CAD, bilingual en_CA/fr_CA
 - [[analysis-paypal-pay-later-multi-country-integration-guide]] — PayPal Pay Later button + message integration for US, FR, GB, IT, ES: per-country products, cross-border messaging, funding eligibility
 - [[analysis-paypal-sdk-v5-vs-v6-multi-country]] — PayPal JS SDK v5 vs v6 multi-country switching: runtime config, React v8→v9, Pay Later messaging, performance patterns, SSR
+- [[analysis-paypal-messages-ios-vs-android]] — PayPal Messages native mobile comparison: Braintree-only policy, separate release/ref histories, configuration traps, callback/state risks, and rollout guidance
 
 ## Concepts (generic)
 

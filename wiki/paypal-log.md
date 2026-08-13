@@ -6,6 +6,52 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-13] ingest | paypal/paypal-messages-android `develop@0424354`
+
+- Delta-ingested work item `github-fed285eccd42cc9507d5` from historical SHA `1d2238c` to untagged `develop` SHA `0424354`.
+- Verified that `README.md` is the only changed path and that this ref line is separate from released `paypal-messages-android@1.3.0` SHA `f1aa138`.
+- Recorded the Braintree-account and Braintree-SDK requirements and the exclusion of PPCP SDK integrations without claiming a package release or code-level enforcement.
+- Updated [[source-github-paypal-messages-android]], [[changelog-github-paypal-messages-android]], [[paypal-pay-later]], [[paypal-android-sdk]], and [[analysis-paypal-messages-ios-vs-android]]. No source count changed.
+
+## [2026-08-13] ingest | paypal/paypal-messages-ios `develop@fdd1868`
+
+- Delta-ingested work item `github-63997abe9a7d60c5179b` from released `1.2.0` SHA `432d6b8` to untagged `develop` SHA `fdd1868`.
+- Verified that `README.md` is the only changed path; no implementation, build, or package file changed.
+- Recorded the new documentation policy requiring a Braintree account and Braintree SDK integration and excluding PPCP SDK integrations.
+- Preserved `paypal-messages-ios@1.2.0` as the latest ingested release and treated `fdd1868` as untagged policy evidence, not a release or demonstrated code-compatibility change.
+- Updated [[source-github-paypal-messages-ios]], [[changelog-github-paypal-messages-ios]], [[paypal-pay-later]], and [[paypal-ios-sdk]]. Android remains a separate unapproved work item.
+
+## [2026-08-12] analysis | PayPal Messages iOS `1.2.0` vs Android `1.3.0`
+
+- Compared the approved iOS and Android exact-SHA baselines while preserving separate package-qualified source and changelog histories.
+- Added a reusable mobile integration analysis covering the shared promotional-only contract, platform UI paths, configuration replacement gaps, modal callbacks, caching, analytics state, and rollout readiness.
+- Recommended iOS as the stronger candidate after application QA; retained Android as sandbox/controlled-pilot scope at `1.3.0` because the repository warns it is still in development and the source exposes callback and shared-state risks.
+- Corrected the iOS `setConfig` guidance: the exact implementation omits environment, merchant ID, and partner attribution ID.
+
+## [2026-08-12] ingest | paypal/paypal-messages-android `paypal-messages-android@1.3.0`
+
+- Approved and processed work item `github-39a4005f41fbb0234224` in full mode after serial review of all 126 required paths.
+- Hash-bounded the 123-file exact-SHA capsule at `f1aa138cc6822cc11d68ac4bfdee3cf183aedbc2`; this managed SHA differs from the April manual collection, whose raw stub remains preserved.
+- Migrated the cumulative source into the canonical PayPal/GitHub hierarchy and added a package-qualified changelog; PayPal source count increased by one for that new changelog.
+- Added view/configuration, XML, modal, callback, cache, analytics, localization, and branding evidence while retaining the sandbox-only recommendation and the development guide's non-working Jetpack warning.
+- Recorded exact-source callback/environment/shared-state risks and conflicting GitHub/Gradle/POM/license metadata. Updated [[paypal-pay-later]] and [[paypal-android-sdk]].
+
+## [2026-08-12] ingest | paypal/paypal-messages-ios `paypal-messages-ios@1.2.0`
+
+- Approved and processed work item `github-b94b44c30164dfad8034` in full mode after serial review of all 69 required paths.
+- Hash-bounded the 66-file exact-SHA capsule at `432d6b832714b2615106c3f2a748ac61654d8bbd`; it matches the April 2026 manual collection rather than representing a newer upstream release.
+- Migrated the cumulative source into the canonical PayPal/GitHub hierarchy, preserved the legacy raw stub, and added a package-qualified changelog; PayPal source count increased by one for that new changelog.
+- Added configuration, UIKit/SwiftUI rendering, merchant-profile caching, modal, delegate, analytics, localization, and accessibility evidence while preserving the boundary that Messages promotes financing but does not execute checkout.
+- Updated [[paypal-pay-later]] and [[paypal-ios-sdk]]. The independently versioned Android counterpart remains outside this serial ingest item.
+
+## [2026-08-12] ingest | paypal/postman-collections `default-branch@7f7240a`
+
+- Approved and processed work item `github-28afa4b70001aa3c42da` in full mode after serial review of all 17 required paths and all 204 requests.
+- Hash-verified the 12-file, 6,678,470-byte exact-SHA capsule at `raw/github/paypal/postman-collections/snapshots/2026-08-12-7f7240a/manifest.json`.
+- Migrated the April stub into the canonical PayPal/GitHub hierarchy and added a separate commit-qualified changelog without treating the legacy clone as a comparable managed snapshot.
+- Added runnable Checkout, saved-payment, subscription, Payment Resources, partner, and helper-library evidence while keeping REST specifications, current product documentation, and live responses authoritative.
+- Updated [[paypal-checkout]], [[paypal-vault]], [[paypal-subscriptions]], and [[paypal-payment-links]]; PayPal source count increased by one for the new changelog.
+
 ## [2026-08-11] ingest | paypal/paypal-rest-api-specifications `default-branch@90e8041`
 
 - Approved and processed work item `github-b3918bc2b2c3efa5f7d5` in full mode after serial review of all 21 required paths and all 13 OpenAPI contracts.

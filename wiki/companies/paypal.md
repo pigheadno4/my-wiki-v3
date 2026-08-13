@@ -2,7 +2,7 @@
 title: "PayPal"
 type: company
 tags: [paypal, payment-gateway, checkout, venmo, javascript-sdk, orders-api, vault, recurring-payments, payouts, disputes, reporting, agentic-commerce]
-source_count: 164
+source_count: 167
 ---
 
 ## PayPal
@@ -32,6 +32,10 @@ The separate `paypal-examples/paypal-sdk-server-side-integration` baseline at `5
 The independent `paypal/paypal-checkout-components` history begins with `@paypal/checkout-components@4.1.47` and now extends through `5.0.425`. The v4 runtime implemented Zoid-based Buttons and Checkout with mobile-only secondary Venmo. The accumulated v5 runtime adds separate Card Fields, Payment Fields, Hosted Buttons, Wallet, Saved Payment Methods, Venmo, and QR component boundaries; its Venmo vault-without-purchase path is experiment-gated. These package-qualified facts do not replace current availability guidance.
 
 The separate `@paypal/sdk-logos` package provides inline and external-image rendering for PayPal, Venmo, card brands, wallets, and local-payment-method artwork. The retained history preserves 117 generated `2.3.3` CDN SVGs and the complete policy-selected `2.3.7` public source. Logo presence is asset evidence only: it does not establish merchant eligibility, regional availability, payment enablement, or permission to use protected marks.
+
+The independent `paypal-messages-ios@1.2.0` package renders Pay Later and PayPal Credit promotion for UIKit and SwiftUI. It uses merchant and transaction context to fetch a message and web-backed learn-more/application modal, but does not execute checkout payments. Buyer-country override requires PayPal approval, and public offer enums are not eligibility evidence. A later untagged `develop` README commit, `fdd1868`, states that native iOS Messages requires a Braintree account and Braintree SDK integration and does not support PPCP SDK integrations; no source code changed and no package release contains this evidence yet.
+
+The Android counterpart, `paypal-messages-android@1.3.0`, provides a native message view and a Compose wrapper, but its README still recommends sandbox use and its development guide says the Jetpack view does not currently work. The exact source also preserves modal callback, environment-update, and shared-state risks. A parallel untagged `develop` README commit, `0424354`, requires a Braintree account and Braintree SDK integration and excludes PPCP SDK integrations; it descends from historical SHA `1d2238c`, not the `1.3.0` release tree, and changes no implementation file. GitHub, Gradle, POM, and license metadata conflict, so package installation and licensing require live verification.
 
 ### Braintree PayPal v6
 
@@ -65,6 +69,8 @@ PayPal-owned peer-to-peer payment network; surfaced as a payment button option i
 - **Sandbox**: Full sandbox environment with personal and business test accounts creatable from Developer Dashboard.
 - **Button placement**: Recommended on product detail pages, cart pages, and checkout pages.
 - **Checkout flow**: Two-step — create order on server, capture order after buyer approves.
+
+The exact `paypal/postman-collections` baseline at `7f7240a` contains 204 requests across Checkout Flows, Public APIs, and Partner APIs, plus reusable Postman authentication and diagnostics helpers. It is runnable example evidence: the repository is a backup of PayPal's Postman workspace, direct JSON imports do not receive updates, and neither request nor stored-response presence proves merchant enablement or current product availability.
 
 ## Checkout Integration Flow
 
@@ -321,8 +327,10 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-save-cards-ios-sdk]] — Save Cards iOS SDK: SwiftUI Toggle, `CardDelegate`, US-only availability (contradicts Android/JS SDK 35-country support)
 - [[source-paypal-save-paypal-android-sdk]] — Save PayPal Wallet Android SDK: `PayPalWebCheckoutClient`, deep link scheme, `vault.id` for returning payers
 - [[source-paypal-save-cards-android-sdk]] — Save Cards Android SDK: Compose checkbox, `customer.id` in Create Order for returning payers, `ApproveOrderListener` 3DS callbacks, RTAU
-- [[source-github-paypal-messages-android]] — GitHub paypal-messages-android v1.3.0: PayPalMessageConfig/Callbacks API, Compose support, int-indexed enums
-- [[source-github-paypal-messages-ios]] — GitHub paypal-messages-ios v1.3.0: PayPalMessageView/Delegate API, SwiftUI support, iOS vs Android differences
+- [[source-github-paypal-messages-android]] — GitHub paypal-messages-android: released `1.3.0` behavior plus parallel untagged Braintree-only policy
+- [[changelog-github-paypal-messages-android]] — managed `1.3.0`, cumulative stable context, metadata conflicts, and untagged policy boundary
+- [[source-github-paypal-messages-ios]] — GitHub paypal-messages-ios `1.2.0`: PayPalMessageView/Delegate API, SwiftUI support, caching, modal, and analytics
+- [[changelog-github-paypal-messages-ios]] — managed `1.2.0` baseline plus cumulative `1.0.0` and `1.1.0` release context
 - [[source-paypal-subscriptions-overview]] — Subscriptions: 6-step flow, REST API vs dashboard, 12 customization capabilities, 4 pricing models (fixed/quantity/volume/tiered); volume vs tiered distinction; single currency per plan
 - [[source-paypal-invoicing-overview]] — Invoicing: 4-step flow (draft→send→view→pay), REST API vs dashboard, QR payment + refunds + reminders; multi-country
 - [[source-paypal-magnes]] — Magnes (limited release): mobile device fingerprinting SDK (iOS/Android); PayPal-Client-Metadata-Id bridge; formerly "Dyson"; FraudNet is non-mobile equivalent
@@ -331,7 +339,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-payouts-overview]] — Payouts: Standard (96 countries, 20+ currencies, self-serve) vs Advanced (240+ countries, 50+ currencies, enterprise, multiple rails)
 - [[source-github-paypal-payouts-php-sdk]] — GitHub Payouts PHP SDK: PayoutsPostRequest/GetRequest/ItemGetRequest/ItemCancelRequest, PayPalHttpClient pattern (github-repo, 2026-04-16)
 - [[source-paypal-login-with-paypal]] — Log in with PayPal: OAuth flow, 8h token expiry, payer ID scope for payouts, app review required (webpage, 2026-04-16)
-- [[source-github-paypal-postman-collections]] — GitHub paypal/postman-collections: 3 collections (Public APIs, Checkout Flows, Partner APIs), paypal-postman-lib helper (github-repo, 2026-04-16)
+- [[source-github-postman-collections]] — cumulative GitHub Postman evidence: 204 Checkout, Public API, and Partner requests plus helper scripts at exact commit `7f7240a`
+- [[changelog-github-postman-collections]] — commit-qualified Postman collection history and workspace-sync boundary
 - [[source-github-paypal-rest-api-specifications]] — cumulative exact-SHA REST contract evidence for 13 API families, including detailed Orders, Payments, Vault, Subscriptions, Webhooks, and Tracking coverage (github-repo, updated 2026-08-11)
 - [[changelog-github-paypal-rest-api-specifications]] — commit-qualified REST specification baseline and future delta ledger
 - [[source-github-paypal-sdk-logos]] — GitHub paypal-sdk-logos: cumulative `2.3.3` generated SVG and `2.3.7` public-source evidence, inline/external rendering, versioned CDN, colors, rebrand badges, and branding boundary (github-repo, updated 2026-08-09)

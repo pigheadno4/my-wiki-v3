@@ -71,16 +71,20 @@ See [[source-github-paypal-ios]] for the current iOS SDK baseline. iOS version 2
 
 ## Messages Module (Pay Later Messaging)
 
-The Messages Module is a separate standalone library: [paypal/paypal-messages-android](https://github.com/paypal/paypal-messages-android) v1.3.0. Available via Maven Central.
+The Messages Module is a separate standalone library: [paypal/paypal-messages-android](https://github.com/paypal/paypal-messages-android), with approved baseline `paypal-messages-android@1.3.0` at SHA `f1aa138cc6822cc11d68ac4bfdee3cf183aedbc2`. It promotes Pay Later and PayPal Credit but does not execute checkout payments.
+
+On a separate untagged `develop` line, README commit `0424354` requires a Braintree account and Braintree SDK integration and says PPCP SDK integrations are unsupported. The direct comparison starts at historical SHA `1d2238c`, not the `1.3.0` release tree, and changes no implementation file.
 
 Key API: `PayPalMessageView` (FrameLayout) for XML layouts; `PayPalComposableMessage` for Jetpack Compose. Config via `PayPalMessageConfig(data, style, viewStateCallbacks, eventsCallbacks)`.
 
 > [!info] Availability
-> Still in active development — README recommends sandbox use only until GA.
+> Still in active development — the README recommends sandbox use until an official release. The development guide also says the Jetpack view does not currently work, so Compose demo/source presence is not readiness evidence.
 
 Offer types: `PAY_LATER_SHORT_TERM`, `PAY_LATER_LONG_TERM`, `PAY_LATER_PAY_IN_1`, `PAYPAL_CREDIT_NO_INTEREST`.
 
-See [[source-github-paypal-messages-android]] for full API reference.
+The retained release/build metadata conflicts: GitHub identifies `1.3.0`, Gradle says `1.1.14`, and the checked-in POM says `1.1.10`; MIT and Apache-2.0 license evidence also conflict. Verify the live Maven coordinate before installation. At this exact SHA, the AppCompat modal maps Apply to the close callback, `setConfig()` omits environment, and activity callbacks are registered after launch.
+
+See [[source-github-paypal-messages-android]] for the full evidence boundary and [[changelog-github-paypal-messages-android]] for release history.
 
 ## PayPal Wallet Vault (Save During Purchase)
 
@@ -141,3 +145,4 @@ See [[source-paypal-save-cards-android-sdk]] for full detail.
 - [[source-github-paypal-android]] — GitHub source: CardClient constructor, instance state, Demo ViewModels, server API contract
 - [[changelog-github-paypal-android]] — package-qualified Android SDK release history through `2.3.0`
 - [[source-github-paypal-messages-android]] — GitHub paypal-messages-android: PayPalMessageConfig API, callbacks, Compose support, Android vs iOS differences
+- [[changelog-github-paypal-messages-android]] — managed `1.3.0` release, cumulative stable history, and retained metadata conflicts

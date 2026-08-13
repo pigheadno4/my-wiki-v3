@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 91
+source_count: 93
 ---
 
 ## Overview
@@ -19,6 +19,8 @@ Metronome is maintained as an independent provider capsule related to [[stripe]]
 The documentation home is a navigation overview. The SDK walkthrough adds an introductory implementation path, while complete API schemas and lifecycle rules still require dedicated references.
 
 ## SDK usage-billing workflow
+
+The retained `@metronome/sdk@3.10.0` GitHub baseline adds the exact Node/TypeScript client contract: built-in Web Fetch with no runtime dependencies, typed V1 and V2 resources, two default retries, one-minute per-attempt timeout, async pagination, raw-response access, and webhook verification. It supports Node 20+, browsers, Deno, Bun, edge runtimes, and related server environments but explicitly excludes React Native. The generated package proves client implementation, not account feature enablement or current REST behavior; its stale `api.md` Payments listing conflicts with the removed source resource and the `3.7.0` changelog. [[source-github-metronome-node]]
 
 - Python, Node.js, Ruby, and Go SDKs demonstrate a common event-to-invoice flow.
 - Event ingestion uses transaction IDs for deduplication and can associate application identifiers with customers through ingest aliases.
@@ -145,11 +147,13 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 91
+- Ingested source summaries: 93
 - Raw pages without source summaries: 134
 
 ## Sources
 
+- [[source-github-metronome-node]] - exact `@metronome/sdk@3.10.0` server client, API surface, transport, webhook helper, and evidence boundaries
+- [[changelog-github-metronome-node]] - package-qualified Node SDK release history and upgrade ledger
 - [[source-metronome-guides-get-started-home]] — documentation entry point and four pricing/packaging routes
 - [[source-metronome-guides-get-started-developer-sdks]] — SDK setup and introductory event-to-invoice workflow
 - [[source-metronome-guides-events-design-usage-events]] — usage-event design principles, cadence tradeoffs, and future metric flexibility

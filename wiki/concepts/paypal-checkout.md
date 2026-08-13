@@ -39,6 +39,8 @@ The exact `@paypal/paypal-server-sdk@2.3.0` TypeScript baseline wraps Orders v2 
 
 The exact REST-contract baseline at `90e8041` independently defines Orders 2.32 create/get/patch/confirm/authorize/capture/tracking operations and Payments 2.12 authorization, capture, refund, and eligible-method operations. Orders models PayPal, Venmo, cards, Apple Pay, Google Pay, and multiple local methods, but schema presence is not merchant or buyer eligibility evidence. See [[source-github-paypal-rest-api-specifications]].
 
+The exact `paypal/postman-collections` baseline at `7f7240a` adds runnable sequences for PayPal and Expanded Checkout: create and retrieve Orders, confirm card payment sources with and without 3DS, authorize, capture an authorization, and capture an Order. It also demonstrates saved-payment and recurring sequences, but remains example evidence rather than the API-contract or product-availability authority. See [[source-github-postman-collections]].
+
 ## Buyer Experience
 
 1. PayPal/Venmo/Card buttons appear on product, cart, or checkout pages
@@ -170,3 +172,4 @@ See [[source-paypal-payment-failures]] for the full 19 error codes and recovery 
 - [[paypal-braintree-integration]] — Braintree client-token, nonce, and server-processing boundary for PayPal v6 React flows
 - [[source-paypal-security-guidelines]] — Security guidelines: CSP + SRI for SDK; load only from official CDN; validate payment events server-side before fulfilling
 - [[source-github-paypal-rest-api-specifications]] — exact-SHA Orders, Payments, Vault, Webhooks, and supporting REST contracts
+- [[source-github-postman-collections]] — exact-commit runnable Checkout, saved-payment, subscription, and partner request sequences

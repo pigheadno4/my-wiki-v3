@@ -6,6 +6,27 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-13] ingest | braintree/braintree-android-drop-in `drop-in@6.17.0`
+
+- Approved and processed work item `github-64aa2131b6b057d2f41c` in full mode at exact SHA `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7`.
+- Read and hash-audited the complete 168-path, 506,105-byte retained packet, including implementation, public API, demo, localization, Gradle metadata, migration guidance, changelog, and presentation resources.
+- Established an independent cumulative source and package-qualified changelog for payment selection, nonce handoff, cards, PayPal, Venmo, Google Pay, saved methods, vault management, 3DS, device data, and redirect handling.
+- Preserved the critical dependency boundary: `6.17.0` pins Braintree Android `4.50.0` and must not inherit behavior from the independently retained `braintree-android@5.30.0` source.
+
+## [2026-08-13] ingest | braintree/braintree-ios-drop-in `BraintreeDropIn@9.14.0`
+
+- Approved and processed work item `github-92242b9e450d596215e2` in full mode at exact SHA `d951d104ac960188824bda191be2f57c57351a31`.
+- Read and hash-audited the complete 203-file retained capsule, including implementation, public API, demos, localization, package metadata, changelog, and generated presentation assets.
+- Established an independent cumulative source and package-qualified changelog for payment selection, nonce handoff, cards, PayPal, Venmo, Apple Pay, saved methods, vault management, 3DS, device data, and UIKit customization.
+- Preserved the critical dependency boundary: `9.14.0` requires `braintree_ios` 5.27.0 and must not inherit behavior from the independently retained `braintree-ios@7.9.0` source.
+
+## [2026-08-11] ingest | braintree/graphql-api `default-branch@3a89f42`
+
+- Approved and processed work item `github-d36f782cded039bfef90` in full mode at exact SHA `3a89f427466a0a978dbfcfd953913f4e76c3264a`.
+- Read and hash-verified the three-file, 598,607-byte capsule containing the complete GraphQL schema, upstream changelog, and README.
+- Established an independent cumulative API-contract source and commit-qualified changelog for transactions, client tokens, vaulting, PayPal, Venmo, 3DS, recurring billing, and broader inventory-level domains.
+- Kept schema presence separate from merchant enablement and SDK implementation, and updated the Braintree company and provider index without merging this evidence into `braintree_node`.
+
 ## [2026-08-09] ingest | braintree/braintree_node `3.39.0`
 
 - Approved and processed work item `github-a3e31c47bd77ac327a7b` in full mode.

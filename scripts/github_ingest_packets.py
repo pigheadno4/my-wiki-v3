@@ -54,6 +54,7 @@ _SOURCE_SUFFIXES = (
     ".py",
     ".rb",
     ".rs",
+    ".sh",
     ".swift",
     ".api",
     ".ts",
@@ -320,8 +321,13 @@ def build_ref_ingest_packet(
     """Build one canonical review packet for exact default-branch evidence."""
     root = Path(root).resolve()
     _validate_config(config)
-    if config.capsules[0].adapter != COMMIT_TREE_ADAPTER:
-        raise PacketBuildError("ref packet requires commit-tree-v1")
+    if config.capsules[0].adapter not in (
+        COMMIT_TREE_ADAPTER,
+        TAGGED_TREE_ADAPTER,
+    ):
+        raise PacketBuildError(
+            "ref packet requires commit-tree-v1 or tagged-tree-v1"
+        )
     if packet_kind not in ("queued", "ad-hoc"):
         raise PacketBuildError("packet kind must be queued or ad-hoc")
     if packet_kind == "queued":
@@ -392,10 +398,11 @@ def build_ref_ingest_packet(
     prior_root = (
         PurePosixPath(prior.relative_path).parent / "files" if prior is not None else None
     )
+    if prior is not None:
+        required.add(prior.relative_path)
     if mode == "full":
         required.update(str(current_root / path) for path in current.files)
         if prior is not None and prior_root is not None:
-            required.add(prior.relative_path)
             required.update(str(prior_root / path) for path in prior.files)
     else:
         for row in selected_changes:
@@ -1103,6 +1110,8 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "package-manifest"
     if filename in (".env.example", ".env.sample", "example.env"):
         return "runtime-configuration"
+    if _is_agent_tool_manifest(lowered, filename):
+        return "runtime-configuration"
     if filename in (
         ".npmrc",
         ".nvmrc",
@@ -1112,6 +1121,10 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "build-configuration"
     if filename == "tsconfig.json" or (
         filename.startswith("tsconfig.") and filename.endswith(".json")
+    ):
+        return "build-configuration"
+    if lowered.startswith(".github/workflows/") and filename.endswith(
+        (".yml", ".yaml")
     ):
         return "build-configuration"
     if (
@@ -1150,16 +1163,24 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "build-configuration"
     if filename.startswith(("changelog", "history", "releases")):
         return "release-history"
+    if filename == ".keep":
+        return "documentation"
     if row.get("purpose") == "repository-context" or row.get(
         "classification_reason"
     ) == "repository-context":
         return "repository-context"
+    if row.get("classification_reason") == "tracked-bin-target":
+        return "public-source"
     if classify_excluded_categories(path, ("stories",)):
         return "story"
     segments = lowered.split("/")
     if any(segment in ("example", "examples", "demo", "demos", "sample", "samples") for segment in segments):
         return "example"
-    if any(segment in ("locale", "locales", "i18n", "translations") for segment in segments):
+    if any(
+        segment in ("locale", "locales", "i18n", "translations")
+        or segment.endswith(".lproj")
+        for segment in segments
+    ):
         return "translation"
     if lowered.endswith(_DOCUMENT_SUFFIXES):
         return "documentation"
@@ -1172,6 +1193,18 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
     if lowered.endswith(_SOURCE_SUFFIXES):
         return "public-source"
     return "unclassified"
+
+
+def _is_agent_tool_manifest(path: str, filename: str) -> bool:
+    if filename in ("gemini-extension.json", ".mcp.json", "mcp.json"):
+        return True
+    segments = path.split("/")
+    if "plugin" in segments and filename in ("plugin.json", ".app.json"):
+        return True
+    return "modelcontextprotocol" in segments and filename in (
+        "manifest.json",
+        "server.json",
+    )
 
 
 def _upstream_dispositions(

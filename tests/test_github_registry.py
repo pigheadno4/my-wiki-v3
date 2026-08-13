@@ -26,11 +26,11 @@ APPENDIX_A_INVENTORY = (
     ('paypal/paypal-sdk-release', 'https://github.com/paypal/paypal-sdk-release', 'release-index', 'tier2', 'github-release', False, 'releases-and-default-branch', 'monthly'),
     ('paypal/paypal-js', 'https://github.com/paypal/paypal-js', 'web-sdk', 'tier1', 'monorepo-packages', True, 'releases-and-default-branch', 'weekly'),
     ('paypal/paypal-ios', 'https://github.com/paypal/paypal-ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
-    ('paypal/postman-collections', 'https://github.com/paypal/postman-collections', 'api-collection', 'tier2', 'commit', False, 'default-branch', 'monthly'),
+    ('paypal/postman-collections', 'https://github.com/paypal/postman-collections', 'api-collection', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('paypal/paypal-typescript-server-sdk', 'https://github.com/paypal/PayPal-TypeScript-Server-SDK', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('paypal/paypal-php-server-sdk', 'https://github.com/paypal/PayPal-PHP-Server-SDK', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('paypal/paypal-messages-ios', 'https://github.com/paypal/paypal-messages-ios', 'messaging-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('paypal/paypal-messages-android', 'https://github.com/paypal/paypal-messages-android', 'messaging-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('paypal/paypal-messages-ios', 'https://github.com/paypal/paypal-messages-ios', 'messaging-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
+    ('paypal/paypal-messages-android', 'https://github.com/paypal/paypal-messages-android', 'messaging-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('paypal/paypal-sdk-logos', 'https://github.com/paypal/paypal-sdk-logos', 'assets', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('paypal/paypal-rest-api-specifications', 'https://github.com/paypal/paypal-rest-api-specifications', 'api-specification', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('paypal-examples/v6-web-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-sample-integration', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
@@ -42,7 +42,7 @@ APPENDIX_A_INVENTORY = (
     ('braintree/braintree_ios', 'https://github.com/braintree/braintree_ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/web-sdk-github-actions', 'https://github.com/braintree/web-sdk-github-actions', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('braintree/mobile-sdk-tooling', 'https://github.com/braintree/mobile-sdk-tooling', 'tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
-    ('braintree/graphql-api', 'https://github.com/braintree/graphql-api', 'api-specification', 'tier1', 'commit', False, 'default-branch', 'monthly'),
+    ('braintree/graphql-api', 'https://github.com/braintree/graphql-api', 'api-specification', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('braintree/credit-card-type', 'https://github.com/braintree/credit-card-type', 'utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree-web', 'https://github.com/braintree/braintree-web', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/uuid', 'https://github.com/braintree/uuid', 'utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
@@ -53,8 +53,8 @@ APPENDIX_A_INVENTORY = (
     ('braintree/braintree_php', 'https://github.com/braintree/braintree_php', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree_ruby', 'https://github.com/braintree/braintree_ruby', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree_node', 'https://github.com/braintree/braintree_node', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
-    ('braintree/braintree-ios-drop-in', 'https://github.com/braintree/braintree-ios-drop-in', 'drop-in', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
-    ('braintree/braintree-android-drop-in', 'https://github.com/braintree/braintree-android-drop-in', 'drop-in', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('braintree/braintree-ios-drop-in', 'https://github.com/braintree/braintree-ios-drop-in', 'drop-in', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
+    ('braintree/braintree-android-drop-in', 'https://github.com/braintree/braintree-android-drop-in', 'drop-in', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-ios', 'https://github.com/stripe/stripe-ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-apps', 'https://github.com/stripe/stripe-apps', 'developer-platform', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-cli', 'https://github.com/stripe/stripe-cli', 'cli', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
@@ -69,8 +69,8 @@ APPENDIX_A_INVENTORY = (
     ('stripe/react-stripe-js', 'https://github.com/stripe/react-stripe-js', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-terminal-ios', 'https://github.com/stripe/stripe-terminal-ios', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-terminal-android', 'https://github.com/stripe/stripe-terminal-android', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
-    ('stripe/ai', 'https://github.com/stripe/ai', 'developer-tooling', 'tier2', 'commit', False, 'default-branch', 'monthly'),
-    ('metronome-industries/metronome-node', 'https://github.com/Metronome-Industries/metronome-node', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('stripe/ai', 'https://github.com/stripe/ai', 'developer-tooling', 'tier2', 'commit', True, 'default-branch', 'monthly'),
+    ('metronome-industries/metronome-node', 'https://github.com/Metronome-Industries/metronome-node', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('metronome-industries/ai', 'https://github.com/Metronome-Industries/ai', 'developer-tooling', 'tier2', 'commit', False, 'default-branch', 'monthly'),
     ('metronome-industries/ai-eval', 'https://github.com/Metronome-Industries/ai-eval', 'evaluation-tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('metronome-industries/mintlify-docs', 'https://github.com/Metronome-Industries/mintlify-docs', 'docs-source', 'tier2', 'commit', False, 'default-branch', 'monthly'),
@@ -83,7 +83,7 @@ APPENDIX_A_INVENTORY = (
     ('adyen/adyen-magento2', 'https://github.com/Adyen/adyen-magento2', 'commerce-plugin', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-pos-mobile-ios', 'https://github.com/Adyen/adyen-pos-mobile-ios', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-pos-mobile-ios-test', 'https://github.com/Adyen/adyen-pos-mobile-ios-test', 'test-tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
-    ('adyen/adyen-postman', 'https://github.com/Adyen/adyen-postman', 'api-collection', 'tier2', 'commit', False, 'default-branch', 'monthly'),
+    ('adyen/adyen-postman', 'https://github.com/Adyen/adyen-postman', 'api-collection', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('adyen/adyen-php-api-library', 'https://github.com/Adyen/adyen-php-api-library', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-sdk-automation', 'https://github.com/Adyen/adyen-sdk-automation', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('adyen/release-automation-action', 'https://github.com/Adyen/release-automation-action', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
@@ -574,6 +574,64 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual((disabled,), select_repos(repos, company="stripe", enabled_only=False))
         self.assertEqual((disabled,), select_repos(repos, repo_id="stripe/stripe-ios", enabled_only=False))
 
+    def test_paypal_messages_ios_uses_the_reviewed_release_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(item for item in repos if item.id == "paypal/paypal-messages-ios")
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:paypal-messages-ios@1",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("1.2.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("paypal-messages-ios-public-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("paypal-messages-ios",), capsule.focus_packages)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertIn("Sources/PayPalMessages/Config", capsule.default_required_roots)
+        self.assertIn("Sources/PayPalMessages/IO", capsule.default_required_roots)
+        self.assertIn("Demo/Demo/Components", capsule.default_required_roots)
+        self.assertIn("Sources/PayPalMessages/PayPalMessageView.swift", capsule.include_paths)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+
+    def test_paypal_messages_android_uses_the_reviewed_release_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(item for item in repos if item.id == "paypal/paypal-messages-android")
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:paypal-messages-android@1",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("1.3.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("paypal-messages-android-public-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("paypal-messages-android",), capsule.focus_packages)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertIn("library/src/main/java", capsule.default_required_roots)
+        self.assertIn("library/src/main/res", capsule.default_required_roots)
+        self.assertIn("demo/src/main/java", capsule.default_required_roots)
+        self.assertIn("library/src/main/AndroidManifest.xml", capsule.include_paths)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+
     def test_adyen_web_uses_the_reviewed_bounded_public_source_capsule(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
         adyen = next(repo for repo in repos if repo.id == "adyen/adyen-web")
@@ -870,6 +928,175 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(200, capsule.max_capsule_files)
         self.assertEqual(1500000, capsule.max_capsule_utf8_bytes)
 
+    def test_braintree_ios_drop_in_uses_reviewed_public_source_capsule(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["braintree/braintree-ios-drop-in"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:BraintreeDropIn@9",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("9.14.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("braintree-ios-drop-in-public-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("BraintreeDropIn",), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(
+            {
+                "Demo/Application/Settings",
+                "Demo/Application/SwiftUI",
+                "Sources/BraintreeDropIn",
+            },
+            set(capsule.default_required_roots),
+        )
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(
+            {
+                "BraintreeDropIn.podspec",
+                "BraintreeDropIn.xcodeproj/project.pbxproj",
+                "CHANGELOG.md",
+                "DEVELOPMENT.md",
+                "Demo/Application/DemoAppDelegate.swift",
+                "Demo/Application/DemoBaseViewController.swift",
+                "Demo/Application/DemoContainerViewController.swift",
+                "Demo/Application/DemoDropInView.swift",
+                "Demo/Application/DemoDropInViewController.swift",
+                "Demo/Application/DemoMerchantAPIClient.swift",
+                "Demo/Application/DemoPurchaseButton.swift",
+                "Demo/Application/ViewHelpers.swift",
+                "LICENSE",
+                "Package.swift",
+                "README.md",
+            },
+            set(capsule.include_paths),
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(500, capsule.max_capsule_files)
+        self.assertEqual(5000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(550, capsule.max_packet_files)
+        self.assertEqual(6000000, capsule.max_packet_utf8_bytes)
+
+    def test_braintree_android_drop_in_uses_reviewed_public_source_capsule(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["braintree/braintree-android-drop-in"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:drop-in@6",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("6.17.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("braintree-android-drop-in-public-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("drop-in",), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(
+            {
+                "Demo/src/main/java",
+                "Demo/src/main/res/layout",
+                "Demo/src/main/res/menu",
+                "Demo/src/main/res/values",
+                "Demo/src/main/res/xml",
+                "Drop-In/src/main/java",
+                "Drop-In/src/main/res/anim",
+                "Drop-In/src/main/res/drawable",
+                "Drop-In/src/main/res/drawable-v21",
+                "Drop-In/src/main/res/layout",
+                "Drop-In/src/main/res/values",
+                "Drop-In/src/main/res/values-ar",
+                "Drop-In/src/main/res/values-cs",
+                "Drop-In/src/main/res/values-da",
+                "Drop-In/src/main/res/values-de",
+                "Drop-In/src/main/res/values-el",
+                "Drop-In/src/main/res/values-es",
+                "Drop-In/src/main/res/values-es-rXC",
+                "Drop-In/src/main/res/values-fi",
+                "Drop-In/src/main/res/values-fr",
+                "Drop-In/src/main/res/values-fr-rCA",
+                "Drop-In/src/main/res/values-fr-rXC",
+                "Drop-In/src/main/res/values-he",
+                "Drop-In/src/main/res/values-hu",
+                "Drop-In/src/main/res/values-id",
+                "Drop-In/src/main/res/values-it",
+                "Drop-In/src/main/res/values-iw",
+                "Drop-In/src/main/res/values-ja",
+                "Drop-In/src/main/res/values-ko",
+                "Drop-In/src/main/res/values-land",
+                "Drop-In/src/main/res/values-nb",
+                "Drop-In/src/main/res/values-nl",
+                "Drop-In/src/main/res/values-pl",
+                "Drop-In/src/main/res/values-pt",
+                "Drop-In/src/main/res/values-ru",
+                "Drop-In/src/main/res/values-sk",
+                "Drop-In/src/main/res/values-sv",
+                "Drop-In/src/main/res/values-th",
+                "Drop-In/src/main/res/values-v16",
+                "Drop-In/src/main/res/values-v21",
+                "Drop-In/src/main/res/values-w700dp",
+                "Drop-In/src/main/res/values-zh-rCN",
+                "Drop-In/src/main/res/values-zh-rHK",
+                "Drop-In/src/main/res/values-zh-rTW",
+                "Drop-In/src/main/res/values-zh-rXC",
+            },
+            set(capsule.default_required_roots),
+        )
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(
+            {
+                "ACKNOWLEDGEMENTS.md",
+                "CHANGELOG.md",
+                "CONTRIBUTING.md",
+                "DEVELOPMENT.md",
+                "Demo/build.gradle",
+                "Demo/src/main/AndroidManifest.xml",
+                "Drop-In/build.gradle",
+                "Drop-In/src/main/AndroidManifest.xml",
+                "LICENSE",
+                "README.md",
+                "build.gradle",
+                "gradle.properties",
+                "settings.gradle",
+                "v6_MIGRATION_GUIDE.md",
+            },
+            set(capsule.include_paths),
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(500, capsule.max_capsule_files)
+        self.assertEqual(5000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(550, capsule.max_packet_files)
+        self.assertEqual(6000000, capsule.max_packet_utf8_bytes)
+
     def test_braintree_node_uses_complete_runtime_checkout_profile(self):
         repos = {
             repo.id: repo
@@ -910,6 +1137,36 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(1500000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(260, capsule.max_packet_files)
         self.assertEqual(2000000, capsule.max_packet_utf8_bytes)
+
+    def test_braintree_graphql_api_has_reviewed_commit_policy(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["braintree/graphql-api"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual("api-specification", repo.repo_type)
+        self.assertEqual("tier1", repo.priority)
+        self.assertEqual("monthly", repo.collection_frequency)
+        self.assertEqual("default-branch", repo.track)
+        self.assertEqual("commit", repo.version_strategy)
+        self.assertEqual((), repo.version_tracks)
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("braintree-graphql-api-schema", capsule.id)
+        self.assertEqual("commit-tree-v1", capsule.adapter)
+        self.assertEqual("braintree-graphql-api", capsule.source_id)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(("schema.graphql",), capsule.default_required_roots)
+        self.assertEqual(("CHANGELOG.md", "README.md"), capsule.include_paths)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual(650000, capsule.max_file_bytes)
+        self.assertEqual(3, capsule.max_capsule_files)
+        self.assertEqual(800000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(15, capsule.max_packet_files)
+        self.assertEqual(1500000, capsule.max_packet_utf8_bytes)
 
     def test_stripe_js_uses_the_root_npm_public_source_profile(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
@@ -1176,6 +1433,54 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(3500000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(700, capsule.max_packet_files)
         self.assertEqual(5000000, capsule.max_packet_utf8_bytes)
+
+    def test_adyen_postman_has_reviewed_checkout_terminal_policy(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["adyen/adyen-postman"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual("api-collection", repo.repo_type)
+        self.assertEqual("tier2", repo.priority)
+        self.assertEqual("monthly", repo.collection_frequency)
+        self.assertEqual("default-branch", repo.track)
+        self.assertEqual("commit", repo.version_strategy)
+        self.assertEqual((), repo.version_tracks)
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("adyen-postman-checkout-terminal", capsule.id)
+        self.assertEqual("commit-tree-v1", capsule.adapter)
+        self.assertEqual("adyen-postman", capsule.source_id)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(
+            (
+                "in-person-payments/ipp.json",
+                "postman/BinLookupService-v54.json",
+                "postman/CheckoutService-v72.json",
+                "postman/RecurringService-v68.json",
+                "postman/TestCardService-v1.json",
+            ),
+            capsule.default_required_roots,
+        )
+        self.assertEqual(
+            (
+                ".github/workflows/sync-collections.yml",
+                "README.md",
+                "adyendev-postman-release-notes.md",
+                "generateAll.sh",
+                "in-person-payments/readme.md",
+            ),
+            capsule.include_paths,
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual(600000, capsule.max_file_bytes)
+        self.assertEqual(11, capsule.max_capsule_files)
+        self.assertEqual(1100000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(30, capsule.max_packet_files)
+        self.assertEqual(3000000, capsule.max_packet_utf8_bytes)
 
     def test_native_sdks_use_tagged_tree_profiles(self):
         repos = {

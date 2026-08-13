@@ -307,6 +307,29 @@ class CapsuleSelectionTests(unittest.TestCase):
             }.issubset(excluded_paths)
         )
 
+    def test_commit_dispatch_selects_exact_root_file(self):
+        tree = self.tree(
+            {
+                "CHANGELOG.md": "# Changes\n",
+                "README.md": "# GraphQL API\n",
+                "schema.graphql": "type Query { ping: String }\n",
+            }
+        )
+        capsule = self.commit_capsule(
+            source_id="braintree-graphql-api",
+            default_required_roots=("schema.graphql",),
+            include_paths=("CHANGELOG.md", "README.md"),
+        )
+
+        result = resolve_capsule(tree, capsule, ())
+
+        self.assertEqual(
+            {"CHANGELOG.md", "README.md", "schema.graphql"},
+            {item.path for item in result.files},
+        )
+        schema = next(item for item in result.files if item.path == "schema.graphql")
+        self.assertEqual("required-root", schema.classification_reason)
+
     def test_commit_dispatch_reuses_secret_binary_and_budget_guards(self):
         secret_tree = self.tree(
             {

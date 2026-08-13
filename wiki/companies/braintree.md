@@ -1,13 +1,19 @@
 ---
 title: "Braintree"
 type: company
-tags: [braintree, payments, checkout, javascript-sdk, node-js-sdk, android-sdk, ios-sdk]
-source_count: 5
+tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, android-sdk, ios-sdk]
+source_count: 8
 ---
 
 ## Overview
 
-Braintree is represented in this wiki by five independently versioned repositories: the Node.js server SDK, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, and native Braintree Android and iOS SDKs. Client SDKs produce payment-method nonces for server processing; the Node.js SDK performs gateway operations. Their package versions and evidence histories remain separate.
+Braintree is represented in this wiki by eight independently tracked repositories: the GraphQL API contract, Node.js server SDK, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, native Braintree Android and iOS SDKs, and separately versioned Android and iOS Drop-in UIs. Client SDKs produce payment-method nonces for server processing; the Node.js SDK performs gateway operations. The GraphQL schema describes a separate API contract. Their commit or package identities and evidence histories remain separate.
+
+## GraphQL API Contract
+
+The `braintree/graphql-api` baseline at exact commit `3a89f42` exposes the GraphQL contract for transaction authorization, charge, capture, partial capture, refunds and voids; client tokens, tokenization and vaulting; PayPal one-time payments and billing agreements; Venmo payment contexts; 3D Secure; and recurring billing plans and subscriptions.
+
+The schema is field-level contract evidence, not proof of merchant enablement or client-SDK support. Integration questions should combine it with the appropriate Web, Android, iOS, or server SDK source rather than treating schema presence as an end-to-end capability claim.
 
 ## Node.js Server SDK Surface
 
@@ -35,11 +41,23 @@ The repository schedules Drop-in deprecation for 2026-09-01 and unsupported stat
 
 PayPal and Venmo are separate Braintree modules. Venmo can launch the Venmo app or a mobile browser and supports conditional multi-use vaulting with a customer-scoped client token. This is distinct from the standalone `paypal/paypal-android` SDK, whose retained `2.3.0` source does not establish a native Venmo path.
 
+## Android Drop-in Surface
+
+`drop-in@6.17.0` provides a prebuilt Android payment-selection experience for cards, PayPal, Venmo, Google Pay, saved methods, vault management, card 3D Secure, and device-data collection. It requires Android API 21+ and pins Braintree Android `4.50.0`, so behavior from the independently retained `braintree-android@5.30.0` modular SDK cannot be attributed to it.
+
+Most selections return a nonce for server processing. PayPal defaults to a vault request, Venmo defaults to single use, and Venmo visibility requires remote enablement plus an available Venmo app switch at this baseline. Customer-scoped client tokens enable saved-method retrieval and deletion.
+
 ## iOS SDK Surface
 
 `braintree-ios@7.9.0` provides modular native clients for cards, PayPal, Venmo, Apple Pay, local payments, SEPA, 3D Secure, fraud data, Shopper Insights, messaging, and payment UI. It requires iOS 16+, Xcode 16.2+, and Swift 5.10+.
 
 PayPal supports separate checkout and vault requests, including billing-agreement consent and recurring metadata. Venmo is a separate native Braintree module using universal-link app switch with browser fallback and conditional multi-use vaulting. Apple Pay support creates and tokenizes a native payment request; the demo's recurring sheet does not by itself establish later merchant charges.
+
+## iOS Drop-in Surface
+
+`BraintreeDropIn@9.14.0` provides a prebuilt UIKit payment-selection experience for cards, PayPal, Venmo, Apple Pay, saved methods, vault management, and card 3D Secure. It supports iOS 12+ and requires `braintree_ios` 5.27.0, so behavior from the independently retained `braintree-ios@7.9.0` modular SDK cannot be attributed to it.
+
+Most selections return a nonce for server processing. Apple Pay selection returns only a method type and requires the merchant to present and tokenize the Apple Pay sheet separately. Venmo visibility additionally requires remote enablement and an installed Venmo app at this baseline.
 
 ## Versioned Implementation Knowledge
 
@@ -49,16 +67,21 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Knowledge Status
 
-- Ingested cumulative GitHub repository sources: 5
-- Ingested package releases: 6
+- Ingested cumulative GitHub repository sources: 8
+- Ingested package releases: 8
+- Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`
 - Latest retained Braintree Node release: `braintree@3.39.0` at `7a9270aaf31eb87819add64a768652243f90007c`
 - Latest retained Braintree Web release: `braintree-web@3.144.0` at `41460fba05c1ea1222e795b36a10765a6699b8e7`
 - Latest retained Drop-in release: `braintree-web-drop-in@1.47.0` at `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`
 - Latest retained Android release: `braintree-android@5.30.0` at `51f183a48557d0fd00eefa541712df0c4f21ee28`
+- Latest retained Android Drop-in release: `drop-in@6.17.0` at `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7`
 - Latest retained iOS release: `braintree-ios@7.9.0` at `4e987ca19f03b65a0d303b4c3ec95e0c723be971`
+- Latest retained iOS Drop-in release: `BraintreeDropIn@9.14.0` at `d951d104ac960188824bda191be2f57c57351a31`
 
 ## Sources
 
+- [[source-github-graphql-api]] - commit-qualified GraphQL API contract
+- [[changelog-github-graphql-api]] - GraphQL schema history
 - [[source-github-braintree-node]] - cumulative Node.js server SDK implementation baseline
 - [[changelog-github-braintree-node]] - package-qualified Node.js release ledger
 - [[source-github-braintree-web]] — cumulative Braintree Web implementation baseline
@@ -67,8 +90,12 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - [[changelog-github-braintree-web-drop-in]] - package-qualified Drop-in release ledger
 - [[source-github-braintree-android]] - cumulative native Android implementation baseline
 - [[changelog-github-braintree-android]] - package-qualified Android release ledger
+- [[source-github-braintree-android-drop-in]] - cumulative prebuilt Android Drop-in implementation baseline
+- [[changelog-github-braintree-android-drop-in]] - package-qualified Android Drop-in release ledger
 - [[source-github-braintree-ios]] - cumulative native iOS implementation baseline
 - [[changelog-github-braintree-ios]] - package-qualified iOS release ledger
+- [[source-github-braintree-ios-drop-in]] - cumulative prebuilt iOS Drop-in implementation baseline
+- [[changelog-github-braintree-ios-drop-in]] - package-qualified iOS Drop-in release ledger
 
 ## Related
 

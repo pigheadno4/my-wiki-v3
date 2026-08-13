@@ -24,8 +24,10 @@ AI developer tools for payments are platforms, SDKs, protocols, and integrations
 
 ### Stripe
 
-- **MCP server**: Interacts with Stripe API + searches docs knowledge base. Install: `docs.stripe.com/mcp`
-- **Agent skills**: 3 skills covering integration best practices. Install via npx / Claude Code / Cursor:
+- **MCP server**: Remote endpoint at `mcp.stripe.com`; OAuth clients are supported, while the local `@stripe/mcp` stdio bridge uses an API key or restricted key. Restricted-key permissions control available tools.
+- **Agent toolkits**: TypeScript `@stripe/agent-toolkit@0.9.1` and Python `stripe-agent-toolkit@0.7.0` adapt remote MCP tools to AI frameworks. They require asynchronous remote initialization and have no direct Stripe SDK fallback.
+- **LLM token billing**: `@stripe/ai-sdk@0.1.3` proxies model calls through `llm.stripe.com`; `@stripe/token-meter@0.1.0` meters native model SDK responses. Both are private-preview evidence at the retained SHA, and proxy tool calling is unsupported.
+- **Agent skills**: Repository-backed skills cover integration best practices and additional Connect, Stripe Apps, documentation, project, directory, and upgrade workflows. Install via npx / Claude Code / Cursor:
   - `stripe-best-practices` — API selection, Connect (Accounts v2), billing, Treasury, security (keys/webhooks/OAuth), deprecated API migration
   - `stripe-projects` — new app/repo setup, Stripe Projects CLI bootstrapping
   - `upgrade-stripe` — API version + SDK upgrades
@@ -33,7 +35,7 @@ AI developer tools for payments are platforms, SDKs, protocols, and integrations
 - **VS Code AI Assistant**: via Stripe VS Code extension; Copilot (`@stripe`) or standalone chat
 - **Plain text docs**: add `.md` to any Stripe docs URL; `/llms.txt` follows emerging standard
 
-See [[source-stripe-building-with-ai]].
+See [[source-stripe-building-with-ai]] for the documentation overview and [[source-github-ai]] for the exact-SHA implementation baseline.
 
 ### PayPal
 
@@ -50,6 +52,8 @@ See [[source-paypal-ai-developer-tools]], [[source-paypal-agent-toolkit]].
 - **Agent skills / instructions**: Pre-written LLM instructions encoding integration best practices — reduces hallucination and improves code quality
 - **llms.txt standard**: Emerging convention for making web content LLM-accessible (plain markdown, structured navigation)
 - **Claimable sandboxes**: Test environments that AI platforms can provision for users without account creation (Stripe-specific)
+- **Remote-tool dependency**: Agent toolkits can be framework adapters rather than local payment SDKs; network availability, least-privilege MCP credentials, initialization, and cleanup become integration requirements
+- **Repository evidence quality**: Runtime code can contradict examples or general guidance. Version-aware answers should prioritize exact-SHA implementation and identify private-preview or volatile claims
 
 ## Open Questions
 

@@ -6,6 +6,13 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-13] ingest | stripe/ai `main@1953b6c`
+
+- Full-ingested work item `github-39ab9debac014faec1c5` at exact SHA `1953b6cce7344d880a054c42b8dd21ca3e50ebd5` after serial full reading of all 212 required evidence paths.
+- Added an independently package-qualified baseline for `@stripe/ai-sdk@0.1.3`, `@stripe/token-meter@0.1.0`, `@stripe/mcp@0.3.3`, `@stripe/agent-toolkit@0.9.1`, and `stripe-agent-toolkit@0.7.0`, plus skills, provider manifests, and benchmarks.
+- Recorded private-preview access, proxy tool-calling limits, fire-and-forget meter-delivery risk, remote MCP dependency, toolkit migration requirements, and benchmark methodology.
+- Preserved contradictions between runtime source and examples/readmes instead of promoting stale guidance as package behavior.
+
 ## [2026-08-08] ingest | stripe/stripe-node `22.4.0`
 
 - Approved and processed work item `github-e923ffd86b6fd634a620` in full mode at exact SHA `57626dcdfb94164fc9f112dfaa3c57aec5130e4f`.

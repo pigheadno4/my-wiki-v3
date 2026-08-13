@@ -71,6 +71,10 @@ The September 2023 `paypal-examples/paypal-sdk-server-side-integration` baseline
 > [!warning] Historical sample validation gaps
 > These examples are illustrative rather than production-ready. Their Fastify schemas require neither `subscriptionId` nor plan configuration; missing plan values become the literal string `"undefined"`. The revise browser ignores the server response, returns the original subscription ID, and then displays success. Use current Subscriptions documentation for supported lifecycle semantics and validation requirements.
 
+### Postman lifecycle baseline at `7f7240a`
+
+The Public APIs collection provides runnable examples for product and plan setup, plan activation/deactivation and pricing changes, and subscription create, show, update, revise, suspend, activate, cancel, balance capture, authorized-amount capture, and transaction listing. Its revise operation covers plan, quantity, shipping amount, and shipping-address changes and explicitly requires buyer consent. Stored responses are commit-qualified examples, so current lifecycle constraints and errors must still be checked against the API contract and current documentation.
+
 ### Billing plan structure (`billing_cycles` array)
 
 - Up to **3 cycles** per plan (e.g. trial → discounted → regular)
@@ -121,3 +125,4 @@ See [[source-paypal-payment-failures]] for full error code reference.
 - [[source-github-paypal-sdk-server-side-integration]] — historical create, `CONTINUE` activation, and plan-revise sample with documented validation gaps
 - [[source-github-paypal-typescript-server-sdk]] — package-qualified `2.3.0` controller and model surface for products, plans, and subscription lifecycle operations
 - [[source-github-paypal-rest-api-specifications]] — exact-SHA Catalog Products 1.0 and Subscriptions 1.8 contracts
+- [[source-github-postman-collections]] — runnable product, plan, and subscription lifecycle examples at exact commit

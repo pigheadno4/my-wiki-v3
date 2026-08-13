@@ -371,6 +371,25 @@ class GitHubWorkItemTests(unittest.TestCase):
         self.assertEqual(2, len(item.package_changes))
         self.assertEqual("full", item.recommended_mode)
 
+    def test_work_item_accepts_case_sensitive_tagged_package_identity(self):
+        change = self.change(
+            package="BraintreeDropIn",
+            from_version="",
+            to_version="9.14.0",
+            recommended_mode="full",
+            reasons=("initial-release-baseline",),
+        )
+
+        item = build_work_item(
+            "braintree/braintree-ios-drop-in",
+            "d951d10" * 5 + "d951d",
+            "2026-08-13",
+            (change,),
+            "raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/manifest.json",
+        )
+
+        self.assertEqual("BraintreeDropIn@9.14.0", item.package_changes[0].release_id)
+
     def test_user_approval_is_required_before_ingesting(self):
         save_work_items(self.path, (self.awaiting_item,))
 

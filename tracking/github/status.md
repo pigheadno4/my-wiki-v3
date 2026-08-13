@@ -75,6 +75,33 @@
   Release: [manifest](../../raw/github/braintree/braintree-web/releases/braintree-web/3.144.0/2026-07-28/manifest.json)
   Comparison: [manifest](repos/braintree/braintree-web/comparisons/braintree-web/3.143.0--3.144.0/comparison.json)
 
+## `github-28afa4b70001aa3c42da`
+
+- Repository: `paypal/postman-collections`
+- SHA: `7f7240ab2d9417a55bf9c68355bf33bf64b1665c`
+- Collection date: `2026-08-12`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/postman-collections/snapshots/2026-08-12-7f7240a/manifest.json)
+- Packet: [review packet](repos/paypal/postman-collections/ingest-packets/github-28afa4b70001aa3c42da/packet.md)
+- Review priority: `high`
+- Required reading: `17` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@7f7240a` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `7f7240ab2d9417a55bf9c68355bf33bf64b1665c`
+  Comparison: Not applicable
+
 ## `github-2957d7d341f9f6cb5ecc`
 
 - Repository: `adyen/adyen-node-api-library`
@@ -124,6 +151,58 @@
 
 - `braintree-ios@7.9.0` (recommended `full`)
   Release: [manifest](../../raw/github/braintree/braintree_ios/releases/braintree-ios/7.9.0/2026-08-01/manifest.json)
+  Comparison: Not applicable
+
+## `github-39a4005f41fbb0234224`
+
+- Repository: `paypal/paypal-messages-android`
+- SHA: `f1aa138cc6822cc11d68ac4bfdee3cf183aedbc2`
+- Collection date: `2026-08-12`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messages-android/snapshots/2026-08-12-f1aa138/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messages-android/ingest-packets/github-39a4005f41fbb0234224/packet.md)
+- Review priority: `normal`
+- Required reading: `126` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `paypal-messages-android@1.3.0` (recommended `full`)
+  Release: [manifest](../../raw/github/paypal/paypal-messages-android/releases/paypal-messages-android/1.3.0/2026-08-12/manifest.json)
+  Comparison: Not applicable
+
+## `github-39ab9debac014faec1c5`
+
+- Repository: `stripe/ai`
+- SHA: `1953b6cce7344d880a054c42b8dd21ca3e50ebd5`
+- Collection date: `2026-08-13`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/manifest.json)
+- Packet: [review packet](repos/stripe/ai/ingest-packets/github-39ab9debac014faec1c5/packet.md)
+- Review priority: `high`
+- Required reading: `212` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@1953b6c` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `1953b6cce7344d880a054c42b8dd21ca3e50ebd5`
   Comparison: Not applicable
 
 ## `github-43baf5daaf3a92e79a79`
@@ -229,6 +308,33 @@
   Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.41.1/2026-08-09/manifest.json)
   Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.41.0--6.41.1/comparison.json)
 
+## `github-63997abe9a7d60c5179b`
+
+- Repository: `paypal/paypal-messages-ios`
+- SHA: `fdd18681f486a3b2f1c60e3c47f8669f55a73a96`
+- Collection date: `2026-08-13`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messages-ios/snapshots/2026-08-13-fdd1868/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messages-ios/ingest-packets/github-63997abe9a7d60c5179b/packet.md)
+- Review priority: `normal`
+- Required reading: `12` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@fdd1868` (recommended `delta`)
+  Ref: `develop`
+  From SHA: `432d6b832714b2615106c3f2a748ac61654d8bbd`
+  To SHA: `fdd18681f486a3b2f1c60e3c47f8669f55a73a96`
+  Comparison: [manifest](repos/paypal/paypal-messages-ios/comparisons/default-branch/432d6b8--fdd1868/comparison.json)
+
 ## `github-6403ae7181617adc4020`
 
 - Repository: `paypal-examples/v6-web-sdk-sample-integration`
@@ -254,6 +360,31 @@
   Ref: `main`
   From SHA: `baseline`
   To SHA: `b5f2df209b0bfd10b1a3cde600088ddf21e43523`
+  Comparison: Not applicable
+
+## `github-64aa2131b6b057d2f41c`
+
+- Repository: `braintree/braintree-android-drop-in`
+- SHA: `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7`
+- Collection date: `2026-08-13`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/manifest.json)
+- Packet: [review packet](repos/braintree/braintree-android-drop-in/ingest-packets/github-64aa2131b6b057d2f41c/packet.md)
+- Review priority: `normal`
+- Required reading: `168` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `drop-in@6.17.0` (recommended `full`)
+  Release: [manifest](../../raw/github/braintree/braintree-android-drop-in/releases/drop-in/6.17.0/2026-08-13/manifest.json)
   Comparison: Not applicable
 
 ## `github-7ecc6c2199897656ffe3`
@@ -432,6 +563,31 @@
 - `@paypal/paypal-server-sdk@2.4.0` (recommended `delta`)
   Release: [manifest](../../raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.4.0/2026-08-10/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-typescript-server-sdk/comparisons/paypal-server-sdk/2.3.0--2.4.0/comparison.json)
+
+## `github-92242b9e450d596215e2`
+
+- Repository: `braintree/braintree-ios-drop-in`
+- SHA: `d951d104ac960188824bda191be2f57c57351a31`
+- Collection date: `2026-08-13`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/manifest.json)
+- Packet: [review packet](repos/braintree/braintree-ios-drop-in/ingest-packets/github-92242b9e450d596215e2/packet.md)
+- Review priority: `normal`
+- Required reading: `206` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `BraintreeDropIn@9.14.0` (recommended `full`)
+  Release: [manifest](../../raw/github/braintree/braintree-ios-drop-in/releases/braintreedropin/9.14.0/2026-08-13/manifest.json)
+  Comparison: Not applicable
 
 ## `github-92e87b7fea5fb1703585`
 
@@ -617,6 +773,33 @@
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/9.3.0/2026-07-22/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/8.9.2--9.3.0/comparison.json)
 
+## `github-ab2d0a488d97d9590b4c`
+
+- Repository: `adyen/adyen-postman`
+- SHA: `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7`
+- Collection date: `2026-08-12`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-postman/snapshots/2026-08-12-ecb2907/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-postman/ingest-packets/github-ab2d0a488d97d9590b4c/packet.md)
+- Review priority: `high`
+- Required reading: `16` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@ecb2907` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7`
+  Comparison: Not applicable
+
 ## `github-b11f1f62c66a78b84806`
 
 - Repository: `paypal/paypal-js`
@@ -718,6 +901,31 @@
   Ref: `main`
   From SHA: `baseline`
   To SHA: `90e8041ffe02d80c452d2b476bedd59a8d219bdc`
+  Comparison: Not applicable
+
+## `github-b94b44c30164dfad8034`
+
+- Repository: `paypal/paypal-messages-ios`
+- SHA: `432d6b832714b2615106c3f2a748ac61654d8bbd`
+- Collection date: `2026-08-12`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messages-ios/snapshots/2026-08-12-432d6b8/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messages-ios/ingest-packets/github-b94b44c30164dfad8034/packet.md)
+- Review priority: `normal`
+- Required reading: `69` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `paypal-messages-ios@1.2.0` (recommended `full`)
+  Release: [manifest](../../raw/github/paypal/paypal-messages-ios/releases/paypal-messages-ios/1.2.0/2026-08-12/manifest.json)
   Comparison: Not applicable
 
 ## `github-bd7fe849961b5c6b9964`
@@ -901,6 +1109,33 @@
   Release: [manifest](../../raw/github/stripe/stripe-android/releases/stripe-android/23.13.1/2026-07-31/manifest.json)
   Comparison: Not applicable
 
+## `github-d36f782cded039bfef90`
+
+- Repository: `braintree/graphql-api`
+- SHA: `3a89f427466a0a978dbfcfd953913f4e76c3264a`
+- Collection date: `2026-08-11`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/graphql-api/snapshots/2026-08-11-3a89f42/manifest.json)
+- Packet: [review packet](repos/braintree/graphql-api/ingest-packets/github-d36f782cded039bfef90/packet.md)
+- Review priority: `normal`
+- Required reading: `8` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@3a89f42` (recommended `full`)
+  Ref: `master`
+  From SHA: `baseline`
+  To SHA: `3a89f427466a0a978dbfcfd953913f4e76c3264a`
+  Comparison: Not applicable
+
 ## `github-d784ed22413ba025c631`
 
 - Repository: `stripe/react-stripe-js`
@@ -1028,3 +1263,55 @@
 - `@paypal/checkout-components@5.0.425` (recommended `full`)
   Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.425/2026-07-23/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/4.1.47--5.0.425/comparison.json)
+
+## `github-f8e02889b5caf0809fc7`
+
+- Repository: `metronome-industries/metronome-node`
+- SHA: `f8ac11210fbca9616a220e82ea82ac1d340ea2df`
+- Collection date: `2026-08-12`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/manifest.json)
+- Packet: [review packet](repos/metronome/metronome-node/ingest-packets/github-f8e02889b5caf0809fc7/packet.md)
+- Review priority: `high`
+- Required reading: `103` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@metronome/sdk@3.10.0` (recommended `full`)
+  Release: [manifest](../../raw/github/metronome/metronome-node/releases/sdk/3.10.0/2026-08-12/manifest.json)
+  Comparison: Not applicable
+
+## `github-fed285eccd42cc9507d5`
+
+- Repository: `paypal/paypal-messages-android`
+- SHA: `0424354a5fa0ab697275186fe101d105838ac03e`
+- Collection date: `2026-08-13`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messages-android/snapshots/2026-08-13-0424354/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messages-android/ingest-packets/github-fed285eccd42cc9507d5/packet.md)
+- Review priority: `normal`
+- Required reading: `12` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@0424354` (recommended `delta`)
+  Ref: `develop`
+  From SHA: `1d2238c9e5ec3564ad5d8060c474e008ab7bf779`
+  To SHA: `0424354a5fa0ab697275186fe101d105838ac03e`
+  Comparison: [manifest](repos/paypal/paypal-messages-android/comparisons/default-branch/1d2238c--0424354/comparison.json)

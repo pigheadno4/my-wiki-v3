@@ -20,6 +20,9 @@ class GitCommandError(RuntimeError):
     """A bounded, actionable failure from a Git subprocess."""
 
     def __init__(self, args: Sequence[str], returncode: int, stderr: Optional[str]):
+        self.args = tuple(args)
+        self.returncode = returncode
+        self.stderr = stderr
         command = "git " + " ".join(args)
         detail = (stderr or "").strip()
         if len(detail) > _ERROR_STDERR_LIMIT:
@@ -77,9 +80,11 @@ def run_git(args: Sequence[str], cwd: Optional[Path] = None) -> str:
 
 def clone_repository(config: RepoConfig, destination: Path) -> None:
     """Create the required partial no-checkout clone for later exact resolution."""
-    run_git(
-        ["clone", "--filter=blob:none", "--no-checkout", "--no-tags", config.url, str(destination)]
-    )
+    source = Path(config.url)
+    options = ["clone", "--no-checkout", "--no-tags"]
+    if not source.exists():
+        options.insert(1, "--filter=blob:none")
+    run_git(options + [config.url, str(destination)])
 
 
 def fetch_required_refs(config: RepoConfig, clone_path: Path, selectors: Sequence[str]) -> None:
@@ -96,6 +101,17 @@ def fetch_required_refs(config: RepoConfig, clone_path: Path, selectors: Sequenc
         if refspec not in fetched:
             run_git(["fetch", "--depth=1", "--no-tags", "origin", refspec], clone_path)
             fetched.add(refspec)
+
+
+def fetch_commit_history(clone_path: Path, sha: str) -> None:
+    """Fetch the ancestry required to validate and compare an exact commit boundary."""
+    if run_git(["rev-parse", "--is-shallow-repository"], clone_path) != "true":
+        return
+    destination = "refs/github-collection/commits/" + sha.lower()
+    run_git(
+        ["fetch", "--unshallow", "--no-tags", "origin", sha + ":" + destination],
+        clone_path,
+    )
 
 
 def inspect_repository(config: RepoConfig, clone_path: Path) -> RepoInspection:
@@ -147,23 +163,25 @@ def inspect_repository(config: RepoConfig, clone_path: Path) -> RepoInspection:
         _tag_ref(config.id, name, tag_shas[name], aliases_by_sha[tag_shas[name]], commit_time(tag_shas[name]))
         for name in sorted(tag_names)
     )
-    commit_refs = tuple(
-        ResolvedRef(
-            repo_id=config.id,
-            ref_kind="commit",
-            ref_name=sha,
-            sha=sha,
-            version=sha,
-            aliases=aliases_by_sha.get(sha, ()),
-            upstream_commit_time=commit_time(sha),
-            release_published_at=None,
+    commit_refs = ()
+    if config.version_strategy != "commit":
+        commit_refs = tuple(
+            ResolvedRef(
+                repo_id=config.id,
+                ref_kind="commit",
+                ref_name=sha,
+                sha=sha,
+                version=sha,
+                aliases=aliases_by_sha.get(sha, ()),
+                upstream_commit_time=commit_time(sha),
+                release_published_at=None,
+            )
+            for sha in sorted(
+                sha
+                for sha in run_git(["rev-list", "--all"], clone_path).splitlines()
+                if sha != default_sha
+            )
         )
-        for sha in sorted(
-            sha
-            for sha in run_git(["rev-list", "--all"], clone_path).splitlines()
-            if sha != default_sha
-        )
-    )
     return RepoInspection(
         default_branch=default_branch,
         refs=(branch_ref,) + tag_refs + commit_refs,

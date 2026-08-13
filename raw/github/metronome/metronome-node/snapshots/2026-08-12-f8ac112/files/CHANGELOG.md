@@ -1,0 +1,1170 @@
+# Changelog
+
+## 3.10.0 (2026-07-22)
+
+Full Changelog: [v3.9.0...v3.10.0](https://github.com/Metronome-Industries/metronome-node/compare/v3.9.0...v3.10.0)
+
+### Features
+
+* [ORCH-2018] fixes type issues created from breaking gql changes ([88828d5](https://github.com/Metronome-Industries/metronome-node/commit/88828d57b9cc70d43c765d5956d5681981dfa60f))
+* Add add_credit_type_conversions field to update_rate_card ([46cee84](https://github.com/Metronome-Industries/metronome-node/commit/46cee84651469fa2a2e9586e1f2a8d4fa491f0d5))
+* Add cost_basis to commits ([1ff5569](https://github.com/Metronome-Industries/metronome-node/commit/1ff55690bb9283fb86b11bec0609634231b409fe))
+* Add daily recurring commit description to docs ([f8c0661](https://github.com/Metronome-Industries/metronome-node/commit/f8c0661d2a92edb9c42ce59cab7624a0a75e956a))
+* add stlc SDK generation workflow to api repo ([ebc8066](https://github.com/Metronome-Industries/metronome-node/commit/ebc8066c931547dcc71317b712b860c51ddeead5))
+* Docs: embeddable dashboard doc updates ([5543ec3](https://github.com/Metronome-Industries/metronome-node/commit/5543ec332a8ad40f71970b8c0613ec0afa6aa6db))
+* Kmd/remove supersede from contract transition ([9cbd75e](https://github.com/Metronome-Industries/metronome-node/commit/9cbd75ef1350c4e629142a4dec10ad1470d9638b))
+* Plumb applicable_contract_ids in edit customer commit ([f2ec444](https://github.com/Metronome-Industries/metronome-node/commit/f2ec4449d84c410c6e8c2b549b0d934d90db7942))
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([130adee](https://github.com/Metronome-Industries/metronome-node/commit/130adee546349b6ece3aabb6d72d38515f43b28e))
+
+
+### Bug Fixes
+
+* **ci:** bump @arethetypeswrong/cli to ^0.18.0 and run CI workflows on Node 24 ([59c6ed5](https://github.com/Metronome-Industries/metronome-node/commit/59c6ed54645fa45457a052f74ae0e319ed02489a))
+
+## 3.9.0 (2026-07-02)
+
+Full Changelog: [v3.8.0...v3.9.0](https://github.com/Metronome-Industries/metronome-node/compare/v3.8.0...v3.9.0)
+
+### Features
+
+* [ORCH-1875] add billing config schedule to api ([b59f319](https://github.com/Metronome-Industries/metronome-node/commit/b59f3196de4cc34f867c7bf66af6308b81ab55a1))
+
+## 3.8.0 (2026-07-01)
+
+Full Changelog: [v3.7.0...v3.8.0](https://github.com/Metronome-Industries/metronome-node/compare/v3.7.0...v3.8.0)
+
+### Features
+
+* [🪿] Remove `allow-subscriptions-custom-billing-anchor` feature flag ([25b53c0](https://github.com/Metronome-Industries/metronome-node/commit/25b53c041ad46accf953eb8166960c772e5295ad))
+* Add `Action` and `Action_hover` theme color options to embeddable dashboard ([465ef11](https://github.com/Metronome-Industries/metronome-node/commit/465ef1128ceab092024bffb2d367d8dbe8cc1ee6))
+* Add alert specifiers to  for `low_remaining_contract_credit_and_commit_balance_reached` threshold notification creation payload ([b6dcae9](https://github.com/Metronome-Industries/metronome-node/commit/b6dcae9839c734b0e3582da916a6e7e55c0ff6e6))
+* Add any_commit_and_credit_ids to override specifier fields ([ff58c81](https://github.com/Metronome-Industries/metronome-node/commit/ff58c818077f25e13a1b4e2ca4e80f27ba2775a8))
+* add getSubscriptionSeatsHistory to Node SDK ([884b1db](https://github.com/Metronome-Industries/metronome-node/commit/884b1db29a29bb4f259831b2479f7ef206b3e876))
+* Add notification_metadata to four API endpoints (Anthropic-only) ([2fb1710](https://github.com/Metronome-Industries/metronome-node/commit/2fb171039e9865fe066d49a529bc2f70b946c958))
+* added created by to commits ([2402508](https://github.com/Metronome-Industries/metronome-node/commit/24025087b01359cd778b9a137d3adfe326197043))
+* **CONN-980:** add contract_id, invoice_type, show_unbillable_invoices to embeddable dashboard API ([b04c5cf](https://github.com/Metronome-Industries/metronome-node/commit/b04c5cfb73059d1a4c3c13f99e32f1b330a0d385))
+* createdBy description specifies excluding system created commits ([967a1aa](https://github.com/Metronome-Industries/metronome-node/commit/967a1aad0c7a9b052481c309510d65b34a799e74))
+* daily recurrence frequency for recurring commits ([c67778d](https://github.com/Metronome-Industries/metronome-node/commit/c67778da1f3b4d5a59088d73c80f94fa8ff406ae))
+* Docs: Update v1.yml ([35c06ca](https://github.com/Metronome-Industries/metronome-node/commit/35c06ca765c3be8deab1d9a9bfd0dae1ef492598))
+* Revert "[pgs] Remove `allow-subscriptions-custom-billing-anchor` and proration rounding feature flags" ([5bc4ec1](https://github.com/Metronome-Industries/metronome-node/commit/5bc4ec10a351da54cb61ff782abdcd30800ca761))
+* Revert "Revert "[pgs] Remove `allow-subscriptions-custom-billing-anchor` and proration rounding feature flags"" ([2441f08](https://github.com/Metronome-Industries/metronome-node/commit/2441f08c98b68780e3cc4d83801060a13e6a027f))
+* skip seat IDs from balances ([9c1d041](https://github.com/Metronome-Industries/metronome-node/commit/9c1d041bb87f71efe6449acbf874a63e2690f470))
+* Update copy ([bd18a9b](https://github.com/Metronome-Industries/metronome-node/commit/bd18a9bbc4f197c4c14bb2f1083933caaab71538))
+
+
+### Bug Fixes
+
+* **client:** send content-type header for requests with an omitted optional body ([1c94ce4](https://github.com/Metronome-Industries/metronome-node/commit/1c94ce4c1e019979726e2697ded71b9ad8bf3010))
+
+
+### Chores
+
+* (internal) Add description for threshold balance specifiers fields ([0ba34e8](https://github.com/Metronome-Industries/metronome-node/commit/0ba34e894d2e4331824212d4930519981a3bfe59))
+
+
+### Documentation
+
+* add RPS limit and batch recommendation to addRate endpoint ([a9ca147](https://github.com/Metronome-Industries/metronome-node/commit/a9ca147bb7aa773a81fe48bd3abc6ed5481a516e))
+* **mcp-server:** mark package as deprecated ([#263](https://github.com/Metronome-Industries/metronome-node/issues/263)) ([52580cd](https://github.com/Metronome-Industries/metronome-node/commit/52580cd98fb2f49a1b7ba3204b70e6edd45ab823))
+* **mcp-server:** warn about HTTP transport auth and local code execution risks ([#262](https://github.com/Metronome-Industries/metronome-node/issues/262)) ([f541564](https://github.com/Metronome-Industries/metronome-node/commit/f541564bfd8b8be5ae0d46fe802921d938ee51b3))
+
+## 3.7.0 (2026-05-29)
+
+Full Changelog: [v3.6.0...v3.7.0](https://github.com/Metronome-Industries/metronome-node/compare/v3.6.0...v3.7.0)
+
+### Features
+
+* [LAUNCH-2814] editContract returns full edit in the response ([197a27a](https://github.com/Metronome-Industries/metronome-node/commit/197a27ad6de47af9b3c725ec79f296e567238f41))
+* [orch-1860] remove all deprecated `/payments/*` endpoints from API ([03d2179](https://github.com/Metronome-Industries/metronome-node/commit/03d217925dad440f11f078606bd6387ed97371cb))
+* create contract returns contract data ([b6530d4](https://github.com/Metronome-Industries/metronome-node/commit/b6530d4c04ad0aebca11493212cf952f9a07b51d))
+* nikku-orch-1723-update-create-contract ([fc920c3](https://github.com/Metronome-Industries/metronome-node/commit/fc920c36a4cb7262cf70ae3b895b4e129b4a2f8b))
+
+
+### Bug Fixes
+
+* **mcp:** use `pure-lockfile` when building mcp server ([df0ff5b](https://github.com/Metronome-Industries/metronome-node/commit/df0ff5b4c9e7591145369af6a2b862fc4f0d3fb3))
+* **typescript:** upgrade tsc-multi so that it works with Node 26 ([ed31463](https://github.com/Metronome-Industries/metronome-node/commit/ed314636e08ca6002585211a9814bb60522fc614))
+
+
+### Chores
+
+* (internal) Add threshold balance specifier to contract create & edit, package create and both contract and package retrievals ([07eb0fe](https://github.com/Metronome-Industries/metronome-node/commit/07eb0fe97fee540544e5ce3b68109a3345c13854))
+
+## 3.6.0 (2026-05-18)
+
+Full Changelog: [v3.5.0...v3.6.0](https://github.com/Metronome-Industries/metronome-node/compare/v3.5.0...v3.6.0)
+
+### Features
+
+* [docs] fix typo in "Create a Contract" [1] page ([6a60d22](https://github.com/Metronome-Industries/metronome-node/commit/6a60d229e2cddcbb00beb374d0aa478cdad43baf))
+* [orch-383] fix API docs for one-off payment-gated commits ([45eede3](https://github.com/Metronome-Industries/metronome-node/commit/45eede35bb9a5684b64b2ecda36566b6a2fe6def))
+* Add alert specifiers to contract create API ([d602713](https://github.com/Metronome-Industries/metronome-node/commit/d6027136f64a6556e1677ee1ad2763c64b3f87f1))
+* add contract_id filter to list invoices endpoint ([d5f9d09](https://github.com/Metronome-Industries/metronome-node/commit/d5f9d097cda65cb60e4faad5a554fc5b433f47f4))
+* add invoice type filter for list invoices api ([e27af18](https://github.com/Metronome-Industries/metronome-node/commit/e27af18c5c2d2c9200d27fa4a239cb75f38cb8d5))
+* Add list seat balances API endpoint to SDK ([60133b6](https://github.com/Metronome-Industries/metronome-node/commit/60133b65a6d667d0f7df3f4c3318899723ae30f6))
+* Add regenerated_from_invoice_id to getInvoice response ([43507a5](https://github.com/Metronome-Industries/metronome-node/commit/43507a549c3018ca6c8dd1da03b519d45a72fa6f))
+* Add sql_breakdown_granularity flag to product create/edit ([c43c40b](https://github.com/Metronome-Industries/metronome-node/commit/c43c40b33687972f5bdadba49c30888b8c0d76af))
+* added custom fields to create contract with package ([67d7fd3](https://github.com/Metronome-Industries/metronome-node/commit/67d7fd34ff8f2aa15d517bd0ed4b4c7737ab39ac))
+* **api:** Adding one skip logic to remove timeout issues for Java list ([58d2b46](https://github.com/Metronome-Industries/metronome-node/commit/58d2b46e26647f1565869414fe9e3f9d5bba5c43))
+* doc updates ([6821afa](https://github.com/Metronome-Industries/metronome-node/commit/6821afa871d3cc026a2f641877cfcca0562bf863))
+* Limit spend breakdown/seat balances to 100 vals ([d6dee53](https://github.com/Metronome-Industries/metronome-node/commit/d6dee53e53183aabc01692fb02117c086222bb2a))
+* Pranadreddy/launch 2486 remove dead billing anchor date field from api ([575f29b](https://github.com/Metronome-Industries/metronome-node/commit/575f29bf0a73556b6cafbf2f08e7e1f2d0accc64))
+* support setting headers via env ([849392e](https://github.com/Metronome-Industries/metronome-node/commit/849392e22b3f7718565e98b2ce5b2f6a34b1ba70))
+* Update stainless.yml to include Java configuration logic ([433ca0d](https://github.com/Metronome-Industries/metronome-node/commit/433ca0dba88262755fd9efe952c605dc69a7407e))
+* wip ([031cf01](https://github.com/Metronome-Industries/metronome-node/commit/031cf014b88c734f445662dcf29233ac5694e89d))
+
+
+### Bug Fixes
+
+* add archived_at to Credit schema (parity with Commit) ([cfaba9b](https://github.com/Metronome-Industries/metronome-node/commit/cfaba9be9f76c32105f7bc5b951bf234e5285ca8))
+
+
+### Chores
+
+* avoid formatting file that gets changed during releases ([0b995ff](https://github.com/Metronome-Industries/metronome-node/commit/0b995ff32ec3d367ae792abe7ee1853a0c62eba2))
+* configure new SDK language ([ecfb751](https://github.com/Metronome-Industries/metronome-node/commit/ecfb751f91cd7e8800ef377916c41c5e9e81df04))
+* configure new SDK language ([76a0031](https://github.com/Metronome-Industries/metronome-node/commit/76a00311082791a57bb245daee6035e371c98bde))
+* configure new SDK language ([1b487c2](https://github.com/Metronome-Industries/metronome-node/commit/1b487c2997cfe498c5bd1b61787d4f6a19d525d3))
+* configure new SDK language ([350b9f0](https://github.com/Metronome-Industries/metronome-node/commit/350b9f062ed88597558e6d9d7285e60aba57fe87))
+* **format:** run eslint and prettier separately ([0389bbe](https://github.com/Metronome-Industries/metronome-node/commit/0389bbe07c0ad22652c128e9c3282ab9081827e7))
+* **formatter:** run prettier and eslint separately ([d41424c](https://github.com/Metronome-Industries/metronome-node/commit/d41424c2828ddb85df1c91194c99a70aedcb7bd0))
+* **internal:** codegen related update ([462c56f](https://github.com/Metronome-Industries/metronome-node/commit/462c56f69d31a9c2d2c5681136b8c0f14068c446))
+* **internal:** codegen related update ([eddf929](https://github.com/Metronome-Industries/metronome-node/commit/eddf929f744954b48617c0f05b4ceaa4e9577f90))
+* **internal:** more robust bootstrap script ([eb22d81](https://github.com/Metronome-Industries/metronome-node/commit/eb22d818d4f326622fb6b77daae65ae2c0eeeac4))
+* **internal:** update docs ordering ([d176e84](https://github.com/Metronome-Industries/metronome-node/commit/d176e847a10483ce4a3ba3ba88d8d0acc355652f))
+* redact api-key headers in debug logs ([35102ad](https://github.com/Metronome-Industries/metronome-node/commit/35102addb800796b37235792a2ff086e21e600d4))
+* restructure docs search code ([4f7af22](https://github.com/Metronome-Industries/metronome-node/commit/4f7af226545ca63e81e7559f0fddd97139bbd7ab))
+* **tests:** remove redundant File import ([e7233f7](https://github.com/Metronome-Industries/metronome-node/commit/e7233f7fac50e14069269ca93979bf1ece303f53))
+* update SDK settings ([5915497](https://github.com/Metronome-Industries/metronome-node/commit/59154971ba808f684b8ee759f2c576692488a7a0))
+* update SDK settings ([994d000](https://github.com/Metronome-Industries/metronome-node/commit/994d0004906fb95da9d794f6897f82df08105ccc))
+
+
+### Documentation
+
+* clarify forwards compat behavior ([c45057b](https://github.com/Metronome-Industries/metronome-node/commit/c45057b3d1cf2f2ff64ad0042d3abbf1d17c7970))
+* update http mcp docs ([a4df3eb](https://github.com/Metronome-Industries/metronome-node/commit/a4df3eb5136fd56fbfa84b8293f29ae489ba0d93))
+* update logging docs ([d4537e1](https://github.com/Metronome-Industries/metronome-node/commit/d4537e1a4150db9a83261afbcf7e8b1bb7d40dde))
+* update with proxy auth info ([a411bd7](https://github.com/Metronome-Industries/metronome-node/commit/a411bd755ead41e095e6ffa7aa08ee5c745bf1f4))
+
+## 3.5.0 (2026-04-17)
+
+Full Changelog: [v3.4.1...v3.5.0](https://github.com/Metronome-Industries/metronome-node/compare/v3.4.1...v3.5.0)
+
+### Features
+
+* add override created at in api responses ([86da750](https://github.com/Metronome-Industries/metronome-node/commit/86da75060a9f84ba6880d0f4ec72019c88c6fd81))
+* Add recurring_commit_ids and remove recurring_credit_ids from api ([9541f93](https://github.com/Metronome-Industries/metronome-node/commit/9541f93423a036e242b69e78d2ff7d7833acc7c1))
+* Docs: Dd/update balance guides ([f86b7a6](https://github.com/Metronome-Industries/metronome-node/commit/f86b7a61b17e6e27a573362a219bc7a6d6e741f1))
+* External fixes for rollover credits ([b6b7662](https://github.com/Metronome-Industries/metronome-node/commit/b6b7662e6789ba861acc86bee5cd0a26f65343a0))
+* Fully document CreditAdd/CreditUpdate fields in API spec ([4d6edeb](https://github.com/Metronome-Industries/metronome-node/commit/4d6edebdd1de58b987d6030f92ec6a416f68e3a0))
+* Map missing `contract_name` when returning Packages ([7ec7cae](https://github.com/Metronome-Industries/metronome-node/commit/7ec7caedb16e6d8a99b85d1d8f2afdb89cfaa1f9))
+* **ORCH-1361:** add priority to threshold commit OpenAPI schemas ([80a013e](https://github.com/Metronome-Industries/metronome-node/commit/80a013e46e4b2990f5050d27102484c5949015f2))
+* ORCH-1410: Add discount_configuration to POST v2/contracts/edit ([f932617](https://github.com/Metronome-Industries/metronome-node/commit/f9326176ef25d130bd9c943d4337b24a718c110e))
+* remove dead field, pipe day through to MRI, return day when get package ([21f20a6](https://github.com/Metronome-Industries/metronome-node/commit/21f20a6e403590c2880d4e435b748a3162cd607e))
+* Support nullable discount fraction on contract update inputs ([5a20752](https://github.com/Metronome-Industries/metronome-node/commit/5a20752ce0e65dd89a0560614dc53213fe22789f))
+* switching "date" header to "x-metronome-date" header ([#256](https://github.com/Metronome-Industries/metronome-node/issues/256)) ([4cd9ccc](https://github.com/Metronome-Industries/metronome-node/commit/4cd9ccc74393883bb66d8918eb4671fc45caa52c))
+
+
+### Bug Fixes
+
+* **internal:** gitignore generated `oidc` dir ([a02a317](https://github.com/Metronome-Industries/metronome-node/commit/a02a317499dadfc04408273c4313ac84a137ee71))
+
+
+### Chores
+
+* **ci:** escape input path in publish-npm workflow ([9434441](https://github.com/Metronome-Industries/metronome-node/commit/9434441e0ec215046c0a548914f671d6586aa101))
+* **ci:** skip lint on metadata-only changes ([72828ef](https://github.com/Metronome-Industries/metronome-node/commit/72828ef435bb9b8300ae1e01a232d4fc2bdc0f1a))
+* **internal:** codegen related update ([a703ff3](https://github.com/Metronome-Industries/metronome-node/commit/a703ff3c6c78488dcc7bad3e5c9a28e8e0405eb4))
+* **internal:** codegen related update ([16f021b](https://github.com/Metronome-Industries/metronome-node/commit/16f021b0d84f679c719e47df682ebe7c1613e5ca))
+* **internal:** fix MCP docker image builds in yarn projects ([e07cbbe](https://github.com/Metronome-Industries/metronome-node/commit/e07cbbee7794f2dd3ba35a027606a8e8750d7244))
+* **internal:** fix MCP server import ordering ([dbdf0b2](https://github.com/Metronome-Industries/metronome-node/commit/dbdf0b2fa22f0d2297e862a1b2528072b53035d1))
+* **internal:** fix MCP server TS errors that occur with required client options ([8853150](https://github.com/Metronome-Industries/metronome-node/commit/8853150cffc5d1572c13b9c812b78cf1005b3998))
+* **internal:** improve local docs search for MCP servers ([5043d7d](https://github.com/Metronome-Industries/metronome-node/commit/5043d7d9cffb8a4aa396f696c00a3f51f979888d))
+* **internal:** improve local docs search for MCP servers ([a1caa5c](https://github.com/Metronome-Industries/metronome-node/commit/a1caa5c2826c07aa0c9dbe9c83e7d10cb29a605c))
+* **internal:** make generated MCP servers compatible with Cloudflare worker environments ([aadee1f](https://github.com/Metronome-Industries/metronome-node/commit/aadee1f2d7719302bb3ec5028f612e5c792210ed))
+* **internal:** show error causes in MCP servers when running in local mode ([1351f60](https://github.com/Metronome-Industries/metronome-node/commit/1351f60d4b9848f2daadd23c4fdc2dfd392c6fb2))
+* **internal:** support custom-instructions-path flag in MCP servers ([1841423](https://github.com/Metronome-Industries/metronome-node/commit/1841423c2f922285aa76caa1c943eb298309e1c1))
+* **internal:** support local docs search in MCP servers ([27974a6](https://github.com/Metronome-Industries/metronome-node/commit/27974a6e40ce3899bd51e725651307dc1f46b264))
+* **internal:** support type annotations when running MCP in local execution mode ([30cfbd6](https://github.com/Metronome-Industries/metronome-node/commit/30cfbd6f32593979ebc262fd3d6be1f6c6d1866f))
+* **internal:** support x-stainless-mcp-client-envs header in MCP servers ([9c38c75](https://github.com/Metronome-Industries/metronome-node/commit/9c38c756951d80f4fc47aa3edbef4b76aa4b8b9d))
+* **internal:** support x-stainless-mcp-client-permissions headers in MCP servers ([3f398e2](https://github.com/Metronome-Industries/metronome-node/commit/3f398e2d0f95fda2b87ddea4d6a0a654e25ecb67))
+* **internal:** tweak CI branches ([d4a7598](https://github.com/Metronome-Industries/metronome-node/commit/d4a7598f2577d9bbe638c114a9a95194ac4fe6de))
+* **internal:** update gitignore ([4e59e98](https://github.com/Metronome-Industries/metronome-node/commit/4e59e9887e17bbc6c3779f5b60c2dbb57de58e77))
+* **internal:** update multipart form array serialization ([6a33072](https://github.com/Metronome-Industries/metronome-node/commit/6a330725a15ead83072adf993dc3bcb5145431f0))
+* **internal:** use link instead of file in MCP server package.json files ([9502cfd](https://github.com/Metronome-Industries/metronome-node/commit/9502cfd005a8ea17e056a78a047a67b056286015))
+* **mcp-server:** add support for session id, forward client info ([829bf72](https://github.com/Metronome-Industries/metronome-node/commit/829bf72b1549c1ce50aacfc361f0b956cf1d9c66))
+* **mcp-server:** increase local docs search result count from 5 to 10 ([9e692c4](https://github.com/Metronome-Industries/metronome-node/commit/9e692c4773f96a4ff296e41f8f8ced65b6cb1347))
+* **mcp-server:** log client info ([90438e0](https://github.com/Metronome-Industries/metronome-node/commit/90438e020ca5a3ebd583bc6db95d8c99eeaee051))
+* **tests:** bump steady to v0.19.4 ([287147e](https://github.com/Metronome-Industries/metronome-node/commit/287147e3346e135ba1f6a105640254dccbdbc647))
+* **tests:** bump steady to v0.19.5 ([fd92998](https://github.com/Metronome-Industries/metronome-node/commit/fd9299818737ee9f4e07d39f795bebbdf5fe4153))
+* **tests:** bump steady to v0.19.6 ([4e39520](https://github.com/Metronome-Industries/metronome-node/commit/4e39520d5001f782d6dbd75400c8401ec06114b1))
+* **tests:** bump steady to v0.19.7 ([810cfc9](https://github.com/Metronome-Industries/metronome-node/commit/810cfc9f2df07a2f72dce7d92b41a3339212046d))
+* **tests:** bump steady to v0.20.1 ([bad0c47](https://github.com/Metronome-Industries/metronome-node/commit/bad0c47ee426bdad51ff22cdc3b690d1e6391645))
+* **tests:** bump steady to v0.20.2 ([c3876be](https://github.com/Metronome-Industries/metronome-node/commit/c3876be3b1e3c88c3093e9a0ddcf6c34315eecb3))
+* **tests:** bump steady to v0.22.1 ([51b2128](https://github.com/Metronome-Industries/metronome-node/commit/51b2128e4625926450a52e56cda836f3bd2b4d15))
+
+
+### Refactors
+
+* **tests:** switch from prism to steady ([1b579d4](https://github.com/Metronome-Industries/metronome-node/commit/1b579d4229031015e86cb915820669ff385d174f))
+
+## 3.4.1 (2026-03-12)
+
+Full Changelog: [v3.4.0...v3.4.1](https://github.com/Metronome-Industries/metronome-node/compare/v3.4.0...v3.4.1)
+
+### Features
+
+* Enable OIDC auth for npm publisher ([deea86d](https://github.com/Metronome-Industries/metronome-node/commit/deea86d7d8b4cef2fc07c82a904ae5df3cdd56a4))
+
+
+### Chores
+
+* **internal:** configure MCP Server hosting ([af9cfed](https://github.com/Metronome-Industries/metronome-node/commit/af9cfeddb5f74f4c76f153455c658f6ecce7565b))
+
+## 3.4.0 (2026-03-11)
+
+Full Changelog: [v3.3.0...v3.4.0](https://github.com/Metronome-Industries/metronome-node/compare/v3.3.0...v3.4.0)
+
+### Features
+
+* (docs): update documentation for /usage/groups ([89950be](https://github.com/Metronome-Industries/metronome-node/commit/89950becd5503f107b090b35827f7de43165545e))
+* Add archive_billing_configurations endpoint ([71a7c5e](https://github.com/Metronome-Industries/metronome-node/commit/71a7c5ef17b331ee14e285772017112ba540ec52))
+* Enable rollover fraction on credits ([0d78794](https://github.com/Metronome-Industries/metronome-node/commit/0d787948a196629f13e1c6be55992c2b8b1ba377))
+
+
+### Bug Fixes
+
+* **client:** preserve URL params already embedded in path ([08a285c](https://github.com/Metronome-Industries/metronome-node/commit/08a285c39f86806141009f3e3798b1d4ec9e56c9))
+* fix request delays for retrying to be more respectful of high requested delays ([31c0124](https://github.com/Metronome-Industries/metronome-node/commit/31c01244e64842acc5440f60f6793f5ac4310330))
+
+
+### Chores
+
+* **ci:** skip uploading artifacts on stainless-internal branches ([a1b3a15](https://github.com/Metronome-Industries/metronome-node/commit/a1b3a153007c0f9c581fcab49a828370c0b1d6c9))
+* **internal:** bump @modelcontextprotocol/sdk, @hono/node-server, and minimatch ([0f4a40a](https://github.com/Metronome-Industries/metronome-node/commit/0f4a40a863a570ecb434696363cc6c681fcf8205))
+* **internal:** update dependencies to address dependabot vulnerabilities ([a8d94ba](https://github.com/Metronome-Industries/metronome-node/commit/a8d94ba931718f879fa5bfd6eb4572ef3e3ebbdc))
+* **internal:** use x-stainless-mcp-client-envs header for MCP remote code tool calls ([7157b5b](https://github.com/Metronome-Industries/metronome-node/commit/7157b5babfc3aaed19102c3b8789c741c4d76e09))
+* **mcp-server:** improve instructions ([560a321](https://github.com/Metronome-Industries/metronome-node/commit/560a321d40d801988432f7f5fe11f19d5071ae9a))
+* **test:** do not count install time for mock server timeout ([54d1c5c](https://github.com/Metronome-Industries/metronome-node/commit/54d1c5cd8dd6a8d0456a1af885e22b6075dc0949))
+
+## 3.3.0 (2026-03-03)
+
+Full Changelog: [v3.2.0...v3.3.0](https://github.com/Metronome-Industries/metronome-node/compare/v3.2.0...v3.3.0)
+
+### Features
+
+* Skip stainless for non-GA's minimum config ([606192b](https://github.com/Metronome-Industries/metronome-node/commit/606192b72ac7b06189a1fbbd6b901e0bfa0eef92))
+
+
+### Chores
+
+* **mcp-server:** return access instructions for 404 without API key ([a9be3e9](https://github.com/Metronome-Industries/metronome-node/commit/a9be3e955d18b99f20707ce76248c2332fd063c8))
+
+## 3.2.0 (2026-03-02)
+
+Full Changelog: [v3.1.0...v3.2.0](https://github.com/Metronome-Industries/metronome-node/compare/v3.1.0...v3.2.0)
+
+### Features
+
+* [ORCH-1333] removes AVALARA enum value from PaymetGateConfig ([8a25034](https://github.com/Metronome-Industries/metronome-node/commit/8a250343cd89cc68680f9cb1e2c876816f1f43af))
+* [orch-759] add `archiveCustomerRevenueSystemConfigurations` endpoint to API ([f4ba821](https://github.com/Metronome-Industries/metronome-node/commit/f4ba82148f1c97f2f860ed47626553457f6e5f87))
+* Add minimum config to percentage and tiered percentage overwrites ([8bfa0e0](https://github.com/Metronome-Industries/metronome-node/commit/8bfa0e0785928dab8bb81ad0b73d46a2052c33ec))
+* **api:** add minimum_config to rates/commits, specialized override tier types ([36f6467](https://github.com/Metronome-Industries/metronome-node/commit/36f646764d5839967509de55a1670504582a2827))
+* **api:** add subscription_id field to invoice line items ([5b83788](https://github.com/Metronome-Industries/metronome-node/commit/5b83788700ea3b6b186a8880cf4985b6ced0b57b))
+* **api:** support compound group keys in `v1/usage/groups` endpoint ([a93c3cb](https://github.com/Metronome-Industries/metronome-node/commit/a93c3cb131bd0a3b4015c6650db189ce91c76edb))
+* **mcp:** add an option to disable code tool ([cef59c7](https://github.com/Metronome-Industries/metronome-node/commit/cef59c79b02d672c1b4ae3450f85bcb40f1398cd))
+* update stainless sdk to include new package endpoints ([01b01ac](https://github.com/Metronome-Industries/metronome-node/commit/01b01ac0d80e6fb503dc83fad908a0cd2f8f4468))
+
+
+### Bug Fixes
+
+* **api:** remove priority field from contracts ([2f1356e](https://github.com/Metronome-Industries/metronome-node/commit/2f1356e65de6fecf63d1753f77f013b00d13d6f8))
+* **client:** avoid removing abort listener too early ([5f010ff](https://github.com/Metronome-Industries/metronome-node/commit/5f010ff5e7af65bdf8ac0704c636472f97f31022))
+* **docs/contributing:** correct pnpm link command ([f7bc6b6](https://github.com/Metronome-Industries/metronome-node/commit/f7bc6b616bdd3aca773a111a96ca4a54b70b0545))
+* **mcp:** initialize SDK lazily to avoid failing the connection on init errors ([be0f3ce](https://github.com/Metronome-Industries/metronome-node/commit/be0f3ce8836d31b2fef026fa6f0f7627e9af8a32))
+* **mcp:** update prompt ([266589e](https://github.com/Metronome-Industries/metronome-node/commit/266589e8362c12e133cee84263602cf08355f5c1))
+
+
+### Chores
+
+* configure new SDK language ([76292ee](https://github.com/Metronome-Industries/metronome-node/commit/76292ee62a97fc091adb86b1d0c509ad56edec8c))
+* **docs:** add missing descriptions ([561ba99](https://github.com/Metronome-Industries/metronome-node/commit/561ba998bf2edc412470dee592b754f3846b4396))
+* **internal/client:** fix form-urlencoded requests ([25936a0](https://github.com/Metronome-Industries/metronome-node/commit/25936a02a1234ab6b82244592be766e4ee51a2e0))
+* **internal:** add health check to MCP server when running in HTTP mode ([a592297](https://github.com/Metronome-Industries/metronome-node/commit/a5922977ab7250a61163399b43e905803a357a5b))
+* **internal:** allow basic filtering of methods allowed for MCP code mode ([4080a7b](https://github.com/Metronome-Industries/metronome-node/commit/4080a7b7bdd82626cafc8d128e5d1bee2661b7b9))
+* **internal:** allow setting x-stainless-api-key header on mcp server requests ([f5e13fa](https://github.com/Metronome-Industries/metronome-node/commit/f5e13fad01b449e2b72d65f5ef088e3e2b45d167))
+* **internal:** always generate MCP server dockerfiles and upgrade associated dependencies ([1983ed8](https://github.com/Metronome-Industries/metronome-node/commit/1983ed80a6d741df391df90bca9028d1cc3b1adb))
+* **internal:** avoid type checking errors with ts-reset ([84ce8b8](https://github.com/Metronome-Industries/metronome-node/commit/84ce8b8058b6d6e567313715edb4535e797b53f6))
+* **internal:** cache fetch instruction calls in MCP server ([621890b](https://github.com/Metronome-Industries/metronome-node/commit/621890b2a694b0b53d0142ef049ec8a7628166c1))
+* **internal:** fix MCP Dockerfiles so they can be built without buildkit ([b3b8095](https://github.com/Metronome-Industries/metronome-node/commit/b3b809531c69e5d68bccab436b2b5299df0b5ca8))
+* **internal:** fix MCP Dockerfiles so they can be built without buildkit ([00b6eeb](https://github.com/Metronome-Industries/metronome-node/commit/00b6eebe460cca9c268aa420d2ceeee7d693ab1b))
+* **internal:** fix pagination internals not accepting option promises ([4217c8f](https://github.com/Metronome-Industries/metronome-node/commit/4217c8f61bed1c9717cc411875165bc783a8db13))
+* **internal:** improve layout of generated MCP server files ([113bc6a](https://github.com/Metronome-Industries/metronome-node/commit/113bc6a9bcce94bd5a8f85e33cd262881f85fb2c))
+* **internal:** make MCP code execution location configurable via a flag ([e18ab57](https://github.com/Metronome-Industries/metronome-node/commit/e18ab571b155102b963ca01f19e13c5dcaf54d4d))
+* **internal:** move stringifyQuery implementation to internal function ([e54ad54](https://github.com/Metronome-Industries/metronome-node/commit/e54ad54f1845b81dbe486aa751d4df8e2a66458e))
+* **internal:** switch MCP servers to use pino for logging ([d74b7f2](https://github.com/Metronome-Industries/metronome-node/commit/d74b7f22a31a37e171d329242c5ad6f597fb2f50))
+* **internal:** upgrade @modelcontextprotocol/sdk and hono ([5881625](https://github.com/Metronome-Industries/metronome-node/commit/588162552888bfe9f34735fe201bbe39520fca34))
+* **mcp:** correctly update version in sync with sdk ([5432e2d](https://github.com/Metronome-Industries/metronome-node/commit/5432e2dfd5c059d6cd578c822507cfbf479fbcf3))
+* **mcp:** forward STAINLESS_API_KEY to docs search endpoint ([64973ff](https://github.com/Metronome-Industries/metronome-node/commit/64973ffc64c613f32c4808de52b712d04aef8b44))
+* **tests:** add netsuite billing provider test cases and examples ([dca79bf](https://github.com/Metronome-Industries/metronome-node/commit/dca79bf40399ba4102bea3a9990f05a8fa0fe95e))
+* update mock server docs ([c7c826a](https://github.com/Metronome-Industries/metronome-node/commit/c7c826a352a9fe4496dc13b755f9551ef7c31216))
+
+## 3.1.0 (2026-02-04)
+
+Full Changelog: [v3.0.0...v3.1.0](https://github.com/Metronome-Industries/metronome-node/compare/v3.0.0...v3.1.0)
+
+### Features
+
+* Add `exclude` field to commit and override specifiers shape in the API ([1aa6154](https://github.com/Metronome-Industries/metronome-node/commit/1aa6154436d63c3903ba547080d849de47427406))
+* **api:** Add getNetBalance endpoint ([c6b7056](https://github.com/Metronome-Industries/metronome-node/commit/c6b70569327be251d02ffe3ec290c1247ca804f0))
+* bump schema version and update code to support TieredPercentage rate ([fcb0a20](https://github.com/Metronome-Industries/metronome-node/commit/fcb0a2062cfa0bd8fca4c0fc19f5c8fd7a5971d1))
+* Expose add revenue config in edit contract api ([b391d83](https://github.com/Metronome-Industries/metronome-node/commit/b391d837679a9af4a14980bcd3b41f7dffa8fc79))
+* **mcp:** add initial server instructions ([ed8001f](https://github.com/Metronome-Industries/metronome-node/commit/ed8001f6304584743d4e29c65d5f8b21623017ac))
+* release account hierarchy ([0b159d2](https://github.com/Metronome-Industries/metronome-node/commit/0b159d28d8b2f4ee441813d393c021905860f60e))
+* update api to allow editing net payment terms ([fbb5555](https://github.com/Metronome-Industries/metronome-node/commit/fbb555505a4cf9512eb9dbd0fce137e3e130cf7c))
+
+
+### Bug Fixes
+
+* **client:** avoid memory leak with abort signals ([1dd723e](https://github.com/Metronome-Industries/metronome-node/commit/1dd723e270715307246a54c266d191a81d7ad7d1))
+* **docs:** fix mcp installation instructions for remote servers ([4e9a230](https://github.com/Metronome-Industries/metronome-node/commit/4e9a230f83e4db28294992dbdff8ae570c2c751f))
+* **mcp:** allow falling back for required env variables ([496cbbd](https://github.com/Metronome-Industries/metronome-node/commit/496cbbd22051ba61d60057b995c6f4426b817789))
+* update v2 contract edit api endpoint description ([#249](https://github.com/Metronome-Industries/metronome-node/issues/249)) ([734099a](https://github.com/Metronome-Industries/metronome-node/commit/734099a8adf54d831174fb59d18a9e3c8ac43444))
+
+
+### Chores
+
+* **ci:** upgrade `actions/github-script` ([a5276ac](https://github.com/Metronome-Industries/metronome-node/commit/a5276ac7c2536889660bb6ecbf2f714fb211b248))
+* **client:** do not parse responses with empty content-length ([143a4d0](https://github.com/Metronome-Industries/metronome-node/commit/143a4d0ce8f90faa061f92616a79d8843b99412f))
+* **client:** restructure abort controller binding ([7b1d306](https://github.com/Metronome-Industries/metronome-node/commit/7b1d306f0da887aece580eb46a79c5ef6bbd4dd5))
+* **internal:** codegen related update ([8e5a257](https://github.com/Metronome-Industries/metronome-node/commit/8e5a257b0f2d5977ff139315fe60c6bd5168a804))
+* **internal:** codegen related update ([98ab39f](https://github.com/Metronome-Industries/metronome-node/commit/98ab39fbf909fcbff84b3a4faffd0e1898bebffa))
+* **internal:** codegen related update ([28ca04e](https://github.com/Metronome-Industries/metronome-node/commit/28ca04ef5e0d000e61d244474f2390b662e36ef1))
+* **internal:** refactor flag parsing for MCP servers and add debug flag ([f7ee520](https://github.com/Metronome-Industries/metronome-node/commit/f7ee52044c1a55257ed8139977d68d3cc99502ec))
+* **internal:** support oauth authorization code flow for MCP servers ([2f1b80e](https://github.com/Metronome-Industries/metronome-node/commit/2f1b80e93e3ed5abe0fb9cd611623cd5e63ac946))
+* **internal:** update lock file ([f4fec3e](https://github.com/Metronome-Industries/metronome-node/commit/f4fec3e19677044aefb8ff484c5b0e6f1099c27a))
+* **mcp:** up tsconfig lib version to es2022 ([9767808](https://github.com/Metronome-Industries/metronome-node/commit/9767808fd168ea29b9033f870e33bf8806eb5661))
+
+
+### Documentation
+
+* Update package docs for GA ([ebbacb3](https://github.com/Metronome-Industries/metronome-node/commit/ebbacb30bfbb33cfde9c8e87c992ea56dec5b8a2))
+
+## 3.0.0 (2026-01-17)
+
+Full Changelog: [v2.2.0...v3.0.0](https://github.com/Metronome-Industries/metronome-node/compare/v2.2.0...v3.0.0)
+
+### ⚠ BREAKING CHANGES
+
+* **mcp:** remove deprecated tool schemes
+* **mcp:** **Migration:** To migrate, simply modify the command used to invoke the MCP server. Currently, the only supported tool scheme is code mode. Now, starting the server with just `node /path/to/mcp/server` or `npx package-name` will invoke code tools: changing your command to one of these is likely all you will need to do.
+
+### Features
+
+* [ORCH-739] expose rev rec data in api ([08d8c01](https://github.com/Metronome-Industries/metronome-node/commit/08d8c017253e732b43a1e06ecb46b92d9ec37e7c))
+* [ORCH-739] expose rev rec data in api ([25647cc](https://github.com/Metronome-Industries/metronome-node/commit/25647cccb2e88a5b155f09d03daf88d2b9386e0f))
+* add recurring commit ID and subscription config to commit/credit response schema ([ed08de6](https://github.com/Metronome-Industries/metronome-node/commit/ed08de6d7ef015c1470e55f635a03c064af10d13))
+* Add support for custom fields on package terms ([c16f6c3](https://github.com/Metronome-Industries/metronome-node/commit/c16f6c335ca0bd7204b26235b26c3680ff962d41))
+* remove use list prices config in requests and responses ([b56153d](https://github.com/Metronome-Industries/metronome-node/commit/b56153df24c55845b9d0f1572db7c06e7fbdc5e7))
+* Revert [ORCH-739] expose rev rec data in api ([857d544](https://github.com/Metronome-Industries/metronome-node/commit/857d5440d64b05fd1ce7d778a1fe2321795ec8f2))
+
+
+### Bug Fixes
+
+* **mcp:** correct code tool api output types ([94c7a2b](https://github.com/Metronome-Industries/metronome-node/commit/94c7a2b631a3954996dae6dd3c1ba007c3341418))
+* **mcp:** fix env parsing ([347d100](https://github.com/Metronome-Industries/metronome-node/commit/347d1001cfb49fb22f8451d6cbc9f5a225810895))
+* **mcp:** fix options parsing ([7c415fc](https://github.com/Metronome-Industries/metronome-node/commit/7c415fcc9e36d20b9eebe98caa499e449367578a))
+
+
+### Chores
+
+* break long lines in snippets into multiline ([553e045](https://github.com/Metronome-Industries/metronome-node/commit/553e0455495fbf42ff3a83533067b403e6f84197))
+* fix typo in descriptions ([955173f](https://github.com/Metronome-Industries/metronome-node/commit/955173fe565c023e5b5677d66d3a22adf2140fe8))
+* **internal:** codegen related update ([f1bc51f](https://github.com/Metronome-Industries/metronome-node/commit/f1bc51fc3b87434b31b0631bc09e7e427e5f3432))
+* **internal:** codegen related update ([7723521](https://github.com/Metronome-Industries/metronome-node/commit/7723521e9984d18f457b0b8db2a923e069409b06))
+* **internal:** configure MCP Server hosting ([1d192a8](https://github.com/Metronome-Industries/metronome-node/commit/1d192a84aa31197141dc76a0a13e9c92bb2793cc))
+* **internal:** update `actions/checkout` version ([bcc55a1](https://github.com/Metronome-Industries/metronome-node/commit/bcc55a1b569cf3e8e252bf6fd995445772359496))
+* **internal:** upgrade babel, qs, js-yaml ([1857b28](https://github.com/Metronome-Industries/metronome-node/commit/1857b288648df430cc7d1a98c1be8a9c11c6acfe))
+* **internal:** version bump ([4d0d6aa](https://github.com/Metronome-Industries/metronome-node/commit/4d0d6aac09b4a049e15cd795ced9ac2df58c6d98))
+* **mcp:** add intent param to execute tool ([87ac2c8](https://github.com/Metronome-Industries/metronome-node/commit/87ac2c8a35200c6f89bed43d4c269aa067969c6d))
+* **mcp:** pass intent param to execute handler ([edb60b3](https://github.com/Metronome-Industries/metronome-node/commit/edb60b340fcd85a138f4444807637319c32ff301))
+* **mcp:** remove deprecated tool schemes ([a708aed](https://github.com/Metronome-Industries/metronome-node/commit/a708aed0aabb76be7b401631a1a3703fba969e8a))
+* **mcp:** upgrade dependencies ([00d0f49](https://github.com/Metronome-Industries/metronome-node/commit/00d0f49987923b9713d671920e991d5d1036de93))
+
+
+### Documentation
+
+* prominently feature MCP server setup in root SDK readmes ([b589975](https://github.com/Metronome-Industries/metronome-node/commit/b589975eb7914476ea99588f963a801b1871620a))
+
+## 2.2.0 (2025-12-18)
+
+Full Changelog: [v2.1.0...v2.2.0](https://github.com/Metronome-Industries/metronome-node/compare/v2.1.0...v2.2.0)
+
+### Features
+
+* [ORCH-605] uses x-mint groups to enable conditional rendering of gated revenue system config apis ([5e19d47](https://github.com/Metronome-Industries/metronome-node/commit/5e19d47922164c03493c2e54b00874f81ce3d26e))
+* [ORCH-752] Update contract creation endpoints to allow setting revenue system configuration ([b51538e](https://github.com/Metronome-Industries/metronome-node/commit/b51538ed7538852afd7832797db54de114bec625))
+* [ORCH-757] Add route for get revenue system config resolver ([948e128](https://github.com/Metronome-Industries/metronome-node/commit/948e128a6c098364cc102d8a396604a3c525ab12))
+* Add `commit_transactions` to the body of `/upsertAvalaraCredentials` endpoint ([9f9f354](https://github.com/Metronome-Industries/metronome-node/commit/9f9f3547a4f39ff088627454652d9bdb413db7cd))
+* Add `seat_filter` field to creation request and response parameters of the alert object ([6481e56](https://github.com/Metronome-Industries/metronome-node/commit/6481e56dd39abb4c8e0e99074763212f6bb535bb))
+* add quantity to plan pricing adjustment response ([a28b851](https://github.com/Metronome-Industries/metronome-node/commit/a28b851c3aa76a31e1d5241cc026b6e8259994f2))
+* adds external_payment_id to ExternalInvoice ([4b24047](https://github.com/Metronome-Industries/metronome-node/commit/4b24047743727a1922ba5e15bfee9e5678bffcd7))
+* everything ([eaf9ff8](https://github.com/Metronome-Industries/metronome-node/commit/eaf9ff84a17973bbd0b2dcf3699117d88c35d00c))
+* GET-6845 get openapi specs ready for GA ([c68ea47](https://github.com/Metronome-Industries/metronome-node/commit/c68ea47d2643a7a998a687f473f07df9df02441b))
+* include aggregation BM info from searchEvents ([6183f83](https://github.com/Metronome-Industries/metronome-node/commit/6183f831e3b5be3115514ef930c835228c88601e))
+* **mcp:** add detail field to docs search tool ([8b55f02](https://github.com/Metronome-Industries/metronome-node/commit/8b55f02771ea52f51ab2c5fe7114ce9c52caadeb))
+* **mcp:** add typescript check to code execution tool ([d573759](https://github.com/Metronome-Industries/metronome-node/commit/d573759f6af9900761fa48c87eff4175b8152999))
+* **mcp:** enable optional code execution tool on http mcp servers ([8f9a3d6](https://github.com/Metronome-Industries/metronome-node/commit/8f9a3d6f93ebafd99996d745571575c1a3f3cf80))
+* **mcp:** handle code mode calls in the Stainless API ([518a64b](https://github.com/Metronome-Industries/metronome-node/commit/518a64b5e2f124165cb73b8240417b04e90c9dbb))
+* **mcp:** return logs on code tool errors ([40bb1da](https://github.com/Metronome-Industries/metronome-node/commit/40bb1da41899dd8997d45600250df1897cebf9e9))
+* ORCH-833/948/946/947 - updated the API to accept aws_customer_account_id all gated behind a feature flag ([c9f28c4](https://github.com/Metronome-Industries/metronome-node/commit/c9f28c4d05f8179e596c39af920b05932d2fbb6d))
+* remove beta language, FF, stainless skip ([e973ac4](https://github.com/Metronome-Industries/metronome-node/commit/e973ac43f0802423c303574235525adab09c3d2c))
+* Return values for set customer billing configuration endpoint ([1fe0c51](https://github.com/Metronome-Industries/metronome-node/commit/1fe0c518c752327cfb30d01b79aa3b8c0895e686))
+* update create alert api to allow LowRemainingSeatBalanceReached alert ([2bb6bd6](https://github.com/Metronome-Industries/metronome-node/commit/2bb6bd65be36cd330c798dda522f466a97ae955d))
+
+
+### Bug Fixes
+
+* **mcp:** add client instantiation options to code tool ([4559148](https://github.com/Metronome-Industries/metronome-node/commit/45591480032eeebfcc1919ec250023b2335413fc))
+* **mcp:** correct code tool API endpoint ([649ecde](https://github.com/Metronome-Industries/metronome-node/commit/649ecdeec840c231c17b77096bcac44bafab0af9))
+* **mcp:** pass base url to code tool ([c3ef781](https://github.com/Metronome-Industries/metronome-node/commit/c3ef781fe3ce706c646dd1741ecd06333d2b1616))
+* **mcp:** return correct lines on typescript errors ([87595a4](https://github.com/Metronome-Industries/metronome-node/commit/87595a4ba34a873cf2d3ccf34dd27e9e39c4ee11))
+* **mcp:** return tool execution error on api error ([737f9b4](https://github.com/Metronome-Industries/metronome-node/commit/737f9b4c4f08227272ed1411888d75d7e9b4290d))
+* **mcp:** return tool execution error on jq failure ([6839208](https://github.com/Metronome-Industries/metronome-node/commit/6839208fc93ac40b621c622eac59ca0bce18b251))
+* **mcp:** use raw responses for binary content ([1902de8](https://github.com/Metronome-Industries/metronome-node/commit/1902de8d17fcbe720dc4e24c8be512defc69d732))
+
+
+### Chores
+
+* **client:** fix logger property type ([3f869a0](https://github.com/Metronome-Industries/metronome-node/commit/3f869a03bd3bb48ed2d81e922bcb1db19a342f7f))
+* **internal:** codegen related update ([93f67ab](https://github.com/Metronome-Industries/metronome-node/commit/93f67abc273f86eadd29ae694e402cf7731d2721))
+* **internal:** codegen related update ([4cf2e06](https://github.com/Metronome-Industries/metronome-node/commit/4cf2e06a7b541c6d3afd6a62e6bf412d9e5ff97d))
+* **internal:** codegen related update ([69a5518](https://github.com/Metronome-Industries/metronome-node/commit/69a55182beef97182c46d1eff6e13c3be2f73ffb))
+* **internal:** codegen related update ([bcab2ec](https://github.com/Metronome-Industries/metronome-node/commit/bcab2ec5e0216180472d501264e6fdbec14598a1))
+* **internal:** grammar fix (it's -&gt; its) ([df4d335](https://github.com/Metronome-Industries/metronome-node/commit/df4d335e034ab20881ad861e19024538f515d7bd))
+* **internal:** upgrade eslint ([113a234](https://github.com/Metronome-Industries/metronome-node/commit/113a2343e89e5618283288faa9766cc5f8a64f9f))
+* mcp code tool explicit error message when missing a run function ([7282f4e](https://github.com/Metronome-Industries/metronome-node/commit/7282f4e612cac5ef53774ce2c0a8d32ebef35ebb))
+* **mcp:** add friendlier MCP code tool errors on incorrect method invocations ([80b8d3d](https://github.com/Metronome-Industries/metronome-node/commit/80b8d3d95570106145be81d7a3f2e096b665f9ce))
+* **mcp:** add line numbers to code tool errors ([1533915](https://github.com/Metronome-Industries/metronome-node/commit/1533915332ada4fb2485a679ec6d06629ab4aa75))
+* **mcp:** clarify http auth error ([a8370e1](https://github.com/Metronome-Industries/metronome-node/commit/a8370e1590bb8f411f0422f5a4e7c3c3d1fd67d4))
+* **mcp:** update lockfile ([a000fb6](https://github.com/Metronome-Industries/metronome-node/commit/a000fb6a4f10e86e6ae53b1d6c2125269aef963b))
+* **mcp:** upgrade jq-web ([9b4a075](https://github.com/Metronome-Industries/metronome-node/commit/9b4a0756a88bc0ee3453f82a17a7fac96f0d8408))
+* use latest @modelcontextprotocol/sdk ([b3cd983](https://github.com/Metronome-Industries/metronome-node/commit/b3cd98399ead98ed9b38f61da1aef6df972cbcf1))
+* use structured error when code execution tool errors ([439adb8](https://github.com/Metronome-Industries/metronome-node/commit/439adb8c14a6dfcdf9273b11d01b8f9799d89b3c))
+
+
+### Documentation
+
+* document missing fields for schemas related to recurring credits and commits ([09f78b2](https://github.com/Metronome-Industries/metronome-node/commit/09f78b23718f1229fc49295c005e84f53c130258))
+* **mcp:** add a README button for one-click add to Cursor ([5676f7b](https://github.com/Metronome-Industries/metronome-node/commit/5676f7b8e537ae9ed10829f455396c85504921c2))
+* **mcp:** add a README link to add server to VS Code or Claude Code ([4357246](https://github.com/Metronome-Industries/metronome-node/commit/4357246014d291c22e9e75baa14a83e2ecd81613))
+
+## 2.1.0 (2025-10-31)
+
+Full Changelog: [v2.0.0...v2.1.0](https://github.com/Metronome-Industries/metronome-node/compare/v2.0.0...v2.1.0)
+
+### Features
+
+* [ORCH-282] plumb `payment_method_id` to the payment gateway object ([15c6c79](https://github.com/Metronome-Industries/metronome-node/commit/15c6c79a1e6bf2eb5d0f7b56f33ca1457dfb3bef))
+* [ORCH-797] add billing_provider_error to invoice.external_invoice ([c0420d3](https://github.com/Metronome-Industries/metronome-node/commit/c0420d37de98fae7d378b9182b09014cf859e245))
+* Add avalara creds + billing provider APIs to SDK. Add avalara creds API to docs. ([039521a](https://github.com/Metronome-Industries/metronome-node/commit/039521addeac2953ff0f30e0c8a08cb972d24c65))
+* add beta tag to stripe auto charge items ([f5e38e8](https://github.com/Metronome-Industries/metronome-node/commit/f5e38e8c777fe60778583c4574345ee631179383))
+* add exclude_zero_balances field behind a FF for anthropic ([c8c7c29](https://github.com/Metronome-Industries/metronome-node/commit/c8c7c299261e60bf7865046357608732ff26c65d))
+* add METRONOME to BillingProvider type ([e242daa](https://github.com/Metronome-Industries/metronome-node/commit/e242daa137de8488bf9e63a3273f2abe9ba9438b))
+* docs(api) Documentation for seat-based subscription linked recurring commits beta release ([667067a](https://github.com/Metronome-Industries/metronome-node/commit/667067a9507777f4d478efdd360da6d1243e92b2))
+* ignore_duplicates ([4ec20ce](https://github.com/Metronome-Industries/metronome-node/commit/4ec20cebb5aa8f1aaa6d7f36dac434eab4cba5e1))
+* internal: moving plans docs to deprecated section of new docs site ([f8c0abf](https://github.com/Metronome-Industries/metronome-node/commit/f8c0abf50cb4f7b2a4ccdbec271c775d769ddb04))
+* not ready for review ([82f5869](https://github.com/Metronome-Industries/metronome-node/commit/82f5869b1f602f9b3b5e9e6bbf29aac79ff576fb))
+* not ready for review ([c2db062](https://github.com/Metronome-Industries/metronome-node/commit/c2db06258d902bc794389c29ec6f751bc63e0a0f))
+* Relax requirement on customer level commits for invoice_contract_id if do_not_invoice is set to true ([fb89c8e](https://github.com/Metronome-Industries/metronome-node/commit/fb89c8ea130da2171c3c5f48944559588788215f))
+* update get customer alerts api to include low seat balance type ([9d9c44c](https://github.com/Metronome-Industries/metronome-node/commit/9d9c44cf27578836e60a4a81f0118b9f24c88f85))
+
+
+### Bug Fixes
+
+* **api:** Make id field required in /v2/notifications/edit ([afd6647](https://github.com/Metronome-Industries/metronome-node/commit/afd6647d668f6031892fa1cbd6323514ce375e94))
+* **mcpb:** pin @anthropic-ai/mcpb version ([4542481](https://github.com/Metronome-Industries/metronome-node/commit/454248130b0cdd15854808634fd0beb9210e3ef0))
+
+
+### Chores
+
+* **api:** Note SQL BM is not supported in previewCustomerEvents description ([ea70362](https://github.com/Metronome-Industries/metronome-node/commit/ea70362ab43c4505d92b382bca361f937d162d3a))
+
+
+### Documentation
+
+* add migrate amendments to edits page ([8553655](https://github.com/Metronome-Industries/metronome-node/commit/85536552c0f2ab2e5f5be34a16ec43c9df705a32))
+
+## 2.0.0 (2025-10-16)
+
+Full Changelog: [v1.0.0...v2.0.0](https://github.com/Metronome-Industries/metronome-node/compare/v1.0.0...v2.0.0)
+
+### ⚠ BREAKING CHANGES
+
+* **api:** Remove customer_id from preview events payload
+* **api:** in getEditHistory endpoint, commit invoice schedule amount, unit price, and quantity are now optional values
+* **api:** Added optional archive_filter param to /notifications/offset/list endpoint
+
+### Features
+
+* Add empty handler for cancelPayment ([8a9f2e8](https://github.com/Metronome-Industries/metronome-node/commit/8a9f2e800db4f6d977d8fade405836f91cf0ca9f))
+* Add payment + billing invoice APIs to the API reference docs ([8cd1d7a](https://github.com/Metronome-Industries/metronome-node/commit/8cd1d7a4678a3887a60fe26c6e6bda89fa4b9bec))
+* Add payment APIs to the SDK ([0adfefc](https://github.com/Metronome-Industries/metronome-node/commit/0adfefc9acf0ab3d480041495f2726446efb9cb4))
+* **api:** add billing_periods to Subscription ([9498382](https://github.com/Metronome-Industries/metronome-node/commit/9498382c48d925d2dc52fb5286d302009371751a))
+* **api:** add new payments/attempt v1 api endpoint ([51234ab](https://github.com/Metronome-Industries/metronome-node/commit/51234abdd9de4ed0a2733b3333e936abec7a4301))
+* **api:** Added optional archive_filter param to /notifications/offset/list endpoint ([efb0aa1](https://github.com/Metronome-Industries/metronome-node/commit/efb0aa188a8c2df9ec025e0f666886f3efd381a0))
+* **api:** Remove customer_id from preview events payload ([d80600b](https://github.com/Metronome-Industries/metronome-node/commit/d80600b4f3be4f9cfc3b94f6acbd13184c7e5c31))
+* Bump graphql version and fix type errors ([a6349d5](https://github.com/Metronome-Industries/metronome-node/commit/a6349d555d194b13a8f6fec4092e01dd49a4f7d4))
+* elia/orch 128 add external apis for payments ([637dc77](https://github.com/Metronome-Industries/metronome-node/commit/637dc77cdf4847ab2ab8458fc06f243d878db724))
+* feat(api):Allow clients retrieve archived config via `/notifications/get` ([ab0b0b1](https://github.com/Metronome-Industries/metronome-node/commit/ab0b0b10ab2102da479552ee5fc3155382085dbd))
+* internal: releasing x-mint ([6f0209a](https://github.com/Metronome-Industries/metronome-node/commit/6f0209a8aa776c96b61ca7bc93ad95b0704009b6))
+* internal: Skip retrieve_pdf API SDK tests ([47426e8](https://github.com/Metronome-Industries/metronome-node/commit/47426e8fea7aa2194c3e31d243becbda73295551))
+* internal(docs): adding confluent endpoints ([66682c2](https://github.com/Metronome-Industries/metronome-node/commit/66682c2705aa432cf5b42bf6c02da3aebbbc187b))
+* LAUNCH-516 add getSubscriptionSeatsScheduleHistory api ([87bffd4](https://github.com/Metronome-Industries/metronome-node/commit/87bffd4eef2a8bbe890d1efcdfddfd351236fa22))
+* **mcp:** add docs search tool ([5b2bce7](https://github.com/Metronome-Industries/metronome-node/commit/5b2bce751297111cae257591faa3da4546ff5065))
+* **mcp:** add option for including docs tools ([4e51097](https://github.com/Metronome-Industries/metronome-node/commit/4e51097669b68a0c473659530ff5920272db1559))
+* **mcp:** enable experimental docs search tool ([9f3a19d](https://github.com/Metronome-Industries/metronome-node/commit/9f3a19d6fd24629865c90ec943be13066929724c))
+* rename getSubscriptionSeatsScheduleHistory to getSubscriptionSeatsHistory ([2a45a7e](https://github.com/Metronome-Industries/metronome-node/commit/2a45a7ecf906d1e07d5530385138590f940626f7))
+* Return array of invoices instead of single invoice and handle multipl… ([843ca4c](https://github.com/Metronome-Industries/metronome-node/commit/843ca4c0cbb15c4bcb13a66ce783452adbad9316))
+* Set up contract get and create with new AH info ([2a15df8](https://github.com/Metronome-Industries/metronome-node/commit/2a15df82e9595ba74d5ca3625d8a582bd9838cb6))
+* update api docs ([ddc0510](https://github.com/Metronome-Industries/metronome-node/commit/ddc0510f876f3cdea0456301c0ec6ef4548100b5))
+
+
+### Bug Fixes
+
+* **api:** in getEditHistory endpoint, commit invoice schedule amount, unit price, and quantity are now optional values ([df927b1](https://github.com/Metronome-Industries/metronome-node/commit/df927b13491689eeb4fa6db96d0989c2e14b76d2))
+* **ci:** set permissions for DXT publish action ([b1bcdad](https://github.com/Metronome-Industries/metronome-node/commit/b1bcdadbf37415497c02cd83e38695be81ac7b44))
+* LAUNCH-1130 remove min and max in api spec for better valiation error message ([20b4d2c](https://github.com/Metronome-Industries/metronome-node/commit/20b4d2cba2d177a71bed7f9db62faabab028cc81))
+* **mcp:** fix cli argument parsing logic ([6db4b4a](https://github.com/Metronome-Industries/metronome-node/commit/6db4b4af661841fe68536cc086a270ea9b93d71f))
+
+
+### Performance Improvements
+
+* faster formatting ([08badd1](https://github.com/Metronome-Industries/metronome-node/commit/08badd16ee6d0a3594977c68540a233fabac163a))
+
+
+### Chores
+
+* **codegen:** internal codegen update ([1dc34a9](https://github.com/Metronome-Industries/metronome-node/commit/1dc34a9cc5066a72c19cfd382472d607effcde75))
+* do not install brew dependencies in ./scripts/bootstrap by default ([607b9b0](https://github.com/Metronome-Industries/metronome-node/commit/607b9b0ada5cb004718cd31c074333c6d9870bdf))
+* extract some types in mcp docs ([2f279f4](https://github.com/Metronome-Industries/metronome-node/commit/2f279f4edb3881f5b4b4ab8577497159915c6680))
+* **internal:** codegen related update ([dde1c3b](https://github.com/Metronome-Industries/metronome-node/commit/dde1c3bababf9ce3b224aa0bd8f69e6a395548e3))
+* **internal:** fix incremental formatting in some cases ([e6aa27e](https://github.com/Metronome-Industries/metronome-node/commit/e6aa27e75896fc2b10f8f0c3f890c839c812afc0))
+* **internal:** gitignore .mcpb files ([0e48487](https://github.com/Metronome-Industries/metronome-node/commit/0e48487bcbd06f3230acd0d9ffa44f9d684d2ae5))
+* **internal:** ignore .eslintcache ([63e1f8e](https://github.com/Metronome-Industries/metronome-node/commit/63e1f8e459f108f4f5d10e2e3a93c64ec090b006))
+* **internal:** remove .eslintcache ([68b87db](https://github.com/Metronome-Industries/metronome-node/commit/68b87dbb06b8b2d3ca403a713434b6daf4a6170b))
+* **internal:** remove deprecated `compilerOptions.baseUrl` from tsconfig.json ([da007e0](https://github.com/Metronome-Industries/metronome-node/commit/da007e0a5e459e623ed8fe8f9b255a70f29532d4))
+* **internal:** use npm pack for build uploads ([610d7b1](https://github.com/Metronome-Industries/metronome-node/commit/610d7b191822a83c6afdd9c4b67859a14b05f653))
+* **jsdoc:** fix [@link](https://github.com/link) annotations to refer only to parts of the package‘s public interface ([2192205](https://github.com/Metronome-Industries/metronome-node/commit/21922059a1991ea558e77aea79993685f873167f))
+* **mcp:** allow pointing `docs_search` tool at other URLs ([996112b](https://github.com/Metronome-Industries/metronome-node/commit/996112b87d1cf2cd7421f49143f40762e4b0b656))
+* **mcp:** rename dxt to mcpb ([f57db37](https://github.com/Metronome-Industries/metronome-node/commit/f57db3729eadc05ce4b806ff8748540abb7b04ff))
+* update lockfile ([1657600](https://github.com/Metronome-Industries/metronome-node/commit/16576000f23fe49205c7d4d9842416627a7ffbad))
+
+## 1.0.0 (2025-09-15)
+
+Full Changelog: [v0.3.0...v1.0.0](https://github.com/Metronome-Industries/metronome-node/compare/v0.3.0...v1.0.0)
+
+### ⚠ BREAKING CHANGES
+
+* **api:** add pagination support to multiple endpoints - Added pagination to CustomerList, AlertList, InvoiceList, CommitList, CreditList, CreditGrantList, CustomerAlerts, UsageList, CustomFields list, and ContractListBalances endpoints.
+* **api:** enhance subscriptions and commits/credits - Added Individual enum to SubscriptionConfig and rate_type enums to UpdateCredit/UpdateCommit.
+* **typescript-sdk:** migrate to latest SDK version - Migrated TypeScript SDK with improved type safety, enhanced error handling, updated method signatures, and restructured package exports. Existing TypeScript SDK integrations will require updates to import paths, method calls, and configuration options. See our Migration Guide for detailed step-by-step instructions.
+* **api:** add comprehensive shared types to SDK - Added 34 new shared types including BaseThresholdCommit, BaseUsageFilter, Commit, CommitHierarchyConfiguration, CommitRate, CommitSpecifier, CommitSpecifierInput, Contract, ContractV2, ContractWithoutAmendments, Credit, CreditTypeData, Discount, EventTypeFilter, HierarchyConfiguration, ID, Override, OverrideTier, OverwriteRate, PaymentGateConfig, PaymentGateConfigV2, PrepaidBalanceThresholdConfiguration, PrepaidBalanceThresholdConfigurationV2, PropertyFilter, ProService, Rate, RecurringCommitSubscriptionConfig, ScheduledCharge, ScheduleDuration, SchedulePointInTime, SpendThresholdConfiguration, SpendThresholdConfigurationV2, Subscription, Tier, and UpdateBaseThresholdCommit.
+
+### Features
+
+* **api:** add archived_at field to CustomerBillingConfiguration ([70c82e0](https://github.com/Metronome-Industries/metronome-node/commit/70c82e0b5b0df3a3031f6a4264c0d00e063bf868))
+* **api:** add comprehensive shared types to SDK - Added 34 new shared types including BaseThresholdCommit, BaseUsageFilter, Commit, CommitHierarchyConfiguration, CommitRate, CommitSpecifier, CommitSpecifierInput, Contract, ContractV2, ContractWithoutAmendments, Credit, CreditTypeData, Discount, EventTypeFilter, HierarchyConfiguration, ID, Override, OverrideTier, OverwriteRate, PaymentGateConfig, PaymentGateConfigV2, PrepaidBalanceThresholdConfiguration, PrepaidBalanceThresholdConfigurationV2, PropertyFilter, ProService, Rate, RecurringCommitSubscriptionConfig, ScheduledCharge, ScheduleDuration, SchedulePointInTime, SpendThresholdConfiguration, SpendThresholdConfigurationV2, Subscription, Tier, and UpdateBaseThresholdCommit. ([70c82e0](https://github.com/Metronome-Industries/metronome-node/commit/70c82e0b5b0df3a3031f6a4264c0d00e063bf868))
+* **api:** add created_at field to Commit ([70c82e0](https://github.com/Metronome-Industries/metronome-node/commit/70c82e0b5b0df3a3031f6a4264c0d00e063bf868))
+* **api:** add customer billing configuration endpoints - Added set and retrieve endpoints for customer billing configurations. ([70c82e0](https://github.com/Metronome-Industries/metronome-node/commit/70c82e0b5b0df3a3031f6a4264c0d00e063bf868))
+* **api:** add pagination support to multiple endpoints - Added pagination to CustomerList, AlertList, InvoiceList, CommitList, CreditList, CreditGrantList, CustomerAlerts, UsageList, CustomFields list, and ContractListBalances endpoints. ([70c82e0](https://github.com/Metronome-Industries/metronome-node/commit/70c82e0b5b0df3a3031f6a4264c0d00e063bf868))
+* **api:** Add support for granular spend threshold alerts with group key filters. ([70c82e0](https://github.com/Metronome-Industries/metronome-node/commit/70c82e0b5b0df3a3031f6a4264c0d00e063bf868))
+* **api:** enhance subscriptions and commits/credits - Added Individual enum to SubscriptionConfig and rate_type enums to UpdateCredit/UpdateCommit. ([70c82e0](https://github.com/Metronome-Industries/metronome-node/commit/70c82e0b5b0df3a3031f6a4264c0d00e063bf868))
+* **typescript-sdk:** migrate to latest SDK version - Migrated TypeScript SDK with improved type safety, enhanced error handling, updated method signatures, and restructured package exports. Existing TypeScript SDK integrations will require updates to import paths, method calls, and configuration options. See our Migration Guide for detailed step-by-step instructions. ([70c82e0](https://github.com/Metronome-Industries/metronome-node/commit/70c82e0b5b0df3a3031f6a4264c0d00e063bf868))
+
+
+### Bug Fixes
+
+* **mcp:** fix query options parsing ([70c82e0](https://github.com/Metronome-Industries/metronome-node/commit/70c82e0b5b0df3a3031f6a4264c0d00e063bf868))
+* **mcp:** fix uploading dxt release assets ([70c82e0](https://github.com/Metronome-Industries/metronome-node/commit/70c82e0b5b0df3a3031f6a4264c0d00e063bf868))
+
+
+### Chores
+
+* coerce nullable values to undefined ([70c82e0](https://github.com/Metronome-Industries/metronome-node/commit/70c82e0b5b0df3a3031f6a4264c0d00e063bf868))
+
+
+### Documentation
+
+* enhance API documentation - Added more detailed descriptions and styling improvements, and enhanced usage filter documentation with additional context. ([70c82e0](https://github.com/Metronome-Industries/metronome-node/commit/70c82e0b5b0df3a3031f6a4264c0d00e063bf868))
+
+## 0.3.0 (2025-09-15)
+
+Full Changelog: [v0.2.0...v0.3.0](https://github.com/Metronome-Industries/metronome-node/compare/v0.2.0...v0.3.0)
+
+### Features
+
+* **api:** api update ([6053d58](https://github.com/Metronome-Industries/metronome-node/commit/6053d586c4fc67e770fad2f9bc9de1706ec363a7))
+* **api:** api update ([1be7b2d](https://github.com/Metronome-Industries/metronome-node/commit/1be7b2d4cc78f10f17cd4021287410c4996900ac))
+* **api:** api update ([fcc3172](https://github.com/Metronome-Industries/metronome-node/commit/fcc3172129d07d7da715b4982acbfb96664f7518))
+
+
+### Bug Fixes
+
+* coerce nullable values to undefined ([db26826](https://github.com/Metronome-Industries/metronome-node/commit/db268263220cb5cacfd6a55ff04de39d2477b323))
+* **mcp:** fix query options parsing ([a680969](https://github.com/Metronome-Industries/metronome-node/commit/a68096999d241b3a6dff06115a76e9c1bacb2fbe))
+* **mcp:** fix uploading dxt release assets ([d2bd1f5](https://github.com/Metronome-Industries/metronome-node/commit/d2bd1f5b6640c9bebf047089347401a2786046d4))
+
+
+### Chores
+
+* **internal:** codegen related update ([191878f](https://github.com/Metronome-Industries/metronome-node/commit/191878f4c0c324365353e04f32dcdb12db6d5308))
+* **mcp:** upload dxt as release asset ([870849d](https://github.com/Metronome-Industries/metronome-node/commit/870849d07517ee4e94c9d5f6afc05c46d1a71958))
+* sync repo ([86f91c5](https://github.com/Metronome-Industries/metronome-node/commit/86f91c5d57c205949c945d058c931353b64147fa))
+
+## 0.2.0 (2025-07-31)
+
+Full Changelog: [v0.1.0...v0.2.0](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0...v0.2.0)
+
+
+### Features
+* **api:** Add support for spend threshold alerts for specific group keys. See [updated alert documentation](https://docs.metronome.com/manage-product-access/create-manage-alerts/#spend-alerts).
+* **api:** Add support for recurring commits linked to subscriptions. See documentation for [hybrid billing models](https://docs.metronome.com/launch-guides/hybrid-business/#implement-a-hybrid-model-for-a-customer).
+* **api:** Add support for new styles in embeddable dashboards.
+* **api:** Add reference to contract on commit objects.
+
+### Chores
+
+* **docs:** Improved documentation.
+
+## 0.1.0 (2025-07-24)
+
+Full Changelog: [v0.1.0-beta.12...v0.1.0](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0-beta.12...v0.1.0)
+
+### Features
+
+* **api:** Allow for Pagination past empty pages ([1b1308b](https://github.com/Metronome-Industries/metronome-node/commit/1b1308b513d14ae4da8c4c2626b31979812ab752))
+* **api:** api update ([b9a103e](https://github.com/Metronome-Industries/metronome-node/commit/b9a103e4cb6df2b6aee6abb86b45b80629f015dd))
+* **api:** api update ([2615251](https://github.com/Metronome-Industries/metronome-node/commit/26152511f0ca5b5fc6c899ad67edbdd27035d9a8))
+* **api:** api update ([2bf2236](https://github.com/Metronome-Industries/metronome-node/commit/2bf22368018398ab1297177ad905d614f708ba94))
+* **api:** api update ([5d3cd18](https://github.com/Metronome-Industries/metronome-node/commit/5d3cd180cb012878780ec99d8469a99d8f2fe5c6))
+
+
+### Chores
+
+* **internal:** codegen related update ([a587ca5](https://github.com/Metronome-Industries/metronome-node/commit/a587ca5d5b9e51241afe9b3bf570f47cee3a8916))
+
+## 0.1.0-beta.12 (2025-07-18)
+
+Full Changelog: [v0.1.0-beta.11...v0.1.0-beta.12](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0-beta.11...v0.1.0-beta.12)
+
+### Features
+
+* **api:** Add Event Search API for finding events to match to customers and billable metrics ([1317600](https://github.com/Metronome-Industries/metronome-node/commit/13176003e84098a2ad6cd9f15b4c2cc9a5afc13c))
+* **api:** add previewEvents API for generating draft invoices with provided events ([39bdb26](https://github.com/Metronome-Industries/metronome-node/commit/39bdb26b0dc826a4abfecdbf50e6c6e524bdbb1e))
+* **api:** add support for Anrok and Precalculated tax types in payment gateway configuration ([063282e](https://github.com/Metronome-Industries/metronome-node/commit/063282e256add65b977bc1ed312dcd7d3b8f7447))
+* **api:** add hierarchy configuration to v1 contracts and v2 contracts ([6a2cac4](https://github.com/Metronome-Industries/metronome-node/commit/6a2cac46aa813c57ab797e6060c413f3809f7dee))
+* **api:** add UUID format annotations to credit type IDs ([07bec6a](https://github.com/Metronome-Industries/metronome-node/commit/07bec6a672c803fdf8708ed5fe6502044a7957b4))
+* **api:** add custom credit type support to prepaid balance thresholds ([ad34431](https://github.com/Metronome-Industries/metronome-node/commit/ad344316b76a56cced5c2a6cd2d6b3cd7cf94c5e))
+* **api:** add contract priority field ([1b84492](https://github.com/Metronome-Industries/metronome-node/commit/1b84492f3bc2456447dc0e8e0dd0acb9190a3b7c))
+* **client:** add support for endpoint-specific base URLs ([9f93c51](https://github.com/Metronome-Industries/metronome-node/commit/9f93c51f5aab3e07e19ddacf9db29b87ff1dc0ff))
+* **mcp:** fallback for void-typed methods ([d9dad2b](https://github.com/Metronome-Industries/metronome-node/commit/d9dad2b63eae17db6be436ef66af4d0f621787be))
+* **mcp:** implement support for binary responses ([4cbe51d](https://github.com/Metronome-Industries/metronome-node/commit/4cbe51df7fba1a011a6aa2fb3174ca2a2f69ef11))
+* **mcp:** set X-Stainless-MCP header ([e175ec9](https://github.com/Metronome-Industries/metronome-node/commit/e175ec9b72a2196c0ed9dade64e60d307b3ce9e5))
+* **mcp:** support filtering tool results by a jq expression ([ebc5682](https://github.com/Metronome-Industries/metronome-node/commit/ebc5682662424f1912e40cb26c4409f001195435))
+
+
+### Bug Fixes
+
+* **build:** bump node version in CI build to 20 to be compatible with MCP package ([52b0abc](https://github.com/Metronome-Industries/metronome-node/commit/52b0abcac2913de4062e5249e27796647249bd7a))
+* **ci:** release-doctor — report correct token name ([4e1621e](https://github.com/Metronome-Industries/metronome-node/commit/4e1621e8e77f29d18dcc6a3d428c0dde033723de))
+* **client:** don't send `Content-Type` for bodyless methods ([7fd6259](https://github.com/Metronome-Industries/metronome-node/commit/7fd6259678fdf7c3878363732e6a1f2fbd90e595))
+* **mcp:** include required section for top-level properties and support naming transformations ([63bb909](https://github.com/Metronome-Industries/metronome-node/commit/63bb909ae64ac02224a5261283cfcb00c556f7b0))
+* **mcp:** relax input type for asTextContextResult ([672b608](https://github.com/Metronome-Industries/metronome-node/commit/672b6088899b3e56ccef1154061c179c0924eb7e))
+* **mcp:** support jq filtering on cloudflare workers ([e560bbc](https://github.com/Metronome-Industries/metronome-node/commit/e560bbc9b9975e2b6fe4a0609e7bba5faf3ee487))
+* publish script — handle NPM errors correctly ([59bc726](https://github.com/Metronome-Industries/metronome-node/commit/59bc726367965dac5877d900d81bec32b71c395d))
+
+
+### Chores
+
+* **ci:** enable for pull requests ([22d2ba8](https://github.com/Metronome-Industries/metronome-node/commit/22d2ba8b4decab21dc501ecd054e1ec92caa0d03))
+* **ci:** only run for pushes and fork pull requests ([55faa25](https://github.com/Metronome-Industries/metronome-node/commit/55faa250be777add47dc8c3e56918184aa66a8be))
+* **docs:** use top-level-await in example snippets ([b3010ef](https://github.com/Metronome-Industries/metronome-node/commit/b3010ef72fb05f33c3382354bc297e8a8fd4a175))
+* **internal:** make base APIResource abstract ([128bf66](https://github.com/Metronome-Industries/metronome-node/commit/128bf662fd0437cdcbd771d006e20b9a0f26f333))
+* make some internal functions async ([4ce7c1b](https://github.com/Metronome-Industries/metronome-node/commit/4ce7c1bdbd26d2144e8cf04d58a80c78bd69931f))
+* **mcp:** formatting ([51ed397](https://github.com/Metronome-Industries/metronome-node/commit/51ed397af653cdc96799a69a7065a66315c1410d))
+* **mcp:** provides high-level initMcpServer function and exports known clients ([7f82ab5](https://github.com/Metronome-Industries/metronome-node/commit/7f82ab5960c2bc474063395fd4c7af6e14964bbf))
+* **mcp:** rework imports in tools ([a1434bc](https://github.com/Metronome-Industries/metronome-node/commit/a1434bc98c123bd605091e1953faf6250022ed81))
+* mention unit type in timeout docs ([74a810d](https://github.com/Metronome-Industries/metronome-node/commit/74a810d4f89fd2840cf0d69cf0c77af4a22a9ffb))
+
+
+### Refactors
+
+* **types:** replace Record with mapped types ([34e6799](https://github.com/Metronome-Industries/metronome-node/commit/34e6799903417585e94f5db100fbb49bd2f047f0))
+
+## 0.1.0-beta.11 (2025-05-30)
+
+Full Changelog: [v0.1.0-beta.10...v0.1.0-beta.11](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0-beta.10...v0.1.0-beta.11)
+
+### Features
+
+* **api:** add subscription quantity history endpoint ([e9b4bbe](https://github.com/Metronome-Industries/metronome-node/commit/e9b4bbef3d7435fd9d35a9938426b59f91e03ad4))
+* **api:** api update ([d1052dc](https://github.com/Metronome-Industries/metronome-node/commit/d1052dce85e4a5497f457bd2168118f9cbb6dde3))
+* **api:** api update ([9ef4660](https://github.com/Metronome-Industries/metronome-node/commit/9ef4660419a21dfcd3f060c93a372fbe010ea843))
+* **api:** api update ([7a4ca29](https://github.com/Metronome-Industries/metronome-node/commit/7a4ca29be180fd7d06ae0b6d4598e708fa538281))
+* **api:** api update ([1f75a2f](https://github.com/Metronome-Industries/metronome-node/commit/1f75a2fe161f762465ee072de1806bf4a510c2ce))
+* **api:** api update ([81d3f3d](https://github.com/Metronome-Industries/metronome-node/commit/81d3f3d2be3ecfb033a6c9aeac2939b2ba0adf5a))
+* **api:** api update ([18b541e](https://github.com/Metronome-Industries/metronome-node/commit/18b541eb177314ca299572a7053389701cea18a8))
+* **api:** api update ([a9ddbe3](https://github.com/Metronome-Industries/metronome-node/commit/a9ddbe3c8a26df141f5ad41acaf8c2fc28bf1dd8))
+* **api:** api update ([2da7274](https://github.com/Metronome-Industries/metronome-node/commit/2da7274efe1a758fbabf5ca4b54107fd33a3c069))
+* **api:** api update ([31bbcc9](https://github.com/Metronome-Industries/metronome-node/commit/31bbcc96c9ae847939a2877475d14e094d06ecf1))
+* **api:** api update ([7aecbf6](https://github.com/Metronome-Industries/metronome-node/commit/7aecbf620e2bb02afe1d3ee5cf6dbc6b4e6c5988))
+* **api:** api update ([56bf37d](https://github.com/Metronome-Industries/metronome-node/commit/56bf37d8aa13c9f55f6ec75dcaf17adaadf2fb69))
+* **api:** rename get subscription quantity history to retrieve ([e8fba34](https://github.com/Metronome-Industries/metronome-node/commit/e8fba347a4de50f939292a263c75ce8407bc33d2))
+* **mcp:** include http information in tools ([726c5e8](https://github.com/Metronome-Industries/metronome-node/commit/726c5e8f508b4f106e753315f045eff3b66ad33f))
+
+
+### Bug Fixes
+
+* **mcp:** fix cursor schema transformation issue with recursive references ([5f170a7](https://github.com/Metronome-Industries/metronome-node/commit/5f170a7dc19dc1fdfd52f1da2e77bcbe4d421d22))
+* **mcp:** include description in dynamic tool search ([aa45634](https://github.com/Metronome-Industries/metronome-node/commit/aa456341222b425c6c76ca8db767bbbfa6117721))
+
+
+### Chores
+
+* **api:** mark some methods as deprecated ([964f311](https://github.com/Metronome-Industries/metronome-node/commit/964f31117ebd10c9a340ffcda002761871d6c194))
+* configure new SDK language ([f579630](https://github.com/Metronome-Industries/metronome-node/commit/f5796305b442d41d73cbc4bc6a713894f7aae190))
+* configure new SDK language ([9f9be53](https://github.com/Metronome-Industries/metronome-node/commit/9f9be5311ee3cbd15e67ea4fdbfd7d1354cf7437))
+* **docs:** grammar improvements ([a205060](https://github.com/Metronome-Industries/metronome-node/commit/a2050605f798ce57798f61135753ca489c6c99b2))
+* improve docs for MCP servers ([8d769fc](https://github.com/Metronome-Industries/metronome-node/commit/8d769fc5714bddfa2094d8b31c4181c7aacb0661))
+* improve publish-npm script --latest tag logic ([51cf030](https://github.com/Metronome-Industries/metronome-node/commit/51cf030151865adfc17dbf30392d92eaee780819))
+* **mcp:** remove duplicate assignment ([3aee147](https://github.com/Metronome-Industries/metronome-node/commit/3aee1475476e8dc7b0672b3295358b498781bb93))
+
+
+### Documentation
+
+* **pagination:** improve naming ([3861f31](https://github.com/Metronome-Industries/metronome-node/commit/3861f31fbe55cfd3d976d1a7794f7c7eb82b5fb7))
+
+## 0.1.0-beta.10 (2025-05-14)
+
+Full Changelog: [v0.1.0-beta.9...v0.1.0-beta.10](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0-beta.9...v0.1.0-beta.10)
+
+### Features
+
+* **api:** api update ([7dff441](https://github.com/Metronome-Industries/metronome-node/commit/7dff441268a88ce3a8846b6cdb7e68e2dca046fb))
+* **api:** api update ([f2c27c0](https://github.com/Metronome-Industries/metronome-node/commit/f2c27c08def847f83d9d49fb756b223705d7afa2))
+* **api:** api update ([8d84c75](https://github.com/Metronome-Industries/metronome-node/commit/8d84c75e3f9328f62b708d9594dcc1c087cbb756))
+* **api:** api update ([af88cb0](https://github.com/Metronome-Industries/metronome-node/commit/af88cb055d1b1e3f20466f4dd0d31099c7a8dc43))
+* **api:** api update ([3b80d3e](https://github.com/Metronome-Industries/metronome-node/commit/3b80d3ecfe26bc2a8250a4bb66fb328ac41d3392))
+* **api:** api update ([a5f5e03](https://github.com/Metronome-Industries/metronome-node/commit/a5f5e0333a21847386d5f8be4d6351a2d1f7f452))
+* **api:** api update ([1180b76](https://github.com/Metronome-Industries/metronome-node/commit/1180b76854337d77e1d2a4add70bb72d2dc6141e))
+* **api:** api update ([6613c56](https://github.com/Metronome-Industries/metronome-node/commit/6613c563f56f6335a9f6061a365044bfcccb2e92))
+* **api:** api update ([4cade32](https://github.com/Metronome-Industries/metronome-node/commit/4cade32a3dca201cde909e94ae2996bbf3cc12ac))
+* **api:** api update ([3ba4f8e](https://github.com/Metronome-Industries/metronome-node/commit/3ba4f8e1b677282008728c84da4c3faf5697b7ed))
+* **api:** api update ([60b4143](https://github.com/Metronome-Industries/metronome-node/commit/60b4143a03cc8e006b86c93da5a545e32703cd83))
+* **api:** api update ([516d9c2](https://github.com/Metronome-Industries/metronome-node/commit/516d9c2fc1bf4b697bb4fafe6f628ea8fbccf79a))
+* **api:** api update ([1c3e744](https://github.com/Metronome-Industries/metronome-node/commit/1c3e744c5003d63781cac40c89e1c5eef24b3bbe))
+* **api:** api update ([bdc9761](https://github.com/Metronome-Industries/metronome-node/commit/bdc97612465ee679612a7b6abb4062d497249a68))
+* **api:** api update ([d6f5562](https://github.com/Metronome-Industries/metronome-node/commit/d6f5562f12c16c51d0126efa3fcc0119fb961621))
+* **api:** api update ([0fd2a49](https://github.com/Metronome-Industries/metronome-node/commit/0fd2a490b5b4e0df89433bfdd584dde69f4d4ea1))
+* **api:** api update ([6dfdf86](https://github.com/Metronome-Industries/metronome-node/commit/6dfdf860700fd361f397a8af15f6f2d1c2577d39))
+* **api:** api update ([4eba9b5](https://github.com/Metronome-Industries/metronome-node/commit/4eba9b5fc38511e98b2b75135dbece28c32af3a2))
+* **api:** api update ([35aae7e](https://github.com/Metronome-Industries/metronome-node/commit/35aae7e331c078b459e73f027c7b4dc6f49176bc))
+* **api:** api update ([84e20e7](https://github.com/Metronome-Industries/metronome-node/commit/84e20e7d6440e2fd6f53860a99600e7206d5d24c))
+* **api:** api update ([3d93874](https://github.com/Metronome-Industries/metronome-node/commit/3d938742990b866401d760fe99a13c217d2c5ab3))
+* **api:** api update ([7049bb8](https://github.com/Metronome-Industries/metronome-node/commit/7049bb8ed7f7f99c89b3a3b8a0e21871f4284055))
+* **api:** api update ([e787f9e](https://github.com/Metronome-Industries/metronome-node/commit/e787f9e186c63ce947eae31727e05e74b6147aa3))
+* **api:** api update ([30f0366](https://github.com/Metronome-Industries/metronome-node/commit/30f0366cfb29018ed2481d91b5fd5badb17da445))
+* **api:** api update ([ea39816](https://github.com/Metronome-Industries/metronome-node/commit/ea39816046abc8384c5572af3aa86b77aa91a43e))
+* **api:** api update ([eff527e](https://github.com/Metronome-Industries/metronome-node/commit/eff527efd5cd6ba1b340e63db45ff7e83a02718d))
+* **api:** api update ([4c5558b](https://github.com/Metronome-Industries/metronome-node/commit/4c5558be27dde87e5801917847af58eab5b1115c))
+* **api:** api update ([ae1b4a1](https://github.com/Metronome-Industries/metronome-node/commit/ae1b4a1fa632f1df8c7b57f63060ff54486b84c3))
+* **api:** api update ([#214](https://github.com/Metronome-Industries/metronome-node/issues/214)) ([44fdb08](https://github.com/Metronome-Industries/metronome-node/commit/44fdb088aab81774a76b23332d631c7e524526bb))
+* **api:** api update ([#216](https://github.com/Metronome-Industries/metronome-node/issues/216)) ([835b4ce](https://github.com/Metronome-Industries/metronome-node/commit/835b4ce72456738d7840dac151e53fe42c85e18d))
+* **api:** api update ([#218](https://github.com/Metronome-Industries/metronome-node/issues/218)) ([37545a3](https://github.com/Metronome-Industries/metronome-node/commit/37545a3c3558f8d5ccc6307eb4ac957c43480ef3))
+* **api:** api update ([#220](https://github.com/Metronome-Industries/metronome-node/issues/220)) ([6185553](https://github.com/Metronome-Industries/metronome-node/commit/6185553a7e1fbc048f37d1b4f376873d488e19f9))
+* **api:** api update ([#222](https://github.com/Metronome-Industries/metronome-node/issues/222)) ([a6de865](https://github.com/Metronome-Industries/metronome-node/commit/a6de865062cc996ca2babb990df2483af26b3a81))
+* **api:** api update ([#224](https://github.com/Metronome-Industries/metronome-node/issues/224)) ([ca18ead](https://github.com/Metronome-Industries/metronome-node/commit/ca18eada2acc3fca19509316825cf7d0cdc12053))
+* **api:** api update ([#225](https://github.com/Metronome-Industries/metronome-node/issues/225)) ([e4d9ab0](https://github.com/Metronome-Industries/metronome-node/commit/e4d9ab0f33722af6b7141c2fc69011454ace1e44))
+* **api:** api update ([#227](https://github.com/Metronome-Industries/metronome-node/issues/227)) ([5f15374](https://github.com/Metronome-Industries/metronome-node/commit/5f15374a6dd354723b6e8fe2f8d5a02407c604ce))
+
+
+### Bug Fixes
+
+* **api:** improve type resolution when importing as a package ([#223](https://github.com/Metronome-Industries/metronome-node/issues/223)) ([35a28ba](https://github.com/Metronome-Industries/metronome-node/commit/35a28ba8b62e6b9afa5c0f86f13ae59335e01f05))
+* **client:** send `X-Stainless-Timeout` in seconds ([#219](https://github.com/Metronome-Industries/metronome-node/issues/219)) ([f36c73a](https://github.com/Metronome-Industries/metronome-node/commit/f36c73aeadc23b5f641a498efe28e9d9b9cfa6ee))
+* **internal:** work around https://github.com/vercel/next.js/issues/76881 ([#217](https://github.com/Metronome-Industries/metronome-node/issues/217)) ([23ce14d](https://github.com/Metronome-Industries/metronome-node/commit/23ce14d6a34b552c0f6fc8718029dbf12f919696))
+* **mcp:** remove unused tools.ts ([#226](https://github.com/Metronome-Industries/metronome-node/issues/226)) ([43d45f6](https://github.com/Metronome-Industries/metronome-node/commit/43d45f68095bd4cfd04091ba078d85e3e38c1ea9))
+
+
+### Chores
+
+* add hash of OpenAPI spec/config inputs to .stats.yml ([f797d09](https://github.com/Metronome-Industries/metronome-node/commit/f797d094fdccd8db75ed5c441580519b91d11f5a))
+* **ci:** add timeout thresholds for CI jobs ([a2dcbf2](https://github.com/Metronome-Industries/metronome-node/commit/a2dcbf26450fe624fc073cd2f82006246b1a0997))
+* **ci:** bump node version for release workflows ([501b76f](https://github.com/Metronome-Industries/metronome-node/commit/501b76f969395ab5bcace5ac9b229eac136e5a16))
+* **ci:** only use depot for staging repos ([ee6b514](https://github.com/Metronome-Industries/metronome-node/commit/ee6b51494f1ab87c9a0d02d59c61d518d108c818))
+* **ci:** run on more branches and use depot runners ([ed00453](https://github.com/Metronome-Industries/metronome-node/commit/ed00453cd92c062247cffe03ab50d055088c1fe5))
+* **client:** minor internal fixes ([04a2029](https://github.com/Metronome-Industries/metronome-node/commit/04a20299b1f439d6bc20110a2043cb73650b8fdb))
+* **internal:** add aliases for Record and Array ([#221](https://github.com/Metronome-Industries/metronome-node/issues/221)) ([3452e8a](https://github.com/Metronome-Industries/metronome-node/commit/3452e8ada01c6f42579e6be5aac0eac294cbafd3))
+* **internal:** reduce CI branch coverage ([ac7f37b](https://github.com/Metronome-Industries/metronome-node/commit/ac7f37b6edee302bd25f2e9ad0d878739f58d2f5))
+* **internal:** upload builds and expand CI branch coverage ([#229](https://github.com/Metronome-Industries/metronome-node/issues/229)) ([1a2c110](https://github.com/Metronome-Industries/metronome-node/commit/1a2c11097f7100c35b0318ad59105ba15bcdc363))
+* **tests:** improve enum examples ([#228](https://github.com/Metronome-Industries/metronome-node/issues/228)) ([3476c1e](https://github.com/Metronome-Industries/metronome-node/commit/3476c1e6be559ad946a7843ec5b4bcc3f6d3670e))
+
+
+### Documentation
+
+* add examples to tsdocs ([a2494b9](https://github.com/Metronome-Industries/metronome-node/commit/a2494b955cf88704027b087f429715c6f49ccb52))
+* **readme:** fix typo ([f8da328](https://github.com/Metronome-Industries/metronome-node/commit/f8da3281bbff42cecb7abdf02d89f6ce6643bfd7))
+
+## 0.1.0-beta.9 (2025-03-25)
+
+Full Changelog: [v0.1.0-beta.8...v0.1.0-beta.9](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0-beta.8...v0.1.0-beta.9)
+
+### Features
+
+* add SKIP_BREW env var to ./scripts/bootstrap ([#198](https://github.com/Metronome-Industries/metronome-node/issues/198)) ([544d349](https://github.com/Metronome-Industries/metronome-node/commit/544d349fecda73a515121ada3b806db5baf09ea3))
+* **api:** api update ([#184](https://github.com/Metronome-Industries/metronome-node/issues/184)) ([06fe395](https://github.com/Metronome-Industries/metronome-node/commit/06fe3958630e2d74debbc70156b60357c4a738d9))
+* **api:** api update ([#186](https://github.com/Metronome-Industries/metronome-node/issues/186)) ([1664ab4](https://github.com/Metronome-Industries/metronome-node/commit/1664ab438dcd126f0a14efaf94162fc40ef8caf1))
+* **api:** api update ([#190](https://github.com/Metronome-Industries/metronome-node/issues/190)) ([b52e98b](https://github.com/Metronome-Industries/metronome-node/commit/b52e98b973d3b5fedbb3934e597c99cb6402b7f7))
+* **api:** api update ([#193](https://github.com/Metronome-Industries/metronome-node/issues/193)) ([c59b373](https://github.com/Metronome-Industries/metronome-node/commit/c59b373f045c8ae80d11694029ad53a9dc38178f))
+* **api:** api update ([#194](https://github.com/Metronome-Industries/metronome-node/issues/194)) ([9bc2925](https://github.com/Metronome-Industries/metronome-node/commit/9bc2925267fc9a3c1200218952031ca4251e8c02))
+* **api:** api update ([#195](https://github.com/Metronome-Industries/metronome-node/issues/195)) ([53acc95](https://github.com/Metronome-Industries/metronome-node/commit/53acc95e94df149834a1d3429598da42b1db2118))
+* **api:** api update ([#196](https://github.com/Metronome-Industries/metronome-node/issues/196)) ([764940e](https://github.com/Metronome-Industries/metronome-node/commit/764940e9a25db57cc161dfd51f2da39c11f5f523))
+* **api:** api update ([#197](https://github.com/Metronome-Industries/metronome-node/issues/197)) ([2205e62](https://github.com/Metronome-Industries/metronome-node/commit/2205e6222dccca01d1e208fa4a3839e362866566))
+* **api:** api update ([#199](https://github.com/Metronome-Industries/metronome-node/issues/199)) ([8a841d2](https://github.com/Metronome-Industries/metronome-node/commit/8a841d2aa55607729aff538e412593f81c87ed1d))
+* **api:** api update ([#201](https://github.com/Metronome-Industries/metronome-node/issues/201)) ([43e3bd1](https://github.com/Metronome-Industries/metronome-node/commit/43e3bd1828177baf0d49ac8115a632660edc5cbe))
+* **api:** api update ([#202](https://github.com/Metronome-Industries/metronome-node/issues/202)) ([bd1a2fc](https://github.com/Metronome-Industries/metronome-node/commit/bd1a2fc37594a41645d0dab2867d8db1d7ce293c))
+* **api:** api update ([#205](https://github.com/Metronome-Industries/metronome-node/issues/205)) ([5a11e9d](https://github.com/Metronome-Industries/metronome-node/commit/5a11e9d4846a300eddbc7fd6bac48a1e1566b257))
+* **api:** api update ([#207](https://github.com/Metronome-Industries/metronome-node/issues/207)) ([9a3a1e0](https://github.com/Metronome-Industries/metronome-node/commit/9a3a1e07d2ce6a66c64f19e42769df63b0d9e569))
+* **api:** api update ([#208](https://github.com/Metronome-Industries/metronome-node/issues/208)) ([de903a1](https://github.com/Metronome-Industries/metronome-node/commit/de903a1f16810fb46b18eb1113f03d9af30afeb4))
+* **api:** api update ([#209](https://github.com/Metronome-Industries/metronome-node/issues/209)) ([d4dfbed](https://github.com/Metronome-Industries/metronome-node/commit/d4dfbed762fb631d3896229ef7f676bf49a98301))
+* **api:** api update ([#211](https://github.com/Metronome-Industries/metronome-node/issues/211)) ([4bccf66](https://github.com/Metronome-Industries/metronome-node/commit/4bccf66082d6cd21d7e35a3f40932d7a86f54360))
+* **api:** manual updates ([#212](https://github.com/Metronome-Industries/metronome-node/issues/212)) ([7423f29](https://github.com/Metronome-Industries/metronome-node/commit/7423f292405bf645ce21ad0f338145031fb9ba1c))
+* **client:** accept RFC6838 JSON content types ([#200](https://github.com/Metronome-Industries/metronome-node/issues/200)) ([7b2dbb5](https://github.com/Metronome-Industries/metronome-node/commit/7b2dbb5a3f8917182a256f73d18d1c68e8e99805))
+
+
+### Bug Fixes
+
+* avoid type error in certain environments ([#206](https://github.com/Metronome-Industries/metronome-node/issues/206)) ([0621095](https://github.com/Metronome-Industries/metronome-node/commit/0621095b11a6f90499cb42f1c480f394d3af8c3c))
+* **client:** mark some request bodies as optional ([#188](https://github.com/Metronome-Industries/metronome-node/issues/188)) ([ccd11d0](https://github.com/Metronome-Industries/metronome-node/commit/ccd11d02a833be483334af37dfeebc70027b8658))
+
+
+### Chores
+
+* **exports:** cleaner resource index imports ([#203](https://github.com/Metronome-Industries/metronome-node/issues/203)) ([ce3b069](https://github.com/Metronome-Industries/metronome-node/commit/ce3b069bda73cbbd08bbeb194e6d63cee38d0c62))
+* **exports:** stop using path fallbacks ([#204](https://github.com/Metronome-Industries/metronome-node/issues/204)) ([aa701f2](https://github.com/Metronome-Industries/metronome-node/commit/aa701f28e265fbd87eaa7d4bd4f802dffb5df226))
+* **internal:** codegen related update ([1cbad9c](https://github.com/Metronome-Industries/metronome-node/commit/1cbad9ca8d07a881679a82b3433966a922a6f2d8))
+* **internal:** codegen related update ([8ad1b81](https://github.com/Metronome-Industries/metronome-node/commit/8ad1b81bd525d57a8f21b5928772539e1fe873fe))
+* **internal:** codegen related update ([#187](https://github.com/Metronome-Industries/metronome-node/issues/187)) ([ec2d099](https://github.com/Metronome-Industries/metronome-node/commit/ec2d099444f2df38f60e912cd71fccd5f126dc99))
+* **internal:** fix devcontainers setup ([#189](https://github.com/Metronome-Industries/metronome-node/issues/189)) ([519bf1d](https://github.com/Metronome-Industries/metronome-node/commit/519bf1ddc7b7ef7084f4d746c8a4123108a58f1e))
+* **internal:** remove extra empty newlines ([e5a2f8a](https://github.com/Metronome-Industries/metronome-node/commit/e5a2f8a001a178780faf628678df5eed36e20631))
+
+
+### Documentation
+
+* update URLs from stainlessapi.com to stainless.com ([#191](https://github.com/Metronome-Industries/metronome-node/issues/191)) ([f5e0b39](https://github.com/Metronome-Industries/metronome-node/commit/f5e0b39c3df9e5a04cc3b5e588984685d2861c19))
+
+## 0.1.0-beta.8 (2025-02-07)
+
+Full Changelog: [v0.1.0-beta.7...v0.1.0-beta.8](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0-beta.7...v0.1.0-beta.8)
+
+### Features
+
+* **api:** api update ([#175](https://github.com/Metronome-Industries/metronome-node/issues/175)) ([914b7ce](https://github.com/Metronome-Industries/metronome-node/commit/914b7cec0dec35505f24876a753c855bfffa1fea))
+* **api:** api update ([#177](https://github.com/Metronome-Industries/metronome-node/issues/177)) ([a8e25ae](https://github.com/Metronome-Industries/metronome-node/commit/a8e25ae5ad4ac878adcd0d6fe40cd332aab27c00))
+* **api:** api update ([#178](https://github.com/Metronome-Industries/metronome-node/issues/178)) ([160b791](https://github.com/Metronome-Industries/metronome-node/commit/160b7915e0374f4a2e7eb0b7a0e0876920795c53))
+* **api:** api update ([#180](https://github.com/Metronome-Industries/metronome-node/issues/180)) ([f99d29e](https://github.com/Metronome-Industries/metronome-node/commit/f99d29e9bce0d27adcebc473dfe594762381e79d))
+* **api:** api update ([#181](https://github.com/Metronome-Industries/metronome-node/issues/181)) ([63d9161](https://github.com/Metronome-Industries/metronome-node/commit/63d91614e279b2b942aec39b3561e646dd4cb4ed))
+* **api:** api update ([#182](https://github.com/Metronome-Industries/metronome-node/issues/182)) ([ea794e4](https://github.com/Metronome-Industries/metronome-node/commit/ea794e4be020125f90689b2417c7ec2901cbe201))
+* **client:** send `X-Stainless-Timeout` header ([#179](https://github.com/Metronome-Industries/metronome-node/issues/179)) ([9bf9863](https://github.com/Metronome-Industries/metronome-node/commit/9bf986348667e88ffaadf082a5583d6a74bca848))
+
+## 0.1.0-beta.7 (2025-01-27)
+
+Full Changelog: [v0.1.0-beta.6...v0.1.0-beta.7](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0-beta.6...v0.1.0-beta.7)
+
+### Features
+
+* **api:** api update ([#172](https://github.com/Metronome-Industries/metronome-node/issues/172)) ([4d55129](https://github.com/Metronome-Industries/metronome-node/commit/4d55129c5b03fd7eb3a8f01819345360de5b3d61))
+
+## 0.1.0-beta.6 (2025-01-22)
+
+Full Changelog: [v0.1.0-beta.5...v0.1.0-beta.6](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0-beta.5...v0.1.0-beta.6)
+
+### Features
+
+* **api:** api update ([#118](https://github.com/Metronome-Industries/metronome-node/issues/118)) ([cd2ada8](https://github.com/Metronome-Industries/metronome-node/commit/cd2ada88e51df663a5375c1aea37d5fd4f1ea943))
+* **api:** api update ([#119](https://github.com/Metronome-Industries/metronome-node/issues/119)) ([f018a3a](https://github.com/Metronome-Industries/metronome-node/commit/f018a3afeb71f3206552f54b215c6cbd01667a53))
+* **api:** api update ([#122](https://github.com/Metronome-Industries/metronome-node/issues/122)) ([238d9e7](https://github.com/Metronome-Industries/metronome-node/commit/238d9e7553317f958e4dfa3ccea2f568af4255d5))
+* **api:** api update ([#124](https://github.com/Metronome-Industries/metronome-node/issues/124)) ([44f18f2](https://github.com/Metronome-Industries/metronome-node/commit/44f18f2a2587208be0792b8d8c8805b17e8f2e91))
+* **api:** api update ([#128](https://github.com/Metronome-Industries/metronome-node/issues/128)) ([c959843](https://github.com/Metronome-Industries/metronome-node/commit/c959843489fcd67e8f837abc265f58e28bb3fc34))
+* **api:** api update ([#131](https://github.com/Metronome-Industries/metronome-node/issues/131)) ([409a74b](https://github.com/Metronome-Industries/metronome-node/commit/409a74b326e286d29d34db31259eb59c5bd2649d))
+* **api:** api update ([#132](https://github.com/Metronome-Industries/metronome-node/issues/132)) ([cdc8068](https://github.com/Metronome-Industries/metronome-node/commit/cdc8068557ffe5174f9f9a07f2e1095a81df4b43))
+* **api:** api update ([#133](https://github.com/Metronome-Industries/metronome-node/issues/133)) ([16ed804](https://github.com/Metronome-Industries/metronome-node/commit/16ed80433f3356df5c98ca4258425f37fcf03811))
+* **api:** api update ([#135](https://github.com/Metronome-Industries/metronome-node/issues/135)) ([051ae0a](https://github.com/Metronome-Industries/metronome-node/commit/051ae0aef252a8ba2f44aa98e8eac3f075f18ddf))
+* **api:** api update ([#136](https://github.com/Metronome-Industries/metronome-node/issues/136)) ([9eef6e2](https://github.com/Metronome-Industries/metronome-node/commit/9eef6e226f1f110bf47b0b8c8cc12c7a19a78e18))
+* **api:** api update ([#142](https://github.com/Metronome-Industries/metronome-node/issues/142)) ([b31ad8b](https://github.com/Metronome-Industries/metronome-node/commit/b31ad8ba44c6e0ba671f142f9a9aa52148e2e97f))
+* **api:** api update ([#143](https://github.com/Metronome-Industries/metronome-node/issues/143)) ([19edcb6](https://github.com/Metronome-Industries/metronome-node/commit/19edcb64432c1eda8a26e249290fdfe8bfcc1ff6))
+* **api:** api update ([#145](https://github.com/Metronome-Industries/metronome-node/issues/145)) ([70d9c12](https://github.com/Metronome-Industries/metronome-node/commit/70d9c12d30e5d7162840d7cd454e2264b082dabb))
+* **api:** api update ([#148](https://github.com/Metronome-Industries/metronome-node/issues/148)) ([df04908](https://github.com/Metronome-Industries/metronome-node/commit/df049082c2794907362128705a3714c124033c5c))
+* **api:** api update ([#151](https://github.com/Metronome-Industries/metronome-node/issues/151)) ([764ef1b](https://github.com/Metronome-Industries/metronome-node/commit/764ef1b3e6e0e8b4360c2750ef606f8af43384af))
+* **api:** api update ([#153](https://github.com/Metronome-Industries/metronome-node/issues/153)) ([72ad248](https://github.com/Metronome-Industries/metronome-node/commit/72ad2481fec2eb0ad61b3bc53c3eca1baa0653e4))
+* **api:** api update ([#156](https://github.com/Metronome-Industries/metronome-node/issues/156)) ([10d97b4](https://github.com/Metronome-Industries/metronome-node/commit/10d97b43ef1550496a2043fd78dbdfa3994f7ae7))
+* **api:** api update ([#158](https://github.com/Metronome-Industries/metronome-node/issues/158)) ([30b43d0](https://github.com/Metronome-Industries/metronome-node/commit/30b43d013b7148ef12f859b2d4e7578f7c239d8b))
+* **api:** api update ([#160](https://github.com/Metronome-Industries/metronome-node/issues/160)) ([f4665bd](https://github.com/Metronome-Industries/metronome-node/commit/f4665bde087cbe34ce82eef2de9a32f020071bff))
+* **api:** api update ([#161](https://github.com/Metronome-Industries/metronome-node/issues/161)) ([5ea040a](https://github.com/Metronome-Industries/metronome-node/commit/5ea040a4cbfc9c184f427a72b73809507dc38771))
+* **api:** api update ([#162](https://github.com/Metronome-Industries/metronome-node/issues/162)) ([7af268f](https://github.com/Metronome-Industries/metronome-node/commit/7af268fc4d2f30f437d81d8c4dbad6483e1768a1))
+* **api:** api update ([#163](https://github.com/Metronome-Industries/metronome-node/issues/163)) ([15d1806](https://github.com/Metronome-Industries/metronome-node/commit/15d18064383ab00890b042c4cf5cdd95c2d63992))
+* **api:** api update ([#164](https://github.com/Metronome-Industries/metronome-node/issues/164)) ([ed372b0](https://github.com/Metronome-Industries/metronome-node/commit/ed372b0aea0a3a4d009020c2c820d00e723181a1))
+* **api:** api update ([#165](https://github.com/Metronome-Industries/metronome-node/issues/165)) ([872db74](https://github.com/Metronome-Industries/metronome-node/commit/872db74e8330788c0f71b0ef84432f38642257c7))
+* **api:** api update ([#167](https://github.com/Metronome-Industries/metronome-node/issues/167)) ([bb3f432](https://github.com/Metronome-Industries/metronome-node/commit/bb3f432e2523d874c9fe6af2ad0544d113614a68))
+* **api:** api update ([#168](https://github.com/Metronome-Industries/metronome-node/issues/168)) ([d4e5f6f](https://github.com/Metronome-Industries/metronome-node/commit/d4e5f6f588ec681572f1661b53401fb77ac13d23))
+* **api:** api update ([#170](https://github.com/Metronome-Industries/metronome-node/issues/170)) ([e697ccc](https://github.com/Metronome-Industries/metronome-node/commit/e697cccc67fe4de123f05e338d0b61a0301d8adc))
+* **api:** OpenAPI spec update via Stainless API ([#111](https://github.com/Metronome-Industries/metronome-node/issues/111)) ([594c7aa](https://github.com/Metronome-Industries/metronome-node/commit/594c7aa0b348a3ba12cd4440dd2c6b58e766c50a))
+* **api:** OpenAPI spec update via Stainless API ([#114](https://github.com/Metronome-Industries/metronome-node/issues/114)) ([933a4e9](https://github.com/Metronome-Industries/metronome-node/commit/933a4e95100d2fdace1578d51c588931d463a1d2))
+* **api:** OpenAPI spec update via Stainless API ([#117](https://github.com/Metronome-Industries/metronome-node/issues/117)) ([4cdfad6](https://github.com/Metronome-Industries/metronome-node/commit/4cdfad676be1cc7a703f9d682e6a95bcdf0f3452))
+* **internal:** make git install file structure match npm ([#144](https://github.com/Metronome-Industries/metronome-node/issues/144)) ([b0fb2e3](https://github.com/Metronome-Industries/metronome-node/commit/b0fb2e3dd44160876369832bf8feb6efeb0da219))
+
+
+### Bug Fixes
+
+* **client:** normalize method ([#154](https://github.com/Metronome-Industries/metronome-node/issues/154)) ([58901f8](https://github.com/Metronome-Industries/metronome-node/commit/58901f8d4a4f6be19dfeb19b3d60d234b96d03fb))
+
+
+### Chores
+
+* **internal:** add test ([#169](https://github.com/Metronome-Industries/metronome-node/issues/169)) ([1a8ab65](https://github.com/Metronome-Industries/metronome-node/commit/1a8ab65ed37c47f3381b1014d7f9335a110f6698))
+* **internal:** bump cross-spawn to v7.0.6 ([#147](https://github.com/Metronome-Industries/metronome-node/issues/147)) ([88cb0d1](https://github.com/Metronome-Industries/metronome-node/commit/88cb0d15944864ce2153d303cb5009af11df8cac))
+* **internal:** codegen related update ([#113](https://github.com/Metronome-Industries/metronome-node/issues/113)) ([f89462a](https://github.com/Metronome-Industries/metronome-node/commit/f89462a6fb658924918ec10ee7bbc0363e13ed5a))
+* **internal:** codegen related update ([#115](https://github.com/Metronome-Industries/metronome-node/issues/115)) ([335f682](https://github.com/Metronome-Industries/metronome-node/commit/335f68267fc8465ddcdf793d5c762833f9aeb24c))
+* **internal:** codegen related update ([#116](https://github.com/Metronome-Industries/metronome-node/issues/116)) ([d2f661f](https://github.com/Metronome-Industries/metronome-node/commit/d2f661fb3516edb01c2e9bf474703585e49b92ac))
+* **internal:** codegen related update ([#157](https://github.com/Metronome-Industries/metronome-node/issues/157)) ([a7ab136](https://github.com/Metronome-Industries/metronome-node/commit/a7ab136f9f99826c7503c7d847fb190f55501ca3))
+* **internal:** codegen related update ([#159](https://github.com/Metronome-Industries/metronome-node/issues/159)) ([a719033](https://github.com/Metronome-Industries/metronome-node/commit/a719033ad2f22ad3dd43e0f3acbac6dd261b5cf3))
+* **internal:** fix some typos ([#152](https://github.com/Metronome-Industries/metronome-node/issues/152)) ([945c122](https://github.com/Metronome-Industries/metronome-node/commit/945c122b4591d26e68c70ad8032b03ea4a452235))
+* **internal:** remove unnecessary getRequestClient function ([#146](https://github.com/Metronome-Industries/metronome-node/issues/146)) ([4962aa2](https://github.com/Metronome-Industries/metronome-node/commit/4962aa234709086b9bebf59ac3b307e186abf899))
+* **internal:** update isAbsoluteURL ([#150](https://github.com/Metronome-Industries/metronome-node/issues/150)) ([612368e](https://github.com/Metronome-Industries/metronome-node/commit/612368ee51c80bb257299b16c92171b9cb31c1b0))
+* rebuild project due to codegen change ([#120](https://github.com/Metronome-Industries/metronome-node/issues/120)) ([86457e7](https://github.com/Metronome-Industries/metronome-node/commit/86457e70bac520852a29225d2d3e0742826c6818))
+* rebuild project due to codegen change ([#121](https://github.com/Metronome-Industries/metronome-node/issues/121)) ([e264a9e](https://github.com/Metronome-Industries/metronome-node/commit/e264a9e51431a436b650f95954541f5945f2aee6))
+* rebuild project due to codegen change ([#123](https://github.com/Metronome-Industries/metronome-node/issues/123)) ([fcaec0b](https://github.com/Metronome-Industries/metronome-node/commit/fcaec0b6d9cdc30fd98c28bfe4f2398d2b135025))
+* rebuild project due to codegen change ([#125](https://github.com/Metronome-Industries/metronome-node/issues/125)) ([100bd01](https://github.com/Metronome-Industries/metronome-node/commit/100bd0182759cee4ed634957159821d778057e30))
+* rebuild project due to codegen change ([#127](https://github.com/Metronome-Industries/metronome-node/issues/127)) ([1690817](https://github.com/Metronome-Industries/metronome-node/commit/16908173f688bdde88c7fda64a6dfb238865cde6))
+* rebuild project due to codegen change ([#129](https://github.com/Metronome-Industries/metronome-node/issues/129)) ([309283d](https://github.com/Metronome-Industries/metronome-node/commit/309283dd0718bbdb809669b892046e9a36800f52))
+* rebuild project due to codegen change ([#130](https://github.com/Metronome-Industries/metronome-node/issues/130)) ([2e7c9a5](https://github.com/Metronome-Industries/metronome-node/commit/2e7c9a500c69a4cd2ce56e99ed4e40ebf46a9232))
+* rebuild project due to codegen change ([#134](https://github.com/Metronome-Industries/metronome-node/issues/134)) ([05445b4](https://github.com/Metronome-Industries/metronome-node/commit/05445b4a416cf0b1e8ce28229e94f2a14818ff8a))
+* rebuild project due to codegen change ([#137](https://github.com/Metronome-Industries/metronome-node/issues/137)) ([a4cde39](https://github.com/Metronome-Industries/metronome-node/commit/a4cde39de04f535254ff7d5b047aa39ac185f23d))
+* rebuild project due to codegen change ([#138](https://github.com/Metronome-Industries/metronome-node/issues/138)) ([95a3ea6](https://github.com/Metronome-Industries/metronome-node/commit/95a3ea6c14b21771733a7370b4b6479715b382e1))
+* rebuild project due to codegen change ([#139](https://github.com/Metronome-Industries/metronome-node/issues/139)) ([680a6ac](https://github.com/Metronome-Industries/metronome-node/commit/680a6acca11ddf57b4d8aa256f358600ffdf663b))
+* remove redundant word in comment ([#141](https://github.com/Metronome-Industries/metronome-node/issues/141)) ([db353a3](https://github.com/Metronome-Industries/metronome-node/commit/db353a3a54450b277dd6f72b0c64c83db424dcb4))
+* **types:** add `| undefined` to client options properties ([#166](https://github.com/Metronome-Industries/metronome-node/issues/166)) ([f99a262](https://github.com/Metronome-Industries/metronome-node/commit/f99a2620b4bf43b054439e8911079fb0279b4fe7))
+* **types:** nicer error class types + jsdocs ([#149](https://github.com/Metronome-Industries/metronome-node/issues/149)) ([f856f7a](https://github.com/Metronome-Industries/metronome-node/commit/f856f7add30f53993ddf9465fda626fc3f18e7d8))
+
+
+### Documentation
+
+* minor formatting changes ([#155](https://github.com/Metronome-Industries/metronome-node/issues/155)) ([e504499](https://github.com/Metronome-Industries/metronome-node/commit/e5044991492be391f0bf87fcca87959bf6c08f9e))
+* remove suggestion to use `npm` call out ([#140](https://github.com/Metronome-Industries/metronome-node/issues/140)) ([3ff1ab5](https://github.com/Metronome-Industries/metronome-node/commit/3ff1ab57d0e60a8e4a78aeea3503c0b5d328e336))
+
+## 0.1.0-beta.5 (2024-09-20)
+
+Full Changelog: [v0.1.0-beta.4...v0.1.0-beta.5](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0-beta.4...v0.1.0-beta.5)
+
+### Features
+
+* **api:** OpenAPI spec update via Stainless API ([#109](https://github.com/Metronome-Industries/metronome-node/issues/109)) ([015b008](https://github.com/Metronome-Industries/metronome-node/commit/015b008fc62450e29de68671b932246d80328101))
+* **client:** send retry count header ([#107](https://github.com/Metronome-Industries/metronome-node/issues/107)) ([6992cf7](https://github.com/Metronome-Industries/metronome-node/commit/6992cf75364fb700caa3b9148dbb905aa109671d))
+
+## 0.1.0-beta.4 (2024-09-19)
+
+Full Changelog: [v0.1.0-beta.3...v0.1.0-beta.4](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0-beta.3...v0.1.0-beta.4)
+
+### Features
+
+* **api:** OpenAPI spec update via Stainless API ([#104](https://github.com/Metronome-Industries/metronome-node/issues/104)) ([6cc74f3](https://github.com/Metronome-Industries/metronome-node/commit/6cc74f326221fcc00d01765248deab8821b22bb3))
+
+
+### Bug Fixes
+
+* **types:** remove leftover polyfill usage ([#103](https://github.com/Metronome-Industries/metronome-node/issues/103)) ([8faaf42](https://github.com/Metronome-Industries/metronome-node/commit/8faaf425cb227e1d02b8de4e123a3aefb650c8d8))
+
+
+### Chores
+
+* **docs:** fix snippets ([#105](https://github.com/Metronome-Industries/metronome-node/issues/105)) ([c99e5ea](https://github.com/Metronome-Industries/metronome-node/commit/c99e5ea02cb6523125535e2296e6266d99477e64))
+* **internal:** add dev dependency ([#100](https://github.com/Metronome-Industries/metronome-node/issues/100)) ([bc3a17e](https://github.com/Metronome-Industries/metronome-node/commit/bc3a17e444052d409f3a9da1907178377c98a528))
+* **internal:** fix some types ([#102](https://github.com/Metronome-Industries/metronome-node/issues/102)) ([eedfa95](https://github.com/Metronome-Industries/metronome-node/commit/eedfa95113d65ae2b7764eb6a034e39cc807c774))
+
+## 0.1.0-beta.3 (2024-09-13)
+
+Full Changelog: [v0.1.0-beta.2...v0.1.0-beta.3](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0-beta.2...v0.1.0-beta.3)
+
+### Features
+
+* **api:** OpenAPI spec update via Stainless API ([#93](https://github.com/Metronome-Industries/metronome-node/issues/93)) ([96e2738](https://github.com/Metronome-Industries/metronome-node/commit/96e2738640fa6e5dd9f6a00c57bec3da48e42c5e))
+
+
+### Bug Fixes
+
+* **errors:** pass message through to APIConnectionError ([#94](https://github.com/Metronome-Industries/metronome-node/issues/94)) ([383df6d](https://github.com/Metronome-Industries/metronome-node/commit/383df6d7b41b6e68722716daf4bfac5bc90dbb9a))
+* **uploads:** avoid making redundant memory copies ([#91](https://github.com/Metronome-Industries/metronome-node/issues/91)) ([38c2861](https://github.com/Metronome-Industries/metronome-node/commit/38c2861bd37ddac6447357d36699938dbadd459b))
+
+
+### Chores
+
+* better object fallback behaviour for casting errors ([#95](https://github.com/Metronome-Industries/metronome-node/issues/95)) ([aa9e7ad](https://github.com/Metronome-Industries/metronome-node/commit/aa9e7ad3f48f6d6d2ad08c3093518e0cd326ab22))
+* **internal:** codegen related update ([#96](https://github.com/Metronome-Industries/metronome-node/issues/96)) ([0df33e3](https://github.com/Metronome-Industries/metronome-node/commit/0df33e3ce5a0630f6be7c72ced8242af3f575973))
+* **internal:** codegen related update ([#97](https://github.com/Metronome-Industries/metronome-node/issues/97)) ([03fb88a](https://github.com/Metronome-Industries/metronome-node/commit/03fb88a5885ae99703f3731e113b91bf6cdc3cbc))
+
+
+### Documentation
+
+* update CONTRIBUTING.md ([#98](https://github.com/Metronome-Industries/metronome-node/issues/98)) ([0af4791](https://github.com/Metronome-Industries/metronome-node/commit/0af479124895e36b02456ef31b8aee0ab9f1c1f8))
+
+## 0.1.0-beta.2 (2024-09-05)
+
+Full Changelog: [v0.1.0-beta.1...v0.1.0-beta.2](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0-beta.1...v0.1.0-beta.2)
+
+### Features
+
+* **api:** OpenAPI spec update via Stainless API ([#80](https://github.com/Metronome-Industries/metronome-node/issues/80)) ([64ca167](https://github.com/Metronome-Industries/metronome-node/commit/64ca167d1a58a2019335e66f6ce865eddd89a5e0))
+* **api:** OpenAPI spec update via Stainless API ([#83](https://github.com/Metronome-Industries/metronome-node/issues/83)) ([b9b40f8](https://github.com/Metronome-Industries/metronome-node/commit/b9b40f8238a9df6b0a40e46484cf7dd2a37fdf29))
+* **api:** OpenAPI spec update via Stainless API ([#89](https://github.com/Metronome-Industries/metronome-node/issues/89)) ([2189fbb](https://github.com/Metronome-Industries/metronome-node/commit/2189fbbacc85fba4dd92fff6a233fcbde4e2416a))
+
+
+### Bug Fixes
+
+* **client:** correct File construction from node-fetch Responses ([#86](https://github.com/Metronome-Industries/metronome-node/issues/86)) ([bd542df](https://github.com/Metronome-Industries/metronome-node/commit/bd542df2dd247dfaec1b7dfb69917bbb7e1eac54))
+
+
+### Chores
+
+* **ci:** check for build errors ([#82](https://github.com/Metronome-Industries/metronome-node/issues/82)) ([40011a9](https://github.com/Metronome-Industries/metronome-node/commit/40011a999f06ff27d38e2e854f68ae223249e51f))
+* **ci:** install deps via ./script/bootstrap ([#85](https://github.com/Metronome-Industries/metronome-node/issues/85)) ([14ee02d](https://github.com/Metronome-Industries/metronome-node/commit/14ee02d3651d5038a640676be79dad9f22825140))
+* **internal:** codegen related update ([#84](https://github.com/Metronome-Industries/metronome-node/issues/84)) ([f0753f2](https://github.com/Metronome-Industries/metronome-node/commit/f0753f272509d79b0b6d3be01393dd61c41ecbc2))
+* **internal:** dependency updates ([#87](https://github.com/Metronome-Industries/metronome-node/issues/87)) ([1f4dd86](https://github.com/Metronome-Industries/metronome-node/commit/1f4dd860ab54c4a20eeb15018e6008c667a42dfc))
+* **internal:** minor bump qs version ([#88](https://github.com/Metronome-Industries/metronome-node/issues/88)) ([603491f](https://github.com/Metronome-Industries/metronome-node/commit/603491fecaed5a8004e6ab19ea7d7fbf0f471c0b))
+
+## 0.1.0-beta.1 (2024-08-23)
+
+Full Changelog: [v0.1.0-beta.0...v0.1.0-beta.1](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0-beta.0...v0.1.0-beta.1)
+
+### Features
+
+* **api:** OpenAPI spec update via Stainless API ([#75](https://github.com/Metronome-Industries/metronome-node/issues/75)) ([c50a30a](https://github.com/Metronome-Industries/metronome-node/commit/c50a30a19c3eea878c71207173241acd56283dee))
+* **api:** OpenAPI spec update via Stainless API ([#77](https://github.com/Metronome-Industries/metronome-node/issues/77)) ([c11168d](https://github.com/Metronome-Industries/metronome-node/commit/c11168df10fd4f2523670fbccc31eb6e2abb80ec))
+* **api:** OpenAPI spec update via Stainless API ([#78](https://github.com/Metronome-Industries/metronome-node/issues/78)) ([5a6a54f](https://github.com/Metronome-Industries/metronome-node/commit/5a6a54f51fc0db786e8cc54297a6abac08b726c7))
+
+## 0.1.0-beta.0 (2024-08-22)
+
+Full Changelog: [v0.1.0-alpha.4...v0.1.0-beta.0](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0-alpha.4...v0.1.0-beta.0)
+
+### Features
+
+* **api:** OpenAPI spec update via Stainless API ([#55](https://github.com/Metronome-Industries/metronome-node/issues/55)) ([15bd178](https://github.com/Metronome-Industries/metronome-node/commit/15bd17847a400df178d25e6c922a7a6b690d6616))
+* **api:** OpenAPI spec update via Stainless API ([#57](https://github.com/Metronome-Industries/metronome-node/issues/57)) ([0e9d365](https://github.com/Metronome-Industries/metronome-node/commit/0e9d3658783efbb87cb3bc41e7662a1506b1044f))
+* **api:** OpenAPI spec update via Stainless API ([#58](https://github.com/Metronome-Industries/metronome-node/issues/58)) ([bdb2c46](https://github.com/Metronome-Industries/metronome-node/commit/bdb2c46ce76a3846e6de70ac09d8c61c2fd3a437))
+* **api:** OpenAPI spec update via Stainless API ([#59](https://github.com/Metronome-Industries/metronome-node/issues/59)) ([270fe8a](https://github.com/Metronome-Industries/metronome-node/commit/270fe8a9402e448bd698d819737a8b83ed75d132))
+* **api:** OpenAPI spec update via Stainless API ([#61](https://github.com/Metronome-Industries/metronome-node/issues/61)) ([4ce07d0](https://github.com/Metronome-Industries/metronome-node/commit/4ce07d03bf3ffdfebed6d71020da48be221c8fb0))
+* **api:** OpenAPI spec update via Stainless API ([#64](https://github.com/Metronome-Industries/metronome-node/issues/64)) ([8fcd675](https://github.com/Metronome-Industries/metronome-node/commit/8fcd675ba3812b743b2212b87d116e990e6bcecc))
+* **api:** OpenAPI spec update via Stainless API ([#66](https://github.com/Metronome-Industries/metronome-node/issues/66)) ([30fd815](https://github.com/Metronome-Industries/metronome-node/commit/30fd8154807d09a98222065b2e799604f943dc0a))
+* **api:** OpenAPI spec update via Stainless API ([#67](https://github.com/Metronome-Industries/metronome-node/issues/67)) ([d9fbbb6](https://github.com/Metronome-Industries/metronome-node/commit/d9fbbb60f0d031965393a3ead353e31ee2db281b))
+* **api:** OpenAPI spec update via Stainless API ([#68](https://github.com/Metronome-Industries/metronome-node/issues/68)) ([888fa5a](https://github.com/Metronome-Industries/metronome-node/commit/888fa5a10d7b3c7f71bc62b6b1985eb62d4b60d3))
+* **api:** OpenAPI spec update via Stainless API ([#69](https://github.com/Metronome-Industries/metronome-node/issues/69)) ([51f3a7d](https://github.com/Metronome-Industries/metronome-node/commit/51f3a7db6cb57a770a9b9aab7f05a19587a94681))
+* **api:** OpenAPI spec update via Stainless API ([#70](https://github.com/Metronome-Industries/metronome-node/issues/70)) ([6b4fd60](https://github.com/Metronome-Industries/metronome-node/commit/6b4fd609d5169648f53f3518f83b93c550c78604))
+* **api:** OpenAPI spec update via Stainless API ([#72](https://github.com/Metronome-Industries/metronome-node/issues/72)) ([3c5a396](https://github.com/Metronome-Industries/metronome-node/commit/3c5a39610786728f27aeb00a4f97b705047b61d3))
+* **api:** OpenAPI spec update via Stainless API ([#73](https://github.com/Metronome-Industries/metronome-node/issues/73)) ([b275770](https://github.com/Metronome-Industries/metronome-node/commit/b2757709a197d7544498f383fdea264b856823ac))
+
+
+### Chores
+
+* **ci:** bump prism mock server version ([#63](https://github.com/Metronome-Industries/metronome-node/issues/63)) ([9058bc6](https://github.com/Metronome-Industries/metronome-node/commit/9058bc65e94042fe4f4627c2ea3c705882314603))
+* **ci:** minor changes ([#62](https://github.com/Metronome-Industries/metronome-node/issues/62)) ([a2a72d3](https://github.com/Metronome-Industries/metronome-node/commit/a2a72d3c31f5399882552e81a2f81e424c952582))
+* **examples:** minor formatting changes ([#65](https://github.com/Metronome-Industries/metronome-node/issues/65)) ([d080d1b](https://github.com/Metronome-Industries/metronome-node/commit/d080d1b1d909c01c57a1f8648dde3c8fe960acf0))
+* force eslint to use non flat config ([#60](https://github.com/Metronome-Industries/metronome-node/issues/60)) ([52c52f5](https://github.com/Metronome-Industries/metronome-node/commit/52c52f587333151c0a3f59cb2939e4853864619b))
+* update SDK settings ([#71](https://github.com/Metronome-Industries/metronome-node/issues/71)) ([a736a0d](https://github.com/Metronome-Industries/metronome-node/commit/a736a0da2d5c18bba34a1d082b3c3a01719b4cba))
+
+## 0.1.0-alpha.4 (2024-08-01)
+
+Full Changelog: [v0.1.0-alpha.3...v0.1.0-alpha.4](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0-alpha.3...v0.1.0-alpha.4)
+
+### Features
+
+* **api:** OpenAPI spec update via Stainless API ([#28](https://github.com/Metronome-Industries/metronome-node/issues/28)) ([d8e6bd8](https://github.com/Metronome-Industries/metronome-node/commit/d8e6bd81bffc2ed5a90b8ca876f3dbe067d42a2c))
+* **api:** OpenAPI spec update via Stainless API ([#30](https://github.com/Metronome-Industries/metronome-node/issues/30)) ([ca6a6b2](https://github.com/Metronome-Industries/metronome-node/commit/ca6a6b27f22877d53b161538820f328ff9213924))
+* **api:** OpenAPI spec update via Stainless API ([#31](https://github.com/Metronome-Industries/metronome-node/issues/31)) ([a028087](https://github.com/Metronome-Industries/metronome-node/commit/a028087120218009fb756c5dec3441ec2bf88f92))
+* **api:** OpenAPI spec update via Stainless API ([#32](https://github.com/Metronome-Industries/metronome-node/issues/32)) ([b1158a2](https://github.com/Metronome-Industries/metronome-node/commit/b1158a259cb774240c94ee7127723cfc9d471fda))
+* **api:** OpenAPI spec update via Stainless API ([#33](https://github.com/Metronome-Industries/metronome-node/issues/33)) ([a6be9e9](https://github.com/Metronome-Industries/metronome-node/commit/a6be9e9f523e9eecfd82e3e87b54c5a5623d79aa))
+* **api:** OpenAPI spec update via Stainless API ([#34](https://github.com/Metronome-Industries/metronome-node/issues/34)) ([1412cfe](https://github.com/Metronome-Industries/metronome-node/commit/1412cfe826183ee4b26aa31a742548d8d27c3701))
+* **api:** OpenAPI spec update via Stainless API ([#35](https://github.com/Metronome-Industries/metronome-node/issues/35)) ([af30903](https://github.com/Metronome-Industries/metronome-node/commit/af30903856c825e52421a4fdb3af9d4d89b1b7a2))
+* **api:** OpenAPI spec update via Stainless API ([#39](https://github.com/Metronome-Industries/metronome-node/issues/39)) ([deedff3](https://github.com/Metronome-Industries/metronome-node/commit/deedff33df21403effe5d60492336779f6988f84))
+* **api:** OpenAPI spec update via Stainless API ([#44](https://github.com/Metronome-Industries/metronome-node/issues/44)) ([59de927](https://github.com/Metronome-Industries/metronome-node/commit/59de927af450fbc7626cfc382c48906751491043))
+* **api:** OpenAPI spec update via Stainless API ([#49](https://github.com/Metronome-Industries/metronome-node/issues/49)) ([1281d74](https://github.com/Metronome-Industries/metronome-node/commit/1281d744182785af6f3ce7bd8da4d6b8a8985fbf))
+* **api:** OpenAPI spec update via Stainless API ([#51](https://github.com/Metronome-Industries/metronome-node/issues/51)) ([eab9d3b](https://github.com/Metronome-Industries/metronome-node/commit/eab9d3b5536898c90cf510a7319941d1406f4ed4))
+* **api:** OpenAPI spec update via Stainless API ([#52](https://github.com/Metronome-Industries/metronome-node/issues/52)) ([c0bbb62](https://github.com/Metronome-Industries/metronome-node/commit/c0bbb6271252fbce053958ee3a03fd5df6b71f86))
+
+
+### Bug Fixes
+
+* **compat:** remove ReadableStream polyfill redundant since node v16 ([#47](https://github.com/Metronome-Industries/metronome-node/issues/47)) ([668bca2](https://github.com/Metronome-Industries/metronome-node/commit/668bca2beba7924da0614bf264e5f9af87501a87))
+* use relative paths ([#46](https://github.com/Metronome-Industries/metronome-node/issues/46)) ([91fc393](https://github.com/Metronome-Industries/metronome-node/commit/91fc393a15cd2dcd75db88de0e4fffe40f1edcc5))
+
+
+### Chores
+
+* **ci:** correctly tag pre-release npm packages ([#53](https://github.com/Metronome-Industries/metronome-node/issues/53)) ([aa857ca](https://github.com/Metronome-Industries/metronome-node/commit/aa857ca701bc20091ff431e7c7bb691e05354e9c))
+* **ci:** limit release doctor target branches ([#38](https://github.com/Metronome-Industries/metronome-node/issues/38)) ([373dc8a](https://github.com/Metronome-Industries/metronome-node/commit/373dc8a165398998e12bfaba767d1ae9e36f8916))
+* **ci:** limit release doctor target branches ([#42](https://github.com/Metronome-Industries/metronome-node/issues/42)) ([43fe4fb](https://github.com/Metronome-Industries/metronome-node/commit/43fe4fb2f071139e8e02eda993f5de6fc989e9b1))
+* **docs:** fix incorrect client var names ([#48](https://github.com/Metronome-Industries/metronome-node/issues/48)) ([0a62e2c](https://github.com/Metronome-Industries/metronome-node/commit/0a62e2c32a4e75511b19383e62aac9fae3fa7060))
+* **docs:** mention support of web browser runtimes ([#36](https://github.com/Metronome-Industries/metronome-node/issues/36)) ([be42b42](https://github.com/Metronome-Industries/metronome-node/commit/be42b42c94fd138c4907aaf1fff32cdb15ff134b))
+* **docs:** use client instead of package name in Node examples ([#37](https://github.com/Metronome-Industries/metronome-node/issues/37)) ([f50e036](https://github.com/Metronome-Industries/metronome-node/commit/f50e036c4079ef9847272cd184f6e33e05f46d57))
+* **docs:** use client instead of package name in Node examples ([#41](https://github.com/Metronome-Industries/metronome-node/issues/41)) ([fa333b0](https://github.com/Metronome-Industries/metronome-node/commit/fa333b0b534d5c8c02b2776ff4253145903790d6))
+* **internal:** add constant for default timeout ([#50](https://github.com/Metronome-Industries/metronome-node/issues/50)) ([9c44d56](https://github.com/Metronome-Industries/metronome-node/commit/9c44d56b6b7a283868325d5104870a22ef5eb990))
+* **internal:** codegen related update ([#40](https://github.com/Metronome-Industries/metronome-node/issues/40)) ([898ec86](https://github.com/Metronome-Industries/metronome-node/commit/898ec86db2ef0388e011516b72f3df5e59519130))
+* **internal:** refactor release doctor script ([#43](https://github.com/Metronome-Industries/metronome-node/issues/43)) ([ec09b32](https://github.com/Metronome-Industries/metronome-node/commit/ec09b32287c12bcef7a8e86c7f0c502191f1f253))
+* **tests:** update prism version ([#45](https://github.com/Metronome-Industries/metronome-node/issues/45)) ([6bc6f8f](https://github.com/Metronome-Industries/metronome-node/commit/6bc6f8f29397e3c790137b8e62453d11b84849e8))
+
+## 0.1.0-alpha.3 (2024-06-14)
+
+Full Changelog: [v0.1.0-alpha.2...v0.1.0-alpha.3](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0-alpha.2...v0.1.0-alpha.3)
+
+### Features
+
+* **api:** OpenAPI spec update via Stainless API ([#22](https://github.com/Metronome-Industries/metronome-node/issues/22)) ([b334bab](https://github.com/Metronome-Industries/metronome-node/commit/b334baba7f444a7a9a5adefb05ff9d5ce81074ae))
+* **api:** OpenAPI spec update via Stainless API ([#24](https://github.com/Metronome-Industries/metronome-node/issues/24)) ([8449089](https://github.com/Metronome-Industries/metronome-node/commit/844908992ce8a1d722524660e9b17174342baee7))
+* **api:** OpenAPI spec update via Stainless API ([#25](https://github.com/Metronome-Industries/metronome-node/issues/25)) ([957383b](https://github.com/Metronome-Industries/metronome-node/commit/957383ba18d0eff67b5fc121d277b77865d40383))
+* Update README.md with warning and remove Stainless branding ([#26](https://github.com/Metronome-Industries/metronome-node/issues/26)) ([79eb373](https://github.com/Metronome-Industries/metronome-node/commit/79eb3731461b67dac82cc43a8e397cc39c663fa8))
+
+## 0.1.0-alpha.2 (2024-06-10)
+
+Full Changelog: [v0.1.0-alpha.0...v0.1.0-alpha.2](https://github.com/Metronome-Industries/metronome-node/compare/v0.1.0-alpha.0...v0.1.0-alpha.2)
+
+### Features
+
+* **api:** update via SDK Studio ([#19](https://github.com/Metronome-Industries/metronome-node/issues/19)) ([363050b](https://github.com/Metronome-Industries/metronome-node/commit/363050b908b2680bbed116943dd1d19a688aba8a))
+* **api:** update via SDK Studio ([#20](https://github.com/Metronome-Industries/metronome-node/issues/20)) ([56338f4](https://github.com/Metronome-Industries/metronome-node/commit/56338f4dc2222243ce9e889394ff472aa37ec154))
+
+
+### Chores
+
+* **internal:** version bump ([#17](https://github.com/Metronome-Industries/metronome-node/issues/17)) ([3f60240](https://github.com/Metronome-Industries/metronome-node/commit/3f60240d1d5c4b453cbd33cbdefc6ea92c75b091))
+
+## 0.1.0-alpha.0 (2024-06-08)
+
+Full Changelog: [v0.0.1...v0.1.0-alpha.0](https://github.com/Metronome-Industries/metronome-node/compare/v0.0.1...v0.1.0-alpha.0)
+
+### Features
+
+* **api:** add webhook helpers ([ea63380](https://github.com/Metronome-Industries/metronome-node/commit/ea63380bf6183c1d01eafdc33ff13a7a3282e492))
+* **api:** OpenAPI spec update ([42751ad](https://github.com/Metronome-Industries/metronome-node/commit/42751ad3173c0a6a993265dc92631e1a914e1662))
+* **api:** OpenAPI spec update ([#2](https://github.com/Metronome-Industries/metronome-node/issues/2)) ([b8f4c7f](https://github.com/Metronome-Industries/metronome-node/commit/b8f4c7fc25a31685ba33f640c1c9500fc5985dea))
+* **api:** OpenAPI spec update ([#3](https://github.com/Metronome-Industries/metronome-node/issues/3)) ([9ce64bb](https://github.com/Metronome-Industries/metronome-node/commit/9ce64bb3f0976a406fa4f23c794e81852153a33b))
+* **api:** OpenAPI spec update ([#4](https://github.com/Metronome-Industries/metronome-node/issues/4)) ([44148ba](https://github.com/Metronome-Industries/metronome-node/commit/44148ba28a0a04a02af9856a1bbc8efb74986348))
+* **api:** OpenAPI spec update ([#5](https://github.com/Metronome-Industries/metronome-node/issues/5)) ([373257c](https://github.com/Metronome-Industries/metronome-node/commit/373257c2910803de72af5f49e06d13937744787d))
+* **api:** OpenAPI spec update ([#6](https://github.com/Metronome-Industries/metronome-node/issues/6)) ([60f9ce3](https://github.com/Metronome-Industries/metronome-node/commit/60f9ce3c5ee6162de1d04c2f0486c5cb6b1ace89))
+* **api:** OpenAPI spec update ([#7](https://github.com/Metronome-Industries/metronome-node/issues/7)) ([5e8ac18](https://github.com/Metronome-Industries/metronome-node/commit/5e8ac18a71efec7622898d0ef31975388c707269))
+* **api:** OpenAPI spec update via Stainless API ([#11](https://github.com/Metronome-Industries/metronome-node/issues/11)) ([67c97fe](https://github.com/Metronome-Industries/metronome-node/commit/67c97fe471537076fd871d67580a8a7369c8f38d))
+* **api:** OpenAPI spec update via Stainless API ([#13](https://github.com/Metronome-Industries/metronome-node/issues/13)) ([1a999c9](https://github.com/Metronome-Industries/metronome-node/commit/1a999c948e92880856bc84411dc7332ea84a6066))
+* **api:** OpenAPI spec update via Stainless API ([#15](https://github.com/Metronome-Industries/metronome-node/issues/15)) ([55303bb](https://github.com/Metronome-Industries/metronome-node/commit/55303bb8f120caa2cd1eb3a2b6405de410519d48))
+* **api:** OpenAPI spec update via Stainless API ([#8](https://github.com/Metronome-Industries/metronome-node/issues/8)) ([e99fb08](https://github.com/Metronome-Industries/metronome-node/commit/e99fb083497999a1ba945a0f4d0c0b79b8b02e7c))
+* **api:** update via SDK Studio ([#10](https://github.com/Metronome-Industries/metronome-node/issues/10)) ([10c779d](https://github.com/Metronome-Industries/metronome-node/commit/10c779dd119a61303fb0e74fd8710b02a4c49594))
+* **api:** update via SDK Studio ([#12](https://github.com/Metronome-Industries/metronome-node/issues/12)) ([37e5db3](https://github.com/Metronome-Industries/metronome-node/commit/37e5db362b412e6ca6be32be35e7f43ff92d0d01))
+* **api:** update via SDK Studio ([#14](https://github.com/Metronome-Industries/metronome-node/issues/14)) ([861f35c](https://github.com/Metronome-Industries/metronome-node/commit/861f35cb321a0bad956098c4a52a2b52e989dec7))
+* **api:** update via SDK Studio ([#9](https://github.com/Metronome-Industries/metronome-node/issues/9)) ([cd2e807](https://github.com/Metronome-Industries/metronome-node/commit/cd2e80774b0c28e97d82a3a394275dff012680ba))

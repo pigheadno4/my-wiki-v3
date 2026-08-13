@@ -1,0 +1,148 @@
+buildscript {
+    ext.kotlin_version = '1.7.10'
+    repositories {
+        google()
+        maven {
+            url = "https://plugins.gradle.org/m2/"
+        }
+    }
+
+    ext.brainTreeVersion = "4.50.0"
+
+    ext.deps = [
+            "braintreeCore" : "com.braintreepayments.api:braintree-core:$brainTreeVersion",
+            "threeDSecure" :  "com.braintreepayments.api:three-d-secure:$brainTreeVersion",
+            "paypal" : "com.braintreepayments.api:paypal:$brainTreeVersion",
+            "venmo" : "com.braintreepayments.api:venmo:$brainTreeVersion",
+            "googlePlay" :  "com.braintreepayments.api:google-pay:$brainTreeVersion",
+            "googlePay" : "com.braintreepayments.api:google-pay:$brainTreeVersion",
+            "card" : "com.braintreepayments.api:card:$brainTreeVersion",
+            "dataCollector" : "com.braintreepayments.api:data-collector:$brainTreeVersion",
+            "unionPay" : "com.braintreepayments.api:union-pay:$brainTreeVersion",
+            "cardForm" : "com.braintreepayments:card-form:$brainTreeVersion"
+    ]
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.2.2'
+        classpath 'de.marcphilipp.gradle:nexus-publish-plugin:0.4.0'
+        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:1.7.20'
+    }
+}
+
+plugins {
+    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
+    id 'org.jetbrains.dokka' version '1.7.10'
+}
+
+version '6.17.0'
+group "com.braintreepayments"
+
+ext {
+    compileSdkVersion = 34
+    minSdkVersion = 21
+    targetSdkVersion = 35
+    versionCode = 109
+    versionName = version
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+subprojects {
+    repositories {
+        maven {
+            url "https://cardinalcommerceprod.jfrog.io/artifactory/android"
+            credentials {
+                username 'braintree_team_sdk'
+                password '[REDACTED: upstream credential]'
+            }
+        }
+    }
+}
+
+nexusPublishing {
+    useStaging = !rootProject.versionName.endsWith("SNAPSHOT")
+    packageGroup = "com.braintreepayments"
+
+    repositories {
+        sonatype {
+            username = System.getenv('SONATYPE_NEXUS_USERNAME') ?: ''
+            password = System.getenv('SONATYPE_NEXUS_PASSWORD') ?: ''
+        }
+    }
+
+    transitionCheckOptions {
+        // give nexus sonatype more time to close the staging repository
+        delayBetween.set(Duration.ofSeconds(20))
+    }
+}
+
+dokkaHtmlMultiModule.configure {
+    // redirect dokka output to GitHub pages root directory
+    outputDirectory.set(project.file("docs"))
+}
+
+task changeGradleReleaseVersion {
+    doLast {
+        def gradleFile = new File('build.gradle')
+        def gradleFileText = gradleFile.text.replaceFirst("\\nversion '\\d+\\.\\d+\\.\\d+(-.*)?'", "\nversion '" + versionParam + "'")
+        gradleFile.write(gradleFileText)
+    }
+}
+
+task changeREADMEVersion {
+    doLast {
+        def readmeFile = new File('README.md')
+        def readmeFileText = readmeFile.text.replaceFirst("com.braintreepayments.api:drop-in:\\d+\\.\\d+\\.\\d+'", "com.braintreepayments.api:drop-in:" + versionParam + "'")
+        readmeFile.write(readmeFileText)
+    }
+}
+
+task changeMigrationGuideVersion {
+    doLast {
+        def migrationGuideFile = new File('v6_MIGRATION_GUIDE.md')
+        def migrationGuideFileText = migrationGuideFile.text.replaceAll(":\\d+\\.\\d+\\.\\d+(-.*)?'", ":" + versionParam + "'")
+        migrationGuideFile.write(migrationGuideFileText)
+    }
+}
+
+task updateCHANGELOGVersion {
+    doLast {
+        def changelogFile = new File('CHANGELOG.md')
+        def changelogFileText = changelogFile.text.replaceFirst("## unreleased", "## " + versionParam)
+        changelogFile.write(changelogFileText)
+    }
+}
+
+task incrementSNAPSHOTVersion {
+    doLast {
+        def gradleFile = new File('build.gradle')
+        def (major, minor, patch) = versionParam.tokenize('.')
+        def patchInteger = patch.toInteger()
+        def newVersion = "$major.$minor.${patchInteger + 1}-SNAPSHOT"
+        def gradleFileText = gradleFile.text.replaceFirst("\\nversion '\\d+\\.\\d+\\.\\d+(-.*)?'", "\nversion '" + newVersion + "'")
+        gradleFile.write(gradleFileText)
+
+        // update README snapshot version
+        def readmeFile = new File('README.md')
+        def readmeFileText = readmeFile.text.replaceFirst("com.braintreepayments.api:drop-in:\\d+\\.\\d+\\.\\d+-SNAPSHOT'", "com.braintreepayments.api:drop-in:" + newVersion + "'")
+        readmeFile.write(readmeFileText)
+    }
+}
+
+task incrementVersionCode {
+    doLast {
+        def gradleFile = new File('build.gradle')
+        def versionText = gradleFile.text.find("versionCode = \\d+")
+        def params = versionText.split("=")
+        def newVersionCode = params[1].trim().toInteger() + 1
+        def gradleFileText = gradleFile.text.replaceFirst("versionCode = \\d+", "versionCode = " + newVersionCode)
+        gradleFile.write(gradleFileText)
+    }
+}

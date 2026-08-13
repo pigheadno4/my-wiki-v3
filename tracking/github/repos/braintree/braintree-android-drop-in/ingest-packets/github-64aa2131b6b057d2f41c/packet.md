@@ -1,0 +1,188 @@
+# GitHub ingest packet
+
+- Repository: `braintree/braintree-android-drop-in`
+- Work item: `github-64aa2131b6b057d2f41c`
+- Snapshot: `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/manifest.json`
+- Recommended mode: `full`
+- Review priority: `normal`
+
+## `drop-in`
+
+- Version: `baseline` -> `6.17.0`
+- Recommendation: `full` / `normal`
+- Unchanged retained files: `0`
+
+### Required reading
+
+- `raw/github/braintree/braintree-android-drop-in/releases/drop-in/6.17.0/2026-08-13/manifest.json`
+- `raw/github/braintree/braintree-android-drop-in/releases/drop-in/6.17.0/2026-08-13/release-notes.md`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/ACKNOWLEDGEMENTS.md`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/CHANGELOG.md`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/CONTRIBUTING.md`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/DEVELOPMENT.md`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/build.gradle`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/AndroidManifest.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/java/com/braintreepayments/demo/BaseActivity.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/java/com/braintreepayments/demo/ClientTokenRequest.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/java/com/braintreepayments/demo/CreateTransactionActivity.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/java/com/braintreepayments/demo/DemoApplication.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/java/com/braintreepayments/demo/DemoClientTokenProvider.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/java/com/braintreepayments/demo/MainActivity.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/java/com/braintreepayments/demo/Settings.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/java/com/braintreepayments/demo/SettingsActivity.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/java/com/braintreepayments/demo/TransactionRequest.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/java/com/braintreepayments/demo/fragments/SettingsFragment.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/java/com/braintreepayments/demo/internal/ApiClient.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/java/com/braintreepayments/demo/internal/ApiClientRequestInterceptor.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/java/com/braintreepayments/demo/models/ClientToken.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/java/com/braintreepayments/demo/models/Transaction.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/java/com/braintreepayments/demo/views/SummaryEditTestPreference.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/res/layout/create_transaction_activity.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/res/layout/main_activity.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/res/menu/menu.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/res/values/arrays.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/res/values/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/res/values/themes.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Demo/src/main/res/xml/settings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/build.gradle`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/AndroidManifest.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/AddCardFragment.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/AlertPresenter.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/AnimatedButtonView.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/AnimationCompleteCallback.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/AvailablePaymentMethodNonceList.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/BottomSheetFragment.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/BottomSheetPresenter.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/BottomSheetState.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/BottomSheetViewAdapter.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/BottomSheetViewModel.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/BottomSheetViewType.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/BraintreeErrorInspector.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/CardDetailsFragment.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/CardFormConfiguration.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DeletePaymentMethodNonceCallback.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DialogInteraction.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DialogInteractionCallback.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInActivity.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInActivityResultContract.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInClient.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInClientParams.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInEvent.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInEventProperty.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInEventType.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInExitTransition.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInFragment.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInIntentData.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInInternalClient.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInInternalClientParams.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInLifecycleObserver.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInListener.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInPaymentMethod.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInRequest.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInResult.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInResultCallback.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInSharedPreferences.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInState.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/DropInViewModel.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/FetchMostRecentPaymentMethodCallback.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/GetPaymentMethodNoncesCallback.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/GetSupportedCardTypesCallback.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/GetSupportedPaymentMethodsCallback.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/GraphQLQueryHelper2.kt`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/IncrementalAnimatorUpdateListener.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/NoAnimationPageTransformer.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/NoticeOfCollectionHelper.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/PaymentMethodClient.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/PaymentMethodDeleteException.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/PaymentMethodInspector.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/PaymentMethodItemView.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/ShouldRequestThreeDSecureVerification.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/SimpleAnimatorListener.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/StreamHelper2.kt`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/SupportedPaymentMethodSelectedListener.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/SupportedPaymentMethodViewHolder.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/SupportedPaymentMethodsAdapter.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/SupportedPaymentMethodsFragment.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/VaultManagerFragment.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/VaultManagerPaymentMethodsAdapter.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/VaultedPaymentMethodSelectedListener.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/VaultedPaymentMethodViewHolder.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/VaultedPaymentMethodsAdapter.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/java/com/braintreepayments/api/ViewPager2Animator.java`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/anim/bt_bottom_sheet_dialog_close.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/anim/bt_bottom_sheet_dialog_open.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/anim/bt_bottom_sheet_layout_animation.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/anim/bt_fade_in.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/anim/bt_fade_out.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/anim/bt_slide_in_up.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/anim/bt_slide_out_down.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/drawable-v21/bt_payment_method_list_item_bg.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/drawable/bt_ic_vaulted_visa.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/drawable/bt_list_view_divider.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/drawable/bt_payment_button_background.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/drawable/bt_payment_method_list_item_bg.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/drawable/bt_submit_button_background.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/layout/bt_animated_button_view.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/layout/bt_drop_in_activity.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/layout/bt_edit_card.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/layout/bt_enrollment_card.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/layout/bt_fragment_add_card.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/layout/bt_fragment_bottom_sheet.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/layout/bt_fragment_card_details.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/layout/bt_fragment_supported_payment_methods.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/layout/bt_fragment_vault_manager.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/layout/bt_payment_method_list_item.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/layout/bt_section_divider.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/layout/bt_vault_manager_list_item.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/layout/bt_vaulted_payment_method_card.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-ar/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-cs/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-da/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-de/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-el/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-es-rXC/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-es/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-fi/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-fr-rCA/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-fr-rXC/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-fr/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-he/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-hu/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-id/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-it/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-iw/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-ja/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-ko/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-land/dimens.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-nb/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-nl/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-pl/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-pt/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-ru/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-sk/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-sv/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-th/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-v16/styles.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-v21/styles.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-w700dp/dimens.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-zh-rCN/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-zh-rHK/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-zh-rTW/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values-zh-rXC/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values/attrs.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values/colors.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values/dimens.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values/public.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values/strings.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/Drop-In/src/main/res/values/styles.xml`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/LICENSE`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/README.md`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/build.gradle`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/gradle.properties`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/settings.gradle`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/files/v6_MIGRATION_GUIDE.md`
+- `raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/manifest.json`
+
+### Upstream changes
+
+- None

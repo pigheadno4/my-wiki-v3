@@ -39,6 +39,7 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 - Dimensional pricing maps one metric and one product to many rates selected by group-key combinations. The guide's 216-combination example is illustrative, not a platform limit; fallback, missing-combination, and multi-match precedence are undocumented.
 - Tier minimums are exclusive and maximums inclusive. One tier configuration applies independently per presentation-group value, and each tier appears as its own invoice line. Tier-count, validation, gap, and overlap behavior remain undocumented.
 - Prepaid thresholds can be denominated in a custom pricing unit. Metronome evaluates the threshold and recharge target in that unit, then uses the customer's rate-card conversion to calculate the fiat payment.
+- `@metronome/sdk@3.10.0` adds `add_credit_type_conversions` to the rate-card update type. It can add custom pricing-unit conversions, while the generated docstring says existing conversions cannot be modified through this field. [[source-github-metronome-node]]
 
 ## Enterprise design
 
@@ -72,6 +73,8 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 - Trial packaging can use `entitled: false` for merchant-enforced feature restriction or a time-bounded multiplier `0` for uncapped free usage, after which list pricing resumes. Overlapping-override precedence, missing-rate behavior, and automatic product gating remain unknown.
 
 ## Sources
+
+- [[source-github-metronome-node]] - exact `3.10.0` rate-card update type and custom-unit conversion addition
 
 - [[source-metronome-api-reference-invoices-add-a-one-time-charge]] — deprecated Plans fixed-product eligibility and invoice-currency price boundary for one-time charges
 

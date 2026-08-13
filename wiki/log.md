@@ -1,5 +1,81 @@
 # Wiki Log
 
+## [2026-08-13] ingest | GitHub stripe/ai `main@1953b6c`
+
+- Full-ingested work item `github-39ab9debac014faec1c5` at exact SHA `1953b6cce7344d880a054c42b8dd21ca3e50ebd5` after serial full reading of all 212 required evidence paths.
+- Added cumulative and package-qualified sources for Stripe LLM token billing, MCP, agent toolkits, agent skills/plugins, and integration benchmarks.
+- Preserved private-preview, unsupported-tool-calling, fire-and-forget delivery, remote-service dependency, and repository contradiction boundaries.
+
+## [2026-08-13] ingest | GitHub braintree/braintree-android-drop-in `drop-in@6.17.0`
+
+- Full-ingested work item `github-64aa2131b6b057d2f41c` at exact SHA `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7` after serial review and hash audit of the complete 168-path retained packet.
+- Added independently versioned cumulative and package-qualified sources for the prebuilt Android payment-selection UI, nonce handoff, cards, PayPal, Venmo, Google Pay, vaulting, 3DS, device data, and redirects.
+- Preserved its Braintree Android `4.50.0` dependency boundary instead of attributing separately collected `braintree-android@5.30.0` modular behavior to Drop-in.
+
+## [2026-08-13] ingest | GitHub braintree/braintree-ios-drop-in `BraintreeDropIn@9.14.0`
+
+- Full-ingested work item `github-92242b9e450d596215e2` at exact SHA `d951d104ac960188824bda191be2f57c57351a31` after serial review and hash audit of the complete 203-file retained capsule.
+- Added independently versioned cumulative and package-qualified sources for the prebuilt iOS payment-selection UI, nonce handoff, cards, PayPal, Venmo, Apple Pay, vaulting, 3DS, and device data.
+- Preserved its `braintree_ios` 5.27.0 dependency boundary instead of attributing separately collected `braintree-ios@7.9.0` modular behavior to Drop-in.
+
+## [2026-08-13] ingest | GitHub paypal/paypal-messages-android `develop@0424354`
+
+- Delta-ingested work item `github-fed285eccd42cc9507d5` across exact SHAs `1d2238c` to `0424354`; only `README.md` changed.
+- Added the Braintree-only documentation policy while keeping released `paypal-messages-android@1.3.0` SHA `f1aa138` as a separate evidence line.
+- Updated the cumulative source, changelog, PayPal company/index/log, Android and Pay Later concepts, and the cross-platform analysis. No source count changed.
+
+## [2026-08-13] ingest | GitHub paypal/paypal-messages-ios `develop@fdd1868`
+
+- Delta-ingested work item `github-63997abe9a7d60c5179b` across exact SHAs `432d6b8` to `fdd1868` after confirming that only `README.md` changed.
+- Added the untagged Braintree-only documentation policy: merchants need a Braintree account and Braintree SDK integration, and PPCP SDK integrations are unsupported.
+- Kept `paypal-messages-ios@1.2.0` as released history; `fdd1868` is not represented as a semantic release or code-level compatibility change.
+- Updated the cumulative source, changelog, PayPal company/index/log, and existing Pay Later and iOS SDK concepts. No source count changed.
+
+## [2026-08-12] analysis | PayPal Messages iOS `1.2.0` vs Android `1.3.0`
+
+- Compared the independently versioned exact-SHA mobile Messages baselines without merging their source histories.
+- Established the shared promotional-only product boundary, platform integration differences, and version-aware query path through each source page and changelog.
+- Recommended iOS as the stronger baseline and kept Android in sandbox/controlled-pilot scope because of its repository warning and exact-source callback, configuration, and shared-state risks.
+- Corrected the iOS source: `setConfig` does not replace environment or partner identity fields at `1.2.0`.
+
+## [2026-08-12] ingest | GitHub paypal/paypal-messages-android `paypal-messages-android@1.3.0`
+
+- Full-ingested work item `github-39a4005f41fbb0234224` at exact SHA `f1aa138cc6822cc11d68ac4bfdee3cf183aedbc2` after serial review of all 126 required paths.
+- Migrated the April source into the canonical PayPal/GitHub hierarchy and added a package-qualified changelog for native rendering, configuration, modal behavior, callbacks, caching, analytics, localization, and branding.
+- Preserved the development/sandbox warning, non-working Jetpack guidance, callback/environment/shared-state risks, and release/build/license metadata conflicts instead of treating the stable tag as general-availability proof.
+- Preserved the product boundary: Android Messages promotes financing but does not execute checkout payments. PayPal source count increased by one for the new changelog, not for a duplicate repository source.
+
+## [2026-08-12] ingest | GitHub paypal/paypal-messages-ios `paypal-messages-ios@1.2.0`
+
+- Full-ingested work item `github-b94b44c30164dfad8034` at exact SHA `432d6b832714b2615106c3f2a748ac61654d8bbd` after serial review of all 69 required paths.
+- Migrated the April source for the same exact SHA into the canonical PayPal/GitHub hierarchy and added a package-qualified changelog for UIKit/SwiftUI rendering, configuration, merchant-profile caching, modal behavior, callbacks, analytics, localization, and accessibility.
+- Preserved the legacy raw stub and increased PayPal's source count by one for the new changelog, not for a duplicate repository source.
+- Preserved the product boundary: this SDK presents Pay Later and PayPal Credit promotions but does not execute checkout payments; public offer types do not prove merchant or buyer eligibility.
+
+## [2026-08-12] ingest | GitHub Metronome-Industries/metronome-node `@metronome/sdk@3.10.0`
+
+- Full-ingested work item `github-f8e02889b5caf0809fc7` at exact SHA `f8ac11210fbca9616a220e82ea82ac1d340ea2df` from the complete 103-path retained SDK capsule.
+- Established the cumulative Node/TypeScript SDK source and package-qualified changelog for runtime support, transport, retries, pagination, generated API resources, usage ingestion, contracts, pricing, billing providers, and webhook verification.
+- Added exact `3.10.0` field changes and preserved the stale `api.md` Payments listing as a conflict with the source tree and `3.7.0` removal history.
+
+## [2026-08-12] ingest | GitHub paypal/postman-collections `default-branch@7f7240a`
+
+- Full-ingested work item `github-28afa4b70001aa3c42da` at exact SHA `7f7240ab2d9417a55bf9c68355bf33bf64b1665c` after serial review of the complete 204-request Postman capsule and helper library.
+- Migrated the April stub into the PayPal/GitHub hierarchy and added cumulative and commit-qualified sources for Checkout Flows, Public APIs, and Partner APIs.
+- Added focused checkout, vault, subscription, and Payment Resources workflow evidence while preserving the workspace-backup, example-only, and limited-release boundaries.
+
+## [2026-08-12] ingest | GitHub adyen/adyen-postman `default-branch@ecb2907`
+
+- Full-ingested work item `github-ab2d0a488d97d9590b4c` at exact SHA `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7` after serial review of the complete Postman capsule.
+- Added cumulative and commit-qualified sources for Checkout v72, Recurring v68, BIN Lookup v54, Test Card v1, and 82 Terminal API examples.
+- Created the Adyen Terminal API concept, corrected the legacy recurring boundary, and updated the Adyen company, provider index, and provider log.
+
+## [2026-08-11] ingest | GitHub braintree/graphql-api `default-branch@3a89f42`
+
+- Full-ingested work item `github-d36f782cded039bfef90` at exact SHA `3a89f427466a0a978dbfcfd953913f4e76c3264a` after serial review of the complete schema, changelog, README, manifest, and Braintree context.
+- Established an independent GraphQL API-contract source and commit-qualified changelog covering checkout, transaction lifecycle, vaulting, PayPal, Venmo, 3DS, and recurring billing.
+- Preserved schema presence as contract evidence rather than merchant-enablement or SDK-support proof; updated the Braintree company, provider index, and provider log.
+
 ## [2026-08-11] ingest | GitHub paypal/paypal-rest-api-specifications `default-branch@90e8041`
 
 - Full-ingested work item `github-b3918bc2b2c3efa5f7d5` at exact SHA `90e8041ffe02d80c452d2b476bedd59a8d219bdc` after serial review of all 21 required paths and 13 OpenAPI contracts.
