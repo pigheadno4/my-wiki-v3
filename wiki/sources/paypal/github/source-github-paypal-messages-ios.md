@@ -2,9 +2,10 @@
 title: "GitHub: paypal/paypal-messages-ios"
 type: source
 date_ingested: 2026-04-14
-date_updated: 2026-08-12
+date_updated: 2026-08-13
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-messages-ios/snapshots/2026-08-13-fdd1868/manifest.json"
   - "github/paypal/paypal-messages-ios/snapshots/2026-08-12-432d6b8/manifest.json"
   - "github-paypal-messages-ios.md"
 tags: [paypal, ios, swift, messaging, pay-later, paypal-credit, uikit, swiftui, github-repository]
@@ -24,6 +25,7 @@ Repository: <https://github.com/paypal/paypal-messages-ios>
 - The managed capsule uses the same exact SHA as the April 2026 manual collection. This page migrates that earlier source into the canonical hierarchy and preserves its raw stub; it does not represent a newer upstream release.
 - Public API and source establish integration behavior, not merchant approval, buyer eligibility, geography, or the offer PayPal will return for a transaction.
 - `1.2.0` is the latest ingested release, not a claim that it remains latest upstream.
+- The untagged `develop` commit `fdd1868` changes only `README.md`. It is documentation-policy evidence, not a package release or proof of a code-level compatibility change.
 
 ## Grounding Excerpts
 
@@ -31,9 +33,9 @@ Repository: <https://github.com/paypal/paypal-messages-ios>
 >
 > `raw/github/paypal/paypal-messages-ios/snapshots/2026-08-12-432d6b8/files/README.md:3`
 
-> "In order to display PayPal messages within your iOS application, a Client ID is required."
+> "This messaging component is intended for use with the Braintree SDK only."
 >
-> `raw/github/paypal/paypal-messages-ios/snapshots/2026-08-12-432d6b8/files/README.md:27`
+> `raw/github/paypal/paypal-messages-ios/snapshots/2026-08-13-fdd1868/files/README.md:5`
 
 > "Consumer's country (Integrations must be approved by PayPal to use this option)"
 >
@@ -51,7 +53,10 @@ Repository: <https://github.com/paypal/paypal-messages-ios>
 
 `1.2.0` requires iOS 14+, Swift 5.8+, and Xcode 14.3+. It supports CocoaPods, Swift Package Manager, and Carthage. The public view is UIKit-based and provides `PayPalMessageView.Representable` for SwiftUI.
 
-The README recommends integrating the package through the broader [[source-github-paypal-ios|PayPal iOS SDK]], but this repository remains independently versioned and has its own evidence history.
+At released baseline `1.2.0`, the README recommended integrating through the broader [[source-github-paypal-ios|PayPal iOS SDK]]. Untagged `develop` commit `fdd1868` removes that recommendation and instead says the component is intended only for the Braintree SDK: merchants must have a Braintree account and integrate the Braintree SDK, while PPCP SDK integrations are unsupported.
+
+> [!warning] Untagged policy boundary
+> This Braintree-only statement is present on `develop` after `1.2.0`, not in a collected semantic release. Treat it as the current repository documentation policy at `fdd1868`, while retaining `1.2.0` behavior as released history. Because only `README.md` changed, the evidence does not establish a code-level compatibility change or the first package version enforcing the policy.
 
 ## Configuration Contract
 
@@ -107,6 +112,8 @@ The included privacy manifest declares UserDefaults access for app functionality
 
 The retained changelog establishes the stable `1.0.0`, `1.1.0`, and `1.2.0` history, but only `1.2.0` has an immutable managed release snapshot. See [[changelog-github-paypal-messages-ios]].
 
+The separate untagged `432d6b8` to `fdd1868` comparison records the later Braintree-only documentation policy without fabricating a package version.
+
 ## Related
 
 - Company: [[paypal]]
@@ -118,6 +125,10 @@ The retained changelog establishes the stable `1.0.0`, `1.1.0`, and `1.2.0` hist
 
 ## Raw Sources
 
+- `raw/github/paypal/paypal-messages-ios/snapshots/2026-08-13-fdd1868/manifest.json` - untagged `develop` documentation-policy snapshot
+- `raw/github/paypal/paypal-messages-ios/snapshots/2026-08-13-fdd1868/files/README.md` - Braintree-account, Braintree-SDK, and PPCP-support boundary
+- `tracking/github/repos/paypal/paypal-messages-ios/comparisons/default-branch/432d6b8--fdd1868/comparison.json` - exact ref comparison metadata
+- `tracking/github/repos/paypal/paypal-messages-ios/comparisons/default-branch/432d6b8--fdd1868/diff.patch` - README-only patch
 - `raw/github/paypal/paypal-messages-ios/snapshots/2026-08-12-432d6b8/manifest.json` - exact-SHA bounded source capsule
 - `raw/github/paypal/paypal-messages-ios/releases/paypal-messages-ios/1.2.0/2026-08-12/manifest.json` - package-qualified release record
 - `raw/github/paypal/paypal-messages-ios/releases/paypal-messages-ios/1.2.0/2026-08-12/release-notes.md` - exact `1.2.0` release notes

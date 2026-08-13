@@ -286,10 +286,10 @@
 - Repository: `paypal/paypal-messages-ios`
 - SHA: `fdd18681f486a3b2f1c60e3c47f8669f55a73a96`
 - Collection date: `2026-08-13`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `delta`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `delta`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

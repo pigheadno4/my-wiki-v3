@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-08-13] ingest | GitHub paypal/paypal-messages-ios `develop@fdd1868`
+
+- Delta-ingested work item `github-63997abe9a7d60c5179b` across exact SHAs `432d6b8` to `fdd1868` after confirming that only `README.md` changed.
+- Added the untagged Braintree-only documentation policy: merchants need a Braintree account and Braintree SDK integration, and PPCP SDK integrations are unsupported.
+- Kept `paypal-messages-ios@1.2.0` as released history; `fdd1868` is not represented as a semantic release or code-level compatibility change.
+- Updated the cumulative source, changelog, PayPal company/index/log, and existing Pay Later and iOS SDK concepts. No source count changed.
+
 ## [2026-08-12] analysis | PayPal Messages iOS `1.2.0` vs Android `1.3.0`
 
 - Compared the independently versioned exact-SHA mobile Messages baselines without merging their source histories.

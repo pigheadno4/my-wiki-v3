@@ -119,6 +119,8 @@ Existing 1.x integrations may still use `CardDelegate`, `CardVaultDelegate`, `Pa
 
 Pay Later messaging is a separate package, [paypal/paypal-messages-ios](https://github.com/paypal/paypal-messages-ios). The latest ingested package is `paypal-messages-ios@1.2.0` at SHA `432d6b8`; it is independently versioned from `paypal-ios`.
 
+The later untagged `develop` commit `fdd1868` changes the Messages README policy without changing source code: it requires a Braintree account and Braintree SDK integration, and says PPCP SDK integrations are unsupported. This does not rename `fdd1868` as a release or prove which future package version will carry the policy.
+
 `PayPalMessageView` is a UIKit control with a SwiftUI `UIViewRepresentable` wrapper. Configuration covers merchant identity, transaction context, preferred offer, placement, localization, cache behavior, and branding. The SDK reports loading/success/error plus click/application events and opens a web-backed learn-more modal after successful rendering.
 
 This is promotional messaging, not native payment checkout: it does not create, approve, authorize, or capture an order. Offer enums and rendering support also do not establish merchant or buyer eligibility.

@@ -6,6 +6,14 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-13] ingest | paypal/paypal-messages-ios `develop@fdd1868`
+
+- Delta-ingested work item `github-63997abe9a7d60c5179b` from released `1.2.0` SHA `432d6b8` to untagged `develop` SHA `fdd1868`.
+- Verified that `README.md` is the only changed path; no implementation, build, or package file changed.
+- Recorded the new documentation policy requiring a Braintree account and Braintree SDK integration and excluding PPCP SDK integrations.
+- Preserved `paypal-messages-ios@1.2.0` as the latest ingested release and treated `fdd1868` as untagged policy evidence, not a release or demonstrated code-compatibility change.
+- Updated [[source-github-paypal-messages-ios]], [[changelog-github-paypal-messages-ios]], [[paypal-pay-later]], and [[paypal-ios-sdk]]. Android remains a separate unapproved work item.
+
 ## [2026-08-12] analysis | PayPal Messages iOS `1.2.0` vs Android `1.3.0`
 
 - Compared the approved iOS and Android exact-SHA baselines while preserving separate package-qualified source and changelog histories.

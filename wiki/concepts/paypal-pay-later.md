@@ -76,6 +76,8 @@ For Braintree integrations, `@paypal/react-paypal-js@10.2.0` adds `useBraintreeP
 
 The independent `paypal-messages-ios@1.2.0` package renders Pay Later and PayPal Credit promotion in UIKit or through a SwiftUI wrapper. It accepts client ID, environment, amount, placement, preferred offer, buyer country, language/locale, and style context; PayPal's response can still select a generic message. Buyer-country override requires PayPal approval.
 
+An untagged `develop` documentation commit after `1.2.0`, `fdd1868`, changes the native iOS integration policy to Braintree-only: a merchant must have a Braintree account and integrate the Braintree SDK, and PPCP SDK integrations are unsupported. Only `README.md` changed, so this is policy evidence rather than a demonstrated runtime compatibility change or package release.
+
 This package is promotional presentment, not payment execution. Its click opens a learn-more/application modal; checkout still requires a separate payment integration. See [[source-github-paypal-messages-ios]].
 
 ### Native Android Messages

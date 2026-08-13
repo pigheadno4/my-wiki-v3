@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal/paypal-messages-ios"
 type: source
 date_ingested: 2026-08-12
-date_updated: 2026-08-12
+date_updated: 2026-08-13
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-messages-ios/snapshots/2026-08-13-fdd1868/manifest.json"
   - "github/paypal/paypal-messages-ios/snapshots/2026-08-12-432d6b8/manifest.json"
 tags: [paypal, ios, swift, messaging, pay-later, changelog, github-repository]
 ---
@@ -12,6 +13,18 @@ tags: [paypal, ios, swift, messaging, pay-later, changelog, github-repository]
 ## Overview
 
 Package-qualified release ledger for `paypal/paypal-messages-ios`. Durable integration and architecture guidance belongs in [[source-github-paypal-messages-ios]].
+
+## Untagged `default-branch@fdd1868` (`develop`) - Braintree Policy Boundary (2026-06-01)
+
+| Ref | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `develop` | released `1.2.0` tree | untagged documentation commit | `fdd18681f486a3b2f1c60e3c47f8669f55a73a96` | Delta |
+
+The only changed path is `README.md`. It removes the recommendation to integrate through the PayPal iOS SDK and states that the component is intended for the Braintree SDK only, requiring both a Braintree account and Braintree SDK integration; PPCP SDK integrations are unsupported.
+
+This is a repository documentation-policy change, not a semantic release or code change. No package version can yet be identified as the first release carrying or enforcing this policy.
+
+Evidence: `raw/github/paypal/paypal-messages-ios/snapshots/2026-08-13-fdd1868/manifest.json` and `tracking/github/repos/paypal/paypal-messages-ios/comparisons/default-branch/432d6b8--fdd1868/comparison.json`.
 
 ## `paypal-messages-ios@1.2.0` - Change Set `432d6b8` (2026-03-25)
 
@@ -41,6 +54,10 @@ The first stable history includes message/modal accessibility, interaction gatin
 
 ## Raw Sources
 
+- `raw/github/paypal/paypal-messages-ios/snapshots/2026-08-13-fdd1868/manifest.json`
+- `raw/github/paypal/paypal-messages-ios/snapshots/2026-08-13-fdd1868/files/README.md`
+- `tracking/github/repos/paypal/paypal-messages-ios/comparisons/default-branch/432d6b8--fdd1868/comparison.json`
+- `tracking/github/repos/paypal/paypal-messages-ios/comparisons/default-branch/432d6b8--fdd1868/diff.patch`
 - `raw/github/paypal/paypal-messages-ios/snapshots/2026-08-12-432d6b8/manifest.json`
 - `raw/github/paypal/paypal-messages-ios/releases/paypal-messages-ios/1.2.0/2026-08-12/manifest.json`
 - `raw/github/paypal/paypal-messages-ios/releases/paypal-messages-ios/1.2.0/2026-08-12/release-notes.md`
