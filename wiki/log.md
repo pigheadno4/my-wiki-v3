@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-13] ingest | GitHub stripe/ai `main@1953b6c`
+
+- Full-ingested work item `github-39ab9debac014faec1c5` at exact SHA `1953b6cce7344d880a054c42b8dd21ca3e50ebd5` after serial full reading of all 212 required evidence paths.
+- Added cumulative and package-qualified sources for Stripe LLM token billing, MCP, agent toolkits, agent skills/plugins, and integration benchmarks.
+- Preserved private-preview, unsupported-tool-calling, fire-and-forget delivery, remote-service dependency, and repository contradiction boundaries.
+
 ## [2026-08-13] ingest | GitHub braintree/braintree-android-drop-in `drop-in@6.17.0`
 
 - Full-ingested work item `github-64aa2131b6b057d2f41c` at exact SHA `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7` after serial review and hash audit of the complete 168-path retained packet.

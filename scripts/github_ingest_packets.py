@@ -1110,6 +1110,8 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "package-manifest"
     if filename in (".env.example", ".env.sample", "example.env"):
         return "runtime-configuration"
+    if _is_agent_tool_manifest(lowered, filename):
+        return "runtime-configuration"
     if filename in (
         ".npmrc",
         ".nvmrc",
@@ -1191,6 +1193,18 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
     if lowered.endswith(_SOURCE_SUFFIXES):
         return "public-source"
     return "unclassified"
+
+
+def _is_agent_tool_manifest(path: str, filename: str) -> bool:
+    if filename in ("gemini-extension.json", ".mcp.json", "mcp.json"):
+        return True
+    segments = path.split("/")
+    if "plugin" in segments and filename in ("plugin.json", ".app.json"):
+        return True
+    return "modelcontextprotocol" in segments and filename in (
+        "manifest.json",
+        "server.json",
+    )
 
 
 def _upstream_dispositions(

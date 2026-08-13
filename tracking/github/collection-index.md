@@ -67,7 +67,7 @@ Generated: `2026-08-13`
 | stripe | `stripe/stripe-react-native` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-07-30 | ingested | 2026-08-06 | `collect-baseline` |
 | stripe | `stripe/stripe-terminal-android` | tier1 | semver-tags | weekly | - | - | - | `disabled` |
 | stripe | `stripe/stripe-terminal-ios` | tier1 | semver-tags | weekly | - | - | - | `disabled` |
-| stripe | `stripe/ai` | tier2 | commit | monthly | - | - | - | `disabled` |
+| stripe | `stripe/ai` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-13 | ingested | 2026-09-13 | `wait` |
 | stripe | `stripe/link-cli` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
 | stripe | `stripe/stripe-apps` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
 | stripe | `stripe/stripe-cli` | tier2 | semver-tags | monthly | - | - | - | `disabled` |

@@ -844,6 +844,79 @@ class GitHubIngestPacketTests(unittest.TestCase):
             classified["tsconfig.lib.json"],
         )
 
+    def test_agent_plugin_and_mcp_manifests_are_runtime_configuration(self):
+        config = RepoConfig(
+            id="acme/widgets",
+            company="acme",
+            url="https://github.com/acme/widgets",
+            enabled=True,
+            repo_type="developer-tooling",
+            priority="tier2",
+            track="default-branch",
+            version_strategy="commit",
+            capsules=(
+                CapsuleConfig(
+                    id="widget-tools",
+                    adapter="commit-tree-v1",
+                    source_id="widgets",
+                    dependency_scope="configured-repository-paths",
+                    changed_path_policy="policy-bounded",
+                    default_required_roots=("tools",),
+                    max_packet_files=30,
+                    max_packet_utf8_bytes=200000,
+                ),
+            ),
+        )
+        manifest_paths = (
+            "gemini-extension.json",
+            "providers/claude/plugin/.claude-plugin/plugin.json",
+            "providers/claude/plugin/.mcp.json",
+            "providers/codex/plugin/.app.json",
+            "providers/codex/plugin/.codex-plugin/plugin.json",
+            "providers/cursor/plugin/.cursor-plugin/plugin.json",
+            "providers/cursor/plugin/mcp.json",
+            "providers/grok/plugin/.grok-plugin/plugin.json",
+            "providers/grok/plugin/.mcp.json",
+            "tools/modelcontextprotocol/manifest.json",
+            "tools/modelcontextprotocol/server.json",
+        )
+        files = {
+            path: ('{"name":"tool"}\n', "source-capsule", "include-path", "widgets")
+            for path in manifest_paths
+        }
+        files["custom.json"] = (
+            '{"name":"custom"}\n',
+            "source-capsule",
+            "include-path",
+            "widgets",
+        )
+        snapshot = self.snapshot(self.current_sha, "", files)
+
+        packet = build_ref_ingest_packet(
+            self.root,
+            config,
+            "github-" + ("5" * 20),
+            self.relative(snapshot),
+            RefPacketInput(
+                "default-branch",
+                "main",
+                "",
+                self.current_sha,
+                "",
+                "",
+                (),
+            ),
+            "queued",
+        )
+
+        classified = {
+            row["path"]: row["classification"]
+            for row in packet.document["selected_changes"]
+        }
+        for path in manifest_paths:
+            self.assertEqual("runtime-configuration", classified[path])
+        self.assertEqual("unclassified", classified["custom.json"])
+
     def test_codegen_versions_are_classified_as_build_configuration(self):
         prior = {
             "package.json": self.manifest_content("22.3.2"),

@@ -62,6 +62,20 @@ class GitResolutionTests(unittest.TestCase):
         self.assertEqual(sha, resolved.sha)
         self.assertTrue(resolved.upstream_commit_time)
 
+    def test_commit_strategy_inspection_does_not_walk_repository_history(self):
+        commit_file(self.repo, "README.md", "historical\n", "historical")
+        current_sha = commit_file(self.repo, "README.md", "current\n", "current")
+        config = self.config(version_strategy="commit")
+
+        with mock.patch("github_git.run_git", wraps=run_git) as git:
+            inspection = inspect_repository(config, self.repo)
+
+        self.assertEqual(current_sha, resolve_ref(config, inspection, "default-branch").sha)
+        self.assertNotIn(
+            ["rev-list", "--all"],
+            [call.args[0] for call in git.call_args_list],
+        )
+
     def test_tag_selector_resolves_a_semver_tag(self):
         sha = commit_file(self.repo, "README.md", "one\n", "initial")
         tag(self.repo, "v1.2.3")

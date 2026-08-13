@@ -19,6 +19,8 @@ Three ways to send meter events to Stripe:
 
 Must configure the meter before recording usage. Events process asynchronously — summaries and upcoming invoices may lag.
 
+For LLM token billing, Stripe's retained `@stripe/token-meter@0.1.0` implementation sends Billing v2 meter events with customer, token count, provider/model, and input/output token type. Its fire-and-forget path catches and logs delivery errors without interrupting model generation. Production use therefore needs independent monitoring, reconciliation, and replay/recovery controls to avoid silent usage undercount. See [[source-github-ai]].
+
 ## Lifecycle
 
 1. **Ingestion** — send meter events (usage data) to Stripe
@@ -190,3 +192,4 @@ Error codes (`reason.error_types.code`): `meter_event_customer_not_found`, `mete
 - [[source-stripe-usage-based-billing-alerts-setup]] — usage alert setup: create API, one-time per-customer type, billing.alert.triggered webhook, test clock limitation
 - [[source-stripe-usage-based-billing-thresholds-setup]] — billing thresholds setup: monetary + usage APIs, reset_billing_cycle_anchor, tiers across invoices, volume tiers negative line item edge case
 - [[source-stripe-usage-based-billing-manage-setup]] — UBB management: transform_quantity, mid-cycle price updates (flexible vs classic), backdated subscriptions, cancellation behavior
+- [[source-github-ai]] — exact-SHA implementation evidence for Stripe LLM token metering, event payloads, and fire-and-forget delivery risk

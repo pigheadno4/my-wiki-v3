@@ -24,6 +24,8 @@ Operations history: [[stripe-log]]
 - [[source-stripe-legacy-apis]] — Stripe Legacy APIs: Sources/Charges/ACH deprecation status, Charges vs PaymentIntents flow, statement descriptor rules (webpage, 2026-04-20)
 - [[source-stripe-glossary]] — Stripe Glossary: 130+ terms — payment APIs, SCA/3DS, Connect, billing, Radar, interchange, payout schedules (webpage, 2026-04-20)
 - [[source-stripe-building-with-ai]] — Stripe AI developer tools: MCP server, agent skills (npx/Claude Code/Cursor), AI coding platforms, VS Code AI assistant (webpage, 2026-04-20)
+- [[source-github-ai]] — `stripe/ai` exact-SHA implementation baseline: token billing packages, MCP bridge, TypeScript/Python agent toolkits, skills/plugins, and benchmarks (github-repo, 2026-08-13)
+- [[changelog-github-ai]] — package-qualified `stripe/ai` component baseline and future exact-SHA comparison rules (github-repo, 2026-08-13)
 - [[source-stripe-accept-a-payment]] — Stripe Accept a Payment: 4 web UI modes, PaymentSheet mobile, webhooks, saved PMs, auth+capture, test cards (webpage, 2026-04-20)
 - [[source-stripe-payment-links]] — Stripe Payment Links: no-code shareable URLs, 40+ methods, Adaptive Pricing, Invoicing vs Payment Links comparison (webpage, 2026-04-20)
 - [[source-stripe-build-payments-page]] — Stripe Build a Payments Page: Checkout Page vs Elements feature matrix, hosting modes, maintenance tradeoffs (webpage, 2026-04-20)

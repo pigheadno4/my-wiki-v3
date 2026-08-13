@@ -1,0 +1,441 @@
+# GitHub ingest packet
+
+- Repository: `stripe/ai`
+- Work item: `github-39ab9debac014faec1c5`
+- Snapshot: `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/manifest.json`
+- Recommended mode: `full`
+- Review priority: `high`
+
+- Ref: `default-branch@1953b6c` (`main`)
+- Transition: `baseline` -> `1953b6cce7344d880a054c42b8dd21ca3e50ebd5`
+- Author date: `2026-08-11T00:28:10Z`
+- Commit date: `2026-08-11T00:28:10Z`
+
+## Required reading
+
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/CODE_OF_CONDUCT.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/CONTRIBUTING.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/LICENSE`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/SECURITY.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/card-element-to-checkout/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/card-element-to-checkout/environment/PROBLEM.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/checkout-gym/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/checkout-gym/environment/PROBLEM.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/checkout-gym/environment/server/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/furever/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/furever/environment/PROBLEM.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/furever/environment/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/galtee-basic/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/galtee-basic/environment/PROBLEM.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/galtee-invoicing/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/galtee-invoicing/environment/PROBLEM.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/saas-starter-embedded-checkout/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/saas-starter-embedded-checkout/environment/PROBLEM.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/saas-starter-embedded-checkout/environment/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/saas-starter-embedded-checkout/solution/SOLUTION_NOTES.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/saas-starter-partial-payments/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/saas-starter-partial-payments/environment/PROBLEM.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/saas-starter-partial-payments/environment/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/saas-starter-partial-payments/solution/SOLUTION_NOTES.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/sdk-upgrades-dotnet/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/sdk-upgrades-dotnet/environment/charges-on-payment-intent/PROBLEM.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/sdk-upgrades-dotnet/environment/invoice-partial-payments/PROBLEM.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/sdk-upgrades-dotnet/environment/subscription-billing-migration/PROBLEM.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/sdk-upgrades-java/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/sdk-upgrades-java/environment/charges-on-payment-intent/PROBLEM.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/sdk-upgrades-java/environment/invoice-partial-payments/PROBLEM.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/sdk-upgrades-java/environment/subscription-billing-migration/PROBLEM.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/sdk-upgrades-ruby/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/sdk-upgrades-ruby/environment/charges-on-payment-intent/PROBLEM.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/sdk-upgrades-ruby/environment/invoice-partial-payments/PROBLEM.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/sdk-upgrades-ruby/environment/subscription-billing-migration/PROBLEM.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/subscription-gym/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/subscription-gym/environment/PROBLEM.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/benchmarks/subscription-gym/environment/server/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/gemini-extension.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/meter/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/meter/examples/.env.example`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/meter/examples/.gitignore`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/meter/examples/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/meter/examples/anthropic.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/meter/examples/google.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/meter/examples/openai.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/meter/examples/tsconfig.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/meter/index.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/meter/meter-event-logging.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/meter/meter-event-types.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/meter/tsconfig.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/meter/types.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/meter/utils.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/meter/wrapperV2.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/meter/wrapperV3.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/package.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/base64.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/examples/.env.example`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/examples/.gitignore`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/examples/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/examples/anthropic.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/examples/google.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/examples/openai.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/examples/tsconfig.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/index.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/stripe-language-model-v3.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/stripe-language-model.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/stripe-provider.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/tsconfig.build.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/tsconfig.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/types.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/utils-v3.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/ai-sdk/provider/utils.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/token-meter/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/token-meter/examples/anthropic.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/token-meter/examples/gemini.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/token-meter/examples/openai.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/token-meter/index.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/token-meter/meter-event-logging.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/token-meter/meter-event-types.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/token-meter/package.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/token-meter/token-meter.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/token-meter/tsconfig.build.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/token-meter/tsconfig.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/token-meter/types.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/token-meter/utils/type-detection.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/providers/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/providers/claude/plugin/.claude-plugin/plugin.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/providers/claude/plugin/.mcp.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/providers/claude/plugin/agents/company-researcher.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/providers/claude/plugin/commands/explain-error.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/providers/claude/plugin/commands/test-cards.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/providers/codex/plugin/.app.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/providers/codex/plugin/.codex-plugin/plugin.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/providers/codex/plugin/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/providers/cursor/plugin/.cursor-plugin/plugin.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/providers/cursor/plugin/mcp.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/providers/grok/plugin/.grok-plugin/plugin.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/providers/grok/plugin/.mcp.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/providers/grok/plugin/agents/company-researcher.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/providers/grok/plugin/commands/explain-error.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/providers/grok/plugin/commands/test-cards.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/providers/kiro/get-started-kiro.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/connect-recommend/SKILL.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/connect-recommend/references/account-types.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/connect-recommend/references/charge-patterns.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/connect-recommend/references/company-researcher.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/connect-recommend/references/compatibility-matrix.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/connect-recommend/references/decision-matrix.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/connect-recommend/references/discovery-questions.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/connect-recommend/references/recommendation-template.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/connect-recommend/references/terminology-rules.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-apps/SKILL.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-apps/references/authentication.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-apps/references/backend.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-apps/references/canonical-docs.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-apps/references/discovery.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-apps/references/extension-types.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-apps/references/onboarding-ux.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-apps/references/publishing.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-apps/references/ui-extensions.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-apps/references/webhooks.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-apps/references/workflow.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-best-practices/SKILL.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-best-practices/references/billing.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-best-practices/references/connect.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-best-practices/references/payments.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-best-practices/references/security.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-best-practices/references/tax.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-best-practices/references/treasury.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-directory/SKILL.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-docs/SKILL.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/stripe-projects/SKILL.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/skills/upgrade-stripe/SKILL.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/modelcontextprotocol/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/modelcontextprotocol/manifest.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/modelcontextprotocol/package.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/modelcontextprotocol/server.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/modelcontextprotocol/src/cli.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/modelcontextprotocol/src/index.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/modelcontextprotocol/src/userAgent.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/crewai/.env.template`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/crewai/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/crewai/main.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/langchain/.env.template`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/langchain/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/langchain/__init__.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/langchain/main.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/openai/.env.template`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/openai/customer_support/.env.template`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/openai/customer_support/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/openai/customer_support/emailer.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/openai/customer_support/env.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/openai/customer_support/main.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/openai/customer_support/pyproject.toml`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/openai/customer_support/repl.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/openai/customer_support/support_agent.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/openai/file_search/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/openai/file_search/main.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/openai/web_search/.env.template`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/openai/web_search/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/openai/web_search/main.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/examples/strands/main.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/pyproject.toml`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/stripe_agent_toolkit/__init__.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/stripe_agent_toolkit/configuration.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/stripe_agent_toolkit/crewai/__init__.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/stripe_agent_toolkit/crewai/toolkit.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/stripe_agent_toolkit/langchain/__init__.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/stripe_agent_toolkit/langchain/toolkit.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/stripe_agent_toolkit/openai/__init__.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/stripe_agent_toolkit/openai/toolkit.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/stripe_agent_toolkit/shared/__init__.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/stripe_agent_toolkit/shared/async_initializer.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/stripe_agent_toolkit/shared/constants.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/stripe_agent_toolkit/shared/mcp_client.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/stripe_agent_toolkit/shared/schema_utils.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/stripe_agent_toolkit/shared/toolkit_core.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/stripe_agent_toolkit/strands/__init__.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/python/stripe_agent_toolkit/strands/toolkit.py`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/MIGRATION.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/package.json`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/src/ai-sdk/index.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/src/ai-sdk/toolkit.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/src/langchain/index.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/src/langchain/toolkit.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/src/modelcontextprotocol/README.md`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/src/modelcontextprotocol/index.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/src/modelcontextprotocol/toolkit.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/src/openai/index.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/src/openai/toolkit.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/src/shared/async-initializer.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/src/shared/configuration.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/src/shared/constants.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/src/shared/mcp-client.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/src/shared/schema-utils.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/tools/typescript/src/shared/toolkit-core.ts`
+- `raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/manifest.json`
+- `wiki/companies/stripe.md`
+- `wiki/log.md`
+- `wiki/stripe-index.md`
+- `wiki/stripe-log.md`
+
+## Selected changes
+
+- `added` `CODE_OF_CONDUCT.md`
+- `added` `CONTRIBUTING.md`
+- `added` `LICENSE`
+- `added` `README.md`
+- `added` `SECURITY.md`
+- `added` `benchmarks/README.md`
+- `added` `benchmarks/card-element-to-checkout/README.md`
+- `added` `benchmarks/card-element-to-checkout/environment/PROBLEM.md`
+- `added` `benchmarks/checkout-gym/README.md`
+- `added` `benchmarks/checkout-gym/environment/PROBLEM.md`
+- `added` `benchmarks/checkout-gym/environment/server/README.md`
+- `added` `benchmarks/furever/README.md`
+- `added` `benchmarks/furever/environment/PROBLEM.md`
+- `added` `benchmarks/furever/environment/README.md`
+- `added` `benchmarks/galtee-basic/README.md`
+- `added` `benchmarks/galtee-basic/environment/PROBLEM.md`
+- `added` `benchmarks/galtee-invoicing/README.md`
+- `added` `benchmarks/galtee-invoicing/environment/PROBLEM.md`
+- `added` `benchmarks/saas-starter-embedded-checkout/README.md`
+- `added` `benchmarks/saas-starter-embedded-checkout/environment/PROBLEM.md`
+- `added` `benchmarks/saas-starter-embedded-checkout/environment/README.md`
+- `added` `benchmarks/saas-starter-embedded-checkout/solution/SOLUTION_NOTES.md`
+- `added` `benchmarks/saas-starter-partial-payments/README.md`
+- `added` `benchmarks/saas-starter-partial-payments/environment/PROBLEM.md`
+- `added` `benchmarks/saas-starter-partial-payments/environment/README.md`
+- `added` `benchmarks/saas-starter-partial-payments/solution/SOLUTION_NOTES.md`
+- `added` `benchmarks/sdk-upgrades-dotnet/README.md`
+- `added` `benchmarks/sdk-upgrades-dotnet/environment/charges-on-payment-intent/PROBLEM.md`
+- `added` `benchmarks/sdk-upgrades-dotnet/environment/invoice-partial-payments/PROBLEM.md`
+- `added` `benchmarks/sdk-upgrades-dotnet/environment/subscription-billing-migration/PROBLEM.md`
+- `added` `benchmarks/sdk-upgrades-java/README.md`
+- `added` `benchmarks/sdk-upgrades-java/environment/charges-on-payment-intent/PROBLEM.md`
+- `added` `benchmarks/sdk-upgrades-java/environment/invoice-partial-payments/PROBLEM.md`
+- `added` `benchmarks/sdk-upgrades-java/environment/subscription-billing-migration/PROBLEM.md`
+- `added` `benchmarks/sdk-upgrades-ruby/README.md`
+- `added` `benchmarks/sdk-upgrades-ruby/environment/charges-on-payment-intent/PROBLEM.md`
+- `added` `benchmarks/sdk-upgrades-ruby/environment/invoice-partial-payments/PROBLEM.md`
+- `added` `benchmarks/sdk-upgrades-ruby/environment/subscription-billing-migration/PROBLEM.md`
+- `added` `benchmarks/subscription-gym/README.md`
+- `added` `benchmarks/subscription-gym/environment/PROBLEM.md`
+- `added` `benchmarks/subscription-gym/environment/server/README.md`
+- `added` `gemini-extension.json`
+- `added` `llm/README.md`
+- `added` `llm/ai-sdk/README.md`
+- `added` `llm/ai-sdk/meter/README.md`
+- `added` `llm/ai-sdk/meter/examples/.env.example`
+- `added` `llm/ai-sdk/meter/examples/.gitignore`
+- `added` `llm/ai-sdk/meter/examples/README.md`
+- `added` `llm/ai-sdk/meter/examples/anthropic.ts`
+- `added` `llm/ai-sdk/meter/examples/google.ts`
+- `added` `llm/ai-sdk/meter/examples/openai.ts`
+- `added` `llm/ai-sdk/meter/examples/tsconfig.json`
+- `added` `llm/ai-sdk/meter/index.ts`
+- `added` `llm/ai-sdk/meter/meter-event-logging.ts`
+- `added` `llm/ai-sdk/meter/meter-event-types.ts`
+- `added` `llm/ai-sdk/meter/tsconfig.json`
+- `added` `llm/ai-sdk/meter/types.ts`
+- `added` `llm/ai-sdk/meter/utils.ts`
+- `added` `llm/ai-sdk/meter/wrapperV2.ts`
+- `added` `llm/ai-sdk/meter/wrapperV3.ts`
+- `added` `llm/ai-sdk/package.json`
+- `added` `llm/ai-sdk/provider/README.md`
+- `added` `llm/ai-sdk/provider/base64.ts`
+- `added` `llm/ai-sdk/provider/examples/.env.example`
+- `added` `llm/ai-sdk/provider/examples/.gitignore`
+- `added` `llm/ai-sdk/provider/examples/README.md`
+- `added` `llm/ai-sdk/provider/examples/anthropic.ts`
+- `added` `llm/ai-sdk/provider/examples/google.ts`
+- `added` `llm/ai-sdk/provider/examples/openai.ts`
+- `added` `llm/ai-sdk/provider/examples/tsconfig.json`
+- `added` `llm/ai-sdk/provider/index.ts`
+- `added` `llm/ai-sdk/provider/stripe-language-model-v3.ts`
+- `added` `llm/ai-sdk/provider/stripe-language-model.ts`
+- `added` `llm/ai-sdk/provider/stripe-provider.ts`
+- `added` `llm/ai-sdk/provider/tsconfig.build.json`
+- `added` `llm/ai-sdk/provider/tsconfig.json`
+- `added` `llm/ai-sdk/provider/types.ts`
+- `added` `llm/ai-sdk/provider/utils-v3.ts`
+- `added` `llm/ai-sdk/provider/utils.ts`
+- `added` `llm/token-meter/README.md`
+- `added` `llm/token-meter/examples/anthropic.ts`
+- `added` `llm/token-meter/examples/gemini.ts`
+- `added` `llm/token-meter/examples/openai.ts`
+- `added` `llm/token-meter/index.ts`
+- `added` `llm/token-meter/meter-event-logging.ts`
+- `added` `llm/token-meter/meter-event-types.ts`
+- `added` `llm/token-meter/package.json`
+- `added` `llm/token-meter/token-meter.ts`
+- `added` `llm/token-meter/tsconfig.build.json`
+- `added` `llm/token-meter/tsconfig.json`
+- `added` `llm/token-meter/types.ts`
+- `added` `llm/token-meter/utils/type-detection.ts`
+- `added` `providers/README.md`
+- `added` `providers/claude/plugin/.claude-plugin/plugin.json`
+- `added` `providers/claude/plugin/.mcp.json`
+- `added` `providers/claude/plugin/agents/company-researcher.md`
+- `added` `providers/claude/plugin/commands/explain-error.md`
+- `added` `providers/claude/plugin/commands/test-cards.md`
+- `added` `providers/codex/plugin/.app.json`
+- `added` `providers/codex/plugin/.codex-plugin/plugin.json`
+- `added` `providers/codex/plugin/README.md`
+- `added` `providers/cursor/plugin/.cursor-plugin/plugin.json`
+- `added` `providers/cursor/plugin/mcp.json`
+- `added` `providers/grok/plugin/.grok-plugin/plugin.json`
+- `added` `providers/grok/plugin/.mcp.json`
+- `added` `providers/grok/plugin/agents/company-researcher.md`
+- `added` `providers/grok/plugin/commands/explain-error.md`
+- `added` `providers/grok/plugin/commands/test-cards.md`
+- `added` `providers/kiro/get-started-kiro.md`
+- `added` `skills/README.md`
+- `added` `skills/connect-recommend/SKILL.md`
+- `added` `skills/connect-recommend/references/account-types.md`
+- `added` `skills/connect-recommend/references/charge-patterns.md`
+- `added` `skills/connect-recommend/references/company-researcher.md`
+- `added` `skills/connect-recommend/references/compatibility-matrix.md`
+- `added` `skills/connect-recommend/references/decision-matrix.md`
+- `added` `skills/connect-recommend/references/discovery-questions.md`
+- `added` `skills/connect-recommend/references/recommendation-template.md`
+- `added` `skills/connect-recommend/references/terminology-rules.md`
+- `added` `skills/stripe-apps/SKILL.md`
+- `added` `skills/stripe-apps/references/authentication.md`
+- `added` `skills/stripe-apps/references/backend.md`
+- `added` `skills/stripe-apps/references/canonical-docs.md`
+- `added` `skills/stripe-apps/references/discovery.md`
+- `added` `skills/stripe-apps/references/extension-types.md`
+- `added` `skills/stripe-apps/references/onboarding-ux.md`
+- `added` `skills/stripe-apps/references/publishing.md`
+- `added` `skills/stripe-apps/references/ui-extensions.md`
+- `added` `skills/stripe-apps/references/webhooks.md`
+- `added` `skills/stripe-apps/references/workflow.md`
+- `added` `skills/stripe-best-practices/SKILL.md`
+- `added` `skills/stripe-best-practices/references/billing.md`
+- `added` `skills/stripe-best-practices/references/connect.md`
+- `added` `skills/stripe-best-practices/references/payments.md`
+- `added` `skills/stripe-best-practices/references/security.md`
+- `added` `skills/stripe-best-practices/references/tax.md`
+- `added` `skills/stripe-best-practices/references/treasury.md`
+- `added` `skills/stripe-directory/SKILL.md`
+- `added` `skills/stripe-docs/SKILL.md`
+- `added` `skills/stripe-projects/SKILL.md`
+- `added` `skills/upgrade-stripe/SKILL.md`
+- `added` `tools/README.md`
+- `added` `tools/modelcontextprotocol/README.md`
+- `added` `tools/modelcontextprotocol/manifest.json`
+- `added` `tools/modelcontextprotocol/package.json`
+- `added` `tools/modelcontextprotocol/server.json`
+- `added` `tools/modelcontextprotocol/src/cli.ts`
+- `added` `tools/modelcontextprotocol/src/index.ts`
+- `added` `tools/modelcontextprotocol/src/userAgent.ts`
+- `added` `tools/python/README.md`
+- `added` `tools/python/examples/crewai/.env.template`
+- `added` `tools/python/examples/crewai/README.md`
+- `added` `tools/python/examples/crewai/main.py`
+- `added` `tools/python/examples/langchain/.env.template`
+- `added` `tools/python/examples/langchain/README.md`
+- `added` `tools/python/examples/langchain/__init__.py`
+- `added` `tools/python/examples/langchain/main.py`
+- `added` `tools/python/examples/openai/.env.template`
+- `added` `tools/python/examples/openai/customer_support/.env.template`
+- `added` `tools/python/examples/openai/customer_support/README.md`
+- `added` `tools/python/examples/openai/customer_support/emailer.py`
+- `added` `tools/python/examples/openai/customer_support/env.py`
+- `added` `tools/python/examples/openai/customer_support/main.py`
+- `added` `tools/python/examples/openai/customer_support/pyproject.toml`
+- `added` `tools/python/examples/openai/customer_support/repl.py`
+- `added` `tools/python/examples/openai/customer_support/support_agent.py`
+- `added` `tools/python/examples/openai/file_search/README.md`
+- `added` `tools/python/examples/openai/file_search/main.py`
+- `added` `tools/python/examples/openai/web_search/.env.template`
+- `added` `tools/python/examples/openai/web_search/README.md`
+- `added` `tools/python/examples/openai/web_search/main.py`
+- `added` `tools/python/examples/strands/main.py`
+- `added` `tools/python/pyproject.toml`
+- `added` `tools/python/stripe_agent_toolkit/__init__.py`
+- `added` `tools/python/stripe_agent_toolkit/configuration.py`
+- `added` `tools/python/stripe_agent_toolkit/crewai/__init__.py`
+- `added` `tools/python/stripe_agent_toolkit/crewai/toolkit.py`
+- `added` `tools/python/stripe_agent_toolkit/langchain/__init__.py`
+- `added` `tools/python/stripe_agent_toolkit/langchain/toolkit.py`
+- `added` `tools/python/stripe_agent_toolkit/openai/__init__.py`
+- `added` `tools/python/stripe_agent_toolkit/openai/toolkit.py`
+- `added` `tools/python/stripe_agent_toolkit/shared/__init__.py`
+- `added` `tools/python/stripe_agent_toolkit/shared/async_initializer.py`
+- `added` `tools/python/stripe_agent_toolkit/shared/constants.py`
+- `added` `tools/python/stripe_agent_toolkit/shared/mcp_client.py`
+- `added` `tools/python/stripe_agent_toolkit/shared/schema_utils.py`
+- `added` `tools/python/stripe_agent_toolkit/shared/toolkit_core.py`
+- `added` `tools/python/stripe_agent_toolkit/strands/__init__.py`
+- `added` `tools/python/stripe_agent_toolkit/strands/toolkit.py`
+- `added` `tools/typescript/MIGRATION.md`
+- `added` `tools/typescript/README.md`
+- `added` `tools/typescript/package.json`
+- `added` `tools/typescript/src/ai-sdk/index.ts`
+- `added` `tools/typescript/src/ai-sdk/toolkit.ts`
+- `added` `tools/typescript/src/langchain/index.ts`
+- `added` `tools/typescript/src/langchain/toolkit.ts`
+- `added` `tools/typescript/src/modelcontextprotocol/README.md`
+- `added` `tools/typescript/src/modelcontextprotocol/index.ts`
+- `added` `tools/typescript/src/modelcontextprotocol/toolkit.ts`
+- `added` `tools/typescript/src/openai/index.ts`
+- `added` `tools/typescript/src/openai/toolkit.ts`
+- `added` `tools/typescript/src/shared/async-initializer.ts`
+- `added` `tools/typescript/src/shared/configuration.ts`
+- `added` `tools/typescript/src/shared/constants.ts`
+- `added` `tools/typescript/src/shared/mcp-client.ts`
+- `added` `tools/typescript/src/shared/schema-utils.ts`
+- `added` `tools/typescript/src/shared/toolkit-core.ts`
+
+## Excluded changes
+
+- None

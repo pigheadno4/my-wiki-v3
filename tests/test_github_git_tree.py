@@ -274,6 +274,27 @@ class GitTreeTests(unittest.TestCase):
         self.assertIsNone(raised.exception.__cause__)
         self.assertEqual("1", run.call_args.kwargs["env"]["GIT_NO_REPLACE_OBJECTS"])
 
+    def test_cat_file_retries_rejected_lazy_blob_reads_in_the_same_tree(self):
+        tree = GitTree(self.repo, self.sha)
+        tree.blobs()
+        path = "packages/widget/package.json"
+        expected_size = len(b'{"name":"widget","version":"1.0.0"}\n')
+        failure = subprocess.CalledProcessError(128, ["git", "cat-file"])
+        success = subprocess.CompletedProcess(
+            ["git", "cat-file"],
+            0,
+            stdout=(str(expected_size) + "\n").encode("ascii"),
+        )
+
+        with mock.patch(
+            "github_git_tree.subprocess.run",
+            side_effect=(failure, failure, success),
+        ) as run:
+            size = tree.blob_size(path)
+
+        self.assertEqual(expected_size, size)
+        self.assertEqual(3, run.call_count)
+
     def test_cat_file_os_and_timeout_failures_are_typed_bounded_and_redacted(self):
         tree = GitTree(self.repo, self.sha)
         tree.blobs()

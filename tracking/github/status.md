@@ -178,6 +178,33 @@
   Release: [manifest](../../raw/github/paypal/paypal-messages-android/releases/paypal-messages-android/1.3.0/2026-08-12/manifest.json)
   Comparison: Not applicable
 
+## `github-39ab9debac014faec1c5`
+
+- Repository: `stripe/ai`
+- SHA: `1953b6cce7344d880a054c42b8dd21ca3e50ebd5`
+- Collection date: `2026-08-13`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/manifest.json)
+- Packet: [review packet](repos/stripe/ai/ingest-packets/github-39ab9debac014faec1c5/packet.md)
+- Review priority: `high`
+- Required reading: `212` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@1953b6c` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `1953b6cce7344d880a054c42b8dd21ca3e50ebd5`
+  Comparison: Not applicable
+
 ## `github-43baf5daaf3a92e79a79`
 
 - Repository: `adyen/adyen-react-native`

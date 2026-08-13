@@ -163,23 +163,25 @@ def inspect_repository(config: RepoConfig, clone_path: Path) -> RepoInspection:
         _tag_ref(config.id, name, tag_shas[name], aliases_by_sha[tag_shas[name]], commit_time(tag_shas[name]))
         for name in sorted(tag_names)
     )
-    commit_refs = tuple(
-        ResolvedRef(
-            repo_id=config.id,
-            ref_kind="commit",
-            ref_name=sha,
-            sha=sha,
-            version=sha,
-            aliases=aliases_by_sha.get(sha, ()),
-            upstream_commit_time=commit_time(sha),
-            release_published_at=None,
+    commit_refs = ()
+    if config.version_strategy != "commit":
+        commit_refs = tuple(
+            ResolvedRef(
+                repo_id=config.id,
+                ref_kind="commit",
+                ref_name=sha,
+                sha=sha,
+                version=sha,
+                aliases=aliases_by_sha.get(sha, ()),
+                upstream_commit_time=commit_time(sha),
+                release_published_at=None,
+            )
+            for sha in sorted(
+                sha
+                for sha in run_git(["rev-list", "--all"], clone_path).splitlines()
+                if sha != default_sha
+            )
         )
-        for sha in sorted(
-            sha
-            for sha in run_git(["rev-list", "--all"], clone_path).splitlines()
-            if sha != default_sha
-        )
-    )
     return RepoInspection(
         default_branch=default_branch,
         refs=(branch_ref,) + tag_refs + commit_refs,
