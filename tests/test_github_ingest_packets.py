@@ -274,6 +274,25 @@ class GitHubIngestPacketTests(unittest.TestCase):
             ),
         )
 
+    def tagged_config(self):
+        return replace(
+            self.config,
+            version_strategy="semver-tags",
+            capsules=(
+                CapsuleConfig(
+                    id="widget-tagged-source",
+                    adapter="tagged-tree-v1",
+                    focus_packages=("@scope/widget",),
+                    dependency_scope="configured-repository-paths",
+                    changed_path_policy="policy-bounded",
+                    default_required_roots=("src",),
+                    include_paths=("README.md", "CHANGELOG.md"),
+                    max_packet_files=30,
+                    max_packet_utf8_bytes=200000,
+                ),
+            ),
+        )
+
     def ref_comparison(self, changes):
         directory = (
             self.root
@@ -409,6 +428,60 @@ class GitHubIngestPacketTests(unittest.TestCase):
         )
         self.assertTrue(packet.document["concept_audit_required"])
         self.assertIn("default-branch@bbbbbbb", packet.markdown.decode("utf-8"))
+
+    def test_ref_packet_accepts_tagged_tree_capsule_without_release_evidence(self):
+        prior = self.snapshot(
+            self.prior_sha,
+            "1.0.0",
+            {
+                "README.md": ("# Before\n", "repository-context", "include-path"),
+                "CHANGELOG.md": ("# Changes\n", "repository-context", "include-path"),
+                "src/message.swift": "let value = 1\n",
+            },
+            date="2026-07-27",
+        )
+        current = self.snapshot(
+            self.current_sha,
+            "unreleased-bbbbbbb",
+            {
+                "README.md": ("# After\n", "repository-context", "include-path"),
+                "CHANGELOG.md": ("# Changes\n", "repository-context", "include-path"),
+                "src/message.swift": "let value = 1\n",
+            },
+        )
+        change = UpstreamChange("modified", "README.md", "README.md")
+        comparison = self.ref_comparison((change,))
+
+        packet = build_ref_ingest_packet(
+            self.root,
+            self.tagged_config(),
+            "github-" + ("5" * 20),
+            self.relative(current),
+            RefPacketInput(
+                ref_kind="default-branch",
+                ref_name="main",
+                from_sha=self.prior_sha,
+                to_sha=self.current_sha,
+                comparison_manifest=self.relative(comparison),
+                prior_snapshot_manifest=self.relative(prior),
+                upstream_changes=(change,),
+                excluded_changes=(),
+            ),
+            "queued",
+        )
+
+        self.assertIn("ref", packet.document)
+        self.assertNotIn("packages", packet.document)
+        self.assertNotIn("release_manifest", json.dumps(packet.document))
+        required = packet.document["required_reading"]
+        self.assertIn(self.relative(prior), required)
+        self.assertIn(self.relative(current), required)
+        self.assertIn(self.relative(comparison), required)
+        self.assertIn(
+            self.relative(comparison.parent / "comparison.md"),
+            required,
+        )
+        self.assertIn(self.relative(comparison.parent / "diff.patch"), required)
 
     def test_ref_baseline_is_full_and_reads_every_selected_file(self):
         current = self.snapshot(

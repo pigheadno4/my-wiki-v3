@@ -321,8 +321,13 @@ def build_ref_ingest_packet(
     """Build one canonical review packet for exact default-branch evidence."""
     root = Path(root).resolve()
     _validate_config(config)
-    if config.capsules[0].adapter != COMMIT_TREE_ADAPTER:
-        raise PacketBuildError("ref packet requires commit-tree-v1")
+    if config.capsules[0].adapter not in (
+        COMMIT_TREE_ADAPTER,
+        TAGGED_TREE_ADAPTER,
+    ):
+        raise PacketBuildError(
+            "ref packet requires commit-tree-v1 or tagged-tree-v1"
+        )
     if packet_kind not in ("queued", "ad-hoc"):
         raise PacketBuildError("packet kind must be queued or ad-hoc")
     if packet_kind == "queued":
@@ -393,10 +398,11 @@ def build_ref_ingest_packet(
     prior_root = (
         PurePosixPath(prior.relative_path).parent / "files" if prior is not None else None
     )
+    if prior is not None:
+        required.add(prior.relative_path)
     if mode == "full":
         required.update(str(current_root / path) for path in current.files)
         if prior is not None and prior_root is not None:
-            required.add(prior.relative_path)
             required.update(str(prior_root / path) for path in prior.files)
     else:
         for row in selected_changes:

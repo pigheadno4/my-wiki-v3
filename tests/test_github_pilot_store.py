@@ -15,6 +15,7 @@ from github_capsule_policy import CapsuleConfig  # noqa: E402
 from github_capsule_selection import resolve_npm_capsule  # noqa: E402
 from github_canonical import canonical_json_bytes  # noqa: E402
 from github_git_tree import GitTree  # noqa: E402
+import github_pilot_store  # noqa: E402
 from github_pilot_store import (  # noqa: E402
     PilotStoreError,
     UpstreamChange,
@@ -113,6 +114,31 @@ class GitHubPilotStoreTests(unittest.TestCase):
                     dependency_scope="configured-repository-paths",
                     changed_path_policy="policy-bounded",
                     default_required_roots=("client", "server"),
+                    max_packet_files=30,
+                    max_packet_utf8_bytes=200000,
+                ),
+            ),
+        )
+
+    def tagged_config(self):
+        return RepoConfig(
+            id="paypal/paypal-messages-ios",
+            company="paypal",
+            url="https://github.com/paypal/paypal-messages-ios",
+            enabled=True,
+            repo_type="messaging-sdk",
+            priority="tier2",
+            track="releases-and-default-branch",
+            version_strategy="semver-tags",
+            capsules=(
+                CapsuleConfig(
+                    id="paypal-messages-ios-public-source",
+                    adapter="tagged-tree-v1",
+                    focus_packages=("paypal-messages-ios",),
+                    dependency_scope="configured-repository-paths",
+                    changed_path_policy="policy-bounded",
+                    default_required_roots=("src",),
+                    include_paths=("README.md",),
                     max_packet_files=30,
                     max_packet_utf8_bytes=200000,
                 ),
@@ -578,6 +604,40 @@ class GitHubPilotStoreTests(unittest.TestCase):
                 to_sha,
                 selected_to,
             )
+
+    def test_ref_comparison_accepts_tagged_tree_capsule(self):
+        from_sha = commit_files(
+            self.repo,
+            {"README.md": "# Before\n", "src/message.swift": "let value = 1\n"},
+            "add tagged boundary fixture",
+        )
+        to_sha = commit_files(
+            self.repo,
+            {"README.md": "# After\n"},
+            "change tagged boundary documentation",
+        )
+
+        comparison = write_ref_comparison(
+            self.root,
+            self.tagged_config(),
+            self.repo,
+            "develop",
+            from_sha,
+            ("README.md", "src/message.swift"),
+            to_sha,
+            ("README.md", "src/message.swift"),
+        )
+
+        self.assertTrue(comparison.metadata_path.is_file())
+        self.assertTrue(comparison.markdown_path.is_file())
+        self.assertTrue(comparison.patch_path.is_file())
+        self.assertEqual(
+            "paypal-messages-ios",
+            github_pilot_store._ref_evidence_owner(
+                self.tagged_config().capsules[0]
+            ),
+        )
+        self.assertNotIn("/releases/", comparison.metadata_path.as_posix())
 
     def test_comparison_accepts_zero_padded_rename_similarity(self):
         output = (
