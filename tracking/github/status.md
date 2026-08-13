@@ -335,6 +335,31 @@
   To SHA: `b5f2df209b0bfd10b1a3cde600088ddf21e43523`
   Comparison: Not applicable
 
+## `github-64aa2131b6b057d2f41c`
+
+- Repository: `braintree/braintree-android-drop-in`
+- SHA: `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7`
+- Collection date: `2026-08-13`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/manifest.json)
+- Packet: [review packet](repos/braintree/braintree-android-drop-in/ingest-packets/github-64aa2131b6b057d2f41c/packet.md)
+- Review priority: `normal`
+- Required reading: `168` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `drop-in@6.17.0` (recommended `full`)
+  Release: [manifest](../../raw/github/braintree/braintree-android-drop-in/releases/drop-in/6.17.0/2026-08-13/manifest.json)
+  Comparison: Not applicable
+
 ## `github-7ecc6c2199897656ffe3`
 
 - Repository: `stripe/stripe-ios`
@@ -511,6 +536,31 @@
 - `@paypal/paypal-server-sdk@2.4.0` (recommended `delta`)
   Release: [manifest](../../raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.4.0/2026-08-10/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-typescript-server-sdk/comparisons/paypal-server-sdk/2.3.0--2.4.0/comparison.json)
+
+## `github-92242b9e450d596215e2`
+
+- Repository: `braintree/braintree-ios-drop-in`
+- SHA: `d951d104ac960188824bda191be2f57c57351a31`
+- Collection date: `2026-08-13`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/manifest.json)
+- Packet: [review packet](repos/braintree/braintree-ios-drop-in/ingest-packets/github-92242b9e450d596215e2/packet.md)
+- Review priority: `normal`
+- Required reading: `206` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `BraintreeDropIn@9.14.0` (recommended `full`)
+  Release: [manifest](../../raw/github/braintree/braintree-ios-drop-in/releases/braintreedropin/9.14.0/2026-08-13/manifest.json)
+  Comparison: Not applicable
 
 ## `github-92e87b7fea5fb1703585`
 
