@@ -1,6 +1,6 @@
 # GitHub repository collection index
 
-Generated: `2026-08-13`
+Generated: `2026-08-14`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -70,7 +70,7 @@ Generated: `2026-08-13`
 | stripe | `stripe/ai` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-13 | ingested | 2026-09-13 | `wait` |
 | stripe | `stripe/link-cli` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
 | stripe | `stripe/stripe-apps` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
-| stripe | `stripe/stripe-cli` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
+| stripe | `stripe/stripe-cli` | tier2 | semver-tags / tagged-tree-v1 | monthly | - | - | - | `collect-baseline` |
 | stripe | `stripe/stripe-node` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-08-08 | ingested | 2026-09-08 | `wait` |
 | stripe | `stripe/stripe-php` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
 | stripe | `stripe/sync-engine` | tier2 | commit | monthly | - | - | - | `disabled` |

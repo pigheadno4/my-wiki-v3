@@ -57,7 +57,7 @@ APPENDIX_A_INVENTORY = (
     ('braintree/braintree-android-drop-in', 'https://github.com/braintree/braintree-android-drop-in', 'drop-in', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-ios', 'https://github.com/stripe/stripe-ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-apps', 'https://github.com/stripe/stripe-apps', 'developer-platform', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('stripe/stripe-cli', 'https://github.com/stripe/stripe-cli', 'cli', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('stripe/stripe-cli', 'https://github.com/stripe/stripe-cli', 'cli', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-android', 'https://github.com/stripe/stripe-android', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/link-cli', 'https://github.com/stripe/link-cli', 'cli', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-react-native', 'https://github.com/stripe/stripe-react-native', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
@@ -1167,6 +1167,75 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(800000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(15, capsule.max_packet_files)
         self.assertEqual(1500000, capsule.max_packet_utf8_bytes)
+
+    def test_stripe_cli_uses_checkout_focused_tagged_profile(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["stripe/stripe-cli"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:stripe-cli@1",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("1.50.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("stripe-cli-checkout-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("stripe-cli",), capsule.focus_packages)
+        self.assertEqual(
+            "configured-repository-paths",
+            capsule.dependency_scope,
+        )
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(
+            (
+                "pkg/config",
+                "pkg/login",
+                "pkg/proxy",
+                "pkg/requests",
+                "pkg/stripe",
+                "pkg/websocket",
+            ),
+            capsule.default_required_roots,
+        )
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(75, len(capsule.include_paths))
+        self.assertIn("pkg/cmd/listen.go", capsule.include_paths)
+        self.assertIn("pkg/cmd/trigger.go", capsule.include_paths)
+        self.assertIn(
+            "pkg/fixtures/triggers/checkout.session.completed.json",
+            capsule.include_paths,
+        )
+        self.assertIn(
+            "pkg/fixtures/triggers/payment_intent.succeeded.json",
+            capsule.include_paths,
+        )
+        self.assertIn(
+            "pkg/fixtures/triggers/customer.subscription.updated.json",
+            capsule.include_paths,
+        )
+        self.assertIn(
+            "pkg/fixtures/triggers/subscription_schedule.updated.json",
+            capsule.include_paths,
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(1000000, capsule.max_file_bytes)
+        self.assertEqual(180, capsule.max_capsule_files)
+        self.assertEqual(2500000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(220, capsule.max_packet_files)
+        self.assertEqual(3200000, capsule.max_packet_utf8_bytes)
 
     def test_stripe_js_uses_the_root_npm_public_source_profile(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
