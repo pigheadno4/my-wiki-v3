@@ -585,6 +585,7 @@ class GitHubIngestPacketTests(unittest.TestCase):
                         "settings.gradle",
                         "dependencies.gradle",
                         "go.mod",
+                        "composer.json",
                         "pkg/fixtures/triggers/checkout.session.completed.json",
                         "rpc/common.proto",
                         "Native/api/native.api",
@@ -643,6 +644,12 @@ class GitHubIngestPacketTests(unittest.TestCase):
                 ),
                 "go.mod": (
                     "module example.com/checkout\n",
+                    "public-source",
+                    "include-path",
+                    "stripe-ios",
+                ),
+                "composer.json": (
+                    '{"name":"stripe/stripe-php"}\n',
                     "public-source",
                     "include-path",
                     "stripe-ios",
@@ -722,6 +729,7 @@ class GitHubIngestPacketTests(unittest.TestCase):
             for row in package["retained_evidence"]["files"]
         }
         self.assertEqual("repository-context", classified["LICENSE"])
+        self.assertEqual("package-manifest", classified["composer.json"])
         for path in (
             "VERSION",
             "Package.swift",

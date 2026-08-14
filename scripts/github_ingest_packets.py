@@ -1107,7 +1107,7 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
     filename = lowered.rsplit("/", 1)[-1]
     if "/" not in lowered and filename in ("license", "notice"):
         return "repository-context"
-    if filename == "package.json":
+    if filename in ("composer.json", "package.json"):
         return "package-manifest"
     if filename in (".env.example", ".env.sample", "example.env"):
         return "runtime-configuration"
