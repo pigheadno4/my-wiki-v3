@@ -1,0 +1,167 @@
+# GitHub ingest packet
+
+- Repository: `stripe/stripe-cli`
+- Work item: `github-feef8fcc377f52acf591`
+- Snapshot: `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/manifest.json`
+- Recommended mode: `full`
+- Review priority: `normal`
+
+## `stripe-cli`
+
+- Version: `baseline` -> `1.50.0`
+- Recommendation: `full` / `normal`
+- Unchanged retained files: `0`
+
+### Required reading
+
+- `raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.0/2026-08-14/manifest.json`
+- `raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.0/2026-08-14/release-notes.md`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/ARCHITECTURE.md`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/LICENSE`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/README.md`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/cmd/stripe/main.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/go.mod`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/cmd/config.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/cmd/delete.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/cmd/fixtures.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/cmd/get.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/cmd/http.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/cmd/listen.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/cmd/login.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/cmd/logout.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/cmd/post.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/cmd/resources.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/cmd/root.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/cmd/switch.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/cmd/trigger.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/cmd/whoami.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/config/config.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/config/config_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/config/main_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/config/plugin_configs.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/config/profile.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/config/profile_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/config/symlink_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/fixtures.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/checkout.session.async_payment_failed.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/checkout.session.async_payment_succeeded.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/checkout.session.completed.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/checkout.session.expired.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/customer.subscription.created.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/customer.subscription.deleted.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/customer.subscription.paused.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/customer.subscription.trial_will_end.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/customer.subscription.updated.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/invoice.created.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/invoice.deleted.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/invoice.finalized.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/invoice.marked_uncollectible.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/invoice.paid.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/invoice.payment_action_required.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/invoice.payment_failed.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/invoice.sent.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/invoice.updated.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/invoice.voided.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/payment_intent.amount_capturable_updated.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/payment_intent.canceled.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/payment_intent.created.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/payment_intent.partially_funded.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/payment_intent.payment_failed.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/payment_intent.processing.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/payment_intent.requires_action.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/payment_intent.succeeded.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/setup_intent.canceled.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/setup_intent.created.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/setup_intent.requires_action.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/setup_intent.setup_failed.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/setup_intent.succeeded.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/subscription_schedule.aborted.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/subscription_schedule.canceled.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/subscription_schedule.completed.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/subscription_schedule.created.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/subscription_schedule.expiring.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/subscription_schedule.released.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/fixtures/triggers/subscription_schedule.updated.json`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/acct/retrieve_account.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/acct/retrieve_account_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/async.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/client_login.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/client_login_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/interactive_login.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/interactive_login_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/keys/configurer.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/keys/configurer_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/keys/keytransfer.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/keys/keytransfer_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/keys/main_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/keys/polling.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/keys/polling_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/links.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/links_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/login.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/login_message.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/login_message_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/oauth_accounts.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/oauth_accounts_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/oauth_credentials.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/oauth_credentials_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/oauth_device.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/oauth_device_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/oauth_pending.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/oauth_reauth.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/oauth_refresh.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/login/switch_context.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/proxy/endpoint.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/proxy/endpoint_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/proxy/events_list.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/proxy/proxy.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/proxy/proxy_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/proxy/stripeevent.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/proxy/stripeevent_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/proxy/v2_stripe_event.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/proxy/webhook_event_processor.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/requests/base.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/requests/base_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/requests/ids.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/requests/plugin.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/requests/request_tracer.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/requests/stripe_version_header.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/requests/webhook_endpoints.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/rpcservice/events_resend.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/rpcservice/fixtures.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/rpcservice/listen.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/rpcservice/trigger.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/rpcservice/triggers_list.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/rpcservice/webhook_endpoint_create.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/rpcservice/webhook_endpoints_list.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/stripe/analytics_telemetry.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/stripe/analytics_telemetry_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/stripe/client.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/stripe/client_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/stripe/url.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/stripe/url_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/stripe/verbosetransport.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/stripe/verbosetransport_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/websocket/client.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/websocket/client_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/websocket/messages.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/websocket/messages_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/websocket/request_log_messages.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/websocket/request_log_messages_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/websocket/visitor.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/websocket/webhook_messages.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/pkg/websocket/webhook_messages_test.go`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/rpc/common.proto`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/rpc/events_resend.proto`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/rpc/fixtures.proto`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/rpc/listen.proto`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/rpc/trigger.proto`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/rpc/triggers_list.proto`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/rpc/webhook_endpoint_create.proto`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/files/rpc/webhook_endpoints_list.proto`
+- `raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/manifest.json`
+
+### Upstream changes
+
+- None

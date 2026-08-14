@@ -1315,3 +1315,28 @@
   From SHA: `1d2238c9e5ec3564ad5d8060c474e008ab7bf779`
   To SHA: `0424354a5fa0ab697275186fe101d105838ac03e`
   Comparison: [manifest](repos/paypal/paypal-messages-android/comparisons/default-branch/1d2238c--0424354/comparison.json)
+
+## `github-feef8fcc377f52acf591`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `a6f40658b99e4142fd63b2e4b560aa9c7ae337b1`
+- Collection date: `2026-08-14`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-feef8fcc377f52acf591/packet.md)
+- Review priority: `normal`
+- Required reading: `147` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.50.0` (recommended `full`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.0/2026-08-14/manifest.json)
+  Comparison: Not applicable
