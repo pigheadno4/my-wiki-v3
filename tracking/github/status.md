@@ -25,6 +25,31 @@
   Release: [manifest](../../raw/github/adyen/adyen-ios/releases/adyen-ios/5.25.1/2026-08-01/manifest.json)
   Comparison: Not applicable
 
+## `github-0ff215c1739732ae4751`
+
+- Repository: `stripe/stripe-php`
+- SHA: `edf8118f0b96d69f06f372da9168d613d1aed072`
+- Collection date: `2026-08-15`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-php/snapshots/2026-08-15-edf8118/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-php/ingest-packets/github-0ff215c1739732ae4751/packet.md)
+- Review priority: `normal`
+- Required reading: `470` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-php@21.2.0` (recommended `full`)
+  Release: [manifest](../../raw/github/stripe/stripe-php/releases/stripe-php/21.2.0/2026-08-15/manifest.json)
+  Comparison: Not applicable
+
 ## `github-1ab2662d292502a53058`
 
 - Repository: `braintree/braintree-web`
