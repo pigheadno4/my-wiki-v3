@@ -10,7 +10,7 @@
 
 Collect one immutable, package-qualified baseline for Stripe's official PHP server SDK. The source must support detailed checkout and payment implementation questions while retaining enough public runtime code for rough queries across other Stripe API domains.
 
-The initial baseline is one exact stable release from the newest stable major. Discovery on 2026-08-14 identified release `stripe-php@21.0.0` for Composer package `stripe/stripe-php`; `21.1.0` tags were prereleases and are excluded. Collection must re-resolve the stable tag and exact SHA at runtime rather than trusting discovery state.
+The initial baseline is one exact stable release from the newest stable major. Runtime discovery on 2026-08-14 identified `stripe-php@21.2.0` as the newest stable v21 release for Composer package `stripe/stripe-php`; stable `21.1.0` and `21.1.1` are superseded baseline candidates, while alpha and beta tags are excluded. Collection must re-resolve the stable tag and exact SHA at runtime rather than trusting discovery state.
 
 ## Approved Evidence Boundary
 
@@ -46,10 +46,10 @@ selector = "package:stripe-php@21"
 backfill = "latest-stable"
 future = "all-stable"
 include_prerelease = false
-pinned_versions = ["21.0.0"]
+pinned_versions = ["21.2.0"]
 ```
 
-The initial collection contains exactly `stripe-php@21.0.0`. It does not backfill major 20 or any earlier release. Future collection selects every newer stable `21.x` release. A later major requires an explicit reviewed track update because Stripe PHP majors can represent API-version, typing, compatibility, or runtime boundaries.
+The initial collection contains exactly `stripe-php@21.2.0`. It does not backfill `21.0.0`, `21.1.0`, `21.1.1`, major 20, or any earlier release. Future collection selects every newer stable `21.x` release. A later major requires an explicit reviewed track update because Stripe PHP majors can represent API-version, typing, compatibility, or runtime boundaries.
 
 ## Capsule Policy
 
@@ -57,7 +57,7 @@ Use the existing `tagged-tree-v1` adapter because one semantic Git tag identifie
 
 The capsule should use `lib` as its required runtime root and explicit root metadata paths. It must retain the complete public runtime tree rather than an allowlist of selected products.
 
-Before setting final file and byte budgets, implementation performs a non-publishing exact-tag inventory in temporary storage. Final registry limits must be based on the measured `21.0.0` capsule plus a small, explicit allowance for ordinary stable-minor growth. If the measured capsule exceeds collector hard limits or makes a serial full ingest impractical, implementation stops for policy review. It must not silently omit API domains, weaken secret checks, classify public runtime as navigation-only, or increase hard limits without review.
+Before setting final file and byte budgets, implementation performs a non-publishing exact-tag inventory in temporary storage. Final registry limits must be based on the measured `21.2.0` capsule plus a small, explicit allowance for ordinary stable-minor growth. If the measured capsule exceeds collector hard limits or makes a serial full ingest impractical, implementation stops for policy review. It must not silently omit API domains, weaken secret checks, classify public runtime as navigation-only, or increase hard limits without review.
 
 Required safety controls remain:
 
@@ -70,7 +70,7 @@ Required safety controls remain:
 
 ## Collection Flow
 
-1. Resolve the newest stable major and exact `21.0.0` tag from the official repository; represent it as release identity `stripe-php@21.0.0` and reject prereleases.
+1. Resolve the newest stable major and exact `21.2.0` tag from the official repository; represent it as release identity `stripe-php@21.2.0` and reject prereleases.
 2. Inventory the exact tag in temporary storage and measure all approved root metadata plus `lib/**/*.php`.
 3. Review the measured file count, byte count, largest file, and excluded categories. Stop if the broad capsule cannot meet the existing serial-ingest and safety contract.
 4. Add the reviewed package track, tagged-tree capsule, exact include roots, exclusions, and measured budgets to `tracking/github/repo-registry.toml`.
@@ -119,7 +119,7 @@ Full ingest adds the new version's knowledge to the cumulative source and preser
 
 ## Validation and Success Criteria
 
-- Discovery resolves `stripe-php@21.0.0` as stable for Composer package `stripe/stripe-php` and excludes all prereleases.
+- Discovery resolves `stripe-php@21.2.0` as the newest stable v21 release for Composer package `stripe/stripe-php` and excludes all prereleases.
 - The temporary broad inventory contains all approved public runtime PHP files and root metadata with no tests, unsafe paths, secret findings, or unclassified retained files.
 - Measured budgets are reviewed before publication and remain compatible with complete serial ingest.
 - Registry/capsule tests and `python3 scripts/validate_github_collection.py` pass.

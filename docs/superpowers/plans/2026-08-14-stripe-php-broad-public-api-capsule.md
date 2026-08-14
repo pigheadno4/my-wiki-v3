@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Enable `stripe/stripe-php`, measure and verify a broad public-runtime capsule for `stripe-php@21.0.0`, and publish one approval-gated baseline packet without ingesting it.
+**Goal:** Enable `stripe/stripe-php`, measure and verify a broad public-runtime capsule for `stripe-php@21.2.0`, and publish one approval-gated baseline packet without ingesting it.
 
 **Architecture:** Reuse the existing `tagged-tree-v1` release adapter. A temporary exact-tag inventory measures the complete `lib/**/*.php` runtime plus five root metadata files before registry budgets are set; a TDD registry change locks that boundary, dry-run proves release selection without publication, and real collection publishes immutable evidence before stopping at `awaiting_approval`.
 
@@ -11,7 +11,7 @@
 ## Global Constraints
 
 - Collector release identity is `stripe-php@21`; Composer package identity is `stripe/stripe-php`.
-- Initial baseline is exactly stable `stripe-php@21.0.0`; prereleases and all prior majors are excluded.
+- Initial baseline is exactly stable `stripe-php@21.2.0`; prereleases and all earlier releases are excluded.
 - Future collection retains every newer stable `21.x` release; a new major requires a separately reviewed track update.
 - Retain all public runtime PHP under `lib/`, including generated resources, services, service parameters, V1/V2 events, OAuth, webhooks, transport, errors, pagination, and Test Helpers API runtime.
 - Retain exactly these five root metadata files: `README.md`, `CHANGELOG.md`, `composer.json`, `init.php`, and `LICENSE`. Exclude `.php_cs.dist` as development tooling.
@@ -32,7 +32,7 @@
 - Modify: none
 
 **Interfaces:**
-- Consumes: official tag `v21.0.0` from `https://github.com/stripe/stripe-php.git`.
+- Consumes: official tag `v21.2.0` from `https://github.com/stripe/stripe-php.git`.
 - Produces: exact tag SHA, stable/prerelease evidence, selected file count, selected UTF-8 byte count, largest selected file, and deterministic budget values for Task 2.
 
 - [ ] **Step 1: Record repository state and create an isolated temporary path**
@@ -51,20 +51,20 @@ Expected: repository status shows only unrelated existing work; save the printed
 Run, replacing `$TMP_STRIPE_PHP` with the path printed in Step 1:
 
 ```bash
-git clone --filter=blob:none --no-checkout --branch v21.0.0 --single-branch https://github.com/stripe/stripe-php.git "$TMP_STRIPE_PHP/repo"
-git -C "$TMP_STRIPE_PHP/repo" rev-parse 'refs/tags/v21.0.0^{commit}'
+git clone --filter=blob:none --no-checkout --branch v21.2.0 --single-branch https://github.com/stripe/stripe-php.git "$TMP_STRIPE_PHP/repo"
+git -C "$TMP_STRIPE_PHP/repo" rev-parse 'refs/tags/v21.2.0^{commit}'
 git -C "$TMP_STRIPE_PHP/repo" ls-remote --tags origin 'refs/tags/v21*'
 ```
 
-Expected: `v21.0.0` resolves to one full commit SHA. Any `v21.1.0-alpha.*`, `-beta.*`, or `-rc.*` tags remain excluded; no stable version newer than `21.0.0` may be silently ignored. If a newer stable v21 tag exists, stop and revise the pinned version through design review.
+Expected: `v21.2.0` resolves to one full commit SHA. Alpha, beta, and release-candidate tags remain excluded; no stable version newer than `21.2.0` may be silently ignored. If a newer stable v21 tag exists, stop and revise the pinned version through design review.
 
 - [ ] **Step 3: Verify the five root metadata files and complete runtime root**
 
 Run:
 
 ```bash
-git -C "$TMP_STRIPE_PHP/repo" ls-tree -r --name-only v21.0.0 -- README.md CHANGELOG.md composer.json init.php LICENSE lib
-git -C "$TMP_STRIPE_PHP/repo" ls-tree -r --name-only v21.0.0 -- tests test fixtures .github vendor docs
+git -C "$TMP_STRIPE_PHP/repo" ls-tree -r --name-only v21.2.0 -- README.md CHANGELOG.md composer.json init.php LICENSE lib
+git -C "$TMP_STRIPE_PHP/repo" ls-tree -r --name-only v21.2.0 -- tests test fixtures .github vendor docs
 ```
 
 Expected: the first command lists the five approved metadata files plus all `lib/` paths. `.php_cs.dist` is not retained. The second command is inventory-only and none of its paths enter the capsule.
@@ -74,7 +74,7 @@ Expected: the first command lists the five approved metadata files plus all `lib
 Run this from the temporary clone:
 
 ```bash
-git -C "$TMP_STRIPE_PHP/repo" ls-tree -r -l v21.0.0 -- README.md CHANGELOG.md composer.json init.php LICENSE lib | awk -F '\t' '
+git -C "$TMP_STRIPE_PHP/repo" ls-tree -r -l v21.2.0 -- README.md CHANGELOG.md composer.json init.php LICENSE lib | awk -F '\t' '
 BEGIN { roots["README.md"]=1; roots["CHANGELOG.md"]=1; roots["composer.json"]=1; roots["init.php"]=1; roots["LICENSE"]=1 }
 {
   split($1, meta, " "); size=meta[4]; path=$2
@@ -96,10 +96,10 @@ END {
   print "max_packet_files=" count+file_extra+20
   print "max_packet_utf8_bytes=" capsule_bytes+500000
 }'
-git -C "$TMP_STRIPE_PHP/repo" ls-tree -r --name-only v21.0.0 -- README.md CHANGELOG.md composer.json init.php LICENSE lib | while IFS= read -r path; do
-  case "$path" in
+git -C "$TMP_STRIPE_PHP/repo" ls-tree -r --name-only v21.2.0 -- README.md CHANGELOG.md composer.json init.php LICENSE lib | while IFS= read -r file_path; do
+  case "$file_path" in
     README.md|CHANGELOG.md|composer.json|init.php|LICENSE|lib/*.php)
-      git -C "$TMP_STRIPE_PHP/repo" show "v21.0.0:$path" | iconv -f UTF-8 -t UTF-8 >/dev/null || exit 1
+      git -C "$TMP_STRIPE_PHP/repo" show "v21.2.0:$file_path" | iconv -f UTF-8 -t UTF-8 >/dev/null || exit 1
       ;;
   esac
 done
@@ -156,7 +156,7 @@ def test_stripe_php_uses_broad_public_runtime_tagged_profile(self):
                 "latest-stable",
                 "all-stable",
                 False,
-                ("21.0.0",),
+                ("21.2.0",),
             ),
         ),
         repo.version_tracks,
@@ -206,7 +206,7 @@ selector="package:stripe-php@21"
 backfill="latest-stable"
 future="all-stable"
 include_prerelease=false
-pinned_versions=["21.0.0"]
+pinned_versions=["21.2.0"]
 [[repos.capsules]]
 id="stripe-php-public-runtime"
 adapter="tagged-tree-v1"
@@ -280,7 +280,7 @@ Run:
 python3 scripts/collect_github_repos.py collect --repo stripe/stripe-php --mode backfill --dry-run
 ```
 
-Expected: discovery selects only `stripe-php@21.0.0`, excludes prereleases, resolves the exact Task 1 SHA, and publishes nothing.
+Expected: discovery selects only `stripe-php@21.2.0`, excludes prereleases, resolves the exact Task 1 SHA, and publishes nothing.
 
 - [ ] **Step 3: Prove dry-run immutability and run the broad regression suite**
 
@@ -299,7 +299,7 @@ Expected: no published Stripe PHP evidence, work-item count `0`, all tests pass,
 
 **Files:**
 - Create: generated exact-SHA snapshot under `raw/github/stripe/stripe-php/snapshots/`
-- Create: generated release record under `raw/github/stripe/stripe-php/releases/stripe-php/21.0.0/`
+- Create: generated release record under `raw/github/stripe/stripe-php/releases/stripe-php/21.2.0/`
 - Create: generated packet under `tracking/github/repos/stripe/stripe-php/ingest-packets/`
 - Modify: generated GitHub work-item, status, and collection-index files
 
@@ -315,7 +315,7 @@ Run:
 python3 scripts/collect_github_repos.py collect --repo stripe/stripe-php --mode backfill
 ```
 
-Expected: one `stripe-php@21.0.0` release and exact-SHA snapshot are published. The work item stops at `awaiting_approval`; no wiki file changes.
+Expected: one `stripe-php@21.2.0` release and exact-SHA snapshot are published. The work item stops at `awaiting_approval`; no wiki file changes.
 
 - [ ] **Step 2: Inspect the generated packet and lifecycle state**
 
@@ -329,7 +329,7 @@ git status --short
 
 Inspect both packet files, the release record and notes, and snapshot manifest. Confirm:
 
-- package identity is `stripe-php@21.0.0`;
+- package identity is `stripe-php@21.2.0`;
 - recommendation is `full` because this is an initial baseline;
 - required reading includes every retained runtime and metadata file;
 - evidence gaps, secret findings, unsafe paths, and unclassified changes are zero;
@@ -357,7 +357,7 @@ Run:
 git status --short
 git add raw/github/stripe/stripe-php tracking/github/repos/stripe/stripe-php tracking/github/work-items.json tracking/github/status.md tracking/github/collection-index.json tracking/github/collection-index.md
 git diff --cached --stat
-git commit -m "Collect Stripe PHP 21.0.0 baseline"
+git commit -m "Collect Stripe PHP 21.2.0 baseline"
 ```
 
 Expected: the commit contains only immutable Stripe PHP evidence and generated GitHub tracking state. The item remains `awaiting_approval`; `CLAUDE copy.md` remains untracked.
