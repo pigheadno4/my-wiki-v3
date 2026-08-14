@@ -833,13 +833,25 @@ def _read_selected_files(
     files: List[CapsuleFile] = []
     findings: Set[SecretFinding] = set()
     total_bytes = 0
+    selected_paths = tuple(path for path, _ in selected_blobs)
+    sizes = tree.blob_sizes(selected_paths)
     for path, blob in selected_blobs:
-        if tree.blob_size(path) > capsule.max_file_bytes:
+        if sizes[path] > capsule.max_file_bytes:
             _review(
                 "capsule-budget-exceeded",
                 "path=" + path + " exceeds max_file_bytes",
             )
-        content = tree.read_blob(path, max_bytes=capsule.max_file_bytes)
+    if sum(sizes.values()) > capsule.max_capsule_utf8_bytes:
+        _review(
+            "capsule-budget-exceeded",
+            "selected UTF-8 bytes exceed max_capsule_utf8_bytes",
+        )
+    contents = tree.read_blobs(
+        selected_paths,
+        max_bytes=capsule.max_file_bytes,
+    )
+    for path, blob in selected_blobs:
+        content = contents[path]
         if _is_lfs_pointer(content):
             _review("unsafe-required-file", "selected path is a Git LFS pointer: " + path)
         if b"\0" in content:
