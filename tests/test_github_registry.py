@@ -62,7 +62,7 @@ APPENDIX_A_INVENTORY = (
     ('stripe/link-cli', 'https://github.com/stripe/link-cli', 'cli', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-react-native', 'https://github.com/stripe/stripe-react-native', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-ios-spm', 'https://github.com/stripe/stripe-ios-spm', 'release-mirror', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
-    ('stripe/stripe-php', 'https://github.com/stripe/stripe-php', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('stripe/stripe-php', 'https://github.com/stripe/stripe-php', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-node', 'https://github.com/stripe/stripe-node', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-js', 'https://github.com/stripe/stripe-js', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/sync-engine', 'https://github.com/stripe/sync-engine', 'tooling', 'tier2', 'commit', False, 'default-branch', 'monthly'),
@@ -1236,6 +1236,47 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(2500000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(220, capsule.max_packet_files)
         self.assertEqual(3200000, capsule.max_packet_utf8_bytes)
+
+    def test_stripe_php_uses_broad_public_runtime_tagged_profile(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["stripe/stripe-php"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:stripe-php@21",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("21.2.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("stripe-php-public-runtime", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("stripe-php",), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(("lib",), capsule.default_required_roots)
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(
+            ("CHANGELOG.md", "LICENSE", "README.md", "composer.json", "init.php"),
+            capsule.include_paths,
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(1000000, capsule.max_file_bytes)
+        self.assertEqual(492, capsule.max_capsule_files)
+        self.assertEqual(3100000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(512, capsule.max_packet_files)
+        self.assertEqual(3600000, capsule.max_packet_utf8_bytes)
 
     def test_stripe_js_uses_the_root_npm_public_source_profile(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")

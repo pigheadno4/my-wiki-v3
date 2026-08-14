@@ -1,6 +1,6 @@
 # GitHub repository collection index
 
-Generated: `2026-08-14`
+Generated: `2026-08-15`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -50,7 +50,7 @@ Generated: `2026-08-14`
 | paypal | `paypal/paypal-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-07-31 | ingested | 2026-08-07 | `collect-baseline` |
 | paypal | `paypal/paypal-checkout-components` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-07-23 | ingested | 2026-07-30 | `collect-baseline` |
 | paypal | `paypal/paypal-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-07-31 | ingested | 2026-08-07 | `collect-baseline` |
-| paypal | `paypal/paypal-js` | tier1 | monorepo-packages / npm-tracked-source-v1 | weekly | 2026-08-08 | ingested | 2026-08-15 | `wait` |
+| paypal | `paypal/paypal-js` | tier1 | monorepo-packages / npm-tracked-source-v1 | weekly | 2026-08-08 | ingested | 2026-08-15 | `collect-baseline` |
 | paypal | `paypal/paypal-messaging-components` | tier1 | semver-tags | weekly | - | - | - | `disabled` |
 | paypal | `paypal/paypal-rest-api-specifications` | tier1 | commit / commit-tree-v1 | monthly | 2026-08-11 | ingested | 2026-09-11 | `wait` |
 | paypal | `paypal/paypal-messages-android` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-12 | ingested | 2026-09-12 | `wait` |
@@ -72,6 +72,6 @@ Generated: `2026-08-14`
 | stripe | `stripe/stripe-apps` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
 | stripe | `stripe/stripe-cli` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-14 | ingested | 2026-09-14 | `wait` |
 | stripe | `stripe/stripe-node` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-08-08 | ingested | 2026-09-08 | `wait` |
-| stripe | `stripe/stripe-php` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
+| stripe | `stripe/stripe-php` | tier2 | semver-tags / tagged-tree-v1 | monthly | - | - | - | `collect-baseline` |
 | stripe | `stripe/sync-engine` | tier2 | commit | monthly | - | - | - | `disabled` |
 | stripe | `stripe/stripe-ios-spm` | tier3 | commit | on-demand | - | - | - | `disabled` |
