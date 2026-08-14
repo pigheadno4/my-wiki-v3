@@ -468,6 +468,8 @@ Operations history: [[stripe-log]]
 - [[source-stripe-react-stripejs]] — React Stripe.js: CheckoutElementsProvider + useCheckoutElements (Checkout path), Elements + useStripe/useElements/ElementsConsumer (advanced) (webpage, 2026-05-08)
 - [[source-github-stripe-node]] — cumulative `stripe` Node SDK through `22.4.0`: server/runtime boundary, retries/idempotency, webhooks, pagination, Checkout, PaymentIntents, SetupIntents, billing, and refunds (github-repo, updated 2026-08-08)
 - [[changelog-github-stripe-node]] — package-qualified stripe-node history retaining `22.1.1` and `22.4.0` with the Dahlia API transition and checkout-relevant changes (github-repo, 2026-08-08)
+- [[source-github-stripe-cli]] — `stripe-cli@1.50.0`: API commands, fixtures, synthetic triggers, local webhook forwarding, OAuth/account contexts, and telemetry (github-repo, 2026-08-14)
+- [[changelog-github-stripe-cli]] — package-qualified Stripe CLI baseline and exact `1.50.0` agent-identity telemetry change (github-repo, 2026-08-14)
 - [[source-github-react-stripe-js]] — `@stripe/react-stripe-js` legacy v6.3.0→retained v6.8.0: provider-specific Checkout hooks, lifecycle, SSR, compatibility, beta Terms Element (github-repo, updated 2026-07-30)
 - [[changelog-github-react-stripe-js]] — package-qualified `stripe/react-stripe-js` history with exact 6.8.0 release note and legacy evidence boundary (github-repo, 2026-07-30)
 - [[source-github-stripe-js]] — `@stripe/stripe-js` v8.11.0→v9.12.1: `clover`→`dahlia`, loader boundary, Checkout API reshape, Elements expansion, and typed migration findings (github-repo, 2026-07-30)
@@ -705,6 +707,7 @@ Operations history: [[stripe-log]]
 - [[stripe-dispute-monitoring-programs]] — Card network monitoring programs: VAMP, ECM/HECM/EFM, AusPayNet FMP thresholds and fines
 - [[stripe-high-risk-merchant-lists]] — MATCH/VMSS TMF databases: qualitative + quantitative criteria, removal rules, Stripe position
 - [[stripe-node-sdk]] — Stripe Node.js SDK through `22.4.0`: runtime exports, typed errors, webhook/event verification, pagination, retry/idempotency conflict, PaymentIntent + Checkout methods
+- [[stripe-cli]] — Stripe CLI `1.50.0`: direct API requests, fixture and trigger testing, webhook forwarding, contexts, and evidence boundaries
 - [[stripe-currencies]] — Stripe Currencies: presentment/settlement/payment method, minor units, special cases (ISK/HUF/TWD/UGX), min/max charge amounts
 - [[stripe-declines]] — Stripe Declines: 3 failure types, outcome object fields, Radar block reasons, Adaptive Acceptance, allow list
 - [[stripe-3d-secure]] — Stripe 3D Secure: 3DS2 flow, manual trigger (any/challenge), web/iOS/Android/RN, liability shift, 6 web + 4 mobile test cards

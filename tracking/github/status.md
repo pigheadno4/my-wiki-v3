@@ -1321,10 +1321,10 @@
 - Repository: `stripe/stripe-cli`
 - SHA: `a6f40658b99e4142fd63b2e4b560aa9c7ae337b1`
 - Collection date: `2026-08-14`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

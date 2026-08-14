@@ -6,6 +6,13 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-14] ingest | stripe/stripe-cli `stripe-cli@1.50.0`
+
+- Full-ingested work item `github-feef8fcc377f52acf591` at exact SHA `a6f40658b99e4142fd63b2e4b560aa9c7ae337b1` after the ordered full-byte read and hash check of all 147 required evidence paths.
+- Established the cumulative source, package-qualified changelog, and [[stripe-cli]] concept for API commands, fixtures, triggers, webhook forwarding, authentication contexts, and request controls.
+- Preserved fixture payloads as test recipes rather than canonical API guarantees and recorded the one-time 28-test-file capsule exception.
+- Attributed only agent host and self-reported agent identifiers to the exact `1.50.0` release note; the broader capabilities remain baseline evidence.
+
 ## [2026-08-13] ingest | stripe/ai `main@1953b6c`
 
 - Full-ingested work item `github-39ab9debac014faec1c5` at exact SHA `1953b6cce7344d880a054c42b8dd21ca3e50ebd5` after serial full reading of all 212 required evidence paths.

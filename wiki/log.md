@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-14] ingest | GitHub stripe/stripe-cli `stripe-cli@1.50.0`
+
+- Full-ingested work item `github-feef8fcc377f52acf591` at exact SHA `a6f40658b99e4142fd63b2e4b560aa9c7ae337b1` from all 147 required evidence paths.
+- Added cumulative and package-qualified sources plus the [[stripe-cli]] concept for API commands, fixtures, triggers, local webhook forwarding, authentication contexts, and telemetry.
+- Kept fixture examples separate from canonical API guarantees and isolated the exact `1.50.0` change to agent-identity telemetry.
+
 ## [2026-08-13] ingest | GitHub stripe/ai `main@1953b6c`
 
 - Full-ingested work item `github-39ab9debac014faec1c5` at exact SHA `1953b6cce7344d880a054c42b8dd21ca3e50ebd5` after serial full reading of all 212 required evidence paths.
