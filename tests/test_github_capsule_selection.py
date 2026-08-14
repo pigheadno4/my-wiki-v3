@@ -1039,6 +1039,13 @@ class CapsuleSelectionTests(unittest.TestCase):
             ),
         )
         self.assertEqual(
+            ("tests",),
+            classify_excluded_categories(
+                "pkg/config/config_test.go",
+                ("tests", "fixtures"),
+            ),
+        )
+        self.assertEqual(
             (),
             classify_excluded_categories(
                 ".storybook/stories/HostedFields.stories.ts",

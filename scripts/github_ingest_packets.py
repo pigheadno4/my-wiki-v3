@@ -51,6 +51,7 @@ _SOURCE_SUFFIXES = (
     ".m",
     ".mm",
     ".php",
+    ".proto",
     ".py",
     ".rb",
     ".rs",
@@ -1132,6 +1133,7 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         in (
             "cartfile",
             "dependencies.gradle",
+            "go.mod",
             "gradle.properties",
             "modules.yaml",
             "package.swift",
@@ -1187,7 +1189,13 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
     if (
         lowered.endswith(".json")
         and row.get("purpose") == "source-capsule"
-        and row.get("classification_reason") == "required-root"
+        and (
+            row.get("classification_reason") == "required-root"
+            or (
+                row.get("classification_reason") == "include-path"
+                and "/fixtures/triggers/" in "/" + lowered
+            )
+        )
     ):
         return "public-source"
     if lowered.endswith(_SOURCE_SUFFIXES):

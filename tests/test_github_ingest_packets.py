@@ -584,6 +584,9 @@ class GitHubIngestPacketTests(unittest.TestCase):
                         "modules.yaml",
                         "settings.gradle",
                         "dependencies.gradle",
+                        "go.mod",
+                        "pkg/fixtures/triggers/checkout.session.completed.json",
+                        "rpc/common.proto",
                         "Native/api/native.api",
                     ),
                     excluded_categories=("tests", "fixtures"),
@@ -635,6 +638,24 @@ class GitHubIngestPacketTests(unittest.TestCase):
                 "dependencies.gradle": (
                     "ext.versions = [:]\n",
                     "public-source",
+                    "include-path",
+                    "stripe-ios",
+                ),
+                "go.mod": (
+                    "module example.com/checkout\n",
+                    "public-source",
+                    "include-path",
+                    "stripe-ios",
+                ),
+                "pkg/fixtures/triggers/checkout.session.completed.json": (
+                    '{"fixtures": []}\n',
+                    "source-capsule",
+                    "include-path",
+                    "stripe-ios",
+                ),
+                "rpc/common.proto": (
+                    "syntax = \"proto3\";\n",
+                    "source-capsule",
                     "include-path",
                     "stripe-ios",
                 ),
@@ -707,6 +728,7 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "modules.yaml",
             "settings.gradle",
             "dependencies.gradle",
+            "go.mod",
             "PrivacyInfo.xcprivacy",
         ):
             self.assertEqual("build-configuration", classified[path])
@@ -714,6 +736,11 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "public-source",
             classified["Native/api/native.api"],
         )
+        self.assertEqual(
+            "public-source",
+            classified["pkg/fixtures/triggers/checkout.session.completed.json"],
+        )
+        self.assertEqual("public-source", classified["rpc/common.proto"])
         self.assertEqual(
             "translation",
             classified["Native/Resources/ar.lproj/Checkout.strings"],

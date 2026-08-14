@@ -990,6 +990,7 @@ def _classify_excluded_categories(
         "tests": (
             ".test." in filename
             or ".spec." in filename
+            or filename.endswith("_test.go")
             or any(
                 segment in (
                     "test",
