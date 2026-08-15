@@ -385,6 +385,31 @@
   Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.41.1/2026-08-09/manifest.json)
   Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.41.0--6.41.1/comparison.json)
 
+## `github-62b2da34c81f87c986c9`
+
+- Repository: `stripe/link-cli`
+- SHA: `d540389e030d0f475a6b85cd64ccaf978ff498ac`
+- Collection date: `2026-08-15`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/manifest.json)
+- Packet: [review packet](repos/stripe/link-cli/ingest-packets/github-62b2da34c81f87c986c9/packet.md)
+- Review priority: `normal`
+- Required reading: `110` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/link-cli@0.13.0` (recommended `full`)
+  Release: [manifest](../../raw/github/stripe/link-cli/releases/link-cli/0.13.0/2026-08-15/manifest.json)
+  Comparison: Not applicable
+
 ## `github-63997abe9a7d60c5179b`
 
 - Repository: `paypal/paypal-messages-ios`

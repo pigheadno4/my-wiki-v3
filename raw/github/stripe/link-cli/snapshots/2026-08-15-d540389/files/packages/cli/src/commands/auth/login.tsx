@@ -1,0 +1,222 @@
+import {
+  type AuthStorage,
+  LinkAuthorizationDeclinedError,
+  type ScopeEligibility,
+  type SourceAction,
+  storage as defaultStorage,
+} from '@stripe/link-sdk';
+import { Box, Text, useInput } from 'ink';
+import Spinner from 'ink-spinner';
+import type React from 'react';
+import { useEffect, useState } from 'react';
+import type { IAuthResource, JsonValue } from '../../auth/types';
+import { DISPLAY_DELAY_MS } from '../../utils/constants';
+import { openUrl } from '../../utils/open-url';
+
+interface LoginProps {
+  authResource: IAuthResource;
+  clientName?: string;
+  scope?: string;
+  sourceActions?: SourceAction[];
+  authorizationDetails?: JsonValue[];
+  authStorage?: AuthStorage;
+  // Set by `auth upgrade`: the still-valid refresh token of the session being
+  // replaced. Revoked (best-effort) only after the new tokens are stored, so an
+  // abandoned upgrade leaves the existing session intact. `login` omits it.
+  revokeRefreshTokenOnSuccess?: string;
+  onComplete: () => void;
+}
+
+export const Login: React.FC<LoginProps> = ({
+  authResource,
+  clientName,
+  scope,
+  sourceActions,
+  authorizationDetails,
+  authStorage = defaultStorage,
+  revokeRefreshTokenOnSuccess,
+  onComplete,
+}) => {
+  const storage = authStorage;
+  const [status, setStatus] = useState<
+    'initiating' | 'waiting' | 'polling' | 'success' | 'error' | 'declined'
+  >('initiating');
+  const [userCode, setUserCode] = useState<string>('');
+  const [verificationUrl, setVerificationUrl] = useState<string>('');
+  const [deviceCode, setDeviceCode] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const [scopeEligibility, setScopeEligibility] = useState<
+    Record<string, ScopeEligibility>
+  >({});
+
+  const isActive = status === 'waiting' || status === 'polling';
+
+  useInput(
+    (_input, key) => {
+      if (key.return && verificationUrl) openUrl(verificationUrl);
+    },
+    { isActive },
+  );
+
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        const authRequest = await authResource.initiateDeviceAuth({
+          clientName,
+          scope,
+          sourceActions,
+          authorizationDetails,
+        });
+        setUserCode(authRequest.user_code);
+        setVerificationUrl(authRequest.verification_url_complete);
+        setDeviceCode(authRequest.device_code);
+        setStatus('waiting');
+      } catch (err) {
+        setError((err as Error).message);
+        setStatus('error');
+      }
+    };
+
+    initAuth();
+  }, [authResource, authorizationDetails, clientName, scope, sourceActions]);
+
+  useEffect(() => {
+    if (status !== 'waiting' || !deviceCode) return;
+
+    const startPolling = async () => {
+      setStatus('polling');
+
+      const pollInterval = setInterval(async () => {
+        try {
+          const tokens = await authResource.pollDeviceAuth(deviceCode);
+
+          if (tokens) {
+            clearInterval(pollInterval);
+            storage.setAuth(tokens);
+            // Upgrade only: revoke the replaced session's grant now that the
+            // widened tokens are stored. Best-effort — a failure here must not
+            // fail the login that just succeeded.
+            if (revokeRefreshTokenOnSuccess) {
+              authResource
+                .revokeToken(revokeRefreshTokenOnSuccess)
+                .catch(() => {});
+            }
+            setStatus('success');
+            setTimeout(onComplete, DISPLAY_DELAY_MS);
+          }
+        } catch (err) {
+          clearInterval(pollInterval);
+          if (err instanceof LinkAuthorizationDeclinedError) {
+            setScopeEligibility(err.scopeEligibility);
+            setStatus('declined');
+          } else {
+            setError((err as Error).message);
+            setStatus('error');
+          }
+        }
+      }, 2000);
+
+      // Cleanup on unmount
+      return () => clearInterval(pollInterval);
+    };
+
+    // Wait 1 second before starting to poll
+    const timeout = setTimeout(startPolling, 1000);
+    return () => clearTimeout(timeout);
+  }, [
+    status,
+    deviceCode,
+    authResource,
+    onComplete,
+    storage,
+    revokeRefreshTokenOnSuccess,
+  ]);
+
+  if (status === 'initiating') {
+    return (
+      <Box>
+        <Text color="cyan">
+          <Spinner type="dots" /> Initiating authentication...
+        </Text>
+      </Box>
+    );
+  }
+
+  if (status === 'declined') {
+    return (
+      <Box flexDirection="column">
+        <Text color="red">✗ Authorization failed</Text>
+        {Object.entries(scopeEligibility).map(([scope, info]) => (
+          <Box key={scope} flexDirection="column" marginLeft={2}>
+            <Text>
+              <Text dimColor>{scope}:</Text>
+              {' ineligible'}
+              {info.ineligibility_reasons.length > 0
+                ? ` (${info.ineligibility_reasons.join(', ')})`
+                : ''}
+            </Text>
+            {info.description ? <Text dimColor>{info.description}</Text> : null}
+          </Box>
+        ))}
+      </Box>
+    );
+  }
+
+  if (status === 'error') {
+    return (
+      <Box flexDirection="column">
+        <Text color="red">✗ Authentication failed</Text>
+        <Text color="red">{error}</Text>
+      </Box>
+    );
+  }
+
+  if (status === 'success') {
+    return (
+      <Box flexDirection="column">
+        <Text color="green">✓ Successfully authenticated!</Text>
+        <Text dimColor>Credentials saved locally</Text>
+      </Box>
+    );
+  }
+
+  return (
+    <Box flexDirection="column" paddingY={1}>
+      <Box marginBottom={1}>
+        <Text bold>Authentication</Text>
+      </Box>
+
+      <Box
+        flexDirection="column"
+        borderStyle="round"
+        borderColor="cyan"
+        paddingX={2}
+        paddingY={1}
+      >
+        <Text>
+          Open:{' '}
+          <Text bold color="cyan">
+            {verificationUrl}
+          </Text>
+        </Text>
+        <Text dimColor>Press Enter to open in browser</Text>
+        <Text>
+          Enter phrase:{' '}
+          <Text bold color="yellow">
+            {userCode}
+          </Text>
+        </Text>
+      </Box>
+
+      <Box marginTop={1}>
+        {status === 'polling' ? (
+          <Text color="cyan">
+            <Spinner type="dots" /> Waiting for authorization...
+          </Text>
+        ) : (
+          <Text dimColor>Press any key after authorizing...</Text>
+        )}
+      </Box>
+    </Box>
+  );
+};

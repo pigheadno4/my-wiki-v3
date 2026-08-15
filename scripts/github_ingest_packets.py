@@ -1118,6 +1118,7 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         ".nvmrc",
         "codegen_version",
         "openapi_version",
+        "pnpm-workspace.yaml",
     ):
         return "build-configuration"
     if filename == "tsconfig.json" or (

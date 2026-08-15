@@ -1,0 +1,130 @@
+# GitHub ingest packet
+
+- Repository: `stripe/link-cli`
+- Work item: `github-62b2da34c81f87c986c9`
+- Snapshot: `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/manifest.json`
+- Recommended mode: `full`
+- Review priority: `normal`
+
+## `@stripe/link-cli`
+
+- Version: `baseline` -> `0.13.0`
+- Recommendation: `full` / `normal`
+- Unchanged retained files: `0`
+
+### Required reading
+
+- `raw/github/stripe/link-cli/releases/link-cli/0.13.0/2026-08-15/manifest.json`
+- `raw/github/stripe/link-cli/releases/link-cli/0.13.0/2026-08-15/release-notes.md`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/LICENSE`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/README.md`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/package.json`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/CHANGELOG.md`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/package.json`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/auth/auth-resource.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/auth/authorization-details.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/auth/config.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/auth/merge-access.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/auth/scopes.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/auth/session.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/auth/types.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/cli.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/auth/index.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/auth/login.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/auth/logout.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/auth/schema.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/auth/status.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/auth/utils.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/balances/index.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/balances/list.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/balances/schema.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/demo/card-flow.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/demo/constants.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/demo/content.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/demo/demo-runner.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/demo/index.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/demo/spt-flow.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/demo/step-data.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/demo/step-indicator.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/mpp/decode-view.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/mpp/decode.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/mpp/index.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/mpp/pay.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/mpp/schema.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/onboard/index.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/onboard/onboard-runner.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/payment-methods/add.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/payment-methods/index.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/payment-methods/list.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/payment-methods/schema.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/report/index.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/report/schema.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/serve/index.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/shipping-address/index.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/shipping-address/list.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/shipping-address/schema.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/sources/index.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/sources/list.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/sources/schema.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/spend-request/app-download-qr-codes.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/spend-request/approval-waiting-view.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/spend-request/cancel.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/spend-request/create.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/spend-request/index.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/spend-request/list.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/spend-request/request-approval.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/spend-request/retrieve.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/spend-request/schema.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/spend-request/update.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/spend-request/use-approval-polling.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/transactions/index.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/transactions/list.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/transactions/schema.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/user-info/index.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/user-info/retrieve.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/user-info/schema.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/web-bot-auth/index.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/commands/web-bot-auth/sign.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/hooks/use-async-action.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/utils/constants.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/utils/credential-output.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/utils/format-amount.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/utils/line-item-parser.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/utils/markdown-text.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/utils/open-url.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/utils/poll-until-approved.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/utils/poll-until.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/utils/render-interactive.tsx`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/utils/render-qr-matrix.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/utils/require-auth.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/utils/resource-factory.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/utils/sanitize-text.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/cli/src/utils/update-info.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/README.md`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/package.json`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/client.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/config.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/errors.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/index.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/resources/auth.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/resources/balances.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/resources/base.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/resources/interfaces.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/resources/payment-methods.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/resources/report.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/resources/shipping-address.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/resources/sources.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/resources/spend-request.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/resources/transactions.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/resources/user-info.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/resources/web-bot-auth.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/types/index.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/packages/sdk/src/utils/storage.ts`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/pnpm-workspace.yaml`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/skills/create-payment-credential/SKILL.md`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/files/skills/financial-insights/SKILL.md`
+- `raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/manifest.json`
+
+### Upstream changes
+
+- None

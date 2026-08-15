@@ -1005,6 +1005,31 @@ class GitHubIngestPacketTests(unittest.TestCase):
             classified["terraform-registry-manifest.json"],
         )
 
+    def test_pnpm_workspace_is_build_configuration(self):
+        prior = {
+            "package.json": self.manifest_content("1.0.0"),
+            "pnpm-workspace.yaml": "packages:\n  - packages/*\n",
+        }
+        current = {
+            "package.json": self.manifest_content("1.0.1"),
+            "pnpm-workspace.yaml": "packages:\n  - packages/*\n",
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            (),
+            from_version="1.0.0",
+            to_version="1.0.1",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        self.assertEqual(
+            "build-configuration",
+            classified["pnpm-workspace.yaml"],
+        )
+
     def test_eslint_configs_are_classified_as_build_configuration(self):
         prior = {
             "package.json": self.manifest_content("10.0.0"),

@@ -1,0 +1,591 @@
+import type { ISpendRequestResource, SpendRequest } from '@stripe/link-sdk';
+import { Box, Text } from 'ink';
+import Spinner from 'ink-spinner';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { DISPLAY_DELAY_MS } from '../../utils/constants';
+import { writeCredentialFile } from '../../utils/credential-output';
+
+interface RetrieveSpendRequestProps {
+  repository: ISpendRequestResource;
+  id: string;
+  timeout?: number;
+  include?: string[];
+  outputFile?: string;
+  force?: boolean;
+  onComplete: (result: SpendRequest | null) => void;
+}
+
+type Phase =
+  | 'fetching'
+  | 'polling'
+  | 'success'
+  | 'declined'
+  | 'finalized'
+  | 'requires_action'
+  | 'timeout'
+  | 'error';
+
+// Statuses past which polling should stop. Mirrors the JSON path in
+// commands/spend-request/index.tsx so an `expired`/`canceled`/`failed` request
+// doesn't keep the TUI spinning until the local timeout fires.
+const TERMINAL_STATUSES: ReadonlySet<string> = new Set([
+  'approved',
+  'denied',
+  'expired',
+  'succeeded',
+  'failed',
+  'canceled',
+]);
+
+// `requires_action` with an `auto_resume` resolution (e.g. 3D Secure) will
+// resolve on its own — keep polling through it rather than stopping.
+function isAutoResume(request: SpendRequest): boolean {
+  return (
+    request.status_details?.requires_action?.next_action?.resolution ===
+    'auto_resume'
+  );
+}
+
+export const RetrieveSpendRequest: React.FC<RetrieveSpendRequestProps> = ({
+  repository,
+  id,
+  timeout = 600,
+  include,
+  outputFile,
+  force,
+  onComplete,
+}) => {
+  const [phase, setPhase] = useState<Phase>('fetching');
+  const [request, setRequest] = useState<SpendRequest | null>(null);
+  const [error, setError] = useState<string>('');
+  const [elapsed, setElapsed] = useState<number>(0);
+  const [outputFilePath, setOutputFilePath] = useState<string | null>(null);
+  const [fileError, setFileError] = useState<string>('');
+  const startTimeRef = useRef<number>(Date.now());
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const requestRef = useRef<SpendRequest | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (phase !== 'success' || !outputFile || !request?.card) return;
+
+    const fileData = {
+      spend_request_id: request.id,
+      merchant_name: request.merchant_name,
+      merchant_url: request.merchant_url,
+      context: request.context,
+      created_at: request.created_at,
+      card: request.card,
+    };
+    writeCredentialFile(outputFile, fileData, force ?? false)
+      .then((path) => setOutputFilePath(path))
+      .catch((err) => setFileError((err as Error).message));
+  }, [phase, outputFile, force, request]);
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const result = await repository.getSpendRequest(id, { include });
+        if (!result) {
+          setError(`Spend request ${id} not found`);
+          setPhase('error');
+          setTimeout(() => onComplete(null), DISPLAY_DELAY_MS);
+          return;
+        }
+
+        requestRef.current = result;
+        setRequest(result);
+
+        if (result.status === 'approved') {
+          setPhase('success');
+          setTimeout(() => onComplete(result), DISPLAY_DELAY_MS);
+        } else if (result.status === 'denied') {
+          setPhase('declined');
+          setTimeout(() => onComplete(result), DISPLAY_DELAY_MS);
+        } else if (
+          result.status === 'requires_action' &&
+          !isAutoResume(result)
+        ) {
+          setPhase('requires_action');
+          setTimeout(() => onComplete(result), DISPLAY_DELAY_MS);
+        } else if (TERMINAL_STATUSES.has(result.status)) {
+          setPhase('finalized');
+          setTimeout(() => onComplete(result), DISPLAY_DELAY_MS);
+        } else {
+          startTimeRef.current = Date.now();
+          setPhase('polling');
+        }
+      } catch (err) {
+        setError((err as Error).message);
+        setPhase('error');
+        setTimeout(() => onComplete(null), DISPLAY_DELAY_MS);
+      }
+    };
+
+    fetch();
+  }, [repository, id, include, onComplete]);
+
+  useEffect(() => {
+    if (phase !== 'polling') return;
+
+    timerRef.current = setInterval(() => {
+      const secs = Math.floor((Date.now() - startTimeRef.current) / 1000);
+      setElapsed(secs);
+    }, 1000);
+
+    pollRef.current = setInterval(async () => {
+      const secs = Math.floor((Date.now() - startTimeRef.current) / 1000);
+      if (secs >= timeout) {
+        if (pollRef.current) clearInterval(pollRef.current);
+        if (timerRef.current) clearInterval(timerRef.current);
+        setPhase('timeout');
+        setTimeout(() => onComplete(requestRef.current), DISPLAY_DELAY_MS);
+        return;
+      }
+
+      try {
+        const result = await repository.getSpendRequest(id, { include });
+        if (!result) return;
+
+        requestRef.current = result;
+        setRequest(result);
+
+        if (result.status === 'approved') {
+          if (pollRef.current) clearInterval(pollRef.current);
+          if (timerRef.current) clearInterval(timerRef.current);
+          setPhase('success');
+          setTimeout(() => onComplete(result), DISPLAY_DELAY_MS);
+        } else if (result.status === 'denied') {
+          if (pollRef.current) clearInterval(pollRef.current);
+          if (timerRef.current) clearInterval(timerRef.current);
+          setPhase('declined');
+          setTimeout(() => onComplete(result), DISPLAY_DELAY_MS);
+        } else if (
+          result.status === 'requires_action' &&
+          !isAutoResume(result)
+        ) {
+          if (pollRef.current) clearInterval(pollRef.current);
+          if (timerRef.current) clearInterval(timerRef.current);
+          setPhase('requires_action');
+          setTimeout(() => onComplete(result), DISPLAY_DELAY_MS);
+        } else if (TERMINAL_STATUSES.has(result.status)) {
+          if (pollRef.current) clearInterval(pollRef.current);
+          if (timerRef.current) clearInterval(timerRef.current);
+          setPhase('finalized');
+          setTimeout(() => onComplete(result), DISPLAY_DELAY_MS);
+        }
+      } catch {
+        // Ignore transient poll errors, keep polling
+      }
+    }, 2000);
+
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [phase, repository, id, include, timeout, onComplete]);
+
+  if (phase === 'fetching') {
+    return (
+      <Box>
+        <Text color="cyan">
+          <Spinner type="dots" /> Retrieving spend request {id}...
+        </Text>
+      </Box>
+    );
+  }
+
+  if (phase === 'error') {
+    return (
+      <Box flexDirection="column">
+        <Text color="red">✗ {error}</Text>
+      </Box>
+    );
+  }
+
+  if (phase === 'timeout') {
+    return (
+      <Box flexDirection="column">
+        <Text color="yellow">
+          ✗ Timed out waiting for approval after {timeout}s
+        </Text>
+        {request && (
+          <Box flexDirection="column" marginTop={1} paddingX={2}>
+            <Text>
+              ID: <Text bold>{request.id}</Text>
+            </Text>
+            <Text>
+              Status: <Text bold>{request.status}</Text>
+            </Text>
+          </Box>
+        )}
+      </Box>
+    );
+  }
+
+  if (phase === 'polling') {
+    const resumingNextAction =
+      request?.status === 'requires_action'
+        ? request.status_details?.requires_action?.next_action
+        : undefined;
+    return (
+      <Box flexDirection="column">
+        <Box>
+          <Text color="cyan">
+            <Spinner type="dots" />{' '}
+            {resumingNextAction
+              ? 'Waiting for 3D Secure verification to complete...'
+              : 'Awaiting approval...'}{' '}
+            ({elapsed}s elapsed)
+          </Text>
+        </Box>
+        {resumingNextAction ? (
+          <Box flexDirection="column" marginTop={1} paddingX={2}>
+            <Text dimColor>{resumingNextAction.display_message}</Text>
+            {resumingNextAction.action_url && (
+              <Text dimColor>
+                URL: <Text color="cyan">{resumingNextAction.action_url}</Text>
+              </Text>
+            )}
+          </Box>
+        ) : (
+          request?.approval_url && (
+            <Box marginTop={1} paddingX={2}>
+              <Text dimColor>
+                Approval URL: <Text color="cyan">{request.approval_url}</Text>
+              </Text>
+            </Box>
+          )
+        )}
+      </Box>
+    );
+  }
+
+  if (phase === 'finalized') {
+    const psd = request?.payment_status_details;
+    return (
+      <Box flexDirection="column">
+        <Text color="yellow">
+          Spend request reached terminal status: {request?.status}
+        </Text>
+        <Box flexDirection="column" marginTop={1} paddingX={2}>
+          <Text>
+            ID: <Text bold>{request?.id}</Text>
+          </Text>
+          <Text>
+            Status: <Text bold>{request?.status}</Text>
+          </Text>
+          {psd && (
+            <Box flexDirection="column" marginTop={1}>
+              <Text bold>Payment Details:</Text>
+              <Text>
+                {'  '}Outcome:{' '}
+                <Text bold color={psd.outcome === 'success' ? 'green' : 'red'}>
+                  {psd.outcome}
+                </Text>
+              </Text>
+              {psd.code && (
+                <Text>
+                  {'  '}Code: <Text bold>{psd.code}</Text>
+                </Text>
+              )}
+              {psd.decline_code && (
+                <Text>
+                  {'  '}Decline Reason: <Text bold>{psd.decline_code}</Text>
+                </Text>
+              )}
+              <Text>
+                {'  '}Amount:{' '}
+                <Text bold>
+                  {psd.amount} {psd.currency}
+                </Text>
+              </Text>
+              {psd.created && (
+                <Text>
+                  {'  '}Charged At:{' '}
+                  <Text bold>{new Date(psd.created * 1000).toISOString()}</Text>
+                </Text>
+              )}
+              {psd.refund_details && (
+                <Box flexDirection="column" marginTop={1}>
+                  <Text bold>{'  '}Refund:</Text>
+                  <Text>
+                    {'    '}Amount:{' '}
+                    <Text bold>
+                      {psd.refund_details.amount} {psd.refund_details.currency}
+                    </Text>
+                  </Text>
+                  <Text>
+                    {'    '}State: <Text bold>{psd.refund_details.state}</Text>
+                  </Text>
+                </Box>
+              )}
+            </Box>
+          )}
+          {request?.link_transaction_id && (
+            <Box marginTop={1}>
+              <Text>
+                Transaction ID: <Text bold>{request.link_transaction_id}</Text>
+              </Text>
+            </Box>
+          )}
+          {request?.status === 'succeeded' && request?.activity_url && (
+            <Box marginTop={1}>
+              <Text>
+                Activity URL:{' '}
+                <Text bold color="cyan">
+                  {request.activity_url}
+                </Text>
+              </Text>
+            </Box>
+          )}
+        </Box>
+      </Box>
+    );
+  }
+
+  if (phase === 'requires_action') {
+    const nextAction = request?.status_details?.requires_action?.next_action;
+    return (
+      <Box flexDirection="column">
+        <Text color="yellow">⚠ Action required before payment can proceed</Text>
+        <Box flexDirection="column" marginTop={1} paddingX={2}>
+          <Text>
+            ID: <Text bold>{request?.id}</Text>
+          </Text>
+          <Text>
+            Type: <Text bold>{nextAction?.type}</Text>
+          </Text>
+          <Text>{nextAction?.display_message}</Text>
+          {nextAction?.action_url && (
+            <Text>
+              URL: <Text color="cyan">{nextAction.action_url}</Text>
+            </Text>
+          )}
+        </Box>
+        <Box marginTop={1}>
+          <Text dimColor>
+            Complete this step, then create a new spend request.
+          </Text>
+        </Box>
+      </Box>
+    );
+  }
+
+  if (phase === 'declined') {
+    return (
+      <Box flexDirection="column">
+        <Text color="red">✗ Spend request declined</Text>
+        <Box flexDirection="column" marginTop={1} paddingX={2}>
+          <Text>
+            ID: <Text bold>{request?.id}</Text>
+          </Text>
+          <Text>
+            Status:{' '}
+            <Text bold color="red">
+              {request?.status}
+            </Text>
+          </Text>
+          <Text>
+            Amount:{' '}
+            <Text bold>
+              {request?.amount != null ? String(request.amount) : 'N/A'}
+            </Text>
+          </Text>
+          <Text>
+            Merchant: <Text bold>{request?.merchant_name}</Text>
+          </Text>
+        </Box>
+      </Box>
+    );
+  }
+
+  return (
+    <Box flexDirection="column">
+      <Text color="green">✓ Spend request approved</Text>
+      <Box flexDirection="column" marginTop={1} paddingX={2}>
+        <Text>
+          ID: <Text bold>{request?.id}</Text>
+        </Text>
+        <Text>
+          Status:{' '}
+          <Text bold color="green">
+            {request?.status}
+          </Text>
+        </Text>
+        <Text>
+          Amount:{' '}
+          <Text bold>
+            {request?.amount != null ? String(request.amount) : 'N/A'}
+          </Text>
+        </Text>
+        <Text>
+          Merchant: <Text bold>{request?.merchant_name}</Text>
+        </Text>
+        <Text>
+          Line Items:{' '}
+          <Text bold>
+            {request?.line_items.map((li) => li.name).join(', ')}
+          </Text>
+        </Text>
+        {request?.link_pay_token && (
+          <Box flexDirection="column" marginTop={1}>
+            <Text bold>Link Pay Token:</Text>
+            <Text>
+              {' '}
+              <Text bold>{request.link_pay_token}</Text>
+            </Text>
+          </Box>
+        )}
+        {request?.payment_status_details && (
+          <Box flexDirection="column" marginTop={1}>
+            <Text bold>Last Payment Attempt:</Text>
+            <Text>
+              {'  '}Outcome:{' '}
+              <Text
+                bold
+                color={
+                  request.payment_status_details.outcome === 'success'
+                    ? 'green'
+                    : 'red'
+                }
+              >
+                {request.payment_status_details.outcome}
+              </Text>
+            </Text>
+            {request.payment_status_details.code && (
+              <Text>
+                {'  '}Code:{' '}
+                <Text bold>{request.payment_status_details.code}</Text>
+              </Text>
+            )}
+            {request.payment_status_details.decline_code && (
+              <Text>
+                {'  '}Decline Reason:{' '}
+                <Text bold>{request.payment_status_details.decline_code}</Text>
+              </Text>
+            )}
+          </Box>
+        )}
+        {request?.shared_payment_token && (
+          <Box flexDirection="column" marginTop={1}>
+            <Text bold>
+              {
+                '\u001b]8;;https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens\u0007'
+              }
+              Shared Payment Token{'\u001b]8;;\u0007'}:
+            </Text>
+            <Text>
+              {' '}
+              Token: <Text bold>{request.shared_payment_token.id}</Text>
+            </Text>
+          </Box>
+        )}
+        {request?.card && !outputFile && (
+          <Box flexDirection="column" marginTop={1}>
+            <Text bold>Card Details:</Text>
+            <Text>
+              {' '}
+              Number: <Text bold>{request?.card.number}</Text>
+            </Text>
+            <Text>
+              {' '}
+              Brand: <Text bold>{request?.card.brand}</Text>
+            </Text>
+            <Text>
+              {' '}
+              Expiry:{' '}
+              <Text bold>
+                {String(request?.card.exp_month).padStart(2, '0')}/
+                {request?.card.exp_year}
+              </Text>
+            </Text>
+            {request?.card.cvc && (
+              <Text>
+                {' '}
+                CVC: <Text bold>{request.card.cvc}</Text>
+              </Text>
+            )}
+            {request?.card.valid_until && (
+              <Text>
+                {' '}
+                Valid Until: <Text bold>{request.card.valid_until}</Text>
+              </Text>
+            )}
+            {request?.card.billing_address && (
+              <Box flexDirection="column" marginTop={1}>
+                <Text bold> Billing Address:</Text>
+                <Text>
+                  {'  '}
+                  {request.card.billing_address.name}
+                </Text>
+                <Text>
+                  {'  '}
+                  {request.card.billing_address.line1}
+                </Text>
+                {request.card.billing_address.line2 && (
+                  <Text>
+                    {'  '}
+                    {request.card.billing_address.line2}
+                  </Text>
+                )}
+                <Text>
+                  {'  '}
+                  {[
+                    request.card.billing_address.city,
+                    request.card.billing_address.state,
+                    request.card.billing_address.postal_code,
+                  ]
+                    .filter(Boolean)
+                    .join(', ')}
+                </Text>
+                <Text>
+                  {'  '}
+                  {request.card.billing_address.country}
+                </Text>
+              </Box>
+            )}
+          </Box>
+        )}
+        {!request?.card && (request?.card_brand || request?.card_last4) && (
+          <Box flexDirection="column" marginTop={1}>
+            <Text bold>Card:</Text>
+            <Text>
+              {' '}
+              {[
+                request?.card_brand,
+                request?.card_last4 && `····${request.card_last4}`,
+              ]
+                .filter(Boolean)
+                .join(' ')}
+            </Text>
+            <Text color="gray">
+              {' '}
+              Use --include card to expand full card details
+            </Text>
+          </Box>
+        )}
+        {request?.card && outputFile && (
+          <Box flexDirection="column" marginTop={1}>
+            {outputFilePath && (
+              <Text color="green">
+                Card credentials written to <Text bold>{outputFilePath}</Text>
+              </Text>
+            )}
+            {fileError && (
+              <Text color="red">Failed to write card file: {fileError}</Text>
+            )}
+          </Box>
+        )}
+      </Box>
+    </Box>
+  );
+};
