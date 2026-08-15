@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-15] ingest | GitHub stripe/stripe-php `stripe-php@21.2.0`
+
+- Full-ingested work item `github-0ff215c1739732ae4751` at exact SHA `edf8118f0b96d69f06f372da9168d613d1aed072` after serial full reading of all 470 required evidence paths.
+- Added cumulative and package-qualified sources plus the [[stripe-php-sdk]] concept for PHP client services, request encoding, retries/idempotency, webhooks, Checkout, billing, and Terminal.
+- Preserved package/API version boundaries and restricted the v21.2.0 `WithoutVerification` helpers to previously verified or trusted event payloads.
+
 ## [2026-08-14] ingest | GitHub stripe/stripe-cli `stripe-cli@1.50.0`
 
 - Full-ingested work item `github-feef8fcc377f52acf591` at exact SHA `a6f40658b99e4142fd63b2e4b560aa9c7ae337b1` from all 147 required evidence paths.

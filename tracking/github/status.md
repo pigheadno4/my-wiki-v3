@@ -30,7 +30,7 @@
 - Repository: `stripe/stripe-php`
 - SHA: `edf8118f0b96d69f06f372da9168d613d1aed072`
 - Collection date: `2026-08-15`
-- State: `approved`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
 - Approved mode: `full`
