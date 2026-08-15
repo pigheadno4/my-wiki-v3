@@ -37,7 +37,7 @@ Generated: `2026-08-15`
 | braintree | `braintree/restricted-input` | tier3 | semver-tags | monthly | - | - | - | `disabled` |
 | braintree | `braintree/uuid` | tier3 | semver-tags | monthly | - | - | - | `disabled` |
 | braintree | `braintree/web-sdk-github-actions` | tier3 | commit | on-demand | - | - | - | `disabled` |
-| metronome | `metronome-industries/ai` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-15 | awaiting_approval | 2026-09-15 | `review-full` |
+| metronome | `metronome-industries/ai` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-15 | ingested | 2026-09-15 | `wait` |
 | metronome | `metronome-industries/metronome-node` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-08-12 | ingested | 2026-09-12 | `wait` |
 | metronome | `metronome-industries/mintlify-docs` | tier2 | commit | monthly | - | - | - | `disabled` |
 | metronome | `metronome-industries/terraform-provider-metronome` | tier2 | semver-tags | monthly | - | - | - | `disabled` |

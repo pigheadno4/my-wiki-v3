@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-15] ingest | GitHub Metronome-Industries/ai `main@59193aa`
+
+- Full-ingested work item `github-5b78ff7871557dec5f21` at exact SHA `59193aabd9c43cca32f320d6f68f5d63d04034d4` after serial full reading of the complete 44-path packet.
+- Added cumulative and commit-qualified sources for Metronome integration, catalog, contract, PLG, CSM, and Stripe usage-billing migration agent workflows.
+- Preserved the agent-instruction evidence boundary and explicit conflicts in numeric properties, rates, endpoint naming, and migration examples.
+
 ## [2026-08-15] ingest | GitHub stripe/stripe-php `stripe-php@21.2.0`
 
 - Full-ingested work item `github-0ff215c1739732ae4751` at exact SHA `edf8118f0b96d69f06f372da9168d613d1aed072` after serial full reading of all 470 required evidence paths.

@@ -24,6 +24,9 @@ For Metronome's platform-pricing terminology, one Event is each discrete JSON ob
 - The dashboard quickstart describes `transaction_id`, `customer_id`, `event_type`, and `timestamp` as required and permits up to 2,000 event properties.
 - In `@metronome/sdk@3.10.0`, the typed call shape is `client.v1.usage.ingest({ usage: [...] })`; `properties` remains optional in the generated event interface. The SDK surface does not replace the endpoint's batch, account-limit, or partial-ingest guidance. [[source-github-metronome-node]]
 
+> [!warning] AI migration guidance conflict
+> The `Metronome-Industries/ai` Stripe-migration skill says numeric event properties must be JSON numbers and that string-typed numbers fail, while the implementation guide above recommends string-valued properties to preserve precision. The repository is agent guidance rather than an API schema; verify the current endpoint contract before changing producer serialization. [[source-github-ai]]
+
 ## Event design
 
 Metronome recommends working backward from billing and operational outcomes, then forward from the timing and data available in the source system. A producer can send detailed events as activity occurs or send periodic summaries; the appropriate choice depends on whether the producer can resolve `customer_id` and whether the cadence meets needs such as usage-spike notifications.
@@ -82,6 +85,7 @@ Metronome's go-live checklist recommends queueing usage events, sampling `search
 
 ## Sources
 
+- [[source-github-ai]] - agent workflow guidance for event design, deterministic IDs, batching, migration, and the numeric-property contradiction
 - [[source-github-metronome-node]] - exact Node SDK ingest call shape and generic retry boundary
 
 - [[source-metronome-integrations-platform-integrations-segment]] - Segment destination setup, explicit five-field mapping contract, default `messageId` transaction identity, and managed-delivery unknowns

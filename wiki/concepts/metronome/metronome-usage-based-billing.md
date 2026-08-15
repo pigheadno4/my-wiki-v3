@@ -46,6 +46,8 @@ A PayGo example packages arrears-oriented self-service usage through products an
 
 Metronome documents two free-trial packaging patterns: a time-bounded credit grant with a balance alert, and a time-bounded multiplier-0 override for uncapped free usage. In both patterns, usage returns to list-price arrears after the grant or override ends; merchant systems remain responsible for access enforcement and customer action.
 
+The `Metronome-Industries/ai` repository adds an agent-oriented operating layer across these patterns. Its Stripe migration playbook recommends discovery, concept mapping, at least one complete parallel billing cycle, invoice-parity checks, remaining-credit migration, billing-boundary cutover, and rollback planning. These are workflow recommendations at one exact commit, not proof of API shape or universally safe cutover behavior. [[source-github-ai]]
+
 ## Platform context
 
 This page describes the Metronome-specific implementation surface. For the cross-provider recurring model, see [[recurring-payments]]. Related platform context is available through [[metronome]] and [[stripe]].
@@ -61,6 +63,7 @@ These remaining questions require dedicated sources and are not fully answered b
 
 ## Sources
 
+- [[source-github-ai]] - agent-oriented catalog, PLG, CSM, and Stripe usage-billing migration workflows
 - [[source-metronome-guides-pricing-packaging-overview]] — navigation overview identifying pay-as-you-go, subscriptions, enterprise commits, hybrid approaches, pricing changes, and credits-and-commits as the documented pricing-and-packaging areas
 
 - [[source-metronome-guides-get-started-home]] — documentation landing page and pricing-model routes

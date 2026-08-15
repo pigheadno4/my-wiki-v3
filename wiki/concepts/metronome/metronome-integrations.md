@@ -13,6 +13,10 @@ Metronome integrations connect its usage-billing and contract workflows to exter
 
 `@metronome/sdk@3.10.0` is a generated server-side TypeScript and JavaScript client with no runtime dependencies. It defaults bearer authentication from `METRONOME_BEARER_TOKEN`, supports configurable fetch, proxy, timeout, retry, logging, raw-response, and pagination behavior, and exposes both typed resources and generic HTTP methods. Its generated types prove an exact package's client surface, not feature enablement or current service behavior. React Native is explicitly unsupported in this release. [[source-github-metronome-node]]
 
+## AI operating-guidance boundary
+
+`Metronome-Industries/ai` packages integration, catalog, customer, contract, PLG, CSM, and Stripe-migration instructions for coding and operational agents. Its preview-before-write controls and reference-first routing are useful workflow evidence, but its examples do not replace dedicated API schemas or prove account enablement. Internal conflicts in event value types, rate representation, endpoint names, and migration consequences must be reconciled against canonical documentation before execution. [[source-github-ai]]
+
 ## Stripe App boundary
 
 - The app requires a Metronome production environment, Stripe Dashboard access, and a configured Metronome Stripe integration.
@@ -83,6 +87,7 @@ The Metronome (Actions) destination connects one selected Segment source using a
 
 ## Sources
 
+- [[source-github-ai]] - Metronome-authored AI skills, operational controls, migration workflow, and evidence limitations
 - [[source-github-metronome-node]] - exact `@metronome/sdk@3.10.0` package, runtime, transport, generated API, and evidence boundaries
 
 - [[source-metronome-api-reference-invoices-regenerate-an-invoice]] - configured billing-provider distribution for regenerated invoices and bounded downstream side effects

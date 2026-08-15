@@ -287,10 +287,10 @@
 - Repository: `metronome-industries/ai`
 - SHA: `59193aabd9c43cca32f320d6f68f5d63d04034d4`
 - Collection date: `2026-08-15`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

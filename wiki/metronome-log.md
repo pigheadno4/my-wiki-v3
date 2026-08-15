@@ -6,6 +6,14 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-15 — GitHub full ingest: `Metronome-Industries/ai` `main@59193aa`
+
+- Full-ingested work item `github-5b78ff7871557dec5f21` at exact SHA `59193aabd9c43cca32f320d6f68f5d63d04034d4` after complete serial review of the 44-path packet and all 39 retained repository files.
+- Added [[source-github-ai]] and [[changelog-github-ai]] for integration best practices, catalog and contract setup, PLG billing, CSM reviews, and Stripe usage-billing migration.
+- Preserved the instruction-repository boundary: skills and dogfood scenarios are agent workflow evidence, not runtime SDK, API-schema, product-eligibility, or production-test evidence.
+- Recorded conflicts around numeric event properties, `SUBSCRIPTION` versus `FLAT` rate representation, endpoint naming, and Stripe line-item consequences instead of selecting one example as canonical.
+- Coverage after promotion: 225 collected documentation pages, 95 source summaries, and 134 documentation raw pages without source summaries.
+
 ## 2026-08-12 — GitHub full ingest: `@metronome/sdk@3.10.0`
 
 - Full-ingested work item `github-f8e02889b5caf0809fc7` at exact SHA `f8ac11210fbca9616a220e82ea82ac1d340ea2df` after complete review of the 103-path Node/TypeScript SDK capsule.
