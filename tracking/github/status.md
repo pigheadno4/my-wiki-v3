@@ -282,6 +282,31 @@
   To SHA: `4c39c1ec50b15dde3af99b524fb24ec8aa9fa11b`
   Comparison: Not applicable
 
+## `github-462a1c4b707deb10c6aa`
+
+- Repository: `metronome-industries/terraform-provider-metronome`
+- SHA: `f06da6d6afee448e9fe9bad77d213cf6159d11f8`
+- Collection date: `2026-08-15`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/metronome/terraform-provider-metronome/snapshots/2026-08-15-f06da6d/manifest.json)
+- Packet: [review packet](repos/metronome/terraform-provider-metronome/ingest-packets/github-462a1c4b707deb10c6aa/packet.md)
+- Review priority: `high`
+- Required reading: `37` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `terraform-provider-metronome@0.1.0-alpha.3` (recommended `full`)
+  Release: [manifest](../../raw/github/metronome/terraform-provider-metronome/releases/terraform-provider-metronome/0.1.0-alpha.3/2026-08-15/manifest.json)
+  Comparison: Not applicable
+
 ## `github-5b78ff7871557dec5f21`
 
 - Repository: `metronome-industries/ai`

@@ -980,6 +980,31 @@ class GitHubIngestPacketTests(unittest.TestCase):
         self.assertEqual("build-configuration", classified["CODEGEN_VERSION"])
         self.assertEqual("build-configuration", classified["OPENAPI_VERSION"])
 
+    def test_terraform_registry_manifest_is_build_configuration(self):
+        prior = {
+            "package.json": self.manifest_content("1.0.0"),
+            "terraform-registry-manifest.json": '{"version":1}\n',
+        }
+        current = {
+            "package.json": self.manifest_content("1.0.1"),
+            "terraform-registry-manifest.json": '{"version":1}\n',
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            (),
+            from_version="1.0.0",
+            to_version="1.0.1",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        self.assertEqual(
+            "build-configuration",
+            classified["terraform-registry-manifest.json"],
+        )
+
     def test_eslint_configs_are_classified_as_build_configuration(self):
         prior = {
             "package.json": self.manifest_content("10.0.0"),
