@@ -32,6 +32,7 @@ class SourceRecord:
 class CapsuleReport:
     raw_files: Tuple[str, ...]
     sources: Tuple[SourceRecord, ...]
+    source_page_stems: Tuple[str, ...]
     index_source_stems: Tuple[str, ...]
     company_source_count: Optional[int]
     orphan_raw_files: Tuple[str, ...]
@@ -132,6 +133,9 @@ def inspect_capsule(root: Path) -> CapsuleReport:
         _source_record(root, path, errors)
         for path in sorted(source_root.glob("*.md"))
     ) if source_root.exists() else ()
+    source_page_stems = tuple(
+        path.stem for path in sorted(source_root.rglob("*.md"))
+    ) if source_root.exists() else ()
     referenced = {raw_file for source in sources for raw_file in source.raw_files}
     orphans = tuple(sorted(set(raw_files) - referenced))
 
@@ -144,6 +148,7 @@ def inspect_capsule(root: Path) -> CapsuleReport:
     return CapsuleReport(
         raw_files=tuple(raw_files),
         sources=sources,
+        source_page_stems=source_page_stems,
         index_source_stems=index_sources,
         company_source_count=company_count,
         orphan_raw_files=orphans,
@@ -155,7 +160,9 @@ def validate_capsule(report: CapsuleReport) -> List[str]:
     """Return structural capsule errors; pending ingest orphans are informational."""
     errors = list(report.inspection_errors)
     by_url = {}
-    source_stems = {source.stem for source in report.sources}
+    source_stems = {
+        stem for stem in report.source_page_stems if stem.startswith("source-")
+    }
     raw_files = set(report.raw_files)
 
     for source in report.sources:
@@ -217,10 +224,11 @@ def validate_capsule(report: CapsuleReport) -> List[str]:
 
     if (
         report.company_source_count is not None
-        and report.company_source_count != len(report.sources)
+        and report.company_source_count != len(report.source_page_stems)
     ):
         errors.append(
             "wiki/companies/metronome.md: source_count is "
-            f"{report.company_source_count} but found {len(report.sources)} source pages"
+            f"{report.company_source_count} but found "
+            f"{len(report.source_page_stems)} source pages"
         )
     return errors

@@ -287,10 +287,10 @@
 - Repository: `metronome-industries/terraform-provider-metronome`
 - SHA: `f06da6d6afee448e9fe9bad77d213cf6159d11f8`
 - Collection date: `2026-08-15`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

@@ -6,6 +6,14 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-15 — GitHub full ingest: `terraform-provider-metronome@0.1.0-alpha.3`
+
+- Full-ingested work item `github-462a1c4b707deb10c6aa` at exact SHA `f06da6d6afee448e9fe9bad77d213cf6159d11f8` after complete serial review of the 37-path packet.
+- Added [[source-github-terraform-provider-metronome]] and [[changelog-github-terraform-provider-metronome]] for provider maturity, configuration, generation dependencies, prerelease history, and future comparison routing.
+- Preserved the decisive implementation boundary: this experimental release constructs a client but registers no Terraform resources and no data sources, so it cannot be represented as a production Metronome management integration.
+- Kept generic serializer, validator, permission-description, and data-source changelog entries scoped to provider machinery rather than treating them as Metronome product capabilities.
+- Coverage after promotion: 225 collected documentation pages, 97 source summaries, and 134 documentation raw pages without source summaries.
+
 ## 2026-08-15 — GitHub full ingest: `Metronome-Industries/ai` `main@59193aa`
 
 - Full-ingested work item `github-5b78ff7871557dec5f21` at exact SHA `59193aabd9c43cca32f320d6f68f5d63d04034d4` after complete serial review of the 44-path packet and all 39 retained repository files.

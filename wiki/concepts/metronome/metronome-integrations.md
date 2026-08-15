@@ -17,6 +17,10 @@ Metronome integrations connect its usage-billing and contract workflows to exter
 
 `Metronome-Industries/ai` packages integration, catalog, customer, contract, PLG, CSM, and Stripe-migration instructions for coding and operational agents. Its preview-before-write controls and reference-first routing are useful workflow evidence, but its examples do not replace dedicated API schemas or prove account enablement. Internal conflicts in event value types, rate representation, endpoint names, and migration consequences must be reconciled against canonical documentation before execution. [[source-github-ai]]
 
+## Terraform provider boundary
+
+`terraform-provider-metronome@0.1.0-alpha.3` is an experimental, Stainless-generated provider that must not be used in production. It accepts base URL, bearer token, and webhook-secret configuration and constructs a Metronome Go client, but its exact implementation registers no Terraform resources and no data sources. Configuration support is therefore not evidence that this release can manage or look up any Metronome entity. Generic release-note entries about resource permissions, data-source IDs, serialization, or validators do not override the empty registration surface. [[source-github-terraform-provider-metronome]]
+
 ## Stripe App boundary
 
 - The app requires a Metronome production environment, Stripe Dashboard access, and a configured Metronome Stripe integration.
@@ -89,6 +93,7 @@ The Metronome (Actions) destination connects one selected Segment source using a
 
 - [[source-github-ai]] - Metronome-authored AI skills, operational controls, migration workflow, and evidence limitations
 - [[source-github-metronome-node]] - exact `@metronome/sdk@3.10.0` package, runtime, transport, generated API, and evidence boundaries
+- [[source-github-terraform-provider-metronome]] - experimental Terraform provider configuration and empty resource/data-source boundary at `0.1.0-alpha.3`
 
 - [[source-metronome-api-reference-invoices-regenerate-an-invoice]] - configured billing-provider distribution for regenerated invoices and bounded downstream side effects
 

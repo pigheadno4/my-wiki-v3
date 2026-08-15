@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 95
+source_count: 97
 ---
 
 ## Overview
@@ -23,6 +23,8 @@ The documentation home is a navigation overview. The SDK walkthrough adds an int
 The retained `@metronome/sdk@3.10.0` GitHub baseline adds the exact Node/TypeScript client contract: built-in Web Fetch with no runtime dependencies, typed V1 and V2 resources, two default retries, one-minute per-attempt timeout, async pagination, raw-response access, and webhook verification. It supports Node 20+, browsers, Deno, Bun, edge runtimes, and related server environments but explicitly excludes React Native. The generated package proves client implementation, not account feature enablement or current REST behavior; its stale `api.md` Payments listing conflicts with the removed source resource and the `3.7.0` changelog. [[source-github-metronome-node]]
 
 The `Metronome-Industries/ai` baseline adds Metronome-authored operating instructions for coding and customer-success agents: integration best practices, catalog and contract setup, PLG billing, CSM reviews, and Stripe usage-billing migration. It is workflow and example evidence rather than an SDK or API schema. Its preview-before-write controls and parallel-run migration process are useful, but exact endpoint, enum, numeric-property, and rate claims require canonical verification because the retained skills contain internal and cross-source conflicts. [[source-github-ai]]
+
+The experimental `terraform-provider-metronome@0.1.0-alpha.3` baseline configures a Metronome Go client through base URL, bearer token, and webhook-secret settings, but registers no Terraform resources or data sources. It is not production-ready and cannot be treated as a Metronome infrastructure-management surface at this version. [[source-github-terraform-provider-metronome]]
 
 - Python, Node.js, Ruby, and Go SDKs demonstrate a common event-to-invoice flow.
 - Event ingestion uses transaction IDs for deduplication and can associate application identifiers with customers through ingest aliases.

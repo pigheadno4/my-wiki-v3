@@ -104,6 +104,38 @@ class MetronomeCapsuleTests(unittest.TestCase):
             self.assertEqual((), report.orphan_raw_files)
             self.assertEqual([], validate_capsule(report))
 
+    def test_nested_github_pages_count_and_resolve_without_docs_validation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            docs_source = "source-metronome-guides-home"
+            github_source = "source-github-example"
+            self.make_capsule(
+                root,
+                source_count=3,
+                index_links=(
+                    docs_source,
+                    github_source,
+                    "changelog-github-example",
+                ),
+            )
+            self.write_raw(root)
+            self.write_source(root)
+            github_root = root / "wiki" / "sources" / "metronome" / "github"
+            github_root.mkdir(parents=True)
+            (github_root / f"{github_source}.md").write_text(
+                "---\ntitle: GitHub source\ntype: source\n---\n",
+                encoding="utf-8",
+            )
+            (github_root / "changelog-github-example.md").write_text(
+                "---\ntitle: GitHub changelog\ntype: source\n---\n",
+                encoding="utf-8",
+            )
+
+            report = inspect_capsule(root)
+
+            self.assertEqual(3, len(report.source_page_stems))
+            self.assertEqual([], validate_capsule(report))
+
     def test_related_raw_reference_is_valid_navigation_but_remains_uningested(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
