@@ -71,7 +71,7 @@ APPENDIX_A_INVENTORY = (
     ('stripe/stripe-terminal-android', 'https://github.com/stripe/stripe-terminal-android', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('stripe/ai', 'https://github.com/stripe/ai', 'developer-tooling', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('metronome-industries/metronome-node', 'https://github.com/Metronome-Industries/metronome-node', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
-    ('metronome-industries/ai', 'https://github.com/Metronome-Industries/ai', 'developer-tooling', 'tier2', 'commit', False, 'default-branch', 'monthly'),
+    ('metronome-industries/ai', 'https://github.com/Metronome-Industries/ai', 'developer-tooling', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('metronome-industries/ai-eval', 'https://github.com/Metronome-Industries/ai-eval', 'evaluation-tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('metronome-industries/mintlify-docs', 'https://github.com/Metronome-Industries/mintlify-docs', 'docs-source', 'tier2', 'commit', False, 'default-branch', 'monthly'),
     ('metronome-industries/terraform-provider-metronome', 'https://github.com/Metronome-Industries/terraform-provider-metronome', 'terraform-provider', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
@@ -1842,6 +1842,45 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(250000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(60, capsule.max_packet_files)
         self.assertEqual(900000, capsule.max_packet_utf8_bytes)
+
+    def test_metronome_ai_uses_complete_skills_and_scenarios_profile(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["metronome-industries/ai"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual("default-branch", repo.track)
+        self.assertEqual("commit", repo.version_strategy)
+        self.assertEqual((), repo.version_tracks)
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("metronome-ai-skills", capsule.id)
+        self.assertEqual("commit-tree-v1", capsule.adapter)
+        self.assertEqual("metronome-ai", capsule.source_id)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(("skills",), capsule.default_required_roots)
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(
+            {
+                "README.md",
+                "CONTRIBUTING.md",
+                "LICENSE",
+                "tests/dogfood/scenarios/add-new-product-to-existing.md",
+                "tests/dogfood/scenarios/change-pricing-raise-rate.md",
+                "tests/dogfood/scenarios/start-billing-saas-with-credits.md",
+            },
+            set(capsule.include_paths),
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(80, capsule.max_capsule_files)
+        self.assertEqual(1000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(100, capsule.max_packet_files)
+        self.assertEqual(1500000, capsule.max_packet_utf8_bytes)
 
 
 if __name__ == "__main__":
