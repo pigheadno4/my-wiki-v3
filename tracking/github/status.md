@@ -282,6 +282,33 @@
   To SHA: `4c39c1ec50b15dde3af99b524fb24ec8aa9fa11b`
   Comparison: Not applicable
 
+## `github-5b78ff7871557dec5f21`
+
+- Repository: `metronome-industries/ai`
+- SHA: `59193aabd9c43cca32f320d6f68f5d63d04034d4`
+- Collection date: `2026-08-15`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/metronome/ai/snapshots/2026-08-15-59193aa/manifest.json)
+- Packet: [review packet](repos/metronome/ai/ingest-packets/github-5b78ff7871557dec5f21/packet.md)
+- Review priority: `normal`
+- Required reading: `44` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@59193aa` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `59193aabd9c43cca32f320d6f68f5d63d04034d4`
+  Comparison: Not applicable
+
 ## `github-5c8c7287ce91fe6f34c2`
 
 - Repository: `paypal/paypal-ios`
