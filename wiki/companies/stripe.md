@@ -2,7 +2,7 @@
 title: "Stripe"
 type: company
 tags: [stripe, payment-gateway, payment-intents, checkout, subscriptions, elements, webhooks, payment-links]
-source_count: 659
+source_count: 661
 ---
 
 ## Stripe
@@ -60,6 +60,10 @@ The `stripe/ai` repository supplies independently versioned LLM token-billing pa
 ### Stripe CLI
 
 `stripe-cli@1.50.0` is Stripe's command-line developer and test tool for direct API requests, fixtures, synthetic event triggers, local webhook forwarding, request-log streaming, and account or sandbox contexts. Its embedded trigger payloads are test recipes rather than canonical API lifecycle evidence. The exact `1.50.0` release note adds agent identity metadata to telemetry; it does not establish the rest of the baseline as new in that release. See [[source-github-stripe-cli]], [[changelog-github-stripe-cli]], and [[stripe-cli]].
+
+### Link CLI for Agents
+
+`@stripe/link-cli@0.13.0` is a separate consumer-wallet tool for agents, not the merchant developer Stripe CLI. It uses user-approved Link spend requests to issue a virtual card for standard checkout, a one-time Shared Payment Token for Stripe MPP `402` payments, or a merchant-bound Link Pay Token for supported AI-agent steering surfaces. It also exposes read-only financial-insight commands, local and HTTP MCP modes, and credential-file protections. The internal `@stripe/link-sdk` is private, and the retained Web Bot Auth code is not registered as a CLI command. See [[source-github-link-cli]], [[changelog-github-link-cli]], and [[stripe-link-cli]].
 
 ### Stripe PHP SDK
 
@@ -138,6 +142,8 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 - [[changelog-github-ai]] — package-qualified `stripe/ai` component baseline and future comparison rules
 - [[source-github-stripe-cli]] — `stripe-cli@1.50.0` baseline: API commands, fixtures, triggers, webhook forwarding, authentication contexts, and telemetry
 - [[changelog-github-stripe-cli]] — package-qualified Stripe CLI history and exact `1.50.0` telemetry change
+- [[source-github-link-cli]] — `@stripe/link-cli@0.13.0` agent wallet baseline: virtual cards, SPT/MPP, Link Pay Token, spend requests, MCP, and financial insights
+- [[changelog-github-link-cli]] — package-qualified Link CLI baseline and exact `0.13.0` financial-insight and duplicate-request messaging changes
 - [[source-github-stripe-php]] — `stripe-php@21.2.0` server SDK baseline: client services, encoding, retries, webhooks, Checkout, subscriptions, and Terminal
 - [[changelog-github-stripe-php]] — package-qualified Stripe PHP baseline and exact v21.2.0 event helper changes
 - [[source-stripe-billing-benchmarks]] — billing benchmarking: k-NN peer matching, ≥5 subs access, peer eligibility ≥100 subs, 7 metrics benchmarked, percentile display

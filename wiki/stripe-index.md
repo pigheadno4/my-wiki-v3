@@ -470,6 +470,8 @@ Operations history: [[stripe-log]]
 - [[changelog-github-stripe-node]] — package-qualified stripe-node history retaining `22.1.1` and `22.4.0` with the Dahlia API transition and checkout-relevant changes (github-repo, 2026-08-08)
 - [[source-github-stripe-cli]] — `stripe-cli@1.50.0`: API commands, fixtures, synthetic triggers, local webhook forwarding, OAuth/account contexts, and telemetry (github-repo, 2026-08-14)
 - [[changelog-github-stripe-cli]] — package-qualified Stripe CLI baseline and exact `1.50.0` agent-identity telemetry change (github-repo, 2026-08-14)
+- [[source-github-link-cli]] — `@stripe/link-cli@0.13.0`: consumer Link wallet agent, virtual cards, SPT/MPP, Link Pay Token, approval lifecycle, MCP, and financial insights (github-repo, 2026-08-15)
+- [[changelog-github-link-cli]] — package-qualified Link CLI baseline and exact `0.13.0` financial-insight and duplicate-request messaging changes (github-repo, 2026-08-15)
 - [[source-github-stripe-php]] — `stripe-php@21.2.0`: PHP server SDK services, v1/v2 encoding, retries/idempotency, webhook and thin-event handling, Checkout, subscriptions, and Terminal (github-repo, 2026-08-15)
 - [[changelog-github-stripe-php]] — package-qualified Stripe PHP baseline and exact v21.2.0 event-notification and pre-verified parser changes (github-repo, 2026-08-15)
 - [[source-github-react-stripe-js]] — `@stripe/react-stripe-js` legacy v6.3.0→retained v6.8.0: provider-specific Checkout hooks, lifecycle, SSR, compatibility, beta Terms Element (github-repo, updated 2026-07-30)
@@ -710,6 +712,7 @@ Operations history: [[stripe-log]]
 - [[stripe-high-risk-merchant-lists]] — MATCH/VMSS TMF databases: qualitative + quantitative criteria, removal rules, Stripe position
 - [[stripe-node-sdk]] — Stripe Node.js SDK through `22.4.0`: runtime exports, typed errors, webhook/event verification, pagination, retry/idempotency conflict, PaymentIntent + Checkout methods
 - [[stripe-cli]] — Stripe CLI `1.50.0`: direct API requests, fixture and trigger testing, webhook forwarding, contexts, and evidence boundaries
+- [[stripe-link-cli]] — Link CLI `0.13.0`: agent-facing Link wallet, approval-gated virtual cards, SPT/MPP, Link Pay Token, MCP, and financial-data access
 - [[stripe-php-sdk]] — Stripe PHP SDK `21.2.0`: client services, request modes, retries/idempotency, webhook verification, and checkout-focused server API surface
 - [[stripe-currencies]] — Stripe Currencies: presentment/settlement/payment method, minor units, special cases (ISK/HUF/TWD/UGX), min/max charge amounts
 - [[stripe-declines]] — Stripe Declines: 3 failure types, outcome object fields, Radar block reasons, Adaptive Acceptance, allow list

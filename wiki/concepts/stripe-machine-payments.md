@@ -52,7 +52,7 @@ HTTP 402 middleware pattern: `Mppx.create({ methods, secretKey })` → `mppx.cha
 
 **SPT**: `stripe.charge({ networkId, paymentMethodTypes, secretKey })` — PaymentIntent created automatically from SPT credential.
 
-**Testing**: crypto → `simulate_crypto_deposit` test helper (sandbox doesn't monitor testnets); SPT → `link-cli spend-request create --credential-type shared_payment_token --network-id profile_test_xxx --test`.
+**Testing and agent execution**: crypto → `simulate_crypto_deposit` test helper (sandbox doesn't monitor testnets); SPT → `link-cli spend-request create --credential-type shared_payment_token --network-id profile_test_xxx --test`. At `@stripe/link-cli@0.13.0`, `link-cli mpp pay` can run the Stripe HTTP `402` flow from challenge parsing through approval, SPT retrieval, credential signing, and request retry. The SPT is one-time use.
 
 ## Relationship to Other Products
 
@@ -66,3 +66,4 @@ HTTP 402 middleware pattern: `Mppx.create({ methods, secretKey })` → `mppx.cha
 - [[source-stripe-machine-payments-mpp-quickstart]] — Hono quickstart: /crypto/paid + /spt/paid endpoints, NodeCache deposit address caching pattern
 - [[source-stripe-machine-payments-x402-quickstart]] — x402 Hono quickstart: Base network, @x402/hono middleware, facilitator (FACILITATOR_URL), purl testing tool
 - [[source-stripe-machine-payments-x402]] — x402 integration guide: USDC contract addresses (Tempo/Base/Solana), CDP mainnet facilitator
+- [[source-github-link-cli]] — Link CLI `0.13.0` implementation of the Stripe MPP agent payment flow

@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-15] ingest | GitHub stripe/link-cli `@stripe/link-cli@0.13.0`
+
+- Full-ingested work item `github-62b2da34c81f87c986c9` at exact SHA `d540389e030d0f475a6b85cd64ccaf978ff498ac` after serial full reading of all 110 required evidence paths.
+- Added cumulative and package-qualified sources plus the [[stripe-link-cli]] concept for Link wallet authentication, approval-gated virtual cards, SPT/MPP, Link Pay Token, MCP, and financial insights.
+- Preserved the consumer-wallet, US-account, private-SDK, disabled-command, one-time-token, security, and stale skill-version metadata boundaries; isolated the exact `0.13.0` release changes from the broader initial baseline.
+
 ## [2026-08-15] ingest | GitHub Metronome-Industries/ai `main@59193aa`
 
 - Full-ingested work item `github-5b78ff7871557dec5f21` at exact SHA `59193aabd9c43cca32f320d6f68f5d63d04034d4` after serial full reading of the complete 44-path packet.

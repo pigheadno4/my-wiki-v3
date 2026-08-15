@@ -6,6 +6,13 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-15] ingest | stripe/link-cli `@stripe/link-cli@0.13.0`
+
+- Full-ingested work item `github-62b2da34c81f87c986c9` at exact SHA `d540389e030d0f475a6b85cd64ccaf978ff498ac` after serial full reading of all 110 required evidence paths.
+- Established the cumulative source, package-qualified changelog, and [[stripe-link-cli]] concept for device authentication, approval-gated spend requests, virtual cards, SPT/MPP, Link Pay Token, MCP modes, and financial insights.
+- Preserved the consumer-wallet and US-account boundaries, private internal SDK status, disabled Web Bot Auth command registration, one-time SPT rule, credential/server security constraints, and stale `0.11.0` metadata in skill files retained at package release `0.13.0`.
+- Attributed only financial-insight command exposure and duplicate spend-request messaging to exact release `0.13.0`; broader behavior remains initial baseline evidence.
+
 ## [2026-08-15] ingest | stripe/stripe-php `stripe-php@21.2.0`
 
 - Full-ingested work item `github-0ff215c1739732ae4751` at exact SHA `edf8118f0b96d69f06f372da9168d613d1aed072` after serial full reading of all 470 required evidence paths.
