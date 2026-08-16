@@ -1075,6 +1075,7 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "android/gradle/libs.versions.toml": "[versions]\nkotlin = '2.0.0'\n",
             "android/src/main/AndroidManifest.xml": "<manifest />\n",
             "ios/Info.plist": "<?xml version=\"1.0\"?><plist />\n",
+            "ios/StripeSdk.entitlements": "<?xml version=\"1.0\"?><plist />\n",
             "ios/StripeSdk.xcodeproj/project.pbxproj": "// project\n",
             "ios/StripeSdk.xcodeproj/xcshareddata/xcschemes/Tests.xcscheme": "<Scheme />\n",
             "ios/StripeSdk.xctestplan": "{}\n",

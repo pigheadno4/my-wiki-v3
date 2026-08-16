@@ -307,6 +307,33 @@
   Release: [manifest](../../raw/github/metronome/terraform-provider-metronome/releases/terraform-provider-metronome/0.1.0-alpha.3/2026-08-15/manifest.json)
   Comparison: Not applicable
 
+## `github-523453a8a9fad6afdf6f`
+
+- Repository: `paypal-examples/paypal-ios-sdk-demo-app`
+- SHA: `047a50ec97d9881af84ca3fb03d1d23e859a86f4`
+- Collection date: `2026-08-16`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-ios-sdk-demo-app/snapshots/2026-08-16-047a50e/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-ios-sdk-demo-app/ingest-packets/github-523453a8a9fad6afdf6f/packet.md)
+- Review priority: `high`
+- Required reading: `30` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@047a50e` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `047a50ec97d9881af84ca3fb03d1d23e859a86f4`
+  Comparison: Not applicable
+
 ## `github-5b78ff7871557dec5f21`
 
 - Repository: `metronome-industries/ai`
@@ -487,6 +514,33 @@
 
 - `drop-in@6.17.0` (recommended `full`)
   Release: [manifest](../../raw/github/braintree/braintree-android-drop-in/releases/drop-in/6.17.0/2026-08-13/manifest.json)
+  Comparison: Not applicable
+
+## `github-71f4eb08ef220f23aba9`
+
+- Repository: `paypal-examples/paypal-android-sdk-demo-app`
+- SHA: `d1137d5daa3a3befdcf6c72e6a1e8144bf765ba2`
+- Collection date: `2026-08-16`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-android-sdk-demo-app/snapshots/2026-08-16-d1137d5/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-android-sdk-demo-app/ingest-packets/github-71f4eb08ef220f23aba9/packet.md)
+- Review priority: `high`
+- Required reading: `44` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@d1137d5` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `d1137d5daa3a3befdcf6c72e6a1e8144bf765ba2`
   Comparison: Not applicable
 
 ## `github-7ecc6c2199897656ffe3`
