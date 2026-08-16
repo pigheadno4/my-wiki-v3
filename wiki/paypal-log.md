@@ -6,6 +6,13 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-16] ingest | paypal-examples/paypal-android-sdk-demo-app `main@d1137d5`
+
+- Full-ingested work item `github-71f4eb08ef220f23aba9` after serial review of all 44 required evidence paths and the 39-file, 80,026-byte exact-SHA capsule.
+- Added cumulative and commit-qualified sources for Jetpack Compose direct PayPal/card checkout and the separate hosted Payment Link path using PayPal Android SDK `2.3.0`.
+- Preserved the native-Venmo absence, incomplete card 3DS handling, example merchant-server boundary, and unverified Payment Link return-state limitation.
+- Updated [[paypal-android-sdk]], [[paypal-checkout]], and [[paypal-payment-links]]. PayPal source count increased by two for the new cumulative source and changelog; the separate iOS demo remains awaiting approval.
+
 ## [2026-08-13] ingest | paypal/paypal-messages-android `develop@0424354`
 
 - Delta-ingested work item `github-fed285eccd42cc9507d5` from historical SHA `1d2238c` to untagged `develop` SHA `0424354`.

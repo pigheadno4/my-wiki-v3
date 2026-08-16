@@ -34,6 +34,13 @@ The `paypal/postman-collections` baseline at `7f7240a` provides create, list, re
 - **UI Editor**: dashboard, no-code, manual management, low-to-medium volume
 - **API**: programmatic creation, high-volume/dynamic, returns URLs to embed in your own flows
 
+### Native mobile hosted-browser pattern
+
+The `paypal-examples/paypal-android-sdk-demo-app` baseline at `d1137d5` opens a pre-created sandbox Payment Link in an Android Custom Tab and handles both warm and cold App Link returns. This is a hosted checkout path, independent of the app's direct PayPal Android SDK order flow.
+
+> [!warning] Return links do not prove payment
+> The sample marks its UI complete from an expected return host and a path containing `success`; it does not verify the transaction first. Production apps must use trusted server-side payment state, APIs, or webhooks before fulfillment.
+
 ## Payment Methods
 
 PayPal, Pay Later, Venmo, Apple Pay, debit/credit cards. Invoicing also adds Pay by Bank (ACH).
@@ -65,3 +72,4 @@ Both support: hosted payment page, discounts, taxes, PCI compliance, Dashboard o
 - [[source-paypal-payment-links-overview]] — 4-option comparison, Payment Links vs Invoicing table
 - [[source-paypal-invoicing-overview]] — Invoicing detailed docs
 - [[source-github-postman-collections]] — exact-commit Payment Resources API request examples
+- [[source-github-paypal-android-sdk-demo-app]] — Android Custom Tab and App Link reference flow with settlement-verification boundary

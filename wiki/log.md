@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-16] ingest | GitHub paypal-examples/paypal-android-sdk-demo-app `main@d1137d5`
+
+- Full-ingested work item `github-71f4eb08ef220f23aba9` from all 44 required evidence paths at exact SHA `d1137d5daa3a3befdcf6c72e6a1e8144bf765ba2`.
+- Added cumulative and commit-qualified sources for Jetpack Compose PayPal/card checkout and a separate hosted Payment Link path using PayPal Android SDK `2.3.0`.
+- Preserved the absent native Venmo flow, incomplete 3DS branch, example server boundary, and return-URI-versus-settlement distinction.
+
 ## [2026-08-15] ingest | GitHub stripe/link-cli `@stripe/link-cli@0.13.0`
 
 - Full-ingested work item `github-62b2da34c81f87c986c9` at exact SHA `d540389e030d0f475a6b85cd64ccaf978ff498ac` after serial full reading of all 110 required evidence paths.

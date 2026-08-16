@@ -521,10 +521,10 @@
 - Repository: `paypal-examples/paypal-android-sdk-demo-app`
 - SHA: `d1137d5daa3a3befdcf6c72e6a1e8144bf765ba2`
 - Collection date: `2026-08-16`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

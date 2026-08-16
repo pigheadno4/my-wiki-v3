@@ -26,6 +26,8 @@ Operations history: [[paypal-log]]
 - [[changelog-github-v6-web-sdk-sample-integration]] — commit-qualified sample expansion and implementation/documentation discrepancies
 - [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample: Orders, partner headers, Hosted Fields, shipping patches, subscriptions, and retained defects (`5409a3b`)
 - [[changelog-github-paypal-sdk-server-side-integration]] — commit-qualified historical baseline and migration cautions
+- [[source-github-paypal-android-sdk-demo-app]] — Jetpack Compose Android SDK `2.3.0` PayPal/card checkout plus separate hosted Payment Link flow (`d1137d5`)
+- [[changelog-github-paypal-android-sdk-demo-app]] — commit-qualified demo baseline, 3DS gap, and Payment Link verification boundary
 - [[source-github-paypal-typescript-server-sdk]] — cumulative `@paypal/paypal-server-sdk` evidence: full `2.3.0` baseline plus `2.4.0` processing-instruction and OAuth-base delta (github-repo, updated 2026-08-10)
 - [[changelog-github-paypal-typescript-server-sdk]] — package-qualified server SDK ledger preserving `2.3.0` and the reviewed `2.4.0` delta
 - [[source-github-paypal-rest-api-specifications]] — cumulative exact-SHA contracts for 13 PayPal REST API families, with detailed checkout-domain coverage (github-repo, updated 2026-08-11)

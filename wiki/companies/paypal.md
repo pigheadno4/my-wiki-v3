@@ -2,7 +2,7 @@
 title: "PayPal"
 type: company
 tags: [paypal, payment-gateway, checkout, venmo, javascript-sdk, orders-api, vault, recurring-payments, payouts, disputes, reporting, agentic-commerce]
-source_count: 167
+source_count: 169
 ---
 
 ## PayPal
@@ -28,6 +28,8 @@ The package-qualified v6 surface in `@paypal/paypal-js@9.8.0` supports direct in
 The runnable `paypal-examples/v6-web-sdk-sample-integration` baseline at `b5f2df2` combines static JavaScript, React 19/TypeScript with `@paypal/react-paypal-js@10.1.0`, and a Node server. It covers standard and advanced PayPal presentation, Venmo, cards, guest checkout, Fastlane, subscriptions, vaulting, Apple Pay, Google Pay with 3DS, and 46 local-method implementations. Sample presence proves an integration contract, not merchant or regional eligibility; its local-method README also conflicts with six implementations that explicitly capture after approval.
 
 The separate `paypal-examples/paypal-sdk-server-side-integration` baseline at `5409a3b` preserves a September 2023 JS SDK 5.1.x client/server example. Its durable patterns keep credentials, OAuth tokens, catalog prices, order creation, and capture on the merchant server; add partner attribution and connected-merchant headers; reuse a capture idempotency key for one 5xx retry; and demonstrate Hosted Fields plus subscription create, activate, and revise orchestration. It is historical sample evidence with documented API-base, order-retrieval, shipping arithmetic, subscription-validation, retry-header, and TypeScript defects, not current production guidance.
+
+The independent `paypal-examples/paypal-android-sdk-demo-app` baseline at `d1137d5` provides a Jetpack Compose reference using PayPal Android SDK `2.3.0`. It separates direct PayPal and card checkout from a hosted Payment Link path. The sample restores PayPal SDK browser state and captures through a merchant server, but its card path omits 3DS completion and its Payment Link path trusts the return URI without verifying settlement; neither the sample nor its explicit `PAYPAL` funding source demonstrates native Venmo.
 
 The independent `paypal/paypal-checkout-components` history begins with `@paypal/checkout-components@4.1.47` and now extends through `5.0.425`. The v4 runtime implemented Zoid-based Buttons and Checkout with mobile-only secondary Venmo. The accumulated v5 runtime adds separate Card Fields, Payment Fields, Hosted Buttons, Wallet, Saved Payment Methods, Venmo, and QR component boundaries; its Venmo vault-without-purchase path is experiment-gated. These package-qualified facts do not replace current availability guidance.
 
@@ -198,6 +200,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[changelog-github-v6-web-sdk-sample-integration]] — commit-qualified expansion history and documentation/code discrepancies
 - [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample for Orders, partners, Hosted Fields, shipping, and Subscriptions
 - [[changelog-github-paypal-sdk-server-side-integration]] — commit-qualified `5409a3b` baseline, migration boundary, and retained sample defects
+- [[source-github-paypal-android-sdk-demo-app]] — Jetpack Compose Android SDK `2.3.0` checkout and hosted Payment Link reference
+- [[changelog-github-paypal-android-sdk-demo-app]] — commit-qualified `d1137d5` baseline and implementation limitations
 - [[source-github-paypal-js-v6]] — GitHub paypal/paypal-js: SDK v6 + React v9 source; PayPalProvider internals, session hook impl, card fields context, SSR utils, types
 - [[source-npm-react-paypal-js-v9]] — @paypal/react-paypal-js v9.1.1 (SDK v6): PayPalProvider, 8 button components, session hooks, card fields, SSR, v8→v9 migration guide
 - [[source-paypal-donate-sdk]] — Donate SDK: pop-up overlay, hosted_button_id vs business param, onComplete callback, multiple buttons on same page

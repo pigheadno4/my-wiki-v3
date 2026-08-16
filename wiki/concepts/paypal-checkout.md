@@ -102,6 +102,12 @@ The capture helper generates one `PayPal-Request-Id` and reuses it for a single 
 > [!warning] Historical sample defects
 > The retained sample has several implementation defects: its custom API-base override is broken by operator precedence; the GET-order route validates a query parameter but reads the request body; its non-success path parses the response body twice; the shipping route does not require `shippingAddress`; and discount values are multiplied by 100 while other amount components are not. Preserve these defects when using the sample as version-specific evidence.
 
+### Android reference sample at `d1137d5`
+
+The independent `paypal-examples/paypal-android-sdk-demo-app` baseline uses PayPal Android SDK `2.3.0` with Jetpack Compose. Direct PayPal checkout creates an order through a merchant server, starts the SDK with the `PAYPAL` funding source, restores SDK state after process loss, finishes the return intent, and captures server-side. The separate card flow captures after approval but deliberately omits the required 3DS challenge path.
+
+The app also offers a pre-created hosted Payment Link through a Custom Tab. That return flow is not equivalent to SDK order completion: it updates the UI from the return URI without server-side settlement verification. See [[source-github-paypal-android-sdk-demo-app]].
+
 ### Historical checkout-components runtime: `4.1.47`
 
 The exact `@paypal/checkout-components@4.1.47` snapshot implements the Zoid-based `paypal-buttons` and `paypal-checkout` components. Its decorated `createOrder` callback must return a nonempty string order ID. The alternative billing-agreement path is mutually exclusive with `createOrder` and requires `vault=true`.
@@ -169,6 +175,7 @@ See [[source-paypal-payment-failures]] for the full 19 error codes and recovery 
 - [[source-github-paypal-js]] — cumulative package-qualified repository evidence and exact source snapshots
 - [[source-github-v6-web-sdk-sample-integration]] — current runnable v6 HTML, React, and Node integration baseline
 - [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample, partner headers, retries, shipping patches, and retained defects
+- [[source-github-paypal-android-sdk-demo-app]] — Android SDK `2.3.0` PayPal/card sample plus separate hosted Payment Link flow
 - [[paypal-braintree-integration]] — Braintree client-token, nonce, and server-processing boundary for PayPal v6 React flows
 - [[source-paypal-security-guidelines]] — Security guidelines: CSP + SRI for SDK; load only from official CDN; validate payment events server-side before fulfilling
 - [[source-github-paypal-rest-api-specifications]] — exact-SHA Orders, Payments, Vault, Webhooks, and supporting REST contracts

@@ -15,6 +15,12 @@ Repo: <https://github.com/paypal/paypal-android>
 
 The approved GitHub baseline is `paypal-android@2.3.0` at SHA `d69a2fad7a96155e71f2681dc7cbfa9957fff544`. It supports Android SDK 23+, is written in Kotlin, and supports Kotlin and Java integrations. This version uses callback result types and explicit browser-return completion methods; the listener APIs summarized from older product pages are version 1 history.
 
+## Reference Demo Baseline
+
+The independent `paypal-examples/paypal-android-sdk-demo-app` baseline at `d1137d5` demonstrates a Jetpack Compose cart using SDK `2.3.0`. Its direct PayPal path creates an order on a merchant server, starts `PayPalWebCheckoutClient` with `PAYPAL`, persists `instanceState`, finishes the browser return, and then captures server-side. Its card path uses `SCA_WHEN_REQUIRED` but rejects `AuthorizationRequired`, so it is not a complete 3DS example.
+
+The same app presents Payment Links as a separate hosted-browser option. It handles warm and cold App Link returns, but it trusts the return URI for UI completion and does not verify settlement. See [[source-github-paypal-android-sdk-demo-app]] and [[changelog-github-paypal-android-sdk-demo-app]].
+
 ## Available Modules
 
 | Module | Gradle artifact | Purpose |
@@ -144,5 +150,7 @@ See [[source-paypal-save-cards-android-sdk]] for full detail.
 - [[source-paypal-save-cards-android-sdk]] — Card vault during purchase: Compose checkbox, returning payer pattern, APPROVED/VAULTED, RTAU
 - [[source-github-paypal-android]] — GitHub source: CardClient constructor, instance state, Demo ViewModels, server API contract
 - [[changelog-github-paypal-android]] — package-qualified Android SDK release history through `2.3.0`
+- [[source-github-paypal-android-sdk-demo-app]] — Jetpack Compose PayPal, card, and hosted Payment Link checkout sample at `d1137d5`
+- [[changelog-github-paypal-android-sdk-demo-app]] — commit-qualified demo baseline and retained limitations
 - [[source-github-paypal-messages-android]] — GitHub paypal-messages-android: PayPalMessageConfig API, callbacks, Compose support, Android vs iOS differences
 - [[changelog-github-paypal-messages-android]] — managed `1.3.0` release, cumulative stable history, and retained metadata conflicts
