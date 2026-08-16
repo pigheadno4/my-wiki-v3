@@ -312,10 +312,10 @@
 - Repository: `paypal-examples/paypal-ios-sdk-demo-app`
 - SHA: `047a50ec97d9881af84ca3fb03d1d23e859a86f4`
 - Collection date: `2026-08-16`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

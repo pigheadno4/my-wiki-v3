@@ -108,6 +108,12 @@ The independent `paypal-examples/paypal-android-sdk-demo-app` baseline uses PayP
 
 The app also offers a pre-created hosted Payment Link through a Custom Tab. That return flow is not equivalent to SDK order completion: it updates the UI from the return URI without server-side settlement verification. See [[source-github-paypal-android-sdk-demo-app]].
 
+### iOS reference sample at `047a50e`
+
+The independent `paypal-examples/paypal-ios-sdk-demo-app` baseline uses SwiftUI and accepts PayPal iOS SDK `>=2.0.0,<3.0.0`; its exact resolved patch is unavailable. Direct PayPal checkout uses `.paypal`, distinguishes cancellation, collects device data, and completes the order through a merchant server. Direct card checkout requests SCA when required, awaits SDK approval, and then completes through the server.
+
+The repository implements no native Venmo, subscription, or webhook callback flow. Its separate Payment Link return trusts `/success` plus an `amt` parameter without validating the host or payment state. See [[source-github-paypal-ios-sdk-demo-app]].
+
 ### Historical checkout-components runtime: `4.1.47`
 
 The exact `@paypal/checkout-components@4.1.47` snapshot implements the Zoid-based `paypal-buttons` and `paypal-checkout` components. Its decorated `createOrder` callback must return a nonempty string order ID. The alternative billing-agreement path is mutually exclusive with `createOrder` and requires `vault=true`.
@@ -176,6 +182,7 @@ See [[source-paypal-payment-failures]] for the full 19 error codes and recovery 
 - [[source-github-v6-web-sdk-sample-integration]] — current runnable v6 HTML, React, and Node integration baseline
 - [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample, partner headers, retries, shipping patches, and retained defects
 - [[source-github-paypal-android-sdk-demo-app]] — Android SDK `2.3.0` PayPal/card sample plus separate hosted Payment Link flow
+- [[source-github-paypal-ios-sdk-demo-app]] — iOS SDK-compatible SwiftUI PayPal/card sample plus separate hosted Payment Link flow
 - [[paypal-braintree-integration]] — Braintree client-token, nonce, and server-processing boundary for PayPal v6 React flows
 - [[source-paypal-security-guidelines]] — Security guidelines: CSP + SRI for SDK; load only from official CDN; validate payment events server-side before fulfilling
 - [[source-github-paypal-rest-api-specifications]] — exact-SHA Orders, Payments, Vault, Webhooks, and supporting REST contracts

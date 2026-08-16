@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-16] ingest | GitHub paypal-examples/paypal-ios-sdk-demo-app `main@047a50e`
+
+- Full-ingested work item `github-523453a8a9fad6afdf6f` from all 30 required evidence paths at exact SHA `047a50ec97d9881af84ca3fb03d1d23e859a86f4`.
+- Added cumulative and commit-qualified sources for SwiftUI PayPal/card checkout and a separate hosted Payment Link path compatible with PayPal iOS SDK `>=2.0.0,<3.0.0`.
+- Preserved the absent native Venmo flow, unresolved SDK patch, README/code gaps, sample defects, and return-URL-versus-settlement distinction.
+
 ## [2026-08-16] ingest | GitHub paypal-examples/paypal-android-sdk-demo-app `main@d1137d5`
 
 - Full-ingested work item `github-71f4eb08ef220f23aba9` from all 44 required evidence paths at exact SHA `d1137d5daa3a3befdcf6c72e6a1e8144bf765ba2`.

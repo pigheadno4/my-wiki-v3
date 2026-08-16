@@ -38,8 +38,10 @@ The `paypal/postman-collections` baseline at `7f7240a` provides create, list, re
 
 The `paypal-examples/paypal-android-sdk-demo-app` baseline at `d1137d5` opens a pre-created sandbox Payment Link in an Android Custom Tab and handles both warm and cold App Link returns. This is a hosted checkout path, independent of the app's direct PayPal Android SDK order flow.
 
+The independent iOS demo at `047a50e` opens a pre-created sandbox Payment Link with `UIApplication.shared.open`, registers an associated domain, and handles the Universal Link through SwiftUI `onOpenURL`. This is likewise separate from its direct PayPal iOS SDK flow.
+
 > [!warning] Return links do not prove payment
-> The sample marks its UI complete from an expected return host and a path containing `success`; it does not verify the transaction first. Production apps must use trusted server-side payment state, APIs, or webhooks before fulfillment.
+> The Android sample marks its UI complete from an expected return host and a path containing `success`. The iOS sample is weaker: it checks only that the path equals `/success`, trusts the `amt` query parameter, and does not validate the host. Neither verifies the transaction first. Production apps must use trusted server-side payment state, APIs, PDT validation, or webhooks before fulfillment.
 
 ## Payment Methods
 
@@ -73,3 +75,4 @@ Both support: hosted payment page, discounts, taxes, PCI compliance, Dashboard o
 - [[source-paypal-invoicing-overview]] — Invoicing detailed docs
 - [[source-github-postman-collections]] — exact-commit Payment Resources API request examples
 - [[source-github-paypal-android-sdk-demo-app]] — Android Custom Tab and App Link reference flow with settlement-verification boundary
+- [[source-github-paypal-ios-sdk-demo-app]] — iOS browser launch and Universal Link reference flow with stricter verification warnings
