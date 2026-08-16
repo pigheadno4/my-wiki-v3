@@ -1496,3 +1496,31 @@
 - `stripe-cli@1.50.0` (recommended `full`)
   Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.0/2026-08-14/manifest.json)
   Comparison: Not applicable
+
+## `github-ff388d21d0a8282ef393`
+
+- Repository: `paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration`
+- SHA: `f1c712374f674ce6f0b2683f105871dcb969d2d7`
+- Collection date: `2026-08-16`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/manifest.json)
+- Packet: [review packet](repos/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/ingest-packets/github-ff388d21d0a8282ef393/packet.md)
+- Evidence attachment: [manifest](repos/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration/evidence-attachments/github-ff388d21d0a8282ef393/attachment.json)
+- Review priority: `high`
+- Required reading: `74` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@f1c7123` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `f1c712374f674ce6f0b2683f105871dcb969d2d7`
+  Comparison: Not applicable

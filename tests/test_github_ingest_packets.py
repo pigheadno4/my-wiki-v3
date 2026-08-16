@@ -531,6 +531,41 @@ class GitHubIngestPacketTests(unittest.TestCase):
                 packet.document["required_reading"],
             )
 
+    def test_ref_baseline_classifies_nested_license_as_repository_context(self):
+        current = self.snapshot(
+            self.current_sha,
+            "current",
+            {
+                "server/node/LICENSE": (
+                    "MIT\n",
+                    "source-capsule",
+                    "include-path",
+                ),
+            },
+        )
+
+        packet = build_ref_ingest_packet(
+            self.root,
+            self.commit_config(),
+            "github-" + ("3" * 20),
+            self.relative(current),
+            RefPacketInput(
+                ref_kind="default-branch",
+                ref_name="main",
+                from_sha="",
+                to_sha=self.current_sha,
+                comparison_manifest="",
+                prior_snapshot_manifest="",
+                upstream_changes=(),
+                excluded_changes=(),
+            ),
+            "queued",
+        )
+
+        selected = packet.document["selected_changes"]
+        self.assertEqual("repository-context", selected[0]["classification"])
+        self.assertEqual([], packet.document["unclassified_changes"])
+
     def test_retained_diff_accounts_for_rename_without_false_add_remove(self):
         prior = {
             "package.json": self.manifest_content("10.0.0"),

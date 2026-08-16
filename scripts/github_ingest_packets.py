@@ -1105,7 +1105,7 @@ def _retained_row(
 def _classify_file(path: str, row: Mapping[str, Any]) -> str:
     lowered = path.lower()
     filename = lowered.rsplit("/", 1)[-1]
-    if "/" not in lowered and filename in ("license", "notice"):
+    if filename in ("license", "notice"):
         return "repository-context"
     if filename in ("composer.json", "package.json"):
         return "package-manifest"
