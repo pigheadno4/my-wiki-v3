@@ -1759,6 +1759,73 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(320, capsule.max_packet_files)
         self.assertEqual(1900000, capsule.max_packet_utf8_bytes)
 
+    def test_paypal_mobile_demo_apps_have_reviewed_disabled_commit_policies(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        android = repos["paypal-examples/paypal-android-sdk-demo-app"]
+        ios = repos["paypal-examples/paypal-ios-sdk-demo-app"]
+
+        for repo in (android, ios):
+            self.assertFalse(repo.enabled)
+            self.assertEqual("sample-app", repo.repo_type)
+            self.assertEqual("tier1", repo.priority)
+            self.assertEqual("monthly", repo.collection_frequency)
+            self.assertEqual("default-branch", repo.track)
+            self.assertEqual("commit", repo.version_strategy)
+            self.assertEqual((), repo.version_tracks)
+            self.assertEqual(1, len(repo.capsules))
+            capsule = repo.capsules[0]
+            self.assertEqual("commit-tree-v1", capsule.adapter)
+            self.assertEqual((), capsule.focus_packages)
+            self.assertEqual(
+                "configured-repository-paths", capsule.dependency_scope
+            )
+            self.assertEqual("policy-bounded", capsule.changed_path_policy)
+            self.assertEqual((), capsule.default_generated_target_paths)
+            self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+            self.assertEqual("text-secrets-v1", capsule.secret_detector)
+            self.assertEqual(512000, capsule.max_file_bytes)
+            self.assertEqual(180, capsule.max_capsule_files)
+            self.assertEqual(1200000, capsule.max_capsule_utf8_bytes)
+            self.assertEqual(220, capsule.max_packet_files)
+            self.assertEqual(2000000, capsule.max_packet_utf8_bytes)
+
+        android_capsule = android.capsules[0]
+        self.assertEqual("paypal-android-sdk-demo-source", android_capsule.id)
+        self.assertEqual(
+            "paypal-android-sdk-demo-app", android_capsule.source_id
+        )
+        self.assertEqual(
+            ("app/src/main",), android_capsule.default_required_roots
+        )
+        self.assertEqual(
+            (
+                "README.md",
+                "app/build.gradle",
+                "build.gradle",
+                "gradle.properties",
+                "gradle/libs.versions.toml",
+                "settings.gradle",
+            ),
+            android_capsule.include_paths,
+        )
+
+        ios_capsule = ios.capsules[0]
+        self.assertEqual("paypal-ios-sdk-demo-source", ios_capsule.id)
+        self.assertEqual("paypal-ios-sdk-demo-app", ios_capsule.source_id)
+        self.assertEqual(("PayPalDemo",), ios_capsule.default_required_roots)
+        self.assertEqual(
+            (
+                "README.md",
+                "paypal-ios-sdk-demo-app-Info.plist",
+                "paypal-ios-sdk-demo-app.entitlements",
+                "paypal-ios-sdk-demo-app.xcodeproj/project.pbxproj",
+            ),
+            ios_capsule.include_paths,
+        )
+
     def test_paypal_typescript_server_sdk_uses_complete_source_profile(self):
         repos = {
             repo.id: repo
