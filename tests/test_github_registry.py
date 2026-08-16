@@ -35,9 +35,9 @@ APPENDIX_A_INVENTORY = (
     ('paypal/paypal-rest-api-specifications', 'https://github.com/paypal/paypal-rest-api-specifications', 'api-specification', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('paypal-examples/v6-web-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-sample-integration', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
-    ('paypal-examples/paypal-android-sdk-demo-app', 'https://github.com/paypal-examples/paypal-android-sdk-demo-app', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
+    ('paypal-examples/paypal-android-sdk-demo-app', 'https://github.com/paypal-examples/paypal-android-sdk-demo-app', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('paypal-examples/paypal-sdk-server-side-integration', 'https://github.com/paypal-examples/paypal-sdk-server-side-integration', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
-    ('paypal-examples/paypal-ios-sdk-demo-app', 'https://github.com/paypal-examples/paypal-ios-sdk-demo-app', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
+    ('paypal-examples/paypal-ios-sdk-demo-app', 'https://github.com/paypal-examples/paypal-ios-sdk-demo-app', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('braintree/braintree_android', 'https://github.com/braintree/braintree_android', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/braintree_ios', 'https://github.com/braintree/braintree_ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/web-sdk-github-actions', 'https://github.com/braintree/web-sdk-github-actions', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
@@ -1759,7 +1759,7 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(320, capsule.max_packet_files)
         self.assertEqual(1900000, capsule.max_packet_utf8_bytes)
 
-    def test_paypal_mobile_demo_apps_have_reviewed_disabled_commit_policies(self):
+    def test_paypal_mobile_demo_apps_have_reviewed_enabled_commit_policies(self):
         repos = {
             repo.id: repo
             for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
@@ -1768,7 +1768,7 @@ class RegistryTests(unittest.TestCase):
         ios = repos["paypal-examples/paypal-ios-sdk-demo-app"]
 
         for repo in (android, ios):
-            self.assertFalse(repo.enabled)
+            self.assertTrue(repo.enabled)
             self.assertEqual("sample-app", repo.repo_type)
             self.assertEqual("tier1", repo.priority)
             self.assertEqual("monthly", repo.collection_frequency)
@@ -1798,12 +1798,18 @@ class RegistryTests(unittest.TestCase):
             "paypal-android-sdk-demo-app", android_capsule.source_id
         )
         self.assertEqual(
-            ("app/src/main",), android_capsule.default_required_roots
+            (
+                "app/src/main/java",
+                "app/src/main/res/values",
+                "app/src/main/res/xml",
+            ),
+            android_capsule.default_required_roots,
         )
         self.assertEqual(
             (
                 "README.md",
                 "app/build.gradle",
+                "app/src/main/AndroidManifest.xml",
                 "build.gradle",
                 "gradle.properties",
                 "gradle/libs.versions.toml",
@@ -1815,9 +1821,23 @@ class RegistryTests(unittest.TestCase):
         ios_capsule = ios.capsules[0]
         self.assertEqual("paypal-ios-sdk-demo-source", ios_capsule.id)
         self.assertEqual("paypal-ios-sdk-demo-app", ios_capsule.source_id)
-        self.assertEqual(("PayPalDemo",), ios_capsule.default_required_roots)
         self.assertEqual(
             (
+                "PayPalDemo/CardCheckoutViews",
+                "PayPalDemo/ConfigSettings",
+                "PayPalDemo/Helpers",
+                "PayPalDemo/Models",
+                "PayPalDemo/Networking",
+                "PayPalDemo/ViewModels",
+            ),
+            ios_capsule.default_required_roots,
+        )
+        self.assertEqual(
+            (
+                "PayPalDemo/CheckoutCoordinator.swift",
+                "PayPalDemo/CheckoutFlow.swift",
+                "PayPalDemo/PayPalDemoApp.swift",
+                "PayPalDemo/PaymentLinkCompleteView.swift",
                 "README.md",
                 "paypal-ios-sdk-demo-app-Info.plist",
                 "paypal-ios-sdk-demo-app.entitlements",
