@@ -2,7 +2,7 @@
 title: "PayPal"
 type: company
 tags: [paypal, payment-gateway, checkout, venmo, javascript-sdk, orders-api, vault, recurring-payments, payouts, disputes, reporting, agentic-commerce]
-source_count: 171
+source_count: 173
 ---
 
 ## PayPal
@@ -44,6 +44,8 @@ The Android counterpart, `paypal-messages-android@1.3.0`, provides a native mess
 ### Braintree PayPal v6
 
 Braintree merchants use a separate React provider backed by Braintree's `paypalCheckoutV6` module and a server-generated Braintree client token. React 9.3.0 provides one-time, billing-agreement, and checkout-with-vault flows; React 10.1.0 adds eligibility-gated Pay Later with a prebuilt button and custom hook; React 10.2.0 adds promotional and BNPL Messages with asynchronous instance creation and content fetching. Approval flows are tokenized into a Braintree payment-method nonce and completed with a Braintree server SDK, not PayPal's Orders API. See [[paypal-braintree-integration]].
+
+The independent `paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration` baseline at `f1c7123` makes that handoff runnable with Braintree Web `3.142.0`, React `@paypal/react-paypal-js@^10.1.0`, and a Node/Braintree server. It covers one-time capture, shipping updates, checkout plus vault, vault-only billing agreements with recurring/subscription/unscheduled metadata, PayPal Messages, and eligibility-gated Pay Later/Credit. Its server trusts browser-provided amounts, creates a new customer for each vault request, and is sandbox-only; the README's PayPal/Venmo feature-setting instruction does not establish an implemented Venmo session.
 
 ### PayPal Orders REST API
 
@@ -200,6 +202,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-disputes-overview]] — Disputes overview: internal (180-day window, 20-day amicable, 10-day PayPal adjudication) vs external (chargeback + ACH return); pre-chargeback alert 20-hour refund window; 6 buyer issue types; 2 flow diagrams
 - [[source-github-v6-web-sdk-sample-integration]] — cumulative GitHub v6 sample evidence from legacy `dd9ef8a` through the 257-file `b5f2df2` baseline
 - [[changelog-github-v6-web-sdk-sample-integration]] — commit-qualified expansion history and documentation/code discrepancies
+- [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — Braintree-merchant v6 sample at `f1c7123`: nonce-based checkout, vault, billing agreements, Pay Later/Credit, Messages, React, and Node boundaries
+- [[changelog-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — commit-qualified history for the first `f1c7123` Braintree v6 sample baseline
 - [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample for Orders, partners, Hosted Fields, shipping, and Subscriptions
 - [[changelog-github-paypal-sdk-server-side-integration]] — commit-qualified `5409a3b` baseline, migration boundary, and retained sample defects
 - [[source-github-paypal-android-sdk-demo-app]] — Jetpack Compose Android SDK `2.3.0` checkout and hosted Payment Link reference

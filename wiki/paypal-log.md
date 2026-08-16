@@ -6,6 +6,14 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-17] ingest | paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration `main@f1c7123`
+
+- Full-ingested work item `github-ff388d21d0a8282ef393` after serial review of all 74 packet, snapshot, attachment, supplement, and shared-context paths.
+- Added cumulative and commit-qualified sources for the 64-file, 130,398-byte exact-SHA baseline plus its three-file linked supplement; one 1,151-byte test was excluded.
+- Recorded Braintree Web `3.142.0`, React `@paypal/react-paypal-js@^10.1.0`, and Node/Braintree flows for one-time capture, shipping updates, checkout plus vault, billing agreements, Pay Later/Credit, and Messages.
+- Preserved the production boundaries around browser-provided amounts, customer identity, sandbox-only configuration, CORS/errors, settlement state, and the absent implemented Venmo session.
+- Updated [[paypal-braintree-integration]]. PayPal source count increased by two for the new cumulative source and changelog.
+
 ## [2026-08-16] ingest | paypal-examples/paypal-ios-sdk-demo-app `main@047a50e`
 
 - Full-ingested work item `github-523453a8a9fad6afdf6f` after serial review of all 30 required evidence paths and the 25-file, 84,280-byte exact-SHA capsule.

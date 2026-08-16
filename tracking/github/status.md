@@ -1502,10 +1502,10 @@
 - Repository: `paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration`
 - SHA: `f1c712374f674ce6f0b2683f105871dcb969d2d7`
 - Collection date: `2026-08-16`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

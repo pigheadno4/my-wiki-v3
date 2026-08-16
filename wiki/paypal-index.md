@@ -24,6 +24,8 @@ Operations history: [[paypal-log]]
 - [[stripe-paypal]] — Stripe PayPal Integration: Checkout + SetupIntents, off_session critical, BAID, mandate.updated, detach cancels billing agreement
 - [[source-github-v6-web-sdk-sample-integration]] — cumulative v6 Web SDK samples: HTML, React, Node, PayPal, Venmo, cards, Fastlane, wallets, vault, subscriptions, and 46 local methods (`dd9ef8a` → `b5f2df2`)
 - [[changelog-github-v6-web-sdk-sample-integration]] — commit-qualified sample expansion and implementation/documentation discrepancies
+- [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — Braintree-merchant v6 sample: one-time, vault, billing agreements, Pay Later/Credit, Messages, React, and Node at `f1c7123`
+- [[changelog-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — first commit-qualified Braintree v6 sample baseline and production-boundary ledger (`f1c7123`)
 - [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample: Orders, partner headers, Hosted Fields, shipping patches, subscriptions, and retained defects (`5409a3b`)
 - [[changelog-github-paypal-sdk-server-side-integration]] — commit-qualified historical baseline and migration cautions
 - [[source-github-paypal-android-sdk-demo-app]] — Jetpack Compose Android SDK `2.3.0` PayPal/card checkout plus separate hosted Payment Link flow (`d1137d5`)

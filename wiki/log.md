@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-17] ingest | GitHub paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration `main@f1c7123`
+
+- Full-ingested work item `github-ff388d21d0a8282ef393` at exact SHA `f1c712374f674ce6f0b2683f105871dcb969d2d7` after serial review of all 74 required evidence and shared-context paths.
+- Added cumulative and commit-qualified sources for Braintree Web/React/Node examples covering one-time payment, shipping updates, vaulting, billing agreements, Pay Later/Credit, and Messages.
+- Preserved the sample-versus-production boundary: client-controlled amounts, per-request customer creation, sandbox-only server configuration, and no implemented Venmo payment session.
+
 ## [2026-08-16] ingest | GitHub paypal-examples/paypal-ios-sdk-demo-app `main@047a50e`
 
 - Full-ingested work item `github-523453a8a9fad6afdf6f` from all 30 required evidence paths at exact SHA `047a50ec97d9881af84ca3fb03d1d23e859a86f4`.
