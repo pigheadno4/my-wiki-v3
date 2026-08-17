@@ -1147,6 +1147,7 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
                 ".gradle",
                 ".gradle.kts",
                 ".entitlements",
+                ".modulemap",
                 ".podspec",
                 ".plist",
                 ".pro",
@@ -1166,9 +1167,11 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         or filename.startswith("eslint.config.")
     ):
         return "build-configuration"
-    if filename.startswith(("changelog", "history", "releases")):
+    if filename == "release_notes" or filename.startswith(
+        ("changelog", "history", "releases")
+    ):
         return "release-history"
-    if filename == ".keep":
+    if filename in (".keep", "element-list", "package-list"):
         return "documentation"
     if row.get("purpose") == "repository-context" or row.get(
         "classification_reason"

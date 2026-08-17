@@ -1059,6 +1059,31 @@
   To SHA: `90e8041ffe02d80c452d2b476bedd59a8d219bdc`
   Comparison: Not applicable
 
+## `github-b8f0d09e7fd89635c59f`
+
+- Repository: `adyen/adyen-3ds2-ios`
+- SHA: `00862adbc079d0be943666a4ad2523deb31f9546`
+- Collection date: `2026-08-17`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-3ds2-ios/snapshots/2026-08-17-00862ad/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-3ds2-ios/ingest-packets/github-b8f0d09e7fd89635c59f/packet.md)
+- Review priority: `normal`
+- Required reading: `32` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen-3ds2-ios@2.4.4` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-3ds2-ios/releases/adyen-3ds2-ios/2.4.4/2026-08-17/manifest.json)
+  Comparison: Not applicable
+
 ## `github-b94b44c30164dfad8034`
 
 - Repository: `paypal/paypal-messages-ios`
@@ -1315,6 +1340,31 @@
 
 - `@stripe/react-stripe-js@6.8.0` (recommended `full`)
   Release: [manifest](../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.0/2026-07-30/manifest.json)
+  Comparison: Not applicable
+
+## `github-ddb53c093685674310ef`
+
+- Repository: `adyen/adyen-3ds2-android`
+- SHA: `de845e67488b6aecb1ff57ea7908b662f5ee2d40`
+- Collection date: `2026-08-17`
+- State: `awaiting_approval`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `not approved`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-3ds2-android/snapshots/2026-08-17-de845e6/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-3ds2-android/ingest-packets/github-ddb53c093685674310ef/packet.md)
+- Review priority: `normal`
+- Required reading: `69` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen-3ds2-android@2.2.27` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-3ds2-android/releases/adyen-3ds2-android/2.2.27/2026-08-17/manifest.json)
   Comparison: Not applicable
 
 ## `github-e923ffd86b6fd634a620`

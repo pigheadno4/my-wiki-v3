@@ -1110,6 +1110,7 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "android/gradle/libs.versions.toml": "[versions]\nkotlin = '2.0.0'\n",
             "android/src/main/AndroidManifest.xml": "<manifest />\n",
             "ios/Info.plist": "<?xml version=\"1.0\"?><plist />\n",
+            "ios/module.modulemap": "framework module Example { umbrella header \"Example.h\" }\n",
             "ios/StripeSdk.entitlements": "<?xml version=\"1.0\"?><plist />\n",
             "ios/StripeSdk.xcodeproj/project.pbxproj": "// project\n",
             "ios/StripeSdk.xcodeproj/xcshareddata/xcschemes/Tests.xcscheme": "<Scheme />\n",
@@ -1141,6 +1142,58 @@ class GitHubIngestPacketTests(unittest.TestCase):
         classified = {row["path"]: row["classification"] for row in rows}
         for path in native_files:
             self.assertEqual("build-configuration", classified[path])
+
+    def test_release_notes_filename_is_classified_as_release_history(self):
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            "RELEASE_NOTES": "Initial release.\n",
+        }
+        current = {
+            "package.json": self.manifest_content("10.1.0"),
+            "RELEASE_NOTES": "Initial release.\nNew capability.\n",
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            (UpstreamChange("modified", "RELEASE_NOTES", "RELEASE_NOTES"),),
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        self.assertEqual("release-history", classified["RELEASE_NOTES"])
+
+    def test_javadoc_index_lists_are_classified_as_documentation(self):
+        documentation = {
+            "docs/element-list": "com.example.api\n",
+            "docs/package-list": "com.example.api\n",
+        }
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            **documentation,
+        }
+        current = {
+            "package.json": self.manifest_content("10.1.0"),
+            **documentation,
+        }
+        changes = tuple(
+            UpstreamChange("modified", path, path) for path in sorted(documentation)
+        )
+
+        packet = self.build(
+            prior,
+            current,
+            changes,
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        for path in documentation:
+            self.assertEqual("documentation", classified[path])
 
     def test_android_proguard_rules_are_build_configuration(self):
         prior = {

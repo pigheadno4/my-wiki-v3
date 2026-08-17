@@ -228,6 +228,10 @@ def fetch_release_notes(
         try:
             if error.code == 404:
                 return None
+            if 500 <= error.code < 600:
+                return _fetch_matching_latest_release(
+                    config, candidate, source_url, headers, open_request
+                )
             raise _evidence_error(config, candidate, "GitHub HTTP " + str(error.code)) from error
         finally:
             error.close()
@@ -261,6 +265,72 @@ def fetch_release_notes(
         raise _evidence_error(config, candidate, "GitHub release body was not a string")
     if not isinstance(published_at, str):
         raise _evidence_error(config, candidate, "GitHub release published_at was not a string")
+    return ReleaseNotesEvidence(source_url, published_at, body.encode("utf-8"))
+
+
+def _fetch_matching_latest_release(
+    config: RepoConfig,
+    candidate: ReleaseCandidate,
+    source_url: str,
+    headers: Dict[str, str],
+    opener: Callable[[Request], object],
+) -> ReleaseNotesEvidence:
+    owner, _, repository = config.id.partition("/")
+    latest_url = (
+        "https://api.github.com/repos/"
+        + quote(owner, safe="")
+        + "/"
+        + quote(repository, safe="")
+        + "/releases/latest"
+    )
+    request = Request(latest_url, headers=headers)
+    try:
+        response = opener(request)
+    except HTTPError as error:
+        try:
+            raise _evidence_error(
+                config, candidate, "GitHub latest-release fallback HTTP " + str(error.code)
+            ) from error
+        finally:
+            error.close()
+    except (URLError, OSError) as error:
+        raise _evidence_error(
+            config, candidate, "GitHub latest-release fallback failed: " + str(error)
+        ) from error
+
+    try:
+        with response as opened_response:
+            status = opened_response.getcode() if hasattr(opened_response, "getcode") else None
+            if status is not None and status >= 400:
+                raise _evidence_error(
+                    config, candidate, "GitHub latest-release fallback HTTP " + str(status)
+                )
+            payload = opened_response.read()
+    except ReleaseEvidenceError:
+        raise
+    except (OSError, ValueError) as error:
+        raise _evidence_error(
+            config, candidate, "could not read GitHub latest-release fallback: " + str(error)
+        ) from error
+
+    if not isinstance(payload, bytes):
+        raise _evidence_error(config, candidate, "GitHub latest-release response body was not bytes")
+    try:
+        document = json.loads(payload.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise _evidence_error(config, candidate, "malformed GitHub latest-release JSON") from error
+    if not isinstance(document, dict):
+        raise _evidence_error(config, candidate, "malformed GitHub latest-release JSON")
+    if document.get("tag_name") != candidate.tag:
+        raise _evidence_error(config, candidate, "latest release tag mismatch")
+    body = document.get("body")
+    published_at = document.get("published_at")
+    if not isinstance(body, str):
+        raise _evidence_error(config, candidate, "GitHub latest-release body was not a string")
+    if not isinstance(published_at, str):
+        raise _evidence_error(
+            config, candidate, "GitHub latest-release published_at was not a string"
+        )
     return ReleaseNotesEvidence(source_url, published_at, body.encode("utf-8"))
 
 

@@ -759,6 +759,73 @@ class GitHubReleasesTests(unittest.TestCase):
         close.assert_called_once_with()
         self.assertTrue(response.closed)
 
+    def test_fetch_release_notes_uses_matching_latest_release_after_tag_endpoint_5xx(self):
+        candidate = self._candidates("9.0.0")[0]
+        failed_response = FakeResponse(b"")
+        error = HTTPError("https://api.github.test", 504, "timeout", None, failed_response)
+        latest_response = FakeResponse(
+            json.dumps(
+                {
+                    "tag_name": "v9.0.0",
+                    "published_at": "2026-07-15T12:00:00Z",
+                    "body": "Recovered notes",
+                }
+            ).encode("utf-8")
+        )
+        received = []
+
+        def opener(request):
+            received.append(request.full_url)
+            if len(received) == 1:
+                raise error
+            return latest_response
+
+        evidence = fetch_release_notes(self.config, candidate, opener=opener)
+
+        self.assertEqual(
+            ReleaseNotesEvidence(
+                "https://api.github.com/repos/acme/widgets/releases/tags/v9.0.0",
+                "2026-07-15T12:00:00Z",
+                b"Recovered notes",
+            ),
+            evidence,
+        )
+        self.assertEqual(
+            [
+                "https://api.github.com/repos/acme/widgets/releases/tags/v9.0.0",
+                "https://api.github.com/repos/acme/widgets/releases/latest",
+            ],
+            received,
+        )
+        self.assertTrue(failed_response.closed)
+        self.assertTrue(latest_response.closed)
+
+    def test_fetch_release_notes_rejects_mismatched_latest_release_fallback(self):
+        candidate = self._candidates("9.0.0")[0]
+        error = HTTPError(
+            "https://api.github.test", 504, "timeout", None, FakeResponse(b"")
+        )
+        latest_response = FakeResponse(
+            json.dumps(
+                {
+                    "tag_name": "v9.1.0",
+                    "published_at": "2026-07-16T12:00:00Z",
+                    "body": "Wrong release",
+                }
+            ).encode("utf-8")
+        )
+        calls = 0
+
+        def opener(request):
+            nonlocal calls
+            calls += 1
+            if calls == 1:
+                raise error
+            return latest_response
+
+        with self.assertRaisesRegex(ReleaseEvidenceError, "latest release tag mismatch"):
+            fetch_release_notes(self.config, candidate, opener=opener)
+
     def test_fetch_release_notes_surfaces_context_for_http_and_payload_failures(self):
         candidate = self._candidates("9.0.0")[0]
         response = FakeResponse(b"")
