@@ -1,6 +1,6 @@
 # GitHub repository collection index
 
-Generated: `2026-08-17`
+Generated: `2026-08-19`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -9,7 +9,7 @@ Generated: `2026-08-17`
 | adyen | `adyen/adyen-pos-mobile-ios` | tier1 | semver-tags | weekly | - | - | - | `disabled` |
 | adyen | `adyen/adyen-react-native` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-01 | ingested | 2026-08-08 | `collect-baseline` |
 | adyen | `adyen/adyen-web` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-08-09 | ingested | 2026-08-16 | `collect-baseline` |
-| adyen | `adyen/adyen-3ds2-android` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-17 | awaiting_approval | 2026-09-17 | `review-full` |
+| adyen | `adyen/adyen-3ds2-android` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-17 | ingested | 2026-09-17 | `wait` |
 | adyen | `adyen/adyen-3ds2-ios` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-17 | awaiting_approval | 2026-09-17 | `review-full` |
 | adyen | `adyen/adyen-3ds2-ios-swift` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
 | adyen | `adyen/adyen-magento2` | tier2 | semver-tags | monthly | - | - | - | `disabled` |

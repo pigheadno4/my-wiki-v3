@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-19] ingest | Adyen/adyen-3ds2-android `2.2.27`
+
+- Approved and full-ingested work item `github-ddb53c093685674310ef` at exact SHA `de845e67488b6aecb1ff57ea7908b662f5ee2d40` after serial full reading of all 69 required evidence paths.
+- Established [[source-github-adyen-3ds2-android]], its package-qualified changelog, and [[adyen-3ds2-android-sdk]] for transaction setup, `/authorise3ds2` handoffs, challenge outcomes, lifecycle, security warnings, and UI customization.
+- Preserved the public-documentation-only boundary and recorded the missing `DATA_SAFETY_GUIDE.md`, absent `2.2.27` compatibility row, and contradictory generated cleanup wording as explicit evidence gaps.
+- Updated the parent Android concept, Adyen company page, provider index, and calculated cumulative source count.
+
 ## [2026-08-12] ingest | adyen/adyen-postman `default-branch@ecb2907`
 
 - Approved and processed work item `github-ab2d0a488d97d9590b4c` in full mode at exact SHA `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7`.

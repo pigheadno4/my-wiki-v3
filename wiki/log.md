@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-19] ingest | GitHub Adyen/adyen-3ds2-android `2.2.27`
+
+- Full-ingested work item `github-ddb53c093685674310ef` at exact SHA `de845e67488b6aecb1ff57ea7908b662f5ee2d40` after serial review of all 69 required evidence paths.
+- Added cumulative and package-qualified sources plus [[adyen-3ds2-android-sdk]] for the delegated native transaction and challenge runtime.
+- Preserved the public-documentation boundary and explicit gaps for the missing Data Safety Guide, missing `2.2.27` compatibility row, and conflicting cleanup wording.
+
 ## [2026-08-17] ingest | GitHub paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration `main@f1c7123`
 
 - Full-ingested work item `github-ff388d21d0a8282ef393` at exact SHA `f1c712374f674ce6f0b2683f105871dcb969d2d7` after serial review of all 74 required evidence and shared-context paths.

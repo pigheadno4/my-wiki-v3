@@ -10,6 +10,8 @@ Operations history: [[adyen-log]]
 
 ## Sources
 
+- [[source-github-adyen-3ds2-android]] — cumulative `adyen-3ds2-android@2.2.27` baseline: transaction setup, authentication parameters, challenge outcomes, lifecycle, security warnings, and UI customization (github-repo, 2026-08-19)
+- [[changelog-github-adyen-3ds2-android]] — package-qualified Android 3DS2 release ledger beginning at `2.2.27`, including retained evidence gaps (github-repo, 2026-08-19)
 - [[source-github-adyen-postman]] — exact-commit Postman baseline for Checkout v72, Recurring v68, BIN Lookup v54, Test Card v1, and 82 Terminal API examples (github-repo, 2026-08-12)
 - [[changelog-github-adyen-postman]] — commit-qualified Adyen Postman collection history beginning at `default-branch@ecb2907` (github-repo, 2026-08-12)
 - [[source-github-adyen-web]] — cumulative Adyen Web implementation history through `@adyen/adyen-web@6.42.0`: Drop-in, Components, Sessions, cards, 3DS2, payment-list analytics, address validation, accessibility, and Fastlane adapter (github-repo, 2026-08-09)
@@ -25,6 +27,7 @@ Operations history: [[adyen-log]]
 
 ## Concepts
 
+- [[adyen-3ds2-android-sdk]] — delegated Android 3DS2 transaction, challenge, lifecycle, security, and UI runtime
 - [[adyen-terminal-api]] — Nexo Terminal API message architecture, in-person flows, and Checkout/Management API boundaries
 - [[adyen-ios-sdk]] — native iOS architecture, integration modes, payment and server boundaries, and delegated dependencies
 - [[adyen-android-sdk]] — native Android architecture, integration modes, View and Compose surfaces, server boundaries, and delegated dependencies

@@ -1347,10 +1347,10 @@
 - Repository: `adyen/adyen-3ds2-android`
 - SHA: `de845e67488b6aecb1ff57ea7908b662f5ee2d40`
 - Collection date: `2026-08-17`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None
