@@ -707,6 +707,12 @@ class GitHubIngestPacketTests(unittest.TestCase):
                     "include-path",
                     "stripe-ios",
                 ),
+                "lib/ssl/api.example.com.ca.crt": (
+                    "-----BEGIN CERTIFICATE-----\nexample\n-----END CERTIFICATE-----\n",
+                    "source-capsule",
+                    "required-root",
+                    "stripe-ios",
+                ),
                 "Native/api/native.api": (
                     "public final class Checkout\n",
                     "public-source",
@@ -775,6 +781,10 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "PrivacyInfo.xcprivacy",
         ):
             self.assertEqual("build-configuration", classified[path])
+        self.assertEqual(
+            "runtime-configuration",
+            classified["lib/ssl/api.example.com.ca.crt"],
+        )
         self.assertEqual(
             "public-source",
             classified["Native/api/native.api"],

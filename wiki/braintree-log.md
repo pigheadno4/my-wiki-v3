@@ -6,6 +6,14 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-19] ingest | braintree/braintree_php `braintree_php@6.37.0`
+
+- Approved and processed work item `github-118cf7cd94ffcd51ebd3` in full mode at exact SHA `0f53ece38397c9fed05b94620634a5a23ef8ee48`.
+- Read the complete 229-path evidence packet covering the 226-file, 766,423-byte retained implementation capsule plus release records; the packet had no evidence gaps or unclassified changes.
+- Established the cumulative PHP server SDK source, package-qualified release ledger, and shared server-SDK concept for client tokens, nonces and vaulting, transaction lifecycle, PayPal/Venmo, subscriptions, webhooks, credentials, errors, and inventory-level secondary API domains.
+- Isolated exact `6.37.0` scope to Address and Dispute path-traversal hardening, PayPal email validation codes, and `preferredPaymentMethodToken`; kept PHP evidence independent from the Node.js package history.
+- Recorded the PHP-specific webhook boundary that public/private API keys are required for signature verification and an OAuth access token alone is insufficient.
+
 ## [2026-08-13] ingest | braintree/braintree-android-drop-in `drop-in@6.17.0`
 
 - Approved and processed work item `github-64aa2131b6b057d2f41c` in full mode at exact SHA `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7`.

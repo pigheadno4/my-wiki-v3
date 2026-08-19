@@ -1111,6 +1111,8 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "package-manifest"
     if filename in (".env.example", ".env.sample", "example.env"):
         return "runtime-configuration"
+    if filename.endswith(".crt"):
+        return "runtime-configuration"
     if _is_agent_tool_manifest(lowered, filename):
         return "runtime-configuration"
     if filename in (

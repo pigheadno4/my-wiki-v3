@@ -50,6 +50,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-php/releases/stripe-php/21.2.0/2026-08-15/manifest.json)
   Comparison: Not applicable
 
+## `github-118cf7cd94ffcd51ebd3`
+
+- Repository: `braintree/braintree_php`
+- SHA: `0f53ece38397c9fed05b94620634a5a23ef8ee48`
+- Collection date: `2026-08-19`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_php/snapshots/2026-08-19-0f53ece/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_php/ingest-packets/github-118cf7cd94ffcd51ebd3/packet.md)
+- Review priority: `normal`
+- Required reading: `229` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree_php@6.37.0` (recommended `full`)
+  Release: [manifest](../../raw/github/braintree/braintree_php/releases/braintree_php/6.37.0/2026-08-19/manifest.json)
+  Comparison: Not applicable
+
 ## `github-1ab2662d292502a53058`
 
 - Repository: `braintree/braintree-web`

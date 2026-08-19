@@ -1,13 +1,13 @@
 ---
 title: "Braintree"
 type: company
-tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, android-sdk, ios-sdk]
-source_count: 8
+tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, android-sdk, ios-sdk]
+source_count: 9
 ---
 
 ## Overview
 
-Braintree is represented in this wiki by eight independently tracked repositories: the GraphQL API contract, Node.js server SDK, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, native Braintree Android and iOS SDKs, and separately versioned Android and iOS Drop-in UIs. Client SDKs produce payment-method nonces for server processing; the Node.js SDK performs gateway operations. The GraphQL schema describes a separate API contract. Their commit or package identities and evidence histories remain separate.
+Braintree is represented in this wiki by nine independently tracked repositories: the GraphQL API contract, Node.js and PHP server SDKs, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, native Braintree Android and iOS SDKs, and separately versioned Android and iOS Drop-in UIs. Client SDKs produce payment-method nonces for server processing; the server SDKs perform gateway operations. The GraphQL schema describes a separate API contract. Their commit or package identities and evidence histories remain separate.
 
 ## GraphQL API Contract
 
@@ -20,6 +20,12 @@ The schema is field-level contract evidence, not proof of merchant enablement or
 `braintree@3.39.0` provides gateway configuration, client-token generation, customer and payment-method vault operations, transaction authorization and settlement, refunds and voids, PayPal and Venmo instruments, card verification and 3DS data, plans and subscriptions, and signed webhook parsing.
 
 The server SDK does not render checkout. Browser or native SDKs collect approval or payment data and return a nonce or token to the merchant server. PayPal customer sessions are restricted to authorized merchants, and legacy Venmo SDK transaction parameters warn merchants to migrate to Pay with Venmo.
+
+## PHP Server SDK Surface
+
+`braintree_php@6.37.0` provides PHP gateway configuration, client-token generation, customer and payment-method vault operations, transaction authorization and settlement, refunds and voids, PayPal and Venmo instruments, plans and subscriptions, and signed webhook parsing.
+
+The PHP package requires PHP 7.3 or later and supports key credentials or OAuth credentials without mixing them. Webhook signature verification specifically requires public/private API keys. The exact release hardens Address and Dispute path IDs, adds PayPal email validation codes, and adds preferred-payment-method context to client-token generation.
 
 ## Web SDK Surface
 
@@ -67,10 +73,11 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Knowledge Status
 
-- Ingested cumulative GitHub repository sources: 8
-- Ingested package releases: 8
+- Ingested cumulative GitHub repository sources: 9
+- Ingested package releases: 9
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`
 - Latest retained Braintree Node release: `braintree@3.39.0` at `7a9270aaf31eb87819add64a768652243f90007c`
+- Latest retained Braintree PHP release: `braintree_php@6.37.0` at `0f53ece38397c9fed05b94620634a5a23ef8ee48`
 - Latest retained Braintree Web release: `braintree-web@3.144.0` at `41460fba05c1ea1222e795b36a10765a6699b8e7`
 - Latest retained Drop-in release: `braintree-web-drop-in@1.47.0` at `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`
 - Latest retained Android release: `braintree-android@5.30.0` at `51f183a48557d0fd00eefa541712df0c4f21ee28`
@@ -84,6 +91,8 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - [[changelog-github-graphql-api]] - GraphQL schema history
 - [[source-github-braintree-node]] - cumulative Node.js server SDK implementation baseline
 - [[changelog-github-braintree-node]] - package-qualified Node.js release ledger
+- [[source-github-braintree-php]] - cumulative PHP server SDK implementation baseline
+- [[changelog-github-braintree-php]] - package-qualified PHP release ledger
 - [[source-github-braintree-web]] — cumulative Braintree Web implementation baseline
 - [[changelog-github-braintree-web]] — package-qualified release ledger
 - [[source-github-braintree-web-drop-in]] - cumulative Drop-in implementation baseline
@@ -102,6 +111,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - [[braintree-index]] — Braintree catalog and operations links
 - [[braintree-log]] — collection and ingest history
 - [[braintree-web-sdk]] — browser SDK concept
+- [[braintree-server-sdk]] - shared server integration boundary and package-qualified evidence rules
 - [[braintree-web-drop-in]] - prebuilt checkout UI and migration boundary
 - [[braintree-android-sdk]] - native Android request, launcher, nonce, PayPal, and Venmo model
 - [[braintree-ios-sdk]] - native iOS nonce, PayPal, Venmo, Apple Pay, and migration model
