@@ -1,0 +1,89 @@
+{
+  "job_id": "target-credit-and-commits",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome: Target Usage with Credits and Commits\"\ntype: source\ndate_ingested: 2026-08-19\ncanonical_url: \"https://docs.metronome.com/guides/pricing-packaging/apply-credits-and-commits/target-credit-and-commits.md\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/pricing-packaging/apply-credits-and-commits/target-credit-and-commits-2026-07-13.md\"\ntags: [metronome, credits, commits, product-targeting, dimensional-pricing]\n---\n\n## Overview\n\nThis guide explains how a Metronome credit or commitment can be restricted to a subset of customer usage. Simple product selectors cover product IDs and product families, while `specifiers` support pricing dimensions, presentation dimensions, and compound boolean conditions.\n\n## Key takeaways\n\n- `applicable_product_ids` and `applicable_product_tags` are the simple targeting path; usage matching any listed product ID or tag is eligible to consume the credit or commit.\n- A `specifiers` array expresses richer targeting. Fields inside one specifier are ANDed, while separate specifier objects are ORed.\n- Specifiers can use pricing-group values, presentation-group values, or product tags. A group-value specifier does not match a product that lacks the corresponding group key.\n- Subscriptions and composite products have no pricing or presentation group values, so they cannot draw down a credit or commit whose eligibility depends on such a group-value match.\n\n## Targeting modes\n\nUse `applicable_product_ids` or `applicable_product_tags` when eligibility depends only on product identity or family and does not require compound AND/OR logic. These direct selectors use any-match semantics across the listed IDs and tags.\n\nUse `specifiers` when targeting pricing-group values, presentation-group values, or advanced boolean combinations. Each object in the array is one alternative eligibility branch: every populated field in that object must match, but satisfying any object in the array makes the line item eligible. This is the same boolean model the guide attributes to contract `override_specifiers`.\n\n## Group-value eligibility boundaries\n\nA pricing-group or presentation-group condition only matches usage from products configured with the corresponding group key and value. For example, a `pricing_group_values` condition on `region` excludes products that do not have `region` as a pricing group key. Because subscription and composite products never have pricing or presentation group values, a credit or commit targeted solely through those dimensions does not apply to them.\n\n## Worked examples\n\n- A `POST /v1/contracts/create` example supplies two `pricing_group_values` specifiers, one for `region: us-east-1` and one for `region: us-west-1`, so either region can consume the commitment.\n- A `POST /v2/contracts/edit` example adds a prepaid credit restricted to the presentation-group value `user_id: user_123`. The scenario uses a non-pricing presentation dimension to isolate one user's usage.\n- A second `POST /v2/contracts/edit` example puts `Audio` and `Basic` in the same specifier's `product_tags` list, illustrating that both tags must match. This lets newly launched products with both tags become eligible without enumerating their IDs.\n\n## Documentation cautions\n\n> [!warning] Contradiction\n> The first example's heading and prose say the commitment applies to `us-east-1` and `us-east-2`, but its name and request payload target `us-east-1` and `us-west-1`. Treat the payload as an illustration of OR semantics, not as reliable evidence for which second region was intended.\n\n> [!warning] Contradiction\n> The product-tag scenario calls the commitment postpaid, but the request payload sets `type` to `PREPAID`. Verify the intended commitment type before adapting this example.\n\nThe page demonstrates request fragments rather than a complete API contract. It does not define selector validation errors, behavior when selectors are empty or omitted, precedence among multiple eligible balances, or mutation semantics for the edit request; use the dedicated API references for those boundaries.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-credits-and-commits]], [[metronome-products-and-rate-cards]]\n- Related sources: [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-create-a-pre-paid-commit]], [[source-metronome-api-reference-credits-and-commits-edit-a-commit]], [[source-metronome-api-reference-contracts-create-a-contract]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/pricing-packaging/apply-credits-and-commits/target-credit-and-commits-2026-07-13|2026-07-13 snapshot \u2014 targeted credit and commitment eligibility guide]]\n",
+  "quotes": [
+    {
+      "text": "You can grant credits and create commitments that are only applicable to a subset of a customer\u2019s usage. Choose to target the usage of specific products, product families, pricing dimensions, and even dimensions not used for pricing. This gives you the flexibility to negotiate enterprise commitments based on any dimension and to try out different pricing incentives.",
+      "location": "lines 9-11, opening paragraph"
+    },
+    {
+      "text": "Usage that matches *any* of the listed product IDs and product tags is eligible to consume the credit or commit.",
+      "location": "line 22, direct-selector semantics"
+    },
+    {
+      "text": "The `specifiers` field takes in an array of objects, where each object is called a specifier. Within each specifier all fields are ANDed together. If the conditions of any specifier in the array are met, the line item is eligible to consume the commit or credit. This is logic identical to [override\\_specifiers](/guides/pricing-packaging/make-pricing-changes/edit-or-override-a-contract#target-overrides), which you can use to grant discounts based on complex logic.",
+      "location": "line 28, specifier boolean semantics"
+    },
+    {
+      "text": "Note that if you use pricing group values and/or presentation group values in a specifier, only usage of products with the corresponding pricing and presentation group values will match that specifier. For example, if you create a credit that applies when pricing group value `region` = `us-east-1`, products that do not have the pricing group key `region` will never draw down the credit. Subscriptions and composite products never have pricing or presentation group values, so would not draw down the commit.",
+      "location": "line 30, group-key eligibility boundary"
+    },
+    {
+      "text": "Product tags make it very straightforward to launch new products. Consider a scenario where, as part of negotiating an enterprise contract, you\u2019ve agreed that a postpaid commitment applies to all products in the *Audio* model family that are also *Basic* models (a non-premium offering). By using product tags, any new products you launch that are *Basic* , *Audio* models automatically draw down from the postpaid commitment, with no additional work required. *Basic* and *Audio* models are both product tags.",
+      "location": "lines 127-129, multi-tag example prose"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "target-credit-boolean-semantics",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Drawdown and invoice attribution",
+        "proposed_markdown": "- Direct `applicable_product_ids` and `applicable_product_tags` use any-match semantics across the listed selectors. For richer targeting, fields within one `specifiers` object are ANDed, while separate objects in the array are ORed; these objects can test pricing-group values, presentation-group values, or product tags.",
+        "quote_indexes": [
+          1,
+          2
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "target-credit-group-key-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Enterprise design",
+        "proposed_markdown": "- A pricing- or presentation-group specifier matches only products carrying the corresponding group key and value. Subscription and composite products never carry pricing or presentation group values, so they cannot draw down a credit or commit targeted solely through those group-value conditions.",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "target-credit-credits-concept-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-target-credit-and-commits]] \u2014 direct-selector any-match behavior, specifier boolean logic, dimension targeting, and example inconsistencies",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw page's first region example conflicts between prose and payload, and its tag example conflicts on prepaid versus postpaid type; retain both cautions in the source page."
+        ]
+      },
+      {
+        "update_id": "target-credit-products-concept-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-target-credit-and-commits]] \u2014 product/tag selector semantics and pricing- or presentation-group eligibility boundaries",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/pricing-packaging/apply-credits-and-commits/target-credit-and-commits-2026-07-13.md",
+  "raw_sha256": "38f90445d14b019ac19bbb80c0e2813d5db14476271266ff4d82786d5f0967c6",
+  "status": "candidate_ready"
+}
