@@ -1,0 +1,80 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "provision-subscription-contract-mechanics",
+      "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Pricing and provisioning",
+      "proposed_markdown": "Contract provisioning uses a `subscriptions` config for each subscription. The config selects the rate by `billing_frequency` and `product_id`, sets advance or arrears collection, supplies initial quantity, and defines proration and invoice timing for mid-period changes. Metronome charges the subscription only when that config exists and its associated rate is enabled; an override must identify both billing frequency and product because one product can map to several rates. For advance subscriptions, `billing_cycle_config.anchor_date` may decouple the subscription cycle from the contract usage-invoice anchor, and `invoice_placement` selects a matching usage invoice or a scheduled invoice, appending to one with the same billing date or creating a new scheduled invoice.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Do not treat the guide's word `enabled` as a literal schema field; the example uses an `entitled` override, and the existing terminology warning remains applicable.",
+        "The source does not define exact proration formulas, failure behavior, idempotency, or complete create-contract validation."
+      ]
+    },
+    {
+      "update_id": "provision-subscription-seat-credit-models",
+      "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Pricing and provisioning",
+      "proposed_markdown": "A shared seat-credit pool links the subscription to a recurring credit by a temporary subscription identifier. Each period grants shared balance equal to `access_amount` per seat, and newly added seats release additional shared balance according to proration. An individual-seat model instead gives each identified seat a balance only that seat can consume; the guide documents a default support boundary of 1,000 individual-credit seats and directs larger cases to Metronome.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "The 1,000-seat statement is a default support boundary with an escalation route, not a documented immutable API maximum.",
+        "The source does not define seat-ID collision handling, reassignment, removal, or balance behavior after a seat is removed."
+      ]
+    },
+    {
+      "update_id": "provision-subscriptions-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-subscription-provision-your-customer]] - contract subscription fields, charging gate, billing-cycle and invoice placement, and pooled and individual seat-credit provisioning",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "provision-seat-credit-allocation",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Subscription, manual-gate, and trial extensions",
+      "proposed_markdown": "A subscription-linked recurring credit can create a shared pool by referencing the subscription's temporary identifier. Each period supplies `access_amount` of contract balance per seat, and seat additions release additional shared balance according to proration. Individual-seat allocation instead gives each identified seat a periodic balance that only that seat can consume; the guide documents default support for up to 1,000 such seats and an escalation path for larger deployments.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not generalize the 1,000-seat default into a hard API maximum.",
+        "The guide does not define exact grant timing, decrease behavior, seat reassignment, or individual-balance lifecycle after seat removal."
+      ]
+    },
+    {
+      "update_id": "provision-credits-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-subscription-provision-your-customer]] - subscription-linked shared recurring credits, per-seat balance grants, and individual-seat credit isolation",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

@@ -1,0 +1,102 @@
+{
+  "job_id": "get-commit-and-usage-analytics",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Get commit and usage analytics\"\ntype: source\ndate_ingested: 2026-08-19\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/reporting-insights/gtm-reporting/get-commit-and-usage-analytics.md\"\nraw_files:\n  - \"metronome/guides/reporting-insights/gtm-reporting/get-commit-and-usage-analytics-2026-07-13.md\"\ntags: [metronome, data-export, commit-analytics, usage-analytics, customer-success]\n---\n\n## Overview\n\nThis guide describes a warehouse-and-BI workflow for customer-level commit burn dashboards used by go-to-market teams. It combines an expected pacing curve derived from commit access schedules with actual consumption from finalized and current draft invoice line items, then proposes operational signals for renewal, adoption, and implementation outreach.\n\nThe page is implementation guidance rather than an executable query contract. Its SQL is explicitly generalized, contains example-level alias and table-name inconsistencies, and must be reconciled with the dedicated Data Export database reference, table grains, delivery cadence, and duplicate-row handling before production use.\n\n## Key takeaways\n\n- Data Export is a paid prerequisite, and the guide asks users to enable customer, contract-related, finalized-invoice, draft-invoice, and corresponding line-item tables. Its broad daily-flow wording does not replace the table-specific cadence and freshness rules in the dedicated export documentation.\n- Expected burn is modeled from each balance access schedule by spreading the scheduled amount across its service-period days; actual burn comes from invoice line items whose commit ID identifies the consumed balance.\n- Historical consumption uses finalized invoices, while the current billing period uses draft invoices and draft line items. The two result sets must be combined with the access schedule and an appropriate date spine.\n- A null commit ID cannot be joined to a particular commit, so this guide excludes the associated usage from the commit burn curve. Its stronger claim that every null value is on-demand usage conflicts with the existing revenue-reporting guide, which says null can mean on-demand or overage and requires client-defined metadata to distinguish them.\n- The suggested burn-rate bands, warning thresholds, and outreach actions are examples for merchant-owned GTM operations, not Metronome-enforced limits or universal health definitions.\n\n## Export prerequisites and scope\n\nThe guide calls for at least seven days of usage data, an Admin or Analyst role, contract-and-commit visibility, Data Export configuration access, and a BI tool that can query the exported Metronome tables. It identifies Data Export as paid and says initial setup typically takes two to three hours plus ongoing refinement.\n\nThe requested table set includes customers, contract-related models, finalized invoices and line items, and draft invoices and line items. The guide describes data flowing daily, but the dedicated Data Export overview remains authoritative for table-specific transfer frequency, average freshness, destination semantics, and latest-row selection. In particular, a production model must account for snapshot grains and, for object-storage destinations, append-only at-least-once delivery rather than assuming one current row per ID.\n\n## Expected and actual burn curves\n\n### Expected pacing\n\nThe expected curve parses schedule items from an access-schedule JSON value, converts monetary amounts from cents to currency units, calculates an inclusive schedule duration, and divides each schedule amount by that duration to obtain a daily expected rate. The sample also classifies a prepaid balance with an empty invoice schedule as a free commit.\n\nThe query is not directly executable as published. The source says its generalized SQL will most likely require adaptation, and the first sample selects through an undefined `sch` alias after naming the access-schedule relation `acs`; it also alternates between `contracts_balances_table` and `balances_table`. Those examples do not establish exact production table or JSON-field names.\n\n### Historical and current consumption\n\nFor historical burn, the guide filters invoices to `FINALIZED`, joins invoice line items, and treats a populated `commit_id` as the balance identifier. The selected data includes customer, product, service-period, invoice, quantity, unit price, line-item total, and audit timestamps.\n\nFor the active billing period, a parallel query uses draft invoices and draft line items. The guide says this current-period result supplements the finalized history so the combined model reflects consumption through the current day. The draft example also carries a `commit_segment_id`, but the source does not define how segment changes, repeated snapshots, voids, backfills, or late corrections should be deduplicated in this model.\n\n## Combined model and GTM use\n\nThe source instructs readers to join `line_item.commit_id` to the access-schedule balance ID, create a date spine over the relevant schedule service period, and cumulatively sum line-item totals within that period. Usage without a commit ID is omitted because it cannot be attributed to a particular commitment. A forecast curve is deliberately left to merchant-selected heuristics.\n\nComparing expected and actual curves can flag customers consuming faster, slower, or approximately on pace. The guide gives illustrative bands\u201480\u2013110% as on track, above 150% before month three as concerning, and below 50% after 60 days as an adoption signal\u2014and proposes account-manager or CSM dashboards, alerts, renewal outreach, and product-activation conversations. These thresholds are playbook examples, not contractual billing behavior.\n\n## Data and documentation cautions\n\n> [!warning] Contradiction\n> This guide maps `commit_id IS NULL` to on-demand usage. The existing revenue-reporting source says a null line-item commit ID can mean either on-demand usage or overage and requires client-defined contract or commit metadata to distinguish them. Preserve the narrower conclusion: null means the amount is not attributable to a specific commit; verify classification before labeling it on-demand.\n\n> [!warning] Generalized SQL\n> The sample queries are expressly non-executable generalized SQL and contain unresolved identifiers and table-name variants. They also do not implement the dedicated export documentation's snapshot selection or object-storage duplicate-row resolution. Treat the page as a modeling recipe and verify current schemas before deployment.\n\nBackdated usage can temporarily spike the curve, price changes can distort burn calculations, and recent configuration changes should be checked before escalating anomalies. The guide advises allowing 24 hours for backdated-usage effects and says draft invoice exports are daily, so neither the chart nor an alert should be represented as real-time. It does not define alert delivery, calculation ownership, time zones, currency aggregation, correction policy, data-retention requirements, access control for the BI layer, or forecast validation.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-reporting-and-analytics]], [[metronome-credits-and-commits]]\n- Related sources: [[source-metronome-guides-reporting-insights-data-export-overview]], [[source-metronome-guides-reporting-insights-data-export-database-reference]], [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/reporting-insights/gtm-reporting/get-commit-and-usage-analytics-2026-07-13|2026-07-13 snapshot \u2014 commit pacing, finalized and draft consumption queries, and GTM playbook guidance]]\n",
+  "quotes": [
+    {
+      "text": "**Instructions:** To create a commit burn rate curve, we need to combine 2 concepts, how much of a commit *should* be burned and how much of a commit has *actually been* burned. The following queries provide a step-by-step guide to define both concepts using Metronome data export data.",
+      "location": "raw/metronome/guides/reporting-insights/gtm-reporting/get-commit-and-usage-analytics-2026-07-13.md:74 (expected-versus-actual burn model)"
+    },
+    {
+      "text": "The SQL used here is generalized SQL and will most likely not run in your query engine as-is. Python and SQL can both be used for the creation of these dashboards.",
+      "location": "raw/metronome/guides/reporting-insights/gtm-reporting/get-commit-and-usage-analytics-2026-07-13.md:79 (non-executable generalized-SQL boundary)"
+    },
+    {
+      "text": "The following query parses invoice line item data to determine how much of the commit was *actually* burned in a given month. This query only parses finalized invoices and will later need to be joined against the draft invoice data to build an up to date view of the remaining commit.",
+      "location": "raw/metronome/guides/reporting-insights/gtm-reporting/get-commit-and-usage-analytics-2026-07-13.md:173 (finalized history and draft-current-view relationship)"
+    },
+    {
+      "text": "The previous query provides a historical month over month view of commit burn. The following query can be combined with the above to show how the commit has been burned as of the current day in the billing period. The query logic is similar to the finalized `line_item` pattern above, with the only difference being that it pulls intra-month commit data from the `draft_invoice` table.",
+      "location": "raw/metronome/guides/reporting-insights/gtm-reporting/get-commit-and-usage-analytics-2026-07-13.md:248 (current-period draft consumption)"
+    },
+    {
+      "text": "   * `line_item.commit_id` should be joined to `access_schedule.balance_id`\n   * date\\_spine should be created using the `schedule_start_date` and `schedule_end_date`, inclusive of the `schedule_start_date` so that consumption is only measured against the appropriate access schedule service period\n   * when `line_item.commit_id` is null, this signifies on-demand usage, which can\u2019t tie to a certain commit, thus this usage won\u2019t show up in the burn curve\n   * cumulative sums on `line_item_total_amount_usd` within an `access_schedule` service period will generate the total burn against a commit by the end of that service period\n   * `forecast_burn_curve` can be modeled based on the heuristics of your choosing",
+      "location": "raw/metronome/guides/reporting-insights/gtm-reporting/get-commit-and-usage-analytics-2026-07-13.md:318-322 (join, date-spine, null-attribution, cumulative-burn, and forecast rules)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "commit-usage-analytics-reporting-model",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Financial reconciliation workflows",
+        "proposed_markdown": "Metronome's GTM reporting guide models a customer commit-burn curve by combining expected daily pacing from balance access schedules with actual consumption from finalized invoice line items and current-period draft line items. The model joins `line_item.commit_id` to the access-schedule balance ID, constrains consumption to the schedule service period, cumulatively sums attributed line-item totals, and leaves forecast heuristics to the merchant. Its SQL is explicitly generalized and includes unresolved aliases and table-name variants; production models must retain the dedicated Data Export table-grain, freshness, snapshot-selection, and duplicate-row rules. The guide's sample burn bands and outreach actions are operational heuristics rather than platform-enforced thresholds.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not describe the generalized SQL as executable or as an exact current schema contract.",
+          "Do not replace table-specific Data Export cadence, freshness, snapshot, or at-least-once rules with the guide's broad daily wording.",
+          "Treat the example burn-rate bands as merchant-selected playbook heuristics, not universal customer-health definitions."
+        ]
+      },
+      {
+        "update_id": "commit-usage-analytics-reporting-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-reporting-insights-gtm-reporting-get-commit-and-usage-analytics]] \u2014 expected-versus-actual commit burn model, finalized and draft consumption inputs, export and SQL limitations, and GTM operational heuristics",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "commit-burn-attribution-and-null-classification",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Drawdown and invoice attribution",
+        "proposed_markdown": "A GTM analytics guide derives expected commit burn from an access schedule and actual burn from finalized plus current draft invoice line items. It joins a populated `line_item.commit_id` to the access-schedule balance ID and sums attributed line-item totals within that schedule's service period. A null commit ID cannot be attributed to a particular commit and is excluded from the curve. > [!warning] Contradiction\n> The GTM guide labels every null commit ID as on-demand usage, while the revenue-reporting guide says null can mean on-demand or overage and requires client-defined metadata to distinguish them. Preserve only the non-attribution conclusion until classification is verified.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not generalize `commit_id IS NULL` to on-demand usage; existing revenue-reporting documentation also permits overage.",
+          "Do not imply that invoice-line aggregation alone captures every ledger event, expiration, correction, or true-up affecting a balance."
+        ]
+      },
+      {
+        "update_id": "commit-usage-analytics-credits-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-reporting-insights-gtm-reporting-get-commit-and-usage-analytics]] \u2014 access-schedule pacing, finalized and draft line-item burn attribution, and the null-commit on-demand-versus-overage contradiction",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/reporting-insights/gtm-reporting/get-commit-and-usage-analytics-2026-07-13.md",
+  "raw_sha256": "ce5a5ad4b54fdf845be5ddca609332df4b9c37093725597819a19733c837f211",
+  "status": "candidate_ready"
+}

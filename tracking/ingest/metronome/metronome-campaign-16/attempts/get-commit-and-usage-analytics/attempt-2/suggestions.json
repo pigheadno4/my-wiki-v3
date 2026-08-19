@@ -1,0 +1,74 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "commit-usage-analytics-reporting-model",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Financial reconciliation workflows",
+      "proposed_markdown": "Metronome's GTM reporting guide models expected commit pacing from access schedules and intended actual burn from finalized plus current-period invoice data, but its generalized SQL does not resolve the export table family. The finalized example names base invoice tables while filtering `li.line_item_type`, which the database reference documents on breakdown line items. The draft example names `draft_invoice` and `draft_line_item` while selecting breakdown timestamps, `commit_segment_id`, and `invoice_breakdown_id`, which the reference associates with the draft-breakdown family. Do not choose a family by inference: reconcile the current reference, fields, joins, and grain first. Finalized base invoice data is incremental at 2-hour transfer and 4-hour average freshness; `contracts_balances` and base draft invoice data are 24-hour/24-hour snapshots. Base draft invoices emit one point-in-time invoice snapshot per day at start-of-day UTC, while draft breakdown snapshots contain month-to-date rows. Separately, object-storage exports are append-only and at-least-once, so latest-row resolution for repeated primary keys remains necessary after snapshot selection. Summing multiple snapshots or delivery duplicates can overstate burn. The source's burn bands and outreach actions are merchant playbook examples, not platform-enforced thresholds.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not resolve the base-versus-breakdown family ambiguity without checking the current database reference.",
+        "Keep snapshot selection separate from object-storage duplicate-row resolution; both can independently cause overcounting.",
+        "Do not replace table-specific export cadence or freshness with the guide's broad daily wording.",
+        "Treat the example burn-rate bands and outreach actions as merchant-selected heuristics."
+      ]
+    },
+    {
+      "update_id": "commit-usage-analytics-reporting-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-reporting-insights-gtm-reporting-get-commit-and-usage-analytics]] \u2014 expected-versus-actual commit burn model, unresolved base-versus-breakdown SQL fields, snapshot and delivery-overcount cautions, null attribution conflict, and illustrative GTM burn bands",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "commit-burn-attribution-and-null-classification",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Drawdown and invoice attribution",
+      "proposed_markdown": "A GTM analytics guide derives expected commit pacing from an access schedule and proposes actual burn from finalized plus current-period invoice data. At the model level it joins a populated `line_item.commit_id` to the access-schedule balance ID and sums attributed amounts within that schedule's service period; however, its base-versus-breakdown table family and grain remain unresolved and must be verified before aggregation. A null commit ID cannot be attributed to a particular commit and is excluded from the curve. > [!warning] Contradiction\n> The GTM guide labels every null commit ID as on-demand usage, while the revenue-reporting guide says null can mean on-demand or overage and requires client-defined metadata to distinguish them. Preserve only the non-attribution conclusion until classification is verified.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Do not generalize `commit_id IS NULL` to on-demand usage; existing revenue-reporting documentation also permits overage.",
+        "Do not imply that the published SQL has selected a coherent invoice table family or grain.",
+        "Do not imply that invoice-line aggregation captures every ledger event, expiration, correction, or true-up affecting a balance."
+      ]
+    },
+    {
+      "update_id": "commit-usage-analytics-credits-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-reporting-insights-gtm-reporting-get-commit-and-usage-analytics]] \u2014 access-schedule pacing, unresolved invoice-data grain, commit-attributed burn, and the null-commit on-demand-versus-overage contradiction",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

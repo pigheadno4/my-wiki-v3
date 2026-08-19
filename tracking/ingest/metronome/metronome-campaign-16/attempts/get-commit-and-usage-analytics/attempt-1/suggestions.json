@@ -1,0 +1,72 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "commit-usage-analytics-reporting-model",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Financial reconciliation workflows",
+      "proposed_markdown": "Metronome's GTM reporting guide models a customer commit-burn curve by combining expected daily pacing from balance access schedules with actual consumption from finalized invoice line items and current-period draft line items. The model joins `line_item.commit_id` to the access-schedule balance ID, constrains consumption to the schedule service period, cumulatively sums attributed line-item totals, and leaves forecast heuristics to the merchant. Its SQL is explicitly generalized and includes unresolved aliases and table-name variants; production models must retain the dedicated Data Export table-grain, freshness, snapshot-selection, and duplicate-row rules. The guide's sample burn bands and outreach actions are operational heuristics rather than platform-enforced thresholds.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not describe the generalized SQL as executable or as an exact current schema contract.",
+        "Do not replace table-specific Data Export cadence, freshness, snapshot, or at-least-once rules with the guide's broad daily wording.",
+        "Treat the example burn-rate bands as merchant-selected playbook heuristics, not universal customer-health definitions."
+      ]
+    },
+    {
+      "update_id": "commit-usage-analytics-reporting-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-reporting-insights-gtm-reporting-get-commit-and-usage-analytics]] \u2014 expected-versus-actual commit burn model, finalized and draft consumption inputs, export and SQL limitations, and GTM operational heuristics",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "commit-burn-attribution-and-null-classification",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Drawdown and invoice attribution",
+      "proposed_markdown": "A GTM analytics guide derives expected commit burn from an access schedule and actual burn from finalized plus current draft invoice line items. It joins a populated `line_item.commit_id` to the access-schedule balance ID and sums attributed line-item totals within that schedule's service period. A null commit ID cannot be attributed to a particular commit and is excluded from the curve. > [!warning] Contradiction\n> The GTM guide labels every null commit ID as on-demand usage, while the revenue-reporting guide says null can mean on-demand or overage and requires client-defined metadata to distinguish them. Preserve only the non-attribution conclusion until classification is verified.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not generalize `commit_id IS NULL` to on-demand usage; existing revenue-reporting documentation also permits overage.",
+        "Do not imply that invoice-line aggregation alone captures every ledger event, expiration, correction, or true-up affecting a balance."
+      ]
+    },
+    {
+      "update_id": "commit-usage-analytics-credits-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-reporting-insights-gtm-reporting-get-commit-and-usage-analytics]] \u2014 access-schedule pacing, finalized and draft line-item burn attribution, and the null-commit on-demand-versus-overage contradiction",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

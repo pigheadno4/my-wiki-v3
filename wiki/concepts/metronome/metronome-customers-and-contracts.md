@@ -43,6 +43,8 @@ This introductory source does not define the full contract schema, amendment lif
 
 The architecture guide frames each contract as answering what the customer buys, how they pay, and where charges are delivered. It lists pay-as-you-go arrears, prepaid credits, subscriptions with overage, enterprise commitments, and hybrids, while leaving request validation, effective-time semantics, amendments, and state transitions to dedicated references.
 
+Metronome account hierarchies link distinct parent and child customers through their contracts. The guide limits a hierarchy to one parent-child level and 10 active nodes, requires every customer to retain its own contract, and configures the relationship during contract creation. A child contract identifies both the parent customer and parent contract, then selects parent-versus-self payment and consolidated-versus-separate usage-statement behavior. Each child's usage remains separately rated under that child's contract; parent tiered pricing applies only to direct parent usage, not aggregated child usage. For shared parent-commit access, both contracts must be active during the same period. The guide does not define reparenting, detachment, deletion, concurrent hierarchy changes, or validation responses.
+
 ### Customer balance views
 
 Metronome documents `/getNetBalance` as a customer-scoped single aggregate with filters for balance type, currency, pending charges, and custom fields. `listBalances` provides the detailed per-credit or per-commit alternative. The page does not define whether the aggregate crosses all customer contracts, how customer- and contract-level balances interact, how hierarchy affects the result, or whether reads are snapshot-consistent.
@@ -114,6 +116,8 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - Commercial-design planning should make prepaid-versus-arrears terms, seat and usage interaction, commitments and overages, ramp and multi-year structures, exceeded-limit policy, and segment-specific payment terms explicit. The planning guide does not itself establish supported contract fields, lifecycle behavior, or enforcement.
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] — one-level parent-child contract model, payer and statement behavior, separate rating, and hierarchy limits
 
 - [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]] - original contract-state recreation, invoice-generation cutoff, and dedicated historical-invoice import boundary
 

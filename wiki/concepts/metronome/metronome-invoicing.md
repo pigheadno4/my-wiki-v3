@@ -23,6 +23,8 @@ The overview emphasizes optionality: organizations can use simpler integrated in
 
 ## Calculation and timing boundary
 
+A subscription's `invoice_placement` defaults to `ON_USAGE_INVOICE`, placing its charge on the usage invoice with the matching billing date. `ON_SCHEDULED_INVOICE` places the charge on a scheduled invoice: Metronome appends it when a scheduled invoice with that billing date exists and creates a new scheduled invoice when none exists. This placement does not establish finalization, delivery, collection success, or payment timing.
+
 ### Legacy Plans one-time invoice charge
 
 Metronome's deprecated Plans API exposes bearer-authenticated `POST /v1/customers/{customer_id}/addCharge`. The required path `customer_id` is UUID-formatted; the `requestBody` is not itself marked required, while its payload schema requires `charge_id`, `price`, `quantity`, `invoice_start_timestamp`, `customer_plan_id`, and `description`. The charge must be on a product outside the current plan, and that product must have only fixed charges. The caller supplies the numeric price, which must match the invoice currency, with USD cents given only as an example. The target invoice is described through the customer, customer plan, and invoice start timestamp rather than an invoice ID, and HTTP 200 has an empty object schema. The page directs new clients to Contracts but does not identify the replacement endpoint, map the payload, define eligible invoice states or duplicate behavior, or document line-item creation, downstream delivery, tax, discounts, credits, commits, payment, accounting, or reconciliation effects.
@@ -56,6 +58,8 @@ Metronome's financial-reporting guide classifies `CONTRACT_SCHEDULED` invoices a
 The dashboard quickstart describes a draft invoice accumulating usage during the billing period, followed by a 24-hour grace period before finalization. With a billing provider connected, it says the invoice is pushed within approximately one hour after finalization. Payment collection and paid or failed status remain the billing provider's responsibility.
 
 ## Credit and commit application
+
+When several eligible invoice lines can receive a credit or commit, Metronome applies the balance to usage products before subscription products and then composite products. Ties within a product type go to the earlier line-item start date, then the higher unit price, then alphabetical line-item name.
 
 For a product rated in a custom pricing unit, Metronome first burns down applicable credits and prepaid commits with access schedules in that unit. If no applicable matching balance remains, the invoice receives a conversion line item that calculates the residual cost in the rate card's fiat currency; the converted fiat amount becomes the total due in the example. This does not establish conversion formula direction, precision, rounding, tax, finalization, delivery, collection, or payment-success behavior.
 
@@ -138,6 +142,8 @@ A contract can schedule invoice routing among Stripe, NetSuite, and AWS, Azure, 
 > [!warning] Documentation ambiguity
 > The provider-change guide first selects a schedule segment relative to service-period end or `issued~at`, then says each invoice maps by service-period start. It does not reconcile those timing formulations.
 
+Hierarchy consolidation uses parent `invoice_consolidation_type: "CONCATENATE"` with child `payer: "PARENT"` and `usage_statement_behavior: "CONSOLIDATE"`; a self-paying child must use a separate statement. Inclusion also requires the child usage service period to be bounded by the parent's period and parent and child issue dates to align on the same day. Metronome still generates standalone parent and child usage statements for UI, API, and data export visibility, but does not send them downstream when consolidation occurs; the guide specifically suggests filtering the standalone parent statement in a parent-facing spend UI to avoid double-counting it with the consolidated invoice. Consolidated line items retain origin customer and contract information. Hierarchy billing currently supports only Stripe; marketplace billing is merely described as coming soon, without a date or provider contract. The source does not define the disposition of a child invoice that fails the consolidation checks.
+
 ## Stripe representation limits
 
 Decimal quantities are moved into descriptions while Stripe line-item quantities become `1`; invoices over 250 line items collapse into one Stripe item. The guide also documents a maximum-charge error and no native Stripe credit-memo support. These transformations mean the Metronome invoice remains the detailed billing record when Stripe representation is compressed.
@@ -153,6 +159,10 @@ Metronome's go-live checklist asks teams to understand the draft-to-grace-period
 - Related platform: [[stripe]]
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-prioritization-rules]] - eligible invoice-line ordering by product type, start date, unit price, and name
+- [[source-metronome-guides-pricing-packaging-subscription-provision-your-customer]] - subscription usage-invoice versus scheduled-invoice placement and same-billing-date append-or-create behavior
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] — parent-paid consolidation conditions, standalone-statement boundary, origin attribution, and Stripe-only hierarchy limit
 
 - [[source-metronome-api-reference-invoices-regenerate-an-invoice]] - invoice regeneration contract, recalculation and distribution side effects, identity contradiction, and retry boundaries
 

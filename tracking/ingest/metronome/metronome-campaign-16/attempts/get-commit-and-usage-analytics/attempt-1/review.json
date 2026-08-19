@@ -1,0 +1,29 @@
+{
+  "job_id": "get-commit-and-usage-analytics",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The immutable raw SHA-256 and canonical URL match the assigned job; candidate.md equals receipt.source_page, suggestions.json equals receipt.suggestions, all five grounding quotes byte-match the assigned raw source, the path-qualified raw backlink exists, the canonical source target is absent, and every existing company, concept, and related-source link resolves. The candidate correctly preserves the most important semantic contradiction: this GTM guide labels every null commit_id as on-demand, while the existing revenue-recognition source says null can mean on-demand or overage and requires client-defined metadata to distinguish them; the candidate therefore retains only non-attribution to a specific commit. It also correctly treats the burn bands and outreach actions as merchant playbook examples rather than enforcement. A production-significant SQL/table-grain issue remains under-described, however. Beyond the identified sch-versus-acs alias and contracts_balances_table-versus-balances_table names, the finalized query filters li.line_item_type even though the dedicated base line_item reference does not document that field, and the draft query is described as draft_invoice plus draft_line_item while selecting breakdown_start_timestamp, breakdown_end_timestamp, commit_segment_id, and invoice_breakdown_id fields documented on the breakdowns_draft_* family. That unresolved base-table-versus-breakdown-table choice controls row grain and snapshot handling, so a generic warning about identifiers is insufficient. The candidate also gestures at table-specific cadence and deduplication without preserving the relevant distinctions from its linked authorities: finalized invoice and line_item are incremental at 2-hour transfer frequency with 4-hour average freshness; contracts_balances, draft_invoice, and draft_line_item are 24-hour/24-hour snapshots; base draft tables emit one invoice snapshot per day with snapshot_time at start-of-day UTC; draft breakdown snapshots are month-to-date; and object-storage retry/update duplicates requiring latest-row-per-primary-key resolution are a separate problem from choosing the intended table snapshot. Finally, the reporting-model shared update asserts unresolved aliases/table variants and GTM burn-band/outreach heuristics, but none of its cited excerpts contains the mismatched query identifiers or the bands and actions. These are important factual and evidence omissions, so the correction requires another full-source review rather than a targeted wording check.",
+  "required_changes": [
+    "Expand the SQL caution to identify the unresolved table-family mismatch, not only sch/acs and placeholder table names: the finalized example uses li.line_item_type although that field is documented on breakdown line items rather than base line_item, and the draft example names draft_invoice/draft_line_item while using breakdown_start_timestamp, breakdown_end_timestamp, commit_segment_id, and invoice_breakdown_id fields associated with breakdowns_draft_invoices/breakdowns_draft_line_items. Do not decide which family is intended; state that the guide must be reconciled with the current database reference before choosing joins or grain.",
+    "State the table-specific export semantics relevant to this model and keep the two deduplication axes separate: finalized invoice/line_item are incremental with 2-hour transfer and 4-hour average freshness; contracts_balances and base draft invoice/line-item tables are 24-hour/24-hour snapshots; base draft invoices produce one snapshot per invoice per day with snapshot_time aligned to start-of-day UTC, while draft breakdown snapshots contain month-to-date rows. Separately, object-storage delivery is append-only and at-least-once, so repeated primary keys from updates or retries require latest-row resolution. Warn that summing multiple draft snapshots or object-storage duplicates would overstate burn.",
+    "Repair quote grounding for commit-usage-analytics-reporting-model and its reciprocal reporting source link. Add or expand byte-exact excerpts that include the asserted query identifier/table mismatches and the burn-band/outreach examples, then update quote_indexes; alternatively remove any exact assertion not present in the cited excerpts. Keep the null-commit contradiction and the table-grain cautions intact."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "full",
+  "shared_update_decisions": [
+    {
+      "update_id": "commit-usage-analytics-reporting-model",
+      "verdict": "rejected",
+      "reason": "The model direction is sound, but the proposed durable fact understates the base-table-versus-breakdown-table ambiguity and cites no excerpt containing either the mismatched identifiers or its asserted burn bands and outreach actions."
+    },
+    {
+      "update_id": "commit-usage-analytics-reporting-source-link",
+      "verdict": "rejected",
+      "reason": "The reciprocal link is warranted, but its description claims export limitations and GTM operational heuristics that are not fully represented in the cited excerpts; approve it after the reporting evidence set is repaired."
+    },
+    "commit-burn-attribution-and-null-classification",
+    "commit-usage-analytics-credits-source-link"
+  ],
+  "reviewer_identity": "/root/c16_r_analytics",
+  "reviewer_model": "gpt-5.6-sol"
+}

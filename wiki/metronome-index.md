@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 97 |
-| Raw pages without source summaries | 134 |
+| Source summaries ingested | 102 |
+| Raw pages without source summaries | 129 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -22,6 +22,12 @@ Operational evidence:
 - [2026-07-13 collection manifest](../tracking/collections/metronome/runs/2026-07-13T100930-manifest.md)
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-prioritization-rules]] - rollover and ordinary credit/commit ordering, tie-breakers, and invoice-line priority
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-prepaid-credits]] - prepaid-credit packaging, merchant-owned entitlement, Stripe payment gate, and example contradictions
+- [[source-metronome-guides-pricing-packaging-subscription-provision-your-customer]] - subscription contract fields, invoice placement, and pooled or individual seat credits
+- [[source-metronome-guides-reporting-insights-gtm-reporting-get-commit-and-usage-analytics]] - commit pacing and burn analysis with export-grain and deduplication cautions
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] - parent-child contracts, shared commits, consolidated invoicing, reporting, and hierarchy limits
 
 - [[source-github-ai]] - Metronome-authored AI skills for integration, catalog and contract setup, PLG billing, CSM reviews, and Stripe migration
 - [[changelog-github-ai]] - commit-qualified Metronome AI skills history and future comparison rule

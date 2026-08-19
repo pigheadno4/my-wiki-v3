@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 97
+source_count: 102
 ---
 
 ## Overview
@@ -151,10 +151,16 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 95
-- Raw pages without source summaries: 134
+- Ingested source summaries: 102
+- Raw pages without source summaries: 129
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-prioritization-rules]] - rollover and ordinary credit/commit ordering, tie-breakers, and invoice-line priority
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-prepaid-credits]] - prepaid-credit packaging, merchant-owned entitlement, Stripe payment gate, and example contradictions
+- [[source-metronome-guides-pricing-packaging-subscription-provision-your-customer]] - subscription contract fields, invoice placement, and pooled or individual seat credits
+- [[source-metronome-guides-reporting-insights-gtm-reporting-get-commit-and-usage-analytics]] - commit pacing and burn analysis with export-grain and deduplication cautions
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] - parent-child contracts, shared commits, consolidated invoicing, reporting, and hierarchy limits
 
 - [[source-github-ai]] - Metronome-authored agent workflows for integrations, catalog setup, CSM reviews, and Stripe migration
 - [[changelog-github-ai]] - commit-qualified Metronome AI skills history

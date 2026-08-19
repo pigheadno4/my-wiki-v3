@@ -1,0 +1,169 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "hierarchical-customer-contract-model",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "under ## Contract and invoice behavior",
+      "proposed_markdown": "Metronome account hierarchies link distinct parent and child customers through their contracts. The guide limits a hierarchy to one parent-child level and 10 active nodes, requires every customer to retain its own contract, and configures the relationship during contract creation. A child contract identifies both the parent customer and parent contract, then selects parent-versus-self payment and consolidated-versus-separate usage-statement behavior. Each child's usage remains separately rated under that child's contract; parent tiered pricing applies only to direct parent usage, not aggregated child usage.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "Do not infer reparenting, detachment, deletion, transition, concurrency, or every accepted payer and statement combination; the guide does not define them.",
+        "Preserve the one-level and maximum-active-10-node limits rather than generalizing account hierarchy to arbitrary nesting."
+      ]
+    },
+    {
+      "update_id": "hierarchical-customer-contract-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] \u2014 one-level parent-child contract model, payer and statement behavior, separate rating, and hierarchy limits",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "hierarchical-commit-child-access",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "under ## Targeted commit edits",
+      "proposed_markdown": "In an account hierarchy, a parent commit can make its balance available to all children, no children, or selected child contract IDs. The shared-pool example lets children draw down the parent commit and then makes self-paying children responsible for their own overages after exhaustion. Selective access can coexist with separate child rate cards and contract overrides. The guide states that hierarchies can share credits as well, but its detailed child-access payloads are commit examples and do not establish credit-specific request mechanics.",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "Do not infer general priority, overlapping-balance, simultaneous-drawdown, or override-precedence rules from these worked examples.",
+        "Keep credit sharing at the overview capability level because the detailed examples configure commits."
+      ]
+    },
+    {
+      "update_id": "hierarchical-commit-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] \u2014 parent commit access for all, no, or selected children and self-paid overage boundary",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "hierarchical-consolidated-invoicing",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "under ## Scheduled provider routing",
+      "proposed_markdown": "Hierarchy consolidation uses parent `invoice_consolidation_type: \"CONCATENATE\"` with child `payer: \"PARENT\"` and `usage_statement_behavior: \"CONSOLIDATE\"`; a self-paying child must use a separate statement. Inclusion also requires the child usage service period to be bounded by the parent's period and parent and child issue dates to align on the same day. Metronome still generates standalone parent and child usage statements for UI, API, and data export visibility, but does not send them downstream when consolidation occurs; merchant spend views should avoid double-counting the standalone parent statement and consolidated invoice. Consolidated line items retain origin customer and contract information.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not infer timezone, proration, late-usage, regeneration, correction, finalization-order, or failure-recovery semantics.",
+        "Scope the downstream-routing statement to the documented consolidation scenario and currently supported Stripe hierarchy path."
+      ]
+    },
+    {
+      "update_id": "hierarchical-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] \u2014 parent-paid consolidation conditions, standalone-statement boundary, origin attribution, and Stripe-only hierarchy limit",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "hierarchical-parent-alert-limits",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "durable_fact",
+      "anchor": "under ## Customer-configured controls",
+      "proposed_markdown": "For a parent contract's shared commit, child consumption does not automatically trigger the parent's commit-balance alert. The hierarchy guide says alerts evaluate when the parent receives usage and may therefore be delayed when usage arrives only for children. It gives no evaluation-latency, replay, or eventual-delivery guarantee. Its next spend-alert bullet is truncated after `parent spend alerts only include parent's`, so no spend scope should be inferred from that sentence.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Preserve the truncated spend-alert sentence as a documentation defect; do not complete or paraphrase its missing object.",
+        "Do not convert may be delayed into an eventual-trigger guarantee."
+      ]
+    },
+    {
+      "update_id": "hierarchical-alerts-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] \u2014 parent commit-alert evaluation limitation and truncated parent-spend-alert statement",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "hierarchical-reporting-origin-and-dashboard-limit",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "under ## Query model",
+      "proposed_markdown": "A consolidated hierarchy invoice can retain origin customer and contract identifiers on line items, allowing consumers to group subsidiary spend and measure contract-level usage. Standalone parent and child usage statements remain visible through the UI, API, and data export even when they are not sent downstream, so analyses must avoid double-counting them with the consolidated invoice. The guide separately says invoice and commit embeddable dashboards do not work for customers whose contract is in a hierarchy; it does not extend that limitation to all reports, API views, or exports.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not infer that every consolidated line-item type exposes an identical origin object or that exported grains deduplicate standalone and consolidated records automatically.",
+        "Keep the dashboard limitation scoped to invoice and commit embeddable dashboards."
+      ]
+    },
+    {
+      "update_id": "hierarchical-reporting-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] \u2014 consolidated origin analysis, standalone-statement double-count boundary, and embeddable-dashboard limitation",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "hierarchical-dollar-amount-contradiction",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "durable_fact",
+      "anchor": "under ## API denomination",
+      "proposed_markdown": "> [!warning] Hierarchy-guide amount contradiction\n> The hierarchical-customer guide calls a parent commitment $10M while its access and invoice schedules both use `amount: 10000000`. Under the documented USD-cent convention, that payload represents $100,000 rather than $10M. The same scaling tension appears in its $200K, $500K, $5M, and $2M examples. The payloads do not identify another pricing unit that resolves the mismatch, so verify every intended amount before adapting them.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Do not silently rescale the payload or assume an undocumented custom pricing unit.",
+        "Preserve the existing provider-wide rule that USD uses cents while listed non-USD fiat uses whole units."
+      ]
+    },
+    {
+      "update_id": "hierarchical-currency-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] \u2014 dollar-labeled hierarchy commitment examples whose numeric amounts conflict with the USD-cent convention",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

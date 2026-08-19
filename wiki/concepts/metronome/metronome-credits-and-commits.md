@@ -35,7 +35,10 @@ Credits and prepaid commits at contract or customer level can carry access sched
 
 A Metronome credit can grant relief on future billing at customer scope, where it can apply across existing contracts on the account, or at contract scope. This does not alter the past transaction or invoice. When charges and associated revenue must be reversed, the credit-memo guide instead assigns the memo to the external customer-A/R system; the resulting A/R invoice can differ from the Metronome invoice line, with the memo serving as the audit record. The source does not establish that a future credit reverses historical revenue.
 
-- Credits and prepaid commits draw down before postpaid commits; lower numeric priorities consume first.
+- Credits and prepaid commits ordinarily draw down before postpaid commits; lower numeric priorities consume first within the applicable ordering tier.
+
+> [!warning] Contradiction
+> The broad prepaid-before-postpaid rule has a rollover exception: the prioritization guide places postpaid rollover commits before prepaid rollover commits and credits. After the rollover tier, prepaid commits and credits still precede ordinary postpaid commits regardless of priority. Commit type outranks priority; same-type rollover ties use priority, narrower product applicability, narrower usage applicability, then earlier `ending_before`. Prepaid ties additionally place zero-dollar cost basis before paid value, then use earlier `starting_on` and fewer applicable contracts. The postpaid section says it follows prepaid logic but its abbreviated list omits usage applicability, so that tie-breaker remains ambiguous for postpaid commits.
 - The same usage can apply to only one credit or commit, with any remainder continuing as postpaid fulfillment or overage.
 - Application occurs at invoice line-item level. Covered usage, the negative balance-application line, and uncovered overage remain separately attributable.
 - Every credit or commit uses a fixed product for invoice and reporting attribution, while product IDs, tags, or specifiers can restrict eligible usage.
@@ -95,6 +98,8 @@ Spend-threshold billing is a separate contract control from prepaid-balance auto
 - Hierarchy child access can allow all children, no children, or a non-empty contract-ID list.
 - The schema does not define general omitted-versus-null mutation semantics, the meaning of its success `data.id`, or the interaction between top-level `product_id` and the applicability selectors.
 
+In an account hierarchy, a parent commit can make its balance available to all children, no children, or selected child contract IDs. The shared-pool example lets children draw down the parent commit and then makes self-paying children responsible for their own overages after exhaustion; both parent and child contracts must be active during the same period for access. Selective access can coexist with separate child rate cards and contract overrides. The guide states that hierarchies can share credits as well, but its detailed child-access payloads are commit examples and do not establish credit-specific request mechanics.
+
 ## Legacy amendment payloads
 
 The retiring contract-amendment endpoint can add prepaid or postpaid commits and credits as part of one amendment. Its commit schema requires type and product, while prose calls `access_schedule` required without listing it in the OpenAPI `required` array. Postpaid schedules are limited to one matching access and invoice item; omitting a prepaid invoice schedule creates a complimentary commit.
@@ -118,6 +123,16 @@ The guides contain example-level inconsistencies that should be checked against 
 - When cancelling a hybrid subscription by moving that subscription's end date, its recurring credit must be ended separately. The lifecycle source does not establish contract-level cancellation behavior for that credit.
 - A manual one-off Stripe-gated commit edits an existing contract. Successful payment releases the balance; failure voids the associated Metronome and Stripe invoices, creates no commit, and requires a new API request rather than an automatic payment retry. Pre-success resource state and external-gate equivalence are undocumented.
 - A capped trial can use a fixed credit product with a time-bounded access schedule, blank applicability fields for all usage, and a low numeric priority so the trial grant draws down first. Depletion or expiry permits later usage to rate in arrears; monetary encoding and isolation from other balances remain unknown.
+- The prepaid-credits business-model guide makes product access merchant-owned: the merchant stores a local boolean entitlement for latency and resilience, sets it true only after successful gated payment, and uses a zero-balance alert as the signal to set it false. The guide implements the purchased "credits" as an `add_commits` contract edit and calls the balance and access-schedule amounts `2000`, but does not define their unit. Its sample access interval is invalid because `ending_before` is 2025-04-01 while `starting_at` is 2026-04-01, and its auto-recharge prose and payload use `threshold_billing_configuration` and `credit_balance_threshold_configuration` rather than the dedicated threshold guide's `prepaid_balance_threshold_configuration`. Do not copy these examples without verifying the current contract schema and corrected dates.
+
+A subscription-linked recurring credit can create a shared pool by referencing the subscription's temporary identifier. Each period supplies `access_amount` of contract balance per seat, and seat additions release additional shared balance according to proration. Individual-seat allocation instead gives each identified seat a periodic balance that only that seat can consume; its usage path depends on the configured metric group key, product presentation group key, stable event seat identifier, and `SEAT_BASED` subscription configuration.
+
+### Commit-usage analytics boundary
+
+A GTM analytics guide derives expected commit pacing from an access schedule and proposes actual burn from finalized plus current-period invoice data. At the model level it joins a populated `line_item.commit_id` to the access-schedule balance ID and sums attributed amounts within that schedule's service period; however, its base-versus-breakdown table family and grain remain unresolved and must be verified before aggregation. A null commit ID cannot be attributed to a particular commit and is excluded from the curve.
+
+> [!warning] Contradiction
+> The GTM guide labels every null commit ID as on-demand usage, while the revenue-reporting guide says null can mean on-demand or overage and requires client-defined metadata to distinguish them. Preserve only the non-attribution conclusion until classification is verified.
 
 ## Commit-balance notifications
 
@@ -126,6 +141,12 @@ Threshold notifications can monitor credit and commit remaining balance, percent
 A merchant can create `low_remaining_commit_balance_reached` for a customer, credit type, and threshold. The resulting signal can support customer communication, sales outreach, or a merchant-owned service cutoff when the balance reaches zero. The page does not define which contract- or customer-level commits contribute, applicability or priority effects, expired-balance treatment, inclusion of credits, or automatic access enforcement.
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-prioritization-rules]] - rollover, prepaid, and postpaid burn-down ordering; type precedence; applicability and schedule tie-breakers; and the postpaid-list ambiguity
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-prepaid-credits]] — end-to-end prepaid-credit model, merchant-owned entitlement, Stripe-gated purchase, auto-recharge lifecycle, and example contradictions
+- [[source-metronome-guides-pricing-packaging-subscription-provision-your-customer]] - subscription-linked shared recurring credits, per-seat grants, and individual-seat credit attribution prerequisites
+- [[source-metronome-guides-reporting-insights-gtm-reporting-get-commit-and-usage-analytics]] — access-schedule pacing, unresolved invoice-data grain, commit-attributed burn, and the null-commit on-demand-versus-overage contradiction
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] — parent commit access for all, no, or selected children and self-paid overage boundary
 
 - [[source-github-metronome-node]] - exact `3.10.0` commit cost-basis and contract-applicability types
 

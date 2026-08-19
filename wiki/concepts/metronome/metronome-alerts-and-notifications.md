@@ -49,7 +49,14 @@ Spend alerts can be scoped with `group_values`, polled with customer-alert get/l
 
 `spend_threshold_reached` evaluates usage-based spend before credit and commit drawdown. `invoice_total_reached` evaluates after drawdown and can be filtered to usage invoices. `low_remaining_commit_balance_reached` signals a configured commit-balance threshold, but the page does not define exactly which balances aggregate into it.
 
+The prepaid-credit model uses `alerts.low_remaining_contract_credit_and_commit_balance_reached` at a zero threshold as a merchant action signal. The merchant stores the entitlement flag in its own database, checks it before each protected action, and changes it from payment and balance signals; the alert does not itself suspend product access. Because the same guide calls the webhook real-time without a latency, ordering, or consistency contract, the dedicated webhook delivery semantics remain authoritative.
+
+For a parent contract's shared commit, child consumption does not automatically trigger the parent's commit-balance alert. The hierarchy guide says alerts evaluate when the parent receives usage and child-only usage may delay the parent alert until parent usage arrives. It gives no evaluation-latency or eventual-evaluation guarantee; webhook delivery mechanics remain a separate concern. Its next spend-alert bullet is truncated after `parent spend alerts only include parent's`, so no spend scope should be inferred from that sentence.
+
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-prepaid-credits]] — zero-balance entitlement signal and merchant-owned access-control boundary in a prepaid-credit flow
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] — parent commit-alert evaluation limitation and truncated parent-spend-alert statement
 
 - [[source-metronome-plans-shared-endpoints-notifications]] - shared Plan and Contract alert routes, entity-specific parameter boundary, and plan-targeted alert types
 

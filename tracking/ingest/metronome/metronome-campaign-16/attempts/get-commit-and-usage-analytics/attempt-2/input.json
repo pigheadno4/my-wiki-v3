@@ -1,0 +1,43 @@
+{
+  "action": "spawn_worker",
+  "job_id": "get-commit-and-usage-analytics",
+  "attempt": 2,
+  "raw_path": "raw/metronome/guides/reporting-insights/gtm-reporting/get-commit-and-usage-analytics-2026-07-13.md",
+  "raw_sha256": "ce5a5ad4b54fdf845be5ddca609332df4b9c37093725597819a19733c837f211",
+  "source_target": "wiki/sources/metronome/source-metronome-guides-reporting-insights-gtm-reporting-get-commit-and-usage-analytics.md",
+  "canonical_url": "https://docs.metronome.com/guides/reporting-insights/gtm-reporting/get-commit-and-usage-analytics.md",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location."
+  ],
+  "retry_context": {
+    "prior_attempt": 1,
+    "review_scope": "full",
+    "required_changes": [
+      "Expand the SQL caution to identify the unresolved table-family mismatch, not only sch/acs and placeholder table names: the finalized example uses li.line_item_type although that field is documented on breakdown line items rather than base line_item, and the draft example names draft_invoice/draft_line_item while using breakdown_start_timestamp, breakdown_end_timestamp, commit_segment_id, and invoice_breakdown_id fields associated with breakdowns_draft_invoices/breakdowns_draft_line_items. Do not decide which family is intended; state that the guide must be reconciled with the current database reference before choosing joins or grain.",
+      "State the table-specific export semantics relevant to this model and keep the two deduplication axes separate: finalized invoice/line_item are incremental with 2-hour transfer and 4-hour average freshness; contracts_balances and base draft invoice/line-item tables are 24-hour/24-hour snapshots; base draft invoices produce one snapshot per invoice per day with snapshot_time aligned to start-of-day UTC, while draft breakdown snapshots contain month-to-date rows. Separately, object-storage delivery is append-only and at-least-once, so repeated primary keys from updates or retries require latest-row resolution. Warn that summing multiple draft snapshots or object-storage duplicates would overstate burn.",
+      "Repair quote grounding for commit-usage-analytics-reporting-model and its reciprocal reporting source link. Add or expand byte-exact excerpts that include the asserted query identifier/table mismatches and the burn-band/outreach examples, then update quote_indexes; alternatively remove any exact assertion not present in the cited excerpts. Keep the null-commit contradiction and the table-grain cautions intact."
+    ],
+    "prior_reviewer_identity": "/root/c16_r_analytics"
+  },
+  "worker_identity": "/root/c16_w_analytics",
+  "worker_model": "gpt-5.6-sol"
+}
