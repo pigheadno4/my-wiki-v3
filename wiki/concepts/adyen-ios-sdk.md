@@ -35,7 +35,7 @@ In the advanced flow, the merchant implements the payment-method, `/payments`, `
 | `AdyenEncryption` | Client-side card and bank-detail encryption using an Adyen-provided public key |
 | Optional modules | Cash App Pay, Twint, WeChat Pay, SwiftUI helpers, card scanning, and delegated authentication |
 
-Several optional paths delegate runtime behavior to separately versioned dependencies, including Adyen 3DS2, authentication, networking, WeChat Pay, Cash App Pay, and the bundled Twint SDK. Their presence in the package does not make this snapshot evidence for the complete delegated implementation.
+Several optional paths delegate runtime behavior to separately versioned dependencies, including Adyen 3DS2, authentication, networking, WeChat Pay, Cash App Pay, and the bundled Twint SDK. Their presence in the package does not make this snapshot evidence for the complete delegated implementation. The exact `Adyen3DS2@2.4.4` runtime is independently documented in [[adyen-3ds2-ios-sdk]].
 
 ## Cards, storage, and partial payments
 
@@ -63,6 +63,7 @@ The SDK can identify native iOS, React Native, or Flutter wrappers for analytics
 
 - [[source-github-adyen-ios]] - cumulative exact-SHA repository evidence
 - [[changelog-github-adyen-ios]] - package-qualified release ledger
+- [[adyen-3ds2-ios-sdk]] - independently versioned native 3DS2 runtime
 - [[source-github-adyen-web]] - independently versioned browser SDK
 - [[adyen-react-native-sdk]] - wrapper baseline that pins Adyen iOS `5.25.1`
 - [[co-badged-cards]] - cross-provider card-network choice

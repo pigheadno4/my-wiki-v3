@@ -36,6 +36,7 @@ Release `2.2.27` documents a Data Safety Guide, compound-button text-color corre
 - [[source-github-adyen-3ds2-android]] - cumulative exact-SHA SDK evidence
 - [[changelog-github-adyen-3ds2-android]] - package-qualified release ledger
 - [[adyen-android-sdk]] - parent checkout SDK and adapter boundary
+- [[adyen-3ds2-ios-sdk]] - independently versioned iOS counterpart
 - [[source-github-adyen-android]] - independently versioned parent repository evidence
 - [[adyen]] - company and knowledge-status page
 

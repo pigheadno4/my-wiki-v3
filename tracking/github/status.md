@@ -1064,10 +1064,10 @@
 - Repository: `adyen/adyen-3ds2-ios`
 - SHA: `00862adbc079d0be943666a4ad2523deb31f9546`
 - Collection date: `2026-08-17`
-- State: `awaiting_approval`
+- State: `ingested`
 - Recommended mode: `full`
 - Evidence revision: `initial`
-- Approved mode: `not approved`
+- Approved mode: `full`
 - Attempts in run: `0`
 - Consecutive failed runs: `0`
 - Last error: None

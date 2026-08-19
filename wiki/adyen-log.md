@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-19] ingest | Adyen/adyen-3ds2-ios `2.4.4`
+
+- Approved and full-ingested work item `github-b8f0d09e7fd89635c59f` at exact SHA `00862adbc079d0be943666a4ad2523deb31f9546` after serial full reading of all 32 required evidence paths.
+- Established [[source-github-adyen-3ds2-ios]], its package-qualified changelog, and [[adyen-3ds2-ios-sdk]] for service setup, server handoff, universal-link challenges, lifecycle, errors, security warnings, privacy, and UI customization.
+- Preserved the binary/public-header evidence boundary, classic Payment API v64 references, selected-framework-slice limitation, and erroneous warning-class specification link.
+- Updated the parent iOS evidence, cross-platform 3DS2 concepts, Adyen company page, provider index, and calculated cumulative source count.
+
 ## [2026-08-19] ingest | Adyen/adyen-3ds2-android `2.2.27`
 
 - Approved and full-ingested work item `github-ddb53c093685674310ef` at exact SHA `de845e67488b6aecb1ff57ea7908b662f5ee2d40` after serial full reading of all 69 required evidence paths.

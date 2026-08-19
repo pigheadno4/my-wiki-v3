@@ -2,12 +2,12 @@
 title: "Adyen"
 type: company
 tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, server-sdk]
-source_count: 7
+source_count: 8
 ---
 
 ## Overview
 
-Adyen is represented in this wiki by independently versioned Web, iOS, Android, Android 3DS2, React Native, and Node.js SDKs plus exact-commit Postman API examples. The retained sources cover browser, native, and cross-platform checkout presentation; the delegated Android 3DS2 authentication runtime; merchant-server Checkout API v72; and Terminal API payment and shopper-interaction messages.
+Adyen is represented in this wiki by independently versioned Web, iOS, Android, Android and iOS 3DS2, React Native, and Node.js SDKs plus exact-commit Postman API examples. The retained sources cover browser, native, and cross-platform checkout presentation; delegated mobile 3DS2 authentication runtimes; merchant-server Checkout API v72; and Terminal API payment and shopper-interaction messages.
 
 ## Web checkout surface
 
@@ -41,6 +41,12 @@ The retained `adyen-3ds2-android@2.2.27` baseline documents the delegated transa
 
 The exact release claims a Data Safety Guide, challenge-button color correction, improved out-of-band issuer-app launch, and Bouncy Castle `1.84`. The guide is absent from the exact tag and the compatibility table stops at `2.2.26`, so privacy-guide contents and an explicit Android compatibility row remain evidence gaps.
 
+## iOS 3DS2 runtime
+
+The retained `adyen-3ds2-ios@2.4.4` baseline documents the delegated native runtime used by Adyen iOS. It covers binary framework distribution, directory-server setup, encrypted authentication parameters, `/authorise3ds2` handoffs, universal-link return handling, challenge results and errors, multi-scene lifecycle, security warnings, privacy declarations, and challenge UI customization.
+
+The exact release adds Device Information 1.7 support and fixes memory warnings plus navigation behavior for iOS 26. The implementation is retained only as a binary framework with public headers, so code-level verification remains outside the capsule. Its privacy manifest declares non-linked coarse location for app functionality and tracking disabled.
+
 ## React Native checkout surface
 
 The retained `@adyen/react-native@2.12.0` baseline wraps Adyen iOS `5.25.1` and Adyen Android `5.19.0`. It exposes Drop-in, individual Components, Sessions and advanced callbacks, follow-up actions, embedded Fabric card UI, Apple Pay, Google Pay, instant payments, and client-side encryption.
@@ -61,10 +67,10 @@ These examples show request shape and intended flow, not current account eligibi
 
 ## Knowledge status
 
-- Ingested cumulative GitHub repository sources: 7
-- Ingested package releases: 8
-- Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`
-- Latest ingest: `adyen-3ds2-android@2.2.27` at exact SHA `de845e67488b6aecb1ff57ea7908b662f5ee2d40`
+- Ingested cumulative GitHub repository sources: 8
+- Ingested package releases: 9
+- Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`
+- Latest ingest: `adyen-3ds2-ios@2.4.4` at exact SHA `00862adbc079d0be943666a4ad2523deb31f9546`
 
 ## Sources
 
@@ -76,6 +82,8 @@ These examples show request shape and intended flow, not current account eligibi
 - [[changelog-github-adyen-android]] — package-qualified native release ledger
 - [[source-github-adyen-3ds2-android]] — cumulative delegated Android 3DS2 runtime baseline
 - [[changelog-github-adyen-3ds2-android]] — package-qualified 3DS2 release ledger
+- [[source-github-adyen-3ds2-ios]] — cumulative delegated iOS 3DS2 runtime baseline
+- [[changelog-github-adyen-3ds2-ios]] — package-qualified iOS 3DS2 release ledger
 - [[source-github-adyen-react-native]] — cumulative Adyen React Native wrapper baseline
 - [[changelog-github-adyen-react-native]] — package-qualified wrapper release ledger
 - [[source-github-adyen-node-api-library]] — cumulative Adyen Node.js server-library baseline
@@ -91,6 +99,7 @@ These examples show request shape and intended flow, not current account eligibi
 - [[adyen-ios-sdk]] — native SDK architecture and merchant-server boundaries
 - [[adyen-android-sdk]] — native Android architecture and merchant-server boundaries
 - [[adyen-3ds2-android-sdk]] — native Android 3DS2 transaction and challenge runtime
+- [[adyen-3ds2-ios-sdk]] — native iOS 3DS2 transaction and challenge runtime
 - [[adyen-react-native-sdk]] — cross-platform wrapper, native dependency, and merchant-server boundaries
 - [[adyen-node-api-library]] — Node.js server SDK, Checkout API, Cloud Device, and query boundaries
 - [[adyen-terminal-api]] — Nexo terminal messages, in-person flows, and API-family boundaries

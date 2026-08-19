@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-19] ingest | GitHub Adyen/adyen-3ds2-ios `2.4.4`
+
+- Full-ingested work item `github-b8f0d09e7fd89635c59f` at exact SHA `00862adbc079d0be943666a4ad2523deb31f9546` after serial review of all 32 required evidence paths.
+- Added cumulative and package-qualified sources plus [[adyen-3ds2-ios-sdk]] for the delegated native transaction and challenge runtime.
+- Preserved the binary implementation boundary, API-version caveat, selected framework-slice scope, privacy declarations, and upstream warning-class documentation defect.
+
 ## [2026-08-19] ingest | GitHub Adyen/adyen-3ds2-android `2.2.27`
 
 - Full-ingested work item `github-ddb53c093685674310ef` at exact SHA `de845e67488b6aecb1ff57ea7908b662f5ee2d40` after serial review of all 69 required evidence paths.
