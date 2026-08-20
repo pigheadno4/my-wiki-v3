@@ -6,7 +6,7 @@
 - Completed at: `2026-08-20T00:59:10Z`
 - Full reviews: 8
 - Targeted reviews: 1
-- Coordinator repairs: 0
+- Coordinator repairs: 1
 - Elapsed: `39297 seconds`
 - Queued: 0
 - Running: 0
