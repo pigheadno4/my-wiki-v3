@@ -531,6 +531,41 @@ class GitHubIngestPacketTests(unittest.TestCase):
                 packet.document["required_reading"],
             )
 
+    def test_ref_baseline_classifies_nested_license_as_repository_context(self):
+        current = self.snapshot(
+            self.current_sha,
+            "current",
+            {
+                "server/node/LICENSE": (
+                    "MIT\n",
+                    "source-capsule",
+                    "include-path",
+                ),
+            },
+        )
+
+        packet = build_ref_ingest_packet(
+            self.root,
+            self.commit_config(),
+            "github-" + ("3" * 20),
+            self.relative(current),
+            RefPacketInput(
+                ref_kind="default-branch",
+                ref_name="main",
+                from_sha="",
+                to_sha=self.current_sha,
+                comparison_manifest="",
+                prior_snapshot_manifest="",
+                upstream_changes=(),
+                excluded_changes=(),
+            ),
+            "queued",
+        )
+
+        selected = packet.document["selected_changes"]
+        self.assertEqual("repository-context", selected[0]["classification"])
+        self.assertEqual([], packet.document["unclassified_changes"])
+
     def test_retained_diff_accounts_for_rename_without_false_add_remove(self):
         prior = {
             "package.json": self.manifest_content("10.0.0"),
@@ -584,6 +619,10 @@ class GitHubIngestPacketTests(unittest.TestCase):
                         "modules.yaml",
                         "settings.gradle",
                         "dependencies.gradle",
+                        "go.mod",
+                        "composer.json",
+                        "pkg/fixtures/triggers/checkout.session.completed.json",
+                        "rpc/common.proto",
                         "Native/api/native.api",
                     ),
                     excluded_categories=("tests", "fixtures"),
@@ -638,10 +677,40 @@ class GitHubIngestPacketTests(unittest.TestCase):
                     "include-path",
                     "stripe-ios",
                 ),
+                "go.mod": (
+                    "module example.com/checkout\n",
+                    "public-source",
+                    "include-path",
+                    "stripe-ios",
+                ),
+                "composer.json": (
+                    '{"name":"stripe/stripe-php"}\n',
+                    "public-source",
+                    "include-path",
+                    "stripe-ios",
+                ),
+                "pkg/fixtures/triggers/checkout.session.completed.json": (
+                    '{"fixtures": []}\n',
+                    "source-capsule",
+                    "include-path",
+                    "stripe-ios",
+                ),
+                "rpc/common.proto": (
+                    "syntax = \"proto3\";\n",
+                    "source-capsule",
+                    "include-path",
+                    "stripe-ios",
+                ),
                 "PrivacyInfo.xcprivacy": (
                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n",
                     "public-source",
                     "include-path",
+                    "stripe-ios",
+                ),
+                "lib/ssl/api.example.com.ca.crt": (
+                    "-----BEGIN CERTIFICATE-----\nexample\n-----END CERTIFICATE-----\n",
+                    "source-capsule",
+                    "required-root",
                     "stripe-ios",
                 ),
                 "Native/api/native.api": (
@@ -701,19 +770,30 @@ class GitHubIngestPacketTests(unittest.TestCase):
             for row in package["retained_evidence"]["files"]
         }
         self.assertEqual("repository-context", classified["LICENSE"])
+        self.assertEqual("package-manifest", classified["composer.json"])
         for path in (
             "VERSION",
             "Package.swift",
             "modules.yaml",
             "settings.gradle",
             "dependencies.gradle",
+            "go.mod",
             "PrivacyInfo.xcprivacy",
         ):
             self.assertEqual("build-configuration", classified[path])
         self.assertEqual(
+            "runtime-configuration",
+            classified["lib/ssl/api.example.com.ca.crt"],
+        )
+        self.assertEqual(
             "public-source",
             classified["Native/api/native.api"],
         )
+        self.assertEqual(
+            "public-source",
+            classified["pkg/fixtures/triggers/checkout.session.completed.json"],
+        )
+        self.assertEqual("public-source", classified["rpc/common.proto"])
         self.assertEqual(
             "translation",
             classified["Native/Resources/ar.lproj/Checkout.strings"],
@@ -945,6 +1025,56 @@ class GitHubIngestPacketTests(unittest.TestCase):
         self.assertEqual("build-configuration", classified["CODEGEN_VERSION"])
         self.assertEqual("build-configuration", classified["OPENAPI_VERSION"])
 
+    def test_terraform_registry_manifest_is_build_configuration(self):
+        prior = {
+            "package.json": self.manifest_content("1.0.0"),
+            "terraform-registry-manifest.json": '{"version":1}\n',
+        }
+        current = {
+            "package.json": self.manifest_content("1.0.1"),
+            "terraform-registry-manifest.json": '{"version":1}\n',
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            (),
+            from_version="1.0.0",
+            to_version="1.0.1",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        self.assertEqual(
+            "build-configuration",
+            classified["terraform-registry-manifest.json"],
+        )
+
+    def test_pnpm_workspace_is_build_configuration(self):
+        prior = {
+            "package.json": self.manifest_content("1.0.0"),
+            "pnpm-workspace.yaml": "packages:\n  - packages/*\n",
+        }
+        current = {
+            "package.json": self.manifest_content("1.0.1"),
+            "pnpm-workspace.yaml": "packages:\n  - packages/*\n",
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            (),
+            from_version="1.0.0",
+            to_version="1.0.1",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        self.assertEqual(
+            "build-configuration",
+            classified["pnpm-workspace.yaml"],
+        )
+
     def test_eslint_configs_are_classified_as_build_configuration(self):
         prior = {
             "package.json": self.manifest_content("10.0.0"),
@@ -990,6 +1120,8 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "android/gradle/libs.versions.toml": "[versions]\nkotlin = '2.0.0'\n",
             "android/src/main/AndroidManifest.xml": "<manifest />\n",
             "ios/Info.plist": "<?xml version=\"1.0\"?><plist />\n",
+            "ios/module.modulemap": "framework module Example { umbrella header \"Example.h\" }\n",
+            "ios/StripeSdk.entitlements": "<?xml version=\"1.0\"?><plist />\n",
             "ios/StripeSdk.xcodeproj/project.pbxproj": "// project\n",
             "ios/StripeSdk.xcodeproj/xcshareddata/xcschemes/Tests.xcscheme": "<Scheme />\n",
             "ios/StripeSdk.xctestplan": "{}\n",
@@ -1020,6 +1152,58 @@ class GitHubIngestPacketTests(unittest.TestCase):
         classified = {row["path"]: row["classification"] for row in rows}
         for path in native_files:
             self.assertEqual("build-configuration", classified[path])
+
+    def test_release_notes_filename_is_classified_as_release_history(self):
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            "RELEASE_NOTES": "Initial release.\n",
+        }
+        current = {
+            "package.json": self.manifest_content("10.1.0"),
+            "RELEASE_NOTES": "Initial release.\nNew capability.\n",
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            (UpstreamChange("modified", "RELEASE_NOTES", "RELEASE_NOTES"),),
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        self.assertEqual("release-history", classified["RELEASE_NOTES"])
+
+    def test_javadoc_index_lists_are_classified_as_documentation(self):
+        documentation = {
+            "docs/element-list": "com.example.api\n",
+            "docs/package-list": "com.example.api\n",
+        }
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            **documentation,
+        }
+        current = {
+            "package.json": self.manifest_content("10.1.0"),
+            **documentation,
+        }
+        changes = tuple(
+            UpstreamChange("modified", path, path) for path in sorted(documentation)
+        )
+
+        packet = self.build(
+            prior,
+            current,
+            changes,
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        for path in documentation:
+            self.assertEqual("documentation", classified[path])
 
     def test_android_proguard_rules_are_build_configuration(self):
         prior = {

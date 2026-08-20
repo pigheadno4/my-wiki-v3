@@ -25,6 +25,56 @@
   Release: [manifest](../../raw/github/adyen/adyen-ios/releases/adyen-ios/5.25.1/2026-08-01/manifest.json)
   Comparison: Not applicable
 
+## `github-0ff215c1739732ae4751`
+
+- Repository: `stripe/stripe-php`
+- SHA: `edf8118f0b96d69f06f372da9168d613d1aed072`
+- Collection date: `2026-08-15`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-php/snapshots/2026-08-15-edf8118/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-php/ingest-packets/github-0ff215c1739732ae4751/packet.md)
+- Review priority: `normal`
+- Required reading: `470` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-php@21.2.0` (recommended `full`)
+  Release: [manifest](../../raw/github/stripe/stripe-php/releases/stripe-php/21.2.0/2026-08-15/manifest.json)
+  Comparison: Not applicable
+
+## `github-118cf7cd94ffcd51ebd3`
+
+- Repository: `braintree/braintree_php`
+- SHA: `0f53ece38397c9fed05b94620634a5a23ef8ee48`
+- Collection date: `2026-08-19`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_php/snapshots/2026-08-19-0f53ece/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_php/ingest-packets/github-118cf7cd94ffcd51ebd3/packet.md)
+- Review priority: `normal`
+- Required reading: `229` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree_php@6.37.0` (recommended `full`)
+  Release: [manifest](../../raw/github/braintree/braintree_php/releases/braintree_php/6.37.0/2026-08-19/manifest.json)
+  Comparison: Not applicable
+
 ## `github-1ab2662d292502a53058`
 
 - Repository: `braintree/braintree-web`
@@ -48,6 +98,31 @@
 
 - `braintree-web@3.143.0` (recommended `full`)
   Release: [manifest](../../raw/github/braintree/braintree-web/releases/braintree-web/3.143.0/2026-07-27/manifest.json)
+  Comparison: Not applicable
+
+## `github-1ef004e332164a8359d6`
+
+- Repository: `adyen/adyen-php-api-library`
+- SHA: `6ef96571834bc460201df8aea8c89882b2043cd8`
+- Collection date: `2026-08-19`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-php-api-library/snapshots/2026-08-19-6ef9657/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-php-api-library/ingest-packets/github-1ef004e332164a8359d6/packet.md)
+- Review priority: `high`
+- Required reading: `450` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen-php-api-library@30.0.2` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-php-api-library/releases/adyen-php-api-library/30.0.2/2026-08-19/manifest.json)
   Comparison: Not applicable
 
 ## `github-236dd1f1ac8a3f30f537`
@@ -257,6 +332,85 @@
   To SHA: `4c39c1ec50b15dde3af99b524fb24ec8aa9fa11b`
   Comparison: Not applicable
 
+## `github-462a1c4b707deb10c6aa`
+
+- Repository: `metronome-industries/terraform-provider-metronome`
+- SHA: `f06da6d6afee448e9fe9bad77d213cf6159d11f8`
+- Collection date: `2026-08-15`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/metronome/terraform-provider-metronome/snapshots/2026-08-15-f06da6d/manifest.json)
+- Packet: [review packet](repos/metronome/terraform-provider-metronome/ingest-packets/github-462a1c4b707deb10c6aa/packet.md)
+- Review priority: `high`
+- Required reading: `37` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `terraform-provider-metronome@0.1.0-alpha.3` (recommended `full`)
+  Release: [manifest](../../raw/github/metronome/terraform-provider-metronome/releases/terraform-provider-metronome/0.1.0-alpha.3/2026-08-15/manifest.json)
+  Comparison: Not applicable
+
+## `github-523453a8a9fad6afdf6f`
+
+- Repository: `paypal-examples/paypal-ios-sdk-demo-app`
+- SHA: `047a50ec97d9881af84ca3fb03d1d23e859a86f4`
+- Collection date: `2026-08-16`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-ios-sdk-demo-app/snapshots/2026-08-16-047a50e/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-ios-sdk-demo-app/ingest-packets/github-523453a8a9fad6afdf6f/packet.md)
+- Review priority: `high`
+- Required reading: `30` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@047a50e` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `047a50ec97d9881af84ca3fb03d1d23e859a86f4`
+  Comparison: Not applicable
+
+## `github-5b78ff7871557dec5f21`
+
+- Repository: `metronome-industries/ai`
+- SHA: `59193aabd9c43cca32f320d6f68f5d63d04034d4`
+- Collection date: `2026-08-15`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/metronome/ai/snapshots/2026-08-15-59193aa/manifest.json)
+- Packet: [review packet](repos/metronome/ai/ingest-packets/github-5b78ff7871557dec5f21/packet.md)
+- Review priority: `normal`
+- Required reading: `44` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@59193aa` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `59193aabd9c43cca32f320d6f68f5d63d04034d4`
+  Comparison: Not applicable
+
 ## `github-5c8c7287ce91fe6f34c2`
 
 - Repository: `paypal/paypal-ios`
@@ -307,6 +461,31 @@
 - `@adyen/adyen-web@6.41.1` (recommended `delta`)
   Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.41.1/2026-08-09/manifest.json)
   Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.41.0--6.41.1/comparison.json)
+
+## `github-62b2da34c81f87c986c9`
+
+- Repository: `stripe/link-cli`
+- SHA: `d540389e030d0f475a6b85cd64ccaf978ff498ac`
+- Collection date: `2026-08-15`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/link-cli/snapshots/2026-08-15-d540389/manifest.json)
+- Packet: [review packet](repos/stripe/link-cli/ingest-packets/github-62b2da34c81f87c986c9/packet.md)
+- Review priority: `normal`
+- Required reading: `110` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/link-cli@0.13.0` (recommended `full`)
+  Release: [manifest](../../raw/github/stripe/link-cli/releases/link-cli/0.13.0/2026-08-15/manifest.json)
+  Comparison: Not applicable
 
 ## `github-63997abe9a7d60c5179b`
 
@@ -385,6 +564,33 @@
 
 - `drop-in@6.17.0` (recommended `full`)
   Release: [manifest](../../raw/github/braintree/braintree-android-drop-in/releases/drop-in/6.17.0/2026-08-13/manifest.json)
+  Comparison: Not applicable
+
+## `github-71f4eb08ef220f23aba9`
+
+- Repository: `paypal-examples/paypal-android-sdk-demo-app`
+- SHA: `d1137d5daa3a3befdcf6c72e6a1e8144bf765ba2`
+- Collection date: `2026-08-16`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-android-sdk-demo-app/snapshots/2026-08-16-d1137d5/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-android-sdk-demo-app/ingest-packets/github-71f4eb08ef220f23aba9/packet.md)
+- Review priority: `high`
+- Required reading: `44` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@d1137d5` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `d1137d5daa3a3befdcf6c72e6a1e8144bf765ba2`
   Comparison: Not applicable
 
 ## `github-7ecc6c2199897656ffe3`
@@ -903,6 +1109,31 @@
   To SHA: `90e8041ffe02d80c452d2b476bedd59a8d219bdc`
   Comparison: Not applicable
 
+## `github-b8f0d09e7fd89635c59f`
+
+- Repository: `adyen/adyen-3ds2-ios`
+- SHA: `00862adbc079d0be943666a4ad2523deb31f9546`
+- Collection date: `2026-08-17`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-3ds2-ios/snapshots/2026-08-17-00862ad/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-3ds2-ios/ingest-packets/github-b8f0d09e7fd89635c59f/packet.md)
+- Review priority: `normal`
+- Required reading: `32` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen-3ds2-ios@2.4.4` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-3ds2-ios/releases/adyen-3ds2-ios/2.4.4/2026-08-17/manifest.json)
+  Comparison: Not applicable
+
 ## `github-b94b44c30164dfad8034`
 
 - Repository: `paypal/paypal-messages-ios`
@@ -1161,6 +1392,31 @@
   Release: [manifest](../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.0/2026-07-30/manifest.json)
   Comparison: Not applicable
 
+## `github-ddb53c093685674310ef`
+
+- Repository: `adyen/adyen-3ds2-android`
+- SHA: `de845e67488b6aecb1ff57ea7908b662f5ee2d40`
+- Collection date: `2026-08-17`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-3ds2-android/snapshots/2026-08-17-de845e6/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-3ds2-android/ingest-packets/github-ddb53c093685674310ef/packet.md)
+- Review priority: `normal`
+- Required reading: `69` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen-3ds2-android@2.2.27` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-3ds2-android/releases/adyen-3ds2-android/2.2.27/2026-08-17/manifest.json)
+  Comparison: Not applicable
+
 ## `github-e923ffd86b6fd634a620`
 
 - Repository: `stripe/stripe-node`
@@ -1315,3 +1571,56 @@
   From SHA: `1d2238c9e5ec3564ad5d8060c474e008ab7bf779`
   To SHA: `0424354a5fa0ab697275186fe101d105838ac03e`
   Comparison: [manifest](repos/paypal/paypal-messages-android/comparisons/default-branch/1d2238c--0424354/comparison.json)
+
+## `github-feef8fcc377f52acf591`
+
+- Repository: `stripe/stripe-cli`
+- SHA: `a6f40658b99e4142fd63b2e4b560aa9c7ae337b1`
+- Collection date: `2026-08-14`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-cli/snapshots/2026-08-14-a6f4065/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-cli/ingest-packets/github-feef8fcc377f52acf591/packet.md)
+- Review priority: `normal`
+- Required reading: `147` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-cli@1.50.0` (recommended `full`)
+  Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.0/2026-08-14/manifest.json)
+  Comparison: Not applicable
+
+## `github-ff388d21d0a8282ef393`
+
+- Repository: `paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration`
+- SHA: `f1c712374f674ce6f0b2683f105871dcb969d2d7`
+- Collection date: `2026-08-16`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/manifest.json)
+- Packet: [review packet](repos/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/ingest-packets/github-ff388d21d0a8282ef393/packet.md)
+- Evidence attachment: [manifest](repos/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration/evidence-attachments/github-ff388d21d0a8282ef393/attachment.json)
+- Review priority: `high`
+- Required reading: `74` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@f1c7123` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `f1c712374f674ce6f0b2683f105871dcb969d2d7`
+  Comparison: Not applicable

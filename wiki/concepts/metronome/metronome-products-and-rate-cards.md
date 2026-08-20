@@ -61,6 +61,9 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 > [!warning] Rate-card documentation inconsistencies
 > The guide alternates between `/addRates` and `/addRate`, and between `"FLAT"` and `"tiered"` casing. It also says all contracts are built on rate cards while the create-contract schema makes package or rate-card selection optional. Confirm current API behavior rather than inferring endpoint aliases, enum normalization, or an implicit card.
 
+> [!warning] AI worked-example inconsistency
+> The `Metronome-Industries/ai` catalog reference calls `SUBSCRIPTION` rate type deprecated and uses `FLAT` with `billing_frequency`, while its PLG worked example uses `rate_type: "SUBSCRIPTION"` with a nested `subscription_rate`. Treat both as agent examples and verify the dedicated rate-card schema. [[source-github-ai]]
+
 > [!info] Retroactive edit boundary
 > The product guide permits retroactive effective dates but does not explain recalculation, draft-versus-finalized invoice effects, historical visibility after archival, or how existing commits, credits, discounts, and scheduled charges follow the change.
 
@@ -74,6 +77,7 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 
 ## Sources
 
+- [[source-github-ai]] - agent catalog workflow, setup order, pricing examples, and internal rate-representation conflict
 - [[source-github-metronome-node]] - exact `3.10.0` rate-card update type and custom-unit conversion addition
 
 - [[source-metronome-api-reference-invoices-add-a-one-time-charge]] — deprecated Plans fixed-product eligibility and invoice-currency price boundary for one-time charges

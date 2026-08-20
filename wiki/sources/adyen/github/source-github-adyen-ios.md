@@ -81,7 +81,7 @@ Partial-payment support can check gift-card or voucher balance, create an order,
 
 `AdyenActionComponent` dispatches redirect, native redirect, 3DS2 fingerprint and challenge, delegated authentication, SDK, await, voucher, QR-code, and document actions. Redirect flows may use an in-app browser or external application and return details for the next payment-details call. QR-code and await flows use method-specific polling and expiration behavior.
 
-3DS2 is delegated to `Adyen3DS2`, with Adyen iOS coordinating fingerprint submission, challenges, redirects, and optional delegated authentication. Claims about the underlying 3DS2 or authentication engine require their independent repository evidence.
+3DS2 is delegated to `Adyen3DS2`, with Adyen iOS coordinating fingerprint submission, challenges, redirects, and optional delegated authentication. The pinned `Adyen3DS2@2.4.4` runtime is independently documented in [[source-github-adyen-3ds2-ios]]; authentication remains a separate dependency boundary.
 
 ## Native wallet and app handoffs
 
@@ -107,6 +107,7 @@ Broader Drop-in, Session, Component, card, action, wallet, analytics, and privac
 
 - [[changelog-github-adyen-ios]] - package-qualified release ledger
 - [[adyen-ios-sdk]] - native SDK concept
+- [[source-github-adyen-3ds2-ios]] - independently versioned native 3DS2 runtime
 - [[source-github-adyen-web]] - independently versioned browser SDK
 - [[adyen]] - company and knowledge-status page
 - [[co-badged-cards]] - cross-provider network-choice concept

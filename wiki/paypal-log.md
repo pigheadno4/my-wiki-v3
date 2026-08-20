@@ -6,6 +6,28 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-17] ingest | paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration `main@f1c7123`
+
+- Full-ingested work item `github-ff388d21d0a8282ef393` after serial review of all 74 packet, snapshot, attachment, supplement, and shared-context paths.
+- Added cumulative and commit-qualified sources for the 64-file, 130,398-byte exact-SHA baseline plus its three-file linked supplement; one 1,151-byte test was excluded.
+- Recorded Braintree Web `3.142.0`, React `@paypal/react-paypal-js@^10.1.0`, and Node/Braintree flows for one-time capture, shipping updates, checkout plus vault, billing agreements, Pay Later/Credit, and Messages.
+- Preserved the production boundaries around browser-provided amounts, customer identity, sandbox-only configuration, CORS/errors, settlement state, and the absent implemented Venmo session.
+- Updated [[paypal-braintree-integration]]. PayPal source count increased by two for the new cumulative source and changelog.
+
+## [2026-08-16] ingest | paypal-examples/paypal-ios-sdk-demo-app `main@047a50e`
+
+- Full-ingested work item `github-523453a8a9fad6afdf6f` after serial review of all 30 required evidence paths and the 25-file, 84,280-byte exact-SHA capsule.
+- Added cumulative and commit-qualified sources for SwiftUI direct PayPal/card checkout and the separate hosted Payment Link path, with PayPal iOS SDK compatibility `>=2.0.0,<3.0.0` and no exact resolved patch.
+- Preserved the native-Venmo absence, merchant-server boundary, unverified Universal Link return, CVV form defect, and README/code gaps for subscriptions, webhooks, and deployment target.
+- Updated [[paypal-ios-sdk]], [[paypal-checkout]], and [[paypal-payment-links]]. PayPal source count increased by two.
+
+## [2026-08-16] ingest | paypal-examples/paypal-android-sdk-demo-app `main@d1137d5`
+
+- Full-ingested work item `github-71f4eb08ef220f23aba9` after serial review of all 44 required evidence paths and the 39-file, 80,026-byte exact-SHA capsule.
+- Added cumulative and commit-qualified sources for Jetpack Compose direct PayPal/card checkout and the separate hosted Payment Link path using PayPal Android SDK `2.3.0`.
+- Preserved the native-Venmo absence, incomplete card 3DS handling, example merchant-server boundary, and unverified Payment Link return-state limitation.
+- Updated [[paypal-android-sdk]], [[paypal-checkout]], and [[paypal-payment-links]]. PayPal source count increased by two for the new cumulative source and changelog; the separate iOS demo remains awaiting approval.
+
 ## [2026-08-13] ingest | paypal/paypal-messages-android `develop@0424354`
 
 - Delta-ingested work item `github-fed285eccd42cc9507d5` from historical SHA `1d2238c` to untagged `develop` SHA `0424354`.

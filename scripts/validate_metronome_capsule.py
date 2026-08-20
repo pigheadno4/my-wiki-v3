@@ -13,7 +13,7 @@ def main() -> int:
     errors = validate_capsule(report)
     print(
         f"Metronome capsule: {len(report.raw_files)} raw, "
-        f"{len(report.sources)} sources, "
+        f"{len(report.source_page_stems)} sources, "
         f"{len(report.orphan_raw_files)} raw pages without source summaries"
     )
     if errors:

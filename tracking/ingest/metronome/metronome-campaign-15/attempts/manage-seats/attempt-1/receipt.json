@@ -1,0 +1,142 @@
+{
+  "job_id": "manage-seats",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Manage Metronome Subscription Seats\"\ntype: source\ndate_ingested: 2026-08-19\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/pricing-packaging/subscription/manage-seats.md\"\nraw_files:\n  - \"metronome/guides/pricing-packaging/subscription/manage-seats-2026-07-13.md\"\ntags: [metronome, subscriptions, seat-based-billing, credits, alerts, contract-edits]\n---\n\n## Overview\n\nThis guide explains how to change subscription seat counts after contract creation, monitor pooled or seat-scoped credit balances, and retrieve quantity, seat-assignment, and ledger history. It distinguishes quantity-managed subscriptions from seat-based credit subscriptions whose `seat_config` tracks assigned seat IDs and unassigned seats.\n\n## Key takeaways\n\n- Standard subscriptions and credit pools use the edit-contract `update_subscription` action with either a new total `quantity` or a relative `quantity_delta`. Updates sharing a `starting_at` timestamp are applied in submission order, and invoice treatment follows the subscription's proration configuration.\n- Changing the quantity of a subscription linked to recurring credits also releases credit balance; the amount depends on the recurring-credit `access_amount` and applicable proration settings.\n- Seat-based credit subscriptions instead edit assigned `seat_ids` and optional unassigned seats. Removing an assigned seat ID while adding one unassigned seat at the same effective time preserves total subscription quantity while freeing capacity for reassignment.\n- Contract- or customer-level credit alerts exclude seat-scoped credits. Seat-scoped monitoring uses `low_remaining_seat_balance_reached` and requires a `seat_filter.seat_group_key`; an optional `seat_group_value` narrows the rule to one seat.\n- Quantity history and seat-ID history use separate contract endpoints. The seat-balance list can return all current seat balances or one seat, and `include_ledgers: true` adds grant and burn-down history that can be time-filtered.\n\n## Seat-count changes\n\nFor quantity-managed subscriptions, schedule an `update_subscription` action through the edit-contract endpoint and provide either the desired total through `quantity` or the change from the prior amount through `quantity_delta`. When multiple updates use the same `starting_at`, Metronome applies them in the order submitted. The guide ties invoicing to the subscription's proration settings but does not define the proration formula, invoice-state interactions, idempotency, concurrency, or failure atomicity.\n\nWhen a quantity-managed subscription is linked to recurring credits, a quantity change can release new credit balance. The guide says the amount depends on proration and the recurring credit's `access_amount`; it does not document an exact increase or decrease formula, the resulting ledger timing, or whether a decrease removes previously released balance.\n\nFor a seat-based credit subscription, `seat_updates` can add or remove assigned `seat_ids` and add unassigned-seat quantity. The examples schedule each operation independently. To free an assigned identity without reducing purchased capacity, remove that seat ID and add one unassigned seat at the same effective time. The page does not define seat-ID uniqueness, reassignment races, removal of unassigned seats, validation, or whether the paired changes are atomic.\n\n## Balance alerts and retrieval\n\nA general credit-balance threshold evaluates customer- or contract-level credits and excludes seat-scoped credits. For seat-scoped credits and commits, create a `low_remaining_seat_balance_reached` notification. Its request requires `seat_filter`, whose `seat_group_key` selects balances associated with seat-based subscriptions configured with that key; `seat_group_value` is optional and narrows the notification to a specific seat. Alert state for a specific seat can be queried through the customer-alert get endpoint.\n\nFor product-facing history, quantity-managed subscriptions use the subscription-quantity-history endpoint, while `seat_config` subscriptions use the subscription-seats-history endpoint for seat-ID history. The seat-balance list returns current balance for all seats when given customer and contract IDs and can be scoped by `seat_id`. With `include_ledgers: true`, it also returns credit-grant and burn-down history; `starting_at` and `ending_before` optionally bound the requested period. The guide does not define pagination, ordering, read consistency, precision, or whether the time bounds are inclusive or exclusive.\n\n## Documentation boundaries\n\nThe JSON and curl bodies are worked examples rather than complete endpoint schemas. This page does not document authentication requirements, response schemas, error codes, retry or idempotency behavior, concurrent edits, webhook delivery guarantees, automatic access enforcement, or accounting treatment. Access gating after a low-balance webhook is an action the merchant may take, not a documented automatic Metronome entitlement change. No direct contradiction was found with the existing Metronome subscription, credit-and-commit, alert, remaining-balance, or contract-edit-history pages when the customer/contract alert exclusion and seat-scoped alert path remain distinct.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-subscriptions]], [[metronome-credits-and-commits]], [[metronome-alerts-and-notifications]], [[metronome-customers-and-contracts]]\n- Related sources: [[source-metronome-guides-pricing-packaging-subscription-subscription-overview]], [[source-metronome-guides-pricing-packaging-subscription-define-subscription-pricing]], [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]], [[source-metronome-api-reference-contracts-get-contract-edit-history]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/pricing-packaging/subscription/manage-seats-2026-07-13|2026-07-13 snapshot - seat changes, seat-scoped alerts, and seat balance and history retrieval]]\n",
+  "quotes": [
+    {
+      "text": "Schedule a change of the quantity of a subscription using the `update_subscription` action on the [edit contract endpoint](/api-reference/contracts/edit-a-contract). Either pass the new total count through `quantity` or the difference between the previous count through `quantity_delta`. Updates scheduled with the same `starting_at` are applied in the order they are submitted in. Quantity changes are invoiced based on the proration settings in the subscription configuration on the contract.",
+      "location": "raw/metronome/guides/pricing-packaging/subscription/manage-seats-2026-07-13.md:19 (quantity update forms, ordering, and proration)"
+    },
+    {
+      "text": "For subscriptions linked to recurring credits, the change in `quantity` will also release new credit balance. The balance amount depends the proration settings and `access_amount` on the recurring credit configuration.",
+      "location": "raw/metronome/guides/pricing-packaging/subscription/manage-seats-2026-07-13.md:21 (subscription-linked recurring-credit release)"
+    },
+    {
+      "text": "In certain cases, your customers may change who has access to a seat. As people change roles or leave their company, they may want to free up the seat for someone else to use. To do this in Metronome, remove the seat ID and add an unassigned seat. This ensures that the total quantity for the subscription stays the same, but that a seat is now available for someone else to use.",
+      "location": "raw/metronome/guides/pricing-packaging/subscription/manage-seats-2026-07-13.md:83 (seat reassignment while preserving quantity)"
+    },
+    {
+      "text": "To set up a threshold notification for seat scoped credits and commits, create a `low_remaining_seat_balance_reached` notification using the [/alerts/create](/api-reference/alerts/create-a-threshold-notification) end point.\n\nThe `seat_filter` parameter, required on the request body when creating this notification, provides a `seat_group_key` field which is used to scope the notification to seat balances associated with seat-based subscriptions with a specific `seat_group_key` in their `seat_config` configuration.",
+      "location": "raw/metronome/guides/pricing-packaging/subscription/manage-seats-2026-07-13.md:129-131 (seat-scoped alert type and required filter)"
+    },
+    {
+      "text": "* **Current seat balance:** Passing the `customer_id` and `contract_id` will return the current `balance` for all seats. Passing a `seat_id` to the request body will scope the results to an individual seat.\n* **Seat ledger history:** To create a view which shows the history of credit grants and associated burn-down, pass `include_ledgers: true` to the request body. Optionally pass in the `starting_at` and `ending_before` dates to filter the response to a specified time period.",
+      "location": "raw/metronome/guides/pricing-packaging/subscription/manage-seats-2026-07-13.md:193-194 (current seat balance and ledger-history retrieval)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "manage-seats-subscription-edit-mechanics",
+        "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Lifecycle",
+        "proposed_markdown": "After contract creation, quantity-managed subscriptions accept a new total `quantity` or a relative `quantity_delta` through an edit-contract `update_subscription` action. Updates with the same `starting_at` are applied in submission order, and invoicing follows the subscription's proration configuration. Seat-based credit subscriptions instead update assigned seat IDs and unassigned-seat quantity; removing one seat ID while adding one unassigned seat preserves purchased quantity while freeing capacity for reassignment.",
+        "quote_indexes": [
+          0,
+          2
+        ],
+        "warnings": [
+          "Do not infer atomicity, idempotency, concurrent-edit behavior, seat-ID uniqueness, or the proration formula from this guide.",
+          "The guide demonstrates adding unassigned seats but does not document removal of unassigned seats."
+        ]
+      },
+      {
+        "update_id": "manage-seats-subscriptions-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] - quantity and seat-ID edits, same-timestamp ordering, reassignment, proration boundary, and seat history",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "manage-seats-recurring-credit-and-seat-balances",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Subscription, manual-gate, and trial extensions",
+        "proposed_markdown": "For a subscription linked to recurring credits, a quantity change releases credit balance according to configured proration and the recurring credit's `access_amount`. For seat-scoped models, the seat-balance endpoint can return current balances across all seats or one seat and can include time-filtered ledgers showing credit grants and burn-down.",
+        "quote_indexes": [
+          1,
+          4
+        ],
+        "warnings": [
+          "The guide does not define the exact increase or decrease calculation, removal of prior grants, ledger-entry timing, pagination, ordering, or read consistency."
+        ]
+      },
+      {
+        "update_id": "manage-seats-credits-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] - recurring-credit release on quantity changes and per-seat current-balance and ledger-history retrieval",
+        "quote_indexes": [
+          1,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "manage-seats-seat-scoped-alerts",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Customer-configured controls",
+        "proposed_markdown": "Customer- or contract-level credit-balance alerts exclude seat-scoped credits. Seat-scoped credits and commits use `low_remaining_seat_balance_reached`; its request requires `seat_filter.seat_group_key` to select balances tied to a matching subscription `seat_config`, while optional `seat_group_value` narrows evaluation to one seat. The customer-alert get endpoint can retrieve alert state for a specific seat.",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "Preserve the distinction between general customer or contract balance alerts and seat-scoped alerts.",
+          "Do not infer automatic access enforcement, delivery timing, aggregation across subscriptions, or reset behavior."
+        ]
+      },
+      {
+        "update_id": "manage-seats-alerts-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] - seat-scoped low-balance alert type, required seat-group filtering, and specific-seat state retrieval",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "manage-seats-contract-edit-and-history",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Contract edit history",
+        "proposed_markdown": "Subscription seat changes are contract edits: quantity-managed subscriptions schedule total or delta quantity updates, while seat-configured subscriptions add or remove seat IDs and can add unassigned capacity. Customer-facing history uses separate quantity-history and seat-ID-history endpoints depending on the subscription model.",
+        "quote_indexes": [
+          0,
+          2
+        ],
+        "warnings": [
+          "The source does not define response schemas, pagination, ordering of history results, edit atomicity, or concurrent mutation behavior."
+        ]
+      },
+      {
+        "update_id": "manage-seats-contracts-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] - contract-level quantity and seat-ID edits plus model-specific subscription history routes",
+        "quote_indexes": [
+          0,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/pricing-packaging/subscription/manage-seats-2026-07-13.md",
+  "raw_sha256": "b2a8bd89697049db2db0bfef08f648e1ec35436cee27bb01dd5ff4a9eb2da705",
+  "status": "candidate_ready"
+}

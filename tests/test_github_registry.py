@@ -34,10 +34,10 @@ APPENDIX_A_INVENTORY = (
     ('paypal/paypal-sdk-logos', 'https://github.com/paypal/paypal-sdk-logos', 'assets', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('paypal/paypal-rest-api-specifications', 'https://github.com/paypal/paypal-rest-api-specifications', 'api-specification', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('paypal-examples/v6-web-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-sample-integration', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
-    ('paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
-    ('paypal-examples/paypal-android-sdk-demo-app', 'https://github.com/paypal-examples/paypal-android-sdk-demo-app', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
+    ('paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'https://github.com/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
+    ('paypal-examples/paypal-android-sdk-demo-app', 'https://github.com/paypal-examples/paypal-android-sdk-demo-app', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('paypal-examples/paypal-sdk-server-side-integration', 'https://github.com/paypal-examples/paypal-sdk-server-side-integration', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
-    ('paypal-examples/paypal-ios-sdk-demo-app', 'https://github.com/paypal-examples/paypal-ios-sdk-demo-app', 'sample-app', 'tier1', 'commit', False, 'default-branch', 'monthly'),
+    ('paypal-examples/paypal-ios-sdk-demo-app', 'https://github.com/paypal-examples/paypal-ios-sdk-demo-app', 'sample-app', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('braintree/braintree_android', 'https://github.com/braintree/braintree_android', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/braintree_ios', 'https://github.com/braintree/braintree_ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/web-sdk-github-actions', 'https://github.com/braintree/web-sdk-github-actions', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
@@ -50,19 +50,19 @@ APPENDIX_A_INVENTORY = (
     ('braintree/restricted-input', 'https://github.com/braintree/restricted-input', 'web-utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree-web-drop-in', 'https://github.com/braintree/braintree-web-drop-in', 'drop-in', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/popup-bridge-android', 'https://github.com/braintree/popup-bridge-android', 'mobile-utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('braintree/braintree_php', 'https://github.com/braintree/braintree_php', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('braintree/braintree_php', 'https://github.com/braintree/braintree_php', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree_ruby', 'https://github.com/braintree/braintree_ruby', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree_node', 'https://github.com/braintree/braintree_node', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree-ios-drop-in', 'https://github.com/braintree/braintree-ios-drop-in', 'drop-in', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/braintree-android-drop-in', 'https://github.com/braintree/braintree-android-drop-in', 'drop-in', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-ios', 'https://github.com/stripe/stripe-ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-apps', 'https://github.com/stripe/stripe-apps', 'developer-platform', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('stripe/stripe-cli', 'https://github.com/stripe/stripe-cli', 'cli', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('stripe/stripe-cli', 'https://github.com/stripe/stripe-cli', 'cli', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-android', 'https://github.com/stripe/stripe-android', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
-    ('stripe/link-cli', 'https://github.com/stripe/link-cli', 'cli', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('stripe/link-cli', 'https://github.com/stripe/link-cli', 'cli', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-react-native', 'https://github.com/stripe/stripe-react-native', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-ios-spm', 'https://github.com/stripe/stripe-ios-spm', 'release-mirror', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
-    ('stripe/stripe-php', 'https://github.com/stripe/stripe-php', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('stripe/stripe-php', 'https://github.com/stripe/stripe-php', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-node', 'https://github.com/stripe/stripe-node', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-js', 'https://github.com/stripe/stripe-js', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/sync-engine', 'https://github.com/stripe/sync-engine', 'tooling', 'tier2', 'commit', False, 'default-branch', 'monthly'),
@@ -71,10 +71,10 @@ APPENDIX_A_INVENTORY = (
     ('stripe/stripe-terminal-android', 'https://github.com/stripe/stripe-terminal-android', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('stripe/ai', 'https://github.com/stripe/ai', 'developer-tooling', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('metronome-industries/metronome-node', 'https://github.com/Metronome-Industries/metronome-node', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
-    ('metronome-industries/ai', 'https://github.com/Metronome-Industries/ai', 'developer-tooling', 'tier2', 'commit', False, 'default-branch', 'monthly'),
+    ('metronome-industries/ai', 'https://github.com/Metronome-Industries/ai', 'developer-tooling', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('metronome-industries/ai-eval', 'https://github.com/Metronome-Industries/ai-eval', 'evaluation-tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('metronome-industries/mintlify-docs', 'https://github.com/Metronome-Industries/mintlify-docs', 'docs-source', 'tier2', 'commit', False, 'default-branch', 'monthly'),
-    ('metronome-industries/terraform-provider-metronome', 'https://github.com/Metronome-Industries/terraform-provider-metronome', 'terraform-provider', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('metronome-industries/terraform-provider-metronome', 'https://github.com/Metronome-Industries/terraform-provider-metronome', 'terraform-provider', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-node-api-library', 'https://github.com/Adyen/adyen-node-api-library', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-react-native', 'https://github.com/Adyen/adyen-react-native', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-web', 'https://github.com/Adyen/adyen-web', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
@@ -84,13 +84,13 @@ APPENDIX_A_INVENTORY = (
     ('adyen/adyen-pos-mobile-ios', 'https://github.com/Adyen/adyen-pos-mobile-ios', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-pos-mobile-ios-test', 'https://github.com/Adyen/adyen-pos-mobile-ios-test', 'test-tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('adyen/adyen-postman', 'https://github.com/Adyen/adyen-postman', 'api-collection', 'tier2', 'commit', True, 'default-branch', 'monthly'),
-    ('adyen/adyen-php-api-library', 'https://github.com/Adyen/adyen-php-api-library', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('adyen/adyen-php-api-library', 'https://github.com/Adyen/adyen-php-api-library', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-sdk-automation', 'https://github.com/Adyen/adyen-sdk-automation', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('adyen/release-automation-action', 'https://github.com/Adyen/release-automation-action', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('adyen/adyen-3ds2-ios-swift', 'https://github.com/Adyen/adyen-3ds2-ios-swift', 'authentication-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-wechatpay-ios', 'https://github.com/Adyen/adyen-wechatpay-ios', 'payment-method-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('adyen/adyen-3ds2-android', 'https://github.com/Adyen/adyen-3ds2-android', 'authentication-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('adyen/adyen-3ds2-ios', 'https://github.com/Adyen/adyen-3ds2-ios', 'authentication-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('adyen/adyen-3ds2-android', 'https://github.com/Adyen/adyen-3ds2-android', 'authentication-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
+    ('adyen/adyen-3ds2-ios', 'https://github.com/Adyen/adyen-3ds2-ios', 'authentication-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
 )
 
 
@@ -769,6 +769,76 @@ class RegistryTests(unittest.TestCase):
             "card/src/main/res/values/strings.xml",
         }.issubset(includes))
 
+    def test_adyen_3ds2_android_uses_public_api_distribution_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(item for item in repos if item.id == "adyen/adyen-3ds2-android")
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:adyen-3ds2-android@2",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("2.2.27",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("adyen-3ds2-android-public-api", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("adyen-3ds2-android",), capsule.focus_packages)
+        self.assertEqual(("docs/com",), capsule.default_required_roots)
+        self.assertIn("RELEASE_NOTES", capsule.include_paths)
+        self.assertIn("TROUBLESHOOTING.md", capsule.include_paths)
+        self.assertNotIn("adyen-3ds2-2.2.27-sources.jar", capsule.include_paths)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+
+    def test_adyen_3ds2_ios_uses_canonical_public_header_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(item for item in repos if item.id == "adyen/adyen-3ds2-ios")
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:adyen-3ds2-ios@2",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("2.4.4",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("adyen-3ds2-ios-public-api", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("adyen-3ds2-ios",), capsule.focus_packages)
+        self.assertEqual(
+            (
+                "XCFramework/Dynamic/Adyen3DS2.xcframework/ios-arm64/Adyen3DS2.framework/Headers",
+            ),
+            capsule.default_required_roots,
+        )
+        self.assertIn("Adyen3DS2.podspec", capsule.include_paths)
+        self.assertIn("Package.swift", capsule.include_paths)
+        self.assertIn(
+            "XCFramework/Dynamic/Adyen3DS2.xcframework/ios-arm64/Adyen3DS2.framework/Modules/module.modulemap",
+            capsule.include_paths,
+        )
+        self.assertIn(
+            "XCFramework/Dynamic/Adyen3DS2.xcframework/ios-arm64/Adyen3DS2.framework/PrivacyInfo.xcprivacy",
+            capsule.include_paths,
+        )
+        self.assertFalse(any(path.endswith("Info.plist") for path in capsule.include_paths))
+        self.assertNotIn("XCFramework/Static", capsule.default_required_roots)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+
     def test_braintree_web_uses_the_reviewed_public_source_capsule(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
         braintree = next(repo for repo in repos if repo.id == "braintree/braintree-web")
@@ -1168,6 +1238,116 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(15, capsule.max_packet_files)
         self.assertEqual(1500000, capsule.max_packet_utf8_bytes)
 
+    def test_stripe_cli_uses_checkout_focused_tagged_profile(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["stripe/stripe-cli"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:stripe-cli@1",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("1.50.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("stripe-cli-checkout-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("stripe-cli",), capsule.focus_packages)
+        self.assertEqual(
+            "configured-repository-paths",
+            capsule.dependency_scope,
+        )
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(
+            (
+                "pkg/config",
+                "pkg/login",
+                "pkg/proxy",
+                "pkg/requests",
+                "pkg/stripe",
+                "pkg/websocket",
+            ),
+            capsule.default_required_roots,
+        )
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(75, len(capsule.include_paths))
+        self.assertIn("pkg/cmd/listen.go", capsule.include_paths)
+        self.assertIn("pkg/cmd/trigger.go", capsule.include_paths)
+        self.assertIn(
+            "pkg/fixtures/triggers/checkout.session.completed.json",
+            capsule.include_paths,
+        )
+        self.assertIn(
+            "pkg/fixtures/triggers/payment_intent.succeeded.json",
+            capsule.include_paths,
+        )
+        self.assertIn(
+            "pkg/fixtures/triggers/customer.subscription.updated.json",
+            capsule.include_paths,
+        )
+        self.assertIn(
+            "pkg/fixtures/triggers/subscription_schedule.updated.json",
+            capsule.include_paths,
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(1000000, capsule.max_file_bytes)
+        self.assertEqual(180, capsule.max_capsule_files)
+        self.assertEqual(2500000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(220, capsule.max_packet_files)
+        self.assertEqual(3200000, capsule.max_packet_utf8_bytes)
+
+    def test_stripe_php_uses_broad_public_runtime_tagged_profile(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["stripe/stripe-php"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:stripe-php@21",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("21.2.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("stripe-php-public-runtime", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("stripe-php",), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(("lib",), capsule.default_required_roots)
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(
+            ("CHANGELOG.md", "LICENSE", "README.md", "composer.json", "init.php"),
+            capsule.include_paths,
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(1000000, capsule.max_file_bytes)
+        self.assertEqual(492, capsule.max_capsule_files)
+        self.assertEqual(3100000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(512, capsule.max_packet_files)
+        self.assertEqual(3600000, capsule.max_packet_utf8_bytes)
+
     def test_stripe_js_uses_the_root_npm_public_source_profile(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
         stripe_js = next(repo for repo in repos if repo.id == "stripe/stripe-js")
@@ -1434,6 +1614,78 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(700, capsule.max_packet_files)
         self.assertEqual(5000000, capsule.max_packet_utf8_bytes)
 
+    def test_adyen_php_uses_checkout_focused_tagged_profile(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["adyen/adyen-php-api-library"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:adyen-php-api-library@30",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("30.0.2",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("adyen-php-checkout-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("adyen-php-api-library",), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(
+            (
+                "src/Adyen/HttpClient",
+                "src/Adyen/Model/Checkout",
+                "src/Adyen/Model/Payments",
+                "src/Adyen/Model/Recurring",
+                "src/Adyen/Model/TokenizationWebhooks",
+                "src/Adyen/Service/Checkout",
+                "src/Adyen/Service/Payments",
+                "src/Adyen/Service/ResourceModel/Checkout",
+                "src/Adyen/Service/ResourceModel/CheckoutUtility",
+                "src/Adyen/Service/ResourceModel/Payment",
+                "src/Adyen/Service/ResourceModel/Recurring",
+                "src/Adyen/Service/Validator",
+                "src/Adyen/Util",
+            ),
+            capsule.default_required_roots,
+        )
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(24, len(capsule.include_paths))
+        self.assertTrue(
+            {
+                "LICENSE",
+                "README.md",
+                "SECURITY.md",
+                "VERSION",
+                "composer.json",
+                "src/Adyen/Client.php",
+                "src/Adyen/Config.php",
+                "src/Adyen/Service/Checkout.php",
+                "src/Adyen/Service/Notification.php",
+                "src/Adyen/Service/Payment.php",
+                "src/Adyen/Service/Recurring.php",
+                "src/Adyen/Service/TokenizationWebhookParser.php",
+                "src/Adyen/Service/WebhookReceiver.php",
+            }.issubset(set(capsule.include_paths))
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(1000000, capsule.max_file_bytes)
+        self.assertEqual(500, capsule.max_capsule_files)
+        self.assertEqual(9000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(550, capsule.max_packet_files)
+        self.assertEqual(10000000, capsule.max_packet_utf8_bytes)
+
     def test_adyen_postman_has_reviewed_checkout_terminal_policy(self):
         repos = {
             repo.id: repo
@@ -1649,6 +1901,93 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(320, capsule.max_packet_files)
         self.assertEqual(1900000, capsule.max_packet_utf8_bytes)
 
+    def test_paypal_mobile_demo_apps_have_reviewed_enabled_commit_policies(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        android = repos["paypal-examples/paypal-android-sdk-demo-app"]
+        ios = repos["paypal-examples/paypal-ios-sdk-demo-app"]
+
+        for repo in (android, ios):
+            self.assertTrue(repo.enabled)
+            self.assertEqual("sample-app", repo.repo_type)
+            self.assertEqual("tier1", repo.priority)
+            self.assertEqual("monthly", repo.collection_frequency)
+            self.assertEqual("default-branch", repo.track)
+            self.assertEqual("commit", repo.version_strategy)
+            self.assertEqual((), repo.version_tracks)
+            self.assertEqual(1, len(repo.capsules))
+            capsule = repo.capsules[0]
+            self.assertEqual("commit-tree-v1", capsule.adapter)
+            self.assertEqual((), capsule.focus_packages)
+            self.assertEqual(
+                "configured-repository-paths", capsule.dependency_scope
+            )
+            self.assertEqual("policy-bounded", capsule.changed_path_policy)
+            self.assertEqual((), capsule.default_generated_target_paths)
+            self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+            self.assertEqual("text-secrets-v1", capsule.secret_detector)
+            self.assertEqual(512000, capsule.max_file_bytes)
+            self.assertEqual(180, capsule.max_capsule_files)
+            self.assertEqual(1200000, capsule.max_capsule_utf8_bytes)
+            self.assertEqual(220, capsule.max_packet_files)
+            self.assertEqual(2000000, capsule.max_packet_utf8_bytes)
+
+        android_capsule = android.capsules[0]
+        self.assertEqual("paypal-android-sdk-demo-source", android_capsule.id)
+        self.assertEqual(
+            "paypal-android-sdk-demo-app", android_capsule.source_id
+        )
+        self.assertEqual(
+            (
+                "app/src/main/java",
+                "app/src/main/res/values",
+                "app/src/main/res/xml",
+            ),
+            android_capsule.default_required_roots,
+        )
+        self.assertEqual(
+            (
+                "README.md",
+                "app/build.gradle",
+                "app/src/main/AndroidManifest.xml",
+                "build.gradle",
+                "gradle.properties",
+                "gradle/libs.versions.toml",
+                "settings.gradle",
+            ),
+            android_capsule.include_paths,
+        )
+
+        ios_capsule = ios.capsules[0]
+        self.assertEqual("paypal-ios-sdk-demo-source", ios_capsule.id)
+        self.assertEqual("paypal-ios-sdk-demo-app", ios_capsule.source_id)
+        self.assertEqual(
+            (
+                "PayPalDemo/CardCheckoutViews",
+                "PayPalDemo/ConfigSettings",
+                "PayPalDemo/Helpers",
+                "PayPalDemo/Models",
+                "PayPalDemo/Networking",
+                "PayPalDemo/ViewModels",
+            ),
+            ios_capsule.default_required_roots,
+        )
+        self.assertEqual(
+            (
+                "PayPalDemo/CheckoutCoordinator.swift",
+                "PayPalDemo/CheckoutFlow.swift",
+                "PayPalDemo/PayPalDemoApp.swift",
+                "PayPalDemo/PaymentLinkCompleteView.swift",
+                "README.md",
+                "paypal-ios-sdk-demo-app-Info.plist",
+                "paypal-ios-sdk-demo-app.entitlements",
+                "paypal-ios-sdk-demo-app.xcodeproj/project.pbxproj",
+            ),
+            ios_capsule.include_paths,
+        )
+
     def test_paypal_typescript_server_sdk_uses_complete_source_profile(self):
         repos = {
             repo.id: repo
@@ -1732,6 +2071,45 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(250000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(60, capsule.max_packet_files)
         self.assertEqual(900000, capsule.max_packet_utf8_bytes)
+
+    def test_metronome_ai_uses_complete_skills_and_scenarios_profile(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["metronome-industries/ai"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual("default-branch", repo.track)
+        self.assertEqual("commit", repo.version_strategy)
+        self.assertEqual((), repo.version_tracks)
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("metronome-ai-skills", capsule.id)
+        self.assertEqual("commit-tree-v1", capsule.adapter)
+        self.assertEqual("metronome-ai", capsule.source_id)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(("skills",), capsule.default_required_roots)
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(
+            {
+                "README.md",
+                "CONTRIBUTING.md",
+                "LICENSE",
+                "tests/dogfood/scenarios/add-new-product-to-existing.md",
+                "tests/dogfood/scenarios/change-pricing-raise-rate.md",
+                "tests/dogfood/scenarios/start-billing-saas-with-credits.md",
+            },
+            set(capsule.include_paths),
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(80, capsule.max_capsule_files)
+        self.assertEqual(1000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(100, capsule.max_packet_files)
+        self.assertEqual(1500000, capsule.max_packet_utf8_bytes)
 
 
 if __name__ == "__main__":

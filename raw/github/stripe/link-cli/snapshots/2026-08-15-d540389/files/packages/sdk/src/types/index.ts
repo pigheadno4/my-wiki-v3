@@ -1,0 +1,309 @@
+export type JsonPrimitive = string | number | boolean | null;
+export type JsonValue =
+  | JsonPrimitive
+  | JsonValue[]
+  | { [key: string]: JsonValue };
+
+export interface DeviceAuthRequest {
+  device_code: string;
+  user_code: string;
+  verification_url: string;
+  verification_url_complete: string;
+  expires_in: number;
+  interval: number;
+}
+
+export interface AuthTokens {
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+  token_type: string;
+  /** Absolute epoch-ms when the access token expires (computed on store). */
+  expires_at?: number;
+  /** Space-separated scopes granted for this session (echoed by the token endpoint). */
+  scope?: string;
+  /** Authorization details granted for this session (echoed by the token endpoint). */
+  authorization_details?: JsonValue[];
+}
+
+export interface LineItem {
+  name: string;
+  url?: string;
+  image_url?: string;
+  description?: string;
+  sku?: string;
+  totals?: Total[];
+  quantity?: number;
+  unit_amount?: number;
+  product_url?: string;
+}
+
+export interface Total {
+  type: string;
+  display_text: string;
+  amount: number;
+}
+
+export interface BillingAddress {
+  name: string;
+  line1: string;
+  line2?: string;
+  city?: string;
+  state?: string;
+  postal_code?: string;
+  country: string;
+}
+
+export interface Card {
+  id: string;
+  brand: string;
+  exp_month: number;
+  exp_year: number;
+  number: string;
+  cvc?: string;
+  billing_address?: BillingAddress;
+  valid_until?: string;
+}
+
+export type SpendRequestStatus =
+  | 'created'
+  | 'pending_approval'
+  | 'expired'
+  | 'approved'
+  | 'denied'
+  | 'succeeded'
+  | 'failed'
+  | 'canceled'
+  | 'requires_action';
+
+export type NextActionType =
+  | 'ssn_verification'
+  | 'identity_verification'
+  | 'contact_support'
+  | 'select_payment_method'
+  | 'add_payment_method'
+  | 'update_payment_method'
+  | 're_authorize'
+  | 'three_d_secure'
+  | 'three_d_secure_retry';
+
+export type NextActionResolution =
+  | 'auto_resume'
+  | 'create_new_spend_request'
+  | 'create_new_spend_request_after_completion';
+
+export interface NextAction {
+  type: NextActionType;
+  resolution: NextActionResolution;
+  display_message: string;
+  action_url: string | null;
+  expires_at?: number | null;
+}
+
+export interface SpendRequestStatusDetails {
+  requires_action?: {
+    failure_code?: string;
+    next_action: NextAction;
+  };
+}
+
+export type CredentialType = 'shared_payment_token' | 'card';
+
+export interface ApprovalDetail {
+  approved_at: number;
+  approval_method: 'click' | 'programmatic' | 'voice';
+  app_name: string;
+  external_user_id: string;
+  ip_address?: string;
+  user_agent?: string;
+  device_type?: 'mobile' | 'web';
+  agent_log_id?: string;
+  external_user_name?: string;
+  external_session_id?: string;
+  authentication_method?:
+    | 'biometric_face'
+    | 'biometric_fingerprint'
+    | 'passkey';
+}
+
+export interface SharedPaymentToken {
+  id: string;
+  billing_address?: BillingAddress;
+  valid_until?: string;
+}
+
+export interface RefundDetails {
+  amount: number;
+  currency: string;
+  state: string;
+  created: number;
+}
+
+export interface PaymentStatusDetails {
+  outcome: 'success' | 'failure';
+  code?: string | null;
+  decline_code?: string | null;
+  amount: number;
+  currency: string;
+  created?: number | null;
+  refund_details?: RefundDetails | null;
+}
+
+export interface SpendRequest {
+  id: string;
+  merchant_name?: string;
+  merchant_url?: string;
+  context?: string;
+  amount?: number;
+  currency?: string;
+  line_items: LineItem[];
+  totals: Total[];
+  payment_method?: string;
+  payment_details: string;
+  credential_type?: CredentialType;
+  network_id?: string;
+  card_brand?: string;
+  card_last4?: string;
+  status: SpendRequestStatus;
+  approval_url?: string;
+  card?: Card;
+  shared_payment_token?: SharedPaymentToken;
+  link_pay_token?: string;
+  payment_status_details?: PaymentStatusDetails | null;
+  status_details?: SpendRequestStatusDetails | null;
+  link_transaction_id?: string;
+  activity_url?: string;
+  metadata?: Record<string, string>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RequestApprovalResponse {
+  id: string;
+  approval_link: string;
+}
+
+export interface CardDetails {
+  brand: string;
+  last4: string;
+  exp_month: number;
+  exp_year: number;
+}
+
+export interface BankAccountDetails {
+  last4: string;
+  bank_name?: string;
+}
+
+export interface UserInfo {
+  email?: string | null;
+  name?: string | null;
+  first_name?: string | null;
+  last_name?: string | null;
+  phone?: string | null;
+}
+
+export interface ProductCapability {
+  eligible: boolean;
+  ineligibility_reasons: string[];
+}
+
+export interface PaymentMethod {
+  id: string;
+  type: string;
+  is_default: boolean;
+  nickname?: string;
+  card_details?: CardDetails;
+  bank_account_details?: BankAccountDetails;
+  capabilities?: Record<string, ProductCapability>;
+}
+
+export interface ShippingAddress {
+  name: string | null;
+  line_1: string | null;
+  line_2: string | null;
+  locality: string | null;
+  dependent_locality: string | null;
+  administrative_area: string | null;
+  postal_code: string | null;
+  sorting_code: string | null;
+  country_code: string | null;
+}
+
+export interface ShippingAddressRecord {
+  id: string;
+  is_default: boolean;
+  nickname: string | null;
+  address: ShippingAddress | null;
+}
+
+export type TransactionOrigin = 'link' | 'external_connection';
+
+export interface Transaction {
+  id: string;
+  source_id: string | null;
+  amount: number;
+  currency: string;
+  created_date: string;
+  description: string;
+  origin: TransactionOrigin;
+  category: string | null;
+  status: string;
+}
+
+export interface TransactionsPage {
+  data: Transaction[];
+  has_more?: boolean;
+  [key: string]: unknown;
+}
+
+export interface Source {
+  id?: string | null;
+  name?: string | null;
+  type?: string | null;
+  capabilities?: Record<string, unknown> | null;
+  external_connection?: Record<string, unknown> | null;
+  granted_actions?: string[] | null;
+  bank_account?: Record<string, unknown> | null;
+  card?: Record<string, unknown> | null;
+  [key: string]: unknown;
+}
+
+export interface SourcesPage {
+  data: Source[];
+  has_more?: boolean;
+  [key: string]: unknown;
+}
+
+export interface CashBalance {
+  available: Record<string, number>;
+}
+
+export interface CreditBalance {
+  used: Record<string, number>;
+}
+
+export interface Balance {
+  source_id: string;
+  type: 'cash' | 'credit';
+  cash?: CashBalance | null;
+  credit?: CreditBalance | null;
+  current: number;
+  currency: string;
+  as_of: string;
+  [key: string]: unknown;
+}
+
+export interface BalancesPage {
+  data: Balance[];
+  has_more?: boolean;
+  [key: string]: unknown;
+}
+
+export interface WebBotAuthBlock {
+  signature: string;
+  signature_input: string;
+  signature_agent: string;
+  authority: string;
+  expires_at: string;
+}

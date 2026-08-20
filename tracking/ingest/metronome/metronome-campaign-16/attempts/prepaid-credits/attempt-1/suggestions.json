@@ -1,0 +1,70 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "prepaid-credit-model-entitlement-and-doc-cautions",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "under ## Subscription, manual-gate, and trial extensions",
+      "proposed_markdown": "- The prepaid-credits business-model guide makes product access merchant-owned: the merchant stores a local boolean entitlement for latency and resilience, sets it true only after successful gated payment, and uses a zero-balance alert as the signal to set it false. The guide implements the purchased \"credits\" as an `add_commits` contract edit and calls the balance and access-schedule amounts `2000`, but does not define their unit. Its sample access interval is invalid because `ending_before` is 2025-04-01 while `starting_at` is 2026-04-01, and its auto-recharge prose and payload use `threshold_billing_configuration` and `credit_balance_threshold_configuration` rather than the dedicated threshold guide's `prepaid_balance_threshold_configuration`. Do not copy these examples without verifying the current contract schema and corrected dates.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Preserve the merchant-owned access boundary: a Metronome alert or balance does not itself deny application requests.",
+        "Record the reversed access dates and threshold-field-name conflict as documentation contradictions; do not normalize them silently.",
+        "The dedicated manual payment-gate source says failed payment voids invoices and creates no commit, while this guide says it voids the commit object."
+      ]
+    },
+    {
+      "update_id": "prepaid-credit-model-credits-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-billing-model-guides-prepaid-credits]] \u2014 end-to-end prepaid-credit model, merchant-owned entitlement, Stripe-gated purchase, auto-recharge lifecycle, and example contradictions",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "prepaid-credit-zero-balance-entitlement-signal",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "durable_fact",
+      "anchor": "under ## Customer-configured controls",
+      "proposed_markdown": "The prepaid-credit model uses `alerts.low_remaining_contract_credit_and_commit_balance_reached` at a zero threshold as a merchant action signal. The merchant stores the entitlement flag in its own database, checks it before each protected action, and changes it from payment and balance signals; the alert does not itself suspend product access. Because the same guide calls the webhook real-time without a latency, ordering, or consistency contract, the dedicated webhook delivery semantics remain authoritative.",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": [
+        "Do not describe the zero-balance alert as automatic entitlement mutation or service enforcement.",
+        "Do not turn the guide's real-time wording into a delivery or cutoff-latency guarantee."
+      ]
+    },
+    {
+      "update_id": "prepaid-credit-alerts-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-billing-model-guides-prepaid-credits]] \u2014 zero-balance entitlement signal and merchant-owned access-control boundary in a prepaid-credit flow",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

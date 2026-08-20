@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 93 |
-| Raw pages without source summaries | 134 |
+| Source summaries ingested | 102 |
+| Raw pages without source summaries | 129 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -23,8 +23,18 @@ Operational evidence:
 
 ## Sources
 
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-prioritization-rules]] - rollover and ordinary credit/commit ordering, tie-breakers, and invoice-line priority
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-prepaid-credits]] - prepaid-credit packaging, merchant-owned entitlement, Stripe payment gate, and example contradictions
+- [[source-metronome-guides-pricing-packaging-subscription-provision-your-customer]] - subscription contract fields, invoice placement, and pooled or individual seat credits
+- [[source-metronome-guides-reporting-insights-gtm-reporting-get-commit-and-usage-analytics]] - commit pacing and burn analysis with export-grain and deduplication cautions
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] - parent-child contracts, shared commits, consolidated invoicing, reporting, and hierarchy limits
+
+- [[source-github-ai]] - Metronome-authored AI skills for integration, catalog and contract setup, PLG billing, CSM reviews, and Stripe migration
+- [[changelog-github-ai]] - commit-qualified Metronome AI skills history and future comparison rule
 - [[source-github-metronome-node]] - `@metronome/sdk@3.10.0` server client, runtime, transport, generated API surface, and webhook helper
 - [[changelog-github-metronome-node]] - package-qualified Node SDK release and upgrade history
+- [[source-github-terraform-provider-metronome]] - experimental `0.1.0-alpha.3` provider configuration and empty resource/data-source surface
+- [[changelog-github-terraform-provider-metronome]] - package-qualified Terraform provider prerelease history and future comparison rule
 - [[source-metronome-guides-get-started-home]] — documentation entry point, getting-started routes, and four pricing/packaging models
 - [[source-metronome-guides-get-started-developer-sdks]] — SDK installation and an introductory event-to-invoice implementation path
 - [[source-metronome-guides-events-design-usage-events]] — event-design principles, cadence tradeoffs, contextual properties, and future-only metric changes

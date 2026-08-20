@@ -1,0 +1,119 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "provision-subscription-contract-mechanics",
+      "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Pricing and provisioning",
+      "proposed_markdown": "Contract provisioning uses a `subscriptions` config for each subscription. The config selects the rate by `billing_frequency` and `product_id`, sets advance or arrears collection, supplies initial quantity, and defines proration and invoice timing for mid-period changes. Metronome charges the subscription only when that config exists and its associated rate is enabled; an override must identify both billing frequency and product because one product can map to several rates. For advance subscriptions, `billing_cycle_config.anchor_date` may decouple the subscription cycle from the contract usage-invoice anchor.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Do not treat the guide's word `enabled` as a literal schema field; the example uses an `entitled` override, and the existing terminology warning remains applicable.",
+        "The source does not define exact proration formulas, failure behavior, idempotency, or complete create-contract validation."
+      ]
+    },
+    {
+      "update_id": "provision-subscription-seat-credit-models",
+      "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Pricing and provisioning",
+      "proposed_markdown": "A shared seat-credit pool links the subscription to a recurring credit by a temporary subscription identifier. Each period grants shared balance equal to `access_amount` per seat, and newly added seats release additional shared balance according to proration. For individual-seat credits, the streaming metric must define the seat group key before creation, applicable usage products use it as a presentation group key, every event carries a stable unique seat identifier, and the subscription uses `quantity_management_mode: SEAT_BASED` with seat configuration. The guide documents default support for up to 1,000 individual-credit seats and directs larger cases to Metronome.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "The 1,000-seat statement is a default support boundary with an escalation route, not a documented immutable API maximum.",
+        "The source does not define seat-ID collision handling, reassignment, removal, or balance behavior after a seat is removed."
+      ]
+    },
+    {
+      "update_id": "provision-unassigned-seat-field-contradiction",
+      "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Pricing and provisioning",
+      "proposed_markdown": "> [!warning] Documentation contradiction\n> The provisioning guide names the unassigned-seat field `initial_unassigned_seats_quantity`, while the dedicated create-contract schema from the same 2026-07-13 collection names it `initial_unassigned_seats`. Neither source establishes which spelling is current runtime truth; verify the live schema before implementation.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Do not choose either field spelling as current runtime authority without newer schema evidence.",
+        "Keep this field-name contradiction separate from unknown seat reassignment, removal, collision, and post-removal balance semantics."
+      ]
+    },
+    {
+      "update_id": "provision-subscriptions-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-subscription-provision-your-customer]] - contract subscription fields, charging gate, billing-cycle configuration, pooled and individual seat-credit provisioning, and the unassigned-seat field contradiction",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "provision-seat-credit-allocation",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Subscription, manual-gate, and trial extensions",
+      "proposed_markdown": "A subscription-linked recurring credit can create a shared pool by referencing the subscription's temporary identifier. Each period supplies `access_amount` of contract balance per seat, and seat additions release additional shared balance according to proration. Individual-seat allocation instead gives each identified seat a periodic balance that only that seat can consume; its usage path depends on the configured metric group key, product presentation group key, stable event seat identifier, and `SEAT_BASED` subscription configuration.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "The guide does not define exact grant timing, decrease behavior, seat reassignment, or individual-balance lifecycle after seat removal.",
+        "Do not resolve the guide/schema unassigned-seat field-name contradiction in this concept update."
+      ]
+    },
+    {
+      "update_id": "provision-credits-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-subscription-provision-your-customer]] - subscription-linked shared recurring credits, per-seat grants, and individual-seat credit attribution prerequisites",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "provision-subscription-invoice-placement",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Calculation and timing boundary",
+      "proposed_markdown": "A subscription's `invoice_placement` defaults to `ON_USAGE_INVOICE`, placing its charge on the usage invoice with the matching billing date. `ON_SCHEDULED_INVOICE` places the charge on a scheduled invoice: Metronome appends it when a scheduled invoice with that billing date exists and creates a new scheduled invoice when none exists.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Invoice placement does not establish finalization, delivery, collection success, payment timing, or provider-delivery behavior.",
+        "The guide's billing-provider configuration requirement is conditional on routing invoices and collecting payment through Metronome, not an unconditional create-contract field."
+      ]
+    },
+    {
+      "update_id": "provision-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-subscription-provision-your-customer]] - subscription usage-invoice versus scheduled-invoice placement and same-billing-date append-or-create behavior",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

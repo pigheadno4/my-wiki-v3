@@ -51,6 +51,7 @@ _SOURCE_SUFFIXES = (
     ".m",
     ".mm",
     ".php",
+    ".proto",
     ".py",
     ".rb",
     ".rs",
@@ -1104,11 +1105,13 @@ def _retained_row(
 def _classify_file(path: str, row: Mapping[str, Any]) -> str:
     lowered = path.lower()
     filename = lowered.rsplit("/", 1)[-1]
-    if "/" not in lowered and filename in ("license", "notice"):
+    if filename in ("license", "notice"):
         return "repository-context"
-    if filename == "package.json":
+    if filename in ("composer.json", "package.json"):
         return "package-manifest"
     if filename in (".env.example", ".env.sample", "example.env"):
+        return "runtime-configuration"
+    if filename.endswith(".crt"):
         return "runtime-configuration"
     if _is_agent_tool_manifest(lowered, filename):
         return "runtime-configuration"
@@ -1117,6 +1120,7 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         ".nvmrc",
         "codegen_version",
         "openapi_version",
+        "pnpm-workspace.yaml",
     ):
         return "build-configuration"
     if filename == "tsconfig.json" or (
@@ -1132,16 +1136,20 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         in (
             "cartfile",
             "dependencies.gradle",
+            "go.mod",
             "gradle.properties",
             "modules.yaml",
             "package.swift",
             "settings.gradle",
+            "terraform-registry-manifest.json",
             "version",
         )
         or filename.endswith(
             (
                 ".gradle",
                 ".gradle.kts",
+                ".entitlements",
+                ".modulemap",
                 ".podspec",
                 ".plist",
                 ".pro",
@@ -1161,9 +1169,11 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         or filename.startswith("eslint.config.")
     ):
         return "build-configuration"
-    if filename.startswith(("changelog", "history", "releases")):
+    if filename == "release_notes" or filename.startswith(
+        ("changelog", "history", "releases")
+    ):
         return "release-history"
-    if filename == ".keep":
+    if filename in (".keep", "element-list", "package-list"):
         return "documentation"
     if row.get("purpose") == "repository-context" or row.get(
         "classification_reason"
@@ -1187,7 +1197,13 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
     if (
         lowered.endswith(".json")
         and row.get("purpose") == "source-capsule"
-        and row.get("classification_reason") == "required-root"
+        and (
+            row.get("classification_reason") == "required-root"
+            or (
+                row.get("classification_reason") == "include-path"
+                and "/fixtures/triggers/" in "/" + lowered
+            )
+        )
     ):
         return "public-source"
     if lowered.endswith(_SOURCE_SUFFIXES):

@@ -54,7 +54,7 @@ Drop-in separates stored and regular methods, checks method availability, can re
 
 ## Actions and delegated runtimes
 
-The SDK handles redirect, 3DS2 fingerprint and challenge, SDK, await, QR-code, and voucher actions. The 3DS2 adapter validates required tokens, coordinates fingerprint and challenge results, and can configure an out-of-band app-return URL, but the underlying runtime comes from `com.adyen.threeds:adyen-3ds2@2.2.27`.
+The SDK handles redirect, 3DS2 fingerprint and challenge, SDK, await, QR-code, and voucher actions. The 3DS2 adapter validates required tokens, coordinates fingerprint and challenge results, and can configure an out-of-band app-return URL, but the underlying runtime comes from `com.adyen.threeds:adyen-3ds2@2.2.27`. That exact delegated runtime is independently documented in [[adyen-3ds2-android-sdk]].
 
 Google Pay delegates to Google Play Services Wallet, Cash App Pay to Pay Kit, Twint to its Android SDK, and WeChat Pay to Tencent's SDK. Their adapters and configuration are evidence for the Adyen integration boundary only; source presence does not prove merchant enablement, regional eligibility, device availability, or complete delegated behavior.
 
@@ -66,6 +66,7 @@ Drop-in and Component analytics are enabled by default from the 5.x line. `Analy
 
 - [[source-github-adyen-android]] - cumulative exact-SHA repository evidence
 - [[changelog-github-adyen-android]] - package-qualified release ledger
+- [[adyen-3ds2-android-sdk]] - independently versioned native 3DS2 runtime
 - [[adyen-ios-sdk]] - independently versioned native iOS SDK
 - [[adyen-react-native-sdk]] - wrapper baseline that pins Adyen Android `5.19.0`, not this page's newer `5.20.0`
 - [[source-github-adyen-web]] - independently versioned browser SDK

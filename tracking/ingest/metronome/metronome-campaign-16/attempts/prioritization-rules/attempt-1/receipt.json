@@ -1,0 +1,90 @@
+{
+  "job_id": "prioritization-rules",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Understand Metronome Prioritization Rules\"\ntype: source\ndate_ingested: 2026-08-19\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/pricing-packaging/apply-credits-and-commits/prioritization-rules.md\"\nraw_files:\n  - \"metronome/guides/pricing-packaging/apply-credits-and-commits/prioritization-rules-2026-07-13.md\"\ntags: [metronome, credits, commits, prioritization, invoice-line-items]\n---\n\n## Overview\n\nThis guide defines two related ordering systems in Metronome: which applicable credit or commit balance burns down first, and which eligible invoice line item receives that balance first. Balance type is the outer ordering rule, while priority and increasingly specific applicability and schedule attributes break ties within a type.\n\n## Key takeaways\n\n- Metronome's overall balance order is rollover commits and credits first, then prepaid commits and credits, then postpaid commits. Within the rollover tier, postpaid rollover commits precede prepaid rollover commits and credits.\n- Commit type takes precedence over the `priority` field. Priority orders balances only within the same type and cannot move an ordinary postpaid commit ahead of a prepaid balance.\n- Rollover balances of the same type are ordered by priority, then narrower product applicability, narrower usage applicability, and earlier `ending_before`.\n- Prepaid balances use priority, zero-dollar before paid cost basis, narrower product applicability, narrower usage applicability, earlier end and start times, and finally fewer applicable contracts. The page says postpaid commits follow the same logic, but its abbreviated postpaid list omits usage applicability.\n- Eligible invoice lines are ordered independently: usage products before subscription products before composite products, then earlier start date, higher unit price, and finally line-item name from A to Z.\n\n## Balance burn-down order\n\nMetronome first separates balances by type. Rollover balances are consumed before the ordinary prepaid and postpaid tiers; among rollover balances, postpaid rollover commits come before prepaid rollover commits and credits. After rollover, prepaid commits and credits burn down before postpaid commits regardless of their priority values. A priority therefore cannot override the type sequence.\n\nFor rollover balances of the same type, the tie-breakers are priority, product applicability, usage applicability, and `ending_before`. Fewer applicable products or usage group-value specifiers consume first, and an earlier end time wins the final documented tie. The guide defines usage applicability here as the number of group value specifiers containing only `presentation_group_value` or `pricing_group_value`; direct `applicable_product_ids` or `applicable_product_tags` do not count as usage applicability.\n\nFor prepaid commits and credits, priority is followed by cost basis, with a zero-dollar basis before paid value. Remaining ties use fewer applicable products, fewer applicable usage values, earlier `ending_before`, earlier `starting_on`, and fewer applicable contracts. The worked request illustrates priority by assigning commit A priority `50` and commits B through F priority `100`, then consuming A first; the prose does not separately state a universal numeric-direction rule.\n\nThe postpaid section says it follows the same ordering logic as prepaid balances, then abbreviates that sequence as priority, cost basis, product applicability, `ending_before`, `starting_on`, and applicable-contract count. Because that abbreviated list omits usage applicability even though the page says the logic is the same, this source alone does not resolve whether the omission is intentional.\n\n## Invoice line-item prioritization\n\nWhen more than one invoice line can receive a credit or commit, Metronome applies the balance to usage products before subscription products and then composite products. Ties within a product type go to the earlier line-item start date, then the higher unit price, then alphabetical line-item name. The worked example therefore applies a balance to Data Reads at $2.60 before Data Storage at $1 when both usage lines span the same dates.\n\n## Documentation boundaries\n\n> [!warning] Contradiction\n> The existing broad summary that credits and prepaid commits always draw down before postpaid commits needs a rollover exception: this guide explicitly places postpaid rollover commits ahead of prepaid rollover commits and credits. The ordinary non-rollover rule still places prepaid balances before postpaid commits regardless of priority.\n\nThe page provides ordering behavior and one contract-creation example, not a complete contract API reference. Its staging request, identifiers, dates, and amounts are illustrative, and it does not document response schemas, validation failures, idempotency, concurrent balance consumption, or atomicity. The postpaid tie-breaker omission above should be verified before relying on usage applicability as a postpaid tie-breaker.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-credits-and-commits]], [[metronome-invoicing]]\n- Related sources: [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-create-a-pre-paid-commit]], [[source-metronome-api-reference-credits-and-commits-edit-a-commit]], [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/pricing-packaging/apply-credits-and-commits/prioritization-rules-2026-07-13|2026-07-13 snapshot - credit, commit, and invoice-line prioritization rules]]\n",
+  "quotes": [
+    {
+      "text": "Before applying the rules within each type, Metronome burns down commits in this sequence:\n\n1. **Rollover commits** (post-paid commits rollover before prepaid commits/credits)\n2. **Prepaid commits and credits**\n3. **Post-paid commits**\n\n**Commit type always takes precedence over priority.** The `priority` field only controls ordering *within* the same commit type\u2014it cannot cause a post-paid commit to burn down before a prepaid commit, or vice versa.",
+      "location": "lines 19-25, overall burn-down order and type-versus-priority boundary"
+    },
+    {
+      "text": "1. If there are multiple rollover commits or credits, burn down is based on **commit or credit type.** Post-paid rollover commits burn down before prepaid commits and credits.\n2. If there are multiple rollover commits or credits with the same type, burn down is based on **priority.**\n3. If there are multiple rollover commits or credits with the same type and priority, burn down is based on **product applicability.** Commits with the fewest applicable products first, most applicable products last.\n4. If there are multiple rollover commits or credits with the same type, priority, and product applicability, burn down is based on **usage applicability** \u2014the number of group value specifiers a commit has. Commits with the fewest applicable usage get consumed first, and the most applicable usage get consumed last.\n5. If there are multiple rollover commits or credits with the same type, priority, and product and usage applicability, burn down is based on `ending_before`. The earlier `ending_before` gets burned down first.",
+      "location": "lines 29-33, rollover tie-breaker sequence"
+    },
+    {
+      "text": "Prepaid commits and credits always burn down before post-paid commits, regardless of priority values.\n\n1. If there are multiple prepaid commits and credits, burn down is based on **priority.**\n2. If there are multiple other prepaid commits or credits with the same priority, burn down is based on **commit cost basis**. \\$0 cost basis burns down first, then paid.\n3. If there are multiple other prepaid commits or credits with the same priority and cost basis, burn down is based on **product applicability** . The fewest applicable products first, most applicable products last.\n4. If there are multiple other prepaid commits or credits with the same commit type, priority, and product applicability, burn down is based on **usage applicability** \u2014the number of group value specifiers a commit has. Commits with the fewest applicable usage get consumed first, and the most applicable usage get consumed last.\n5. If there are multiple other prepaid commits or credits with the same priority, cost basis, and product and usage applicability, burn down is based on `ending_before`. The earlier `ending_before` burns down first.\n6. If there are multiple prepaid commits or credits with the same priority, cost basis, product and usage applicability, and `ending_before`, burn down is based on `starting_on`. The earlier `starting_on` burns down first.\n7. If there are multiple prepaid commits or credits with the same priority, cost basis, product and usage applicability, `ending_before`, and `starting_on`, burn down is based on the **number of contracts a commit applies to**. The commit with the least number of applicable contracts burns down first.",
+      "location": "lines 43-51, prepaid ordering and tie-breakers"
+    },
+    {
+      "text": "Post-paid commits always burn down after prepaid commits and credits, regardless of priority values. Within post-paid commits, burn down follows the same order logic as prepaid commits: priority, cost basis, product applicability, `ending_before`, `starting_on`, then number of applicable contracts.",
+      "location": "line 55, postpaid rule and abbreviated tie-breaker list"
+    },
+    {
+      "text": "If there are multiple line items on the invoice eligible for commit or credit application, Metronome uses rules to determine which line item to apply commit or credit to first:\n\n1. Commits or credits are applied against usage products first, then subscription products, then composite products.\n2. If there are multiple products of the same type, Metronome uses the start date of the line item, applied against earlier start dates first.\n3. If there are multiple products of the same type with the same start date, Metronome uses the unit price of the line item, applied against line items with higher unit prices first.\n4. If there are multiple products of the same type with the same type, start date and unit price, Metronome uses the line item name, applied alphabetically from A to Z.",
+      "location": "lines 258-263, invoice line-item prioritization sequence"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "prioritization-rollover-exception-and-tiebreakers",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "- Credits and prepaid commits draw down before postpaid commits; lower numeric priorities consume first.",
+        "proposed_markdown": "> [!warning] Contradiction\n> The broad prepaid-before-postpaid rule has a rollover exception: the prioritization guide places postpaid rollover commits before prepaid rollover commits and credits. After the rollover tier, prepaid commits and credits still precede ordinary postpaid commits regardless of priority. Commit type outranks priority; same-type rollover ties use priority, narrower product applicability, narrower usage applicability, then earlier `ending_before`. Prepaid ties additionally place zero-dollar cost basis before paid value, then use earlier `starting_on` and fewer applicable contracts. The postpaid section says it follows prepaid logic but its abbreviated list omits usage applicability, so that tie-breaker remains ambiguous for postpaid commits.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "This update must qualify the existing broad concept bullet and the related create-a-pre-paid-commit source summary; do not erase the ordinary prepaid-before-postpaid rule.",
+          "Do not infer that usage applicability is absent from postpaid ordering: the raw page says postpaid follows the same prepaid logic but omits that step from its abbreviated list."
+        ]
+      },
+      {
+        "update_id": "prioritization-credits-concept-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-prioritization-rules]] - rollover, prepaid, and postpaid burn-down ordering; type precedence; applicability and schedule tie-breakers; and the postpaid-list ambiguity",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "prioritization-invoice-line-order",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "Credits and commits apply at invoice line-item level.",
+        "proposed_markdown": "When several eligible invoice lines can receive a credit or commit, Metronome applies the balance to usage products before subscription products and then composite products. Ties within a product type go to the earlier line-item start date, then the higher unit price, then alphabetical line-item name.",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "prioritization-invoicing-concept-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-prioritization-rules]] - eligible invoice-line ordering by product type, start date, unit price, and name",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/pricing-packaging/apply-credits-and-commits/prioritization-rules-2026-07-13.md",
+  "raw_sha256": "6a7de2bdaf54f399f84bf92c5d659609cf66200435c9b8afdeb42388bc770dae",
+  "status": "candidate_ready"
+}

@@ -541,21 +541,51 @@ id="paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration"
 collection_frequency="monthly"
 company="paypal"
 url="https://github.com/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration"
-enabled=false
+enabled=true
 repo_type="sample-app"
 priority="tier1"
 track="default-branch"
 version_strategy="commit"
+[[repos.capsules]]
+id="paypal-v6-braintree-sample-source"
+adapter="commit-tree-v1"
+source_id="v6-web-sdk-with-braintree-sdk-sample-integration"
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=["client/paypalBillingAgreements","client/paypalCheckoutWithVault","client/paypalMessages","client/paypalOneTimePayments","client/prebuiltPages/react/src","client/shared","server/node/src"]
+include_paths=[".env.sample","README.md","client/index.html","client/package.json","client/prebuiltPages/react/README.md","client/prebuiltPages/react/index.html","client/prebuiltPages/react/package.json","client/prebuiltPages/react/tsconfig.json","client/prebuiltPages/react/utils.ts","client/prebuiltPages/react/vite.config.ts","server/node/.nvmrc","server/node/LICENSE","server/node/package.json","server/node/tsconfig.json"]
+excluded_categories=["tests","fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=512000
+max_capsule_files=150
+max_capsule_utf8_bytes=1500000
+max_packet_files=170
+max_packet_utf8_bytes=2200000
 [[repos]]
 id="paypal-examples/paypal-android-sdk-demo-app"
 collection_frequency="monthly"
 company="paypal"
 url="https://github.com/paypal-examples/paypal-android-sdk-demo-app"
-enabled=false
+enabled=true
 repo_type="sample-app"
 priority="tier1"
 track="default-branch"
 version_strategy="commit"
+[[repos.capsules]]
+id="paypal-android-sdk-demo-source"
+adapter="commit-tree-v1"
+source_id="paypal-android-sdk-demo-app"
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=["app/src/main/java","app/src/main/res/values","app/src/main/res/xml"]
+include_paths=["README.md","app/build.gradle","app/src/main/AndroidManifest.xml","build.gradle","gradle.properties","gradle/libs.versions.toml","settings.gradle"]
+excluded_categories=["tests","fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=512000
+max_capsule_files=180
+max_capsule_utf8_bytes=1200000
+max_packet_files=220
+max_packet_utf8_bytes=2000000
 [[repos]]
 id="paypal-examples/paypal-sdk-server-side-integration"
 collection_frequency="monthly"
@@ -586,11 +616,26 @@ id="paypal-examples/paypal-ios-sdk-demo-app"
 collection_frequency="monthly"
 company="paypal"
 url="https://github.com/paypal-examples/paypal-ios-sdk-demo-app"
-enabled=false
+enabled=true
 repo_type="sample-app"
 priority="tier1"
 track="default-branch"
 version_strategy="commit"
+[[repos.capsules]]
+id="paypal-ios-sdk-demo-source"
+adapter="commit-tree-v1"
+source_id="paypal-ios-sdk-demo-app"
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=["PayPalDemo/CardCheckoutViews","PayPalDemo/ConfigSettings","PayPalDemo/Helpers","PayPalDemo/Models","PayPalDemo/Networking","PayPalDemo/ViewModels"]
+include_paths=["PayPalDemo/CheckoutCoordinator.swift","PayPalDemo/CheckoutFlow.swift","PayPalDemo/PayPalDemoApp.swift","PayPalDemo/PaymentLinkCompleteView.swift","README.md","paypal-ios-sdk-demo-app-Info.plist","paypal-ios-sdk-demo-app.entitlements","paypal-ios-sdk-demo-app.xcodeproj/project.pbxproj"]
+excluded_categories=["tests","fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=512000
+max_capsule_files=180
+max_capsule_utf8_bytes=1200000
+max_packet_files=220
+max_packet_utf8_bytes=2000000
 [[repos]]
 id="braintree/braintree_android"
 collection_frequency="weekly"
@@ -902,11 +947,32 @@ id="braintree/braintree_php"
 collection_frequency="monthly"
 company="braintree"
 url="https://github.com/braintree/braintree_php"
-enabled=false
+enabled=true
 repo_type="server-sdk"
 priority="tier2"
 track="releases-and-default-branch"
 version_strategy="semver-tags"
+[[repos.version_tracks]]
+selector="package:braintree_php@6"
+backfill="latest-stable"
+future="all-stable"
+include_prerelease=false
+[[repos.capsules]]
+id="braintree-php-checkout-source"
+adapter="tagged-tree-v1"
+focus_packages=["braintree_php"]
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=["lib"]
+default_generated_target_paths=[]
+include_paths=["CHANGELOG.md", "LICENSE", "README.md", "SECURITY.md", "composer.json"]
+excluded_categories=["tests", "fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=1000000
+max_capsule_files=500
+max_capsule_utf8_bytes=3200000
+max_packet_files=520
+max_packet_utf8_bytes=3600000
 [[repos]]
 id="braintree/braintree_ruby"
 collection_frequency="monthly"
@@ -1190,11 +1256,116 @@ id="stripe/stripe-cli"
 collection_frequency="monthly"
 company="stripe"
 url="https://github.com/stripe/stripe-cli"
-enabled=false
+enabled=true
 repo_type="cli"
 priority="tier2"
 track="releases-and-default-branch"
 version_strategy="semver-tags"
+[[repos.version_tracks]]
+selector="package:stripe-cli@1"
+backfill="latest-stable"
+future="all-stable"
+include_prerelease=false
+pinned_versions=["1.50.0"]
+[[repos.capsules]]
+id="stripe-cli-checkout-source"
+adapter="tagged-tree-v1"
+focus_packages=["stripe-cli"]
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=[
+  "pkg/config",
+  "pkg/login",
+  "pkg/proxy",
+  "pkg/requests",
+  "pkg/stripe",
+  "pkg/websocket",
+]
+default_generated_target_paths=[]
+include_paths=[
+  "README.md",
+  "ARCHITECTURE.md",
+  "LICENSE",
+  "go.mod",
+  "cmd/stripe/main.go",
+  "pkg/cmd/root.go",
+  "pkg/cmd/config.go",
+  "pkg/cmd/login.go",
+  "pkg/cmd/logout.go",
+  "pkg/cmd/switch.go",
+  "pkg/cmd/whoami.go",
+  "pkg/cmd/get.go",
+  "pkg/cmd/post.go",
+  "pkg/cmd/delete.go",
+  "pkg/cmd/http.go",
+  "pkg/cmd/listen.go",
+  "pkg/cmd/trigger.go",
+  "pkg/cmd/fixtures.go",
+  "pkg/cmd/resources.go",
+  "pkg/fixtures/fixtures.go",
+  "pkg/fixtures/triggers.go",
+  "pkg/rpcservice/events_resend.go",
+  "pkg/rpcservice/fixtures.go",
+  "pkg/rpcservice/listen.go",
+  "pkg/rpcservice/trigger.go",
+  "pkg/rpcservice/triggers_list.go",
+  "pkg/rpcservice/webhook_endpoint_create.go",
+  "pkg/rpcservice/webhook_endpoints_list.go",
+  "rpc/common.proto",
+  "rpc/events_resend.proto",
+  "rpc/fixtures.proto",
+  "rpc/listen.proto",
+  "rpc/trigger.proto",
+  "rpc/triggers_list.proto",
+  "rpc/webhook_endpoint_create.proto",
+  "rpc/webhook_endpoints_list.proto",
+  "pkg/fixtures/triggers/checkout.session.async_payment_failed.json",
+  "pkg/fixtures/triggers/checkout.session.async_payment_succeeded.json",
+  "pkg/fixtures/triggers/checkout.session.completed.json",
+  "pkg/fixtures/triggers/checkout.session.expired.json",
+  "pkg/fixtures/triggers/customer.subscription.created.json",
+  "pkg/fixtures/triggers/customer.subscription.deleted.json",
+  "pkg/fixtures/triggers/customer.subscription.paused.json",
+  "pkg/fixtures/triggers/customer.subscription.trial_will_end.json",
+  "pkg/fixtures/triggers/customer.subscription.updated.json",
+  "pkg/fixtures/triggers/invoice.created.json",
+  "pkg/fixtures/triggers/invoice.deleted.json",
+  "pkg/fixtures/triggers/invoice.finalized.json",
+  "pkg/fixtures/triggers/invoice.marked_uncollectible.json",
+  "pkg/fixtures/triggers/invoice.paid.json",
+  "pkg/fixtures/triggers/invoice.payment_action_required.json",
+  "pkg/fixtures/triggers/invoice.payment_failed.json",
+  "pkg/fixtures/triggers/invoice.sent.json",
+  "pkg/fixtures/triggers/invoice.updated.json",
+  "pkg/fixtures/triggers/invoice.voided.json",
+  "pkg/fixtures/triggers/payment_intent.amount_capturable_updated.json",
+  "pkg/fixtures/triggers/payment_intent.canceled.json",
+  "pkg/fixtures/triggers/payment_intent.created.json",
+  "pkg/fixtures/triggers/payment_intent.partially_funded.json",
+  "pkg/fixtures/triggers/payment_intent.payment_failed.json",
+  "pkg/fixtures/triggers/payment_intent.processing.json",
+  "pkg/fixtures/triggers/payment_intent.requires_action.json",
+  "pkg/fixtures/triggers/payment_intent.succeeded.json",
+  "pkg/fixtures/triggers/setup_intent.canceled.json",
+  "pkg/fixtures/triggers/setup_intent.created.json",
+  "pkg/fixtures/triggers/setup_intent.requires_action.json",
+  "pkg/fixtures/triggers/setup_intent.setup_failed.json",
+  "pkg/fixtures/triggers/setup_intent.succeeded.json",
+  "pkg/fixtures/triggers/subscription_schedule.aborted.json",
+  "pkg/fixtures/triggers/subscription_schedule.canceled.json",
+  "pkg/fixtures/triggers/subscription_schedule.completed.json",
+  "pkg/fixtures/triggers/subscription_schedule.created.json",
+  "pkg/fixtures/triggers/subscription_schedule.expiring.json",
+  "pkg/fixtures/triggers/subscription_schedule.released.json",
+  "pkg/fixtures/triggers/subscription_schedule.updated.json",
+]
+excluded_categories=["tests", "fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=1000000
+max_capsule_files=180
+max_capsule_utf8_bytes=2500000
+max_packet_files=220
+max_packet_utf8_bytes=3200000
 [[repos]]
 id="stripe/stripe-android"
 collection_frequency="weekly"
@@ -1278,11 +1449,46 @@ id="stripe/link-cli"
 collection_frequency="monthly"
 company="stripe"
 url="https://github.com/stripe/link-cli"
-enabled=false
+enabled=true
 repo_type="cli"
 priority="tier2"
 track="releases-and-default-branch"
 version_strategy="semver-tags"
+[[repos.version_tracks]]
+selector="package:@stripe/link-cli@0"
+backfill="latest-stable"
+future="all-stable"
+include_prerelease=false
+pinned_versions=["0.13.0"]
+[[repos.capsules]]
+id="stripe-link-cli-public-source"
+adapter="tagged-tree-v1"
+focus_packages=["@stripe/link-cli"]
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=[
+  "packages/cli/src",
+  "packages/sdk/src",
+  "skills",
+]
+default_generated_target_paths=[]
+include_paths=[
+  "README.md",
+  "LICENSE",
+  "package.json",
+  "pnpm-workspace.yaml",
+  "packages/cli/CHANGELOG.md",
+  "packages/cli/package.json",
+  "packages/sdk/README.md",
+  "packages/sdk/package.json",
+]
+excluded_categories=["tests", "fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=512000
+max_capsule_files=160
+max_capsule_utf8_bytes=2500000
+max_packet_files=200
+max_packet_utf8_bytes=3200000
 [[repos]]
 id="stripe/stripe-react-native"
 collection_frequency="weekly"
@@ -1347,11 +1553,33 @@ id="stripe/stripe-php"
 collection_frequency="monthly"
 company="stripe"
 url="https://github.com/stripe/stripe-php"
-enabled=false
+enabled=true
 repo_type="server-sdk"
 priority="tier2"
 track="releases-and-default-branch"
 version_strategy="semver-tags"
+[[repos.version_tracks]]
+selector="package:stripe-php@21"
+backfill="latest-stable"
+future="all-stable"
+include_prerelease=false
+pinned_versions=["21.2.0"]
+[[repos.capsules]]
+id="stripe-php-public-runtime"
+adapter="tagged-tree-v1"
+focus_packages=["stripe-php"]
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=["lib"]
+default_generated_target_paths=[]
+include_paths=["CHANGELOG.md", "LICENSE", "README.md", "composer.json", "init.php"]
+excluded_categories=["tests", "fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=1000000
+max_capsule_files=492
+max_capsule_utf8_bytes=3100000
+max_packet_files=512
+max_packet_utf8_bytes=3600000
 [[repos]]
 id="stripe/stripe-node"
 collection_frequency="monthly"
@@ -1701,11 +1929,34 @@ id="metronome-industries/ai"
 collection_frequency="monthly"
 company="metronome"
 url="https://github.com/Metronome-Industries/ai"
-enabled=false
+enabled=true
 repo_type="developer-tooling"
 priority="tier2"
 track="default-branch"
 version_strategy="commit"
+[[repos.capsules]]
+id="metronome-ai-skills"
+adapter="commit-tree-v1"
+source_id="metronome-ai"
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=["skills"]
+default_generated_target_paths=[]
+include_paths=[
+  "README.md",
+  "CONTRIBUTING.md",
+  "LICENSE",
+  "tests/dogfood/scenarios/add-new-product-to-existing.md",
+  "tests/dogfood/scenarios/change-pricing-raise-rate.md",
+  "tests/dogfood/scenarios/start-billing-saas-with-credits.md",
+]
+excluded_categories=["tests", "fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=512000
+max_capsule_files=80
+max_capsule_utf8_bytes=1000000
+max_packet_files=100
+max_packet_utf8_bytes=1500000
 [[repos]]
 id="metronome-industries/ai-eval"
 collection_frequency="on-demand"
@@ -1731,11 +1982,41 @@ id="metronome-industries/terraform-provider-metronome"
 collection_frequency="monthly"
 company="metronome"
 url="https://github.com/Metronome-Industries/terraform-provider-metronome"
-enabled=false
+enabled=true
 repo_type="terraform-provider"
 priority="tier2"
 track="releases-and-default-branch"
 version_strategy="semver-tags"
+[[repos.version_tracks]]
+selector="package:terraform-provider-metronome@0"
+backfill="latest-stable"
+future="all-stable"
+include_prerelease=true
+pinned_versions=["0.1.0-alpha.3"]
+[[repos.capsules]]
+id="metronome-terraform-provider-source"
+adapter="tagged-tree-v1"
+focus_packages=["terraform-provider-metronome"]
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=["internal", "docs", "examples"]
+default_generated_target_paths=[]
+include_paths=[
+  "README.md",
+  "CHANGELOG.md",
+  "LICENSE",
+  "SECURITY.md",
+  "CONTRIBUTING.md",
+  "go.mod",
+  "terraform-registry-manifest.json",
+]
+excluded_categories=["tests", "fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=512000
+max_capsule_files=80
+max_capsule_utf8_bytes=2000000
+max_packet_files=100
+max_packet_utf8_bytes=2500000
 [[repos]]
 id="adyen/adyen-node-api-library"
 collection_frequency="monthly"
@@ -2315,11 +2596,72 @@ id="adyen/adyen-php-api-library"
 collection_frequency="monthly"
 company="adyen"
 url="https://github.com/Adyen/adyen-php-api-library"
-enabled=false
+enabled=true
 repo_type="server-sdk"
 priority="tier2"
 track="releases-and-default-branch"
 version_strategy="semver-tags"
+[[repos.version_tracks]]
+selector="package:adyen-php-api-library@30"
+backfill="latest-stable"
+future="all-stable"
+include_prerelease=false
+pinned_versions=["30.0.2"]
+[[repos.capsules]]
+id="adyen-php-checkout-source"
+adapter="tagged-tree-v1"
+focus_packages=["adyen-php-api-library"]
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=[
+  "src/Adyen/HttpClient",
+  "src/Adyen/Model/Checkout",
+  "src/Adyen/Model/Payments",
+  "src/Adyen/Model/Recurring",
+  "src/Adyen/Model/TokenizationWebhooks",
+  "src/Adyen/Service/Checkout",
+  "src/Adyen/Service/Payments",
+  "src/Adyen/Service/ResourceModel/Checkout",
+  "src/Adyen/Service/ResourceModel/CheckoutUtility",
+  "src/Adyen/Service/ResourceModel/Payment",
+  "src/Adyen/Service/ResourceModel/Recurring",
+  "src/Adyen/Service/Validator",
+  "src/Adyen/Util",
+]
+default_generated_target_paths=[]
+include_paths=[
+  "LICENSE",
+  "README.md",
+  "SECURITY.md",
+  "VERSION",
+  "composer.json",
+  "src/Adyen/AdyenException.php",
+  "src/Adyen/ApiKeyAuthenticatedService.php",
+  "src/Adyen/Client.php",
+  "src/Adyen/Config.php",
+  "src/Adyen/ConnectionException.php",
+  "src/Adyen/Environment.php",
+  "src/Adyen/Region.php",
+  "src/Adyen/Service.php",
+  "src/Adyen/Service/AbstractCheckoutResource.php",
+  "src/Adyen/Service/AbstractResource.php",
+  "src/Adyen/Service/Checkout.php",
+  "src/Adyen/Service/CheckoutUtility.php",
+  "src/Adyen/Service/Modification.php",
+  "src/Adyen/Service/Notification.php",
+  "src/Adyen/Service/Payment.php",
+  "src/Adyen/Service/Recurring.php",
+  "src/Adyen/Service/RecurringApi.php",
+  "src/Adyen/Service/TokenizationWebhookParser.php",
+  "src/Adyen/Service/WebhookReceiver.php",
+]
+excluded_categories=["tests", "fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=1000000
+max_capsule_files=500
+max_capsule_utf8_bytes=9000000
+max_packet_files=550
+max_packet_utf8_bytes=10000000
 [[repos]]
 id="adyen/adyen-sdk-automation"
 collection_frequency="on-demand"
@@ -2365,18 +2707,60 @@ id="adyen/adyen-3ds2-android"
 collection_frequency="monthly"
 company="adyen"
 url="https://github.com/Adyen/adyen-3ds2-android"
-enabled=false
+enabled=true
 repo_type="authentication-sdk"
 priority="tier2"
 track="releases-and-default-branch"
 version_strategy="semver-tags"
+[[repos.version_tracks]]
+selector="package:adyen-3ds2-android@2"
+backfill="latest-stable"
+future="all-stable"
+include_prerelease=false
+pinned_versions=["2.2.27"]
+[[repos.capsules]]
+id="adyen-3ds2-android-public-api"
+adapter="tagged-tree-v1"
+focus_packages=["adyen-3ds2-android"]
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=["docs/com"]
+include_paths=["LICENSE","README.md","RELEASE_NOTES","TROUBLESHOOTING.md","docs/allclasses.html","docs/deprecated.html","docs/element-list","docs/index.html","docs/package-list"]
+excluded_categories=["tests","fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=512000
+max_capsule_files=100
+max_capsule_utf8_bytes=2500000
+max_packet_files=130
+max_packet_utf8_bytes=3000000
 [[repos]]
 id="adyen/adyen-3ds2-ios"
 collection_frequency="monthly"
 company="adyen"
 url="https://github.com/Adyen/adyen-3ds2-ios"
-enabled=false
+enabled=true
 repo_type="authentication-sdk"
 priority="tier2"
 track="releases-and-default-branch"
 version_strategy="semver-tags"
+[[repos.version_tracks]]
+selector="package:adyen-3ds2-ios@2"
+backfill="latest-stable"
+future="all-stable"
+include_prerelease=false
+pinned_versions=["2.4.4"]
+[[repos.capsules]]
+id="adyen-3ds2-ios-public-api"
+adapter="tagged-tree-v1"
+focus_packages=["adyen-3ds2-ios"]
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=["XCFramework/Dynamic/Adyen3DS2.xcframework/ios-arm64/Adyen3DS2.framework/Headers"]
+include_paths=["Adyen3DS2.podspec","LICENSE","Package.swift","README.md","XCFramework/Dynamic/Adyen3DS2.xcframework/ios-arm64/Adyen3DS2.framework/Modules/module.modulemap","XCFramework/Dynamic/Adyen3DS2.xcframework/ios-arm64/Adyen3DS2.framework/PrivacyInfo.xcprivacy"]
+excluded_categories=["tests","fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=512000
+max_capsule_files=80
+max_capsule_utf8_bytes=1000000
+max_packet_files=120
+max_packet_utf8_bytes=1500000

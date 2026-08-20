@@ -99,6 +99,68 @@ class GitTree:
             raise GitObjectReadError("Git blob read size did not match tree metadata")
         return content
 
+    def read_blobs(
+        self,
+        paths: Sequence[str],
+        max_bytes: Optional[int] = None,
+    ) -> Dict[str, bytes]:
+        """Read selected tracked blobs with one size and one content command."""
+        limit = self._max_blob_bytes if max_bytes is None else _read_limit(max_bytes)
+        requested = tuple(paths)
+        if len(requested) != len(set(requested)):
+            raise ValueError("paths must not contain duplicates")
+        selected = tuple((path, self._blob(path)) for path in requested)
+        if not selected:
+            return {}
+
+        sizes_by_path = self.blob_sizes(requested)
+        sizes = tuple(sizes_by_path[path] for path in requested)
+        for (path, _), size in zip(selected, sizes):
+            if size > limit:
+                raise ValueError("Git blob exceeds byte limit: " + path)
+
+        object_input = b"".join(
+            blob.oid.encode("ascii") + b"\n" for _, blob in selected
+        )
+        contents = _parse_batch_contents(
+            _run_git_bytes(
+                ["cat-file", "--batch"],
+                self._repo_root,
+                input_data=object_input,
+            ),
+            tuple(blob.oid for _, blob in selected),
+            sizes,
+        )
+        return {
+            path: content
+            for (path, _), content in zip(selected, contents)
+        }
+
+    def blob_sizes(self, paths: Sequence[str]) -> Dict[str, int]:
+        """Resolve selected blob sizes with at most one Git command."""
+        requested = tuple(paths)
+        if len(requested) != len(set(requested)):
+            raise ValueError("paths must not contain duplicates")
+        selected = tuple((path, self._blob(path)) for path in requested)
+        missing = tuple(
+            (path, blob) for path, blob in selected if path not in self._sizes
+        )
+        if missing:
+            object_input = b"".join(
+                blob.oid.encode("ascii") + b"\n" for _, blob in missing
+            )
+            sizes = _parse_batch_sizes(
+                _run_git_bytes(
+                    ["cat-file", "--batch-check"],
+                    self._repo_root,
+                    input_data=object_input,
+                ),
+                tuple(blob.oid for _, blob in missing),
+            )
+            for (path, _), size in zip(missing, sizes):
+                self._sizes[path] = size
+        return {path: self._sizes[path] for path, _ in selected}
+
     def read_json(self, path: str, max_bytes: Optional[int] = None) -> Any:
         """Read a JSON blob without accepting duplicate object keys."""
         try:
@@ -170,7 +232,11 @@ def _parse_ls_tree_entry(value: bytes) -> GitBlob:
     raise ValueError("unsupported Git tree entry: " + path)
 
 
-def _run_git_bytes(args: Sequence[str], cwd: Path) -> bytes:
+def _run_git_bytes(
+    args: Sequence[str],
+    cwd: Path,
+    input_data: Optional[bytes] = None,
+) -> bytes:
     command = ["git"] + list(args)
     attempts = _CAT_FILE_ATTEMPTS if args and args[0] == "cat-file" else 1
     for attempt in range(attempts):
@@ -181,6 +247,7 @@ def _run_git_bytes(args: Sequence[str], cwd: Path) -> bytes:
                 check=True,
                 capture_output=True,
                 env=_git_environment(),
+                input=input_data,
             )
         except subprocess.CalledProcessError:
             if attempt + 1 < attempts:
@@ -190,6 +257,60 @@ def _run_git_bytes(args: Sequence[str], cwd: Path) -> bytes:
             raise GitObjectReadError("Git object command failed") from None
         return result.stdout
     raise AssertionError("unreachable Git object retry state")
+
+
+def _parse_batch_sizes(output: bytes, expected_oids: Sequence[str]) -> Tuple[int, ...]:
+    lines = output.splitlines()
+    if len(lines) != len(expected_oids):
+        raise GitObjectReadError("Git batch size output is invalid")
+    sizes = []
+    for line, expected_oid in zip(lines, expected_oids):
+        fields = line.split()
+        if len(fields) != 3 or fields[0] != expected_oid.encode("ascii") or fields[1] != b"blob":
+            raise GitObjectReadError("Git batch size output is invalid")
+        try:
+            size = int(fields[2])
+        except ValueError:
+            raise GitObjectReadError("Git batch size output is invalid") from None
+        if size < 0:
+            raise GitObjectReadError("Git batch size output is invalid")
+        sizes.append(size)
+    return tuple(sizes)
+
+
+def _parse_batch_contents(
+    output: bytes,
+    expected_oids: Sequence[str],
+    expected_sizes: Sequence[int],
+) -> Tuple[bytes, ...]:
+    offset = 0
+    contents = []
+    for expected_oid, expected_size in zip(expected_oids, expected_sizes):
+        header_end = output.find(b"\n", offset)
+        if header_end < 0:
+            raise GitObjectReadError("Git batch content output is invalid")
+        fields = output[offset:header_end].split()
+        if (
+            len(fields) != 3
+            or fields[0] != expected_oid.encode("ascii")
+            or fields[1] != b"blob"
+        ):
+            raise GitObjectReadError("Git batch content output is invalid")
+        try:
+            size = int(fields[2])
+        except ValueError:
+            raise GitObjectReadError("Git batch content output is invalid") from None
+        if size != expected_size:
+            raise GitObjectReadError("Git batch content output is invalid")
+        content_start = header_end + 1
+        content_end = content_start + size
+        if content_end >= len(output) or output[content_end:content_end + 1] != b"\n":
+            raise GitObjectReadError("Git batch content output is invalid")
+        contents.append(output[content_start:content_end])
+        offset = content_end + 1
+    if offset != len(output):
+        raise GitObjectReadError("Git batch content output is invalid")
+    return tuple(contents)
 
 
 def _git_environment() -> dict:

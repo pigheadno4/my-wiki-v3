@@ -6,6 +6,27 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-20] ingest | Adyen/adyen-php-api-library `30.0.2`
+
+- Approved and full-ingested work item `github-1ef004e332164a8359d6` at exact SHA `6ef96571834bc460201df8aea8c89882b2043cd8` after serial full reading of all 450 required evidence paths.
+- Established [[source-github-adyen-php-api-library]], its package-qualified changelog, and [[adyen-php-api-library]] for Checkout API v71, Payments and Recurring APIs v68, tokenization webhooks, transport, and HMAC helpers.
+- Preserved the checkout-focused boundary, merchant-specific live Checkout prefix requirement, generated-model-versus-eligibility distinction, and the stale `SECURITY.md` support-table contradiction.
+- Updated [[recurring-payments]], the Adyen company page, provider index, and calculated cumulative source and release counts.
+
+## [2026-08-19] ingest | Adyen/adyen-3ds2-ios `2.4.4`
+
+- Approved and full-ingested work item `github-b8f0d09e7fd89635c59f` at exact SHA `00862adbc079d0be943666a4ad2523deb31f9546` after serial full reading of all 32 required evidence paths.
+- Established [[source-github-adyen-3ds2-ios]], its package-qualified changelog, and [[adyen-3ds2-ios-sdk]] for service setup, server handoff, universal-link challenges, lifecycle, errors, security warnings, privacy, and UI customization.
+- Preserved the binary/public-header evidence boundary, classic Payment API v64 references, selected-framework-slice limitation, and erroneous warning-class specification link.
+- Updated the parent iOS evidence, cross-platform 3DS2 concepts, Adyen company page, provider index, and calculated cumulative source count.
+
+## [2026-08-19] ingest | Adyen/adyen-3ds2-android `2.2.27`
+
+- Approved and full-ingested work item `github-ddb53c093685674310ef` at exact SHA `de845e67488b6aecb1ff57ea7908b662f5ee2d40` after serial full reading of all 69 required evidence paths.
+- Established [[source-github-adyen-3ds2-android]], its package-qualified changelog, and [[adyen-3ds2-android-sdk]] for transaction setup, `/authorise3ds2` handoffs, challenge outcomes, lifecycle, security warnings, and UI customization.
+- Preserved the public-documentation-only boundary and recorded the missing `DATA_SAFETY_GUIDE.md`, absent `2.2.27` compatibility row, and contradictory generated cleanup wording as explicit evidence gaps.
+- Updated the parent Android concept, Adyen company page, provider index, and calculated cumulative source count.
+
 ## [2026-08-12] ingest | adyen/adyen-postman `default-branch@ecb2907`
 
 - Approved and processed work item `github-ab2d0a488d97d9590b4c` in full mode at exact SHA `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7`.

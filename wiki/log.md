@@ -1,5 +1,65 @@
 # Wiki Log
 
+## [2026-08-20] ingest | GitHub Adyen/adyen-php-api-library `30.0.2`
+
+- Full-ingested work item `github-1ef004e332164a8359d6` at exact SHA `6ef96571834bc460201df8aea8c89882b2043cd8` after serial review of all 450 required evidence paths.
+- Added cumulative and package-qualified sources plus [[adyen-php-api-library]] for Checkout API v71, classic Payments and Recurring APIs v68, tokenization webhooks, transport, and signature helpers.
+- Preserved the checkout-focused evidence boundary, live-prefix requirement, and stale `SECURITY.md` support-table contradiction.
+
+## [2026-08-19] ingest | GitHub Adyen/adyen-3ds2-ios `2.4.4`
+
+- Full-ingested work item `github-b8f0d09e7fd89635c59f` at exact SHA `00862adbc079d0be943666a4ad2523deb31f9546` after serial review of all 32 required evidence paths.
+- Added cumulative and package-qualified sources plus [[adyen-3ds2-ios-sdk]] for the delegated native transaction and challenge runtime.
+- Preserved the binary implementation boundary, API-version caveat, selected framework-slice scope, privacy declarations, and upstream warning-class documentation defect.
+
+## [2026-08-19] ingest | GitHub Adyen/adyen-3ds2-android `2.2.27`
+
+- Full-ingested work item `github-ddb53c093685674310ef` at exact SHA `de845e67488b6aecb1ff57ea7908b662f5ee2d40` after serial review of all 69 required evidence paths.
+- Added cumulative and package-qualified sources plus [[adyen-3ds2-android-sdk]] for the delegated native transaction and challenge runtime.
+- Preserved the public-documentation boundary and explicit gaps for the missing Data Safety Guide, missing `2.2.27` compatibility row, and conflicting cleanup wording.
+
+## [2026-08-17] ingest | GitHub paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration `main@f1c7123`
+
+- Full-ingested work item `github-ff388d21d0a8282ef393` at exact SHA `f1c712374f674ce6f0b2683f105871dcb969d2d7` after serial review of all 74 required evidence and shared-context paths.
+- Added cumulative and commit-qualified sources for Braintree Web/React/Node examples covering one-time payment, shipping updates, vaulting, billing agreements, Pay Later/Credit, and Messages.
+- Preserved the sample-versus-production boundary: client-controlled amounts, per-request customer creation, sandbox-only server configuration, and no implemented Venmo payment session.
+
+## [2026-08-16] ingest | GitHub paypal-examples/paypal-ios-sdk-demo-app `main@047a50e`
+
+- Full-ingested work item `github-523453a8a9fad6afdf6f` from all 30 required evidence paths at exact SHA `047a50ec97d9881af84ca3fb03d1d23e859a86f4`.
+- Added cumulative and commit-qualified sources for SwiftUI PayPal/card checkout and a separate hosted Payment Link path compatible with PayPal iOS SDK `>=2.0.0,<3.0.0`.
+- Preserved the absent native Venmo flow, unresolved SDK patch, README/code gaps, sample defects, and return-URL-versus-settlement distinction.
+
+## [2026-08-16] ingest | GitHub paypal-examples/paypal-android-sdk-demo-app `main@d1137d5`
+
+- Full-ingested work item `github-71f4eb08ef220f23aba9` from all 44 required evidence paths at exact SHA `d1137d5daa3a3befdcf6c72e6a1e8144bf765ba2`.
+- Added cumulative and commit-qualified sources for Jetpack Compose PayPal/card checkout and a separate hosted Payment Link path using PayPal Android SDK `2.3.0`.
+- Preserved the absent native Venmo flow, incomplete 3DS branch, example server boundary, and return-URI-versus-settlement distinction.
+
+## [2026-08-15] ingest | GitHub stripe/link-cli `@stripe/link-cli@0.13.0`
+
+- Full-ingested work item `github-62b2da34c81f87c986c9` at exact SHA `d540389e030d0f475a6b85cd64ccaf978ff498ac` after serial full reading of all 110 required evidence paths.
+- Added cumulative and package-qualified sources plus the [[stripe-link-cli]] concept for Link wallet authentication, approval-gated virtual cards, SPT/MPP, Link Pay Token, MCP, and financial insights.
+- Preserved the consumer-wallet, US-account, private-SDK, disabled-command, one-time-token, security, and stale skill-version metadata boundaries; isolated the exact `0.13.0` release changes from the broader initial baseline.
+
+## [2026-08-15] ingest | GitHub Metronome-Industries/ai `main@59193aa`
+
+- Full-ingested work item `github-5b78ff7871557dec5f21` at exact SHA `59193aabd9c43cca32f320d6f68f5d63d04034d4` after serial full reading of the complete 44-path packet.
+- Added cumulative and commit-qualified sources for Metronome integration, catalog, contract, PLG, CSM, and Stripe usage-billing migration agent workflows.
+- Preserved the agent-instruction evidence boundary and explicit conflicts in numeric properties, rates, endpoint naming, and migration examples.
+
+## [2026-08-15] ingest | GitHub stripe/stripe-php `stripe-php@21.2.0`
+
+- Full-ingested work item `github-0ff215c1739732ae4751` at exact SHA `edf8118f0b96d69f06f372da9168d613d1aed072` after serial full reading of all 470 required evidence paths.
+- Added cumulative and package-qualified sources plus the [[stripe-php-sdk]] concept for PHP client services, request encoding, retries/idempotency, webhooks, Checkout, billing, and Terminal.
+- Preserved package/API version boundaries and restricted the v21.2.0 `WithoutVerification` helpers to previously verified or trusted event payloads.
+
+## [2026-08-14] ingest | GitHub stripe/stripe-cli `stripe-cli@1.50.0`
+
+- Full-ingested work item `github-feef8fcc377f52acf591` at exact SHA `a6f40658b99e4142fd63b2e4b560aa9c7ae337b1` from all 147 required evidence paths.
+- Added cumulative and package-qualified sources plus the [[stripe-cli]] concept for API commands, fixtures, triggers, local webhook forwarding, authentication contexts, and telemetry.
+- Kept fixture examples separate from canonical API guarantees and isolated the exact `1.50.0` change to agent-identity telemetry.
+
 ## [2026-08-13] ingest | GitHub stripe/ai `main@1953b6c`
 
 - Full-ingested work item `github-39ab9debac014faec1c5` at exact SHA `1953b6cce7344d880a054c42b8dd21ca3e50ebd5` after serial full reading of all 212 required evidence paths.

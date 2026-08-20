@@ -49,6 +49,8 @@ stripe.handleNextAction({ hashedValue: next_action.use_stripe_sdk.value })
 stripe.sharedPayment.issuedTokens.revoke('spt_xxx')
 ```
 
+At the retained `@stripe/link-cli@0.13.0` baseline, a consumer-side agent can also obtain an SPT from a Link wallet for a Stripe MPP `402` challenge. `link-cli mpp pay` extracts the challenge's network ID and amount, creates a user-approved spend request, retrieves the SPT, and retries with the payment credential. The SPT is one-time use; a failed payment requires a new spend request.
+
 ## Supported Payment Methods
 
 Cards (Mastercard Agent Pay / Visa Intelligent Commerce), Link, Apple Pay, Google Pay, Klarna, Affirm (limited — no programmatic UI interaction).
@@ -69,3 +71,4 @@ Agent sets `max_amount`, `currency`, `expires_at`. Usage limits enforce the tran
 ## Sources
 
 - [[source-stripe-shared-payment-tokens]] — full seller + agent integration guide with code
+- [[source-github-link-cli]] — package-qualified Link CLI implementation of approval-gated SPT issuance and MPP payment

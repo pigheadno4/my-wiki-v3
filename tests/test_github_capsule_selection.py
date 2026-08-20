@@ -195,6 +195,83 @@ class CapsuleSelectionTests(unittest.TestCase):
             result.effective_policy.capsule.adapter,
         )
 
+    def test_tagged_dispatch_batches_selected_blob_reads(self):
+        tree = self.tree(
+            {
+                "README.md": "# SDK\n",
+                "lib/Checkout.php": "<?php final class Checkout {}\n",
+                "lib/PaymentIntent.php": "<?php final class PaymentIntent {}\n",
+            }
+        )
+        capsule = CapsuleConfig(
+            id="tagged-batch-read",
+            adapter="tagged-tree-v1",
+            focus_packages=("stripe-php",),
+            dependency_scope="configured-repository-paths",
+            changed_path_policy="policy-bounded",
+            default_required_roots=("lib",),
+            include_paths=("README.md",),
+        )
+        tree.blobs()
+
+        with mock.patch("github_git_tree.subprocess.run", wraps=subprocess.run) as run:
+            result = resolve_capsule(
+                tree,
+                capsule,
+                (),
+                versions={"stripe-php": "21.2.0"},
+            )
+
+        self.assertEqual(3, len(result.files))
+        cat_file_commands = [
+            tuple(call.args[0])
+            for call in run.call_args_list
+            if call.args[0][:2] == ["git", "cat-file"]
+        ]
+        self.assertEqual(
+            [
+                ("git", "cat-file", "--batch-check"),
+                ("git", "cat-file", "--batch"),
+            ],
+            cat_file_commands,
+        )
+
+    def test_tagged_dispatch_rejects_aggregate_budget_before_content_batch(self):
+        tree = self.tree(
+            {
+                "README.md": "# SDK\n",
+                "lib/Checkout.php": "<?php final class Checkout {}\n",
+                "lib/PaymentIntent.php": "<?php final class PaymentIntent {}\n",
+            }
+        )
+        capsule = CapsuleConfig(
+            id="tagged-batch-budget",
+            adapter="tagged-tree-v1",
+            focus_packages=("stripe-php",),
+            dependency_scope="configured-repository-paths",
+            changed_path_policy="policy-bounded",
+            default_required_roots=("lib",),
+            include_paths=("README.md",),
+            max_capsule_utf8_bytes=50,
+        )
+        tree.blobs()
+
+        with mock.patch("github_git_tree.subprocess.run", wraps=subprocess.run) as run:
+            with self.assertRaisesRegex(ValueError, "capsule-budget-exceeded"):
+                resolve_capsule(
+                    tree,
+                    capsule,
+                    (),
+                    versions={"stripe-php": "21.2.0"},
+                )
+
+        cat_file_commands = [
+            tuple(call.args[0])
+            for call in run.call_args_list
+            if call.args[0][:2] == ["git", "cat-file"]
+        ]
+        self.assertEqual([("git", "cat-file", "--batch-check")], cat_file_commands)
+
     def test_tagged_dispatch_reuses_secret_and_budget_guards(self):
         def capsule(**overrides):
             values = {
@@ -1039,6 +1116,13 @@ class CapsuleSelectionTests(unittest.TestCase):
             ),
         )
         self.assertEqual(
+            ("tests",),
+            classify_excluded_categories(
+                "pkg/config/config_test.go",
+                ("tests", "fixtures"),
+            ),
+        )
+        self.assertEqual(
             (),
             classify_excluded_categories(
                 ".storybook/stories/HostedFields.stories.ts",
@@ -1150,16 +1234,16 @@ class CapsuleSelectionTests(unittest.TestCase):
         )
         capsule = self.capsule(max_file_bytes=100)
 
-        with mock.patch.object(tree, "read_blob", wraps=tree.read_blob) as read_blob:
+        with mock.patch.object(tree, "read_blobs", wraps=tree.read_blobs) as read_blobs:
             result = resolve_npm_capsule(tree, capsule, ())
 
         self.assertEqual(
             ("package.json", "src/index.js"),
             tuple(item.path for item in result.files),
         )
-        self.assertIn(
-            mock.call("src/index.js", max_bytes=100),
-            read_blob.call_args_list,
+        self.assertEqual(
+            mock.call(("package.json", "src/index.js"), max_bytes=100),
+            read_blobs.call_args,
         )
 
     def test_selected_read_preserves_typed_git_object_infrastructure_failure(self):
@@ -1169,15 +1253,9 @@ class CapsuleSelectionTests(unittest.TestCase):
                 "src/index.js": "source\n",
             }
         )
-        original_read = tree.read_blob
         sentinel = GitObjectReadError("bounded infrastructure failure")
 
-        def fail_selected(path, max_bytes=None):
-            if path == "src/index.js":
-                raise sentinel
-            return original_read(path, max_bytes=max_bytes)
-
-        with mock.patch.object(tree, "read_blob", side_effect=fail_selected):
+        with mock.patch.object(tree, "read_blobs", side_effect=sentinel):
             with self.assertRaises(GitObjectReadError) as raised:
                 resolve_npm_capsule(tree, self.capsule(), ())
 

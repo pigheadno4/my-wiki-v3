@@ -2,7 +2,7 @@
 title: "Stripe"
 type: company
 tags: [stripe, payment-gateway, payment-intents, checkout, subscriptions, elements, webhooks, payment-links]
-source_count: 655
+source_count: 661
 ---
 
 ## Stripe
@@ -56,6 +56,18 @@ The `@stripe/stripe-js` npm package is the web loader and TypeScript declaration
 ### AI Developer and Token-Billing Tooling
 
 The `stripe/ai` repository supplies independently versioned LLM token-billing packages, a local bridge to Stripe's remote MCP server, TypeScript and Python agent toolkits, provider-specific agent skills/plugins, and integration benchmarks. At the retained SHA, token billing is private preview, the Stripe AI SDK proxy does not support tool calling, native token-meter delivery is fire-and-forget, and the agent toolkits require remote MCP availability. See [[source-github-ai]] and [[changelog-github-ai]].
+
+### Stripe CLI
+
+`stripe-cli@1.50.0` is Stripe's command-line developer and test tool for direct API requests, fixtures, synthetic event triggers, local webhook forwarding, request-log streaming, and account or sandbox contexts. Its embedded trigger payloads are test recipes rather than canonical API lifecycle evidence. The exact `1.50.0` release note adds agent identity metadata to telemetry; it does not establish the rest of the baseline as new in that release. See [[source-github-stripe-cli]], [[changelog-github-stripe-cli]], and [[stripe-cli]].
+
+### Link CLI for Agents
+
+`@stripe/link-cli@0.13.0` is a separate consumer-wallet tool for agents, not the merchant developer Stripe CLI. It uses user-approved Link spend requests to issue a virtual card for standard checkout, a one-time Shared Payment Token for Stripe MPP `402` payments, or a merchant-bound Link Pay Token for supported AI-agent steering surfaces. It also exposes read-only financial-insight commands, local and HTTP MCP modes, and credential-file protections. The internal `@stripe/link-sdk` is private, and the retained Web Bot Auth code is not registered as a CLI command. See [[source-github-link-cli]], [[changelog-github-link-cli]], and [[stripe-link-cli]].
+
+### Stripe PHP SDK
+
+`stripe-php@21.2.0` is Stripe's retained server-side PHP SDK baseline, pinned to Stripe API `2026-07-29.dahlia` and requiring PHP 7.2+. It covers Checkout, PaymentIntents, SetupIntents, Payment Links, subscriptions, webhooks and event notifications, and Terminal server operations. Public webhooks still require signature verification; the v21.2.0 `WithoutVerification` helpers are only for previously verified or trusted payloads. See [[source-github-stripe-php]], [[changelog-github-stripe-php]], and [[stripe-php-sdk]].
 
 ### Express Checkout Element
 
@@ -128,6 +140,12 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 - [[changelog-github-stripe-react-native]] — package-qualified release history and v0.72.0 explicit Link SetupIntent confirmation migration
 - [[source-github-ai]] — exact-SHA Stripe AI implementation baseline: LLM token billing, MCP bridge, agent toolkits, skills/plugins, and benchmarks
 - [[changelog-github-ai]] — package-qualified `stripe/ai` component baseline and future comparison rules
+- [[source-github-stripe-cli]] — `stripe-cli@1.50.0` baseline: API commands, fixtures, triggers, webhook forwarding, authentication contexts, and telemetry
+- [[changelog-github-stripe-cli]] — package-qualified Stripe CLI history and exact `1.50.0` telemetry change
+- [[source-github-link-cli]] — `@stripe/link-cli@0.13.0` agent wallet baseline: virtual cards, SPT/MPP, Link Pay Token, spend requests, MCP, and financial insights
+- [[changelog-github-link-cli]] — package-qualified Link CLI baseline and exact `0.13.0` financial-insight and duplicate-request messaging changes
+- [[source-github-stripe-php]] — `stripe-php@21.2.0` server SDK baseline: client services, encoding, retries, webhooks, Checkout, subscriptions, and Terminal
+- [[changelog-github-stripe-php]] — package-qualified Stripe PHP baseline and exact v21.2.0 event helper changes
 - [[source-stripe-billing-benchmarks]] — billing benchmarking: k-NN peer matching, ≥5 subs access, peer eligibility ≥100 subs, 7 metrics benchmarked, percentile display
 - [[source-stripe-billing-analytics]] — billing analytics: MRR + 6 growth components, ARPU, LTV, cohort retention, configurable settings, 3 CSV reports
 - [[source-stripe-subscriptions-backdate]] — backdating: classic vs flexible line items, 3 patterns (charge/no-charge/anchor), coupon duration counts from backdate not API call

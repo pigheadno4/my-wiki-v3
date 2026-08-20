@@ -6,6 +6,37 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-19 — Metronome Campaign 16 completed
+
+- Result: five approved source pages from complete raw-page reads across nine worker attempts and nine independent reviews; one correction used unchanged-hash targeted review and three material corrections received another full review. All workers and reviewers used Sol.
+- Sources:
+  - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-prioritization-rules]] — rollover and ordinary credit/commit ordering, tie-breakers, and invoice-line priority
+  - [[source-metronome-guides-pricing-packaging-billing-model-guides-prepaid-credits]] — prepaid-credit packaging, merchant-owned entitlement, Stripe payment gate, and example contradictions
+  - [[source-metronome-guides-pricing-packaging-subscription-provision-your-customer]] — subscription contract fields, invoice placement, and pooled or individual seat credits
+  - [[source-metronome-guides-reporting-insights-gtm-reporting-get-commit-and-usage-analytics]] — commit pacing and burn analysis with export-grain and deduplication cautions
+  - [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] — parent-child contracts, shared commits, consolidated invoicing, reporting, and hierarchy limits
+- Concepts: updated alerts, credits and commits, currencies, customers and contracts, invoicing, reporting, and subscriptions; no new concept page was required.
+- Boundaries retained: rollover precedence qualifies the general prepaid-before-postpaid rule; prepaid entitlement remains merchant-owned; subscription seat-field spelling conflicts across guides; analytics SQL does not establish a coherent export table family; hierarchy amounts conflict with the USD-cent convention; hierarchy billing is Stripe-only in this guide; consolidation failure and hierarchy lifecycle semantics remain undocumented.
+- Independent query audit: the initial fixed sample found one missing standard-subscription usage boundary. One bounded coordinator repair restored the raw's included-versus-separate-arrears distinction, the same auditor rechecked it, and the required expansion then passed 5/5 pages and 15/15 queries.
+- Coverage after promotion: 225 collected documentation pages, 102 source summaries, and 129 raw pages without source summaries.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-16/monitor.md) and [quality audit](../tracking/ingest/metronome/metronome-campaign-16/quality-audit.md).
+
+## 2026-08-15 — GitHub full ingest: `terraform-provider-metronome@0.1.0-alpha.3`
+
+- Full-ingested work item `github-462a1c4b707deb10c6aa` at exact SHA `f06da6d6afee448e9fe9bad77d213cf6159d11f8` after complete serial review of the 37-path packet.
+- Added [[source-github-terraform-provider-metronome]] and [[changelog-github-terraform-provider-metronome]] for provider maturity, configuration, generation dependencies, prerelease history, and future comparison routing.
+- Preserved the decisive implementation boundary: this experimental release constructs a client but registers no Terraform resources and no data sources, so it cannot be represented as a production Metronome management integration.
+- Kept generic serializer, validator, permission-description, and data-source changelog entries scoped to provider machinery rather than treating them as Metronome product capabilities.
+- Coverage after promotion: 225 collected documentation pages, 97 source summaries, and 134 documentation raw pages without source summaries.
+
+## 2026-08-15 — GitHub full ingest: `Metronome-Industries/ai` `main@59193aa`
+
+- Full-ingested work item `github-5b78ff7871557dec5f21` at exact SHA `59193aabd9c43cca32f320d6f68f5d63d04034d4` after complete serial review of the 44-path packet and all 39 retained repository files.
+- Added [[source-github-ai]] and [[changelog-github-ai]] for integration best practices, catalog and contract setup, PLG billing, CSM reviews, and Stripe usage-billing migration.
+- Preserved the instruction-repository boundary: skills and dogfood scenarios are agent workflow evidence, not runtime SDK, API-schema, product-eligibility, or production-test evidence.
+- Recorded conflicts around numeric event properties, `SUBSCRIPTION` versus `FLAT` rate representation, endpoint naming, and Stripe line-item consequences instead of selecting one example as canonical.
+- Coverage after promotion: 225 collected documentation pages, 95 source summaries, and 134 documentation raw pages without source summaries.
+
 ## 2026-08-12 — GitHub full ingest: `@metronome/sdk@3.10.0`
 
 - Full-ingested work item `github-f8e02889b5caf0809fc7` at exact SHA `f8ac11210fbca9616a220e82ea82ac1d340ea2df` after complete review of the 103-path Node/TypeScript SDK capsule.

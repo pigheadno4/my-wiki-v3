@@ -80,7 +80,7 @@ See platform-specific concept pages for integration details:
 - **Stripe**: See [[stripe-subscriptions]] for full Subscriptions API, Checkout integration, customer portal, flexible billing mode, and provisioning pattern
 - **PayPal**: See [[paypal-subscriptions]] for Subscriptions API + vault-based recurring
 - **Braintree iOS**: [[braintree-ios-sdk]] can collect PayPal billing-agreement consent and recurring-plan metadata, but the merchant server still owns token storage and later charges. An Apple Pay recurring request shown by the demo is not, by itself, a recurring-payment engine.
-- **Adyen**: The retained Checkout v72 examples create, list, and delete stored payment methods and distinguish `Subscription`, `CardOnFile`, and one-click models. The retained Recurring v68 collection calls itself legacy and recommends Checkout recurring endpoints when possible; its examples remain relevant for listing/disabling older recurring details, Account Updater, and limited legacy operations. See [[source-github-adyen-postman]].
+- **Adyen**: The retained Checkout examples create, list, and delete stored payment methods and distinguish `Subscription`, `CardOnFile`, and unscheduled or one-click models. The retained Recurring v68 Postman collection calls itself legacy and recommends Checkout recurring endpoints when possible. The PHP server SDK independently retains v68 operations for listing/disabling recurring details, shopper notification, Account Updater, and deprecated permits. See [[source-github-adyen-postman]] and [[source-github-adyen-php-api-library]].
 
 ## Open Questions
 

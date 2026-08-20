@@ -111,6 +111,12 @@ The SDK provides `PayPalButton`, `PayPalPayLaterButton`, and `PayPalCreditButton
 
 `PayPalDataCollector.collectDeviceData()` returns JSON containing a correlation ID. It uses Magnes and a Keychain-stored device identifier. The FraudProtection privacy manifest declares device-ID collection for app functionality and marks it as not linked to the user and not used for tracking.
 
+## Reference Demo Baseline
+
+The independent `paypal-examples/paypal-ios-sdk-demo-app` baseline at `047a50e` provides a SwiftUI reference for direct PayPal and card checkout. It accepts PayPal iOS SDK `>=2.0.0,<3.0.0`, but no retained lockfile establishes the exact patch version. Both paths create and complete orders through a merchant server and pass collected device data during completion. The PayPal request uses only `.paypal`; it adds no native Venmo evidence.
+
+The card path uses `.scaWhenRequired` and awaits SDK approval rather than rejecting a 3DS-required branch. The sample still has a miswired CVV change handler, embedded sandbox card values, and no production payment-state validation. Its separate Payment Link path is hosted checkout, not an iOS SDK payment method. See [[source-github-paypal-ios-sdk-demo-app]].
+
 ## Version 1 Historical API
 
 Existing 1.x integrations may still use `CardDelegate`, `CardVaultDelegate`, `PayPalWebCheckoutDelegate`, and `PayPalVaultDelegate`. These delegate signatures remain important maintenance knowledge but are not current version 2 APIs. Follow the repository migration guide before moving a 1.x integration to 2.x.
@@ -148,6 +154,7 @@ See [[source-github-paypal-messages-ios]] for its versioned API evidence.
 - [[source-paypal-save-cards-ios-sdk]] - card save-during-purchase guidance
 - [[source-paypal-ios-in-app-purchases]] - iOS policy-sensitive browser payment patterns
 - [[source-github-paypal-messages-ios]] - separate Pay Later messaging package
+- [[source-github-paypal-ios-sdk-demo-app]] - SwiftUI direct checkout and hosted Payment Link reference baseline
 
 ## Related
 

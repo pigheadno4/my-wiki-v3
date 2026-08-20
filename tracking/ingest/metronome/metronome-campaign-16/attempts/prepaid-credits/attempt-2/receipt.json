@@ -1,0 +1,96 @@
+{
+  "job_id": "prepaid-credits",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Launch a prepaid credits business model\"\ntype: source\ndate_ingested: 2026-08-19\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/pricing-packaging/billing-model-guides/prepaid-credits.md\"\nraw_files:\n  - \"metronome/guides/pricing-packaging/billing-model-guides/prepaid-credits-2026-07-13.md\"\ntags: [metronome, prepaid-credits, payment-gating, auto-recharge, entitlements, stripe]\n---\n\n## Overview\n\nThis guide assembles a prepaid-credit business model on Metronome: customers pay before receiving usable balance, usage burns that balance down, and the merchant application controls product access. Its worked Stripe flow links customer and contract provisioning, a payment-gated commit purchase, balance alerts, an application-owned entitlement flag, automatic recharge, and customer-facing balance display. The page is architectural guidance rather than a complete API contract, and several request examples conflict internally or with the dedicated current guides.\n\n## Key takeaways\n\n- The model requires positive prepaid balance for access, but Metronome does not perform the application request denial shown here. The merchant stores and checks its own entitlement state, then changes that state from payment and zero-balance signals.\n- In the documented manual purchase flow, Metronome initiates a Stripe payment from a contract edit. Success creates a commit that increases balance and emits a success webhook; failure is described here as voiding the commit object and emitting a failure webhook.\n- A fixed product represents the prepaid purchase charge, while usage-based products and rate-card rates determine how usage consumes spend. The guide calls the commercial unit a credit but implements the purchase through `add_commits`.\n- Automatic recharge is contract-scoped and asynchronous: it purchases only the difference between the threshold balance and recharge target. A failed payment disables `is_enabled`; re-enabling it after billing remediation triggers another recharge evaluation.\n- `listBalances` can support a customer-facing balance view, but the page's \"real time\" wording provides no freshness, consistency, ordering, or latency guarantee.\n\n## Provisioning and manual purchase flow\n\nThe merchant first creates corresponding customers in Stripe and Metronome, stores the Stripe customer ID in the Metronome billing-provider configuration, sets a default Stripe payment method, and creates a Metronome contract. The guide recommends first-of-month billing to group spend and revenue data by calendar-month boundaries even though the prepaid model does not bill usage in arrears. Before the first purchase, the merchant-owned entitlement state is false.\n\nFor an ad-hoc purchase, the merchant submits `POST /v2/contracts/edit` with `add_commits`, an access schedule, invoice schedule, priority, fixed `product_id`, and `payment_gate_type: \"STRIPE\"`. The page says successful payment creates the commit and prompts the merchant to set entitlement true. Its failure wording says Metronome voids the commit object. That description conflicts with the more specific manual-payment-gated-commit guide, which says the associated Metronome and Stripe invoices are voided and no commit is created; implementation should use the dedicated guide and API reference for resource-state semantics.\n\n## Merchant-owned entitlement and alerts\n\nThe entitlement flag belongs in the merchant's own system and database so it can meet the application's access-check latency and remain available through failures between the application and Metronome. Before each protected action, the application checks that flag; after an allowed action, it sends usage to Metronome.\n\nThe guide recommends a customer balance alert at zero as the signal to set entitlement false. Its example event is `alerts.low_remaining_contract_credit_and_commit_balance_reached` and includes customer, alert, credit type, remaining balance, threshold, timestamp, and `triggered_by` fields. This is an action signal, not automatic access enforcement. The linked setup-webhooks source establishes retry and duplicate-delivery behavior, so the guide's \"real-time webhook\" language must not be treated as an access-cutoff latency or ordering guarantee.\n\n## Automatic recharge and balance display\n\nThe example describes recharging from $5 back to $20 as a $15 purchase. It says recharge actions occur asynchronously from customer usage and that payment success or failure is reported by webhook. After a failure, Metronome disables the recharge configuration; the merchant prompts the customer to repair billing information and re-enables `is_enabled` to trigger another attempt.\n\nThe auto-recharge instructions are internally inconsistent about the configuration key: the prose names `threshold_billing_configuration`, while the JSON uses `credit_balance_threshold_configuration`. The dedicated prepaid-balance-threshold guide and current concept material use `prepaid_balance_threshold_configuration`. This source does not establish that the three names are aliases, so callers should verify the current create-contract schema rather than copying this payload. The sample also targets the staging API and does not state the units behind `threshold_amount: 300` and `recharge_to_amount: 2000`.\n\nFor customer display, the page calls `/v1/contracts/customerBalances/list` with customer and balance IDs plus `include_balance` and `include_contracts_balances`. The dedicated balance guide is the authority for aggregation, ledgers, fractional amounts, effective timestamps, and freshness limitations.\n\n## Documentation cautions\n\n> [!warning] Contradiction\n> The manual purchase's access schedule sets `ending_before` to 2025-04-01 and `starting_at` to 2026-04-01, so the shown access interval ends before it begins. Although the use case says the 2,000 credits expire after one year, this payload cannot demonstrate that lifecycle. Verify corrected dates and current schedule validation before implementation.\n\n> [!warning] Contradiction\n> The auto-recharge prose names `threshold_billing_configuration`, its payload uses `credit_balance_threshold_configuration`, and the dedicated threshold guide uses `prepaid_balance_threshold_configuration`. Treat the dedicated current schema as authoritative; this page does not say these keys are aliases.\n\n> [!warning] Commit failure wording\n> This page says a failed manual purchase voids the commit object. The dedicated manual-payment-gated guide instead says the invoices are voided and no commit is created. The pre-success resource identity and state are therefore unresolved here.\n\nThe page does not define idempotency, duplicate purchase or recharge suppression, concurrent balance evaluation, webhook ordering, payment retry beyond re-enabling recharge, exact access-cutoff timing, units for the shown amounts, or read-after-write consistency. It also does not establish provider-agnostic behavior beyond the concrete Stripe examples.\n\n## Related\n\n- Companies: [[metronome]], [[stripe]]\n- Concepts: [[metronome-credits-and-commits]], [[metronome-customers-and-contracts]], [[metronome-alerts-and-notifications]], [[metronome-webhooks]], [[metronome-integrations]]\n- Related sources: [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]], [[source-metronome-guides-customers-billing-optimize-customer-experience-prepaid-balance-thresholds]], [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]], [[source-metronome-guides-platform-configuration-setup-webhooks]], [[source-metronome-integrations-invoice-integrations-stripe]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/pricing-packaging/billing-model-guides/prepaid-credits-2026-07-13|2026-07-13 snapshot \u2014 prepaid-credit provisioning, Stripe-gated purchase, merchant entitlement, auto-recharge, and balance display]]\n",
+  "quotes": [
+    {
+      "text": "In this guide, your customer Example Inc. signs up for your platform using Stripe as your billing provider. They purchase 2,000 credits to use on your platform, which expire after one year. When the Example Inc. user clicks `purchase credits` in your system, payment is immediately triggered, and credits are only granted once payment is confirmed successful. With credits in hand, they can use your system and watch their credit balance decrease in real time. Once their balance reaches zero, your system should cut them off from further use until they purchase another batch of credits.",
+      "location": "raw/metronome/guides/pricing-packaging/billing-model-guides/prepaid-credits-2026-07-13.md:25 (Stripe-gated one-year credit use case and merchant cutoff)"
+    },
+    {
+      "text": "2. You send an API request to Metronome to facilitate the end-to-end prepaid credit. Metronome initiates the payment in Stripe.\n\n   * Upon success, Metronome creates a commit object to increase the customer balance and sends a webhook with notice of a successful payment.\n   * Upon failure, Metronome voids the commit object in the system and sends a webhook with notice of a failed payment.\n\n3. Upon successful payment, you set a customer's entitlement state to `true` to allow them to start to spend.",
+      "location": "raw/metronome/guides/pricing-packaging/billing-model-guides/prepaid-credits-2026-07-13.md:138-143 (manual purchase outcomes and merchant entitlement change)"
+    },
+    {
+      "text": "    \"add_commits\": [  \n        {  \n            \"product_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",  \n            \"access_schedule\": {  \n                \"schedule_items\": [  \n                    {  \n                        \"amount\": 2000,  \n                        \"ending_before\": \"2025-04-01T00:00:00.000Z\",  \n                        \"starting_at\": \"2026-04-01T00:00:00.000Z\"  \n                    }  \n                ]  \n            },  \n            \"invoice_schedule\": {  \n                \"schedule_items\": [  \n                    {  \n                        \"amount\": 2000,  \n                        \"timestamp\": \"2025-04-01T00:00:00.000Z\"  \n                    }  \n                ]  \n            },  \n            \"priority\": 10,  \n            \"payment_gate_config\": {  \n                \"payment_gate_type\": \"STRIPE\"",
+      "location": "raw/metronome/guides/pricing-packaging/billing-model-guides/prepaid-credits-2026-07-13.md:154-176 (add_commits request, reversed access dates, invoice amount, priority, and Stripe gate)"
+    },
+    {
+      "text": "We recommend that a customer\u2019s entitlement state is managed within your system and database. At its most simple, this could be a true/false value for a particular customer that's checked before they take an action. We recommend that this is maintained within your system so that it can be fetched with the latency that your system will require, and so that it's resilient to any failures between your system and Metronome.\n\nAt a high level, when a customer action is taken, this is the state you should check:\n\n```javascript theme={null}\nif (customer_entitled) {  \n    do_action();  \n    send_usage_to_metronome();  \n} else {  \n    error(\"Not enough credits\");  \n}\n```\n\nThe customer entitlement state should be informed by whether the customer has an active balance. As such, you should use real-time signals from Metronome to drive the state of this customer entitlement flag. The primary mechanism that we recommend for this is to set an alert for all customers to send when customer balance reaches \\$0. This way, Metronome sends you a signal when each customer runs out of credits to change their entitlement state.\n\nHere's an example of a webhook for when a customer reaches 0. This is your signal to set a customer\u2019s `customer_entitled` to `false`.\n\n```json theme={null}\n{  \n  \"id\": \"8d9cebd2-9c57-4a35-a468-bd73fa2ffa89\",  \n  \"properties\": {  \n    \"customer_id\": \"ac39ecc3-87ee-4d58-8ec0-24041464a5dd\",  \n    \"alert_id\": \"618a4ca8-c8d9-4822-addc-bd3008eb8428\",  \n    \"timestamp\": \"2025-04-07T15:08:44.865Z\",  \n    \"threshold\": 0,  \n    \"alert_name\": \"Balance low\",  \n    \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",  \n    \"remaining_balance\": 0,  \n    \"triggered_by\": \"usage\"  \n  },  \n  \"type\": \"alerts.low_remaining_contract_credit_and_commit_balance_reached\"  \n}",
+      "location": "raw/metronome/guides/pricing-packaging/billing-model-guides/prepaid-credits-2026-07-13.md:185-216 (merchant-owned entitlement, zero-balance recommendation, and alert payload identifier)"
+    },
+    {
+      "text": "You can set up a customer\u2019s desired auto recharge threshold on their contract object. Once set up, Metronome handles all of the recharge actions asynchronously based on customer usage. To set this up, use the `threshold_billing_configuration` object within the create contract request:\n\n```bash theme={null}\ncurl https://api.staging.metronome.com/v1/contracts/create \\  \n  -H \"Authorization: Bearer $TOKEN\" \\  \n  -H \"Content-Type: application/json\" \\  \n  -d '{  \n    \"customer_id\": \"f7ed0bb0-7079-4fd1-baa8-713bf70dcb3b\",  \n    \"rate_card_id\": \"8664db91-4c22-459a-b3c5-5fb11ce085fe\",  \n    \"starting_at\": \"2025-04-01T00:00:00.000Z\",  \n    \"credit_balance_threshold_configuration\": {  \n        \"is_enabled\": true,  \n        \"threshold_amount\": 300,  \n        \"recharge_to_amount\": 2000,  \n        \"payment_gate_config\": {  \n            \"payment_gate_type\": \"STRIPE\"  \n        },  \n        \"commit\": {  \n            \"product_id\": \"ff6c5ff2-28d9-443c-bb49-68df8191b05f\"  \n        }  \n    }  \n  }'\n```\n\nOnce set up, Metronome handles all of the recharge actions asynchronously based on customer usage. As payments happen, Metronome sends webhooks to your system indicating if payments succeed or fail in the billing provider. In the event of payment failure, Metronome sets the status of the recharge settings `is_enabled` to `false`. To remediate, we recommend sending an email or in-platform notification to the customer prompting them to update their billing information. Upon update of this information, you should edit the contract and `set is_enabled` back to `true`, which triggers another recharge.",
+      "location": "raw/metronome/guides/pricing-packaging/billing-model-guides/prepaid-credits-2026-07-13.md:227-251 (auto-recharge naming conflict, staging payload, asynchronous outcomes, and re-enable flow)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "prepaid-credit-model-entitlement-and-doc-cautions",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "under ## Subscription, manual-gate, and trial extensions",
+        "proposed_markdown": "- The prepaid-credits business-model guide makes product access merchant-owned: the merchant stores a local boolean entitlement for latency and resilience, sets it true only after successful gated payment, and uses a zero-balance alert as the signal to set it false. The guide implements the purchased \"credits\" as an `add_commits` contract edit and calls the balance and access-schedule amounts `2000`, but does not define their unit. Its sample access interval is invalid because `ending_before` is 2025-04-01 while `starting_at` is 2026-04-01, and its auto-recharge prose and payload use `threshold_billing_configuration` and `credit_balance_threshold_configuration` rather than the dedicated threshold guide's `prepaid_balance_threshold_configuration`. Do not copy these examples without verifying the current contract schema and corrected dates.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the merchant-owned access boundary: a Metronome alert or balance does not itself deny application requests.",
+          "Record the reversed access dates and threshold-field-name conflict as documentation contradictions; do not normalize them silently.",
+          "The dedicated manual payment-gate source says failed payment voids invoices and creates no commit, while this guide says it voids the commit object."
+        ]
+      },
+      {
+        "update_id": "prepaid-credit-model-credits-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-billing-model-guides-prepaid-credits]] \u2014 end-to-end prepaid-credit model, merchant-owned entitlement, Stripe-gated purchase, auto-recharge lifecycle, and example contradictions",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "prepaid-credit-zero-balance-entitlement-signal",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "durable_fact",
+        "anchor": "under ## Customer-configured controls",
+        "proposed_markdown": "The prepaid-credit model uses `alerts.low_remaining_contract_credit_and_commit_balance_reached` at a zero threshold as a merchant action signal. The merchant stores the entitlement flag in its own database, checks it before each protected action, and changes it from payment and balance signals; the alert does not itself suspend product access. Because the same guide calls the webhook real-time without a latency, ordering, or consistency contract, the dedicated webhook delivery semantics remain authoritative.",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "Do not describe the zero-balance alert as automatic entitlement mutation or service enforcement.",
+          "Do not turn the guide's real-time wording into a delivery or cutoff-latency guarantee."
+        ]
+      },
+      {
+        "update_id": "prepaid-credit-alerts-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-billing-model-guides-prepaid-credits]] \u2014 zero-balance entitlement signal and merchant-owned access-control boundary in a prepaid-credit flow",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/pricing-packaging/billing-model-guides/prepaid-credits-2026-07-13.md",
+  "raw_sha256": "b3f5763c3a6c2c07c7cf553447d914a86be2e654184c1c9d05b3913b4f21e523",
+  "status": "candidate_ready"
+}

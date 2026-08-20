@@ -53,7 +53,18 @@ This hook presents messaging content; it is not a payment session and does not p
 
 Unlike standard PayPal buttons, merchants pass amount and currency rather than implementing `createOrder`. The Braintree SDK creates the payment session. After approval, the merchant calls `tokenizePayment()` and sends the resulting payment-method nonce to its server for processing with a Braintree server SDK, not PayPal's Orders API.
 
-The independently retained `braintree@3.39.0` Node.js source confirms the server half: `transaction.sale()` accepts a payment-method nonce or vaulted token and can submit the transaction for settlement. Its PayPal account and payment-resource gateways remain Braintree operations; they do not turn this flow into a direct PayPal Orders API integration.
+The independently retained `braintree@3.39.0` Node.js and `braintree_php@6.37.0` PHP sources confirm the server half: each language SDK accepts a payment-method nonce or vaulted token for a transaction sale and can submit the transaction for settlement. Their PayPal account and payment-resource gateways remain Braintree operations; they do not turn this flow into a direct PayPal Orders API integration. Exact methods and release findings remain package-qualified under [[braintree-server-sdk]].
+
+## Runnable Sample Evidence at `f1c7123`
+
+The independent `paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration` baseline demonstrates the complete browser-to-Braintree handoff. Its setup requires Braintree sandbox credentials, a linked PayPal sandbox business account, and the PayPal application's Vault and PayPal/Venmo feature settings. These setup instructions are account-configuration evidence, not proof that a merchant or buyer is eligible for every named feature.
+
+The static examples load Braintree Web `3.142.0`, create `paypalCheckoutV6` from a Braintree client token, call `loadPayPalSDK()`, create a session, tokenize approval into a Braintree payment-method nonce, and send that nonce to the Node server. The retained flows cover one-time capture, checkout plus vault, billing-agreement vaulting, `RECURRING`, `SUBSCRIPTION`, and `UNSCHEDULED` plan metadata, shipping updates, PayPal Messages, and eligibility-gated Pay Later and PayPal Credit. The React sample uses `@paypal/react-paypal-js@^10.1.0` and provides both prebuilt buttons and custom-hook wrappers for one-time, billing-agreement, and checkout-with-vault flows.
+
+> [!warning] Sample production boundaries
+> The Node transaction route accepts `amount` directly from the browser request before calling `transaction.sale()`, so a production integration must calculate and validate the payable amount from trusted server-side cart data. The vault-only route creates a new Braintree customer for every request instead of binding the nonce to an authenticated merchant customer. The sample is also hard-wired to Braintree Sandbox, enables unrestricted CORS, and returns exception text to clients. These are runnable-demo choices, not production architecture guidance.
+
+The README asks merchants to enable a PayPal/Venmo feature setting, but the retained implementation demonstrates PayPal, Pay Later, PayPal Credit, and Messages rather than a Venmo payment session. Do not infer a working Venmo flow from that account-setting instruction alone.
 
 ## Braintree iOS Evidence
 
@@ -74,5 +85,5 @@ The same release expands the PayPal Checkout v6 session payload with locale, lan
 ## Related
 
 - Companies: [[paypal]], [[braintree]]
-- Concepts: [[paypal-checkout]], [[paypal-vault]], [[braintree-web-sdk]], [[braintree-ios-sdk]]
-- Sources: [[source-github-paypal-js]], [[source-github-braintree-web]], [[source-github-braintree-node]], [[source-github-braintree-ios]]
+- Concepts: [[paypal-checkout]], [[paypal-vault]], [[braintree-web-sdk]], [[braintree-server-sdk]], [[braintree-ios-sdk]]
+- Sources: [[source-github-paypal-js]], [[source-github-braintree-web]], [[source-github-braintree-node]], [[source-github-braintree-php]], [[source-github-braintree-ios]], [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]]

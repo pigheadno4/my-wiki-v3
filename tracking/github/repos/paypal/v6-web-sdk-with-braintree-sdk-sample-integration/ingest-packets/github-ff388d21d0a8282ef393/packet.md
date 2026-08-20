@@ -1,0 +1,155 @@
+# GitHub ingest packet
+
+- Repository: `paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration`
+- Work item: `github-ff388d21d0a8282ef393`
+- Snapshot: `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/manifest.json`
+- Recommended mode: `full`
+- Review priority: `high`
+
+- Ref: `default-branch@f1c7123` (`main`)
+- Transition: `baseline` -> `f1c712374f674ce6f0b2683f105871dcb969d2d7`
+- Author date: `2026-06-25T14:00:09-05:00`
+- Commit date: `2026-06-25T14:00:09-05:00`
+
+## Required reading
+
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/.env.sample`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/README.md`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/index.html`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/package.json`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalBillingAgreements/basic/src/app.js`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalBillingAgreements/basic/src/index.html`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalBillingAgreements/recurring/src/app.js`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalBillingAgreements/recurring/src/index.html`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalBillingAgreements/subscription/src/app.js`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalBillingAgreements/subscription/src/index.html`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalBillingAgreements/unscheduled/src/app.js`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalBillingAgreements/unscheduled/src/index.html`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalCheckoutWithVault/basic/src/app.js`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalCheckoutWithVault/basic/src/index.html`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalMessages/basic/src/app.js`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalMessages/basic/src/index.html`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalOneTimePayments/basic/src/app.js`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalOneTimePayments/basic/src/index.html`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalOneTimePayments/lineItems/src/app.js`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalOneTimePayments/lineItems/src/index.html`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalOneTimePayments/shippingCallbacks/src/app.js`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalOneTimePayments/shippingCallbacks/src/index.html`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalOneTimePayments/smartStack/src/app.js`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/paypalOneTimePayments/smartStack/src/index.html`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/README.md`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/package.json`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/App.tsx`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/main.tsx`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/paymentIntegrations/OneTimePaymentCheckout.tsx`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/paymentIntegrations/README.md`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/paymentIntegrations/SavePaymentPage.tsx`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/paymentIntegrations/VaultWithPurchaseCheckout.tsx`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/paymentIntegrations/customButtons/BraintreePayPalBillingAgreementButton.tsx`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/paymentIntegrations/customButtons/BraintreePayPalCheckoutWithVaultButton.tsx`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/paymentIntegrations/customButtons/PayPalOneTimePaymentButton.tsx`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/storeDemo/components/CartLineItem.tsx`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/storeDemo/components/FlowNav.tsx`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/storeDemo/components/ProductCard.tsx`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/storeDemo/context/CartContext.tsx`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/storeDemo/context/cartContextValue.ts`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/storeDemo/context/useCart.ts`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/storeDemo/hooks/useProducts.ts`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/storeDemo/pages/BaseCartPage.tsx`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/storeDemo/pages/BaseProductPage.tsx`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/storeDemo/pages/ConfirmationPage.tsx`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/storeDemo/pages/Home.tsx`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/src/vite-env.d.ts`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/tsconfig.json`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/prebuiltPages/react/vite.config.ts`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/shared/alert-component.js`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/client/shared/styles.css`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/server/node/LICENSE`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/server/node/package.json`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/server/node/src/braintreeServerSdkClient.ts`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/server/node/src/checkNodeVersion.ts`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/server/node/src/middleware/errorMiddleware.ts`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/server/node/src/productCatalog.ts`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/server/node/src/routes/authRouteHandler.ts`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/server/node/src/routes/index.ts`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/server/node/src/routes/paymentMethodRouteHandler.ts`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/server/node/src/routes/productRouteHandler.ts`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/server/node/src/routes/transactionRouteHandler.ts`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/server/node/src/server.ts`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/files/server/node/tsconfig.json`
+- `raw/github/paypal/v6-web-sdk-with-braintree-sdk-sample-integration/snapshots/2026-08-16-f1c7123/manifest.json`
+- `wiki/companies/paypal.md`
+- `wiki/log.md`
+- `wiki/paypal-index.md`
+- `wiki/paypal-log.md`
+
+## Selected changes
+
+- `added` `.env.sample`
+- `added` `README.md`
+- `added` `client/index.html`
+- `added` `client/package.json`
+- `added` `client/paypalBillingAgreements/basic/src/app.js`
+- `added` `client/paypalBillingAgreements/basic/src/index.html`
+- `added` `client/paypalBillingAgreements/recurring/src/app.js`
+- `added` `client/paypalBillingAgreements/recurring/src/index.html`
+- `added` `client/paypalBillingAgreements/subscription/src/app.js`
+- `added` `client/paypalBillingAgreements/subscription/src/index.html`
+- `added` `client/paypalBillingAgreements/unscheduled/src/app.js`
+- `added` `client/paypalBillingAgreements/unscheduled/src/index.html`
+- `added` `client/paypalCheckoutWithVault/basic/src/app.js`
+- `added` `client/paypalCheckoutWithVault/basic/src/index.html`
+- `added` `client/paypalMessages/basic/src/app.js`
+- `added` `client/paypalMessages/basic/src/index.html`
+- `added` `client/paypalOneTimePayments/basic/src/app.js`
+- `added` `client/paypalOneTimePayments/basic/src/index.html`
+- `added` `client/paypalOneTimePayments/lineItems/src/app.js`
+- `added` `client/paypalOneTimePayments/lineItems/src/index.html`
+- `added` `client/paypalOneTimePayments/shippingCallbacks/src/app.js`
+- `added` `client/paypalOneTimePayments/shippingCallbacks/src/index.html`
+- `added` `client/paypalOneTimePayments/smartStack/src/app.js`
+- `added` `client/paypalOneTimePayments/smartStack/src/index.html`
+- `added` `client/prebuiltPages/react/README.md`
+- `added` `client/prebuiltPages/react/package.json`
+- `added` `client/prebuiltPages/react/src/App.tsx`
+- `added` `client/prebuiltPages/react/src/main.tsx`
+- `added` `client/prebuiltPages/react/src/paymentIntegrations/OneTimePaymentCheckout.tsx`
+- `added` `client/prebuiltPages/react/src/paymentIntegrations/README.md`
+- `added` `client/prebuiltPages/react/src/paymentIntegrations/SavePaymentPage.tsx`
+- `added` `client/prebuiltPages/react/src/paymentIntegrations/VaultWithPurchaseCheckout.tsx`
+- `added` `client/prebuiltPages/react/src/paymentIntegrations/customButtons/BraintreePayPalBillingAgreementButton.tsx`
+- `added` `client/prebuiltPages/react/src/paymentIntegrations/customButtons/BraintreePayPalCheckoutWithVaultButton.tsx`
+- `added` `client/prebuiltPages/react/src/paymentIntegrations/customButtons/PayPalOneTimePaymentButton.tsx`
+- `added` `client/prebuiltPages/react/src/storeDemo/components/CartLineItem.tsx`
+- `added` `client/prebuiltPages/react/src/storeDemo/components/FlowNav.tsx`
+- `added` `client/prebuiltPages/react/src/storeDemo/components/ProductCard.tsx`
+- `added` `client/prebuiltPages/react/src/storeDemo/context/CartContext.tsx`
+- `added` `client/prebuiltPages/react/src/storeDemo/context/cartContextValue.ts`
+- `added` `client/prebuiltPages/react/src/storeDemo/context/useCart.ts`
+- `added` `client/prebuiltPages/react/src/storeDemo/hooks/useProducts.ts`
+- `added` `client/prebuiltPages/react/src/storeDemo/pages/BaseCartPage.tsx`
+- `added` `client/prebuiltPages/react/src/storeDemo/pages/BaseProductPage.tsx`
+- `added` `client/prebuiltPages/react/src/storeDemo/pages/ConfirmationPage.tsx`
+- `added` `client/prebuiltPages/react/src/storeDemo/pages/Home.tsx`
+- `added` `client/prebuiltPages/react/src/vite-env.d.ts`
+- `added` `client/prebuiltPages/react/tsconfig.json`
+- `added` `client/prebuiltPages/react/vite.config.ts`
+- `added` `client/shared/alert-component.js`
+- `added` `client/shared/styles.css`
+- `added` `server/node/LICENSE`
+- `added` `server/node/package.json`
+- `added` `server/node/src/braintreeServerSdkClient.ts`
+- `added` `server/node/src/checkNodeVersion.ts`
+- `added` `server/node/src/middleware/errorMiddleware.ts`
+- `added` `server/node/src/productCatalog.ts`
+- `added` `server/node/src/routes/authRouteHandler.ts`
+- `added` `server/node/src/routes/index.ts`
+- `added` `server/node/src/routes/paymentMethodRouteHandler.ts`
+- `added` `server/node/src/routes/productRouteHandler.ts`
+- `added` `server/node/src/routes/transactionRouteHandler.ts`
+- `added` `server/node/src/server.ts`
+- `added` `server/node/tsconfig.json`
+
+## Excluded changes
+
+- None

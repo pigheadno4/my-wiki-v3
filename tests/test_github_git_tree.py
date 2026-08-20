@@ -71,6 +71,41 @@ class GitTreeTests(unittest.TestCase):
 
         self.assertEqual(committed, content)
 
+    def test_read_blobs_batches_size_and_content_reads_for_selected_paths(self):
+        tree = GitTree(self.repo, self.sha)
+        tree.blobs()
+        selected = ("packages/widget/package.json", "src/cli.sh")
+
+        with mock.patch("github_git_tree.subprocess.run", wraps=subprocess.run) as run:
+            contents = tree.read_blobs(selected)
+
+        self.assertEqual(
+            {
+                "packages/widget/package.json": b'{"name":"widget","version":"1.0.0"}\n',
+                "src/cli.sh": b"#!/bin/sh\necho exact\n",
+            },
+            contents,
+        )
+        commands = [tuple(call.args[0]) for call in run.call_args_list]
+        self.assertEqual(
+            [
+                ("git", "cat-file", "--batch-check"),
+                ("git", "cat-file", "--batch"),
+            ],
+            commands,
+        )
+
+    def test_read_blobs_rejects_oversized_selection_before_content_batch(self):
+        tree = GitTree(self.repo, self.sha, max_blob_bytes=4)
+        tree.blobs()
+
+        with mock.patch("github_git_tree.subprocess.run", wraps=subprocess.run) as run:
+            with self.assertRaisesRegex(ValueError, "byte limit"):
+                tree.read_blobs(("packages/widget/package.json", "src/cli.sh"))
+
+        commands = [tuple(call.args[0]) for call in run.call_args_list]
+        self.assertEqual([("git", "cat-file", "--batch-check")], commands)
+
     def test_defers_blob_size_lookup_until_selected_blob_read(self):
         tree = GitTree(self.repo, self.sha)
 

@@ -16,6 +16,9 @@ The documented supported set is USD, AUD, BRL, CAD, CHF, CZK, EUR, GBP, INR, MXN
 > [!warning] Denomination wording
 > The source calls all monetary values the currency's smallest denomination, but then explicitly defines non-USD values as whole currency units. Preserve the concrete Metronome encoding instead of inferring conventional ISO minor-unit scaling for non-USD currencies. The page does not define general precision, integer-only storage, or rounding.
 
+> [!warning] Hierarchy-guide amount contradiction
+> The hierarchical-customer guide calls a shared parent commitment $10M while its access and invoice schedules both use `amount: 10000000`; it later labels a parent commit $200K with `amount: 200000` and a child commit $500K with `amount: 500000`. Under the documented USD-cent convention, those payloads represent $100,000, $2,000, and $5,000 rather than the labeled amounts. The payloads do not identify another currency or pricing unit that resolves the mismatches, so verify the intended denomination and amounts before adapting them. This contradiction does not extend to later unlabeled `5000000` and `2000000` examples.
+
 ## Rate-card setup and immutability
 
 Custom units are created and named in the Metronome app for invoice presentation. A rate card selects one fiat currency, and each product rate uses either that fiat currency or a custom pricing unit with a conversion from the underlying fiat currency. Once a product's rate is saved in one pricing unit, that rate's pricing unit cannot be changed. The source does not define the required replacement or migration path or its effects on contracts and invoices.
@@ -35,5 +38,7 @@ The guide does not define custom-unit creation APIs, precision, conversion formu
 - [[metronome-invoicing]]
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] — $10M, $200K, and $500K hierarchy commitment labels whose paired numeric amounts conflict with the USD-cent convention
 
 - [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]] — supported currencies, Metronome-specific denomination, rate-card custom units, matching-balance drawdown, and residual fiat conversion

@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 93
+source_count: 102
 ---
 
 ## Overview
@@ -21,6 +21,10 @@ The documentation home is a navigation overview. The SDK walkthrough adds an int
 ## SDK usage-billing workflow
 
 The retained `@metronome/sdk@3.10.0` GitHub baseline adds the exact Node/TypeScript client contract: built-in Web Fetch with no runtime dependencies, typed V1 and V2 resources, two default retries, one-minute per-attempt timeout, async pagination, raw-response access, and webhook verification. It supports Node 20+, browsers, Deno, Bun, edge runtimes, and related server environments but explicitly excludes React Native. The generated package proves client implementation, not account feature enablement or current REST behavior; its stale `api.md` Payments listing conflicts with the removed source resource and the `3.7.0` changelog. [[source-github-metronome-node]]
+
+The `Metronome-Industries/ai` baseline adds Metronome-authored operating instructions for coding and customer-success agents: integration best practices, catalog and contract setup, PLG billing, CSM reviews, and Stripe usage-billing migration. It is workflow and example evidence rather than an SDK or API schema. Its preview-before-write controls and parallel-run migration process are useful, but exact endpoint, enum, numeric-property, and rate claims require canonical verification because the retained skills contain internal and cross-source conflicts. [[source-github-ai]]
+
+The experimental `terraform-provider-metronome@0.1.0-alpha.3` baseline configures a Metronome Go client through base URL, bearer token, and webhook-secret settings, but registers no Terraform resources or data sources. It is not production-ready and cannot be treated as a Metronome infrastructure-management surface at this version. [[source-github-terraform-provider-metronome]]
 
 - Python, Node.js, Ruby, and Go SDKs demonstrate a common event-to-invoice flow.
 - Event ingestion uses transaction IDs for deduplication and can associate application identifiers with customers through ingest aliases.
@@ -147,11 +151,19 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 93
-- Raw pages without source summaries: 134
+- Ingested source summaries: 102
+- Raw pages without source summaries: 129
 
 ## Sources
 
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-prioritization-rules]] - rollover and ordinary credit/commit ordering, tie-breakers, and invoice-line priority
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-prepaid-credits]] - prepaid-credit packaging, merchant-owned entitlement, Stripe payment gate, and example contradictions
+- [[source-metronome-guides-pricing-packaging-subscription-provision-your-customer]] - subscription contract fields, invoice placement, and pooled or individual seat credits
+- [[source-metronome-guides-reporting-insights-gtm-reporting-get-commit-and-usage-analytics]] - commit pacing and burn analysis with export-grain and deduplication cautions
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] - parent-child contracts, shared commits, consolidated invoicing, reporting, and hierarchy limits
+
+- [[source-github-ai]] - Metronome-authored agent workflows for integrations, catalog setup, CSM reviews, and Stripe migration
+- [[changelog-github-ai]] - commit-qualified Metronome AI skills history
 - [[source-github-metronome-node]] - exact `@metronome/sdk@3.10.0` server client, API surface, transport, webhook helper, and evidence boundaries
 - [[changelog-github-metronome-node]] - package-qualified Node SDK release history and upgrade ledger
 - [[source-metronome-guides-get-started-home]] — documentation entry point and four pricing/packaging routes
