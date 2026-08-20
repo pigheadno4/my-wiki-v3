@@ -1,0 +1,56 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "data-export-cookbook-query-patterns",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Query model",
+      "proposed_markdown": "Metronome's SQL cookbook supplies starting-point queries across customers, events, finalized and draft invoices, invoice-breakdown snapshots, contracts, rate cards, and alerts. Its current-state and latest-snapshot patterns include `archived_at IS NULL` for non-archived customers, global maximum `snapshot_time` or `snapshot_timestamp` filters for draft data, an ID-plus-snapshot join for draft breakdown line items, descending `updated_at` sorting for one contract's overrides, future `ending_before` filtering for rate-card entries, and `webhooks_enabled = TRUE` plus `disabled_at IS NULL` for active webhook alerts. These are cookbook patterns rather than complete lifecycle or warehouse-delivery contracts.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Preserve the existing database-reference authority for table grain, nullable fields, snapshot behavior, and lifecycle states; the cookbook does not replace it.",
+        "Do not generalize `total/100 AS total_dollars` into a universal currency scale, or the global maximum snapshot into a per-object completeness guarantee."
+      ]
+    },
+    {
+      "update_id": "data-export-cookbook-query-contradictions",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Global cautions",
+      "proposed_markdown": "> [!warning] SQL cookbook boundaries\n> Three examples need qualification before production use. The queries under the `Finalized Invoices` heading do not filter invoice status even though the database reference says the table includes finalized and void records. The alert-history query titled `over the last week` contains no date predicate. The detailed draft-breakdown query selects six nonaggregated expressions while grouping only by the first two despite the page's standard-SQL framing. Reconcile status and time scope and validate grouping syntax in the target warehouse.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The finalized-versus-void boundary relies on the already-ingested database-reference context; retain its source citation when applying this warning.",
+        "Describe the grouping issue as a strict-standard-SQL incompatibility, not proof that every supported warehouse rejects the query under every mode."
+      ]
+    },
+    {
+      "update_id": "data-export-cookbook-reporting-reciprocal-link",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-reporting-insights-data-export-cookbook]] \u2014 cross-domain SQL starting points, snapshot and join patterns, and material status, time-window, grouping, and currency boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

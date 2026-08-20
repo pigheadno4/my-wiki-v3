@@ -1,0 +1,45 @@
+{
+  "action": "spawn_worker",
+  "job_id": "data-export-cookbook",
+  "attempt": 3,
+  "raw_path": "raw/metronome/guides/reporting-insights/data-export/cookbook-2026-07-13.md",
+  "raw_sha256": "ff238507fbef397ef328228d6ea56fca4ce04d7ee203743aa47556ee175963d8",
+  "source_target": "wiki/sources/metronome/source-metronome-guides-reporting-insights-data-export-cookbook.md",
+  "canonical_url": "https://docs.metronome.com/guides/reporting-insights/data-export/cookbook.md",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location."
+  ],
+  "retry_context": {
+    "prior_attempt": 2,
+    "review_scope": "full",
+    "required_changes": [
+      "Add an explicit environment-scope caution to the candidate and reporting concept update. The export overview says one destination spans Production and Sandbox, while only the two draft-breakdown examples add environment_type = 'PRODUCTION'. State that the other cookbook counts and totals are not environment-scoped as written, and require the intended per-table environment predicate before interpreting them as production metrics.",
+      "Carry the documented delivery and draft-grain boundaries into the candidate and shared cautions. Object-storage exports are append-only and at-least-once, so repeated primary keys from updates or retries require latest-row resolution before aggregation; a global maximum snapshot is not a substitute for per-key deduplication or a per-object completeness guarantee. The draft_invoice reference also permits DRAFT_INCOMPLETE rows with no total or line items, so explain that COUNT may include incomplete rows while SUM ignores null totals unless status and completeness are handled.",
+      "Strengthen the contracts/rate-card qualification. Keep the correct observation that descending updated_at does not return only one override. Also state that the query titled active rate-card entries checks only ending_before > NOW(), omits starting_at, does not define nullable ending_before handling, and does not select among version or snapshot rows; do not present it as a complete current-state count without reconciling the database-reference grain.",
+      "Retain the total/100 warning but link the direct denomination authority, [[metronome-currencies-and-custom-pricing-units]] and/or [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]]. Preserve that Metronome documents USD API values in cents but listed non-USD fiat in whole units, so the cookbook alias total_dollars cannot establish a universal divide-by-100 rule. Keep this separate from export delivery and invoice-status concerns.",
+      "Update data-export-cookbook-query-patterns and data-export-cookbook-query-contradictions so their canonical prose includes the environment, at-least-once deduplication, DRAFT_INCOMPLETE, and rate-card version/effective-time boundaries above. Retain the existing finalized-versus-void, missing-seven-day-filter, and strict-grouping warnings. The reciprocal source link can be approved only after its status, snapshot, aggregation, and currency description points to corrected concept content."
+    ],
+    "prior_reviewer_identity": "/root/c17_r_override"
+  },
+  "worker_identity": "/root/c17_w_edit_contract",
+  "worker_model": "gpt-5.6-sol"
+}

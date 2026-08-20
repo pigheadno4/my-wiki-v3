@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 102
+source_count: 107
 ---
 
 ## Overview
@@ -151,10 +151,16 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 102
-- Raw pages without source summaries: 129
+- Ingested source summaries: 107
+- Raw pages without source summaries: 124
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-make-pricing-changes-make-a-pricing-change]] — package-based cohort pricing changes, alias transitions, and worked-example contradictions
+- [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-or-override-a-contract]] — contract override models, dimensional targeting, precedence, and create-only boundary
+- [[source-metronome-guides-reporting-insights-data-export-cookbook]] — example export queries and their environment, grain, deduplication, effective-time, and currency boundaries
+- [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-contract]] — contract edit lifecycle, effective history, audit surfaces, and invoice-state guards
+- [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition-examples]] — illustrative revenue scenarios with amount, key, classification, and accounting-authority boundaries
 
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-prioritization-rules]] - rollover and ordinary credit/commit ordering, tie-breakers, and invoice-line priority
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-prepaid-credits]] - prepaid-credit packaging, merchant-owned entitlement, Stripe payment gate, and example contradictions
@@ -270,6 +276,7 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 - [[metronome-event-ingestion]] — usage-event contract and deduplication
 - [[metronome-billable-metrics]] — event matching, aggregation, and grouping
 - [[metronome-products-and-rate-cards]] — product presentation and effective pricing
+- [[metronome-packages-and-aliases]] — package cohorts, effective-dated alias transitions, and migration boundaries
 - [[metronome-customers-and-contracts]] — customer aliases, commercial terms, and invoice activation
 - [[metronome-reporting-and-analytics]] — warehouse exports, snapshot grains, and query cautions
 - [[metronome-webhooks]] — notification delivery, reliability, and authenticity

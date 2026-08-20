@@ -1,0 +1,63 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "data-export-cookbook-query-patterns",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Query model",
+      "proposed_markdown": "Metronome's SQL cookbook supplies starting-point queries across customers, events, finalized and draft invoices, invoice-breakdown snapshots, contracts, rate cards, and alerts. Its patterns include `archived_at IS NULL` for non-archived customers, table-global maximum draft snapshots, ID-plus-snapshot breakdown joins, descending `updated_at` ordering for contract overrides, future `ending_before` filtering for rate-card entries, and active webhook-alert predicates. Apply four authorities before production aggregation: only the two breakdown examples filter `environment_type = 'PRODUCTION'` even though one destination spans Production and Sandbox; append-only at-least-once object-storage delivery requires latest-row resolution per primary key before aggregation; `DRAFT_INCOMPLETE` rows can make `COUNT(0)` include rows whose null `total` is ignored by `SUM(total)`; and the rate-card query omits `starting_at`, nullable-end semantics, and version/snapshot selection. A global maximum snapshot is not per-key deduplication or a per-object completeness guarantee, and descending override order is not a one-row selector.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Preserve the existing database-reference authority for table grain, nullable fields, snapshot behavior, version/effective-time selection, and lifecycle states; the cookbook does not replace it.",
+        "Add the intended per-table environment predicate before interpreting non-breakdown cookbook results as Production-only.",
+        "For object-storage exports, resolve repeated primary keys to the latest row before aggregating; snapshot filtering and delivery deduplication are separate operations.",
+        "Handle DRAFT_INCOMPLETE status and hydration before treating COUNT and SUM as one coherent draft population.",
+        "Do not generalize `total/100 AS total_dollars`; [[metronome-currencies-and-custom-pricing-units]] documents USD cents but listed non-USD fiat in whole units."
+      ]
+    },
+    {
+      "update_id": "data-export-cookbook-query-contradictions",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Global cautions",
+      "proposed_markdown": "> [!warning] SQL cookbook boundaries\n> The `Finalized Invoices` queries have no status predicate even though the database reference says `invoice` includes both `FINALIZED` and `VOID` rows. The alert-history query titled `over the last week` has no date predicate. The detailed draft-breakdown query selects six nonaggregated expressions while grouping only by the first two despite the standard-SQL framing. Beyond those raw-page defects, one destination can contain Production and Sandbox while only the two breakdown examples filter Production; append-only at-least-once object-storage delivery requires latest-row selection per primary key; global maximum snapshots do not guarantee per-object completeness; and `DRAFT_INCOMPLETE` rows can be counted while their null totals are ignored by `SUM`. The rate-card count tests only future `ending_before`, omitting start time, nullable-end semantics, and version/snapshot selection. Reconcile status, environment, delivery deduplication, draft hydration, effective time, exported grain, time scope, and target-warehouse grouping before production use.\n\n> [!warning] Cookbook currency alias\n> `total/100 AS total_dollars` cannot establish a universal scale. The direct Metronome authority [[metronome-currencies-and-custom-pricing-units]] documents USD in cents and listed non-USD fiat in whole units; select the row's pricing-unit rule before conversion.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The finalized-versus-void boundary relies on the already-ingested database-reference context; retain its source citation when applying this warning.",
+        "Describe the grouping issue as a strict-standard-SQL incompatibility, not proof that every supported warehouse rejects the query under every mode.",
+        "Keep environment scope, delivery deduplication, snapshot completeness, draft status, and currency denomination as separate concerns.",
+        "Do not call the future-ending rate-card count current without reconciling starting_at, nullable ending_before, and version/snapshot grain."
+      ]
+    },
+    {
+      "update_id": "data-export-cookbook-reporting-reciprocal-link",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-reporting-insights-data-export-cookbook]] \u2014 cross-domain SQL starting points with corrected environment, at-least-once latest-row, snapshot/completeness, invoice-status, draft-hydration, effective-time/version, aggregation, and currency boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Read with [[source-metronome-guides-reporting-insights-data-export-overview]], [[source-metronome-guides-reporting-insights-data-export-database-reference]], and [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]]."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

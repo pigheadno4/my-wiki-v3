@@ -43,6 +43,8 @@ This introductory source does not define the full contract schema, amendment lif
 
 The architecture guide frames each contract as answering what the customer buys, how they pay, and where charges are delivered. It lists pay-as-you-go arrears, prepaid credits, subscriptions with overage, enterprise commitments, and hybrids, while leaving request validation, effective-time semantics, amendments, and state transitions to dedicated references.
 
+For a grandfathered customer that opts into new pricing, the pricing-change guide gives two individual routes: end the existing contract and re-provision it with the new package, or edit the contract directly with customer-specific changes such as negotiated overrides. The page does not define termination timing, proration, continuity, amendment history, override precedence, invoice recalculation, or either route's complete request schema.
+
 Metronome account hierarchies link distinct parent and child customers through their contracts. The guide limits a hierarchy to one parent-child level and 10 active nodes, requires every customer to retain its own contract, and configures the relationship during contract creation. A child contract identifies both the parent customer and parent contract, then selects parent-versus-self payment and consolidated-versus-separate usage-statement behavior. Each child's usage remains separately rated under that child's contract; parent tiered pricing applies only to direct parent usage, not aggregated child usage. For shared parent-commit access, both contracts must be active during the same period. The guide does not define reparenting, detachment, deletion, concurrent hierarchy changes, or validation responses.
 
 ### Customer balance views
@@ -76,6 +78,12 @@ With payment gating enabled, a failed payment changes `is_enabled` to `false`; M
 `POST /v2/contracts/getEditHistory` returns the recorded edit history for one customer contract. Metronome describes this as a full history spanning changes made in the UI, through `editContract`, and through other contract-changing endpoints. Each `ContractEdit` can identify when an edit occurred and group the additions, updates, archives, and removals it contained, including changes to pricing overrides, discounts, charges, commits, credits, subscriptions, usage filters, contract dates, and threshold configuration.
 
 The targeted `POST /v2/contracts/commits/edit` operation is narrower than a general contract edit: it identifies one existing customer- or contract-level commit and changes that commit's fields, schedules, applicability, invoicing contract, rate type, priority, or hierarchy access.
+
+A general contract edit can be made in the UI or through `editContract`; the guide's supported surface spans commits, recurring commits, credits, recurring credits, overrides, scheduled charges, spend-threshold configuration, and contract name and end date changes. Draft invoices immediately reflect an edit, while finalized invoices remain unchanged unless voided and regenerated from current contract state.
+
+Keep three related surfaces distinct: `getEditHistory` lists recorded changes, `getContract` with `as_of_date` retrieves full contract state at a historical point, and all edits also enter Metronome audit logs available through the UI and API. The guide names an edit-history contributor `updateEndDate`, while the dedicated history source names `updateContractEndDate`; current runtime naming is unresolved. The guide also says to use the first edit's `created_at` for `as_of_date`, although its edit records expose `timestamp`, the shown contract state's `created_at` predates the first edit, and no request is displayed, so the exact timestamp source remains unresolved.
+
+Contract-level overrides layer customer-specific rate or entitlement changes over rate-card defaults. Applicable overrides do not stack on one usage-invoice line: an overwrite takes precedence over multiplier or tiered overrides, the last-added overwrite wins among overwrites, and multiplier prioritization chooses either the lowest multiplier or the lowest explicit priority value. Despite its title, the override guide shows only contract-create requests and does not document how to add, update, end, or remove an override on an existing contract.
 
 ## Legacy contract amendments
 
@@ -116,6 +124,10 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - Commercial-design planning should make prepaid-versus-arrears terms, seat and usage interaction, commitments and overages, ramp and multi-year structures, exceeded-limit policy, and segment-specific payment terms explicit. The planning guide does not itself establish supported contract fields, lifecycle behavior, or enforcement.
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-make-pricing-changes-make-a-pricing-change]] — cohort grandfathering and individual re-provision-versus-edit pricing routes
+- [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-or-override-a-contract]] — customer-specific contract override types, targeting, precedence, and undocumented edit lifecycle
+- [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-contract]] — general contract-edit channels, historical edit records, `as_of_date` full-state retrieval, UI/API audit logs, and documented endpoint/timestamp ambiguities
 
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] — one-level parent-child contract model, payer and statement behavior, separate rating, and hierarchy limits
 

@@ -1,0 +1,93 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "edit-or-override-contract-rate-and-entitlement-models",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Enterprise design",
+      "proposed_markdown": "Contract overrides apply to usage, subscription, and composite products. Multipliers continue to track rate-card list-price changes, overwrites remain fixed when the list price changes, and tiered multipliers apply to quantity ranges only under explicit override prioritization. Overrides can also enable a product's entitlement; once enabled, usage for that product appears on customer invoices.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Do not generalize invoice entitlement into application authorization or access control.",
+        "The guide does not define tier boundary inclusivity, fallback above the listed tiers, or invoice recalculation behavior."
+      ]
+    },
+    {
+      "update_id": "edit-or-override-contract-targeting-and-precedence",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Enterprise design",
+      "proposed_markdown": "Simple contract-override targeting uses product IDs or product tags. Compound `override_specifiers` combine fields with AND semantics inside one specifier and OR semantics across the specifier array. Only one override is selected for a usage-invoice line item: overwrites outrank multiplier and tiered overrides, the last-added applicable overwrite wins, and multiplier selection uses either the lowest multiplier or the lowest explicit priority value.",
+      "quote_indexes": [
+        1,
+        4
+      ],
+      "warnings": [
+        "The page does not define concurrent or backdated meaning for last-added, edit atomicity, or ordering among several applicable tiered overrides."
+      ]
+    },
+    {
+      "update_id": "edit-or-override-dimensional-scope-ambiguity",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "after > [!warning] Rate-card documentation inconsistencies",
+      "proposed_markdown": "> [!warning] Dimensional override scope ambiguity\n> The contract-override guide says dimensional pricing must use a product ID and specify all pricing-group values needed to apply the override, but a later multiplier example permits a subset of the product's pricing-group keys and lets omitted hardware values match. The first statement follows an overwrite-specific tag prohibition and may itself be overwrite-specific, but the page does not explicitly settle that scope.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "Preserve this as an unresolved scope ambiguity rather than asserting that one statement is universally correct.",
+        "Verify the override type and complete rate dimensions before implementing partial dimensional selectors."
+      ]
+    },
+    {
+      "update_id": "edit-or-override-rate-cards-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-or-override-a-contract]] - contract override models, entitlements, selector logic, dimensional-targeting ambiguity, and precedence",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "edit-or-override-contract-layering-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Contract creation API",
+      "proposed_markdown": "Contract-level overrides layer customer-specific rate or entitlement changes over rate-card defaults. Applicable overrides do not stack on one usage-invoice line: an overwrite takes precedence over multiplier or tiered overrides, the last-added overwrite wins among overwrites, and multiplier prioritization chooses either the lowest multiplier or the lowest explicit priority value.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "Despite its title, this guide shows only contract-create requests and does not document how to add, update, end, or remove an override on an existing contract.",
+        "Do not infer edit-history, idempotency, concurrency, backdating, invoice-state, or failure semantics."
+      ]
+    },
+    {
+      "update_id": "edit-or-override-contracts-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-or-override-a-contract]] - customer-specific contract override types, targeting, precedence, and undocumented edit lifecycle",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}
