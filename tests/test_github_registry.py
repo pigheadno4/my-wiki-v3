@@ -84,7 +84,7 @@ APPENDIX_A_INVENTORY = (
     ('adyen/adyen-pos-mobile-ios', 'https://github.com/Adyen/adyen-pos-mobile-ios', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-pos-mobile-ios-test', 'https://github.com/Adyen/adyen-pos-mobile-ios-test', 'test-tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('adyen/adyen-postman', 'https://github.com/Adyen/adyen-postman', 'api-collection', 'tier2', 'commit', True, 'default-branch', 'monthly'),
-    ('adyen/adyen-php-api-library', 'https://github.com/Adyen/adyen-php-api-library', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('adyen/adyen-php-api-library', 'https://github.com/Adyen/adyen-php-api-library', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-sdk-automation', 'https://github.com/Adyen/adyen-sdk-automation', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('adyen/release-automation-action', 'https://github.com/Adyen/release-automation-action', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('adyen/adyen-3ds2-ios-swift', 'https://github.com/Adyen/adyen-3ds2-ios-swift', 'authentication-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
@@ -1613,6 +1613,78 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(3500000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(700, capsule.max_packet_files)
         self.assertEqual(5000000, capsule.max_packet_utf8_bytes)
+
+    def test_adyen_php_uses_checkout_focused_tagged_profile(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["adyen/adyen-php-api-library"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:adyen-php-api-library@30",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("30.0.2",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("adyen-php-checkout-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("adyen-php-api-library",), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(
+            (
+                "src/Adyen/HttpClient",
+                "src/Adyen/Model/Checkout",
+                "src/Adyen/Model/Payments",
+                "src/Adyen/Model/Recurring",
+                "src/Adyen/Model/TokenizationWebhooks",
+                "src/Adyen/Service/Checkout",
+                "src/Adyen/Service/Payments",
+                "src/Adyen/Service/ResourceModel/Checkout",
+                "src/Adyen/Service/ResourceModel/CheckoutUtility",
+                "src/Adyen/Service/ResourceModel/Payment",
+                "src/Adyen/Service/ResourceModel/Recurring",
+                "src/Adyen/Service/Validator",
+                "src/Adyen/Util",
+            ),
+            capsule.default_required_roots,
+        )
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(24, len(capsule.include_paths))
+        self.assertTrue(
+            {
+                "LICENSE",
+                "README.md",
+                "SECURITY.md",
+                "VERSION",
+                "composer.json",
+                "src/Adyen/Client.php",
+                "src/Adyen/Config.php",
+                "src/Adyen/Service/Checkout.php",
+                "src/Adyen/Service/Notification.php",
+                "src/Adyen/Service/Payment.php",
+                "src/Adyen/Service/Recurring.php",
+                "src/Adyen/Service/TokenizationWebhookParser.php",
+                "src/Adyen/Service/WebhookReceiver.php",
+            }.issubset(set(capsule.include_paths))
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(1000000, capsule.max_file_bytes)
+        self.assertEqual(500, capsule.max_capsule_files)
+        self.assertEqual(9000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(550, capsule.max_packet_files)
+        self.assertEqual(10000000, capsule.max_packet_utf8_bytes)
 
     def test_adyen_postman_has_reviewed_checkout_terminal_policy(self):
         repos = {

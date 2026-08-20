@@ -1,13 +1,13 @@
 ---
 title: "Adyen"
 type: company
-tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, server-sdk]
-source_count: 8
+tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk]
+source_count: 9
 ---
 
 ## Overview
 
-Adyen is represented in this wiki by independently versioned Web, iOS, Android, Android and iOS 3DS2, React Native, and Node.js SDKs plus exact-commit Postman API examples. The retained sources cover browser, native, and cross-platform checkout presentation; delegated mobile 3DS2 authentication runtimes; merchant-server Checkout API v72; and Terminal API payment and shopper-interaction messages.
+Adyen is represented in this wiki by independently versioned Web, iOS, Android, Android and iOS 3DS2, React Native, Node.js, and PHP SDKs plus exact-commit Postman API examples. The retained sources cover browser, native, and cross-platform checkout presentation; delegated mobile 3DS2 authentication runtimes; merchant-server Checkout APIs v71 and v72; and Terminal API payment and shopper-interaction messages.
 
 ## Web checkout surface
 
@@ -59,6 +59,12 @@ The retained `@adyen/api-library@32.0.0` baseline provides typed merchant-server
 
 The Node library does not render shopper UI. Its broader API and webhook exports are inventory evidence where the complete generated model trees were not retained; detailed non-checkout queries should trigger focused recollection.
 
+## PHP server surface
+
+The retained `adyen/php-api-library@30.0.2` baseline provides typed PHP clients for Checkout API v71, classic Payments and Recurring APIs v68, tokenization webhooks, HMAC helpers, and merchant-specific live Checkout routing. Checkout operations cover payments, Sessions, methods, modifications, orders, links, stored methods, donations, and utilities.
+
+The PHP library is independently versioned from the Node library and does not render shopper UI. Its retained capsule is checkout-focused; broader README-listed API families are inventory evidence. The exact release's `SECURITY.md` still names `6.x.x` as supported, contradicting package and code version `30.0.2`, so that table is not treated as current support policy.
+
 ## Postman API examples
 
 The retained `adyen/adyen-postman` baseline at commit `ecb2907c79a0aef2208aa2796a2bd0fc8ffd0cd7` contains generated Checkout v72, Recurring v68, BIN Lookup v54, and Test Card v1 collections plus an unversioned Terminal API collection. Checkout examples cover Sessions, payments, details, modifications, orders, links, stored methods, and utilities. Terminal examples cover 82 payment, refund, input, display, reconciliation, card-acquisition, tipping, instalment, and gift-card requests.
@@ -67,10 +73,10 @@ These examples show request shape and intended flow, not current account eligibi
 
 ## Knowledge status
 
-- Ingested cumulative GitHub repository sources: 8
-- Ingested package releases: 9
-- Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`
-- Latest ingest: `adyen-3ds2-ios@2.4.4` at exact SHA `00862adbc079d0be943666a4ad2523deb31f9546`
+- Ingested cumulative GitHub repository sources: 9
+- Ingested package releases: 10
+- Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`
+- Latest ingest: `adyen/php-api-library@30.0.2` at exact SHA `6ef96571834bc460201df8aea8c89882b2043cd8`
 
 ## Sources
 
@@ -88,6 +94,8 @@ These examples show request shape and intended flow, not current account eligibi
 - [[changelog-github-adyen-react-native]] — package-qualified wrapper release ledger
 - [[source-github-adyen-node-api-library]] — cumulative Adyen Node.js server-library baseline
 - [[changelog-github-adyen-node-api-library]] — package-qualified server-library release ledger
+- [[source-github-adyen-php-api-library]] — cumulative Adyen PHP server-library baseline
+- [[changelog-github-adyen-php-api-library]] — package-qualified PHP server-library release ledger
 - [[source-github-adyen-postman]] — cumulative Checkout, recurring, BIN lookup, test-card, and Terminal API examples
 - [[changelog-github-adyen-postman]] — commit-qualified Postman collection history
 
@@ -102,4 +110,5 @@ These examples show request shape and intended flow, not current account eligibi
 - [[adyen-3ds2-ios-sdk]] — native iOS 3DS2 transaction and challenge runtime
 - [[adyen-react-native-sdk]] — cross-platform wrapper, native dependency, and merchant-server boundaries
 - [[adyen-node-api-library]] — Node.js server SDK, Checkout API, Cloud Device, and query boundaries
+- [[adyen-php-api-library]] — PHP server SDK, Checkout API v71, recurring, tokenization, and query boundaries
 - [[adyen-terminal-api]] — Nexo terminal messages, in-person flows, and API-family boundaries

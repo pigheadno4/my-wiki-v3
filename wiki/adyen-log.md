@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-20] ingest | Adyen/adyen-php-api-library `30.0.2`
+
+- Approved and full-ingested work item `github-1ef004e332164a8359d6` at exact SHA `6ef96571834bc460201df8aea8c89882b2043cd8` after serial full reading of all 450 required evidence paths.
+- Established [[source-github-adyen-php-api-library]], its package-qualified changelog, and [[adyen-php-api-library]] for Checkout API v71, Payments and Recurring APIs v68, tokenization webhooks, transport, and HMAC helpers.
+- Preserved the checkout-focused boundary, merchant-specific live Checkout prefix requirement, generated-model-versus-eligibility distinction, and the stale `SECURITY.md` support-table contradiction.
+- Updated [[recurring-payments]], the Adyen company page, provider index, and calculated cumulative source and release counts.
+
 ## [2026-08-19] ingest | Adyen/adyen-3ds2-ios `2.4.4`
 
 - Approved and full-ingested work item `github-b8f0d09e7fd89635c59f` at exact SHA `00862adbc079d0be943666a4ad2523deb31f9546` after serial full reading of all 32 required evidence paths.

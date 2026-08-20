@@ -1,6 +1,6 @@
 # GitHub repository collection index
 
-Generated: `2026-08-19`
+Generated: `2026-08-20`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -14,14 +14,14 @@ Generated: `2026-08-19`
 | adyen | `adyen/adyen-3ds2-ios-swift` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
 | adyen | `adyen/adyen-magento2` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
 | adyen | `adyen/adyen-node-api-library` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-02 | ingested | 2026-09-02 | `wait` |
-| adyen | `adyen/adyen-php-api-library` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
+| adyen | `adyen/adyen-php-api-library` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-19 | ingested | 2026-09-19 | `wait` |
 | adyen | `adyen/adyen-postman` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-12 | ingested | 2026-09-12 | `wait` |
 | adyen | `adyen/adyen-wechatpay-ios` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
 | adyen | `adyen/adyen-pos-mobile-ios-test` | tier3 | commit | on-demand | - | - | - | `disabled` |
 | adyen | `adyen/adyen-sdk-automation` | tier3 | commit | on-demand | - | - | - | `disabled` |
 | adyen | `adyen/release-automation-action` | tier3 | commit | on-demand | - | - | - | `disabled` |
-| braintree | `braintree/braintree-android-drop-in` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-13 | ingested | 2026-08-20 | `wait` |
-| braintree | `braintree/braintree-ios-drop-in` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-13 | ingested | 2026-08-20 | `wait` |
+| braintree | `braintree/braintree-android-drop-in` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-13 | ingested | 2026-08-20 | `collect-baseline` |
+| braintree | `braintree/braintree-ios-drop-in` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-13 | ingested | 2026-08-20 | `collect-baseline` |
 | braintree | `braintree/braintree-web` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-08-04 | ingested | 2026-08-11 | `collect-baseline` |
 | braintree | `braintree/braintree-web-drop-in` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-08-04 | ingested | 2026-08-11 | `collect-baseline` |
 | braintree | `braintree/braintree_android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-01 | ingested | 2026-08-08 | `collect-baseline` |

@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-20] ingest | GitHub Adyen/adyen-php-api-library `30.0.2`
+
+- Full-ingested work item `github-1ef004e332164a8359d6` at exact SHA `6ef96571834bc460201df8aea8c89882b2043cd8` after serial review of all 450 required evidence paths.
+- Added cumulative and package-qualified sources plus [[adyen-php-api-library]] for Checkout API v71, classic Payments and Recurring APIs v68, tokenization webhooks, transport, and signature helpers.
+- Preserved the checkout-focused evidence boundary, live-prefix requirement, and stale `SECURITY.md` support-table contradiction.
+
 ## [2026-08-19] ingest | GitHub Adyen/adyen-3ds2-ios `2.4.4`
 
 - Full-ingested work item `github-b8f0d09e7fd89635c59f` at exact SHA `00862adbc079d0be943666a4ad2523deb31f9546` after serial review of all 32 required evidence paths.

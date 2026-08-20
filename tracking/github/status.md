@@ -100,6 +100,31 @@
   Release: [manifest](../../raw/github/braintree/braintree-web/releases/braintree-web/3.143.0/2026-07-27/manifest.json)
   Comparison: Not applicable
 
+## `github-1ef004e332164a8359d6`
+
+- Repository: `adyen/adyen-php-api-library`
+- SHA: `6ef96571834bc460201df8aea8c89882b2043cd8`
+- Collection date: `2026-08-19`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-php-api-library/snapshots/2026-08-19-6ef9657/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-php-api-library/ingest-packets/github-1ef004e332164a8359d6/packet.md)
+- Review priority: `high`
+- Required reading: `450` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen-php-api-library@30.0.2` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-php-api-library/releases/adyen-php-api-library/30.0.2/2026-08-19/manifest.json)
+  Comparison: Not applicable
+
 ## `github-236dd1f1ac8a3f30f537`
 
 - Repository: `braintree/braintree-web`
