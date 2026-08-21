@@ -44,6 +44,12 @@ The Basic Filters editor always creates a streaming billable metric. Its worked 
 
 ## Lifecycle boundary
 
+### Sampled event-to-metric diagnostics
+
+`POST /v1/events/search` can return an optional `matched_billable_metrics` array for events retrieved by transaction ID within the last 34 days. Each returned metric object inherits required `id` and `name` and may expose aggregation, grouping, filtering, custom-field, SQL, and archive fields in the returned schema alongside deprecated `group_by`, `aggregate`, `aggregate_keys`, and `filter`. Its search-specific aggregation enum includes case variants of count, latest, max, sum, and unique plus `custom_sql`; this does not resolve the existing `UNIQUE`-versus-SQL-distinct ambiguity or promise case normalization.
+
+Metronome positions this sampling-only, heavily rate-limited endpoint for checking whether raw events match active billable metrics and for investigating pipeline changes or metric misconfiguration. The page does not define whether matches reflect ingest-time or search-time metric configuration, whether an absent or empty array means no match or unavailable diagnostics, or how archived metrics, reflow, late changes, and duplicate events affect the result. A sampled match is evidence about the returned event, not proof that every intended event matched, was rated, reached an invoice, or prevented revenue leakage.
+
 Contract usage filters impose upstream schema requirements. For streaming metrics, the filter key must be an existing group key and must join pricing and presentation keys in one compound key when those dimensions coexist. For SQL metrics, the filter key must be present as an underlying event property.
 
 The SDK and event-design guides state that billable metrics match only usage events sent after metric creation by default. The create-metrics guide adds that Metronome retains raw events and can perform a representative-assisted reflow when earlier events need to apply to a new streaming metric. The page does not define reflow timing, eligibility, cost, or operational limits.
@@ -75,6 +81,8 @@ The retrieval schemas preserve the create-schema conflicts: `UNIQUE` remains une
 Dimension-scoped spend alerts require their `group_values` key to be a group key on the underlying billable metrics associated with the customer's contract. Products whose metric lacks the key do not contribute to that threshold. Metronome recomputes the selected usage as if the key were a presentation group, so tiered pricing, quantity rounding, and `MAX` aggregation apply to the subset. A customer can use three distinct keys for spend-threshold notifications; a fourth is blocked. When one key has more than 5,000 values for that customer, the guide calls for representative consultation rather than defining a hard maximum.
 
 ## Sources
+
+- [[source-metronome-api-reference-usage-search-events]] — sampled transaction-ID retrieval, optional matched-metric configuration diagnostics, 34-day occurrence window, heavy-rate-limit boundary, and non-exhaustive leakage evidence
 
 - [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-sql-editor]] — SQL functions and outputs, breakdown granularity, scheduled metric swaps, and unresolved SQL-runtime boundaries
 

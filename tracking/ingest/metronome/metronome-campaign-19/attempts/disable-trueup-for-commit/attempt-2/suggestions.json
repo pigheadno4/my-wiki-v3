@@ -1,0 +1,69 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "disable-trueup-for-commit-durable-fact",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Targeted commit edits",
+      "proposed_markdown": "### Postpaid true-up suppression\n\nGlobally bearer-secured `POST /v1/contracts/commits/disableTrueup` prevents generation of the final true-up invoice for one postpaid commit. The operation's `requestBody` wrapper is not marked required; within the referenced JSON payload, customer, contract, and commit UUID properties are required, while an amendment UUID is optional when applicable. This does not establish omitted-body runtime behavior. HTTP 200 requires a `data.id` UUID, while the operation lists generic `400` and `404` responses.\n\nPostpaid usage remains described as paid in arrears, with a shortfall otherwise producing a final true-up invoice on `invoice_date`. Apply the separate API-wide [[metronome-api-idempotency|`Idempotency-Key` contract]] for POST requests: identical parameters with the same key replay the original result, changed parameters return `409`, and retention is at least 24 hours.\n\n> [!info] Operation boundary\n> This source establishes invoice suppression only. It does not define a balance or ledger mutation, forgiveness of the unmet commitment, a timing cutoff or retroactive effect, reversal or re-enablement, behavior after invoice generation, already-disabled behavior, replay with another or expired key, concurrent calls, `disableTrueup`-specific recovery after cached errors, detailed error-condition mapping, or propagation to reports, exports, webhooks, external A/R, and other invoices. Existing categorical statements that a postpaid shortfall generates a true-up should be qualified with this endpoint's conditional exception rather than replaced.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not infer that suppressing invoice generation changes the commit balance, ledger, or underlying obligation.",
+        "Do not infer omitted-body behavior from required properties inside an optionality-unmarked requestBody wrapper.",
+        "The API-wide request-result replay contract does not define already-disabled state, different or expired keys, concurrency, or endpoint-specific recovery after cached errors.",
+        "Existing broad true-up statements need a conditional qualification; the endpoint does not directly contradict the normal shortfall rule."
+      ]
+    },
+    {
+      "update_id": "disable-trueup-for-commit-reciprocal-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-disable-trueup-for-commit]] \u2014 bearer-secured postpaid true-up invoice suppression, payload requiredness distinction, success and error envelopes, API-wide idempotency context, and lifecycle unknowns",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "disable-trueup-for-commit-invoicing-durable-fact",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Credit and commit application",
+      "proposed_markdown": "### Conditional suppression of a postpaid true-up invoice\n\nPostpaid usage is paid in arrears, and a shortfall against the committed amount otherwise produces a final true-up invoice on `invoice_date`. `POST /v1/contracts/commits/disableTrueup` conditionally prevents that invoice from being generated for an identified postpaid commit.\n\n> [!info] Invoice-effect boundary\n> The endpoint does not define its cutoff or retroactivity, behavior for an already generated or finalized invoice, balance or ledger effects, forgiveness of the underlying obligation, reversal or re-enablement, reporting or export treatment, webhooks, downstream A/R behavior, or effects on other invoices. Treat it as a qualification to the normal shortfall true-up rule, not as evidence for any of those lifecycle or downstream outcomes.",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "Keep request-schema and commit-identity details in metronome-credits-and-commits rather than duplicating them here.",
+        "Do not infer cutoff, retroactivity, already-generated or finalized invoice behavior, balance or ledger effects, obligation forgiveness, reversal, reporting, export, webhook, downstream A/R, or other-invoice effects."
+      ]
+    },
+    {
+      "update_id": "disable-trueup-for-commit-invoicing-reciprocal-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-disable-trueup-for-commit]] \u2014 conditional suppression of a postpaid shortfall true-up invoice and unresolved invoice-lifecycle and downstream effects",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

@@ -1,0 +1,46 @@
+{
+  "action": "spawn_worker",
+  "job_id": "disable-trueup-for-commit",
+  "attempt": 2,
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/disable-trueup-for-commit-2026-07-13.md",
+  "raw_sha256": "9399dbb6da5b2357b1f80a35ad0010d9f0f9fb07aba04031f2fd8a566ca47bf8",
+  "source_target": "wiki/sources/metronome/source-metronome-api-reference-credits-and-commits-disable-trueup-for-commit.md",
+  "canonical_url": "https://docs.metronome.com/api-reference/credits-and-commits/disable-trueup-for-commit.md",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location."
+  ],
+  "retry_context": {
+    "prior_attempt": 1,
+    "review_scope": "full",
+    "required_changes": [
+      "Revise the request-contract prose in the candidate and disable-trueup-for-commit-durable-fact to distinguish the nested DisableCommitTrueupPayload.required fields from the OpenAPI requestBody object, which is not itself marked required. State that customer_id, commit_id, and contract_id are required UUID-formatted properties when the JSON payload is supplied; amendment_id remains optional when applicable. Do not infer omitted-body runtime behavior.",
+      "Correct the idempotency and retry treatment throughout the candidate and durable concept proposal. Link [[metronome-api-idempotency]] and the existing source-metronome-api-reference-idempotency context, state that the API-wide Idempotency-Key contract applies to all POST endpoints with identical-parameter result replay, changed-parameter 409, and at-least-24-hour retention, and preserve that this endpoint does not define already-disabled behavior, replay with another or expired key, concurrent calls, or disableTrueup-specific state recovery after cached errors. Do not describe idempotency as wholly undocumented.",
+      "Add [[metronome-invoicing]] to the candidate's Related concepts and complete the shared concept audit with a bounded durable-fact update plus reciprocal source-link update for wiki/concepts/metronome/metronome-invoicing.md. Place the fact under the existing credit-and-commit invoice surface, qualify the normal shortfall true-up rule with this conditional suppression endpoint, and preserve the unknown cutoff, retroactivity, already-generated/finalized invoice, balance/ledger, obligation, reversal, reporting, export, webhook, downstream A/R, and other-invoice effects. Avoid duplicating unrelated commit schema detail already owned by metronome-credits-and-commits.",
+      "Replace or expand the three-to-five grounding excerpts so the retained byte-exact evidence covers the global bearer-security declaration, POST path, requestBody and payload schema, HTTP 200 data.id envelope, operation-listed 400 and 404 responses, and the postpaid shortfall/suppression behavior. Update every shared suggestion's quote_indexes so its factual prose and reciprocal-link description are supported by the cited excerpts."
+    ],
+    "prior_reviewer_identity": "/root/c19_r_disable_trueup"
+  },
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Mutation suppresses a postpaid-commit true-up invoice, so invoice, balance, reversibility, timing, and repeated-call boundaries require stronger judgment.",
+  "worker_identity": "/root/c19_w_disable_trueup",
+  "worker_model": "gpt-5.6-sol"
+}

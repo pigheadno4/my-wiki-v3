@@ -1,0 +1,120 @@
+{
+  "job_id": "archive-a-contract",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Archive a Contract\"\ntype: source\ndate_ingested: 2026-08-21\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/contracts/archive-a-contract.md\"\nraw_files:\n  - \"metronome/api-reference/contracts/archive-a-contract-2026-07-13.md\"\ntags: [metronome, api, contracts, archival, invoicing, credits-and-commits]\n---\n\n## Overview\n\nThis API reference documents the bearer-authenticated `POST /v1/contracts/archive` operation for permanently ending and archiving an incorrectly created contract together with its terms. Archival cancels draft invoices, voids upcoming scheduled invoices, can optionally void finalized invoices, archives associated commits and credits, and creates expiration ledger entries for remaining active prepaid-commit balances. Archived contracts remain available for historical reporting and audit views, but the page does not define restoration, propagation timing, duplicate-call behavior, concurrency ordering, or partial-failure recovery.\n\n## Key takeaways\n\n- Archival is described as permanent and is intended for a contract that was created incorrectly and needs to be removed from the customer, but it is not deletion: the archived record remains available through `ListContracts` with `include_archived=true` and through the UI's \"Show archived\" option.\n- Draft invoices are canceled and all upcoming scheduled invoices are voided. Finalized invoices are optional: `void_invoices` is a required boolean, and the schema explicitly says existing finalized invoices remain when it is `false`.\n- All associated commits and credits are archived. For prepaid commits with active segments, Metronome generates expiration ledger entries that close remaining balances and appear in transaction history as `PREPAID_COMMIT_EXPIRATION`.\n- The request schema requires UUID `customer_id`, UUID `contract_id`, and boolean `void_invoices`; the enclosing OpenAPI `requestBody` is not itself marked `required: true`.\n- A `200` response requires `data` containing an `Id` object. The page also lists `400` and `404` errors, but it does not enumerate validation cases or distinguish missing customer, missing contract, customer-contract mismatch, or an already archived contract.\n\n## Endpoint contract\n\n| Item | Documented value |\n| --- | --- |\n| Method and path | `POST /v1/contracts/archive` |\n| Operation ID | `archiveContract-v1` |\n| Authentication | Top-level HTTP bearer authentication through `bearerAuth` |\n| Request media type | `application/json` |\n| Required payload properties | UUID `customer_id`, UUID `contract_id`, and boolean `void_invoices` |\n| Success | `200`; the response object requires `data`, which uses the required-UUID `Id` schema |\n| Listed endpoint errors | `400 Bad request` and `404` for a specified resource that was not found; both use an error object requiring string `message` |\n\nThe payload identifies both the customer and the contract. The page does not state whether the customer-contract relationship is validated atomically, what happens when the IDs belong to different customers, or whether an omitted body, extra property, malformed UUID, or inaccessible resource is classified as `400` or `404`. The successful example returns a UUID different from the request's `contract_id`; because the generic `Id` schema does not label that identifier, this page does not establish whether `data.id` is the archived contract ID, an archive-operation ID, or another resource ID.\n\n## Archive, invoice, and balance effects\n\nThe operation permanently ends the contract and all its terms. Draft invoices are canceled and upcoming scheduled invoices are voided automatically. Finalized invoices are treated separately: the narrative says they can optionally be voided, the request example sends `void_invoices: true`, and the property description guarantees only that existing finalized invoices remain when the flag is `false`. The page does not define eligible invoice states, the cutoff for \"upcoming,\" whether already distributed scheduled or finalized invoices are affected, or any Stripe, ERP, marketplace, payment, refund, tax, revenue-recognition, webhook, or external accounts-receivable effect.\n\nAssociated commits and credits are archived with the contract. For prepaid commits that have active segments, Metronome automatically creates expiration ledger entries to close remaining balances and records them in commit transaction history with type `PREPAID_COMMIT_EXPIRATION`. The page does not define how \"associated\" applies to customer-level balances shared across contracts, the entry amount or effective timestamp, ordering against invoice deductions, whether the balance and invoice mutations are atomic, or how a partial failure is surfaced and reconciled.\n\n> [!warning] Ledger entry casing ambiguity\n> This page renders the generated transaction-history type as uppercase `PREPAID_COMMIT_EXPIRATION`, while the separate remaining-balance guide documents the corresponding ledger type as lowercase `prepaid_commit_expiration`. The sources do not say whether these are surface-specific representations of one value, so clients should verify the actual enum serialization rather than normalize the casing by assumption.\n\n## Historical visibility and permanence\n\nArchival preserves the record for historical reporting and audit purposes. A caller can request archived contracts through `ListContracts` by setting `include_archived` to `true`, and the UI exposes them when \"Show archived\" is enabled. The page does not define default list behavior, visibility latency, retention, export behavior, audit-event fields, an unarchive or restore operation, or whether a replacement contract can reuse identities or uniqueness keys from the archived contract.\n\n## Authorization, errors, retries, and concurrency\n\nThe OpenAPI document applies HTTP bearer authentication but names no endpoint-specific permission or scope and lists no `401` or `403` response. It documents generic `400` and `404` responses with a required message only; it does not list `409`, `429`, or `5xx` behavior or provide machine-readable error codes.\n\nThis endpoint page does not mention `Idempotency-Key`, repeated archive calls, request deduplication, or retry guidance. It also does not define concurrency ordering when archival races with invoice generation or finalization, contract edits or transitions, balance consumption, or another archive request. No propagation guarantee, transaction boundary, completion signal beyond the `200` response, timeout-recovery procedure, restoration mechanism, or read-after-write consistency rule is stated. Consult the separate API-wide authentication, status-code, and idempotency authorities, and do not assume that changing an idempotency key or retrying after an uncertain response is safe without reconciling the contract, invoices, balances, and ledger history.\n\n## Contradiction check\n\nThe automatic treatment of draft and scheduled invoices and the optional treatment of finalized invoices do not contradict the existing edit guidance that finalized invoices remain unchanged unless separately voided: contract archival is a distinct lifecycle operation with an explicit `void_invoices` control. No direct lifecycle contradiction was found. The ledger-entry casing difference above remains unresolved and is preserved as a documentation ambiguity.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-customers-and-contracts]], [[metronome-invoicing]], [[metronome-credits-and-commits]], [[metronome-api-idempotency]], [[metronome-security-principles]]\n- API context: [[source-metronome-api-reference-authentication]], [[source-metronome-api-reference-status-codes]], [[source-metronome-api-reference-idempotency]]\n- Ledger context: [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/contracts/archive-a-contract-2026-07-13|2026-07-13 snapshot \u2014 contract archival lifecycle, invoice treatment, ledger effects, and request/response schema]]\n",
+  "quotes": [
+    {
+      "text": "> Permanently end and archive a contract along with all its terms. Any draft invoices will be canceled, and all upcoming scheduled invoices will be voided\u2013also all finalized invoices can optionally be voided. Use this in the event a contract was incorrectly created and needed to be removed from a customer.",
+      "location": "line 11"
+    },
+    {
+      "text": "When archiving a contract, all associated commits and credits are also archived. For prepaid commits with active segments, Metronome automatically generates expiration ledger entries to close out any remaining balances, ensuring accurate accounting of unused prepaid amounts. These ledger entries will appear in the commit's transaction history with type `PREPAID_COMMIT_EXPIRATION`.",
+      "location": "line 14"
+    },
+    {
+      "text": "Archived contracts remain accessible for historical reporting and audit purposes. They can be retrieved using the `ListContracts` endpoint by setting the `include_archived` parameter to `true` or in the Metronome UI when the \"Show archived\" option is enabled.",
+      "location": "line 17"
+    },
+    {
+      "text": "    ArchiveContractPayload:\n      type: object\n      required:\n        - customer_id\n        - contract_id\n        - void_invoices\n      properties:\n        customer_id:\n          type: string\n          format: uuid\n          description: ID of the customer whose contract is to be archived\n        contract_id:\n          type: string\n          format: uuid\n          description: ID of the contract to archive\n        void_invoices:\n          type: boolean\n          description: >-\n            If false, the existing finalized invoices will remain after the\n            contract is archived.",
+      "location": "lines 182-201"
+    },
+    {
+      "text": "      responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/Id'\n              example:\n                data:\n                  id: 8deed800-1b7a-495d-a207-6c52bac54dc9\n        '400':\n          description: Bad request\n          content:\n            application/json:\n              schema:\n                $ref: '#/components/schemas/Error'\n        '404':\n          $ref: '#/components/responses/NotFound'",
+      "location": "lines 157-179"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "archive-contract-lifecycle-fact",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Contract and invoice behavior",
+        "proposed_markdown": "`POST /v1/contracts/archive` permanently ends and archives a contract and all its terms when an incorrectly created contract must be removed from a customer. The record is not deleted: it remains available to `ListContracts` with `include_archived=true` and through the UI's \"Show archived\" option. The request requires UUID `customer_id`, UUID `contract_id`, and boolean `void_invoices`; the page does not define restoration, retention, propagation timing, read-after-write consistency, duplicate-call behavior, concurrency ordering, or partial-failure recovery. [[source-metronome-api-reference-contracts-archive-a-contract]]",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not equate removal from a customer with deletion; archived contracts remain historically visible.",
+          "Do not infer an unarchive path, retention guarantee, atomic transaction boundary, or retry-safe repeated-call behavior."
+        ]
+      },
+      {
+        "update_id": "archive-contract-lifecycle-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-contracts-archive-a-contract]] \u2014 permanent contract archival, historical visibility, required request flags, and lifecycle unknowns",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "archive-contract-balance-expiration-fact",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Balance retrieval and ledger calculation",
+        "proposed_markdown": "Archiving a contract also archives all associated commits and credits. For prepaid commits with active segments, Metronome automatically creates expiration ledger entries to close remaining balances and shows them in commit transaction history as `PREPAID_COMMIT_EXPIRATION`. The archive page does not define association behavior for customer-level balances shared across contracts, entry amounts or effective timestamps, ordering against invoice deductions, atomicity, or reconciliation after partial failure. Its uppercase type spelling differs from the lowercase `prepaid_commit_expiration` documented by the remaining-balance guide, so enum casing should be verified per surface. [[source-metronome-api-reference-contracts-archive-a-contract]]",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "Do not generalize associated commits and credits into all balances owned by the customer.",
+          "Preserve the uppercase-versus-lowercase ledger-type ambiguity instead of silently normalizing it."
+        ]
+      },
+      {
+        "update_id": "archive-contract-balance-expiration-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-contracts-archive-a-contract]] \u2014 associated commit and credit archival, active prepaid-balance expiration entries, and ledger casing ambiguity",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "archive-contract-invoice-disposition-fact",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Credit, correction, and re-bill state boundaries",
+        "proposed_markdown": "Contract archival cancels draft invoices and voids upcoming scheduled invoices. Finalized invoices are optional: the archive request requires boolean `void_invoices`, and the schema explicitly says finalized invoices remain when it is `false`. The page does not define the cutoff for upcoming, eligible finalized states, effects on already distributed invoices, downstream Stripe, ERP, or marketplace records, payment or refund handling, tax, webhooks, revenue recognition, error recovery, or whether the contract, invoice, balance, and ledger mutations are atomic. [[source-metronome-api-reference-contracts-archive-a-contract]]",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": [
+          "Do not extend Metronome invoice cancellation or voiding to downstream invoice, payment, refund, tax, or accounts-receivable effects without separate evidence.",
+          "Do not infer that `void_invoices: true` defines eligibility, ordering, or atomicity for every finalized invoice state."
+        ]
+      },
+      {
+        "update_id": "archive-contract-invoice-disposition-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-contracts-archive-a-contract]] \u2014 draft cancellation, scheduled-invoice voiding, finalized-invoice flag behavior, and downstream boundary",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/contracts/archive-a-contract-2026-07-13.md",
+  "raw_sha256": "b5b8810ec07999f62978e40d60e5c2c6130408252402e7095f6f277cd41a0b88",
+  "status": "candidate_ready"
+}

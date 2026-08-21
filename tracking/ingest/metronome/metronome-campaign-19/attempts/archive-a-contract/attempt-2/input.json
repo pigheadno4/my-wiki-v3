@@ -1,0 +1,44 @@
+{
+  "action": "spawn_worker",
+  "job_id": "archive-a-contract",
+  "attempt": 2,
+  "raw_path": "raw/metronome/api-reference/contracts/archive-a-contract-2026-07-13.md",
+  "raw_sha256": "b5b8810ec07999f62978e40d60e5c2c6130408252402e7095f6f277cd41a0b88",
+  "source_target": "wiki/sources/metronome/source-metronome-api-reference-contracts-archive-a-contract.md",
+  "canonical_url": "https://docs.metronome.com/api-reference/contracts/archive-a-contract.md",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location."
+  ],
+  "retry_context": {
+    "prior_attempt": 1,
+    "review_scope": "targeted",
+    "required_changes": [
+      "In archive-contract-lifecycle-fact, change 'The request requires UUID customer_id, UUID contract_id, and boolean void_invoices' to say that ArchiveContractPayload requires those properties, and add that the enclosing OpenAPI requestBody is not marked required so omitted-body behavior is undocumented. Preserve all current permanence, historical-visibility, restoration, retention, propagation, consistency, duplicate-call, concurrency, and recovery boundaries.",
+      "In archive-contract-invoice-disposition-fact, change 'the archive request requires boolean void_invoices' to say that the payload schema requires boolean void_invoices while requestBody itself is not marked required. Preserve the automatic draft and scheduled-invoice effects, the false-value finalized-invoice guarantee, and all eligible-state, downstream, payment, tax, webhook, accounting, recovery, and atomicity unknowns."
+    ],
+    "prior_reviewer_identity": "/root/c19_r_subscription_history"
+  },
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Permanent archival affects contract terms, draft and scheduled invoices, optional finalized-invoice voiding, balances, ledger entries, and historical visibility.",
+  "worker_identity": "/root/c19_w_archive_contract",
+  "worker_model": "gpt-5.6-sol"
+}

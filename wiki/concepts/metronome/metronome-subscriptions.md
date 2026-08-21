@@ -30,6 +30,7 @@ A shared seat-credit pool links the subscription to a recurring credit by a temp
 
 ## Lifecycle
 
+- Metronome's subscription quantity-history endpoint returns historical quantities and prices for customer-facing seat-count history, but excludes future scheduled quantity changes; those future changes must be retrieved through `getContract`.
 - A subscription rate-card price change reaches inheriting contracts in the next billing period; a contract overwrite retains its assigned price.
 - A sub-cycle trial can use consecutive subscriptions with a time-bounded `$0` override on the first. A full-cycle trial can use one `$0` override that expires before list pricing applies in the next period.
 - Add-ons use `add_subscription`. The guide recommends renewal transitions for upgrades and downgrades, with proration only for upgrades and next-period effect for downgrades.
@@ -40,6 +41,7 @@ The lifecycle page labels one operation as create-contract guidance while linkin
 
 ## Sources
 
+- [[source-metronome-api-reference-contracts-get-subscription-quantity-history]] — historical subscription quantities and prices, seat-count presentation, response structure, and the future-change boundary
 - [[source-metronome-guides-pricing-packaging-subscription-provision-your-customer]] - contract subscription fields, charging gate, billing-cycle configuration, pooled and individual seat-credit provisioning, and the unassigned-seat field contradiction
 
 - [[source-metronome-guides-pricing-packaging-subscription-subscription-overview]] — subscription object model, quantity, collection direction, and credit scope

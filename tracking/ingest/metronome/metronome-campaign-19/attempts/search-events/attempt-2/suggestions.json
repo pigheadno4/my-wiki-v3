@@ -1,0 +1,71 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "search-events-ingestion-observability",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Scale, observability, and recovery",
+      "proposed_markdown": "### Transaction-ID search diagnostics\n\nBearer-authenticated `POST /v1/events/search` retrieves events by transaction ID only when they occurred within the last 34 days. Its nested payload schema requires a `transactionIds` string array when a body is supplied, although the OpenAPI `requestBody` object is not itself marked required and supplies no array-size, uniqueness, or per-ID format constraint. Metronome describes the endpoint as heavily rate limited and sampling-only, with no numeric limit; it must not be used to check every event.\n\nA `200` response is an array whose items require event identity, customer ID, event type, and timestamp and may include properties, `processed_at`, `is_duplicate`, a matched customer, and matched billable metrics. The page does not define missing-ID representation, exact 34-day cutoff semantics, result ordering, pagination, configuration-snapshot timing, duplicate-flag semantics, or read-after-ingest consistency. This occurrence-based search window is distinct from the acceptance-relative ingest duplicate-suppression and historical-ingest boundaries.\n\nApply the separate API-wide [[metronome-api-idempotency|`Idempotency-Key` contract]] to this POST request: the same key with identical parameters replays the original result, changed parameters return HTTP `409`, retention is at least 24 hours, and a cached result can be HTTP `500`. For `searchEvents`, that replay is not evidence of a later ingest or matching snapshot. The endpoint page does not define no-key, different-key, expired-key, concurrent-call, snapshot-refresh, or search-specific cached-error recovery behavior.\n\n> [!info] Sampling and revenue boundary\n> Sampled matching can expose evidence for individual returned events and help investigate dropped, delayed, reformatted, or unmatched usage. It does not prove complete ingestion, absence of revenue leakage, correct rating or invoicing, downstream collection, or recovery of lost revenue; the page provides no sampling coverage, false-negative, alert, latency, or remediation guarantee.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep the search occurrence window distinct from ingest backdating and acceptance-relative duplicate suppression.",
+        "Do not turn sampling-oriented revenue-leakage language into a completeness, invoice-accuracy, or revenue-recovery guarantee.",
+        "Treat same-key replay as the original request result, not as proof of later ingest, matching, or configuration state."
+      ]
+    },
+    {
+      "update_id": "search-events-ingestion-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-usage-search-events]] \u2014 34-day transaction-ID search, sampling-only rate-limit boundary, event/customer/metric matching diagnostics, duplicate flag, and revenue-leakage guarantee limits",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "search-events-billable-metric-diagnostics",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Lifecycle boundary",
+      "proposed_markdown": "### Sampled event-to-metric diagnostics\n\n`POST /v1/events/search` can return an optional `matched_billable_metrics` array for events retrieved by transaction ID within the last 34 days. Each returned metric object inherits required `id` and `name` and may expose aggregation, grouping, filtering, custom-field, SQL, and archive fields in the returned schema alongside deprecated `group_by`, `aggregate`, `aggregate_keys`, and `filter`. Its search-specific aggregation enum includes case variants of count, latest, max, sum, and unique plus `custom_sql`; this does not resolve the existing `UNIQUE`-versus-SQL-distinct ambiguity or promise case normalization.\n\nMetronome positions this sampling-only, heavily rate-limited endpoint for checking whether raw events match active billable metrics and for investigating pipeline changes or metric misconfiguration. The page does not define whether matches reflect ingest-time or search-time metric configuration, whether an absent or empty array means no match or unavailable diagnostics, or how archived metrics, reflow, late changes, and duplicate events affect the result. A sampled match is evidence about the returned event, not proof that every intended event matched, was rated, reached an invoice, or prevented revenue leakage.",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "Preserve the unknown metric-configuration snapshot and do not infer exhaustive match coverage from a sampled response."
+      ]
+    },
+    {
+      "update_id": "search-events-billable-metrics-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-usage-search-events]] \u2014 sampled transaction-ID retrieval, optional matched-metric configuration diagnostics, 34-day occurrence window, heavy-rate-limit boundary, and non-exhaustive leakage evidence",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

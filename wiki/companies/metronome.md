@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 112
+source_count: 117
 ---
 
 ## Overview
@@ -151,11 +151,16 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 112
-- Raw pages without source summaries: 119
+- Ingested source summaries: 117
+- Raw pages without source summaries: 114
 
 ## Sources
 
+- [[source-metronome-api-reference-settings-list-account-level-billing-providers]] — account-level billing-provider delivery methods, pagination, configuration exposure, and identifier boundaries
+- [[source-metronome-api-reference-credits-and-commits-disable-trueup-for-commit]] — postpaid true-up invoice suppression, API-wide idempotency, and lifecycle unknowns
+- [[source-metronome-api-reference-contracts-get-subscription-quantity-history]] — historical subscription quantities and prices with the future-change boundary
+- [[source-metronome-api-reference-contracts-archive-a-contract]] — permanent archival, invoice disposition, balance expiration entries, and historical visibility
+- [[source-metronome-api-reference-usage-search-events]] — sampled 34-day event search, matched-customer and metric diagnostics, keyed replay, and completeness limits
 - [[source-metronome-api-reference-settings-list-pricing-units]] — pricing-unit enumeration, USD cents identifier, pagination, and response-schema boundaries
 - [[source-metronome-api-reference-rate-cards-archive-a-rate-card]] — permanent new-contract disablement and preservation of existing-contract pricing
 - [[source-metronome-api-reference-plans-list-plans]] — deprecated Plans listing schema and Contracts migration boundary

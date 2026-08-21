@@ -6,6 +6,16 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-21 — Metronome Campaign 19 completed
+
+- Result: five approved API-reference source pages from complete raw-page reads. Four pages needed one retry; three corrections used unchanged-hash targeted review, while `disable-trueup-for-commit` and `search-events` received full semantic rereviews.
+- Sources: [[source-metronome-api-reference-settings-list-account-level-billing-providers]], [[source-metronome-api-reference-credits-and-commits-disable-trueup-for-commit]], [[source-metronome-api-reference-contracts-get-subscription-quantity-history]], [[source-metronome-api-reference-contracts-archive-a-contract]], and [[source-metronome-api-reference-usage-search-events]].
+- Concepts: updated integrations, credits and commits, invoicing, subscriptions, customers and contracts, event ingestion, and billable metrics; no new concept page was required.
+- Boundaries retained: account delivery-method IDs are not proven interchangeable with customer or contract selectors; true-up suppression does not prove balance, obligation, or downstream effects; quantity history excludes future scheduled changes; archive request-wrapper requiredness and downstream atomicity remain undefined; keyed search replay is not evidence of later ingest or matching state.
+- Campaign outcome: all five pages passed final independent review, but only one passed on attempt 1, so this representative-complexity campaign did not meet the planned first-pass efficiency gate.
+- Coverage after promotion: 225 collected documentation pages, 117 source summaries, and 114 raw pages without source summaries.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-19/monitor.md) and [quality audit](../tracking/ingest/metronome/metronome-campaign-19/quality-audit.md).
+
 ## 2026-08-21 — Metronome Campaign 18 completed
 
 - Result: five approved API-reference source pages from complete raw-page reads and five independent Sol reviews; all passed on attempt 1 with no retry or coordinator content repair.

@@ -51,6 +51,8 @@ Historical invoice import combines supplied line-item quantities with unit price
 
 ### Balance retrieval and ledger calculation
 
+Archiving a contract also archives all associated commits and credits. For prepaid commits with active segments, Metronome automatically creates expiration ledger entries to close remaining balances and shows them in commit transaction history as `PREPAID_COMMIT_EXPIRATION`. The archive page does not define association behavior for customer-level balances shared across contracts, entry amounts or effective timestamps, ordering against invoice deductions, atomicity, or reconciliation after partial failure. Its uppercase type spelling differs from the lowercase `prepaid_commit_expiration` documented by the remaining-balance guide, so enum casing should be verified per surface. [[source-metronome-api-reference-contracts-archive-a-contract]]
+
 ### Revenue-reporting treatment
 
 Metronome's revenue-recognition guide treats prepaid-commit purchase invoices as deferred revenue, prepaid drawdown invoices as recognized as consumption occurs, and unused prepaid expiration as recognized at period end. Postpaid usage is recognized as the balance draws down, with any unmet minimum reported when the true-up invoice is issued. Free credits are never paid for and do not affect deferred revenue, although their drawdown may have a contra-revenue effect. For line-item-based reports, the guide says to ignore `credit_automated_invoice_deduction` and `prepaid_automated_invoice_deduction` on `CONTRACT_USAGE`, plus `postpaid_automated_invoice_deduction` and `postpaid_trueup` where invoice line items already include the amounts; include `prepaid_segment_expiration` because Metronome does not invoice that expiration, and usually ignore `credit_segment_expiration` because free-credit expiration does not affect revenue. These rules are documented report-construction guidance, not a complete merchant accounting policy.
@@ -93,6 +95,15 @@ Spend-threshold billing is a separate contract control from prepaid-balance auto
 - `uniqueness_key` prevents duplicate creation; its description documents a `409` failure.
 
 ## Targeted commit edits
+
+### Postpaid true-up suppression
+
+Globally bearer-secured `POST /v1/contracts/commits/disableTrueup` prevents generation of the final true-up invoice for one postpaid commit. The operation's `requestBody` wrapper is not marked required; within the referenced JSON payload, customer, contract, and commit UUID properties are required, while an amendment UUID is optional when applicable. This does not establish omitted-body runtime behavior. HTTP 200 requires a `data.id` UUID, while the operation lists generic `400` and `404` responses.
+
+Postpaid usage remains described as paid in arrears, with a shortfall otherwise producing a final true-up invoice on `invoice_date`. Apply the separate API-wide [[metronome-api-idempotency|`Idempotency-Key` contract]] for POST requests: identical parameters with the same key replay the original result, changed parameters return `409`, and retention is at least 24 hours.
+
+> [!info] Operation boundary
+> This source establishes invoice suppression only. It does not define a balance or ledger mutation, forgiveness of the unmet commitment, a timing cutoff or retroactive effect, reversal or re-enablement, behavior after invoice generation, already-disabled behavior, replay with another or expired key, concurrent calls, `disableTrueup`-specific recovery after cached errors, detailed error-condition mapping, or propagation to reports, exports, webhooks, external A/R, and other invoices. Existing categorical statements that a postpaid shortfall generates a true-up should be qualified with this endpoint's conditional exception rather than replaced.
 
 `POST /v2/contracts/commits/edit` changes one contract-level or customer-level commit identified by `customer_id` and `commit_id`. It can update display fields, access or invoice schedule items, invoicing contract, applicability, priority, rate type, fixed product, or hierarchy access.
 
@@ -147,6 +158,8 @@ A merchant can create `low_remaining_commit_balance_reached` for a customer, cre
 
 ## Sources
 
+- [[source-metronome-api-reference-credits-and-commits-disable-trueup-for-commit]] — bearer-secured postpaid true-up invoice suppression, payload requiredness distinction, success and error envelopes, API-wide idempotency context, and lifecycle unknowns
+- [[source-metronome-api-reference-contracts-archive-a-contract]] — associated commit and credit archival, active prepaid-balance expiration entries, and ledger casing ambiguity
 - [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]] — pending-commit release or cancellation, required external workflow ID, accepted outcome values, and recovery unknowns
 
 - [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-contract]] — commit and credit edit capabilities, rollover cutoffs, schedule-ledger behavior, and archival prerequisites

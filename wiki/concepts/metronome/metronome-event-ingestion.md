@@ -47,6 +47,17 @@ The ingest reference documents only a `200 Success` response without a body sche
 
 ## Scale, observability, and recovery
 
+### Transaction-ID search diagnostics
+
+Bearer-authenticated `POST /v1/events/search` retrieves events by transaction ID only when they occurred within the last 34 days. Its nested payload schema requires a `transactionIds` string array when a body is supplied, although the OpenAPI `requestBody` object is not itself marked required and supplies no array-size, uniqueness, or per-ID format constraint. Metronome describes the endpoint as heavily rate limited and sampling-only, with no numeric limit; it must not be used to check every event.
+
+A `200` response is an array whose items require event identity, customer ID, event type, and timestamp and may include properties, `processed_at`, `is_duplicate`, a matched customer, and matched billable metrics. The page does not define missing-ID representation, exact 34-day cutoff semantics, result ordering, pagination, configuration-snapshot timing, duplicate-flag semantics, or read-after-ingest consistency. This occurrence-based search window is distinct from the acceptance-relative ingest duplicate-suppression and historical-ingest boundaries.
+
+Apply the separate API-wide [[metronome-api-idempotency|`Idempotency-Key` contract]] to this POST request: the same key with identical parameters replays the original result, changed parameters return HTTP `409`, retention is at least 24 hours, and a cached result can be HTTP `500`. For `searchEvents`, that replay is not evidence of a later ingest or matching snapshot. The endpoint page does not define no-key, different-key, expired-key, concurrent-call, snapshot-refresh, or search-specific cached-error recovery behavior.
+
+> [!info] Sampling and revenue boundary
+> Sampled matching can expose evidence for individual returned events and help investigate dropped, delayed, reformatted, or unmatched usage. It does not prove complete ingestion, absence of revenue leakage, correct rating or invoicing, downstream collection, or recovery of lost revenue; the page provides no sampling coverage, false-negative, alert, latency, or remediation guarantee.
+
 A correction guide applies compensating usage only while the current-period invoice is `DRAFT`: send a new event with a negative quantity or value that matches the affected product's billable metric. For a previous-period `finalized` invoice, it says usage events cannot be corrected or adjusted; use a future credit or an external A/R credit memo instead. Its separate full-invoice re-bill flow negates and replaces usage before voiding and regeneration, but does not reconcile that ordering with the finalized-invoice rule, so the invoice-state precondition remains ambiguous.
 
 > [!warning] Documentation scope conflict
@@ -84,6 +95,8 @@ Before selecting an ingest design, identify usage origins and reliable delivery,
 Metronome's go-live checklist recommends queueing usage events, sampling `searchEvents` to confirm active-metric matching, load-testing expected peaks, and injecting ingestion failures. It also places `properties` under required fields, directly contradicting the dedicated ingest reference's optional `properties` schema. Separately, the checklist asks teams to exercise 14-day backdating, while the dedicated ingest sources document a 34-day historical-ingest window. The checklist does not call 14 days a maximum, so days 15–34 remain outside its stated test coverage rather than forming mutually exclusive limits or a retention conflict. [[source-metronome-guides-implement-metronome-production-checklist]]
 
 ## Sources
+
+- [[source-metronome-api-reference-usage-search-events]] — 34-day transaction-ID search, sampling-only rate-limit boundary, event/customer/metric matching diagnostics, duplicate flag, and revenue-leakage guarantee limits
 
 - [[source-github-ai]] - agent workflow guidance for event design, deterministic IDs, batching, migration, and the numeric-property contradiction
 - [[source-github-metronome-node]] - exact Node SDK ingest call shape and generic retry boundary

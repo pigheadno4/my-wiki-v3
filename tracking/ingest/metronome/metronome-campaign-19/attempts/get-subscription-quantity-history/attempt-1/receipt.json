@@ -1,0 +1,63 @@
+{
+  "job_id": "get-subscription-quantity-history",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Get Subscription Quantity History API\"\ntype: source\ndate_ingested: 2026-08-21\ncanonical_url: \"https://docs.metronome.com/api-reference/contracts/get-subscription-quantity-history.md\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/contracts/get-subscription-quantity-history-2026-07-13.md\"\ntags: [metronome, contracts, subscriptions, seat-based-billing, api-reference]\n---\n\n## Overview\n\nThis Metronome API reference documents `POST /v1/contracts/getSubscriptionQuantityHistory`, a bearer-authenticated read endpoint for retrieving a subscription's historical quantities and prices. It is intended to support customer-facing views of seat-count changes, but it deliberately excludes future scheduled quantity changes.\n\n## Key takeaways\n\n- The JSON request schema requires UUID `customer_id`, `contract_id`, and `subscription_id` identifiers.\n- The successful response requires a top-level `data` value whose schema can contain the subscription identifier, a fiat credit-type identifier, and an array of effective-dated history entries.\n- Every history entry requires `starting_at` and `data`; each item in `data` requires numeric `quantity`, `unit_price`, and `total` values.\n- Historical quantity and price states can support an in-product seat-count history. Future scheduled quantity changes are outside this endpoint and must be viewed through `getContract`.\n- The documented error response is HTTP `400` with `code` and `message`; the listed codes are `ContractNotFound`, `CustomerNotFound`, and `SubscriptionNotFound`.\n\n## Request and authentication\n\nSend a bearer-authenticated `POST` request to `/v1/contracts/getSubscriptionQuantityHistory`. The request schema requires three UUID strings: `customer_id`, `contract_id`, and `subscription_id`. The page does not document query parameters, pagination inputs, or a request-side time range.\n\n## Response history structure\n\nA `200` response requires a top-level `data` property referencing `SubscriptionQuantityHistory`. That object defines optional `subscription_id`, `fiat_credit_type_id`, and `history` properties. Each item in `history` requires a date-time `starting_at` and a `data` array; every data item requires numeric `quantity`, `unit_price`, and `total` fields.\n\nThe example contains one effective date with a single quantity-price-total item and a later effective date with two items. The reference does not define the business relationship among multiple items at one effective date, the monetary scale or currency semantics of `unit_price` and `total`, or whether `total` is always calculated as quantity multiplied by unit price.\n\n## Historical and ordering boundaries\n\nThe endpoint returns historical quantities and prices, including information suited to showing changes in seat count. It does not include future changes even though subscription quantity can be changed for a past or future effective time; the page directs consumers to `getContract` for future scheduled quantity changes.\n\n`starting_at` identifies when a history entry begins, but the page does not document an ending timestamp, sort order, duplicate handling, pagination, retention window, or whether the returned history is exhaustive. Consumers should not infer chronological ordering from the displayed example.\n\n## Errors and undocumented behavior\n\nThe only documented error response is HTTP `400`, whose schema requires string `code` and `message` fields. The enumerated codes cover missing contracts, customers, and subscriptions. This page does not specify authorization-failure responses, malformed-UUID behavior, identifier-ownership mismatch behavior, rate limits, retry semantics, or whether an empty history is possible.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-subscriptions]], [[metronome-customers-and-contracts]]\n- Related audit endpoint: [[source-metronome-api-reference-contracts-get-contract-edit-history]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/contracts/get-subscription-quantity-history-2026-07-13|2026-07-13 snapshot \u2014 subscription quantity and price history API schema]]\n",
+  "quotes": [
+    {
+      "text": "> Get the history of subscription quantities and prices over time for a given `subscription_id`. This endpoint can be used to power an in-product experience where you show a customer their historical changes to seat count. Future changes are not included in this endpoint - use the `getContract` endpoint to view the future scheduled changes to a subscription's quantity. ",
+      "location": "line 11, introductory endpoint description"
+    },
+    {
+      "text": "Subscriptions are used to model fixed recurring fees as well as seat-based recurring fees. To model changes to the number of seats in Metronome, you can increment or decrement the quantity on a subscription at any point in the past or future.",
+      "location": "line 13, subscription and seat-count context"
+    },
+    {
+      "text": "              required:\n                - customer_id\n                - contract_id\n                - subscription_id\n              properties:\n                customer_id:\n                  type: string\n                  format: uuid\n                contract_id:\n                  type: string\n                  format: uuid\n                subscription_id:\n                  type: string\n                  format: uuid",
+      "location": "lines 114-127, request JSON schema"
+    },
+    {
+      "text": "        history:\n          type: array\n          items:\n            type: object\n            required:\n              - starting_at\n              - data\n            properties:\n              starting_at:\n                type: string\n                format: date-time\n              data:\n                type: array\n                items:\n                  type: object\n                  required:\n                    - quantity\n                    - unit_price\n                    - total\n                  properties:\n                    quantity:\n                      type: number\n                    total:\n                      type: number\n                    unit_price:\n                      type: number",
+      "location": "lines 191-216, history entry and quantity-price item schema"
+    },
+    {
+      "text": "        '400':\n          description: Error\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - code\n                  - message\n                properties:\n                  code:\n                    type: string\n                    enum:\n                      - ContractNotFound\n                      - CustomerNotFound\n                      - SubscriptionNotFound\n                  message:\n                    type: string",
+      "location": "lines 162-179, documented error response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-get-subscription-quantity-history-subscriptions-history-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Lifecycle",
+        "proposed_markdown": "- Metronome's subscription quantity-history endpoint returns historical quantities and prices for customer-facing seat-count history, but excludes future scheduled quantity changes; those future changes must be retrieved through `getContract`.",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": [
+          "Do not imply that the quantity-history response includes future scheduled changes.",
+          "The source does not document ordering, pagination, retention, price units, or interval end times."
+        ]
+      },
+      {
+        "update_id": "c19-get-subscription-quantity-history-subscriptions-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-contracts-get-subscription-quantity-history]] \u2014 historical subscription quantities and prices, seat-count presentation, response structure, and the future-change boundary",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/contracts/get-subscription-quantity-history-2026-07-13.md",
+  "raw_sha256": "cddb9b26136f83c02562f3634edd94dce4c029e5fd0128b256cd6319bd23b543",
+  "status": "candidate_ready"
+}

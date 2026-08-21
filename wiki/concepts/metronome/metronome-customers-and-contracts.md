@@ -29,6 +29,8 @@ The implementation guide states that a customer needs at least one contract befo
 
 ## Contract and invoice behavior
 
+`POST /v1/contracts/archive` permanently ends and archives a contract and all its terms when an incorrectly created contract must be removed from a customer. The record is not deleted: it remains available to `ListContracts` with `include_archived=true` and through the UI's "Show archived" option. `ArchiveContractPayload` requires UUID `customer_id`, UUID `contract_id`, and boolean `void_invoices`; the enclosing OpenAPI `requestBody` is not marked required, so omitted-body behavior is undocumented. The page does not define restoration, retention, propagation timing, read-after-write consistency, duplicate-call behavior, concurrency ordering, or partial-failure recovery. [[source-metronome-api-reference-contracts-archive-a-contract]]
+
 ### Deprecated Plans listing boundary
 
 `GET /v1/plans` is a deprecated bearer-authenticated Plans endpoint that lists legacy plan records with optional cursor pagination. The response requires a plan array plus a nullable `next_page`; each plan requires a UUID `id`, `name`, and `description`, with an optional string-valued custom-field map. Metronome directs new clients to Contracts, but this source does not name an equivalent Contracts route, define a Plan-to-Contract field or identity mapping, supply a migration procedure, or state a removal date.
@@ -128,6 +130,8 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - Commercial-design planning should make prepaid-versus-arrears terms, seat and usage interaction, commitments and overages, ramp and multi-year structures, exceeded-limit policy, and segment-specific payment terms explicit. The planning guide does not itself establish supported contract fields, lifecycle behavior, or enforcement.
 
 ## Sources
+
+- [[source-metronome-api-reference-contracts-archive-a-contract]] — permanent contract archival, historical visibility, required request flags, and lifecycle unknowns
 
 - [[source-metronome-api-reference-plans-list-plans]] — deprecated `GET /v1/plans` route, bearer authentication, cursor pagination, legacy Plan response schema, and Contracts migration boundary
 

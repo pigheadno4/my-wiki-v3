@@ -1,0 +1,44 @@
+{
+  "action": "spawn_worker",
+  "job_id": "search-events",
+  "attempt": 2,
+  "raw_path": "raw/metronome/api-reference/usage/search-events-2026-07-13.md",
+  "raw_sha256": "2869bcb9d81a7cde19bd11dde93807374b6bd295ec4dc03b892b6090200a3aaa",
+  "source_target": "wiki/sources/metronome/source-metronome-api-reference-usage-search-events.md",
+  "canonical_url": "https://docs.metronome.com/api-reference/usage/search-events.md",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location."
+  ],
+  "retry_context": {
+    "prior_attempt": 1,
+    "review_scope": "full",
+    "required_changes": [
+      "Integrate the existing [[metronome-api-idempotency]] and [[source-metronome-api-reference-idempotency]] context into the candidate and search-events-ingestion-observability suggestion. State that the API-wide Idempotency-Key contract applies to all POST endpoints: the same key with identical parameters replays the original result, changed parameters return HTTP 409, retention is at least 24 hours, and a cached result can be an HTTP 500. Qualify the current broad no-caching/repeated-call statement and preserve that searchEvents does not define no-key, different-key, expired-key, concurrent-call, snapshot-refresh, or endpoint-specific cached-error recovery behavior. Make clear that a replayed keyed response is not evidence of later ingest or matching state.",
+      "Replace 'current configuration' in the candidate response discussion and 'current aggregation' in search-events-billable-metric-diagnostics with neutral returned metric schema/configuration wording. Preserve the already-correct boundary that the page does not say whether matching or returned fields reflect ingest-time, search-time, or another configuration snapshot, including how archived metrics, reflow, late changes, and duplicate events affect results. Update warning prose and quote indexes only as needed; retain all mechanically valid hash, URL, raw backlink, request/response, sampling, revenue, property-filter, and contradiction content."
+    ],
+    "prior_reviewer_identity": "/root/c19_w_disable_trueup"
+  },
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Longer observability endpoint combines a 34-day window, sampling-only and rate-limit guidance, matching diagnostics, duplicate state, and revenue-leakage boundaries.",
+  "worker_identity": "/root/c19_r_disable_trueup",
+  "worker_model": "gpt-5.6-sol"
+}

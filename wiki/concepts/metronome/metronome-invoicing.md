@@ -64,6 +64,13 @@ The dashboard quickstart describes a draft invoice accumulating usage during the
 
 ## Credit and commit application
 
+### Conditional suppression of a postpaid true-up invoice
+
+Postpaid usage is paid in arrears, and a shortfall against the committed amount otherwise produces a final true-up invoice on `invoice_date`. `POST /v1/contracts/commits/disableTrueup` conditionally prevents that invoice from being generated for an identified postpaid commit.
+
+> [!info] Invoice-effect boundary
+> The endpoint does not define its cutoff or retroactivity, behavior for an already generated or finalized invoice, balance or ledger effects, forgiveness of the underlying obligation, reversal or re-enablement, reporting or export treatment, webhooks, downstream A/R behavior, or effects on other invoices. Treat it as a qualification to the normal shortfall true-up rule, not as evidence for any of those lifecycle or downstream outcomes.
+
 When several eligible invoice lines can receive a credit or commit, Metronome applies the balance to usage products before subscription products and then composite products. Ties within a product type go to the earlier line-item start date, then the higher unit price, then alphabetical line-item name.
 
 For a product rated in a custom pricing unit, Metronome first burns down applicable credits and prepaid commits with access schedules in that unit. If no applicable matching balance remains, the invoice receives a conversion line item that calculates the residual cost in the rate card's fiat currency; the converted fiat amount becomes the total due in the example. This does not establish conversion formula direction, precision, rounding, tax, finalization, delivery, collection, or payment-success behavior.
@@ -73,6 +80,8 @@ For a product rated in a custom pricing unit, Metronome first burns down applica
 For invoices already issued before a customer was provisioned in Metronome, `/v1/contracts/createHistoricalInvoices` accepts service periods and usage-line-item quantities, combines them with contract unit prices, and calculates invoice totals plus credit and commit balance effects. `preview: true` dry-runs the comparison before saving, and imported invoices are available through the Contracts page or API. Metronome does not send these invoices to its Stripe integration. This guide's worked migration is distinct from the credit-memo guide's mechanics for draft or finalized invoice corrections, external A/R credit memos, payment refunds, and credit-and-rebill. A separate `createHistoricalInvoices` API reference describes the endpoint as ideal for both billing migrations and correcting past billing periods, but the sources do not establish the correction workflow, its invoice-state preconditions, or its reconciliation behavior. This page does not define imported invoice state, finalization, collection, tax, downstream delivery beyond Stripe, idempotency, or partial failure.
 
 ### Credit, correction, and re-bill state boundaries
+
+Contract archival cancels draft invoices and voids upcoming scheduled invoices. Finalized invoices are optional: the payload schema requires boolean `void_invoices`, while the `requestBody` itself is not marked required, and the schema explicitly says finalized invoices remain when it is `false`. The page does not define the cutoff for upcoming, eligible finalized states, effects on already distributed invoices, downstream Stripe, ERP, or marketplace records, payment or refund handling, tax, webhooks, revenue recognition, error recovery, or whether the contract, invoice, balance, and ledger mutations are atomic. [[source-metronome-api-reference-contracts-archive-a-contract]]
 
 For incorrect usage on a current-period `DRAFT` invoice, the credit-memo guide directs the merchant to send a negative quantity or value matching the affected product's billable metric. For a previous-period `finalized` invoice, Metronome says usage events cannot be corrected or adjusted; the documented alternatives are a future credit or an external A/R credit memo. When the whole invoice is wrong, the guide separately gives a credit-and-rebill sequence of negative usage, corrected usage, voiding, and regeneration. A Metronome void does not void a downstream invoice, and historical usage submission is limited to 34 days; older re-bills remain entirely in the invoicing and A/R system.
 
@@ -166,6 +175,9 @@ Metronome's go-live checklist asks teams to understand the draft-to-grace-period
 - Related platform: [[stripe]]
 
 ## Sources
+
+- [[source-metronome-api-reference-credits-and-commits-disable-trueup-for-commit]] — conditional suppression of a postpaid shortfall true-up invoice and unresolved invoice-lifecycle and downstream effects
+- [[source-metronome-api-reference-contracts-archive-a-contract]] — draft cancellation, scheduled-invoice voiding, finalized-invoice flag behavior, and downstream boundary
 
 - [[source-metronome-api-reference-invoices-get-an-invoice-pdf]] — bearer-authenticated PDF retrieval, required customer and invoice identifiers, binary media boundary, and generic not-found contract
 

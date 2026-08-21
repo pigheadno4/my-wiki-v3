@@ -1,0 +1,28 @@
+{
+  "job_id": "search-events",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The candidate is mechanically grounded and handles the sampling, revenue, request, response, matching, and contradiction boundaries well, but it omits the applicable API-wide POST Idempotency-Key contract while broadly calling caching and repeated-call consistency undefined. Same-key identical-parameter result replay can materially affect search observation freshness. It also labels returned matched-metric fields as current configuration even though the source does not establish the configuration snapshot and the candidate later preserves that uncertainty.",
+  "required_changes": [
+    "Integrate the existing [[metronome-api-idempotency]] and [[source-metronome-api-reference-idempotency]] context into the candidate and search-events-ingestion-observability suggestion. State that the API-wide Idempotency-Key contract applies to all POST endpoints: the same key with identical parameters replays the original result, changed parameters return HTTP 409, retention is at least 24 hours, and a cached result can be an HTTP 500. Qualify the current broad no-caching/repeated-call statement and preserve that searchEvents does not define no-key, different-key, expired-key, concurrent-call, snapshot-refresh, or endpoint-specific cached-error recovery behavior. Make clear that a replayed keyed response is not evidence of later ingest or matching state.",
+    "Replace 'current configuration' in the candidate response discussion and 'current aggregation' in search-events-billable-metric-diagnostics with neutral returned metric schema/configuration wording. Preserve the already-correct boundary that the page does not say whether matching or returned fields reflect ingest-time, search-time, or another configuration snapshot, including how archived metrics, reflow, late changes, and duplicate events affect results. Update warning prose and quote indexes only as needed; retain all mechanically valid hash, URL, raw backlink, request/response, sampling, revenue, property-filter, and contradiction content."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "full",
+  "shared_update_decisions": [
+    {
+      "update_id": "search-events-ingestion-observability",
+      "verdict": "rejected",
+      "reason": "The proposal omits the applicable API-wide POST result-replay contract, which materially qualifies repeated searches and read-after-ingest observation freshness."
+    },
+    "search-events-ingestion-source-link",
+    {
+      "update_id": "search-events-billable-metric-diagnostics",
+      "verdict": "rejected",
+      "reason": "The phrase 'current aggregation' overclaims a current configuration snapshot that the endpoint does not establish."
+    },
+    "search-events-billable-metrics-source-link"
+  ],
+  "reviewer_identity": "/root/c19_w_disable_trueup",
+  "reviewer_model": "gpt-5.6-sol"
+}

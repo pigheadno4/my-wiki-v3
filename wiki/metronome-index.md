@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 112 |
-| Raw pages without source summaries | 119 |
+| Source summaries ingested | 117 |
+| Raw pages without source summaries | 114 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -22,6 +22,12 @@ Operational evidence:
 - [2026-07-13 collection manifest](../tracking/collections/metronome/runs/2026-07-13T100930-manifest.md)
 
 ## Sources
+
+- [[source-metronome-api-reference-settings-list-account-level-billing-providers]] — account-level billing-provider delivery methods, pagination, configuration exposure, and identifier boundaries
+- [[source-metronome-api-reference-credits-and-commits-disable-trueup-for-commit]] — postpaid true-up invoice suppression, API-wide idempotency, and lifecycle unknowns
+- [[source-metronome-api-reference-contracts-get-subscription-quantity-history]] — historical subscription quantities and prices with the future-change boundary
+- [[source-metronome-api-reference-contracts-archive-a-contract]] — permanent archival, invoice disposition, balance expiration entries, and historical visibility
+- [[source-metronome-api-reference-usage-search-events]] — sampled 34-day event search, matched-customer and metric diagnostics, keyed replay, and completeness limits
 
 - [[source-metronome-api-reference-settings-list-pricing-units]] — pricing-unit enumeration, USD cents identifier, pagination, and response-schema boundaries
 - [[source-metronome-api-reference-rate-cards-archive-a-rate-card]] — permanent new-contract disablement and preservation of existing-contract pricing

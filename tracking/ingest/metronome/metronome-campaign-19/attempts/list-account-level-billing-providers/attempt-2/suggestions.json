@@ -1,0 +1,25 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "list-account-level-billing-providers-integrations-fact",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "durable_fact",
+      "anchor": "Insert a new `## Account-level provider enumeration` section immediately before `## Billing-provider transitions`.",
+      "proposed_markdown": "## Account-level provider enumeration\n\n`POST /v1/listConfiguredBillingProviders` is a bearer-authenticated Settings operation that enumerates the billing-provider delivery methods configured for an account. Its optional nullable UUID `next_page` cursor paginates a required `data` array; each entry requires a provider, UUID `delivery_method_id`, delivery method, and method-specific configuration object. The provider enum covers AWS Marketplace, Stripe, NetSuite, custom, Azure Marketplace, QuickBooks Online, Workday, GCP Marketplace, and Metronome, while delivery is enumerated as direct provider delivery, AWS SQS, Tackle, or AWS SNS. Configuration permits arbitrary method-specific properties and may omit security-sensitive values.\n\nThe returned identifiers and settings are described as inputs for mapping customer contracts to billing integrations, but this operation does not create or update customer configurations, contract selections, or provider schedules. Its item description calls `delivery_method_id` an ID used for a customer; do not equate that account-level delivery-method identifier with a customer billing-provider configuration ID or contract selector without separate schema evidence. The page does not define token scope, ordering, page size, cursor lifecycle, configuration readiness, invoice-delivery outcomes, payment ownership, retry behavior, or errors beyond a generic HTTP 400 message. [[source-metronome-api-reference-settings-list-account-level-billing-providers]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Preserve the distinction among an account-level delivery_method_id, a customer billing-provider configuration, and a contract-level selector; the page does not establish ID interchangeability.",
+        "Configuration objects are open-ended and may omit security-sensitive fields, so enumeration is not evidence of complete credentials, downstream readiness, or successful invoice delivery."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

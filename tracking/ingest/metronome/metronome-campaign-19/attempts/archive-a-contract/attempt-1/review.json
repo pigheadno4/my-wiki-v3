@@ -1,0 +1,30 @@
+{
+  "job_id": "archive-a-contract",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Classification: PARTIAL. The immutable raw hashes to b5b8810ec07999f62978e40d60e5c2c6130408252402e7095f6f277cd41a0b88, exactly matching the trusted review order, worker input, and receipt. The canonical URL, nested raw_files value, path-qualified raw backlink, absent canonical source target, and every candidate wikilink are correct. candidate.md is byte-equal to receipt.source_page, suggestions.json equals receipt.suggestions, and the trusted worker artifact equals the persisted receipt. All five grounding excerpts byte-match the complete raw at their cited locations. The source candidate is semantically complete and accurate: it preserves permanent archival without deletion; separates automatic draft cancellation and upcoming-scheduled-invoice voiding from optional finalized-invoice voiding; limits the false flag guarantee to finalized invoices remaining; archives associated commits and credits; captures active prepaid-segment expiration entries and the PREPAID_COMMIT_EXPIRATION versus prepaid_commit_expiration casing ambiguity; preserves ListContracts include_archived and UI historical visibility; distinguishes required payload properties from the non-required enclosing requestBody; identifies the unlabeled success data.id; and leaves customer-contract mismatch, extra-property and malformed-UUID handling, invoice cutoffs and eligible states, downstream effects, association scope, ledger amount and effective time, atomicity, permissions, endpoint errors, retry safety, concurrency ordering, propagation, recovery, restoration, retention, and read-after-write consistency undocumented. The separate authentication, status-code, and API-wide Idempotency-Key authorities support its cautious recovery guidance without turning a changed key or uncertain retry into a safe archive procedure. Existing customers-and-contracts, invoicing, and credits-and-commits context introduces no contradiction. Four of six shared updates are approved as written, including both reciprocal source links and the balance-expiration durable fact. Approval is blocked only by two material shared-update requiredness overstatements: archive-contract-lifecycle-fact says 'The request requires' all three fields, and archive-contract-invoice-disposition-fact says 'the archive request requires' void_invoices, even though the operation does not mark requestBody required. The assigned source correctly scopes requiredness to the payload schema, so the two concept facts must preserve that same distinction. This is an unchanged-hash shared-wording correction; targeted review is sufficient.",
+  "required_changes": [
+    "In archive-contract-lifecycle-fact, change 'The request requires UUID customer_id, UUID contract_id, and boolean void_invoices' to say that ArchiveContractPayload requires those properties, and add that the enclosing OpenAPI requestBody is not marked required so omitted-body behavior is undocumented. Preserve all current permanence, historical-visibility, restoration, retention, propagation, consistency, duplicate-call, concurrency, and recovery boundaries.",
+    "In archive-contract-invoice-disposition-fact, change 'the archive request requires boolean void_invoices' to say that the payload schema requires boolean void_invoices while requestBody itself is not marked required. Preserve the automatic draft and scheduled-invoice effects, the false-value finalized-invoice guarantee, and all eligible-state, downstream, payment, tax, webhook, accounting, recovery, and atomicity unknowns."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "archive-contract-lifecycle-fact",
+      "verdict": "rejected",
+      "reason": "Its lifecycle and historical-visibility semantics are correct, but it overstates operation-level requiredness by saying the request requires the three fields when only ArchiveContractPayload marks them required and requestBody is not marked required."
+    },
+    "archive-contract-lifecycle-source-link",
+    "archive-contract-balance-expiration-fact",
+    "archive-contract-balance-expiration-source-link",
+    {
+      "update_id": "archive-contract-invoice-disposition-fact",
+      "verdict": "rejected",
+      "reason": "Its invoice-disposition and downstream boundaries are correct, but it says the archive request requires void_invoices without preserving that requiredness belongs to the payload schema and the enclosing requestBody is not marked required."
+    },
+    "archive-contract-invoice-disposition-source-link"
+  ],
+  "reviewer_identity": "/root/c19_r_subscription_history",
+  "reviewer_model": "gpt-5.6-sol"
+}

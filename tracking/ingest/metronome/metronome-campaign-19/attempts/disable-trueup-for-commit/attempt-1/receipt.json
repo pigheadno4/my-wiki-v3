@@ -1,0 +1,71 @@
+{
+  "job_id": "disable-trueup-for-commit",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Disable True-up for a Commit\"\ntype: source\ndate_ingested: 2026-08-21\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/credits-and-commits/disable-trueup-for-commit.md\"\nraw_files:\n  - \"metronome/api-reference/credits-and-commits/disable-trueup-for-commit-2026-07-13.md\"\ntags: [metronome, api, credits-and-commits, postpaid-commit, true-up]\n---\n\n## Overview\n\nThis API reference documents `POST /v1/contracts/commits/disableTrueup`, an authenticated operation that prevents Metronome from generating the true-up invoice for one postpaid commit. It is a narrow invoice-generation control: the page does not define a balance mutation, forgiveness of the unmet commitment, or any downstream accounting effect.\n\n## Key takeaways\n\n- Postpaid-commit usage is paid in arrears. When total payment during the access period is below the committed amount, Metronome otherwise describes a final true-up invoice on `invoice_date`.\n- The request identifies the customer, contract, and commit with required UUID fields; `amendment_id` is an optional UUID when the commit belongs to an amendment.\n- The endpoint says the true-up invoice will not be generated. It does not document a cutoff relative to `invoice_date`, retroactive effect, reversal or re-enablement, repeated-call behavior, or idempotency guarantees.\n- The response map documents `200`, `400`, and `404`. Error bodies contain a message, but the page does not enumerate which conditions produce each error.\n\n## Operation and request\n\nThe bearer-authenticated endpoint is `POST /v1/contracts/commits/disableTrueup`. Its JSON body requires `customer_id`, `contract_id`, and `commit_id`, each formatted as a UUID. The optional `amendment_id` identifies the amendment containing the commit when applicable.\n\nA successful `200` response contains `data.id` as a UUID. The example value matches the submitted `commit_id`, but the schema names the response only as `Id` and does not independently define whether `data.id` is always the commit ID.\n\n## True-up and lifecycle boundaries\n\nThe operation suppresses generation of the final true-up invoice for the identified postpaid commit. The source does not say that it archives, deletes, edits, or resets the commit; changes the access-period usage or paid amount; changes the commit balance or ledger; voids an invoice already generated; or waives the underlying commercial obligation.\n\nThe source also does not specify how late the call may occur relative to `invoice_date`, whether it can act after invoice generation or finalization, whether suppression can be reversed, or whether another API or contract edit can re-enable the invoice. No idempotency key, uniqueness key, retry guidance, concurrency behavior, or repeated-call outcome is documented, so safe retry semantics cannot be inferred.\n\nOnly generic `400 Bad request` and `404 Not Found` failures are listed. The page does not map malformed identifiers, cross-customer or cross-contract mismatches, wrong commit type, already-generated invoices, repeated calls, or timing violations to specific responses. It likewise does not define propagation to ledger entries, balance retrieval, revenue reports, data exports, webhooks, external accounts-receivable systems, or other invoices.\n\n> [!warning] Scope qualification\n> Existing descriptions that a shortfall produces a final postpaid true-up invoice need the qualifier that the invoice may be disabled with this endpoint. That is a conditional exception, not evidence that the normal true-up rule or the underlying commit balance is removed.\n\n## Related\n\n- Companies: [[metronome]]\n- Concepts: [[metronome-credits-and-commits]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/credits-and-commits/disable-trueup-for-commit-2026-07-13|2026-07-13 snapshot \u2014 disable-true-up endpoint and OpenAPI schema]]\n",
+  "quotes": [
+    {
+      "text": "Disable the true-up invoice for a postpaid commit. If used, the true-up invoice will not be generated.",
+      "location": "Introductory description beneath `# Disable trueup for commit`"
+    },
+    {
+      "text": "For postpaid commits, usage during the access period is paid for in arrears. If the total amount paid during the access period is less than the committed amount, there's a final true-up invoice on the invoice_date.",
+      "location": "Introductory behavior paragraph before `## OpenAPI`"
+    },
+    {
+      "text": "required:\n        - customer_id\n        - commit_id\n        - contract_id",
+      "location": "OpenAPI `components.schemas.DisableCommitTrueupPayload.required`"
+    },
+    {
+      "text": "amendment_id:\n          type: string\n          format: uuid\n          description: If applicable, the amendment ID that the commit is on",
+      "location": "OpenAPI `components.schemas.DisableCommitTrueupPayload.properties.amendment_id`"
+    },
+    {
+      "text": "'400':\n          description: Bad request\n          content:\n            application/json:\n              schema:\n                $ref: '#/components/schemas/Error'\n        '404':\n          $ref: '#/components/responses/NotFound'",
+      "location": "OpenAPI `paths./v1/contracts/commits/disableTrueup.post.responses`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "disable-trueup-for-commit-durable-fact",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Targeted commit edits",
+        "proposed_markdown": "### Postpaid true-up suppression\n\n`POST /v1/contracts/commits/disableTrueup` prevents generation of the final true-up invoice for one postpaid commit identified by required customer, contract, and commit UUIDs; an amendment UUID is optional when applicable. Postpaid usage remains described as paid in arrears, with a shortfall otherwise producing a final true-up invoice on `invoice_date`. The endpoint documents `200`, generic `400`, and `404` responses.\n\n> [!info] Operation boundary\n> This source establishes invoice suppression only. It does not define a balance or ledger mutation, forgiveness of the unmet commitment, a timing cutoff or retroactive effect, reversal or re-enablement, behavior after invoice generation, repeated-call or idempotency semantics, detailed error-condition mapping, or propagation to reports, exports, webhooks, external A/R, and other invoices. Existing categorical statements that a postpaid shortfall generates a true-up should therefore be qualified with this endpoint's conditional exception rather than replaced.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer that suppressing invoice generation changes the commit balance, ledger, or underlying obligation.",
+          "Do not infer timing, reversibility, repeated-call, idempotency, error-condition, or propagation behavior that the endpoint does not document.",
+          "Existing broad true-up statements need a conditional qualification; the new source does not directly contradict the normal shortfall rule."
+        ]
+      },
+      {
+        "update_id": "disable-trueup-for-commit-reciprocal-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-disable-trueup-for-commit]] \u2014 postpaid-commit true-up invoice suppression, required identifiers, documented responses, and lifecycle unknowns",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/disable-trueup-for-commit-2026-07-13.md",
+  "raw_sha256": "9399dbb6da5b2357b1f80a35ad0010d9f0f9fb07aba04031f2fd8a566ca47bf8",
+  "status": "candidate_ready"
+}
