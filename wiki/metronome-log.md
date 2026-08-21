@@ -6,6 +6,16 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-20 — Metronome Campaign 17 completed
+
+- Result: five approved source pages from complete raw-page reads. Pricing-change evidence used one unchanged-hash targeted review; data-export cookbook, edit-contract, and revenue-recognition corrections received full independent rereviews.
+- Sources: [[source-metronome-guides-pricing-packaging-make-pricing-changes-make-a-pricing-change]], [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-or-override-a-contract]], [[source-metronome-guides-reporting-insights-data-export-cookbook]], [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-contract]], and [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition-examples]].
+- Concepts: created [[metronome-packages-and-aliases]] and updated products and rate cards, customers and contracts, credits and commits, invoicing, and reporting and analytics.
+- Boundaries retained: package examples do not prove future-rate scheduling; override examples do not document an existing-contract edit route; cookbook SQL requires environment, grain, deduplication, effective-time, and currency care; edit endpoint and timestamp terminology conflicts across guides; revenue examples contain amount, identifier, field-name, and classification conflicts and are not accounting policy.
+- Independent query audit: the fixed sample found one missing reciprocal link from [[payment-reconciliation-reporting]] to the revenue examples. One bounded coordinator repair added that source-only link; the same auditor verified it and the required expansion passed all five pages and 15/15 queries.
+- Coverage after promotion: 225 collected documentation pages, 107 source summaries, and 124 raw pages without source summaries.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-17/monitor.md) and [quality audit](../tracking/ingest/metronome/metronome-campaign-17/quality-audit.md).
+
 ## 2026-08-19 — Metronome Campaign 16 completed
 
 - Result: five approved source pages from complete raw-page reads across nine worker attempts and nine independent reviews; one correction used unchanged-hash targeted review and three material corrections received another full review. All workers and reviewers used Sol.

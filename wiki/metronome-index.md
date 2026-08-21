@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 102 |
-| Raw pages without source summaries | 129 |
+| Source summaries ingested | 107 |
+| Raw pages without source summaries | 124 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -22,6 +22,12 @@ Operational evidence:
 - [2026-07-13 collection manifest](../tracking/collections/metronome/runs/2026-07-13T100930-manifest.md)
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-make-pricing-changes-make-a-pricing-change]] — package-based cohort pricing changes, alias transitions, and worked-example contradictions
+- [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-or-override-a-contract]] — contract override models, dimensional targeting, precedence, and create-only boundary
+- [[source-metronome-guides-reporting-insights-data-export-cookbook]] — example export queries and their environment, grain, deduplication, effective-time, and currency boundaries
+- [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-contract]] — contract edit lifecycle, effective history, audit surfaces, and invoice-state guards
+- [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition-examples]] — illustrative revenue scenarios with amount, key, classification, and accounting-authority boundaries
 
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-prioritization-rules]] - rollover and ordinary credit/commit ordering, tie-breakers, and invoice-line priority
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-prepaid-credits]] - prepaid-credit packaging, merchant-owned entitlement, Stripe payment gate, and example contradictions
@@ -136,6 +142,7 @@ Operational evidence:
 - [[metronome-event-ingestion]] — usage-event fields, limits, idempotency, design choices, and matching boundary
 - [[metronome-billable-metrics]] — filters, aggregation operations, contextual grouping, and creation-time behavior
 - [[metronome-products-and-rate-cards]] — product presentation, quantity conversion, and effective rates
+- [[metronome-packages-and-aliases]] — package cohorts, effective-dated alias transitions, and migration boundaries
 - [[metronome-customers-and-contracts]] — ingest aliases, commercial terms, and draft-invoice activation
 - [[metronome-reporting-and-analytics]] — exported table families, row grains, and nullability/version cautions
 - [[metronome-webhooks]] — notification delivery, deduplication, API verification, and HMAC authenticity

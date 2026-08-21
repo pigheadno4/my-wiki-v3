@@ -53,6 +53,9 @@ These results are previews, not finalized, delivered, collectible, or documented
 
 Metronome's financial-reporting guide classifies `CONTRACT_SCHEDULED` invoices as scheduled charges including prepaid purchases, `CONTRACT_USAGE` invoices as usage charges, and `CONTRACT_TRUEUP` invoices as postpaid true-up charges. Invoice service-period timestamps select the target ERP accounting period, `line_items.product_id` maps the amount to a product or ERP SKU, and a populated `line_items.commit_id` joins to `balances.id` so `balances.type` classifies the amount as `credit`, `prepaid`, or `postpaid`. A null commit ID leaves on-demand versus overage classification to client-defined contract or commit metadata. The guide maps `FINALIZED` invoices to recognized-revenue reporting and `DRAFT` invoices to accrued-revenue reporting, with finalized and draft invoices transferred in separate export tables. It does not define metadata completeness, void and correction handling, downstream posting state, journal entries, or whether those status filters satisfy a particular accounting standard or close control.
 
+> [!warning] Revenue-example invoice labels and IDs
+> The CloudNet postpaid table labels twelve `800` rows `CONTRACT_SCHEDULED` while its conclusion calls them usage invoices; it labels the `400` row `CONTRACT_TRUEUP` while the conclusion calls it scheduled. Invoice ID `30011` is used for three periods, and IDs `30002`–`30012` recur across Customer B contract `20002` and Customer C contract `20003`. Line-item IDs `40005`/`40006` and `40006`–`40008` are likewise reused in different scenarios, while ledger IDs beginning `60001` recur under different balances. The scenarios may be isolated alternatives; do not combine them, assume global uniqueness, silently renumber them, or infer corrected invoice types without current source-data verification.
+
 ## Dashboard lifecycle overview
 
 The dashboard quickstart describes a draft invoice accumulating usage during the billing period, followed by a 24-hour grace period before finalization. With a billing provider connected, it says the invoice is pushed within approximately one hour after finalization. Payment collection and paid or failed status remain the billing provider's responsibility.
@@ -84,6 +87,8 @@ Metronome exposes globally bearer-secured `POST /v1/invoices/regenerate` to rege
 Credits and commits apply at invoice line-item level. Covered usage, its negative application line, and uncovered overage remain separate so product-level precommitted and overage spend stays attributable. A commit can record an invoiced amount without sending a downstream invoice, and scheduled commit charges can be consolidated onto a usage statement when the contract enables that behavior.
 
 Commit edits appear immediately on draft invoices, while finalized invoices remain unchanged unless voided and regenerated. Invoice-schedule items tied to finalized invoices cannot be removed or updated, and a voided invoice's schedule item still cannot be removed. An access-schedule segment applied to a finalized invoice can be removed only after voiding that invoice.
+
+When a contract edit adds an invoice-schedule item at date X, or moves an item to X, and a finalized scheduled invoice already exists there, Metronome leaves that invoice untouched and creates a new finalized scheduled invoice for the edited items. Removing an access-schedule segment also removes its manual ledger entry. The guide does not define delivery, collection, consolidation, idempotency, or downstream-provider effects for the newly created invoice.
 
 A credit or commit ledger has one deduction entry for each invoice that consumes that balance. The deduction's effective timestamp is always the end of the usage invoice's service period, and Metronome says that timestamp can support balance views including or excluding pending charges. This does not make the ledger timestamp an invoice creation, finalization, delivery, collection, or payment timestamp, and the guide does not define how `pending` maps to invoice states.
 
@@ -159,6 +164,9 @@ Metronome's go-live checklist asks teams to understand the draft-to-grace-period
 - Related platform: [[stripe]]
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-contract]] — draft recalculation, finalized-invoice regeneration, schedule restrictions, and same-date scheduled-invoice creation
+- [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition-examples]] — scheduled, usage, and true-up examples with table-versus-conclusion labels and reused sample identifiers
 
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-prioritization-rules]] - eligible invoice-line ordering by product type, start date, unit price, and name
 - [[source-metronome-guides-pricing-packaging-subscription-provision-your-customer]] - subscription usage-invoice versus scheduled-invoice placement and same-billing-date append-or-create behavior

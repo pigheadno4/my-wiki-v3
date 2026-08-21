@@ -1,0 +1,44 @@
+{
+  "action": "spawn_worker",
+  "job_id": "revenue-recognition-examples",
+  "attempt": 2,
+  "raw_path": "raw/metronome/guides/reporting-insights/financial-reporting/revenue-recognition-examples-2026-07-13.md",
+  "raw_sha256": "c2861f1e4d056b07a1105b2ca5443826a9c968f77831f6d08831fb3481c022a2",
+  "source_target": "wiki/sources/metronome/source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition-examples.md",
+  "canonical_url": "https://docs.metronome.com/guides/reporting-insights/financial-reporting/revenue-recognition-examples.md",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location."
+  ],
+  "retry_context": {
+    "prior_attempt": 1,
+    "review_scope": "full",
+    "required_changes": [
+      "Expand the source's identifier cautions. Preserve the existing Customer B 10002-versus-contract-customer 10001 contradiction and the three repeated 30011 rows, then add that invoice IDs 30002-30012 are reused across Customer B contract 20002 and Customer C contract 20003, line-item IDs 40005/40006 and 40006-40008 are reused across different scenario invoices, and ledger-entry IDs beginning 60001 recur under different balance IDs. Do not assume global uniqueness or silently renumber them; state that the examples may be isolated alternatives and must not be combined or joined by these sample IDs without current source-data verification.",
+      "Add the missing revenue-classification and schema contradictions. Scenario 2c calls the detailed rows overage, yet both gross usage rows carry commit_id 50002, which joins to the PREPAID balance, while the parent source says populated commit_id classifies through balances.type and null commit_id still requires metadata to distinguish on-demand from overage. Do not infer a corrected allocation or classification rule from this example. Also record that the page promises invoices.type, line_items.product_id, and balances.type but its examples use invoice_type, omit product_id for product_name, and vary the balance-type header among ledger type, ledger_type, and commit_type; treat the tables as illustrative, not executable current schema.",
+      "Strengthen accounting and shared-concept coverage. Keep the GAAP/IFRS and merchant-policy boundary, and explicitly preserve the parent guide's double-count rule: automated credit/prepaid/postpaid deduction and postpaid-true-up ledger entries are not added again when the same amount is already represented through invoice line items under that query model. Expand revenue-examples-reporting-model with the customer-key, reused-ID, schema-field, and classification cautions. Expand revenue-examples-prepaid-contradictions to cover Scenario 2c's 800-versus-900 month-11 invoice conflict and its unsupported prepaid classification after balance exhaustion. Expand the invoicing caution to include both the table-versus-conclusion labels and the invoice-ID defects.",
+      "Replace or expand the grounding set while retaining three to five byte-exact excerpts. It must cover the export-model table at raw lines 18-28, all of Scenario 1 at lines 30-85, Scenario 2a at lines 87-140, the Scenario 2b and 2c tables, ledgers, and conclusions at lines 142-290, and Scenario 3's customer, contract, invoice, ledger, and conclusion at lines 291-354. Update every affected quote_indexes array; no shared update may rely on a warning that asks the reviewer to verify an unquoted table."
+    ],
+    "prior_reviewer_identity": "/root/c17_r_pricing"
+  },
+  "worker_identity": "/root/c17_w_pricing",
+  "worker_model": "gpt-5.6-sol"
+}

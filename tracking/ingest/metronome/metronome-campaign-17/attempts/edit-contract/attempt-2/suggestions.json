@@ -1,0 +1,90 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "edit-contract-lifecycle-and-history",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Contract edit history",
+      "proposed_markdown": "A general contract edit can be made in the UI or through `editContract`; the guide's supported surface spans commits, recurring commits, credits, recurring credits, overrides, scheduled charges, spend-threshold configuration, and contract name and end date changes. Draft invoices immediately reflect an edit, while finalized invoices remain unchanged unless voided and regenerated from current contract state. Keep three related surfaces distinct: `getEditHistory` lists recorded changes, `getContract` with `as_of_date` retrieves full contract state at a historical point, and all edits also enter Metronome audit logs available through the UI and API. The guide names an edit-history contributor `updateEndDate`, while the dedicated history source names `updateContractEndDate`; current runtime naming is unresolved. The guide also says to use the first edit's `created_at` for `as_of_date`, although its edit records expose `timestamp`, the shown contract state's `created_at` predates the first edit, and no request is displayed, so the exact timestamp source remains unresolved.",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep edit history, getContract historical-state retrieval, and audit logs as distinct surfaces; the sources do not define their consistency, ordering, or retention relationship.",
+        "Do not choose between updateEndDate and updateContractEndDate without a current endpoint authority.",
+        "Do not treat the displayed contract created_at as the first edit time; it predates the shown edit timestamps.",
+        "Keep this separate from a contract transition, which starts a new contract.",
+        "The guide is a capability and lifecycle authority, not a complete editContract request or error schema."
+      ]
+    },
+    {
+      "update_id": "edit-contract-customers-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-contract]] \u2014 general contract-edit channels, historical edit records, `as_of_date` full-state retrieval, UI/API audit logs, and documented endpoint/timestamp ambiguities",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "edit-contract-balance-guardrails",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "after ## Targeted commit edits",
+      "proposed_markdown": "General contract editing supports adding and archiving commits and credits; editing their applicable products, descriptive fields, and documented schedules; adding recurring grants; changing documented recurring-grant amounts and end times; and editing commit rollover fraction. Rollover commits cannot themselves be edited. An originating commit's access schedule is editable only until the destination contract has a finalized invoice, while its invoice schedule is editable only until the original contract ends. Archiving requires voiding the documented finalized usage, payment, or scheduled-charge invoices first.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "The guide does not define inclusive cutoff semantics, concurrency ordering, or failure codes for rollover and archival guardrails.",
+        "Do not infer that downstream-provider invoices are voided when the guide says finalized invoices must be voided."
+      ]
+    },
+    {
+      "update_id": "edit-contract-balances-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-contract]] \u2014 commit and credit edit capabilities, rollover cutoffs, schedule-ledger behavior, and archival prerequisites",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "edit-contract-invoice-state-effects",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "after the paragraph beginning Commit edits appear immediately on draft invoices",
+      "proposed_markdown": "When a contract edit adds an invoice-schedule item at date X, or moves an item to X, and a finalized scheduled invoice already exists there, Metronome leaves that invoice untouched and creates a new finalized scheduled invoice for the edited items. Removing an access-schedule segment also removes its manual ledger entry. The guide does not define delivery, collection, consolidation, idempotency, or downstream-provider effects for the newly created invoice.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Preserve the distinction between leaving the existing finalized invoice untouched and creating a separate finalized scheduled invoice."
+      ]
+    },
+    {
+      "update_id": "edit-contract-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-contract]] \u2014 draft recalculation, finalized-invoice regeneration, schedule restrictions, and same-date scheduled-invoice creation",
+      "quote_indexes": [
+        0,
+        2,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

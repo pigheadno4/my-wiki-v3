@@ -41,6 +41,11 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 - Prepaid thresholds can be denominated in a custom pricing unit. Metronome evaluates the threshold and recharge target in that unit, then uses the customer's rate-card conversion to calculate the fiat payment.
 - `@metronome/sdk@3.10.0` adds `add_credit_type_conversions` to the rate-card update type. It can add custom pricing-unit conversions, while the generated docstring says existing conversions cannot be modified through this field. [[source-github-metronome-node]]
 
+Metronome frames pricing launches at three scopes: rate-card changes for all customers, packages for selected new-customer cohorts, and contract edits or re-provisioning for individual customers. The all-customer guide uses `POST /v1/contract-pricing/rate-cards/addRates` with an array of effective-dated, entitlement-bearing product rates. Package rates layer on top of rate-card changes, and package customers inherit most rate-card changes; a package overwrite override is the stated exception and follows the separate override rules. The page does not enumerate what `most` excludes beyond overwrite overrides or define precedence for other overlapping package, rate-card, and contract changes.
+
+> [!warning] Pricing-change example contradiction
+> The launch guide says its single `addRates` call schedules a price increase after one year, but both rates use the same `starting_at` timestamp and differ by region as well as price. The payload therefore shows simultaneous dimension-specific rates, not the described future increase. Do not infer a missing later date, intended region relationship, or automatic ending of the earlier rate.
+
 ## Enterprise design
 
 - Contracts build on a selected rate card but may also carry fixed products outside it. The provisioning guide's cloud-tag example adds an entitled `0.95` multiplier; dimensional pricing requires an override for each relevant group-key and product combination.
@@ -55,11 +60,18 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 - Legacy contract amendments can add overwrite, multiplier, or tiered rate overrides. Overwrites take precedence; explicit tiered and multiplier priority uses the lowest number first. Product IDs or tags cannot be combined with override specifiers, and a configured percentage minimum prevents commit-specific overrides from applying.
 - Stripe Tax mapping stores a Stripe product ID in `stripe_product_id`; Metronome products can share one Stripe product only when they share a tax code, so the field must not enforce uniqueness.
 
+Contract overrides apply to usage, subscription, and composite products. Multipliers continue to track rate-card list-price changes, overwrites remain fixed when the list price changes, and tiered multipliers apply to quantity ranges only under explicit override prioritization. Overrides can also enable a product's entitlement; once enabled, usage for that product appears on customer invoices. This does not establish application authorization or access control.
+
+Simple contract-override targeting uses product IDs or product tags. Compound `override_specifiers` combine fields with AND semantics inside one specifier and OR semantics across the specifier array. Only one override is selected for a usage-invoice line item: overwrites outrank multiplier and tiered overrides, the last-added applicable overwrite wins, and multiplier selection uses either the lowest multiplier or the lowest explicit priority value. The guide does not define concurrent or backdated meaning for last-added, edit atomicity, or ordering among several applicable tiered overrides.
+
 > [!warning] Documentation ambiguity
 > The Stripe Tax guide creates `stripe_product_id` on Metronome's `Product` entity but maps it from `ContractProduct`. The page does not reconcile those labels.
 
 > [!warning] Rate-card documentation inconsistencies
 > The guide alternates between `/addRates` and `/addRate`, and between `"FLAT"` and `"tiered"` casing. It also says all contracts are built on rate cards while the create-contract schema makes package or rate-card selection optional. Confirm current API behavior rather than inferring endpoint aliases, enum normalization, or an implicit card.
+
+> [!warning] Dimensional override scope ambiguity
+> The contract-override guide says dimensional pricing must use a product ID and specify all pricing-group values needed to apply the override, but a later multiplier example permits a subset of the product's pricing-group keys and lets omitted hardware values match. The first statement follows an overwrite-specific tag prohibition and may itself be overwrite-specific, but the page does not explicitly settle that scope.
 
 > [!warning] AI worked-example inconsistency
 > The `Metronome-Industries/ai` catalog reference calls `SUBSCRIPTION` rate type deprecated and uses `FLAT` with `billing_frequency`, while its PLG worked example uses `rate_type: "SUBSCRIPTION"` with a nested `subscription_rate`. Treat both as agent examples and verify the dedicated rate-card schema. [[source-github-ai]]
@@ -76,6 +88,9 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 - Trial packaging can use `entitled: false` for merchant-enforced feature restriction or a time-bounded multiplier `0` for uncapped free usage, after which list pricing resumes. Overlapping-override precedence, missing-rate behavior, and automatic product gating remain unknown.
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-make-pricing-changes-make-a-pricing-change]] — all-customer rate additions, package inheritance boundary, and the future-change worked-example contradiction
+- [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-or-override-a-contract]] — contract override models, entitlements, selector logic, dimensional-targeting ambiguity, and precedence
 
 - [[source-github-ai]] - agent catalog workflow, setup order, pricing examples, and internal rate-representation conflict
 - [[source-github-metronome-node]] - exact `3.10.0` rate-card update type and custom-unit conversion addition

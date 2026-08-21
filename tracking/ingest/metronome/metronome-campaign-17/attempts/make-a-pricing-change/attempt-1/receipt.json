@@ -1,0 +1,133 @@
+{
+  "job_id": "make-a-pricing-change",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Launch New Pricing\"\ntype: source\ndate_ingested: 2026-08-19\ncanonical_url: \"https://docs.metronome.com/guides/pricing-packaging/make-pricing-changes/make-a-pricing-change.md\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/pricing-packaging/make-pricing-changes/make-a-pricing-change-2026-07-13.md\"\ntags: [metronome, pricing, rate-cards, packages, package-aliases, contracts, grandfathering]\n---\n\n## Overview\n\nThis guide presents three scopes for launching pricing changes in Metronome: rate-card changes for all customers, packages and package aliases for specific cohorts, and contract changes for individual customers. Its worked examples show entitlement-based grandfathering and time-resolved package aliases, but they are implementation illustrations rather than complete endpoint schemas or lifecycle specifications.\n\n## Key takeaways\n\n- A rate-card `addRates` call can introduce product rates for all customers, including rates selected by pricing-group values.\n- To keep existing customers on their contracted pricing while offering a new product to new customers, the guide adds the product to the rate card with `entitled: false`, then creates a package whose override entitles it and provisions new contracts by `package_alias`.\n- Package rates layer on top of rate-card changes, so package customers inherit most rate-card changes. An overwrite override is the stated exception and follows the separate standard override rules.\n- Reusing a package alias with a later `starting_at` can redirect unchanged provisioning calls to a newly created package while preserving the earlier package's bounded alias schedule for existing customers.\n- An individual customer can move by ending and re-provisioning its contract with the new package, or by editing the existing contract with customer-specific overrides.\n\n## All-customer rate-card changes\n\nThe page directs callers to `POST /v1/contract-pricing/rate-cards/addRates`, the same endpoint it says creates new rates. The request identifies a rate card and submits a `rates` array containing product ID, effective start, default entitlement, rate type, price, and pricing-group values. The example supplies two flat rates for the same product, one for `us-west-2` on AWS at `100` and one for `us-east-2` on AWS at `120`.\n\n> [!warning] Worked-example scheduling contradiction\n> The narrative says the example launches a product and schedules a price increase after one year in a single call, but both submitted rates have the identical `starting_at` value of `2024-01-01T00:00:00.000Z` and differ by region as well as price. The payload therefore demonstrates simultaneous region-specific rates, not a future-effective increase. Do not infer the missing later effective date, the intended region relationship, or automatic termination of an earlier rate.\n\nThe page does not define required fields beyond the example, array atomicity, idempotency, overlap resolution, backdating, automatic end dates, failure responses, or effects on draft or finalized invoices. Use the dedicated rate-card API reference for those boundaries.\n\n## Cohort rollout and grandfathering\n\nFor a new-customer-only launch, the guide first adds the product to the shared rate card with `entitled: false`. It then creates a package over that rate card with an override scoped by product ID and pricing-group values and sets `entitled: true`. New contracts select the package through `package_alias: \"New Customer Pricing\"`; the guide says those new customers receive the product while existing customers' contracted pricing remains unchanged.\n\nPackage rates are applied on top of rate-card changes, and customers provisioned through a package still inherit most changes made to its rate card. The documented exception is a package overwrite override, for which the separate standard override rules apply. The word \"most\" is not enumerated here, and the page does not define precedence for other overlapping package, rate-card, or contract changes.\n\n## Package-alias transition\n\nThe guide creates a second package with the same `New Customer Pricing` alias and a later `starting_at`. It says Metronome automatically gives the original package an alias schedule ending when the new one begins, and unchanged provisioning calls resolve to the newer package from that date. This supports changing the package selected for future customers without changing provisioning infrastructure while existing customers retain their original package pricing.\n\nThe example labels the overwrite change as `$1` to `$1.20` while the payload uses `price: 120`; the request does not identify the rate card's currency on this page. Alias uniqueness, overlapping schedules, exact boundary lookup, timezone handling, reuse after removal, whether already-provisioned contracts retain a resolved package ID, and transition failure behavior remain undocumented.\n\n## Individual-customer changes\n\nFor a grandfathered customer that opts into new pricing, the guide gives two routes: end the contract and re-provision it with the new package, or edit the contract directly. It also points to custom contract overrides for negotiated customer-specific pricing. This page does not define termination timing, proration, continuity, amendment history, override precedence, invoice recalculation, or the request schemas for either route.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-products-and-rate-cards]], [[metronome-packages-and-aliases]], [[metronome-customers-and-contracts]]\n- Related sources: [[source-metronome-guides-implement-metronome-core-concepts-create-manage-rate-cards]], [[source-metronome-api-reference-contracts-create-a-contract]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/pricing-packaging/make-pricing-changes/make-a-pricing-change-2026-07-13|2026-07-13 snapshot \u2014 all-customer, cohort, alias, and individual pricing-change workflows]]\n",
+  "quotes": [
+    {
+      "text": "Metronome\u2019s unique model streamlines this process by allowing you to schedule changes for a specified time period, with the ability to flexibly introduce new pricing across all customers, specific cohorts, or to individual customers, depending on your needs.",
+      "location": "line 13"
+    },
+    {
+      "text": "To introduce a new product or schedule a rate change for all customers through the API, make a POST request to `/contract-pricing/rate-cards/addRates`. This is the same endpoint used to create new rates.\n\nImagine you are launching a new product to all customers, and you know that you will need to increase prices after a year. The example below showcases how you can use Metronome to easily add a new product and schedule a pricing change in a year, in a single API call. This allows you to make pricing changes across all your customers in advance, so your teams can focus on your customers rather than on billing.\n\n```bash theme={null}\ncurl https://api.metronome.com/v1/contract-pricing/rate-cards/addRates \\  \n-H \"Authorization: Bearer <TOKEN>\" \\  \n-H \"Content-Type: application/json\" \\  \n-d '{  \n\"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",  \n\"rates\": [  \n  {  \n    \"product_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",  \n    \"starting_at\": \"2024-01-01T00:00:00.000Z\",  \n    \"entitled\": true,  \n    \"rate_type\": \"FLAT\",  \n    \"price\": 100,  \n    \"pricing_group_values\": {  \n      \"region\": \"us-west-2\",  \n      \"cloud\": \"aws\"  \n    }  \n  },  \n  {  \n    \"product_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",  \n    \"starting_at\": \"2024-01-01T00:00:00.000Z\",  \n    \"entitled\": true,  \n    \"rate_type\": \"FLAT\",  \n    \"price\": 120,  \n    \"pricing_group_values\": {  \n      \"region\": \"us-east-2\",  \n      \"cloud\": \"aws\"  \n    }  \n  }  \n]  \n}'",
+      "location": "lines 21-55"
+    },
+    {
+      "text": "Use [packages](https://docs.metronome.com/guides/get-started/core-concepts/packages-overview) to easily introduce new pricing to specific cohorts of new customers. This is especially useful in scenarios where you are rolling out consistently defined pricing packages for new customers and want existing customers to maintain grandfathered prices.\n\n### Grandfather in existing customers\n\nImagine that instead of launching to all customers, you want to launch your new product for new customers only. Legacy customers can opt in to the new product as needed. To do this, you can add the new product to the rate card but default the entitlement to `false`.",
+      "location": "lines 61-65"
+    },
+    {
+      "text": "New customers will be provisioned with the new product while existing customers see no change to their contracted pricing.\n\n<Info>\n  **INFO**\n\n  Package rates are applied on top of rate card changes. Customers provisioned on a package with a rate card will still inherit most pricing changes made to the rate card. This enables flexibility in being able to launch pricing changes both at the rate card level for all customers, and at the package level for specific cohorts. The only exception is if the package contains an overwrite override, in which case [standard override rules](https://docs.metronome.com/guides/pricing-packaging/make-pricing-changes/edit-or-override-a-contract#override-types\u200b) apply.\n</Info>",
+      "location": "lines 138-144"
+    },
+    {
+      "text": "The \u201cNew Customer Pricing\u201d package now points to the newly created package with an increase in price from \\$1 \u2192 \\$1.20. The original package will automatically show an alias schedule of \u201cNew Customer Pricing\u201d from Jan. 1, 2024 - Jan 1, 2025. New customers will automatically be provisioned on the updated package starting on Jan. 1, 2025 without any need to change the above provisioning flow, since Metronome manages the transition of aliases across packages.\n\n## Make a pricing change for individual customers\n\nIf any of your grandfathered customers want to migrate to the new package, you can either end their contract and re-provision their contract with the new pricing, or edit the contract directly to make changes scoped individually. In many cases, individual customers may negotiate specific pricing changes that you will want to reflect separately from your standard rate card or package. Metronome\u2019s contract flexibility allows you to introduce custom overrides to contracts to enable individually-scoped changes. See the following page on [contract editing](https://docs.metronome.com/guides/pricing-packaging/make-pricing-changes/edit-or-override-a-contract) for more details.",
+      "location": "lines 196-200"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pricing-change-rate-card-workflow",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "under ## Rate cards and rates",
+        "proposed_markdown": "Metronome frames pricing launches at three scopes: rate-card changes for all customers, packages for selected new-customer cohorts, and contract edits or re-provisioning for individual customers. The all-customer guide uses `POST /v1/contract-pricing/rate-cards/addRates` with an array of effective-dated, entitlement-bearing product rates. Package rates layer on top of rate-card changes, and package customers inherit most rate-card changes; a package overwrite override is the stated exception and follows the separate override rules. The page does not enumerate what `most` excludes beyond overwrite overrides or define precedence for other overlapping package, rate-card, and contract changes.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not generalize the worked requests into a complete API schema or infer array atomicity, idempotency, overlap resolution, backdating, automatic ending, invoice recalculation, or failure responses.",
+          "Keep cohort packaging distinct from direct contract editing and re-provisioning for individual customers."
+        ]
+      },
+      {
+        "update_id": "pricing-change-rate-card-example-contradiction",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "under > [!warning] Rate-card documentation inconsistencies",
+        "proposed_markdown": "> [!warning] Pricing-change example contradiction\n> The launch guide says its single `addRates` call schedules a price increase after one year, but both rates use the same `starting_at` timestamp and differ by region as well as price. The payload therefore shows simultaneous dimension-specific rates, not the described future increase. Do not infer a missing later date, intended region relationship, or automatic ending of the earlier rate.",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "Preserve both identical `starting_at` values and the differing region values; they are essential to the contradiction."
+        ]
+      },
+      {
+        "update_id": "pricing-change-rate-card-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-make-pricing-changes-make-a-pricing-change]] \u2014 all-customer rate additions, package inheritance boundary, and the future-change worked-example contradiction",
+        "quote_indexes": [
+          1,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "pricing-change-packages-and-aliases",
+        "target_path": "wiki/concepts/metronome/metronome-packages-and-aliases.md",
+        "update_kind": "durable_fact",
+        "anchor": "new concept page covering package cohort pricing and aliases",
+        "proposed_markdown": "Metronome packages support consistently defined pricing for selected cohorts. In the documented grandfathering workflow, a product is added to the shared rate card with `entitled: false`, a package override entitles it for new customers, and new contracts select that package by alias while existing customers retain their contracted pricing. Creating a second package under the same alias with a later `starting_at` makes unchanged provisioning calls resolve to the newer package from that date, while the original package receives an alias schedule ending at the transition. Package rates layer on top of rate-card changes and inherit most such changes; an overwrite override is the stated exception. Alias uniqueness, overlap handling, exact boundary lookup, timezone semantics, reuse after removal, resolved-package retention, and transition failures are undocumented.",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not treat package selection as mutation of already-provisioned contracts; the guide describes future provisioning and says existing customers retain their pricing.",
+          "Do not infer behaviors for alias overlap, uniqueness, timezone boundaries, removal, or failed transitions."
+        ]
+      },
+      {
+        "update_id": "pricing-change-packages-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-packages-and-aliases.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-make-pricing-changes-make-a-pricing-change]] \u2014 package-based cohort grandfathering, rate-card inheritance boundary, and effective-dated alias transition",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "pricing-change-individual-contract-route",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "under ## Contract and invoice behavior",
+        "proposed_markdown": "For a grandfathered customer that opts into new pricing, the pricing-change guide gives two individual routes: end the existing contract and re-provision it with the new package, or edit the contract directly with customer-specific changes such as negotiated overrides. The page does not define termination timing, proration, continuity, amendment history, override precedence, invoice recalculation, or either route's complete request schema.",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Do not infer seamless migration, proration, invoice continuity, or overwrite precedence from the route list."
+        ]
+      },
+      {
+        "update_id": "pricing-change-contract-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-make-pricing-changes-make-a-pricing-change]] \u2014 cohort grandfathering and individual re-provision-versus-edit pricing routes",
+        "quote_indexes": [
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/pricing-packaging/make-pricing-changes/make-a-pricing-change-2026-07-13.md",
+  "raw_sha256": "167df7747dca0372537d7885442ce30cb798396f367f58cf76f19362d7c284b0",
+  "status": "candidate_ready"
+}

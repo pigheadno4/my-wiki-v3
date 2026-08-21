@@ -1,0 +1,128 @@
+{
+  "job_id": "revenue-recognition-examples",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Revenue Recognition Examples\"\ntype: source\ndate_ingested: 2026-08-19\ncanonical_url: \"https://docs.metronome.com/guides/reporting-insights/financial-reporting/revenue-recognition-examples.md\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/reporting-insights/financial-reporting/revenue-recognition-examples-2026-07-13.md\"\ntags: [metronome, revenue-recognition, financial-reporting, data-export, invoices, credits, commits]\n---\n\n## Overview\n\nThis page uses a fictional CloudNet business to illustrate how Metronome customer, contract, invoice, invoice-line-item, and balance-ledger exports can support downstream revenue-recognition analysis. It covers on-demand usage with free credits, prepaid commitment purchase and drawdown, prepaid expiration and overage, and a postpaid commitment with a period-end true-up.\n\nThese are provider-authored reporting examples, not an accounting standard, journal-entry specification, or complete close control. Several tables and narrative conclusions conflict arithmetically or semantically, so consumers must reconcile the current export schema and their own accounting policy rather than copy the examples as authoritative calculations.\n\n## Exported evidence model\n\nThe examples join five data areas:\n\n- customer metadata maps billing customers to CRM or ERP records;\n- contract metadata supplies commercial identifiers such as contract type, opportunity ID, or sales-order ID;\n- invoice type distinguishes prepaid purchase, usage, and postpaid true-up charges;\n- invoice line items use `commit_id` for revenue-category classification, `product_id` for product attribution, and `starting_at` plus `ending_before` for service periods; and\n- balances consolidate credits and commits, with ledger entries for invoice deductions, manual adjustments, expirations, and true-ups.\n\nThe page does not define table grain, primary keys, snapshot selection, export freshness, duplicate delivery, correction handling, currency denomination, ERP posting, debits and credits, performance obligations, allocation, breakage policy, tax, refunds, or sign-off. Use the dedicated data-export reference and the parent revenue-recognition guide for those boundaries.\n\n## Scenario 1: On-demand usage with free credits\n\nCustomer A receives `$500` of free credits, uses CloudCompute and CloudStorage before and after the credit period, and receives a `$459` usage invoice for uncovered usage. The exported line items separately show gross product charges and negative free-credit applications, while the balance ledger records a `$410` automated deduction and `$90` expiration. The example treats uncovered usage as on-demand revenue and reports the free-credit drawdown and expiration separately.\n\n> [!warning] CloudStorage arithmetic contradiction\n> The uncovered CloudStorage line item is `150` units at `0.50`, with total `75`, and the invoice total of `459` equals `384 + 75`. The narrative nevertheless says the merchant can recognize `$150` of CloudStorage revenue. The table supports `$75`, not `$150`; verify the intended amount rather than copying the prose.\n\nThe source does not establish whether free-credit use is contra revenue under a merchant's governing policy. The parent guide describes that treatment as possible rather than universal.\n\n## Scenario 2a: Prepaid purchase and first-month drawdown\n\nCustomer B prepays `$10,000` for a one-year commitment and receives a stated 20 percent rate discount. The example issues a `$10,000` `CONTRACT_SCHEDULED` invoice, defers that amount, then issues a zero-dollar `CONTRACT_USAGE` invoice whose line items show `$800` of CloudCompute and `$100` of CloudStorage covered by the commit. The ledger starts at `$10,000` and records a `$900` deduction.\n\n> [!warning] Customer-key contradiction\n> The Customer table assigns Customer B ID `10002`, and the balance row also uses `10002`, but the Contract row for contract `20002` uses customer ID `10001`, which belongs to Customer A in Scenario 1. Do not use that contract join without correcting and validating the intended customer key.\n\n## Scenario 2b: Prepaid burn-down and expiration\n\nThe narrative says months after the first burn `$700` total per month, split `$600` CloudCompute and `$100` CloudStorage. The monthly table and balance ledger agree on an initial `$900` deduction, eleven later `$700` deductions, and `$1,400` expiration, which exactly consumes the `$10,000` balance. Zero-dollar usage invoices record drawdown while the unused remainder expires at the end.\n\n> [!warning] Recognition-total contradiction\n> The recognition bullets instead assign `$700` to CloudCompute plus `$100` to CloudStorage for each of months 2\u201312, totaling `$800` per month. Combined with the stated `$1,400` expiration, those bullets would recognize more than the `$10,000` prepaid amount and conflict with the `$700` monthly table and ledger. The likely corrected product split is not documented; do not invent it.\n\n## Scenario 2c: Prepaid burn-down and overage\n\nThe overage variant starts with `$10,000`, reaches `$100` remaining after month 10, then says overage begins in month 11. Its month-11 summary table lists `$1,000` usage, `$900` overage, an `$800` invoice total, and a zero balance, while the detailed invoice is `$900` and its line items sum to `$900` (`800 + 200 - 100`). Month 12 has no balance and a `$1,000` invoice.\n\n> [!warning] Overage calculation and classification contradictions\n> The month-11 summary's `$800` invoice conflicts with both its stated `$900` overage and the detailed `$900` invoice. The recognition bullets then label all `$1,000` in months 11 and 12 as prepaid-commit revenue even though only `$100` remained entering month 11 and the scenario explicitly says overage begins then. The page does not provide a reliable corrected product-level split between remaining prepaid drawdown and overage.\n\n## Scenario 3: Postpaid commitment and true-up\n\nCustomer C commits to `$10,000`, consumes `$800` per month for twelve months, and reaches `$9,600` of cumulative spending. The example then issues a `$400` `CONTRACT_TRUEUP` invoice and records twelve `$800` automated deductions plus a `$400` `postpaid_trueup` ledger entry.\n\n> [!warning] Invoice-label and identifier contradictions\n> The invoice table labels the twelve `$800` rows `CONTRACT_SCHEDULED`, but the concluding bullets call them usage invoices. The table labels the `$400` row `CONTRACT_TRUEUP`, but the conclusion calls it a scheduled invoice. The invoice ID `30011` is also repeated for three different service periods. Preserve the table values as example evidence, but do not infer which labels or IDs are correct without current schema and source-data verification.\n\n## Accounting and implementation boundaries\n\n- The page demonstrates Metronome data relationships and provider-proposed timing; it does not determine whether revenue is earned under GAAP, IFRS, or a merchant's contract-specific policy.\n- Invoice issuance, zero-dollar invoices, drawdown, expiration, and true-up are billing events, not by themselves proof of performance-obligation satisfaction, allocation, collectibility, breakage treatment, or posting approval.\n- The examples omit voids, regeneration, refunds, credit memos, corrections, restatements, payment state, taxes, foreign currency, close cutoffs, reconciliation tolerances, and auditor approval.\n- Because several rows, totals, classifications, and identifiers conflict, implementers should rebuild control totals from current exported records and reconcile them to invoices and ledgers before relying on any recognition output.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-reporting-and-analytics]], [[metronome-credits-and-commits]], [[metronome-invoicing]], [[payment-reconciliation-reporting]]\n- Related sources: [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition]], [[source-metronome-guides-reporting-insights-financial-reporting-reconcile-data]], [[source-metronome-guides-reporting-insights-data-export-database-reference]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/reporting-insights/financial-reporting/revenue-recognition-examples-2026-07-13|2026-07-13 snapshot \u2014 export-table examples for on-demand, prepaid, overage, expiration, and postpaid true-up reporting]]\n",
+  "quotes": [
+    {
+      "text": "This page demonstrates how an example company called CloudNet handles revenue recognition with Metronome.\n\nCloudNet offers two products:\n\n* CloudCompute, billed at \\$1/CPU hour\n* CloudStorage, billed at \\$0.50/GB storage monthly\n\n## Data export tables\u200b\n\nFor each scenario below, Metronome populates data export tables in CloudNet\u2019s object storage destination or data warehouse. In turn, CloudNet can use this data, based on the rules described in the parent section, to accurately recognize revenue for its usage based business.",
+      "location": "lines 11-20"
+    },
+    {
+      "text": "| 40005 | 30001       | 384      | 1.00        | 384   | CloudCompute                 | CloudCompute  | null       | Jan 16, 2024 00:00 | Feb 1, 2024 00:00  |\n| 40006 | 30001       | 150      | 0.50        | 75    | CloudStorage                 | CloudStorage  | null       | Jan 16, 2024 00:00 | Feb 1, 2024 00:00  |\n\n**Balances ledger**\n\n| balances\\_id | customer\\_id | contract id | name                 | ledger type | ledger\\_entry\\_id | ledger entry type                     | ledger entry timestamp | ledger entry amount |\n| ------------ | ------------ | ----------- | -------------------- | ----------- | ----------------- | ------------------------------------- | ---------------------- | ------------------- |\n| 50001        | 10001        | 20001       | Free\\_trial\\_credits | CREDIT      | 60001             | credit\\_segment\\_start                | Jan 1, 2024 00:00      | 500                 |\n| 50001        | 10001        | 20001       | Free\\_trial\\_credits | CREDIT      | 60002             | credit\\_automated\\_invoice\\_deduction | Jan 16, 2024 00:00     | -410                |\n| 50001        | 10001        | 20001       | Free\\_trial\\_credits | CREDIT      | 60003             | credit\\_segment\\_expiration           | Jan 16, 2024 00:00     | -90                 |\n\nUsing the table data, CloudNet recognizes this revenue:\n\nOn Feb 1, Metronome issues a usage invoice for \\$459.\n\n* The merchant can report that \\$360 of free credits were applied to CloudCompute\n* The merchant can report that \\$50 of free credits were applied to CloudStorage\n* The merchant can report that \\$90 of free credits were expired\n* The merchant can recognize \\$384 of on-demand revenue for CloudCompute\n* The merchant can recognize \\$150 of on-demand revenue for CloudStorage",
+      "location": "lines 66-85"
+    },
+    {
+      "text": "In this scenario, Customer B continues to burn down \\$700 of prepaid commits every month during their contract (\\$600 for CloudCompute and \\$100 for CloudStorage). Metronome issues a zero-dollar invoice each month while the commit balance is drawn down. At the end of month 12, Metronome expires the remaining commit balance (\\$1,400).\n\nAs a result of that scenario, the data shown in these tables populates in the CloudNet warehouse through Metronome data export.\n\n| **Month** | **Usage Charges** | **Overage Charges** | **Invoice Total** | **Remaining Commit Balance** |\n| --------- | ----------------- | ------------------- | ----------------- | ---------------------------- |\n| 1         | 900               | 0                   | 0                 | 9,100                        |\n| 2         | 700               | 0                   | 0                 | 8,400                        |\n| 3         | 700               | 0                   | 0                 | 7,700                        |\n| 4         | 700               | 0                   | 0                 | 7,000                        |\n| 5         | 700               | 0                   | 0                 | 6,300                        |\n| 6         | 700               | 0                   | 0                 | 5,600                        |\n| 7         | 700               | 0                   | 0                 | 4,900                        |\n| 8         | 700               | 0                   | 0                 | 4,200                        |\n| 9         | 700               | 0                   | 0                 | 3,500                        |\n| 10        | 700               | 0                   | 0                 | 2,800                        |\n| 11        | 700               | 0                   | 0                 | 2,100                        |\n| 12        | 700               | 0                   | 0                 | 1,400                        |",
+      "location": "lines 144-161"
+    },
+    {
+      "text": "Using the table data, CloudNet recognizes the following revenue:\n\n* In month 1, Metronome issues a \\$0 usage invoice\n  * The merchant can recognize \\$800 of prepaid commit revenue for CloudCompute\n  * The merchant can recognize \\$100 of prepaid commit revenue for CloudStorage\n* From months 2 - 12, Metronome issues a \\$0 usage invoices\n  * The merchant can recognize \\$700 of prepaid commit revenue for CloudCompute each month\n  * The merchant can recognize \\$100 of prepaid commit revenue for CloudStorage each month\n* On Jan 1, 2025, Metronome expires \\$1400 remaining balance of unused prepaid commit\n  * The merchant can recognize \\$1400 of prepaid commit revenue",
+      "location": "lines 200-209"
+    },
+    {
+      "text": "Using the table data, CloudNet recognizes the following revenue:\n\n* In month 1-12, Metronome issues a \\$800 usage invoice\n  * The merchant can recognize \\$700 of postpaid commit revenue for CloudCompute each month\n  * The merchant can recognize \\$100 of postpaid commit revenue for CloudStorage each month\n* After month 12, Metronome issues a \\$400 scheduled invoice for the postpaid true up\n  * The merchant can recognize \\$400 of postpaid commit revenue",
+      "location": "lines 348-354"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "revenue-examples-reporting-model",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "under ## Revenue-recognition reporting model",
+        "proposed_markdown": "Metronome's CloudNet examples demonstrate how customer and contract metadata, invoice types, invoice-line-item product and commit attribution, service-period dates, and credit or commit balance ledgers can be combined for merchant-owned revenue-recognition analysis across on-demand usage, free credits, prepaid drawdown and expiration, overage, and postpaid true-up. The examples are illustrative provider reporting treatments rather than an accounting standard or journal-entry specification. They omit export grain and delivery controls, performance obligations, allocation, breakage policy, corrections, refunds, currency, tax, close controls, and sign-off, and they contain conflicting arithmetic and invoice labels; rebuild control totals from current exports before relying on them.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not treat Metronome invoice issuance, zero-dollar invoices, drawdown, expiration, or true-up as sufficient proof that revenue is recognizable under GAAP, IFRS, or a merchant's contract-specific policy.",
+          "Preserve the source's arithmetic and label defects rather than silently correcting them in implementation guidance."
+        ]
+      },
+      {
+        "update_id": "revenue-examples-reporting-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition-examples]] \u2014 CloudNet export-table examples for free credits, prepaid drawdown and expiration, overage, and postpaid true-up, with documented arithmetic and classification cautions",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "revenue-examples-prepaid-contradictions",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "under ### Revenue-reporting treatment",
+        "proposed_markdown": "> [!warning] Revenue-example arithmetic contradictions\n> In the CloudNet free-credit example, an uncovered CloudStorage line item totals `75` (`150` units at `0.50`), while the prose says to recognize `150`. In the prepaid expiration example, the narrative and monthly table burn `700` per month after an initial `900`, leaving `1,400` to expire, but the recognition bullets allocate `700` to CloudCompute plus `100` to CloudStorage for each later month, which would exceed both the monthly drawdown and the original `10,000` balance when combined with expiration. Do not infer corrected product allocations; reconcile current invoice line items and balance-ledger entries.",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not silently change the CloudStorage amount to 75 or the later CloudCompute split to 600 in canonical guidance; the intended corrections are not stated by the source.",
+          "Treat free-credit and prepaid recognition descriptions as provider examples, not an independent accounting-policy conclusion."
+        ]
+      },
+      {
+        "update_id": "revenue-examples-commits-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition-examples]] \u2014 prepaid purchase, drawdown, expiration, overage, and postpaid true-up examples with arithmetic cautions",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "revenue-examples-invoice-label-caution",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "under ## Revenue-reporting invoice classification",
+        "proposed_markdown": "The CloudNet examples use zero-dollar usage invoices to record prepaid drawdown, a scheduled invoice for the prepaid purchase, and a period-end invoice for postpaid true-up. Its concluding postpaid bullets call the twelve monthly invoices `usage` and the true-up invoice `scheduled`; those labels conflict with the example's own invoice table, which uses `CONTRACT_SCHEDULED` for the monthly rows and `CONTRACT_TRUEUP` for the final row. Verify current invoice types rather than treating the conclusion's natural-language labels as schema authority.",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": [
+          "The submitted quote shows the conclusion's labels; the candidate records that the source's detailed invoice table uses different types. Reviewer should verify both locations before approval.",
+          "Do not infer finalization, collection, payment, ERP posting, or accounting recognition merely from an invoice type or zero-dollar total."
+        ]
+      },
+      {
+        "update_id": "revenue-examples-invoicing-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition-examples]] \u2014 scheduled purchase, zero-dollar drawdown, usage, and true-up invoice examples with internal label conflicts",
+        "quote_indexes": [
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/reporting-insights/financial-reporting/revenue-recognition-examples-2026-07-13.md",
+  "raw_sha256": "c2861f1e4d056b07a1105b2ca5443826a9c968f77831f6d08831fb3481c022a2",
+  "status": "candidate_ready"
+}
