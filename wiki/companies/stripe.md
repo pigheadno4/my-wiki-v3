@@ -43,7 +43,7 @@ Created when a PaymentIntent is confirmed. Represents one specific attempt to mo
 
 Drop-in UI components for custom integrations. Enables custom-built checkout flows while Stripe handles PCI compliance and UI rendering.
 
-The `@stripe/stripe-js` npm package is the web loader and TypeScript declaration layer for Stripe.js, not a self-hosted runtime. The retained history covers v8.11.0 on `clover` and v9.12.1 on `dahlia`, while preserving standard and deferred `/pure` entrypoints and server-side `null` behavior. V9 reshapes Checkout entrypoints, expands Elements types, and removes typed client-side Source helpers. See [[source-github-stripe-js]].
+The `@stripe/stripe-js` npm package is the web loader and TypeScript declaration layer for Stripe.js, not a self-hosted runtime. The retained history covers v8.11.0 on `clover`, the v9.12.1 transition to `dahlia`, and approved deltas through v9.14.0, while preserving standard and deferred `/pure` entrypoints and server-side `null` behavior. V9.13.0 adds Checkout Form promotion-code display control and makes wallet visibility creation-only; v9.14.0 adds updateable wallet contact requirements, embedded Custom Payment Method rendering, a beta Express Checkout CPM surface, and an Embedded Checkout dynamic-shipping deprecation. See [[source-github-stripe-js]].
 
 `@stripe/react-stripe-js` is the separate React binding layer. Its retained `6.8.0` baseline provides standard Elements, provider-specific Checkout Elements and beta Checkout Form hooks, Embedded Checkout, SSR-safe initialization, and typed component lifecycle. It requires `@stripe/stripe-js >=9.5.0 <10.0.0`; typed exports do not independently prove runtime rollout or merchant eligibility. See [[source-github-react-stripe-js]].
 
@@ -126,7 +126,7 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 
 ## Sources
 
-- [[source-github-stripe-js]] — `stripe/stripe-js` v8.11.0 loader, Elements, Checkout, and public TypeScript baseline
+- [[source-github-stripe-js]] — cumulative `stripe/stripe-js` v8.11.0 through v9.14.0 loader, Elements, Checkout, and public TypeScript history
 - [[changelog-github-stripe-js]] — package-qualified Stripe JS release history
 - [[source-metronome-integrations-tax-integrations-stripe-tax]] — Stripe Tax on Metronome-created Stripe invoices, including customer and product mapping
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — Stripe product mapping, invoice voiding, and retry boundary for a Metronome-gated commit

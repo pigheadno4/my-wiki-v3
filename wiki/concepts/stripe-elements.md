@@ -69,7 +69,7 @@ import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-
 
 ## Stripe.js Loader Boundary
 
-The `@stripe/stripe-js` npm package is a loader and TypeScript declaration package, not a bundled copy of the Stripe.js runtime. The retained history now covers `@stripe/stripe-js@8.11.0` and the full transition to `@stripe/stripe-js@9.12.1`:
+The `@stripe/stripe-js` npm package is a loader and TypeScript declaration package, not a bundled copy of the Stripe.js runtime. The retained history now covers `@stripe/stripe-js@8.11.0`, the full transition to `@stripe/stripe-js@9.12.1`, and approved deltas through `9.14.0`:
 
 - Stripe.js must load from `https://js.stripe.com`; the runtime cannot be bundled or self-hosted.
 - The v8 package targets `clover`; v9 targets `dahlia`. Package versions pin declaration trains but do not prove runtime feature availability.
@@ -77,6 +77,8 @@ The `@stripe/stripe-js` npm package is a loader and TypeScript declaration packa
 - `loadStripe()` resolves to `null` in a server environment, caches a browser load attempt, and clears the cached promise after a load failure so a later call can retry.
 - Only the pure entrypoint exposes `loadStripe.setLoadParameters({advancedFraudSignals})`, and parameters cannot change after the first `loadStripe()` call.
 - In v9, `elements.update()` returns `Promise<void>`. Contact Details and beta Terms Element entrypoints are added, Payment Element can emit `availablepaymentmethodschange`, and Tax ID Element can expose verification status.
+- In v9.13.0, `paymentElement.update()` is limited to `defaultValues`, `business`, `paymentMethodOrder`, `fields`, `readOnly`, `terms`, `layout`, and `applePay`. The `wallets` creation option is excluded from the typed update surface, so wallet visibility must be set when creating the Element.
+- In v9.14.0, `walletOptions` can require wallet-provided email and phone values at Payment Element creation and can be changed through `paymentElement.update()`. This is separate from the creation-only `wallets` visibility option.
 
 See [[source-github-stripe-js]] for package-qualified v8 and v9 implementation evidence.
 
@@ -111,7 +113,8 @@ const error = await actions.confirm();
 
 - **Layout**: `layout.type: 'tabs'` or `'accordion'`; accordion can show/hide radio buttons
 - **Appearance API**: themes (`stripe`, `night`, `flat`, `none`) + CSS variables
-- **8 options**: `layout`, `defaultValues`, `business`, `paymentMethodOrder`, `fields`, `readOnly`, `terms`, `wallets`
+- **Creation options**: `layout`, `defaultValues`, `business`, `paymentMethodOrder`, `fields`, `readOnly`, `terms`, `wallets`, `walletOptions`, and `applePay` in the retained v9.14 contract
+- **Post-creation update boundary in `@stripe/stripe-js@9.14.0`**: `defaultValues`, `business`, `paymentMethodOrder`, `fields`, `readOnly`, `terms`, `layout`, `applePay`, and `walletOptions` are accepted by the typed `update()` call; `wallets` remains creation-only
 - **Combining**: Link Authentication (contact/autofill) + Address (shipping) + Payment Element work together; when combined with Express Checkout, wallets only appear in Express Checkout
 - **Link legal agreement**: cannot be removed (compliance requirement)
 - **17 auto-handled error codes**: card_declined, insufficient_funds, expired_card, etc.
@@ -162,7 +165,7 @@ The v6.8.0 release note adds `TermsElement`. Both the root and `/checkout` imple
 - [[source-stripe-react-stripejs]] — React Stripe.js reference: CheckoutElementsProvider, useCheckoutElements, Elements provider, useStripe/useElements, ElementsConsumer
 - [[source-github-react-stripe-js]] — cumulative React Stripe.js repository history: legacy v6.3.0 context plus package-qualified `@stripe/react-stripe-js@6.8.0`
 - [[changelog-github-react-stripe-js]] — package-qualified React Stripe.js release ledger
-- [[source-github-stripe-js]] — package-qualified `@stripe/stripe-js@8.11.0` and `9.12.1` loader, runtime boundary, public type surface, and Elements history
+- [[source-github-stripe-js]] — package-qualified `@stripe/stripe-js@8.11.0` through `9.14.0` loader, runtime boundary, public type surface, and Elements history
 - [[source-stripe-elements-advanced-payments]] — Checkout Sessions vs Payment Intents feature matrix
 - [[source-stripe-payment-element]] — Payment Element reference: layout, Appearance API, 8 options, combining elements, 17 error codes
 - [[source-stripe-payment-element-best-practices]] — Best practices: LLM instruction, HTML confirm pattern, 7-item checklist, 5-item features checklist

@@ -1,0 +1,306 @@
+diff --git a/package.json b/package.json
+index 2be6611..ed1f0d1 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@stripe/stripe-js",
+-  "version": "9.13.0",
++  "version": "9.14.0",
+   "description": "Stripe.js loading utility",
+   "repository": "github:stripe/stripe-js",
+   "main": "lib/index.js",
+diff --git a/tests/types/src/invalid.ts b/tests/types/src/invalid.ts
+index 8c4131a..43af142 100644
+--- a/tests/types/src/invalid.ts
++++ b/tests/types/src/invalid.ts
+@@ -166,6 +166,22 @@ elements.create('payment', {
+   },
+ });
+ 
++// invalid type for walletOptions.emailRequired
++// @ts-expect-error: No overload matches this call
++elements.create('payment', {
++  walletOptions: {
++    emailRequired: 'yes',
++  },
++});
++
++// invalid type for walletOptions.phoneNumberRequired
++// @ts-expect-error: No overload matches this call
++elements.create('payment', {
++  walletOptions: {
++    phoneNumberRequired: 'yes',
++  },
++});
++
+ paymentElement.update({
+   // @ts-expect-error: `wallets` option can't be updated
+   wallets: {
+@@ -656,6 +672,22 @@ checkoutElementsSdk.createShippingAddressElement({
+   },
+ });
+ 
++// invalid type for walletOptions.emailRequired in EwCS
++checkoutElementsSdk.createPaymentElement({
++  walletOptions: {
++    // @ts-expect-error: Type 'string' is not assignable to type 'boolean | undefined'
++    emailRequired: 'yes',
++  },
++});
++
++// invalid type for walletOptions.phoneNumberRequired in EwCS
++checkoutElementsSdk.createPaymentElement({
++  walletOptions: {
++    // @ts-expect-error: Type 'string' is not assignable to type 'boolean | undefined'
++    phoneNumberRequired: 'yes',
++  },
++});
++
+ const checkoutFormSdk = stripe.initCheckoutFormSdk({
+   clientSecret: 'cs_test_foo',
+ });
+diff --git a/tests/types/src/valid.ts b/tests/types/src/valid.ts
+index b151665..265383e 100644
+--- a/tests/types/src/valid.ts
++++ b/tests/types/src/valid.ts
+@@ -541,6 +541,10 @@ const paymentElement: StripePaymentElement = elements.create('payment', {
+     googlePay: 'auto',
+     link: 'auto',
+   },
++  walletOptions: {
++    emailRequired: true,
++    phoneNumberRequired: true,
++  },
+   layout: {
+     type: 'accordion',
+     visibleAccordionItemsCount: 2,
+@@ -581,6 +585,13 @@ paymentElement.update({
+   },
+ });
+ 
++paymentElement.update({
++  walletOptions: {
++    emailRequired: true,
++    phoneNumberRequired: false,
++  },
++});
++
+ let paymentElementDefaults: StripePaymentElement = elements.create('payment');
+ paymentElementDefaults = elements.create('payment', {});
+ 
+@@ -3693,6 +3704,12 @@ const checkoutElementsSdk = stripe.initCheckoutElementsSdk({
+   clientSecret: 'cs_test_foo',
+ });
+ const checkoutPaymentElement: StripePaymentElement = checkoutElementsSdk.createPaymentElement();
++checkoutElementsSdk.createPaymentElement({
++  walletOptions: {
++    emailRequired: true,
++    phoneNumberRequired: true,
++  },
++});
+ checkoutElementsSdk.getPaymentElement();
+ const checkoutAddressElement: StripeAddressElement = checkoutElementsSdk.createBillingAddressElement();
+ checkoutElementsSdk.getBillingAddressElement();
+diff --git a/types/stripe-js/checkout.d.ts b/types/stripe-js/checkout.d.ts
+index 479a363..b3d72ce 100644
+--- a/types/stripe-js/checkout.d.ts
++++ b/types/stripe-js/checkout.d.ts
+@@ -3,6 +3,7 @@ import {
+   Layout,
+   TermsOption,
+   StripePaymentElement,
++  PaymentWalletOptionsOption,
+ } from './elements/payment';
+ import {ContactOption, StripeAddressElement} from './elements/address';
+ import {Appearance, CssFontSource, CustomFontSource} from './elements-group';
+@@ -405,6 +406,7 @@ export type StripeCheckoutPaymentElementOptions = {
+   terms?: TermsOption;
+   fields?: FieldsOption;
+   wallets?: PaymentWalletsOption;
++  walletOptions?: PaymentWalletOptionsOption;
+ };
+ 
+ export type StripeCheckoutAddressElementOptions = {
+diff --git a/types/stripe-js/elements-group.d.ts b/types/stripe-js/elements-group.d.ts
+index 645331c..5dc4741 100644
+--- a/types/stripe-js/elements-group.d.ts
++++ b/types/stripe-js/elements-group.d.ts
+@@ -1404,15 +1404,94 @@ export interface CustomPaymentMethod {
+   /**
+    * Additional options to configure the Custom Payment Method.
+    */
+-  options: {
++  options?: {
+     /**
+      * The payment form type.
+      */
+-    type: 'static';
++    type: 'static' | 'embedded';
+ 
+     /**
+      * Display additional information about the payment method, max 100 characters.
+      */
+     subtitle?: string;
++
++    /**
++     * Requires beta access:
++     * Contact [Stripe support](https://support.stripe.com/) for more information.
++     *
++     * Options for the embedded Custom Payment Method. Required for type: 'embedded'.
++     */
++    embedded?: {
++      /**
++       * Function for rendering custom content in the Custom Payment Method form, called on mount.
++       */
++      handleRender: (container: HTMLDivElement) => void;
++
++      /**
++       * Function for cleaning up the Custom Payment Method form, called when the Custom Payment Method is removed and on unmount.
++       */
++      handleDestroy?: () => void;
++    };
++  };
++
++  /**
++   * Additional options to configure the Custom Payment Method in the Payment Element. Alias for `options`.
++   */
++  payment?: {
++    /**
++     * The payment form type.
++     */
++    type: 'static' | 'embedded';
++
++    /**
++     * Display additional information about the payment method, max 100 characters.
++     */
++    subtitle?: string;
++
++    /**
++     * Requires beta access:
++     * Contact [Stripe support](https://support.stripe.com/) for more information.
++     *
++     * Options for the embedded Custom Payment Method. Required for type: 'embedded'.
++     */
++    embedded?: {
++      /**
++       * Function for rendering custom content in the Custom Payment Method form, called on mount.
++       */
++      handleRender: (container: HTMLDivElement) => void;
++
++      /**
++       * Function for cleaning up the Custom Payment Method form, called when the Custom Payment Method is removed and on unmount.
++       */
++      handleDestroy?: () => void;
++    };
++  };
++
++  /**
++   * Requires beta access:
++   * Contact [Stripe support](https://support.stripe.com/) for more information.
++   *
++   * Additional options to configure the Custom Payment Method in the Express Checkout Element.
++   */
++  expressCheckout?: {
++    /**
++     * The payment button type.
++     */
++    type: 'embedded';
++
++    /**
++     * Options for the embedded Custom Payment Method.
++     */
++    embedded: {
++      /**
++       * Function for rendering custom content in the Custom Payment Method button, called on mount.
++       */
++      handleRender: (container: HTMLDivElement) => void;
++
++      /**
++       * Function for cleaning up the Custom Payment Method button, called when the Custom Payment Method is removed and on unmount.
++       */
++      handleDestroy?: () => void;
++    };
+   };
+ }
+diff --git a/types/stripe-js/elements/express-checkout.d.ts b/types/stripe-js/elements/express-checkout.d.ts
+index 50101c6..a6ae66b 100644
+--- a/types/stripe-js/elements/express-checkout.d.ts
++++ b/types/stripe-js/elements/express-checkout.d.ts
+@@ -607,6 +607,7 @@ export interface StripeExpressCheckoutElementAvailablePaymentMethodsChangeEvent
+         paypal?: {available: boolean};
+         amazonPay?: {available: boolean};
+         klarna?: {available: boolean};
++        [customPaymentMethodId: string]: {available: boolean} | undefined;
+       }
+     | undefined;
+ }
+diff --git a/types/stripe-js/elements/payment.d.ts b/types/stripe-js/elements/payment.d.ts
+index 9b4a027..73cbeb3 100644
+--- a/types/stripe-js/elements/payment.d.ts
++++ b/types/stripe-js/elements/payment.d.ts
+@@ -336,6 +336,11 @@ export interface PaymentWalletsOption {
+   link?: PaymentWalletOption;
+ }
+ 
++export interface PaymentWalletOptionsOption {
++  emailRequired?: boolean;
++  phoneNumberRequired?: boolean;
++}
++
+ export type Layout = 'tabs' | 'accordion' | 'auto';
+ type RadiosOption = 'auto' | 'never' | 'always' | 'if_multiple';
+ 
+@@ -392,6 +397,11 @@ export interface StripePaymentElementOptions {
+    */
+   wallets?: PaymentWalletsOption;
+ 
++  /**
++   * Control wallet behavior options in the Payment Element.
++   */
++  walletOptions?: PaymentWalletOptionsOption;
++
+   /**
+    * Specify a layout to use when rendering a Payment Element.
+    */
+@@ -419,6 +429,7 @@ export type StripePaymentElementUpdateOptions = Pick<
+   | 'terms'
+   | 'layout'
+   | 'applePay'
++  | 'walletOptions'
+ >;
+ 
+ export interface StripePaymentElementChangeEvent {
+diff --git a/types/stripe-js/embedded-checkout.d.ts b/types/stripe-js/embedded-checkout.d.ts
+index 60713bd..5e4d159 100644
+--- a/types/stripe-js/embedded-checkout.d.ts
++++ b/types/stripe-js/embedded-checkout.d.ts
+@@ -162,10 +162,7 @@ export interface StripeEmbeddedCheckoutOptions {
+    */
+   onComplete?: () => void;
+   /**
+-   * onShippingDetailsChange is called when the customer completes the shipping details form.
+-   *
+-   * The callback is required when [permissions.update.shipping_details](https://docs.stripe.com/api/checkout/sessions/create#create_checkout_session-permissions-update-shipping_details) is set to `server_only`.
+-   * For a step-by-step guide on using this callback to customize shipping options during checkout, see [Customize Shipping Options](https://docs.stripe.com/payments/checkout/custom-shipping-options).
++   * @deprecated Dynamic shipping updates are deprecated in Embedded Checkout.
+    */
+   onShippingDetailsChange?: (
+     event: StripeEmbeddedCheckoutShippingDetailsChangeEvent
+diff --git a/yarn.lock b/yarn.lock
+index b2e1a64..c0ae88c 100644
+--- a/yarn.lock
++++ b/yarn.lock
+@@ -3559,9 +3559,9 @@ jest@^24.9.0:
+   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
+ 
+ js-yaml@^3.13.1:
+-  version "3.15.0"
+-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.15.0.tgz#586e5214eafe3e893756a41e979b50d89d3e4a67"
+-  integrity sha512-ttBQIIQPDeLjpPOohtUdXuXUVoA2uIB6fEH9HyJ7234s5mBJ5wTx20njxplLZQgLaOfpmPQA7X2t5AX6tIPbog==
++  version "3.15.1"
++  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.15.1.tgz#24bc95028f361cdaaa84745b06a109c4486773c0"
++  integrity sha512-S99WuO3HlhO3XN41EtYUNl9zzXjoJx7QvmipxsJVxtCBT0YHEFy+iOJhjSvrmV12nYhWpZaM8lPHkJm0yUMbag==
+   dependencies:
+     argparse "^1.0.7"
+     esprima "^4.0.0"

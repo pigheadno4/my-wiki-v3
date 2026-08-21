@@ -1392,6 +1392,31 @@
   Release: [manifest](../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.0/2026-07-30/manifest.json)
   Comparison: Not applicable
 
+## `github-db5e3553fa18c09a0d75`
+
+- Repository: `stripe/stripe-js`
+- SHA: `1a6a2c6dc4fd25ccd0c52f42136ee98776f0c2f5`
+- Collection date: `2026-08-21`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-js/snapshots/2026-08-21-1a6a2c6/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-js/ingest-packets/github-db5e3553fa18c09a0d75/packet.md)
+- Review priority: `high`
+- Required reading: `12` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-js@9.13.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-js/releases/stripe-js/9.13.0/2026-08-21/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-js/comparisons/stripe-js/9.12.1--9.13.0/comparison.json)
+
 ## `github-ddb53c093685674310ef`
 
 - Repository: `adyen/adyen-3ds2-android`
@@ -1494,6 +1519,31 @@
 - `@paypal/paypal-server-sdk@2.3.0` (recommended `full`)
   Release: [manifest](../../raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.3.0/2026-08-10/manifest.json)
   Comparison: Not applicable
+
+## `github-f4acbaae53defd3b2074`
+
+- Repository: `stripe/stripe-js`
+- SHA: `8daa6fad5d318aa9e18aa0e1833e4249c08e4682`
+- Collection date: `2026-08-21`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-js/ingest-packets/github-f4acbaae53defd3b2074/packet.md)
+- Review priority: `high`
+- Required reading: `15` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-js@9.14.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-js/releases/stripe-js/9.14.0/2026-08-21/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-js/comparisons/stripe-js/9.13.0--9.14.0/comparison.json)
 
 ## `github-f8c98215ba0bd54e6149`
 

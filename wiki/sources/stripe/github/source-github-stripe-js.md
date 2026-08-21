@@ -2,9 +2,11 @@
 title: "GitHub: stripe/stripe-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-07-30
+date_updated: 2026-08-21
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/manifest.json"
+  - "github/stripe/stripe-js/snapshots/2026-08-21-1a6a2c6/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-07-30-43d35b1/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-07-30-d7bbb14/manifest.json"
 tags: [stripe, stripe-js, javascript, typescript, elements, checkout, github-repository]
@@ -12,7 +14,7 @@ tags: [stripe, stripe-js, javascript, typescript, elements, checkout, github-rep
 
 ## Overview
 
-`stripe/stripe-js` publishes `@stripe/stripe-js`, the CommonJS and ES module loader plus TypeScript declarations for Stripe.js. This cumulative page preserves the approved `@stripe/stripe-js@8.11.0` baseline and adds the full major-version transition to `@stripe/stripe-js@9.12.1` at commit `43d35b1b0e324475ea9f9cb867ad2c4e7dabe3f8`.
+`stripe/stripe-js` publishes `@stripe/stripe-js`, the CommonJS and ES module loader plus TypeScript declarations for Stripe.js. This cumulative page preserves the approved `@stripe/stripe-js@8.11.0` baseline, the full major-version transition to `@stripe/stripe-js@9.12.1`, and approved declaration deltas through `9.14.0` at commit `8daa6fad5d318aa9e18aa0e1833e4249c08e4682`.
 
 Repository: <https://github.com/stripe/stripe-js>
 
@@ -23,6 +25,7 @@ Repository: <https://github.com/stripe/stripe-js>
 - `@stripe/stripe-js` package versions and Stripe.js release trains are related but distinct. Version-specific answers must identify both when relevant.
 - The declarations track a broad API surface, including legacy APIs. A declared method is not by itself a recommendation to start a new integration with that method.
 - Current Stripe documentation can be newer than either retained package version. Later package releases are added cumulatively rather than replacing older sections.
+- The 9.14.0 upstream release notes retain their empty-section template and do not classify the listed commits. The exact retained comparison is the authority for the release findings below.
 
 > [!warning] Contradiction
 > The v9 declarations conflict with the April 2026 snapshot in [[source-stripe-checkout-elements-beta-changelog]] on which train is latest and whether `initCheckout()` remains a current entrypoint. Treat that page as historical Clover migration guidance and use package-qualified evidence for version-specific implementation work.
@@ -65,11 +68,39 @@ Repository: <https://github.com/stripe/stripe-js>
 >
 > `raw/github/stripe/stripe-js/snapshots/2026-07-30-43d35b1/files/types/stripe-js/stripe.d.ts:678-688`
 
+> "Control whether the promotion code collection UI is displayed in the CheckoutForm."
+>
+> `raw/github/stripe/stripe-js/snapshots/2026-08-21-1a6a2c6/files/types/stripe-js/checkout.d.ts:472-484`
+
+> "Only applies when `allow_promotion_codes`is enabled on the Checkout Session."
+>
+> `raw/github/stripe/stripe-js/snapshots/2026-08-21-1a6a2c6/files/types/stripe-js/checkout.d.ts:477-484`
+
+> "The subset of `StripePaymentElementOptions` that can be updated after the `PaymentElement` has been created."
+>
+> `raw/github/stripe/stripe-js/snapshots/2026-08-21-1a6a2c6/files/types/stripe-js/elements/payment.d.ts:406-422`
+
+> "Control wallet behavior options in the Payment Element."
+>
+> `raw/github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/files/types/stripe-js/elements/payment.d.ts:339-342,400-403`
+
+> "Additional options to configure the Custom Payment Method in the Express Checkout Element."
+>
+> `raw/github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/files/types/stripe-js/elements-group.d.ts:1470-1495`
+
+> "[customPaymentMethodId: string]: {available: boolean} | undefined;"
+>
+> `raw/github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/files/types/stripe-js/elements/express-checkout.d.ts:600-612`
+
+> "@deprecated Dynamic shipping updates are deprecated in Embedded Checkout."
+>
+> `raw/github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/files/types/stripe-js/embedded-checkout.d.ts:164-169`
+
 ## Package Status
 
 | Package | Latest ingested release | Stripe.js train | Evidence status |
 | --- | --- | --- | --- |
-| `@stripe/stripe-js` | `9.12.1` | `dahlia` | Approved full major transition; v8 retained |
+| `@stripe/stripe-js` | `9.14.0` | `dahlia` | Approved 9.14 declaration delta; prior v9 and v8 retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -204,6 +235,35 @@ For a v8-to-v9 migration:
 5. await `elements.update()` where ordering matters; and
 6. re-run TypeScript checks for changed Checkout, Payment Element, Address, Tax ID, and wallet option contracts.
 
+### `@stripe/stripe-js@9.13.0`
+
+Version 9.13.0 is a contained TypeScript contract update on the retained `dahlia` train. It does not change the package's loader boundary or establish runtime rollout by itself.
+
+Checkout Form options add `features.promotionCodeCollection?: 'auto' | 'never'`. The default is `auto`, and the setting only controls whether the promotion-code collection UI is displayed when the Checkout Session already has `allow_promotion_codes` enabled. It does not enable promotion codes on the session.
+
+Payment Element `update()` now accepts `Partial<StripePaymentElementUpdateOptions>` instead of all partial creation options. The updateable subset is `defaultValues`, `business`, `paymentMethodOrder`, `fields`, `readOnly`, `terms`, `layout`, and `applePay`. In particular, `wallets` remains a creation option but is no longer accepted by the typed post-creation update call. Consumers upgrading from 9.12.1 should run TypeScript checks around every `paymentElement.update()` call and move wallet visibility configuration to element creation.
+
+### `@stripe/stripe-js@9.14.0`
+
+Version 9.14.0 remains on the retained `dahlia` train and changes public declarations rather than the loader implementation. Its upstream release notes list commits under an unfinished template, so the exact 9.13.0-to-9.14.0 comparison provides the reliable change classification.
+
+#### Wallet Contact Collection
+
+Payment Element adds `walletOptions` with boolean `emailRequired` and `phoneNumberRequired` fields. The option is available both to standard Elements and Checkout Elements Payment Element creation. Unlike the separate `wallets` visibility option, `walletOptions` is included in `StripePaymentElementUpdateOptions`, so contact requirements can be changed after element creation in the typed contract.
+
+#### Embedded Custom Payment Methods
+
+`CustomPaymentMethod.options` becomes optional and supports either `static` or `embedded` form rendering. The new `payment` property is an alias for Payment Element configuration. Embedded rendering receives an `HTMLDivElement` through required `handleRender()` and can define optional `handleDestroy()` cleanup.
+
+A beta `expressCheckout` property adds an embedded Custom Payment Method button with the same render-and-cleanup lifecycle. Express Checkout's `availablepaymentmethodschange` event now accepts dynamic custom payment-method IDs in addition to built-in wallet keys.
+
+> [!warning] Versioned availability
+> Existing product documentation in [[stripe-custom-payment-methods]] records Express Checkout Element as unsupported. The v9.14 declarations explicitly mark this new surface as requiring beta access. Treat it as typed preview evidence, not proof of general runtime availability or merchant eligibility.
+
+#### Embedded Checkout Shipping Deprecation
+
+`StripeEmbeddedCheckoutOptions.onShippingDetailsChange` remains declared but is now marked deprecated because dynamic shipping updates are deprecated in Embedded Checkout. Existing integrations can retain the callback for their pinned version, but new work must verify Stripe's current replacement path rather than following older dynamic-shipping guidance unchanged.
+
 ## Compatibility and Operational Notes
 
 - Stripe.js must be loaded from `js.stripe.com` for the documented PCI boundary.
@@ -212,6 +272,10 @@ For a v8-to-v9 migration:
 - Content Security Policy must allow the Stripe.js origins required by Stripe.
 - Stripe recommends loading Stripe.js throughout the site to improve advanced fraud signals; disabling those signals is an explicit pure-entrypoint choice.
 - Minor and patch package releases can include small backwards-incompatible declaration corrections without changing the remote Stripe.js runtime.
+- In `9.13.0`, Checkout Form promotion-code visibility depends on the server-created Session setting, and Payment Element wallet visibility must be configured at creation rather than through the typed `update()` call.
+- In `9.14.0`, wallet contact requirements can be created or updated through `walletOptions`; this does not make the separate `wallets` visibility option updateable.
+- Embedded Custom Payment Method rendering requires trusted content, explicit cleanup, and beta-access verification. The declaration does not transfer third-party payment processing to Stripe.
+- Embedded Checkout dynamic shipping updates are deprecated; version-specific maintenance guidance must not be presented as the recommended new-integration path.
 
 ## Related
 
@@ -221,6 +285,22 @@ For a v8-to-v9 migration:
 
 ## Raw Sources
 
+- `raw/github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/manifest.json` — exact-SHA v9.14.0 source capsule
+- `raw/github/stripe/stripe-js/releases/stripe-js/9.14.0/2026-08-21/manifest.json` — package-qualified v9.14.0 release record
+- `raw/github/stripe/stripe-js/releases/stripe-js/9.14.0/2026-08-21/release-notes.md` — upstream release notes with unfinished template
+- `tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/9.13.0--9.14.0/comparison.md` — retained v9.13.0-to-v9.14.0 comparison
+- `tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/9.13.0--9.14.0/diff.patch` — exact retained delta
+- `raw/github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/files/types/stripe-js/elements/payment.d.ts` — wallet contact collection and update typing
+- `raw/github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/files/types/stripe-js/elements-group.d.ts` — embedded Payment and Express Checkout Custom Payment Methods
+- `raw/github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/files/types/stripe-js/elements/express-checkout.d.ts` — dynamic custom-method availability keys
+- `raw/github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/files/types/stripe-js/embedded-checkout.d.ts` — dynamic shipping callback deprecation
+- `raw/github/stripe/stripe-js/snapshots/2026-08-21-1a6a2c6/manifest.json` — exact-SHA v9.13.0 source capsule
+- `raw/github/stripe/stripe-js/releases/stripe-js/9.13.0/2026-08-21/manifest.json` — package-qualified v9.13.0 release record
+- `raw/github/stripe/stripe-js/releases/stripe-js/9.13.0/2026-08-21/release-notes.md` — exact v9.13.0 release notes
+- `tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/9.12.1--9.13.0/comparison.md` — retained v9.12.1-to-v9.13.0 comparison
+- `tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/9.12.1--9.13.0/diff.patch` — exact retained delta
+- `raw/github/stripe/stripe-js/snapshots/2026-08-21-1a6a2c6/files/types/stripe-js/checkout.d.ts` — Checkout Form promotion-code display control
+- `raw/github/stripe/stripe-js/snapshots/2026-08-21-1a6a2c6/files/types/stripe-js/elements/payment.d.ts` — Payment Element updateable-option subset
 - `raw/github/stripe/stripe-js/snapshots/2026-07-30-43d35b1/manifest.json` — exact-SHA v9.12.1 source capsule
 - `raw/github/stripe/stripe-js/releases/stripe-js/9.12.1/2026-07-30/manifest.json` — package-qualified v9 release record
 - `raw/github/stripe/stripe-js/releases/stripe-js/9.12.1/2026-07-30/release-notes.md` — exact 9.12.1 patch note

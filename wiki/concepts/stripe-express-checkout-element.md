@@ -7,7 +7,7 @@ tags: [stripe, elements, express-checkout, apple-pay, google-pay, paypal, link, 
 
 ## Definition
 
-The Express Checkout Element is a Stripe UI component that renders multiple one-click payment wallet buttons in a single integration. It replaces the older Payment Request Button Element and supports six payment methods: **Link**, **Apple Pay**, **Google Pay**, **PayPal**, **Klarna**, and **Amazon Pay**.
+The Express Checkout Element is a Stripe UI component that renders multiple one-click payment buttons in a single integration. It replaces the older Payment Request Button Element and has six built-in methods: **Link**, **Apple Pay**, **Google Pay**, **PayPal**, **Klarna**, and **Amazon Pay**. The `@stripe/stripe-js@9.14.0` declarations also add a beta embedded Custom Payment Method button surface.
 
 ## How It Works
 
@@ -151,6 +151,13 @@ Options passed when creating the ECE:
 | `cancel` | Customer dismisses UI | Reset amount: `elements.update({amount: original})` |
 | `click` | Customer clicks a button | Request Apple Pay merchant tokens for MIT |
 
+## Custom Payment Methods in v9.14
+
+The `@stripe/stripe-js@9.14.0` type contract allows a `cpmt_` Custom Payment Method to define an `expressCheckout` configuration with `type: 'embedded'`, a required `handleRender(container)` callback, and optional `handleDestroy()` cleanup. The `availablepaymentmethodschange` event can report dynamically keyed custom payment-method IDs alongside the six built-in method keys.
+
+> [!warning] Versioned availability
+> Earlier product documentation describes Express Checkout Element as unsupported for Custom Payment Methods. The v9.14 declarations prove a beta typed integration surface, not general runtime rollout or account eligibility. Confirm beta access and live behavior before offering this path to a merchant.
+
 ## Apple Pay Merchant Tokens (MIT)
 
 For recurring, deferred, or auto-reload Apple Pay payments, request the relevant merchant token type in the `click` event. Aligns with Apple Pay's latest guidelines.
@@ -213,3 +220,4 @@ Full migration guide: [[source-stripe-express-checkout-element-migration]]
 - [[source-stripe-express-checkout-element]] — overview reference: supported methods, browser matrix, customization options, ready event
 - [[source-stripe-express-checkout-element-accept-payment]] — full integration guide: both API paths, customer detail collection, wallet events, testing, Connect
 - [[source-stripe-express-checkout-element-migration]] — migration guide: Payment Request Button → ECE, before/after code, MPAN support
+- [[source-github-stripe-js]] — package-qualified v9.14 beta Custom Payment Method button and dynamic availability-event typing

@@ -41,7 +41,7 @@ The `@stripe/stripe-js@8.11.0` declarations expose three distinct Checkout entry
 
 The v8 `StripeCheckout` interface provides element creation and lookup plus `loadActions()`. Its actions cover confirmation, promotion codes, shipping and billing addresses, contact details, line-item quantities, tax IDs, shipping options, and server updates. These declarations are a historical package baseline; later major versions can rename or reshape the interfaces without erasing the v8 evidence. See [[source-github-stripe-js]] and [[changelog-github-stripe-js]].
 
-## Historical Stripe.js v9 API Transition
+## Historical Stripe.js v9 API Transition and Delta
 
 The retained `@stripe/stripe-js@9.12.1` declarations target the `dahlia` Stripe.js train and reshape the v8 Checkout entrypoints:
 
@@ -53,6 +53,10 @@ The retained `@stripe/stripe-js@9.12.1` declarations target the `dahlia` Stripe.
 - Session state adds optional items, removable line items, price IDs, decimal unit amounts, currency options, and surcharge status and totals.
 
 This is a cumulative v8-to-v9 package comparison, not the 9.12.1 patch note alone. The older [[source-stripe-checkout-elements-beta-changelog]] remains useful as dated Clover migration evidence, but its “latest” label and `initCheckout()` example are not current for the retained v9 declarations.
+
+The approved `@stripe/stripe-js@9.13.0` delta adds `features.promotionCodeCollection?: 'auto' | 'never'` to Checkout Form options. Its default is `auto`; `never` suppresses the collection UI. This is only a display control when the server-created Checkout Session already enables `allow_promotion_codes`, not a client-side replacement for that Session setting.
+
+The approved `@stripe/stripe-js@9.14.0` delta adds Payment Element `walletOptions` to the Checkout Elements path, allowing wallet email and phone collection to be required at creation and updated later. It also marks Embedded Checkout `onShippingDetailsChange` deprecated because dynamic shipping updates are deprecated in that surface.
 
 ## React Stripe.js v6.8 Binding
 
@@ -107,7 +111,7 @@ Both integrate with Elements + Appearance API. **Use Checkout Sessions for most 
 - **Shipping rates**: `shipping_options` param with pre-created ShippingRate ID or inline `shipping_rate_data`; fixed amount only; payment mode only; first option pre-selected; delivery estimates with `hour`/`day`/`business_day` units; shipping tax via `tax_code: 'txcd_92010001'`
 - **Payment method migration**: remove `payment_method_types` to use Dashboard-managed dynamic methods; non-default PMs (bank redirects) turn off on migration — re-enable in Dashboard; Apple Pay on by default, Google Pay off by default; Google Pay filtered when automatic_tax + no shipping address
 - **Delayed notification PMs** (2–14 day delay): Bacs, bank transfers, Boleto, Canadian PAD, Konbini, OXXO, Pay by Bank, SEPA, ACH — must handle `checkout.session.async_payment_succeeded` + `checkout.session.async_payment_failed`; on `checkout.session.completed` check `payment_status === 'paid'` before fulfilling
-- **Dynamic shipping options**: embedded mode only; `permissions.update_shipping_details: 'server_only'` disables auto client-side update; `onShippingDetailsChange` client callback triggers server endpoint to validate address + recalculate rates + update session; returns `{type: "accept"}` or `{type: "reject", errorMessage}`
+- **Dynamic shipping options (historical Embedded Checkout path)**: `permissions.update_shipping_details: 'server_only'` and `onShippingDetailsChange` previously supported server recalculation, but `@stripe/stripe-js@9.14.0` deprecates the callback because dynamic shipping updates are deprecated in Embedded Checkout. Preserve older guidance for existing-version maintenance and verify the current replacement before new implementation.
 - **Dynamic line items**: **not supported** in hosted or embedded Checkout; **supported** in Elements path (Checkout Sessions API) via beta `runServerUpdate` pattern (SDK `2025-03-31.basil`+) — use cases: inventory checks, cross-sells, subscription interval toggle, order-total-based shipping/tax updates; see [[source-stripe-checkout-dynamic-line-items]]
 - **Manual approval** (CS only): run server-side logic (fraud, inventory, PM checks) before finalizing payment; compatible with dynamic line items; PI alternative is "finalize payments on server" — see [[source-stripe-checkout-manual-approval]]
 - **Credits** (private access): pass available credit amount into session; applied after tax + shipping; Stripe doesn't track balances — merchant manages; retrieve session after completion for reconciliation; use cases: store credit, prepaid gift cards; CS API only — see [[source-stripe-checkout-redeem-credits]]
@@ -207,7 +211,7 @@ Both integrate with Elements + Appearance API. **Use Checkout Sessions for most 
 - [[source-stripe-checkout-sessions-vs-payment-intents]] — Official comparison: 11-row feature matrix, session expiration, webhook lifecycle scope, Adaptive Pricing exclusivity
 - [[source-stripe-checkout-elements-quickstart]] — Checkout Elements quickstart: CheckoutElementsProvider, useCheckout hook, 4 elements, return page, Adaptive Pricing, Stripe Tax
 - [[source-stripe-web-elements-overview]] — Stripe Elements overview: 7 elements, API comparison diagram, features
-- [[source-github-stripe-js]] — package-qualified `@stripe/stripe-js@8.11.0` baseline and `9.12.1` Checkout API transition
+- [[source-github-stripe-js]] — package-qualified `@stripe/stripe-js@8.11.0` through `9.14.0`, including Checkout transition, promotion-code control, wallet collection, and Embedded Checkout deprecation
 - [[source-github-react-stripe-js]] — React provider, hook, component lifecycle, SSR, and package-compatibility evidence at `@stripe/react-stripe-js@6.8.0`
 - [[changelog-github-react-stripe-js]] — package-qualified React Stripe.js release history
 - [[stripe-elements]] — Stripe Elements concept page (all 7 elements, React integration patterns)

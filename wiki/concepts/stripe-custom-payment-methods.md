@@ -30,7 +30,7 @@ Stripe Custom Payment Methods (CPM) allow merchants to surface third-party payme
 | Customer Portal | ✓ |
 | Checkout | ✗ |
 | Payment Links | ✗ |
-| Express Checkout Element | ✗ |
+| Express Checkout Element | Beta typed surface in `@stripe/stripe-js@9.14.0`; availability must be verified |
 
 ## Compliance
 
@@ -77,6 +77,13 @@ Renders merchant's custom HTML/UI inside the Payment Element container.
 ![Embedded CPM with custom content](../raw/assets/stripe-payment-element-custom-pm-embedded.png)
 
 > **XSS warning**: only render trusted content in the embedded container. User-supplied or unsanitized markup creates a cross-site scripting vulnerability.
+
+### Express Checkout Embedded Button (Beta Type Surface)
+
+`@stripe/stripe-js@9.14.0` adds an `expressCheckout` configuration for a `cpmt_` method. It requires `type: 'embedded'` and a render callback for the custom button; an optional destroy callback handles cleanup. Express Checkout availability events can use the custom method ID as a dynamic key.
+
+> [!warning] Versioned availability
+> Earlier Custom Payment Method product documentation marks Express Checkout Element unsupported. The v9.14 repository proves only a beta TypeScript contract and explicitly requires beta access; it does not prove general availability or merchant enablement.
 
 ## Routing in the Submit Handler
 
@@ -138,3 +145,4 @@ Decision rule:
 - [[source-stripe-custom-payment-methods]] — overview: PM API type, integration matrix, marks compliance, Indonesia/Thailand restriction, Stripe disclaimer
 - [[source-stripe-paypal-custom-payment-method]] — PayPal as CPM: low-code adapter for Checkout, decision rule (EU→standard PM vs global→CPM adapter)
 - [[source-stripe-subscriptions-third-party]] — billing with 3rd party processors: custom PM types, payment records API, webhook handler, retry logic, refunds, out-of-band legacy
+- [[source-github-stripe-js]] — `@stripe/stripe-js@9.14.0` embedded Payment Element and beta Express Checkout Custom Payment Method declarations

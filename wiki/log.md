@@ -1,5 +1,17 @@
 # Wiki Log
 
+## [2026-08-21] ingest | GitHub stripe/stripe-js — `@stripe/stripe-js@9.14.0`
+
+- Delta-ingested work item `github-f4acbaae53defd3b2074` at exact SHA `8daa6fad5d318aa9e18aa0e1833e4249c08e4682` after serial full reading of all 15 required evidence paths.
+- Added updateable wallet email and phone requirements, embedded Payment Element and beta Express Checkout Custom Payment Method typing, and dynamic custom-method availability keys.
+- Recorded the Embedded Checkout dynamic-shipping deprecation, unfinished upstream release-note template, beta availability boundary, and unchanged source count while preserving all earlier release findings.
+
+## [2026-08-21] ingest | GitHub stripe/stripe-js — `@stripe/stripe-js@9.13.0`
+
+- Delta-ingested work item `github-db5e3553fa18c09a0d75` at exact SHA `1a6a2c6dc4fd25ccd0c52f42136ee98776f0c2f5` after serial full reading of all 12 required evidence paths.
+- Preserved the cumulative v8.11.0 and v9.12.1 knowledge while adding Checkout Form `promotionCodeCollection` display control and the explicit Payment Element updateable-option subset.
+- Recorded the server-side `allow_promotion_codes` prerequisite, the creation-only `wallets` boundary, and the Stripe-hosted runtime evidence limit; source count is unchanged.
+
 ## [2026-08-20] ingest | GitHub Adyen/adyen-php-api-library `30.0.2`
 
 - Full-ingested work item `github-1ef004e332164a8359d6` at exact SHA `6ef96571834bc460201df8aea8c89882b2043cd8` after serial review of all 450 required evidence paths.

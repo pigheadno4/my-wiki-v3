@@ -1,0 +1,131 @@
+diff --git a/package.json b/package.json
+index f2f1281..2be6611 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@stripe/stripe-js",
+-  "version": "9.12.1",
++  "version": "9.13.0",
+   "description": "Stripe.js loading utility",
+   "repository": "github:stripe/stripe-js",
+   "main": "lib/index.js",
+diff --git a/tests/types/src/invalid.ts b/tests/types/src/invalid.ts
+index 851b545..8c4131a 100644
+--- a/tests/types/src/invalid.ts
++++ b/tests/types/src/invalid.ts
+@@ -166,6 +166,13 @@ elements.create('payment', {
+   },
+ });
+ 
++paymentElement.update({
++  // @ts-expect-error: `wallets` option can't be updated
++  wallets: {
++    applePay: 'never',
++  },
++});
++
+ paymentElement.on('change', (e) => {
+   // @ts-expect-error: `error` is not present on PaymentElement "change" event.
+   if (e.error) {
+@@ -752,6 +759,13 @@ checkoutFormSdk.createForm({
+ // @ts-expect-error: contacts must be an array of ContactOption
+ checkoutFormSdk.createForm({contacts: 'invalid'});
+ 
++checkoutFormSdk.createForm({
++  features: {
++    // @ts-expect-error: promotionCodeCollection must be 'auto' | 'never'
++    promotionCodeCollection: 'invalid',
++  },
++});
++
+ // StripeCheckoutFormSdk.loadActions() omits client-only update methods that
+ // are driven by the CheckoutForm UI rather than imperative calls.
+ checkoutFormSdk.loadActions().then((loadActionsResult) => {
+diff --git a/tests/types/src/valid.ts b/tests/types/src/valid.ts
+index b5ed70e..b151665 100644
+--- a/tests/types/src/valid.ts
++++ b/tests/types/src/valid.ts
+@@ -3949,6 +3949,16 @@ checkoutFormSdk.createForm({
+     buttonHeight: 50,
+   },
+ });
++checkoutFormSdk.createForm({
++  features: {
++    promotionCodeCollection: 'auto',
++  },
++});
++checkoutFormSdk.createForm({
++  features: {
++    promotionCodeCollection: 'never',
++  },
++});
+ const retrievedCheckoutForm: StripeCheckoutForm | null = checkoutFormSdk.getForm();
+ 
+ checkoutFormSdk.createCurrencySelectorElement();
+diff --git a/types/stripe-js/checkout.d.ts b/types/stripe-js/checkout.d.ts
+index c5e0515..479a363 100644
+--- a/types/stripe-js/checkout.d.ts
++++ b/types/stripe-js/checkout.d.ts
+@@ -468,6 +468,21 @@ export type StripeCheckoutFormOptions = {
+      */
+     paymentMethods?: ExpressCheckoutPaymentMethodsOption;
+   };
++
++  /**
++   * Client-side feature configuration for the CheckoutForm.
++   */
++  features?: {
++    /**
++     * Control whether the promotion code collection UI is displayed in the CheckoutForm.
++     *
++     * Only applies when `allow_promotion_codes`is enabled on the Checkout Session.
++     *
++     * @default 'auto'
++     * @docs https://stripe.com/docs/checkout/promotion-codes
++     */
++    promotionCodeCollection?: 'auto' | 'never';
++  };
+ };
+ 
+ export type StripeCheckoutExpressCheckoutElementOptions = {
+diff --git a/types/stripe-js/elements/payment.d.ts b/types/stripe-js/elements/payment.d.ts
+index 252ebea..9b4a027 100644
+--- a/types/stripe-js/elements/payment.d.ts
++++ b/types/stripe-js/elements/payment.d.ts
+@@ -167,7 +167,9 @@ export type StripePaymentElement = StripeElementBase & {
+    * Updates the options the `PaymentElement` was initialized with.
+    * Updates are merged into the existing configuration.
+    */
+-  update(options: Partial<StripePaymentElementOptions>): StripePaymentElement;
++  update(
++    options: Partial<StripePaymentElementUpdateOptions>
++  ): StripePaymentElement;
+ 
+   /**
+    * Collapses the Payment Element into a row of payment method tabs.
+@@ -401,6 +403,24 @@ export interface StripePaymentElementOptions {
+   applePay?: ApplePayOption;
+ }
+ 
++/**
++ * The subset of `StripePaymentElementOptions` that can be updated after the
++ * `PaymentElement` has been created.
++ *
++ * @see https://docs.stripe.com/js/elements_object/update_payment_element
++ */
++export type StripePaymentElementUpdateOptions = Pick<
++  StripePaymentElementOptions,
++  | 'defaultValues'
++  | 'business'
++  | 'paymentMethodOrder'
++  | 'fields'
++  | 'readOnly'
++  | 'terms'
++  | 'layout'
++  | 'applePay'
++>;
++
+ export interface StripePaymentElementChangeEvent {
+   /**
+    * The type of element that emitted this event.
