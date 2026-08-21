@@ -147,6 +147,8 @@ A merchant can create `low_remaining_commit_balance_reached` for a customer, cre
 
 ## Sources
 
+- [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]] — pending-commit release or cancellation, required external workflow ID, accepted outcome values, and recovery unknowns
+
 - [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-contract]] — commit and credit edit capabilities, rollover cutoffs, schedule-ledger behavior, and archival prerequisites
 - [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition-examples]] — prepaid purchase, drawdown, expiration, overage, and postpaid true-up examples with amount, key, and classification conflicts
 

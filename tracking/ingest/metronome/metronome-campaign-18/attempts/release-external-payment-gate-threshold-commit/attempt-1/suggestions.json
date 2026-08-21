@@ -1,0 +1,69 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "external-threshold-release-endpoint-contract",
+      "target_path": "wiki/concepts/metronome/metronome-spend-threshold-billing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Payment gates",
+      "proposed_markdown": "`POST /v1/contracts/commits/threshold-billing/release` continues an external payment-gate workflow by using the saved `payment_gate.external_initiate` `workflow_id` to release or cancel its pending commit according to the external-payment outcome. The request requires the UUID `workflow_id` and an outcome of `paid`, `PAID`, `failed`, or `FAILED`; its operation page supplies only a bare `200`. It does not define workflow expiry or single-use behavior, duplicate or conflicting submissions, operation-specific retry/failure recovery, event ordering, concurrency, or propagation to balance, ledger, invoice, read, or webhook surfaces. [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not treat a 200 response as proof that downstream commit balance, ledger, invoice, access, export, or webhook state is already visible.",
+        "Do not conflate webhook-delivery retry, external-payment retry, and retry of this POST operation."
+      ]
+    },
+    {
+      "update_id": "external-threshold-release-spend-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-spend-threshold-billing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]] \u2014 external workflow correlation, paid/failed outcome schema, and release-or-cancel API boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "external-threshold-release-credits-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]] \u2014 pending-commit release or cancellation, required external workflow ID, accepted outcome values, and recovery unknowns",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "This endpoint does not define the pending commit's pre-completion visibility, balance availability, schedules, ledger state, or invoice effects."
+      ]
+    },
+    {
+      "update_id": "external-threshold-release-webhook-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]] \u2014 `payment_gate.external_initiate` workflow-ID correlation and the downstream outcome-reporting endpoint",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Use the event's `workflow_id` for the release call; this page does not say that a generic webhook notification ID is interchangeable."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

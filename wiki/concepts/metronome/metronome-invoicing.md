@@ -39,6 +39,8 @@ The customer-controls guide distinguishes two alert calculations: `spend_thresho
 
 ## Shared Plan and Contract invoice surface
 
+Metronome also exposes bearer-authenticated `GET /v1/customers/{customer_id}/invoices/{invoice_id}/pdf` with both path identifiers required and UUID-formatted. HTTP 200 uses `application/pdf`; although the prose describes a binary full-invoice PDF, the OpenAPI media schema says only `type: object` and does not define bytes, properties, headers, filename, length, or streaming. HTTP 404 is a generic JSON error requiring string `message` and does not distinguish a missing customer, invoice, or customer-invoice mismatch. The page describes on-demand generation and potential performance impact from frequent requests but provides no rate, latency, caching, retry, lifecycle, retention, rendering-stability, availability, legal-officiality, audit-sufficiency, or compliance guarantee.
+
 Metronome documents shared invoice operations for Plans and Contracts: customer-scoped retrieval of one or all invoices plus regeneration and voiding. Contract-targeted invoices may carry commit, credit, or usage details, while Plan invoices are generally scoped to plan-level billing events. Documented invoice fields include plan identity and generation-time plan custom fields, invoice adjustments, and charge sub-line items; non-tiered nonzero charges may expose a unit `price`, while tiered detail uses `tier_period` and `tiers`. The page does not specify HTTP methods, API version prefixes, pagination, target-selection mechanics, lifecycle preconditions, monetary units or currency, enum values, ordering, downstream-provider effects, or how the plan fields behave for contract invoices.
 
 ## Event-based invoice preview
@@ -164,6 +166,8 @@ Metronome's go-live checklist asks teams to understand the draft-to-grace-period
 - Related platform: [[stripe]]
 
 ## Sources
+
+- [[source-metronome-api-reference-invoices-get-an-invoice-pdf]] — bearer-authenticated PDF retrieval, required customer and invoice identifiers, binary media boundary, and generic not-found contract
 
 - [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-contract]] — draft recalculation, finalized-invoice regeneration, schedule restrictions, and same-date scheduled-invoice creation
 - [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition-examples]] — scheduled, usage, and true-up examples with table-versus-conclusion labels and reused sample identifiers

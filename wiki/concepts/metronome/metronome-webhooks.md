@@ -51,6 +51,8 @@ Metronome's go-live checklist places three checks in its webhook-and-error-handl
 
 ## Sources
 
+- [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]] — `payment_gate.external_initiate` workflow-ID correlation and the downstream outcome-reporting endpoint
+
 - [[source-github-metronome-node]] - exact Node SDK raw-body, timestamp-tolerance, HMAC, and parsing behavior
 
 - [[source-metronome-api-reference-notifications-list-system-notification-event-types]] - optional lifecycle-event webhook-publication status and its documented control boundary

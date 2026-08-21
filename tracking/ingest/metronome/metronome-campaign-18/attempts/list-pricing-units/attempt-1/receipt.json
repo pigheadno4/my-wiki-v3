@@ -1,0 +1,71 @@
+{
+  "job_id": "list-pricing-units",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome List Pricing Units API\"\ntype: source\ndate_ingested: 2026-08-21\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/settings/list-pricing-units.md\"\nraw_files:\n  - \"metronome/api-reference/settings/list-pricing-units-2026-07-13.md\"\ntags: [metronome, api, pricing-units, currencies, pagination]\n---\n\n## Overview\n\nThis API reference documents the bearer-authenticated `GET /v1/credit-types/list` endpoint on `https://api.metronome.com`. It lists fiat currency pricing units and configured custom pricing units, including non-fiat units such as AI credits. The reference defines optional cursor pagination and the successful JSON response shape, but it does not document error responses or mutation behavior.\n\n## Key takeaways\n\n- The endpoint lists all fiat currency types and configured custom pricing units; the page gives AI credits as a non-fiat example.\n- The request accepts optional `limit` and `next_page` query parameters. `limit` is an integer from 1 through 100, while `next_page` is the cursor at which the next result page starts.\n- A `200` response is JSON with required top-level `data` and `next_page` fields. `data` is an array whose item schema exposes a string `name`, UUID `id`, and boolean `is_currency`; `next_page` is a nullable string. The item properties themselves are not marked required by this schema.\n- The fixed pricing-unit identifier documented for `USD (cents)` is `2714e483-4ff1-48e4-9e25-ac732e8f24f2`. This page does not define scaling for other fiat currencies or precision and rounding for custom units.\n- Authentication uses an HTTP bearer scheme. No `4xx` or `5xx` response, error body, rate limit, retry rule, ordering guarantee, or pagination default is documented on this page.\n\n## Request and authorization\n\nCall `GET /v1/credit-types/list` against the documented production server, `https://api.metronome.com`. The OpenAPI document applies `bearerAuth` globally and defines it as an HTTP bearer scheme. The operation shows no request body.\n\nBoth query parameters are optional. `limit` sets the maximum number of returned results and is constrained to the inclusive range 1\u2013100. `next_page` is a string cursor indicating where the next page begins. The page does not document a default page size, cursor lifetime, cursor reuse, stable ordering between pages, or behavior for malformed or expired cursors.\n\n## Success response\n\nThe only documented response is `200 Success` with `application/json`. Its object schema requires `data` and `next_page`. `data` is an array; each item may expose `name` as a string, `id` as a UUID-formatted string, and `is_currency` as a boolean. Because the item schema has no `required` list, this source does not guarantee that every returned item contains all three properties. `next_page` is a nullable string.\n\nThe example returns `USD (cents)` with `is_currency: true`, a custom `cloud consumption units` entry with `is_currency: false`, and `next_page: null`. The example illustrates these values but does not establish sorting, uniqueness, total result count, or that the two-item sample is exhaustive.\n\n## Pricing-unit denomination and naming\n\nThe page states that all fiat currency types, including examples such as USD and GBP, appear alongside any configured custom pricing units. It also names AI credits as an example of charging for usage in a non-fiat pricing unit. The documented USD entry is specifically named `USD (cents)` and has ID `2714e483-4ff1-48e4-9e25-ac732e8f24f2`.\n\nThis source does not enumerate the complete fiat set, define the denomination of GBP or any other non-USD currency, specify whether identifiers are stable across environments, or define custom-unit precision, conversion, rounding, creation, update, or deletion. Its operation path and operation ID use `credit-types` terminology while the page calls the resources pricing units; the page does not explain whether those names are aliases or distinct API concepts.\n\n## Failure and behavior boundaries\n\nNo error status, error response schema, authorization-failure body, retry guidance, idempotency behavior, or rate-limit behavior is included. Because the operation is a listing endpoint with no documented mutation, this page provides no creation, update, archive, or deletion semantics. It also does not define permissions beyond bearer authentication, environment-specific availability, caching, consistency after configuration changes, or propagation timing.\n\nNo contradiction was found with the existing Metronome currency concept. That concept's broader supported-currency and non-USD denomination statements come from a separate guide; this endpoint independently establishes only the listing taxonomy, the `USD (cents)` identifier, pagination, authentication, and response schema described here.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-currencies-and-custom-pricing-units]], [[metronome-products-and-rate-cards]]\n- Related source: [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/settings/list-pricing-units-2026-07-13|2026-07-13 snapshot \u2014 pricing-unit list request, response schema, pagination, and bearer authentication]]\n",
+  "quotes": [
+    {
+      "text": "List all pricing units. All fiat currency types (for example, USD or GBP) will be included, as well as any custom pricing units that were configured. Custom pricing units can be used to charge for usage in a non-fiat pricing unit, for example AI credits.",
+      "location": "raw/metronome/api-reference/settings/list-pricing-units-2026-07-13.md:11 (listing scope and fiat/custom taxonomy)"
+    },
+    {
+      "text": "Note: The USD (cents) pricing unit is 2714e483-4ff1-48e4-9e25-ac732e8f24f2.",
+      "location": "raw/metronome/api-reference/settings/list-pricing-units-2026-07-13.md:13 (USD denomination label and identifier)"
+    },
+    {
+      "text": "      parameters:\n        - $ref: '#/components/parameters/PageLimit'\n        - $ref: '#/components/parameters/NextPage'",
+      "location": "raw/metronome/api-reference/settings/list-pricing-units-2026-07-13.md:105-107 (operation pagination parameters)"
+    },
+    {
+      "text": "                required:\n                  - data\n                  - next_page\n                properties:\n                  data:\n                    type: array\n                    items:\n                      properties:\n                        name:\n                          type: string\n                        id:\n                          type: string\n                          format: uuid\n                        is_currency:\n                          type: boolean\n                  next_page:\n                    type: string\n                    nullable: true",
+      "location": "raw/metronome/api-reference/settings/list-pricing-units-2026-07-13.md:115-132 (successful response schema)"
+    },
+    {
+      "text": "    PageLimit:\n      name: limit\n      in: query\n      description: Max number of results that should be returned\n      required: false\n      schema:\n        type: integer\n        minimum: 1\n        maximum: 100\n    NextPage:\n      name: next_page\n      in: query\n      description: Cursor that indicates where the next page of results should start.\n      required: false\n      schema:\n        type: string\n  securitySchemes:\n    bearerAuth:\n      type: http\n      scheme: bearer",
+      "location": "raw/metronome/api-reference/settings/list-pricing-units-2026-07-13.md:143-163 (query constraints and bearer authentication)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "list-pricing-units-currencies-durable-fact",
+        "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Fiat currencies and API denomination",
+        "proposed_markdown": "Metronome exposes `GET /v1/credit-types/list` as a bearer-authenticated, cursor-paginated listing of fiat currency pricing units and configured custom pricing units. A successful JSON object requires `data` and nullable `next_page`; the array-item schema exposes `name`, UUID `id`, and `is_currency`, although those item properties are not marked required. The endpoint identifies `USD (cents)` as `2714e483-4ff1-48e4-9e25-ac732e8f24f2`. This page does not enumerate the complete fiat set or define non-USD denomination, custom-unit precision, conversion, rounding, identifier stability, error responses, ordering, or propagation after configuration changes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not use this endpoint page alone to infer non-USD currency scaling; it defines only the USD (cents) label and identifier.",
+          "The data item properties are exposed by the schema but are not listed as required.",
+          "The API path uses credit-types terminology while the documentation calls the returned resources pricing units; the page does not explain the relationship."
+        ]
+      },
+      {
+        "update_id": "list-pricing-units-currencies-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-settings-list-pricing-units]] \u2014 bearer-authenticated pricing-unit enumeration, USD (cents) identifier, cursor pagination, and successful response schema",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/settings/list-pricing-units-2026-07-13.md",
+  "raw_sha256": "455c833fa65b8c698b1b431c13d55bd6a5ecb297dfb4c41b4d3cb7c81321eab1",
+  "status": "candidate_ready"
+}

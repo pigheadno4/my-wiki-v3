@@ -6,6 +6,16 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-21 — Metronome Campaign 18 completed
+
+- Result: five approved API-reference source pages from complete raw-page reads and five independent Sol reviews; all passed on attempt 1 with no retry or coordinator content repair.
+- Sources: [[source-metronome-api-reference-settings-list-pricing-units]], [[source-metronome-api-reference-rate-cards-archive-a-rate-card]], [[source-metronome-api-reference-plans-list-plans]], [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]], and [[source-metronome-api-reference-invoices-get-an-invoice-pdf]].
+- Concepts: updated currencies and custom pricing units, products and rate cards, customers and contracts, spend-threshold billing, credits and commits, webhooks, and invoicing; no new concept page was required.
+- Boundaries retained: pricing-unit fields and non-USD denomination remain incomplete; rate-card restoration and existing-contract preservation mechanics are unspecified; Plans-to-Contracts migration lacks a field or identity mapping; external payment-gate retry, ordering, and propagation are undefined; PDF media metadata does not prove legal officiality, compliance, retention, or rendering stability.
+- Independent query audit: the immutable three-page sample passed 9/9 queries; all five raw hashes, canonical candidate equality, backlinks, company/index entries, and 7/7 fact-bearing reciprocal concept targets passed, so no expansion was required.
+- Coverage after promotion: 225 collected documentation pages, 112 source summaries, and 119 raw pages without source summaries.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-18/monitor.md) and [quality audit](../tracking/ingest/metronome/metronome-campaign-18/quality-audit.md).
+
 ## 2026-08-20 — Metronome Campaign 17 completed
 
 - Result: five approved source pages from complete raw-page reads. Pricing-change evidence used one unchanged-hash targeted review; data-export cookbook, edit-contract, and revenue-recognition corrections received full independent rereviews.

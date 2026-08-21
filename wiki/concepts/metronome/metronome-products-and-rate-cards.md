@@ -25,6 +25,8 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 
 ## Rate cards and rates
 
+`POST /v1/contract-pricing/rate-cards/archive` permanently disables a rate card for new contracts, removes it from contract-creation workflows, and preserves pricing for existing contracts. The endpoint page does not define whether preservation uses a snapshot or retained reference, how later catalog changes interact with those contracts, visibility outside creation workflows, restoration, propagation timing, in-flight contract creation, idempotency, or concurrency. [[source-metronome-api-reference-rate-cards-archive-a-rate-card]]
+
 - The currency guide enumerates 18 fiat currencies and defines Metronome-specific API scaling: USD uses cents, while every other listed fiat currency uses whole units. One rate card carries one fiat currency; a product rate can use that currency or a custom pricing unit with a conversion from the underlying fiat currency. After a product rate is saved in one pricing unit, that rate's unit cannot be changed. The guide does not define replacement, effective-dating, contract migration, precision, rounding, or invoice-recalculation behavior.
 
 - Card creation accepts a name, optional description and effective-dated aliases, selected products, one fiat currency, and product rates, entitlements, and effective dates. Aliases can stand in for generated IDs during contract provisioning, but uniqueness, overlap, boundary lookup, and reuse are undocumented.
@@ -88,6 +90,8 @@ Simple contract-override targeting uses product IDs or product tags. Compound `o
 - Trial packaging can use `entitled: false` for merchant-enforced feature restriction or a time-bounded multiplier `0` for uncapped free usage, after which list pricing resumes. Overlapping-override precedence, missing-rate behavior, and automatic product gating remain unknown.
 
 ## Sources
+
+- [[source-metronome-api-reference-rate-cards-archive-a-rate-card]] — permanent new-contract disablement, preserved existing-contract pricing, and archive request/response boundaries
 
 - [[source-metronome-guides-pricing-packaging-make-pricing-changes-make-a-pricing-change]] — all-customer rate additions, package inheritance boundary, and the future-change worked-example contradiction
 - [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-or-override-a-contract]] — contract override models, entitlements, selector logic, dimensional-targeting ambiguity, and precedence

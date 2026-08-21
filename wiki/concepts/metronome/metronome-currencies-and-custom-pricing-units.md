@@ -11,6 +11,8 @@ Metronome rate cards use one fiat currency and can price products in that curren
 
 ## Fiat currencies and API denomination
 
+Metronome exposes `GET /v1/credit-types/list` as a bearer-authenticated, cursor-paginated listing of fiat currency pricing units and configured custom pricing units. A successful JSON object requires `data` and nullable `next_page`; the array-item schema exposes `name`, UUID `id`, and `is_currency`, although those item properties are not marked required. The endpoint identifies `USD (cents)` as `2714e483-4ff1-48e4-9e25-ac732e8f24f2`. This page does not enumerate the complete fiat set or define non-USD denomination, custom-unit precision, conversion, rounding, identifier stability, error responses, ordering, or propagation after configuration changes.
+
 The documented supported set is USD, AUD, BRL, CAD, CHF, CZK, EUR, GBP, INR, MXN, NGN, NOK, PLN, SEK, TRY, ZAR, NZD, and SGD. USD API values use cents, so $1.00 is `100`; every other listed fiat currency uses whole units, so EUR 10.00 is `10`, not `1000`. The API reflects this through `USD (cents)` versus an unqualified code such as `EUR`. Do not apply a universal divide-by-100 rule.
 
 > [!warning] Denomination wording
@@ -38,6 +40,8 @@ The guide does not define custom-unit creation APIs, precision, conversion formu
 - [[metronome-invoicing]]
 
 ## Sources
+
+- [[source-metronome-api-reference-settings-list-pricing-units]] — bearer-authenticated pricing-unit enumeration, USD (cents) identifier, cursor pagination, and successful response schema
 
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] — $10M, $200K, and $500K hierarchy commitment labels whose paired numeric amounts conflict with the USD-cent convention
 

@@ -1,0 +1,99 @@
+{
+  "job_id": "release-external-payment-gate-threshold-commit",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Release External Payment Gate Threshold Commit\"\ntype: source\ndate_ingested: 2026-08-21\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/credits-and-commits/release-external-payment-gate-threshold-commit.md\"\nraw_files:\n  - \"metronome/api-reference/credits-and-commits/release-external-payment-gate-threshold-commit-2026-07-13.md\"\ntags: [metronome, api, threshold-billing, payment-gating, commits, webhooks]\n---\n\n## Overview\n\nThis API reference documents the bearer-authenticated `POST /v1/contracts/commits/threshold-billing/release` operation for a threshold-billing workflow that uses an external payment gateway. The merchant, rather than Metronome, performs the payment transaction, then reports its outcome so Metronome can release or cancel the pending commit. The request correlates to `payment_gate.external_initiate` through a saved `workflow_id`; the page defines the accepted payload and a bare `200` response but leaves replay, failure recovery, ordering, and state-propagation behavior unspecified.\n\n## Key takeaways\n\n- External-gateway collection is merchant-owned: Metronome does not perform the payment-gating transaction for the client.\n- The integrator must consume `payment_gate.external_initiate`, retain its `workflow_id`, and return that workflow ID to this endpoint.\n- The endpoint is used to continue the pending workflow by releasing or cancelling the commit according to the reported external-payment outcome.\n- Both `workflow_id` and `outcome` are required properties. `workflow_id` is a UUID, while `outcome` accepts `paid`, `PAID`, `failed`, or `FAILED`.\n- The operation documents only `200 Success` and no response body, error response, or operation-specific retry behavior.\n\n## Endpoint contract\n\n| Item | Documented value |\n| --- | --- |\n| Method and path | `POST /v1/contracts/commits/threshold-billing/release` |\n| Operation ID | `releaseExternalPaymentGateThresholdCommit-v1` |\n| Authentication | Top-level HTTP bearer authentication through `bearerAuth` |\n| Request media type | `application/json` |\n| Required properties | `workflow_id`, `outcome` |\n| `workflow_id` | String with UUID format; identifies the workflow to continue |\n| `outcome` | One of `paid`, `PAID`, `failed`, or `FAILED` |\n| Documented success | `200 Success`; no response-body schema is supplied |\n\nThe request-body description says the payload identifies the workflow in progress and tells Metronome which action to take to complete it. Although the referenced payload schema requires both properties, the OpenAPI `requestBody` object itself is not marked `required: true`. The page therefore does not establish runtime behavior for an omitted body, a missing property, a malformed UUID, an unsupported outcome spelling, a null value, or an extra property.\n\n## State transition and webhook correlation\n\nThe external gateway path begins when the integrator receives `payment_gate.external_initiate`. Its `workflow_id` is the documented correlation handle for the later API call and must be saved. The endpoint then uses the external-payment outcome to release or cancel the commit that remains pending. The schema's four outcome values show accepted case variants for the two outcomes, but the page does not define a normalization rule beyond that enum.\n\nThe page does not define whether one workflow ID always maps to exactly one pending commit, whether it is single-use or expires, or how the pending commit can be queried before completion. It also does not say whether a generic webhook notification ID can substitute for the workflow ID; only the `workflow_id` named by this event is documented for correlation.\n\n## Idempotency, retries, and failures\n\nThis endpoint page does not document a uniqueness field, an `Idempotency-Key` example, or operation-specific replay semantics. The separate API-wide idempotency reference says POST operations can use `Idempotency-Key`, but this page does not resolve what happens when the same workflow is submitted twice, when identical and conflicting outcomes race, or when a caller changes keys after an ambiguous response. Implementers should therefore apply the API-wide idempotency guidance without inferring that the workflow itself is safely repeatable.\n\nOnly `200 Success` is listed. No validation, authentication, authorization, not-found, conflict, rate-limit, or server-error response is attached to this operation, and there is no error-body schema here. The page gives no recovery procedure when external payment succeeds but the API call times out or fails, when delivery of `payment_gate.external_initiate` is duplicated or delayed, or when a failed report must be corrected. Webhook-delivery retry, payment retry, and this API call's retry are separate concerns.\n\n## Ordering, concurrency, and propagation boundaries\n\nThe source supplies no ordering guarantee between the external-initiation event, the payment provider's result, this API call, and any later Metronome event. It does not define concurrent calls for one workflow, first-writer versus last-writer behavior, atomicity, conflicting outcomes, or a lock on the pending commit.\n\nA successful `200` has no documented response body and no timing guarantee for when release or cancellation becomes visible. The page does not define propagation to available commit balance, ledger entries, invoices, contract reads, usage rating, product access, dashboards, exports, or follow-up webhooks. A transport-level success must therefore not be generalized into a documented downstream-settlement or visibility guarantee.\n\n## Documentation boundaries\n\nThis endpoint is specifically for threshold billing with a payment gateway Metronome does not support. It does not describe the Stripe-managed gate, payment-provider object lifecycle, amount or currency charged, how the pending commit was created, payment authentication, refunds, chargebacks, or merchant application access control. The existing spend-threshold guide agrees on the external release-or-cancel flow; no contradiction was found.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-spend-threshold-billing]], [[metronome-credits-and-commits]], [[metronome-webhooks]], [[metronome-api-idempotency]]\n- Related sources: [[source-metronome-guides-customers-billing-optimize-customer-experience-set-customer-spend-control]], [[source-metronome-guides-platform-configuration-setup-webhooks]], [[source-metronome-api-reference-idempotency]], [[source-metronome-api-reference-status-codes]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/credits-and-commits/release-external-payment-gate-threshold-commit-2026-07-13|2026-07-13 snapshot \u2014 external-payment outcome endpoint, workflow correlation, and request schema]]\n",
+  "quotes": [
+    {
+      "text": "> If using threshold billing with an external payment gateway, Metronome does not facilitate the payment gating process on behalf of the client. As a result, clients must facilitate the transaction themselves. This end-point is used to either release or cancel the commit pending on the outcome of the external payment attempt.",
+      "location": "line 11"
+    },
+    {
+      "text": "To release the commit, you must pass the `workflow_id` provided in the `payment_gate.external_initiate` webhook.",
+      "location": "line 13"
+    },
+    {
+      "text": "  /v1/contracts/commits/threshold-billing/release:\n    post:\n      tags:\n        - Credits and commits\n      summary: Release external payment gate threshold commit",
+      "location": "lines 96-100"
+    },
+    {
+      "text": "      requestBody:\n        description: >-\n          Information to identify the workflow that is in progress to release\n          the commit, and what action we should take to complete the workflow.\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/ExternalPaymentGateThresholdCommitPayload'\n            example:\n              workflow_id: 5576ba1f-4a33-b473-3f05-6162d87b4a33\n              outcome: paid\n      responses:\n        '200':\n          description: Success",
+      "location": "lines 124-137"
+    },
+    {
+      "text": "    ExternalPaymentGateThresholdCommitPayload:\n      type: object\n      required:\n        - workflow_id\n        - outcome\n      properties:\n        workflow_id:\n          type: string\n          format: uuid\n          description: ID of the workflow to continue\n        outcome:\n          type: string\n          enum:\n            - paid\n            - PAID\n            - failed\n            - FAILED\n          description: The outcome of the external payment gate",
+      "location": "lines 140-157"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "external-threshold-release-endpoint-contract",
+        "target_path": "wiki/concepts/metronome/metronome-spend-threshold-billing.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Payment gates",
+        "proposed_markdown": "`POST /v1/contracts/commits/threshold-billing/release` continues an external payment-gate workflow by using the saved `payment_gate.external_initiate` `workflow_id` to release or cancel its pending commit according to the external-payment outcome. The request requires the UUID `workflow_id` and an outcome of `paid`, `PAID`, `failed`, or `FAILED`; its operation page supplies only a bare `200`. It does not define workflow expiry or single-use behavior, duplicate or conflicting submissions, operation-specific retry/failure recovery, event ordering, concurrency, or propagation to balance, ledger, invoice, read, or webhook surfaces. [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not treat a 200 response as proof that downstream commit balance, ledger, invoice, access, export, or webhook state is already visible.",
+          "Do not conflate webhook-delivery retry, external-payment retry, and retry of this POST operation."
+        ]
+      },
+      {
+        "update_id": "external-threshold-release-spend-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-spend-threshold-billing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]] \u2014 external workflow correlation, paid/failed outcome schema, and release-or-cancel API boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "external-threshold-release-credits-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]] \u2014 pending-commit release or cancellation, required external workflow ID, accepted outcome values, and recovery unknowns",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "This endpoint does not define the pending commit's pre-completion visibility, balance availability, schedules, ledger state, or invoice effects."
+        ]
+      },
+      {
+        "update_id": "external-threshold-release-webhook-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]] \u2014 `payment_gate.external_initiate` workflow-ID correlation and the downstream outcome-reporting endpoint",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "Use the event's `workflow_id` for the release call; this page does not say that a generic webhook notification ID is interchangeable."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/release-external-payment-gate-threshold-commit-2026-07-13.md",
+  "raw_sha256": "d71b3d777b07ad270a327b71418430604aaf53d74ca684e16db2442140883938",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,62 @@
+{
+  "schema_version": 2,
+  "campaign_id": "metronome-campaign-18",
+  "provider": "metronome",
+  "mode": "dry_run",
+  "review_policy": "per_page",
+  "worker_concurrency": 3,
+  "review_concurrency": 3,
+  "max_attempts": 3,
+  "audit_job_ids": [
+    "list-pricing-units",
+    "release-external-payment-gate-threshold-commit",
+    "list-plans"
+  ],
+  "jobs": [
+    {
+      "job_id": "list-pricing-units",
+      "raw_path": "raw/metronome/api-reference/settings/list-pricing-units-2026-07-13.md",
+      "raw_sha256": "455c833fa65b8c698b1b431c13d55bd6a5ecb297dfb4c41b4d3cb7c81321eab1",
+      "source_target": "wiki/sources/metronome/source-metronome-api-reference-settings-list-pricing-units.md",
+      "canonical_url": "https://docs.metronome.com/api-reference/settings/list-pricing-units.md",
+      "recommended_worker_tier": "standard",
+      "routing_reason": "Short read-only listing endpoint with one pricing-unit taxonomy and no metadata-visible state transition."
+    },
+    {
+      "job_id": "archive-a-rate-card",
+      "raw_path": "raw/metronome/api-reference/rate-cards/archive-a-rate-card-2026-07-13.md",
+      "raw_sha256": "f6b0e7b1106cedf09ad2bd4c4a0d86eb7668e9eb489c88fbe562edcdc5ce87ac",
+      "source_target": "wiki/sources/metronome/source-metronome-api-reference-rate-cards-archive-a-rate-card.md",
+      "canonical_url": "https://docs.metronome.com/api-reference/rate-cards/archive-a-rate-card.md",
+      "recommended_worker_tier": "strong",
+      "routing_reason": "Archival changes future availability while claiming preservation of existing pricing, so lifecycle, propagation, and failure boundaries require stronger first-pass judgment."
+    },
+    {
+      "job_id": "list-plans",
+      "raw_path": "raw/metronome/api-reference/plans/list-plans-2026-07-13.md",
+      "raw_sha256": "4ce4c0e36644804bdaa93e069feb7125010a19241685f68fcad3f3a98e580722",
+      "source_target": "wiki/sources/metronome/source-metronome-api-reference-plans-list-plans.md",
+      "canonical_url": "https://docs.metronome.com/api-reference/plans/list-plans.md",
+      "recommended_worker_tier": "standard",
+      "routing_reason": "Short read-only deprecated Plans listing endpoint whose main cross-source boundary is migration toward Contracts."
+    },
+    {
+      "job_id": "release-external-payment-gate-threshold-commit",
+      "raw_path": "raw/metronome/api-reference/credits-and-commits/release-external-payment-gate-threshold-commit-2026-07-13.md",
+      "raw_sha256": "d71b3d777b07ad270a327b71418430604aaf53d74ca684e16db2442140883938",
+      "source_target": "wiki/sources/metronome/source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit.md",
+      "canonical_url": "https://docs.metronome.com/api-reference/credits-and-commits/release-external-payment-gate-threshold-commit.md",
+      "recommended_worker_tier": "strong",
+      "routing_reason": "Webhook-correlated external-payment outcome drives release or cancellation of a pending commit, making state-transition and recovery semantics high risk."
+    },
+    {
+      "job_id": "get-an-invoice-pdf",
+      "raw_path": "raw/metronome/api-reference/invoices/get-an-invoice-pdf-2026-07-13.md",
+      "raw_sha256": "65bd69593012116d503cc714db1980786a482379e44bc85e87ec491160d3f69e",
+      "source_target": "wiki/sources/metronome/source-metronome-api-reference-invoices-get-an-invoice-pdf.md",
+      "canonical_url": "https://docs.metronome.com/api-reference/invoices/get-an-invoice-pdf.md",
+      "recommended_worker_tier": "standard",
+      "routing_reason": "Read-only binary invoice retrieval endpoint; the worker must preserve response-media and identifier boundaries without inferring invoice officiality or compliance."
+    }
+  ]
+}

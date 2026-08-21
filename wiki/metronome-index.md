@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 107 |
-| Raw pages without source summaries | 124 |
+| Source summaries ingested | 112 |
+| Raw pages without source summaries | 119 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -22,6 +22,12 @@ Operational evidence:
 - [2026-07-13 collection manifest](../tracking/collections/metronome/runs/2026-07-13T100930-manifest.md)
 
 ## Sources
+
+- [[source-metronome-api-reference-settings-list-pricing-units]] — pricing-unit enumeration, USD cents identifier, pagination, and response-schema boundaries
+- [[source-metronome-api-reference-rate-cards-archive-a-rate-card]] — permanent new-contract disablement and preservation of existing-contract pricing
+- [[source-metronome-api-reference-plans-list-plans]] — deprecated Plans listing schema and Contracts migration boundary
+- [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]] — external payment outcome correlation and pending-commit release or cancellation
+- [[source-metronome-api-reference-invoices-get-an-invoice-pdf]] — PDF retrieval, required identifiers, response-media, and generic not-found boundaries
 
 - [[source-metronome-guides-pricing-packaging-make-pricing-changes-make-a-pricing-change]] — package-based cohort pricing changes, alias transitions, and worked-example contradictions
 - [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-or-override-a-contract]] — contract override models, dimensional targeting, precedence, and create-only boundary

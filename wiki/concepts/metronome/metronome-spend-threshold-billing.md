@@ -17,11 +17,15 @@ Stripe collection can use a Stripe Billing invoice or direct PaymentIntent and r
 
 A payment gate can delay commit release. With `EXTERNAL`, the integrator receives `payment_gate.external_initiate`, stores its `workflow_id`, collects through its own gateway, and calls the threshold-release endpoint to release the commit on success or cancel it on failure. The source does not define ordinary Stripe failure events, retries, pending-commit visibility, event ordering, workflow expiry, or idempotency.
 
+`POST /v1/contracts/commits/threshold-billing/release` continues an external payment-gate workflow by using the saved `payment_gate.external_initiate` `workflow_id` to release or cancel its pending commit according to the external-payment outcome. The request requires the UUID `workflow_id` and an outcome of `paid`, `PAID`, `failed`, or `FAILED`; its operation page supplies only a bare `200`. It does not define workflow expiry or single-use behavior, duplicate or conflicting submissions, operation-specific retry/failure recovery, event ordering, concurrency, or propagation to balance, ledger, invoice, read, or webhook surfaces. [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]]
+
 ## Documentation boundaries
 
 The source does not define spend aggregation across contracts, currency or amount denomination, equality behavior, reset periods, credit/commit treatment in the spend calculation, access enforcement, notification timing, or complete create/edit schemas. Its creation API link points to edit-contract documentation and its edit API link points to authorization, so dedicated current API references remain authoritative.
 
 ## Sources
+
+- [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]] — external workflow correlation, paid/failed outcome schema, and release-or-cancel API boundaries
 
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-set-customer-spend-control]] — contract configuration, updates, payment gates, and external collection
 

@@ -29,6 +29,10 @@ The implementation guide states that a customer needs at least one contract befo
 
 ## Contract and invoice behavior
 
+### Deprecated Plans listing boundary
+
+`GET /v1/plans` is a deprecated bearer-authenticated Plans endpoint that lists legacy plan records with optional cursor pagination. The response requires a plan array plus a nullable `next_page`; each plan requires a UUID `id`, `name`, and `description`, with an optional string-valued custom-field map. Metronome directs new clients to Contracts, but this source does not name an equivalent Contracts route, define a Plan-to-Contract field or identity mapping, supply a migration procedure, or state a removal date.
+
 ### Historical invoice migration
 
 A migration can recreate a contract with its original start and starting credit or commit balances while setting `usage_statement_schedule.invoice_generation_starting_at` to the first period Metronome should generate. In the worked example, a June 1 contract and August 1 generation start produce an August draft but no June or July invoices; those earlier periods are added through `/v1/contracts/createHistoricalInvoices`. The source does not establish whether imports appear in contract edit history, mutate contract terms after creation, or may overlap existing Metronome invoice periods.
@@ -124,6 +128,8 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - Commercial-design planning should make prepaid-versus-arrears terms, seat and usage interaction, commitments and overages, ramp and multi-year structures, exceeded-limit policy, and segment-specific payment terms explicit. The planning guide does not itself establish supported contract fields, lifecycle behavior, or enforcement.
 
 ## Sources
+
+- [[source-metronome-api-reference-plans-list-plans]] — deprecated `GET /v1/plans` route, bearer authentication, cursor pagination, legacy Plan response schema, and Contracts migration boundary
 
 - [[source-metronome-guides-pricing-packaging-make-pricing-changes-make-a-pricing-change]] — cohort grandfathering and individual re-provision-versus-edit pricing routes
 - [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-or-override-a-contract]] — customer-specific contract override types, targeting, precedence, and undocumented edit lifecycle

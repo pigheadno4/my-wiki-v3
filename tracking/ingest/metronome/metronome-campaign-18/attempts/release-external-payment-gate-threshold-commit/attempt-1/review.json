@@ -1,0 +1,17 @@
+{
+  "job_id": "release-external-payment-gate-threshold-commit",
+  "attempt": 1,
+  "verdict": "approved",
+  "reason": "Independent complete-source review passed. The immutable raw hashes to d71b3d777b07ad270a327b71418430604aaf53d74ca684e16db2442140883938, matching the trusted review order and persisted receipt. The candidate accurately documents the globally bearer-authenticated POST /v1/contracts/commits/threshold-billing/release operation, its workflow-ID correlation to payment_gate.external_initiate, the ExternalPaymentGateThresholdCommitPayload schema with required workflow_id and outcome properties, the UUID format and exact paid/PAID/failed/FAILED enum, and the sole operation-listed bare 200 response. It correctly preserves the important OpenAPI nuance that the requestBody object itself is not marked required and does not infer omitted-body, invalid-UUID, unsupported-outcome, null, extra-property, authentication, authorization, not-found, conflict, rate-limit, or server-error runtime behavior. The release-or-cancel description and related spend-threshold source support the paid-versus-failed transition framing, while the candidate does not invent a pending-commit query surface, workflow cardinality, expiry, single-use behavior, generic-notification-ID substitution, downstream visibility, ledger or invoice timing, access effects, follow-up events, atomicity, concurrency ordering, duplicate-call handling, or conflicting-outcome resolution. Its retry section correctly treats the separate API-wide Idempotency-Key guidance as broader context rather than proof that workflow replay is inherently safe, and it keeps webhook-delivery retry, external-payment retry, and this POST operation's retry distinct. Generic webhook context confirms at-least-once delivery and notification-ID deduplication but does not establish endpoint-specific ordering or recovery; no contradiction with the existing spend-threshold, credits-and-commits, webhook, or idempotency concepts was found. All four shared suggestions are warranted at existing anchors: the spend-threshold fact adds the endpoint contract and explicit unknowns, and the three reciprocal links are required because the source contributes durable facts to spend-threshold billing, commit lifecycle, and webhook correlation. Mechanical review also passed: the canonical URL exactly matches the trusted worker input and raw Source URL, raw_files and the path-qualified raw backlink are exact, the target is absent, candidate.md is byte-equal to receipt.source_page, suggestions.json equals receipt.suggestions, the worker artifact equals the persisted receipt, all five grounding quotes are exact raw substrings at their cited locations, and every candidate wikilink resolves. No correction is required.",
+  "required_changes": [],
+  "review_scope": "full",
+  "retry_review_scope": null,
+  "shared_update_decisions": [
+    "external-threshold-release-endpoint-contract",
+    "external-threshold-release-spend-source-link",
+    "external-threshold-release-credits-source-link",
+    "external-threshold-release-webhook-source-link"
+  ],
+  "reviewer_identity": "/root/c18_r_release_commit",
+  "reviewer_model": "gpt-5.6-sol"
+}
