@@ -1,6 +1,6 @@
 # GitHub repository collection index
 
-Generated: `2026-08-21`
+Generated: `2026-08-23`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -29,7 +29,7 @@ Generated: `2026-08-21`
 | braintree | `braintree/graphql-api` | tier1 | commit / commit-tree-v1 | monthly | 2026-08-11 | ingested | 2026-09-11 | `wait` |
 | braintree | `braintree/braintree_node` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-08-09 | ingested | 2026-09-09 | `wait` |
 | braintree | `braintree/braintree_php` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-19 | ingested | 2026-09-19 | `wait` |
-| braintree | `braintree/braintree_ruby` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
+| braintree | `braintree/braintree_ruby` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-23 | ingested | 2026-09-23 | `wait` |
 | braintree | `braintree/credit-card-type` | tier3 | semver-tags | monthly | - | - | - | `disabled` |
 | braintree | `braintree/mobile-sdk-tooling` | tier3 | commit | on-demand | - | - | - | `disabled` |
 | braintree | `braintree/popup-bridge-android` | tier3 | semver-tags | monthly | - | - | - | `disabled` |

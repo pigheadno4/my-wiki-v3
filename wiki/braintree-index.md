@@ -16,6 +16,8 @@ Operations history: [[braintree-log]]
 - [[changelog-github-braintree-node]] - package-qualified Braintree Node release ledger beginning at `3.39.0` (github-repo, 2026-08-09)
 - [[source-github-braintree-php]] - cumulative `braintree_php@6.37.0` PHP gateway knowledge: client tokens, vault, transactions, PayPal/Venmo, subscriptions, webhooks, credentials, and error semantics (github-repo, 2026-08-19)
 - [[changelog-github-braintree-php]] - package-qualified Braintree PHP release ledger beginning at `6.37.0` (github-repo, 2026-08-19)
+- [[source-github-braintree-ruby]] - cumulative `braintree@4.40.0` Ruby gateway knowledge: client tokens, vault, transactions, PayPal/Venmo, 3DS, subscriptions, webhooks, runtime, and error semantics (github-repo, 2026-08-23)
+- [[changelog-github-braintree-ruby]] - package-qualified Braintree Ruby release ledger beginning at `4.40.0` (github-repo, 2026-08-23)
 - [[source-github-braintree-web]] — cumulative `braintree-web` implementation knowledge through `3.144.0`: Hosted Fields, 3DS, PayPal v6, View/Edit Funding Instrument, Venmo, wallets, local payments, and decision-support components (github-repo, 2026-07-28)
 - [[changelog-github-braintree-web]] — package-qualified Braintree Web release ledger from `3.143.0` through `3.144.0` (github-repo, 2026-07-28)
 - [[source-github-braintree-web-drop-in]] - `braintree-web-drop-in@1.47.0` prebuilt UI, payment methods, vault behavior, 3DS, localization, and migration boundary (github-repo, 2026-07-28)
@@ -31,7 +33,7 @@ Operations history: [[braintree-log]]
 
 ## Concepts
 
-- [[braintree-server-sdk]] - shared server-side gateway boundary with independent Node.js and PHP package evidence
+- [[braintree-server-sdk]] - shared server-side gateway boundary with independent Node.js, PHP, and Ruby package evidence
 - [[braintree-web-sdk]] — modular client/nonce architecture and exact-version evidence boundaries
 - [[braintree-web-drop-in]] - prebuilt checkout UI, pinned SDK dependency, and scheduled deprecation
 - [[braintree-android-sdk]] - native Android request/launcher/result architecture, PayPal/Venmo behavior, and independently versioned Drop-in boundary

@@ -150,6 +150,31 @@
   Release: [manifest](../../raw/github/braintree/braintree-web/releases/braintree-web/3.144.0/2026-07-28/manifest.json)
   Comparison: [manifest](repos/braintree/braintree-web/comparisons/braintree-web/3.143.0--3.144.0/comparison.json)
 
+## `github-23d59ffe8258788624b8`
+
+- Repository: `braintree/braintree_ruby`
+- SHA: `1217992763cc13f33dbd8b6c51ad2ae058ddd2a8`
+- Collection date: `2026-08-23`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_ruby/snapshots/2026-08-23-1217992/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_ruby/ingest-packets/github-23d59ffe8258788624b8/packet.md)
+- Review priority: `normal`
+- Required reading: `204` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree@4.40.0` (recommended `full`)
+  Release: [manifest](../../raw/github/braintree/braintree_ruby/releases/braintree/4.40.0/2026-08-23/manifest.json)
+  Comparison: Not applicable
+
 ## `github-28afa4b70001aa3c42da`
 
 - Repository: `paypal/postman-collections`

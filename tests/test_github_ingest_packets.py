@@ -1126,6 +1126,7 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "ios/StripeSdk.xcodeproj/xcshareddata/xcschemes/Tests.xcscheme": "<Scheme />\n",
             "ios/StripeSdk.xctestplan": "{}\n",
             "widget.podspec": "Pod::Spec.new do |spec|\nend\n",
+            "braintree.gemspec": "Gem::Specification.new do |spec|\nend\n",
         }
         prior = {
             "package.json": self.manifest_content("10.0.0"),

@@ -1,13 +1,13 @@
 ---
 title: "Braintree"
 type: company
-tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, android-sdk, ios-sdk]
-source_count: 9
+tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk]
+source_count: 10
 ---
 
 ## Overview
 
-Braintree is represented in this wiki by nine independently tracked repositories: the GraphQL API contract, Node.js and PHP server SDKs, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, native Braintree Android and iOS SDKs, and separately versioned Android and iOS Drop-in UIs. Client SDKs produce payment-method nonces for server processing; the server SDKs perform gateway operations. The GraphQL schema describes a separate API contract. Their commit or package identities and evidence histories remain separate.
+Braintree is represented in this wiki by ten independently tracked repositories: the GraphQL API contract, Node.js, PHP, and Ruby server SDKs, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, native Braintree Android and iOS SDKs, and separately versioned Android and iOS Drop-in UIs. Client SDKs produce payment-method nonces for server processing; the server SDKs perform gateway operations. The GraphQL schema describes a separate API contract. Their commit or package identities and evidence histories remain separate.
 
 ## GraphQL API Contract
 
@@ -26,6 +26,12 @@ The server SDK does not render checkout. Browser or native SDKs collect approval
 `braintree_php@6.37.0` provides PHP gateway configuration, client-token generation, customer and payment-method vault operations, transaction authorization and settlement, refunds and voids, PayPal and Venmo instruments, plans and subscriptions, and signed webhook parsing.
 
 The PHP package requires PHP 7.3 or later and supports key credentials or OAuth credentials without mixing them. Webhook signature verification specifically requires public/private API keys. The exact release hardens Address and Dispute path IDs, adds PayPal email validation codes, and adds preferred-payment-method context to client-token generation.
+
+## Ruby Server SDK Surface
+
+`braintree@4.40.0` provides Ruby gateway configuration, client-token generation, customer and payment-method vault operations, transaction authorization and settlement, refunds and voids, PayPal and Venmo instruments, plans and subscriptions, and signed webhook parsing.
+
+The active 4.x package requires Ruby 2.6 or later and supports key credentials or OAuth credentials without mixing them. Its exact release hardens Address and Dispute path IDs, adds PayPal email validation codes, and adds network-qualified 3DS pass-through fields. Unlike the retained Node and PHP baselines, its client-token signature does not expose `preferredPaymentMethodToken`.
 
 ## Web SDK Surface
 
@@ -73,11 +79,12 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Knowledge Status
 
-- Ingested cumulative GitHub repository sources: 9
-- Ingested package releases: 9
+- Ingested cumulative GitHub repository sources: 10
+- Ingested package releases: 10
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`
 - Latest retained Braintree Node release: `braintree@3.39.0` at `7a9270aaf31eb87819add64a768652243f90007c`
 - Latest retained Braintree PHP release: `braintree_php@6.37.0` at `0f53ece38397c9fed05b94620634a5a23ef8ee48`
+- Latest retained Braintree Ruby release: `braintree@4.40.0` at `1217992763cc13f33dbd8b6c51ad2ae058ddd2a8`
 - Latest retained Braintree Web release: `braintree-web@3.144.0` at `41460fba05c1ea1222e795b36a10765a6699b8e7`
 - Latest retained Drop-in release: `braintree-web-drop-in@1.47.0` at `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`
 - Latest retained Android release: `braintree-android@5.30.0` at `51f183a48557d0fd00eefa541712df0c4f21ee28`
@@ -93,6 +100,8 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - [[changelog-github-braintree-node]] - package-qualified Node.js release ledger
 - [[source-github-braintree-php]] - cumulative PHP server SDK implementation baseline
 - [[changelog-github-braintree-php]] - package-qualified PHP release ledger
+- [[source-github-braintree-ruby]] - cumulative Ruby server SDK implementation baseline
+- [[changelog-github-braintree-ruby]] - package-qualified Ruby release ledger
 - [[source-github-braintree-web]] — cumulative Braintree Web implementation baseline
 - [[changelog-github-braintree-web]] — package-qualified release ledger
 - [[source-github-braintree-web-drop-in]] - cumulative Drop-in implementation baseline

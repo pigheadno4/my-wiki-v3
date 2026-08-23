@@ -6,6 +6,14 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-23] ingest | braintree/braintree_ruby `braintree@4.40.0`
+
+- Approved and processed work item `github-23d59ffe8258788624b8` in full mode at exact SHA `1217992763cc13f33dbd8b6c51ad2ae058ddd2a8`.
+- Read the complete 204-path evidence packet covering the 201-file, 503,484-byte retained implementation capsule plus release records; the packet had no evidence gaps or unclassified changes.
+- Established the cumulative Ruby server SDK source and package-qualified release ledger for configuration, client tokens, nonces and vaulting, transaction lifecycle and idempotency, PayPal/Venmo, cards and 3DS, subscriptions, webhooks, runtime, and error semantics.
+- Isolated exact `4.40.0` scope to PayPal email validation codes, 3DS pass-through network fields, and Address/Dispute path-traversal hardening.
+- Preserved a cross-language difference: retained Node and PHP client-token gateways expose `preferredPaymentMethodToken`, while Ruby `4.40.0` does not.
+
 ## [2026-08-19] ingest | braintree/braintree_php `braintree_php@6.37.0`
 
 - Approved and processed work item `github-118cf7cd94ffcd51ebd3` in full mode at exact SHA `0f53ece38397c9fed05b94620634a5a23ef8ee48`.

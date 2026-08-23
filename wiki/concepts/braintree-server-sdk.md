@@ -11,7 +11,7 @@ Braintree server SDKs connect a merchant backend to the Braintree Gateway. Clien
 
 ## Shared Integration Model
 
-The independently retained Node and PHP packages expose the same broad boundary through language-specific APIs:
+The independently retained Node, PHP, and Ruby packages expose the same broad boundary through language-specific APIs:
 
 - generate client tokens for browser or native SDK initialization;
 - create and manage customers and vaulted payment methods;
@@ -32,8 +32,9 @@ Both retained SDKs support merchant API-key credentials and OAuth access tokens 
 
 - `braintree@3.39.0` at SHA `7a9270aaf31eb87819add64a768652243f90007c` is the retained Node.js baseline.
 - `braintree_php@6.37.0` at SHA `0f53ece38397c9fed05b94620634a5a23ef8ee48` is the retained PHP baseline.
+- `braintree@4.40.0` at SHA `1217992763cc13f33dbd8b6c51ad2ae058ddd2a8` is the retained Ruby baseline.
 
-Both baselines expose `preferredPaymentMethodToken` during client-token generation and warn that legacy Venmo SDK parameters are unsupported in favor of Pay with Venmo. These matching findings increase confidence in the cross-language gateway contract, but current enablement and client experience still require client-SDK and product documentation evidence.
+The Node and PHP baselines expose `preferredPaymentMethodToken` during client-token generation; the Ruby `4.40.0` client-token signature does not. All three warn that legacy Venmo SDK parameters are unsupported in favor of Pay with Venmo. This confirms the broad gateway contract while also demonstrating why optional fields must remain package-qualified. Current enablement and client experience still require client-SDK and product documentation evidence.
 
 ## Related
 
@@ -41,6 +42,8 @@ Both baselines expose `preferredPaymentMethodToken` during client-token generati
 - [[changelog-github-braintree-node]] - Node.js package release ledger
 - [[source-github-braintree-php]] - PHP server SDK implementation evidence
 - [[changelog-github-braintree-php]] - PHP package release ledger
+- [[source-github-braintree-ruby]] - Ruby server SDK implementation evidence
+- [[changelog-github-braintree-ruby]] - Ruby package release ledger
 - [[braintree-web-sdk]] - browser tokenization and nonce handoff
 - [[braintree-android-sdk]] - native Android nonce handoff
 - [[braintree-ios-sdk]] - native iOS nonce handoff

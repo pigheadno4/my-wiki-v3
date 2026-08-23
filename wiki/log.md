@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-23] ingest | GitHub braintree/braintree_ruby - `braintree@4.40.0`
+
+- Full-ingested work item `github-23d59ffe8258788624b8` at exact SHA `1217992763cc13f33dbd8b6c51ad2ae058ddd2a8` after serial full reading of all 204 required evidence paths.
+- Added cumulative and package-qualified sources for the Ruby server SDK covering client tokens, vaulting, transactions and idempotency, PayPal/Venmo, 3DS, subscriptions, webhooks, runtime, and errors.
+- Preserved checkout scope, exact-release security findings, experimental customer-recommendation boundaries, and the missing Ruby `preferredPaymentMethodToken` field versus retained Node and PHP baselines.
+
 ## [2026-08-21] ingest | GitHub paypal/paypal-sdk-release - `@paypal/sdk-release@5.0.569`
 
 - Full-ingested work item `github-7afbbbad6ed794ece5d5` at exact SHA `71e5116c56355a60bc8af337720116047d4d6ab8` after serial full reading of all 14 required evidence paths.

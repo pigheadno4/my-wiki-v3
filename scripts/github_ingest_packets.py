@@ -1149,6 +1149,7 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
                 ".gradle",
                 ".gradle.kts",
                 ".entitlements",
+                ".gemspec",
                 ".modulemap",
                 ".podspec",
                 ".plist",
