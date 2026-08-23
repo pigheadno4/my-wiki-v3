@@ -66,6 +66,9 @@ def worker_orders(
                 "Copy canonical_url exactly into source_page frontmatter.",
                 "Return exactly result_contract.top_level_keys and no other top-level keys.",
                 "Ensure every quote has non-empty text and location.",
+                "For OpenAPI pages, distinguish requestBody requiredness, required payload properties, and additionalProperties behavior; do not infer omitted-body or unknown-field behavior.",
+                "For every POST operation, check the existing Metronome API-wide idempotency authority and separate its guarantees from endpoint-specific unknowns.",
+                "For each durable fact, audit every relevant existing Metronome concept and provide reciprocal source-link suggestions; do not stop after the first plausible concept.",
             ],
             **({"retry_context": deepcopy(job["retry_context"])} if job["attempt"] > 0 and "retry_context" in job else {}),
             **{

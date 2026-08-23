@@ -55,8 +55,13 @@ For coordinator-controlled ingest, dispatch the generated worker order without r
 - Copy `canonical_url` exactly into the source-page frontmatter; do not substitute the raw page's fetch URL.
 - Return exactly the top-level keys listed in `result_contract.top_level_keys`.
 - Give every grounding quote non-empty `text` and `location` values.
+- For OpenAPI pages, distinguish the enclosing `requestBody` requiredness from required properties inside its payload schema, and do not infer unknown-field behavior when `additionalProperties` is unspecified.
+- For every POST operation, check the existing Metronome API-wide idempotency authority and separate its guarantees from endpoint-specific retry, concurrency, freshness, and recovery unknowns.
+- For each durable fact, audit every relevant existing Metronome concept and propose the required reciprocal source links instead of stopping after the first plausible concept.
 
 These are submission checks, not new campaign state. The existing validator remains the fail-closed authority, and an invalid result follows the existing bounded retry path.
+
+These three semantic checks were added after Campaign 19. They are worker reminders, not deterministic proof and not a replacement for independent review.
 
 ## Parallel-review campaign allocation
 
