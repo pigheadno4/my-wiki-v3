@@ -25,6 +25,10 @@ Metronome's operational allowlisting guide tells customers to poll `getServices`
 
 Metronome says almost no part of its system depends on long-lived API keys or static security tokens. Its engineers mint credentials daily, those credentials last 12 hours, and long-lived AWS credentials are not stored on developer machines.
 
+## Billing-provider credential submission boundary
+
+The bearer-authenticated account-level setup endpoint accepts an open provider-specific configuration object. Its examples submit AWS role and external identifiers, Azure client and tenant IDs plus `raw_azure_client_secret`, and GCP provider ID plus `raw_gcp_workload_identity_federation_config`. The page does not specify caller role or token scope, credential creation and ownership, validation, storage encryption, redaction, rotation, independent update, deletion, forwarding to providers, or audit attribution. A separate listing source says sensitive configuration may be omitted from responses, but setup success returns only `delivery_method_id` and does not establish a credential-retrieval surface. [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]]
+
 ## Customer API tokens
 
 Metronome's public API uses bearer tokens created and archived through the dashboard. Tokens inherit the creating user's permissions by default and can be restricted by access level, environment, or endpoint through a Metronome representative. The full token is visible only at creation, the SDKs default to `METRONOME_BEARER_TOKEN`, and archiving a token cannot be undone.
@@ -64,6 +68,8 @@ Metronome's go-live checklist recommends creating and securely storing a product
 - [[source-metronome-api-reference-authentication]] — customer bearer-token creation, use, scoping, and archival
 - [[source-metronome-api-reference-api-quickstart]] — first-connection token handling and SDK environment-variable setup
 - [[source-metronome-guides-platform-configuration-role-based-access-rbac]] — built-in roles, SSO claims, default denial, and token role selection
+
+- [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]] — bearer-authenticated submission of provider identity and secret-bearing configuration with unspecified custody and rotation semantics
 
 ## Related
 

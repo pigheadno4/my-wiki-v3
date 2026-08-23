@@ -1,0 +1,50 @@
+{
+  "action": "spawn_worker",
+  "job_id": "list-balances",
+  "attempt": 3,
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/list-balances-2026-07-13.md",
+  "raw_sha256": "7ffde117cacffadd3abb40817c718eeb46374b86ef2cb527db6e9fbe37cc048d",
+  "source_target": "wiki/sources/metronome/source-metronome-api-reference-credits-and-commits-list-balances.md",
+  "canonical_url": "https://docs.metronome.com/api-reference/credits-and-commits/list-balances.md",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location.",
+    "For OpenAPI pages, distinguish requestBody requiredness, required payload properties, and additionalProperties behavior; do not infer omitted-body or unknown-field behavior.",
+    "For every POST operation, check the existing Metronome API-wide idempotency authority and separate its guarantees from endpoint-specific unknowns.",
+    "For each durable fact, audit every relevant existing Metronome concept and provide reciprocal source-link suggestions; do not stop after the first plausible concept."
+  ],
+  "retry_context": {
+    "prior_attempt": 2,
+    "review_scope": "targeted",
+    "required_changes": [
+      "Correct the Archive visibility ambiguity sentence that says not to infer whether credits from archived contracts are themselves archived. The existing contract-archive authority establishes that associated commits and credits are archived with the contract. Preserve that lifecycle fact while retaining the list endpoint's actual unknowns: whether include_archived returns archived commits, how Credit exposes archive status without archived_at, how the repeated-credit wording partitions results, and omitted-flag behavior.",
+      "Repair the grounding excerpts and quote_indexes without changing the correct substantive conclusions. Quote 2 does not contain the CreditType schema, so it cannot support the claims that CreditType requires UUID id and string name or lacks is_currency; it also does not contain the response example that labels USD (cents). Add direct raw evidence for those facts or narrow the currency source and shared prose to what the excerpt actually establishes.",
+      "Directly ground the absence and optionality claims. Quotes 1 and 2 begin in the middle or tail of the Commit and Credit property lists and omit their required arrays and the start of the complete Credit schema; they therefore do not directly establish that custom_fields is optional or that Credit has no archived_at anywhere in its schema. Expand or replace excerpts to include the relevant complete required/property boundaries, or narrow each shared claim and description accordingly.",
+      "Ground or remove bearer-security wording in the shared durable updates. None of the five assigned excerpts contains the OpenAPI global bearer security block. The source-page statement is factually correct from the complete raw read, but each shared claim must use an excerpt that directly supports it or omit that detail from proposed shared markdown.",
+      "After revising the excerpts, update all eight shared suggestions' quote_indexes and descriptions so each approved fact-bearing update and reciprocal link is supported by its assigned evidence. Keep the corrected anchors and do not broaden the already-complete semantic scope."
+    ],
+    "prior_reviewer_identity": "/root/c20_r_balances"
+  },
+  "recommended_worker_tier": "strong",
+  "routing_reason": "The 1,464-line credits-and-commits endpoint is the manifest's longest and schema-heaviest page and may intersect balance, ledger, and pagination concepts.",
+  "worker_identity": "/root/c20_w_balances",
+  "worker_model": "gpt-5.6-sol"
+}

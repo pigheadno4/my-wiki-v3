@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 117
+source_count: 122
 ---
 
 ## Overview
@@ -151,10 +151,16 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 117
-- Raw pages without source summaries: 114
+- Ingested source summaries: 122
+- Raw pages without source summaries: 109
 
 ## Sources
+
+- [[source-metronome-api-reference-customers-get-a-customer]] — customer identity, ingest aliases, custom fields, archival state, and billing-configuration boundary
+- [[source-metronome-api-reference-billable-metrics-list-all-billable-metrics]] — billable-metric discovery, configuration schema, archive filtering, pagination, and documented contradictions
+- [[source-metronome-api-reference-credits-and-commits-list-balances]] — detailed customer balances, endpoint-specific pagination, archive visibility, ledgers, and denomination boundaries
+- [[source-metronome-api-reference-credits-and-commits-create-a-credit]] — customer-level credit creation, access schedules, applicability selectors, priority, and idempotency boundaries
+- [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]] — account-level marketplace provider setup, credential boundaries, identifier layers, and readiness limits
 
 - [[source-metronome-api-reference-settings-list-account-level-billing-providers]] — account-level billing-provider delivery methods, pagination, configuration exposure, and identifier boundaries
 - [[source-metronome-api-reference-credits-and-commits-disable-trueup-for-commit]] — postpaid true-up invoice suppression, API-wide idempotency, and lifecycle unknowns

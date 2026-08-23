@@ -81,6 +81,8 @@ Simple contract-override targeting uses product IDs or product tags. Compound `o
 > [!info] Retroactive edit boundary
 > The product guide permits retroactive effective dates but does not explain recalculation, draft-versus-finalized invoice effects, historical visibility after archival, or how existing commits, credits, discounts, and scheduled charges follow the change.
 
+The customer-credit create payload requires a UUID `product_id` even when eligible usage is unrestricted. The `applicable_product_ids` and `applicable_product_tags` descriptions say omitting both direct selectors makes the credit apply to all products. However, the same payload permits `specifiers` only when those direct selectors are absent and says at least one specifier condition must match; it does not reconcile whether `specifiers` override that all-products wording. Within a specifier, all listed product tags must match, and pricing or presentation group-value maps accept arbitrary string-valued keys. The exclusion array makes a specifier inapplicable when usage matches its inclusion criteria and any exclusion entry; within one exclusion entry, all listed product tags must match. The page does not say whether direct IDs and tags may coexist with each other, how empty arrays behave, how missing dimensions are evaluated, or how duplicates and unknown enclosing-object fields are validated.
+
 ## Subscription and payment-gate extensions
 
 - Subscription offerings use one product per offering, with quantity-one list pricing on a rate card. Separate billing frequencies can use distinct rates; when several subscription rates exist, the guide recommends defaulting them to `false` and enabling the applicable rate or rates on the contract without defining exclusivity or resolution.
@@ -122,6 +124,8 @@ Simple contract-override targeting uses product IDs or product tags. Compound `o
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-pay-as-you-go]] — plan tags and contract-scoped entitlement override
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — Stripe product mapping for a payment-gated commit
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — time-bounded entitlement and zero-multiplier trial overrides
+
+- [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - required credit product, direct product applicability, specifier matching, and selector-validation boundaries
 
 ## Related
 

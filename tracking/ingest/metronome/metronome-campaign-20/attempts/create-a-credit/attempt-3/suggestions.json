@@ -1,0 +1,185 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "create-credit-credits-durable-fact",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Customer-level create API",
+      "proposed_markdown": "### Customer-level credit creation\n\nBearer-authenticated `POST /v1/contracts/customerCredits/create` creates a customer-level credit, though Metronome recommends contract create or edit for most credits. The payload schema requires UUID customer, numeric priority, UUID fixed product, and access schedule; the request-body wrapper itself is not marked required. Each schedule item requires numeric amount plus inclusive RFC 3339 start and exclusive end, while the optional credit type defaults to USD cents. Contract scope can be selected or cross-contract. For product applicability, the direct-selector descriptions say omitting both IDs and tags means all products, while the same payload permits `specifiers` only when those direct selectors are absent and says at least one specifier condition must match; the page does not reconcile those statements into one selector algorithm. An exclusion array makes a specifier inapplicable when usage matches its inclusion criteria and any exclusion entry, while all tags within one exclusion entry must match. Lower numeric priority applies first, with contract-level balances winning equal-priority ties over customer-level balances; this endpoint summary does not replace the fuller rollover, type, cost-basis, applicability, and schedule ordering rules. HTTP 200 returns required UUID `data.id`; 400 and 404 use generic required string messages, while `uniqueness_key` separately documents a 409 duplicate failure. The page leaves unknown-field behavior, amount constraints, schedule cardinality and overlap, ledger state, balance-read timing, lifecycle mutations, concurrency, and propagation to invoices, alerts, reports, exports, webhooks, external A/R, tax, payment, refunds, and revenue recognition unspecified.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep requestBody requiredness separate from required properties inside CreateCustomerCreditPayload.",
+        "Preserve the unresolved all-products versus specifiers wording; do not synthesize a reconciled selector algorithm.",
+        "For exclude, use any exclusion entry and all tags within one entry, not all tags across the exclusion array.",
+        "Do not treat the endpoint's abbreviated priority prose as the complete global burn-down algorithm.",
+        "Do not turn the preferred contract-level route into an accounting or revenue-recognition guarantee."
+      ]
+    },
+    {
+      "update_id": "create-credit-credits-reciprocal-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - customer-level credit creation, payload and schedule requiredness, applicability, priority, uniqueness, response, and lifecycle boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "create-credit-idempotency-durable-fact",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Mechanisms",
+      "proposed_markdown": "`POST /v1/contracts/customerCredits/create` specifically exposes a 1-128 character `uniqueness_key`; reuse after a credit or commit creation prevents a new record and returns HTTP 409, although 409 is absent from the operation's response map. This resource-identity guard is separate from the API-wide `Idempotency-Key` result-replay mechanism for POST. The API-wide authority says uniqueness keys last until released but documents release only for Alerts, so no customer-credit release path is documented. The sources do not define interaction or precedence between the two keys, uniqueness-key scope, normalization, races, failed-attempt consumption, expired-header-key retries, or endpoint-specific cached-error recovery.",
+      "quote_indexes": [
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "The endpoint raw does not itself mention Idempotency-Key; retain the separate API-wide source as authority for that header.",
+        "State that no customer-credit uniqueness-key release path is documented; do not erase the API-wide until-released and Alerts-only-release statements.",
+        "Do not infer how uniqueness_key and Idempotency-Key interact."
+      ]
+    },
+    {
+      "update_id": "create-credit-idempotency-reciprocal-link",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - endpoint-specific uniqueness-key schema, duplicate-creation prevention, omitted 409 response-map entry, and interaction unknowns",
+      "quote_indexes": [
+        1,
+        2,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "create-credit-products-durable-fact",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Enterprise design",
+      "proposed_markdown": "The customer-credit create payload requires a UUID `product_id` even when eligible usage is unrestricted. The `applicable_product_ids` and `applicable_product_tags` descriptions say omitting both direct selectors makes the credit apply to all products. However, the same payload permits `specifiers` only when those direct selectors are absent and says at least one specifier condition must match; it does not reconcile whether `specifiers` override that all-products wording. Within a specifier, all listed product tags must match, and pricing or presentation group-value maps accept arbitrary string-valued keys. The exclusion array makes a specifier inapplicable when usage matches its inclusion criteria and any exclusion entry; within one exclusion entry, all listed product tags must match. The page does not say whether direct IDs and tags may coexist with each other, how empty arrays behave, how missing dimensions are evaluated, or how duplicates and unknown enclosing-object fields are validated.",
+      "quote_indexes": [
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "Keep the required fixed product separate from the optional eligible-usage selectors.",
+        "Preserve the unresolved all-products versus specifiers wording; do not infer a complete selector algorithm.",
+        "Do not infer mutual exclusivity between applicable_product_ids and applicable_product_tags; only specifiers exclusivity is documented.",
+        "For exclude, use any exclusion entry and all tags within one entry, not all tags across every entry."
+      ]
+    },
+    {
+      "update_id": "create-credit-products-reciprocal-link",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - required credit product, direct product applicability, specifier matching, and selector-validation boundaries",
+      "quote_indexes": [
+        1,
+        2,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "create-credit-currency-durable-fact",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Credits, commits, and invoice conversion",
+      "proposed_markdown": "For customer-credit creation, `access_schedule.credit_type_id` is optional and defaults to USD cents. Every schedule item requires numeric `amount`, but the endpoint schema supplies no integer, positivity, zero, precision, maximum, or rounding constraint and no non-USD denomination rule. The schedule array is required without `minItems`; its items require inclusive RFC 3339 start and exclusive end, while ordering, overlap, chronology, gaps, and time-zone behavior beyond RFC 3339 remain unspecified.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Do not generalize the endpoint's USD-cent default into a denomination rule for other currencies or custom pricing units.",
+        "A required schedule_items property is not proof that the array must be nonempty."
+      ]
+    },
+    {
+      "update_id": "create-credit-currency-reciprocal-link",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - access-schedule credit-type default, numeric amount schema, inclusive and exclusive time bounds, and denomination constraints left open",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "create-credit-custom-fields-durable-fact",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Entity scope and persistence",
+      "proposed_markdown": "The customer-credit create schema accepts `custom_fields` for the `contract_credit` entity. The referenced `CustomField` is a typed object with `additionalProperties: {type: string}`. Under OpenAPI 3.0.1, neither schema sets `nullable: true`, so a supplied `custom_fields` value must be a non-null object and each supplied arbitrary property value must be a non-null string at the schema boundary. The endpoint does not define configured-key validation, uniqueness, limits, endpoint-specific runtime error mapping for invalid nulls, deletion-by-null semantics, overwrite behavior, persistence, API or export visibility, invoice propagation, or archived-credit handling; those behaviors must come from the dedicated custom-fields authority rather than this create operation.",
+      "quote_indexes": [
+        0,
+        2,
+        4
+      ],
+      "warnings": [
+        "Do not describe null handling as unspecified at the schema boundary: the typed object and typed string values lack nullable true and therefore do not admit null.",
+        "Runtime error mapping for invalid nulls and deletion-by-null behavior remain undocumented.",
+        "Do not infer persistence or propagation from the create-credit endpoint alone.",
+        "The explicit additionalProperties rule belongs to the custom_fields map, not the enclosing credit payload."
+      ]
+    },
+    {
+      "update_id": "create-credit-custom-fields-reciprocal-link",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - contract-credit custom-field input shape and endpoint-specific validation and propagation limits",
+      "quote_indexes": [
+        0,
+        2,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "create-credit-invoicing-durable-fact",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Credit and commit application",
+      "proposed_markdown": "The customer-credit create schema describes optional nonempty `name` as displayed on invoices and optional `description` as UI/API-only and not exposed to end customers. This endpoint does not define which invoice line or state displays the name, whether already-draft or finalized invoices change, or how either field propagates to PDFs, exports, webhooks, downstream billing providers, external A/R, tax, payment, refunds, or accounting systems.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "Do not turn invoice display wording into a propagation guarantee for downstream providers or finalized invoices.",
+        "Preserve the explicit end-customer visibility distinction between name and description."
+      ]
+    },
+    {
+      "update_id": "create-credit-invoicing-reciprocal-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - credit name and description invoice-visibility boundary plus unspecified downstream propagation",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

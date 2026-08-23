@@ -1,0 +1,177 @@
+{
+  "job_id": "set-up-account-level-billing-provider",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Set Up Account-Level Billing Provider\"\ntype: source\ndate_ingested: 2026-08-23\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/settings/set-up-account-level-billing-provider.md\"\nraw_files:\n  - \"metronome/api-reference/settings/set-up-account-level-billing-provider-2026-07-13.md\"\ntags: [metronome, billing-providers, settings, api-reference, marketplaces, credentials]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `POST /v1/setUpBillingProvider`, which inserts an account-level billing-provider delivery configuration and returns a UUID `delivery_method_id`. The documented setup surface supports AWS Marketplace, Azure Marketplace, and GCP Marketplace, while leaving customer configuration and contract selection to separate workflows.\n\n## Key takeaways\n\n- The OpenAPI document applies HTTP bearer authentication to the operation. It does not define the token scope or role required to create account-level provider configuration.\n- The enclosing `requestBody` is not marked required, while its JSON payload schema requires `billing_provider`, `delivery_method`, and `configuration`; omitted-body behavior is therefore undocumented.\n- `billing_provider` is limited here to `aws_marketplace`, `azure_marketplace`, or `gcp_marketplace`. `delivery_method` is limited to `direct_to_billing_provider`, `aws_sqs`, or `aws_sns`; the page does not define which provider-method combinations are valid beyond its direct-delivery examples.\n- `configuration` explicitly allows arbitrary properties and has no provider-specific required-property schema. Examples submit AWS identity values, an Azure client ID and raw client secret, or a GCP provider ID and raw workload-identity federation configuration, but examples do not establish validation requirements.\n- HTTP `200` requires `data.delivery_method_id` as a UUID. The description says contracts across customers can later be mapped to the account-level configuration with that identifier, but this operation does not identify or mutate a customer or contract.\n\n## Endpoint and request contract\n\nThe production operation is `POST /v1/setUpBillingProvider` with operation ID `setUpBillingProvider-v1` under the OpenAPI document's HTTP bearer scheme. The operation has no path or query parameters. The `requestBody` describes JSON billing-provider, delivery-method, and configuration data, but does not declare `required: true`; inside the payload object, all three named properties are required. The top-level payload schema does not set `additionalProperties: false`, so the page does not state whether undocumented top-level properties are accepted, ignored, or rejected.\n\n`billing_provider` enumerates only AWS Marketplace, Azure Marketplace, and GCP Marketplace. This is narrower than the separate account-level listing endpoint's broader provider enum, so this setup page is not evidence that every listed provider can be created through this operation. `delivery_method` enumerates direct provider delivery, AWS SQS, and AWS SNS. All three examples use `direct_to_billing_provider`; the source does not document compatibility rules for SQS or SNS, provider-specific validation, or whether duplicate configurations are allowed.\n\n## Provider configuration and credential boundary\n\nThe required `configuration` property is an object with `additionalProperties: true`. Its structure depends on the billing-provider and delivery-method combination, but the page provides no closed schema, property types, required-property lists, mutual-exclusion rules, or unknown-field behavior within that object beyond permitting arbitrary properties.\n\nThe AWS example sends `aws_external_id` and `aws_iam_role_arn`. The Azure example sends `azure_client_id`, `raw_azure_client_secret`, and `azure_tenant_id`. The GCP example sends `gcp_provider_id` and `raw_gcp_workload_identity_federation_config`. These examples establish that callers may submit provider identity and secret-bearing material; they do not define who must create or rotate those credentials, how Metronome stores, encrypts, validates, redacts, or deletes them, whether a secret can be updated independently, or whether values are forwarded to an external provider during setup. The separate listing reference says security-sensitive configuration may be omitted from list responses, but this setup page does not define its own response exposure or a credential-retrieval contract.\n\n## Account, customer, and contract boundaries\n\nThis operation creates account-level configuration and returns a delivery-method identifier. It does not accept a Metronome `customer_id`, a customer billing-provider configuration ID, or a contract ID, and it does not create a customer-level billing destination or select one on a contract. Existing customer-provisioning and Stripe-integration sources separately describe using `delivery_method_id` when creating a customer billing-provider configuration and using `billing_provider_configuration_id` when a contract selects among that customer's configurations. The setup page's statement that contracts across customers can be mapped with the returned ID does not reconcile those identifier layers, so implementations should verify the downstream customer and contract schemas instead of substituting one identifier for another.\n\nThe source does not document when the new configuration becomes usable, whether the external provider is contacted or validated synchronously, how to confirm readiness, how the record appears in account-level listing, or how changes propagate to existing customers or contracts. It also defines no update, rotation, archive, delete, rollback, or reconciliation operation. A successful setup response therefore proves issuance of a `delivery_method_id`, not that any customer or contract currently selects it or that invoice delivery, marketplace metering, payment, tax, or downstream reconciliation will succeed.\n\n## Response, errors, idempotency, and recovery\n\nHTTP `200` requires a top-level `data` object, which requires only UUID-formatted string `delivery_method_id`. The page does not return the normalized provider, delivery method, configuration, creation status, readiness state, timestamps, or an external-provider identifier. It also does not state whether success is durable and immediately readable or whether later reconciliation can fail.\n\nHTTP `400` and HTTP `409` both use a generic error object requiring string `message`. No error codes or examples identify validation failures, invalid provider-method combinations, duplicate configuration, credential rejection, authorization, or which conflict condition produced `409`. The page does not document partial creation, atomicity, timeout recovery, concurrent setup ordering, rate limits, or safe cleanup after an uncertain outcome.\n\nThe separate API-wide idempotency authority applies `Idempotency-Key` to all POST endpoints: identical parameters with the same key return the original result, changed parameters conflict with HTTP `409`, keys persist for at least 24 hours, and results cached after execution can include HTTP `500`. This endpoint does not add any endpoint-specific retry, concurrency, provider-side deduplication, or recovery guarantee. After an ambiguous failure, reuse the same key and parameters within the documented window and investigate state before changing keys; do not infer that a new key is safe or that the external-provider side is reconciled.\n\nNo contradiction was found when account-level setup, customer-level configuration, contract selection, and invoice-delivery outcomes are kept as separate lifecycle stages.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-integrations]], [[metronome-customers-and-contracts]], [[metronome-invoicing]], [[metronome-api-idempotency]], [[metronome-security-principles]]\n- Related sources: [[source-metronome-api-reference-settings-list-account-level-billing-providers]], [[source-metronome-api-reference-customers-create-a-customer]], [[source-metronome-guides-implement-metronome-core-concepts-provision-customer]], [[source-metronome-integrations-invoice-integrations-stripe]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/settings/set-up-account-level-billing-provider-2026-07-13|2026-07-13 snapshot \u2014 account-level billing-provider setup endpoint and embedded OpenAPI schema]]",
+  "quotes": [
+    {
+      "text": "Set up account-level configuration for a billing provider. Once configured, individual contracts across customers can be mapped to this configuration using the returned delivery_method_id.",
+      "location": "Opening description below the H1"
+    },
+    {
+      "text": "paths:\n  /v1/setUpBillingProvider:\n    post:",
+      "location": "OpenAPI paths entry for /v1/setUpBillingProvider"
+    },
+    {
+      "text": "required:\n                - billing_provider\n                - delivery_method\n                - configuration",
+      "location": "OpenAPI requestBody application/json payload schema"
+    },
+    {
+      "text": "azure:\n                value:\n                  billing_provider: azure_marketplace\n                  delivery_method: direct_to_billing_provider\n                  configuration:\n                    azure_client_id: client_id\n                    raw_azure_client_secret: secret\n                    azure_tenant_id: tenant_id\n              gcp:\n                value:\n                  billing_provider: gcp_marketplace\n                  delivery_method: direct_to_billing_provider\n                  configuration:\n                    gcp_provider_id: provider_id\n                    raw_gcp_workload_identity_federation_config: '{\"wif\": \"config\"}'",
+      "location": "OpenAPI requestBody application/json Azure and GCP examples"
+    },
+    {
+      "text": "required:\n                      - delivery_method_id\n                    properties:\n                      delivery_method_id:\n                        type: string\n                        format: uuid",
+      "location": "OpenAPI HTTP 200 response data schema"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "set-up-account-provider-integrations-fact",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "durable_fact",
+        "anchor": "Before ## Account-level provider enumeration",
+        "proposed_markdown": "## Account-level provider setup\n\nBearer-authenticated `POST /v1/setUpBillingProvider` creates an account-level delivery configuration for AWS, Azure, or GCP Marketplace and returns UUID `delivery_method_id`. Its JSON payload schema requires provider, delivery method, and an open provider-specific `configuration`, although the enclosing `requestBody` is not marked required. This operation does not identify or mutate a customer or contract; separate sources use the returned delivery-method layer when constructing customer billing configuration and use a distinct customer configuration ID for contract selection. The endpoint does not document provider readiness, propagation to listing, update or deletion, external validation, or downstream invoice and reconciliation outcomes. [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Keep account-level delivery_method_id distinct from customer billing-provider configuration IDs and contract selectors.",
+          "The setup provider enum is narrower than the list endpoint's provider enum; do not infer create support for every listed provider."
+        ]
+      },
+      {
+        "update_id": "set-up-account-provider-integrations-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]] \u2014 account-level marketplace provider setup, open configuration payload, returned delivery-method identifier, credential examples, and lifecycle boundaries",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "set-up-account-provider-customers-contracts-fact",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "Before ## Billing-provider schedule",
+        "proposed_markdown": "### Account-level provider prerequisite\n\n`POST /v1/setUpBillingProvider` inserts account-level AWS, Azure, or GCP Marketplace configuration and returns `delivery_method_id`, described as enabling later mapping of contracts across customers. The call accepts no customer or contract identifier and does not itself create a customer billing-provider configuration or select one on a contract. Because other sources separately use `delivery_method_id` at customer configuration and `billing_provider_configuration_id` at contract selection, callers must verify each downstream schema rather than treat the identifiers as interchangeable. The page defines no propagation, readiness, attachment, update, archival, or reconciliation behavior. [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]]",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "The source's cross-customer mapping statement does not collapse the documented account, customer, and contract identifier layers."
+        ]
+      },
+      {
+        "update_id": "set-up-account-provider-customers-contracts-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]] \u2014 account-level provider creation prerequisite, returned delivery-method identifier, and customer/contract mapping boundary",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "set-up-account-provider-invoicing-fact",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "Before ## Scheduled provider routing",
+        "proposed_markdown": "## Account-level marketplace delivery setup\n\n`POST /v1/setUpBillingProvider` creates account-level AWS, Azure, or GCP Marketplace delivery configuration and returns a UUID `delivery_method_id` for later mapping. Its setup success response contains only that identifier; it does not establish customer or contract attachment, provider readiness, invoice routing, marketplace metering, payment collection, tax handling, delivery success, or reconciliation. Provider-specific configuration is open-ended, and the page does not define activation timing, read-after-write visibility, update or rollback, or external-provider validation. [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]]",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "Do not treat HTTP 200 setup success as evidence of downstream invoice delivery or reconciliation."
+        ]
+      },
+      {
+        "update_id": "set-up-account-provider-invoicing-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]] \u2014 account-level marketplace delivery setup, returned routing identifier, and downstream outcome boundaries",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "set-up-account-provider-idempotency-fact",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "Under ## Retry and error boundary",
+        "proposed_markdown": "For account-level billing-provider setup, `POST /v1/setUpBillingProvider` falls under the API-wide `Idempotency-Key` guarantee, but its own page documents only generic HTTP 400 and 409 errors and no endpoint-specific retry, concurrency, partial-creation, provider-side deduplication, or recovery semantics. The successful result's UUID `delivery_method_id` is the result that an identical same-key retry should recover under the API-wide authority; after an ambiguous failure, do not assume a changed key is safe or that external-provider state is reconciled. [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]]",
+        "quote_indexes": [
+          1,
+          4
+        ],
+        "warnings": [
+          "The endpoint's generic 409 does not identify whether a conflict came from idempotency parameters, duplicate configuration, or another condition."
+        ]
+      },
+      {
+        "update_id": "set-up-account-provider-idempotency-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]] \u2014 POST setup mutation, returned configuration identifier, generic conflicts, and endpoint-specific recovery unknowns",
+        "quote_indexes": [
+          1,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "set-up-account-provider-security-fact",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "durable_fact",
+        "anchor": "Before ## Customer API tokens",
+        "proposed_markdown": "## Billing-provider credential submission boundary\n\nThe bearer-authenticated account-level setup endpoint accepts an open provider-specific configuration object. Its examples submit AWS role and external identifiers, Azure client and tenant IDs plus `raw_azure_client_secret`, and GCP provider ID plus `raw_gcp_workload_identity_federation_config`. The page does not specify caller role or token scope, credential creation and ownership, validation, storage encryption, redaction, rotation, independent update, deletion, forwarding to providers, or audit attribution. A separate listing source says sensitive configuration may be omitted from responses, but setup success returns only `delivery_method_id` and does not establish a credential-retrieval surface. [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]]",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Example secret-bearing keys are not a provider-specific schema or proof of required fields.",
+          "Do not infer credential-at-rest or rotation guarantees from the API-wide bearer scheme."
+        ]
+      },
+      {
+        "update_id": "set-up-account-provider-security-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]] \u2014 bearer-authenticated submission of provider identity and secret-bearing configuration with unspecified custody and rotation semantics",
+        "quote_indexes": [
+          1,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/settings/set-up-account-level-billing-provider-2026-07-13.md",
+  "raw_sha256": "4d1fa98ba9b8e564ec8e57741fb19003397d0b6531936e59539b8fad8e4b3ed9",
+  "status": "candidate_ready"
+}

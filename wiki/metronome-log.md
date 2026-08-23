@@ -6,6 +6,17 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-23 — Metronome Campaign 20 completed
+
+- Result: five approved API-reference source pages from complete raw-page reads across twelve worker attempts and twelve independent reviews; final attempts were 2, 2, 3, 3, and 2, with no coordinator content repair.
+- Sources: [[source-metronome-api-reference-customers-get-a-customer]], [[source-metronome-api-reference-billable-metrics-list-all-billable-metrics]], [[source-metronome-api-reference-credits-and-commits-list-balances]], [[source-metronome-api-reference-credits-and-commits-create-a-credit]], and [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]].
+- Concepts: updated billable metrics, custom fields, customers and contracts, event ingestion, integrations, invoicing, API idempotency, security, credits and commits, products and rate cards, and currencies and custom pricing units; no new concept page was required.
+- Boundaries retained: customer detail is separate from billing configuration; metric examples conflict with their aggregation-key rule; detailed balances differ from global pagination and ledger conventions; credit selector and exclusion semantics remain source-bounded; account-level provider setup does not prove customer attachment, downstream readiness, invoice delivery, payment, or reconciliation.
+- Independent query audit: the fixed three-page sample passed 9/9 factual, boundary or contradiction, and exact raw deep-dive queries. All five hashes, canonical candidate equality, backlinks, company/index entries, and reviewer-approved concept blocks passed, so no expansion was required.
+- Campaign outcome: content quality passed, but zero of five pages passed on attempt 1 and elapsed time was 3,464 seconds. The Campaign 19 preflight reminders did not meet the throughput gate, so an 8–10 page expansion is not approved.
+- Coverage after promotion: 225 collected documentation pages, 122 source summaries, and 109 raw pages without source summaries.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-20/monitor.md), [quality audit](../tracking/ingest/metronome/metronome-campaign-20/quality-audit.md), and [retrospective](../tracking/ingest/metronome/metronome-campaign-20/retrospective.md).
+
 ## 2026-08-21 — Metronome Campaign 19 completed
 
 - Result: five approved API-reference source pages from complete raw-page reads. Four pages needed one retry; three corrections used unchanged-hash targeted review, while `disable-trueup-for-commit` and `search-events` received full semantic rereviews.

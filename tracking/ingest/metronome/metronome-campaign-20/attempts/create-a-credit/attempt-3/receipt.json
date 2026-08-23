@@ -1,0 +1,215 @@
+{
+  "job_id": "create-a-credit",
+  "attempt": 3,
+  "source_page": "---\ntitle: \"Create a credit\"\ntype: source\ndate_ingested: 2026-08-23\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/credits-and-commits/create-a-credit.md\"\nraw_files:\n  - \"metronome/api-reference/credits-and-commits/create-a-credit-2026-07-13.md\"\ntags: [metronome, credits-and-commits, customer-credits, api]\n---\n\n## Overview\n\nThis API reference documents Metronome's bearer-authenticated `POST /v1/contracts/customerCredits/create` endpoint on `https://api.metronome.com`. It creates a customer-level credit that can span all of a customer's contracts or be limited to selected contracts, although the page recommends adding credits directly through contract create or edit APIs in most cases. This is a future-balance creation operation; the page does not establish historical invoice reversal, a credit memo, refund behavior, or an external accounts-receivable adjustment.\n\n## Key takeaways\n\n- The `requestBody` wrapper is not marked `required: true`, while the referenced payload requires `customer_id`, `priority`, `product_id`, and `access_schedule`. The document therefore defines required properties when a payload is supplied but does not define omitted-body runtime behavior.\n- `access_schedule.schedule_items` is required, and every item requires numeric `amount`, inclusive RFC 3339 `starting_at`, and exclusive RFC 3339 `ending_before`. `credit_type_id` defaults to USD cents when omitted.\n- Contract scope can be limited with `applicable_contract_ids`; the prose says an empty value is cross-contract, while the schema says omission applies to all contracts. The direct-selector descriptions say omitting both product IDs and tags makes the credit apply to all products, while the same payload permits `specifiers` only when those direct selectors are absent and says at least one specifier condition must match. The page does not reconcile those statements into one selector algorithm.\n- Lower numeric priority is consumed first, and the page says contract-level commits and credits win equal-priority ties over customer-level ones. The broader prioritization guide adds balance-type, rollover, applicability, cost-basis, and schedule tie-breakers, so this endpoint summary is not a complete global ordering algorithm.\n- HTTP `200` requires `data.id`, a UUID. The operation lists generic `400` and `404` errors requiring a string `message`; the `uniqueness_key` schema separately says duplicate credit or commit creation fails with `409`, which the operation response map omits.\n- The top-level payload, schedule-item, specifier, and exclusion objects do not declare `additionalProperties`; unknown-field behavior is therefore unspecified. Only the pricing-group map, presentation-group map, and `custom_fields` map explicitly allow arbitrary keys with string values.\n\n## Request-body requiredness and core fields\n\nThe OpenAPI document applies HTTP bearer authentication globally. The operation's `requestBody` contains an `application/json` schema reference but no `required: true`. Within `CreateCustomerCreditPayload`, `customer_id`, `priority`, `product_id`, and `access_schedule` are required. `customer_id` and `product_id` are UUID-formatted strings, while `priority` is a number.\n\nThis required-property list must not be presented as proof that a completely omitted body is rejected: the wrapper does not declare that requirement. The payload schema also does not set `additionalProperties`, so it does not say whether unknown top-level fields are accepted, ignored, or rejected. Under OpenAPI 3.0.1, the typed properties shown without `nullable: true` are non-null at the schema boundary; this includes required `customer_id`, `priority`, `product_id`, and `access_schedule`, as well as optional typed fields when present. The page does not define endpoint-specific runtime error mapping for invalid nulls, numeric bounds for priority, authorization scope beyond bearer authentication, or other field-level failure mappings.\n\n## Access amount and timing\n\n`access_schedule` distributes credit to the customer. Its object requires `schedule_items`; each item requires numeric `amount`, an inclusive RFC 3339 `starting_at`, and an exclusive RFC 3339 `ending_before`. The optional UUID-formatted `credit_type_id` defaults to USD cents.\n\nThe schema provides no `minItems`, so it does not establish that `schedule_items` must be nonempty. It also gives no positivity, zero, integer, precision, maximum, or rounding rule for `amount`; no ordering, overlap, adjacency, gap, or start-before-end validation; and no time-zone rule beyond RFC 3339 formatting and the inclusive/exclusive endpoint descriptions. The prose says the schedule defines when and how much credit becomes available, usually aligned to a contract or beginning immediately and expiring later, but it does not define ledger-entry creation time, balance-read visibility, eventual consistency, editability, cancellation, expiry processing, or concurrency with usage and invoicing.\n\n## Contract scope, product eligibility, and usage filters\n\n`applicable_contract_ids` limits the credit to selected contracts. The prose says leaving it empty permits use across all customer contracts, while the schema says the same for omission; its array items are strings without a UUID format annotation. The page does not define an invalid, archived, duplicate, foreign-customer, or later-created contract's behavior.\n\nThe required `product_id` identifies the credit's product even when eligible usage is unrestricted. The `applicable_product_ids` and `applicable_product_tags` descriptions each say that when both direct selectors are absent, the credit applies to all products. However, the same payload permits `specifiers` only when those direct selectors are absent and says at least one specifier condition must match. The page does not reconcile whether the presence of `specifiers` overrides the direct-selector descriptions' all-products wording, so these statements must remain an unresolved applicability ambiguity rather than a synthesized selector algorithm. It also does not state whether the two direct selector fields may be combined with each other or how empty arrays differ from omission.\n\nAlternatively, `specifiers` filter eligible usage. Usage must satisfy at least one specifier. A specifier can select one product UUID, require all listed product tags, and match arbitrary string-valued pricing-group or presentation-group maps. `specifiers` cannot be combined with either direct product selector. The feature-gated `exclude` array makes a specifier inapplicable when usage matches its inclusion criteria and any exclusion entry; within one `ExcludeSpecifier`, `product_tags` matches products carrying all tags listed in that entry. This does not require usage to match all tags across every exclusion-array entry. No field inside a specifier or exclusion object is marked required, and the page does not define empty-specifier behavior, selector evaluation against missing dimensions, case sensitivity, duplicate entries, atomic validation, or unknown fields on these enclosing objects.\n\n## Priority and ordering boundary\n\nThe endpoint page states that lower numeric priority is consumed first when several credits apply and that equal-priority contract-level commits and credits precede customer-level ones. This is consistent with the existing wiki when treated as this endpoint's concise ordering summary, but it is incomplete rather than globally exhaustive. The dedicated prioritization source separately places rollover and balance type ahead of some priority comparisons and adds cost basis, product and usage specificity, schedule times, and applicable-contract count as further tie-breakers. The endpoint does not define concurrent drawdown ordering, transaction isolation, ledger atomicity, or whether a priority change can affect already-rated or finalized usage.\n\n## Optional presentation and integration fields\n\nOptional `name` is a nonempty string described as displayed on invoices. Optional `description` is for the UI and API and is explicitly not exposed to end customers. The endpoint does not define invoice states, line-item placement, finalized-invoice effects, downstream-provider propagation, or whether the description appears in exports or webhooks.\n\n`custom_fields` is labeled for the `contract_credit` entity and references a typed object whose arbitrary property values are typed strings. Neither the object schema nor its string-valued `additionalProperties` sets `nullable: true`, so a supplied `custom_fields` value and each supplied property value are non-null at the OpenAPI 3.0.1 schema boundary. This endpoint does not define allowed keys, configured-key validation, uniqueness, limits, endpoint-specific runtime error mapping for invalid nulls, deletion-by-null semantics, overwrite behavior, persistence, deletion, or propagation; those broader custom-field behaviors remain owned by the dedicated custom-fields authority. NetSuite sales-order and Salesforce opportunity IDs are strings whose availability depends on client configuration. `rate_type` accepts uppercase and lowercase `COMMIT_RATE` and `LIST_RATE`, but the page gives no semantics or precedence for those values.\n\n## Success, errors, and idempotency boundaries\n\nA documented `200 Success` returns JSON with required top-level `data`; `data` requires UUID `id`. The page does not say whether that ID identifies a fully usable balance, expose any created-resource state, or provide a retrieval link.\n\nThe operation lists `400 Bad request` and generic `404 Not found`; both use an error object requiring only string `message`. It gives no endpoint-specific error codes, examples, or mappings and does not list `401`, `403`, `409`, `429`, or `5xx`. Separately, `uniqueness_key` is a 1-128 character string whose reuse after creating a credit or commit prevents a new record and fails with `409`. The endpoint page does not define key scope, normalization, races, or whether a failed attempt consumes the key. The separate API-wide authority says uniqueness keys last until released but documents release only for Alerts, so it provides no documented customer-credit release path.\n\nThe separate API-wide [[source-metronome-api-reference-idempotency|idempotency authority]] applies `Idempotency-Key` to all POST endpoints: identical parameters with the same key replay the original result, changed parameters return `409`, retention is at least 24 hours, and a cached result can be `500`. Those guarantees are API-wide rather than stated by this endpoint page. Neither source defines how the header interacts with `uniqueness_key`, no-key or different-key duplicate behavior, expired-key retries, concurrent credit creation, endpoint-specific recovery after a cached error, or how to reconcile a response lost after creation. The general [[source-metronome-api-reference-status-codes|status-code guidance]] must likewise not be mistaken for endpoint-specific error coverage.\n\n## Lifecycle and propagation unknowns\n\nThis endpoint creates a customer-level spending allowance or free balance and returns an ID. It does not define update, archive, delete, reversal, or transition operations; the created ledger's initial state; visibility in balance APIs; notification or webhook emission; propagation timing to draft or finalized invoices, reports, exports, alerts, contracts, or account hierarchies; effects on external A/R, Stripe, tax, payment, refund, or revenue-recognition systems; partial failure; or transaction boundaries. The recommendation that contract-level credits are easier for finance teams is operational guidance, not an accounting, revenue-recognition, or reconciliation guarantee.\n\nNo direct contradiction was found with the existing Metronome concepts or source pages. The endpoint fills the customer-credit creation gap beside the existing customer-commit source, while its abbreviated priority wording and finance recommendation require the qualifications above.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-credits-and-commits]], [[metronome-api-idempotency]], [[metronome-products-and-rate-cards]], [[metronome-currencies-and-custom-pricing-units]], [[metronome-custom-fields]], [[metronome-invoicing]]\n- Related sources: [[source-metronome-api-reference-credits-and-commits-create-a-commit]], [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-prioritization-rules]], [[source-metronome-api-reference-contracts-create-a-contract]], [[source-metronome-api-reference-custom-fields]], [[source-metronome-api-reference-idempotency]], [[source-metronome-api-reference-status-codes]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/credits-and-commits/create-a-credit-2026-07-13|2026-07-13 snapshot - customer-level credit creation, schedule, applicability, priority, response, and error schema]]\n",
+  "quotes": [
+    {
+      "text": "> Creates customer-level credits that provide spending allowances or free credit balances for customers across their Metronome usage. Note: In most cases, you should add credits directly to customer contracts using the contract/create or contract/edit APIs.\n\n### Use this endpoint to:\nUse this endpoint when you need to provision credits directly at the customer level that can be applied across multiple contracts or scoped to specific contracts. Customer-level credits are ideal for:\n- Customer onboarding incentives that apply globally\n- Flexible spending allowances that aren't tied to a single contract\n- Migration scenarios where you need to preserve existing customer balances\n\n#### Scoping flexibility: \nCustomer-level credits can be configured in two ways:\n- Contract-specific: Use the applicable_contract_ids field to limit the credit to specific contracts\n- Cross-contract: Leave applicable_contract_ids empty to allow the credit to be used across all of the customer's contracts\n\n#### Product Targeting: \nCredits can be scoped to specific products using `applicable_product_ids` or `applicable_product_tags`, or left unrestricted to apply to all products.\n\n#### Priority considerations: \nWhen multiple credits are applicable, the one with the lower priority value will be consumed first. If there is a tie, contract level commits and credits will be applied before customer level commits and credits. Plan your priority scheme carefully to ensure credits are applied in the desired order.\n\n#### Access Schedule Required: \nYou must provide an `access_schedule` that defines when and how much credit becomes available to the customer over time. This usually is aligned to the contract schedule or starts immediately and is set to expire in the future.\n\n### Usage Guidelines:\n\u26a0\ufe0f Preferred Alternative: In most cases, you should add credits directly to contracts using the contract/create or contract/edit APIs instead of creating customer-level credits. Contract-level credits provide better organization, and are easier for finance teams to recognize revenue, and are the recommended approach for most use cases.\n\n\n\n\n## OpenAPI\n\n````yaml /openapi.json post /v1/contracts/customerCredits/create\nopenapi: 3.0.1\ninfo:\n  title: Metronome\n  version: 1.0.0\nservers:\n  - url: https://api.metronome.com\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "raw/metronome/api-reference/credits-and-commits/create-a-credit-2026-07-13.md:11-50 (customer-level purpose, scopes, priority, schedule, preferred route, POST path, production server, and bearer security)"
+    },
+    {
+      "text": "      operationId: createCustomerCredit-v1\n      requestBody:\n        description: Create a credit\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/CreateCustomerCreditPayload'\n            example:\n              customer_id: 13117714-3f05-48e5-a6e9-a66093f13b4d\n              name: My Credit\n              priority: 100\n              product_id: f14d6729-6a44-4b13-9908-9387f1918790\n              access_schedule:\n                credit_type_id: 2714e483-4ff1-48e4-9e25-ac732e8f24f2\n                schedule_items:\n                  - amount: 1000\n                    starting_at: '2020-01-01T00:00:00.000Z'\n                    ending_before: '2020-02-01T00:00:00.000Z'\n      responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/Id'\n              example:\n                data:\n                  id: 6162d87b-e5db-4a33-b7f2-76ce6ead4e85\n        '400':\n          description: Bad request\n          content:\n            application/json:\n              schema:\n                $ref: '#/components/schemas/Error'\n        '404':\n          $ref: '#/components/responses/NotFound'\ncomponents:\n  schemas:\n    CreateCustomerCreditPayload:\n      type: object\n      required:\n        - customer_id\n        - priority\n        - product_id\n        - access_schedule\n      properties:\n        customer_id:\n          type: string\n          format: uuid\n        name:\n          type: string\n          minLength: 1\n          description: displayed on invoices\n        description:\n          type: string\n          description: Used only in UI/API. It is not exposed to end customers.\n        priority:\n          type: number\n          description: >-\n            If multiple credits or commits are applicable, the one with the\n            lower priority will apply first.\n        product_id:\n          type: string\n          format: uuid\n        access_schedule:\n          $ref: '#/components/schemas/ScheduleDurationInput'\n          description: Schedule for distributing the credit to the customer.",
+      "location": "raw/metronome/api-reference/credits-and-commits/create-a-credit-2026-07-13.md:179-250 (request-body wrapper, response map, payload required fields, customer and product UUIDs, presentation fields, priority, and access-schedule reference)"
+    },
+    {
+      "text": "        applicable_product_ids:\n          type: array\n          items:\n            type: string\n            format: uuid\n          description: >-\n            Which products the credit applies to. If both applicable_product_ids\n            and applicable_product_tags are not provided, the credit applies to\n            all products.\n        applicable_product_tags:\n          type: array\n          items:\n            type: string\n          description: >-\n            Which tags the credit applies to. If both applicable_product_ids and\n            applicable_product_tags are not provided, the credit applies to all\n            products.\n        specifiers:\n          type: array\n          description: >-\n            List of filters that determine what kind of customer usage draws\n            down a commit or credit. A customer's usage needs to meet the\n            condition of at least one of the specifiers to contribute to a\n            commit's or credit's drawdown. This field cannot be used together\n            with `applicable_product_ids` or `applicable_product_tags`.\n          items:\n            $ref: '#/components/schemas/CommitSpecifierInput'\n        applicable_contract_ids:\n          type: array\n          items:\n            type: string\n          description: >-\n            Which contract the credit applies to. If not provided, the credit\n            applies to all contracts.\n        netsuite_sales_order_id:\n          x-mint:\n            groups:\n              - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2\n          type: string\n          description: >-\n            This field's availability is dependent on your client's\n            configuration.\n        salesforce_opportunity_id:\n          x-mint:\n            groups:\n              - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2\n          type: string\n          description: >-\n            This field's availability is dependent on your client's\n            configuration.\n        custom_fields:\n          $ref: '#/components/schemas/CustomField'\n          x-cf-entity: contract_credit\n        rate_type:\n          type: string\n          enum:\n            - COMMIT_RATE\n            - commit_rate\n            - LIST_RATE\n            - list_rate\n        uniqueness_key:\n          $ref: '#/components/schemas/UniquenessKeyForCommitsAndCredits'",
+      "location": "raw/metronome/api-reference/credits-and-commits/create-a-credit-2026-07-13.md:251-312 (direct product selectors, unresolved all-products wording, specifier exclusivity, contract scope, integration fields, custom-field entity, rate type, and uniqueness reference)"
+    },
+    {
+      "text": "    Id:\n      required:\n        - id\n      type: object\n      properties:\n        id:\n          type: string\n          format: uuid\n    Error:\n      required:\n        - message\n      type: object\n      properties:\n        message:\n          type: string\n    ScheduleDurationInput:\n      type: object\n      required:\n        - schedule_items\n      properties:\n        credit_type_id:\n          type: string\n          format: uuid\n          description: Defaults to USD (cents) if not passed\n        schedule_items:\n          type: array\n          items:\n            type: object\n            required:\n              - amount\n              - starting_at\n              - ending_before\n            properties:\n              amount:\n                type: number\n              starting_at:\n                type: string\n                format: date-time\n                description: RFC 3339 timestamp (inclusive)\n              ending_before:\n                type: string\n                format: date-time\n                description: RFC 3339 timestamp (exclusive)",
+      "location": "raw/metronome/api-reference/credits-and-commits/create-a-credit-2026-07-13.md:313-355 (required UUID success ID, required string error message, and complete access-schedule requiredness, amount, and timestamp schema)"
+    },
+    {
+      "text": "    CommitSpecifierInput:\n      type: object\n      properties:\n        product_id:\n          type: string\n          format: uuid\n          description: >-\n            If provided, the specifier will only apply to the product with the\n            specified ID.\n        product_tags:\n          type: array\n          items:\n            type: string\n          description: >-\n            If provided, the specifier will only apply to products with all the\n            specified tags.\n        pricing_group_values:\n          type: object\n          additionalProperties:\n            type: string\n          description: >-\n            If provided, the specifier will apply to product usage with these\n            set of pricing group values.\n        presentation_group_values:\n          type: object\n          additionalProperties:\n            type: string\n          description: >-\n            If provided, the specifier will apply to product usage with these\n            set of presentation group values.\n        exclude:\n          x-stainless-skip: true\n          x-mint:\n            groups:\n              - ff:exclude-specifiers-ga\n          type: array\n          description: >-\n            If provided, the specifier will not apply to product usage that\n            matches the inclusion criteria and any of the excluding values.\n          items:\n            $ref: '#/components/schemas/ExcludeSpecifier'\n    CustomField:\n      type: object\n      description: 'Custom fields to be added eg. { \"key1\": \"value1\", \"key2\": \"value2\" }'\n      additionalProperties:\n        type: string\n    UniquenessKeyForCommitsAndCredits:\n      type: string\n      minLength: 1\n      maxLength: 128\n      description: >-\n        Prevents the creation of duplicates. If a request to create a commit or\n        credit is made with a uniqueness key that was previously used to create\n        a commit or credit, a new record will not be created and the request\n        will fail with a 409 error.\n    ExcludeSpecifier:\n      type: object\n      properties:\n        product_tags:\n          type: array\n          items:\n            type: string\n          description: >-\n            If provided, the specifier will not apply to products with all the\n            specified tags.",
+      "location": "raw/metronome/api-reference/credits-and-commits/create-a-credit-2026-07-13.md:356-420 (complete specifier maps and exclusion semantics, string-valued custom fields, uniqueness-key failure, and all-tags semantics within one exclusion entry)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "create-credit-credits-durable-fact",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Customer-level create API",
+        "proposed_markdown": "### Customer-level credit creation\n\nBearer-authenticated `POST /v1/contracts/customerCredits/create` creates a customer-level credit, though Metronome recommends contract create or edit for most credits. The payload schema requires UUID customer, numeric priority, UUID fixed product, and access schedule; the request-body wrapper itself is not marked required. Each schedule item requires numeric amount plus inclusive RFC 3339 start and exclusive end, while the optional credit type defaults to USD cents. Contract scope can be selected or cross-contract. For product applicability, the direct-selector descriptions say omitting both IDs and tags means all products, while the same payload permits `specifiers` only when those direct selectors are absent and says at least one specifier condition must match; the page does not reconcile those statements into one selector algorithm. An exclusion array makes a specifier inapplicable when usage matches its inclusion criteria and any exclusion entry, while all tags within one exclusion entry must match. Lower numeric priority applies first, with contract-level balances winning equal-priority ties over customer-level balances; this endpoint summary does not replace the fuller rollover, type, cost-basis, applicability, and schedule ordering rules. HTTP 200 returns required UUID `data.id`; 400 and 404 use generic required string messages, while `uniqueness_key` separately documents a 409 duplicate failure. The page leaves unknown-field behavior, amount constraints, schedule cardinality and overlap, ledger state, balance-read timing, lifecycle mutations, concurrency, and propagation to invoices, alerts, reports, exports, webhooks, external A/R, tax, payment, refunds, and revenue recognition unspecified.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep requestBody requiredness separate from required properties inside CreateCustomerCreditPayload.",
+          "Preserve the unresolved all-products versus specifiers wording; do not synthesize a reconciled selector algorithm.",
+          "For exclude, use any exclusion entry and all tags within one entry, not all tags across the exclusion array.",
+          "Do not treat the endpoint's abbreviated priority prose as the complete global burn-down algorithm.",
+          "Do not turn the preferred contract-level route into an accounting or revenue-recognition guarantee."
+        ]
+      },
+      {
+        "update_id": "create-credit-credits-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - customer-level credit creation, payload and schedule requiredness, applicability, priority, uniqueness, response, and lifecycle boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "create-credit-idempotency-durable-fact",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Mechanisms",
+        "proposed_markdown": "`POST /v1/contracts/customerCredits/create` specifically exposes a 1-128 character `uniqueness_key`; reuse after a credit or commit creation prevents a new record and returns HTTP 409, although 409 is absent from the operation's response map. This resource-identity guard is separate from the API-wide `Idempotency-Key` result-replay mechanism for POST. The API-wide authority says uniqueness keys last until released but documents release only for Alerts, so no customer-credit release path is documented. The sources do not define interaction or precedence between the two keys, uniqueness-key scope, normalization, races, failed-attempt consumption, expired-header-key retries, or endpoint-specific cached-error recovery.",
+        "quote_indexes": [
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "The endpoint raw does not itself mention Idempotency-Key; retain the separate API-wide source as authority for that header.",
+          "State that no customer-credit uniqueness-key release path is documented; do not erase the API-wide until-released and Alerts-only-release statements.",
+          "Do not infer how uniqueness_key and Idempotency-Key interact."
+        ]
+      },
+      {
+        "update_id": "create-credit-idempotency-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - endpoint-specific uniqueness-key schema, duplicate-creation prevention, omitted 409 response-map entry, and interaction unknowns",
+        "quote_indexes": [
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "create-credit-products-durable-fact",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Enterprise design",
+        "proposed_markdown": "The customer-credit create payload requires a UUID `product_id` even when eligible usage is unrestricted. The `applicable_product_ids` and `applicable_product_tags` descriptions say omitting both direct selectors makes the credit apply to all products. However, the same payload permits `specifiers` only when those direct selectors are absent and says at least one specifier condition must match; it does not reconcile whether `specifiers` override that all-products wording. Within a specifier, all listed product tags must match, and pricing or presentation group-value maps accept arbitrary string-valued keys. The exclusion array makes a specifier inapplicable when usage matches its inclusion criteria and any exclusion entry; within one exclusion entry, all listed product tags must match. The page does not say whether direct IDs and tags may coexist with each other, how empty arrays behave, how missing dimensions are evaluated, or how duplicates and unknown enclosing-object fields are validated.",
+        "quote_indexes": [
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Keep the required fixed product separate from the optional eligible-usage selectors.",
+          "Preserve the unresolved all-products versus specifiers wording; do not infer a complete selector algorithm.",
+          "Do not infer mutual exclusivity between applicable_product_ids and applicable_product_tags; only specifiers exclusivity is documented.",
+          "For exclude, use any exclusion entry and all tags within one entry, not all tags across every entry."
+        ]
+      },
+      {
+        "update_id": "create-credit-products-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - required credit product, direct product applicability, specifier matching, and selector-validation boundaries",
+        "quote_indexes": [
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "create-credit-currency-durable-fact",
+        "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Credits, commits, and invoice conversion",
+        "proposed_markdown": "For customer-credit creation, `access_schedule.credit_type_id` is optional and defaults to USD cents. Every schedule item requires numeric `amount`, but the endpoint schema supplies no integer, positivity, zero, precision, maximum, or rounding constraint and no non-USD denomination rule. The schedule array is required without `minItems`; its items require inclusive RFC 3339 start and exclusive end, while ordering, overlap, chronology, gaps, and time-zone behavior beyond RFC 3339 remain unspecified.",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "Do not generalize the endpoint's USD-cent default into a denomination rule for other currencies or custom pricing units.",
+          "A required schedule_items property is not proof that the array must be nonempty."
+        ]
+      },
+      {
+        "update_id": "create-credit-currency-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - access-schedule credit-type default, numeric amount schema, inclusive and exclusive time bounds, and denomination constraints left open",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "create-credit-custom-fields-durable-fact",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Entity scope and persistence",
+        "proposed_markdown": "The customer-credit create schema accepts `custom_fields` for the `contract_credit` entity. The referenced `CustomField` is a typed object with `additionalProperties: {type: string}`. Under OpenAPI 3.0.1, neither schema sets `nullable: true`, so a supplied `custom_fields` value must be a non-null object and each supplied arbitrary property value must be a non-null string at the schema boundary. The endpoint does not define configured-key validation, uniqueness, limits, endpoint-specific runtime error mapping for invalid nulls, deletion-by-null semantics, overwrite behavior, persistence, API or export visibility, invoice propagation, or archived-credit handling; those behaviors must come from the dedicated custom-fields authority rather than this create operation.",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "Do not describe null handling as unspecified at the schema boundary: the typed object and typed string values lack nullable true and therefore do not admit null.",
+          "Runtime error mapping for invalid nulls and deletion-by-null behavior remain undocumented.",
+          "Do not infer persistence or propagation from the create-credit endpoint alone.",
+          "The explicit additionalProperties rule belongs to the custom_fields map, not the enclosing credit payload."
+        ]
+      },
+      {
+        "update_id": "create-credit-custom-fields-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - contract-credit custom-field input shape and endpoint-specific validation and propagation limits",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "create-credit-invoicing-durable-fact",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Credit and commit application",
+        "proposed_markdown": "The customer-credit create schema describes optional nonempty `name` as displayed on invoices and optional `description` as UI/API-only and not exposed to end customers. This endpoint does not define which invoice line or state displays the name, whether already-draft or finalized invoices change, or how either field propagates to PDFs, exports, webhooks, downstream billing providers, external A/R, tax, payment, refunds, or accounting systems.",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "Do not turn invoice display wording into a propagation guarantee for downstream providers or finalized invoices.",
+          "Preserve the explicit end-customer visibility distinction between name and description."
+        ]
+      },
+      {
+        "update_id": "create-credit-invoicing-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - credit name and description invoice-visibility boundary plus unspecified downstream propagation",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/create-a-credit-2026-07-13.md",
+  "raw_sha256": "b358dcf3534a54839040a1c032795d609be264362c141a8eb777dc3abff7f52f",
+  "status": "candidate_ready"
+}

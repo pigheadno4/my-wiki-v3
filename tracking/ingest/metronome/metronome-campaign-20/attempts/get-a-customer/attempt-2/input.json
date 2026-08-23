@@ -1,0 +1,49 @@
+{
+  "action": "spawn_worker",
+  "job_id": "get-a-customer",
+  "attempt": 2,
+  "raw_path": "raw/metronome/api-reference/customers/get-a-customer-2026-07-13.md",
+  "raw_sha256": "57a7231913df80ef08cff1370e69bbd1c07f8d4bbc1e46ad76af7f8373ec3cc5",
+  "source_target": "wiki/sources/metronome/source-metronome-api-reference-customers-get-a-customer.md",
+  "canonical_url": "https://docs.metronome.com/api-reference/customers/get-a-customer.md",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location.",
+    "For OpenAPI pages, distinguish requestBody requiredness, required payload properties, and additionalProperties behavior; do not infer omitted-body or unknown-field behavior.",
+    "For every POST operation, check the existing Metronome API-wide idempotency authority and separate its guarantees from endpoint-specific unknowns.",
+    "For each durable fact, audit every relevant existing Metronome concept and provide reciprocal source-link suggestions; do not stop after the first plausible concept."
+  ],
+  "retry_context": {
+    "prior_attempt": 1,
+    "review_scope": "targeted",
+    "required_changes": [
+      "Delete or correct the candidate sentence claiming that the page does not define whether required fields can be null. Preserve the separate and correct point that CustomerDetail does not set an additionalProperties policy, but do not turn typed required properties into a nullability unknown when the OpenAPI 3.0.1 schema uses explicit nullable markers for the fields that permit null.",
+      "Expand or replace the grounding excerpts, without exceeding the three-to-five quote contract, so the quote indexes for every durable shared claim directly cover the relevant raw schema. In particular, include the 200 data envelope and CustomerDetail required list; the ingest_aliases and deprecated external_id descriptions; the archived_at and configuration-dependent current_billable_status blocks; and the complete CustomField type/object plus additionalProperties/type:string block. Update each suggestion's quote_indexes accordingly, or narrow any unsupported proposed prose.",
+      "Revise get-a-customer-custom-fields-fact so its omission-language cannot contradict the required custom_fields response property. If the intended unknown concerns configured map keys that lack values, say that explicitly; otherwise remove the omission claim while retaining the supported map-key ordering and freshness boundaries.",
+      "Change the anchor for get-a-customer-event-alias-fact to the actual current location of the customer_id bullet under ## Commercial event-count boundary, or name the exact bullet text as the insertion anchor. Do not claim that the bullet currently sits under the empty ## Event contract section."
+    ],
+    "prior_reviewer_identity": "/root/c20_r_customer"
+  },
+  "recommended_worker_tier": "standard",
+  "routing_reason": "Short read-oriented customer endpoint selected as the standard baseline for request, response, and identity boundaries.",
+  "worker_identity": "/root/c20_w_customer",
+  "worker_model": "gpt-5.6-sol"
+}

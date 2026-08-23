@@ -1,0 +1,98 @@
+{
+  "job_id": "list-all-billable-metrics",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome List All Billable Metrics API\"\ntype: source\ndate_ingested: 2026-08-23\ncanonical_url: \"https://docs.metronome.com/api-reference/billable-metrics/list-all-billable-metrics.md\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/billable-metrics/list-all-billable-metrics-2026-07-13.md\"\ntags: [metronome, api, billable-metrics, pagination, archived-metrics]\n---\n\n## Overview\n\nThis reference documents bearer-authenticated `GET /v1/billable-metrics`, which returns billable metrics with their configurations for programmatic discovery and management. The page specifically suggests using the list to associate metrics with products and audit orphaned or archived metrics; archived metrics are excluded by default and require `include_archived=true`.\n\n## Key takeaways\n\n- The page defines the `limit`, `next_page`, and `include_archived` query parameters but no OpenAPI `requestBody`. Request-body requiredness and behavior if a caller supplies a body are therefore undocumented.\n- `limit` accepts integers from `1` through `100`; `next_page` is a string cursor indicating where the following page begins. The page states no default page size or result order.\n- HTTP `200` requires both a `data` array and a nullable string `next_page`; `null` is the documented terminal cursor value under the separate API-wide pagination convention.\n- Each returned metric requires only UUID `id` and string `name`. Event and property filters, aggregation type and key, group keys, custom fields, SQL, and archive timestamp are optional in this response schema.\n- The response exposes complete configurations in the page's wording, but it supplies no metric-type discriminator, version, product association, orphan-status flag, or reason a metric is considered orphaned.\n\n## Request and pagination\n\nThe production route is `GET https://api.metronome.com/v1/billable-metrics`, operation ID `listAllBillableMetrics-v1`, under an HTTP bearer-authentication requirement. This page defines no OpenAPI `requestBody`; it consequently does not document request-body requiredness, a request payload schema, required payload properties, `additionalProperties` behavior for a supplied body, or how a server handles a body if one is supplied.\n\n`limit` is optional with a minimum of `1` and maximum of `100`. `next_page` is an optional string cursor. A successful response requires both `data` and `next_page`, with the latter nullable. The endpoint does not define its default limit, sort order, cursor lifetime, snapshot consistency, cursor binding to `include_archived`, malformed-cursor errors, or duplicate and skipped-record behavior while configurations change during traversal.\n\n`include_archived` is an optional boolean. Archived metrics are excluded by default, and callers set it to `true` to include them. The page does not define whether archive filtering occurs before pagination, how quickly archival propagates to a traversal, whether an in-progress cursor preserves its original archive scope, or whether archived entries are ordered separately.\n\n## Returned configuration\n\nEvery array item uses `BillableMetricV1`; only `id` and `name` are schema-required. The optional fields have these documented meanings and boundaries:\n\n| Field | Documented behavior |\n| --- | --- |\n| `event_type_filter` | Optional include and exclude arrays for event types; each must be non-empty when present. Overlap, precedence, duplicate, and case behavior are unspecified. |\n| `property_filters` | Array of property rules, each requiring `name`; all supplied rules must pass. `exists` can require presence or absence, and value lists admit or reject specified values. |\n| `aggregation_type` | Enumerates lower-, title-, and uppercase spellings of COUNT, LATEST, MAX, SUM, and UNIQUE. The enumeration does not promise arbitrary case normalization or define UNIQUE semantics. |\n| `aggregation_key` | Event-property key used for aggregation; it must be one of the property-filter names and is inapplicable to count. The response schema does not say which other aggregations require it. |\n| `group_keys` | Array of string arrays used to group usage costs into invoice buckets. Non-empty rules, size limits, duplicate behavior, order, and property-filter prerequisites are not stated. |\n| `custom_fields` | Object explicitly permitting arbitrary property names whose values are strings. No key, value, count, visibility, or redaction limits are documented. |\n| `sql` | SQL query associated with the metric. This endpoint gives no dialect, output contract, limits, redaction rule, or discriminator between SQL and standard metrics. |\n| `archived_at` | RFC 3339 timestamp indicating when the metric was archived; omission means it is not archived. |\n\nExcept for the string-valued `additionalProperties` declaration on `custom_fields`, the response object schemas do not declare `additionalProperties`; this page therefore does not establish whether undocumented response fields are forbidden, ignored, or may appear. Consumers should not infer a closed response contract from omission alone.\n\n## Matching and schema inconsistencies\n\nAll property-filter rules must pass. `exists: true` requires the event property, `exists: false` requires its absence, and null or omission leaves existence optional. `in_values` admits only listed values and must be non-empty when present. The `not_in_values` description says null or an empty list lets all values pass and also says the list must be non-empty when present, leaving empty-list validity contradictory. Interactions among existence checks, value filters, duplicate rules, null values, and include/exclude overlap are not defined.\n\n> [!warning] Aggregation example conflict\n> The example uses `aggregation_key: bytes`, but its property filters are named `cpu_hours`, `region`, and `machine_type`, contradicting the schema statement that the aggregation key must be one of the property-filter names. Treat the example as illustrative rather than a validated configuration.\n\n> [!warning] UNIQUE documentation conflict\n> This list schema includes `UNIQUE`, while the separate billable-metric guide describes streaming metrics with COUNT, SUM, MAX, and LATEST and directs distinct counts to SQL. This endpoint does not define UNIQUE or reconcile that boundary, so it does not independently establish a streaming distinct-count contract.\n\nThe schema does not mark an aggregation, filter set, group-key set, or SQL query as required and provides no standard-versus-SQL discriminator. A missing optional field should therefore not be treated as proof of a metric type or configuration default.\n\n## Operational unknowns\n\nOnly HTTP `200` is documented. The page gives no operation-specific error envelope, authorization scope, rate limit, cache behavior, timeout, retry guidance, consistency guarantee, or audit-history field. This operation is GET, so the existing API-wide POST idempotency authority does not supply endpoint-specific guarantees here. Listing a metric also does not associate it with a product, prove that it currently receives matching events, establish that it contributes to an invoice, or itself determine orphan status.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-billable-metrics]], [[metronome-custom-fields]]\n- Related sources: [[source-metronome-api-reference-pagination]], [[source-metronome-api-reference-billable-metrics-create-a-billable-metric]], [[source-metronome-api-reference-billable-metrics-get-a-billable-metric]], [[source-metronome-api-reference-billable-metrics-get-billable-metrics-for-a-customer]], [[source-metronome-api-reference-custom-fields]], [[source-metronome-api-reference-authentication]], [[source-metronome-api-reference-status-codes]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/billable-metrics/list-all-billable-metrics-2026-07-13|2026-07-13 snapshot - account-wide billable-metric listing, pagination, archive filter, and returned configuration schema]]\n",
+  "quotes": [
+    {
+      "text": "Important: Archived metrics are excluded by default; use `include_archived`=`true` parameter to include them.",
+      "location": "Opening narrative and GET operation description"
+    },
+    {
+      "text": "schema:\n                type: object\n                required:\n                  - data\n                  - next_page\n                properties:\n                  data:\n                    type: array\n                    items:\n                      $ref: '#/components/schemas/BillableMetricV1'\n                  next_page:\n                    type: string\n                    nullable: true\n              example:\n                data:\n                  - name: data transfer (GB)\n                    id: 9570e4f3-d1da-4b95-ba81-bd40ee002727\n                    aggregation_type: SUM\n                    aggregation_key: bytes\n                    event_type_filter:\n                      in_values:\n                        - cpu_usage\n                    property_filters:\n                      - name: cpu_hours\n                        exists: true\n                      - name: region\n                        exists: true\n                        in_values:\n                          - EU\n                          - NA\n                      - name: machine_type\n                        exists: true\n                        in_values:\n                          - slow\n                          - fast",
+      "location": "OpenAPI HTTP 200 response schema and example"
+    },
+    {
+      "text": "PageLimit:\n      name: limit\n      in: query\n      description: Max number of results that should be returned\n      required: false\n      schema:\n        type: integer\n        minimum: 1\n        maximum: 100",
+      "location": "OpenAPI components.parameters.PageLimit"
+    },
+    {
+      "text": "BillableMetricV1:\n      type: object\n      required:\n        - id\n        - name",
+      "location": "OpenAPI components.schemas.BillableMetricV1 required fields"
+    },
+    {
+      "text": "AggregationKey:\n      type: string\n      description: >-\n        A key that specifies which property of the event is used to aggregate\n        data. This key must be one of the property filter names and is not\n        applicable when the aggregation type is 'count'.\n    GroupKeysArray:\n      type: array\n      items:\n        type: array\n        items:\n          type: string\n      description: >-\n        Property names that are used to group usage costs on an invoice. Each\n        entry represents a set of properties used to slice events into distinct\n        buckets.\n    CustomField:\n      type: object\n      description: 'Custom fields to be added eg. { \"key1\": \"value1\", \"key2\": \"value2\" }'\n      additionalProperties:\n        type: string",
+      "location": "OpenAPI components.schemas AggregationKey through CustomField"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "list-all-billable-metrics-retrieval-fact-v2",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append after the existing customer-scoped list paragraph in `## Retrieval APIs` and before the paragraph beginning `The retrieval schemas preserve`.",
+        "proposed_markdown": "`GET /v1/billable-metrics` provides an account-wide, bearer-authenticated configuration inventory with optional `limit` (`1` to `100`), string `next_page`, and boolean `include_archived` query parameters. Archived metrics are excluded by default and require `include_archived=true`; HTTP `200` requires a `data` array and nullable `next_page`. Returned items require only UUID `id` and string `name`, while filters, aggregation, grouping, custom fields, SQL, and archive timestamp remain optional. The endpoint supplies no ordering, cursor-lifetime or snapshot guarantee, metric-type discriminator, product association, orphan-status field, or non-200 response contract. Its example also repeats the schema defect in which `aggregation_key: bytes` does not name any listed property filter.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the example contradiction: aggregation_key is documented as a property-filter name, but bytes is absent from the example's property-filter names.",
+          "Do not generalize the endpoint's configuration listing into product association, event matching, invoice contribution, or an authoritative orphan-status determination.",
+          "The response schema repeats the unresolved UNIQUE-versus-SQL-distinct conflict and the contradictory empty not_in_values wording already recorded on the concept page."
+        ]
+      },
+      {
+        "update_id": "list-all-billable-metrics-billable-reciprocal-v2",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` beside the existing billable-metric retrieval API sources.",
+        "proposed_markdown": "- [[source-metronome-api-reference-billable-metrics-list-all-billable-metrics]] - account-wide configuration listing, 1-100 cursor pagination, archived-by-default exclusion, response-schema boundaries, and the aggregation-key example defect",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "list-all-billable-metrics-custom-fields-fact-v2",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "durable_fact",
+        "anchor": "Insert a new `## Billable-metric response shape` section immediately before `## Limits of the overview`.",
+        "proposed_markdown": "## Billable-metric response shape\n\nThe `GET /v1/billable-metrics` response schema can expose `custom_fields` on each returned billable metric as an object with arbitrary property names and string values. The field is optional because only metric `id` and `name` are required. This endpoint does not document custom-field key, value, or entry-count limits, visibility rules, redaction behavior, or whether every field configured elsewhere is returned through this listing. [[source-metronome-api-reference-billable-metrics-list-all-billable-metrics]]",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this scoped to the billable-metric list response schema; it does not expand the Custom Fields overview's supported-entity list or establish write behavior.",
+          "Arbitrary keys with string values do not establish key, value, count, visibility, or redaction limits."
+        ]
+      },
+      {
+        "update_id": "list-all-billable-metrics-custom-fields-reciprocal-v2",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` after the existing custom-fields overview source.",
+        "proposed_markdown": "- [[source-metronome-api-reference-billable-metrics-list-all-billable-metrics]] - billable-metric response custom fields as an arbitrary-key, string-valued object and undocumented limits",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/billable-metrics/list-all-billable-metrics-2026-07-13.md",
+  "raw_sha256": "9ffd87e8d56e7c63edeee3ffa68c215b072be5643eab4634ad5fd232c033226a",
+  "status": "candidate_ready"
+}

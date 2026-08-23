@@ -1,0 +1,52 @@
+{
+  "action": "spawn_worker",
+  "job_id": "list-balances",
+  "attempt": 2,
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/list-balances-2026-07-13.md",
+  "raw_sha256": "7ffde117cacffadd3abb40817c718eeb46374b86ef2cb527db6e9fbe37cc048d",
+  "source_target": "wiki/sources/metronome/source-metronome-api-reference-credits-and-commits-list-balances.md",
+  "canonical_url": "https://docs.metronome.com/api-reference/credits-and-commits/list-balances.md",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location.",
+    "For OpenAPI pages, distinguish requestBody requiredness, required payload properties, and additionalProperties behavior; do not infer omitted-body or unknown-field behavior.",
+    "For every POST operation, check the existing Metronome API-wide idempotency authority and separate its guarantees from endpoint-specific unknowns.",
+    "For each durable fact, audit every relevant existing Metronome concept and provide reciprocal source-link suggestions; do not stop after the first plausible concept."
+  ],
+  "retry_context": {
+    "prior_attempt": 1,
+    "review_scope": "full",
+    "required_changes": [
+      "Correct the top-level response wording to an object that requires data and nullable next_page, with data containing the Commit-or-Credit union. Explicitly reconcile the endpoint-specific JSON-body next_page and 1-25 limit (default 25) with the separate pagination authority's query-parameter guidance and general 100 cap; preserve this as an endpoint-specific documentation difference rather than silently applying the general convention.",
+      "Strengthen the archive boundary: preserve the exact ambiguous include_archived wording, note that archived_at appears only on the Commit response schema while Credit has no archived_at property, and reconcile that asymmetry with the existing contract-archive authority that archives associated commits and credits. Do not infer whether archived commits are returned, how archived credits expose status, or what omission defaults do.",
+      "Add the material ledger-schema contradiction/ambiguity. This OpenAPI page uses uppercase, often expanded enum tokens such as PREPAID_COMMIT_EXPIRATION, POSTPAID_COMMIT_INITIAL_BALANCE, and CREDIT_EXPIRATION, while the existing remaining-balance guide documents lowercase and sometimes differently named families such as prepaid_commit_expiration, postpaid_initial_balance, and credit_segment_expiration. Preserve the exact per-surface names and do not infer normalization or one-to-one equivalence. Retain the already-correct non-negative calculated-balance exception.",
+      "Qualify the amount guidance: access and invoice schedule amounts are numeric, but credit_type is optional in both schedule schemas and this page does not expose is_currency or independently define denomination, precision, conversion, or rounding. When credit_type is present it supplies only an id and name here. Add the relevant metronome-currencies-and-custom-pricing-units concept to Related and provide fact-bearing plus reciprocal-source-link suggestions that defer USD, non-USD, and custom-unit denomination rules to the existing currency authority.",
+      "Audit and add fact-bearing plus reciprocal-source-link suggestions for wiki/concepts/metronome/metronome-custom-fields.md. The Commit and Credit response schemas can expose optional custom_fields as arbitrary-key objects with string values, with entity annotations commit and contract_credit respectively; key, value, count, visibility, redaction, and availability limits remain undocumented. Add the concept to the source Related section.",
+      "Replace or expand the three-to-five grounding excerpts so every durable shared update is directly evidenced. The revised excerpts and quote_indexes must cover the request schema and filters/flags being asserted, the required 200 envelope and Commit/Credit union, endpoint pagination, archive fields and wording, balance and ledger semantics, and any new credit_type or custom_fields facts; otherwise narrow the proposed shared prose to what the excerpts actually support.",
+      "Revise the existing credits-and-commits and customers-and-contracts suggestions to incorporate the corrected pagination, archive, ledger-name, and amount boundaries and to use accurate current anchors. Resubmit all fact-bearing and reciprocal descriptions with quote indexes that directly ground their stated details."
+    ],
+    "prior_reviewer_identity": "/root/c20_r_balances"
+  },
+  "recommended_worker_tier": "strong",
+  "routing_reason": "The 1,464-line credits-and-commits endpoint is the manifest's longest and schema-heaviest page and may intersect balance, ledger, and pagination concepts.",
+  "worker_identity": "/root/c20_w_balances",
+  "worker_model": "gpt-5.6-sol"
+}

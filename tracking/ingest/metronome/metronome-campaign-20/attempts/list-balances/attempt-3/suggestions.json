@@ -1,0 +1,126 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "list-balances-v2-credits-durable",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Balance retrieval and ledger calculation",
+      "proposed_markdown": "`POST /v1/contracts/customerBalances/list` is the detailed balance read. Its payload schema requires `customer_id`, although the request-body wrapper is not marked required; omitted-body and top-level unknown-field behavior remain undocumented. Optional access-window filters, balance and ledger expansions, contract and archive inclusion, feature-gated zero exclusion, and JSON-body cursor pagination are available. HTTP 200 is an object requiring `data` and nullable `next_page`; `data` is the Commit-or-Credit union. The endpoint's body `limit` is 1-25 and defaults to 25, unlike the separate pagination authority's query-parameter convention and general 100 cap.\n\n`include_archived` says exactly \"archived credits and credits from archived contracts.\" Commit alone exposes `archived_at`; Credit has no corresponding property. The contract-archive authority establishes that associated commits and credits are archived. This list surface still does not establish whether archived commits are returned, how Credit exposes archive status without `archived_at`, how the repeated-credit wording partitions results, or omitted-flag behavior.\n\nThe calculated balance excludes expired and upcoming segments, includes future-dated manual entries on active segments, and ordinarily matches ledger sum. If negative manual entries exceed positive remaining value, however, it is floored at zero.\n\n> [!warning] Contradiction\n> This non-negative floor qualifies the existing broad signed-ledger-sum statement. The OpenAPI page also serializes uppercase, often expanded tokens such as `PREPAID_COMMIT_EXPIRATION`, `POSTPAID_COMMIT_INITIAL_BALANCE`, and `CREDIT_EXPIRATION`, while the remaining-balance guide uses lowercase and sometimes differently named `prepaid_commit_expiration`, `postpaid_initial_balance`, and `credit_segment_expiration`. Do not infer normalization or one-to-one equivalence; preserve each surface's exact names.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Calculated balance can be zero while signed ledger sum is negative after excessive negative manual entries.",
+        "Ledger enum differences include more than casing, especially CREDIT_EXPIRATION versus credit_segment_expiration.",
+        "Archive wording and response fields do not establish archived-commit inclusion or Credit archive-status representation."
+      ]
+    },
+    {
+      "update_id": "list-balances-v2-credits-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-balances]] - detailed balance request and response schemas, endpoint-specific pagination, archive asymmetry, schedule-unit boundary, calculated-balance floor, custom fields, and ledger-enum contradictions",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-balances-v2-customers-durable",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Customer balance views",
+      "proposed_markdown": "The detailed view is `POST /v1/contracts/customerBalances/list`. Its JSON payload requires the customer UUID and can filter by access-window dates, with exclusive `effective_before`; the body wrapper itself is not marked required. HTTP 200 requires an object containing a Commit-or-Credit `data` array and nullable `next_page`. This endpoint puts `next_page` and a 1-25, default-25 `limit` in the JSON body, unlike the general pagination authority's query parameters and 100 cap.\n\n`include_contract_balances` requests contract-level records. `include_archived` says \"archived credits and credits from archived contracts,\" while Commit alone exposes `archived_at` and Credit does not. The contract-archive authority establishes that associated commits and credits are archived. The list surface still does not establish omitted-flag behavior, whether archived commits are returned, how Credit exposes archive status, how the repeated-credit wording partitions results, hierarchy effects, response ordering, cursor lifetime, or snapshot consistency.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Preserve the exact repeated-credit archive wording and the Commit-only archived_at field.",
+        "Endpoint body pagination differs from the API-wide query-parameter convention."
+      ]
+    },
+    {
+      "update_id": "list-balances-v2-customers-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-balances]] - customer-scoped detailed balance envelope, access filters, endpoint-specific pagination, contract inclusion, archive-response asymmetry, and consistency unknowns",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-balances-v2-currency-durable",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Fiat currencies and API denomination",
+      "proposed_markdown": "The `listBalances` response models access- and invoice-schedule `amount`, `unit_price`, and `quantity` as numbers. Both schedule schemas make `credit_type` optional; on this page the referenced type requires only UUID `id` and string `name` and does not expose `is_currency`. The example uses `USD (cents)`, but this endpoint independently defines no USD, non-USD, or custom-unit denomination, precision, conversion, or rounding rule. Apply the dedicated currency and custom-unit authorities rather than inferring a universal scale from this response example.",
+      "quote_indexes": [
+        1,
+        3
+      ],
+      "warnings": [
+        "credit_type is optional in both schedule schemas and this endpoint does not expose is_currency.",
+        "The USD (cents) example cannot establish non-USD or custom-unit encoding."
+      ]
+    },
+    {
+      "update_id": "list-balances-v2-currency-link",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-balances]] - optional schedule credit-type references, numeric amount fields, USD-cents example, and endpoint-level denomination and precision boundaries",
+      "quote_indexes": [
+        1,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-balances-v2-custom-fields-durable",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Entity scope and persistence",
+      "proposed_markdown": "The `listBalances` Commit and Credit response schemas can each expose optional `custom_fields` through an arbitrary-key object whose additional-property values are strings. The Commit field is annotated as entity `commit`; the Credit field is annotated `contract_credit`. This endpoint does not define key format, value length, field count, visibility, redaction, permissions, availability, or unset-value behavior.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "The contract_credit annotation is surface-specific and should not be renamed to credit without authority.",
+        "No endpoint-level key, count, visibility, redaction, or availability limits are documented."
+      ]
+    },
+    {
+      "update_id": "list-balances-v2-custom-fields-link",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-balances]] - optional commit and contract-credit custom-field response maps, string-valued additional properties, and endpoint-level limits and visibility unknowns",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

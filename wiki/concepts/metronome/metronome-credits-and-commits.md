@@ -53,6 +53,15 @@ Historical invoice import combines supplied line-item quantities with unit price
 
 Archiving a contract also archives all associated commits and credits. For prepaid commits with active segments, Metronome automatically creates expiration ledger entries to close remaining balances and shows them in commit transaction history as `PREPAID_COMMIT_EXPIRATION`. The archive page does not define association behavior for customer-level balances shared across contracts, entry amounts or effective timestamps, ordering against invoice deductions, atomicity, or reconciliation after partial failure. Its uppercase type spelling differs from the lowercase `prepaid_commit_expiration` documented by the remaining-balance guide, so enum casing should be verified per surface. [[source-metronome-api-reference-contracts-archive-a-contract]]
 
+`POST /v1/contracts/customerBalances/list` is the detailed balance read. Its payload schema requires `customer_id`, although the request-body wrapper is not marked required; omitted-body and top-level unknown-field behavior remain undocumented. Optional access-window filters, balance and ledger expansions, contract and archive inclusion, feature-gated zero exclusion, and JSON-body cursor pagination are available. HTTP 200 is an object requiring `data` and nullable `next_page`; `data` is the Commit-or-Credit union. The endpoint's body `limit` is 1-25 and defaults to 25, unlike the separate pagination authority's query-parameter convention and general 100 cap.
+
+`include_archived` says exactly "archived credits and credits from archived contracts." Commit alone exposes `archived_at`; Credit has no corresponding property. The contract-archive authority establishes that associated commits and credits are archived. This list surface still does not establish whether archived commits are returned, how Credit exposes archive status without `archived_at`, how the repeated-credit wording partitions results, or omitted-flag behavior.
+
+The calculated balance excludes expired and upcoming segments, includes future-dated manual entries on active segments, and ordinarily matches ledger sum. If negative manual entries exceed positive remaining value, however, it is floored at zero.
+
+> [!warning] Contradiction
+> This non-negative floor qualifies the existing broad signed-ledger-sum statement. The OpenAPI page also serializes uppercase, often expanded tokens such as `PREPAID_COMMIT_EXPIRATION`, `POSTPAID_COMMIT_INITIAL_BALANCE`, and `CREDIT_EXPIRATION`, while the remaining-balance guide uses lowercase and sometimes differently named `prepaid_commit_expiration`, `postpaid_initial_balance`, and `credit_segment_expiration`. Do not infer normalization or one-to-one equivalence; preserve each surface's exact names.
+
 ### Revenue-reporting treatment
 
 Metronome's revenue-recognition guide treats prepaid-commit purchase invoices as deferred revenue, prepaid drawdown invoices as recognized as consumption occurs, and unused prepaid expiration as recognized at period end. Postpaid usage is recognized as the balance draws down, with any unmet minimum reported when the true-up invoice is issued. Free credits are never paid for and do not affect deferred revenue, although their drawdown may have a contra-revenue effect. For line-item-based reports, the guide says to ignore `credit_automated_invoice_deduction` and `prepaid_automated_invoice_deduction` on `CONTRACT_USAGE`, plus `postpaid_automated_invoice_deduction` and `postpaid_trueup` where invoice line items already include the amounts; include `prepaid_segment_expiration` because Metronome does not invoice that expiration, and usually ignore `credit_segment_expiration` because free-credit expiration does not affect revenue. These rules are documented report-construction guidance, not a complete merchant accounting policy.
@@ -93,6 +102,10 @@ Spend-threshold billing is a separate contract control from prepaid-balance auto
 - Contract scope can be explicit or cross-contract; product scope can use IDs, tags, or specifiers.
 - Lower priority numbers consume first, with contract-level balances winning ties over customer-level balances.
 - `uniqueness_key` prevents duplicate creation; its description documents a `409` failure.
+
+### Customer-level credit creation
+
+Bearer-authenticated `POST /v1/contracts/customerCredits/create` creates a customer-level credit, though Metronome recommends contract create or edit for most credits. The payload schema requires UUID customer, numeric priority, UUID fixed product, and access schedule; the request-body wrapper itself is not marked required. Each schedule item requires numeric amount plus inclusive RFC 3339 start and exclusive end, while the optional credit type defaults to USD cents. Contract scope can be selected or cross-contract. For product applicability, the direct-selector descriptions say omitting both IDs and tags means all products, while the same payload permits `specifiers` only when those direct selectors are absent and says at least one specifier condition must match; the page does not reconcile those statements into one selector algorithm. An exclusion array makes a specifier inapplicable when usage matches its inclusion criteria and any exclusion entry, while all tags within one exclusion entry must match. Lower numeric priority applies first, with contract-level balances winning equal-priority ties over customer-level balances; this endpoint summary does not replace the fuller rollover, type, cost-basis, applicability, and schedule ordering rules. HTTP 200 returns required UUID `data.id`; 400 and 404 use generic required string messages, while `uniqueness_key` separately documents a 409 duplicate failure. The page leaves unknown-field behavior, amount constraints, schedule cardinality and overlap, ledger state, balance-read timing, lifecycle mutations, concurrency, and propagation to invoices, alerts, reports, exports, webhooks, external A/R, tax, payment, refunds, and revenue recognition unspecified.
 
 ## Targeted commit edits
 
@@ -200,6 +213,10 @@ A merchant can create `low_remaining_commit_balance_reached` for a customer, cre
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-set-customer-spend-control]] — spend-triggered commit representation, optional payment gate, and external release/cancel flow
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] — low-remaining-commit alert and merchant-owned outreach or access action
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]] — aggregate and detailed balance APIs, signed-ledger arithmetic, precision, effective time, entry types, and manual adjustments
+
+- [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - customer-level credit creation, payload and schedule requiredness, applicability, priority, uniqueness, response, and lifecycle boundaries
+
+- [[source-metronome-api-reference-credits-and-commits-list-balances]] - detailed balance request and response schemas, endpoint-specific pagination, archive asymmetry, schedule-unit boundary, calculated-balance floor, custom fields, and ledger-enum contradictions
 
 ## Related
 

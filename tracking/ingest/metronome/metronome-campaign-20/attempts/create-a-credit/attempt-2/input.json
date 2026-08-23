@@ -1,0 +1,49 @@
+{
+  "action": "spawn_worker",
+  "job_id": "create-a-credit",
+  "attempt": 2,
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/create-a-credit-2026-07-13.md",
+  "raw_sha256": "b358dcf3534a54839040a1c032795d609be264362c141a8eb777dc3abff7f52f",
+  "source_target": "wiki/sources/metronome/source-metronome-api-reference-credits-and-commits-create-a-credit.md",
+  "canonical_url": "https://docs.metronome.com/api-reference/credits-and-commits/create-a-credit.md",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location.",
+    "For OpenAPI pages, distinguish requestBody requiredness, required payload properties, and additionalProperties behavior; do not infer omitted-body or unknown-field behavior.",
+    "For every POST operation, check the existing Metronome API-wide idempotency authority and separate its guarantees from endpoint-specific unknowns.",
+    "For each durable fact, audit every relevant existing Metronome concept and provide reciprocal source-link suggestions; do not stop after the first plausible concept."
+  ],
+  "retry_context": {
+    "prior_attempt": 1,
+    "review_scope": "full",
+    "required_changes": [
+      "Add an explicit contradiction or ambiguity note for product applicability: the applicable_product_ids and applicable_product_tags descriptions say that omitting both makes the credit apply to all products, while the same payload permits specifiers only when those direct selectors are absent and says at least one specifier condition must match. Do not present both statements as a reconciled selector algorithm; update the candidate and the affected credits-and-commits and products shared facts to preserve this unresolved wording.",
+      "Correct the candidate's exclusion sentence. The exclude array excludes usage matching the inclusion criteria and any exclusion entry; within an ExcludeSpecifier, product_tags matches products carrying all tags in that entry. Do not collapse this into a requirement to match all exclusion tags across the array.",
+      "Revise create-credit-idempotency-durable-fact so it does not say uniqueness-key release is simply undefined across the sources. The API-wide authority says uniqueness keys last until released but documents release only for Alerts, so state that no customer-credit release path is documented; retain the unknown key scope, normalization, race, failed-attempt, and interaction boundaries.",
+      "Replace or expand the grounding excerpts, while retaining the three-to-five quote limit, so every durable shared claim is directly supported. In particular include customer_id's UUID schema, the Id required/id/UUID and Error required/message/string blocks, the complete CommitSpecifierInput pricing and presentation group maps plus exclude semantics, and ExcludeSpecifier product_tags semantics; then update quote_indexes or narrow unsupported prose."
+    ],
+    "prior_reviewer_identity": "/root/c20_r_credit"
+  },
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Credit creation is a mutation selected to test OpenAPI requiredness, API-wide POST idempotency, lifecycle boundaries, and complete concept placement.",
+  "worker_identity": "/root/c20_w_credit",
+  "worker_model": "gpt-5.6-sol"
+}

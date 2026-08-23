@@ -1,0 +1,120 @@
+{
+  "job_id": "get-a-customer",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Get a Customer\"\ntype: source\ndate_ingested: 2026-08-23\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/customers/get-a-customer.md\"\nraw_files:\n  - \"metronome/api-reference/customers/get-a-customer-2026-07-13.md\"\ntags: [metronome, customers, api-reference, ingest-aliases, custom-fields]\n---\n\n## Overview\n\nThis API reference documents the bearer-authenticated `GET /v1/customers/{customer_id}` endpoint for retrieving one customer by Metronome UUID. The response exposes the customer's identity, timestamps, usage-event aliases, configuration data, and custom fields, while directing billing-configuration searches to a separate endpoint.\n\n## Key takeaways\n\n- The required `customer_id` path parameter is a UUID and identifies the customer by its Metronome ID.\n- HTTP `200` returns a required `data` envelope containing a `CustomerDetail`; the schema requires the customer's ID, deprecated `external_id`, ingest aliases, name, creation and update timestamps, customer configuration, and custom fields.\n- `ingest_aliases` are alternate identifiers usable instead of the Metronome customer ID in usage events. The returned `external_id` remains required by this response schema but is deprecated in favor of ingest aliases.\n- Customer custom fields are returned as an object whose arbitrary keys have string values. `customer_config` separately requires a nullable `salesforce_account_id`; this page does not establish that it is a customer billing-provider configuration.\n- The optional nullable `archived_at` records when the customer was archived. An optional `current_billable_status` is available only for some client configurations and, when present, contains a required `billable` or `unbillable` value plus an optional nullable effective timestamp.\n\n## Endpoint and request\n\nThe production server is `https://api.metronome.com`, the operation ID is `getCustomer-v1`, and the OpenAPI document applies HTTP bearer authentication. The operation takes one required path parameter, `customer_id`, whose schema is a UUID-formatted string. No query parameters or request body are defined on this page.\n\nThe page explicitly says billing-configuration lookups should use `/getCustomerBillingConfigurations`. It does not provide that endpoint's method, request contract, or response schema, so this customer-detail response must not be treated as the billing-configuration authority.\n\n## Response schema\n\nA successful response requires a top-level `data` property referencing `CustomerDetail`. Within that object, `id`, `external_id`, `ingest_aliases`, `name`, `customer_config`, `custom_fields`, `created_at`, and `updated_at` are required. `id` is a UUID; `created_at` and `updated_at` are RFC 3339 date-time strings.\n\n`external_id` is described as the first Metronome ID or ingest alias usable in usage events, but is deprecated in favor of `ingest_aliases`. The alias array contains strings that may replace the Metronome customer ID in usage events. The page does not state alias ordering, uniqueness, or whether every returned alias is currently active.\n\n`customer_config` references a schema that requires `salesforce_account_id`, while allowing that string field to be null. The page supplies no semantics for absent or stale Salesforce mappings and does not define unknown-field behavior for this object. `custom_fields` is an open string-valued map.\n\n`archived_at` is optional and nullable; when present it is an RFC 3339 timestamp, and null denotes an active customer. `current_billable_status` is also optional and explicitly configuration-dependent. Its nested `value` is required and enumerated as `billable` or `unbillable`; `effective_at` is optional and nullable. This page does not define the status's billing effect, derivation, freshness, transition history, or behavior for clients where the field is unavailable.\n\n## Documented boundaries\n\nThe operation documents only HTTP `200 Success`. It does not define not-found representation, authentication or authorization errors, malformed-ID behavior, rate limits, retry guidance, cache or read-after-write consistency, or response freshness. Although the response can carry `archived_at`, the page does not say whether archived customers are always retrievable, for how long, or under what access rules.\n\nThe `CustomerDetail` schema does not set an `additionalProperties` policy, so this source does not establish how clients should handle undocumented response fields. It also does not define whether the required fields can be null except where a property explicitly declares nullability.\n\nNo contradiction was found with the existing customer-creation, customer-provisioning, custom-field, or event-ingestion summaries when the retrieval schema is kept separate from creation limits and billing-provider configuration.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-customers-and-contracts]], [[metronome-event-ingestion]], [[metronome-custom-fields]]\n- Related sources: [[source-metronome-api-reference-customers-create-a-customer]], [[source-metronome-guides-implement-metronome-core-concepts-provision-customer]], [[source-metronome-api-reference-usage-ingest-events]], [[source-metronome-api-reference-custom-fields]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/customers/get-a-customer-2026-07-13|2026-07-13 snapshot \u2014 customer retrieval endpoint and embedded OpenAPI schema]]",
+  "quotes": [
+    {
+      "text": "Get detailed information for a specific customer by their Metronome ID. Returns customer profile data including name, creation date, ingest aliases, configuration settings, and custom fields. Use this endpoint to fetch complete customer details for billing operations or account management.",
+      "location": "Opening description below the H1"
+    },
+    {
+      "text": "Note: If searching for a customer billing configuration, use the `/getCustomerBillingConfigurations` endpoint.",
+      "location": "Opening note immediately before the OpenAPI section"
+    },
+    {
+      "text": "required: true\n      schema:\n        type: string\n        format: uuid",
+      "location": "OpenAPI components.parameters.CustomerId"
+    },
+    {
+      "text": "(deprecated, use ingest_aliases instead) the first ID (Metronome or\n            ingest alias) that can be used in usage events",
+      "location": "OpenAPI components.schemas.CustomerDetail.properties.external_id.description"
+    },
+    {
+      "text": "Custom fields to be added eg. { \"key1\": \"value1\", \"key2\": \"value2\" }",
+      "location": "OpenAPI components.schemas.CustomField.description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "get-a-customer-customers-retrieval-fact",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "Before ## Customer creation API",
+        "proposed_markdown": "## Customer retrieval API\n\nBearer-authenticated `GET /v1/customers/{customer_id}` requires a Metronome UUID path parameter and returns detailed customer identity, timestamps, ingest aliases, customer configuration, and custom fields under `data`. Its schema retains required-but-deprecated `external_id`; the page directs billing-configuration searches to `/getCustomerBillingConfigurations` and does not equate `customer_config` with a billing-provider configuration. Optional `archived_at` is nullable, while optional `current_billable_status` is client-configuration-dependent. The page documents only HTTP `200` and leaves not-found behavior, freshness, archived-customer retrieval, and status derivation undefined. [[source-metronome-api-reference-customers-get-a-customer]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep customer_config separate from customer billing-provider configurations.",
+          "Do not infer archived-customer retrieval or billable-status lifecycle semantics."
+        ]
+      },
+      {
+        "update_id": "get-a-customer-customers-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-get-a-customer]] \u2014 UUID-scoped customer retrieval, returned identity and alias fields, configuration-dependent status, and documented read boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "get-a-customer-custom-fields-fact",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "durable_fact",
+        "anchor": "Before ## Limits of the overview",
+        "proposed_markdown": "## Customer retrieval surface\n\n`GET /v1/customers/{customer_id}` returns customer custom fields as an open object with string-valued properties inside the customer detail. The endpoint does not define field ordering, omission behavior, or endpoint-specific freshness, and its separate `customer_config` object must not be conflated with custom fields. [[source-metronome-api-reference-customers-get-a-customer]]",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": [
+          "The schema permits arbitrary custom-field keys but only string values; it does not define unknown top-level CustomerDetail behavior."
+        ]
+      },
+      {
+        "update_id": "get-a-customer-custom-fields-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-get-a-customer]] \u2014 customer-detail retrieval of the string-valued custom-field map and endpoint-specific read boundaries",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "get-a-customer-event-alias-fact",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "durable_fact",
+        "anchor": "Under ## Event contract after the customer_id bullet",
+        "proposed_markdown": "- `GET /v1/customers/{customer_id}` provides the read-side customer view of `ingest_aliases`, which its schema describes as aliases usable instead of the Metronome customer ID in usage events; the same response retains deprecated `external_id`. The retrieval page does not state alias ordering, uniqueness, or current-active status. [[source-metronome-api-reference-customers-get-a-customer]]",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": [
+          "Do not infer alias uniqueness or lifecycle state from the returned array."
+        ]
+      },
+      {
+        "update_id": "get-a-customer-event-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-get-a-customer]] \u2014 read-side customer identity and ingest-alias response contract",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/customers/get-a-customer-2026-07-13.md",
+  "raw_sha256": "57a7231913df80ef08cff1370e69bbd1c07f8d4bbc1e46ad76af7f8373ec3cc5",
+  "status": "candidate_ready"
+}

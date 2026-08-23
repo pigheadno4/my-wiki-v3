@@ -1,0 +1,90 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "get-a-customer-customers-retrieval-fact",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "Before ## Customer creation API",
+      "proposed_markdown": "## Customer retrieval API\n\nBearer-authenticated `GET /v1/customers/{customer_id}` requires a Metronome UUID path parameter and returns detailed customer identity, timestamps, ingest aliases, customer configuration, and custom fields under `data`. Its schema retains required-but-deprecated `external_id`; the page directs billing-configuration searches to `/getCustomerBillingConfigurations` and does not equate `customer_config` with a billing-provider configuration. Optional `archived_at` is nullable, while optional `current_billable_status` is client-configuration-dependent. The page documents only HTTP `200` and leaves not-found behavior, freshness, archived-customer retrieval, and status derivation undefined. [[source-metronome-api-reference-customers-get-a-customer]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Keep customer_config separate from customer billing-provider configurations.",
+        "Do not infer archived-customer retrieval or billable-status lifecycle semantics."
+      ]
+    },
+    {
+      "update_id": "get-a-customer-customers-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-customers-get-a-customer]] \u2014 UUID-scoped customer retrieval, returned identity and alias fields, configuration-dependent status, and documented read boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "get-a-customer-custom-fields-fact",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "durable_fact",
+      "anchor": "Before ## Limits of the overview",
+      "proposed_markdown": "## Customer retrieval surface\n\n`GET /v1/customers/{customer_id}` returns customer custom fields as an open object with string-valued properties inside the customer detail. The endpoint does not define field ordering, omission behavior, or endpoint-specific freshness, and its separate `customer_config` object must not be conflated with custom fields. [[source-metronome-api-reference-customers-get-a-customer]]",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "The schema permits arbitrary custom-field keys but only string values; it does not define unknown top-level CustomerDetail behavior."
+      ]
+    },
+    {
+      "update_id": "get-a-customer-custom-fields-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-customers-get-a-customer]] \u2014 customer-detail retrieval of the string-valued custom-field map and endpoint-specific read boundaries",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "get-a-customer-event-alias-fact",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "durable_fact",
+      "anchor": "Under ## Event contract after the customer_id bullet",
+      "proposed_markdown": "- `GET /v1/customers/{customer_id}` provides the read-side customer view of `ingest_aliases`, which its schema describes as aliases usable instead of the Metronome customer ID in usage events; the same response retains deprecated `external_id`. The retrieval page does not state alias ordering, uniqueness, or current-active status. [[source-metronome-api-reference-customers-get-a-customer]]",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "Do not infer alias uniqueness or lifecycle state from the returned array."
+      ]
+    },
+    {
+      "update_id": "get-a-customer-event-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-customers-get-a-customer]] \u2014 read-side customer identity and ingest-alias response contract",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

@@ -19,6 +19,7 @@ For Metronome's platform-pricing terminology, one Event is each discrete JSON ob
 - `transaction_id` is the event's required, nonempty idempotency key, with a maximum length of 128 characters; Metronome documents a 34-day duplicate-detection window.
 - `timestamp` is required and RFC 3339 formatted. The API reference permits historical events up to 34 days in the past.
 - `customer_id` is required and may be a Metronome customer ID or an application-defined ingest alias.
+- `GET /v1/customers/{customer_id}` provides the read-side customer view of `ingest_aliases`, which its schema describes as aliases usable instead of the Metronome customer ID in usage events; the same response retains deprecated `external_id`. The retrieval page does not state alias ordering, uniqueness, or current-active status. [[source-metronome-api-reference-customers-get-a-customer]]
 - Customer creation accepts up to 2,000 ingest aliases of 1–128 characters each; the older `external_id` alias field is deprecated.
 - `event_type` is a required nonempty string, and optional `properties` can contain metering and grouping data. The endpoint schema treats the map as an object, while the implementation guide recommends representing every property key and value as a string to avoid floating-point precision loss; Metronome says it computes with arbitrary-precision decimals internally.
 - The dashboard quickstart describes `transaction_id`, `customer_id`, `event_type`, and `timestamp` as required and permits up to 2,000 event properties.
@@ -119,6 +120,8 @@ Metronome's go-live checklist recommends queueing usage events, sampling `search
 - [[source-metronome-guides-get-started-how-metronome-works]] — one-event-to-many-metrics relationship and instrumentation boundary
 - [[source-metronome-guides-implement-metronome-planning-your-billing-architecture]] — data-origin, cadence, scale, dimension, and context checklist
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] — non-ingestion simulation boundary, transaction-ID conflict, 8 RPS limit, batching guidance, and SQL-metric exclusion
+
+- [[source-metronome-api-reference-customers-get-a-customer]] — read-side customer identity and ingest-alias response contract
 
 ## Related
 

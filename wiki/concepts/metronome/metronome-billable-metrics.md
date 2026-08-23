@@ -74,6 +74,8 @@ Because usage-event structures target particular metrics, changing the producer 
 
 `GET /v1/customers/{customer_id}/billable-metrics` lists metrics available to one customer. It accepts limits from `1` to `100`, returns required nullable `next_page`, and can filter to the current plan or include archived metrics. Items require `id` and `name` and can carry current standard or SQL fields plus deprecated `group_by`, `aggregate`, `aggregate_keys`, and `filter`.
 
+`GET /v1/billable-metrics` provides an account-wide, bearer-authenticated configuration inventory with optional `limit` (`1` to `100`), string `next_page`, and boolean `include_archived` query parameters. Archived metrics are excluded by default and require `include_archived=true`; HTTP `200` requires a `data` array and nullable `next_page`. Returned items require only UUID `id` and string `name`, while filters, aggregation, grouping, custom fields, SQL, and archive timestamp remain optional. The endpoint supplies no ordering, cursor-lifetime or snapshot guarantee, metric-type discriminator, product association, orphan-status field, or non-200 response contract. Its example also repeats the schema defect in which `aggregation_key: bytes` does not name any listed property filter.
+
 The retrieval schemas preserve the create-schema conflicts: `UNIQUE` remains unexplained, SQL and standard configuration have no discriminator, and include/exclude precedence, empty `not_in_values`, aggregation-key requiredness, and group-key limits remain undefined. The customer-list example also uses `aggregation_key: bytes` without a matching property-filter name and shows conflicting `group_by` and `group_keys` values.
 
 ## Group-key alert scoping
@@ -103,6 +105,8 @@ Dimension-scoped spend alerts require their `group_values` key to be a group key
 - [[source-metronome-api-reference-billable-metrics-get-a-billable-metric]] — single-metric retrieval, archive visibility, and response-schema boundaries
 - [[source-metronome-api-reference-billable-metrics-get-billable-metrics-for-a-customer]] — customer-scoped pagination, filters, deprecated fields, and example defects
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] — group-key requirements, subset repricing, three-key limit, and high-cardinality consultation for spend alerts
+
+- [[source-metronome-api-reference-billable-metrics-list-all-billable-metrics]] - account-wide configuration listing, 1-100 cursor pagination, archived-by-default exclusion, response-schema boundaries, and the aggregation-key example defect
 
 ## Related
 

@@ -103,6 +103,8 @@ When a contract edit adds an invoice-schedule item at date X, or moves an item t
 
 A credit or commit ledger has one deduction entry for each invoice that consumes that balance. The deduction's effective timestamp is always the end of the usage invoice's service period, and Metronome says that timestamp can support balance views including or excluding pending charges. This does not make the ledger timestamp an invoice creation, finalization, delivery, collection, or payment timestamp, and the guide does not define how `pending` maps to invoice states.
 
+The customer-credit create schema describes optional nonempty `name` as displayed on invoices and optional `description` as UI/API-only and not exposed to end customers. This endpoint does not define which invoice line or state displays the name, whether already-draft or finalized invoices change, or how either field propagates to PDFs, exports, webhooks, downstream billing providers, external A/R, tax, payment, refunds, or accounting systems.
+
 ## Threshold payment flow
 
 Prepaid balance thresholds can gate release of a recharge commit on payment. Stripe gating can use a Stripe Billing invoice or a direct PaymentIntent. On a failed payment, the guide says the threshold configuration is disabled and a voided invoice should appear in both Metronome and Stripe; there is no automatic retry. An external payment gate leaves collection to the integrator, which must explicitly release or cancel the pending commit.
@@ -146,6 +148,10 @@ Stripe owns mandate creation and lifecycle. Metronome returns the custom-field v
 ## Custom downstream invoice delivery
 
 Metronome's recommended API pattern for a non-native downstream provider listens for `invoice.finalized`, then uses the webhook's `customer_id` to query `/listInvoices` for finalized invoices in the associated billing period, transforms the returned invoice and line-item fields, and upserts them into the destination. The guide says finalization occurs after the grace period and that `invoice.finalized` must be enabled through a Metronome representative. Its QuickBooks example requires a preexisting downstream customer and at least one item. This is a recommended integration sequence, not an exactly-once or complete synchronization contract: the source does not define webhook ordering or duplicate handling, invoice-list pagination or consistency, how several matches are selected, destination idempotency, partial-failure recovery, replay, downstream status synchronization, payment collection, tax, credit-memo behavior, or reconciliation.
+
+## Account-level marketplace delivery setup
+
+`POST /v1/setUpBillingProvider` creates account-level AWS, Azure, or GCP Marketplace delivery configuration and returns a UUID `delivery_method_id` for later mapping. Its setup success response contains only that identifier; it does not establish customer or contract attachment, provider readiness, invoice routing, marketplace metering, payment collection, tax handling, delivery success, or reconciliation. Provider-specific configuration is open-ended, and the page does not define activation timing, read-after-write visibility, update or rollback, or external-provider validation. [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]]
 
 ## Scheduled provider routing
 
@@ -228,3 +234,7 @@ Metronome's go-live checklist asks teams to understand the draft-to-grace-period
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] — contract-aware cost simulation, merge/replace semantics, multi-contract draft results, performance limit, and SQL-metric exclusion
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] — pre-drawdown spend versus post-drawdown usage-invoice alert calculation
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]] — per-invoice balance deductions, service-period effective timestamps, and pending-charge display boundary
+
+- [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]] — account-level marketplace delivery setup, returned routing identifier, and downstream outcome boundaries
+
+- [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - credit name and description invoice-visibility boundary plus unspecified downstream propagation

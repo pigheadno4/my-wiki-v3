@@ -1,0 +1,47 @@
+{
+  "action": "spawn_worker",
+  "job_id": "create-a-credit",
+  "attempt": 3,
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/create-a-credit-2026-07-13.md",
+  "raw_sha256": "b358dcf3534a54839040a1c032795d609be264362c141a8eb777dc3abff7f52f",
+  "source_target": "wiki/sources/metronome/source-metronome-api-reference-credits-and-commits-create-a-credit.md",
+  "canonical_url": "https://docs.metronome.com/api-reference/credits-and-commits/create-a-credit.md",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location.",
+    "For OpenAPI pages, distinguish requestBody requiredness, required payload properties, and additionalProperties behavior; do not infer omitted-body or unknown-field behavior.",
+    "For every POST operation, check the existing Metronome API-wide idempotency authority and separate its guarantees from endpoint-specific unknowns.",
+    "For each durable fact, audit every relevant existing Metronome concept and provide reciprocal source-link suggestions; do not stop after the first plausible concept."
+  ],
+  "retry_context": {
+    "prior_attempt": 2,
+    "review_scope": "full",
+    "required_changes": [
+      "Replace the candidate sentence saying the page does not define null handling. OpenAPI 3.0.1 typed properties without nullable: true do define a non-null schema boundary. Preserve only genuinely undocumented behavior such as endpoint-specific runtime error mapping for invalid nulls; do not imply the schema permits or is silent about null for customer_id, product_id, priority, access_schedule, or other typed fields.",
+      "Revise create-credit-custom-fields-durable-fact so its null wording matches the schema: CustomField is an object whose additional property values are typed string, so null is not admitted at that schema boundary. It is still valid to say that deletion-by-null semantics and endpoint-specific validation or error behavior are undocumented."
+    ],
+    "prior_reviewer_identity": "/root/c20_r_credit"
+  },
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Credit creation is a mutation selected to test OpenAPI requiredness, API-wide POST idempotency, lifecycle boundaries, and complete concept placement.",
+  "worker_identity": "/root/c20_w_credit",
+  "worker_model": "gpt-5.6-sol"
+}

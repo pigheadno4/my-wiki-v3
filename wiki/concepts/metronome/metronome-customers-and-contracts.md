@@ -19,6 +19,10 @@ Because aliases can match events sent before or after the Metronome customer exi
 
 The provisioning guide additionally treats aliases as an enterprise hierarchy mechanism: one Metronome customer can receive usage from sub-organization aliases, with group keys shaping invoice presentation. It explicitly says adding an alias later retroactively associates earlier usage carrying that alias.
 
+## Customer retrieval API
+
+Bearer-authenticated `GET /v1/customers/{customer_id}` requires a Metronome UUID path parameter and returns detailed customer identity, timestamps, ingest aliases, customer configuration, and custom fields under `data`. Its schema retains required-but-deprecated `external_id`; the page directs billing-configuration searches to `/getCustomerBillingConfigurations` and does not equate `customer_config` with a billing-provider configuration. Optional `archived_at` is nullable, while optional `current_billable_status` is client-configuration-dependent. The page documents only HTTP `200` and leaves not-found behavior, freshness, archived-customer retrieval, and status derivation undefined. [[source-metronome-api-reference-customers-get-a-customer]]
+
 ## Customer creation API
 
 `POST /v1/customers` creates a customer for product-led or sales-led provisioning. `name` is the only required payload property; values longer than 160 characters are truncated. A customer may receive up to 2,000 ingest aliases of 1–128 characters each, while the older `external_id` field is deprecated.
@@ -56,6 +60,10 @@ Metronome account hierarchies link distinct parent and child customers through t
 ### Customer balance views
 
 Metronome documents `/getNetBalance` as a customer-scoped single aggregate with filters for balance type, currency, pending charges, and custom fields. `listBalances` provides the detailed per-credit or per-commit alternative. The page does not define whether the aggregate crosses all customer contracts, how customer- and contract-level balances interact, how hierarchy affects the result, or whether reads are snapshot-consistent.
+
+The detailed view is `POST /v1/contracts/customerBalances/list`. Its JSON payload requires the customer UUID and can filter by access-window dates, with exclusive `effective_before`; the body wrapper itself is not marked required. HTTP 200 requires an object containing a Commit-or-Credit `data` array and nullable `next_page`. This endpoint puts `next_page` and a 1-25, default-25 `limit` in the JSON body, unlike the general pagination authority's query parameters and 100 cap.
+
+`include_contract_balances` requests contract-level records. `include_archived` says "archived credits and credits from archived contracts," while Commit alone exposes `archived_at` and Credit does not. The contract-archive authority establishes that associated commits and credits are archived. The list surface still does not establish omitted-flag behavior, whether archived commits are returned, how Credit exposes archive status, how the repeated-credit wording partitions results, hierarchy effects, response ordering, cursor lifetime, or snapshot consistency.
 
 ## Contract creation API
 
@@ -102,6 +110,10 @@ The legacy request requires customer ID, contract ID, and an inclusive `starting
 The enterprise guide distinguishes two lifecycle operations. An edit adds terms without starting a new contract. A transition starts a new contract, preserves its relationship to the original, and can apply renewal logic such as rolling over unused commitments or credits.
 
 For recurring-grant upgrades, a renewal at the next period removes future old-contract charges and creates a finalized scheduled invoice plus a new draft usage invoice. A mid-period renewal prorates the first grant and finalizes old-contract usage through the transition date. A backdated renewal moves open-period usage to the replacement contract and uses a one-time adjustment before forward recurrence begins.
+
+### Account-level provider prerequisite
+
+`POST /v1/setUpBillingProvider` inserts account-level AWS, Azure, or GCP Marketplace configuration and returns `delivery_method_id`, described as enabling later mapping of contracts across customers. The call accepts no customer or contract identifier and does not itself create a customer billing-provider configuration or select one on a contract. Because other sources separately use `delivery_method_id` at customer configuration and `billing_provider_configuration_id` at contract selection, callers must verify each downstream schema rather than treat the identifiers as interchangeable. The page defines no propagation, readiness, attachment, update, archival, or reconciliation behavior. [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]]
 
 ## Billing-provider schedule
 
@@ -173,6 +185,12 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - [[source-metronome-api-reference-billable-metrics-get-billable-metrics-for-a-customer]] — customer-scoped metric discovery and current-plan filter
 - [[source-metronome-guides-implement-metronome-planning-your-billing-architecture]] — commercial-design axes and implementation unknowns
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]] — customer aggregate and individual credit-or-commit balance views
+
+- [[source-metronome-api-reference-customers-get-a-customer]] — UUID-scoped customer retrieval, returned identity and alias fields, configuration-dependent status, and documented read boundaries
+
+- [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]] — account-level provider creation prerequisite, returned delivery-method identifier, and customer/contract mapping boundary
+
+- [[source-metronome-api-reference-credits-and-commits-list-balances]] - customer-scoped detailed balance envelope, access filters, endpoint-specific pagination, contract inclusion, archive-response asymmetry, and consistency unknowns
 
 ## Related
 

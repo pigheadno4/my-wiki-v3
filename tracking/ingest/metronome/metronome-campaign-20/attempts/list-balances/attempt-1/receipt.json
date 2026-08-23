@@ -1,0 +1,97 @@
+{
+  "job_id": "list-balances",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"List balances\"\ntype: source\ndate_ingested: 2026-08-23\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/credits-and-commits/list-balances.md\"\nraw_files:\n  - \"metronome/api-reference/credits-and-commits/list-balances-2026-07-13.md\"\ntags: [metronome, api-reference, credits-and-commits, balances, ledgers, pagination]\n---\n\n## Overview\n\nThis API reference documents `POST /v1/contracts/customerBalances/list`, Metronome's detailed customer-balance read. It returns individual commit and credit records, optionally expanding each calculated balance and ordered ledger, while `/getNetBalance` remains the separate single combined-balance view.\n\nThe operation is globally bearer-secured. Although the JSON schema requires `customer_id`, the enclosing OpenAPI `requestBody` is not marked required, so omitted-body runtime behavior is not established.\n\n## Key takeaways\n\n- The response is a paginated array whose members are either commits (`PREPAID` or `POSTPAID`) or credits (`CREDIT`); HTTP 200 requires both `data` and nullable `next_page`.\n- Optional access-window filters are `covering_date`, `starting_at`, and exclusive `effective_before`. An optional UUID `id` is also accepted, but the page does not describe whether it identifies a credit, a commit, or either.\n- `include_balance` and `include_ledgers` request calculated balances and ledger history, respectively, and the page warns that either expansion may make the query slower. `include_contract_balances` requests contract-level balances.\n- Pagination uses a request-body `next_page` cursor and an endpoint-specific `limit` from 1 through 25, defaulting to 25. This is narrower than the separate API-wide pagination page's general 100-item cap.\n- A calculated balance counts expired and upcoming access segments as zero. It ordinarily matches the sum of ledger entries, except that excessive negative manual adjustments cannot push it below zero; future-dated manual entries tied to active segments are included.\n- The schema defines numeric amounts but no universal precision, rounding, currency-exponent, conversion, or display rule. Interpret amounts with their `credit_type` rather than assuming every balance is an integer fiat amount.\n\n## Request contract\n\nThe JSON object requires only UUID `customer_id` inside the payload schema. The operation also accepts:\n\n- UUID `id`, without documented identity semantics.\n- `covering_date` for schedules covering a date, `starting_at` for any access on or after a date, and `effective_before` for any access before an exclusive cutoff. The page does not define how these filters compose, time-zone normalization, or boundary behavior beyond the stated exclusivity.\n- `include_contract_balances`, `include_archived`, `include_ledgers`, and `include_balance`. No defaults are supplied for these booleans.\n- Feature-gated `exclude_zero_balances`, plus a skipped, feature-gated `webhook_notification_id` that marks a request as webhook-triggered. Their general availability is not established.\n- `next_page` and `limit`; the limit description says \"commits\" even though the response can also contain credits.\n\nThe request schema does not specify top-level `additionalProperties`, so unknown-field handling must not be inferred. No non-200 responses or endpoint-specific authorization scopes, rate limits, invalid-cursor behavior, or validation-error mappings are documented.\n\n## Response shape\n\nHTTP 200 returns `data` plus nullable `next_page`. Each `data` member is a `Commit` or `Credit`. Commits require `id`, `type`, `product`, and `created_at`; credits require `id`, `type`, and `product`. Product objects require their own `id` and `name`. Other optional fields can describe contract association, access and invoice schedules, applicability, priority, recurring or rollover origin, subscription allocation, custom fields, hierarchy access, uniqueness keys, archival time, and creator metadata.\n\nAccess schedules contain typed amount segments with inclusive-looking `starting_at` and `ending_before` fields, but this page does not explicitly define their boundary operators. Commit invoice schedules can include amount, unit price, quantity, timestamp, nullable invoice ID, and `do_not_invoice`; the endpoint is a read and does not define how those values were validated or mutated.\n\nThe `priority` descriptions say the lower value applies first when several balances are applicable. That field-level statement does not replace the broader credits-and-commits authority's type, rollover, applicability, and schedule ordering rules, and the endpoint does not document response-array order.\n\n## Balance and ledger semantics\n\n`include_balance=true` exposes the current usable amount for each returned credit or commit. Expired and upcoming segments contribute zero. The value matches ledger sum except when negative manual entries exceed the positive remaining amount, in which case it is floored at zero. All manual entries associated with active segments contribute, including future-dated manual entries.\n\n> [!warning] Contradiction\n> The existing remaining-balance guide says summing every signed ledger entry yields an individual ledger's remaining balance. This endpoint's schema adds a material exception: excessive negative manual entries do not produce a negative calculated balance; the returned balance is zero. Preserve the signed ledger as transaction history and do not assume its arithmetic sum always equals the expanded `balance`.\n\nWith `include_ledgers=true`, commit and credit ledgers are described as ordered balance-impacting events. The schema distinguishes start, automated invoice deduction, rollover, expiration, cancellation, credited, manual, true-up, and seat-adjustment variants according to balance type. Required fields vary by event; for example, several events require a segment or invoice UUID, while manual entries require a reason. The page does not define ordering keys or tie-breakers, late-arriving entry behavior, or snapshot consistency between the returned ledger, balance, and pagination cursor.\n\n## Archive, freshness, and retry boundaries\n\n`include_archived` is described as including \"archived credits and credits from archived contracts.\" The repeated noun leaves archived-commit behavior unresolved. Likewise, `include_contract_balances=true` establishes an opt-in for contract-level balances but the page does not state the false or omitted default, hierarchy behavior, or interaction with customer-level balances.\n\nThe overview calls the view real-time, but supplies no freshness, read-after-write, snapshot-isolation, or cross-page consistency guarantee. Concurrent balance changes could therefore affect a multi-page traversal in undocumented ways.\n\nBecause this read uses POST, the separate API-wide [[metronome-api-idempotency|`Idempotency-Key` authority]] applies: identical parameters with the same key replay the original result, changed parameters conflict, and retention is at least 24 hours. This endpoint does not say whether keyed caching is recommended for a balance read, how it affects freshness or cursor traversal, or how to recover from an endpoint-specific cached error.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-credits-and-commits]], [[metronome-customers-and-contracts]], [[metronome-api-idempotency]]\n- API conventions: [[source-metronome-api-reference-pagination]], [[source-metronome-api-reference-idempotency]]\n- Balance guide: [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/credits-and-commits/list-balances-2026-07-13|2026-07-13 snapshot - List balances API reference]]\n",
+  "quotes": [
+    {
+      "text": "Retrieve a comprehensive view of all available balances (commits and credits) for a customer. This endpoint provides real-time visibility into prepaid funds, postpaid commitments, promotional credits, and other balance types that can offset usage charges, helping you build transparent billing experiences.",
+      "location": "line 11, overview"
+    },
+    {
+      "text": "List all balances (commits and credits) for a customer",
+      "location": "line 177, OpenAPI requestBody description"
+    },
+    {
+      "text": "Date filtering: Use `effective_before` to include only balances with access before a specific date (exclusive)",
+      "location": "line 30, usage guidelines"
+    },
+    {
+      "text": "The maximum number of commits to return. Defaults to 25.",
+      "location": "line 235, request limit description"
+    },
+    {
+      "text": "The balance will match the sum of all ledger entries\n        with the exception of the case where the sum of negative manual ledger\n        entries exceeds the positive amount remaining on the credit or commit -\n        in that case, the balance will be 0.",
+      "location": "lines 828-831, BalanceForCommitsAndCredits description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "list-balances-credits-durable",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Balance retrieval and ledger calculation",
+        "proposed_markdown": "`POST /v1/contracts/customerBalances/list` is the detailed customer-balance read. Its payload schema requires `customer_id`, while the enclosing `requestBody` is not marked required; omitted-body and top-level unknown-field behavior remain undocumented. Optional filters cover one undocumented UUID `id`, schedules covering a date, any access on or after `starting_at`, and any access before exclusive `effective_before`. Optional flags request contract-level or archived balances, calculated balances, ordered ledgers, and feature-gated exclusion of zero balances. Cursor pagination accepts 1-25 records and defaults to 25; response ordering, cursor lifetime, snapshot consistency, and boolean defaults are not defined.\n\nThe expanded current balance gives expired and upcoming segments zero contribution and includes future-dated manual entries associated with active segments. It ordinarily equals ledger sum, but if negative manual entries exceed the positive remaining amount, the returned balance is floored at zero.\n\n> [!warning] Contradiction\n> This endpoint qualifies the existing broad statement that summing every signed ledger entry yields the remaining balance. Excessive negative manual entries can make the ledger sum negative while the calculated `balance` is zero; retain both the transaction-history arithmetic and the API's non-negative calculated balance.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The API schema materially qualifies the existing signed-ledger-sum statement by flooring calculated balance at zero after excessive negative manual entries.",
+          "The endpoint does not define amount precision, rounding, response ordering, cursor consistency, or boolean defaults."
+        ]
+      },
+      {
+        "update_id": "list-balances-credits-reciprocal",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-balances]] - detailed customer balance request filters, per-credit and per-commit response union, endpoint-specific pagination, calculated-balance floor, ledger expansions, and archive and consistency unknowns",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "list-balances-customers-durable",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Customer balance views",
+        "proposed_markdown": "The detailed view is bearer-secured `POST /v1/contracts/customerBalances/list`. Its JSON schema requires the customer UUID and can filter balances by access-window dates; `effective_before` is exclusive. `include_contract_balances` requests contract-level records, while `include_archived` uses the ambiguous wording \"archived credits and credits from archived contracts,\" leaving archived commits unresolved. The response mixes individual commits and credits and paginates with a nullable cursor plus a 1-25 limit that defaults to 25. The page does not define hierarchy effects, omitted boolean defaults, response order, cursor lifetime, or snapshot consistency across pages.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The include_archived description repeats credits and does not clearly establish archived-commit behavior.",
+          "Contract-level inclusion is opt-in by field description, but false or omitted behavior is not explicitly documented."
+        ]
+      },
+      {
+        "update_id": "list-balances-customers-reciprocal",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-balances]] - customer-scoped detailed balance endpoint, contract and archive inclusion controls, access-window filters, per-balance response union, and pagination and consistency boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/list-balances-2026-07-13.md",
+  "raw_sha256": "7ffde117cacffadd3abb40817c718eeb46374b86ef2cb527db6e9fbe37cc048d",
+  "status": "candidate_ready"
+}

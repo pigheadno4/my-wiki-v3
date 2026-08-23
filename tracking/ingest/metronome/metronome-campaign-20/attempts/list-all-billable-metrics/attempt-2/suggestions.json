@@ -1,0 +1,68 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "list-all-billable-metrics-retrieval-fact-v2",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append after the existing customer-scoped list paragraph in `## Retrieval APIs` and before the paragraph beginning `The retrieval schemas preserve`.",
+      "proposed_markdown": "`GET /v1/billable-metrics` provides an account-wide, bearer-authenticated configuration inventory with optional `limit` (`1` to `100`), string `next_page`, and boolean `include_archived` query parameters. Archived metrics are excluded by default and require `include_archived=true`; HTTP `200` requires a `data` array and nullable `next_page`. Returned items require only UUID `id` and string `name`, while filters, aggregation, grouping, custom fields, SQL, and archive timestamp remain optional. The endpoint supplies no ordering, cursor-lifetime or snapshot guarantee, metric-type discriminator, product association, orphan-status field, or non-200 response contract. Its example also repeats the schema defect in which `aggregation_key: bytes` does not name any listed property filter.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Preserve the example contradiction: aggregation_key is documented as a property-filter name, but bytes is absent from the example's property-filter names.",
+        "Do not generalize the endpoint's configuration listing into product association, event matching, invoice contribution, or an authoritative orphan-status determination.",
+        "The response schema repeats the unresolved UNIQUE-versus-SQL-distinct conflict and the contradictory empty not_in_values wording already recorded on the concept page."
+      ]
+    },
+    {
+      "update_id": "list-all-billable-metrics-billable-reciprocal-v2",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside the existing billable-metric retrieval API sources.",
+      "proposed_markdown": "- [[source-metronome-api-reference-billable-metrics-list-all-billable-metrics]] - account-wide configuration listing, 1-100 cursor pagination, archived-by-default exclusion, response-schema boundaries, and the aggregation-key example defect",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-all-billable-metrics-custom-fields-fact-v2",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "durable_fact",
+      "anchor": "Insert a new `## Billable-metric response shape` section immediately before `## Limits of the overview`.",
+      "proposed_markdown": "## Billable-metric response shape\n\nThe `GET /v1/billable-metrics` response schema can expose `custom_fields` on each returned billable metric as an object with arbitrary property names and string values. The field is optional because only metric `id` and `name` are required. This endpoint does not document custom-field key, value, or entry-count limits, visibility rules, redaction behavior, or whether every field configured elsewhere is returned through this listing. [[source-metronome-api-reference-billable-metrics-list-all-billable-metrics]]",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep this scoped to the billable-metric list response schema; it does not expand the Custom Fields overview's supported-entity list or establish write behavior.",
+        "Arbitrary keys with string values do not establish key, value, count, visibility, or redaction limits."
+      ]
+    },
+    {
+      "update_id": "list-all-billable-metrics-custom-fields-reciprocal-v2",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` after the existing custom-fields overview source.",
+      "proposed_markdown": "- [[source-metronome-api-reference-billable-metrics-list-all-billable-metrics]] - billable-metric response custom fields as an arbitrary-key, string-valued object and undocumented limits",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

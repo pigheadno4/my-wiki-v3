@@ -59,6 +59,10 @@ For a manual Stripe-gated commit, Metronome initiates and monitors payment and r
 
 Spend-threshold billing uses the same explicit external-ownership pattern as the documented threshold release route: `payment_gate_type: EXTERNAL` causes `payment_gate.external_initiate`; the integrator retains the workflow ID, collects payment independently, and calls the release endpoint to release or cancel the pending commit. For Stripe, the spend-threshold page offers invoice or PaymentIntent collection and requires a valid contract billing configuration. It does not define gateway readiness, event ordering, duplicate outcomes, expiry, retry, or idempotency.
 
+## Account-level provider setup
+
+Bearer-authenticated `POST /v1/setUpBillingProvider` creates an account-level delivery configuration for AWS, Azure, or GCP Marketplace and returns UUID `delivery_method_id`. Its JSON payload schema requires provider, delivery method, and an open provider-specific `configuration`, although the enclosing `requestBody` is not marked required. This operation does not identify or mutate a customer or contract; separate sources use the returned delivery-method layer when constructing customer billing configuration and use a distinct customer configuration ID for contract selection. The endpoint does not document provider readiness, propagation to listing, update or deletion, external validation, or downstream invoice and reconciliation outcomes. [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]]
+
 ## Account-level provider enumeration
 
 `POST /v1/listConfiguredBillingProviders` is a bearer-authenticated Settings operation that enumerates the billing-provider delivery methods configured for an account. Its optional nullable UUID `next_page` cursor paginates a required `data` array; each entry requires a provider, UUID `delivery_method_id`, delivery method, and method-specific configuration object. The provider enum covers AWS Marketplace, Stripe, NetSuite, custom, Azure Marketplace, QuickBooks Online, Workday, GCP Marketplace, and Metronome, while delivery is enumerated as direct provider delivery, AWS SQS, Tackle, or AWS SNS. Configuration permits arbitrary method-specific properties and may omit security-sensitive values.
@@ -126,6 +130,8 @@ The Metronome (Actions) destination connects one selected Segment source using a
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — Stripe manual-gate responsibility, product mapping, and retry boundary
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates]] — Stripe mandate ownership, Metronome contract-field mapping, action-required handling, and retry boundary
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-set-customer-spend-control]] — Stripe and external spend-threshold payment-gate responsibility
+
+- [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]] — account-level marketplace provider setup, open configuration payload, returned delivery-method identifier, credential examples, and lifecycle boundaries
 
 ## Related
 

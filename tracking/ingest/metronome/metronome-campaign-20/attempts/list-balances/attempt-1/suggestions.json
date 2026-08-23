@@ -1,0 +1,67 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "list-balances-credits-durable",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Balance retrieval and ledger calculation",
+      "proposed_markdown": "`POST /v1/contracts/customerBalances/list` is the detailed customer-balance read. Its payload schema requires `customer_id`, while the enclosing `requestBody` is not marked required; omitted-body and top-level unknown-field behavior remain undocumented. Optional filters cover one undocumented UUID `id`, schedules covering a date, any access on or after `starting_at`, and any access before exclusive `effective_before`. Optional flags request contract-level or archived balances, calculated balances, ordered ledgers, and feature-gated exclusion of zero balances. Cursor pagination accepts 1-25 records and defaults to 25; response ordering, cursor lifetime, snapshot consistency, and boolean defaults are not defined.\n\nThe expanded current balance gives expired and upcoming segments zero contribution and includes future-dated manual entries associated with active segments. It ordinarily equals ledger sum, but if negative manual entries exceed the positive remaining amount, the returned balance is floored at zero.\n\n> [!warning] Contradiction\n> This endpoint qualifies the existing broad statement that summing every signed ledger entry yields the remaining balance. Excessive negative manual entries can make the ledger sum negative while the calculated `balance` is zero; retain both the transaction-history arithmetic and the API's non-negative calculated balance.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The API schema materially qualifies the existing signed-ledger-sum statement by flooring calculated balance at zero after excessive negative manual entries.",
+        "The endpoint does not define amount precision, rounding, response ordering, cursor consistency, or boolean defaults."
+      ]
+    },
+    {
+      "update_id": "list-balances-credits-reciprocal",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-balances]] - detailed customer balance request filters, per-credit and per-commit response union, endpoint-specific pagination, calculated-balance floor, ledger expansions, and archive and consistency unknowns",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-balances-customers-durable",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Customer balance views",
+      "proposed_markdown": "The detailed view is bearer-secured `POST /v1/contracts/customerBalances/list`. Its JSON schema requires the customer UUID and can filter balances by access-window dates; `effective_before` is exclusive. `include_contract_balances` requests contract-level records, while `include_archived` uses the ambiguous wording \"archived credits and credits from archived contracts,\" leaving archived commits unresolved. The response mixes individual commits and credits and paginates with a nullable cursor plus a 1-25 limit that defaults to 25. The page does not define hierarchy effects, omitted boolean defaults, response order, cursor lifetime, or snapshot consistency across pages.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "The include_archived description repeats credits and does not clearly establish archived-commit behavior.",
+        "Contract-level inclusion is opt-in by field description, but false or omitted behavior is not explicitly documented."
+      ]
+    },
+    {
+      "update_id": "list-balances-customers-reciprocal",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-balances]] - customer-scoped detailed balance endpoint, contract and archive inclusion controls, access-window filters, per-balance response union, and pagination and consistency boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}
