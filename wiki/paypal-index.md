@@ -91,6 +91,8 @@ Operations history: [[paypal-log]]
 - [[changelog-github-paypal-js]] — package-qualified release ledger through core 10.1.0 and React 10.3.0 (github-repo, updated 2026-08-08)
 - [[source-github-paypal-checkout-components]] — cumulative checkout runtime from `4.1.47` through `5.0.425`: component interfaces, funding eligibility, Venmo desktop/QR and gated vault behavior (github-repo, updated 2026-07-23)
 - [[changelog-github-paypal-checkout-components]] — package-qualified checkout-components release ledger through `5.0.425` (github-repo, updated 2026-07-23)
+- [[source-github-paypal-sdk-release]] — `@paypal/sdk-release@5.0.569`: 12-component assembly manifest, wrapper entry point, and release/deployment automation (github-repo, 2026-08-21)
+- [[changelog-github-paypal-sdk-release]] — package-qualified SDK release-assembly ledger beginning at `5.0.569` (github-repo, 2026-08-21)
 - [[source-github-react-paypal-js-v8]] — GitHub react-paypal-js v8: ScriptProvider/reducer, Buttons lifecycle, CardFields provider+hooks (github-repo, 2026-04-13)
 - [[source-paypal-expanded-checkout-integrate]] — Expanded Checkout integration: CardFields+Buttons dual-render, 3DS SCA_ALWAYS, billing address, authorize/captureAuthorize routes (webpage, 2026-04-13)
 - [[source-paypal-android-card-payments]] — Android SDK: CardClient 8-step flow, WebPayments, deprecated NativePayments, FraudProtection (webpage, 2026-04-13)

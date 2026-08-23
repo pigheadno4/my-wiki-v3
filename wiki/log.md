@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-21] ingest | GitHub paypal/paypal-sdk-release - `@paypal/sdk-release@5.0.569`
+
+- Full-ingested work item `github-7afbbbad6ed794ece5d5` at exact SHA `71e5116c56355a60bc8af337720116047d4d6ab8` after serial full reading of all 14 required evidence paths.
+- Added cumulative and package-qualified sources for the twelve-component browser SDK bill of materials, wrapper entry point, dependency upgrade controls, npm publication, production deployment, activation, and SDK-logo CDN gate.
+- Preserved repository ownership and evidence boundaries: release composition is not merchant eligibility or component behavior, Checkout Components `5.0.428` is newer than the local `5.0.425` component snapshot, transitive lockfile/CDN artifacts require a supplement, and the documented activation command is absent from the package scripts.
+
 ## [2026-08-21] ingest | GitHub stripe/stripe-js — `@stripe/stripe-js@9.14.0`
 
 - Delta-ingested work item `github-f4acbaae53defd3b2074` at exact SHA `8daa6fad5d318aa9e18aa0e1833e4249c08e4682` after serial full reading of all 15 required evidence paths.

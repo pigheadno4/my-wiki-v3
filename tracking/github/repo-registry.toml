@@ -137,11 +137,40 @@ id="paypal/paypal-sdk-release"
 collection_frequency="monthly"
 company="paypal"
 url="https://github.com/paypal/paypal-sdk-release"
-enabled=false
+enabled=true
 repo_type="release-index"
 priority="tier2"
 track="releases-and-default-branch"
-version_strategy="github-release"
+version_strategy="semver-tags"
+[[repos.version_tracks]]
+selector="package:@paypal/sdk-release@5"
+backfill="latest-stable"
+future="all-stable"
+include_prerelease=false
+[[repos.capsules]]
+id="paypal-sdk-release-index"
+adapter="tagged-tree-v1"
+focus_packages=["@paypal/sdk-release"]
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+default_required_roots=[
+  ".github/workflows",
+  "scripts",
+]
+default_generated_target_paths=[]
+include_paths=[
+  "README.md",
+  "LICENSE",
+  "index.js",
+  "package.json",
+]
+excluded_categories=["tests", "fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=512000
+max_capsule_files=40
+max_capsule_utf8_bytes=750000
+max_packet_files=60
+max_packet_utf8_bytes=1000000
 [[repos]]
 id="paypal/paypal-js"
 collection_frequency="weekly"

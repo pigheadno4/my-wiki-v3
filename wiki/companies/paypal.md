@@ -2,7 +2,7 @@
 title: "PayPal"
 type: company
 tags: [paypal, payment-gateway, checkout, venmo, javascript-sdk, orders-api, vault, recurring-payments, payouts, disputes, reporting, agentic-commerce]
-source_count: 173
+source_count: 174
 ---
 
 ## PayPal
@@ -34,6 +34,8 @@ The independent `paypal-examples/paypal-android-sdk-demo-app` baseline at `d1137
 The independent `paypal-examples/paypal-ios-sdk-demo-app` baseline at `047a50e` provides a SwiftUI reference compatible with PayPal iOS SDK `>=2.0.0,<3.0.0`; no lockfile establishes the exact patch. Its direct PayPal and card paths complete through a merchant server and pass device data, while its separate Payment Link return trusts only `/success` and `amt`. The sample implements no native Venmo, subscription, or webhook callback flow despite broader README language, and its iOS 15+ claim conflicts with the project's iOS 17.2 target.
 
 The independent `paypal/paypal-checkout-components` history begins with `@paypal/checkout-components@4.1.47` and now extends through `5.0.425`. The v4 runtime implemented Zoid-based Buttons and Checkout with mobile-only secondary Venmo. The accumulated v5 runtime adds separate Card Fields, Payment Fields, Hosted Buttons, Wallet, Saved Payment Methods, Venmo, and QR component boundaries; its Venmo vault-without-purchase path is experiment-gated. These package-qualified facts do not replace current availability guidance.
+
+The separate `paypal/paypal-sdk-release` baseline records how the combined browser SDK is assembled and promoted. `@paypal/sdk-release@5.0.569` pins twelve direct components, including Checkout Components `5.0.428`, Messaging Components `1.94.0`, Apple Pay Components `1.8.2`, Google Pay Components `1.3.5`, and SDK Client `4.0.204`. This is component bill-of-materials evidence, not merchant eligibility or component behavior; its checkout version is newer than the current local checkout-components snapshot.
 
 The separate `@paypal/sdk-logos` package provides inline and external-image rendering for PayPal, Venmo, card brands, wallets, and local-payment-method artwork. The retained history preserves 117 generated `2.3.3` CDN SVGs and the complete policy-selected `2.3.7` public source. Logo presence is asset evidence only: it does not establish merchant eligibility, regional availability, payment enablement, or permission to use protected marks.
 
@@ -265,6 +267,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[changelog-github-paypal-js]] — package-qualified paypal/paypal-js release ledger through core `10.1.0` and React `10.3.0`, with impact, migration action, contradictions, and immutable raw links
 - [[source-github-paypal-checkout-components]] — cumulative checkout runtime evidence from `@paypal/checkout-components@4.1.47` through `5.0.425`
 - [[changelog-github-paypal-checkout-components]] — package-qualified checkout-components release ledger through `5.0.425`
+- [[source-github-paypal-sdk-release]] — `@paypal/sdk-release@5.0.569` component bill of materials and release/deployment workflow
+- [[changelog-github-paypal-sdk-release]] — package-qualified SDK release-assembly ledger
 - [[source-github-react-paypal-js-v8]] — GitHub react-paypal-js v8 source: ScriptProvider internals, reducer state machine, Buttons lifecycle, CardFields architecture
 - [[source-paypal-expanded-checkout-integrate]] — Expanded Checkout integration: CardFields+Buttons, 3DS SCA, billing address submit, authorize routes
 - [[source-paypal-android-card-payments]] — Android SDK: CardClient, WebPayments, deprecated NativePayments, FraudProtection, 3DS SCA

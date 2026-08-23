@@ -593,6 +593,31 @@
   To SHA: `d1137d5daa3a3befdcf6c72e6a1e8144bf765ba2`
   Comparison: Not applicable
 
+## `github-7afbbbad6ed794ece5d5`
+
+- Repository: `paypal/paypal-sdk-release`
+- SHA: `71e5116c56355a60bc8af337720116047d4d6ab8`
+- Collection date: `2026-08-21`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-sdk-release/snapshots/2026-08-21-71e5116/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-sdk-release/ingest-packets/github-7afbbbad6ed794ece5d5/packet.md)
+- Review priority: `normal`
+- Required reading: `14` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/sdk-release@5.0.569` (recommended `full`)
+  Release: [manifest](../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.569/2026-08-21/manifest.json)
+  Comparison: Not applicable
+
 ## `github-7ecc6c2199897656ffe3`
 
 - Repository: `stripe/stripe-ios`

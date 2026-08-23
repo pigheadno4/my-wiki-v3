@@ -128,6 +128,12 @@ The exact `@paypal/checkout-components@5.0.425` source exposes separate interfac
 
 The v5 Venmo funding config supports purchase and experiment-gated vault-without-purchase flows. Its implementation distinguishes desktop-web from mobile-web channels and carries native-browser, popup, app-switch, and QR-related state. Product availability and merchant eligibility must still be checked against current documentation.
 
+### SDK release assembly baseline: `@paypal/sdk-release@5.0.569`
+
+The independent `paypal/paypal-sdk-release` repository records the component bill of materials used to assemble and release the combined PayPal and Braintree browser SDK. Baseline `5.0.569` pins Checkout Components `5.0.428`, Messaging Components `1.94.0`, Apple Pay Components `1.8.2`, Google Pay Components `1.3.5`, SDK Client `4.0.204`, and seven other direct PayPal component packages.
+
+This manifest is release-composition evidence, not merchant eligibility or component-behavior evidence. Its Checkout Components version is three patches newer than the current local checkout-components snapshot, so behavior introduced only in `5.0.426` through `5.0.428` remains unresolved until that repository is recollected. See [[source-github-paypal-sdk-release]].
+
 ### Historical package evidence: `@paypal/paypal-js@8.4.2`
 
 The exact `8.4.2` package snapshot exposes the v6 loader from the `./sdk-v6` export. Its TypeScript surface requires `clientToken` for `createInstance()` and conditionally adds methods for three declared components: `paypal-payments`, `venmo-payments`, and `paypal-legacy-billing-agreements`. The separately versioned React package appears in the same monorepo snapshot only as repository context; it is not part of the `@paypal/paypal-js@8.4.2` release identity.
@@ -178,6 +184,7 @@ See [[source-paypal-payment-failures]] for the full 19 error codes and recovery 
 - [[source-paypal-payment-failures]] — Payment failures: 19 error codes, actions.restart(), async failures, webhook events
 - [[source-paypal-js-sdk-v6-setup]] — JS SDK v6 canonical setup: script URLs, clientToken 15min expiry, 8 components, eligibility API, Pay Later/Credit sessions, web components
 - [[source-github-paypal-checkout-components]] — historical checkout presentation, callback, funding eligibility, and Venmo runtime evidence
+- [[source-github-paypal-sdk-release]] — package-qualified SDK assembly, direct component versions, and release/deployment workflow
 - [[source-github-paypal-js]] — cumulative package-qualified repository evidence and exact source snapshots
 - [[source-github-v6-web-sdk-sample-integration]] — current runnable v6 HTML, React, and Node integration baseline
 - [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample, partner headers, retries, shipping patches, and retained defects
