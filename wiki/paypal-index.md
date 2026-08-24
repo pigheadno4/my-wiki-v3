@@ -200,7 +200,8 @@ Operations history: [[paypal-log]]
 - [[changelog-github-paypal-sdk-logos]] — SDK Logos history: `2.3.3` through `2.3.7`, generated-CDN releases, Venmo/PP whitespace refinements, and migration guidance (github-repo, 2026-08-09)
 - [[source-github-paypal-googlepay-component]] — GitHub Google Pay component: GraphQL config/confirm, 3DS ZalgoPromise, productFlow=CUSTOM_DIGITAL_WALLET (github-repo, 2026-04-16)
 - [[source-github-paypal-applepay-component]] — GitHub Apple Pay component: config/validateMerchant/confirmOrder, base64 session, countryCode uppercase fix (github-repo, 2026-04-16)
-- [[source-github-paypal-php-server-sdk]] — GitHub PHP Server SDK v2.2.0: 5 controllers, builder pattern, built-in retry/backoff/proxy (github-repo, 2026-04-16)
+- [[source-github-paypal-php-server-sdk]] — cumulative `paypal/paypal-server-sdk@2.4.0` exact-SHA baseline: five controllers, OAuth, retries, models, and eligibility boundaries (github-repo, updated 2026-08-24)
+- [[changelog-github-paypal-php-server-sdk]] — package-qualified PHP Server SDK ledger preserving the `2.4.0` full baseline and upstream history through `2.3.0`
 - [[source-paypal-payment-links-overview]] — Payment Links and Buttons overview: 4 no-code options, vs Invoicing (webpage, 2026-04-16)
 
 ## Concepts

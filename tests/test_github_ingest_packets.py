@@ -808,6 +808,100 @@ class GitHubIngestPacketTests(unittest.TestCase):
             all("package.json" not in path for path in package["required_reading"])
         )
 
+    def test_baseline_ingest_paths_narrow_required_reading_without_dropping_evidence(self):
+        config = replace(
+            self.config,
+            ingest_required_paths=("src/core",),
+        )
+        current = self.snapshot(
+            self.current_sha,
+            "8.0.0",
+            {
+                "package.json": self.manifest_content("8.0.0"),
+                "src/core/client.ts": "export const client = true;\n",
+                "src/generated/model.ts": "export const model = true;\n",
+            },
+        )
+        release = self.release("8.0.0", self.current_sha, "Initial release.\n")
+
+        packet = build_ingest_packet(
+            self.root,
+            config,
+            "github-" + ("2" * 20),
+            self.relative(current),
+            (
+                PackagePacketInput(
+                    package="@scope/widget",
+                    from_version="",
+                    to_version="8.0.0",
+                    from_sha="",
+                    to_sha=self.current_sha,
+                    release_manifest=self.relative(release),
+                    comparison_manifest="",
+                    prior_snapshot_manifest="",
+                    upstream_changes=(),
+                ),
+            ),
+            "queued",
+        )
+
+        package = packet.document["packages"][0]
+        retained_paths = {
+            row["path"] for row in package["retained_evidence"]["files"]
+        }
+        self.assertEqual(
+            {"package.json", "src/core/client.ts", "src/generated/model.ts"},
+            retained_paths,
+        )
+        self.assertIn(
+            self.relative(current.parent / "files/src/core/client.ts"),
+            package["required_reading"],
+        )
+        self.assertNotIn(
+            self.relative(current.parent / "files/src/generated/model.ts"),
+            package["required_reading"],
+        )
+
+    def test_baseline_ingest_path_must_match_retained_evidence(self):
+        config = replace(
+            self.config,
+            ingest_required_paths=("src/missing",),
+        )
+        current = self.snapshot(
+            self.current_sha,
+            "8.0.0",
+            {
+                "package.json": self.manifest_content("8.0.0"),
+                "src/core/client.ts": "export const client = true;\n",
+            },
+        )
+        release = self.release("8.0.0", self.current_sha, "Initial release.\n")
+
+        with self.assertRaisesRegex(
+            PacketBuildError,
+            "ingest required path matches no retained evidence: src/missing",
+        ):
+            build_ingest_packet(
+                self.root,
+                config,
+                "github-" + ("2" * 20),
+                self.relative(current),
+                (
+                    PackagePacketInput(
+                        package="@scope/widget",
+                        from_version="",
+                        to_version="8.0.0",
+                        from_sha="",
+                        to_sha=self.current_sha,
+                        release_manifest=self.relative(release),
+                        comparison_manifest="",
+                        prior_snapshot_manifest="",
+                        upstream_changes=(),
+                    ),
+                ),
+                "queued",
+            )
+
     def test_commit_web_and_environment_files_have_stable_classifications(self):
         config = RepoConfig(
             id="acme/widgets",

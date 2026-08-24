@@ -28,7 +28,7 @@ APPENDIX_A_INVENTORY = (
     ('paypal/paypal-ios', 'https://github.com/paypal/paypal-ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('paypal/postman-collections', 'https://github.com/paypal/postman-collections', 'api-collection', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('paypal/paypal-typescript-server-sdk', 'https://github.com/paypal/PayPal-TypeScript-Server-SDK', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
-    ('paypal/paypal-php-server-sdk', 'https://github.com/paypal/PayPal-PHP-Server-SDK', 'server-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('paypal/paypal-php-server-sdk', 'https://github.com/paypal/PayPal-PHP-Server-SDK', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('paypal/paypal-messages-ios', 'https://github.com/paypal/paypal-messages-ios', 'messaging-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('paypal/paypal-messages-android', 'https://github.com/paypal/paypal-messages-android', 'messaging-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('paypal/paypal-sdk-logos', 'https://github.com/paypal/paypal-sdk-logos', 'assets', 'tier2', 'commit', True, 'default-branch', 'monthly'),
@@ -147,6 +147,7 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual((), repo.version_tracks)
         self.assertEqual((), repo.capsules)
         self.assertEqual((), repo.secret_allowlist)
+        self.assertEqual((), repo.ingest_required_paths)
         with self.assertRaises(dataclasses.FrozenInstanceError):
             repo.enabled = False
 
@@ -2033,6 +2034,95 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(3000000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(500, capsule.max_packet_files)
         self.assertEqual(4000000, capsule.max_packet_utf8_bytes)
+
+    def test_paypal_php_server_sdk_uses_complete_runtime_source_profile(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["paypal/paypal-php-server-sdk"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual("server-sdk", repo.repo_type)
+        self.assertEqual("tier2", repo.priority)
+        self.assertEqual("monthly", repo.collection_frequency)
+        self.assertEqual("releases-and-default-branch", repo.track)
+        self.assertEqual("semver-tags", repo.version_strategy)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:paypal/paypal-server-sdk@2",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("2.4.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("paypal-php-server-sdk-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("paypal/paypal-server-sdk",), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(("doc/controllers", "src"), capsule.default_required_roots)
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(
+            ("CHANGELOG.md", "LICENSE", "README.md", "composer.json"),
+            capsule.include_paths,
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(750, capsule.max_capsule_files)
+        self.assertEqual(6000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(780, capsule.max_packet_files)
+        self.assertEqual(7000000, capsule.max_packet_utf8_bytes)
+        self.assertEqual(
+            (
+                "CHANGELOG.md",
+                "LICENSE",
+                "README.md",
+                "composer.json",
+                "doc/controllers",
+                "src/ApiHelper.php",
+                "src/Authentication",
+                "src/ClientCredentialsAuth.php",
+                "src/ConfigurationDefaults.php",
+                "src/ConfigurationInterface.php",
+                "src/Controllers",
+                "src/Environment.php",
+                "src/Exceptions",
+                "src/Http",
+                "src/Logging",
+                "src/PaypalServerSdkClient.php",
+                "src/PaypalServerSdkClientBuilder.php",
+                "src/Proxy",
+                "src/Server.php",
+                "src/Utils",
+                "src/Models/BalancesResponse.php",
+                "src/Models/BillingPlan.php",
+                "src/Models/CapturedPayment.php",
+                "src/Models/CustomerVaultPaymentTokensResponse.php",
+                "src/Models/ModifySubscriptionResponse.php",
+                "src/Models/OAuthToken.php",
+                "src/Models/Order.php",
+                "src/Models/OrderAuthorizeResponse.php",
+                "src/Models/PaymentAuthorization.php",
+                "src/Models/PaymentTokenResponse.php",
+                "src/Models/PlanCollection.php",
+                "src/Models/Refund.php",
+                "src/Models/SearchResponse.php",
+                "src/Models/SetupTokenResponse.php",
+                "src/Models/Subscription.php",
+                "src/Models/SubscriptionCollection.php",
+                "src/Models/SubscriptionTransactionDetails.php",
+                "src/Models/TransactionsList.php",
+            ),
+            repo.ingest_required_paths,
+        )
 
     def test_paypal_server_side_sample_has_reviewed_enabled_commit_policy(self):
         repos = {

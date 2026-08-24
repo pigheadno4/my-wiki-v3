@@ -2,7 +2,7 @@
 title: "PayPal"
 type: company
 tags: [paypal, payment-gateway, checkout, venmo, javascript-sdk, orders-api, vault, recurring-payments, payouts, disputes, reporting, agentic-commerce]
-source_count: 174
+source_count: 175
 ---
 
 ## PayPal
@@ -365,5 +365,6 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[changelog-github-paypal-typescript-server-sdk]] — package-qualified TypeScript Server SDK ledger preserving the full `2.3.0` baseline and `2.4.0` delta
 - [[source-github-paypal-googlepay-component]] — GitHub paypal-googlepay-component: googlePayConfig/confirmOrder/initiatePayerAction internals, GraphQL, 3DS via ZalgoPromise (github-repo, 2026-04-16)
 - [[source-github-paypal-applepay-component]] — GitHub paypal-applepay-components: config/validateMerchant/confirmOrder, base64 session decode, countryCode uppercase fix (github-repo, 2026-04-16)
-- [[source-github-paypal-php-server-sdk]] — GitHub PayPal-PHP-Server-SDK v2.2.0: 5 controllers, builder pattern, built-in retry/backoff/proxy (github-repo, 2026-04-16)
+- [[source-github-paypal-php-server-sdk]] — cumulative PHP Server SDK `2.4.0` exact-SHA baseline: five controllers, OAuth client, configuration, retries, payment-source models, and release-attribution boundaries (github-repo, updated 2026-08-24)
+- [[changelog-github-paypal-php-server-sdk]] — package-qualified PHP Server SDK ledger preserving the full `2.4.0` baseline and upstream history through `2.3.0`
 - [[source-paypal-payment-links-overview]] — Payment Links and Buttons: 4 no-code options, Payment Links vs Invoicing comparison (webpage, 2026-04-16)

@@ -61,6 +61,12 @@ class GitHubVersionTests(unittest.TestCase):
             parse_package_tag("braintree-web@3.112.1"),
         )
 
+    def test_parser_accepts_composer_package_tags(self):
+        self.assertEqual(
+            ("paypal/paypal-server-sdk", "2.4.0"),
+            parse_package_tag("paypal/paypal-server-sdk@2.4.0"),
+        )
+
     def test_parser_accepts_case_sensitive_non_npm_release_identity(self):
         self.assertEqual(
             ("BraintreeDropIn", "9.14.0"),

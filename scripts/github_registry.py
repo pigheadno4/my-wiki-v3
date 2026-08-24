@@ -6,6 +6,7 @@ import re
 from typing import Dict, List, Optional, Sequence, Tuple
 from urllib.parse import urlsplit
 
+from github_canonical import safe_policy_path
 from github_capsule_policy import (
     COMMIT_TREE_ADAPTER,
     CapsuleConfig,
@@ -56,6 +57,7 @@ OPTIONAL_KEYS = {
     "version_tracks",
     "capsules",
     "secret_allowlist",
+    "ingest_required_paths",
 }
 VERSION_TRACK_REQUIRED_KEYS = {"selector", "backfill", "future"}
 VERSION_TRACK_OPTIONAL_KEYS = {"include_prerelease", "pinned_versions"}
@@ -90,6 +92,7 @@ class RepoConfig:
     version_tracks: Tuple[VersionTrack, ...] = ()
     capsules: Tuple[CapsuleConfig, ...] = ()
     secret_allowlist: Tuple[SecretAllowlist, ...] = ()
+    ingest_required_paths: Tuple[str, ...] = ()
 
 
 def load_registry(path: Path) -> Tuple[RepoConfig, ...]:
@@ -162,6 +165,14 @@ def validate_registry(repos: Sequence[RepoConfig]) -> List[str]:
             errors.append(prefix + " collection_frequency must not be empty")
         if repo.max_file_bytes <= 0 or repo.max_snapshot_bytes <= 0:
             errors.append(prefix + " byte limits must be positive")
+        if not isinstance(repo.ingest_required_paths, tuple):
+            errors.append(prefix + " ingest_required_paths must be a tuple")
+        else:
+            for path in repo.ingest_required_paths:
+                if not isinstance(path, str) or not safe_policy_path(path):
+                    errors.append(prefix + " has unsafe ingest required path " + str(path))
+            if len(repo.ingest_required_paths) != len(set(repo.ingest_required_paths)):
+                errors.append(prefix + " has duplicate ingest required paths")
         errors.extend(_version_track_errors(repo.version_tracks, prefix))
 
     return errors
@@ -243,6 +254,7 @@ def _config_from_row(row: Dict[str, object], index: int) -> RepoConfig:
         version_tracks=_version_tracks(row.get("version_tracks", []), index),
         capsules=parse_capsules(row.get("capsules", []), index),
         secret_allowlist=parse_secret_allowlist(row.get("secret_allowlist", []), index),
+        ingest_required_paths=_optional_strings(row, "ingest_required_paths", index),
     )
 
 

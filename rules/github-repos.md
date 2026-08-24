@@ -16,7 +16,9 @@ Tests and fixtures may be excluded by reviewed capsule policy. Stories remain el
 
 ## Authorities and generated state
 
-`tracking/github/repo-registry.toml` is the only human-maintained repository registry. It stores stable intent: identity, company, URL, priority, cadence, strategy, and capsule policy. Mutable SHAs, versions, dates, failures, comparisons, and ingest progress belong under `tracking/github/`.
+`tracking/github/repo-registry.toml` is the only human-maintained repository registry. It stores stable intent: identity, company, URL, priority, cadence, strategy, capsule policy, and any reviewed ingest-reading selectors. Mutable SHAs, versions, dates, failures, comparisons, and ingest progress belong under `tracking/github/`.
+
+`ingest_required_paths` is an optional repository-level list of package-relative paths. Use it only when a complete retained capsule is intentionally broader than the evidence needed for routine serial ingest. The packet still records and hashes every retained file, but assigns only matching source files to required reading; manifests, release notes, comparisons, and wiki context remain mandatory. Every configured selector must match retained evidence or packet generation fails. An absent list preserves the default of assigning every applicable retained source file.
 
 The collector atomically maintains two repository-level views:
 
@@ -77,7 +79,7 @@ Ingest exactly one approved SHA work item at a time. `next-ingest` atomically cl
 
 For every ingest, read the complete cumulative source page first. Then read every packet and attachment path in full, one by one.
 
-For `full`, read the complete current snapshot and relevant prior history. Add the new baseline or major knowledge to the cumulative page; do not replace validated older-version knowledge.
+For `full`, read every current-snapshot path assigned by the packet and relevant prior history. This is the complete snapshot by default, or the reviewed `ingest_required_paths` subset when configured. Add the new baseline or major knowledge to the cumulative page; do not replace validated older-version knowledge. Unassigned retained files remain available for later query-time deep dives or an approved supplement ingest.
 
 For `delta`, read every changed retained file and linked comparison/history section in full. Update affected knowledge and append history. Unchanged historical raw files need not be reread.
 

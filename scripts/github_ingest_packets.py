@@ -762,6 +762,8 @@ def _build_package(
         prior,
         retained,
         notes_path,
+        package_paths,
+        config.ingest_required_paths,
     )
     recommendation = _recommend(
         root,
@@ -1458,6 +1460,8 @@ def _required_reading(
     prior: Optional[_LoadedSnapshot],
     retained: dict,
     notes_path: str,
+    package_roots: Sequence[str],
+    ingest_required_paths: Sequence[str],
 ) -> Tuple[str, ...]:
     required = {item.release_manifest, notes_path, current.relative_path}
     if item.comparison_manifest:
@@ -1472,8 +1476,27 @@ def _required_reading(
     if prior is not None:
         required.add(prior.relative_path)
     rows = retained["files"]
+    if ingest_required_paths:
+        retained_paths = tuple(row["path"] for row in rows)
+        for selected in ingest_required_paths:
+            if not any(
+                _matches_ingest_path(path, package_roots, selected)
+                for path in retained_paths
+            ):
+                raise PacketBuildError(
+                    "ingest required path matches no retained evidence: " + selected
+                )
     for row in rows:
-        if prior is None or row["status"] != "unchanged":
+        if (
+            (prior is None or row["status"] != "unchanged")
+            and (
+                not ingest_required_paths
+                or any(
+                    _matches_ingest_path(row["path"], package_roots, selected)
+                    for selected in ingest_required_paths
+                )
+            )
+        ):
             snapshot = prior if row["status"] == "removed" else current
             path = row["path"]
             required.add(
@@ -1482,6 +1505,24 @@ def _required_reading(
     for value in required:
         _resolve_file(root, value)
     return tuple(sorted(required))
+
+
+def _matches_ingest_path(
+    path: str,
+    package_roots: Sequence[str],
+    selected: str,
+) -> bool:
+    relative_paths = []
+    for package_root in package_roots:
+        if not package_root:
+            relative_paths.append(path)
+        elif _within(path, package_root):
+            relative = path[len(package_root):].lstrip("/")
+            if relative:
+                relative_paths.append(relative)
+    if not relative_paths:
+        relative_paths.append(path)
+    return any(_within(relative, selected) for relative in relative_paths)
 
 
 def _recommend(

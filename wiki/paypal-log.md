@@ -6,6 +6,13 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-24] ingest | paypal/paypal-php-server-sdk `paypal/paypal-server-sdk@2.4.0`
+
+- Full-ingested work item `github-26220457423a12b6b561` after serial review of all 64 required evidence paths and the complete 689-entry snapshot manifest.
+- Migrated the stale unpinned `2.2.0` stub into cumulative and package-qualified sources for the 2,641,320-byte exact-SHA baseline at `b6be767b759ac3e3ad1d32dde7143a0927f5892b`.
+- Recorded the five controllers, OAuth client, PHP runtime, retry/logging/proxy configuration, checkout, vault, reporting, and subscription lifecycles.
+- Preserved the US-only Vault label, generated-model-versus-eligibility boundary, absent `2.4.0` release notes, Composer/license-file mismatch, and PHP-versus-TypeScript OAuth difference. PayPal source count increased by one for the new changelog.
+
 ## [2026-08-17] ingest | paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration `main@f1c7123`
 
 - Full-ingested work item `github-ff388d21d0a8282ef393` after serial review of all 74 packet, snapshot, attachment, supplement, and shared-context paths.

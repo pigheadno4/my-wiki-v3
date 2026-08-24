@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-24] ingest | GitHub paypal/paypal-php-server-sdk - `paypal/paypal-server-sdk@2.4.0`
+
+- Full-ingested work item `github-26220457423a12b6b561` at exact SHA `b6be767b759ac3e3ad1d32dde7143a0927f5892b` after serial review of all 64 required evidence paths and the complete 689-entry snapshot manifest.
+- Replaced the unpinned `2.2.0` stub with cumulative and package-qualified `2.4.0` sources covering five controllers, OAuth, configuration, checkout, vault, reporting, and subscriptions.
+- Preserved package eligibility boundaries, missing `2.4.0` release attribution, license metadata conflict, and PHP-specific evidence without overwriting historical findings.
+
 ## [2026-08-23] ingest | GitHub braintree/braintree_ruby - `braintree@4.40.0`
 
 - Full-ingested work item `github-23d59ffe8258788624b8` at exact SHA `1217992763cc13f33dbd8b6c51ad2ae058ddd2a8` after serial full reading of all 204 required evidence paths.

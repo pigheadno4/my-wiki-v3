@@ -175,6 +175,31 @@
   Release: [manifest](../../raw/github/braintree/braintree_ruby/releases/braintree/4.40.0/2026-08-23/manifest.json)
   Comparison: Not applicable
 
+## `github-26220457423a12b6b561`
+
+- Repository: `paypal/paypal-php-server-sdk`
+- SHA: `b6be767b759ac3e3ad1d32dde7143a0927f5892b`
+- Collection date: `2026-08-24`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-php-server-sdk/snapshots/2026-08-24-b6be767/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-php-server-sdk/ingest-packets/github-26220457423a12b6b561/packet.md)
+- Review priority: `normal`
+- Required reading: `64` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `paypal/paypal-server-sdk@2.4.0` (recommended `full`)
+  Release: [manifest](../../raw/github/paypal/paypal-php-server-sdk/releases/paypal-server-sdk/2.4.0/2026-08-24/manifest.json)
+  Comparison: Not applicable
+
 ## `github-28afa4b70001aa3c42da`
 
 - Repository: `paypal/postman-collections`
