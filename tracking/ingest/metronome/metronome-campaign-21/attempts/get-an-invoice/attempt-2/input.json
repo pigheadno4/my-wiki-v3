@@ -1,0 +1,48 @@
+{
+  "action": "spawn_worker",
+  "job_id": "get-an-invoice",
+  "attempt": 2,
+  "raw_path": "raw/metronome/api-reference/invoices/get-an-invoice-2026-07-13.md",
+  "raw_sha256": "fa63043096b5387c5a047dcd08968582a4cbb511e9d3fae2697b4c19adf99085",
+  "source_target": "wiki/sources/metronome/source-metronome-api-reference-invoices-get-an-invoice.md",
+  "canonical_url": "https://docs.metronome.com/api-reference/invoices/get-an-invoice.md",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location.",
+    "For OpenAPI pages, distinguish requestBody requiredness, required payload properties, and additionalProperties behavior; do not infer omitted-body or unknown-field behavior.",
+    "For every POST operation, check the existing Metronome API-wide idempotency authority and separate its guarantees from endpoint-specific unknowns.",
+    "For each durable fact, audit every relevant existing Metronome concept and provide reciprocal source-link suggestions; do not stop after the first plausible concept."
+  ],
+  "retry_context": {
+    "prior_attempt": 1,
+    "review_scope": "full",
+    "required_changes": [
+      "Correct quote 0's location from raw lines 33-37 to lines 34-37; the current cited range includes the Usage guidelines heading that is absent from the quote text.",
+      "Replace the candidate's no-cross-page-contradiction conclusion with a warning that raw lines 708-710 document InvoiceStatus only as a string example containing uppercase VOID, while wiki/sources/metronome/source-metronome-api-reference-invoices-void-an-invoice.md and wiki/concepts/metronome/metronome-invoicing.md report the void operation's lowercase voided status wording. Preserve both source-scoped claims and state that enum exhaustiveness, casing normalization, and whether the operation wording is a literal read-response value are unresolved. Revise the metronome-invoicing shared update so the concept receives the reciprocal warning.",
+      "Repair shared-update grounding and scope: change get-an-invoice-invoicing-read-fact from the line-item schema to the invoice and line-item schemas and incorporate the status contradiction; remove hierarchy context from get-an-invoice-invoicing-reciprocal-link or cite an exact hierarchy quote; cite the AppliedCommitOrCredit required enum and commit_id overload for get-an-invoice-credit-application-fact or trim those claims; cite the Invoice properties that declare external_invoice and revenue_system_invoices nullable for both integration updates or remove nullable; and cite the referenced string-valued CustomField schema plus the claimed invoice and line-item custom-field properties for both custom-field updates, or narrow them to the invoice-level unrestricted shape actually covered by quote 3. Preserve the valid CPU-conversion updates and the bounded credit-application reciprocal link."
+    ],
+    "prior_reviewer_identity": "/root/c21_r_invoice"
+  },
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Preliminary archetype API Read: the 1,025-line single-invoice endpoint is the longest and schema-heaviest sample for identity, envelope, state, nested records, and response boundaries.",
+  "worker_identity": "/root/c21_w_invoice",
+  "worker_model": "gpt-5.6-sol"
+}

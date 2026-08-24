@@ -1,0 +1,114 @@
+{
+  "job_id": "list-customers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: List Customers\"\ntype: source\ndate_ingested: 2026-08-24\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/customers/list-customers.md\"\nraw_files:\n  - \"metronome/api-reference/customers/list-customers-2026-07-13.md\"\ntags: [metronome, customers, api-reference, pagination, ingest-aliases]\n---\n\n## Overview\n\nThis reference documents the bearer-authenticated `GET /v1/customers` endpoint for browsing, searching, or synchronizing customers in a Metronome account. It is the authority for this list operation's query filters, cursor envelope, and returned customer-detail schema; it does not establish customer lifecycle policy or synchronization consistency.\n\n## Key takeaways\n\n- The endpoint returns active customers by default. Optional filters select one ingest alias, up to 100 customer IDs, only archived customers, or up to 100 Salesforce account IDs; the page does not define how combined filters interact.\n- Cursor pagination uses optional `limit` and `next_page` query parameters. `limit` accepts 1 through 100, and a successful response requires both the `data` array and a nullable `next_page`.\n- Every returned `CustomerDetail` requires the customer's UUID, deprecated `external_id`, ingest aliases, name, creation and update timestamps, customer configuration, and custom fields.\n- `archived_at` is optional and nullable. `current_billable_status` is also optional and configuration-dependent; when present, it requires a `billable` or `unbillable` value and may include a nullable effective timestamp.\n- The reference defines neither result ordering nor default page size, cursor lifetime, snapshot consistency, freshness, errors, or read-after-write behavior.\n\n## Endpoint and filters\n\nThe production server is `https://api.metronome.com`, the operation ID is `listCustomers-v1`, and the OpenAPI document applies HTTP bearer authentication. All documented inputs are optional query parameters: `limit`, `next_page`, `ingest_alias`, `customer_ids`, `only_archived`, and `salesforce_account_ids`. No request body is defined; that absence documents no body schema but does not prove how the runtime handles a supplied body.\n\n`limit` has a minimum of 1 and maximum of 100. `next_page` identifies where the following page should start. The page does not document a default limit, array-query serialization, cursor opacity, expiry, reuse, or behavior after the underlying customer set changes.\n\n`ingest_alias` filters by one string alias. The `customer_ids` description limits the filter to 100 IDs, but its array schema has no `maxItems` and does not require UUID formatting. By contrast, `salesforce_account_ids` has both the same prose limit and `maxItems: 100`. These are documentation and schema boundaries, not permission to exceed the prose customer-ID limit.\n\n`only_archived` filters the list to archived customers, while the documented default returns only active customers. The reference does not define whether an explicit false differs from omission, whether active and archived customers can be returned together, archive retention, restoration, or visibility rules.\n\n## Response schema\n\nHTTP `200` requires an object with `data` and `next_page`. `data` is an array of `CustomerDetail` objects; `next_page` is a nullable string. The endpoint-specific schema is consistent with the general pagination authority's terminal-null convention, but this page does not independently state whether every non-null cursor guarantees another nonempty page.\n\nEach customer item requires `id`, `external_id`, `name`, `created_at`, `updated_at`, `customer_config`, `ingest_aliases`, and `custom_fields`. The UUID-formatted `id` is Metronome's customer ID. `external_id` remains required in this response schema but is deprecated in favor of `ingest_aliases`; those aliases can replace the Metronome customer ID in usage events. The page does not define alias ordering, uniqueness, or active-state semantics.\n\n`customer_config` requires a `salesforce_account_id` property whose string value may be null. `custom_fields` is an open map with string-valued properties. These structures must not be conflated with customer billing-provider configurations, and the page does not define Salesforce-link freshness or custom-field ordering.\n\nOptional `archived_at` is an RFC 3339 timestamp and is null for an active customer when present. Optional `current_billable_status` is available only for some client configurations. Its nested `value` is required and enumerated as `billable` or `unbillable`; `effective_at` is optional and nullable. The reference does not define status derivation, billing effects, transition history, or freshness.\n\n## Documented boundaries\n\nOnly HTTP `200 Success` is documented. The page does not define authentication or authorization errors, malformed filters, rate limits, retry guidance, partial results, response ordering, cursor lifetime, snapshot isolation, concurrent-update behavior, or read-after-write consistency. It also does not specify how multiple filters combine or whether duplicate IDs affect results.\n\n`CustomerDetail` does not set an `additionalProperties` policy, so the source does not establish unknown response-field behavior. The prose-only maximum for `customer_ids` and schema-level `maxItems` for `salesforce_account_ids` are an asymmetry, not a contradiction with the documented 100-ID limit. No contradiction was found with the existing single-customer retrieval, customer creation, pagination, event-ingestion, or custom-field authorities.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-customers-and-contracts]], [[metronome-event-ingestion]], [[metronome-custom-fields]]\n- Related sources: [[source-metronome-api-reference-customers-get-a-customer]], [[source-metronome-api-reference-customers-create-a-customer]], [[source-metronome-api-reference-pagination]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/customers/list-customers-2026-07-13|2026-07-13 snapshot \u2014 customer-list endpoint and embedded OpenAPI schema]]",
+  "quotes": [
+    {
+      "text": "Gets a paginated list of all customers in your Metronome account. Use this endpoint to browse your customer base, implement customer search functionality, or sync customer data with external systems. Returns customer details including IDs, names, and configuration settings. Supports filtering and pagination parameters for efficient data retrieval.",
+      "location": "line 11, introductory description"
+    },
+    {
+      "text": "Filter the customer list to only return archived customers. By\n            default, only active customers are returned.",
+      "location": "lines 123-124, only_archived query-parameter description"
+    },
+    {
+      "text": "Cursor that indicates where the next page of results should start.",
+      "location": "line 185, NextPage parameter description"
+    },
+    {
+      "text": "(deprecated, use ingest_aliases instead) the first ID (Metronome or\n            ingest alias) that can be used in usage events",
+      "location": "lines 209-210, CustomerDetail.external_id description"
+    },
+    {
+      "text": "This field's availability is dependent on your client's\n            configuration.",
+      "location": "lines 255-256, CustomerDetail.current_billable_status description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "list-customers-customers-durable-fact",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Customer retrieval API",
+        "proposed_markdown": "### Customer list API\n\nBearer-authenticated `GET /v1/customers` returns active customers by default and can filter by one ingest alias, up to 100 customer IDs, only archived customers, or up to 100 Salesforce account IDs. It uses optional 1-100 `limit` and `next_page` query parameters and requires a customer-detail array plus nullable `next_page` in a successful response. The endpoint does not define filter-intersection semantics, result ordering, default page size, cursor lifetime, snapshot consistency, or freshness. [[source-metronome-api-reference-customers-list-customers]]",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "The customer_ids 100-ID limit is stated in prose but lacks schema maxItems; salesforce_account_ids has maxItems: 100.",
+          "Do not infer that active and archived customers can be returned together."
+        ]
+      },
+      {
+        "update_id": "list-customers-customers-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-list-customers]] \u2014 account-wide customer filters, cursor envelope, customer-detail item shape, archived visibility, and list-consistency unknowns",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "list-customers-event-ingestion-durable-fact",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Event contract",
+        "proposed_markdown": "The customer-list read surface can filter customers by a single `ingest_alias`, and each returned customer requires `ingest_aliases`; those aliases are documented as substitutes for the Metronome customer ID in usage events. The endpoint does not define alias ordering, uniqueness, current-active status, or how its alias filter combines with other filters. [[source-metronome-api-reference-customers-list-customers]]",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "Do not treat list membership or position as proof that an alias is unique or currently active."
+        ]
+      },
+      {
+        "update_id": "list-customers-event-ingestion-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-list-customers]] \u2014 ingest-alias filtering and the list response's required customer alias surface",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "list-customers-custom-fields-durable-fact",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Customer retrieval surface",
+        "proposed_markdown": "`GET /v1/customers` requires `custom_fields` on every returned customer detail as an arbitrary-key object with string values. The listing endpoint does not define key ordering, entry limits, visibility, redaction, freshness, or whether every configured customer field is returned. [[source-metronome-api-reference-customers-list-customers]]",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": [
+          "The grounding quote establishes returned configuration settings at the page-description level; the source candidate preserves the exact OpenAPI map shape from the fully read schema."
+        ]
+      },
+      {
+        "update_id": "list-customers-custom-fields-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-list-customers]] \u2014 required customer-list custom-field response map and endpoint-specific visibility and freshness limits",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/customers/list-customers-2026-07-13.md",
+  "raw_sha256": "df498e80a484009f5f66480c90ce1175e4a01b67ebbed44a4a5ba5447d3b5771",
+  "status": "candidate_ready"
+}

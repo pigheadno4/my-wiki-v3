@@ -23,6 +23,9 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 - Product edits are effective-dated and can start in the future or apply retroactively from a past `Starting at` value. Name, tags, metric, conversion, rounding, and API-only group-key fields are editable while billing is active, but product type is immutable; correcting it requires a replacement product and archival of the original.
 - Product tags can also store internal catalog identifiers and select products for composites, commits, and discounts.
 
+
+- On usage invoices, pricing group keys produce a separate line item for each priced group-key combination, but the guide says a combination without usage does not produce a line item. Presentation group keys instead organize usage-product lines under a property such as project or organization. The guide does not define missing-key behavior, ordering, cardinality limits, fallback pricing, or label stability after edits. [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]]
+
 ## Rate cards and rates
 
 `POST /v1/contract-pricing/rate-cards/archive` permanently disables a rate card for new contracts, removes it from contract-creation workflows, and preserves pricing for existing contracts. The endpoint page does not define whether preservation uses a snapshot or retained reference, how later catalog changes interact with those contracts, visibility outside creation workflows, restoration, propagation timing, in-flight contract creation, idempotency, or concurrency. [[source-metronome-api-reference-rate-cards-archive-a-rate-card]]
@@ -126,6 +129,9 @@ The customer-credit create payload requires a UUID `product_id` even when eligib
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — time-bounded entitlement and zero-multiplier trial overrides
 
 - [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - required credit product, direct product applicability, specifier matching, and selector-validation boundaries
+
+
+- [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] — pricing-group line creation, presentation grouping, and invoice field boundaries
 
 ## Related
 

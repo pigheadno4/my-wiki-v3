@@ -31,6 +31,9 @@ For offset-notification scheduling, Metronome says subsequent recurring-commit c
 
 Credits and prepaid commits at contract or customer level can carry access schedules in custom pricing units or selected currencies. Usage priced in a custom unit burns down applicable balances whose access schedules use that same unit; when none remains, invoice conversion to the rate card's fiat currency covers the residual usage. A CHF-paid prepaid commit granting Cloud Compute Tokens illustrates differing payment and access denominations, but the guide does not define arbitrary balance conversion, applicability priority, exchange rates, precision, or rounding.
 
+
+A usage invoice can show entitlements, consumed quantity, and applied commitments or credits; an applied credit or prepaid commitment can reduce its total to zero so the invoice serves as a revenue record without requiring payment collection. The guide says balance application and overage are calculated per line item. Commitment prepayments and postpaid true-ups can instead produce scheduled invoices, but this guide does not define drawdown priority, ledger mutation, tax, delivery, collection, or reconciliation. [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]]
+
 ### Future-credit versus credit-memo boundary
 
 A Metronome credit can grant relief on future billing at customer scope, where it can apply across existing contracts on the account, or at contract scope. This does not alter the past transaction or invoice. When charges and associated revenue must be reversed, the credit-memo guide instead assigns the memo to the external customer-A/R system; the resulting A/R invoice can differ from the Metronome invoice line, with the memo serving as the audit record. The source does not establish that a future credit reverses historical revenue.
@@ -72,6 +75,14 @@ Metronome's revenue-recognition guide treats prepaid-commit purchase invoices as
 `/getNetBalance` returns one customer-level remaining-balance sum with filters for balance type, currency, pending charges, and custom fields. `listBalances` supports individual credit and commit views: each balance has a ledger, and summing its positive and negative entries produces that ledger's remaining balance. Values can be fractional; for USD the unit is cents, so `0.8` represents $0.008 and must not be silently truncated.
 
 Ledger entries carry a type, signed amount, and effective timestamp. One invoice-deduction entry exists for every invoice that consumes a balance, and its timestamp is the usage invoice's service-period end. Positive and negative manual entries can correct or migrate balances. Credit, prepaid-commit, and postpaid-commit ledgers have distinct start, drawdown, rollover, expiration, true-up, manual, and seat-adjustment types; the guide gives identical descriptions for `prepaid_segment_expiration` and `prepaid_commit_expiration` without distinguishing their trigger boundaries.
+
+
+The single-invoice read schema names `applied_commit_or_credit` as a separate negative-total line-item type. It specifically says a postpaid-commit application line is not included in the invoice total because postpaid commitments are paid in arrears. This endpoint does not define partial-application splitting, balance or ledger mutations, precision, rounding, or total reconciliation.
+
+
+### AWS Marketplace treatment
+
+For AWS delivery, Metronome meters prepaid commit amounts on each scheduled invoice's service-period date rather than creation time. Free contract credits are not metered; only overage remaining after full drawdown reaches AWS. Postpaid usage is metered during the contract, but the end-of-contract shortfall true-up is not sent because it finalizes after the marketplace endpoint closes, leaving the merchant to handle that true-up directly in AWS. Later Metronome credits also cannot decrease an already-sent AWS total because AWS accepts only positive quantities. [[source-metronome-integrations-marketplace-integrations-aws]]
 
 ## Prepaid balance thresholds
 
@@ -217,6 +228,15 @@ A merchant can create `low_remaining_commit_balance_reached` for a customer, cre
 - [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - customer-level credit creation, payload and schedule requiredness, applicability, priority, uniqueness, response, and lifecycle boundaries
 
 - [[source-metronome-api-reference-credits-and-commits-list-balances]] - detailed balance request and response schemas, endpoint-specific pagination, archive asymmetry, schedule-unit boundary, calculated-balance floor, custom fields, and ledger-enum contradictions
+
+
+- [[source-metronome-api-reference-invoices-get-an-invoice]] - negative application-line representation, applied balance identity and type, postpaid-total exclusion, and attribution unknowns
+
+
+- [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] — zero-dollar usage invoices, per-line commitment and credit application, and scheduled prepayment and true-up invoice roles
+
+
+- [[source-metronome-integrations-marketplace-integrations-aws]] — marketplace-specific prepaid, credit, postpaid true-up, correction, and refund treatment
 
 ## Related
 

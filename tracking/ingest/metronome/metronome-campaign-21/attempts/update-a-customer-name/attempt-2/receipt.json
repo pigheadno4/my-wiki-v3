@@ -1,0 +1,142 @@
+{
+  "job_id": "update-a-customer-name",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome API Reference: Update a Customer Name\"\ntype: source\ndate_ingested: 2026-08-24\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/customers/update-a-customer-name.md\"\nraw_files:\n  - \"metronome/api-reference/customers/update-a-customer-name-2026-07-13.md\"\ntags: [metronome, customers, api-reference, customer-names, invoicing]\n---\n\n## Overview\n\nThis API reference documents the bearer-authenticated `POST /v1/customers/{customer_id}/setName` mutation for changing one Metronome customer's display name. It is the endpoint authority for request requiredness, name truncation, and the immediate propagation claim; separate customer, invoice, authentication, and idempotency authorities are still needed for broader lifecycle, downstream, and retry behavior.\n\n## Key takeaways\n\n- The required `customer_id` path parameter is a UUID-formatted Metronome customer ID.\n- The enclosing OpenAPI `requestBody` is not marked `required: true`, while `SetCustomerNamePayload` requires the string property `name`; omitted-body behavior is therefore undocumented.\n- A supplied name longer than 160 characters is truncated to 160 characters. The page gives no minimum length, normalization, character-counting, or empty-string rule.\n- HTTP `200` requires a top-level `data` envelope containing a `Customer`; that object requires `id`, deprecated `external_id`, `ingest_aliases`, and `name`, and may include customer `custom_fields`.\n- Metronome states that the updated name is applied immediately across all billing documents and interfaces, but the page does not define the scope of \"all\" across historical, draft, finalized, rendered, exported, webhook, or downstream-provider copies.\n\n## Endpoint contract\n\n| Item | Documented value |\n| --- | --- |\n| Method and path | `POST /v1/customers/{customer_id}/setName` |\n| Operation ID | `setCustomerName-v1` |\n| Authentication | Top-level HTTP bearer authentication through `bearerAuth` |\n| Required path input | UUID-formatted `customer_id` |\n| Request media type | `application/json` |\n| Required payload property | String `name` |\n| Success | HTTP `200` with required `data` referencing `Customer` |\n| Listed endpoint errors | None |\n\nThe endpoint identifies the customer only through the path UUID. It defines no query parameters and no request field for an ingest alias or deprecated external ID, so this page does not establish name updates by either alternate identifier. Bearer authentication is explicit, but endpoint-specific token scope, role, permission, and authorization-failure behavior are not documented.\n\n## Request schema and validation boundaries\n\n`SetCustomerNamePayload` is an object whose required list contains `name`. The property is a string and is truncated when longer than 160 characters. The schema sets no `minLength`, pattern, enum, or nullable marker, and the page does not define whitespace handling, Unicode counting, normalization, duplicate-name constraints, or whether an unchanged name has any distinct behavior.\n\nThe operation's `requestBody` has a description, JSON content, schema reference, and example, but it lacks `required: true`. Requiredness of the payload property must therefore remain separate from operation-level body requiredness. The payload object also has no `additionalProperties` policy, so the page does not establish whether unknown request properties are accepted, ignored, stored, or rejected.\n\n## Success response and customer identity\n\nThe `200` response object requires `data`, which references `Customer`. That customer object requires UUID `id`, `external_id`, `ingest_aliases`, and `name`. `external_id` is deprecated in favor of `ingest_aliases`; the alias array is described as identifiers usable instead of the Metronome customer ID in usage events. Their presence in the returned representation does not prove that this name-only mutation changes, reorders, or revalidates either identity field.\n\nThe response may include `custom_fields`, which references an arbitrary-key object with string values, but `custom_fields` is not required in this `Customer` schema. The endpoint does not mutate custom fields or define their freshness, ordering, visibility, or propagation. The enclosing response and `Customer` objects do not set an `additionalProperties` policy, so this source does not establish whether other response fields can appear or how clients should treat them.\n\n## Propagation and lifecycle boundary\n\nThe page says the new name is applied immediately across all billing documents and interfaces. Preserve that documented product claim, but do not extend it into undocumented mechanics: the page does not distinguish already-finalized from draft or future documents; define whether PDFs, exports, audit logs, webhooks, data exports, or downstream Stripe, ERP, or marketplace records are included; specify cache invalidation or measurable propagation latency; or establish payment, tax, accounting, delivery, settlement, or reconciliation effects.\n\nThe returned customer object confirms the successful mutation result and new name, but the page defines no version, `updated_at`, change-event identity, audit entry, rollback, scheduled update, archive-state restriction, or read-after-write procedure. It also does not say whether archived customers can be renamed.\n\n## Idempotency, errors, concurrency, and recovery\n\nThis endpoint page lists only HTTP `200` and supplies no `400`, `401`, `403`, `404`, `409`, `429`, or `5xx` response contract. It does not define malformed or missing body behavior, missing or inaccessible customer representation, validation errors, truncation signaling, rate limits, partial failure, concurrent rename ordering, repeated-call behavior, timeout recovery, or whether success is atomic with the claimed document/interface propagation.\n\nThe separate [[source-metronome-api-reference-idempotency|Metronome API-wide idempotency authority]] applies `Idempotency-Key` to all POST endpoints: the same key with identical parameters returns the original result, changed parameters return HTTP `409 Conflict`, keys persist for at least 24 hours, and a cached result can be HTTP `500`. This endpoint neither repeats nor narrows that contract and exposes no resource `uniqueness_key`. A same-key replay recovers the original result rather than proving a fresh read of the customer's current name; after an ambiguous failure, the endpoint page does not define current customer or document state, safe changed-key behavior, or reconciliation steps.\n\n## Contradiction check\n\nNo direct contradiction was found when the authorities are kept source-scoped. The create-customer authority independently documents the same longer-than-160-character truncation behavior and returns a `Customer` representation with UUID `id`, deprecated `external_id`, `ingest_aliases`, and `name`. The get-customer authority documents retrieval by a required UUID and a richer `CustomerDetail` response whose required fields include UUID `id`, deprecated `external_id`, `ingest_aliases`, `name`, `customer_config`, `custom_fields`, `created_at`, and `updated_at`; it does not document a name-length or truncation rule. Across all three pages, `external_id` is deprecated in favor of `ingest_aliases`, and ingest aliases are described as identifiers usable instead of the Metronome customer ID in usage events. The create/update `Customer` schemas and get-customer `CustomerDetail` schema have different required-field sets and should not be flattened. The broad \"immediately across all billing documents and interfaces\" statement is an unresolved scope boundary rather than proof that external copies, finalized artifacts, or downstream financial outcomes are synchronously changed.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-customers-and-contracts]], [[metronome-invoicing]], [[metronome-api-idempotency]], [[metronome-custom-fields]], [[metronome-security-principles]]\n- Customer context: [[source-metronome-api-reference-customers-create-a-customer]], [[source-metronome-api-reference-customers-get-a-customer]]\n- API context: [[source-metronome-api-reference-authentication]], [[source-metronome-api-reference-status-codes]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/customers/update-a-customer-name-2026-07-13|2026-07-13 snapshot \u2014 customer-name mutation, response schema, and propagation claim]]\n",
+  "quotes": [
+    {
+      "text": "> Updates the display name for a customer record. Use this to correct customer names, update business names after rebranding, or maintain accurate customer information for invoicing and reporting. Returns the updated customer object with the new name applied immediately across all billing documents and interfaces.",
+      "location": "line 11, introductory endpoint description"
+    },
+    {
+      "text": "  /v1/customers/{customer_id}/setName:\n    post:\n      tags:\n        - Customers\n      summary: Update a customer name\n      description: >\n        Updates the display name for a customer record. Use this to correct\n        customer names, update business names after rebranding, or maintain\n        accurate customer information for invoicing and reporting. Returns the\n        updated customer object with the new name applied immediately across all\n        billing documents and interfaces.\n      operationId: setCustomerName-v1",
+      "location": "lines 88-99, OpenAPI operation declaration"
+    },
+    {
+      "text": "      requestBody:\n        description: The customer name\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/SetCustomerNamePayload'\n            example:\n              name: Example, Inc.",
+      "location": "lines 102-109, requestBody definition without required: true"
+    },
+    {
+      "text": "    SetCustomerNamePayload:\n      required:\n        - name\n      type: object\n      properties:\n        name:\n          type: string\n          description: >-\n            The new name for the customer. This will be truncated to 160\n            characters if the provided name is longer.",
+      "location": "lines 140-149, required payload property and truncation rule"
+    },
+    {
+      "text": "    Customer:\n      required:\n        - external_id\n        - ingest_aliases\n        - id\n        - name\n      type: object\n      properties:\n        id:\n          type: string\n          format: uuid\n          description: the Metronome ID of the customer\n        external_id:\n          type: string\n          description: >-\n            (deprecated, use ingest_aliases instead) the first ID (Metronome or\n            ingest alias) that can be used in usage events\n        ingest_aliases:\n          type: array\n          description: >-\n            aliases for this customer that can be used instead of the Metronome\n            customer ID in usage events\n          items:\n            type: string\n        name:\n          type: string\n        custom_fields:\n          $ref: '#/components/schemas/CustomField'\n          x-cf-entity: customer\n    CustomField:\n      type: object\n      description: 'Custom fields to be added eg. { \"key1\": \"value1\", \"key2\": \"value2\" }'\n      additionalProperties:\n        type: string",
+      "location": "lines 150-183, returned Customer identity and custom-field schemas"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "update-customer-name-customers-contracts-fact",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Customer retrieval API",
+        "proposed_markdown": "## Customer name update API\n\nBearer-authenticated `POST /v1/customers/{customer_id}/setName` targets a required UUID path identifier. Its JSON payload schema requires string `name`, while the enclosing `requestBody` is not marked required; names longer than 160 characters are truncated. HTTP `200` requires `data` containing a customer whose required identity fields are UUID `id`, deprecated `external_id`, `ingest_aliases`, and the updated `name`. Metronome says the new name is applied immediately across all billing documents and interfaces, but this page does not define the scope across historical, draft, finalized, exported, rendered, or downstream-provider copies; archived-customer eligibility; errors; concurrency; or partial-failure recovery. [[source-metronome-api-reference-customers-update-a-customer-name]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep operation-level requestBody requiredness separate from the payload property's requiredness.",
+          "Do not convert the broad propagation statement into proof of external-provider, payment, tax, accounting, or reconciliation outcomes."
+        ]
+      },
+      {
+        "update_id": "update-customer-name-customers-contracts-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-update-a-customer-name]] \u2014 UUID-scoped display-name mutation, 160-character truncation, returned customer identity, immediate billing-document/interface claim, and recovery boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "update-customer-name-invoicing-fact",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Calculation and timing boundary",
+        "proposed_markdown": "### Customer-name propagation boundary\n\n`POST /v1/customers/{customer_id}/setName` is documented to apply the new display name immediately across all billing documents and interfaces. The endpoint does not distinguish already-finalized from draft or future documents; define whether PDFs, exports, webhooks, data exports, or downstream Stripe, ERP, and marketplace copies are included; or establish invoice recalculation, delivery, collection, payment, tax, accounting, settlement, or reconciliation effects. Preserve the immediate product claim while treating those surfaces and outcomes as undocumented. [[source-metronome-api-reference-customers-update-a-customer-name]]",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "The word 'all' is source wording with unresolved scope; do not silently narrow or expand it."
+        ]
+      },
+      {
+        "update_id": "update-customer-name-invoicing-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-update-a-customer-name]] \u2014 immediate customer-name propagation claim across billing documents and interfaces, with finalized-artifact and downstream scope unresolved",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "update-customer-name-idempotency-fact",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Retry and error boundary",
+        "proposed_markdown": "`POST /v1/customers/{customer_id}/setName` falls under the API-wide `Idempotency-Key` contract even though its endpoint page lists only HTTP `200` and does not mention retries. An identical same-key retry returns the original mutation result rather than proving a fresh read of the customer's current name; the endpoint adds no behavior for another or expired key, concurrent renames, cached-error customer or document state, or recovery after ambiguous propagation. [[source-metronome-api-reference-customers-update-a-customer-name]] [[source-metronome-api-reference-idempotency]]",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "The replay, conflict, retention, and cached-error guarantees come from the separate API-wide idempotency authority, not this endpoint page."
+        ]
+      },
+      {
+        "update_id": "update-customer-name-idempotency-link",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-update-a-customer-name]] \u2014 POST customer-name mutation, original-result replay context, and endpoint-specific concurrency and recovery unknowns",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "update-customer-name-custom-fields-fact",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Customer retrieval surface",
+        "proposed_markdown": "The `POST /v1/customers/{customer_id}/setName` success representation can also include optional customer `custom_fields`, referencing the same arbitrary-key, string-valued map shape. Unlike the dedicated customer-detail retrieval schema, this mutation's `Customer` required list does not include `custom_fields`. The endpoint changes only `name` and does not define custom-field mutation, ordering, freshness, visibility, or propagation. [[source-metronome-api-reference-customers-update-a-customer-name]]",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Do not infer that a name update mutates or refreshes custom fields merely because the response schema can include them."
+        ]
+      },
+      {
+        "update_id": "update-customer-name-custom-fields-link",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-update-a-customer-name]] \u2014 optional string-valued customer custom-field map in the name-mutation response and non-mutation boundary",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/customers/update-a-customer-name-2026-07-13.md",
+  "raw_sha256": "8f258820167a6064aa1ba92bb2f9eca81271f1f634b211493bad83091e3dc1f3",
+  "status": "candidate_ready"
+}

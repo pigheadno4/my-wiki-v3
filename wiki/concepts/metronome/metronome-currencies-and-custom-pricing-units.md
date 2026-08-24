@@ -33,6 +33,14 @@ Customer- or contract-level credits and prepaid commits can have access schedule
 
 For customer-credit creation, `access_schedule.credit_type_id` is optional and defaults to USD cents. Every schedule item requires numeric `amount`, but the endpoint schema supplies no integer, positivity, zero, precision, maximum, or rounding constraint and no non-USD denomination rule. The schedule array is required without `minItems`; its items require inclusive RFC 3339 start and exclusive end, while ordering, overlap, chronology, gaps, and time-zone behavior beyond RFC 3339 remain unspecified.
 
+
+The invoice-read schema exposes `cpu_conversion` as a distinct line-item type when products are priced in a custom pricing unit and matching prepaid commit or credit is insufficient to cover the spend. Its description says outstanding custom-unit spend is converted to fiat using the rate-card conversion. This read surface does not define conversion direction, precision, rounding, rate snapshot, tax treatment, or whether the line alone is sufficient to reproduce the calculation.
+
+
+### AWS Marketplace currency boundary
+
+The AWS Marketplace integration accepts only invoices in USD fiat currency and expresses each metering-record quantity as the accrued dollar amount in USD cents. Metronome errors when a contract selects AWS while its rate card uses non-USD fiat; when a contract has additional non-USD invoices, only its USD invoices are sent to AWS. The guide does not define conversion, mixed-currency aggregation, tax, or rounding beyond the stated USD-cent quantity. [[source-metronome-integrations-marketplace-integrations-aws]]
+
 ## Boundaries and unknowns
 
 The guide does not define custom-unit creation APIs, precision, conversion formula direction, rounding, exchange-rate sourcing or timing, rate-card currency mutation, mixed-rate resolution, balance priority, tax, invoice lifecycle, collection, refund, or revaluation behavior. Its supported-currency list and denomination behavior are dated documentation evidence, not an evergreen capability guarantee.
@@ -54,3 +62,7 @@ The guide does not define custom-unit creation APIs, precision, conversion formu
 - [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - access-schedule credit-type default, numeric amount schema, inclusive and exclusive time bounds, and denomination constraints left open
 
 - [[source-metronome-api-reference-credits-and-commits-list-balances]] - optional schedule credit-type references, numeric amount fields, USD-cents example, and endpoint-level denomination and precision boundaries
+
+- [[source-metronome-api-reference-invoices-get-an-invoice]] - `cpu_conversion` invoice-line representation, insufficient matching-balance trigger, and calculation boundaries
+
+- [[source-metronome-integrations-marketplace-integrations-aws]] — AWS Marketplace USD-only contract and invoice-delivery boundary plus USD-cent metering quantity

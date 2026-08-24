@@ -1,0 +1,220 @@
+{
+  "job_id": "aws-marketplace-integration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Invoice with AWS Marketplace\"\ntype: source\ndate_ingested: 2026-08-24\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/integrations/marketplace-integrations/aws.md\"\nraw_files:\n  - \"metronome/integrations/marketplace-integrations/aws-2026-07-13.md\"\ntags: [metronome, aws-marketplace, marketplace-invoicing, metering, billing-providers]\n---\n\n## Overview\n\nThis guide documents the native Metronome-to-AWS Marketplace invoicing path: prepare an AWS listing, delegate AWS metering and entitlement access to Metronome through a cross-account IAM role, map each Marketplace customer into Metronome, and select AWS on that customer's contract. The guide also defines what Metronome sends to AWS and identifies correction, cutoff, currency, lifecycle, and true-up limits that remain merchant-owned.\n\nThe page is an integration guide rather than a complete API or settlement contract. Its configuration steps and returned or entered identifiers do not by themselves prove AWS acceptance, activation, downstream delivery, payment, tax, settlement, or reconciliation.\n\n## Listing and pricing prerequisites\n\nAn organization must first be an approved AWS Marketplace seller. The listing can use **Contract with Consumption** or **Usage-based pricing** with **Units** as the dimension unit type; the chosen model must also be represented when the Marketplace customer is configured in Metronome. Contract-with-consumption listings use contract dimensions and **Single dimension per contract**, while usage-based listings omit those contract-only steps.\n\nThe integration imposes exact marketplace dimension values:\n\n- Create one usage dimension whose API identifier is `usage_fee`.\n- Price every contract dimension at `$0`.\n- Price `usage_fee` at `$0.01` per unit.\n- Leave **Activate pay-as-you-go pricing for additional usage** unchecked on contract dimensions.\n\nThe guide says deviations from the dimension prices cause the integration to fail. It does not define when or how AWS or Metronome validates the listing, what error identifies each mismatch, or whether saving configuration proves the listing is ready to receive metering records.\n\n## IAM role and credential boundary\n\nMetronome requires a seller-owned AWS IAM role with `aws-marketplace:BatchMeterUsage`, `aws-marketplace:GetEntitlements`, `aws-marketplace:ListEntities`, and `aws-marketplace:DescribeEntity` allowed on `Resource: \"*\"`. The seller configures the role's trust using the Metronome AWS account ID and unique external ID shown by the Metronome integration flow, leaves **Require MFA** unchecked, attaches the policy, and names the role with the required `metronome-marketplace` prefix. Environment-specific suffixes such as `-production` and `-staging` are permitted examples. The role ARN is then entered in Metronome and saved.\n\nThe AWS account ID, external ID, AWS account that owns the role, and role ARN are distinct identifiers. The page does not document least-privilege resource scoping beyond the shown wildcard, credential validation timing, role rotation, external-ID rotation, independent update, rollback, deletion, audit evidence, or recovery if AWS access later fails.\n\n## Customer and contract identifier layers\n\n| Layer | Documented identity or selection |\n| --- | --- |\n| AWS listing | Product code, region, pricing model, and marketplace dimensions |\n| Metronome account integration | Metronome AWS account ID, generated external ID, and seller role ARN |\n| Customer billing-provider configuration | AWS customer ID, AWS product code, AWS region, and conditional `aws_is_subscription_product` |\n| Contract routing | AWS Marketplace as the contract's billing provider with direct provider delivery |\n\nThe AWS customer ID comes from the token sent to the listing's fulfillment URL. The product code comes from the AWS Marketplace Portal. The guide recommends `us-east-1` unless another region was deliberately selected and says a wrong region returns an error that the AWS customer cannot be found. The usage-based checkbox, or `aws_is_subscription_product` in the API examples, is used only for an AWS **Usage-based pricing** product and is omitted or left unselected for **Contract with Consumption**.\n\nA Metronome contract must reflect the Marketplace contract or subscription, including relevant commits and credits, and select AWS under billing configuration. The alternative API examples attach `customer_billing_provider_configurations` during customer creation or set the configuration for an existing customer, then put `billing_provider: \"aws_marketplace\"` and `delivery_method: \"direct_to_billing_provider\"` on contract creation. These examples establish the documented layer separation but do not replace the dedicated customer and contract API schemas, validation, idempotency, or recovery authorities.\n\n> [!warning] Billing-provider lifecycle contradiction\n> This AWS guide says a billing provider cannot be added or changed after the contract is created. [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] instead documents later provider changes through a contract provider schedule, including next-period transitions to or from AWS Marketplace. The sources do not state whether the AWS sentence is stale, UI-specific, or limited to initial contract configuration. Verify the applicable product and API lifecycle before implementation.\n\n## Metering semantics\n\nAfter AWS is configured for the customer, selected on the contract, and usage events are sent, Metronome begins metering calculated invoice totals to AWS. Each metering request sums the amount accrued since the previous request across all of that customer's contract invoices whose billing provider is AWS. The AWS metering-record quantity is the total dollar amount expressed in USD cents. The guide does not specify request cadence, rounding, duplicate-record handling, acknowledgement state, read-after-write visibility, or reconciliation keys.\n\nCredits and commits have marketplace-specific treatment:\n\n- **Prepaid commits:** Metronome meters the amount owed on the service-period date of each scheduled invoice, not its creation timestamp.\n- **Credits:** Because contract credits are unpaid, only invoice overage after the credit is fully drawn down is metered.\n- **Postpaid commits:** Usage reflected on invoice totals is metered during the contract, but an end-of-contract shortfall true-up invoice is not sent to AWS. The merchant must handle that true-up directly in the marketplace because Metronome finalizes it after its grace period, when the Marketplace metering endpoint has closed.\n\n> [!warning] Marketplace coverage qualification\n> [[source-metronome-guides-invoices-overview]] says marketplace invoicing supports all Metronome charge types. This dedicated AWS guide says a postpaid-commit true-up is not sent and that only USD invoices are delivered. Treat the overview as a routing summary and preserve these AWS-specific delivery exclusions.\n\n## Lifecycle, correction, outage, and currency limits\n\nWhen Metronome detects a Marketplace subscription lifecycle change, it stops metering and updates the customer's Metronome status. The merchant remains responsible for representing that status in its own application and, when relevant, ending the Metronome contract. The guide names the app's contract-end-date control and `/contracts/updateEndDate`, but it does not reconcile that route name with other contract-edit documentation; verify the current mutation authority before calling it.\n\nAWS Marketplace accepts only positive metering quantities. If Metronome has already sent more than the corrected bill, adding a Metronome credit cannot reduce the AWS total. Metronome instead stops billing until new usage catches up; if that is insufficient, the merchant must issue a manual AWS Marketplace refund. The page does not define pause-state visibility, automatic resumption timing, refund synchronization, or downstream accounting treatment.\n\nAWS accepts metering requests for only one hour after a customer's Marketplace contract ends. Metronome sends a final request 15 minutes after the scheduled end, while late usage may continue to reach a Metronome invoice for up to 24 hours after the billing period; usage arriving after the Marketplace cutoff cannot be billed through AWS. After an outage, Metronome includes accrued usage in the next request, but cannot recover it once the contract has ended and AWS's one-hour window has elapsed. Ingestability or Metronome invoice inclusion is therefore not proof of AWS billability.\n\nThe integration supports only USD-fiat invoices. Metronome errors when an AWS-billed contract's rate card uses a non-USD fiat currency. If the contract also has other non-USD invoices, such as scheduled-charge invoices, only its USD invoices are sent to AWS. The page does not define mixed-currency aggregation, conversion, tax, rounding beyond the USD-cent metering quantity, or reconciliation of excluded invoices.\n\n## Operational unknowns and ownership\n\nThe guide assigns listing creation, AWS seller approval, product fulfillment setup, customer fulfillment-token decoding, accurate contract provisioning, application lifecycle state, direct true-up handling, and manual refunds to the merchant or AWS-side workflow. Metronome owns calculation and the described metering attempts once the required configuration and usage are present.\n\nIt does not define AWS acceptance and entitlement propagation after setup, activation or health checks, exact metering schedule, AWS-side record identity, partial failure, retry policy, concurrency, rollback, role rotation, alerting, payment collection, tax, settlement, disputes, remittance, financial reconciliation, or proof that an AWS invoice or payment completed. Operators need separate AWS and Metronome authorities and production evidence for those outcomes.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-integrations]], [[metronome-security-principles]], [[metronome-customers-and-contracts]], [[metronome-invoicing]], [[metronome-credits-and-commits]], [[metronome-currencies-and-custom-pricing-units]], [[metronome-event-ingestion]]\n- Related sources: [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]], [[source-metronome-api-reference-customers-create-a-customer]], [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]], [[source-metronome-guides-invoices-overview]]\n\n## Raw Sources\n\n- [[raw/metronome/integrations/marketplace-integrations/aws-2026-07-13|2026-07-13 snapshot - AWS Marketplace listing, IAM, customer provisioning, metering, and lifecycle limits]]",
+  "quotes": [
+    {
+      "text": "The API identifier must be called `usage_fee` for the integration to work correctly.",
+      "location": "line 68, Create an AWS Marketplace listing, usage-dimension caution"
+    },
+    {
+      "text": "3. Specify these permissions:\n\n```json theme={null}\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Action\": [\n        \"aws-marketplace:BatchMeterUsage\",\n        \"aws-marketplace:GetEntitlements\",\n        \"aws-marketplace:ListEntities\",\n        \"aws-marketplace:DescribeEntity\"\n      ],\n      \"Effect\": \"Allow\",\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```",
+      "location": "lines 101-119, Set up IAM credentials for Metronome to meter on your behalf"
+    },
+    {
+      "text": "You cannot add or change the billing provider after creating the contract.",
+      "location": "line 196, Provision AWS Marketplace customers in Metronome, billing-configuration caution"
+    },
+    {
+      "text": "When metering to AWS, Metronome sums up a customer\u2019s total amount accrued across all contract invoices that have AWS set as the billing provider since the last metering request. Metronome sets the quantity for each metering record as the total dollar amount expressed in USD cents.\n\nIf a customer purchased a commit or was offered a credit as part of their contract, Metronome meters like this:\n\n* **Prepaid commits** A contract in Metronome specifies a schedule over which the customer pays for their prepaid commit. Those inputs create one or more scheduled invoices. Metronome meters the amount the customer owes on the prepaid commit on the date associated with the service period of the scheduled invoice, not the created at date.\n* **Credits** As credits on a Metronome contract are not paid for, Metronome only meters overages reflected on invoice totals after the credit has been drawn down in its entirety.\n* **Postpaid commits** Metronome meters usage reflected on invoice totals throughout the duration of the contract. However, if the entirety of the postpaid commit isn\u2019t consumed by the end of the contract, Metronome ignores the true-up invoice and doesn\u2019t send it to the marketplace. This is because the true-up invoice isn\u2019t finalized until after the Metronome grace period ends, at which point the metering endpoint for the marketplace has closed. This means you must handle the true-up in the marketplace directly.",
+      "location": "lines 267-273, What Metronome meters to AWS"
+    },
+    {
+      "text": "**AWS Marketplace only supports positive quantities through their [Metering Service](https://docs.aws.amazon.com/marketplace/latest/userguide/metering-service.html).**\n\nThere's no way to *decrease* a customer's total bill. For example, consider a customer who was meant to receive \\$1,000 in credits when they started using your product. Due to a typo, they erroneously received only \\$100. The mistake gets noticed one week into their first billing period, when the customer notices a \\$500 charge on their AWS bill. In Metronome, this mistake is easily rectified by adding an additional \\$900 credit, but in AWS, there's no way to reduce that bill.\n\nIf this situation arises, Metronome stops billing for that customer until their usage catches up to the amount they've already been billed. If this is insufficient to correct the problem, you must [issue a manual refund](https://docs.aws.amazon.com/marketplace/latest/userguide/refunds.html) through the AWS Marketplace. Contact your AWS or Metronome representative for help.\n\n**AWS Marketplace strictly enforces the end of a customer's Marketplace contract or subscription.** The AWS Marketplace Metering Service only accepts requests for one hour after the customer's contract ends. Metronome typically applies late usage events to an invoice up to 24 hours after the billing period ends, but there\u2019s no way to deliver that usage to AWS. Metronome sends one final request to AWS 15 minutes after the scheduled end of a customer's contract. Usage received after that cannot be billed through AWS.\n\nIn the event of an outage, Metronome catches up when everything comes back online. If Metronome was unable to send usage to AWS for some period of time, the accrued usage is included in the next request to AWS. However, if the customer's contract has already ended and AWS's one hour grace period has elapsed, Metronome is unable to bill for the usage accrued during the down time.\n\n**Metronome's integration with AWS Marketplace only supports invoices with a USD fiat currency.** Metronome throws an error if you attempt to create a contract with AWS Marketplace set as the billing provider, and the rate card on the contract has a non-USD fiat currency. In the case where the contract is associated with other other invoices that are not in USD (for example, scheduled invoices associated with scheduled charges), only the USD invoices will be sent to AWS Marketplace.",
+      "location": "lines 287-297, Limitations of AWS Marketplace listings"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "aws-marketplace-integrations-facts",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Account-level provider setup",
+        "proposed_markdown": "### Native AWS Marketplace integration boundary\n\nThe AWS path layers an approved seller listing with fixed `usage_fee` dimension rules, a seller-owned cross-account IAM role trusted through Metronome's AWS account and external IDs, customer-level AWS customer/product/region configuration, and contract-level AWS selection. The role policy grants BatchMeterUsage plus entitlement and marketplace entity reads. Saving those layers is not documented proof of listing activation, AWS acceptance, invoice delivery, settlement, or reconciliation. [[source-metronome-integrations-marketplace-integrations-aws]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep AWS account, external, role ARN, customer, product, region, customer-configuration, and contract-selection identifiers distinct."
+        ]
+      },
+      {
+        "update_id": "aws-marketplace-integrations-link",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-marketplace-integrations-aws]] \u2014 AWS Marketplace listing, IAM delegation, customer and contract configuration layers, metering behavior, and downstream limits",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "aws-marketplace-invoicing-facts",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Invoicing options",
+        "proposed_markdown": "### AWS Marketplace metering and delivery limits\n\nFor an AWS-selected customer, Metronome meters the accrued total across AWS-billed contract invoices since the last request as a USD-cent quantity. Prepaid commit charges follow scheduled-invoice service dates; unpaid credits suppress metering until overage remains; postpaid shortfall true-ups are not sent and remain merchant-owned. AWS accepts only positive quantities, so an overbill cannot be reduced through later Metronome credits; Metronome pauses until usage catches up or the merchant issues an AWS refund. AWS accepts records for one hour after contract end, while Metronome sends a final request after 15 minutes; later usage and outage backlog can become undeliverable. Only USD invoices are sent. [[source-metronome-integrations-marketplace-integrations-aws]]\n\n> [!warning] AWS-specific coverage qualification\n> The invoicing overview's broad statement that marketplace invoicing supports all Metronome charge types is qualified by the dedicated AWS guide's exclusions for postpaid true-up invoices and non-USD invoices.",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": [
+          "Qualifies the existing all-charge-types marketplace overview; preserve both sources with the AWS guide as the dedicated delivery authority."
+        ]
+      },
+      {
+        "update_id": "aws-marketplace-invoicing-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-marketplace-integrations-aws]] \u2014 AWS listing and routing prerequisites, USD-cent metering semantics, credit and commit treatment, positive-quantity correction, cutoff, outage, and currency limits",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "aws-marketplace-contract-facts",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Billing-provider schedule",
+        "proposed_markdown": "### AWS Marketplace provisioning layers\n\nThe AWS guide configures a customer with AWS customer ID, product code, region, and a usage-based-product flag when applicable, then requires the Metronome contract to mirror the Marketplace agreement and select AWS for delivery. Its examples keep customer provider configuration separate from contract selection. When Metronome detects a Marketplace subscription change it stops metering and updates Metronome customer status, while the merchant owns application status and ending the Metronome contract when relevant. [[source-metronome-integrations-marketplace-integrations-aws]]\n\n> [!warning] Provider-change lifecycle contradiction\n> The AWS guide says a billing provider cannot be added or changed after contract creation, while [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] documents next-period changes to and from AWS Marketplace. The sources do not resolve whether the AWS statement is stale, UI-specific, or limited to initial provisioning.",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not silently choose between the immutable-at-creation sentence and the later provider-schedule authority."
+        ]
+      },
+      {
+        "update_id": "aws-marketplace-contract-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-marketplace-integrations-aws]] \u2014 AWS customer identifiers, contract routing, lifecycle ownership, and the provider-change contradiction",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "aws-marketplace-credits-commits-facts",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Drawdown and invoice attribution",
+        "proposed_markdown": "### AWS Marketplace treatment\n\nFor AWS delivery, Metronome meters prepaid commit amounts on each scheduled invoice's service-period date rather than creation time. Free contract credits are not metered; only overage remaining after full drawdown reaches AWS. Postpaid usage is metered during the contract, but the end-of-contract shortfall true-up is not sent because it finalizes after the marketplace endpoint closes, leaving the merchant to handle that true-up directly in AWS. Later Metronome credits also cannot decrease an already-sent AWS total because AWS accepts only positive quantities. [[source-metronome-integrations-marketplace-integrations-aws]]",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": [
+          "AWS Marketplace delivery does not include the postpaid shortfall true-up documented here."
+        ]
+      },
+      {
+        "update_id": "aws-marketplace-credits-commits-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-marketplace-integrations-aws]] \u2014 marketplace-specific prepaid, credit, postpaid true-up, correction, and refund treatment",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "aws-marketplace-currency-facts",
+        "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Credits, commits, and invoice conversion",
+        "proposed_markdown": "### AWS Marketplace currency boundary\n\nThe AWS Marketplace integration accepts only invoices in USD fiat currency and expresses each metering-record quantity as the accrued dollar amount in USD cents. Metronome errors when a contract selects AWS while its rate card uses non-USD fiat; when a contract has additional non-USD invoices, only its USD invoices are sent to AWS. The guide does not define conversion, mixed-currency aggregation, tax, or rounding beyond the stated USD-cent quantity. [[source-metronome-integrations-marketplace-integrations-aws]]",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "aws-marketplace-currency-link",
+        "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-marketplace-integrations-aws]] \u2014 AWS Marketplace USD-only contract and invoice-delivery boundary plus USD-cent metering quantity",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "aws-marketplace-security-facts",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Billing-provider credential submission boundary",
+        "proposed_markdown": "### AWS Marketplace role delegation\n\nThe AWS guide has the seller create a cross-account role that allows `BatchMeterUsage`, `GetEntitlements`, `ListEntities`, and `DescribeEntity` on `Resource: \"*\"`; the trust setup uses Metronome's AWS account ID and generated external ID, and the role name must begin with `metronome-marketplace`. The role ARN is then saved in Metronome. The page does not define narrower resource scoping, validation, credential or external-ID rotation, independent update, rollback, deletion, or audit evidence. [[source-metronome-integrations-marketplace-integrations-aws]]",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "The shown wildcard resource permission is documented setup, not proof that a narrower least-privilege policy is unsupported."
+        ]
+      },
+      {
+        "update_id": "aws-marketplace-security-link",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-marketplace-integrations-aws]] \u2014 cross-account AWS role permissions, account and external-ID trust, role-name constraint, and credential-lifecycle unknowns",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "aws-marketplace-event-cutoff-facts",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Scale, observability, and recovery",
+        "proposed_markdown": "### AWS Marketplace late-usage delivery boundary\n\nFor AWS-billed contracts, Metronome may apply late usage to an invoice for up to 24 hours after the billing period, but AWS accepts metering requests only for one hour after Marketplace contract end. Metronome sends a final request after 15 minutes; usage arriving later cannot be billed through AWS. Outage backlog is included in a later request only while the AWS window remains open. Event acceptance or invoice inclusion therefore does not prove marketplace delivery or billability. [[source-metronome-integrations-marketplace-integrations-aws]]",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Keep ingestion acceptance separate from downstream marketplace cutoff and recovery."
+        ]
+      },
+      {
+        "update_id": "aws-marketplace-event-cutoff-link",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-marketplace-integrations-aws]] \u2014 AWS Marketplace one-hour contract-end cutoff, final metering request, late-usage, and outage-backlog delivery limits",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/integrations/marketplace-integrations/aws-2026-07-13.md",
+  "raw_sha256": "aabf3973a0a99aa24290f690bbd51da0b8883eef2b8fa34a73fdadf06b0cabb0",
+  "status": "candidate_ready"
+}

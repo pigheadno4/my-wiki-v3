@@ -1,0 +1,84 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "list-customers-customers-durable-fact",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Customer retrieval API",
+      "proposed_markdown": "### Customer list API\n\nBearer-authenticated `GET /v1/customers` returns active customers by default and can filter by one ingest alias, up to 100 customer IDs, only archived customers, or up to 100 Salesforce account IDs. It uses optional 1-100 `limit` and `next_page` query parameters and requires a customer-detail array plus nullable `next_page` in a successful response. The endpoint does not define filter-intersection semantics, result ordering, default page size, cursor lifetime, snapshot consistency, or freshness. [[source-metronome-api-reference-customers-list-customers]]",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "The customer_ids 100-ID limit is stated in prose but lacks schema maxItems; salesforce_account_ids has maxItems: 100.",
+        "Do not infer that active and archived customers can be returned together."
+      ]
+    },
+    {
+      "update_id": "list-customers-customers-reciprocal-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-customers-list-customers]] \u2014 account-wide customer filters, cursor envelope, customer-detail item shape, archived visibility, and list-consistency unknowns",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-customers-event-ingestion-durable-fact",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Event contract",
+      "proposed_markdown": "The customer-list read surface can filter customers by a single `ingest_alias`, and each returned customer requires `ingest_aliases`; those aliases are documented as substitutes for the Metronome customer ID in usage events. The endpoint does not define alias ordering, uniqueness, current-active status, or how its alias filter combines with other filters. [[source-metronome-api-reference-customers-list-customers]]",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Do not treat list membership or position as proof that an alias is unique or currently active."
+      ]
+    },
+    {
+      "update_id": "list-customers-event-ingestion-reciprocal-link",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-customers-list-customers]] \u2014 ingest-alias filtering and the list response's required customer alias surface",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-customers-custom-fields-durable-fact",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Customer retrieval surface",
+      "proposed_markdown": "`GET /v1/customers` requires `custom_fields` on every returned customer detail as an arbitrary-key object with string values. The listing endpoint does not define key ordering, entry limits, visibility, redaction, freshness, or whether every configured customer field is returned. [[source-metronome-api-reference-customers-list-customers]]",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The grounding quote establishes returned configuration settings at the page-description level; the source candidate preserves the exact OpenAPI map shape from the fully read schema."
+      ]
+    },
+    {
+      "update_id": "list-customers-custom-fields-reciprocal-link",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-customers-list-customers]] \u2014 required customer-list custom-field response map and endpoint-specific visibility and freshness limits",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

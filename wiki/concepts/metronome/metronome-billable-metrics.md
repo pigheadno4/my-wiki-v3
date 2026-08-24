@@ -30,6 +30,9 @@ The Basic Filters editor always creates a streaming billable metric. Its worked 
 - One usage event can contribute to multiple billable metrics. The architecture guide does not define matching precedence or safeguards against unintended multi-product charging, so this cardinality should not be interpreted as automatic charge deduplication.
 - Dimensional pricing can map one metric to one product and then many rates. Rate combinations depend on product pricing keys whose properties originate as group keys on the underlying metric; the rate-card guide does not supersede metric creation or immutability rules.
 
+
+On the invoice side, each used pricing-group-key combination produces a separate line item, while the guide says combinations without usage do not create a line item. Presentation grouping organizes usage lines under a property such as project or organization; it does not by itself establish price selection. These invoice effects do not replace the metric-side requirements for declaring group keys, filters, compound dimensions, or creation-time immutability. [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]]
+
 ## SQL query, output, and timing semantics
 
 - SQL metrics query `events` through `event_type`, `timestamp`, and `properties.field_name`; Metronome applies customer and billing-period filtering. The concept currently leaves SQL output rules undefined; replace that boundary with the documented multi-column rule: `value` is preferred, the first returned column is the fallback when `value` is absent, other columns can become pricing or presentation keys, and unused extra columns are summed over. The page does not define the quantity-column rule for a one-column result or runtime behavior for missing, duplicate, or nonnumeric quantity columns.
@@ -107,6 +110,9 @@ Dimension-scoped spend alerts require their `group_values` key to be a group key
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] — group-key requirements, subset repricing, three-key limit, and high-cardinality consultation for spend alerts
 
 - [[source-metronome-api-reference-billable-metrics-list-all-billable-metrics]] - account-wide configuration listing, 1-100 cursor pagination, archived-by-default exclusion, response-schema boundaries, and the aggregation-key example defect
+
+
+- [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] — invoice-side pricing-group line creation, no-usage suppression, and presentation-group display boundary
 
 ## Related
 

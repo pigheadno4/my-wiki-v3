@@ -63,11 +63,21 @@ Spend-threshold billing uses the same explicit external-ownership pattern as the
 
 Bearer-authenticated `POST /v1/setUpBillingProvider` creates an account-level delivery configuration for AWS, Azure, or GCP Marketplace and returns UUID `delivery_method_id`. Its JSON payload schema requires provider, delivery method, and an open provider-specific `configuration`, although the enclosing `requestBody` is not marked required. This operation does not identify or mutate a customer or contract; separate sources use the returned delivery-method layer when constructing customer billing configuration and use a distinct customer configuration ID for contract selection. The endpoint does not document provider readiness, propagation to listing, update or deletion, external validation, or downstream invoice and reconciliation outcomes. [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]]
 
+
+### Native AWS Marketplace integration boundary
+
+The AWS path layers an approved seller listing, delegated AWS access, customer identity, and contract routing. **Contract with Consumption** uses fixed terms and contract dimensions corresponding to Metronome pricing models and lifecycle events such as subscription end and renewal; those contract-dimension API identifiers and display names are merchant-chosen, pay-as-you-go is unchecked, and each contract-dimension price is `$0`. **Usage-based pricing** can be started or stopped by the customer and omits the contract-only dimension and purchasing steps. Both routes use a separate single usage dimension whose mandatory API identifier is `usage_fee` and whose price is `$0.01` per unit. A seller-owned cross-account IAM role grants BatchMeterUsage plus entitlement and marketplace entity reads; customer-level AWS customer/product/region configuration and contract-level AWS selection remain separate layers. Completing setup is not documented proof of listing activation, AWS acceptance, invoice delivery, settlement, or reconciliation. [[source-metronome-integrations-marketplace-integrations-aws]]
+
 ## Account-level provider enumeration
 
 `POST /v1/listConfiguredBillingProviders` is a bearer-authenticated Settings operation that enumerates the billing-provider delivery methods configured for an account. Its optional nullable UUID `next_page` cursor paginates a required `data` array; each entry requires a provider, UUID `delivery_method_id`, delivery method, and method-specific configuration object. The provider enum covers AWS Marketplace, Stripe, NetSuite, custom, Azure Marketplace, QuickBooks Online, Workday, GCP Marketplace, and Metronome, while delivery is enumerated as direct provider delivery, AWS SQS, Tackle, or AWS SNS. Configuration permits arbitrary method-specific properties and may omit security-sensitive values.
 
 The returned identifiers and settings are described as inputs for mapping customer contracts to billing integrations, but this operation does not create or update customer configurations, contract selections, or provider schedules. Its item description calls `delivery_method_id` an ID used for a customer; do not equate that account-level delivery-method identifier with a customer billing-provider configuration ID or contract selector without separate schema evidence. The page does not define token scope, ordering, page size, cursor lifecycle, configuration readiness, invoice-delivery outcomes, payment ownership, retry behavior, or errors beyond a generic HTTP 400 message. [[source-metronome-api-reference-settings-list-account-level-billing-providers]]
+
+
+## Invoice-read integration status surface
+
+The single-invoice response can expose nullable `external_invoice` and `revenue_system_invoices`. An external-invoice object requires a billing-provider type when present and can optionally report an external ID, issued time, provider status, PDF URL, beta tax and invoiced totals, provider error, and external payment ID. Each revenue-system item requires provider, sync status, and external entity type, with optional external entity ID and error. The endpoint does not define observation freshness, status transitions, provider precedence, retry, terminality, or reconciliation; a returned identifier or paid-like status does not independently prove delivery, settlement finality, tax correctness, revenue posting, or reconciliation, and absence of an error is not success proof.
 
 ## Billing-provider transitions
 
@@ -132,6 +142,12 @@ The Metronome (Actions) destination connects one selected Segment source using a
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-set-customer-spend-control]] — Stripe and external spend-threshold payment-gate responsibility
 
 - [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]] — account-level marketplace provider setup, open configuration payload, returned delivery-method identifier, credential examples, and lifecycle boundaries
+
+
+- [[source-metronome-api-reference-invoices-get-an-invoice]] - nullable external billing and revenue-system records, provider and sync diagnostics, beta totals and tax fields, and downstream-outcome boundaries
+
+
+- [[source-metronome-integrations-marketplace-integrations-aws]] — AWS Marketplace listing, IAM delegation, customer and contract configuration layers, metering behavior, and downstream limits
 
 ## Related
 

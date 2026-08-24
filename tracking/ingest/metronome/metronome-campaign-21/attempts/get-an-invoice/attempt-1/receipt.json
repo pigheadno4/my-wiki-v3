@@ -1,0 +1,171 @@
+{
+  "job_id": "get-an-invoice",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Get an Invoice API\"\ntype: source\ndate_ingested: 2026-08-24\ncanonical_url: \"https://docs.metronome.com/api-reference/invoices/get-an-invoice.md\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/invoices/get-an-invoice-2026-07-13.md\"\ntags: [metronome, api, invoices, line-items, billing-providers]\n---\n\n## Overview\n\nThis reference documents bearer-authenticated `GET /v1/customers/{customer_id}/invoices/{invoice_id}` on `https://api.metronome.com`. It retrieves one customer-scoped invoice under a required `data` envelope and exposes invoice state, totals, line items, credit and commit applications, hierarchy attribution, and optional downstream-system records. The surface is useful for billing-portal and support queries, but it does not establish invoice finality, collection, payment, tax, accounting, delivery, or synchronization completion.\n\n## Key takeaways\n\n- `customer_id` and `invoice_id` are required UUID-formatted path parameters. Optional boolean `skip_zero_qty_line_items` filters all zero-quantity line items from the response; the page does not define effects on totals, line ordering, or item identity.\n- HTTP `200` requires top-level `data`. Within the invoice object, only `id`, `customer_id`, `credit_type`, `line_items`, `status`, `total`, and `type` are schema-required; billing-period timestamps, contract identity, correction metadata, hierarchy fields, custom fields, and downstream records are optional or conditionally described.\n- The prose names `DRAFT`, `FINALIZED`, and `VOID`, says drafts update in real time and may change, and says voided invoices retain original line-item details. The status schema is a plain string with an example rather than an enum, and the page gives no freshness SLA, read-after-write guarantee, lifecycle transitions, retention period, or immutability contract.\n- Each line item requires `name`, `total`, `credit_type`, and `type`. Documented types cover scheduled charges, prepaid-commit purchases, usage, subscriptions, applied commits or credits, and custom-pricing-unit conversion; most quantities, prices, product identifiers, service periods, and attribution fields remain optional.\n- Applied commits and credits have separate negative-total line items. The page specifically says a postpaid-commit application line is not included in the invoice total because it is paid in arrears; it does not define total reconciliation, precision, rounding, or balance and ledger effects.\n- Nullable `external_invoice` and `revenue_system_invoices` can report provider, status or sync state, external identifiers, errors, and selected totals. Their presence does not prove downstream acceptance, delivery, payment, settlement, tax completion, revenue posting, or reconciliation.\n\n## Request, identity, and filtering\n\nCall `GET /v1/customers/{customer_id}/invoices/{invoice_id}` against the documented production server. The OpenAPI document applies a global HTTP bearer scheme. It defines no request body. Both path identifiers are required and UUID-formatted, while `skip_zero_qty_line_items` is an optional boolean query parameter that removes all zero-quantity line items from the returned representation when set.\n\nThe page does not define whether invoice IDs are globally unique, whether the customer path component is an authorization boundary, or how a customer-invoice mismatch differs from another missing resource. It also does not document token scope, field-level permissions, or whether client-configuration-gated fields are omitted, redacted, or rejected for an ineligible caller.\n\n> [!warning] Undocumented list-price query parameter\n> The `InvoiceLineItem.list_price` description says the field appears for eligible contract usage and subscription lines when `include_list_prices=true`, but the operation parameter list defines only the two path identifiers and `skip_zero_qty_line_items`. This page therefore does not document how to request list prices, whether the parameter is currently supported, or how omission behaves.\n\n## Success envelope and invoice state\n\nHTTP `200` returns JSON whose top-level object requires `data`. The referenced invoice object requires UUID `id`, UUID `customer_id`, `credit_type`, a `line_items` array, string-backed `status` and `type`, and numeric `total`. `credit_type` in turn requires UUID `id` and string `name`. The schema does not require a contract ID, billing-period timestamps, issue time, created time, external record, or separate amount-due field.\n\nOptional UTC timestamps describe the usage-period start and end and invoice issue time. `created_at` is described as present for correction invoices only. Optional correction lineage can expose a `correction_record`, whose object requires `reason`, `memo`, and `corrected_invoice_id` when present, and a separate `regenerated_from_invoice_id`. The page does not define whether those lineage forms are mutually exclusive, exhaustive, immutable, or available for every correction.\n\nThe prose says draft invoices update in real time as usage arrives and may change before finalization. It also says a void invoice retains all original line-item details. Those statements do not define refresh latency, snapshot consistency, ordering, cache behavior, visibility of concurrent usage, retention duration, or whether every nested field remains byte-for-byte unchanged after voiding.\n\n> [!warning] Amount-due description versus schema\n> The narrative lists both total amount and amount due after credits as key response information, but the invoice schema defines numeric `total` and no separate `amount_due` property. Do not infer that `total` always means amount due, or synthesize an amount-due field, without another authority.\n\nThe status schema is a string with the example `DRAFT, VOID, or FINALIZED`; it is not an enum. Likewise, the invoice-type schema is a string whose example says `SCHEDULED or USAGE`, while conditional fields refer to `USAGE_CONSOLIDATED`. Treat these as documented vocabulary and examples, not exhaustive runtime enums.\n\n## Line items and amount attribution\n\nEach invoice line item requires `name`, numeric `total`, `credit_type`, and string `type`. Optional fields can report quantity, unit price, product identity and current tags, inclusive `starting_at`, exclusive `ending_before`, proration, scheduled-charge, subscription, discount, commit, professional-service, tier, grouping, presentation, and custom-field context. Optionality matters: the schema does not promise quantity, unit price, product ID, or a service period on every line.\n\nThe line-item description distinguishes these cases:\n\n- `scheduled` points to a scheduled charge.\n- `commit_purchase` represents payment for a prepaid commit.\n- `usage` represents a usage or composite product.\n- `subscription` represents a subscription charge.\n- `applied_commit_or_credit` is a separate negative-total application line. Its nested object requires an ID and a type from `PREPAID`, `POSTPAID`, or `CREDIT`. A postpaid application line is expressly excluded from the invoice total.\n- `cpu_conversion` converts uncovered spend from a custom pricing unit to fiat using the rate-card conversion when matching prepaid commit or credit is insufficient. The page does not specify formula direction, precision, rounding, tax, or conversion-time snapshot semantics.\n\nFor `USAGE`, `SUBSCRIPTION`, or `COMPOSITE` products, `commit_id` is described as the applied credit or commit ID; for `FIXED`, it identifies the prepaid or postpaid commit being paid for. The page does not define whether that overloaded identifier and `applied_commit_or_credit.id` must agree, how partial applications are split, or how line totals reconcile to ledger entries.\n\n## Consolidation, payer, and correction context\n\nThe invoice schema includes optional `constituent_invoices`, described as required on `USAGE_CONSOLIDATED` invoices; each constituent requires contract, invoice, and customer UUIDs. Optional line-item `origin`, present on consolidated invoices, requires original line-item, invoice, customer, and contract UUIDs. An optional `payer` object is described as required for account-hierarchy usage invoices and requires the paying contract and customer UUIDs.\n\nThese prose-level conditional requirements are not represented in the invoice object's top-level `required` array. The page does not define consolidation ordering, duplicate origins, missing constituent behavior, parent-child authorization, whether standalone invoices remain retrievable, or how payer and source-customer totals reconcile.\n\n## External billing and revenue-system records\n\n`external_invoice` is optional and nullable. If present, its object requires `billing_provider_type`; optional fields can expose an external invoice ID, issued timestamp, external status, provider PDF URL, beta tax details, beta invoiced total and subtotal, provider error, and external payment ID. The provider enum covers Metronome, Stripe, marketplaces, ERP and accounting systems, and custom delivery. The external-status enum includes draft, finalized, paid, partially paid, uncollectible, void, deleted, payment-failed, invalid-request, skipped, sent, and queued states, but `external_status` itself is optional.\n\n`revenue_system_invoices` is also optional and nullable. Each returned item requires provider, sync status, and external entity type; external entity ID and error message are optional. The page does not define the vocabulary or transition model for `sync_status`, polling freshness, provider precedence, multiplicity, retries, terminal states, or consistency between external billing and revenue-system records.\n\nThese nested records are observations available from the Metronome invoice read. A returned payment ID or paid-like external status is not, by itself, proof of settlement finality, refund state, tax correctness, accounting posting, or reconciliation. Likewise, absence of an error is not a delivery or sync guarantee.\n\n## Custom fields and schema boundaries\n\nThe invoice can expose customer, contract, invoice, product, commit, professional-service, scheduled-charge, subscription, and discount custom-field context. Referenced `CustomField` objects allow arbitrary property names with string values. The invoice-level `custom_fields` property separately declares unrestricted additional properties without a value schema. The page does not define key and value limits, redaction, permissions, freshness, configured-field absence, or whether client-group annotations describe public availability.\n\nMost response objects do not declare `additionalProperties`; under this OpenAPI 3.0.1 page, that omission does not prove that undocumented response fields are rejected or cannot appear. The `billable_status` property also combines a reference to the string enum `billable | unbillable` with a sibling `type: object`, leaving that field's documented shape internally unresolved.\n\n## Errors and operational unknowns\n\nThe only documented failure is HTTP `404`, a generic JSON error whose object requires string `message` and whose description says only that the specified resource was not found. It does not distinguish a missing customer, invoice, or customer-invoice relationship. No `400`, `401`, `403`, `429`, or `5xx` response contract is listed; their omission is not proof that those failures cannot occur.\n\nThe page defines no rate limit, timeout, retry, cache, ordering, read-after-write, snapshot-consistency, historical-visibility, archive, or authorization-scope contract. Because this is GET, the separate API-wide POST idempotency authority does not establish endpoint-specific read guarantees. No cross-page contradiction was found when this Contracts invoice schema is kept distinct from the legacy shared Plans surface; the internal list-price, amount-due, invoice-type, and billable-status documentation gaps above remain unresolved.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-invoicing]], [[metronome-credits-and-commits]], [[metronome-currencies-and-custom-pricing-units]], [[metronome-integrations]], [[metronome-custom-fields]]\n- Related sources: [[source-metronome-api-reference-invoices-get-an-invoice-pdf]], [[source-metronome-plans-shared-endpoints-invoices]], [[source-metronome-api-reference-invoices-void-an-invoice]], [[source-metronome-api-reference-invoices-regenerate-an-invoice]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/invoices/get-an-invoice-2026-07-13|2026-07-13 snapshot - single-invoice retrieval, required envelope, line-item attribution, hierarchy context, and downstream records]]\n",
+  "quotes": [
+    {
+      "text": "- Draft invoices update in real-time as usage is reported and may change before finalization\n- The response includes both usage-based line items (e.g., API calls, data processed) and scheduled charges (e.g., monthly subscriptions, commitment fees)\n- Credit and commitment applications are shown as separate line items with negative amounts\n- For voided invoices, the response will indicate VOID status but retain all original line item details",
+      "location": "raw/metronome/api-reference/invoices/get-an-invoice-2026-07-13.md:33-37 (draft mutability, line-item coverage, negative applications, and void representation)"
+    },
+    {
+      "text": "    SkipZeroQtyLineItems:\n      name: skip_zero_qty_line_items\n      in: query\n      description: >-\n        If set, all zero quantity line items will be filtered out of the\n        response\n      required: false\n      schema:\n        type: boolean\n  schemas:\n    Invoice:\n      required:\n        - id\n        - customer_id\n        - credit_type\n        - line_items\n        - status\n        - total\n        - type",
+      "location": "raw/metronome/api-reference/invoices/get-an-invoice-2026-07-13.md:242-260 (optional zero-quantity filter and required invoice fields)"
+    },
+    {
+      "text": "        list_price:\n          $ref: '#/components/schemas/Rate'\n          description: >\n            Only present for contract invoices and when the\n            `include_list_prices` query parameter is set to true. This will\n            include the list rate for the charge if applicable.  Only present\n            for usage and subscription line items.\n        product_id:\n          type: string\n          format: uuid\n          description: ID of the product associated with the line item.\n        product_custom_fields:\n          $ref: '#/components/schemas/CustomField'\n        product_tags:\n          $ref: '#/components/schemas/Tags'\n          description: >-\n            The current product tags associated with the line item's\n            `product_id`.\n        product_type:\n          type: string\n          description: >\n            The type of the line item's product. Possible values are\n            `FixedProductListItem` (for `FIXED` type products),\n            `UsageProductListItem` (for `USAGE` type products),\n            `SubscriptionProductListItem` (for `SUBSCRIPTION` type products) or\n            `CompositeProductListItem` (for `COMPOSITE` type products).  For\n            scheduled charges, commit and credit payments, the value is\n            `FixedProductListItem`.\n        type:\n          type: string\n          description: >\n            The type of line item.\n\n\n            - `scheduled`: Line item is associated with a scheduled charge. View\n            the scheduled_charge_id on the line item.\n\n            - `commit_purchase`: Line item is associated with a payment for a\n            prepaid commit. View the commit_id on the line item.\n\n            - `usage`: Line item is associated with a usage product or composite\n            product. View the product_id on the line item to determine which\n            product.\n\n            - `subscription`: Line item is associated with a subscription. e.g.\n            monthly recurring payment for an in-advance subscription.\n\n            - `applied_commit_or_credit`: On metronome invoices, applied commits\n            and credits are associated with their own line items. These line\n            items have negative totals. Use the applied_commit_or_credit object\n            on the line item to understand the id of the applied commit or\n            credit, and its type. Note that the application of a postpaid commit\n            is associated with a line item, but the total on the line item is\n            not included in the invoice's total as postpaid commits are paid\n            in-arrears.\n\n            - `cpu_conversion`: Line item converting between a custom pricing\n            unit and fiat currency, using the conversion rate set on the rate\n            card. This line item will appear when there are products priced in\n            custom pricing units, and there is insufficient prepaid\n            commit/credit in that custom pricing unit to fully cover the spend.\n            Then, the outstanding spend in custom pricing units will be\n            converted to fiat currency using a cpu_conversion line item.",
+      "location": "raw/metronome/api-reference/invoices/get-an-invoice-2026-07-13.md:490-552 (list-price parameter gap and line-item type semantics)"
+    },
+    {
+      "text": "        custom_fields:\n          x-cf-entity: invoice\n          type: object\n          x-mint:\n            groups:\n              - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be\n              - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560\n              - client_id:f157d376-0781-4ef3-9db9-775a9052148e\n              - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37\n              - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5\n              - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33\n              - client_id:9c7e2b27-9b4c-4b76-9df7-f9cb05665a6a\n              - client_id:8e3a848a-4566-4cfb-be49-64d80118a7fc\n          additionalProperties: true\n        billable_status:\n          $ref: '#/components/schemas/BillableStatus'\n          x-mint:\n            groups:\n              - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be\n              - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560\n              - client_id:f157d376-0781-4ef3-9db9-775a9052148e\n              - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37\n              - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5\n              - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33\n              - client_id:9c7e2b27-9b4c-4b76-9df7-f9cb05665a6a",
+      "location": "raw/metronome/api-reference/invoices/get-an-invoice-2026-07-13.md:387-411 (invoice custom-field openness and client-gated billable status prelude)"
+    },
+    {
+      "text": "    ExternalInvoice:\n      required:\n        - billing_provider_type\n      type: object\n      properties:\n        billing_provider_type:\n          $ref: '#/components/schemas/BillingProviderType'\n        invoice_id:\n          type: string\n        issued_at_timestamp:\n          type: string\n          format: date-time\n        external_status:\n          $ref: '#/components/schemas/ExternalInvoiceStatus'\n        pdf_url:\n          type: string\n          format: uri\n          description: >-\n            A URL to the PDF of the invoice, if available from the billing\n            provider.\n        tax:\n          x-mint:\n            metadata:\n              tag: Beta\n          type: object\n          description: Tax details for the invoice, if available from the billing provider.\n          properties:\n            total_tax_amount:\n              type: number\n              description: The total tax amount applied to the invoice.\n            total_taxable_amount:\n              type: number\n              description: The total taxable amount of the invoice.\n            transaction_id:\n              type: string\n              description: The transaction ID associated with the tax calculation.\n        invoiced_total:\n          x-mint:\n            metadata:\n              tag: Beta\n          type: number\n          description: The total amount invoiced, if available from the billing provider.\n        invoiced_sub_total:\n          x-mint:\n            metadata:\n              tag: Beta\n          type: number\n          description: >-\n            The subtotal amount invoiced, if available from the billing\n            provider.\n        billing_provider_error:\n          type: string\n          description: Error message from the billing provider, if available.\n        external_payment_id:\n          type: string\n          description: The ID of the payment in the external system, if available.\n    RevenueSystemInvoice:\n      required:\n        - revenue_system_provider\n        - sync_status\n        - revenue_system_external_entity_type\n      type: object\n      properties:\n        revenue_system_provider:\n          type: string\n        revenue_system_external_entity_id:\n          type: string\n        sync_status:\n          type: string\n        revenue_system_external_entity_type:\n          type: string\n        error_message:\n          type: string\n          description: The error message from the revenue system, if available.",
+      "location": "raw/metronome/api-reference/invoices/get-an-invoice-2026-07-13.md:714-787 (external billing and revenue-system response objects)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "get-an-invoice-invoicing-read-fact",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append under `## Shared Plan and Contract invoice surface` after the existing PDF retrieval paragraph.",
+        "proposed_markdown": "Bearer-authenticated `GET /v1/customers/{customer_id}/invoices/{invoice_id}` requires both UUID path identifiers and returns a required `data` envelope. The invoice object requires only ID, customer ID, credit type, line items, status, total, and type; optional boolean `skip_zero_qty_line_items` removes zero-quantity lines from the representation. Prose names draft, finalized, and void states, says drafts update in real time and may change, and says voided invoices retain original line details, but it defines no freshness SLA, snapshot guarantee, lifecycle transition contract, or retention period. The line-item schema exposes charge, balance-application, conversion, hierarchy, correction, and downstream-system context without proving finalization, delivery, collection, payment, tax, accounting, or reconciliation outcomes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "The status and invoice-type schemas are strings with examples, not exhaustive enums.",
+          "Do not treat the prose phrase real-time as a latency or read-after-write guarantee.",
+          "The narrative names amount due after credits, but the schema defines no separate amount_due field."
+        ]
+      },
+      {
+        "update_id": "get-an-invoice-invoicing-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` beside the other invoice API references.",
+        "proposed_markdown": "- [[source-metronome-api-reference-invoices-get-an-invoice]] - customer-scoped invoice retrieval, required envelope, mutable draft and void representation, line-item attribution, hierarchy context, downstream-record boundaries, and schema gaps",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "get-an-invoice-credit-application-fact",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append in `## Drawdown and invoice attribution` after the existing separate-line attribution bullets.",
+        "proposed_markdown": "The single-invoice read schema names `applied_commit_or_credit` as a separate negative-total line-item type and exposes an application object requiring an ID plus `PREPAID`, `POSTPAID`, or `CREDIT` type. It specifically says a postpaid-commit application line is not included in the invoice total because postpaid commitments are paid in arrears. The same line schema overloads `commit_id`: on usage, subscription, or composite products it identifies the applied credit or commit, while on fixed products it identifies the commit being paid for. The endpoint does not define partial-application splitting, ID agreement between fields, balance or ledger mutations, precision, rounding, or total reconciliation.",
+        "quote_indexes": [
+          0,
+          2
+        ],
+        "warnings": [
+          "Keep the postpaid exclusion scoped to the application line's contribution to invoice total; it does not mean postpaid usage has no invoice or ledger effect.",
+          "Do not infer that commit_id and applied_commit_or_credit.id always agree; the page does not state that invariant."
+        ]
+      },
+      {
+        "update_id": "get-an-invoice-credit-application-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` beside invoice-attribution authorities.",
+        "proposed_markdown": "- [[source-metronome-api-reference-invoices-get-an-invoice]] - negative application-line representation, applied balance identity and type, postpaid-total exclusion, and attribution unknowns",
+        "quote_indexes": [
+          0,
+          2
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "get-an-invoice-cpu-conversion-fact",
+        "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append in `## Credits, commits, and invoice conversion` after the existing conversion paragraph.",
+        "proposed_markdown": "The invoice-read schema exposes `cpu_conversion` as a distinct line-item type when products are priced in a custom pricing unit and matching prepaid commit or credit is insufficient to cover the spend. Its description says outstanding custom-unit spend is converted to fiat using the rate-card conversion. This read surface does not define conversion direction, precision, rounding, rate snapshot, tax treatment, or whether the line alone is sufficient to reproduce the calculation.",
+        "quote_indexes": [
+          2
+        ],
+        "warnings": [
+          "Do not infer a conversion formula or rounding mode from the existence of the line-item type.",
+          "The schema supports the residual-conversion behavior but does not expand the supported-currency or denomination authority."
+        ]
+      },
+      {
+        "update_id": "get-an-invoice-cpu-conversion-link",
+        "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` beside the custom-unit conversion guide.",
+        "proposed_markdown": "- [[source-metronome-api-reference-invoices-get-an-invoice]] - `cpu_conversion` invoice-line representation, insufficient matching-balance trigger, and calculation boundaries",
+        "quote_indexes": [
+          2
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "get-an-invoice-integration-status-fact",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "durable_fact",
+        "anchor": "Insert a new `## Invoice-read integration status surface` section before `## Billing-provider transitions`.",
+        "proposed_markdown": "## Invoice-read integration status surface\n\nThe single-invoice response can expose nullable `external_invoice` and `revenue_system_invoices`. An external-invoice object requires a billing-provider type when present and can optionally report an external ID, issued time, provider status, PDF URL, beta tax and invoiced totals, provider error, and external payment ID. Each revenue-system item requires provider, sync status, and external entity type, with optional external entity ID and error. The endpoint does not define observation freshness, status transitions, provider precedence, retry, terminality, or reconciliation; a returned identifier or paid-like status does not independently prove delivery, settlement finality, tax correctness, revenue posting, or reconciliation, and absence of an error is not success proof.",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "External status and revenue sync status are reporting fields, not an end-to-end outcome guarantee.",
+          "Keep beta tax and total fields distinguished from Metronome's required invoice total."
+        ]
+      },
+      {
+        "update_id": "get-an-invoice-integration-status-link",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` beside invoice integration authorities.",
+        "proposed_markdown": "- [[source-metronome-api-reference-invoices-get-an-invoice]] - nullable external billing and revenue-system records, provider and sync diagnostics, beta totals and tax fields, and downstream-outcome boundaries",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "get-an-invoice-custom-field-shape-fact",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append under `## Invoice propagation` after the existing product-to-line propagation paragraph.",
+        "proposed_markdown": "The single-invoice response can expose optional customer, contract, invoice, product, commit, professional-service, scheduled-charge, subscription, and discount custom-field context. Referenced `CustomField` objects admit arbitrary property names with string values, while the invoice-level `custom_fields` property separately declares unrestricted additional properties without a value schema. This endpoint does not define key or value limits, redaction, permissions, freshness, configured-field absence, or whether client-group annotations describe public availability.",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "Do not generalize the invoice-level untyped additionalProperties declaration into the string-valued CustomField schema used by other properties.",
+          "Client-group annotations and optional fields do not establish general availability."
+        ]
+      },
+      {
+        "update_id": "get-an-invoice-custom-field-shape-link",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` beside invoice propagation authorities.",
+        "proposed_markdown": "- [[source-metronome-api-reference-invoices-get-an-invoice]] - invoice and line-item custom-field response surfaces, arbitrary-key shape differences, and availability and freshness limits",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/invoices/get-an-invoice-2026-07-13.md",
+  "raw_sha256": "fa63043096b5387c5a047dcd08968582a4cbb511e9d3fae2697b4c19adf99085",
+  "status": "candidate_ready"
+}

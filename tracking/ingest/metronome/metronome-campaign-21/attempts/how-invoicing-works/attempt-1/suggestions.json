@@ -1,0 +1,120 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "how-invoicing-works-invoicing-native-model",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "Before ## Invoicing options",
+      "proposed_markdown": "## Native invoice model\n\nContracts are Metronome's primary invoice generator. Usage invoices (`USAGE`) follow a contract's usage-statement schedule, cover a billing period, update while usage arrives, and enter a configurable grace period that defaults to 24 hours. Scheduled invoices (`SCHEDULED`) cover fixed charges such as commitment prepayments, postpaid true-ups, and recurring fees; they have no grace period or billing-period boundary fields. Their documented finalization is immediate for past or present issue dates, within two hours and 30 minutes when the issue date is within two hours of contract creation, and within 30 minutes of later issue dates.\n\nThe guide names draft, grace period, finalized, and void as the four states. `FINALIZED` invoices are immutable within Metronome; a finalized invoice created in error may become `VOID` and be regenerated from updated usage and pricing. Distribution and collection follow contract billing configuration, but the guide does not prove provider delivery, settlement, payment, tax, or accounting outcomes. Its worked JSON also uses `issued_at`, `start_timestamp`, and `end_timestamp` where its schema prose names `issue_date`, `billing_period_start_date`, and `billing_period_end_date`, and its negative commitment adjustment omits quantity and unit price despite the universal line-item list. Use dedicated API schemas for exact fields. [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Preserve the scheduled-finalization windows instead of flattening them to exact issue-date finalization.",
+        "Do not extend Metronome finalization, voiding, or regeneration to downstream payment, tax, delivery, or accounting outcomes.",
+        "Keep the guide's field-name and adjustment-line conflicts explicit until current API schemas resolve them."
+      ]
+    },
+    {
+      "update_id": "how-invoicing-works-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] \u2014 contract-driven usage and scheduled invoice types, lifecycle and finalization timing, line-item presentation, and schema-example boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "how-invoicing-works-contract-generation-fact",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "Under ## Contract and invoice behavior, before ### Deprecated Plans listing boundary",
+      "proposed_markdown": "A provisioned contract is the primary invoice-generation mechanism and produces invoices on predefined schedules throughout its lifecycle. Usage invoices follow the contract's usage-statement cadence, while commitments and scheduled charges can produce scheduled invoices. Draft usage invoices update as usage arrives; finalized invoices no longer change, and their distribution and collection follow contract billing configuration without establishing provider acceptance or payment success. [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Do not turn the guide's contract-driven generation model into a complete contract schema or downstream collection guarantee."
+      ]
+    },
+    {
+      "update_id": "how-invoicing-works-contract-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] \u2014 contract-driven invoice generation, usage-statement cadence, scheduled charges, and lifecycle boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "how-invoicing-works-product-presentation-fact",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "Under ## Products, after the existing presentation_group_key bullet",
+      "proposed_markdown": "- On usage invoices, pricing group keys produce a separate line item for each priced group-key combination, but the guide says a combination without usage does not produce a line item. Presentation group keys instead organize usage-product lines under a property such as project or organization. The guide does not define missing-key behavior, ordering, cardinality limits, fallback pricing, or label stability after edits. [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]]",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Keep pricing-line separation distinct from presentation-only grouping."
+      ]
+    },
+    {
+      "update_id": "how-invoicing-works-product-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] \u2014 pricing-group line creation, presentation grouping, and invoice field boundaries",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "how-invoicing-works-credit-invoice-fact",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "Under ## Drawdown and invoice attribution, before ### Future-credit versus credit-memo boundary",
+      "proposed_markdown": "A usage invoice can show entitlements, consumed quantity, and applied commitments or credits; an applied credit or prepaid commitment can reduce its total to zero so the invoice serves as a revenue record without requiring payment collection. The guide says balance application and overage are calculated per line item. Commitment prepayments and postpaid true-ups can instead produce scheduled invoices, but this guide does not define drawdown priority, ledger mutation, tax, delivery, collection, or reconciliation. [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]]",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Do not infer payment completion or ledger semantics from a zero-dollar usage invoice or scheduled charge."
+      ]
+    },
+    {
+      "update_id": "how-invoicing-works-credit-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] \u2014 zero-dollar usage invoices, per-line commitment and credit application, and scheduled prepayment and true-up invoice roles",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

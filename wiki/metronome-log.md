@@ -6,6 +6,18 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-24 — Metronome Campaign 21 archetype pilot promoted
+
+- Result: five approved source pages from complete raw-page reads across thirteen worker attempts and thirteen independent reviews; final attempts were 3, 2, 2, 3, and 3, with no coordinator content repair.
+- Sources: [[source-metronome-api-reference-invoices-get-an-invoice]], [[source-metronome-api-reference-customers-list-customers]], [[source-metronome-api-reference-customers-update-a-customer-name]], [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]], and [[source-metronome-integrations-marketplace-integrations-aws]].
+- Archetypes: API Read, API List / Schema, API Mutation, Concept / Guide, and Integration Guide. The playbook made reviewer attention and defect attribution more consistent, but zero of five pages passed attempt 1, so it did not meet the throughput gate.
+- Concepts: updated customers and contracts, event ingestion, custom fields, invoicing, API idempotency, credits and commits, currencies, integrations, products and rate cards, usage-based billing, billable metrics, and security; no new concept page was required.
+- Boundaries retained: invoice response examples do not settle cross-source status terminology; customer listing does not prove cursor consistency or alias lifecycle; immediate name propagation leaves finalized and downstream artifacts undefined; native invoice examples conflict with some documented fields; AWS Marketplace setup does not prove provider acceptance, payment, settlement, tax, or reconciliation.
+- Independent query audit: the fixed three-page sample passed 9/9 factual, boundary or contradiction, and exact raw deep-dive queries. All five hashes, approved-candidate equality, backlinks, catalog entries, and reciprocal concept links passed, so no expansion was required.
+- Campaign outcome: final content quality passed, but zero of five pages passed attempt 1, four full semantic retry cycles were required, and time to final reviewer approval was about 44 minutes. The archetype playbook improved review focus and defect attribution but failed its throughput gate.
+- Coverage after promotion: 225 collected documentation pages, 127 source summaries, and 104 raw pages without source summaries.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-21/monitor.md), [quality audit](../tracking/ingest/metronome/metronome-campaign-21/quality-audit.md), and [retrospective](../tracking/ingest/metronome/metronome-campaign-21/retrospective.md).
+
 ## 2026-08-23 — Metronome Campaign 20 completed
 
 - Result: five approved API-reference source pages from complete raw-page reads across twelve worker attempts and twelve independent reviews; final attempts were 2, 2, 3, 3, and 2, with no coordinator content repair.

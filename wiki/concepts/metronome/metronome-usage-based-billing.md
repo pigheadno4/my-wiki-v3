@@ -30,6 +30,9 @@ The credits-and-commits guide supplies one implementation path for hybrid subscr
 
 The billable-metrics guide fills in the metering layer: usage events are filtered and aggregated into invoice-line quantities, products control invoice presentation, rate cards attach list prices, and contracts can override those rates. Streaming metrics provide `COUNT`, `SUM`, `MAX`, and `LATEST` across the UI, API, Plans, and Contracts, while SQL metrics support calculations such as distinct counts.
 
+
+The invoice guide adds the usage-invoice lifecycle: a contract's usage-statement schedule sets cadence, the draft invoice updates as usage arrives, and a configurable grace period that defaults to 24 hours accepts late usage and corrections before finalization. Once `FINALIZED`, the invoice is immutable within Metronome even if more usage is reported. Distribution and collection follow contract billing configuration, but the guide does not establish downstream provider acceptance, customer delivery, payment success, settlement, tax completion, or accounting posting. [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]]
+
 ## Pre-processing validation
 
 The Preview Events API provides a concrete validation step between usage-event design and invoice generation. It can calculate draft invoices from proposed events using the customer's current contract, either replacing historical usage for the calculation or merging with it. The preview does not support contracts with SQL billable metrics.
@@ -75,3 +78,5 @@ These remaining questions require dedicated sources and are not fully answered b
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-pay-as-you-go]] — illustrative PayGo packaging and provisioning path
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — capped-credit and zero-multiplier trial patterns
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] — contract-aware pre-action pricing, merge/replace modes, multi-contract output, and simulation limits
+
+- [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] — contract-driven usage-invoice cadence, draft updates, configurable default grace period, finalized immutability, and downstream-outcome boundary

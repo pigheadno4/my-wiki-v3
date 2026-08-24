@@ -32,6 +32,9 @@ For periodic usage heartbeats, the event guide gives a concrete deterministic pa
 
 For account-level billing-provider setup, `POST /v1/setUpBillingProvider` falls under the API-wide `Idempotency-Key` guarantee, but its own page documents only generic HTTP 400 and 409 errors and no endpoint-specific retry, concurrency, partial-creation, provider-side deduplication, or recovery semantics. The successful result's UUID `delivery_method_id` is the result that an identical same-key retry should recover under the API-wide authority; after an ambiguous failure, do not assume a changed key is safe or that external-provider state is reconciled. [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]]
 
+
+`POST /v1/customers/{customer_id}/setName` falls under the API-wide `Idempotency-Key` contract even though its endpoint page lists only HTTP `200` and does not mention retries. An identical same-key retry returns the original mutation result rather than proving a fresh read of the customer's current name; the endpoint adds no behavior for another or expired key, concurrent renames, cached-error customer or document state, or recovery after ambiguous propagation. [[source-metronome-api-reference-customers-update-a-customer-name]] [[source-metronome-api-reference-idempotency]]
+
 ## Related platform concepts
 
 - [[metronome-event-ingestion]] owns the usage-event schema, matching, deduplication, and processing boundaries.
@@ -49,6 +52,9 @@ For account-level billing-provider setup, `POST /v1/setUpBillingProvider` falls 
 - [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]] — POST setup mutation, returned configuration identifier, generic conflicts, and endpoint-specific recovery unknowns
 
 - [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - endpoint-specific uniqueness-key schema, duplicate-creation prevention, omitted 409 response-map entry, and interaction unknowns
+
+
+- [[source-metronome-api-reference-customers-update-a-customer-name]] — POST customer-name mutation, original-result replay context, and endpoint-specific concurrency and recovery unknowns
 
 ## Related
 

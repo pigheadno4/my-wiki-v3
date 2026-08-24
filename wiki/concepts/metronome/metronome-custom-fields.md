@@ -25,6 +25,9 @@ Uniqueness is intended for foreign entities that have a one-to-one relationship 
 
 A Product custom field can propagate to the associated invoice line item. The overview's `stripe_product_id` example uses this propagation to link an invoice line item to a Stripe product when creating invoices in Stripe.
 
+
+The single-invoice response can expose optional invoice-level `custom_fields`. That property declares an object with unrestricted `additionalProperties: true` and no value schema, while client-group annotations qualify its documented availability. This endpoint does not establish key or value types, limits, redaction, permissions, freshness, configured-field absence, or general availability for that invoice-level map.
+
 ## Billable-metric response shape
 
 The `GET /v1/billable-metrics` response schema can expose `custom_fields` on each returned billable metric as an object with arbitrary property names and string values. The field is optional because only metric `id` and `name` are required. This endpoint does not document custom-field key, value, or entry-count limits, visibility rules, redaction behavior, or whether every field configured elsewhere is returned through this listing. [[source-metronome-api-reference-billable-metrics-list-all-billable-metrics]]
@@ -32,6 +35,12 @@ The `GET /v1/billable-metrics` response schema can expose `custom_fields` on eac
 ## Customer retrieval surface
 
 `GET /v1/customers/{customer_id}` returns the required customer `custom_fields` property as an open object with string-valued properties inside the customer detail. The endpoint does not define configured map-key ordering or endpoint-specific freshness, and its separate `customer_config` object must not be conflated with custom fields. [[source-metronome-api-reference-customers-get-a-customer]]
+
+
+`GET /v1/customers` requires `custom_fields` on every returned customer detail as an arbitrary-key object with string values. The listing endpoint does not define key ordering, entry limits, visibility, redaction, freshness, or whether every configured customer field is returned. [[source-metronome-api-reference-customers-list-customers]]
+
+
+The `POST /v1/customers/{customer_id}/setName` success representation can also include optional customer `custom_fields`, referencing the same arbitrary-key, string-valued map shape. Unlike the dedicated customer-detail retrieval schema, this mutation's `Customer` required list does not include `custom_fields`. The endpoint changes only `name` and does not define custom-field mutation, ordering, freshness, visibility, or propagation. [[source-metronome-api-reference-customers-update-a-customer-name]]
 
 ## Limits of the overview
 
@@ -48,6 +57,15 @@ The overview establishes the purpose, supported object examples, persistence, un
 - [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - contract-credit custom-field input shape and endpoint-specific validation and propagation limits
 
 - [[source-metronome-api-reference-credits-and-commits-list-balances]] - optional commit and contract-credit custom-field response maps, string-valued additional properties, and endpoint-level limits and visibility unknowns
+
+
+- [[source-metronome-api-reference-customers-list-customers]] — required customer-list custom-field response map and endpoint-specific visibility and freshness limits
+
+
+- [[source-metronome-api-reference-customers-update-a-customer-name]] — optional string-valued customer custom-field map in the name-mutation response and non-mutation boundary
+
+
+- [[source-metronome-api-reference-invoices-get-an-invoice]] - invoice-level unrestricted custom-field response shape and availability, typing, permission, and freshness limits
 
 ## Related
 

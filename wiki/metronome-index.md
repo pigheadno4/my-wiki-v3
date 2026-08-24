@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 122 |
-| Raw pages without source summaries | 109 |
+| Source summaries ingested | 127 |
+| Raw pages without source summaries | 104 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -22,6 +22,12 @@ Operational evidence:
 - [2026-07-13 collection manifest](../tracking/collections/metronome/runs/2026-07-13T100930-manifest.md)
 
 ## Sources
+
+- [[source-metronome-api-reference-invoices-get-an-invoice]] — single-invoice retrieval, state, line items, applied balances, hierarchy, and integration-status boundaries
+- [[source-metronome-api-reference-customers-list-customers]] — account customer filters, pagination, identity, aliases, custom fields, and archive visibility
+- [[source-metronome-api-reference-customers-update-a-customer-name]] — customer display-name mutation, truncation, propagation claim, retry, and lifecycle boundaries
+- [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] — native invoice generation, types, lifecycle, calculation, and presentation model
+- [[source-metronome-integrations-marketplace-integrations-aws]] — AWS Marketplace listing, IAM delegation, customer mapping, metering, and external-provider boundaries
 
 - [[source-metronome-api-reference-customers-get-a-customer]] — customer identity, ingest aliases, custom fields, archival state, and billing-configuration boundary
 - [[source-metronome-api-reference-billable-metrics-list-all-billable-metrics]] — billable-metric discovery, configuration schema, archive filtering, pagination, and documented contradictions

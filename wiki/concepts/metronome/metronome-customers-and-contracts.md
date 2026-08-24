@@ -23,6 +23,16 @@ The provisioning guide additionally treats aliases as an enterprise hierarchy me
 
 Bearer-authenticated `GET /v1/customers/{customer_id}` requires a Metronome UUID path parameter and returns detailed customer identity, timestamps, ingest aliases, customer configuration, and custom fields under `data`. Its schema retains required-but-deprecated `external_id`; the page directs billing-configuration searches to `/getCustomerBillingConfigurations` and does not equate `customer_config` with a billing-provider configuration. Optional `archived_at` is nullable, while optional `current_billable_status` is client-configuration-dependent. The page documents only HTTP `200` and leaves not-found behavior, freshness, archived-customer retrieval, and status derivation undefined. [[source-metronome-api-reference-customers-get-a-customer]]
 
+
+### Customer list API
+
+Bearer-authenticated `GET /v1/customers` returns active customers by default and can filter by one ingest alias, up to 100 customer IDs, only archived customers, or up to 100 Salesforce account IDs. It uses optional 1-100 `limit` and `next_page` query parameters and requires a customer-detail array plus nullable `next_page` in a successful response. The endpoint does not define filter-intersection semantics, result ordering, default page size, cursor lifetime, snapshot consistency, or freshness. [[source-metronome-api-reference-customers-list-customers]]
+
+
+## Customer name update API
+
+Bearer-authenticated `POST /v1/customers/{customer_id}/setName` targets a required UUID path identifier. Its JSON payload schema requires string `name`, while the enclosing `requestBody` is not marked required; names longer than 160 characters are truncated. HTTP `200` requires `data` containing a customer whose required identity fields are UUID `id`, deprecated `external_id`, `ingest_aliases`, and the updated `name`. Metronome says the new name is applied immediately across all billing documents and interfaces, but this page does not define the scope across historical, draft, finalized, exported, rendered, or downstream-provider copies; archived-customer eligibility; errors; concurrency; or partial-failure recovery. [[source-metronome-api-reference-customers-update-a-customer-name]]
+
 ## Customer creation API
 
 `POST /v1/customers` creates a customer for product-led or sales-led provisioning. `name` is the only required payload property; values longer than 160 characters are truncated. A customer may receive up to 2,000 ingest aliases of 1–128 characters each, while the older `external_id` field is deprecated.
@@ -34,6 +44,9 @@ The implementation guide states that a customer needs at least one contract befo
 ## Contract and invoice behavior
 
 `POST /v1/contracts/archive` permanently ends and archives a contract and all its terms when an incorrectly created contract must be removed from a customer. The record is not deleted: it remains available to `ListContracts` with `include_archived=true` and through the UI's "Show archived" option. `ArchiveContractPayload` requires UUID `customer_id`, UUID `contract_id`, and boolean `void_invoices`; the enclosing OpenAPI `requestBody` is not marked required, so omitted-body behavior is undocumented. The page does not define restoration, retention, propagation timing, read-after-write consistency, duplicate-call behavior, concurrency ordering, or partial-failure recovery. [[source-metronome-api-reference-contracts-archive-a-contract]]
+
+
+A provisioned contract is the primary invoice-generation mechanism and produces invoices on predefined schedules throughout its lifecycle. Usage invoices follow the contract's usage-statement cadence, while commitments and scheduled charges can produce scheduled invoices. Draft usage invoices update as usage arrives; finalized invoices no longer change, and their distribution and collection follow contract billing configuration without establishing provider acceptance or payment success. [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]]
 
 ### Deprecated Plans listing boundary
 
@@ -123,6 +136,14 @@ An existing contract can change invoice destinations without being replaced. `ad
 
 Stripe-to-Stripe and Stripe/NetSuite transitions may start in the current or next period. Any transition to or from AWS, Azure, or GCP Marketplace is next-period only, and threshold billing must be removed before moving to a marketplace. A contract supports at most 10 schedule segments unless the account team grants more capacity.
 
+
+### AWS Marketplace provisioning layers
+
+The AWS guide configures a customer with AWS customer ID, product code, region, and a usage-based-product flag when applicable, then requires the Metronome contract to mirror the Marketplace agreement and select AWS for delivery. Its examples keep customer provider configuration separate from contract selection. When Metronome detects a Marketplace subscription change it stops metering and updates Metronome customer status, while the merchant owns application status and ending the Metronome contract when relevant. [[source-metronome-integrations-marketplace-integrations-aws]]
+
+> [!warning] Provider-change lifecycle contradiction
+> The AWS guide says a billing provider cannot be added or changed after contract creation, while [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] documents next-period changes to and from AWS Marketplace. The sources do not resolve whether the AWS statement is stale, UI-specific, or limited to initial provisioning.
+
 ## Stripe Dashboard contract management
 
 The Metronome Stripe App embeds customer and contract management in the Stripe Dashboard. It lists Stripe customers linked through Metronome billing-provider configurations and can automatically create a corresponding Metronome customer when contract creation starts. Its four-step wizard configures invoice terms, rate-card pricing and overrides, subscription quantities and product entitlement, credit schedules, and confirmation. The resulting contract uses the Stripe customer's existing billing-provider configuration for invoice delivery.
@@ -191,6 +212,18 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]] — account-level provider creation prerequisite, returned delivery-method identifier, and customer/contract mapping boundary
 
 - [[source-metronome-api-reference-credits-and-commits-list-balances]] - customer-scoped detailed balance envelope, access filters, endpoint-specific pagination, contract inclusion, archive-response asymmetry, and consistency unknowns
+
+
+- [[source-metronome-api-reference-customers-list-customers]] — account-wide customer filters, cursor envelope, customer-detail item shape, archived visibility, and list-consistency unknowns
+
+
+- [[source-metronome-api-reference-customers-update-a-customer-name]] — UUID-scoped display-name mutation, 160-character truncation, returned customer identity, immediate billing-document/interface claim, and recovery boundaries
+
+
+- [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] — contract-driven invoice generation, usage-statement cadence, scheduled charges, and lifecycle boundaries
+
+
+- [[source-metronome-integrations-marketplace-integrations-aws]] — AWS customer identifiers, contract routing, lifecycle ownership, and the provider-change contradiction
 
 ## Related
 

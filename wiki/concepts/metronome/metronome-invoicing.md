@@ -9,6 +9,13 @@ tags: [metronome, invoicing, stripe, marketplaces, erp]
 
 Metronome presents invoicing as a set of distribution-channel options rather than one mandatory delivery path. Its overview identifies native Stripe invoicing, marketplace invoicing for AWS, Azure, and GCP, and ERP-oriented invoicing and revenue workflows.
 
+
+## Native invoice model
+
+Contracts are Metronome's primary invoice generator. Usage invoices (`USAGE`) follow a contract's usage-statement schedule, cover a billing period, update while usage arrives, and enter a configurable grace period that defaults to 24 hours. Scheduled invoices (`SCHEDULED`) cover fixed charges such as commitment prepayments, postpaid true-ups, and recurring fees; they have no grace period or billing-period boundary fields. Their documented finalization is immediate for past or present issue dates, within two hours and 30 minutes when the issue date is within two hours of contract creation, and within 30 minutes of later issue dates.
+
+The guide names draft, grace period, finalized, and void as the four states. `FINALIZED` invoices are immutable within Metronome; a finalized invoice created in error may become `VOID` and be regenerated from updated usage and pricing. Distribution and collection follow contract billing configuration, but the guide does not prove provider delivery, settlement, payment, tax, or accounting outcomes. Its worked JSON also uses `issued_at`, `start_timestamp`, and `end_timestamp` where its schema prose names `issue_date`, `billing_period_start_date`, and `billing_period_end_date`, and its negative commitment adjustment omits quantity and unit price despite the universal line-item list. Use dedicated API schemas for exact fields. [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]]
+
 ## Invoicing options
 
 | Option | Documented scope |
@@ -16,6 +23,14 @@ Metronome presents invoicing as a set of distribution-channel options rather tha
 | Stripe Invoicing | Native Stripe integration that can use Stripe Tax, dunning, and other Stripe product-suite capabilities. |
 | Marketplace Invoicing | Out-of-the-box metering and invoice creation for AWS, Azure, and GCP marketplaces, covering all Metronome charge types without a third-party integrator. |
 | ERP Invoicing | Out-of-the-box and custom ERP integrations for collection, book-closing, and revenue workflows; the overview highlights NetSuite as a native option. |
+
+
+### AWS Marketplace metering and delivery limits
+
+For an AWS-selected customer, Metronome meters the accrued total across AWS-billed contract invoices since the last request as a USD-cent quantity. Prepaid commit charges follow scheduled-invoice service dates; unpaid credits suppress metering until overage remains; postpaid shortfall true-ups are not sent and remain merchant-owned. AWS accepts only positive quantities, so an overbill cannot be reduced through later Metronome credits; Metronome pauses until usage catches up or the merchant issues an AWS refund. AWS accepts records for one hour after contract end, while Metronome sends a final request after 15 minutes; later usage and outage backlog can become undeliverable. Only USD invoices are sent. [[source-metronome-integrations-marketplace-integrations-aws]]
+
+> [!warning] AWS-specific coverage qualification
+> The invoicing overview's broad statement that marketplace invoicing supports all Metronome charge types is qualified by the dedicated AWS guide's exclusions for postpaid true-up invoices and non-USD invoices.
 
 ## Selection model
 
@@ -28,6 +43,11 @@ A subscription's `invoice_placement` defaults to `ON_USAGE_INVOICE`, placing its
 ### Legacy Plans one-time invoice charge
 
 Metronome's deprecated Plans API exposes bearer-authenticated `POST /v1/customers/{customer_id}/addCharge`. The required path `customer_id` is UUID-formatted; the `requestBody` is not itself marked required, while its payload schema requires `charge_id`, `price`, `quantity`, `invoice_start_timestamp`, `customer_plan_id`, and `description`. The charge must be on a product outside the current plan, and that product must have only fixed charges. The caller supplies the numeric price, which must match the invoice currency, with USD cents given only as an example. The target invoice is described through the customer, customer plan, and invoice start timestamp rather than an invoice ID, and HTTP 200 has an empty object schema. The page directs new clients to Contracts but does not identify the replacement endpoint, map the payload, define eligible invoice states or duplicate behavior, or document line-item creation, downstream delivery, tax, discounts, credits, commits, payment, accounting, or reconciliation effects.
+
+
+### Customer-name propagation boundary
+
+`POST /v1/customers/{customer_id}/setName` is documented to apply the new display name immediately across all billing documents and interfaces. The endpoint does not distinguish already-finalized from draft or future documents; define whether PDFs, exports, webhooks, data exports, or downstream Stripe, ERP, and marketplace copies are included; or establish invoice recalculation, delivery, collection, payment, tax, accounting, settlement, or reconciliation effects. Preserve the immediate product claim while treating those surfaces and outcomes as undocumented. [[source-metronome-api-reference-customers-update-a-customer-name]]
 
 ## Commercial Billings measure
 
@@ -42,6 +62,9 @@ The customer-controls guide distinguishes two alert calculations: `spend_thresho
 Metronome also exposes bearer-authenticated `GET /v1/customers/{customer_id}/invoices/{invoice_id}/pdf` with both path identifiers required and UUID-formatted. HTTP 200 uses `application/pdf`; although the prose describes a binary full-invoice PDF, the OpenAPI media schema says only `type: object` and does not define bytes, properties, headers, filename, length, or streaming. HTTP 404 is a generic JSON error requiring string `message` and does not distinguish a missing customer, invoice, or customer-invoice mismatch. The page describes on-demand generation and potential performance impact from frequent requests but provides no rate, latency, caching, retry, lifecycle, retention, rendering-stability, availability, legal-officiality, audit-sufficiency, or compliance guarantee.
 
 Metronome documents shared invoice operations for Plans and Contracts: customer-scoped retrieval of one or all invoices plus regeneration and voiding. Contract-targeted invoices may carry commit, credit, or usage details, while Plan invoices are generally scoped to plan-level billing events. Documented invoice fields include plan identity and generation-time plan custom fields, invoice adjustments, and charge sub-line items; non-tiered nonzero charges may expose a unit `price`, while tiered detail uses `tier_period` and `tiers`. The page does not specify HTTP methods, API version prefixes, pagination, target-selection mechanics, lifecycle preconditions, monetary units or currency, enum values, ordering, downstream-provider effects, or how the plan fields behave for contract invoices.
+
+
+Bearer-authenticated `GET /v1/customers/{customer_id}/invoices/{invoice_id}` requires both UUID path identifiers and returns a required `data` envelope. The invoice schema requires only ID, customer ID, credit type, line items, status, total, and type; each line item requires only name, total, credit type, and type. Optional boolean `skip_zero_qty_line_items` removes zero-quantity lines from the representation. Prose says drafts update in real time and may change and says voided invoices retain original line details, but it defines no freshness SLA, snapshot guarantee, lifecycle transition contract, or retention period. This read page uses uppercase `VOID`, while the void-operation authority uses lowercase `voided`; preserve both source-scoped claims because enum exhaustiveness, casing normalization, and whether the operation wording is a literal GET response value are unresolved.
 
 ## Event-based invoice preview
 
@@ -238,3 +261,11 @@ Metronome's go-live checklist asks teams to understand the draft-to-grace-period
 - [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]] — account-level marketplace delivery setup, returned routing identifier, and downstream outcome boundaries
 
 - [[source-metronome-api-reference-credits-and-commits-create-a-credit]] - credit name and description invoice-visibility boundary plus unspecified downstream propagation
+
+- [[source-metronome-api-reference-customers-update-a-customer-name]] — immediate customer-name propagation claim across billing documents and interfaces, with finalized-artifact and downstream scope unresolved
+
+- [[source-metronome-api-reference-invoices-get-an-invoice]] - customer-scoped invoice retrieval, required invoice and line-item fields, mutable draft and void representation, uppercase-VOID versus lowercase-voided uncertainty, downstream-record boundaries, and schema gaps
+
+- [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] — contract-driven usage and scheduled invoice types, lifecycle and finalization timing, line-item presentation, and schema-example boundaries
+
+- [[source-metronome-integrations-marketplace-integrations-aws]] — AWS listing and routing prerequisites, USD-cent metering semantics, credit and commit treatment, positive-quantity correction, cutoff, outage, and currency limits

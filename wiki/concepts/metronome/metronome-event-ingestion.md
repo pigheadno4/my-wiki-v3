@@ -11,6 +11,9 @@ Metronome event ingestion accepts application usage payloads through the `/inges
 
 ## Event contract
 
+
+The customer-list read surface can filter customers by a single `ingest_alias`, and each returned customer requires `ingest_aliases`; those aliases are documented as substitutes for the Metronome customer ID in usage events. The endpoint does not define alias ordering, uniqueness, current-active status, or how its alias filter combines with other filters. [[source-metronome-api-reference-customers-list-customers]]
+
 ## Commercial event-count boundary
 
 For Metronome's platform-pricing terminology, one Event is each discrete JSON object submitted to and accepted through the ingestion API. Examples such as API calls, storage measurements, and data transfers describe what an accepted object may represent; this source does not define how rejected, retried, or duplicate submissions affect commercial counts. [[source-metronome-guides-platform-configuration-metronome-pricing-model]]
@@ -77,6 +80,11 @@ A correction guide applies compensating usage only while the current-period invo
 - Periodic heartbeat events should use a deterministic transaction ID such as `<node id>_<floor(unix_now()/60)>` and send at least two heartbeats per measurement period. Duplicate IDs are ignored, reducing the chance that timer imprecision or delay leaves a measurement gap.
 - The Node SDK's generic client retries connection and timeout failures plus HTTP 408, 409, 429, and `5xx` responses twice by default. That transport policy is broader than the endpoint-specific producer guidance above; preserve deterministic transaction IDs and do not infer that every retried mutation is idempotent. [[source-github-metronome-node]]
 
+
+### AWS Marketplace late-usage delivery boundary
+
+For AWS-billed contracts, Metronome may apply late usage to an invoice for up to 24 hours after the billing period, but AWS accepts metering requests only for one hour after Marketplace contract end. Metronome sends a final request after 15 minutes; usage arriving later cannot be billed through AWS. Outage backlog is included in a later request only while the AWS window remains open. Event acceptance or invoice inclusion therefore does not prove marketplace delivery or billability. [[source-metronome-integrations-marketplace-integrations-aws]]
+
 ## Invoice preview boundary
 
 The Preview Events API provides a separate, non-ingestion path for testing how supplied events would affect a customer's invoices under the current contract configuration. `replace` mode ignores historical usage, while `merge` combines the supplied events with existing usage. Preview transaction IDs are checked against historical events from the previous 34 days, but contracts with SQL billable metrics are not supported.
@@ -122,6 +130,12 @@ Metronome's go-live checklist recommends queueing usage events, sampling `search
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] — non-ingestion simulation boundary, transaction-ID conflict, 8 RPS limit, batching guidance, and SQL-metric exclusion
 
 - [[source-metronome-api-reference-customers-get-a-customer]] — read-side customer identity and ingest-alias response contract
+
+
+- [[source-metronome-api-reference-customers-list-customers]] — ingest-alias filtering and the list response's required customer alias surface
+
+
+- [[source-metronome-integrations-marketplace-integrations-aws]] — AWS Marketplace one-hour contract-end cutoff, final metering request, late-usage, and outage-backlog delivery limits
 
 ## Related
 

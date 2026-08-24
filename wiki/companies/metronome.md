@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 122
+source_count: 127
 ---
 
 ## Overview
@@ -151,10 +151,16 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 122
-- Raw pages without source summaries: 109
+- Ingested source summaries: 127
+- Raw pages without source summaries: 104
 
 ## Sources
+
+- [[source-metronome-api-reference-invoices-get-an-invoice]] — customer-scoped invoice retrieval, state, line items, balance applications, hierarchy, and downstream-system boundaries
+- [[source-metronome-api-reference-customers-list-customers]] — customer filters, cursor pagination, returned identity, aliases, custom fields, and archive visibility
+- [[source-metronome-api-reference-customers-update-a-customer-name]] — display-name mutation, truncation, immediate propagation claim, idempotency, and downstream limits
+- [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] — contract-driven native invoice types, lifecycle, line-item calculation, and presentation controls
+- [[source-metronome-integrations-marketplace-integrations-aws]] — AWS Marketplace listing, delegated role, customer and contract mapping, metering, and reconciliation boundaries
 
 - [[source-metronome-api-reference-customers-get-a-customer]] — customer identity, ingest aliases, custom fields, archival state, and billing-configuration boundary
 - [[source-metronome-api-reference-billable-metrics-list-all-billable-metrics]] — billable-metric discovery, configuration schema, archive filtering, pagination, and documented contradictions
