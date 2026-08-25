@@ -1,0 +1,35 @@
+<?php
+/**
+ *
+ * Adyen Payment module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2023 Adyen N.V. (https://www.adyen.com/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>
+ */
+
+/**
+ * @var Giftcard $block
+ */
+
+use Adyen\Payment\Api\Data\OrderPaymentInterface;
+use Adyen\Payment\Block\Info\Giftcard;
+
+?>
+
+<dl class="payment-method adyen_hpp">
+    <?php if ($block->getPartialPayments()->getSize() > 1): ?>
+       <?= $block->renderPartialPaymentsHtml(); ?>
+    <?php elseif ($block->getPartialPayments()->getSize() === 1): ?>
+        <?php
+            /** @var OrderPaymentInterface $payment */
+            $payment = $block->getPartialPayments()->getFirstItem();
+            echo $block->escapeHtml(
+                sprintf("%s: %s", $block->getMethod()->getTitle(), ucwords($payment->getPaymentMethod()))
+            );
+        ?>
+    <?php else: ?>
+        <?= $block->escapeHtml($block->getInfo()->getMethodInstance()->getTitle()); ?>
+    <?php endif; ?>
+</dl>

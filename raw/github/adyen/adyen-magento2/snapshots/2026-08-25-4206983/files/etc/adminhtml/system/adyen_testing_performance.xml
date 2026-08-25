@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!--
+/**
+ *
+ * Adyen Payment module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2023 Adyen N.V. (https://www.adyen.com/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>
+ */
+-->
+<include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+    <group id="adyen_testing_performance" translate="label" type="text" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label><![CDATA[Testing and performance]]></label>
+        <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
+        <comment>
+            <![CDATA[<p>Optimize your testing and performance measures to ensure Adyen’s plugin functionality.</p>]]>
+        </comment>
+        <field id="ignore_refund_notification" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Ignore refund webhook</label>
+            <tooltip>If the refund is done on the Adyen Platform it will send a refund webhook to Magento which automatically creates a credit memo. If you set this setting to 'Yes', this will not happen because it will not process any of the REFUND webhook that is received.</tooltip>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/adyen_abstract/ignore_refund_notification</config_path>
+        </field>
+        <field id="ignore_dispute_notification" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Ignore dispute webhook</label>
+            <tooltip>Setting to Yes will not process any of the DISPUTE notifications received.</tooltip>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/adyen_abstract/ignore_dispute_notification</config_path>
+        </field>
+        <field id="ignore_expire_webhook" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Ignore expire webhook</label>
+            <tooltip>Setting to Yes will not process any of the EXPIRE webhook received.</tooltip>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/adyen_abstract/ignore_expire_webhook</config_path>
+        </field>
+        <field id="debug" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1"
+               showInStore="0">
+            <label>Debug logging</label>
+            <depends>
+                <field id="configuration_mode">manual</field>
+            </depends>
+            <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+            <config_path>payment/adyen_abstract/debug</config_path>
+        </field>
+        <field id="webhook_notification_processor" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>Webhook processor</label>
+            <source_model>Adyen\Payment\Model\Config\Source\NotificationProcessor</source_model>
+            <config_path>payment/adyen_abstract/webhook_notification_processor</config_path>
+            <comment>Use cron or queue (async) to process webhook notifications. Queue performs better if you have AMQP service installed, like RabbitMQ.</comment>
+        </field>
+        <!-- TODO:: This field must be configured only on the default level (ECP-9838) -->
+        <field id="notifications_ip_check" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Check webhook's IP address</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/adyen_abstract/notifications_ip_check</config_path>
+            <comment>
+                <![CDATA[
+                If enabled webhooks will be accepted only when the IP address matches Adyen's servers. To learn more about these settings refer to
+                <a target="_blank" href="https://docs.adyen.com/plugins/magento-2/set-up-the-plugin-in-magento">Adyen documentation</a>.
+                ]]>
+            </comment>
+        </field>
+        <field id="remove_processed_webhooks" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>Remove processed webhooks</label>
+            <backend_model>Adyen\Payment\Model\Config\Backend\ProcessedWebhookRemoval</backend_model>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/adyen_abstract/remove_processed_webhooks</config_path>
+            <comment model="Adyen\Payment\Model\Comment\WebhookRemovalNotice"/>
+            <tooltip>
+                Processed webhooks older than a configured number of days will be removed from the database by a cronjob if this feature is enabled.
+                The default value is 90 days and this can be configured in the `Number of days to remove processed webhooks` configuration field.
+            </tooltip>
+        </field>
+        <field id="processed_webhook_removal_time" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="0" showInStore="0">
+            <depends>
+                <field id="remove_processed_webhooks">1</field>
+            </depends>
+            <label>Days required to remove processed webhooks</label>
+            <frontend_class>validate-number</frontend_class>
+            <config_path>payment/adyen_abstract/processed_webhook_removal_time</config_path>
+            <tooltip>
+                This field determines the number of days after which processed webhooks will be removed by a cronjob. Note: Setting less than a reasonable number of days might reduce the desired visibility of webhooks in the Webhooks Overview.
+            </tooltip>
+        </field>
+        <field id="reliability_data_collection" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Collect and submit application reliability data</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/adyen_abstract/reliability_data_collection</config_path>
+            <tooltip>
+                Enables application reliability metrics data collection and submission to Adyen for performance analysis purpose.
+            </tooltip>
+        </field>
+        <field id="clean_adyen_payment_response" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>Clean-up Adyen payment response data</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/adyen_abstract/clean_adyen_payment_response</config_path>
+            <tooltip>
+                When enabled, a nightly cronjob removes stale rows from the `adyen_payment_response` table once the order is finalized (complete, closed or canceled) or is orphaned (older than 1 day with no associated order).
+            </tooltip>
+        </field>
+    </group>
+</include>

@@ -1,0 +1,227 @@
+type Query {
+    adyenPaymentStatus (
+        orderNumber: String @doc(description: "Magento Increment Order ID.")
+        cartId: String @doc(description: "Cart ID.")
+    ) : AdyenPaymentStatus @resolver(class: "Adyen\\Payment\\Model\\Resolver\\GetAdyenPaymentStatus")
+
+    adyenPaymentMethods (
+        cart_id: String! @doc(description: "Cart ID.")
+        shopper_locale: String @doc(description: "Language and country code combination separated by underscore (_), e.g. en_US")
+        country: String @doc(description: "Country code to be used in paymentMethods call, e.g. US")
+        channel: String @doc(description: "The platform where a payment transaction takes place, e.g. Web")
+    ) : AdyenPaymentMethods @resolver(class: "Adyen\\Payment\\Model\\Resolver\\GetAdyenPaymentMethods")
+
+    adyenPaymentMethodsBalance (
+        payload: String! @doc(description: "JSON encoded payload with giftcard state data and amount.")
+    ): AdyenPaymentMethodsBalanceResponse @resolver(class: "Adyen\\Payment\\Model\\Resolver\\GetAdyenPaymentMethodsBalance")
+
+    adyenRedeemedGiftcards (
+        cartId: String! @doc(description: "Cart ID for which to fetch redeemed gift cards.")
+    ): AdyenRedeemedGiftcardsResponse @resolver(class: "Adyen\\Payment\\Model\\Resolver\\GetAdyenRedeemedGiftcards")
+
+    adyenDonationCampaigns (
+        cartId: String! @doc(description: "Cart ID associated with the donation")
+    ): AdyenDonationCampaignsResponse @resolver(class: "Adyen\\Payment\\Model\\Resolver\\DonationCampaigns")
+}
+
+type Mutation {
+    adyenPaymentDetails (
+        payload: String! @doc(description: "Payload JSON String with orderId, details, paymentData and threeDSAuthenticationOnly.")
+        cart_id: String! @doc(description: "Cart ID.")
+    ) : AdyenPaymentStatus @resolver(class: "Adyen\\Payment\\Model\\Resolver\\GetAdyenPaymentDetails")
+
+    adyenSaveStateData (
+        stateData: String! @doc(description: "JSON string of Adyen state data.")
+        cartId: String! @doc(description: "Cart ID associated with the state data.")
+    ): AdyenStateData @resolver(class: "Adyen\\Payment\\Model\\Resolver\\SaveAdyenStateData")
+
+    adyenRemoveStateData(
+        stateDataId: Int! @doc(description: "ID of the state data to remove.")
+        cartId: String! @doc(description: "Cart ID associated with the state data.")
+    ): AdyenStateData @resolver(class: "Adyen\\Payment\\Model\\Resolver\\RemoveAdyenStateData")
+
+    posPayment(
+        cartId: String! @doc(description: "Cart ID associated with the POS payment.")
+    ): AdyenPaymentStatus @resolver(class: "Adyen\\Payment\\Model\\Resolver\\InitiatePosPayment")
+
+    adyenDonate(
+        cartId: String! @doc(description: "Cart ID associated with the donation")
+        amount: AdyenAmountInput! @doc(description: "Donation amount")
+        returnUrl: String! @doc(description: "The URL to return to after the donation is completed in case of a redirect")
+    ): AdyenDonationStatus @resolver(class: "Adyen\\Payment\\Model\\Resolver\\Donations")
+}
+
+input AdyenAmountInput {
+    currency: String! @doc(description: "Three-letter ISO currency code, e.g. EUR.")
+    value: Int! @doc(description: "Amount in minor units, e.g. 500 for 5.00 EUR.")
+}
+
+type AdyenDonationStatus {
+    status: Boolean @doc(description: "True if the donation was processed successfully.")
+}
+
+type AdyenDonationCampaignsResponse {
+    campaignsData: String @doc(description: "JSON encoded donation campaigns data.")
+}
+
+type AdyenPaymentStatus {
+    isFinal: Boolean @doc(description: "If True, no further action is required and customer should be redirect to success page.")
+    resultCode: String @doc(description: "Current state of the order in Adyen.")
+    additionalData: String @doc(description: "Additional data required for the next step in the payment process.")
+    action: String @doc(description: "Object containing information about the payment's next step.")
+    canDonate: Boolean @doc(description: "Indicates if donations are available for this order.")
+    message: String @doc(description: "Translated response message in case of payment refusals.")
+}
+
+type AdyenPaymentMethods {
+    paymentMethodsResponse: AdyenPaymentMethodsResponse @doc(description: "API response from Adyen with payment methods.")
+    paymentMethodsExtraDetails: [AdyenPaymentMethodsExtraDetails] @doc(description: "Payment method's additional details.")
+}
+
+type AdyenPaymentMethodsResponse {
+    paymentMethods: [AdyenPaymentMethodsArray]
+    storedPaymentMethods: [AdyenStoredPaymentMethodsArray]
+}
+
+type Order {
+    cart_id: String! @doc(description: "Cart ID.")
+    adyen_payment_status: AdyenPaymentStatus @resolver(class: "Adyen\\Payment\\Model\\Resolver\\GetAdyenPaymentStatus")
+}
+
+type AdyenStoredPaymentMethodsArray {
+    id: String @doc(description: "A unique identifier of this stored payment method.")
+    brand: String @doc(description: "The brand of the card.")
+    expiryMonth: String @doc(description: "The month the card expires.")
+    expiryYear: String @doc(description: "The year the card expires.")
+    holderName:String @doc(description: "The unique payment method code.")
+    lastFour:String @doc(description: "The last four digits of the PAN.")
+    name: String @doc(description: "The display name of the stored payment method.")
+    iban: String  @doc(description: "The IBAN of the bank account.")
+    ownerName: String @doc(description: "The name of the bank account holder.")
+    shopperEmail: String @doc(description: "The shopper’s email address.")
+    networkTxReference: String @doc(description: "Returned in the response if you are not tokenizing with Adyen and are using the Merchant-initiated transactions (MIT) framework from Mastercard or Visa. This contains either the Mastercard Trace ID or the Visa Transaction ID.")
+    supportedShopperInteractions: [String] @doc(description: "The supported shopper interactions for this stored payment method.")
+    type: String @doc(description: "The type of payment method.")
+}
+
+type AdyenPaymentMethodsArray {
+    name: String @doc(description: "The displayable name of this payment method.")
+    type: String @doc(description: "The unique payment method code.")
+    brand: String @doc(description: "Brand for the selected gift card. For example: plastix, hmclub.")
+    brands: [String] @doc(description: "List of possible brands. For example: visa, mc.")
+    configuration: AdyenPaymentMethodsConfiguration @doc(description: "The configuration of the payment method.")
+    details: [AdyenPaymentMethodsDetails] @deprecated(reason: "This field will be removed in the next major version following the deprecation in the Checkout API.") @doc(description: "All input details to be provided to complete the payment with this payment method.")
+    issuers: [AdyenPaymentMethodsIssuers] @doc(description: "Payment method issuer list.")
+}
+
+type AdyenPaymentMethodsConfiguration {
+    merchantId: String @doc(description: "ID of the merchant.")
+    merchantName: String  @doc(description: "Name of the merchant.")
+    gatewayMerchantId: String @doc(description: "Name of the merchant for Google Pay.")
+}
+
+type AdyenPaymentMethodsDetails {
+    key: String @doc(description: "The value to provide in the result.")
+    type: String @doc(description: "The type of the required input.")
+    items: [AdyenPaymentMethodsDetailsItems] @doc(description: "The items to choose from in case that the payment method includes a selection list.")
+    optional: String @doc(description: "True if this input is optional.")
+    value: String @doc(description: "The value can be pre-filled, if available.")
+}
+
+type AdyenPaymentMethodsIssuers {
+    id: String @doc(description: "Issuer ID.")
+    name: String @doc(description: "Issuer name.")
+}
+
+type AdyenPaymentMethodsDetailsItems {
+    id: String @doc(description: "The value to provide in the result.")
+    name: String @doc(description: "The display name.")
+}
+
+type AdyenPaymentMethodsBalanceResponse {
+    balanceResponse: String @doc(description: "Balance of the payment method.")
+}
+
+type AdyenRedeemedGiftcardsResponse {
+    redeemedGiftcards: [AdyenGiftcard] @doc(description: "List of redeemed gift cards.")
+    remainingAmount: String @doc(description: "Remaining order amount after giftcard discount.")
+    totalDiscount: String @doc(description: "Total giftcard discount applied to the cart.")
+}
+
+type PaymentMethodBalance {
+    currency: String @doc(description: "Cart currency")
+    value: String @doc(description: "Total cart amount")
+}
+
+type AdyenGiftcard {
+    stateDataId: String @doc(description: "Gift card identifier.")
+    brand: String @doc(description: "Gift card brand")
+    title: String @doc(description: "Gift card payment method title")
+    balance: PaymentMethodBalance @doc(description: "Remaining balance on the gift card.")
+    deductedAmount: String @doc(description: "Deducted balance from the gift card")
+}
+
+type AdyenStateData {
+    stateDataId: String @doc(description: "ID of the inserted stateData object.")
+}
+
+type AdyenPaymentMethodsExtraDetails {
+    type: String @doc(description: "The unique payment method code.")
+    icon: AdyenPaymentMethodIcon @doc(description: "Icon for the payment method.")
+    isOpenInvoice: Boolean @doc(description: "True if the payment method is Open Invoice.")
+    configuration: AdyenPaymentMethodsExtraDetailsConfiguration @doc(description: "Extra configuration settings.")
+}
+
+type AdyenPaymentMethodIcon {
+    url: String @doc(description: "URL of the icon.")
+    width: Int @doc(description: "Width of the icon in pixels.")
+    height: Int @doc(description: "Height of the icon in pixels.")
+}
+
+type AdyenPaymentMethodsExtraDetailsConfiguration {
+    amount: Money @doc(description: "Current order amount in minor units.")
+    currency: String @doc(description: "Current order currency.")
+}
+
+input PaymentMethodInput {
+    adyen_additional_data_cc: AdyenAdditionalDataCc @doc(description:"Required input for Adyen CC payments.")
+    adyen_additional_data: AdyenAdditionalData @doc(description:"Required input for Adyen alternative payment methods.")
+    adyen_additional_data_pos_cloud: AdyenAdditionalDataPosCloud @doc(description:"Required input for Adyen POS Cloud payments.")
+}
+
+input AdyenAdditionalDataCc {
+    cc_type: String @doc(description: "Credit card brand.")
+    number_of_installments: Int @doc(description: "If combo_card_type is credit, Number of installments for the payment.")
+    guestEmail: String @doc(description: "Email address if customer is guest.")
+    combo_card_type: String @doc(description: "Debit or Credit card.")
+    stateData: String @doc(description: "JSON string of filled fields.")
+    returnUrl: String @doc(description: "The URL to return to in case of a redirection. The format depends on the channel. This URL can have a maximum of 1024 characters. It can include a placeholder `:merchantReference` to identify the order e.g. `https://your-company.com/checkout?shopperOrder=:merchantReference`.")
+    recurringProcessingModel: String @doc(description: "Recurring processing model to tokenize the payment method.")
+    public_hash: String @doc(description: "Reference of the vault payment token for recurring payments")
+}
+
+input AdyenAdditionalData {
+    stateData: String @doc(description:"JSON string of filled fields.")
+    df_value: String @doc(description: "Ratepay device identification token.")
+    guestEmail: String @doc(description: "Email address if customer is guest.")
+    returnUrl: String @doc(description: "The URL to return to in case of a redirection. The format depends on the channel. This URL can have a maximum of 1024 characters. It can include a placeholder `:merchantReference` to identify the order e.g. `https://your-company.com/checkout?shopperOrder=:merchantReference`.")
+    recurringProcessingModel: String @doc(description: "Recurring processing model to tokenize the payment method.")
+    public_hash: String @doc(description: "Reference of the vault payment token for recurring payments")
+}
+
+input AdyenAdditionalDataPosCloud {
+    number_of_installments: Int @doc(description: "Number of installments for the payment.")
+    terminal_id: String @doc(description: "Terminal ID of selected terminal.")
+}
+
+type StoreConfig @doc(description: "The type contains information about a store config") {
+    adyen_client_key_test : String @doc(description: "Adyen client key for TEST environment.")
+    adyen_client_key_live : String @doc(description: "Adyen client key for LIVE environment.")
+    adyen_demo_mode : Boolean @doc(description: "Adyen demo mode enabled (TEST).")
+    adyen_has_holder_name: Boolean @doc(description: "Adyen card holder's name is visible.")
+    adyen_holder_name_required: Boolean @doc(description: "Adyen card holder's name is required.")
+    adyen_title_renderer: String @doc(description: "Adyen Render Mode for Payment Method.")
+    adyen_return_path_error: String @doc(description: "Adyen Return path in case of error")
+    adyen_checkout_frontend_region: String @doc(description: "Adyen front end resources region.")
+    adyen_store_locale : String @doc(description: "Adyen store locale.") @resolver(class: "Adyen\\Payment\\Model\\Resolver\\StoreConfig\\StoreLocale")
+}

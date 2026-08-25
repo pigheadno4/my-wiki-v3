@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-25] ingest | GitHub adyen/adyen-magento2 - `adyen/module-payment@11.0.0`
+
+- Full-ingested work item `github-f9bb5a2b85a6fd26d4e8` at exact SHA `4206983499d829ef695185ac78af06b9bdfe96c6` after serial full reading of all 206 required evidence and context paths.
+- Added cumulative and package-qualified sources plus [[adyen-magento2]] for Adobe Commerce checkout, modifications, vault, webhooks, gift cards, POS Cloud, and Giving.
+- Preserved exact compatibility and dependency boundaries and recorded two implementation caveats without claiming unverified production impact.
+
 ## [2026-08-25] ingest | GitHub adyen/adyen-sdk-automation - `default-branch@2f180b9`
 
 - Full-ingested work item `github-8048e778dfc5ff78b746` at exact SHA `2f180b958babc6bbd6f0b6b73d7e4c6feefe256e` after serial full reading of all 49 required evidence and context paths.

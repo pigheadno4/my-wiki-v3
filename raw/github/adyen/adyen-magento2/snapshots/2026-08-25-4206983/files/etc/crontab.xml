@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!--
+/**
+ *
+ * Adyen Payment module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2015 Adyen BV (https://www.adyen.com/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="adyen_payment">
+        <job name="adyen_payment_process_notification" instance="Adyen\Payment\Cron\WebhookProcessor" method="execute">
+            <schedule>*/1 * * * *</schedule>
+        </job>
+        <job name="adyen_payment_server_address_caching" instance="Adyen\Payment\Cron\ServerIpAddress" method="execute">
+            <schedule>*/1 * * * *</schedule>
+        </job>
+        <job name="adyen_payment_cancel_expired_orders" instance="AdyenCancelOrders" method="execute">
+            <schedule>0 0 * * *</schedule>
+        </job>
+        <job name="adyen_payment_state_data_clean_up" instance="Adyen\Payment\Cron\StateDataCleanUp" method="execute">
+            <schedule>0 0 * * *</schedule>
+        </job>
+        <job name="adyen_payment_remove_processed_webhooks" instance="Adyen\Payment\Cron\RemoveProcessedWebhooks" method="execute">
+            <schedule>*/5 0 * * *</schedule>
+        </job>
+        <job name="adyen_payment_submit_pending_analytics_events" instance="Adyen\Payment\Cron\SubmitAnalyticsEvents" method="execute">
+            <schedule>*/1 * * * *</schedule>
+        </job>
+        <job name="adyen_payment_clean_up_analytics_events" instance="Adyen\Payment\Cron\AnalyticsEventsCleanUp" method="execute">
+            <schedule>*/5 * * * *</schedule>
+        </job>
+        <job name="adyen_payment_response_clean_up" instance="Adyen\Payment\Cron\PaymentResponseCleanUp" method="execute">
+            <schedule>*/5 0 * * *</schedule>
+        </job>
+    </group>
+</config>

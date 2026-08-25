@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-25] ingest | adyen/adyen-magento2 `adyen/module-payment@11.0.0`
+
+- Approved and full-ingested work item `github-f9bb5a2b85a6fd26d4e8` at exact SHA `4206983499d829ef695185ac78af06b9bdfe96c6` after serial full reading of all 206 required evidence and context paths.
+- Established [[source-github-adyen-magento2]], its package-qualified changelog, and [[adyen-magento2]] for storefront and headless checkout, modifications, vault, asynchronous webhooks, gift-card partial payments, POS Cloud, and Giving.
+- Preserved Magento 2.4.8 and PHP 8.2-8.5 compatibility, Checkout API v71 and Components 6.35.0 boundaries, independently versioned dependencies, and merchant eligibility limits.
+- Recorded the callback-argument mismatch and residual `supports_auto_capture` setting as source-code caveats requiring focused verification rather than confirmed runtime failures.
+
 ## [2026-08-25] ingest | adyen/adyen-sdk-automation `default-branch@2f180b9`
 
 - Approved and full-ingested work item `github-8048e778dfc5ff78b746` at exact SHA `2f180b958babc6bbd6f0b6b73d7e4c6feefe256e` after serial full reading of all 49 required evidence and context paths.

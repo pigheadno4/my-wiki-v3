@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+  <table name="sales_order" resource="default">
+    <column xsi:type="boolean" name="adyen_notification_event_code_success" nullable="true" comment="Adyen Notification event code success flag"/>
+    <column xsi:type="varchar" name="adyen_charged_currency" nullable="true" length="255" comment="Charged currency depending on Adyen config option"/>
+    <column xsi:type="varchar" name="adyen_resulturl_event_code" nullable="true" length="255" comment="Adyen resulturl event status"/>
+    <column xsi:type="varchar" name="adyen_notification_event_code" nullable="true" length="255" comment="Adyen notification event status"/>
+  </table>
+  <table name="sales_order_payment" resource="default">
+    <column xsi:type="varchar" name="adyen_psp_reference" nullable="true" length="255" comment="Adyen PspReference of the payment"/>
+  </table>
+  <table name="adyen_order_payment" resource="default" engine="innodb" comment="Adyen Order Payment">
+    <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Adyen Payment ID"/>
+    <column xsi:type="varchar" name="pspreference" nullable="false" length="255" comment="Pspreference"/>
+    <column xsi:type="varchar" name="merchant_reference" nullable="false" length="255" comment="Merchant Reference"/>
+    <column xsi:type="int" name="payment_id" padding="10" unsigned="true" nullable="false" identity="false" comment="Order Payment Id"/>
+    <column xsi:type="varchar" name="payment_method" nullable="true" length="255" comment="Payment Method"/>
+    <column xsi:type="decimal" name="amount" scale="4" precision="12" unsigned="true" nullable="false" comment="Amount"/>
+    <column xsi:type="decimal" name="total_refunded" scale="4" precision="12" unsigned="true" nullable="false" comment="Total Refunded"/>
+    <column xsi:type="datetime" name="created_at" on_update="false" nullable="false" comment="Created at"/>
+    <column xsi:type="datetime" name="updated_at" on_update="false" nullable="false" comment="Updated at"/>
+    <column xsi:type="text" name="capture_status" nullable="true" comment="Field to determine if and how order payment was captured"/>
+    <column xsi:type="decimal" name="total_captured" scale="4" precision="12" unsigned="true" nullable="true" comment="Field to determine the amount that has been captured."/>
+    <column xsi:type="int" name="order_sort" unsigned="true" nullable="true" comment="Sort order of Partial Payment"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="entity_id"/>
+    </constraint>
+    <constraint xsi:type="foreign" referenceId="ADYEN_ORDER_PAYMENT_PAYMENT_ID_SALES_ORDER_PAYMENT_ENTITY_ID" table="adyen_order_payment" column="payment_id" referenceTable="sales_order_payment" referenceColumn="entity_id" onDelete="CASCADE"/>
+    <constraint xsi:type="unique" referenceId="ADYEN_ORDER_PAYMENT_PSPREFERENCE">
+      <column name="pspreference"/>
+    </constraint>
+  </table>
+  <table name="adyen_notification" resource="default" engine="innodb" comment="Adyen Notifications">
+    <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Adyen Notification Entity ID"/>
+    <column xsi:type="varchar" name="pspreference" nullable="true" length="255" comment="Pspreference"/>
+    <column xsi:type="varchar" name="original_reference" nullable="true" length="255" comment="Original Reference"/>
+    <column xsi:type="varchar" name="merchant_reference" nullable="true" length="255" comment="Merchant Reference"/>
+    <column xsi:type="varchar" name="event_code" nullable="true" length="255" comment="Event Code"/>
+    <column xsi:type="varchar" name="success" nullable="true" length="255" comment="Success"/>
+    <column xsi:type="varchar" name="payment_method" nullable="true" length="255" comment="Payment Method"/>
+    <column xsi:type="varchar" name="amount_value" nullable="true" length="255" comment="Amount value"/>
+    <column xsi:type="varchar" name="amount_currency" nullable="true" length="255" comment="Amount currency"/>
+    <column xsi:type="varchar" name="reason" nullable="true" length="255" comment="reason"/>
+    <column xsi:type="varchar" name="live" nullable="true" length="255" comment="Send from Live platform of adyen?"/>
+    <column xsi:type="text" name="additional_data" nullable="true" comment="AdditionalData"/>
+    <column xsi:type="boolean" name="done" nullable="false" comment="done" default="0"/>
+    <column xsi:type="boolean" name="processing" nullable="true" comment="Adyen Notification Cron Processing" default="0"/>
+    <column xsi:type="int" name="error_count" nullable="true" comment="Adyen Notification Process Error Count" default="0"/>
+    <column xsi:type="text" name="error_message" nullable="true" comment="Adyen Notification Process Error Message"/>
+    <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+    <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="entity_id"/>
+    </constraint>
+    <index referenceId="ADYEN_NOTIFICATION_PSPREFERENCE" indexType="btree">
+      <column name="pspreference"/>
+    </index>
+    <index referenceId="ADYEN_NOTIFICATION_EVENT_CODE" indexType="btree">
+      <column name="event_code"/>
+    </index>
+    <index referenceId="ADYEN_NOTIFICATION_PSPREFERENCE_EVENT_CODE" indexType="btree">
+      <column name="pspreference"/>
+      <column name="event_code"/>
+    </index>
+    <index referenceId="ADYEN_NOTIFICATION_MERCHANT_REFERENCE_EVENT_CODE" indexType="btree">
+      <column name="merchant_reference"/>
+      <column name="event_code"/>
+    </index>
+    <index referenceId="ADYEN_NOTIFICATION_CREATED_AT" indexType="btree">
+      <column name="created_at"/>
+    </index>
+  </table>
+  <table name="adyen_invoice" resource="default" engine="innodb" comment="Adyen Invoice">
+    <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Adyen Invoice Entity ID"/>
+    <column xsi:type="varchar" name="pspreference" nullable="false" length="255" comment="Adyen pspreference of the capture"/>
+    <column xsi:type="varchar" name="acquirer_reference" nullable="true" length="255" comment="Adyen AcquirerReference of the capture"/>
+    <column xsi:type="int" name="invoice_id" padding="10" unsigned="true" nullable="true" identity="false" comment="Link to Magento Invoice table"/>
+    <column xsi:type="timestamp" name="created_at" on_update="false" nullable="true" default="CURRENT_TIMESTAMP" comment="Created at"/>
+    <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="true" default="CURRENT_TIMESTAMP" comment="Updated at"/>
+    <column xsi:type="decimal" name="amount" scale="4" precision="12" unsigned="true" nullable="true" comment="Field to determine the capture amount."/>
+    <column xsi:type="text" name="status" nullable="true" comment="Field to determine the status of the adyen_invoice"/>
+    <column xsi:type="int" name="adyen_order_payment_id" padding="10" unsigned="true" nullable="true" identity="false" comment="Field to link this row to the an adyen_order_payment row."/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="entity_id"/>
+    </constraint>
+    <constraint xsi:type="foreign" referenceId="ADYEN_INVOICE_INVOICE_ID_SALES_INVOICE_ENTITY_ID" table="adyen_invoice" column="invoice_id" referenceTable="sales_invoice" referenceColumn="entity_id" onDelete="CASCADE"/>
+    <constraint xsi:type="foreign" referenceId="ADYEN_INVOICE_ADYEN_ORDER_PAYMENT_ID_ADYEN_ORDER_PAYMENT_ENTT_ID" table="adyen_invoice" column="adyen_order_payment_id" referenceTable="adyen_order_payment" referenceColumn="entity_id" onDelete="CASCADE"/>
+  </table>
+  <table name="adyen_state_data" resource="default" engine="innodb" comment="Adyen Payment State Data">
+    <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Adyen State Data Entity ID"/>
+    <column xsi:type="int" name="quote_id" padding="10" unsigned="true" nullable="false" identity="false" comment="Magento Quote ID"/>
+    <column xsi:type="text" name="state_data" nullable="true" comment="Adyen Payment State Data"/>
+    <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="true" default="CURRENT_TIMESTAMP" comment="Updated at"/>
+    <column xsi:type="timestamp" name="created_at" on_update="false" nullable="true" default="CURRENT_TIMESTAMP" comment="Created at"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="entity_id"/>
+    </constraint>
+    <constraint xsi:type="foreign" referenceId="ADYEN_STATE_DATA_QUOTE_ID_QUOTE_ENTITY_ID" table="adyen_state_data" column="quote_id" referenceTable="quote" referenceColumn="entity_id" onDelete="CASCADE"/>
+    <index referenceId="ADYEN_STATE_DATA_QUOTE_ID" indexType="btree">
+      <column name="quote_id"/>
+    </index>
+  </table>
+  <table name="adyen_payment_response" resource="default" engine="innodb" comment="Adyen Payment Response">
+    <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Adyen Payment Response Entity ID"/>
+    <column xsi:type="varchar" name="merchant_reference" nullable="true" length="255" comment="Merchant reference ID"/>
+    <column xsi:type="text" name="result_code" nullable="true" comment="Payment Response Result Code"/>
+    <column xsi:type="text" name="response" nullable="true" comment="Payment Response"/>
+    <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created at"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="entity_id"/>
+    </constraint>
+    <index referenceId="ADYEN_PAYMENT_RESPONSE_MERCHANT_REFERENCE" indexType="btree">
+      <column name="merchant_reference"/>
+    </index>
+    <index referenceId="ADYEN_PAYMENT_RESPONSE_CREATED_AT" indexType="btree">
+      <column name="created_at"/>
+    </index>
+  </table>
+  <table name="adyen_creditmemo" resource="default" engine="innodb" comment="Adyen Creditmemo">
+    <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Adyen Creditmemo Entity ID"/>
+    <column xsi:type="text" name="pspreference" nullable="false" comment="Adyen pspreference of the refund"/>
+    <column xsi:type="text" name="original_reference" nullable="true" comment="Adyen original reference of the refund"/>
+    <column xsi:type="int" name="creditmemo_id" padding="10" unsigned="true" nullable="true" comment="Creditmemo ID, link to magento creditmemo entity"/>
+    <column xsi:type="decimal" name="amount" scale="4" precision="12" unsigned="true" nullable="false" comment="Amount Refunded"/>
+    <column xsi:type="int" name="adyen_order_payment_id" padding="10" unsigned="true" nullable="false" comment="ID of corresponding payment"/>
+    <column xsi:type="text" name="status" nullable="false" comment="Creditmemo status"/>
+    <column xsi:type="timestamp" name="created_at" default="CURRENT_TIMESTAMP" nullable="false" comment="Created at"/>
+    <column xsi:type="timestamp" name="updated_at" default="CURRENT_TIMESTAMP" nullable="false" comment="Updated at"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="entity_id"/>
+    </constraint>
+    <constraint xsi:type="foreign" referenceId="ADYEN_CREDITMEMO_ADYEN_ORDER_PAYMENT_ID_ADYEN_ORDER_PAYMENT_ENTITY_ID" table="adyen_creditmemo" column="adyen_order_payment_id" referenceTable="adyen_order_payment" referenceColumn="entity_id" onDelete="CASCADE"/>
+  </table>
+  <table name="adyen_analytics_event" resource="default" engine="innodb" comment="Adyen Analytics Event Queue">
+    <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Adyen Analytics Event Entity ID"/>
+    <column xsi:type="varchar" name="uuid" length="255" nullable="false" comment="Unique event ID"/>
+    <column xsi:type="varchar" name="relation_id" length="255" nullable="false" comment="Relation ID"/>
+    <column xsi:type="varchar" name="type" length="50" nullable="false" comment="Type"/>
+    <column xsi:type="varchar" name="topic" length="255" nullable="false" comment="Topic"/>
+    <column xsi:type="text" name="message" nullable="true" comment="Message"/>
+    <column xsi:type="varchar" name="version" length="50" nullable="false" comment="Version"/>
+    <column xsi:type="varchar" name="error_type" nullable="true" comment="Error Type"/>
+    <column xsi:type="varchar" name="error_code" nullable="true" comment="Error Code"/>
+    <column xsi:type="int" name="error_count" nullable="false" default="0" comment="Error Count"/>
+    <column xsi:type="int" name="status" nullable="false" default="0" comment="Status"/>
+    <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+    <column xsi:type="timestamp" name="updated_at" nullable="true" on_update="true" comment="Updated At"/>
+    <column xsi:type="timestamp" name="scheduled_processing_time" nullable="true" default="CURRENT_TIMESTAMP" comment="Scheduled Processing Time"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="entity_id"/>
+    </constraint>
+    <index referenceId="ADYEN_ANALYTICS_EVENT_TYPE" indexType="btree">
+      <column name="type"/>
+    </index>
+    <index referenceId="ADYEN_ANALYTICS_EVENT_STATUS" indexType="btree">
+      <column name="status"/>
+    </index>
+    <index referenceId="ADYEN_ANALYTICS_EVENT_ERROR_COUNT" indexType="btree">
+      <column name="error_count"/>
+    </index>
+    <index referenceId="ADYEN_ANALYTICS_EVENT_SCHEDULED_PROCESSING_TIME" indexType="btree">
+      <column name="scheduled_processing_time"/>
+    </index>
+    <index referenceId="ADYEN_ANALYTICS_EVENT_TYPE_STATUS_ERROR_COUNT_SCHEDULED_PROCESSING_TIME" indexType="btree">
+      <column name="type"/>
+      <column name="status"/>
+      <column name="error_count"/>
+      <column name="scheduled_processing_time"/>
+    </index>
+  </table>
+</schema>

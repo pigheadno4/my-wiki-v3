@@ -83,7 +83,7 @@ def clone_repository(config: RepoConfig, destination: Path) -> None:
     source = Path(config.url)
     options = ["clone", "--no-checkout", "--no-tags"]
     if not source.exists():
-        options.insert(1, "--filter=blob:none")
+        options[1:1] = ["--filter=blob:none", "--depth=1"]
     run_git(options + [config.url, str(destination)])
 
 

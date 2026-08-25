@@ -1,13 +1,13 @@
 ---
 title: "Adyen"
 type: company
-tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, openapi]
-source_count: 10
+tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, openapi, adobe-commerce, magento2]
+source_count: 11
 ---
 
 ## Overview
 
-Adyen is represented in this wiki by independently versioned Web, iOS, Android, Android and iOS 3DS2, React Native, Node.js, and PHP SDKs plus exact-commit Postman API examples and SDK-generation automation. The retained sources cover browser, native, and cross-platform checkout presentation; delegated mobile 3DS2 authentication runtimes; merchant-server Checkout APIs v71 and v72; Terminal API payment and shopper-interaction messages; and the OpenAPI-to-SDK generation lifecycle.
+Adyen is represented in this wiki by independently versioned Web, iOS, Android, Android and iOS 3DS2, React Native, Node.js, and PHP SDKs; an Adobe Commerce plugin; plus exact-commit Postman API examples and SDK-generation automation. The retained sources cover browser, native, cross-platform, and Magento checkout presentation; delegated mobile 3DS2 authentication runtimes; merchant-server Checkout APIs v71 and v72; Terminal API payment and shopper-interaction messages; and the OpenAPI-to-SDK generation lifecycle.
 
 ## Web checkout surface
 
@@ -77,15 +77,23 @@ The retained `adyen-sdk-automation` baseline at exact commit `2f180b958babc6bbd6
 
 This evidence describes build and release machinery rather than merchant checkout behavior. Generated SDK repositories remain independently versioned and authoritative for their retained runtime interfaces; official product documentation and account configuration remain authoritative for current eligibility.
 
+## Adobe Commerce plugin
+
+The retained `adyen/module-payment@11.0.0` baseline integrates Adyen with Adobe Commerce 2.4.8 on PHP 8.2 through 8.5. It covers headful and headless payment-method discovery, `/payments` and `/payments/details`, stored methods, capture and refund, gift-card partial payments, POS Cloud, Giving, and asynchronous webhook processing.
+
+The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api-library ^29.0.0`. These dependencies remain independently versioned, and adapter presence does not prove payment-method or merchant eligibility. Magento cron and webhook processing are operational requirements rather than optional background detail.
+
 ## Knowledge status
 
-- Ingested cumulative GitHub repository sources: 10
-- Ingested package releases: 10
-- Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`
-- Latest ingest: `adyen/adyen-sdk-automation` at `default-branch@2f180b9`, exact SHA `2f180b958babc6bbd6f0b6b73d7e4c6feefe256e`
+- Ingested cumulative GitHub repository sources: 11
+- Ingested package releases: 11
+- Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
+- Latest ingest: `adyen/adyen-magento2` at `adyen/module-payment@11.0.0`, exact SHA `4206983499d829ef695185ac78af06b9bdfe96c6`
 
 ## Sources
 
+- [[source-github-adyen-magento2]] — cumulative Adobe Commerce checkout and operations baseline
+- [[changelog-github-adyen-magento2]] — package-qualified Adobe Commerce plugin release ledger
 - [[source-github-adyen-web]] — cumulative Adyen Web implementation baseline
 - [[changelog-github-adyen-web]] — package-qualified release ledger
 - [[source-github-adyen-ios]] — cumulative Adyen iOS implementation baseline
@@ -111,6 +119,7 @@ This evidence describes build and release machinery rather than merchant checkou
 
 - [[adyen-index]] — Adyen catalog and operations links
 - [[adyen-log]] — collection and ingest history
+- [[adyen-magento2]] — Adobe Commerce plugin architecture and lifecycle
 - [[co-badged-cards]] — cross-provider network-choice concept
 - [[adyen-ios-sdk]] — native SDK architecture and merchant-server boundaries
 - [[adyen-android-sdk]] — native Android architecture and merchant-server boundaries

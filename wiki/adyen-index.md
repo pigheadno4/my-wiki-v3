@@ -10,6 +10,8 @@ Operations history: [[adyen-log]]
 
 ## Sources
 
+- [[source-github-adyen-magento2]] — cumulative `adyen/module-payment@11.0.0` Adobe Commerce baseline: storefront and headless checkout, modifications, vault, webhooks, gift cards, POS Cloud, and Giving (github-repo, 2026-08-25)
+- [[changelog-github-adyen-magento2]] — package-qualified Adobe Commerce plugin history beginning at `11.0.0`, including migration and source-code caveats (github-repo, 2026-08-25)
 - [[source-github-adyen-sdk-automation]] — exact-commit SDK generation baseline for seven API libraries: OpenAPI processing, service inventory, language configuration, CI provenance, and release-note tooling (github-repo, 2026-08-25)
 - [[changelog-github-adyen-sdk-automation]] — commit-qualified SDK automation history beginning at `default-branch@2f180b9` (github-repo, 2026-08-25)
 - [[source-github-adyen-php-api-library]] — cumulative `adyen/php-api-library@30.0.2` server baseline: Checkout API v71, Payments and Recurring APIs v68, tokenization webhooks, transport, and HMAC helpers (github-repo, 2026-08-20)
@@ -33,6 +35,7 @@ Operations history: [[adyen-log]]
 
 ## Concepts
 
+- [[adyen-magento2]] — Adobe Commerce plugin architecture, checkout lifecycle, vault, webhooks, POS, and version boundary
 - [[adyen-sdk-automation]] — OpenAPI-to-SDK generation, language-specific configuration, CI provenance, and release-note validation
 - [[adyen-php-api-library]] — PHP server SDK, Checkout API v71, recurring, tokenization, transport, and evidence boundaries
 - [[adyen-3ds2-ios-sdk]] — delegated iOS 3DS2 transaction, challenge, lifecycle, security, privacy, and UI runtime

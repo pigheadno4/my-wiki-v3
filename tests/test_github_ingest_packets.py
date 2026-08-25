@@ -1215,6 +1215,7 @@ class GitHubIngestPacketTests(unittest.TestCase):
             ".factory/settings.json": "{\"skills\":{}}\n",
             "gradle/wrapper/gradle-wrapper.properties": "distributionUrl=https://example.test/gradle.zip\n",
             "android/src/main/AndroidManifest.xml": "<manifest />\n",
+            "etc/adyen_payment.xsd": "<schema />\n",
             "ios/Info.plist": "<?xml version=\"1.0\"?><plist />\n",
             "ios/module.modulemap": "framework module Example { umbrella header \"Example.h\" }\n",
             "ios/StripeSdk.entitlements": "<?xml version=\"1.0\"?><plist />\n",
@@ -1366,14 +1367,43 @@ class GitHubIngestPacketTests(unittest.TestCase):
             self.assertEqual("public-source", classified[path])
 
     def test_graphql_operations_are_classified_as_public_source(self):
-        path = "CardPayments/src/main/res/raw/update_setup_token.graphql"
+        paths = (
+            "CardPayments/src/main/res/raw/update_setup_token.graphql",
+            "etc/schema.graphqls",
+        )
         prior = {
             "package.json": self.manifest_content("10.0.0"),
-            path: "mutation UpdateSetupToken { updateSetupToken { id } }\n",
+            paths[0]: "mutation UpdateSetupToken { updateSetupToken { id } }\n",
+            paths[1]: "type Query { paymentStatus: String }\n",
         }
         current = {
             "package.json": self.manifest_content("10.1.0"),
-            path: "mutation UpdateSetupToken { updateSetupToken { id status } }\n",
+            paths[0]: "mutation UpdateSetupToken { updateSetupToken { id status } }\n",
+            paths[1]: "type Query { paymentStatus: String paymentMethods: [String] }\n",
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            tuple(UpstreamChange("modified", path, path) for path in paths),
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        for path in paths:
+            self.assertEqual("public-source", classified[path])
+
+    def test_magento_php_templates_are_classified_as_public_source(self):
+        path = "view/frontend/templates/checkout/success.phtml"
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            path: "<?php echo $block->escapeHtml($block->getMessage()); ?>\n",
+        }
+        current = {
+            "package.json": self.manifest_content("10.1.0"),
+            path: "<?php echo $block->escapeHtml($block->getPaymentStatus()); ?>\n",
         }
 
         packet = self.build(

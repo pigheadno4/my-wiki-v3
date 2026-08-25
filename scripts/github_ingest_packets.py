@@ -38,6 +38,7 @@ _SOURCE_SUFFIXES = (
     ".cs",
     ".go",
     ".graphql",
+    ".graphqls",
     ".h",
     ".hpp",
     ".html",
@@ -50,6 +51,7 @@ _SOURCE_SUFFIXES = (
     ".cjs",
     ".m",
     ".mm",
+    ".phtml",
     ".php",
     ".proto",
     ".py",
@@ -1168,6 +1170,7 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
                 ".xcscheme",
                 ".xctestplan",
                 ".xml",
+                ".xsd",
             )
         )
     ):

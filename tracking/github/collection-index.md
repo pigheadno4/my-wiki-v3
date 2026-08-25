@@ -12,7 +12,7 @@ Generated: `2026-08-25`
 | adyen | `adyen/adyen-3ds2-android` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-17 | ingested | 2026-09-17 | `wait` |
 | adyen | `adyen/adyen-3ds2-ios` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-17 | ingested | 2026-09-17 | `wait` |
 | adyen | `adyen/adyen-3ds2-ios-swift` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
-| adyen | `adyen/adyen-magento2` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
+| adyen | `adyen/adyen-magento2` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-25 | ingested | 2026-09-25 | `wait` |
 | adyen | `adyen/adyen-node-api-library` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-02 | ingested | 2026-09-02 | `wait` |
 | adyen | `adyen/adyen-php-api-library` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-19 | ingested | 2026-09-19 | `wait` |
 | adyen | `adyen/adyen-postman` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-12 | ingested | 2026-09-12 | `wait` |

@@ -264,6 +264,25 @@ class GitResolutionTests(unittest.TestCase):
         self.assertEqual(1, promisor.returncode)
         self.assertEqual("", promisor.stdout)
 
+    def test_remote_clone_is_shallow_partial_and_has_no_checkout(self):
+        destination = self.root / "clone"
+        config = self.config(url="https://github.com/example/upstream.git")
+
+        with mock.patch("github_git.run_git") as git:
+            clone_repository(config, destination)
+
+        git.assert_called_once_with(
+            [
+                "clone",
+                "--filter=blob:none",
+                "--depth=1",
+                "--no-checkout",
+                "--no-tags",
+                config.url,
+                str(destination),
+            ]
+        )
+
     def test_clone_fetch_inspect_and_resolve_selected_local_remote_refs(self):
         historical_sha = commit_file(self.repo, "README.md", "historical\n", "historical")
         annotated_tag(self.repo, "v1.0.0")

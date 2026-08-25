@@ -1,0 +1,180 @@
+<?php
+/**
+ *
+ * Adyen Payment module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2022 Adyen N.V. (https://www.adyen.com/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>
+ */
+
+/** @var \Adyen\Payment\Block\Checkout\Success $block */
+/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
+
+$scriptCartReload = <<<script
+    require(['Magento_Customer/js/customer-data'], function (customerData) {
+        'use strict';
+        customerData.reload(['cart'], true);
+    });
+script;
+?>
+
+<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptCartReload, false) ?>
+
+<?php if ($block->isIntermediateResult()): ?>
+    <div class="adyen-pending-message">
+        <p><?= $block->escapeHtml($block->getPendingMessage()) ?></p>
+    </div>
+
+    <?php
+    $scriptPendingMessage = <<<JS
+        require(['jquery'], function($) {
+            try {
+                $('.adyen-pending-message').show();
+            } catch (e) {
+                /* no-op: silently ignore cleanup errors */
+            }
+        });
+        JS;
+    ?>
+    <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptPendingMessage, false) ?>
+<?php endif; ?>
+
+
+<?php if ($block->renderAction()): ?>
+    <div id="ActionContainer"></div>
+    <?php
+    $actionJson = json_encode($block->getAction());
+    $locale = $block->escapeJs($block->getLocale());
+    $countryCode = $block->escapeJs($block->getOrder()->getBillingAddress()->getCountryId());
+    $environment = $block->escapeJs($block->getEnvironment());
+    $clientKey = $block->escapeJs($block->getClientKey());
+
+    $scriptAction = <<<script
+        require([
+            'jquery',
+            'Adyen_Payment/js/adyen'
+        ], function ($, AdyenWeb) {
+            (async function () {
+                var action = JSON.parse($actionJson);
+                var checkoutComponent = await window.AdyenWeb.AdyenCheckout({
+                    locale: '$locale',
+                    countryCode: '$countryCode',
+                    environment: '$environment',
+                    clientKey: '$clientKey'
+                });
+                try {
+                    checkoutComponent.createFromAction(action).mount('#ActionContainer');
+                } catch (err) {
+                    // Action component cannot be created
+                }
+            })();
+        });
+script;
+    ?>
+
+    <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptAction, false) ?>
+<?php endif; ?>
+
+<?php if ($block->showAdyenGiving()): ?>
+    <div id="donation-container"></div>
+
+    <?php
+    $checkoutConfig       = $block->getSerializedCheckoutConfig();
+    $scriptCheckoutConfig = "window.checkoutConfig = $checkoutConfig;";
+    ?>
+
+    <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptCheckoutConfig, false) ?>
+
+    <?php
+    $orderId       = $block->escapeJs($block->getOrder()->getId());
+    $isLoggedIn    = (int) $block->getIsCustomerLoggedIn(); // safe cast for Boolean
+    $maskedQuoteId = $block->escapeJs($block->getMaskedQuoteId());
+    $currency      = $block->escapeJs($block->getOrder()->getOrderCurrencyCode());
+    $locale        = $block->escapeJs($block->getLocale());
+    $environment   = $block->escapeJs($block->getEnvironment());
+    $clientKey     = $block->escapeJs($block->getClientKey());
+    $countryCode   = $block->escapeJs($block->getOrder()->getBillingAddress()->getCountryId());
+    $orderAmount   = $block->escapeJs($block->getOrderAmount());
+
+    $scriptGiving = <<<script
+        require([
+            'jquery',
+            'mage/storage',
+            'Adyen_Payment/js/adyen',
+            'Adyen_Payment/js/model/adyen-payment-service'
+        ], function ($, storage, AdyenWeb, adyenPaymentService) {
+            (async function () {
+                const currency = '$currency';
+                const locale = '$locale';
+                const environment = '$environment';
+                const clientKey = '$clientKey';
+                const orderId = '$orderId';
+                const isLoggedIn = Boolean($isLoggedIn);
+                const maskedQuoteId = '$maskedQuoteId';
+
+                adyenPaymentService.donationCampaigns(isLoggedIn, orderId, maskedQuoteId)
+                    .done(function (response) {
+                        try {
+                            const campaignResponse = JSON.parse(response);
+                            if (campaignResponse && Object.keys(campaignResponse).length > 0) {
+                                mountAdyenGivingComponent(campaignResponse);
+                            }
+                        } catch (parseError) {
+                            console.warn('Error parsing donation campaign response:', parseError);
+                        }
+                    });
+
+                async function mountAdyenGivingComponent(campaign) {
+                    try {
+                        const checkoutComponent = await window.AdyenWeb.AdyenCheckout({
+                            locale: locale,
+                            countryCode: '$countryCode',
+                            environment: environment,
+                            clientKey: clientKey
+                        });
+                        const donationConfig = {
+                            ...campaign,
+                            onDonate: handleOnDonate,
+                            onCancel: handleOnCancel
+                        };
+                        if (campaign.donation.type == 'roundup') {
+                            donationConfig.commercialTxAmount = '$orderAmount'
+                        }
+                        adyenGivingComponent = new window.AdyenWeb.Donation(
+                            checkoutComponent,
+                            donationConfig
+                        );
+                        adyenGivingComponent.mount('#donation-container');
+                    } catch (error) {
+                        console.error('Failed to initialize Adyen Giving component:', error);
+                    }
+                }
+
+                function handleOnDonate(state, component) {
+                    if (state.isValid) {
+                        const payload = state.data;
+                        payload.returnUrl = window.location.href;
+                        adyenPaymentService.donate(payload, isLoggedIn, orderId, maskedQuoteId)
+                            .done(function () {
+                                component.setStatus('success');
+                            })
+                            .fail(function () {
+                                component.setStatus('error');
+                            });
+                    } else {
+                        component.setStatus('ready');
+                    }
+                }
+
+                function handleOnCancel(state, component) {
+                    window.location.href = $('.primary.action.continue')[0]?.href || '/';
+                }
+            })();
+        });
+script;
+    ?>
+
+    <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptGiving, false) ?>
+<?php endif; ?>

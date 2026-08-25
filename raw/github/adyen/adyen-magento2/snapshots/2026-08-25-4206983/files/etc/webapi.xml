@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<!--
+/**
+ *
+ * Adyen Payment module (https://www.adyen.com/)
+ *
+ * Copyright (c) 2023 Adyen N.V. (https://www.adyen.com/)
+ * See LICENSE.txt for license details.
+ *
+ * Author: Adyen <magento@adyen.com>
+ */
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+
+    <route url="/V1/guest-carts/:cartId/retrieve-adyen-payment-methods" method="POST">
+        <service class="Adyen\Payment\Api\GuestAdyenPaymentMethodManagementInterface" method="getPaymentMethods"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/carts/mine/retrieve-adyen-payment-methods" method="POST">
+        <service class="Adyen\Payment\Api\AdyenPaymentMethodManagementInterface" method="getPaymentMethods"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="cartId" force="true">%cart_id%</parameter>
+        </data>
+    </route>
+
+    <route url="/V1/adyen/guest-carts/:cartId/payments-details" method="POST">
+        <service class="Adyen\Payment\Api\GuestAdyenPaymentsDetailsInterface" method="initiate"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/adyen/carts/mine/payments-details" method="POST">
+        <service class="Adyen\Payment\Api\AdyenPaymentsDetailsInterface" method="initiate"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+    </route>
+
+    <route url="/V1/adyen/carts/mine/state-data" method="POST">
+        <service class="Adyen\Payment\Api\AdyenStateDataInterface" method="save"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="cartId" force="true">%cart_id%</parameter>
+        </data>
+    </route>
+
+    <route url="/V1/adyen/carts/mine/state-data/:stateDataId" method="DELETE">
+        <service class="Adyen\Payment\Api\AdyenStateDataInterface" method="remove"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="cartId" force="true">%cart_id%</parameter>
+        </data>
+    </route>
+
+    <route url="/V1/adyen/guest-carts/:cartId/state-data" method="POST">
+        <service class="Adyen\Payment\Api\GuestAdyenStateDataInterface" method="save"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/adyen/guest-carts/:cartId/state-data/:stateDataId" method="DELETE">
+        <service class="Adyen\Payment\Api\GuestAdyenStateDataInterface" method="remove"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/adyen/giftcards/mine" method="GET">
+        <service class="Adyen\Payment\Api\AdyenGiftcardInterface" method="getRedeemedGiftcards"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="cartId" force="true">%cart_id%</parameter>
+        </data>
+    </route>
+
+    <route url="/V1/adyen/giftcards/guest-carts/:cartId" method="GET">
+        <service class="Adyen\Payment\Api\GuestAdyenGiftcardInterface" method="getRedeemedGiftcards"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/adyen/orders/carts/mine/payment-status" method="POST">
+        <service class="Adyen\Payment\Api\AdyenOrderPaymentStatusInterface" method="getOrderPaymentStatus"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+    </route>
+
+    <route url="/V1/adyen/orders/guest-carts/:cartId/payment-status" method="POST">
+        <service class="Adyen\Payment\Api\GuestAdyenOrderPaymentStatusInterface" method="getOrderPaymentStatus"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/adyen/orders/guest-carts/:cartId/donations" method="POST">
+        <service class="Adyen\Payment\Api\GuestAdyenDonationsInterface" method="donate"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/adyen/orders/carts/mine/donations" method="POST">
+        <service class="Adyen\Payment\Api\AdyenDonationsInterface" method="donate"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+    </route>
+
+    <route url="/V1/adyen/orders/carts/mine/donation-campaigns" method="POST">
+        <service class="Adyen\Payment\Api\AdyenDonationCampaignsInterface" method="getCampaigns"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+    </route>
+
+    <route url="/V1/adyen/orders/guest-carts/:cartId/donation-campaigns" method="POST">
+        <service class="Adyen\Payment\Api\GuestAdyenDonationCampaignsInterface" method="getCampaigns"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/adyen/payment-methods/balance" method="POST">
+        <service class="Adyen\Payment\Api\AdyenPaymentMethodsBalanceInterface" method="getBalance"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/adyen/orders/guest-carts/:cartId/pos-payment" method="POST">
+        <service class="Adyen\Payment\Api\GuestAdyenPosCloudInterface" method="payByCart"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/adyen/orders/carts/mine/pos-payment" method="POST">
+        <service class="Adyen\Payment\Api\AdyenPosCloudInterface" method="pay"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+    </route>
+
+    <route url="/V1/adyen/token/deactivate" method="POST">
+        <service class="Adyen\Payment\Api\TokenDeactivateInterface" method="deactivateToken"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="customerId" force="true">%customer_id%</parameter>
+        </data>
+    </route>
+</routes>

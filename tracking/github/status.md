@@ -1698,6 +1698,31 @@
   Release: [manifest](../../raw/github/metronome/metronome-node/releases/sdk/3.10.0/2026-08-12/manifest.json)
   Comparison: Not applicable
 
+## `github-f9bb5a2b85a6fd26d4e8`
+
+- Repository: `adyen/adyen-magento2`
+- SHA: `4206983499d829ef695185ac78af06b9bdfe96c6`
+- Collection date: `2026-08-25`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-magento2/snapshots/2026-08-25-4206983/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-magento2/ingest-packets/github-f9bb5a2b85a6fd26d4e8/packet.md)
+- Review priority: `high`
+- Required reading: `206` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen/module-payment@11.0.0` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-magento2/releases/module-payment/11.0.0/2026-08-25/manifest.json)
+  Comparison: Not applicable
+
 ## `github-fed285eccd42cc9507d5`
 
 - Repository: `paypal/paypal-messages-android`

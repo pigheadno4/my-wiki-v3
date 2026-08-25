@@ -80,7 +80,7 @@ APPENDIX_A_INVENTORY = (
     ('adyen/adyen-web', 'https://github.com/Adyen/adyen-web', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-android', 'https://github.com/Adyen/adyen-android', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-ios', 'https://github.com/Adyen/adyen-ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
-    ('adyen/adyen-magento2', 'https://github.com/Adyen/adyen-magento2', 'commerce-plugin', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('adyen/adyen-magento2', 'https://github.com/Adyen/adyen-magento2', 'commerce-plugin', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-pos-mobile-ios', 'https://github.com/Adyen/adyen-pos-mobile-ios', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-pos-mobile-ios-test', 'https://github.com/Adyen/adyen-pos-mobile-ios-test', 'test-tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('adyen/adyen-postman', 'https://github.com/Adyen/adyen-postman', 'api-collection', 'tier2', 'commit', True, 'default-branch', 'monthly'),
@@ -2200,6 +2200,157 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(1000000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(100, capsule.max_packet_files)
         self.assertEqual(1500000, capsule.max_packet_utf8_bytes)
+
+    def test_adyen_magento2_uses_checkout_plugin_profile(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["adyen/adyen-magento2"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:adyen/module-payment@11",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("11.0.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("adyen-magento2-checkout-source", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("adyen/module-payment",), capsule.focus_packages)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertTrue(
+            {
+                "Api",
+                "Controller",
+                "Gateway",
+                "Helper",
+                "Model",
+                "etc",
+                "view/frontend",
+            }.issubset(set(capsule.default_required_roots))
+        )
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(
+            {
+                "LICENSE.txt",
+                "README.md",
+                "SECURITY.md",
+                "VERSION",
+                "composer.json",
+                "registration.php",
+            },
+            set(capsule.include_paths),
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(600, capsule.max_capsule_files)
+        self.assertEqual(4000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(650, capsule.max_packet_files)
+        self.assertEqual(5000000, capsule.max_packet_utf8_bytes)
+        self.assertEqual(
+            (
+                "README.md",
+                "VERSION",
+                "composer.json",
+                "Api/AdyenGiftcardInterface.php",
+                "Api/AdyenOrderPaymentStatusInterface.php",
+                "Api/AdyenPaymentMethodManagementInterface.php",
+                "Api/AdyenPaymentsDetailsInterface.php",
+                "Api/AdyenPosCloudInterface.php",
+                "Api/AdyenStateDataInterface.php",
+                "Api/TokenDeactivateInterface.php",
+                "Api/Webhook/WebhookAcceptorInterface.php",
+                "Cron/PaymentResponseCleanUp.php",
+                "Cron/StateDataCleanUp.php",
+                "Cron/WebhookProcessor.php",
+                "Gateway/Http/Client/TransactionCancel.php",
+                "Gateway/Http/Client/TransactionCapture.php",
+                "Gateway/Http/Client/TransactionPayment.php",
+                "Gateway/Http/Client/TransactionRefund.php",
+                "Gateway/Request/BrowserInfoDataBuilder.php",
+                "Gateway/Request/CaptureDataBuilder.php",
+                "Gateway/Request/CheckoutDataBuilder.php",
+                "Gateway/Request/GiftcardDataBuilder.php",
+                "Gateway/Request/LineItemsDataBuilder.php",
+                "Gateway/Request/MerchantAccountDataBuilder.php",
+                "Gateway/Request/MerchantRiskIndicatorDataBuilder.php",
+                "Gateway/Request/OneclickAuthorizationDataBuilder.php",
+                "Gateway/Request/OriginDataBuilder.php",
+                "Gateway/Request/PaymentDataBuilder.php",
+                "Gateway/Request/PosCloudBuilder.php",
+                "Gateway/Request/RecurringDataBuilder.php",
+                "Gateway/Request/RecurringVaultDataBuilder.php",
+                "Gateway/Request/RefundDataBuilder.php",
+                "Gateway/Request/ReturnUrlDataBuilder.php",
+                "Gateway/Request/ShopperInteractionDataBuilder.php",
+                "Gateway/Response/CheckoutPaymentsResponseHandler.php",
+                "Gateway/Response/CheckoutStateDataCleanupHandler.php",
+                "Gateway/Response/ModificationsCapturesResponseHandler.php",
+                "Gateway/Response/ModificationsRefundsResponseHandler.php",
+                "Gateway/Response/PaymentPosCloudHandler.php",
+                "Gateway/Validator/CheckoutResponseValidator.php",
+                "Helper/Config.php",
+                "Helper/Creditmemo.php",
+                "Helper/GiftcardPayment.php",
+                "Helper/Idempotency.php",
+                "Helper/Invoice.php",
+                "Helper/Order.php",
+                "Helper/PaymentMethods.php",
+                "Helper/PaymentMethodsFilter.php",
+                "Helper/PaymentResponseHandler.php",
+                "Helper/PaymentsDetails.php",
+                "Helper/PointOfSale.php",
+                "Helper/Quote.php",
+                "Helper/StateData.php",
+                "Helper/Vault.php",
+                "Helper/Webhook.php",
+                "Helper/Webhook/AuthorisationWebhookHandler.php",
+                "Helper/Webhook/CaptureWebhookHandler.php",
+                "Helper/Webhook/RecurringContractWebhookHandler.php",
+                "Helper/Webhook/RecurringTokenCreatedWebhookHandler.php",
+                "Helper/Webhook/RefundWebhookHandler.php",
+                "Helper/Webhook/WebhookHandlerFactory.php",
+                "Model/Api",
+                "Model/Method",
+                "Model/PaymentResponse.php",
+                "Model/Resolver",
+                "Model/StateData.php",
+                "Model/Ui",
+                "Model/Webhook",
+                "Observer/AdyenCcDataAssignObserver.php",
+                "Observer/AdyenPaymentMethodDataAssignObserver.php",
+                "Observer/SetOrderStateAfterPaymentObserver.php",
+                "Plugin/CustomerFilterVaultTokens.php",
+                "Plugin/GraphQlPlaceOrderAddCartId.php",
+                "Plugin/PaymentInformationManagement.php",
+                "Plugin/PaymentVaultDeleteToken.php",
+                "Plugin/SortAndFilterAdyenPaymentMethods.php",
+                "etc/config.xml",
+                "etc/crontab.xml",
+                "etc/csp_whitelist.xml",
+                "etc/db_schema.xml",
+                "etc/events.xml",
+                "etc/payment.xml",
+                "etc/queue_consumer.xml",
+                "etc/queue_publisher.xml",
+                "etc/queue_topology.xml",
+                "etc/schema.graphqls",
+                "etc/webapi.xml",
+                "view/frontend",
+            ),
+            repo.ingest_required_paths,
+        )
 
 
 if __name__ == "__main__":
