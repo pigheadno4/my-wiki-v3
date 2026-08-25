@@ -1,7 +1,7 @@
 # Minimum Sufficient Source Ingest Design
 
 **Date:** 2026-08-25
-**Status:** User-approved design; written specification awaiting final review
+**Status:** User-approved; ready for implementation
 **Initial pilot:** Metronome Campaign 23
 **Future scope:** Stripe, Adyen, PayPal, Braintree, and other provider capsules after provider-specific validation
 
