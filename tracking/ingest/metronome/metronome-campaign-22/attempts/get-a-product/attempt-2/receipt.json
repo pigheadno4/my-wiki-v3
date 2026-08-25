@@ -1,0 +1,197 @@
+{
+  "job_id": "get-a-product",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome Get a Product API\"\ntype: source\ndate_ingested: 2026-08-25\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/products/get-a-product.md\"\nraw_files:\n  - \"metronome/api-reference/products/get-a-product-2026-07-13.md\"\ntags: [metronome, api, products, product-history, usage-based-billing]\n---\n\n## Overview\n\nThis API reference documents the globally bearer-secured `POST /v1/contract-pricing/products/get` operation on `https://api.metronome.com`. It retrieves one product by ID and returns required identity, type, initial state, current state, and update-history surfaces under a required `data` envelope. It is a read contract; the page does not create, edit, archive, price, or associate a product with a contract.\n\n## Request and requiredness\n\nThe operation's `requestBody` defines `application/json` content referencing `Id`, but the enclosing body is not marked `required: true`. Inside `Id`, `id` is required and formatted as a UUID. Omitted-body runtime behavior is therefore undocumented. The `Id` schema also does not specify `additionalProperties`, so this page does not establish unknown-field handling.\n\nThe route contains no path parameter, and the operation defines no query parameter. The page does not document endpoint-specific token scopes, field-level permissions, rate limits, request caching, or validation-error mapping.\n\n## Success envelope and product identity\n\nHTTP `200` requires top-level `data`. The referenced `ProductListItem` requires UUID `id`, string `type`, `initial`, `current`, and an `updates` array. Its type enum is `USAGE`, `SUBSCRIPTION`, `COMPOSITE`, `FIXED`, or `PRO_SERVICE`; this endpoint does not define the behavior of any type. The separate product guide explains four types but not `PRO_SERVICE`, so its semantics must not be inferred here.\n\n`archived_at` is optional, nullable, and date-time formatted. The endpoint provides no description for the field, so presence, null, or omission does not establish archive timing, retrievability, restoration, retention, or historical invoice and contract effects.\n\n## Initial, current, and update state\n\nBoth required `initial` and `current` reference `ProductListItemState`. That state requires `name`, date-time `created_at`, and string `created_by`; other fields are optional in the schema. In particular, state `billable_metric_id` is only typed as a string, whereas `ProductListItemUpdate.billable_metric_id` is a UUID-formatted string. The state can also expose optional `starting_at`, quantity conversion and rounding, composite and general tags, pricing and presentation group keys, `exclude_free_usage`, and a configuration-dependent `is_refundable`. Their presence does not establish validation, applicability to every product type, or availability for every client.\n\nEach `ProductListItemUpdate` requires only date-time `created_at` and string `created_by`; its other fields are optional. The page does not say whether omitted update properties mean unchanged, cleared, unavailable, or redacted. Although the description says the product includes all metadata and historical changes, the endpoint does not define update ordering, completeness, version identity, effective-time selection, future-effective visibility, archive-event representation, freshness, or read-after-write behavior. Treat `initial`, `current`, and `updates` as the documented representation, not a replayable audit-log guarantee.\n\n## Composite-product state\n\nState can expose optional UUID-array `composite_product_ids` and string-array `composite_tags`. The state-only `composite_scope` is a feature-gated selector with values `CUSTOMER` or `CONTRACT`, described as determining what spend contributes to the charge. `include_composite_spend` is also feature-gated, applies only to composite products, defaults to false, and when true permits spend from other composite products; it appears on state and update schemas. The page does not define validation, recursion, cycle handling, precedence, calculation order, historical replay, or general availability for these fields.\n\n## Usage configuration and billable-metric boundary\n\nFor usage products, `quantity_conversion` is nullable; when non-null it requires numeric `conversion_factor` and an operation from the explicitly enumerated lower- or uppercase multiply/divide values. The page supplies no minimum, non-zero rule, precision, overflow, or general case-normalization contract. `quantity_rounding` is likewise nullable and usage-only; when non-null it requires a listed lower- or uppercase rounding method plus numeric `decimal_places` with minimum zero, while maximum precision and runtime validation errors remain unspecified.\n\nThe reusable pricing- and presentation-group-key schemas are string arrays for usage products. A pricing group key determines pricing per key value, while a presentation group key groups usage invoice lines. Both descriptions require the superset of pricing and presentation values to be configured as one compound group key on the billable metric. This product read does not return or validate the metric definition, and the unformatted state `billable_metric_id` must not be silently normalized to the update schema's UUID format.\n\n## NetSuite and custom-field boundaries\n\nBoth state and update schemas can expose `netsuite_internal_item_id` and `netsuite_overage_item_id` as strings whose availability depends on the client's configuration. Their presence does not establish mapping correctness, integration readiness, synchronization, delivery, accounting, or reconciliation behavior.\n\n`ProductListItem.custom_fields` is optional and references an object with arbitrary property names whose values are strings; the field carries `x-cf-entity: contract_product`. This endpoint establishes only that response shape. The separate [[source-metronome-api-reference-custom-fields|custom-fields authority]] establishes configured entity scope, persistence, uniqueness, export visibility, and Product-to-invoice-line propagation. Its Product terminology is not reconciled here with this endpoint's `contract_product` annotation. This read adds no key or value limits, ordering, redaction, permissions, availability, or freshness rules.\n\n## Errors and POST-read idempotency boundary\n\nThe only operation-specific non-success response documented is HTTP `404`, using the shared not-found response whose JSON `Error` requires a string `message`. The page does not distinguish an unknown product from an archived, unauthorized, or otherwise invisible product and does not document `400`, `401`, `403`, `409`, `429`, or `5xx` behavior.\n\nThis endpoint page does not mention `Idempotency-Key` or define endpoint-specific retry, concurrency, cache, freshness, or recovery behavior. Because the read uses POST, the separate [[source-metronome-api-reference-idempotency|API-wide idempotency authority]] remains authoritative: it documents identical-parameter same-key replay, changed-parameter conflict, at-least-24-hour retention, and cached errors. Those guarantees are not established by this endpoint raw. Returning the original keyed result is not evidence of a fresh product read.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-products-and-rate-cards]], [[metronome-billable-metrics]], [[metronome-custom-fields]], [[metronome-integrations]], [[metronome-api-idempotency]]\n- Product semantics: [[source-metronome-guides-implement-metronome-core-concepts-create-products-contracts]]\n- Custom-field authority: [[source-metronome-api-reference-custom-fields]]\n- API-wide idempotency authority: [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/products/get-a-product-2026-07-13|2026-07-13 snapshot - single-product retrieval, full state and update schemas, composite and usage configuration, integration fields, custom fields, and read boundaries]]\n",
+  "quotes": [
+    {
+      "text": "````yaml /openapi.json post /v1/contract-pricing/products/get\nopenapi: 3.0.1\ninfo:\n  title: Metronome\n  version: 1.0.0\nservers:\n  - url: https://api.metronome.com\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "raw/metronome/api-reference/products/get-a-product-2026-07-13.md:18-27 (production server and global bearer security)"
+    },
+    {
+      "text": "paths:\n  /v1/contract-pricing/products/get:\n    post:\n      tags:\n        - Products\n      summary: Get a product\n      description: >\n        Retrieve a product by its ID, including all metadata and historical\n        changes.\n      operationId: getProduct-v1\n      requestBody:\n        description: The ID of the product to get\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/Id'\n            example:\n              id: d84e7f4e-7a70-4fe4-be02-7a5027beffcc\n      responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/ProductListItem'\n              example:\n                data:\n                  id: 9c9a4a71-171e-41f9-b8da-d982baf1a388\n                  type: COMPOSITE\n                  initial:\n                    name: My Composite Product\n                    starting_at: '2020-01-01T00:00:00.000Z'\n                    composite_product_ids:\n                      - e5e40bc7-ef69-42ec-a77e-cd696f6bfa3d\n                    created_at: '2019-12-30T04:24:55.123Z'\n                    created_by: Bob\n                  current:\n                    name: My Updated Composite Product Name\n                    starting_at: '2020-01-01T00:00:00.000Z'\n                    composite_product_ids:\n                      - e5e40bc7-ef69-42ec-a77e-cd696f6bfa3d\n                    created_at: '2019-12-30T04:24:55.123Z'\n                    created_by: Bob\n                  updates:\n                    - name: My Updated Composite Product Name\n                      starting_at: '2020-02-01T00:00:00.000Z'\n                      created_at: '2019-12-30T09:24:55.123Z'\n                      created_by: Alice\n                  custom_fields:\n                    x_account_id: KyVnHhSBWl7eY2bl\n        '404':\n          $ref: '#/components/responses/NotFound'\ncomponents:\n  schemas:\n    Id:\n      required:\n        - id\n      type: object\n      properties:\n        id:\n          type: string\n          format: uuid\n    ProductListItem:\n      type: object\n      required:\n        - id\n        - type\n        - initial\n        - current\n        - updates\n      properties:\n        id:\n          type: string\n          format: uuid\n        type:\n          type: string\n          enum:\n            - USAGE\n            - SUBSCRIPTION\n            - COMPOSITE\n            - FIXED\n            - PRO_SERVICE\n        archived_at:\n          type: string\n          format: date-time\n          nullable: true\n        initial:\n          $ref: '#/components/schemas/ProductListItemState'\n        current:\n          $ref: '#/components/schemas/ProductListItemState'\n        updates:\n          type: array\n          items:\n            $ref: '#/components/schemas/ProductListItemUpdate'\n        custom_fields:\n          $ref: '#/components/schemas/CustomField'\n          x-cf-entity: contract_product",
+      "location": "raw/metronome/api-reference/products/get-a-product-2026-07-13.md:87-188 (POST read, request wrapper, success envelope, example, required product identity and history, type enum, archive marker, and custom-field annotation)"
+    },
+    {
+      "text": "    ProductListItemState:\n      type: object\n      required:\n        - name\n        - created_at\n        - created_by\n      properties:\n        name:\n          type: string\n        starting_at:\n          type: string\n          format: date-time\n        netsuite_internal_item_id:\n          x-mint:\n            groups:\n              - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2\n          type: string\n          description: >-\n            This field's availability is dependent on your client's\n            configuration.\n        created_at:\n          type: string\n          format: date-time\n        created_by:\n          type: string\n        netsuite_overage_item_id:\n          x-mint:\n            groups:\n              - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2\n          type: string\n          description: >-\n            This field's availability is dependent on your client's\n            configuration.\n        billable_metric_id:\n          type: string\n        composite_product_ids:\n          type: array\n          items:\n            type: string\n            format: uuid\n        quantity_conversion:\n          $ref: '#/components/schemas/QuantityConversion'\n        quantity_rounding:\n          $ref: '#/components/schemas/QuantityRounding'\n        composite_tags:\n          type: array\n          items:\n            type: string\n        is_refundable:\n          x-mint:\n            groups:\n              - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2\n          type: boolean\n          description: >-\n            This field's availability is dependent on your client's\n            configuration.\n        tags:\n          type: array\n          items:\n            type: string\n        composite_scope:\n          type: string\n          enum:\n            - CUSTOMER\n            - CONTRACT\n          x-mint:\n            groups:\n              - ff:composite-support-charge-m1-enabled\n          x-stainless-skip: true\n          description: Determines what spend contributes to calculating this charge.\n        exclude_free_usage:\n          type: boolean\n        include_composite_spend:\n          type: boolean\n          x-mint:\n            groups:\n              - ff:m2-composite-on-composite\n          x-stainless-skip: true\n          description: >-\n            Only for composite products. If true, allows a composite to\n            incorporate spend from other composite products. Defaults to false\n        pricing_group_key:\n          $ref: '#/components/schemas/PricingGroupKey'\n        presentation_group_key:\n          $ref: '#/components/schemas/PresentationGroupKey'",
+      "location": "raw/metronome/api-reference/products/get-a-product-2026-07-13.md:189-273 (complete initial/current state schema, required audit fields, configuration-dependent NetSuite and refund fields, unformatted metric ID, composite selectors, and usage configuration references)"
+    },
+    {
+      "text": "    ProductListItemUpdate:\n      type: object\n      required:\n        - created_at\n        - created_by\n      properties:\n        name:\n          type: string\n        starting_at:\n          type: string\n          format: date-time\n        is_refundable:\n          x-mint:\n            groups:\n              - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2\n          type: boolean\n        created_at:\n          type: string\n          format: date-time\n        created_by:\n          type: string\n        billable_metric_id:\n          type: string\n          format: uuid\n        quantity_conversion:\n          $ref: '#/components/schemas/QuantityConversion'\n        quantity_rounding:\n          $ref: '#/components/schemas/QuantityRounding'\n        netsuite_internal_item_id:\n          x-mint:\n            groups:\n              - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2\n          type: string\n          description: >-\n            This field's availability is dependent on your client's\n            configuration.\n        netsuite_overage_item_id:\n          x-mint:\n            groups:\n              - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2\n          type: string\n          description: >-\n            This field's availability is dependent on your client's\n            configuration.\n        composite_product_ids:\n          type: array\n          items:\n            type: string\n            format: uuid\n        composite_tags:\n          type: array\n          items:\n            type: string\n        tags:\n          type: array\n          items:\n            type: string\n        exclude_free_usage:\n          type: boolean\n        include_composite_spend:\n          type: boolean\n          x-mint:\n            groups:\n              - ff:m2-composite-on-composite\n          x-stainless-skip: true\n          description: >-\n            Only for composite products. If true, allows a composite to\n            incorporate spend from other composite products. Defaults to false\n        pricing_group_key:\n          $ref: '#/components/schemas/PricingGroupKey'\n        presentation_group_key:\n          $ref: '#/components/schemas/PresentationGroupKey'",
+      "location": "raw/metronome/api-reference/products/get-a-product-2026-07-13.md:274-345 (complete update schema, required audit fields, UUID-formatted metric ID, configuration-dependent NetSuite IDs, and optional composite and usage fields)"
+    },
+    {
+      "text": "    CustomField:\n      type: object\n      description: 'Custom fields to be added eg. { \"key1\": \"value1\", \"key2\": \"value2\" }'\n      additionalProperties:\n        type: string\n    Error:\n      required:\n        - message\n      type: object\n      properties:\n        message:\n          type: string\n    QuantityConversion:\n      type: object\n      nullable: true\n      description: >-\n        Optional. Only valid for USAGE products. If provided, the quantity will\n        be converted using the provided conversion factor and operation. For\n        example, if the operation is \"multiply\" and the conversion factor is\n        100, then the quantity will be multiplied by 100. This can be used in\n        cases where data is sent in one unit and priced in another.  For\n        example, data could be sent in MB and priced in GB. In this case, the\n        conversion factor would be 1024 and the operation would be \"divide\".\n      required:\n        - conversion_factor\n        - operation\n      properties:\n        name:\n          type: string\n          description: Optional name for this conversion.\n        conversion_factor:\n          type: number\n          description: The factor to multiply or divide the quantity by.\n        operation:\n          type: string\n          enum:\n            - multiply\n            - divide\n            - MULTIPLY\n            - DIVIDE\n          description: The operation to perform on the quantity\n    QuantityRounding:\n      type: object\n      nullable: true\n      description: >-\n        Optional. Only valid for USAGE products. If provided, the quantity will\n        be rounded using the provided rounding method and decimal places. For\n        example, if the method is \"round up\" and the decimal places is 0, then\n        the quantity will be rounded up to the nearest integer.\n      required:\n        - rounding_method\n        - decimal_places\n      properties:\n        rounding_method:\n          type: string\n          enum:\n            - round_up\n            - round_down\n            - round_half_up\n            - ROUND_UP\n            - ROUND_DOWN\n            - ROUND_HALF_UP\n        decimal_places:\n          type: number\n          minimum: 0\n    PricingGroupKey:\n      type: array\n      items:\n        type: string\n      description: >-\n        For USAGE products only. If set, pricing for this product will be\n        determined for each pricing_group_key value, as opposed to the product\n        as a whole. The superset of values in the pricing group key and\n        presentation group key must be set as one compound group key on the\n        billable metric.\n    PresentationGroupKey:\n      type: array\n      items:\n        type: string\n      description: >-\n        For USAGE products only. Groups usage line items on invoices. The\n        superset of values in the pricing group key and presentation group key\n        must be set as one compound group key on the billable metric.\n  responses:\n    NotFound:\n      description: The specified resource was not found\n      content:\n        application/json:\n          schema:\n            $ref: '#/components/schemas/Error'\n  securitySchemes:\n    bearerAuth:\n      type: http\n      scheme: bearer",
+      "location": "raw/metronome/api-reference/products/get-a-product-2026-07-13.md:346-440 (custom-field and error shapes, usage conversion and rounding requirements, group-key semantics, not-found response, and bearer scheme)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "get-a-product-products-read-surface",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append in `## Products` after the effective-dated edit bullet and before invoice-side grouping.",
+        "proposed_markdown": "Bearer-secured `POST /v1/contract-pricing/products/get` reads one product using a UUID required inside the JSON payload schema, although the enclosing OpenAPI `requestBody` is not marked required. HTTP `200` requires `data`; the product requires UUID `id`, `type`, `initial`, `current`, and an `updates` array. Both state objects require `name`, `created_at`, and `created_by`, while each update requires only `created_at` and `created_by`. State `billable_metric_id` is an unformatted string, whereas the update field is UUID-formatted. The five-value response enum includes `PRO_SERVICE`, whose behavior this endpoint does not define. Optional nullable `archived_at` and optional custom fields sit beside the required history surfaces. The description promises all metadata and historical changes, but the page defines no history ordering, completeness, version identity, archive-event representation, archived-product retrieval rule, freshness, or read-after-write guarantee.",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not extrapolate PRO_SERVICE behavior from the four types covered by the separate product guide.",
+          "Do not normalize the state billable_metric_id to UUID merely because the update schema applies that format.",
+          "The enclosing requestBody is not required even though id is required inside its schema; omitted-body behavior is unknown."
+        ]
+      },
+      {
+        "update_id": "get-a-product-products-usage-config",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append in `## Products` after the existing quantity-conversion and rounding bullets.",
+        "proposed_markdown": "The single-product read can expose optional UUID-array `composite_product_ids` and string-array `composite_tags`. Its state-only, feature-gated `composite_scope` selects `CUSTOMER` or `CONTRACT` and is described as determining contributing spend. Feature-gated `include_composite_spend` is composite-only, defaults false, and permits spend from other composite products when true. The page does not define validation, recursion, cycles, precedence, calculation order, historical replay, or general availability. For usage products, nullable quantity conversion requires a numeric factor and an enumerated multiply/divide operation when present; nullable rounding requires an enumerated method and numeric decimal places of at least zero. Pricing- and presentation-group-key string arrays select pricing per key value and group invoice usage lines respectively, and their combined value superset must be configured as one compound billable-metric group key.",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve feature-gated and composite-only boundaries without inferring general availability or recursive evaluation rules.",
+          "The conversion and rounding enums list specific lower- and uppercase spellings; they do not establish arbitrary case-insensitive parsing.",
+          "Do not invent missing-key, fallback-pricing, or metric-validation behavior."
+        ]
+      },
+      {
+        "update_id": "get-a-product-products-link",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` beside the product creation guide.",
+        "proposed_markdown": "- [[source-metronome-api-reference-products-get-a-product]] - single-product POST read, required identity and state/history envelope, five-value type enum, state-versus-update schema distinctions, composite selectors, configuration-dependent integration fields, usage conversions, and compound group-key constraint",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "get-a-product-billable-metric-impact",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append in `## Matching and aggregation` after the existing product-side group-key dependency bullet.",
+        "proposed_markdown": "The single-product read can expose an unformatted string `billable_metric_id` on initial/current state and a UUID-formatted `billable_metric_id` on update entries; clients must preserve that schema distinction. Reusable pricing- and presentation-group-key schemas are usage-only string arrays: pricing keys select pricing per value, presentation keys group usage invoice lines, and their combined value superset must be set as one compound group key on the billable metric. This product read does not return the metric definition or prove that a referenced metric exists, contains the required compound key, or is compatible with the product.",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The product response is not a substitute for retrieving or validating the referenced billable metric.",
+          "Do not infer missing-key behavior, fallback pricing, metric freshness, or association validity."
+        ]
+      },
+      {
+        "update_id": "get-a-product-billable-metric-link",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` beside product and rate-card authorities.",
+        "proposed_markdown": "- [[source-metronome-api-reference-products-get-a-product]] - product-side billable-metric references with state/update format distinction, usage pricing and presentation group-key schemas, compound-key requirement, and association-validation boundaries",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "get-a-product-custom-fields-impact",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append in `## Entity scope and persistence` after the product scope paragraph.",
+        "proposed_markdown": "The single-product response can expose optional `custom_fields` on `ProductListItem`, annotated as entity `contract_product`. The referenced object permits arbitrary property names whose values are strings. This endpoint establishes only the read shape and does not define configured-key validation, limits, ordering, visibility, redaction, permissions, freshness, persistence, export behavior, invoice propagation, or archived-product handling.",
+        "quote_indexes": [
+          1,
+          4
+        ],
+        "warnings": [
+          "Preserve the endpoint's contract_product annotation and the overview's Product terminology as an unresolved boundary.",
+          "Attribute persistence, uniqueness, export, and invoice propagation to source-metronome-api-reference-custom-fields, not this endpoint quote set."
+        ]
+      },
+      {
+        "update_id": "get-a-product-custom-fields-link",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` beside other entity retrieval surfaces.",
+        "proposed_markdown": "- [[source-metronome-api-reference-products-get-a-product]] - optional `contract_product`-annotated custom-field response map, arbitrary string-valued properties, and endpoint-specific visibility and freshness unknowns",
+        "quote_indexes": [
+          1,
+          4
+        ],
+        "warnings": [
+          "The Product terminology comes from the separately linked custom-fields overview; the assigned endpoint supplies contract_product."
+        ]
+      },
+      {
+        "update_id": "get-a-product-integrations-impact",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append a bounded product-read subsection before `## Sources`.",
+        "proposed_markdown": "The single-product read can expose string `netsuite_internal_item_id` and `netsuite_overage_item_id` on initial/current state and update entries. Both schemas describe those fields as dependent on the client's configuration. Their presence is a product response surface, not evidence of mapping correctness, NetSuite integration readiness, synchronization, invoice delivery, accounting, revenue posting, or reconciliation.",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not infer field availability for every client or any downstream NetSuite outcome from a returned identifier."
+        ]
+      },
+      {
+        "update_id": "get-a-product-integrations-link",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` beside NetSuite-related configuration authorities.",
+        "proposed_markdown": "- [[source-metronome-api-reference-products-get-a-product]] - configuration-dependent NetSuite item identifiers in product state and updates, with readiness, synchronization, delivery, accounting, and reconciliation boundaries",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "get-a-product-idempotency-impact",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append in `## Retry and error boundary` after the existing POST endpoint examples.",
+        "proposed_markdown": "`POST /v1/contract-pricing/products/get` is a product read whose request schema requires a product UUID inside an enclosing body that is not marked required; HTTP `200` requires `data`, and the product requires identity plus initial, current, and update-history surfaces. Its endpoint page adds no endpoint-specific idempotency, retry, cache, freshness, concurrency, or recovery guarantee.",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "Same-key replay, changed-parameter conflict, retention, and cached-error behavior come from source-metronome-api-reference-idempotency, not the assigned endpoint quote.",
+          "Do not treat POST as proof that keyed caching is required or recommended for this read."
+        ]
+      },
+      {
+        "update_id": "get-a-product-idempotency-link",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` beside other endpoint-specific POST boundaries.",
+        "proposed_markdown": "- [[source-metronome-api-reference-products-get-a-product]] - POST product-read method, required identity and history response surface, and endpoint-specific idempotency, retry, caching, and freshness unknowns",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "Keep API-wide replay, conflict, lifetime, and cached-error guarantees attributed to source-metronome-api-reference-idempotency."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/products/get-a-product-2026-07-13.md",
+  "raw_sha256": "68a26065b8c4d9a978197fbafcc8d0115271511065489845752f0591787e4893",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,110 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "get-a-product-products-read-surface",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append in `## Products` after the effective-dated edit bullet and before invoice-side grouping.",
+      "proposed_markdown": "Bearer-authenticated `POST /v1/contract-pricing/products/get` reads one product by a UUID required inside the JSON payload schema, although the enclosing OpenAPI `requestBody` is not marked required. HTTP `200` requires `data`; the product requires UUID `id`, `type`, `initial`, `current`, and an `updates` array. The response enum lists `USAGE`, `SUBSCRIPTION`, `COMPOSITE`, `FIXED`, and `PRO_SERVICE`; the endpoint does not define type behavior. Optional nullable `archived_at` and optional `custom_fields` sit beside the required history surfaces. The description promises all metadata and historical changes, but the page defines no history ordering, completeness, version identity, archive-event representation, archived-product retrieval rule, freshness, or read-after-write guarantee. Each update object itself requires only `created_at` and `created_by`; omitted optional fields do not establish unchanged, cleared, unavailable, or redacted state.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Keep PRO_SERVICE as an endpoint enum value with undefined semantics; do not extrapolate behavior from the four types covered by the product guide.",
+        "Do not turn initial, current, and updates into a completeness, ordering, or audit-log guarantee.",
+        "The enclosing requestBody is not required even though id is required inside its schema; omitted-body behavior is unknown."
+      ]
+    },
+    {
+      "update_id": "get-a-product-products-usage-config",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append in `## Products` after the existing quantity-conversion and rounding bullets.",
+      "proposed_markdown": "The single-product read schema makes usage-product `quantity_conversion` nullable; when non-null, it requires numeric `conversion_factor` and one of the explicitly enumerated lower- or uppercase multiply/divide operations. `quantity_rounding` is likewise nullable and usage-only; when non-null it requires an enumerated lower- or uppercase rounding method and numeric `decimal_places` with minimum zero. The page does not define a positive or non-zero conversion-factor constraint, maximum decimal places, precision, overflow, or general case normalization. Its pricing- and presentation-group-key schemas are string arrays for usage products: pricing is selected per pricing-key value, presentation groups usage invoice lines, and the superset of both must be configured as one compound group key on the billable metric.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "The enum lists specific lower- and uppercase spellings; it does not establish arbitrary case-insensitive parsing.",
+        "The schema states no positivity or non-zero constraint for conversion_factor and no maximum for decimal_places.",
+        "Preserve the read schema's wording about the superset being one compound metric group key rather than inventing fallback or missing-key behavior."
+      ]
+    },
+    {
+      "update_id": "get-a-product-products-link",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside the product creation guide.",
+      "proposed_markdown": "- [[source-metronome-api-reference-products-get-a-product]] - single-product POST read, required identity and history envelope, five-value type enum, archive and freshness boundaries, usage conversion and rounding schemas, and compound group-key constraint",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "get-a-product-billable-metric-impact",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append in `## Matching and aggregation` after the existing product-side group-key dependency bullet.",
+      "proposed_markdown": "The single-product read can expose a UUID-formatted `billable_metric_id` on a product update and reusable pricing- and presentation-group-key schemas. Both group-key schemas are string arrays limited to usage products. Pricing keys select pricing per value, while presentation keys group usage invoice line items; the superset of values across both must be set as one compound group key on the billable metric. This product read does not return the metric definition or prove that a referenced metric currently exists, contains the required compound key, or is compatible with the product.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "The product response is not a substitute for retrieving or validating the referenced billable metric.",
+        "Do not infer missing-key behavior, fallback pricing, metric freshness, or association validity from the response fields."
+      ]
+    },
+    {
+      "update_id": "get-a-product-billable-metric-link",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside product and rate-card authorities.",
+      "proposed_markdown": "- [[source-metronome-api-reference-products-get-a-product]] - product-side billable-metric reference, usage pricing and presentation group-key response schemas, compound-key requirement, and association-validation boundaries",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "get-a-product-custom-fields-impact",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append in `## Entity scope and persistence` after the product scope paragraph.",
+      "proposed_markdown": "The single-product response can expose optional `custom_fields` on `ProductListItem`, annotated as entity `contract_product`. The referenced object permits arbitrary property names whose values are strings. This endpoint establishes only the read shape and does not define configured-key validation, limits, ordering, visibility, redaction, permissions, freshness, persistence, export behavior, invoice propagation, or archived-product handling.",
+      "quote_indexes": [
+        2,
+        4
+      ],
+      "warnings": [
+        "Preserve the endpoint's contract_product annotation; do not silently rename it to product.",
+        "Use the dedicated custom-fields authority for persistence and invoice propagation rather than attributing those behaviors to this read endpoint."
+      ]
+    },
+    {
+      "update_id": "get-a-product-custom-fields-link",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside other entity retrieval surfaces.",
+      "proposed_markdown": "- [[source-metronome-api-reference-products-get-a-product]] - optional contract-product custom-field response map, arbitrary string-valued properties, and endpoint-specific visibility and freshness boundaries",
+      "quote_indexes": [
+        2,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

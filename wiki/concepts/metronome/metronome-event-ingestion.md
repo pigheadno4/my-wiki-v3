@@ -14,6 +14,9 @@ Metronome event ingestion accepts application usage payloads through the `/inges
 
 The customer-list read surface can filter customers by a single `ingest_alias`, and each returned customer requires `ingest_aliases`; those aliases are documented as substitutes for the Metronome customer ID in usage events. The endpoint does not define alias ordering, uniqueness, current-active status, or how its alias filter combines with other filters. [[source-metronome-api-reference-customers-list-customers]]
 
+The daily Salesforce sync includes a distinct customer-ingest-alias custom object with the Metronome alias ID, a lookup to the associated customer, the alias value, and the Metronome environment. This CRM replica does not establish alias uniqueness, current-active status, reassignment, deletion, ordering, event-matching freshness, or atomic synchronization with customer records.
+
+
 ## Commercial event-count boundary
 
 For Metronome's platform-pricing terminology, one Event is each discrete JSON object submitted to and accepted through the ingestion API. Examples such as API calls, storage measurements, and data transfers describe what an accepted object may represent; this source does not define how rejected, retried, or duplicate submissions affect commercial counts. [[source-metronome-guides-platform-configuration-metronome-pricing-model]]
@@ -136,6 +139,9 @@ Metronome's go-live checklist recommends queueing usage events, sampling `search
 
 
 - [[source-metronome-integrations-marketplace-integrations-aws]] — AWS Marketplace one-hour contract-end cutoff, final metering request, late-usage, and outage-backlog delivery limits
+
+- [[source-metronome-integrations-platform-integrations-sfdc-integration]] - daily Salesforce customer-ingest-alias replica, alias identity and customer lookup fields, and uniqueness, activity, freshness, lifecycle, and synchronization boundaries
+
 
 ## Related
 

@@ -6,6 +6,17 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-25 — Metronome Campaign 22 archetype v2 pilot promoted
+
+- Result: five approved source pages from complete raw-page reads across eleven worker attempts and eleven independent reviews; final attempts were 2, 3, 2, 2, and 2, with no coordinator content repair.
+- Sources: [[source-metronome-api-reference-products-get-a-product]], [[source-metronome-api-reference-products-list-products]], [[source-metronome-api-reference-customers-archive-a-customer]], [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]], and [[source-metronome-integrations-platform-integrations-sfdc-integration]].
+- Archetype v2 checks: claim-to-evidence closure, authority separation, and concept-impact sweep made reviewer defect attribution explicit, but no page passed attempt 1 and `list-products` required a third attempt.
+- Concepts: updated products and rate cards, billable metrics, custom fields, integrations, API idempotency, customers and contracts, invoicing, alerts and notifications, usage-based billing, credits and commits, reporting and analytics, event ingestion, and currencies and custom pricing units; no new concept page was required.
+- Boundaries retained: `PRO_SERVICE` conflicts with the four-type guide; product state and update identifier formats differ; customer archival does not define downstream invoice or notification completion; the non-monotonic worked example conflicts with its full-period recommendation; Salesforce synchronization does not prove completeness, financial reconciliation, or downstream outcomes.
+- Campaign outcome: final content quality reached reviewer approval, but the pilot failed its throughput gate before promotion: zero of five attempt-1 approvals, five full semantic retry cycles, one targeted retry, and one page reaching attempt 3. Archetype v2 should remain campaign-local evidence rather than a production speed rule.
+- Coverage after promotion: 225 collected documentation pages, 132 source summaries, and 99 raw pages without source summaries.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-22/monitor.md); quality audit and retrospective are recorded in the same campaign folder after closure.
+
 ## 2026-08-24 — Metronome Campaign 21 archetype pilot promoted
 
 - Result: five approved source pages from complete raw-page reads across thirteen worker attempts and thirteen independent reviews; final attempts were 3, 2, 2, 3, and 3, with no coordinator content repair.

@@ -29,6 +29,9 @@ Metronome separates threshold, system, and offset notifications. Threshold notif
 
 System and offset notifications are stateless. Threshold notifications are continuously evaluated, use `OK` and `IN_ALARM` as their ongoing states, and list `EVALUATING` before the initial evaluation. Evaluation occurs at least every three minutes, and the guide documents firing within five minutes after triggering usage is ingested. A return from `IN_ALARM` to `OK` may emit an optional `*_resolved` event.
 
+Archiving a customer stops notifications associated with that customer from being triggered. The archive page does not specify the timing of that suppression or treatment of notification work already generated or in flight. [[source-metronome-api-reference-customers-archive-a-customer]]
+
+
 ## Offset notifications
 
 ### System lifecycle event-type discovery
@@ -69,6 +72,9 @@ For a parent contract's shared commit, child consumption does not automatically 
 - [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] — notification families, evaluation timing, state transitions, and operating guidance
 - [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] — relative scheduling, payload timestamp semantics, prospective firing rules, and recurring-commit caveat
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] — customer-configured spend, grouped-dimension, commit-balance, and invoice-total alert patterns with merchant-action boundaries
+
+- [[source-metronome-api-reference-customers-archive-a-customer]] - customer-archive suppression of associated notification triggers, with timing and already-generated or in-flight scope unspecified
+
 
 ## Related
 

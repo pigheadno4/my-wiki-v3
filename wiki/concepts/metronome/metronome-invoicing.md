@@ -66,6 +66,9 @@ Metronome documents shared invoice operations for Plans and Contracts: customer-
 
 Bearer-authenticated `GET /v1/customers/{customer_id}/invoices/{invoice_id}` requires both UUID path identifiers and returns a required `data` envelope. The invoice schema requires only ID, customer ID, credit type, line items, status, total, and type; each line item requires only name, total, credit type, and type. Optional boolean `skip_zero_qty_line_items` removes zero-quantity lines from the representation. Prose says drafts update in real time and may change and says voided invoices retain original line details, but it defines no freshness SLA, snapshot guarantee, lifecycle transition contract, or retention period. This read page uses uppercase `VOID`, while the void-operation authority uses lowercase `voided`; preserve both source-scoped claims because enum exhaustiveness, casing normalization, and whether the operation wording is a literal GET response value are unresolved.
 
+The Salesforce integration synchronizes invoice and invoice-line custom objects daily. Invoice fields include identity, customer, contract, credit type, invoice type, inclusive and exclusive UTC service-period bounds, total, status, issue time, and environment; lines include invoice, credit-type and commit lookups, quantity, unit price, product ID, total, effective-time bounds, and environment. The prose explicitly says the invoice and line objects include draft and finalized invoices, while the invoice status field enumerates `Draft`, `Finalized`, and `Void`; whether void invoices are synchronized or retained is unresolved. Salesforce copies do not establish invoice finalization freshness, provider delivery, payment, tax, settlement, accounting, or reconciliation.
+
+
 ## Event-based invoice preview
 
 Metronome exposes `POST /v1/customers/{customer_id}/previewEvents` to calculate draft invoices from supplied usage events and the customer's current contract configuration before those events are processed. The request can replace historical usage or merge with it, and the response returns draft invoice records with totals and line items. Contracts using SQL billable metrics are excluded from this preview capability.
@@ -127,6 +130,15 @@ When a contract edit adds an invoice-schedule item at date X, or moves an item t
 A credit or commit ledger has one deduction entry for each invoice that consumes that balance. The deduction's effective timestamp is always the end of the usage invoice's service period, and Metronome says that timestamp can support balance views including or excluding pending charges. This does not make the ledger timestamp an invoice creation, finalization, delivery, collection, or payment timestamp, and the guide does not define how `pending` maps to invoice states.
 
 The customer-credit create schema describes optional nonempty `name` as displayed on invoices and optional `description` as UI/API-only and not exposed to end customers. This endpoint does not define which invoice line or state displays the name, whether already-draft or finalized invoices change, or how either field propagates to PDFs, exports, webhooks, downstream billing providers, external A/R, tax, payment, refunds, or accounting systems.
+
+Customer archival automatically archives all of that customer's contracts as of the current date and voids all corresponding invoices. [[source-metronome-api-reference-customers-archive-a-customer]]
+
+For non-monotonically increasing `LATEST` metrics, invoice quantities are changes between reporting windows and may be negative when usage falls. Metronome evaluates charge lines independently and chronologically, consuming credit against positive lines without looking ahead to a later negative line; the worked full-period-credit example ends at `-$20`. The invoice-breakdowns surface is described as returning each window's incremental quantity and associated cost, including negative quantities and costs. The guide does not define how a negative invoice total proceeds through finalization, delivery, payment, refund, tax, settlement, external A/R, reconciliation, or accounting.
+
+> [!warning] Intra-page recommendation conflict
+> The example's credit covers the full billing period and still yields a negative total, but the later tip says full-period coverage avoids unexpected negative totals. The guide does not reconcile that recommendation with its example.
+
+
 
 ## Threshold payment flow
 
@@ -269,3 +281,9 @@ Metronome's go-live checklist asks teams to understand the draft-to-grace-period
 - [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] — contract-driven usage and scheduled invoice types, lifecycle and finalization timing, line-item presentation, and schema-example boundaries
 
 - [[source-metronome-integrations-marketplace-integrations-aws]] — AWS listing and routing prerequisites, USD-cent metering semantics, credit and commit treatment, positive-quantity correction, cutoff, outage, and currency limits
+
+- [[source-metronome-api-reference-customers-archive-a-customer]] - automatic current-date contract archival and corresponding-invoice voiding
+
+- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - incremental and negative invoice quantities, no-look-ahead credit consumption, negative-total boundary, and invoice-breakdown behavior
+
+- [[source-metronome-integrations-platform-integrations-sfdc-integration]] - daily Salesforce invoice and line-item replicas, service-period and attribution fields, draft and finalized scope, Void-status ambiguity, and downstream-outcome boundaries

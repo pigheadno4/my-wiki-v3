@@ -23,6 +23,9 @@ The documented supported set is USD, AUD, BRL, CAD, CHF, CZK, EUR, GBP, INR, MXN
 
 The `listBalances` response models access- and invoice-schedule `amount`, `unit_price`, and `quantity` as numbers. Both schedule schemas make `credit_type` optional; on this page the referenced type requires only UUID `id` and string `name` and does not expose `is_currency`. The example uses `USD (cents)`, but this endpoint independently defines no USD, non-USD, or custom-unit denomination, precision, conversion, or rounding rule. Apply the dedicated currency and custom-unit authorities rather than inferring a universal scale from this response example.
 
+The daily Salesforce sync includes a credit-type object with credit-type ID, name, and Metronome environment; its invoice and invoice-line objects each reference a credit type. The combined commit-or-credit object has no documented credit-type lookup even though its total-amount description uses dollar wording. This Salesforce schema does not establish denomination or USD-cent, non-USD, custom-pricing-unit, conversion, precision, or rounding semantics for those replicas.
+
+
 ## Rate-card setup and immutability
 
 Custom units are created and named in the Metronome app for invoice presentation. A rate card selects one fiat currency, and each product rate uses either that fiat currency or a custom pricing unit with a conversion from the underlying fiat currency. Once a product's rate is saved in one pricing unit, that rate's pricing unit cannot be changed. The source does not define the required replacement or migration path or its effects on contracts and invoices.
@@ -66,3 +69,5 @@ The guide does not define custom-unit creation APIs, precision, conversion formu
 - [[source-metronome-api-reference-invoices-get-an-invoice]] - `cpu_conversion` invoice-line representation, insufficient matching-balance trigger, and calculation boundaries
 
 - [[source-metronome-integrations-marketplace-integrations-aws]] — AWS Marketplace USD-only contract and invoice-delivery boundary plus USD-cent metering quantity
+
+- [[source-metronome-integrations-platform-integrations-sfdc-integration]] - Salesforce credit-type, invoice, and invoice-line references plus the commit-or-credit denomination and missing-lookup boundary

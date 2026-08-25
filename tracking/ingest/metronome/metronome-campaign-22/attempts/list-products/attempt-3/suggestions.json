@@ -1,0 +1,144 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "list-products-products-rate-cards-fact",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append a new `## Product catalog retrieval API` section after `## Products` and before `## Rate cards and rates`.",
+      "proposed_markdown": "## Product catalog retrieval API\n\nBearer-authenticated `POST /v1/contract-pricing/products/list` returns a cursor-paginated organization-wide catalog and excludes archived products by default unless `archive_filter` selects `ARCHIVED` or `ALL`. Optional query `limit` is `1` to `100`; HTTP `200` requires `data` plus nullable `next_page`. Every product item requires UUID `id`, enum `type`, `initial`, `current`, and `updates`; the state objects require `name`, `created_at`, and `created_by`, while update entries require only `created_at` and `created_by`. The endpoint says the list returns complete version history, but defines no update ordering, retention horizon, future-scheduled-entry semantics, current-state selection, omitted-field inheritance, cursor lifetime, snapshot or cross-page consistency, default page size, non-200 response, or read-after-write guarantee.\n\n> [!warning] Product-type contradiction\n> The list schema adds `PRO_SERVICE` to `USAGE`, `SUBSCRIPTION`, `COMPOSITE`, and `FIXED`, while the product guide enumerates only four types. The sources do not establish whether `PRO_SERVICE` is newly supported, API-only, feature-gated, legacy, or creatable; preserve the mismatch and verify current creation support. [[source-metronome-api-reference-products-list-products]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Do not flatten optional state and update fields into required configuration or infer version ordering from the example.",
+        "Preserve the direct five-enum-versus-four-guide contradiction; do not silently classify PRO_SERVICE."
+      ]
+    },
+    {
+      "update_id": "list-products-products-rate-cards-link",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside the existing product API and guide sources.",
+      "proposed_markdown": "- [[source-metronome-api-reference-products-list-products]] \u2014 product catalog listing that excludes archived products by default, pagination, state and update shapes, optional configuration, and the `PRO_SERVICE` type contradiction",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-products-billable-metrics-fact",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append to `## Retrieval APIs` after the account-wide billable-metric listing paragraph.",
+      "proposed_markdown": "The product catalog's `initial` and `current` states, and each update entry, can expose `billable_metric_id`, `pricing_group_key`, and `presentation_group_key`. The list schema repeats that the two product key arrays are usage-only and that their combined values must be defined as one compound group key on the billable metric. The initial/current state annotates `billable_metric_id` only as a string while the update schema marks it UUID-formatted; this difference does not prove different runtime identifier formats. The endpoint does not define metric existence checks, missing-dimension behavior, fallback pricing, or consistency while metric or product configuration changes. [[source-metronome-api-reference-products-list-products]]",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "Treat this as a product-side retrieval surface; it does not replace metric creation, matching, or immutability authorities.",
+        "Do not infer different runtime billable-metric identifier formats from the inconsistent format annotations."
+      ]
+    },
+    {
+      "update_id": "list-products-billable-metrics-link",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside the product and metric relationship sources.",
+      "proposed_markdown": "- [[source-metronome-api-reference-products-list-products]] \u2014 product-side metric IDs, pricing and presentation group keys, compound-key requirement, and identifier-format ambiguity",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-products-custom-fields-fact",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "durable_fact",
+      "anchor": "Add a `## Product listing surface` subsection after `## Invoice propagation`.",
+      "proposed_markdown": "## Product listing surface\n\n`POST /v1/contract-pricing/products/list` can return optional product `custom_fields` as an object with arbitrary property names and string values, annotated for the `contract_product` entity. The endpoint does not define key or value length, entry limits, ordering, visibility, redaction, configured-key absence, freshness, or whether every product custom field is returned. Listing the map does not mutate it or independently establish invoice-line propagation. [[source-metronome-api-reference-products-list-products]]",
+      "quote_indexes": [
+        2,
+        4
+      ],
+      "warnings": [
+        "Keep retrieval shape separate from the dedicated custom-fields authority's persistence, uniqueness, and invoice-propagation behavior."
+      ]
+    },
+    {
+      "update_id": "list-products-custom-fields-link",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside other entity retrieval surfaces.",
+      "proposed_markdown": "- [[source-metronome-api-reference-products-list-products]] \u2014 optional string-valued product custom-field map and endpoint-specific visibility and freshness unknowns",
+      "quote_indexes": [
+        2,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-products-integrations-fact",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "durable_fact",
+      "anchor": "Add a new `## NetSuite product-item retrieval surface` section after `## Definition` and before `## TypeScript SDK boundary`.",
+      "proposed_markdown": "## NetSuite product-item retrieval surface\n\nThe product catalog's `initial` and `current` state schemas and its update schema can expose `netsuite_internal_item_id` and `netsuite_overage_item_id`; both fields state that their availability depends on the client's configuration. This retrieval schema does not define what either identifier maps to, external-item validation, freshness, propagation, synchronization, invoice delivery, or reconciliation. [[source-metronome-api-reference-products-list-products]]",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Treat these only as configuration-dependent response fields; do not infer a working NetSuite mapping or synchronized downstream state.",
+        "Do not extend retrieval visibility to invoice delivery, settlement, accounting, or reconciliation outcomes."
+      ]
+    },
+    {
+      "update_id": "list-products-integrations-link",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside other product-to-external-system mapping sources.",
+      "proposed_markdown": "- [[source-metronome-api-reference-products-list-products]] \u2014 configuration-dependent NetSuite item-ID fields in product initial, current, and update schemas, with mapping and synchronization boundaries",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-products-idempotency-fact",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append in `## Retry and error boundary` after the existing endpoint-specific POST examples.",
+      "proposed_markdown": "The assigned product-catalog reference documents `POST /v1/contract-pricing/products/list`. Its complete operation response map lists only HTTP `200`, and it supplies no endpoint-specific idempotency, retry, caching, cursor-replay, or freshness contract. [[source-metronome-api-reference-products-list-products]]",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "The all-POST Idempotency-Key applicability, identical-parameter original-result replay, changed-parameter conflict, at-least-24-hour retention, and cached-error behavior come from [[source-metronome-api-reference-idempotency]], not the assigned list-products raw.",
+        "Do not infer whether identical parameters include query parameters, body values, archive filters, or cursor state beyond the separate API-wide authority's wording."
+      ]
+    },
+    {
+      "update_id": "list-products-idempotency-link",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside endpoint-specific POST examples.",
+      "proposed_markdown": "- [[source-metronome-api-reference-products-list-products]] \u2014 POST product-catalog listing, its sole listed HTTP `200` response, and endpoint-specific idempotency, retry, caching, cursor-replay, and freshness unknowns",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "Original-result replay and other API-wide guarantees belong to [[source-metronome-api-reference-idempotency]], not this reciprocal description."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

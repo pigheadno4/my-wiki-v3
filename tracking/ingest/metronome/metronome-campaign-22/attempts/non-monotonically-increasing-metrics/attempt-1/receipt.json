@@ -1,0 +1,202 @@
+{
+  "job_id": "non-monotonically-increasing-metrics",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Non-Monotonically Increasing Metrics\"\ntype: source\ndate_ingested: 2026-08-25\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/implement-metronome/core-concepts/non-monotonically-increasing-metrics.md\"\nraw_files:\n  - \"metronome/guides/implement-metronome/core-concepts/non-monotonically-increasing-metrics-2026-07-13.md\"\ntags: [metronome, billable-metrics, latest-aggregation, usage-based-billing, credits, rate-changes]\n---\n\n## Overview\n\nThis guide documents how Metronome bills metrics whose reported value can rise or fall, such as connected-device or storage-in-use measurements. These metrics typically use `latest`; for billing, Metronome derives incremental changes between consecutive reporting windows, while its usage-query surface reports absolute latest values. The guide is useful for reasoning about rating, commit and credit coverage, rate changes, invoice breakdowns, and reconciliation, but it does not replace the linked metric-creation or endpoint schemas.\n\n## Metric and billing semantics\n\nA non-monotonically increasing metric can move up or down during a billing period and typically uses `latest`, which captures the most recently reported value at each point in time. For billing, Metronome uses the change between consecutive reporting windows rather than the absolute reported value. In the worked sequence `7 -> 9 -> 10 -> 5`, the billed quantities are `7`, `2`, `1`, and `-5`; a decrease therefore creates a negative billed quantity and a credit for that period.\n\nThe page does not define the exact reporting-window boundaries, timezone, missing-window behavior, first-value baseline across billing periods, treatment of late or corrected values, precision, rounding, or invoice-finalization effects. Its examples establish the documented outcomes shown, not a complete event, metric-creation, invoice-lifecycle, or accounting contract.\n\n## Commits, credits, and effective dates\n\nCommits and credits cover only incremental usage within their effective date range, not the absolute latest value. In the guide's example, a commit beginning on day 2 covers the increment from `7` to `9`\u2014quantity `2`\u2014but not day 1's quantity `7`. The same effective-window rule is illustrated for a free credit: only incremental units accrued inside the credit's date range are covered, and the remainder is billed at the standard rate.\n\n## Rate changes and negative quantities\n\nA mid-period rate applies to incremental usage in its own effective window. An increase from `7` to `9` after a move from $3 to $4 per unit bills only the increment of `2` at $4. If the reported value falls after the rate change, the negative increment is priced at the current effective rate: the guide's decrease of `10` at the new $4 rate produces a `-$40` charge line. It warns that a higher current rate can make the per-unit credit larger than the earlier per-unit charge.\n\n## Credit application and negative totals\n\nWhen credits, a rate change, and a later usage decrease coexist, Metronome evaluates charge lines independently in chronological order and applies credit to positive lines as encountered; it does not look ahead to later negative charges or first cap credit consumption against the net invoice. In the worked example, a $100 full-period credit is consumed against an initial $120 positive charge, after which a `-$40` line yields a final total due of `-$20`. The guide does not explain whether a negative total is carried forward, refunded, offset, exported, delivered to a billing provider, or treated for tax, payment, settlement, reconciliation, or accounting.\n\n> [!warning] Intra-page recommendation conflict\n> The worked example explicitly says its $100 credit covers the full billing period and still produces a `-$20` total because credit is consumed before the later negative charge. The later tip nevertheless recommends full-period commit and credit coverage and says that configuration applies credits holistically across all line items and avoids unexpected negative totals. The page does not reconcile these statements. Preserve both as documented and verify operational behavior before relying on the recommendation.\n\n## Invoice-breakdown and usage-query distinction\n\nFor this guide's `latest` metrics, the invoice-breakdowns endpoint returns incremental quantity and associated cost for each time window, including negative quantities and negative costs when usage decreases. By contrast, the usage endpoints return the absolute latest reported value within each requested window; with no breakdown, the example returns the latest value across the full queried period. This difference matters when reconciling usage views with billed quantities.\n\nThis guide documents the distinction, not the endpoints' exact authentication, parameters, response envelopes, pagination, ordering, freshness, consistency, or error behavior. Those contracts require the dedicated API references.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-billable-metrics]], [[metronome-usage-based-billing]], [[metronome-products-and-rate-cards]], [[metronome-credits-and-commits]], [[metronome-invoicing]], [[metronome-reporting-and-analytics]]\n- Metric design authority: [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]]\n\n## Related raw API references\n\n- [[raw/metronome/api-reference/invoices/list-invoice-breakdowns-2026-07-13|Invoice breakdowns API reference]] \u2014 navigation-only; not used as factual evidence for this source body\n- [[raw/metronome/api-reference/usage/get-usage-data-with-paginated-groupings-2026-07-13|Usage data with paginated groupings API reference]] \u2014 navigation-only; not used as factual evidence for this source body\n\n## Raw Sources\n\n- [[raw/metronome/guides/implement-metronome/core-concepts/non-monotonically-increasing-metrics-2026-07-13|2026-07-13 snapshot - non-monotonic metric billing, effective-date, rate-change, credit, and query-surface behavior]]\n",
+  "quotes": [
+    {
+      "text": "Most billable metrics in Metronome track usage that only goes up over time \u2014 for example, the total count of API calls made. These are **monotonically increasing** metrics. However, some metrics can fluctuate up *and* down over a billing period \u2014 for example, the number of connected devices or storage in use. These are **non-monotonically increasing** metrics, and they require a few special considerations when working with Metronome contracts, commits, credits, rate changes, and usage APIs.\n\nNon-monotonically increasing metrics typically use the `latest` aggregation type, which captures the most recent reported value at each point in time rather than counting or summing all events together.\n\nThis page covers behavioral nuances specific to non-monotonically increasing (e.g., `latest`) metrics. For general information about creating billable metrics, see [Create billable metrics](/guides/implement-metronome/core-concepts/create-billable-metrics#1-identify-usage-components).\n\n## How Metronome bills non-monotonically increasing metrics\n\nWhen Metronome processes a `latest` metric for billing purposes, it calculates the **incremental change** between consecutive reporting windows rather than billing on the absolute value. This is a critical distinction that affects how charges, commits, credits, and rate changes are applied.\n\n**Example:** You send in the following `latest` values over four days:\n\n| Day   | Reported value | Incremental quantity billed |\n| ----- | -------------- | --------------------------- |\n| Day 1 | 7              | 7                           |\n| Day 2 | 9              | 2 *(9 \u2212 7)*                 |\n| Day 3 | 10             | 1 *(10 \u2212 9)*                |\n| Day 4 | 5              | \u22125 *(5 \u2212 10)*               |\n\nMetronome computes the daily incremental change and uses that as the billable quantity. When the reported value **decreases**, the incremental quantity is **negative**, which results in a credit back to the customer for that period.",
+      "location": "raw/metronome/guides/implement-metronome/core-concepts/non-monotonically-increasing-metrics-2026-07-13.md:11-30 (metric definition, typical latest aggregation, incremental billing, and negative quantity outcome)"
+    },
+    {
+      "text": "Commits and credits apply only to the **incremental usage that falls within their effective date range** \u2014 not the absolute reported value.\n\n### Example\n\nSuppose you have a `latest` metric and send the following values:\n\n* **Day 1:** reported value = **7**\n* **Day 2:** reported value = **9**\n\nYou create a contract with a commit that covers **Day 2 onward only**.\n\nEven though the absolute value on Day 2 is 9, the commit only covers the **incremental quantity** of **2** (the change from 7 to 9). The usage from Day 1 (quantity of 7) is not covered by the commit because it falls outside the commit's effective range.\n\n| Period | Reported value | Incremental quantity | Covered by commit? |\n| ------ | -------------- | -------------------- | ------------------ |\n| Day 1  | 7              | 7                    | No                 |\n| Day 2  | 9              | 2                    | Yes                |\n\nThis behavior ensures that commits and credits are applied proportionally to the usage that actually occurred during their effective period.\n\nThe same logic applies to **credits**. In the invoice below, the \\$100 credit labeled \"Free credit\" covers only the incremental quantity that falls within its effective date range (March 17th onward).\n\n**Example invoice with credit coverage:**\n\n| Name           | Applied commit or credit | Effective date | Quantity | Unit price           | Total        |\n| -------------- | ------------------------ | -------------- | -------- | -------------------- | ------------ |\n| Latest Product | \u2013                        | Mar 1 \u2013 Mar 17 | 40       | \\$3.00               | \\$120.00     |\n| Latest Product | Free credit              | Mar 17 \u2013 Apr 1 | 25       | \\$4.00               | \\$100.00     |\n| Latest Product | \u2013                        | Mar 17 \u2013 Apr 1 | 55       | \\$4.00               | \\$220.00     |\n|                |                          |                |          | Free credit consumed | \u2212\\$100.00    |\n|                |                          |                |          | **Total due**        | **\\$340.00** |\n\nIn this example, the free credit covers 25 of the 80 incremental units that accrued during the Mar 17 \u2013 Apr 1 period. The remaining 55 units are billed at the standard rate.\n\n## Rate changes\n\nWhen a rate change takes effect mid-period, Metronome applies each rate only to the **incremental usage that occurred during that rate's effective window**. This interacts with non-monotonically increasing metrics in two important ways depending on whether the value increased or decreased.",
+      "location": "raw/metronome/guides/implement-metronome/core-concepts/non-monotonically-increasing-metrics-2026-07-13.md:34-70 (commit and credit effective-window coverage and rate-window rule)"
+    },
+    {
+      "text": "When the reported value drops after a rate change, the **negative incremental quantity** is priced at the **new rate**, resulting in a credit at that rate.\n\n* **Mar 1 \u2013 Mar 17:** reported value reaches **40** (rate = \\$3.00/unit)\n* **Mar 17 \u2013 Apr 1:** reported value drops by **10** (rate changes to \\$4.00/unit)\n\n**Example invoice with rate change and negative quantity:**\n\n| Name           | Effective date | Quantity | Unit price    | Total       |\n| -------------- | -------------- | -------- | ------------- | ----------- |\n| Latest Product | Mar 1 \u2013 Mar 17 | 40       | \\$3.00        | \\$120.00    |\n| Latest Product | Mar 17 \u2013 Apr 1 | \u221210      | \\$4.00        | \u2212\\$40.00    |\n|                |                |          | **Total due** | **\\$80.00** |\n\nIn this case, the customer is billed \\$120.00 for the first period at \\$3.00/unit, then credited \\$40.00 for the decrease of 10 units at the new \\$4.00 rate, resulting in a net total of **\\$80.00**.\n\n<Warning>\n  Because negative incremental quantities are priced at the **current effective rate** (not the original rate), a rate increase combined with a usage decrease can result in a credit that is larger per unit than the original charge. Make sure your rate change timing accounts for this behavior.\n</Warning>\n\n## Credits combined with rate changes and usage decreases\n\nWhen a credit is present alongside a rate change and a usage decrease, the interaction between these factors can produce **negative invoice totals**. This happens because Metronome evaluates each charge line independently and applies credits as it encounters positive charges \u2014 it does **not** look ahead to account for negative charges that appear later on the invoice.",
+      "location": "raw/metronome/guides/implement-metronome/core-concepts/non-monotonically-increasing-metrics-2026-07-13.md:87-108 (current-rate pricing for negative increments and no-look-ahead credit rule)"
+    },
+    {
+      "text": "Using the same scenario as above \u2014 a rate change from \\$3.00 to \\$4.00 on Mar 17, with usage rising to 40 then dropping by 10 \u2014 now add a **\\$100.00 free credit** that covers the full billing period.\n\nMetronome processes the charges in chronological order:\n\n1. **Mar 1 \u2013 Mar 17:** 40 units \u00d7 \\$3.00 = \\$120.00. The \\$100.00 credit is applied here, covering 33.33 units. The remaining 6.67 units are billed at \\$3.00.\n2. **Mar 17 \u2013 Apr 1:** \u221210 units \u00d7 \\$4.00 = \u2212\\$40.00. This negative charge is processed as-is \u2014 the credit has already been consumed.\n\n**Example invoice with credit, rate change, and negative quantity:**\n\n| Name           | Applied commit or credit | Effective date | Quantity | Unit price           | Total        |\n| -------------- | ------------------------ | -------------- | -------- | -------------------- | ------------ |\n| Latest Product | Free credit              | Mar 1 \u2013 Mar 17 | 33.33    | \\$3.00               | \\$100.00     |\n| Latest Product | \u2013                        | Mar 1 \u2013 Mar 17 | 6.67     | \\$3.00               | \\$20.00      |\n| Latest Product | \u2013                        | Mar 17 \u2013 Apr 1 | \u221210      | \\$4.00               | \u2212\\$40.00     |\n|                |                          |                |          | Subtotal             | \\$80.00      |\n|                |                          |                |          | Free credit consumed | \u2212\\$100.00    |\n|                |                          |                |          | **Total due**        | **\u2212\\$20.00** |\n\nThe subtotal of the charges is \\$80.00 (the same as the scenario without a credit). However, the full \\$100.00 credit was consumed against the first tranche of positive charges. The result is a **negative total due of \u2212\\$20.00**.\n\n<Warning>\n  **Metronome does not look forward when applying credits.** Credits are drawn down against positive charge line items as they are encountered. The system does not pre-calculate the net invoice total and limit the credit accordingly. This means that when positive charges early in a period are followed by negative charges later (due to a usage decrease), a credit can be consumed in full even though the net invoice total would have been lower than the credit amount. This can result in negative invoice totals.\n</Warning>\n\nKeep this in mind when configuring credits for products that use non-monotonically increasing metrics, especially in combination with mid-period rate changes.\n\n<Tip>\n  When using non-monotonically increasing metrics, we recommend configuring commits and credits to cover the **entire billing period** rather than a partial date range. This ensures that credits are applied holistically across all line items, including any negative incremental charges from usage decreases, and avoids unexpected negative invoice totals caused by credits being fully consumed against early positive charges before later negative charges are processed.\n</Tip>",
+      "location": "raw/metronome/guides/implement-metronome/core-concepts/non-monotonically-increasing-metrics-2026-07-13.md:112-140 (full-period credit example, negative total, no-look-ahead warning, and conflicting full-period recommendation)"
+    },
+    {
+      "text": "When you call the [invoice breakdowns endpoint](/api-reference/invoices/list-invoice-breakdowns), Metronome returns the **incremental quantity and its associated cost for each time window** \u2014 not the absolute reported value. This includes negative quantities when usage decreases.\n\n### Example\n\nYou send the following `latest` values:\n\n| Day   | Reported value |\n| ----- | -------------- |\n| Day 1 | 7              |\n| Day 2 | 9              |\n| Day 3 | 10             |\n| Day 4 | 5              |\n\nThe invoice breakdowns endpoint returns:\n\n| Day   | Quantity | Cost            |\n| ----- | -------- | --------------- |\n| Day 1 | 7        | 7 \u00d7 unit price  |\n| Day 2 | 2        | 2 \u00d7 unit price  |\n| Day 3 | 1        | 1 \u00d7 unit price  |\n| Day 4 | \u22125       | \u22125 \u00d7 unit price |\n\nThe **quantity** column reflects the incremental change, and the **cost** is calculated based on that incremental quantity. Negative quantities produce negative costs (credits).\n\nThis breakdown gives you a granular, day-by-day view of how the metric's value changed and how each change was priced.\n\n## Usage endpoints\n\nUnlike invoice breakdowns, the [usage endpoints](/api-reference/usage/get-usage-data-with-paginated-groupings) return the **absolute latest reported value per time window** \u2014 not the incremental change. The value you see depends on the granularity you request.\n\n### Example\n\nYou send the following `latest` values:\n\n| Day   | Reported value |\n| ----- | -------------- |\n| Day 1 | 7              |\n| Day 2 | 8              |\n| Day 3 | 9              |\n\n**With a daily breakdown**, the usage endpoint returns:\n\n| Day   | Value |\n| ----- | ----- |\n| Day 1 | 7     |\n| Day 2 | 8     |\n| Day 3 | 9     |\n\n**With no breakdown** (full period), the usage endpoint returns:\n\n| Period        | Value |\n| ------------- | ----- |\n| Day 1 \u2013 Day 3 | 9     |\n\nThe value returned with no breakdown is the **latest reported value** across the entire queried window.\n\n<Info>\n  **Key distinction:** Invoice breakdowns show **incremental quantities** (the change between windows), while usage endpoints show the **absolute latest value** within each window. Keep this difference in mind when reconciling data between the two.\n</Info>",
+      "location": "raw/metronome/guides/implement-metronome/core-concepts/non-monotonically-increasing-metrics-2026-07-13.md:144-202 (invoice-breakdown incremental values versus usage-query absolute latest values)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "non-monotonic-billable-metrics-semantics",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append in `## Matching and aggregation` after the streaming aggregation bullet.",
+        "proposed_markdown": "Non-monotonically increasing measurements, such as connected-device or storage-in-use values, can rise or fall and typically use `LATEST`. For billing, Metronome computes the change between consecutive reporting windows rather than charging the absolute reported value; the guide's `7 -> 9 -> 10 -> 5` example bills `7`, `2`, `1`, and `-5`, so a decrease creates a negative billed quantity and a period credit. The page does not define reporting-window boundaries, cross-period baselines, missing-window behavior, late corrections, precision, rounding, or finalized-invoice effects.",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": [
+          "Preserve `typically uses latest`; the guide does not say every non-monotonic metric must use LATEST.",
+          "Do not collapse billing-time incremental quantities into the absolute LATEST value returned by usage queries."
+        ]
+      },
+      {
+        "update_id": "non-monotonic-billable-metrics-link",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` beside the create-billable-metrics and SQL Editor guides.",
+        "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - non-monotonic `LATEST` metric definition, incremental billing quantities, negative-decrease treatment, and reporting-window boundaries",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "non-monotonic-usage-billing-semantics",
+        "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append in `## Adjacent billing domains` after the billable-metrics paragraph.",
+        "proposed_markdown": "For non-monotonically increasing metrics that typically use `LATEST`, Metronome bills the incremental change between consecutive reporting windows, including a negative quantity and customer credit when the reported value decreases. The same guide distinguishes this billed quantity from usage-query output: invoice breakdowns show each window's incremental quantity and cost, while usage endpoints show the absolute latest value in each requested window. With no breakdown, the usage example returns the latest value across the full queried period. Exact endpoint schemas, pagination, ordering, freshness, and consistency remain with the dedicated API references.",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": [
+          "Attribute the endpoint-output distinction to this guide; the linked endpoint raw pages were navigation-only for this candidate.",
+          "Do not infer invoice finalization, delivery, payment, tax, settlement, or accounting outcomes."
+        ]
+      },
+      {
+        "update_id": "non-monotonic-usage-billing-link",
+        "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` beside the create-billable-metrics and invoicing guides.",
+        "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - incremental billing for falling `LATEST` values, effective-window pricing, and invoice-breakdown versus absolute usage-query semantics",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "non-monotonic-rate-card-impact",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append in `## Rate cards and rates` after the date-effective rate-change bullet.",
+        "proposed_markdown": "For a non-monotonically increasing metric, each rate applies only to the incremental usage in that rate's effective window. A negative increment after a rate change is priced at the current effective rate rather than the original rate; the guide's drop of 10 after a move from $3 to $4 produces a `-$40` charge. It warns that a rate increase can therefore make the per-unit credit for a decrease larger than the original per-unit charge. The page does not define overlap precedence, window boundaries, retroactive changes, late corrections, rounding, or finalized-invoice recalculation.",
+        "quote_indexes": [
+          1,
+          2
+        ],
+        "warnings": [
+          "Keep this rule scoped to the guide's non-monotonically increasing metric behavior.",
+          "A negative Metronome charge line does not establish downstream refund, payment, tax, settlement, or accounting treatment."
+        ]
+      },
+      {
+        "update_id": "non-monotonic-rate-card-link",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` beside rate-change authorities.",
+        "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - effective-window rating of non-monotonic increments, current-rate pricing of negative quantities, and larger-credit warning",
+        "quote_indexes": [
+          1,
+          2
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "non-monotonic-credit-commit-impact",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append in `## Drawdown and invoice attribution` after the line-item application paragraph.",
+        "proposed_markdown": "For non-monotonically increasing metrics, commits and credits cover only incremental usage inside their effective date range, not the absolute reported value. Credits are applied to positive charge lines as encountered and do not look ahead to later negative charges. In the guide's example, a $100 credit stated to cover the full billing period is consumed against an initial $120 positive charge; a later `-$40` charge then produces a `-$20` total. The page does not define the balance-ledger entries, negative-total disposition, carry-forward, refund, downstream delivery, tax, payment, reconciliation, or accounting treatment.\n\n> [!warning] Intra-page recommendation conflict\n> The worked example says a full-period credit still produces a negative total under no-look-ahead application, while the later tip says full-period commit and credit coverage applies credits holistically across all line items and avoids unexpected negative totals. The guide does not reconcile the two statements; preserve both and verify behavior before treating the tip as a guarantee.",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not silently resolve the full-period example versus recommendation conflict.",
+          "Do not infer balance-ledger mutation or downstream financial treatment from invoice-line examples."
+        ]
+      },
+      {
+        "update_id": "non-monotonic-credit-commit-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` beside line-item drawdown authorities.",
+        "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - effective-range incremental coverage, chronological no-look-ahead credit application, negative-total example, and conflicting full-period recommendation",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "non-monotonic-invoicing-impact",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append in `## Credit and commit application` after the existing line-item application ordering paragraph.",
+        "proposed_markdown": "For non-monotonically increasing `LATEST` metrics, invoice quantities are changes between reporting windows and may be negative when usage falls. Metronome evaluates charge lines independently and chronologically, consuming credit against positive lines without looking ahead to a later negative line; the worked full-period-credit example ends at `-$20`. The invoice-breakdowns surface is described as returning each window's incremental quantity and associated cost, including negative quantities and costs. The guide does not define how a negative invoice total proceeds through finalization, delivery, payment, refund, tax, settlement, external A/R, reconciliation, or accounting.\n\n> [!warning] Intra-page recommendation conflict\n> The example's credit covers the full billing period and still yields a negative total, but the later tip says full-period coverage avoids unexpected negative totals. The guide does not reconcile that recommendation with its example.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep negative incremental usage distinct from a credit-memo, refund, or downstream payment outcome.",
+          "Preserve the full-period coverage contradiction."
+        ]
+      },
+      {
+        "update_id": "non-monotonic-invoicing-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` beside credit application and invoice-breakdown authorities.",
+        "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - incremental and negative invoice quantities, no-look-ahead credit consumption, negative-total boundary, and invoice-breakdown behavior",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "non-monotonic-reporting-impact",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append in `## Query model` after the opening SQL-cookbook paragraph.",
+        "proposed_markdown": "For non-monotonically increasing `LATEST` metrics, this guide defines an important reconciliation boundary: invoice breakdowns return incremental quantity and associated cost for each time window, including negative values when usage falls, whereas usage endpoints return the absolute latest reported value within each requested window. With no breakdown, the usage example returns the latest value across the full query period. Comparing these surfaces as if they shared one quantity grain can create apparent mismatches; exact endpoint parameters, envelopes, pagination, ordering, freshness, and consistency require the dedicated API references.",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Do not sum absolute latest window values as if they were billed increments.",
+          "The linked API raw pages were not read as factual evidence for this candidate; attribute these semantics to the assigned guide."
+        ]
+      },
+      {
+        "update_id": "non-monotonic-reporting-link",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add under `## Sources` beside invoice-breakdown and usage-reporting authorities.",
+        "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - reconciliation boundary between incremental invoice-breakdown quantities and absolute latest usage-query values",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/implement-metronome/core-concepts/non-monotonically-increasing-metrics-2026-07-13.md",
+  "raw_sha256": "6b98485546dcb644387de90361e0b6b128c28e76c2e545c7dc50fa5b39496fae",
+  "status": "candidate_ready"
+}

@@ -17,6 +17,9 @@ The customer-credit create schema accepts `custom_fields` for the `contract_cred
 
 The `listBalances` Commit and Credit response schemas can each expose optional `custom_fields` through an arbitrary-key object whose additional-property values are strings. The Commit field is annotated as entity `commit`; the Credit field is annotated `contract_credit`. This endpoint does not define key format, value length, field count, visibility, redaction, permissions, availability, or unset-value behavior.
 
+The single-product response can expose optional `custom_fields` on `ProductListItem`, annotated as entity `contract_product`. The referenced object permits arbitrary property names whose values are strings. This endpoint establishes only the read shape and does not define configured-key validation, limits, ordering, visibility, redaction, permissions, freshness, persistence, export behavior, invoice propagation, or archived-product handling.
+
+
 ## Uniqueness
 
 Uniqueness is intended for foreign entities that have a one-to-one relationship with a Metronome object. Enforcement continues for archived objects; resolving a duplicate involving an archived object requires resetting that object's field value.
@@ -27,6 +30,11 @@ A Product custom field can propagate to the associated invoice line item. The ov
 
 
 The single-invoice response can expose optional invoice-level `custom_fields`. That property declares an object with unrestricted `additionalProperties: true` and no value schema, while client-group annotations qualify its documented availability. This endpoint does not establish key or value types, limits, redaction, permissions, freshness, configured-field absence, or general availability for that invoice-level map.
+
+## Product listing surface
+
+`POST /v1/contract-pricing/products/list` can return optional product `custom_fields` as an object with arbitrary property names and string values, annotated for the `contract_product` entity. The endpoint does not define key or value length, entry limits, ordering, visibility, redaction, configured-key absence, freshness, or whether every product custom field is returned. Listing the map does not mutate it or independently establish invoice-line propagation. [[source-metronome-api-reference-products-list-products]]
+
 
 ## Billable-metric response shape
 
@@ -66,6 +74,12 @@ The overview establishes the purpose, supported object examples, persistence, un
 
 
 - [[source-metronome-api-reference-invoices-get-an-invoice]] - invoice-level unrestricted custom-field response shape and availability, typing, permission, and freshness limits
+
+- [[source-metronome-api-reference-products-get-a-product]] - optional `contract_product`-annotated custom-field response map, arbitrary string-valued properties, and endpoint-specific visibility and freshness unknowns
+
+- [[source-metronome-api-reference-products-list-products]] — optional string-valued product custom-field map and endpoint-specific visibility and freshness unknowns
+
+
 
 ## Related
 

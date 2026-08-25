@@ -33,6 +33,9 @@ The billable-metrics guide fills in the metering layer: usage events are filtere
 
 The invoice guide adds the usage-invoice lifecycle: a contract's usage-statement schedule sets cadence, the draft invoice updates as usage arrives, and a configurable grace period that defaults to 24 hours accepts late usage and corrections before finalization. Once `FINALIZED`, the invoice is immutable within Metronome even if more usage is reported. Distribution and collection follow contract billing configuration, but the guide does not establish downstream provider acceptance, customer delivery, payment success, settlement, tax completion, or accounting posting. [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]]
 
+For non-monotonically increasing metrics that typically use `LATEST`, Metronome bills the incremental change between consecutive reporting windows, including a negative quantity and customer credit when the reported value decreases. The same guide distinguishes this billed quantity from usage-query output: invoice breakdowns show each window's incremental quantity and cost, while usage endpoints show the absolute latest value in each requested window. With no breakdown, the usage example returns the latest value across the full queried period. Exact endpoint schemas, pagination, ordering, freshness, and consistency remain with the dedicated API references.
+
+
 ## Pre-processing validation
 
 The Preview Events API provides a concrete validation step between usage-event design and invoice generation. It can calculate draft invoices from proposed events using the customer's current contract, either replacing historical usage for the calculation or merging with it. The preview does not support contracts with SQL billable metrics.
@@ -80,3 +83,5 @@ These remaining questions require dedicated sources and are not fully answered b
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-preview-event-cost]] — contract-aware pre-action pricing, merge/replace modes, multi-contract output, and simulation limits
 
 - [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] — contract-driven usage-invoice cadence, draft updates, configurable default grace period, finalized immutability, and downstream-outcome boundary
+
+- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - incremental billing for falling `LATEST` values, effective-window pricing, and invoice-breakdown versus absolute usage-query semantics

@@ -1,0 +1,48 @@
+{
+  "action": "spawn_worker",
+  "job_id": "list-products",
+  "attempt": 3,
+  "raw_path": "raw/metronome/api-reference/products/list-products-2026-07-13.md",
+  "raw_sha256": "88a01577b26926064503dca4f0e25542f074c19192357a1ff74570bc2bf55698",
+  "source_target": "wiki/sources/metronome/source-metronome-api-reference-products-list-products.md",
+  "canonical_url": "https://docs.metronome.com/api-reference/products/list-products.md",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location.",
+    "For OpenAPI pages, distinguish requestBody requiredness, required payload properties, and additionalProperties behavior; do not infer omitted-body or unknown-field behavior.",
+    "For every POST operation, check the existing Metronome API-wide idempotency authority and separate its guarantees from endpoint-specific unknowns.",
+    "For each durable fact, audit every relevant existing Metronome concept and provide reciprocal source-link suggestions; do not stop after the first plausible concept."
+  ],
+  "retry_context": {
+    "prior_attempt": 2,
+    "review_scope": "full",
+    "required_changes": [
+      "Correct the request nullability boundary. ListProductsPayload is an OpenAPI 3.0.1 type: object without nullable: true, and archive_filter is a type: string without nullable: true; omission remains allowed because neither the requestBody wrapper nor the property is required, but an explicitly supplied null is outside the documented schema. Keep endpoint-specific runtime error status, envelope, and handling for invalid null unknown, and preserve the unspecified additionalProperties boundary.",
+      "Close the products durable-fact evidence gap. Quote 1 ends inside the HTTP 200 response and therefore does not directly establish that no non-200 response is listed. Expand or replace an excerpt so it encloses the complete operation response map through the components boundary, then update quote locations and quote_indexes, or remove the non-200 absence statement from list-products-products-rate-cards-fact. Preserve the already-correct complete-version-history wording and attempt-1 fixes.",
+      "Narrow list-products-idempotency-fact and list-products-idempotency-link to facts directly grounded in the assigned raw: this is a POST product-catalog listing, its operation page lists only HTTP 200, and it supplies no endpoint-specific idempotency, retry, caching, cursor-replay, or freshness contract. Keep the all-POST Idempotency-Key applicability, identical-parameter original-result replay, conflict, retention, and cached-error behavior attributed to source-metronome-api-reference-idempotency in the candidate or suggestion warnings; do not present original-result replay context as a fact established by quote 1. Re-evaluate quote_indexes after enclosing the operation response map."
+    ],
+    "prior_reviewer_identity": "/root/c22_r_list2"
+  },
+  "recommended_worker_tier": "standard",
+  "routing_reason": "Preliminary archetype API List / Schema: the 459-line product collection is selected for filters, pagination, item shape, ordering, and reusable schemas. Apply the Campaign 22 claim-to-evidence, authority-separation, and concept-impact checks before submission.",
+  "worker_identity": "/root/c22_w_list3",
+  "worker_model": "gpt-5.6-sol"
+}

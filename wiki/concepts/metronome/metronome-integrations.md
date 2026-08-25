@@ -9,6 +9,11 @@ tags: [metronome, integrations, stripe, invoicing]
 
 Metronome integrations connect its usage-billing and contract workflows to external systems. The Metronome Stripe App is an embedded management interface inside the Stripe Dashboard; it is distinct from the native Stripe invoicing integration that delivers invoices to Stripe.
 
+## NetSuite product-item retrieval surface
+
+The product catalog's `initial` and `current` state schemas and its update schema can expose `netsuite_internal_item_id` and `netsuite_overage_item_id`; both fields state that their availability depends on the client's configuration. This retrieval schema does not define what either identifier maps to, external-item validation, freshness, propagation, synchronization, invoice delivery, or reconciliation. [[source-metronome-api-reference-products-list-products]]
+
+
 ## TypeScript SDK boundary
 
 `@metronome/sdk@3.10.0` is a generated server-side TypeScript and JavaScript client with no runtime dependencies. It defaults bearer authentication from `METRONOME_BEARER_TOKEN`, supports configurable fetch, proxy, timeout, retry, logging, raw-response, and pagination behavior, and exposes both typed resources and generic HTTP methods. Its generated types prove an exact package's client surface, not feature enablement or current service behavior. React Native is explicitly unsupported in this release. [[source-github-metronome-node]]
@@ -109,6 +114,14 @@ Metronome documents an SDK-like Workato connector for performing actions on Metr
 
 The Metronome (Actions) destination connects one selected Segment source using a Metronome API token and maps Segment event fields into Metronome's usage-event format. Additional Destination Actions can pair mappings with triggers containing any number of conditions, such as excluding company-domain user emails. The page calls these action configurations `subscriptions`; in this context they are Segment conditional-delivery rules, not Metronome billing subscriptions or customer contracts. It does not define token scope or rotation, trigger overlap or evaluation order, duplicate delivery, retries, batching, response handling, replay, or observability.
 
+The single-product read can expose string `netsuite_internal_item_id` and `netsuite_overage_item_id` on initial/current state and update entries. Both schemas describe those fields as dependent on the client's configuration. Their presence is a product response surface, not evidence of mapping correctness, NetSuite integration readiness, synchronization, invoice delivery, accounting, revenue posting, or reconciliation.
+
+## Salesforce outbound data sync
+
+Metronome's native Salesforce integration uses Census as an ETL layer to push Metronome data into Salesforce daily. Setup installs the Metronome-Salesforce package, creates a Census workspace, links Census to a Salesforce Production or Sandbox destination, and selects either all Metronome customers or only those associated with Salesforce accounts; the process is repeated for every Metronome environment that should sync. After setup, the first syncs start automatically and can take a couple of hours; later syncs run once per day and cannot currently be configured more frequently. Completed-run monitoring reports attempted, successful, and failed changed rows by object type, and its downloadable error CSV is only a sample of up to 100 failures. The guide does not define credential rotation, package lifecycle, retries, recovery, object-ordering or atomicity, deletion handling, or proof of Salesforce visibility for rows reported successful.
+
+
+
 ## Sources
 
 - [[source-metronome-api-reference-settings-list-account-level-billing-providers]] — account-level billing-provider delivery-method enumeration, configuration exposure, pagination, and identifier boundaries
@@ -148,6 +161,15 @@ The Metronome (Actions) destination connects one selected Segment source using a
 
 
 - [[source-metronome-integrations-marketplace-integrations-aws]] — AWS Marketplace listing, IAM delegation, customer and contract configuration layers, metering behavior, and downstream limits
+
+- [[source-metronome-api-reference-products-get-a-product]] - configuration-dependent NetSuite item identifiers in product state and updates, with readiness, synchronization, delivery, accounting, and reconciliation boundaries
+
+- [[source-metronome-api-reference-products-list-products]] — configuration-dependent NetSuite item-ID fields in product initial, current, and update schemas, with mapping and synchronization boundaries
+
+- [[source-metronome-integrations-platform-integrations-sfdc-integration]] - outbound Census-powered Salesforce sync, per-environment setup, customer selection, daily cadence, changed-row monitoring, failure sampling, and downstream boundaries
+
+
+
 
 ## Related
 

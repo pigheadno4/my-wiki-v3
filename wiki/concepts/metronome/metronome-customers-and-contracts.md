@@ -28,6 +28,9 @@ Bearer-authenticated `GET /v1/customers/{customer_id}` requires a Metronome UUID
 
 Bearer-authenticated `GET /v1/customers` returns active customers by default and can filter by one ingest alias, up to 100 customer IDs, only archived customers, or up to 100 Salesforce account IDs. It uses optional 1-100 `limit` and `next_page` query parameters and requires a customer-detail array plus nullable `next_page` in a successful response. The endpoint does not define filter-intersection semantics, result ordering, default page size, cursor lifetime, snapshot consistency, or freshness. [[source-metronome-api-reference-customers-list-customers]]
 
+The Salesforce integration can synchronize every Metronome customer or only customers linked to Salesforce accounts. The UI link stores a supplied Salesforce account ID on the Metronome customer, and the guide says the association can also be made during programmatic customer creation without supplying the request contract. The Salesforce objects include customer identity and the associated Salesforce-account lookup when present. The distinct customer-ingest-alias object carries the Metronome alias ID, customer lookup, alias value, and environment. Contract records link customer and rate card and expose inclusive UTC start, nullable exclusive UTC end, and usage-statement schedule frequency. The page does not define account-ID validation, uniqueness, reassignment, unlinking, linkage freshness, exact programmatic field, or row deletion and archive behavior. For the alias replica, it likewise does not establish alias uniqueness, current-active status, reassignment, deletion, ordering, event-matching freshness, or synchronization atomicity.
+
+
 
 ## Customer name update API
 
@@ -40,6 +43,11 @@ Bearer-authenticated `POST /v1/customers/{customer_id}/setName` targets a requir
 Billing-provider and revenue-system configurations can be attached during creation or added later. A contract must select the intended customer configuration because one customer can have multiple invoice destinations. The narrative calls the returned identifier `customer_id`, while the response schema exposes it as `data.id`.
 
 The implementation guide states that a customer needs at least one contract before rating begins. A customer can hold several provider configurations, while each contract selects one, separating customer creation from rating and invoice routing.
+
+## Customer archival API
+
+On the documented production server `https://api.metronome.com`, top-level bearer-secured `POST /v1/customers/archive` takes a JSON `Id` payload whose required property is UUID `id`, while the enclosing `requestBody` is not marked required. Metronome positions archival for a mistakenly onboarded customer, makes it irreversible, keeps the customer visible through the API and UI for audit, automatically archives all contracts as of the current date, and voids all corresponding invoices. Ingest aliases remain reserved unless removed before archival. The page does not define retention, archive timestamp propagation, read-after-write consistency, contract or invoice state partitioning, atomicity, repeated-call behavior, or partial-failure recovery. [[source-metronome-api-reference-customers-archive-a-customer]]
+
 
 ## Contract and invoice behavior
 
@@ -224,6 +232,12 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 
 
 - [[source-metronome-integrations-marketplace-integrations-aws]] — AWS customer identifiers, contract routing, lifecycle ownership, and the provider-change contradiction
+
+- [[source-metronome-api-reference-customers-archive-a-customer]] - production bearer-authenticated customer archival, irreversible lifecycle, audit visibility, contract and invoice effects, alias reservation, request schema, and lifecycle unknowns
+
+- [[source-metronome-integrations-platform-integrations-sfdc-integration]] - Salesforce account linkage and selected-customer sync, customer and ingest-alias replicas, contract lookup and effective-time fields, and linkage and lifecycle unknowns
+
+
 
 ## Related
 

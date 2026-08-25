@@ -24,6 +24,9 @@ A historical invoice line item can replace one period-level `quantity` with time
 - Join through stable object IDs such as customer, contract, invoice, line-item, product, billable-metric, and rate-card IDs.
 - Follow table-specific scope notes. For example, `contracts_commits` contains contract-level commits but excludes customer-level commits or credits and contract-level credits.
 
+For non-monotonically increasing `LATEST` metrics, this guide defines an important reconciliation boundary: invoice breakdowns return incremental quantity and associated cost for each time window, including negative values when usage falls, whereas usage endpoints return the absolute latest reported value within each requested window. With no breakdown, the usage example returns the latest value across the full query period. Comparing these surfaces as if they shared one quantity grain can create apparent mismatches; exact endpoint parameters, envelopes, pagination, ordering, freshness, and consistency require the dedicated API references.
+
+
 ## Delivery and freshness
 
 ### In-app reports and dashboards
@@ -33,6 +36,9 @@ Metronome's app exposes standard and custom reports as generated CSVs from the R
 The separately documented in-app dashboards are beta and require account enablement. Basic Revenue Overview summarizes invoiced amounts, usage and subscription revenue, commits and credits, and customer consumption; Committed & Run Rate ARR defines ARR, movement, NRR, GRR, and logo classifications; Filterable Customer List supports customer search and sorting. Committed ARR annualizes balance-schedule items and scheduled charges over their durations, with CPU commitments converted through the associated rate-card conversion. Run Rate ARR annualizes average usage and subscription revenue over a configurable trailing completed-month window, uses available history for newer customers, and continues to calculate a moving average for churned customers whose latest month is zero. Movement compares a configurable current and base period; GRR excludes expansion while NRR includes it.
 
 The ARR dashboard defaults include excluding `credit` commits and commits or charges shorter than 30 days, a 12-month movement lookback, excluding `credit_drawdown` from run-rate revenue, and a three-completed-month run-rate average. Its caveats say only contract data and finalized invoices are used, invoices are prorated by day across months, and non-USD fiat is unsupported. The page calls customer-detail exploration “real time” but gives no dashboard refresh cadence, latency, API, permissions, caching, correction, retention, availability, or accounting-standard guarantee. The once-daily update warning is stated for generated reports, not explicitly for dashboards; Data Export timing and API-powered merchant dashboards remain separate surfaces.
+
+The native Salesforce integration is a distinct CRM-facing reporting surface from Data Export and in-app reporting: Census pushes selected Metronome customer, contract, commit or credit, rate-card, invoice, and invoice-line data into Salesforce once per day. The initial sync can take a couple of hours, and the cadence cannot currently be configured more frequently. Completed-sync totals count only rows changed since the prior sync, while the downloadable error CSV samples at most 100 failures for one object type and sync. Those counters and samples do not establish full-population completeness, end-to-end Salesforce visibility, retry or recovery, ordering across object types, or a financial-reconciliation guarantee.
+
 
 ## Commercial export-row accounting
 
@@ -93,6 +99,12 @@ Metronome's GTM reporting guide models expected commit pacing from access schedu
 - [[source-metronome-guides-reporting-insights-data-export-database-reference]] — exported table families, grains, fields, snapshot behavior, and global cautions
 - [[source-metronome-guides-reporting-insights-data-export-overview]] — destination scope, delivery cadence, freshness, and object-storage semantics
 - [[source-metronome-guides-implement-metronome-planning-your-billing-architecture]] — customer, sales, finance, and audit distribution requirements
+
+- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - reconciliation boundary between incremental invoice-breakdown quantities and absolute latest usage-query values
+
+- [[source-metronome-integrations-platform-integrations-sfdc-integration]] - daily CRM sync through Census, selected customer and billing-data scope, changed-row outcome monitoring, 100-failure sample boundary, and freshness and completeness unknowns
+
+
 
 ## Related
 

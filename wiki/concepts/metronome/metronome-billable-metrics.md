@@ -33,6 +33,12 @@ The Basic Filters editor always creates a streaming billable metric. Its worked 
 
 On the invoice side, each used pricing-group-key combination produces a separate line item, while the guide says combinations without usage do not create a line item. Presentation grouping organizes usage lines under a property such as project or organization; it does not by itself establish price selection. These invoice effects do not replace the metric-side requirements for declaring group keys, filters, compound dimensions, or creation-time immutability. [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]]
 
+The single-product read can expose an unformatted string `billable_metric_id` on initial/current state and a UUID-formatted `billable_metric_id` on update entries; clients must preserve that schema distinction. Reusable pricing- and presentation-group-key schemas are usage-only string arrays: pricing keys select pricing per value, presentation keys group usage invoice lines, and their combined value superset must be set as one compound group key on the billable metric. This product read does not return the metric definition or prove that a referenced metric exists, contains the required compound key, or is compatible with the product.
+
+Non-monotonically increasing measurements, such as connected-device or storage-in-use values, can rise or fall and typically use `LATEST`. For billing, Metronome computes the change between consecutive reporting windows rather than charging the absolute reported value; the guide's `7 -> 9 -> 10 -> 5` example bills `7`, `2`, `1`, and `-5`, so a decrease creates a negative billed quantity and a period credit. The page does not define reporting-window boundaries, cross-period baselines, missing-window behavior, late corrections, precision, rounding, or finalized-invoice effects.
+
+
+
 ## SQL query, output, and timing semantics
 
 - SQL metrics query `events` through `event_type`, `timestamp`, and `properties.field_name`; Metronome applies customer and billing-period filtering. The concept currently leaves SQL output rules undefined; replace that boundary with the documented multi-column rule: `value` is preferred, the first returned column is the fallback when `value` is absent, other columns can become pricing or presentation keys, and unused extra columns are summed over. The page does not define the quantity-column rule for a one-column result or runtime behavior for missing, duplicate, or nonnumeric quantity columns.
@@ -81,6 +87,9 @@ Because usage-event structures target particular metrics, changing the producer 
 
 The retrieval schemas preserve the create-schema conflicts: `UNIQUE` remains unexplained, SQL and standard configuration have no discriminator, and include/exclude precedence, empty `not_in_values`, aggregation-key requiredness, and group-key limits remain undefined. The customer-list example also uses `aggregation_key: bytes` without a matching property-filter name and shows conflicting `group_by` and `group_keys` values.
 
+The product catalog's `initial` and `current` states, and each update entry, can expose `billable_metric_id`, `pricing_group_key`, and `presentation_group_key`. The list schema repeats that the two product key arrays are usage-only and that their combined values must be defined as one compound group key on the billable metric. The initial/current state annotates `billable_metric_id` only as a string while the update schema marks it UUID-formatted; this difference does not prove different runtime identifier formats. The endpoint does not define metric existence checks, missing-dimension behavior, fallback pricing, or consistency while metric or product configuration changes. [[source-metronome-api-reference-products-list-products]]
+
+
 ## Group-key alert scoping
 
 Dimension-scoped spend alerts require their `group_values` key to be a group key on the underlying billable metrics associated with the customer's contract. Products whose metric lacks the key do not contribute to that threshold. Metronome recomputes the selected usage as if the key were a presentation group, so tiered pricing, quantity rounding, and `MAX` aggregation apply to the subset. A customer can use three distinct keys for spend-threshold notifications; a fourth is blocked. When one key has more than 5,000 values for that customer, the guide calls for representative consultation rather than defining a hard maximum.
@@ -113,6 +122,15 @@ Dimension-scoped spend alerts require their `group_values` key to be a group key
 
 
 - [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] — invoice-side pricing-group line creation, no-usage suppression, and presentation-group display boundary
+
+- [[source-metronome-api-reference-products-get-a-product]] - product-side billable-metric references with state/update format distinction, usage pricing and presentation group-key schemas, compound-key requirement, and association-validation boundaries
+
+- [[source-metronome-api-reference-products-list-products]] — product-side metric IDs, pricing and presentation group keys, compound-key requirement, and identifier-format ambiguity
+
+- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - non-monotonic `LATEST` metric definition, incremental billing quantities, negative-decrease treatment, and undefined reporting-window boundaries
+
+
+
 
 ## Related
 

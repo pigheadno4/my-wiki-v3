@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 127 |
-| Raw pages without source summaries | 104 |
+| Source summaries ingested | 132 |
+| Raw pages without source summaries | 99 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -22,6 +22,12 @@ Operational evidence:
 - [2026-07-13 collection manifest](../tracking/collections/metronome/runs/2026-07-13T100930-manifest.md)
 
 ## Sources
+
+- [[source-metronome-api-reference-products-get-a-product]] — single-product state and update history, composite configuration, group keys, custom fields, and integration boundaries
+- [[source-metronome-api-reference-products-list-products]] — paginated catalog retrieval, archive filtering, complete-version-history claim, product schemas, and contradictions
+- [[source-metronome-api-reference-customers-archive-a-customer]] — irreversible customer archival, contract and invoice effects, alias reservation, and notification suppression
+- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] — incremental non-monotonic billing, negative quantities, effective periods, credit ordering, and reporting boundaries
+- [[source-metronome-integrations-platform-integrations-sfdc-integration]] — outbound Salesforce synchronization, setup layers, daily cadence, object mappings, and completeness limits
 
 - [[source-metronome-api-reference-invoices-get-an-invoice]] — single-invoice retrieval, state, line items, applied balances, hierarchy, and integration-status boundaries
 - [[source-metronome-api-reference-customers-list-customers]] — account customer filters, pagination, identity, aliases, custom fields, and archive visibility

@@ -1,0 +1,225 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "sfdc-integration-sync-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append after `## Segment event-delivery integration` and before `## Sources`.",
+      "proposed_markdown": "## Salesforce outbound data sync\n\nMetronome's native Salesforce integration uses Census as an ETL layer to push Metronome data into Salesforce daily. Setup installs the Metronome-Salesforce package, creates a Census workspace, links Census to a Salesforce Production or Sandbox destination, and selects either all Metronome customers or only those associated with Salesforce accounts; the process is repeated for every Metronome environment that should sync. After setup, the first syncs start automatically and can take a couple of hours; later syncs run once per day and cannot currently be configured more frequently. Completed-run monitoring reports attempted, successful, and failed changed rows by object type, and its downloadable error CSV is only a sample of up to 100 failures. The guide does not define credential rotation, package lifecycle, retries, recovery, object-ordering or atomicity, deletion handling, or proof of Salesforce visibility for rows reported successful.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Keep the direction Metronome to Salesforce; do not merge this with the separately documented Salesforce-to-Metronome provisioning example in [[source-metronome-guides-reporting-insights-financial-reporting-reconcile-data]].",
+        "Active integration state and successful-row counts do not independently prove Salesforce acceptance, visibility, or downstream business outcomes."
+      ]
+    },
+    {
+      "update_id": "sfdc-integration-integrations-link",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside the Segment and Workato platform-integration sources.",
+      "proposed_markdown": "- [[source-metronome-integrations-platform-integrations-sfdc-integration]] - outbound Census-powered Salesforce sync, per-environment setup, customer selection, daily cadence, changed-row monitoring, failure sampling, and downstream boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "sfdc-integration-reporting-surface",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append under `## Delivery and freshness` after the in-app reports and dashboards subsection.",
+      "proposed_markdown": "The native Salesforce integration is a distinct CRM-facing reporting surface from Data Export and in-app reporting: Census pushes selected Metronome customer, contract, commit or credit, rate-card, invoice, and invoice-line data into Salesforce once per day. The initial sync can take a couple of hours, and the cadence cannot currently be configured more frequently. Completed-sync totals count only rows changed since the prior sync, while the downloadable error CSV samples at most 100 failures for one object type and sync. Those counters and samples do not establish full-population completeness, end-to-end Salesforce visibility, retry or recovery, ordering across object types, or a financial-reconciliation guarantee.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not apply Data Export cadence, append-only delivery, at-least-once behavior, or table-grain rules to this Salesforce connector unless a separate authority does so.",
+        "Do not treat the changed-row total as the Salesforce object's total record count."
+      ]
+    },
+    {
+      "update_id": "sfdc-integration-reporting-link",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside CRM and reconciliation authorities.",
+      "proposed_markdown": "- [[source-metronome-integrations-platform-integrations-sfdc-integration]] - daily CRM sync through Census, selected customer and billing-data scope, changed-row outcome monitoring, 100-failure sample boundary, and freshness and completeness unknowns",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "sfdc-integration-customer-contract-impact",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append after the customer list API subsection.",
+      "proposed_markdown": "The Salesforce integration can synchronize every Metronome customer or only customers linked to Salesforce accounts. The UI link stores a supplied Salesforce account ID on the Metronome customer, and the guide says the association can also be made during programmatic customer creation without supplying the request contract. The Salesforce objects include customer identity and the associated Salesforce-account lookup when present. The distinct customer-ingest-alias object carries the Metronome alias ID, customer lookup, alias value, and environment. Contract records link customer and rate card and expose inclusive UTC start, nullable exclusive UTC end, and usage-statement schedule frequency. The page does not define account-ID validation, uniqueness, reassignment, unlinking, linkage freshness, exact programmatic field, or row deletion and archive behavior. For the alias replica, it likewise does not establish alias uniqueness, current-active status, reassignment, deletion, ordering, event-matching freshness, or synchronization atomicity.",
+      "quote_indexes": [
+        1,
+        3
+      ],
+      "warnings": [
+        "[[source-metronome-api-reference-customers-get-a-customer]] and [[source-metronome-api-reference-customers-list-customers]] separately expose nullable customer_config.salesforce_account_id; this integration guide does not replace their response and filter schemas.",
+        "The current [[source-metronome-api-reference-customers-create-a-customer]] summary does not document a Salesforce account field; verify the current mutation schema before implementing the guide's programmatic-link statement.",
+        "Keep customer ingest aliases under the customer identity authority; do not conflate them with effective-dated rate-card or package aliases."
+      ]
+    },
+    {
+      "update_id": "sfdc-integration-customer-contract-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside customer read, list, and creation authorities.",
+      "proposed_markdown": "- [[source-metronome-integrations-platform-integrations-sfdc-integration]] - Salesforce account linkage and selected-customer sync, customer and ingest-alias replicas, contract lookup and effective-time fields, and linkage and lifecycle unknowns",
+      "quote_indexes": [
+        1,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "sfdc-integration-credit-commit-impact",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append under `## Drawdown and invoice attribution` after the usage-invoice paragraph.",
+      "proposed_markdown": "The Salesforce sync represents both commits and credits in one object family with Metronome commit identity; customer and contract lookups; prepaid, postpaid, or credit type; priority; inclusive UTC start and exclusive UTC end; total amount; current balance; total cost; cost basis; and environment identity. The current-balance description subtracts burn-down including the current draft invoice from total amount, total amount sums access segments, total cost sums invoice segments, and cost basis is total cost divided by total amount. The commit-or-credit object has no documented credit-type lookup even though its total-amount description uses dollar wording. This CRM replica does not define balance-read timing, denomination, USD-cent or non-USD scaling, custom-pricing-unit conversion, number precision or rounding, zero-total division behavior, ledger identity, synchronization ordering, or reconciliation to the authoritative balance and invoice APIs.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Preserve the source's combined commit-or-credit Salesforce object rather than inferring separate lifecycle schemas.",
+        "Do not treat the synchronized current balance as a snapshot-consistency or accounting-reconciliation guarantee.",
+        "Do not resolve the missing commit credit-type lookup or denomination from [[metronome-currencies-and-custom-pricing-units]]; the Salesforce schema does not document that relationship."
+      ]
+    },
+    {
+      "update_id": "sfdc-integration-credit-commit-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside reporting and balance-read authorities.",
+      "proposed_markdown": "- [[source-metronome-integrations-platform-integrations-sfdc-integration]] - daily Salesforce commit-or-credit replica, schedule and amount fields, current-draft-inclusive burn-down balance, cost basis, and freshness and reconciliation boundaries",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "sfdc-integration-invoice-impact",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append under `## Shared Plan and Contract invoice surface` after the single-invoice read paragraph.",
+      "proposed_markdown": "The Salesforce integration synchronizes invoice and invoice-line custom objects daily. Invoice fields include identity, customer, contract, credit type, invoice type, inclusive and exclusive UTC service-period bounds, total, status, issue time, and environment; lines include invoice, credit-type and commit lookups, quantity, unit price, product ID, total, effective-time bounds, and environment. The prose explicitly says the invoice and line objects include draft and finalized invoices, while the invoice status field enumerates `Draft`, `Finalized`, and `Void`; whether void invoices are synchronized or retained is unresolved. Salesforce copies do not establish invoice finalization freshness, provider delivery, payment, tax, settlement, accounting, or reconciliation.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Preserve the draft/finalized prose versus Draft/Finalized/Void status ambiguity; do not assert that void invoices are synchronized without further authority.",
+        "Product_Type__c is described as the product ID despite its field name; do not silently reinterpret it as a product-type enum."
+      ]
+    },
+    {
+      "update_id": "sfdc-integration-invoice-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside invoice retrieval and reporting sources.",
+      "proposed_markdown": "- [[source-metronome-integrations-platform-integrations-sfdc-integration]] - daily Salesforce invoice and line-item replicas, service-period and attribution fields, draft and finalized scope, Void-status ambiguity, and downstream-outcome boundaries",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "sfdc-integration-product-rate-card-impact",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append under `## Rate cards and rates` after the card-creation and metadata-edit bullets.",
+      "proposed_markdown": "The Salesforce sync exposes a rate-card custom object containing Metronome rate-card ID, name, description, and environment. Contract replicas reference the rate card. Invoice-line replicas identify the product and can be connected through many-to-many association objects to pricing-dimension key/value records; parallel association objects connect lines to presentation or invoicing-group key/value records. The guide does not define product or rate versioning, archive handling, dimension cardinality, ordering, missing-key behavior, or whether Salesforce receives historical versus current catalog state.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "The Salesforce field named Product_Type__c is described as a product ID, not as the Metronome product type.",
+        "Do not infer that Salesforce association rows reproduce every pricing or presentation grouping state at one atomic snapshot."
+      ]
+    },
+    {
+      "update_id": "sfdc-integration-product-rate-card-link",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside rate-card and invoice-grouping authorities.",
+      "proposed_markdown": "- [[source-metronome-integrations-platform-integrations-sfdc-integration]] - Salesforce rate-card replica, contract lookup, invoice-line product attribution, pricing-dimension and invoicing-group association objects, and catalog-state unknowns",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "sfdc-integration-event-ingestion-impact",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append under `## Event contract` after the customer-list read paragraph.",
+      "proposed_markdown": "The daily Salesforce sync includes a distinct customer-ingest-alias custom object with the Metronome alias ID, a lookup to the associated customer, the alias value, and the Metronome environment. This CRM replica does not establish alias uniqueness, current-active status, reassignment, deletion, ordering, event-matching freshness, or atomic synchronization with customer records.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Keep this replica separate from the authorities that define ingest-alias event matching, provisioning limits, persistence, and idempotency; the Salesforce object schema does not replace those contracts."
+      ]
+    },
+    {
+      "update_id": "sfdc-integration-event-ingestion-link",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside the customer create, get, and list authorities.",
+      "proposed_markdown": "- [[source-metronome-integrations-platform-integrations-sfdc-integration]] - daily Salesforce customer-ingest-alias replica, alias identity and customer lookup fields, and uniqueness, activity, freshness, lifecycle, and synchronization boundaries",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "sfdc-integration-currency-impact",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append under `## Fiat currencies and API denomination` after the listBalances paragraph.",
+      "proposed_markdown": "The daily Salesforce sync includes a credit-type object with credit-type ID, name, and Metronome environment; its invoice and invoice-line objects each reference a credit type. The combined commit-or-credit object has no documented credit-type lookup even though its total-amount description uses dollar wording. This Salesforce schema does not establish denomination or USD-cent, non-USD, custom-pricing-unit, conversion, precision, or rounding semantics for those replicas.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not import the general currency authority's USD-cent, non-USD, or custom-pricing-unit behavior into the Salesforce replica or infer a commit-to-credit-type relationship that this schema does not document."
+      ]
+    },
+    {
+      "update_id": "sfdc-integration-currency-link",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside pricing-unit and balance authorities.",
+      "proposed_markdown": "- [[source-metronome-integrations-platform-integrations-sfdc-integration]] - Salesforce credit-type, invoice, and invoice-line references plus the commit-or-credit denomination and missing-lookup boundary",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

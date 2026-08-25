@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 127
+source_count: 132
 ---
 
 ## Overview
@@ -152,9 +152,15 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 
 - Collected documentation pages: 225
 - Ingested source summaries: 127
-- Raw pages without source summaries: 104
+- Raw pages without source summaries: 99
 
 ## Sources
+
+- [[source-metronome-api-reference-products-get-a-product]] — single-product identity, state, history, composite configuration, group keys, custom fields, and integration boundaries
+- [[source-metronome-api-reference-products-list-products]] — paginated product catalog, archive filtering, complete-version-history claim, reusable schemas, and documented contradictions
+- [[source-metronome-api-reference-customers-archive-a-customer]] — irreversible customer archival, contract and invoice effects, alias reservation, notification suppression, and retry boundaries
+- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] — incremental `LATEST` billing, negative quantities, effective periods, credit ordering, and reconciliation cautions
+- [[source-metronome-integrations-platform-integrations-sfdc-integration]] — daily Census-powered Salesforce sync, object mappings, monitoring limits, identifier layers, and downstream boundaries
 
 - [[source-metronome-api-reference-invoices-get-an-invoice]] — customer-scoped invoice retrieval, state, line items, balance applications, hierarchy, and downstream-system boundaries
 - [[source-metronome-api-reference-customers-list-customers]] — customer filters, cursor pagination, returned identity, aliases, custom fields, and archive visibility

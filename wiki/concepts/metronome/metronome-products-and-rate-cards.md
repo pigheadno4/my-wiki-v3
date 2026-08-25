@@ -26,6 +26,20 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 
 - On usage invoices, pricing group keys produce a separate line item for each priced group-key combination, but the guide says a combination without usage does not produce a line item. Presentation group keys instead organize usage-product lines under a property such as project or organization. The guide does not define missing-key behavior, ordering, cardinality limits, fallback pricing, or label stability after edits. [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]]
 
+Bearer-secured `POST /v1/contract-pricing/products/get` reads one product using a UUID required inside the JSON payload schema, although the enclosing OpenAPI `requestBody` is not marked required. HTTP `200` requires `data`; the product requires UUID `id`, `type`, `initial`, `current`, and an `updates` array. Both state objects require `name`, `created_at`, and `created_by`, while each update requires only `created_at` and `created_by`. State `billable_metric_id` is an unformatted string, whereas the update field is UUID-formatted. The five-value response enum includes `PRO_SERVICE`, whose behavior this endpoint does not define. Optional nullable `archived_at` and optional custom fields sit beside the required history surfaces. The description promises all metadata and historical changes, but the page defines no history ordering, completeness, version identity, archive-event representation, archived-product retrieval rule, freshness, or read-after-write guarantee.
+
+The single-product read can expose optional UUID-array `composite_product_ids` and string-array `composite_tags`. Its state-only, feature-gated `composite_scope` selects `CUSTOMER` or `CONTRACT` and is described as determining contributing spend. Feature-gated `include_composite_spend` is composite-only, defaults false, and permits spend from other composite products when true. The page does not define validation, recursion, cycles, precedence, calculation order, historical replay, or general availability. For usage products, nullable quantity conversion requires a numeric factor and an enumerated multiply/divide operation when present; nullable rounding requires an enumerated method and numeric decimal places of at least zero. Pricing- and presentation-group-key string arrays select pricing per key value and group invoice usage lines respectively, and their combined value superset must be configured as one compound billable-metric group key.
+
+## Product catalog retrieval API
+
+Bearer-authenticated `POST /v1/contract-pricing/products/list` returns a cursor-paginated organization-wide catalog and excludes archived products by default unless `archive_filter` selects `ARCHIVED` or `ALL`. Optional query `limit` is `1` to `100`; HTTP `200` requires `data` plus nullable `next_page`. Every product item requires UUID `id`, enum `type`, `initial`, `current`, and `updates`; the state objects require `name`, `created_at`, and `created_by`, while update entries require only `created_at` and `created_by`. The endpoint says the list returns complete version history, but defines no update ordering, retention horizon, future-scheduled-entry semantics, current-state selection, omitted-field inheritance, cursor lifetime, snapshot or cross-page consistency, default page size, non-200 response, or read-after-write guarantee.
+
+> [!warning] Product-type contradiction
+> The list schema adds `PRO_SERVICE` to `USAGE`, `SUBSCRIPTION`, `COMPOSITE`, and `FIXED`, while the product guide enumerates only four types. The sources do not establish whether `PRO_SERVICE` is newly supported, API-only, feature-gated, legacy, or creatable; preserve the mismatch and verify current creation support. [[source-metronome-api-reference-products-list-products]]
+
+
+
+
 ## Rate cards and rates
 
 `POST /v1/contract-pricing/rate-cards/archive` permanently disables a rate card for new contracts, removes it from contract-creation workflows, and preserves pricing for existing contracts. The endpoint page does not define whether preservation uses a snapshot or retained reference, how later catalog changes interact with those contracts, visibility outside creation workflows, restoration, propagation timing, in-flight contract creation, idempotency, or concurrency. [[source-metronome-api-reference-rate-cards-archive-a-rate-card]]
@@ -50,6 +64,12 @@ Metronome frames pricing launches at three scopes: rate-card changes for all cus
 
 > [!warning] Pricing-change example contradiction
 > The launch guide says its single `addRates` call schedules a price increase after one year, but both rates use the same `starting_at` timestamp and differ by region as well as price. The payload therefore shows simultaneous dimension-specific rates, not the described future increase. Do not infer a missing later date, intended region relationship, or automatic ending of the earlier rate.
+
+For a non-monotonically increasing metric, each rate applies only to the incremental usage in that rate's effective window. A negative increment after a rate change is priced at the current effective rate rather than the original rate; the guide's drop of 10 after a move from $3 to $4 produces a `-$40` charge. It warns that a rate increase can therefore make the per-unit credit for a decrease larger than the original per-unit charge. The page does not define overlap precedence, window boundaries, retroactive changes, late corrections, rounding, or finalized-invoice recalculation.
+
+The Salesforce sync exposes a rate-card custom object containing Metronome rate-card ID, name, description, and environment. Contract replicas reference the rate card. Invoice-line replicas identify the product and can be connected through many-to-many association objects to pricing-dimension key/value records; parallel association objects connect lines to presentation or invoicing-group key/value records. The guide does not define product or rate versioning, archive handling, dimension cardinality, ordering, missing-key behavior, or whether Salesforce receives historical versus current catalog state.
+
+
 
 ## Enterprise design
 
@@ -132,6 +152,18 @@ The customer-credit create payload requires a UUID `product_id` even when eligib
 
 
 - [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] — pricing-group line creation, presentation grouping, and invoice field boundaries
+
+- [[source-metronome-api-reference-products-get-a-product]] - single-product POST read, required identity and state/history envelope, five-value type enum, state-versus-update schema distinctions, composite selectors, configuration-dependent integration fields, usage conversions, and compound group-key constraint
+
+- [[source-metronome-api-reference-products-list-products]] — product catalog listing that excludes archived products by default, pagination, state and update shapes, optional configuration, and the `PRO_SERVICE` type contradiction
+
+- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - effective-window rating of non-monotonic increments, current-rate pricing of negative quantities, and larger-credit warning
+
+- [[source-metronome-integrations-platform-integrations-sfdc-integration]] - Salesforce rate-card replica, contract lookup, invoice-line product attribution, pricing-dimension and invoicing-group association objects, and catalog-state unknowns
+
+
+
+
 
 ## Related
 

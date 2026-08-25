@@ -1,0 +1,152 @@
+{
+  "job_id": "archive-a-customer",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome API Reference: Archive a Customer\"\ntype: source\ndate_ingested: 2026-08-25\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/customers/archive-a-customer.md\"\nraw_files:\n  - \"metronome/api-reference/customers/archive-a-customer-2026-07-13.md\"\ntags: [metronome, customers, api-reference, archival, contracts, invoices, notifications]\n---\n\n## Overview\n\nThis API reference documents the bearer-authenticated `POST /v1/customers/archive` operation on the production server `https://api.metronome.com`. It irreversibly archives a Metronome customer while preserving API and UI visibility for audit, automatically archives the customer's contracts as of the current date, voids all corresponding invoices, preserves ingest-alias reservation, and stops associated notifications from being triggered. Exact invoice-state treatment, notification timing, downstream effects, retry recovery, and transaction boundaries remain outside this endpoint's documented contract.\n\n## Key takeaways\n\n- Customer archival is intended for a customer onboarded by mistake. The customer cannot be unarchived but remains viewable through the API and UI for audit.\n- Archiving automatically archives all contracts as of the current date and voids all corresponding invoices. The endpoint does not partition invoice states or expose a control over those effects.\n- An archived customer's ingest aliases remain reserved. To reuse an alias, it must be removed from the customer before archival.\n- The archive page says associated notifications will no longer be triggered; it does not define timing or treatment of notification work already generated or in flight.\n- The enclosing OpenAPI `requestBody` is not marked `required: true`, while the referenced `Id` payload requires one UUID-formatted `id`. Omitted-body and unknown-property behavior are undocumented.\n- HTTP `200` requires `data` containing an `Id`. The operation also lists `400 Bad request` and generic `404 Not Found`; their error schema requires string `message`.\n\n## Endpoint and request contract\n\nThe OpenAPI document names `https://api.metronome.com` as the production server and applies top-level HTTP bearer authentication. The operation ID is `archiveCustomer-v1`; the operation defines no path or query parameters. Its JSON request body references the generic `Id` object, whose required `id` property is a UUID-formatted string.\n\nThe operation's `requestBody` supplies a description, JSON schema reference, and example but does not set `required: true`. Requiredness of payload property `id` is therefore distinct from operation-level body requiredness. Neither the request wrapper nor `Id` specifies `additionalProperties`, so the page does not establish whether unknown request fields are accepted, ignored, or rejected. It also does not document lookup by ingest alias, deprecated external ID, contract ID, or invoice ID.\n\n## Customer, contract, and invoice lifecycle\n\nMetronome positions this operation as cleanup for a customer onboarded by mistake. Archival is irreversible, but the archived customer remains visible through both the API and UI for audit. The page does not define retention duration, the retrieval route, authorization for archived records, archive timestamp visibility, propagation latency, or read-after-write consistency; the separate get- and list-customer sources own their response fields and filters.\n\nThe mutation automatically archives all contracts effective as of the current date and voids all corresponding invoices. The archive page identifies no affected contract or invoice IDs, invoice-state partition, ordering, or atomicity. The separate [[source-metronome-api-reference-contracts-archive-a-contract|contract-archive authority]] documents a different mutation with its own finalized-invoice flag and state-specific effects; those controls must not be imported into customer archival. The separate [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos|invoice-correction authority]] says a Metronome void does not itself void a downstream invoice. Accordingly, the customer-archive wording does not prove Stripe, ERP, marketplace, payment, refund, tax, accounting, revenue, settlement, webhook, or reconciliation completion.\n\n## Ingest aliases and notification boundary\n\nThe page says ingest aliases remain idempotent for archived customers and directs callers to remove an alias before archival if they need to reuse it. This is a customer-identity reservation, not request-result replay through `Idempotency-Key`. The archive page does not define the removal operation, alias normalization, archive-versus-removal races, whether all aliases are released atomically, or a post-archive release path.\n\nThe assigned archive authority is limited to the statement that associated notifications will no longer be triggered. The separate [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications|notification lifecycle authority]] distinguishes threshold, system, and offset notifications and documents asynchronous JSON webhook delivery, retry, and at-least-once behavior. The archive page does not say which notification families its suppression covers, when suppression takes effect relative to the archive response, or what happens to evaluation or delivery work already generated or in flight. It therefore does not establish webhook cancellation or delivery recall.\n\n## Success, errors, idempotency, and recovery\n\nHTTP `200` requires a top-level `data` property referencing the generic `Id` schema, which requires UUID `id`. The response example repeats the request UUID, but the schema does not label the returned value or include archival state, `archived_at`, affected contract or invoice identifiers, notification status, or an operation record. A successful response therefore does not expose completion details for each documented side effect.\n\nThe operation lists `400 Bad request` and `404` for a specified resource not found. Both use an error object requiring string `message`; no machine-readable error code or field-level validation detail is supplied. The page does not distinguish malformed or missing bodies, malformed UUIDs, inaccessible customers, active versus already archived state, or failures during contract, invoice, alias, or notification effects.\n\nThe separate [[source-metronome-api-reference-idempotency|API-wide idempotency authority]] applies `Idempotency-Key` to all POST endpoints: the same key with identical parameters returns the original result, changed parameters return HTTP `409 Conflict`, keys persist for at least 24 hours, and a cached result can be HTTP `500`. This archive endpoint does not repeat or narrow those guarantees and gives no archive-specific retry contract. A same-key replay returns the original result rather than proving a fresh archive execution or a current read of its side effects; archive-specific no-key, different-key, expired-key, repeated-call, concurrency, partial-failure, and reconciliation behavior remain undocumented.\n\n## Authority separation and contradiction check\n\nNo direct contradiction was found when each authority remains source-scoped. The get-customer schema's optional nullable `archived_at` and the list endpoint's `only_archived` filter are consistent with this page's explicit API visibility statement, while those read sources still own the exact response and filtering contracts. The notification lifecycle guide owns notification taxonomy and asynchronous delivery; the idempotency source owns API-wide POST replay; and the contract-archive and invoice-correction sources own their distinct invoice-state and downstream boundaries. None of those sources turns customer archival into a documented unarchive path, webhook recall, downstream invoice cancellation, or fresh-state retry.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-customers-and-contracts]], [[metronome-invoicing]], [[metronome-alerts-and-notifications]], [[metronome-api-idempotency]]\n- Customer and contract context: [[source-metronome-api-reference-customers-get-a-customer]], [[source-metronome-api-reference-customers-list-customers]], [[source-metronome-api-reference-contracts-archive-a-contract]]\n- Invoice context: [[source-metronome-api-reference-invoices-void-an-invoice]], [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]]\n- Notification context: [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]]\n- API context: [[source-metronome-api-reference-authentication]], [[source-metronome-api-reference-status-codes]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/customers/archive-a-customer-2026-07-13|2026-07-13 snapshot - customer archival lifecycle, aliases, notifications, and OpenAPI contract]]\n",
+  "quotes": [
+    {
+      "text": "> Use this endpoint to archive a customer while preserving auditability. Archiving a customer will automatically archive all contracts as of the current date and void all corresponding invoices. Use this endpoint if a customer is onboarded by mistake.\n\n### Usage guidelines:\n- Once a customer is archived, it cannot be unarchived.\n- Archived customers can still be viewed through the API or the UI for audit purposes. \n- Ingest aliases remain idempotent for archived customers. In order to reuse an ingest alias, first remove the ingest alias from the customer prior to archiving.\n- Any notifications associated with the customer will no longer be triggered.",
+      "location": "lines 11-17"
+    },
+    {
+      "text": "paths:\n  /v1/customers/archive:\n    post:\n      tags:\n        - Customers\n      summary: Archive a customer\n      description: >\n        Use this endpoint to archive a customer while preserving auditability.\n        Archiving a customer will automatically archive all contracts as of the\n        current date and void all corresponding invoices. Use this endpoint if a\n        customer is onboarded by mistake.\n\n\n        ### Usage guidelines:\n\n        - Once a customer is archived, it cannot be unarchived.\n\n        - Archived customers can still be viewed through the API or the UI for\n        audit purposes. \n\n        - Ingest aliases remain idempotent for archived customers. In order to\n        reuse an ingest alias, first remove the ingest alias from the customer\n        prior to archiving.\n\n        - Any notifications associated with the customer will no longer be\n        triggered.\n      operationId: archiveCustomer-v1\n      requestBody:\n        description: The ID of the customer to archive\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/Id'\n            example:\n              id: 8deed800-1b7a-495d-a207-6c52bac54dc9",
+      "location": "lines 93-127"
+    },
+    {
+      "text": "      responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/Id'\n              example:\n                data:\n                  id: 8deed800-1b7a-495d-a207-6c52bac54dc9\n        '400':\n          description: Bad request\n          content:\n            application/json:\n              schema:\n                $ref: '#/components/schemas/Error'\n        '404':\n          $ref: '#/components/responses/NotFound'",
+      "location": "lines 128-150"
+    },
+    {
+      "text": "components:\n  schemas:\n    Id:\n      required:\n        - id\n      type: object\n      properties:\n        id:\n          type: string\n          format: uuid\n    Error:\n      required:\n        - message\n      type: object\n      properties:\n        message:\n          type: string\n  responses:\n    NotFound:\n      description: The specified resource was not found\n      content:\n        application/json:\n          schema:\n            $ref: '#/components/schemas/Error'\n  securitySchemes:\n    bearerAuth:\n      type: http\n      scheme: bearer",
+      "location": "lines 151-178"
+    },
+    {
+      "text": "````yaml /openapi.json post /v1/customers/archive\nopenapi: 3.0.1\ninfo:\n  title: Metronome\n  version: 1.0.0\nservers:\n  - url: https://api.metronome.com\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "lines 24-33"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "archive-customer-lifecycle-fact",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Customer creation API",
+        "proposed_markdown": "## Customer archival API\n\nOn the documented production server `https://api.metronome.com`, top-level bearer-secured `POST /v1/customers/archive` takes a JSON `Id` payload whose required property is UUID `id`, while the enclosing `requestBody` is not marked required. Metronome positions archival for a mistakenly onboarded customer, makes it irreversible, keeps the customer visible through the API and UI for audit, automatically archives all contracts as of the current date, and voids all corresponding invoices. Ingest aliases remain reserved unless removed before archival. The page does not define retention, archive timestamp propagation, read-after-write consistency, contract or invoice state partitioning, atomicity, repeated-call behavior, or partial-failure recovery. [[source-metronome-api-reference-customers-archive-a-customer]]",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep operation-level requestBody requiredness separate from the payload property's requiredness.",
+          "Do not infer an unarchive path, contract or invoice identifiers, balance effects, or atomic completion across side effects."
+        ]
+      },
+      {
+        "update_id": "archive-customer-lifecycle-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-archive-a-customer]] - production bearer-authenticated customer archival, irreversible lifecycle, audit visibility, contract and invoice effects, alias reservation, request schema, and lifecycle unknowns",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "archive-customer-invoice-fact",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Credit, correction, and re-bill state boundaries",
+        "proposed_markdown": "Customer archival automatically archives all of that customer's contracts as of the current date and voids all corresponding invoices. [[source-metronome-api-reference-customers-archive-a-customer]]",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": [
+          "The separate contract-archive endpoint's finalized-invoice flag and state partition belong to [[source-metronome-api-reference-contracts-archive-a-contract]], not this customer-archive fact.",
+          "Do not extend this Metronome customer-archive wording to downstream Stripe, ERP, marketplace, payment, refund, tax, accounting, revenue, webhook, or reconciliation outcomes; [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]] separately states that a Metronome void does not itself void a downstream invoice."
+        ]
+      },
+      {
+        "update_id": "archive-customer-invoice-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-archive-a-customer]] - automatic current-date contract archival and corresponding-invoice voiding",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": [
+          "Keep dedicated contract-archive state controls and downstream invoice boundaries attributed to their separate sources."
+        ]
+      },
+      {
+        "update_id": "archive-customer-notification-fact",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Notification types and lifecycle",
+        "proposed_markdown": "Archiving a customer stops notifications associated with that customer from being triggered. The archive page does not specify the timing of that suppression or treatment of notification work already generated or in flight. [[source-metronome-api-reference-customers-archive-a-customer]]",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": [
+          "Threshold, system, and offset taxonomy and asynchronous webhook delivery belong to [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]].",
+          "Do not convert trigger suppression into webhook cancellation, delivery recall, or downstream-action reversal."
+        ]
+      },
+      {
+        "update_id": "archive-customer-notification-link",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-archive-a-customer]] - customer-archive suppression of associated notification triggers, with timing and already-generated or in-flight scope unspecified",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": [
+          "Keep notification-family taxonomy and webhook-delivery behavior attributed to the notification lifecycle source."
+        ]
+      },
+      {
+        "update_id": "archive-customer-idempotency-fact",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Retry and error boundary",
+        "proposed_markdown": "`POST /v1/customers/archive` says ingest aliases remain idempotent for archived customers and directs callers to remove an alias before archival when it must be reused. This archived-customer alias reservation is distinct from request replay, and the endpoint itself gives no archive-specific retry contract. [[source-metronome-api-reference-customers-archive-a-customer]]",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "The all-POST `Idempotency-Key` guarantee, identical-parameter replay, conflict behavior, retention, and cached-error guidance belong to [[source-metronome-api-reference-idempotency]], not this archive-page fact.",
+          "Do not conflate ingest-alias reservation with `Idempotency-Key` request-result replay."
+        ]
+      },
+      {
+        "update_id": "archive-customer-idempotency-link",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-archive-a-customer]] - POST customer archival, archived-customer ingest-alias reservation and reuse prerequisite, and absence of an archive-specific retry contract",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "Keep API-wide replay, conflict, lifetime, and cached-error behavior attributed to the idempotency authority."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/customers/archive-a-customer-2026-07-13.md",
+  "raw_sha256": "5c5408a9efaa93db9a57eecc9ae9d1d819861be311060959dde056b625059a44",
+  "status": "candidate_ready"
+}

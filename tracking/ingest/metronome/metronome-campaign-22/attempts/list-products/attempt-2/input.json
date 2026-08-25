@@ -1,0 +1,48 @@
+{
+  "action": "spawn_worker",
+  "job_id": "list-products",
+  "attempt": 2,
+  "raw_path": "raw/metronome/api-reference/products/list-products-2026-07-13.md",
+  "raw_sha256": "88a01577b26926064503dca4f0e25542f074c19192357a1ff74570bc2bf55698",
+  "source_target": "wiki/sources/metronome/source-metronome-api-reference-products-list-products.md",
+  "canonical_url": "https://docs.metronome.com/api-reference/products/list-products.md",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location.",
+    "For OpenAPI pages, distinguish requestBody requiredness, required payload properties, and additionalProperties behavior; do not infer omitted-body or unknown-field behavior.",
+    "For every POST operation, check the existing Metronome API-wide idempotency authority and separate its guarantees from endpoint-specific unknowns.",
+    "For each durable fact, audit every relevant existing Metronome concept and provide reciprocal source-link suggestions; do not stop after the first plausible concept."
+  ],
+  "retry_context": {
+    "prior_attempt": 1,
+    "review_scope": "full",
+    "required_changes": [
+      "Revise the version-history paragraph so it faithfully preserves the endpoint description's claim that the list returns complete version history. Keep only genuinely undocumented boundaries: update ordering, retention horizon, inclusion and semantics of future-scheduled entries, current-state selection, omitted-field inheritance, and cross-page consistency. Do not say that appearance of all historical entries is itself undocumented.",
+      "Complete the concept-impact sweep for wiki/concepts/metronome/metronome-integrations.md. Add a bounded durable-fact suggestion and reciprocal source-link suggestion, grounded by quote 3, stating only that initial/current state and update schemas can expose netsuite_internal_item_id and netsuite_overage_item_id and that their availability depends on client configuration; preserve unknown mapping semantics, external-item validation, freshness, propagation, synchronization, invoice delivery, and reconciliation. Add [[metronome-integrations]] to the candidate's Related concepts.",
+      "Change the products-and-rate-cards reciprocal-link description from archived-by-default to unambiguous wording such as excludes archived products by default or default archived-product exclusion. Preserve the PRO_SERVICE contradiction and do not infer creation support or lifecycle semantics."
+    ],
+    "prior_reviewer_identity": "/root/c22_r_list_products"
+  },
+  "recommended_worker_tier": "standard",
+  "routing_reason": "Preliminary archetype API List / Schema: the 459-line product collection is selected for filters, pagination, item shape, ordering, and reusable schemas. Apply the Campaign 22 claim-to-evidence, authority-separation, and concept-impact checks before submission.",
+  "worker_identity": "/root/c22_w_list2",
+  "worker_model": "gpt-5.6-sol"
+}

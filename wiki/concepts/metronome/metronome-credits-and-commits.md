@@ -84,6 +84,15 @@ The single-invoice read schema names `applied_commit_or_credit` as a separate ne
 
 For AWS delivery, Metronome meters prepaid commit amounts on each scheduled invoice's service-period date rather than creation time. Free contract credits are not metered; only overage remaining after full drawdown reaches AWS. Postpaid usage is metered during the contract, but the end-of-contract shortfall true-up is not sent because it finalizes after the marketplace endpoint closes, leaving the merchant to handle that true-up directly in AWS. Later Metronome credits also cannot decrease an already-sent AWS total because AWS accepts only positive quantities. [[source-metronome-integrations-marketplace-integrations-aws]]
 
+For non-monotonically increasing metrics, commits and credits cover only incremental usage inside their effective date range, not the absolute reported value. Credits are applied to positive charge lines as encountered and do not look ahead to later negative charges. In the guide's example, a $100 credit stated to cover the full billing period is consumed against an initial $120 positive charge; a later `-$40` charge then produces a `-$20` total. The page does not define the balance-ledger entries, negative-total disposition, carry-forward, refund, downstream delivery, tax, payment, reconciliation, or accounting treatment.
+
+> [!warning] Intra-page recommendation conflict
+> The worked example says a full-period credit still produces a negative total under no-look-ahead application, while the later tip says full-period commit and credit coverage applies credits holistically across all line items and avoids unexpected negative totals. The guide does not reconcile the two statements; preserve both and verify behavior before treating the tip as a guarantee.
+
+The Salesforce sync represents both commits and credits in one object family with Metronome commit identity; customer and contract lookups; prepaid, postpaid, or credit type; priority; inclusive UTC start and exclusive UTC end; total amount; current balance; total cost; cost basis; and environment identity. The current-balance description subtracts burn-down including the current draft invoice from total amount, total amount sums access segments, total cost sums invoice segments, and cost basis is total cost divided by total amount. The commit-or-credit object has no documented credit-type lookup even though its total-amount description uses dollar wording. This CRM replica does not define balance-read timing, denomination, USD-cent or non-USD scaling, custom-pricing-unit conversion, number precision or rounding, zero-total division behavior, ledger identity, synchronization ordering, or reconciliation to the authoritative balance and invoice APIs.
+
+
+
 ## Prepaid balance thresholds
 
 A contract-provisioning example separates a one-year prepaid commit's access schedule from its one-time upfront invoice schedule and scopes the balance to `cloud`-tagged products. A quarterly platform charge has its own schedule. Optional usage-invoice consolidation applies to scheduled charges including commits when the service-period end date aligns and the usage invoice remains unfinalized.
@@ -237,6 +246,12 @@ A merchant can create `low_remaining_commit_balance_reached` for a customer, cre
 
 
 - [[source-metronome-integrations-marketplace-integrations-aws]] — marketplace-specific prepaid, credit, postpaid true-up, correction, and refund treatment
+
+- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - effective-range incremental coverage, chronological no-look-ahead credit application, negative-total example, and conflicting full-period recommendation
+
+- [[source-metronome-integrations-platform-integrations-sfdc-integration]] - daily Salesforce commit-or-credit replica, schedule and amount fields, current-draft-inclusive burn-down balance, cost basis, and freshness and reconciliation boundaries
+
+
 
 ## Related
 

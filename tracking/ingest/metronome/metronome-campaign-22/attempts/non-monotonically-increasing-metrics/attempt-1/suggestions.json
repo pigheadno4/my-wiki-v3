@@ -1,0 +1,172 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "non-monotonic-billable-metrics-semantics",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append in `## Matching and aggregation` after the streaming aggregation bullet.",
+      "proposed_markdown": "Non-monotonically increasing measurements, such as connected-device or storage-in-use values, can rise or fall and typically use `LATEST`. For billing, Metronome computes the change between consecutive reporting windows rather than charging the absolute reported value; the guide's `7 -> 9 -> 10 -> 5` example bills `7`, `2`, `1`, and `-5`, so a decrease creates a negative billed quantity and a period credit. The page does not define reporting-window boundaries, cross-period baselines, missing-window behavior, late corrections, precision, rounding, or finalized-invoice effects.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Preserve `typically uses latest`; the guide does not say every non-monotonic metric must use LATEST.",
+        "Do not collapse billing-time incremental quantities into the absolute LATEST value returned by usage queries."
+      ]
+    },
+    {
+      "update_id": "non-monotonic-billable-metrics-link",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside the create-billable-metrics and SQL Editor guides.",
+      "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - non-monotonic `LATEST` metric definition, incremental billing quantities, negative-decrease treatment, and reporting-window boundaries",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "non-monotonic-usage-billing-semantics",
+      "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append in `## Adjacent billing domains` after the billable-metrics paragraph.",
+      "proposed_markdown": "For non-monotonically increasing metrics that typically use `LATEST`, Metronome bills the incremental change between consecutive reporting windows, including a negative quantity and customer credit when the reported value decreases. The same guide distinguishes this billed quantity from usage-query output: invoice breakdowns show each window's incremental quantity and cost, while usage endpoints show the absolute latest value in each requested window. With no breakdown, the usage example returns the latest value across the full queried period. Exact endpoint schemas, pagination, ordering, freshness, and consistency remain with the dedicated API references.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "Attribute the endpoint-output distinction to this guide; the linked endpoint raw pages were navigation-only for this candidate.",
+        "Do not infer invoice finalization, delivery, payment, tax, settlement, or accounting outcomes."
+      ]
+    },
+    {
+      "update_id": "non-monotonic-usage-billing-link",
+      "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside the create-billable-metrics and invoicing guides.",
+      "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - incremental billing for falling `LATEST` values, effective-window pricing, and invoice-breakdown versus absolute usage-query semantics",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "non-monotonic-rate-card-impact",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append in `## Rate cards and rates` after the date-effective rate-change bullet.",
+      "proposed_markdown": "For a non-monotonically increasing metric, each rate applies only to the incremental usage in that rate's effective window. A negative increment after a rate change is priced at the current effective rate rather than the original rate; the guide's drop of 10 after a move from $3 to $4 produces a `-$40` charge. It warns that a rate increase can therefore make the per-unit credit for a decrease larger than the original per-unit charge. The page does not define overlap precedence, window boundaries, retroactive changes, late corrections, rounding, or finalized-invoice recalculation.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Keep this rule scoped to the guide's non-monotonically increasing metric behavior.",
+        "A negative Metronome charge line does not establish downstream refund, payment, tax, settlement, or accounting treatment."
+      ]
+    },
+    {
+      "update_id": "non-monotonic-rate-card-link",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside rate-change authorities.",
+      "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - effective-window rating of non-monotonic increments, current-rate pricing of negative quantities, and larger-credit warning",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "non-monotonic-credit-commit-impact",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append in `## Drawdown and invoice attribution` after the line-item application paragraph.",
+      "proposed_markdown": "For non-monotonically increasing metrics, commits and credits cover only incremental usage inside their effective date range, not the absolute reported value. Credits are applied to positive charge lines as encountered and do not look ahead to later negative charges. In the guide's example, a $100 credit stated to cover the full billing period is consumed against an initial $120 positive charge; a later `-$40` charge then produces a `-$20` total. The page does not define the balance-ledger entries, negative-total disposition, carry-forward, refund, downstream delivery, tax, payment, reconciliation, or accounting treatment.\n\n> [!warning] Intra-page recommendation conflict\n> The worked example says a full-period credit still produces a negative total under no-look-ahead application, while the later tip says full-period commit and credit coverage applies credits holistically across all line items and avoids unexpected negative totals. The guide does not reconcile the two statements; preserve both and verify behavior before treating the tip as a guarantee.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Do not silently resolve the full-period example versus recommendation conflict.",
+        "Do not infer balance-ledger mutation or downstream financial treatment from invoice-line examples."
+      ]
+    },
+    {
+      "update_id": "non-monotonic-credit-commit-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside line-item drawdown authorities.",
+      "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - effective-range incremental coverage, chronological no-look-ahead credit application, negative-total example, and conflicting full-period recommendation",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "non-monotonic-invoicing-impact",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append in `## Credit and commit application` after the existing line-item application ordering paragraph.",
+      "proposed_markdown": "For non-monotonically increasing `LATEST` metrics, invoice quantities are changes between reporting windows and may be negative when usage falls. Metronome evaluates charge lines independently and chronologically, consuming credit against positive lines without looking ahead to a later negative line; the worked full-period-credit example ends at `-$20`. The invoice-breakdowns surface is described as returning each window's incremental quantity and associated cost, including negative quantities and costs. The guide does not define how a negative invoice total proceeds through finalization, delivery, payment, refund, tax, settlement, external A/R, reconciliation, or accounting.\n\n> [!warning] Intra-page recommendation conflict\n> The example's credit covers the full billing period and still yields a negative total, but the later tip says full-period coverage avoids unexpected negative totals. The guide does not reconcile that recommendation with its example.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep negative incremental usage distinct from a credit-memo, refund, or downstream payment outcome.",
+        "Preserve the full-period coverage contradiction."
+      ]
+    },
+    {
+      "update_id": "non-monotonic-invoicing-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside credit application and invoice-breakdown authorities.",
+      "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - incremental and negative invoice quantities, no-look-ahead credit consumption, negative-total boundary, and invoice-breakdown behavior",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "non-monotonic-reporting-impact",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append in `## Query model` after the opening SQL-cookbook paragraph.",
+      "proposed_markdown": "For non-monotonically increasing `LATEST` metrics, this guide defines an important reconciliation boundary: invoice breakdowns return incremental quantity and associated cost for each time window, including negative values when usage falls, whereas usage endpoints return the absolute latest reported value within each requested window. With no breakdown, the usage example returns the latest value across the full query period. Comparing these surfaces as if they shared one quantity grain can create apparent mismatches; exact endpoint parameters, envelopes, pagination, ordering, freshness, and consistency require the dedicated API references.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Do not sum absolute latest window values as if they were billed increments.",
+        "The linked API raw pages were not read as factual evidence for this candidate; attribute these semantics to the assigned guide."
+      ]
+    },
+    {
+      "update_id": "non-monotonic-reporting-link",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add under `## Sources` beside invoice-breakdown and usage-reporting authorities.",
+      "proposed_markdown": "- [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - reconciliation boundary between incremental invoice-breakdown quantities and absolute latest usage-query values",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

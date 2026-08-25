@@ -35,6 +35,15 @@ For account-level billing-provider setup, `POST /v1/setUpBillingProvider` falls 
 
 `POST /v1/customers/{customer_id}/setName` falls under the API-wide `Idempotency-Key` contract even though its endpoint page lists only HTTP `200` and does not mention retries. An identical same-key retry returns the original mutation result rather than proving a fresh read of the customer's current name; the endpoint adds no behavior for another or expired key, concurrent renames, cached-error customer or document state, or recovery after ambiguous propagation. [[source-metronome-api-reference-customers-update-a-customer-name]] [[source-metronome-api-reference-idempotency]]
 
+`POST /v1/contract-pricing/products/get` is a product read whose request schema requires a product UUID inside an enclosing body that is not marked required; HTTP `200` requires `data`, and the product requires identity plus initial, current, and update-history surfaces. Its endpoint page adds no endpoint-specific idempotency, retry, cache, freshness, concurrency, or recovery guarantee.
+
+The assigned product-catalog reference documents `POST /v1/contract-pricing/products/list`. Its complete operation response map lists only HTTP `200`, and it supplies no endpoint-specific idempotency, retry, caching, cursor-replay, or freshness contract. [[source-metronome-api-reference-products-list-products]]
+
+`POST /v1/customers/archive` says ingest aliases remain idempotent for archived customers and directs callers to remove an alias before archival when it must be reused. This archived-customer alias reservation is distinct from request replay, and the endpoint itself gives no archive-specific retry contract. [[source-metronome-api-reference-customers-archive-a-customer]]
+
+
+
+
 ## Related platform concepts
 
 - [[metronome-event-ingestion]] owns the usage-event schema, matching, deduplication, and processing boundaries.
@@ -55,6 +64,15 @@ For account-level billing-provider setup, `POST /v1/setUpBillingProvider` falls 
 
 
 - [[source-metronome-api-reference-customers-update-a-customer-name]] — POST customer-name mutation, original-result replay context, and endpoint-specific concurrency and recovery unknowns
+
+- [[source-metronome-api-reference-products-get-a-product]] - POST product-read method, required identity and history response surface, and endpoint-specific idempotency, retry, caching, and freshness unknowns
+
+- [[source-metronome-api-reference-products-list-products]] — POST product-catalog listing, its sole listed HTTP `200` response, and endpoint-specific idempotency, retry, caching, cursor-replay, and freshness unknowns
+
+- [[source-metronome-api-reference-customers-archive-a-customer]] - POST customer archival, archived-customer ingest-alias reservation and reuse prerequisite, and absence of an archive-specific retry contract
+
+
+
 
 ## Related
 
