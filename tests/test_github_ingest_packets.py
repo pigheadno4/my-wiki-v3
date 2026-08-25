@@ -1212,6 +1212,8 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "android/build.gradle": "dependencies {}\n",
             "android/gradle.properties": "StripeSdkVersion=1\n",
             "android/gradle/libs.versions.toml": "[versions]\nkotlin = '2.0.0'\n",
+            ".factory/settings.json": "{\"skills\":{}}\n",
+            "gradle/wrapper/gradle-wrapper.properties": "distributionUrl=https://example.test/gradle.zip\n",
             "android/src/main/AndroidManifest.xml": "<manifest />\n",
             "ios/Info.plist": "<?xml version=\"1.0\"?><plist />\n",
             "ios/module.modulemap": "framework module Example { umbrella header \"Example.h\" }\n",
@@ -1219,6 +1221,8 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "ios/StripeSdk.xcodeproj/project.pbxproj": "// project\n",
             "ios/StripeSdk.xcodeproj/xcshareddata/xcschemes/Tests.xcscheme": "<Scheme />\n",
             "ios/StripeSdk.xctestplan": "{}\n",
+            "java/config.yaml": "files: {}\n",
+            "renovate.json": "{\"extends\":[]}\n",
             "widget.podspec": "Pod::Spec.new do |spec|\nend\n",
             "braintree.gemspec": "Gem::Specification.new do |spec|\nend\n",
         }

@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-25] ingest | GitHub adyen/adyen-sdk-automation - `default-branch@2f180b9`
+
+- Full-ingested work item `github-8048e778dfc5ff78b746` at exact SHA `2f180b958babc6bbd6f0b6b73d7e4c6feefe256e` after serial full reading of all 49 required evidence and context paths.
+- Added cumulative and commit-qualified sources plus [[adyen-sdk-automation]] for seven-language OpenAPI generation, service/version inventory, CI provenance, and validated release-note tooling.
+- Preserved downstream package ownership and merchant-eligibility boundaries; retained four production workflow files as an exact-SHA supplement while excluding their tests.
+
 ## [2026-08-24] ingest | GitHub paypal/paypal-php-server-sdk - `paypal/paypal-server-sdk@2.4.0`
 
 - Full-ingested work item `github-26220457423a12b6b561` at exact SHA `b6be767b759ac3e3ad1d32dde7143a0927f5892b` after serial review of all 64 required evidence paths and the complete 689-entry snapshot manifest.

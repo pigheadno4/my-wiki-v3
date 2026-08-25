@@ -1121,9 +1121,15 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         ".npmrc",
         ".nvmrc",
         "codegen_version",
+        "config.yaml",
+        "config.yml",
+        "gradle-wrapper.properties",
         "openapi_version",
         "pnpm-workspace.yaml",
+        "renovate.json",
     ):
+        return "build-configuration"
+    if lowered == ".factory/settings.json":
         return "build-configuration"
     if filename == "tsconfig.json" or (
         filename.startswith("tsconfig.") and filename.endswith(".json")

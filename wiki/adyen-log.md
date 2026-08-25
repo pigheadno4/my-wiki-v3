@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-25] ingest | adyen/adyen-sdk-automation `default-branch@2f180b9`
+
+- Approved and full-ingested work item `github-8048e778dfc5ff78b746` at exact SHA `2f180b958babc6bbd6f0b6b73d7e4c6feefe256e` after serial full reading of all 49 required evidence and context paths.
+- Established [[source-github-adyen-sdk-automation]], its commit-qualified changelog, and [[adyen-sdk-automation]] for seven-language OpenAPI generation, service inventory, CI execution, provenance logs, and release-note validation.
+- Attached an exact-SHA four-file supplement for production generation scripts and workflows that the baseline's generic CI exclusion omitted; test scripts remain excluded.
+- Preserved downstream SDK version ownership, generated-code-versus-runtime boundaries, and merchant-eligibility limits while updating the Adyen company page and provider index.
+
 ## [2026-08-20] ingest | Adyen/adyen-php-api-library `30.0.2`
 
 - Approved and full-ingested work item `github-1ef004e332164a8359d6` at exact SHA `6ef96571834bc460201df8aea8c89882b2043cd8` after serial full reading of all 450 required evidence paths.

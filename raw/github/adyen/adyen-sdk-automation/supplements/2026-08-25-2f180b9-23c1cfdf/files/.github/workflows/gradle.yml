@@ -1,0 +1,184 @@
+name: Update SDKs
+
+on:
+  workflow_dispatch:
+    inputs:
+      projects:
+        description: 'Comma-separated list of projects to generate (e.g. java,python). Leave empty for all.'
+        required: false
+        default: ''
+      services:
+        description: 'Comma-separated list of services to generate (e.g. checkout,management). Leave empty for all.'
+        required: false
+        default: ''
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-sdk-automation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      projects: ${{ steps.resolve.outputs.projects }}
+      services: ${{ steps.resolve.outputs.services }}
+      should_generate: ${{ steps.classify.outputs.should_generate }}
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Classify generation impact
+        id: classify
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.sha }}
+        run: |
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            echo "should_generate=true" >> "$GITHUB_OUTPUT"
+            echo "reason=manual-dispatch" >> "$GITHUB_OUTPUT"
+          else
+            python3 .github/scripts/should_generate.py "$BEFORE_SHA" "$AFTER_SHA" "$GITHUB_OUTPUT"
+          fi
+
+      - name: Report generation decision
+        run: |
+          echo "SDK generation: ${{ steps.classify.outputs.should_generate }} (${{ steps.classify.outputs.reason }})" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Resolve matrix inputs
+        id: resolve
+        env:
+          INPUT_PROJECTS: ${{ github.event.inputs.projects }}
+          INPUT_SERVICES: ${{ github.event.inputs.services }}
+        run: bash .github/scripts/resolve-matrix-inputs.sh "$GITHUB_OUTPUT"
+
+  # split generation (create multiple PRs)
+  generate-per-service:
+    needs: setup
+    if: needs.setup.outputs.should_generate == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJson(needs.setup.outputs.projects) }}
+        service: ${{ fromJson(needs.setup.outputs.services) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a # v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Clone ${{ matrix.project }} repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          token: ${{ secrets.ADYEN_AUTOMATION_BOT_ACCESS_TOKEN }}
+          repository: Adyen/adyen-${{ matrix.project }}-api-library
+          path: ${{ matrix.project }}/repo
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6
+
+      - name: Override properties
+        env:
+          PROJECT: ${{ matrix.project }}
+        run: cp $PROJECT/gradle.properties buildSrc
+
+      - name: Generate code for ${{ matrix.service }} in ${{ matrix.project }}
+        env:
+          PROJECT: ${{ matrix.project }}
+          SERVICE: ${{ matrix.service }}
+        run: |
+          if ./gradlew :$PROJECT:tasks --group=service 2>/dev/null | grep -qw "^$SERVICE"; then
+            ./gradlew $PROJECT:$SERVICE
+          else
+            echo "Service '$SERVICE' is not applicable for '$PROJECT', skipping."
+          fi
+
+      - name: Check for and prepare formatting action
+        id: prep_action
+        # Some libraries have a formatting action in their repository, so we check for it and copy it to a temporary directory to use it later.
+        run: |
+          if [[ -f "${{ matrix.project }}/repo/.github/actions/format/action.yml" ]]; then
+            echo "format_action_exists=true" >> "$GITHUB_OUTPUT"
+            mkdir -p ./.temp-format-action
+            cp -r "${{ matrix.project }}/repo/.github/actions/format" ./.temp-format-action/
+          else
+            echo "format_action_exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Format Code
+        # We run the formatting action if it exists.
+        if: steps.prep_action.outputs.format_action_exists == 'true'
+        uses: ./.temp-format-action/format
+        with:
+          path: ${{ matrix.project }}/repo
+
+      - name: Check for changes
+        id: changes
+        working-directory: ${{ matrix.project }}/repo
+        run: |
+          # Check for modified tracked files AND new untracked files
+          echo "=== Git Status Output ==="
+          git status --porcelain
+          
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo ""
+            echo "=== Diff Summary ==="
+            git diff --stat
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No changes detected."
+          fi
+
+      - name: Get OpenAPI commit SHA
+        id: vars
+        env:
+          PROJECT: ${{ matrix.project }}
+        run: |
+          echo "sha=$(cd schema && git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "sha_short=$(cd schema && git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          echo "library_sha=$(cd $PROJECT/repo && git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Write generation log
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          PROJECT: ${{ matrix.project }}
+          SERVICE: ${{ matrix.service }}
+        run: |
+          mkdir -p $PROJECT/repo/sdk-generation-log
+          cat > $PROJECT/repo/sdk-generation-log/$SERVICE.json << EOF
+          {
+            "service": "$SERVICE",
+            "project": "$PROJECT",
+            "generatedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "openapiCommitSha": "${{ steps.vars.outputs.sha }}",
+            "automationCommitSha": "${{ github.sha }}",
+            "libraryCommitSha": "${{ steps.vars.outputs.library_sha }}"
+          }
+          EOF
+
+      - name: Create Pull Request
+        if: steps.changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
+        with:
+          path: ${{ matrix.project }}/repo
+          token: ${{ secrets.ADYEN_AUTOMATION_BOT_ACCESS_TOKEN }}
+          committer: ${{ secrets.ADYEN_AUTOMATION_BOT_TEST_EMAIL }}
+          author: ${{ secrets.ADYEN_AUTOMATION_BOT_TEST_EMAIL }}
+          branch: sdk-automation/${{ matrix.service }}
+          title: '[${{ matrix.service }}] Code generation: update services and models'
+          body: |
+            This PR contains the automated changes for the `${{ matrix.service }}` service.
+
+            The commit history of this PR reflects the `adyen-openapi` commits that have been applied.
+          commit-message: '[${{ matrix.service }}] Automated update from Adyen/adyen-openapi@${{ steps.vars.outputs.sha_short }}'

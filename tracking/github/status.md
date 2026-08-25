@@ -693,6 +693,34 @@
   Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.4.1/2026-07-31/manifest.json)
   Comparison: Not applicable
 
+## `github-8048e778dfc5ff78b746`
+
+- Repository: `adyen/adyen-sdk-automation`
+- SHA: `2f180b958babc6bbd6f0b6b73d7e4c6feefe256e`
+- Collection date: `2026-08-25`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-sdk-automation/snapshots/2026-08-25-2f180b9/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-sdk-automation/ingest-packets/github-8048e778dfc5ff78b746/packet.md)
+- Evidence attachment: [manifest](repos/adyen/adyen-sdk-automation/evidence-attachments/github-8048e778dfc5ff78b746/attachment.json)
+- Review priority: `normal`
+- Required reading: `49` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@2f180b9` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `2f180b958babc6bbd6f0b6b73d7e4c6feefe256e`
+  Comparison: Not applicable
+
 ## `github-82cea027945f7df14795`
 
 - Repository: `stripe/stripe-js`

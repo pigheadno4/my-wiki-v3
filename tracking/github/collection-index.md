@@ -1,6 +1,6 @@
 # GitHub repository collection index
 
-Generated: `2026-08-24`
+Generated: `2026-08-25`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -18,7 +18,7 @@ Generated: `2026-08-24`
 | adyen | `adyen/adyen-postman` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-12 | ingested | 2026-09-12 | `wait` |
 | adyen | `adyen/adyen-wechatpay-ios` | tier2 | semver-tags | monthly | - | - | - | `disabled` |
 | adyen | `adyen/adyen-pos-mobile-ios-test` | tier3 | commit | on-demand | - | - | - | `disabled` |
-| adyen | `adyen/adyen-sdk-automation` | tier3 | commit | on-demand | - | - | - | `disabled` |
+| adyen | `adyen/adyen-sdk-automation` | tier3 | commit / commit-tree-v1 | on-demand | 2026-08-25 | ingested | - | `wait` |
 | adyen | `adyen/release-automation-action` | tier3 | commit | on-demand | - | - | - | `disabled` |
 | braintree | `braintree/braintree-android-drop-in` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-13 | ingested | 2026-08-20 | `collect-baseline` |
 | braintree | `braintree/braintree-ios-drop-in` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-13 | ingested | 2026-08-20 | `collect-baseline` |

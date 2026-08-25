@@ -10,6 +10,8 @@ Operations history: [[adyen-log]]
 
 ## Sources
 
+- [[source-github-adyen-sdk-automation]] — exact-commit SDK generation baseline for seven API libraries: OpenAPI processing, service inventory, language configuration, CI provenance, and release-note tooling (github-repo, 2026-08-25)
+- [[changelog-github-adyen-sdk-automation]] — commit-qualified SDK automation history beginning at `default-branch@2f180b9` (github-repo, 2026-08-25)
 - [[source-github-adyen-php-api-library]] — cumulative `adyen/php-api-library@30.0.2` server baseline: Checkout API v71, Payments and Recurring APIs v68, tokenization webhooks, transport, and HMAC helpers (github-repo, 2026-08-20)
 - [[changelog-github-adyen-php-api-library]] — package-qualified PHP API Library release ledger beginning at `30.0.2`, including the stale security-table contradiction (github-repo, 2026-08-20)
 - [[source-github-adyen-3ds2-ios]] — cumulative `adyen-3ds2-ios@2.4.4` baseline: service setup, authentication parameters, universal-link challenges, lifecycle, privacy, errors, and UI customization (github-repo, 2026-08-19)
@@ -31,6 +33,7 @@ Operations history: [[adyen-log]]
 
 ## Concepts
 
+- [[adyen-sdk-automation]] — OpenAPI-to-SDK generation, language-specific configuration, CI provenance, and release-note validation
 - [[adyen-php-api-library]] — PHP server SDK, Checkout API v71, recurring, tokenization, transport, and evidence boundaries
 - [[adyen-3ds2-ios-sdk]] — delegated iOS 3DS2 transaction, challenge, lifecycle, security, privacy, and UI runtime
 - [[adyen-3ds2-android-sdk]] — delegated Android 3DS2 transaction, challenge, lifecycle, security, and UI runtime
