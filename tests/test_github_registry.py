@@ -88,7 +88,7 @@ APPENDIX_A_INVENTORY = (
     ('adyen/adyen-sdk-automation', 'https://github.com/Adyen/adyen-sdk-automation', 'automation', 'tier3', 'commit', True, 'default-branch', 'on-demand'),
     ('adyen/release-automation-action', 'https://github.com/Adyen/release-automation-action', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('adyen/adyen-3ds2-ios-swift', 'https://github.com/Adyen/adyen-3ds2-ios-swift', 'authentication-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('adyen/adyen-wechatpay-ios', 'https://github.com/Adyen/adyen-wechatpay-ios', 'payment-method-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('adyen/adyen-wechatpay-ios', 'https://github.com/Adyen/adyen-wechatpay-ios', 'payment-method-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-3ds2-android', 'https://github.com/Adyen/adyen-3ds2-android', 'authentication-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-3ds2-ios', 'https://github.com/Adyen/adyen-3ds2-ios', 'authentication-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
 )
@@ -838,6 +838,44 @@ class RegistryTests(unittest.TestCase):
         )
         self.assertFalse(any(path.endswith("Info.plist") for path in capsule.include_paths))
         self.assertNotIn("XCFramework/Static", capsule.default_required_roots)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+
+    def test_adyen_wechatpay_ios_uses_public_wrapper_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(item for item in repos if item.id == "adyen/adyen-wechatpay-ios")
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:AdyenWeChatPayInternal@2",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("2.2.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("adyen-wechatpay-ios-public-wrapper", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("AdyenWeChatPayInternal",), capsule.focus_packages)
+        self.assertEqual(
+            (
+                "AdyenWeChatPayInternal.xcframework/ios-arm64/AdyenWeChatPayInternal.framework/Headers",
+            ),
+            capsule.default_required_roots,
+        )
+        self.assertIn("AdyenWeChatPayInternal.podspec", capsule.include_paths)
+        self.assertIn("AdyenWeChatPayInternal.xcframework/Info.plist", capsule.include_paths)
+        self.assertNotIn(
+            "AdyenWeChatPayInternal.xcframework/ios-arm64/AdyenWeChatPayInternal.framework/Info.plist",
+            capsule.include_paths,
+        )
+        self.assertFalse(any(path.endswith(".abi.json") for path in capsule.include_paths))
+        self.assertFalse(any(path.endswith("/AdyenWeChatPayInternal") for path in capsule.include_paths))
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
 
     def test_braintree_web_uses_the_reviewed_public_source_capsule(self):

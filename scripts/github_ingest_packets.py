@@ -1137,6 +1137,8 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         filename.startswith("tsconfig.") and filename.endswith(".json")
     ):
         return "build-configuration"
+    if filename.endswith(".abi.json"):
+        return "build-configuration"
     if lowered.startswith(".github/workflows/") and filename.endswith(
         (".yml", ".yaml")
     ):

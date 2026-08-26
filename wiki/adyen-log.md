@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-26] ingest | adyen/adyen-wechatpay-ios `AdyenWeChatPayInternal@2.2.0`
+
+- Approved and full-ingested work item `github-3da269c833aa3c1fde17` at exact SHA `1127f793854d8624dbe6741d5c42be39dadd4f93` after serial full reading of all 14 required evidence paths.
+- Established [[source-github-adyen-wechatpay-ios]], its package-qualified changelog, and [[adyen-wechatpay-ios-wrapper]] for Tencent SDK packaging, iOS requirements, public native handoff, and the payment request/response surface.
+- Preserved the independently versioned `adyen-ios` Component boundary, binary implementation limit, and the distinction between native callbacks and authoritative merchant-server payment status.
+- Recorded the simulator contradiction between the XCFramework inventory, README warning, and umbrella-header imports; physical-device testing remains the dependable boundary.
+
 ## [2026-08-25] ingest | adyen/adyen-magento2 `adyen/module-payment@11.0.0`
 
 - Approved and full-ingested work item `github-f9bb5a2b85a6fd26d4e8` at exact SHA `4206983499d829ef695185ac78af06b9bdfe96c6` after serial full reading of all 206 required evidence and context paths.

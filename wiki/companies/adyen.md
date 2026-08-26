@@ -1,8 +1,8 @@
 ---
 title: "Adyen"
 type: company
-tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, openapi, adobe-commerce, magento2]
-source_count: 11
+tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, openapi, adobe-commerce, magento2, wechat-pay]
+source_count: 12
 ---
 
 ## Overview
@@ -28,6 +28,12 @@ Repository evidence is not current product eligibility guidance. In particular, 
 The retained `adyen-ios@5.25.1` baseline provides modular Drop-in, Session, Card, Components, Actions, Encryption, SwiftUI, scanner, and native wallet or app-handoff modules. Session can own payments, payment-details, partial-payment, and stored-method calls, while advanced integrations implement those server calls themselves.
 
 Native payment details are submitted through merchant or Session delegates; card and ACH details are encrypted with an Adyen-provided public key. Apple Pay, Cash App Pay, Twint, WeChat Pay, and delegated 3DS/authentication paths each have additional platform or dependency boundaries.
+
+## WeChat Pay iOS wrapper
+
+The retained `AdyenWeChatPayInternal@2.2.0` baseline packages Tencent WeChat SDK `2.0.4` as an XCFramework for iOS 12 and newer. It exposes app and Universal Link registration, URL return handling, request submission, native callbacks, and the `PayReq`/`PayResp` surface.
+
+This wrapper is independently versioned from the shopper-facing `AdyenWeChatPay` module in `adyen-ios`. Native handoff callbacks do not prove Adyen authorization, capture, settlement, or merchant eligibility. The advertised simulator slice also conflicts with the README and umbrella-header restrictions, so physical-device testing is the dependable boundary.
 
 ## Native Android checkout surface
 
@@ -85,13 +91,15 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 ## Knowledge status
 
-- Ingested cumulative GitHub repository sources: 11
-- Ingested package releases: 11
-- Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
-- Latest ingest: `adyen/adyen-magento2` at `adyen/module-payment@11.0.0`, exact SHA `4206983499d829ef695185ac78af06b9bdfe96c6`
+- Ingested cumulative GitHub repository sources: 12
+- Ingested package releases: 12
+- Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
+- Latest ingest: `adyen/adyen-wechatpay-ios` at `AdyenWeChatPayInternal@2.2.0`, exact SHA `1127f793854d8624dbe6741d5c42be39dadd4f93`
 
 ## Sources
 
+- [[source-github-adyen-wechatpay-ios]] — cumulative WeChat SDK XCFramework wrapper baseline
+- [[changelog-github-adyen-wechatpay-ios]] — package-qualified wrapper release ledger
 - [[source-github-adyen-magento2]] — cumulative Adobe Commerce checkout and operations baseline
 - [[changelog-github-adyen-magento2]] — package-qualified Adobe Commerce plugin release ledger
 - [[source-github-adyen-web]] — cumulative Adyen Web implementation baseline
@@ -119,6 +127,7 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 - [[adyen-index]] — Adyen catalog and operations links
 - [[adyen-log]] — collection and ingest history
+- [[adyen-wechatpay-ios-wrapper]] — WeChat SDK wrapper, native handoff, and query boundary
 - [[adyen-magento2]] — Adobe Commerce plugin architecture and lifecycle
 - [[co-badged-cards]] — cross-provider network-choice concept
 - [[adyen-ios-sdk]] — native SDK architecture and merchant-server boundaries

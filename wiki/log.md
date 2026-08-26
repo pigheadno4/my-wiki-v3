@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-26] ingest | GitHub adyen/adyen-wechatpay-ios - `AdyenWeChatPayInternal@2.2.0`
+
+- Full-ingested work item `github-3da269c833aa3c1fde17` at exact SHA `1127f793854d8624dbe6741d5c42be39dadd4f93` after serial full reading of all 14 required evidence paths.
+- Added cumulative and package-qualified sources plus [[adyen-wechatpay-ios-wrapper]] for Tencent SDK `2.0.4` packaging, iOS 12, native app handoff, and public payment request/response interfaces.
+- Preserved the binary, independently versioned Adyen iOS, merchant eligibility, and server-authoritative payment-status boundaries, plus the simulator contradiction requiring physical-device testing.
+
 ## [2026-08-25] ingest | GitHub adyen/adyen-magento2 - `adyen/module-payment@11.0.0`
 
 - Full-ingested work item `github-f9bb5a2b85a6fd26d4e8` at exact SHA `4206983499d829ef695185ac78af06b9bdfe96c6` after serial full reading of all 206 required evidence and context paths.

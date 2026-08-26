@@ -330,6 +330,31 @@
   To SHA: `1953b6cce7344d880a054c42b8dd21ca3e50ebd5`
   Comparison: Not applicable
 
+## `github-3da269c833aa3c1fde17`
+
+- Repository: `adyen/adyen-wechatpay-ios`
+- SHA: `1127f793854d8624dbe6741d5c42be39dadd4f93`
+- Collection date: `2026-08-26`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-wechatpay-ios/snapshots/2026-08-26-1127f79/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-wechatpay-ios/ingest-packets/github-3da269c833aa3c1fde17/packet.md)
+- Review priority: `normal`
+- Required reading: `14` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `AdyenWeChatPayInternal@2.2.0` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-wechatpay-ios/releases/adyenwechatpayinternal/2.2.0/2026-08-26/manifest.json)
+  Comparison: Not applicable
+
 ## `github-43baf5daaf3a92e79a79`
 
 - Repository: `adyen/adyen-react-native`

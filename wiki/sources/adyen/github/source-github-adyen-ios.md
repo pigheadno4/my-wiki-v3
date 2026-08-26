@@ -108,6 +108,8 @@ Broader Drop-in, Session, Component, card, action, wallet, analytics, and privac
 - [[changelog-github-adyen-ios]] - package-qualified release ledger
 - [[adyen-ios-sdk]] - native SDK concept
 - [[source-github-adyen-3ds2-ios]] - independently versioned native 3DS2 runtime
+- [[source-github-adyen-wechatpay-ios]] - independently versioned WeChat SDK binary wrapper
+- [[adyen-wechatpay-ios-wrapper]] - wrapper ownership and native handoff boundary
 - [[source-github-adyen-web]] - independently versioned browser SDK
 - [[adyen]] - company and knowledge-status page
 - [[co-badged-cards]] - cross-provider network-choice concept

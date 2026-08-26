@@ -941,6 +941,12 @@ class GitHubIngestPacketTests(unittest.TestCase):
                     "include-path",
                     "widgets",
                 ),
+                "client/Module.swiftmodule/arm64-apple-ios.abi.json": (
+                    '{"ABIRoot":{"kind":"Root"}}\n',
+                    "source-capsule",
+                    "include-path",
+                    "widgets",
+                ),
                 "generateAll.sh": (
                     "#!/bin/sh\n",
                     "source-capsule",
@@ -981,6 +987,10 @@ class GitHubIngestPacketTests(unittest.TestCase):
         self.assertEqual(
             "build-configuration",
             classified[".github/workflows/sync.yml"],
+        )
+        self.assertEqual(
+            "build-configuration",
+            classified["client/Module.swiftmodule/arm64-apple-ios.abi.json"],
         )
         self.assertEqual("public-source", classified["generateAll.sh"])
         self.assertEqual("public-source", classified["src/data/products.json"])
