@@ -9,6 +9,10 @@ tags: [metronome, data-export, warehouse, reporting, analytics]
 
 Metronome data export exposes billing and operational data as warehouse tables for reporting, reconciliation, and custom analysis. The database reference spans raw events, customers, invoices, contracts and balances, pricing, packages, payments, alerts, and client-specific metadata.
 
+## Invoice-list reporting surface
+
+Metronome's customer invoice-list API supports billing-history, current-draft, reconciliation, support, and date-bounded reporting queries. Its date filters use inclusive billing-period start and exclusive billing-period end rather than issue date, and complete retrieval requires following nullable `next_page` cursors. The page does not establish cursor snapshot consistency or reporting freshness, and its conflicting default-order descriptions require callers that depend on order to pass the `sort` parameter explicitly. [[source-metronome-api-reference-invoices-list-invoices]]
+
 ## Query model
 
 Metronome's SQL cookbook supplies starting-point queries across customers, events, finalized and draft invoices, invoice-breakdown snapshots, contracts, rate cards, and alerts. Its patterns include `archived_at IS NULL` for non-archived customers, table-global maximum draft snapshots, ID-plus-snapshot breakdown joins, descending `updated_at` ordering for contract overrides, future `ending_before` filtering for rate-card entries, and active webhook-alert predicates. Apply four authorities before production aggregation: only the two breakdown examples filter `environment_type = 'PRODUCTION'` even though one destination spans Production and Sandbox; append-only at-least-once object-storage delivery requires latest-row resolution per primary key before aggregation; `DRAFT_INCOMPLETE` rows can make `COUNT(0)` include rows whose null `total` is ignored by `SUM(total)`; and the rate-card query omits `starting_at`, nullable-end semantics, and version/snapshot selection. A global maximum snapshot is not per-key deduplication or a per-object completeness guarantee, and descending override order is not a one-row selector.
@@ -105,6 +109,8 @@ Metronome's GTM reporting guide models expected commit pacing from access schedu
 - [[source-metronome-integrations-platform-integrations-sfdc-integration]] - daily CRM sync through Census, selected customer and billing-data scope, changed-row outcome monitoring, 100-failure sample boundary, and freshness and completeness unknowns
 
 
+
+- [[source-metronome-api-reference-invoices-list-invoices]] - invoice-history and current-draft retrieval, billing-period filters, pagination completeness, and ordering boundaries
 
 ## Related
 

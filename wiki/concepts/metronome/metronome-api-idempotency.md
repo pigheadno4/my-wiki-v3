@@ -22,6 +22,9 @@ The documented `uniqueness_key` examples include contracts, alerts, and customer
 
 `POST /v1/contracts/customerCredits/create` specifically exposes a 1-128 character `uniqueness_key`; reuse after a credit or commit creation prevents a new record and returns HTTP 409, although 409 is absent from the operation's response map. This resource-identity guard is separate from the API-wide `Idempotency-Key` result-replay mechanism for POST. The API-wide authority says uniqueness keys last until released but documents release only for Alerts, so no customer-credit release path is documented. The sources do not define interaction or precedence between the two keys, uniqueness-key scope, normalization, races, failed-attempt consumption, expired-header-key retries, or endpoint-specific cached-error recovery.
 
+> [!warning] Endpoint-specific qualification
+> The deprecated Plans credit-grant void endpoint documents `release_uniqueness_key: true`, which resets that grant's uniqueness key for reuse. This qualifies the API-wide overview's statement that release is available only for Alerts. The endpoint does not define release visibility, concurrent reuse, rollback, or interaction with the API-wide `Idempotency-Key` mechanism. [[source-metronome-api-reference-credit-grants-void-a-credit-grant]]
+
 ## Retry and error boundary
 
 Metronome persists an `Idempotency-Key` result after a request begins execution—that is, after validation and concurrent-request conflict checks. The cached result can be an HTTP `500` error. Reusing that key returns the cached error, so the source recommends investigating system state and deciding whether to resolve manually or retry instead of automatically switching keys after a partial failure.
@@ -73,6 +76,8 @@ The assigned product-catalog reference documents `POST /v1/contract-pricing/prod
 
 
 
+
+- [[source-metronome-api-reference-contracts-get-a-contract-v2]] - POST contract-state read, historical-view and optional balance/ledger controls, and the boundary that same-key result replay does not establish a fresh read
 
 ## Related
 

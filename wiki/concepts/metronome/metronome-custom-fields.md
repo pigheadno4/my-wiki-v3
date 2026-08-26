@@ -20,6 +20,8 @@ The `listBalances` Commit and Credit response schemas can each expose optional `
 The single-product response can expose optional `custom_fields` on `ProductListItem`, annotated as entity `contract_product`. The referenced object permits arbitrary property names whose values are strings. This endpoint establishes only the read shape and does not define configured-key validation, limits, ordering, visibility, redaction, permissions, freshness, persistence, export behavior, invoice propagation, or archived-product handling.
 
 
+Package-term custom fields pass down to associated contracts. Package custom fields cannot be changed after they are set, while their contract-level descendants can be updated through `/customFields/setValues`; the guide lists package commit, credit, scheduled-charge, and subscription entities. [[source-metronome-guides-implement-metronome-core-concepts-packages-overview]]
+
 ## Uniqueness
 
 Uniqueness is intended for foreign entities that have a one-to-one relationship with a Metronome object. Enforcement continues for archived objects; resolving a duplicate involving an archived object requires resetting that object's field value.

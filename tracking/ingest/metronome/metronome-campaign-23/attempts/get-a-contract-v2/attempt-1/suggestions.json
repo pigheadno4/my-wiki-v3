@@ -1,0 +1,53 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "get-contract-v2-contract-state-read",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Contract edit history",
+      "proposed_markdown": "`POST /v2/contracts/get` retrieves one customer contract by customer and contract UUID and can return the full contract configuration as of an RFC 3339 `as_of_date`. The endpoint's `has_more` flags mean its embedded commits or credits can be incomplete and require the respective list endpoints for full collections. Its schema does not establish freshness, snapshot consistency, or historical-balance semantics. [[source-metronome-api-reference-contracts-get-a-contract-v2]]",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": [
+        "Keep historical contract configuration distinct from current balance semantics."
+      ]
+    },
+    {
+      "update_id": "get-contract-v2-credit-commit-read-options",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Balance retrieval",
+      "proposed_markdown": "The v2 contract read can optionally include credit and commit balances or ledgers, with slower queries; ledger inclusion cannot be combined with the historical `as_of_date` view. Embedded collections can be incomplete when `has_more` is true, and the balance definition is the amount currently accessible rather than an explicit historical snapshot. [[source-metronome-api-reference-contracts-get-a-contract-v2]]",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The raw prose says `include_ledger`, while the request property is `include_ledgers`; use the schema property name in implementation guidance.",
+        "Do not infer that `include_balance` with `as_of_date` returns a historical balance."
+      ]
+    },
+    {
+      "update_id": "get-contract-v2-post-replay-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-contracts-get-a-contract-v2]] - POST contract-state read, historical-view and optional balance/ledger controls, and the boundary that same-key result replay does not establish a fresh read",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "API-wide idempotency behavior comes from the existing idempotency authority, not from this endpoint page."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

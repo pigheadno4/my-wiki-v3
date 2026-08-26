@@ -1,0 +1,83 @@
+{
+  "job_id": "get-a-contract-v2",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Get a Contract (v2)\"\ntype: source\ndate_ingested: 2026-08-26\ncanonical_url: \"https://docs.metronome.com/api-reference/contracts/get-a-contract-v2.md\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/contracts/get-a-contract-v2-2026-07-13.md\"\ntags: [metronome, api, contracts, credits, commits]\n---\n\n## Overview\n\nBearer-authenticated `POST /v2/contracts/get` retrieves one customer's contract by `customer_id` and `contract_id`. It is the contract-state read for inspecting the term, pricing configuration, credits and commits, charges, transitions, schedules, and other attached configuration, including a historical view through `as_of_date`.\n\n## Query-critical facts\n\n- The payload schema requires UUID `customer_id` and `contract_id` properties. The enclosing OpenAPI `requestBody` is not marked required, so omitted-body behavior is not established.\n- `as_of_date` accepts an optional RFC 3339 timestamp and returns the full contract configuration as of that point, supporting inspection of terms that changed through edits.\n- `include_balance` adds credit and commit balances, and `include_ledgers` adds their ledgers; both make the query slower. `include_ledgers` cannot be combined with `as_of_date`.\n- The success response wraps a `ContractV2` object in `data`. Its core identity includes contract `id`, `customer_id`, and `starting_at`; the larger response can expose pricing, commitments, credits, overrides, scheduled charges, transitions, statement schedules, subscriptions, thresholds, provider schedules, and hierarchy configuration.\n- `has_more.commits` or `has_more.credits` indicates that this contract read omitted additional items; callers must use the respective list endpoints for complete collections.\n- The documented `400` response distinguishes `CustomerNotFound` and `ContractNotFound`.\n\n## Material boundaries\n\n- The request object does not declare `additionalProperties: false`; unknown-field rejection must not be inferred. Some response fields are explicitly client-configuration- or feature-dependent, so schema presence does not establish universal availability.\n- The balance schema defines a current accessible balance, including future-dated manual ledger entries for active segments, while `as_of_date` provides historical contract configuration. This page does not define historical balance semantics, and it forbids only `include_ledgers`\u2014not `include_balance`\u2014with `as_of_date`; do not assume the balance is historical or snapshot-consistent.\n- The API-wide [[source-metronome-api-reference-idempotency|POST idempotency authority]] applies `Idempotency-Key` result replay to this POST read. Replaying a key can return the original result and therefore is not proof of a fresh contract read; this endpoint adds no cache, freshness, read-after-edit consistency, concurrency, or recovery guarantee.\n\n## Raw detail coverage\n\nThe exact request fields, complete `ContractV2` property catalog, required and nullable fields, enums, examples, feature-gated fields, balance and ledger-entry unions, schedules, overrides, recurring grants, thresholds, subscriptions, hierarchy objects, provider configuration, and error schemas remain in the complete raw reference linked below.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-customers-and-contracts]], [[metronome-credits-and-commits]], [[metronome-api-idempotency]]\n- Related sources: [[source-metronome-api-reference-contracts-create-a-contract]], [[source-metronome-api-reference-contracts-amend-a-contract]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/contracts/get-a-contract-v2-2026-07-13|2026-07-13 snapshot - complete endpoint, response schema, examples, and error definitions]]\n",
+  "quotes": [
+    {
+      "text": "Gets the details for a specific contract, including contract term, rate card information, credits and commits, and more.",
+      "location": "line 11, endpoint overview"
+    },
+    {
+      "text": "Understand the state of a contract at a past time. As you can evolve the terms of a contract over time through editing, use the `as_of_date` parameter to view the full contract configuration as of that point in time.",
+      "location": "line 16, use cases"
+    },
+    {
+      "text": "Optionally, use the `include_balance` and `include_ledger` fields to include balances and ledgers in the credit and commit responses. Using these fields will cause the query to be slower.",
+      "location": "line 19, usage guidelines"
+    },
+    {
+      "text": "Use the respective list endpoints to get the full lists.",
+      "location": "line 835, HasMore schema description"
+    },
+    {
+      "text": "The current balance of the credit or commit.",
+      "location": "line 1528, BalanceForCommitsAndCredits description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "get-contract-v2-contract-state-read",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Contract edit history",
+        "proposed_markdown": "`POST /v2/contracts/get` retrieves one customer contract by customer and contract UUID and can return the full contract configuration as of an RFC 3339 `as_of_date`. The endpoint's `has_more` flags mean its embedded commits or credits can be incomplete and require the respective list endpoints for full collections. Its schema does not establish freshness, snapshot consistency, or historical-balance semantics. [[source-metronome-api-reference-contracts-get-a-contract-v2]]",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": [
+          "Keep historical contract configuration distinct from current balance semantics."
+        ]
+      },
+      {
+        "update_id": "get-contract-v2-credit-commit-read-options",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Balance retrieval",
+        "proposed_markdown": "The v2 contract read can optionally include credit and commit balances or ledgers, with slower queries; ledger inclusion cannot be combined with the historical `as_of_date` view. Embedded collections can be incomplete when `has_more` is true, and the balance definition is the amount currently accessible rather than an explicit historical snapshot. [[source-metronome-api-reference-contracts-get-a-contract-v2]]",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw prose says `include_ledger`, while the request property is `include_ledgers`; use the schema property name in implementation guidance.",
+          "Do not infer that `include_balance` with `as_of_date` returns a historical balance."
+        ]
+      },
+      {
+        "update_id": "get-contract-v2-post-replay-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-contracts-get-a-contract-v2]] - POST contract-state read, historical-view and optional balance/ledger controls, and the boundary that same-key result replay does not establish a fresh read",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "API-wide idempotency behavior comes from the existing idempotency authority, not from this endpoint page."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/contracts/get-a-contract-v2-2026-07-13.md",
+  "raw_sha256": "fc929b1ed102106ef829006f505ee630159f5c895aa65dbb80270202007bb48f",
+  "status": "candidate_ready"
+}

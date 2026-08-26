@@ -1,0 +1,69 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "list-invoices-invoicing-fact",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Shared Plan and Contract invoice surface",
+      "proposed_markdown": "### Customer invoice-list read\n\nBearer-authenticated `GET /v1/customers/{customer_id}/invoices` lists a customer's invoices with cursor pagination and filters for status, invoice type, credit type, contract, and inclusive-start/exclusive-end billing-period boundaries. The prose says drafts update as usage arrives and void invoices are included by default, but it gives no freshness or snapshot guarantee. Its ordering authorities conflict: prose says creation-date descending by default, while the `sort` parameter says `issued_at` ordering defaults to `date_asc`; callers needing deterministic order should pass `sort` explicitly. The prose also calls results summaries, while the response schema references an invoice object requiring `line_items`, so neither line-item omission nor single-invoice completeness is established. [[source-metronome-api-reference-invoices-list-invoices]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Preserve the creation-date-descending versus issued_at-date_asc conflict; do not choose one undocumented default.",
+        "Do not treat external provider fields as proof of delivery, payment, settlement, tax, accounting, or reconciliation."
+      ]
+    },
+    {
+      "update_id": "list-invoices-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-invoices-list-invoices]] - customer-scoped invoice listing, billing-period filters, cursor pagination, live-draft boundary, and conflicting default-order descriptions",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-invoices-reporting-fact",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Definition",
+      "proposed_markdown": "## Invoice-list reporting surface\n\nMetronome's customer invoice-list API supports billing-history, current-draft, reconciliation, support, and date-bounded reporting queries. Its date filters use inclusive billing-period start and exclusive billing-period end rather than issue date, and complete retrieval requires following nullable `next_page` cursors. The page does not establish cursor snapshot consistency or reporting freshness, and its conflicting default-order descriptions require callers that depend on order to pass the `sort` parameter explicitly. [[source-metronome-api-reference-invoices-list-invoices]]",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "This is an API retrieval surface, not proof that a report is accounting-complete or reconciled."
+      ]
+    },
+    {
+      "update_id": "list-invoices-reporting-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-invoices-list-invoices]] - invoice-history and current-draft retrieval, billing-period filters, pagination completeness, and ordering boundaries",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

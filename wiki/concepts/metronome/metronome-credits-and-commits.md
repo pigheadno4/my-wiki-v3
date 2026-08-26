@@ -27,6 +27,8 @@ Recurring credits and commits create a new grant and ledger each period. `commit
 
 For offset-notification scheduling, Metronome says subsequent recurring-commit child commits are generated at most one future billing period ahead. A before-`commit.segment.start` offset longer than that horizon cannot fire at the requested earlier time because the child does not yet exist; it fires when the next child is created. This page does not establish the exact child-creation instant or a general recurring-commit generation SLA outside the offset scenario.
 
+The deprecated Plans `POST /v1/credits/voidGrant` operation voids a grant by UUID. Optional flags can also void the grant's associated purchase invoice and reset the grant's uniqueness key for reuse. The page does not define eligible grant states, balance or ledger restoration, reversibility, visibility timing, or atomicity among those effects. [[source-metronome-api-reference-credit-grants-void-a-credit-grant]]
+
 ## Drawdown and invoice attribution
 
 Credits and prepaid commits at contract or customer level can carry access schedules in custom pricing units or selected currencies. Usage priced in a custom unit burns down applicable balances whose access schedules use that same unit; when none remains, invoice conversion to the rate card's fiat currency covers the residual usage. A CHF-paid prepaid commit granting Cloud Compute Tokens illustrates differing payment and access denominations, but the guide does not define arbitrary balance conversion, applicability priority, exchange rates, precision, or rounding.
@@ -65,6 +67,8 @@ The calculated balance excludes expired and upcoming segments, includes future-d
 > [!warning] Contradiction
 > This non-negative floor qualifies the existing broad signed-ledger-sum statement. The OpenAPI page also serializes uppercase, often expanded tokens such as `PREPAID_COMMIT_EXPIRATION`, `POSTPAID_COMMIT_INITIAL_BALANCE`, and `CREDIT_EXPIRATION`, while the remaining-balance guide uses lowercase and sometimes differently named `prepaid_commit_expiration`, `postpaid_initial_balance`, and `credit_segment_expiration`. Do not infer normalization or one-to-one equivalence; preserve each surface's exact names.
 
+The v2 contract read can optionally include credit and commit balances or ledgers, with slower queries; ledger inclusion cannot be combined with the historical `as_of_date` view. Embedded collections can be incomplete when `has_more` is true, and the balance definition is the amount currently accessible rather than an explicit historical snapshot. [[source-metronome-api-reference-contracts-get-a-contract-v2]]
+
 ### Revenue-reporting treatment
 
 Metronome's revenue-recognition guide treats prepaid-commit purchase invoices as deferred revenue, prepaid drawdown invoices as recognized as consumption occurs, and unused prepaid expiration as recognized at period end. Postpaid usage is recognized as the balance draws down, with any unmet minimum reported when the true-up invoice is issued. Free credits are never paid for and do not affect deferred revenue, although their drawdown may have a contra-revenue effect. For line-item-based reports, the guide says to ignore `credit_automated_invoice_deduction` and `prepaid_automated_invoice_deduction` on `CONTRACT_USAGE`, plus `postpaid_automated_invoice_deduction` and `postpaid_trueup` where invoice line items already include the amounts; include `prepaid_segment_expiration` because Metronome does not invoice that expiration, and usually ignore `credit_segment_expiration` because free-credit expiration does not affect revenue. These rules are documented report-construction guidance, not a complete merchant accounting policy.
@@ -92,6 +96,10 @@ For non-monotonically increasing metrics, commits and credits cover only increme
 The Salesforce sync represents both commits and credits in one object family with Metronome commit identity; customer and contract lookups; prepaid, postpaid, or credit type; priority; inclusive UTC start and exclusive UTC end; total amount; current balance; total cost; cost basis; and environment identity. The current-balance description subtracts burn-down including the current draft invoice from total amount, total amount sums access segments, total cost sums invoice segments, and cost basis is total cost divided by total amount. The commit-or-credit object has no documented credit-type lookup even though its total-amount description uses dollar wording. This CRM replica does not define balance-read timing, denomination, USD-cent or non-USD scaling, custom-pricing-unit conversion, number precision or rounding, zero-total division behavior, ledger identity, synchronization ordering, or reconciliation to the authoritative balance and invoice APIs.
 
 
+
+### Azure Marketplace treatment
+
+Under Azure Marketplace metering, prepaid purchase amounts follow scheduled-invoice service-period dates, free credits are not sent and only post-drawdown overage is metered, and an end-of-contract postpaid true-up that finalizes after the marketplace window is merchant-owned. Azure's positive-only quantities prevent a later Metronome credit from reducing a previously submitted total. [[source-metronome-integrations-marketplace-integrations-azure]]
 
 ## Prepaid balance thresholds
 

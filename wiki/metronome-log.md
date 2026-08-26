@@ -6,6 +6,16 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-26 — Metronome Campaign 23 Minimum Sufficient Source pilot promoted
+
+- Result: five approved source pages from complete raw-page reads, each accepted on attempt 1 after an independent complete-source Sol review; no worker retry, targeted review, failure, or rejection was required.
+- Sources: [[source-metronome-api-reference-contracts-get-a-contract-v2]], [[source-metronome-api-reference-invoices-list-invoices]], [[source-metronome-api-reference-credit-grants-void-a-credit-grant]], [[source-metronome-guides-implement-metronome-core-concepts-packages-overview]], and [[source-metronome-integrations-marketplace-integrations-azure]].
+- Minimum Sufficient Source finding: concise query routers retained material decisions, contradictions, authority boundaries, primary concept routes, raw coverage maps, and exact raw deep-dive links without copying complete schemas or setup procedures.
+- Concepts: updated customers and contracts, credits and commits, API idempotency, invoicing, reporting and analytics, packages and aliases, products and rate cards, custom fields, integrations, event ingestion, and currencies and custom pricing units; no new concept page was required.
+- Boundaries retained: contract balance history remains ambiguous; invoice default ordering conflicts across the page; the legacy grant void does not establish downstream or atomic effects; package aliases do not imply existing-contract rewrites; Azure setup and metering do not prove acceptance, payment, settlement, tax, refund, or reconciliation, and its provider-change wording conflicts with the dedicated transition authority.
+- Coverage after promotion: 225 collected documentation pages, 137 source summaries, and 94 raw pages without source summaries.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-23/monitor.md), [quality audit](../tracking/ingest/metronome/metronome-campaign-23/quality-audit.md), and [retrospective](../tracking/ingest/metronome/metronome-campaign-23/retrospective.md).
+
 ## 2026-08-25 — Metronome Campaign 22 archetype v2 pilot promoted
 
 - Result: five approved source pages from complete raw-page reads across eleven worker attempts and eleven independent reviews; final attempts were 2, 3, 2, 2, and 2, with no coordinator content repair.

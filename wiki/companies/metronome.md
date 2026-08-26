@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 132
+source_count: 137
 ---
 
 ## Overview
@@ -151,8 +151,8 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 127
-- Raw pages without source summaries: 99
+- Ingested source summaries: 137
+- Raw pages without source summaries: 94
 
 ## Sources
 
@@ -292,6 +292,12 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 - [[source-metronome-api-reference-invoices-add-a-one-time-charge]] — deprecated Plans one-time charge contract, product restriction, and empty response boundary
 - [[source-metronome-guides-reporting-insights-in-app-reporting]] — report generation, beta dashboards, ARR calculations, defaults, and freshness limits
 - [[source-metronome-api-reference-custom-fields]] — custom-field purpose, supported object examples, persistence, uniqueness, and invoice-line propagation
+
+- [[source-metronome-api-reference-contracts-get-a-contract-v2]] — contract-state retrieval, historical view, balance and ledger controls, embedded collection limits, and freshness boundaries
+- [[source-metronome-api-reference-invoices-list-invoices]] — customer invoice listing, filters, cursor completeness, live-draft behavior, and conflicting ordering descriptions
+- [[source-metronome-api-reference-credit-grants-void-a-credit-grant]] — deprecated Plans grant voiding, optional purchase-invoice and uniqueness-key effects, and lifecycle unknowns
+- [[source-metronome-guides-implement-metronome-core-concepts-packages-overview]] — package templates, restricted contract provisioning, immutable versioning, aliases, and custom-field propagation
+- [[source-metronome-integrations-marketplace-integrations-azure]] — Azure Marketplace setup, USD-cent metering, lifecycle ownership, late-event limits, and provider-transition conflict
 
 ## Related
 

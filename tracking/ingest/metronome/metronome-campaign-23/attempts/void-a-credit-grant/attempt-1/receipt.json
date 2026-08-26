@@ -1,0 +1,94 @@
+{
+  "job_id": "void-a-credit-grant",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Void a Credit Grant\"\ntype: source\ndate_ingested: 2026-08-26\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/credit-grants/void-a-credit-grant.md\"\nraw_files:\n  - \"metronome/api-reference/credit-grants/void-a-credit-grant-2026-07-13.md\"\ntags: [metronome, credit-grants, plans, contracts, invoicing, api]\n---\n\n## Overview\n\nThis OpenAPI page documents bearer-authenticated `POST /v1/credits/voidGrant`, which voids a credit grant. It is a deprecated Plans endpoint, and Metronome directs new clients to Contracts without identifying a replacement operation or migration mapping.\n\n## Query-critical facts\n\n- The request object requires UUID-formatted `id` when a JSON payload is supplied. The enclosing `requestBody` is not marked required, so omitted-body behavior is not documented.\n- Optional `void_credit_purchase_invoice` voids the purchase invoice associated with the grant when true. The page does not define its omitted or false behavior, invoice eligibility, downstream propagation, payment or refund effects, tax or accounting treatment, or atomicity with the grant void.\n- Optional `release_uniqueness_key` resets this grant's uniqueness key for reuse when true. This endpoint-specific capability qualifies the API-wide idempotency summary that describes release as available only for Alerts. The page does not define the omitted or false behavior, when reuse becomes visible, concurrent reuse, or rollback after partial failure.\n- HTTP 200 requires `data.id`, a UUID, but the request and response examples use different UUIDs; the page does not identify whether the response ID is the voided grant ID or another resource. HTTP 400 uses an error object requiring only a string `message`.\n- The API-wide [[source-metronome-api-reference-idempotency|POST idempotency authority]] applies `Idempotency-Key`: identical same-key parameters replay the original result, changed parameters return `409`, and retention is at least 24 hours. This endpoint adds no void-specific repeated-call, concurrency, cached-error recovery, state-visibility, or reconciliation guarantee.\n\n## Material boundaries\n\nThe page does not state preconditions or eligible grant states, whether voiding restores consumed or remaining balance, how ledgers or invoices reflect the transition, whether the mutation is reversible, or when reads observe it. Its purchase-invoice option does not establish effects in Stripe, an ERP, a marketplace, or another downstream A/R system. The endpoint is legacy Plans authority, not a Contracts implementation guide.\n\n## Raw-detail coverage map\n\nUse the raw page for the exact OpenAPI server and path, bearer security declaration, request property types and descriptions, request and response UUID examples, success and generic error schemas, operation ID, and the full shared tag descriptions. The raw schema does not declare `additionalProperties`, so unknown-field behavior is unspecified.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-credits-and-commits]], [[metronome-invoicing]], [[metronome-api-idempotency]], [[metronome-customers-and-contracts]]\n- Related source: [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/credit-grants/void-a-credit-grant-2026-07-13|2026-07-13 snapshot - deprecated Plans credit-grant void mutation, invoice and uniqueness-key options, and OpenAPI responses]]\n",
+  "quotes": [
+    {
+      "text": "Void a credit grant. This is a Plans (deprecated) endpoint. New clients should implement using Contracts.",
+      "location": "line 11; repeated in OpenAPI description at lines 97-99"
+    },
+    {
+      "text": "description: The ID of the grant to void",
+      "location": "line 102"
+    },
+    {
+      "text": "description: If true, void the purchase invoice associated with the grant",
+      "location": "line 115"
+    },
+    {
+      "text": "If true, resets the uniqueness key on this grant so it can\n                    be re-used",
+      "location": "lines 119-120"
+    },
+    {
+      "text": "description: Bad request",
+      "location": "line 139"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "void-credit-grant-credits-lifecycle",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Lifecycle",
+        "proposed_markdown": "The deprecated Plans `POST /v1/credits/voidGrant` operation voids a grant by UUID. Optional flags can also void the grant's associated purchase invoice and reset the grant's uniqueness key for reuse. The page does not define eligible grant states, balance or ledger restoration, reversibility, visibility timing, or atomicity among those effects. [[source-metronome-api-reference-credit-grants-void-a-credit-grant]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Treat the operation as legacy Plans authority; the page directs new clients to Contracts without naming a replacement."
+        ]
+      },
+      {
+        "update_id": "void-credit-grant-invoice-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Contract and invoice behavior",
+        "proposed_markdown": "A deprecated Plans credit-grant void can optionally set `void_credit_purchase_invoice: true` to void the purchase invoice associated with the grant. The endpoint does not define omitted or false behavior, invoice-state eligibility, downstream-provider propagation, payment or refund effects, tax or accounting treatment, or atomicity with the grant void. [[source-metronome-api-reference-credit-grants-void-a-credit-grant]]",
+        "quote_indexes": [
+          0,
+          2
+        ],
+        "warnings": [
+          "Do not extend the purchase-invoice option to Stripe, ERP, marketplace, or other downstream A/R records without separate authority."
+        ]
+      },
+      {
+        "update_id": "void-credit-grant-uniqueness-release",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Mechanisms",
+        "proposed_markdown": "> [!warning] Endpoint-specific qualification\n> The deprecated Plans credit-grant void endpoint documents `release_uniqueness_key: true`, which resets that grant's uniqueness key for reuse. This qualifies the API-wide overview's statement that release is available only for Alerts. The endpoint does not define release visibility, concurrent reuse, rollback, or interaction with the API-wide `Idempotency-Key` mechanism. [[source-metronome-api-reference-credit-grants-void-a-credit-grant]]",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": [
+          "Preserve the conflict explicitly rather than continuing to state categorically that only Alerts can release uniqueness keys."
+        ]
+      },
+      {
+        "update_id": "void-credit-grant-plans-contracts-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Deprecated Plans listing boundary",
+        "proposed_markdown": "The deprecated Plans `POST /v1/credits/voidGrant` page directs new clients to Contracts but does not identify a replacement Contracts operation, map Plan grant identity to a contract credit or commit, provide migration steps, or state a removal date. [[source-metronome-api-reference-credit-grants-void-a-credit-grant]]",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": [
+          "Do not infer a Contracts endpoint or field mapping from the migration direction alone."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/credit-grants/void-a-credit-grant-2026-07-13.md",
+  "raw_sha256": "c917e52bbe854ca7a0c0eef6eae037616a75af2edfa6fbb92b4a3ffc602bd3d8",
+  "status": "candidate_ready"
+}

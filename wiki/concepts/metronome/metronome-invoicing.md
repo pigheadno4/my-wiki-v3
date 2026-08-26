@@ -32,6 +32,10 @@ For an AWS-selected customer, Metronome meters the accrued total across AWS-bill
 > [!warning] AWS-specific coverage qualification
 > The invoicing overview's broad statement that marketplace invoicing supports all Metronome charge types is qualified by the dedicated AWS guide's exclusions for postpaid true-up invoices and non-USD invoices.
 
+### Azure Marketplace metering and delivery limits
+
+For Azure Marketplace delivery, Metronome meters accrued totals since the prior request across contract invoices routed to Azure, encoded as USD cents. Scheduled prepaid purchases use the scheduled invoice service-period date; credits send only later overage; and a postpaid shortfall true-up that finalizes after the marketplace window is not sent, leaving the merchant to handle it directly in Azure. Azure's positive-quantity limit means a later credit cannot decrease an already submitted bill. [[source-metronome-integrations-marketplace-integrations-azure]]
+
 ## Selection model
 
 The overview emphasizes optionality: organizations can use simpler integrated invoicing, marketplace distribution, or ERP systems according to their contracting and revenue-process needs. It does not define invoice objects, lifecycle states, synchronization details, or integration setup; those require the linked dedicated guides.
@@ -68,6 +72,10 @@ Bearer-authenticated `GET /v1/customers/{customer_id}/invoices/{invoice_id}` req
 
 The Salesforce integration synchronizes invoice and invoice-line custom objects daily. Invoice fields include identity, customer, contract, credit type, invoice type, inclusive and exclusive UTC service-period bounds, total, status, issue time, and environment; lines include invoice, credit-type and commit lookups, quantity, unit price, product ID, total, effective-time bounds, and environment. The prose explicitly says the invoice and line objects include draft and finalized invoices, while the invoice status field enumerates `Draft`, `Finalized`, and `Void`; whether void invoices are synchronized or retained is unresolved. Salesforce copies do not establish invoice finalization freshness, provider delivery, payment, tax, settlement, accounting, or reconciliation.
 
+
+### Customer invoice-list read
+
+Bearer-authenticated `GET /v1/customers/{customer_id}/invoices` lists a customer's invoices with cursor pagination and filters for status, invoice type, credit type, contract, and inclusive-start/exclusive-end billing-period boundaries. The prose says drafts update as usage arrives and void invoices are included by default, but it gives no freshness or snapshot guarantee. Its ordering authorities conflict: prose says creation-date descending by default, while the `sort` parameter says `issued_at` ordering defaults to `date_asc`; callers needing deterministic order should pass `sort` explicitly. The prose also calls results summaries, while the response schema references an invoice object requiring `line_items`, so neither line-item omission nor single-invoice completeness is established. [[source-metronome-api-reference-invoices-list-invoices]]
 
 ## Event-based invoice preview
 
@@ -139,6 +147,10 @@ For non-monotonically increasing `LATEST` metrics, invoice quantities are change
 > The example's credit covers the full billing period and still yields a negative total, but the later tip says full-period coverage avoids unexpected negative totals. The guide does not reconcile that recommendation with its example.
 
 
+
+### Legacy credit-grant purchase-invoice boundary
+
+A deprecated Plans credit-grant void can optionally set `void_credit_purchase_invoice: true` to void the purchase invoice associated with the grant. The endpoint does not define omitted or false behavior, invoice-state eligibility, downstream-provider propagation, payment or refund effects, tax or accounting treatment, or atomicity with the grant void. [[source-metronome-api-reference-credit-grants-void-a-credit-grant]]
 
 ## Threshold payment flow
 
@@ -287,3 +299,5 @@ Metronome's go-live checklist asks teams to understand the draft-to-grace-period
 - [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - incremental and negative invoice quantities, no-look-ahead credit consumption, negative-total boundary, and invoice-breakdown behavior
 
 - [[source-metronome-integrations-platform-integrations-sfdc-integration]] - daily Salesforce invoice and line-item replicas, service-period and attribution fields, draft and finalized scope, Void-status ambiguity, and downstream-outcome boundaries
+
+- [[source-metronome-api-reference-invoices-list-invoices]] - customer-scoped invoice listing, billing-period filters, cursor pagination, live-draft boundary, and conflicting default-order descriptions

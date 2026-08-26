@@ -71,6 +71,8 @@ The Salesforce sync exposes a rate-card custom object containing Metronome rate-
 
 
 
+Packages let one rate card support multiple standardized pricing plans by adding reusable, time-relative contract terms and package-level rate overrides. Package creation requires an existing product and rate card, but this guide does not define precedence with later rate-card changes or already-provisioned contract state. [[source-metronome-guides-implement-metronome-core-concepts-packages-overview]]
+
 ## Enterprise design
 
 - Contracts build on a selected rate card but may also carry fixed products outside it. The provisioning guide's cloud-tag example adds an entitled `0.95` multiplier; dimensional pricing requires an override for each relevant group-key and product combination.

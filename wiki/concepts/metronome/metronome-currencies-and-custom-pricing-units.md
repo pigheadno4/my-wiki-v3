@@ -44,6 +44,10 @@ The invoice-read schema exposes `cpu_conversion` as a distinct line-item type wh
 
 The AWS Marketplace integration accepts only invoices in USD fiat currency and expresses each metering-record quantity as the accrued dollar amount in USD cents. Metronome errors when a contract selects AWS while its rate card uses non-USD fiat; when a contract has additional non-USD invoices, only its USD invoices are sent to AWS. The guide does not define conversion, mixed-currency aggregation, tax, or rounding beyond the stated USD-cent quantity. [[source-metronome-integrations-marketplace-integrations-aws]]
 
+### Azure Marketplace currency boundary
+
+Azure Marketplace delivery supports only USD-fiat invoices and encodes metering quantity in USD cents. Selecting Azure with a non-USD rate card causes contract creation to error; if other invoices associated with the contract are non-USD, only USD invoices are sent. The guide does not define conversion, mixed-currency reconciliation, precision, rounding, or tax. [[source-metronome-integrations-marketplace-integrations-azure]]
+
 ## Boundaries and unknowns
 
 The guide does not define custom-unit creation APIs, precision, conversion formula direction, rounding, exchange-rate sourcing or timing, rate-card currency mutation, mixed-rate resolution, balance priority, tax, invoice lifecycle, collection, refund, or revaluation behavior. Its supported-currency list and denomination behavior are dated documentation evidence, not an evergreen capability guarantee.

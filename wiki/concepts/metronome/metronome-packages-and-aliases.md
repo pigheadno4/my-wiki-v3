@@ -9,6 +9,8 @@ tags: [metronome, packages, aliases, pricing, grandfathering]
 
 Metronome packages apply consistently defined pricing to selected customer cohorts, while effective-dated aliases let provisioning choose the applicable package without hard-coding its generated ID.
 
+A package is a customer-agnostic, time-relative template of contract terms layered on one rate card. It can standardize billing terms, commits, credits, subscriptions, thresholds, scheduled charges, and rate overrides across a cohort. Packages cannot be edited after creation; operators version them by creating a new package and scheduling the same alias, so new alias-based provisioning resolves to the new version while existing contracts require separate provisioning or contract editing. [[source-metronome-guides-implement-metronome-core-concepts-packages-overview]]
+
 ## Cohort pricing
 
 In the documented grandfathering workflow, a product is added to the shared rate card with `entitled: false`, a package override entitles it for new customers, and new contracts select that package by alias while existing customers retain their contracted pricing.

@@ -60,6 +60,8 @@ A provisioned contract is the primary invoice-generation mechanism and produces 
 
 `GET /v1/plans` is a deprecated bearer-authenticated Plans endpoint that lists legacy plan records with optional cursor pagination. The response requires a plan array plus a nullable `next_page`; each plan requires a UUID `id`, `name`, and `description`, with an optional string-valued custom-field map. Metronome directs new clients to Contracts, but this source does not name an equivalent Contracts route, define a Plan-to-Contract field or identity mapping, supply a migration procedure, or state a removal date.
 
+The deprecated Plans `POST /v1/credits/voidGrant` page directs new clients to Contracts but does not identify a replacement Contracts operation, map Plan grant identity to a contract credit or commit, provide migration steps, or state a removal date. [[source-metronome-api-reference-credit-grants-void-a-credit-grant]]
+
 ### Historical invoice migration
 
 A migration can recreate a contract with its original start and starting credit or commit balances while setting `usage_statement_schedule.invoice_generation_starting_at` to the first period Metronome should generate. In the worked example, a June 1 contract and August 1 generation start produce an August draft but no June or July invoices; those earlier periods are added through `/v1/contracts/createHistoricalInvoices`. The source does not establish whether imports appear in contract edit history, mutate contract terms after creation, or may overlap existing Metronome invoice periods.
@@ -102,6 +104,8 @@ Important creation constraints include:
 
 Rate-card aliases can stand in for generated IDs during provisioning, and contract overrides can change tier boundaries or prices for one customer. The rate-card guide says categorically that all contracts are built on cards, while this API surface treats package or rate-card selection as optional; no source explains whether a default or package-resolved card fills that gap.
 
+Package creation is customer agnostic; customer binding occurs later through `/contracts/create`. In package mode, the guide says contract creation accepts only `package_id` or `package_alias` plus `transition`, and additional terms return HTTP 400. The provisioned contract retains an attached package ID visible in the app, data export, and API. [[source-metronome-guides-implement-metronome-core-concepts-packages-overview]]
+
 ## Prepaid threshold configuration
 
 `prepaid_balance_threshold_configuration` adds contract-level automatic recharge. It defines the eligible balance threshold, recharge target, commit attribution, enablement, and optional payment gate. Changes take effect immediately and force an evaluation of the customer's current balance.
@@ -119,6 +123,8 @@ A general contract edit can be made in the UI or through `editContract`; the gui
 Keep three related surfaces distinct: `getEditHistory` lists recorded changes, `getContract` with `as_of_date` retrieves full contract state at a historical point, and all edits also enter Metronome audit logs available through the UI and API. The guide names an edit-history contributor `updateEndDate`, while the dedicated history source names `updateContractEndDate`; current runtime naming is unresolved. The guide also says to use the first edit's `created_at` for `as_of_date`, although its edit records expose `timestamp`, the shown contract state's `created_at` predates the first edit, and no request is displayed, so the exact timestamp source remains unresolved.
 
 Contract-level overrides layer customer-specific rate or entitlement changes over rate-card defaults. Applicable overrides do not stack on one usage-invoice line: an overwrite takes precedence over multiplier or tiered overrides, the last-added overwrite wins among overwrites, and multiplier prioritization chooses either the lowest multiplier or the lowest explicit priority value. Despite its title, the override guide shows only contract-create requests and does not document how to add, update, end, or remove an override on an existing contract.
+
+`POST /v2/contracts/get` retrieves one customer contract by customer and contract UUID and can return the full contract configuration as of an RFC 3339 `as_of_date`. The endpoint's `has_more` flags mean its embedded commits or credits can be incomplete and require the respective list endpoints for full collections. Its schema does not establish freshness, snapshot consistency, or historical-balance semantics. [[source-metronome-api-reference-contracts-get-a-contract-v2]]
 
 ## Legacy contract amendments
 
@@ -151,6 +157,10 @@ The AWS guide configures a customer with AWS customer ID, product code, region, 
 
 > [!warning] Provider-change lifecycle contradiction
 > The AWS guide says a billing provider cannot be added or changed after contract creation, while [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] documents next-period changes to and from AWS Marketplace. The sources do not resolve whether the AWS statement is stale, UI-specific, or limited to initial provisioning.
+
+### Azure Marketplace provisioning layers
+
+Azure provisioning requires the accepted offer's Subscription ID in customer provider configuration and Azure selection on a matching Metronome contract. On marketplace lifecycle changes, Metronome stops metering and updates its customer status, while the merchant owns application status and ending the Metronome contract when relevant. The Azure guide says the provider cannot be added or changed after contract creation, conflicting with the separate next-period marketplace-transition authority; the scope or staleness of that restriction is unresolved. [[source-metronome-integrations-marketplace-integrations-azure]]
 
 ## Stripe Dashboard contract management
 

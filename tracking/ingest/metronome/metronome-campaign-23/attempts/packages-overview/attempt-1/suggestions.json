@@ -1,0 +1,62 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "packages-overview-core-lifecycle",
+      "target_path": "wiki/concepts/metronome/metronome-packages-and-aliases.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Definition",
+      "proposed_markdown": "A package is a customer-agnostic, time-relative template of contract terms layered on one rate card. It can standardize billing terms, commits, credits, subscriptions, thresholds, scheduled charges, and rate overrides across a cohort. Packages cannot be edited after creation; operators version them by creating a new package and scheduling the same alias, so new alias-based provisioning resolves to the new version while existing contracts require separate provisioning or contract editing. [[source-metronome-guides-implement-metronome-core-concepts-packages-overview]]",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": [
+        "Do not infer alias overlap, exact-boundary resolution, rollback, or mutation of existing contracts beyond the guide's explicit workflow."
+      ]
+    },
+    {
+      "update_id": "packages-overview-contract-provisioning",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Contract creation API",
+      "proposed_markdown": "Package creation is customer agnostic; customer binding occurs later through `/contracts/create`. In package mode, the guide says contract creation accepts only `package_id` or `package_alias` plus `transition`, and additional terms return HTTP 400. The provisioned contract retains an attached package ID visible in the app, data export, and API. [[source-metronome-guides-implement-metronome-core-concepts-packages-overview]]",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Treat this as the guide's restricted package-provisioning contract, not a complete create-contract request or error schema."
+      ]
+    },
+    {
+      "update_id": "packages-overview-rate-card-layer",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Rate cards and rates",
+      "proposed_markdown": "Packages let one rate card support multiple standardized pricing plans by adding reusable, time-relative contract terms and package-level rate overrides. Package creation requires an existing product and rate card, but this guide does not define precedence with later rate-card changes or already-provisioned contract state. [[source-metronome-guides-implement-metronome-core-concepts-packages-overview]]",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Keep later rate-card propagation and override precedence as unknown unless a dedicated authority establishes them."
+      ]
+    },
+    {
+      "update_id": "packages-overview-term-custom-fields",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Entity scope and persistence",
+      "proposed_markdown": "Package-term custom fields pass down to associated contracts. Package custom fields cannot be changed after they are set, while their contract-level descendants can be updated through `/customFields/setValues`; the guide lists package commit, credit, scheduled-charge, and subscription entities. [[source-metronome-guides-implement-metronome-core-concepts-packages-overview]]",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "This is a secondary concept route; the guide does not supply the complete custom-field API schema or propagation timing."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

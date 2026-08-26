@@ -1,0 +1,92 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "azure-integration-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Native AWS Marketplace integration boundary",
+      "proposed_markdown": "### Native Azure Marketplace integration boundary\n\nThe Azure path layers a merchant-created Azure SaaS offer, Microsoft Entra credentials, an activated marketplace Subscription ID, customer-level Azure configuration, and contract-level Azure delivery selection. Metronome submits calculated USD-cent invoice totals, but the merchant owns SaaS status, contract alignment, lifecycle handling in its app, marketplace-window true-ups, and manual refund escalation. Configuration does not prove Azure activation or acceptance, payment, settlement, tax, refund completion, or reconciliation. [[source-metronome-integrations-marketplace-integrations-azure]]",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep Metronome-documented submission behavior separate from external Azure outcomes."
+      ]
+    },
+    {
+      "update_id": "azure-invoice-metering",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "### AWS Marketplace treatment",
+      "proposed_markdown": "For Azure Marketplace delivery, Metronome meters accrued totals since the prior request across contract invoices routed to Azure, encoded as USD cents. Scheduled prepaid purchases use the scheduled invoice service-period date; credits send only later overage; and a postpaid shortfall true-up that finalizes after the marketplace window is not sent, leaving the merchant to handle it directly in Azure. Azure's positive-quantity limit means a later credit cannot decrease an already submitted bill. [[source-metronome-integrations-marketplace-integrations-azure]]",
+      "quote_indexes": [
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "Do not infer provider acceptance, payment, settlement, refund, tax, or reconciliation from metering submission."
+      ]
+    },
+    {
+      "update_id": "azure-provider-lifecycle-conflict",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "### AWS Marketplace provisioning layers",
+      "proposed_markdown": "Azure provisioning requires the accepted offer's Subscription ID in customer provider configuration and Azure selection on a matching Metronome contract. On marketplace lifecycle changes, Metronome stops metering and updates its customer status, while the merchant owns application status and ending the Metronome contract when relevant. The Azure guide says the provider cannot be added or changed after contract creation, conflicting with the separate next-period marketplace-transition authority; the scope or staleness of that restriction is unresolved. [[source-metronome-integrations-marketplace-integrations-azure]]",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "Preserve the billing-provider change contradiction explicitly."
+      ]
+    },
+    {
+      "update_id": "azure-late-event-window",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "durable_fact",
+      "anchor": "### AWS Marketplace late-usage delivery boundary",
+      "proposed_markdown": "For Azure-billed contracts, only events within one hour after subscription end remain billable through the marketplace, and Metronome disables metering two hours after end. Outage backlog is included in the next request only while the contract and late-event window remain open; accepted usage therefore does not prove Azure billability or delivery. [[source-metronome-integrations-marketplace-integrations-azure]]",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Event acceptance and invoice inclusion do not establish Azure delivery after the marketplace window closes."
+      ]
+    },
+    {
+      "update_id": "azure-credit-commit-treatment",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "### AWS Marketplace treatment",
+      "proposed_markdown": "Under Azure Marketplace metering, prepaid purchase amounts follow scheduled-invoice service-period dates, free credits are not sent and only post-drawdown overage is metered, and an end-of-contract postpaid true-up that finalizes after the marketplace window is merchant-owned. Azure's positive-only quantities prevent a later Metronome credit from reducing a previously submitted total. [[source-metronome-integrations-marketplace-integrations-azure]]",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Do not generalize this marketplace treatment to other invoice destinations."
+      ]
+    },
+    {
+      "update_id": "azure-usd-only-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "durable_fact",
+      "anchor": "### AWS Marketplace currency boundary",
+      "proposed_markdown": "### Azure Marketplace currency boundary\n\nAzure Marketplace delivery supports only USD-fiat invoices and encodes metering quantity in USD cents. Selecting Azure with a non-USD rate card causes contract creation to error; if other invoices associated with the contract are non-USD, only USD invoices are sent. The guide does not define conversion, mixed-currency reconciliation, precision, rounding, or tax. [[source-metronome-integrations-marketplace-integrations-azure]]",
+      "quote_indexes": [
+        1,
+        4
+      ],
+      "warnings": [
+        "Do not infer conversion of excluded non-USD invoices."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

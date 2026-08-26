@@ -1,0 +1,64 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "void-credit-grant-credits-lifecycle",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Lifecycle",
+      "proposed_markdown": "The deprecated Plans `POST /v1/credits/voidGrant` operation voids a grant by UUID. Optional flags can also void the grant's associated purchase invoice and reset the grant's uniqueness key for reuse. The page does not define eligible grant states, balance or ledger restoration, reversibility, visibility timing, or atomicity among those effects. [[source-metronome-api-reference-credit-grants-void-a-credit-grant]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Treat the operation as legacy Plans authority; the page directs new clients to Contracts without naming a replacement."
+      ]
+    },
+    {
+      "update_id": "void-credit-grant-invoice-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Contract and invoice behavior",
+      "proposed_markdown": "A deprecated Plans credit-grant void can optionally set `void_credit_purchase_invoice: true` to void the purchase invoice associated with the grant. The endpoint does not define omitted or false behavior, invoice-state eligibility, downstream-provider propagation, payment or refund effects, tax or accounting treatment, or atomicity with the grant void. [[source-metronome-api-reference-credit-grants-void-a-credit-grant]]",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "Do not extend the purchase-invoice option to Stripe, ERP, marketplace, or other downstream A/R records without separate authority."
+      ]
+    },
+    {
+      "update_id": "void-credit-grant-uniqueness-release",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Mechanisms",
+      "proposed_markdown": "> [!warning] Endpoint-specific qualification\n> The deprecated Plans credit-grant void endpoint documents `release_uniqueness_key: true`, which resets that grant's uniqueness key for reuse. This qualifies the API-wide overview's statement that release is available only for Alerts. The endpoint does not define release visibility, concurrent reuse, rollback, or interaction with the API-wide `Idempotency-Key` mechanism. [[source-metronome-api-reference-credit-grants-void-a-credit-grant]]",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "Preserve the conflict explicitly rather than continuing to state categorically that only Alerts can release uniqueness keys."
+      ]
+    },
+    {
+      "update_id": "void-credit-grant-plans-contracts-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Deprecated Plans listing boundary",
+      "proposed_markdown": "The deprecated Plans `POST /v1/credits/voidGrant` page directs new clients to Contracts but does not identify a replacement Contracts operation, map Plan grant identity to a contract credit or commit, provide migration steps, or state a removal date. [[source-metronome-api-reference-credit-grants-void-a-credit-grant]]",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Do not infer a Contracts endpoint or field mapping from the migration direction alone."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

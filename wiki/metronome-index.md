@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 132 |
-| Raw pages without source summaries | 99 |
+| Source summaries ingested | 137 |
+| Raw pages without source summaries | 94 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -162,6 +162,12 @@ Operational evidence:
 - [[source-metronome-api-reference-invoices-add-a-one-time-charge]] — deprecated Plans one-time charge contract, product restriction, and empty response boundary
 - [[source-metronome-guides-reporting-insights-in-app-reporting]] — report generation, beta dashboards, ARR calculations, defaults, and freshness limits
 - [[source-metronome-api-reference-custom-fields]] — custom-field purpose, supported object examples, persistence, uniqueness, and invoice-line propagation
+
+- [[source-metronome-api-reference-contracts-get-a-contract-v2]] — contract-state read, historical configuration, optional balance and ledger detail, and incomplete embedded collections
+- [[source-metronome-api-reference-invoices-list-invoices]] — customer invoice collection, filters, pagination, mutable drafts, and ordering contradiction
+- [[source-metronome-api-reference-credit-grants-void-a-credit-grant]] — legacy Plans grant void mutation, invoice option, uniqueness release, and recovery limits
+- [[source-metronome-guides-implement-metronome-core-concepts-packages-overview]] — reusable package terms, contract provisioning, aliases, immutable versions, and propagation boundaries
+- [[source-metronome-integrations-marketplace-integrations-azure]] — Azure offer and identity layers, metering, corrections, late-event window, currency, and lifecycle ownership
 
 ## Concepts
 
