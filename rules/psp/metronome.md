@@ -253,3 +253,49 @@ its shared semantic suggestions. Deterministic hash, quote, schema, URL, and
 link checks remain mandatory but do not replace semantic review. Do not resume
 Campaign 14 retries or generalize a no-review policy to another provider. Any
 future optimization requires a new bounded manifest and explicit approval.
+
+## Campaign 23 Minimum Sufficient Source pilot authorization
+
+Campaign 23 is a bounded five-page Metronome-only pilot and may be initialized
+only after its exact manifest is explicitly approved. It changes source
+granularity and the review blocking contract, not collection, routing,
+scheduling, result schemas, model routing, or close validation.
+
+Each strong-model worker reads the complete assigned raw page, the campaign
+playbook, and only the matching section of
+`tracking/ingest/metronome/lessons.md`. It produces one Minimum Sufficient
+Source with an overview, query-critical durable facts, material boundaries or
+contradictions, a raw-detail coverage map, primary concept routes, and the
+exact path-qualified raw backlink. Numeric ranges in the playbook are semantic
+guidance and are not hard caps.
+
+A different strong-model reviewer reads the complete assigned raw page and
+applies the same archetype overlay. `changes_requested` is limited to a core
+factual error, a material omission that changes an integration decision, an
+authority error, a missing material contradiction, a missing or incorrect
+primary concept, a broken evidence route, or a coverage-map gap that hides an
+entire detail category central to the page purpose.
+
+Secondary concept gaps, ordinary schema details left in raw, non-material
+wording or formatting, mechanically repairable quote ranges, and mechanical
+company/index/log work are non-blocking. The reviewer returns `approved`,
+records any such follow-up in the existing `reason`, and approves or rejects
+the existing shared update IDs normally. Do not add a `coordinator_actions`
+schema field.
+
+Use targeted review only for an unchanged-hash bounded correction whose exact
+scope was identified by the prior complete review. Core misunderstanding,
+material omission, authority confusion, new factual meaning, or unresolved
+contradiction receives a full semantic retry and complete review. Secondary
+issues do not consume a worker attempt.
+
+The coordinator accepts the reviewer verdict, performs bounded non-semantic
+repairs, applies approved primary concept changes, verifies reciprocal links,
+promotes canonical sources, and runs close checks. It does not perform a
+default third complete raw read. Campaign close records first-pass approvals,
+bounded retries, full semantic retries, attempts, elapsed time, query audit,
+raw deep-dive success, and primary-concept reciprocity using existing files
+only.
+
+This authorization does not apply to Campaign 22 evidence, another provider,
+reviewer sampling, a larger campaign, or bulk migration.
