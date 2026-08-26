@@ -129,10 +129,28 @@ correction receives a full complete-source review.
 The coordinator remains the only canonical writer and explicitly completes
 the campaign after its terminal approval and campaign-close checks. It records
 only `started_at` and `completed_at`, consumes the reviewer-approved
-`shared_update_plan` by grouping updates by exact target, applies each shared
-target once, and runs the campaign-close wiki, capsule, and predetermined
-three-page query-audit validations once. The coordinator does not perform a
-default third full-source reread.
+`shared_update_plan`, and runs the campaign-close wiki, capsule, and
+predetermined three-page query-audit validations once. In close-only mode it
+groups updates by exact target and applies each target once; the incremental
+mode below instead applies each approved update once while keeping all writes
+serial. The coordinator does not perform a default third full-source reread.
+
+## Incremental promotion after approval
+
+For future explicitly approved Metronome campaigns, the coordinator may use
+idle time while unrelated workers and reviewers continue. As soon as one job
+has an `approved` review, the coordinator may serially apply that job's
+reviewer-approved concept updates, promote its approved candidate, and run the
+targeted checks for those files. Concept updates still precede that source.
+
+This permission does not allow workers or reviewers to write canonical files,
+does not allow promotion from `candidate_ready` or `reviewing`, and does not
+change the campaign's retry or review gates. The coordinator resolves shared
+target collisions in approval order and checks every approved `update_id`
+exactly once at close. Company, provider index, provider log, aggregate counts,
+capsule validation, the fixed query audit, and the full campaign commit remain
+one close-stage operation. If the campaign pauses, stop new promotion work and
+retain already promoted approved pages as recoverable campaign state.
 
 ## Campaign 09 compact production mode
 

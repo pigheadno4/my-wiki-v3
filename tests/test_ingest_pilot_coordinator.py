@@ -959,6 +959,13 @@ class CoordinatorTests(unittest.TestCase):
             reviewer_assignments=[{"identity": "reviewer-a", "model": "Sol"}],
         )
         self.assertEqual(output["review_order"]["job_id"], "job-1")
+        persisted_review = json.loads(
+            self.attempt("job-1", 1).joinpath("input.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(persisted_review["action"], "review_candidate")
+        self.assertEqual(persisted_review["review_scope"], "full")
+        self.assertEqual(persisted_review["reviewer_identity"], "reviewer-a")
+        self.assertEqual(persisted_review["reviewer_model"], "Sol")
         self.assertEqual(load_jobs(self.root, self.campaign_id)[1]["state"], "running")
 
     def test_parallel_review_result_without_assignment_fails_closed(self):
@@ -1032,6 +1039,13 @@ class CoordinatorTests(unittest.TestCase):
         self.assertEqual(retried["review_order"]["job_id"], "job-1")
         self.assertEqual(next(job for job in load_jobs(self.root, self.campaign_id) if job["job_id"] == "job-1")["state"], "reviewing")
         self.assertTrue(self.attempt("job-1", 1).joinpath("candidate.md").is_file())
+        persisted_review = json.loads(
+            self.attempt("job-1", 1).joinpath("input.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(persisted_review["action"], "review_candidate")
+        self.assertEqual(persisted_review["review_scope"], "full")
+        self.assertEqual(persisted_review["reviewer_identity"], "reviewer-a")
+        self.assertEqual(persisted_review["reviewer_model"], "Sol")
 
     def test_parallel_review_result_missing_worker_assignment_leaves_state_and_attempt_unchanged_then_retries(self):
         parallel = dict(self.manifest)

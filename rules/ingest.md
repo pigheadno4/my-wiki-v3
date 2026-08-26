@@ -66,9 +66,14 @@ these controls. A provider without its own authorization remains serial-only.
 - Source units remain independent. No candidate may combine several raw pages,
   and review approval is recorded per source before canonical promotion.
 
-After all reviews finish, the coordinator groups reviewer-approved shared
+Unless the provider-specific authorization permits incremental promotion,
+after all reviews finish the coordinator groups reviewer-approved shared
 updates by target and applies each target once instead of repeatedly editing
-the same file:
+the same file. An incremental authorization may let the coordinator promote
+one approved job while unrelated workers and reviewers continue, but it must
+keep canonical writes serial, apply only that job's reviewer-approved updates,
+and defer company, provider-index, provider-log, and count updates until the
+campaign close:
 
 1. Merge approved durable facts and planned source wikilinks by concept and
    apply each concept update once, before the corresponding sources.
@@ -77,6 +82,11 @@ the same file:
    defect if one is found.
 4. Update the company page, provider index, provider log, and calculated counts
    once for the campaign.
+
+Incremental promotion never weakens the approval gate: a candidate remains
+non-canonical until its own independent review is approved. A pause stops new
+promotion work but preserves already promoted approved jobs and their attempt
+evidence. Campaign-close validation still covers the complete promoted set.
 
 Concept updates still precede the corresponding canonical source promotion.
 Company and provider indexes are exhaustive reverse catalogs; a concept cites a

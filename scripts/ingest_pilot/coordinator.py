@@ -529,6 +529,25 @@ def _assignment_by_job(
     return validated
 
 
+def _persist_review_order(root: Path, campaign_id: str, order: Mapping[str, object]) -> None:
+    attempt_dir = (
+        root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
+        / str(order["job_id"]) / f"attempt-{order['attempt']}"
+    )
+    destination = attempt_dir / "input.json"
+    temporary = attempt_dir / "input.json.tmp"
+    try:
+        attempt_dir.mkdir(parents=True, exist_ok=True)
+        temporary.write_bytes(_json_bytes(order))
+        temporary.replace(destination)
+    except OSError as error:
+        try:
+            temporary.unlink(missing_ok=True)
+        except OSError:
+            pass
+        raise PilotError("cannot persist review order") from error
+
+
 def _start_shared_orders(
     root: Path,
     campaign_id: str,
@@ -573,6 +592,7 @@ def _start_shared_orders(
         assignment = reviewer_assignment_by_job[job["job_id"]]
         order["reviewer_identity"] = assignment["identity"]
         order["reviewer_model"] = assignment["model"]
+        _persist_review_order(root, campaign_id, order)
         job.update({
             "state": "reviewing",
             "last_event": "review_started",
@@ -584,6 +604,8 @@ def _start_shared_orders(
 
 
 def _start_review(
+    root: Path,
+    campaign_id: str,
     jobs: list,
     campaign: Mapping[str, Any],
     reviewer_assignments: Optional[Union[Mapping[str, Mapping[str, str]], Sequence[Mapping[str, str]]]],
@@ -598,6 +620,7 @@ def _start_review(
         order["reviewer_model"] = assignment["model"]
         job["reviewer_identity"] = assignment["identity"]
         job["reviewer_model"] = assignment["model"]
+    _persist_review_order(root, campaign_id, order)
     job["state"] = "reviewing"
     job["last_event"] = "review_started"
     job["active_review_scope"] = order["review_scope"]
@@ -664,7 +687,7 @@ def run_once(
         orders, review_orders = shared_orders["worker_orders"], shared_orders["review_orders"]
     events.extend({"event": "worker_started", "job_id": order["job_id"]} for order in orders)
     if total_subagent_slots is None:
-        review = _start_review(jobs, campaign, reviewer_assignments)
+        review = _start_review(root, campaign_id, jobs, campaign, reviewer_assignments)
         if review is not None:
             review_orders = [review]
     else:
