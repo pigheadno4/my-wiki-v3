@@ -96,6 +96,8 @@ Dimension-scoped spend alerts require their `group_values` key to be a group key
 
 ## Sources
 
+- [[source-metronome-guides-get-started-api-quickstart]] — metric placement in the onboarding flow, event-type and property matching, group-key decisions, creation-time immutability, and stale-event test boundary
+
 - [[source-metronome-api-reference-usage-search-events]] — sampled transaction-ID retrieval, optional matched-metric configuration diagnostics, 34-day occurrence window, heavy-rate-limit boundary, and non-exhaustive leakage evidence
 
 - [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-sql-editor]] — SQL functions and outputs, breakdown granularity, scheduled metric swaps, and unresolved SQL-runtime boundaries

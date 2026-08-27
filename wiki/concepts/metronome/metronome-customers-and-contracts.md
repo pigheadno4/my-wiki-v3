@@ -192,6 +192,8 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 
 ## Sources
 
+- [[source-metronome-guides-get-started-api-quickstart]] — customer alias identity, ordered customer and contract provisioning, rate-card linkage, provider-optional invoice generation, and in-window event prerequisite
+
 - [[source-metronome-api-reference-contracts-archive-a-contract]] — permanent contract archival, historical visibility, required request flags, and lifecycle unknowns
 
 - [[source-metronome-api-reference-plans-list-plans]] — deprecated `GET /v1/plans` route, bearer authentication, cursor pagination, legacy Plan response schema, and Contracts migration boundary

@@ -120,6 +120,8 @@ The customer-credit create payload requires a UUID `product_id` even when eligib
 
 ## Sources
 
+- [[source-metronome-guides-get-started-api-quickstart]] — product and shared-rate-card roles in first-invoice onboarding, dimensional group-key dependencies, and missing-rate diagnostic
+
 - [[source-metronome-api-reference-rate-cards-archive-a-rate-card]] — permanent new-contract disablement, preserved existing-contract pricing, and archive request/response boundaries
 
 - [[source-metronome-guides-pricing-packaging-make-pricing-changes-make-a-pricing-change]] — all-customer rate additions, package inheritance boundary, and the future-change worked-example contradiction

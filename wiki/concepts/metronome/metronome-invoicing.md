@@ -235,6 +235,8 @@ Metronome's go-live checklist asks teams to understand the draft-to-grace-period
 
 ## Sources
 
+- [[source-metronome-guides-get-started-api-quickstart]] — first draft-invoice verification, required in-window event substitution, mismatch diagnosis, stated grace-period and optional Stripe-delivery timing, and provider-owned collection
+
 - [[source-metronome-api-reference-credits-and-commits-disable-trueup-for-commit]] — conditional suppression of a postpaid shortfall true-up invoice and unresolved invoice-lifecycle and downstream effects
 - [[source-metronome-api-reference-contracts-archive-a-contract]] — draft cancellation, scheduled-invoice voiding, finalized-invoice flag behavior, and downstream boundary
 

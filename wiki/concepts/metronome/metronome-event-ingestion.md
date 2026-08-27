@@ -11,6 +11,9 @@ Metronome event ingestion accepts application usage payloads through the `/inges
 
 ## Event contract
 
+> [!warning] Stale API quickstart timestamps
+> The API quickstart snapshot fetched July 13, 2026 uses March 9, 2026 timestamps in both its event-schema and `/v1/ingest` examples while stating that events may be backdated only 34 days and future events are rejected. Callers must substitute current, non-future timestamps within the rolling window, and retain unique transaction IDs, before using those payloads to test metric matching, rating, or draft invoicing. [[source-metronome-guides-get-started-api-quickstart]]
+
 
 The customer-list read surface can filter customers by a single `ingest_alias`, and each returned customer requires `ingest_aliases`; those aliases are documented as substitutes for the Metronome customer ID in usage events. The endpoint does not define alias ordering, uniqueness, current-active status, or how its alias filter combines with other filters. [[source-metronome-api-reference-customers-list-customers]]
 

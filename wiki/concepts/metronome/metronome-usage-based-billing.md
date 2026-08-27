@@ -69,6 +69,8 @@ These remaining questions require dedicated sources and are not fully answered b
 
 ## Sources
 
+- [[source-metronome-guides-get-started-api-quickstart]] — programmatic sandbox onboarding order from event schema and billing objects to a draft invoice, including the stale worked timestamp boundary
+
 - [[source-github-ai]] - agent-oriented catalog, PLG, CSM, and Stripe usage-billing migration workflows
 - [[source-metronome-guides-pricing-packaging-overview]] — navigation overview identifying pay-as-you-go, subscriptions, enterprise commits, hybrid approaches, pricing changes, and credits-and-commits as the documented pricing-and-packaging areas
 
