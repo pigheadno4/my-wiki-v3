@@ -44,6 +44,8 @@ Offset generation is prospective: past fire times are not replayed, moving a fir
 
 ## Customer-configured controls
 
+A customer- or contract-level credit-balance threshold explicitly excludes seat-scoped credits. Seat-scoped monitoring instead uses `low_remaining_seat_balance_reached`. The guide requires the request-body `seat_filter` object when creating that notification and says the object provides `seat_group_key`; it does not independently establish the nested `seat_group_key` property as required. Optional `seat_filter.seat_group_value` narrows monitoring or lookup to one seat. Webhook receipt can drive merchant-owned access gating, but the guide does not make the alert an entitlement mutation. Its specific-seat get example is malformed JSON because it omits a comma between `alert_id` and `seat_filter`. [[source-metronome-guides-pricing-packaging-subscription-manage-seats]]
+
 Credit and commit threshold notifications can monitor remaining balance, percent remaining, or days remaining. Custom fields can narrow a policy to a subset of commits or credits; the worked UI example selects **Contract credit balance** at `$0`, filters credit entities by `credit_type: free_trial`, and scopes the notification to selected customers. The guide presents product cutoff, renewal, and upsell as downstream use cases, but does not establish automatic access enforcement, entitlement mutation, customer communication, or sales action.
 
 A merchant can create customer-scoped threshold alerts for billing-period spend, low remaining commit balance, and usage-invoice total. The spend-limit examples use `spend_threshold_reached` for both soft and hard limits; their names, thresholds, and merchant actions distinguish them rather than a documented native severity or enforcement field. Store returned alert IDs so webhook signals can be matched to the intended customer and rule. When a limit changes, the guide archives the previous alert before creating a replacement, without defining atomic replacement or gap behavior.
@@ -57,6 +59,8 @@ The prepaid-credit model uses `alerts.low_remaining_contract_credit_and_commit_b
 For a parent contract's shared commit, child consumption does not automatically trigger the parent's commit-balance alert. The hierarchy guide says alerts evaluate when the parent receives usage and child-only usage may delay the parent alert until parent usage arrives. It gives no evaluation-latency or eventual-evaluation guarantee; webhook delivery mechanics remain a separate concern. Its next spend-alert bullet is truncated after `parent spend alerts only include parent's`, so no spend scope should be inferred from that sentence.
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — exclusion of seat-scoped credits from general balance alerts, seat-filter object requiredness, optional one-seat scoping, malformed lookup example, and merchant-owned access response
 
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-prepaid-credits]] — zero-balance entitlement signal and merchant-owned access-control boundary in a prepaid-credit flow
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] — parent commit-alert evaluation limitation and truncated parent-spend-alert statement

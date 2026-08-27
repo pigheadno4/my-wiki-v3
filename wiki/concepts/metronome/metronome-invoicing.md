@@ -48,6 +48,8 @@ The overview emphasizes optionality: organizations can use simpler integrated in
 
 ## Calculation and timing boundary
 
+Subscription seat changes have configuration-dependent billing effects. Aggregate quantity updates are invoiced according to the subscription's contract proration settings; seat-based updates say invoices are billed and credits released according to subscription and recurring-credit configuration. The guide does not provide a proration formula, rounding, invoice placement or state, finalization, delivery, collection, tax, payment, accounting, or correction behavior. [[source-metronome-guides-pricing-packaging-subscription-manage-seats]]
+
 A subscription's `invoice_placement` defaults to `ON_USAGE_INVOICE`, placing its charge on the usage invoice with the matching billing date. `ON_SCHEDULED_INVOICE` places the charge on a scheduled invoice: Metronome appends it when a scheduled invoice with that billing date exists and creates a new scheduled invoice when none exists. This placement does not establish finalization, delivery, collection success, or payment timing.
 
 ### Legacy Plans one-time invoice charge
@@ -234,6 +236,8 @@ Metronome's go-live checklist asks teams to understand the draft-to-grace-period
 - Related platform: [[stripe]]
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — configuration-dependent seat-change invoicing and proration, with amount and invoice-lifecycle limits
 
 - [[source-metronome-guides-get-started-api-quickstart]] — first draft-invoice verification, required in-window event substitution, mismatch diagnosis, stated grace-period and optional Stripe-delivery timing, and provider-owned collection
 

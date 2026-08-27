@@ -120,6 +120,8 @@ With payment gating enabled, a failed payment changes `is_enabled` to `false`; M
 
 ## Contract edit history
 
+After contract creation, subscription capacity is edited through `update_subscription`. Aggregate updates accept total `quantity` or `quantity_delta`, while seat-based updates add or remove identified and unassigned seats; replacing an assignee without changing quantity removes the old seat ID and adds unassigned capacity. The source does not define atomicity across seat operations, validation, error mapping, concurrent-edit behavior, or when the new state becomes visible in contract reads and edit history. [[source-metronome-guides-pricing-packaging-subscription-manage-seats]]
+
 `POST /v2/contracts/getEditHistory` returns the recorded edit history for one customer contract. Metronome describes this as a full history spanning changes made in the UI, through `editContract`, and through other contract-changing endpoints. Each `ContractEdit` can identify when an edit occurred and group the additions, updates, archives, and removals it contained, including changes to pricing overrides, discounts, charges, commits, credits, subscriptions, usage filters, contract dates, and threshold configuration.
 
 The targeted `POST /v2/contracts/commits/edit` operation is narrower than a general contract edit: it identifies one existing customer- or contract-level commit and changes that commit's fields, schedules, applicability, invoicing contract, rate type, priority, or hierarchy access.
@@ -191,6 +193,8 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - Commercial-design planning should make prepaid-versus-arrears terms, seat and usage interaction, commitments and overages, ramp and multi-year structures, exceeded-limit policy, and segment-specific payment terms explicit. The planning guide does not itself establish supported contract fields, lifecycle behavior, or enforcement.
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — post-creation aggregate and identity-bearing subscription edits, unassigned-seat reassignment, and contract-state visibility unknowns
 
 - [[source-metronome-guides-get-started-api-quickstart]] — customer alias identity, ordered customer and contract provisioning, rate-card linkage, provider-optional invoice generation, and in-window event prerequisite
 

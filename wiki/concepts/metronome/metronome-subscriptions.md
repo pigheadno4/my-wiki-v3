@@ -30,6 +30,8 @@ A shared seat-credit pool links the subscription to a recurring credit by a temp
 
 ## Lifecycle
 
+Seat management after contract creation has two modes. Aggregate subscriptions and shared credit pools use `update_subscription` with either total `quantity` or `quantity_delta`; equal-`starting_at` aggregate updates apply in submission order, and invoice plus recurring-credit effects follow configured proration and `access_amount`. Seat-based credit subscriptions instead add or remove stable `seat_ids` and can add or remove unassigned capacity. Reassignment without changing total quantity removes the old identity and adds one unassigned seat, leaving capacity available for a later assignee. The guide does not extend aggregate same-time ordering to seat updates or define proration calculations, rounding, atomicity, errors, or recovery. [[source-metronome-guides-pricing-packaging-subscription-manage-seats]]
+
 - Metronome's subscription quantity-history endpoint returns historical quantities and prices for customer-facing seat-count history, but excludes future scheduled quantity changes; those future changes must be retrieved through `getContract`.
 - A subscription rate-card price change reaches inheriting contracts in the next billing period; a contract overwrite retains its assigned price.
 - A sub-cycle trial can use consecutive subscriptions with a time-bounded `$0` override on the first. A full-cycle trial can use one `$0` override that expires before list pricing applies in the next period.
@@ -40,6 +42,8 @@ A shared seat-credit pool links the subscription to a recurring credit by a temp
 The lifecycle page labels one operation as create-contract guidance while linking to edit-contract documentation. Endpoint choice should therefore be verified against the current API.
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — aggregate and identity-bearing seat updates, unassigned-seat reassignment, configuration-dependent proration, and seat history and balance routes
 
 - [[source-metronome-api-reference-contracts-get-subscription-quantity-history]] — historical subscription quantities and prices, seat-count presentation, response structure, and the future-change boundary
 - [[source-metronome-guides-pricing-packaging-subscription-provision-your-customer]] - contract subscription fields, charging gate, billing-cycle configuration, pooled and individual seat-credit provisioning, and the unassigned-seat field contradiction

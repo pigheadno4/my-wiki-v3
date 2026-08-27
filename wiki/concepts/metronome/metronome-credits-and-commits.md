@@ -191,6 +191,8 @@ The guides contain example-level inconsistencies that should be checked against 
 
 ## Subscription, manual-gate, and trial extensions
 
+Managing subscription seats changes both access identity and credit balance. Aggregate quantity changes on a recurring-credit subscription release balance according to the recurring credit's proration settings and `access_amount`; seat-based additions or removals bill invoices and release credits according to subscription and recurring-credit configuration. Seat-balance reads can return all seats or one `seat_id`, and optional ledgers expose grant and burn-down history over a requested time window. This guide does not define the amount formula, rounding, release timing, ledger-entry types, consistency, or recovery. [[source-metronome-guides-pricing-packaging-subscription-manage-seats]]
+
 - A subscription can optionally provision credit pooled at subscription level or scoped per seat. The overview does not define grant schedules, drawdown, thresholds, payment gates, or hybrid mechanics.
 - When cancelling a hybrid subscription by moving that subscription's end date, its recurring credit must be ended separately. The lifecycle source does not establish contract-level cancellation behavior for that credit.
 - A manual one-off Stripe-gated commit edits an existing contract. Successful payment releases the balance; failure voids the associated Metronome and Stripe invoices, creates no commit, and requires a new API request rather than an automatic payment retry. Pre-success resource state and external-gate equivalence are undocumented.
@@ -213,6 +215,8 @@ Threshold notifications can monitor credit and commit remaining balance, percent
 A merchant can create `low_remaining_commit_balance_reached` for a customer, credit type, and threshold. The resulting signal can support customer communication, sales outreach, or a merchant-owned service cutoff when the balance reaches zero. The page does not define which contract- or customer-level commits contribute, applicability or priority effects, expired-balance treatment, inclusion of credits, or automatic access enforcement.
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — seat-change credit release, customer/contract versus seat-scoped threshold boundary, and per-seat current-balance and ledger-history navigation
 
 - [[source-metronome-api-reference-credits-and-commits-disable-trueup-for-commit]] — bearer-secured postpaid true-up invoice suppression, payload requiredness distinction, success and error envelopes, API-wide idempotency context, and lifecycle unknowns
 - [[source-metronome-api-reference-contracts-archive-a-contract]] — associated commit and credit archival, active prepaid-balance expiration entries, and ledger casing ambiguity
