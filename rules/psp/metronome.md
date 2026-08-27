@@ -340,3 +340,38 @@ commit remain one close-stage operation.
 suggestions, failures, or reviews as source evidence. This authorization does
 not permit a ninth page, reviewer sampling, Luna or Terra routing, another
 provider, cross-PSP rollout, or bulk migration.
+
+## Campaign 25 shadow risk-review authorization
+
+Campaign 25 is authorized only for the exact six jobs and three audit job IDs
+in its approved manifest. It is a shadow calibration of reviewer coverage, not
+a live sampled-review policy. The existing scheduler remains
+`review_policy: per_page`, and every source candidate receives a complete raw
+read by a different strong Sol reviewer before canonical promotion.
+
+The three preliminary mandatory jobs are `edit-a-contract`,
+`list-seat-balances`, and `netsuite`. The provisional sample pool is
+`get-a-threshold-notification`, `get-plan-details`, and `sdks`, with
+`get-a-threshold-notification` fixed as the immediate shadow sample. A worker
+that finds a state or lifecycle transition; financial semantics; durable
+failure, retry, idempotency, concurrency, or propagation behavior;
+cross-system authority or reconciliation boundaries; or material schema,
+time-window, pagination, requiredness, or narrative conflict must report the
+trigger using its existing quote locations. That report escalates a
+provisional job to mandatory review before the simulated cutoff. A mandatory
+job cannot be downgraded.
+
+If the fixed sample remains eligible and passes its complete review, the
+coordinator records the time and exact candidate set the proposed policy would
+have released, then dispatches the two deferred shadow reviews. If the sample
+is escalated, the shadow result is inconclusive; if it has a material defect,
+the shadow policy fails. Any material defect or missed escalation found by a
+deferred review yields `revise_risk_rule`. In every outcome, real promotion
+waits for all applicable per-page reviews and existing close gates.
+
+Record the preliminary route, worker escalation decision, simulated cutoff,
+and deferred-review findings in existing Campaign 25 evidence only. Do not add
+a result-contract field, registry, score, classifier agent, scheduler state,
+validator, or performance-monitoring layer. This authorization does not permit
+an unreviewed canonical source, a seventh page, Luna or Terra routing, another
+provider, cross-PSP rollout, or bulk migration.
