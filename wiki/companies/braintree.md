@@ -1,13 +1,13 @@
 ---
 title: "Braintree"
 type: company
-tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview]
-source_count: 12
+tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, developer-tooling, github-actions]
+source_count: 13
 ---
 
 ## Overview
 
-Braintree is represented in this wiki by twelve independently tracked repositories: the GraphQL API contract, Node.js, PHP, and Ruby server SDKs, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, native Braintree Android and iOS SDKs, separately versioned Android and iOS Drop-in UIs, and independent Android and iOS PopupBridge WebView transports. Client SDKs produce payment-method nonces for server processing; the server SDKs perform gateway operations; PopupBridge only transports browser popup results. The GraphQL schema describes a separate API contract. Their commit or package identities and evidence histories remain separate.
+Braintree is represented in this wiki by thirteen independently tracked repositories: the GraphQL API contract, Node.js, PHP, and Ruby server SDKs, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, native Braintree Android and iOS SDKs, separately versioned Android and iOS Drop-in UIs, independent Android and iOS PopupBridge WebView transports, and shared mobile SDK review tooling. Client SDKs produce payment-method nonces for server processing; the server SDKs perform gateway operations; PopupBridge only transports browser popup results; and mobile SDK tooling only coordinates engineering review. The GraphQL schema describes a separate API contract. Their commit or package identities and evidence histories remain separate.
 
 ## GraphQL API Contract
 
@@ -87,6 +87,12 @@ The host activity owns the deep link, must use `PopupBridgeWebViewClient`, and m
 
 The retained Android README and migration guides conflict with the exact runtime on minimum SDK, lifecycle handling, version status, and data-collector APIs. See [[source-github-popup-bridge-android]] for the exact `5.3.0` behavior.
 
+## Mobile SDK Developer Tooling
+
+`braintree/mobile-sdk-tooling` at `default-branch@a3b0ffe` provides a shared GitHub Actions review digest for configured Braintree mobile SDK repositories. It authenticates with a GitHub App, reduces each reviewer's full history to the latest decisive state, applies CODEOWNER-aware approval counting and inner-source routing, and posts qualifying pull requests to Slack.
+
+This is engineering-operations evidence only. It does not establish SDK implementation behavior, release readiness, merchant eligibility, or payment processing. Its current limitations include a 100-open-pull-request cap per repository, manual daylight-saving cron maintenance, individual-only CODEOWNER extraction, and Ubuntu/GNU shell assumptions.
+
 ## Versioned Implementation Knowledge
 
 The retained history begins with `braintree-web@3.143.0` and currently reaches `3.144.0` at exact SHA `41460fba05c1ea1222e795b36a10765a6699b8e7`. The newer release adds PayPal View/Edit Funding Instrument, expands PayPal Checkout v6 session options, and prevents failed incognito detection from aborting Venmo creation while preserving the 23-component architecture.
@@ -95,7 +101,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Knowledge Status
 
-- Ingested cumulative GitHub repository sources: 12
+- Ingested cumulative GitHub repository sources: 13
 - Ingested package releases: 12
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`
 - Latest retained Braintree Node release: `braintree@3.39.0` at `7a9270aaf31eb87819add64a768652243f90007c`
@@ -109,6 +115,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - Latest retained iOS Drop-in release: `BraintreeDropIn@9.14.0` at `d951d104ac960188824bda191be2f57c57351a31`
 - Latest retained iOS PopupBridge release: `PopupBridge@3.1.0` at `00256b4b8c58367287fe35a442a33cd7c010a94f`
 - Latest retained Android PopupBridge release: `popup-bridge@5.3.0` at `f30654168b997ea1dd95ebc61901582ae00bebb0`
+- Latest retained mobile SDK tooling ref: `default-branch@a3b0ffe` at `a3b0ffe7931cde179f8b0dfdd5162979adf81683`
 
 ## Sources
 
@@ -136,6 +143,8 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - [[changelog-github-popup-bridge-ios]] - package-qualified iOS PopupBridge release ledger
 - [[source-github-popup-bridge-android]] - cumulative Android WebView popup transport baseline
 - [[changelog-github-popup-bridge-android]] - package-qualified Android PopupBridge release ledger
+- [[source-github-mobile-sdk-tooling]] - cumulative mobile SDK review-automation baseline
+- [[changelog-github-mobile-sdk-tooling]] - commit-qualified mobile SDK tooling history
 
 ## Related
 

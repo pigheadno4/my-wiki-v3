@@ -1,0 +1,296 @@
+name: PR Review Digest
+
+on:
+  schedule:
+    # 9:00 AM Central (CDT = UTC-5). Update to '0 15 * * 1-5' when clocks fall back to CST (UTC-6) in November.
+    - cron: '0 14 * * 1-5'
+    # 3:00 PM Central (CDT = UTC-5). Update to '0 21 * * 1-5' when clocks fall back to CST (UTC-6) in November.
+    - cron: '0 20 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  digest:
+    name: Post PR review digest to Slack
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # ── Step 1: Authenticate as the GitHub App ─────────────────────────────
+      # This action handles JWT generation and token exchange automatically.
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          # Scopes the token to the whole org so it can read any repo with our GH app installed.
+          owner: ${{ github.repository_owner }}
+
+      # ── Step 2: Check out this repo to read its CODEOWNERS file ───────────
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      # ── Step 3: Find PRs needing review and post digest to Slack ───────────
+      - name: Find PRs needing review and post to Slack
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          # Stored as Actions Variables
+          REPOS: ${{ vars.REPOS }}
+          OPEN_THRESHOLD_HOURS: ${{ vars.OPEN_THRESHOLD_HOURS }}
+        run: |
+          set -euo pipefail
+          
+          THRESHOLD="${OPEN_THRESHOLD_HOURS:-12}"
+          NOW=$(date +%s)
+          NL=$'\n'
+          
+          # Regular PR tracking
+          TOTAL=0
+          SLACK_BODY=""
+          
+          # Inner source PR tracking (only included on Tuesdays and Thursdays)
+          INNER_SOURCE_TOTAL=0
+          INNER_SOURCE_BODY=""
+          
+          # 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri
+          DAY_OF_WEEK=$(date '+%u')
+          IS_INNER_SOURCE_DAY=false
+          [[ $DAY_OF_WEEK -eq 2 || $DAY_OF_WEEK -eq 4 ]] && IS_INNER_SOURCE_DAY=true
+          
+          # ── Read code owners from this repo's CODEOWNERS file ─────────────
+          # Extracts individual @username entries only — @org/team refs are skipped
+          # since we're matching against individual reviewer logins on PRs.
+          CODE_OWNERS=""
+          for CO_PATH in ".github/CODEOWNERS" "CODEOWNERS" "docs/CODEOWNERS"; do
+            if [[ -f "$CO_PATH" ]]; then
+              CODE_OWNERS=$(grep -v '^\s*#' "$CO_PATH" \
+                | grep -oP '(?<=@)[a-zA-Z0-9][a-zA-Z0-9_-]*(?!\/)' \
+                | sort -u | tr '\n' ' ')
+              echo "CODEOWNERS loaded from ${CO_PATH}: ${CODE_OWNERS}"
+              break
+            fi
+          done
+          [[ -z "$CODE_OWNERS" ]] && echo "No CODEOWNERS file found — all reviews will count"
+          
+          if [[ -z "$REPOS" ]]; then
+            echo "REPOS variable is empty — Please set it to a comma-separated list of repositories (e.g. 'org/repo1, org/repo2') in Actions Variables."
+            exit 0
+          fi
+          
+          IFS=',' read -ra REPO_LIST <<< "$REPOS"
+          
+          for REPO in "${REPO_LIST[@]}"; do
+            REPO="${REPO// /}"
+            [[ -z "$REPO" ]] && continue
+            echo "Scanning: $REPO"
+          
+            # mergeStateStatus= CLEAN means approved, checks pass, no conflicts
+            # updatedAt       = last time the PR was updated (push, comment, review, etc.)
+            PRS=$(gh pr list \
+              --repo "$REPO" \
+              --state open \
+              --limit 100 \
+              --json number,title,url,author,createdAt,updatedAt,isDraft,mergeStateStatus,labels)
+          
+            PR_COUNT=$(echo "$PRS" | jq 'length')
+            REPO_TEXT=""
+            INNER_SOURCE_REPO_TEXT=""
+          
+            for i in $(seq 0 $((PR_COUNT - 1))); do
+              PR=$(echo "$PRS" | jq ".[$i]")
+          
+              # Skip draft PRs — not ready for review
+              IS_DRAFT=$(echo "$PR" | jq -r '.isDraft')
+              [[ "$IS_DRAFT" == "true" ]] && continue
+          
+              NUMBER=$(echo "$PR"  | jq -r '.number')
+              TITLE=$(echo "$PR"   | jq -r '.title' | sed 's/[][|>]/ /g')
+              URL=$(echo "$PR"     | jq -r '.url')
+              AUTHOR=$(echo "$PR"  | jq -r '.author.login')
+              CREATED=$(echo "$PR" | jq -r '.createdAt')
+              UPDATED=$(echo "$PR" | jq -r '.updatedAt')
+          
+              CREATED_EPOCH=$(date -d "$CREATED" +%s)
+              UPDATED_EPOCH=$(date -d "$UPDATED" +%s)
+              AGE_HOURS=$(( (NOW - CREATED_EPOCH) / 3600 ))
+              STALE_HOURS=$(( (NOW - UPDATED_EPOCH) / 3600 ))
+          
+              if [[ $AGE_HOURS -lt 24 ]]; then
+                AGE_LABEL="${AGE_HOURS}h"
+              else
+                AGE_LABEL="$((AGE_HOURS / 24))d"
+              fi
+          
+              # ── Check for inner source label (case-insensitive) ─────────
+              IS_INNER_SOURCE=$(echo "$PR" | jq -r \
+                '[.labels[].name | ascii_downcase] | contains(["inner source"])')
+
+              # ── Check for tech lead review required label (case-insensitive) ─
+              NEEDS_TECH_LEAD=$(echo "$PR" | jq -r \
+                '[.labels[].name | ascii_downcase] | contains(["tech lead review required"])')
+
+              # Inner source PRs still awaiting tech lead review aren't actionable
+              # by the broader team yet — hide them entirely, on any day.
+              if [[ "$IS_INNER_SOURCE" == "true" && "$NEEDS_TECH_LEAD" == "true" ]]; then
+                continue
+              fi
+
+              # Skip inner source PRs on non-Tue/Thu days entirely
+              if [[ "$IS_INNER_SOURCE" == "true" && "$IS_INNER_SOURCE_DAY" == "false" ]]; then
+                continue
+              fi
+
+              # ── Resolve each reviewer's latest decision ─────────────────
+              # The list query's latestReviews reports each reviewer's most recent review of ANY
+              # type, so a COMMENTED reply submitted after an approval hides that approval. Fetch
+              # the full review history and reduce to each reviewer's latest DECISIVE review
+              # (APPROVED / CHANGES_REQUESTED / DISMISSED), ignoring COMMENTED/PENDING. A dismissed
+              # approval correctly stops counting because DISMISSED can be a reviewer's latest
+              # decision. This mirrors how GitHub itself tracks approval state.
+              LATEST_DECISIONS=$(gh api --paginate "repos/$REPO/pulls/$NUMBER/reviews?per_page=100" 2>/dev/null \
+                | jq -s '
+                    (add // [])
+                    | [ .[]
+                        | select(.state == "APPROVED" or .state == "CHANGES_REQUESTED" or .state == "DISMISSED")
+                        | {login: .user.login, state: .state, submittedAt: .submitted_at}
+                      ]
+                    | group_by(.login)
+                    | map(sort_by(.submittedAt) | last)
+                  ' || echo '[]')
+          
+              # ── Skip PRs with unaddressed change requests ───────────────
+              # Latest CHANGES_REQUESTED timestamp from a relevant reviewer (code owners when a
+              # CODEOWNERS file exists, otherwise any reviewer); empty when there is none.
+              CHANGES_REQUESTED_AT=$(echo "$LATEST_DECISIONS" | jq -r --arg owners "$CODE_OWNERS" '
+                ($owners | split(" ") | map(select(length > 0))) as $owner_list |
+                [.[]
+                  | select(.state == "CHANGES_REQUESTED")
+                  | select(($owner_list | length == 0)
+                           or (.login as $l | $owner_list | contains([$l])))
+                  | .submittedAt
+                ] | max // ""')
+
+              if [[ -n "$CHANGES_REQUESTED_AT" ]]; then
+                # Fetch commits for this single PR only. Requesting `commits` for every PR in the
+                # list query above blows GitHub's GraphQL node limit via the commit authors
+                # connection, so we look it up lazily and only when a change request exists.
+                LAST_COMMIT_DATE=$(gh pr view "$NUMBER" --repo "$REPO" --json commits \
+                  --jq '[.commits[].committedDate] | max // ""' 2>/dev/null || true)
+                # If the latest commit is not newer than the change request, the PR is waiting on
+                # the author, not reviewers — drop it. On a lookup failure (empty date) we keep
+                # the PR rather than hide it.
+                if [[ -n "$LAST_COMMIT_DATE" && ! "$LAST_COMMIT_DATE" > "$CHANGES_REQUESTED_AT" ]]; then
+                  continue
+                fi
+              fi
+
+              # ── Count code owner approvals (all approvals when no CODEOWNERS) ──
+              REVIEW_COUNT=$(echo "$LATEST_DECISIONS" | jq --arg owners "$CODE_OWNERS" '
+                ($owners | split(" ") | map(select(length > 0))) as $owner_list |
+                [.[]
+                  | select(.state == "APPROVED")
+                  | select(($owner_list | length == 0)
+                           or (.login as $l | $owner_list | contains([$l])))] | length
+              ')
+              APPROVERS=$(echo "$LATEST_DECISIONS" | jq -r --arg owners "$CODE_OWNERS" '
+                ($owners | split(" ") | map(select(length > 0))) as $owner_list |
+                [.[]
+                  | select(.state == "APPROVED")
+                  | select(($owner_list | length == 0)
+                           or (.login as $l | $owner_list | contains([$l])))
+                  | .login] | join(", ")
+              ')
+          
+              MERGE_STATE=$(echo "$PR" | jq -r '.mergeStateStatus')
+          
+              REASONS=()
+          
+              # ── Criterion 1: fewer than 2 code owner approvals ─────────
+              if [[ $REVIEW_COUNT -lt 2 ]]; then
+                NEEDED=$(( 2 - REVIEW_COUNT ))
+                REASONS+=("${REVIEW_COUNT}/2 code owner approvals — needs ${NEEDED} more")
+              fi
+          
+              # ── Criterion 2: ready to merge ─────────────────────────────
+              if [[ "$MERGE_STATE" == "CLEAN" ]]; then
+                REASONS+=("ready to merge")
+              fi
+          
+              # ── Criterion 3: 2+ code owner approvals but stale ─────────
+              if [[ $REVIEW_COUNT -ge 2 && $STALE_HOURS -ge $THRESHOLD ]]; then
+                if [[ $STALE_HOURS -lt 24 ]]; then
+                  STALE_LABEL="${STALE_HOURS}h"
+                else
+                  STALE_LABEL="$((STALE_HOURS / 24))d"
+                fi
+                REASONS+=("${REVIEW_COUNT} code owner approvals but no activity for ${STALE_LABEL}")
+              fi
+          
+              [[ ${#REASONS[@]} -eq 0 ]] && continue
+          
+              REASON_STR=$(printf '%s; ' "${REASONS[@]}")
+              REASON_STR="${REASON_STR%; }"   # strip trailing semicolon
+          
+              # Labels (display all labels except "inner source" which drives section routing)
+              LABELS=$(echo "$PR" | jq -r '[.labels[].name] | join(", ")')
+              if [[ -n "$LABELS" ]]; then
+                LABEL_STR="${NL}  🏷️  ${LABELS}"
+              else
+                LABEL_STR=""
+              fi
+          
+              # Approvers
+              if [[ -n "$APPROVERS" ]]; then
+                APPROVAL_STR="${NL}  ✅ Approved by: $APPROVERS"
+              else
+                APPROVAL_STR=""
+              fi
+          
+              # Bare URL on its own line so Slack auto-links it cleanly. Wrapping it in
+              # Markdown [text](url) doesn't render in the Workflow Builder message (it shows
+              # literally) and pulls the trailing ")" into the auto-detected link.
+              PR_LINE="• #${NUMBER}: ${TITLE}${NL}  ${URL}${NL}  @${AUTHOR} · ${AGE_LABEL} old${NL}  ${REASON_STR}${LABEL_STR}${APPROVAL_STR}${NL}"
+          
+              # ── Route PR to the appropriate section ─────────────────────
+              if [[ "$IS_INNER_SOURCE" == "true" ]]; then
+                INNER_SOURCE_REPO_TEXT+="$PR_LINE"
+                ((INNER_SOURCE_TOTAL++)) || true
+              else
+                REPO_TEXT+="$PR_LINE"
+                ((TOTAL++)) || true
+              fi
+            done
+          
+            if [[ -n "$REPO_TEXT" ]]; then
+              SLACK_BODY+="${REPO}${NL}${REPO_TEXT}${NL}"
+            fi
+            if [[ -n "$INNER_SOURCE_REPO_TEXT" ]]; then
+              INNER_SOURCE_BODY+="${REPO}${NL}${INNER_SOURCE_REPO_TEXT}${NL}"
+            fi
+          done
+          
+          # ── Build and send Slack message ──────────────────────────────────
+          DATE_LABEL=$(date '+%A, %B %-d')
+          SLACK_TEXT=""
+          
+          if [[ $TOTAL -gt 0 ]]; then
+            SLACK_TEXT+="🔍 PR Review Digest — ${DATE_LABEL}${NL}${TOTAL} PR(s) need attention:${NL}${NL}${SLACK_BODY}"
+          fi
+          
+          if [[ $INNER_SOURCE_TOTAL -gt 0 ]]; then
+            SLACK_TEXT+="${NL}🌐 Inner Source PRs — ${DATE_LABEL}${NL}${INNER_SOURCE_TOTAL} inner source PR(s) need attention:${NL}${NL}${INNER_SOURCE_BODY}"
+          fi
+          
+          if [[ -z "$SLACK_TEXT" ]]; then
+            SLACK_TEXT="✅ PR Review Digest — ${DATE_LABEL} — All clear! There are no PRs currently needing attention."
+          fi
+          
+          # Slack Workflow expects a variable named "message" in the payload.
+          PAYLOAD=$(jq -n --arg message "$SLACK_TEXT" '{"message": $message}')
+          
+          curl -sf -X POST \
+            -H "Content-Type: application/json" \
+            --data "$PAYLOAD" \
+            "$SLACK_WEBHOOK_URL" > /dev/null
+          
+          echo "Done. Posted $TOTAL regular PR(s) and $INNER_SOURCE_TOTAL inner source PR(s) to Slack."

@@ -6,6 +6,14 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-27] ingest | braintree/mobile-sdk-tooling `default-branch@a3b0ffe`
+
+- Approved and processed work item `github-c10bd0ceb7090dd5898f` in full mode at exact SHA `a3b0ffe7931cde179f8b0dfdd5162979adf81683`.
+- Read the complete seven-path packet containing the workflow, README, snapshot manifest, and required Braintree and root context; the packet had no evidence gaps or unclassified files.
+- Established the cumulative source and commit-qualified changelog for GitHub App authentication, scheduled repository scans, CODEOWNER-aware review-state reduction, inner-source routing, and Slack digest delivery.
+- Preserved the engineering-operations boundary: the workflow does not prove SDK behavior, release readiness, merchant eligibility, or payment processing.
+- Recorded the 100-open-pull-request cap, manual daylight-saving cron maintenance, individual-only CODEOWNER extraction, and Ubuntu/GNU shell assumptions.
+
 ## [2026-08-27] ingest | braintree/popup-bridge-android `popup-bridge@5.3.0`
 
 - Approved and processed work item `github-674c25ce833e37536ebc` in full mode at exact SHA `f30654168b997ea1dd95ebc61901582ae00bebb0`.

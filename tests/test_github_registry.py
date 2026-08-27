@@ -41,7 +41,7 @@ APPENDIX_A_INVENTORY = (
     ('braintree/braintree_android', 'https://github.com/braintree/braintree_android', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/braintree_ios', 'https://github.com/braintree/braintree_ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/web-sdk-github-actions', 'https://github.com/braintree/web-sdk-github-actions', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
-    ('braintree/mobile-sdk-tooling', 'https://github.com/braintree/mobile-sdk-tooling', 'tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
+    ('braintree/mobile-sdk-tooling', 'https://github.com/braintree/mobile-sdk-tooling', 'tooling', 'tier3', 'commit', True, 'default-branch', 'on-demand'),
     ('braintree/graphql-api', 'https://github.com/braintree/graphql-api', 'api-specification', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('braintree/credit-card-type', 'https://github.com/braintree/credit-card-type', 'utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree-web', 'https://github.com/braintree/braintree-web', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
@@ -1410,6 +1410,43 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(650000, capsule.max_file_bytes)
         self.assertEqual(3, capsule.max_capsule_files)
         self.assertEqual(800000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(15, capsule.max_packet_files)
+        self.assertEqual(1500000, capsule.max_packet_utf8_bytes)
+
+    def test_braintree_mobile_sdk_tooling_has_reviewed_commit_policy(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["braintree/mobile-sdk-tooling"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual("tooling", repo.repo_type)
+        self.assertEqual("tier3", repo.priority)
+        self.assertEqual("on-demand", repo.collection_frequency)
+        self.assertEqual("default-branch", repo.track)
+        self.assertEqual("commit", repo.version_strategy)
+        self.assertEqual((), repo.version_tracks)
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("braintree-mobile-sdk-tooling", capsule.id)
+        self.assertEqual("commit-tree-v1", capsule.adapter)
+        self.assertEqual("mobile-sdk-tooling", capsule.source_id)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual(
+            ("README.md",),
+            capsule.default_required_roots,
+        )
+        self.assertEqual(
+            (".github/workflows/pr-review-digest.yml",),
+            capsule.include_paths,
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(2, capsule.max_capsule_files)
+        self.assertEqual(200000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(15, capsule.max_packet_files)
         self.assertEqual(1500000, capsule.max_packet_utf8_bytes)
 

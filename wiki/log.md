@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-27] ingest | GitHub braintree/mobile-sdk-tooling - `default-branch@a3b0ffe`
+
+- Full-ingested work item `github-c10bd0ceb7090dd5898f` at exact SHA `a3b0ffe7931cde179f8b0dfdd5162979adf81683` after serial full reading of all seven required evidence and context paths.
+- Added cumulative and commit-qualified sources for the GitHub App-authenticated, CODEOWNER-aware mobile SDK pull-request review digest and Slack routing.
+- Preserved the engineering-operations boundary and recorded the 100-PR cap, manual time-zone maintenance, team-CODEOWNER gap, and GNU-runner dependencies.
+
 ## [2026-08-27] ingest | GitHub braintree/popup-bridge-android - `popup-bridge@5.3.0`
 
 - Full-ingested work item `github-674c25ce833e37536ebc` at exact SHA `f30654168b997ea1dd95ebc61901582ae00bebb0` after serial full reading of all 44 required evidence paths.

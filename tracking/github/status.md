@@ -1365,6 +1365,33 @@
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.0.0/2026-07-22/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/9.3.0--10.0.0/comparison.json)
 
+## `github-c10bd0ceb7090dd5898f`
+
+- Repository: `braintree/mobile-sdk-tooling`
+- SHA: `a3b0ffe7931cde179f8b0dfdd5162979adf81683`
+- Collection date: `2026-08-27`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/mobile-sdk-tooling/snapshots/2026-08-27-a3b0ffe/manifest.json)
+- Packet: [review packet](repos/braintree/mobile-sdk-tooling/ingest-packets/github-c10bd0ceb7090dd5898f/packet.md)
+- Review priority: `normal`
+- Required reading: `7` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@a3b0ffe` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `a3b0ffe7931cde179f8b0dfdd5162979adf81683`
+  Comparison: Not applicable
+
 ## `github-c2ebe224d536e16acded`
 
 - Repository: `paypal/paypal-android`
