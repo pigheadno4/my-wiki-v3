@@ -317,3 +317,26 @@ only.
 
 This authorization does not apply to Campaign 22 evidence, another provider,
 reviewer sampling, a larger campaign, or bulk migration.
+
+## Campaign 24 Minimum Sufficient Source confirmation authorization
+
+Campaign 24 is authorized only for the exact eight jobs and three audit job
+IDs in its approved manifest. It reuses the unchanged Campaign 23 Minimum
+Sufficient Source playbook and matching archetype lessons; it does not change
+collection, routing, result schemas, model routing, retry policy, or close
+validation.
+
+Every job uses a strong Sol worker and a different strong Sol complete-source
+reviewer. Keep three dynamic native-agent slots beside the coordinator and no
+batch barrier. Persist the trusted review order before reviewer dispatch. Once
+one job is independently approved, the coordinator may serially apply only
+that job's approved primary-concept changes, promote its exact candidate, and
+run targeted checks while unrelated agents continue. Company, provider index,
+provider log, counts, capsule validation, fixed query audit, and the campaign
+commit remain one close-stage operation.
+
+`api-quickstart`, `system-notifications`, and `manage-seats` are fresh Campaign
+24 jobs. Do not read or reuse their earlier campaign candidates, receipts,
+suggestions, failures, or reviews as source evidence. This authorization does
+not permit a ninth page, reviewer sampling, Luna or Terra routing, another
+provider, cross-PSP rollout, or bulk migration.
