@@ -27,6 +27,8 @@ The documented `uniqueness_key` examples include contracts, alerts, and customer
 
 ## Retry and error boundary
 
+The API-wide `Idempotency-Key` contract applies to `POST /v1/contracts/updateInvoiceIssueDate`: identical same-key parameters replay the original result, changed parameters conflict, retention is at least 24 hours, and a cached result can be HTTP `500`. The endpoint adds no issue-date-specific semantics for another or expired key, concurrent rescheduling, read-after-write visibility, or recovery and final invoice state after a cached or ambiguous failure. [[source-metronome-api-reference-contracts-update-invoice-issue-date]] [[source-metronome-api-reference-idempotency]]
+
 Metronome persists an `Idempotency-Key` result after a request begins execution—that is, after validation and concurrent-request conflict checks. The cached result can be an HTTP `500` error. Reusing that key returns the cached error, so the source recommends investigating system state and deciding whether to resolve manually or retry instead of automatically switching keys after a partial failure.
 
 The best-practice guidance recommends deterministic keys derived from business identity and operation type for resource operations, UUIDs where deterministic identity is unnecessary, exponential backoff, and reuse of the same key within its lifetime. The separate status-code reference advises verifying that a resource was not partially created after a `5XX` response, but its suggestion to retry with a different key must be reconciled with the idempotency page's manual-investigation warning for cached errors.

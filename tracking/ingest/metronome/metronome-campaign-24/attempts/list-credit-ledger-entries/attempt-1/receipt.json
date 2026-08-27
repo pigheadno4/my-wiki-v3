@@ -1,0 +1,109 @@
+{
+  "job_id": "list-credit-ledger-entries",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome List Credit Ledger Entries API\"\ntype: source\ndate_ingested: 2026-08-27\ncanonical_url: \"https://docs.metronome.com/api-reference/credit-grants/list-credit-ledger-entries.md\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/credit-grants/list-credit-ledger-entries-2026-07-13.md\"\ntags: [metronome, api, credit-grants, ledgers, pagination]\n---\n\n## Overview\n\nThis reference documents bearer-authenticated `POST /v1/credits/listEntries`, which returns credit ledgers grouped by customer on Metronome's deprecated Plans surface. Metronome directs new clients to Contracts, but this page does not identify an equivalent Contracts operation or migration mapping.\n\n## Query-critical facts\n\n- The optional JSON object can filter by customer UUIDs and credit-type UUIDs. Omitting either property broadens that dimension to all customers or all credit types; neither the payload nor its enclosing `requestBody` is marked required.\n- `starting_on` is inclusive by ledger-entry `effective_at`. `ending_before` is exclusive, cannot be in the future, and defaults the upper boundary to the start of each customer's next billing period when omitted.\n- Optional query `sort` orders ledgers by date as `asc` or `desc` and defaults to ascending. Optional query `next_page` is a string cursor; HTTP `200` requires a customer-ledger array under `data` and nullable `next_page`. The page defines no page size, cursor lifetime, snapshot consistency, or duplicate/skip behavior during concurrent ledger changes.\n- Each returned customer item requires `customer_id` and a `ledgers` array. Every credit-type ledger requires its credit type, starting and ending balances, posted `entries`, and `pending_entries`; each balance separates `excluding_pending` from `including_pending` and carries an effective timestamp.\n- A ledger entry requires amount, reason, running balance, effective time, creator, and related credit-grant UUID. Optional nullable `invoice_id` links a deduction to the invoice that consumed it or a grant to the invoice that charged its `paid_amount`.\n\n## Material boundaries\n\n- Entries associated with voided credit grants are excluded. The endpoint therefore is not a complete history of every grant-related entry and must not be used alone to reconstruct voided-grant activity.\n- This legacy entry schema does not expose a ledger-entry type, and its Plans-specific shape must not be conflated with current Contracts balance and ledger schemas. The page supplies no Plan-to-Contract identity mapping, replacement route, migration procedure, or removal date.\n- The request object does not declare `additionalProperties: false`, so unknown-field handling is undocumented. Only a generic HTTP `404` is listed; authorization scope, rate limits, malformed-cursor behavior, freshness, cache behavior, and other failures are not defined here.\n- The separate API-wide `Idempotency-Key` authority applies to this POST read. An identical same-key retry can replay the original result rather than prove a fresh ledger view; this endpoint adds no cursor-replay, concurrent-update, cached-error, or recovery semantics.\n\n## Raw-detail coverage map\n\nUse the raw snapshot for the complete request filters and example, cursor and sort definitions, response envelope and example, customer and credit-type grouping schemas, starting and ending balance calculations, posted and pending entry fields, invoice linkage, bearer security declaration, and generic `404` response schema.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-credits-and-commits]], [[metronome-customers-and-contracts]], [[metronome-api-idempotency]]\n- Related sources: [[source-metronome-api-reference-credits-and-commits-list-balances]], [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]], [[source-metronome-api-reference-credit-grants-void-a-credit-grant]], [[source-metronome-api-reference-pagination]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/credit-grants/list-credit-ledger-entries-2026-07-13|2026-07-13 snapshot - deprecated Plans credit-ledger listing, filters, pagination, balance windows, and entry schema]]",
+  "quotes": [
+    {
+      "text": "> Fetches a list of credit ledger entries. Returns lists of ledgers per customer. Ledger entries are returned in chronological order. Ledger entries associated with voided credit grants are not included. This is a Plans (deprecated) endpoint. New clients should implement using Contracts.",
+      "location": "line 11, page summary"
+    },
+    {
+      "text": "  /credits/listEntries:\n    post:\n      tags:\n        - Credit grants\n      summary: List credit ledger entries\n      description: >\n        Fetches a list of credit ledger entries. Returns lists of ledgers per\n        customer. Ledger entries are returned in chronological order. Ledger\n        entries associated with voided credit grants are not included. This is a\n        Plans (deprecated) endpoint. New clients should implement using\n        Contracts.\n      operationId: listCreditLedgerEntries\n      parameters:\n        - $ref: '#/components/parameters/NextPage'\n        - in: query\n          name: sort\n          description: Ledgers sort order by date, asc or desc. Defaults to asc.\n          required: false\n          schema:\n            type: string\n            enum:\n              - asc\n              - desc\n      requestBody:\n        description: Optional filters on the ledger entries to return\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/CreditLedgerEntriesQueryPayload'\n            example:\n              starting_on: '2021-01-01T00:00:00Z'\n              ending_before: '2021-02-01T00:00:00Z'\n              customer_ids:\n                - 6a37bb88-8538-48c5-b37b-a41c836328bd\n              credit_type_ids:\n                - 2714e483-4ff1-48e4-9e25-ac732e8f24f2\n      responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                  - next_page\n                properties:\n                  data:\n                    type: array\n                    items:\n                      $ref: '#/components/schemas/CustomerCreditTypeLedger'\n                  next_page:\n                    type: string\n                    nullable: true",
+      "location": "lines 92-145, OpenAPI operation, parameters, request body, and success envelope"
+    },
+    {
+      "text": "    CreditLedgerEntriesQueryPayload:\n      type: object\n      properties:\n        customer_ids:\n          type: array\n          description: >-\n            A list of Metronome customer IDs to fetch ledger entries for. If\n            absent, ledger entries for all customers will be returned.\n          items:\n            type: string\n            format: uuid\n        credit_type_ids:\n          type: array\n          description: >-\n            A list of Metronome credit type IDs to fetch ledger entries for. If\n            absent, ledger entries for all credit types will be returned.\n          items:\n            type: string\n            format: uuid\n        starting_on:\n          type: string\n          description: >-\n            If supplied, only ledger entries effective at or after this time\n            will be returned.\n          format: date-time\n        ending_before:\n          type: string\n          description: >-\n            If supplied, ledger entries will only be returned with an\n            effective_at before this time. This timestamp must not be in the\n            future. If no timestamp is supplied, all entries up to the start of\n            the customer's next billing period will be returned.\n          format: date-time",
+      "location": "lines 183-215, query payload filters and time-window semantics"
+    },
+    {
+      "text": "        starting_balance:\n          type: object\n          required:\n            - excluding_pending\n            - including_pending\n            - effective_at\n          properties:\n            excluding_pending:\n              type: number\n              description: >-\n                the starting balance, including all posted grants, deductions,\n                and expirations that happened at or before the effective_at\n                timestamp\n            including_pending:\n              type: number\n              description: >-\n                the excluding_pending balance plus any pending activity that has\n                not been posted at the time of the query\n            effective_at:\n              type: string\n              format: date-time\n              description: >-\n                the starting_on request parameter (if supplied) or the first\n                credit grant's effective_at date\n        ending_balance:\n          description: the effective balances at the end of the specified time window\n          type: object\n          required:\n            - excluding_pending\n            - including_pending\n            - effective_at\n          properties:\n            excluding_pending:\n              type: number\n              description: >-\n                the ending balance, including the balance of all grants that\n                have not expired before the effective_at date and deductions\n                that happened before the effective_at date\n            including_pending:\n              type: number\n              description: >-\n                the excluding_pending balance plus any pending invoice\n                deductions and expirations that will happen by the effective_at\n                date\n            effective_at:\n              type: string\n              format: date-time\n              description: >-\n                the ending_before request parameter (if supplied) or the current\n                billing period's end date",
+      "location": "lines 240-289, starting and ending balance semantics"
+    },
+    {
+      "text": "    CreditLedgerEntry:\n      type: object\n      required:\n        - amount\n        - reason\n        - running_balance\n        - effective_at\n        - created_by\n        - credit_grant_id\n      properties:\n        amount:\n          type: number\n          description: an amount representing the change to the customer's credit balance\n        reason:\n          type: string\n          example: Automated invoice deduction\n        running_balance:\n          type: number\n          description: >-\n            the running balance for this credit type at the time of the ledger\n            entry, including all preceding charges\n        effective_at:\n          type: string\n          format: date-time\n        created_by:\n          type: string\n        credit_grant_id:\n          type: string\n          format: uuid\n          description: the credit grant this entry is related to\n        invoice_id:\n          type: string\n          format: uuid\n          nullable: true\n          description: >-\n            if this entry is a deduction, the Metronome ID of the invoice where\n            the credit deduction was consumed; if this entry is a grant, the\n            Metronome ID of the invoice where the grant's paid_amount was\n            charged",
+      "location": "lines 316-354, ledger-entry required fields and invoice linkage"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "list-credit-ledger-entries-credits-fact",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Balance retrieval and ledger calculation",
+        "proposed_markdown": "The deprecated Plans `POST /v1/credits/listEntries` operation returns credit-type ledgers grouped by customer. Optional payload filters select customer IDs, credit-type IDs, an inclusive `starting_on`, and an exclusive non-future `ending_before`; when the upper bound is omitted, the window runs through the start of each customer's next billing period. Query `sort` orders ledgers by date and defaults to ascending, while nullable `next_page` paginates the required customer-ledger array. Each ledger separates posted from pending entries and starting and ending balances that expose `excluding_pending`, `including_pending`, and an effective timestamp. Entries associated with voided credit grants are omitted, so this surface is not a complete grant history. Its entry schema does not expose a Contracts-style ledger-entry type, and the page defines no page size, cursor lifecycle, snapshot consistency, freshness, or Plan-to-Contract replacement mapping. [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the voided-grant visibility exclusion; do not describe this endpoint as a complete historical ledger.",
+          "Keep this deprecated Plans schema separate from current Contracts balance and ledger schemas."
+        ]
+      },
+      {
+        "update_id": "list-credit-ledger-entries-credits-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]] - deprecated Plans credit-ledger listing, customer and credit-type filters, time windows, pagination, pending-balance separation, and voided-grant visibility boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "list-credit-ledger-entries-contracts-fact",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Deprecated Plans listing boundary",
+        "proposed_markdown": "The deprecated Plans `POST /v1/credits/listEntries` endpoint lists credit ledgers across customers and directs new clients to Contracts. The page does not name an equivalent Contracts route, map Plan credit-grant or ledger identity to Contract credits or commits, provide migration steps, or state a removal date. Its exclusion of entries associated with voided grants is a Plans-surface visibility rule and does not establish current Contracts archival or ledger-retention behavior. [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]]",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": [
+          "Do not invent a Contracts replacement route or identity mapping from the deprecation notice.",
+          "Do not generalize the legacy voided-grant exclusion into a current Contracts retention rule."
+        ]
+      },
+      {
+        "update_id": "list-credit-ledger-entries-contracts-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]] - deprecated Plans customer-ledger listing and the undocumented Contracts replacement, identity-mapping, migration, and removal-date boundaries",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "list-credit-ledger-entries-idempotency-link",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]] - read-only POST ledger listing, cursor and time-window inputs, and the boundary that API-wide same-key replay does not establish a fresh ledger view",
+        "quote_indexes": [
+          1,
+          2
+        ],
+        "warnings": [
+          "The replay, conflict, retention, and cached-error guarantees come from the separate API-wide idempotency authority, not this endpoint page."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/credit-grants/list-credit-ledger-entries-2026-07-13.md",
+  "raw_sha256": "1f471d2f417c2c859c574a420f86e5aa296572882d45c8032208418f1f0ca082",
+  "status": "candidate_ready"
+}

@@ -137,6 +137,8 @@ Bearer-authenticated `POST /v1/contracts/customerCredits/create` creates a custo
 
 ## Targeted commit edits
 
+Changing one draft invoice's issue date through `POST /v1/contracts/updateInvoiceIssueDate` does not modify the recurring invoice schedule of an associated commit. Metronome directs callers to an edit-commit operation when both the invoice date and future schedule must change, but this endpoint page does not define that edit's fields, validation, timing, or atomic relationship to invoice rescheduling. [[source-metronome-api-reference-contracts-update-invoice-issue-date]]
+
 ### Postpaid true-up suppression
 
 Globally bearer-secured `POST /v1/contracts/commits/disableTrueup` prevents generation of the final true-up invoice for one postpaid commit. The operation's `requestBody` wrapper is not marked required; within the referenced JSON payload, customer, contract, and commit UUID properties are required, while an amendment UUID is optional when applicable. This does not establish omitted-body runtime behavior. HTTP 200 requires a `data.id` UUID, while the operation lists generic `400` and `404` responses.

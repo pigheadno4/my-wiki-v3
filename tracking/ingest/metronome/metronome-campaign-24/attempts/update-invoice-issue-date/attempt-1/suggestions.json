@@ -1,0 +1,61 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "update-invoice-issue-date-invoice-lifecycle",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Native invoice model",
+      "proposed_markdown": "Bearer-authenticated `POST /v1/contracts/updateInvoiceIssueDate` reschedules one invoice only while it remains `DRAFT`; the new RFC 3339 issue date cannot be later than the contract end date. It does not modify future billing cycles or underlying contract terms. The page does not define interaction with grace periods or simultaneous finalization, read/export visibility timing, reversibility, or downstream Stripe, marketplace, ERP, tax, delivery, collection, payment, and accounting effects. [[source-metronome-api-reference-contracts-update-invoice-issue-date]]",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "Do not infer downstream redistribution, recollection, or accounting effects from the issue-date mutation."
+      ]
+    },
+    {
+      "update_id": "update-invoice-issue-date-contract-schedule-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Contract and invoice behavior",
+      "proposed_markdown": "`POST /v1/contracts/updateInvoiceIssueDate` changes the issue date of one identified draft invoice without changing the contract's terms or later billing cycles. Metronome directs callers to edit-contract or edit-commit operations when the future billing schedule must also change; this page does not establish those operations' request contracts or the rescheduling mutation's concurrency and recovery behavior. [[source-metronome-api-reference-contracts-update-invoice-issue-date]]",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Treat edit-contract and edit-commit as routing guidance, not as schema authority supplied by this page."
+      ]
+    },
+    {
+      "update_id": "update-invoice-issue-date-commit-schedule-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Targeted commit edits",
+      "proposed_markdown": "Changing one draft invoice's issue date through `POST /v1/contracts/updateInvoiceIssueDate` does not modify the recurring invoice schedule of an associated commit. Metronome directs callers to an edit-commit operation when both the invoice date and future schedule must change, but this endpoint page does not define that edit's fields, validation, timing, or atomic relationship to invoice rescheduling. [[source-metronome-api-reference-contracts-update-invoice-issue-date]]",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "Do not treat the routing sentence as proof that invoice rescheduling and commit editing form one atomic operation."
+      ]
+    },
+    {
+      "update_id": "update-invoice-issue-date-post-idempotency",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "The API-wide `Idempotency-Key` contract applies to `POST /v1/contracts/updateInvoiceIssueDate`: identical same-key parameters replay the original result, changed parameters conflict, retention is at least 24 hours, and a cached result can be HTTP `500`. The endpoint adds no issue-date-specific semantics for another or expired key, concurrent rescheduling, read-after-write visibility, or recovery and final invoice state after a cached or ambiguous failure. [[source-metronome-api-reference-contracts-update-invoice-issue-date]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Keep API-wide request-result replay separate from endpoint-specific state, concurrency, freshness, and recovery behavior."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

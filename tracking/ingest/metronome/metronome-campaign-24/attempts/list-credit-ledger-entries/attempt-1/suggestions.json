@@ -1,0 +1,79 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "list-credit-ledger-entries-credits-fact",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Balance retrieval and ledger calculation",
+      "proposed_markdown": "The deprecated Plans `POST /v1/credits/listEntries` operation returns credit-type ledgers grouped by customer. Optional payload filters select customer IDs, credit-type IDs, an inclusive `starting_on`, and an exclusive non-future `ending_before`; when the upper bound is omitted, the window runs through the start of each customer's next billing period. Query `sort` orders ledgers by date and defaults to ascending, while nullable `next_page` paginates the required customer-ledger array. Each ledger separates posted from pending entries and starting and ending balances that expose `excluding_pending`, `including_pending`, and an effective timestamp. Entries associated with voided credit grants are omitted, so this surface is not a complete grant history. Its entry schema does not expose a Contracts-style ledger-entry type, and the page defines no page size, cursor lifecycle, snapshot consistency, freshness, or Plan-to-Contract replacement mapping. [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Preserve the voided-grant visibility exclusion; do not describe this endpoint as a complete historical ledger.",
+        "Keep this deprecated Plans schema separate from current Contracts balance and ledger schemas."
+      ]
+    },
+    {
+      "update_id": "list-credit-ledger-entries-credits-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]] - deprecated Plans credit-ledger listing, customer and credit-type filters, time windows, pagination, pending-balance separation, and voided-grant visibility boundary",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-credit-ledger-entries-contracts-fact",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Deprecated Plans listing boundary",
+      "proposed_markdown": "The deprecated Plans `POST /v1/credits/listEntries` endpoint lists credit ledgers across customers and directs new clients to Contracts. The page does not name an equivalent Contracts route, map Plan credit-grant or ledger identity to Contract credits or commits, provide migration steps, or state a removal date. Its exclusion of entries associated with voided grants is a Plans-surface visibility rule and does not establish current Contracts archival or ledger-retention behavior. [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]]",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Do not invent a Contracts replacement route or identity mapping from the deprecation notice.",
+        "Do not generalize the legacy voided-grant exclusion into a current Contracts retention rule."
+      ]
+    },
+    {
+      "update_id": "list-credit-ledger-entries-contracts-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]] - deprecated Plans customer-ledger listing and the undocumented Contracts replacement, identity-mapping, migration, and removal-date boundaries",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-credit-ledger-entries-idempotency-link",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]] - read-only POST ledger listing, cursor and time-window inputs, and the boundary that API-wide same-key replay does not establish a fresh ledger view",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "The replay, conflict, retention, and cached-error guarantees come from the separate API-wide idempotency authority, not this endpoint page."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

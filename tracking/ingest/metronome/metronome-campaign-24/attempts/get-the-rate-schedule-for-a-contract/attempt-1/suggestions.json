@@ -1,0 +1,69 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "get-contract-rate-schedule-contract-read",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Contract and invoice behavior",
+      "proposed_markdown": "Bearer-authenticated `POST /v1/contracts/getContractRateSchedule` reads the entitled rate schedule for one customer contract. Required payload properties identify the customer and contract, optional `at` selects overlapping schedule segments and defaults to the current timestamp, and selectors use OR semantics while supplying no selectors returns all rates. The result incorporates the contract's rate card, scheduled changes, and overrides but does not establish invoice, authorization, freshness, or snapshot-consistency behavior. [[source-metronome-api-reference-contracts-get-the-rate-schedule-for-a-contract]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Keep returned entitlement visibility distinct from application access control and invoice creation.",
+        "The payload properties are required, but the enclosing requestBody is not marked required."
+      ]
+    },
+    {
+      "update_id": "get-contract-rate-schedule-rate-card-state",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Rate cards and rates",
+      "proposed_markdown": "The contract rate-schedule read combines rate-card scheduled changes with contract overrides at an optional effective timestamp and returns only entitled rates. Each returned segment identifies its rate card and product and requires a list rate; optional fields can expose an override rate or commit rate. The endpoint does not define ordering, cross-page consistency, overlap precedence, freshness, or whether the returned surfaces equal a final invoice amount. [[source-metronome-api-reference-contracts-get-the-rate-schedule-for-a-contract]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "Do not treat entitled rate visibility as application authorization or a final invoice calculation.",
+        "Do not infer precedence among list, override, and commit rates from their presence in the response schema."
+      ]
+    },
+    {
+      "update_id": "get-contract-rate-schedule-commit-rate-surface",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Drawdown and invoice attribution",
+      "proposed_markdown": "The contract rate-schedule response can expose an optional `commit_rate` beside required `list_rate` and optional `override_rate`. This read surface does not specify when commit rate is selected over list or override rate, how balances affect selection, or whether the values equal final invoice charges. [[source-metronome-api-reference-contracts-get-the-rate-schedule-for-a-contract]]",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Treat this as a returned pricing surface, not a complete commit-drawdown or precedence rule."
+      ]
+    },
+    {
+      "update_id": "get-contract-rate-schedule-post-replay-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-contracts-get-the-rate-schedule-for-a-contract]] - POST contract-rate read, effective-time and entitlement scope, and the boundary that same-key result replay does not establish a fresh schedule",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "API-wide Idempotency-Key replay behavior comes from the existing idempotency authority, not from this endpoint page."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

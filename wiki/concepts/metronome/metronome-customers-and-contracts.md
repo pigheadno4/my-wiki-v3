@@ -51,6 +51,8 @@ On the documented production server `https://api.metronome.com`, top-level beare
 
 ## Contract and invoice behavior
 
+`POST /v1/contracts/updateInvoiceIssueDate` changes the issue date of one identified draft invoice without changing the contract's terms or later billing cycles. Metronome directs callers to edit-contract or edit-commit operations when the future billing schedule must also change; this page does not establish those operations' request contracts or the rescheduling mutation's concurrency and recovery behavior. [[source-metronome-api-reference-contracts-update-invoice-issue-date]]
+
 `POST /v1/contracts/archive` permanently ends and archives a contract and all its terms when an incorrectly created contract must be removed from a customer. The record is not deleted: it remains available to `ListContracts` with `include_archived=true` and through the UI's "Show archived" option. `ArchiveContractPayload` requires UUID `customer_id`, UUID `contract_id`, and boolean `void_invoices`; the enclosing OpenAPI `requestBody` is not marked required, so omitted-body behavior is undocumented. The page does not define restoration, retention, propagation timing, read-after-write consistency, duplicate-call behavior, concurrency ordering, or partial-failure recovery. [[source-metronome-api-reference-contracts-archive-a-contract]]
 
 
