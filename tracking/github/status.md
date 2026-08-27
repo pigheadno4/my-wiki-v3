@@ -459,6 +459,31 @@
   To SHA: `047a50ec97d9881af84ca3fb03d1d23e859a86f4`
   Comparison: Not applicable
 
+## `github-5aefbb37c742b17a51ab`
+
+- Repository: `braintree/popup-bridge-ios`
+- SHA: `00256b4b8c58367287fe35a442a33cd7c010a94f`
+- Collection date: `2026-08-27`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/popup-bridge-ios/snapshots/2026-08-27-00256b4/manifest.json)
+- Packet: [review packet](repos/braintree/popup-bridge-ios/ingest-packets/github-5aefbb37c742b17a51ab/packet.md)
+- Review priority: `high`
+- Required reading: `38` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `PopupBridge@3.1.0` (recommended `full`)
+  Release: [manifest](../../raw/github/braintree/popup-bridge-ios/releases/popupbridge/3.1.0/2026-08-27/manifest.json)
+  Comparison: Not applicable
+
 ## `github-5b78ff7871557dec5f21`
 
 - Repository: `metronome-industries/ai`
@@ -639,6 +664,31 @@
 
 - `drop-in@6.17.0` (recommended `full`)
   Release: [manifest](../../raw/github/braintree/braintree-android-drop-in/releases/drop-in/6.17.0/2026-08-13/manifest.json)
+  Comparison: Not applicable
+
+## `github-674c25ce833e37536ebc`
+
+- Repository: `braintree/popup-bridge-android`
+- SHA: `f30654168b997ea1dd95ebc61901582ae00bebb0`
+- Collection date: `2026-08-27`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/popup-bridge-android/snapshots/2026-08-27-f306541/manifest.json)
+- Packet: [review packet](repos/braintree/popup-bridge-android/ingest-packets/github-674c25ce833e37536ebc/packet.md)
+- Review priority: `normal`
+- Required reading: `44` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `popup-bridge@5.3.0` (recommended `full`)
+  Release: [manifest](../../raw/github/braintree/popup-bridge-android/releases/popup-bridge/5.3.0/2026-08-27/manifest.json)
   Comparison: Not applicable
 
 ## `github-71f4eb08ef220f23aba9`

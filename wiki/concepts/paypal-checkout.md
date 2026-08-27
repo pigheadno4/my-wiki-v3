@@ -76,6 +76,14 @@ This reduces friction and allows buyers to initiate PayPal Checkout from whereve
 
 PayPal supports deep-linking into the native PayPal mobile app. Requires `appSwitchWhenAvailable: true` on the client and `appSwitchPreference.launchPaypalApp: true` in the server-side `experienceContext`. On return, call `buttons.resume()` if `buttons.hasReturned()`.
 
+## Embedded Mobile WebView Transport
+
+The independent Braintree `PopupBridge@3.1.0` baseline supports compatible PayPal web checkout inside an iOS `WKWebView` by opening popup authentication in `ASWebAuthenticationSession` and returning callback data to the page. It also supplies a merchant return scheme for the retained Braintree Venmo app-switch path.
+
+Android `popup-bridge@5.3.0` provides the parallel browser-switch and deep-link transport for an Android WebView. The host activity must wrap its WebViewClient and explicitly forward return intents to the bridge.
+
+These transports are version-specific. The iOS README lists PayPal SDK v5 as supported and PayPal SDK v6 or later as unsupported; the Android README discusses Braintree Web and historical Checkout.js without establishing current PayPal SDK v6 compatibility. Neither replaces Orders API or Braintree server processing or establishes merchant or buyer eligibility. See [[braintree-popup-bridge]], [[source-github-popup-bridge-ios]], and [[source-github-popup-bridge-android]].
+
 ## JS SDK v6 Key Details
 
 - **Script**: `https://www.paypal.com/web-sdk/v6/core` (prod) / `https://www.sandbox.paypal.com/web-sdk/v6/core` (sandbox)
@@ -190,6 +198,8 @@ See [[source-paypal-payment-failures]] for the full 19 error codes and recovery 
 - [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample, partner headers, retries, shipping patches, and retained defects
 - [[source-github-paypal-android-sdk-demo-app]] — Android SDK `2.3.0` PayPal/card sample plus separate hosted Payment Link flow
 - [[source-github-paypal-ios-sdk-demo-app]] — iOS SDK-compatible SwiftUI PayPal/card sample plus separate hosted Payment Link flow
+- [[source-github-popup-bridge-ios]] — Braintree iOS WebView popup transport and Venmo return-scheme evidence
+- [[source-github-popup-bridge-android]] — Braintree Android WebView browser-switch and deep-link evidence
 - [[paypal-braintree-integration]] — Braintree client-token, nonce, and server-processing boundary for PayPal v6 React flows
 - [[source-paypal-security-guidelines]] — Security guidelines: CSP + SRI for SDK; load only from official CDN; validate payment events server-side before fulfilling
 - [[source-github-paypal-rest-api-specifications]] — exact-SHA Orders, Payments, Vault, Webhooks, and supporting REST contracts

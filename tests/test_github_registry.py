@@ -46,10 +46,10 @@ APPENDIX_A_INVENTORY = (
     ('braintree/credit-card-type', 'https://github.com/braintree/credit-card-type', 'utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree-web', 'https://github.com/braintree/braintree-web', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/uuid', 'https://github.com/braintree/uuid', 'utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
-    ('braintree/popup-bridge-ios', 'https://github.com/braintree/popup-bridge-ios', 'mobile-utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('braintree/popup-bridge-ios', 'https://github.com/braintree/popup-bridge-ios', 'mobile-utility', 'tier3', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('braintree/restricted-input', 'https://github.com/braintree/restricted-input', 'web-utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree-web-drop-in', 'https://github.com/braintree/braintree-web-drop-in', 'drop-in', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
-    ('braintree/popup-bridge-android', 'https://github.com/braintree/popup-bridge-android', 'mobile-utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('braintree/popup-bridge-android', 'https://github.com/braintree/popup-bridge-android', 'mobile-utility', 'tier3', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree_php', 'https://github.com/braintree/braintree_php', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree_ruby', 'https://github.com/braintree/braintree_ruby', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree_node', 'https://github.com/braintree/braintree_node', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
@@ -1084,6 +1084,66 @@ class RegistryTests(unittest.TestCase):
             "UIComponents/src/main/res/drawable-xxhdpi",
             capsule.default_required_roots,
         )
+
+    def test_braintree_popup_bridges_use_reviewed_platform_capsules(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+
+        ios = repos["braintree/popup-bridge-ios"]
+        self.assertTrue(ios.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:PopupBridge@3",
+                    "latest-stable",
+                    "all-stable",
+                    pinned_versions=("3.1.0",),
+                ),
+            ),
+            ios.version_tracks,
+        )
+        self.assertEqual(1, len(ios.capsules))
+        ios_capsule = ios.capsules[0]
+        self.assertEqual("popup-bridge-ios-public-source", ios_capsule.id)
+        self.assertEqual("tagged-tree-v1", ios_capsule.adapter)
+        self.assertEqual(("PopupBridge",), ios_capsule.focus_packages)
+        self.assertEqual(
+            ("Demo/Demo", "Sources/PopupBridge"),
+            ios_capsule.default_required_roots,
+        )
+        self.assertEqual(("fixtures", "tests"), ios_capsule.excluded_categories)
+
+        android = repos["braintree/popup-bridge-android"]
+        self.assertTrue(android.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:popup-bridge@5",
+                    "latest-stable",
+                    "all-stable",
+                    pinned_versions=("5.3.0",),
+                ),
+            ),
+            android.version_tracks,
+        )
+        self.assertEqual(1, len(android.capsules))
+        android_capsule = android.capsules[0]
+        self.assertEqual("popup-bridge-android-public-source", android_capsule.id)
+        self.assertEqual("tagged-tree-v1", android_capsule.adapter)
+        self.assertEqual(("popup-bridge",), android_capsule.focus_packages)
+        self.assertEqual(
+            (
+                "Demo/src/main/java",
+                "Demo/src/main/res/layout",
+                "Demo/src/main/res/values",
+                "Demo/src/main/res/xml",
+                "PopupBridge/src/main",
+            ),
+            android_capsule.default_required_roots,
+        )
+        self.assertEqual(("fixtures", "tests"), android_capsule.excluded_categories)
 
     def test_braintree_web_drop_in_uses_the_reviewed_public_source_capsule(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")

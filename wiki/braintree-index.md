@@ -30,6 +30,10 @@ Operations history: [[braintree-log]]
 - [[changelog-github-braintree-ios]] - package-qualified Braintree iOS release ledger beginning at `7.9.0` (github-repo, 2026-08-01)
 - [[source-github-braintree-ios-drop-in]] - `BraintreeDropIn@9.14.0` prebuilt native payment selection, nonce handoff, cards, PayPal, Venmo, Apple Pay, vaulting, 3DS, and 5.27 dependency boundary (github-repo, 2026-08-13)
 - [[changelog-github-braintree-ios-drop-in]] - package-qualified iOS Drop-in release ledger beginning at `9.14.0` (github-repo, 2026-08-13)
+- [[source-github-popup-bridge-ios]] - `PopupBridge@3.1.0` iOS WebView-to-`ASWebAuthenticationSession` transport, Venmo return scheme, PayPal/Braintree boundary, analytics, and retained documentation conflicts (github-repo, 2026-08-27)
+- [[changelog-github-popup-bridge-ios]] - package-qualified iOS PopupBridge release ledger beginning at `3.1.0` (github-repo, 2026-08-27)
+- [[source-github-popup-bridge-android]] - `popup-bridge@5.3.0` Android WebView-to-Browser-Switch transport, persisted return handling, Venmo detection, analytics, and retained lifecycle conflicts (github-repo, 2026-08-27)
+- [[changelog-github-popup-bridge-android]] - package-qualified Android PopupBridge release ledger beginning at `5.3.0` (github-repo, 2026-08-27)
 
 ## Concepts
 
@@ -38,6 +42,7 @@ Operations history: [[braintree-log]]
 - [[braintree-web-drop-in]] - prebuilt checkout UI, pinned SDK dependency, and scheduled deprecation
 - [[braintree-android-sdk]] - native Android request/launcher/result architecture, PayPal/Venmo behavior, and independently versioned Drop-in boundary
 - [[braintree-ios-sdk]] - native iOS authorization/nonce architecture, PayPal/Venmo/Apple Pay, and independently versioned Drop-in boundary
+- [[braintree-popup-bridge]] - WebView popup transport, Venmo app-switch return, and payment-eligibility boundary
 
 ## Cross-Cutting Concepts
 

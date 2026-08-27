@@ -82,8 +82,16 @@ At `braintree-web@3.144.0`, the non-v6 `paypalCheckout` component adds a separat
 
 The same release expands the PayPal Checkout v6 session payload with locale, landing-page, user-action, risk-correlation, and shipping-address controls. Checkout-with-vault can also carry plan type and plan metadata. Availability remains subject to Braintree account configuration and the delegated PayPal runtime.
 
+## WebView Popup Transport
+
+The independently versioned `PopupBridge@3.1.0` iOS library lets a Braintree or compatible PayPal web checkout embedded in `WKWebView` open popup authentication through `ASWebAuthenticationSession` and return the callback payload to JavaScript. Its Venmo path can advertise a merchant-registered deep-link scheme when the Venmo app is installed.
+
+The independent Android `popup-bridge@5.3.0` library provides the corresponding WebView transport through Braintree Browser Switch and an application deep link. It persists the pending request, requires the activity to forward return intents through `handleReturnToApp()`, and injects Venmo installation state after page load.
+
+PopupBridge does not create a Braintree payment session or nonce and does not establish merchant eligibility. The Braintree Web or PayPal web integration remains responsible for checkout behavior, and the merchant server remains responsible for processing the resulting Braintree nonce or approved payment state. See [[source-github-popup-bridge-ios]] and [[source-github-popup-bridge-android]] for the independent platform implementations.
+
 ## Related
 
 - Companies: [[paypal]], [[braintree]]
-- Concepts: [[paypal-checkout]], [[paypal-vault]], [[braintree-web-sdk]], [[braintree-server-sdk]], [[braintree-ios-sdk]]
-- Sources: [[source-github-paypal-js]], [[source-github-braintree-web]], [[source-github-braintree-node]], [[source-github-braintree-php]], [[source-github-braintree-ruby]], [[source-github-braintree-ios]], [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]]
+- Concepts: [[paypal-checkout]], [[paypal-vault]], [[braintree-web-sdk]], [[braintree-server-sdk]], [[braintree-ios-sdk]], [[braintree-popup-bridge]]
+- Sources: [[source-github-paypal-js]], [[source-github-braintree-web]], [[source-github-braintree-node]], [[source-github-braintree-php]], [[source-github-braintree-ruby]], [[source-github-braintree-ios]], [[source-github-popup-bridge-ios]], [[source-github-popup-bridge-android]], [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]]

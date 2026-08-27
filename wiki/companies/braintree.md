@@ -1,13 +1,13 @@
 ---
 title: "Braintree"
 type: company
-tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk]
-source_count: 10
+tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview]
+source_count: 12
 ---
 
 ## Overview
 
-Braintree is represented in this wiki by ten independently tracked repositories: the GraphQL API contract, Node.js, PHP, and Ruby server SDKs, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, native Braintree Android and iOS SDKs, and separately versioned Android and iOS Drop-in UIs. Client SDKs produce payment-method nonces for server processing; the server SDKs perform gateway operations. The GraphQL schema describes a separate API contract. Their commit or package identities and evidence histories remain separate.
+Braintree is represented in this wiki by twelve independently tracked repositories: the GraphQL API contract, Node.js, PHP, and Ruby server SDKs, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, native Braintree Android and iOS SDKs, separately versioned Android and iOS Drop-in UIs, and independent Android and iOS PopupBridge WebView transports. Client SDKs produce payment-method nonces for server processing; the server SDKs perform gateway operations; PopupBridge only transports browser popup results. The GraphQL schema describes a separate API contract. Their commit or package identities and evidence histories remain separate.
 
 ## GraphQL API Contract
 
@@ -71,6 +71,22 @@ PayPal supports separate checkout and vault requests, including billing-agreemen
 
 Most selections return a nonce for server processing. Apple Pay selection returns only a method type and requires the merchant to present and tokenize the Apple Pay sheet separately. Venmo visibility additionally requires remote enablement and an installed Venmo app at this baseline.
 
+## iOS PopupBridge Surface
+
+`PopupBridge@3.1.0` adapts PayPal or Braintree web checkout running inside `WKWebView`: JavaScript requests a popup, native code opens `ASWebAuthenticationSession`, and the validated return URL is delivered to the page. It requires iOS 16+, Xcode 16.2+, and Swift 5.10+.
+
+Exact release `3.1.0` adds a merchant return-scheme initializer for Venmo app switch. The bridge reports whether Venmo is installed and can advertise the merchant scheme to Braintree Web, but it does not enable Venmo, create a payment session, tokenize a payment, or process a transaction. Its README lists PayPal SDK v5 as supported and v6 or later as unsupported.
+
+The retained podspec, privacy manifest, and PayPal data-collector guide conflict with the exact runtime: the podspec names the replaced browser controller, the privacy manifest has blank declarations despite analytics metadata transmission, and the guide uses delegate callbacks removed in v2. See [[source-github-popup-bridge-ios]] for the exact boundaries.
+
+## Android PopupBridge Surface
+
+`popup-bridge@5.3.0` adapts a web checkout running inside an Android WebView by exposing a JavaScript interface, opening popup URLs through Braintree Browser Switch, persisting the pending request, and returning deep-link data to the page. The exact build requires Android API 23+, targets API 37, and uses Browser Switch `3.5.1`.
+
+The host activity owns the deep link, must use `PopupBridgeWebViewClient`, and must forward return intents through `handleReturnToApp()`. Venmo installation state is injected after page load. As on iOS, this is transport evidence rather than payment-session, tokenization, merchant-enablement, or processing evidence.
+
+The retained Android README and migration guides conflict with the exact runtime on minimum SDK, lifecycle handling, version status, and data-collector APIs. See [[source-github-popup-bridge-android]] for the exact `5.3.0` behavior.
+
 ## Versioned Implementation Knowledge
 
 The retained history begins with `braintree-web@3.143.0` and currently reaches `3.144.0` at exact SHA `41460fba05c1ea1222e795b36a10765a6699b8e7`. The newer release adds PayPal View/Edit Funding Instrument, expands PayPal Checkout v6 session options, and prevents failed incognito detection from aborting Venmo creation while preserving the 23-component architecture.
@@ -79,8 +95,8 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Knowledge Status
 
-- Ingested cumulative GitHub repository sources: 10
-- Ingested package releases: 10
+- Ingested cumulative GitHub repository sources: 12
+- Ingested package releases: 12
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`
 - Latest retained Braintree Node release: `braintree@3.39.0` at `7a9270aaf31eb87819add64a768652243f90007c`
 - Latest retained Braintree PHP release: `braintree_php@6.37.0` at `0f53ece38397c9fed05b94620634a5a23ef8ee48`
@@ -91,6 +107,8 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - Latest retained Android Drop-in release: `drop-in@6.17.0` at `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7`
 - Latest retained iOS release: `braintree-ios@7.9.0` at `4e987ca19f03b65a0d303b4c3ec95e0c723be971`
 - Latest retained iOS Drop-in release: `BraintreeDropIn@9.14.0` at `d951d104ac960188824bda191be2f57c57351a31`
+- Latest retained iOS PopupBridge release: `PopupBridge@3.1.0` at `00256b4b8c58367287fe35a442a33cd7c010a94f`
+- Latest retained Android PopupBridge release: `popup-bridge@5.3.0` at `f30654168b997ea1dd95ebc61901582ae00bebb0`
 
 ## Sources
 
@@ -114,6 +132,10 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - [[changelog-github-braintree-ios]] - package-qualified iOS release ledger
 - [[source-github-braintree-ios-drop-in]] - cumulative prebuilt iOS Drop-in implementation baseline
 - [[changelog-github-braintree-ios-drop-in]] - package-qualified iOS Drop-in release ledger
+- [[source-github-popup-bridge-ios]] - cumulative iOS WebView popup transport baseline
+- [[changelog-github-popup-bridge-ios]] - package-qualified iOS PopupBridge release ledger
+- [[source-github-popup-bridge-android]] - cumulative Android WebView popup transport baseline
+- [[changelog-github-popup-bridge-android]] - package-qualified Android PopupBridge release ledger
 
 ## Related
 
@@ -124,4 +146,5 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - [[braintree-web-drop-in]] - prebuilt checkout UI and migration boundary
 - [[braintree-android-sdk]] - native Android request, launcher, nonce, PayPal, and Venmo model
 - [[braintree-ios-sdk]] - native iOS nonce, PayPal, Venmo, Apple Pay, and migration model
+- [[braintree-popup-bridge]] - WebView popup transport and payment-processing boundary
 - [[paypal-braintree-integration]] — Braintree PayPal v6 processing boundary

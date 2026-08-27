@@ -1,5 +1,17 @@
 # Wiki Log
 
+## [2026-08-27] ingest | GitHub braintree/popup-bridge-android - `popup-bridge@5.3.0`
+
+- Full-ingested work item `github-674c25ce833e37536ebc` at exact SHA `f30654168b997ea1dd95ebc61901582ae00bebb0` after serial full reading of all 44 required evidence paths.
+- Added cumulative and package-qualified sources and extended [[braintree-popup-bridge]] with Android Browser Switch, deep-link return handling, WebViewClient wrapping, Venmo detection, and parity with iOS.
+- Preserved payment and merchant-eligibility boundaries and recorded the stale SDK floor, lifecycle guide, version banner, and PayPal data-collector APIs.
+
+## [2026-08-27] ingest | GitHub braintree/popup-bridge-ios - `PopupBridge@3.1.0`
+
+- Full-ingested work item `github-5aefbb37c742b17a51ab` at exact SHA `00256b4b8c58367287fe35a442a33cd7c010a94f` after serial full reading of all 38 required evidence paths.
+- Added cumulative and package-qualified sources plus [[braintree-popup-bridge]] for iOS WebView popup transport, Venmo app-switch return handling, PayPal/Braintree integration boundaries, and analytics behavior.
+- Preserved merchant-eligibility and payment-processing boundaries and recorded the stale podspec/data-collector guidance, privacy-manifest mismatch, and unused message field.
+
 ## [2026-08-27] ingest | GitHub stripe/sync-engine - `default-branch@93321ab`
 
 - Full-ingested work item `github-d7a121b45c762cec959d` at exact SHA `93321ab3644d5460213725abe0595247c403eb46` after serial full reading of all 105 required evidence and context paths.

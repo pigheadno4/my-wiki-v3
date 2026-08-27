@@ -1,0 +1,67 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+    id 'signing'
+    alias(libs.plugins.kotlin.android)
+}
+
+android {
+    namespace 'com.braintreepayments.api.popupbridge'
+
+    defaultConfig {
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+        compileSdk rootProject.compileSdkVersion
+
+        consumerProguardFiles 'proguard.pro'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
+        buildConfigField "String", "VERSION_NAME", "\"${rootProject.versionName}\""
+    }
+
+    testOptions.unitTests.includeAndroidResources = true
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+}
+
+dependencies {
+    implementation libs.browser.switch
+    implementation libs.appcompat
+    implementation libs.lifecycle.runtime
+    implementation libs.datastore.preferences
+
+    testImplementation libs.junit
+    testImplementation libs.mockito.core
+    testImplementation libs.robolectric
+    testImplementation libs.mockk
+    testImplementation libs.kotlinx.coroutines.test
+    testImplementation libs.kotlin.test
+}
+
+// region signing and publishing
+
+project.ext.name = "popup-bridge"
+project.ext.pom_name = "popup-bridge"
+project.ext.group_id = "com.braintreepayments.api"
+project.ext.version = rootProject.version
+project.ext.pom_desc = "PopupBridge is an Android library that allows WebViews to open popup windows in a browser and send data back to the WebView."
+
+apply from: rootProject.file("gradle/gradle-publish.gradle")
+
+// quickfix for a build failure with the following error:
+// Reason: Task ':PopupBridge:generateMetadataFileForReleasePublication' uses this output of task ':PopupBridge:androidSourcesJar' without declaring an explicit or implicit dependency. This can lead to incorrect results being produced, depending on what order the tasks are executed.
+afterEvaluate {
+    generateMetadataFileForReleasePublication.dependsOn androidSourcesJar
+}
+// endregion

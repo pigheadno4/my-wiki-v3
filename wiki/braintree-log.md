@@ -6,6 +6,22 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-27] ingest | braintree/popup-bridge-android `popup-bridge@5.3.0`
+
+- Approved and processed work item `github-674c25ce833e37536ebc` in full mode at exact SHA `f30654168b997ea1dd95ebc61901582ae00bebb0`.
+- Read the complete 44-path evidence packet covering the 41-file retained implementation capsule, release record, and snapshot manifest; the packet had no evidence gaps or unclassified files.
+- Added the independent Android source and changelog and extended [[braintree-popup-bridge]] with Browser Switch, deep-link, pending-request, WebViewClient, Venmo detection, analytics, and platform-parity evidence.
+- Preserved the transport boundary and recorded conflicts in minimum SDK, lifecycle handling, version status, and obsolete PayPal data-collector APIs.
+- Kept Android and iOS release identities independent while making their common WebView checkout role queryable through one concept.
+
+## [2026-08-27] ingest | braintree/popup-bridge-ios `PopupBridge@3.1.0`
+
+- Approved and processed work item `github-5aefbb37c742b17a51ab` in full mode at exact SHA `00256b4b8c58367287fe35a442a33cd7c010a94f`.
+- Read the complete 38-path evidence packet covering the 35-file retained implementation capsule, release record, and snapshot manifest; the packet had no evidence gaps or unclassified files.
+- Established the cumulative iOS PopupBridge source, package-qualified changelog, and [[braintree-popup-bridge]] concept for `WKWebView`, `ASWebAuthenticationSession`, callback validation, Venmo app switch, PayPal/Braintree web integration, analytics, and lifecycle behavior.
+- Preserved the transport boundary: PopupBridge neither enables a payment method nor creates, tokenizes, or processes a payment; the Braintree or PayPal web integration and merchant server remain independently responsible.
+- Recorded the stale podspec and PayPal data-collector APIs, the blank privacy declaration versus runtime analytics metadata, and the decoded-but-undispatched `sendMessage` path.
+
 ## [2026-08-23] ingest | braintree/braintree_ruby `braintree@4.40.0`
 
 - Approved and processed work item `github-23d59ffe8258788624b8` in full mode at exact SHA `1217992763cc13f33dbd8b6c51ad2ae058ddd2a8`.
