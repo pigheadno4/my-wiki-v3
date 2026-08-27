@@ -8,16 +8,24 @@
     "contract_version": 2,
     "recommended_worker_tier": "strong",
     "routing_reason": "Mandatory-review API Mutation: preserve preconditions, contract state transitions, effective timing, financial and lifecycle effects, idempotency and failure boundaries, material contradictions, primary concepts, coverage map, and exact raw deep dive. Apply the Minimum Sufficient Source playbook and API Mutation lessons section.",
-    "state": "reviewing",
+    "state": "queued",
     "attempt": 1,
-    "queue_position": 1,
-    "last_event": "review_started",
+    "queue_position": 8,
+    "last_event": "changes_requested",
     "failure_reason": null,
     "worker_identity": "/root/c25_w_edit_contract",
     "worker_model": "Sol",
-    "active_review_scope": "full",
-    "reviewer_identity": "/root/c25_r_edit_contract",
-    "reviewer_model": "Sol"
+    "retry_context": {
+      "prior_attempt": 1,
+      "review_scope": "full",
+      "required_changes": [
+        "Add a query-critical contract-end lifecycle fact for update_contract_end_date and the default-true allow_contract_ending_before_finalized_invoice control: it permits ending the contract before existing finalized-invoice end timestamps, leaves those finalized invoices unchanged, and requires void-and-regenerate to incorporate the new end date. Carry the boundary into the relevant contract and invoicing shared update coverage and ground it directly.",
+        "Add the financially material threshold activation behavior: setting spend-threshold or prepaid-balance-threshold is_enabled from false to true causes immediate evaluation regardless of prior state, and reaching the usage or balance threshold initiates a charge. Keep payment, atomicity, ordering, downstream, and ambiguous-failure outcomes bounded; reflect this fact in the relevant invoicing and credits/commits concept coverage and ground it directly.",
+        "Preserve the unresolved idempotency authority conflict instead of replacing it: this endpoint snapshot exposes a 1-128 character uniqueness_key with duplicate-prevention and 409 wording, while the same-date API-wide idempotency page labels contract-edit uniqueness support coming soon. State that documented endpoint exposure does not by itself resolve runtime enablement, keep it distinct from Idempotency-Key replay, and revise the idempotency shared proposal and warning accordingly.",
+        "Add metronome-integrations to the source's primary concept routes because the retained provider-scope conflict directly affects that integration decision. Repair the integration suggestion to use the existing ## Billing-provider transitions anchor (or an exact insertion anchor), preserve both add-only endpoint and provider-transition authorities, and keep downstream readiness and reconciliation unproven. Reselect or expand the maximum five grounding excerpts so the new material lifecycle and financial facts are directly evidenced."
+      ],
+      "prior_reviewer_identity": "/root/c25_r_edit_contract"
+    }
   },
   {
     "job_id": "list-seat-balances",
@@ -28,10 +36,10 @@
     "contract_version": 2,
     "recommended_worker_tier": "strong",
     "routing_reason": "Mandatory-review API List / Schema: preserve balance identity and scope, principal filters and pagination, ordering or completeness limits, financial and seat-allocation semantics, contradictions, primary concepts, coverage map, and exact raw deep dive without copying the field catalog. Apply the Minimum Sufficient Source playbook and API List / Schema lessons section.",
-    "state": "queued",
-    "attempt": 1,
+    "state": "running",
+    "attempt": 2,
     "queue_position": 7,
-    "last_event": "changes_requested",
+    "last_event": "worker_started",
     "failure_reason": null,
     "worker_identity": "/root/c25_w_seat_balances",
     "worker_model": "Sol",
@@ -91,13 +99,16 @@
     "contract_version": 2,
     "recommended_worker_tier": "strong",
     "routing_reason": "Provisional deferred-shadow API Read: preserve plan identity, lookup scope, returned state, material visibility or consistency boundaries, primary concepts, coverage map, and exact raw deep dive. After the complete read, report and ground any Campaign 25 risk trigger, especially financial or lifecycle semantics; any trigger escalates this job to mandatory full review. Apply the Minimum Sufficient Source playbook and API Read lessons section.",
-    "state": "running",
+    "state": "reviewing",
     "attempt": 1,
     "queue_position": 5,
-    "last_event": "worker_started",
+    "last_event": "review_started",
     "failure_reason": null,
     "worker_identity": "/root/c25_w_plan_details",
-    "worker_model": "Sol"
+    "worker_model": "Sol",
+    "active_review_scope": "full",
+    "reviewer_identity": "/root/c25_r_plan_details",
+    "reviewer_model": "Sol"
   },
   {
     "job_id": "sdks",

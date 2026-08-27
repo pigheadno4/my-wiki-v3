@@ -1,0 +1,112 @@
+{
+  "job_id": "get-plan-details",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Get Plan Details\"\ntype: source\ndate_ingested: 2026-08-27\ncanonical_url: \"https://docs.metronome.com/api-reference/plans/get-plan-details.md\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/plans/get-plan-details-2026-07-13.md\"\ntags: [metronome, api, plans, pricing, credit-grants, deprecated]\n---\n\n## Overview\n\nThis OpenAPI page documents bearer-authenticated `GET /v1/planDetails/{plan_id}`, which retrieves high-level configuration for one legacy Plan. The Plans surface is deprecated, and Metronome directs new clients to Contracts without supplying a Plan-to-Contract identity, field, or migration mapping on this page.\n\n## Query-critical facts\n\n- The required path locator is UUID-formatted `plan_id`; the endpoint documents only an HTTP `200` success response whose top-level object requires `data`.\n- `data` references `PlanDetail`, which requires UUID `id`, string `name`, and `custom_fields`; `description`, `minimums`, `overage_rates`, and `credit_grants` are optional. This differs from the separate legacy Plan-list representation already documented in the wiki, where `description` is required and `custom_fields` is optional, so callers must preserve operation-specific requiredness rather than merge the two response shapes.\n- A returned minimum requires `name`, numeric `value`, numeric `start_period`, and a credit type. A returned overage rate requires numeric `to_fiat_conversion_factor`, numeric `start_period`, fiat credit type, and source credit type. In both structures, `start_period` is described as the number of billing periods before the charge applies.\n- Returned credit-grant configuration requires name, granted and paid numeric amounts, priority, effective duration, `send_invoice`, and credit types for the granted and paid amounts; recurrence duration, recurrence interval, and reason are optional. These are Plan configuration fields, not proof of an issued customer's current balance, ledger state, invoice state, or collection outcome.\n- Plan `custom_fields` is required in this detail representation and uses an arbitrary-key map whose values are strings, annotated for the `plan` entity. The endpoint does not define field ordering, configured-key completeness, permissions, redaction, or freshness.\n\n## Material boundaries\n\n- Deprecation is an integration and lifecycle boundary: new clients should use Contracts, but this page names no replacement endpoint, removal date, compatibility period, identity mapping, field mapping, or migration behavior.\n- The response exposes financially meaningful configuration surfaces, but it does not define denomination, conversion-factor direction, precision, rounding, charge calculation, credit issuance, balance application, invoice generation, tax, delivery, collection, payment, accounting, or reconciliation behavior. Credit-type identity and the success example's `USD (cents)` label do not establish a universal unit for every Plan.\n- This is a configuration read, not a customer assignment, entitlement, billing-state, or historical-state view. The page defines no archive visibility, effective as-of time, version history, result freshness, read-after-write consistency, cache behavior, not-found response, or other non-`200` error contract.\n- `PlanDetail` and its nested minimum, overage-rate, and credit-grant objects do not declare `additionalProperties: false`; do not infer closed schemas or unknown-field rejection. The success example shows one possible combination and does not make optional fields universally present.\n\n## Raw-detail coverage map\n\nUse the complete raw snapshot for the production server and bearer-security declaration; exact path, operation ID, and UUID locator; required success envelope; full PlanDetail requiredness; minimum, overage-rate, credit-grant, credit-type, and custom-field schemas; price-ramp timing descriptions; every optional recurrence and reason field; the complete success example and example identifiers and amounts; OpenAPI tag catalog; and the absence of documented non-`200`, history, freshness, migration, and closed-schema guarantees.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-customers-and-contracts]], [[metronome-products-and-rate-cards]], [[metronome-credits-and-commits]]\n- Additional affected concepts: [[metronome-custom-fields]], [[metronome-currencies-and-custom-pricing-units]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/plans/get-plan-details-2026-07-13|2026-07-13 snapshot - deprecated Plan lookup, financial configuration schemas, custom fields, and read boundaries]]\n",
+  "quotes": [
+    {
+      "text": "Fetch high level details of a specific plan. This is a Plans (deprecated) endpoint. New clients should implement using Contracts.",
+      "location": "line 11, endpoint purpose and deprecation boundary"
+    },
+    {
+      "text": "name: plan_id\n      in: path\n      required: true\n      schema:\n        type: string\n        format: uuid",
+      "location": "lines 156-161, required Plan ID path parameter"
+    },
+    {
+      "text": "PlanDetail:\n      required:\n        - id\n        - name\n        - custom_fields",
+      "location": "lines 164-168, PlanDetail required properties"
+    },
+    {
+      "text": "minimums:\n          type: array\n          items:\n            required:\n              - name\n              - value\n              - start_period\n              - credit_type\n            type: object\n            properties:\n              name:\n                type: string\n              value:\n                type: number\n              start_period:\n                type: number\n                description: >-\n                  Used in price ramps.  Indicates how many billing periods pass\n                  before the charge applies.\n              credit_type:\n                $ref: '#/components/schemas/CreditType'\n        overage_rates:\n          type: array\n          items:\n            required:\n              - to_fiat_conversion_factor\n              - start_period\n              - fiat_credit_type\n              - credit_type\n            type: object\n            properties:\n              to_fiat_conversion_factor:\n                type: number\n              start_period:\n                type: number\n                description: >-\n                  Used in price ramps.  Indicates how many billing periods pass\n                  before the charge applies.\n              fiat_credit_type:\n                $ref: '#/components/schemas/CreditType'\n              credit_type:\n                $ref: '#/components/schemas/CreditType'",
+      "location": "lines 178-219, minimum and overage-rate schemas and ramp timing"
+    },
+    {
+      "text": "required:\n              - name\n              - amount_granted\n              - amount_paid\n              - priority\n              - effective_duration\n              - send_invoice\n              - amount_granted_credit_type\n              - amount_paid_credit_type",
+      "location": "lines 223-231, required credit-grant configuration fields"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "get-plan-details-legacy-plan-read",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Deprecated Plans listing boundary",
+        "proposed_markdown": "Bearer-authenticated `GET /v1/planDetails/{plan_id}` requires a UUID Plan ID and returns high-level configuration for one legacy Plan. The detail representation requires plan `id`, `name`, and `custom_fields` while leaving `description` optional; the separate Plan-list representation instead requires `description` and leaves `custom_fields` optional. Preserve operation-specific requiredness. Metronome directs new clients to Contracts but supplies no replacement endpoint, Plan-to-Contract identity or field mapping, migration procedure, compatibility period, or removal date. [[source-metronome-api-reference-plans-get-plan-details]]",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "Treat the list/detail requiredness difference as operation-specific schema variation, not proof that either representation is wrong.",
+          "Do not infer a Contracts replacement route or Plan-to-Contract identity mapping."
+        ]
+      },
+      {
+        "update_id": "get-plan-details-legacy-pricing-config",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Rate cards and rates",
+        "proposed_markdown": "The deprecated Plan-detail read can expose minimum and overage-rate configuration. Minimum entries require a value, credit type, and `start_period`; overage entries require `to_fiat_conversion_factor`, fiat and source credit types, and `start_period`. The shared `start_period` description counts billing periods before the charge applies. This read does not establish current Contract pricing, product-rate selection, precedence, denomination, calculation, invoice outcome, or migration behavior. [[source-metronome-api-reference-plans-get-plan-details]]",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": [
+          "Keep legacy Plan pricing configuration distinct from current rate-card and Contract pricing behavior.",
+          "Do not infer conversion direction, precision, rounding, or final charged amount."
+        ]
+      },
+      {
+        "update_id": "get-plan-details-credit-grant-template",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Lifecycle",
+        "proposed_markdown": "A deprecated Plan-detail response can expose Plan credit-grant configuration requiring name, granted and paid amounts, priority, effective duration, `send_invoice`, and credit types for granted and paid amounts; recurrence duration, recurrence interval, and reason are optional. This is a configuration read and does not establish issuance to a customer, current balance or ledger state, drawdown, purchase-invoice state, collection, lifecycle transitions, or migration to Contract credits or commits. [[source-metronome-api-reference-plans-get-plan-details]]",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": [
+          "Do not treat a Plan credit-grant template as an issued grant or live balance.",
+          "Numeric fields have no endpoint-defined universal denomination, constraints, precision, or rounding."
+        ]
+      },
+      {
+        "update_id": "get-plan-details-plan-custom-fields",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Entity scope and persistence",
+        "proposed_markdown": "The legacy Plan-detail representation requires `custom_fields` and models it as an arbitrary-key object with string values annotated for the `plan` entity. The endpoint establishes this response shape but does not define configured-key completeness, key or value limits, ordering, permissions, redaction, freshness, mutation, persistence, export behavior, or propagation into invoices. [[source-metronome-api-reference-plans-get-plan-details]]",
+        "quote_indexes": [
+          2
+        ],
+        "warnings": [
+          "Requiredness is specific to PlanDetail; the separate Plan-list representation leaves custom_fields optional.",
+          "Do not import persistence or propagation guarantees from the general custom-fields overview into this endpoint."
+        ]
+      },
+      {
+        "update_id": "get-plan-details-overage-conversion-surface",
+        "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Credits, commits, and invoice conversion",
+        "proposed_markdown": "A deprecated Plan-detail overage-rate entry requires numeric `to_fiat_conversion_factor`, a fiat credit type, a source credit type, and the price-ramp `start_period`. This schema exposes a conversion configuration surface but defines no factor direction, denomination, precision, rounding, applicability, timing beyond billing-period offset, invoice calculation, or equivalence to current rate-card custom-pricing-unit conversion. [[source-metronome-api-reference-plans-get-plan-details]]",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": [
+          "Do not interpret the factor mathematically without a dedicated legacy Plans authority.",
+          "Do not generalize the example's USD (cents) label to every Plan or credit type."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/plans/get-plan-details-2026-07-13.md",
+  "raw_sha256": "90c3356e4e4d3753b6fb935593fe96ec698244bb04b6cd7292fa3c8d5bcfdca6",
+  "status": "candidate_ready"
+}
