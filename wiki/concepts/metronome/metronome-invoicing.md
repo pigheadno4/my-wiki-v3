@@ -38,6 +38,10 @@ For an AWS-selected customer, Metronome meters the accrued total across AWS-bill
 
 For Azure Marketplace delivery, Metronome meters accrued totals since the prior request across contract invoices routed to Azure, encoded as USD cents. Scheduled prepaid purchases use the scheduled invoice service-period date; credits send only later overage; and a postpaid shortfall true-up that finalizes after the marketplace window is not sent, leaving the merchant to handle it directly in Azure. Azure's positive-quantity limit means a later credit cannot decrease an already submitted bill. [[source-metronome-integrations-marketplace-integrations-azure]]
 
+### GCP Marketplace metering and delivery limits
+
+For GCP Marketplace delivery, Metronome meters accrued totals since the prior request across contract invoices routed to GCP and encodes the quantity as USD cents. Scheduled prepaid purchases follow the scheduled invoice service-period date; credits send only post-drawdown overage; and a postpaid shortfall true-up that finalizes after the marketplace window is not sent. GCP's positive-only usage quantities mean a later credit cannot reduce an already reported bill; Metronome pauses until usage catches up or the merchant issues a manual GCP refund. [[source-metronome-integrations-marketplace-integrations-gcp]]
+
 ## Selection model
 
 The overview emphasizes optionality: organizations can use simpler integrated invoicing, marketplace distribution, or ERP systems according to their contracting and revenue-process needs. It does not define invoice objects, lifecycle states, synchronization details, or integration setup; those require the linked dedicated guides.

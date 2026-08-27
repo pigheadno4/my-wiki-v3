@@ -34,6 +34,10 @@ The bearer-authenticated account-level setup endpoint accepts an open provider-s
 
 The AWS guide has the seller create a cross-account role that allows `BatchMeterUsage`, `GetEntitlements`, `ListEntities`, and `DescribeEntity` on `Resource: "*"`; the trust setup uses Metronome's AWS account ID and generated external ID, and the role name must begin with `metronome-marketplace`. The role ARN is then saved in Metronome. The page does not define narrower resource scoping, validation, credential or external-ID rotation, independent update, rollback, deletion, or audit evidence. [[source-metronome-integrations-marketplace-integrations-aws]]
 
+### GCP Marketplace workload-identity delegation
+
+The GCP guide uses Workload Identity Federation so Metronome can access the merchant's marketplace project without stored long-lived tokens or keys. The merchant deploys the federation pool, AWS workload provider, and GCP service account, enables the named GCP APIs, grants procurement and Service Controller access, and submits the Provider ID plus federation configuration to Metronome. The guide does not define least-privilege role bindings, configuration custody, validation depth, rotation, revocation, access-loss recovery, audit evidence, or incident response. [[source-metronome-integrations-marketplace-integrations-gcp]]
+
 ## Customer API tokens
 
 Metronome's public API uses bearer tokens created and archived through the dashboard. Tokens inherit the creating user's permissions by default and can be restricted by access level, environment, or endpoint through a Metronome representative. The full token is visible only at creation, the SDKs default to `METRONOME_BEARER_TOKEN`, and archiving a token cannot be undone.

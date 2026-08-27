@@ -48,6 +48,10 @@ The AWS Marketplace integration accepts only invoices in USD fiat currency and e
 
 Azure Marketplace delivery supports only USD-fiat invoices and encodes metering quantity in USD cents. Selecting Azure with a non-USD rate card causes contract creation to error; if other invoices associated with the contract are non-USD, only USD invoices are sent. The guide does not define conversion, mixed-currency reconciliation, precision, rounding, or tax. [[source-metronome-integrations-marketplace-integrations-azure]]
 
+### GCP Marketplace currency boundary
+
+GCP Marketplace delivery supports only USD-fiat invoices and encodes metering quantity in USD cents. Selecting GCP with a non-USD rate card causes contract creation to error; if other invoices associated with the contract are non-USD, only USD invoices are sent. The guide does not define conversion, mixed-currency reconciliation, precision, rounding, or tax. [[source-metronome-integrations-marketplace-integrations-gcp]]
+
 ## Boundaries and unknowns
 
 The guide does not define custom-unit creation APIs, precision, conversion formula direction, rounding, exchange-rate sourcing or timing, rate-card currency mutation, mixed-rate resolution, balance priority, tax, invoice lifecycle, collection, refund, or revaluation behavior. Its supported-currency list and denomination behavior are dated documentation evidence, not an evergreen capability guarantee.

@@ -92,6 +92,10 @@ For AWS-billed contracts, Metronome may apply late usage to an invoice for up to
 
 For Azure-billed contracts, only events within one hour after subscription end remain billable through the marketplace, and Metronome disables metering two hours after end. Outage backlog is included in the next request only while the contract and late-event window remain open; accepted usage therefore does not prove Azure billability or delivery. [[source-metronome-integrations-marketplace-integrations-azure]]
 
+### GCP Marketplace late-usage delivery boundary
+
+For GCP-billed contracts, only events within one hour after subscription end remain billable through the marketplace, and Metronome disables metering two hours after end. Outage backlog is included in the next request only while the contract and GCP window remain open; accepted usage therefore does not prove GCP billability or delivery. The guide does not define retry cadence, duplicate suppression, partial-request recovery, or provider acceptance evidence. [[source-metronome-integrations-marketplace-integrations-gcp]]
+
 ## Invoice preview boundary
 
 The Preview Events API provides a separate, non-ingestion path for testing how supplied events would affect a customer's invoices under the current contract configuration. `replace` mode ignores historical usage, while `merge` combines the supplied events with existing usage. Preview transaction IDs are checked against historical events from the previous 34 days, but contracts with SQL billable metrics are not supported.

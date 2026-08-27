@@ -166,6 +166,10 @@ The AWS guide configures a customer with AWS customer ID, product code, region, 
 
 Azure provisioning requires the accepted offer's Subscription ID in customer provider configuration and Azure selection on a matching Metronome contract. On marketplace lifecycle changes, Metronome stops metering and updates its customer status, while the merchant owns application status and ending the Metronome contract when relevant. The Azure guide says the provider cannot be added or changed after contract creation, conflicting with the separate next-period marketplace-transition authority; the scope or staleness of that restriction is unresolved. [[source-metronome-integrations-marketplace-integrations-azure]]
 
+### GCP Marketplace provisioning layers
+
+GCP provisioning maps the marketplace Entitlement ID, also called Order ID, and Service Name onto customer provider configuration, then separately selects GCP delivery on a Metronome contract matching the accepted offer. On marketplace lifecycle changes, Metronome stops metering and updates its customer status, while the merchant owns application status and ending the Metronome contract when relevant. The GCP guide says the provider cannot be added or changed after contract creation, conflicting with the separate next-period marketplace-transition authority; the scope or staleness of that restriction is unresolved. [[source-metronome-integrations-marketplace-integrations-gcp]]
+
 ## Stripe Dashboard contract management
 
 The Metronome Stripe App embeds customer and contract management in the Stripe Dashboard. It lists Stripe customers linked through Metronome billing-provider configurations and can automatically create a corresponding Metronome customer when contract creation starts. Its four-step wizard configures invoice terms, rate-card pricing and overrides, subscription quantities and product entitlement, credit schedules, and confirmation. The resulting contract uses the Stripe customer's existing billing-provider configuration for invoice delivery.

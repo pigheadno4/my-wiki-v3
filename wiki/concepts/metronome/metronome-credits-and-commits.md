@@ -103,6 +103,10 @@ The Salesforce sync represents both commits and credits in one object family wit
 
 Under Azure Marketplace metering, prepaid purchase amounts follow scheduled-invoice service-period dates, free credits are not sent and only post-drawdown overage is metered, and an end-of-contract postpaid true-up that finalizes after the marketplace window is merchant-owned. Azure's positive-only quantities prevent a later Metronome credit from reducing a previously submitted total. [[source-metronome-integrations-marketplace-integrations-azure]]
 
+### GCP Marketplace treatment
+
+Under GCP Marketplace metering, prepaid purchase amounts follow scheduled-invoice service-period dates, free credits are not sent and only post-drawdown overage is metered, and an end-of-contract postpaid true-up that finalizes after the marketplace window is merchant-owned. GCP's positive-only quantities prevent a later Metronome credit from reducing a previously reported total. [[source-metronome-integrations-marketplace-integrations-gcp]]
+
 ## Prepaid balance thresholds
 
 A contract-provisioning example separates a one-year prepaid commit's access schedule from its one-time upfront invoice schedule and scopes the balance to `cloud`-tagged products. A quarterly platform charge has its own schedule. Optional usage-invoice consolidation applies to scheduled charges including commits when the service-period end date aligns and the usage invoice remains unfinalized.

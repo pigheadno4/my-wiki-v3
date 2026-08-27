@@ -1,0 +1,96 @@
+{
+  "job_id": "system-notifications",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome System Notifications\"\ntype: source\ndate_ingested: 2026-08-27\ncanonical_url: \"https://docs.metronome.com/guides/customers-billing/set-up-notifications/system-notifications.md\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/customers-billing/set-up-notifications/system-notifications-2026-07-13.md\"\ntags: [metronome, notifications, webhooks, contracts, commits, credits, lifecycle-events]\n---\n\n## Overview\n\nThis guide defines Metronome system notifications for time-based automation around customer contract, commit, and credit lifecycle events. It identifies the available event policies, their example webhook payload families, and the account-wide UI and API controls for enabling prospective publication.\n\n## Query-critical facts\n\n- A system notification is tied either to an object's configured timestamp, such as contract start, or to the time an action occurs, such as contract creation. The documented use case is automation around a customer's key lifecycle events.\n- The catalog contains five contract policies for create, start, edit, end, and archive; five commit policies for create, edit, archive, segment start, and segment end; and the same five lifecycle policies for credits. Segment start and end payloads expose the triggering segment's index, count, and identifier in addition to the associated object, contract, and customer context.\n- System-notification payloads differ from threshold-notification payloads: system payloads do not include `properties`. The examples otherwise show notification identity, policy `type`, timestamp, environment, customer identity and custom fields, plus object-specific contract, commit, credit, recurring-parent, and segment fields. Receivers therefore cannot assume one payload shape for both notification families.\n- System notifications can be enabled in the Notifications UI or with `POST /v2/notifications/edit` by passing the selected policy and `is_enabled: true`; a successful API call returns HTTP `200`. The UI says every system notification is disabled by default for an account and that enabling one publishes that event for all customers to all configured webhooks.\n- Enablement is prospective: Metronome starts generating events only from the point of enablement and does not create notifications for past data. The policy itself cannot be edited.\n\n## Material boundaries\n\n- This page provides payload examples rather than a normative closed schema. It does not define field requiredness, nullability, forward-compatible additions, payload-version negotiation, or whether every shown custom-field and recurring-parent field is always present. Use the raw examples for implementation inspection without converting example presence into a universal guarantee.\n- The page says enabled events are sent to every configured webhook, but it does not define HTTP delivery, signing, latency, ordering, retry duration, duplicate delivery, deduplication, endpoint failure handling, or replay behavior. Those mechanics belong to the dedicated [[metronome-webhooks]] authority.\n- The API walkthrough names the mutation and a `200` result but supplies no complete request or response schema, authentication declaration, error catalog, authorization scope, disablement behavior, propagation timing, concurrent-edit semantics, or treatment of already generated or in-flight notifications. The separate [[source-metronome-api-reference-idempotency|API-wide POST idempotency authority]] applies `Idempotency-Key`, but this guide adds no endpoint-specific guarantee for no-key or expired-key retries, cached-error recovery, or the final state after an ambiguous failure.\n- Prospective generation and immutable policy selection mean enablement cannot be used to reconstruct missed historical lifecycle events, while this page does not identify an API reconciliation procedure for that gap.\n\n## Raw-detail coverage map\n\nUse the raw page for the complete 15-policy event catalog; every contract, commit, credit, recurring-parent, and segment payload example; notification, object, customer, environment, custom-field, and segment fields; the UI navigation and confirmation walkthrough; the `POST /v2/notifications/edit` enablement outline; default-disabled account behavior; all-customers and all-configured-webhooks scope; and the prospective-only and immutable-policy limitations. Dedicated webhook and API references remain authoritative for delivery, verification, retries, complete mutation schemas, errors, and recovery.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-alerts-and-notifications]], [[metronome-webhooks]], [[metronome-customers-and-contracts]], [[metronome-credits-and-commits]]\n- Related source: [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/customers-billing/set-up-notifications/system-notifications-2026-07-13|2026-07-13 snapshot - lifecycle-event catalog, webhook payload examples, enablement routes, scope, and historical-data limitation]]\n",
+  "quotes": [
+    {
+      "text": "System notifications monitor when events or actions occur based on the configured timestamp of an object (e.g contract start) or the time at which an action occurred (e.g. contract created). They're best for time-based automation workflows around a customer's key lifecycle events.",
+      "location": "line 11"
+    },
+    {
+      "text": "The payload schema for system notifications differ slightly from the payload schema for threshold notifications. Specifically, the payload for system notifications do not include a `properties` field. Ensure your webhooks are properly configured to handle both notification types.",
+      "location": "line 18"
+    },
+    {
+      "text": "The segment number that triggered the notification and the total number of commit segments can be found in the payload",
+      "location": "lines 31-32"
+    },
+    {
+      "text": "System notifications can be enabled and managed through both the UI and the API.",
+      "location": "line 362"
+    },
+    {
+      "text": "When you enable a system notification, Metronome starts generating events from that point forward. It does not go back and create events for past data. Additionally, the policy for system notifications cannot be edited.",
+      "location": "line 387"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "system-notifications-alerts-route",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-system-notifications]] - contract, commit, and credit lifecycle policy catalog; account-wide enablement; payload-family distinction; and prospective-only, immutable-policy boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": [
+          "Keep system lifecycle notifications distinct from continuously evaluated threshold notifications and user-scheduled offset notifications."
+        ]
+      },
+      {
+        "update_id": "system-notifications-webhooks-route",
+        "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-system-notifications]] - system-event publication to all configured webhooks, notification-family payload differences, and lifecycle payload examples",
+        "quote_indexes": [
+          1,
+          3
+        ],
+        "warnings": [
+          "This page does not establish webhook transport, signature, retry, ordering, duplicate-delivery, latency, or replay guarantees; retain the dedicated webhook authority for those mechanics."
+        ]
+      },
+      {
+        "update_id": "system-notifications-contract-lifecycle-route",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-system-notifications]] - contract create, start, edit, end, and archive event policies; customer and contract payload context; and prospective account-wide enablement",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "Lifecycle notifications are automation signals and do not independently define the underlying contract state transitions, mutation success, or historical reconstruction."
+        ]
+      },
+      {
+        "update_id": "system-notifications-credit-commit-lifecycle-route",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-system-notifications]] - commit and credit create, edit, archive, segment-start, and segment-end policies with recurring-parent and segment payload context",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "Payload examples do not establish universal field requiredness or the underlying commit and credit lifecycle semantics."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/customers-billing/set-up-notifications/system-notifications-2026-07-13.md",
+  "raw_sha256": "230cd355a9898e22acc47377975206c4cfd19bc0a10b3655038c5595844bf360",
+  "status": "candidate_ready"
+}

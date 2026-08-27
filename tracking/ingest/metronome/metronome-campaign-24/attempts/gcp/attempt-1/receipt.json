@@ -1,0 +1,135 @@
+{
+  "job_id": "gcp",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Integration: GCP Marketplace\"\ntype: source\ndate_ingested: 2026-08-27\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/integrations/marketplace-integrations/gcp.md\"\nraw_files:\n  - \"metronome/integrations/marketplace-integrations/gcp-2026-07-13.md\"\ntags: [metronome, gcp-marketplace, marketplace-billing, invoicing, integrations]\n---\n\n## Overview\n\nThis guide describes a native integration in which a merchant grants Metronome federated access to a GCP Marketplace project, configures a usage-based listing, maps each GCP entitlement to a Metronome customer and contract, and lets Metronome report calculated invoice totals to GCP. The merchant remains responsible for GCP project and listing configuration, Google review and publication, its own subscription backend and application state, matching the Metronome contract to the accepted offer, postpaid true-ups that miss the marketplace window, and manual refunds when GCP cannot accept a downward correction.\n\n## Query-critical facts\n\n- Metronome accesses the merchant's marketplace project through Workload Identity Federation rather than stored long-lived keys. The merchant deploys the pool, AWS workload provider, and GCP service account; enables the required IAM, service-account credential, procurement, service-control, and service-management APIs; and grants the service account procurement access for entitlement metadata and Service Controller access for usage reporting. Metronome does not require Pub/Sub access, leaving subscription-backend integration to merchant-owned service accounts.\n- The GCP listing must use a `usage_fee` metric with reporting unit `count`, a custom display unit that does not imply currency, display quantity `1`, and price `0.01`; at least one listing feature must attach the usage-based plan. The guide says the metric identifier and pricing values are integration requirements and deviation causes failure.\n- Identity is layered rather than interchangeable. Metronome supplies its Service Account ID, AWS Account ID, and AWS Lambda Role Name; the merchant supplies GCP Project ID and Project Number to deploy federation, then submits the resulting Provider ID and Workload Identity Configuration JSON to Metronome. Successful access validation saves the integration but does not establish Google listing approval or publication.\n- Each marketplace customer is mapped with an Entitlement ID, also called Order ID, plus a Service Name identifying the product listing. The customer billing-provider configuration carries `gcp_entitlement_id` and `gcp_service_name`; a matching Metronome contract separately selects GCP with direct provider delivery.\n- After GCP is selected and usage events arrive, Metronome sums the amount accrued since its previous metering request across that customer's contract invoices routed to GCP and reports the quantity as the total USD amount in cents.\n- Prepaid commit purchases are metered on the scheduled invoice's service-period date; free credits are not metered, so only overage after complete drawdown is sent; and an end-of-contract postpaid shortfall true-up that finalizes after the marketplace endpoint closes is not sent and must be handled directly in GCP.\n- On detected marketplace subscription changes, Metronome stops metering and updates its customer status. The merchant owns corresponding application status and ending the Metronome contract when relevant.\n- GCP accepts only positive usage quantities. A later Metronome credit cannot reduce an already reported bill; Metronome pauses billing until usage catches up, and an insufficient correction requires a manual GCP refund. Only events within one hour after subscription end remain billable, Metronome disables metering after two hours, and outage backlog is included in a later request only while the contract and GCP window remain open. The integration supports USD-fiat invoices only: a non-USD contract rate card errors, and other non-USD invoices associated with the contract are not sent.\n\n## Material boundaries and contradiction\n\nThis Metronome guide documents configuration, access validation, and intended metering behavior; it does not prove Google vendor registration, listing approval or publication, entitlement activation or freshness, metering-record acceptance, invoice delivery, payment, settlement, tax, refund completion, or reconciliation. Beyond the stated pause and outage-catch-up behavior, it does not define credential rotation or revocation, recovery from lost access, retry cadence, duplicate suppression or idempotency, partial-request handling, acceptance evidence, or reconciliation.\n\nThe guide says a billing provider cannot be added or changed after contract creation, while the separate billing-provider schedule authority permits next-period transitions to or from GCP Marketplace. The sources do not explain whether the guide's statement is stale, UI-specific, or limited to initial provisioning.\n\n## Raw-detail coverage map\n\nUse the raw page for the complete Workload Identity Federation, project/API, service-account permission, Producer Portal listing, metric and price, feature, Technical Integration, configuration-submission, customer provisioning, API payload, lifecycle, and contract-end procedures; every named identifier; the exact `usage_fee` settings; all prepaid, credit, and postpaid metering cases; and the positive-quantity correction, refund, outage, grace-window, and currency examples. Follow current GCP and dedicated Metronome API authorities for external approval, complete schemas, credential lifecycle, retry behavior, provider acceptance, and reconciliation.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-integrations]], [[metronome-security-principles]], [[metronome-invoicing]], [[metronome-customers-and-contracts]], [[metronome-event-ingestion]], [[metronome-credits-and-commits]], [[metronome-currencies-and-custom-pricing-units]]\n\n## Raw Sources\n\n- [[raw/metronome/integrations/marketplace-integrations/gcp-2026-07-13|2026-07-13 snapshot - GCP federation and listing setup, identity mapping, contract routing, metering lifecycle, financial limits, late usage, and USD-only boundary]]\n",
+  "quotes": [
+    {
+      "text": "In order to meter your listings, Metronome will require access to the procurement and metering APIs in your marketplace GCP project. Metronome will access your project via [Workload Identity Federation](https://cloud.google.com/iam/docs/workload-identity-federation), which allows federated access to your project by Metronome without the need to store long-lived tokens or keys. You will then associate a [Google Service Account](https://cloud.google.com/iam/docs/service-account-overview) with the Workload Identity Federation pool, to which you will attach the appropriate fine-grained permissions for Metronome's metering operations.",
+      "location": "line 44"
+    },
+    {
+      "text": "The metric ID must be called `usage_fee` for the integration to work correctly.",
+      "location": "line 136"
+    },
+    {
+      "text": "When a customer agrees to your Marketplace listing, you will need to provision their account in Metronome with a Metronome Contract that reflects the full details of the offer/subscription they signed with you in the Marketplace and GCP identified as the billing provider on that Contract.\n\nTo connect a customer to GCP and have Metronome begin metering their invoices to GCP on your behalf:\n\n1. Go to an existing customer's detail page in Metronome or create a new customer at **Customers** > **Add New Customer**.\n\n2. Go to **Settings** > **Available Integrations** > **GCP** > **Get Started.**\n\n3. Enter the **Entitlement ID** and **Service Name** for this customer's subscription:\n   * You can find both pieces of information from the subscription or order in [GCP Producer Portal](https://console.cloud.google.com/producer-portal/).\n\n   * **Entitlement ID** is the unique identifier representing your customer's offer/subscription in GCP. It is also referenced as **Order ID.** Example:",
+      "location": "lines 219-230"
+    },
+    {
+      "text": "After you set GCP as that customer's billing provider and begin sending usage events, Metronome starts metering that customer's calculated invoice totals to GCP on your behalf.\n\n## What Metronome meters to GCP\n\nWhen metering to GCP, Metronome sums up a customer's total amount accrued across all contract invoices that have GCP set as the billing provider since the last metering request. Metronome sets the quantity for each metering record as the total dollar amount expressed in USD cents.\n\nIf a customer purchased a commit or was offered a credit as part of their contract, Metronome meters like this:\n\n* **Prepaid commits** A contract in Metronome specifies a schedule over which the customer pays for their prepaid commit. Those inputs create one or more scheduled invoices. Metronome meters the amount the customer owes on the prepaid commit on the date associated with the service period of the scheduled invoice, not the created at date.\n* **Credits** As credits on a Metronome contract are not paid for, Metronome only meters overages reflected on invoice totals after the credit has been drawn down in its entirety.\n* **Postpaid commits** Metronome meters usage reflected on invoice totals throughout the duration of the contract. However, if the entirety of the postpaid commit isn't consumed by the end of the contract, Metronome ignores the true-up invoice and doesn't send it to the marketplace. This is because the true-up invoice isn't finalized until after the Metronome grace period ends, at which point the metering endpoint for the marketplace has closed. This means you must handle the true-up in the marketplace directly.",
+      "location": "lines 305-315"
+    },
+    {
+      "text": "Metronome stops metering if it detects subscription changes due to marketplace lifecycle events, and updates the customer's status in Metronome accordingly. However, you are responsible for ensuing that the customer's status is correctly represented in your application and ending the customer's contract in Metronome, if relevant.\n\nTo end the customer's contract in the [Metronome app](https://app.metronome.com/), go to the customer > click the contract > select the overflow menu > click **Edit Contract End Date.**\n\nTo end the customer's contract with the Metronome API, use the `/contracts/updateEndDate` endpoint.\n\n## Limitations of GCP Marketplace listings\n\nBilling through the GCP Marketplace has some limitations.\n\n**GCP Marketplace only supports positive quantities through their usage reporting service.**\n\nThere's no way to *decrease* a customer's total bill. For example, consider a customer who was meant to receive \\$1,000 in credits when they started using your product. Due to a typo, they erroneously received only \\$100. The mistake gets noticed one week into their first billing period, when the customer notices a \\$500 charge on their GCP bill. In Metronome, this mistake is easily rectified by adding an additional \\$900 credit, but in GCP, there's no way to reduce that bill.\n\nIf this situation arises, Metronome stops billing for that customer until their usage catches up to the amount they've already been billed. If this is insufficient to correct the problem, you must issue a manual refund through the GCP Marketplace. Contact your GCP or Metronome representative for help.\n\n**GCP Marketplace strictly enforces the end of a customer's Marketplace contract or subscription.**\n\nMetronome provides a 1 hour grace period of events sent after the completion of the subscription. While Metronome normally supports a grace period of up to 24 hours after the billing period ends, the GCP integration currently is limited to 1 hour. This means usage received after that cannot be billed through GCP. Metronome automatically disables metering 2 hours after the subscription ends.\n\nIn the event of an outage, Metronome catches up when everything comes back online. If Metronome was unable to send usage to GCP for some period of time, the accrued usage is included in the next request to GCP. However, if the customer's contract has already ended and GCP's grace period has elapsed, Metronome is unable to bill for the usage accrued during the down time.\n\n**Metronome's integration with GCP Marketplace only supports invoices with a USD fiat currency.**\n\nMetronome throws an error if you attempt to create a contract with GCP Marketplace set as the billing provider, and the rate card on the contract has a non-USD fiat currency. In the case where the contract is associated with other invoices that are not in USD (for example, scheduled invoices associated with scheduled charges), only the USD invoices will be sent to GCP Marketplace.",
+      "location": "lines 319-343"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gcp-integration-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Native Azure Marketplace integration boundary",
+        "proposed_markdown": "### Native GCP Marketplace integration boundary\n\nThe GCP path layers merchant-owned project and listing configuration, Workload Identity Federation, a GCP service account with procurement and usage-reporting access, Provider ID and federation JSON submission, customer Entitlement/Order ID plus Service Name mapping, and contract-level GCP delivery selection. Metronome calculates and reports USD-cent invoice totals, while the merchant owns Google listing approval, its subscription backend and application status, contract alignment, marketplace-window true-ups, and manual refund escalation. Configuration and access validation do not prove GCP publication or activation, metering acceptance, payment, settlement, tax, refund completion, or reconciliation. [[source-metronome-integrations-marketplace-integrations-gcp]]",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep Metronome-documented access and submission behavior separate from external GCP outcomes."
+        ]
+      },
+      {
+        "update_id": "gcp-workload-identity-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "durable_fact",
+        "anchor": "### AWS Marketplace role delegation",
+        "proposed_markdown": "### GCP Marketplace workload-identity delegation\n\nThe GCP guide uses Workload Identity Federation so Metronome can access the merchant's marketplace project without stored long-lived tokens or keys. The merchant deploys the federation pool, AWS workload provider, and GCP service account, enables the named GCP APIs, grants procurement and Service Controller access, and submits the Provider ID plus federation configuration to Metronome. The guide does not define least-privilege role bindings, configuration custody, validation depth, rotation, revocation, access-loss recovery, audit evidence, or incident response. [[source-metronome-integrations-marketplace-integrations-gcp]]",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": [
+          "Do not treat federation setup or successful validation as proof of ongoing authorization, secure custody, or metering acceptance."
+        ]
+      },
+      {
+        "update_id": "gcp-invoice-metering",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Azure Marketplace metering and delivery limits",
+        "proposed_markdown": "### GCP Marketplace metering and delivery limits\n\nFor GCP Marketplace delivery, Metronome meters accrued totals since the prior request across contract invoices routed to GCP and encodes the quantity as USD cents. Scheduled prepaid purchases follow the scheduled invoice service-period date; credits send only post-drawdown overage; and a postpaid shortfall true-up that finalizes after the marketplace window is not sent. GCP's positive-only usage quantities mean a later credit cannot reduce an already reported bill; Metronome pauses until usage catches up or the merchant issues a manual GCP refund. [[source-metronome-integrations-marketplace-integrations-gcp]]",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer GCP acceptance, invoice delivery, payment, settlement, refund completion, tax, or reconciliation from Metronome submission."
+        ]
+      },
+      {
+        "update_id": "gcp-provider-lifecycle-conflict",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Azure Marketplace provisioning layers",
+        "proposed_markdown": "### GCP Marketplace provisioning layers\n\nGCP provisioning maps the marketplace Entitlement ID, also called Order ID, and Service Name onto customer provider configuration, then separately selects GCP delivery on a Metronome contract matching the accepted offer. On marketplace lifecycle changes, Metronome stops metering and updates its customer status, while the merchant owns application status and ending the Metronome contract when relevant. The GCP guide says the provider cannot be added or changed after contract creation, conflicting with the separate next-period marketplace-transition authority; the scope or staleness of that restriction is unresolved. [[source-metronome-integrations-marketplace-integrations-gcp]]",
+        "quote_indexes": [
+          2,
+          4
+        ],
+        "warnings": [
+          "Preserve the billing-provider change contradiction explicitly."
+        ]
+      },
+      {
+        "update_id": "gcp-late-event-window",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Azure Marketplace late-usage delivery boundary",
+        "proposed_markdown": "### GCP Marketplace late-usage delivery boundary\n\nFor GCP-billed contracts, only events within one hour after subscription end remain billable through the marketplace, and Metronome disables metering two hours after end. Outage backlog is included in the next request only while the contract and GCP window remain open; accepted usage therefore does not prove GCP billability or delivery. The guide does not define retry cadence, duplicate suppression, partial-request recovery, or provider acceptance evidence. [[source-metronome-integrations-marketplace-integrations-gcp]]",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Event acceptance and invoice inclusion do not establish GCP delivery after the marketplace window closes."
+        ]
+      },
+      {
+        "update_id": "gcp-credit-commit-treatment",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Azure Marketplace treatment",
+        "proposed_markdown": "### GCP Marketplace treatment\n\nUnder GCP Marketplace metering, prepaid purchase amounts follow scheduled-invoice service-period dates, free credits are not sent and only post-drawdown overage is metered, and an end-of-contract postpaid true-up that finalizes after the marketplace window is merchant-owned. GCP's positive-only quantities prevent a later Metronome credit from reducing a previously reported total. [[source-metronome-integrations-marketplace-integrations-gcp]]",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not generalize this marketplace treatment to other invoice destinations."
+        ]
+      },
+      {
+        "update_id": "gcp-usd-only-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Azure Marketplace currency boundary",
+        "proposed_markdown": "### GCP Marketplace currency boundary\n\nGCP Marketplace delivery supports only USD-fiat invoices and encodes metering quantity in USD cents. Selecting GCP with a non-USD rate card causes contract creation to error; if other invoices associated with the contract are non-USD, only USD invoices are sent. The guide does not define conversion, mixed-currency reconciliation, precision, rounding, or tax. [[source-metronome-integrations-marketplace-integrations-gcp]]",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer conversion or delivery of excluded non-USD invoices."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/integrations/marketplace-integrations/gcp-2026-07-13.md",
+  "raw_sha256": "3367814f5152554ba43a95172d2b906e9d00bd143b152d2d3dab39233242d1e8",
+  "status": "candidate_ready"
+}
