@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 137 |
-| Raw pages without source summaries | 94 |
+| Source summaries ingested | 145 |
+| Raw pages without source summaries | 86 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -168,6 +168,14 @@ Operational evidence:
 - [[source-metronome-api-reference-credit-grants-void-a-credit-grant]] — legacy Plans grant void mutation, invoice option, uniqueness release, and recovery limits
 - [[source-metronome-guides-implement-metronome-core-concepts-packages-overview]] — reusable package terms, contract provisioning, aliases, immutable versions, and propagation boundaries
 - [[source-metronome-integrations-marketplace-integrations-azure]] — Azure offer and identity layers, metering, corrections, late-event window, currency, and lifecycle ownership
+- [[source-metronome-api-reference-contracts-get-the-rate-schedule-for-a-contract]] — contract rate-schedule retrieval, effective-time and selector scope, returned pricing surfaces, and unknown precedence
+- [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]] — deprecated Plans credit-ledger listing, ordering boundaries, amount-sign contradiction, pagination, and incomplete history
+- [[source-metronome-api-reference-contracts-update-invoice-issue-date]] — draft invoice issue-date mutation, schedule separation, lifecycle boundaries, and idempotent retry context
+- [[source-metronome-api-reference-security-get-audit-logs]] — account audit retrieval, time and resource filters, continuous cursor polling, attribution gaps, and response-shape contradiction
+- [[source-metronome-integrations-marketplace-integrations-gcp]] — GCP Marketplace setup, identity mapping, USD-cent metering, correction limits, and merchant-owned outcomes
+- [[source-metronome-guides-get-started-api-quickstart]] — programmatic sandbox onboarding, event-to-invoice flow, stale timestamps, diagnostics, and integration limits
+- [[source-metronome-guides-customers-billing-set-up-notifications-system-notifications]] — lifecycle policy catalog, payload-family distinction, account-wide webhook scope, and prospective enablement
+- [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — aggregate and identity-bearing seat lifecycle, configuration-dependent billing, seat alerts, history, and retry risk
 
 ## Concepts
 

@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 137
+source_count: 145
 ---
 
 ## Overview
@@ -151,8 +151,8 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 225
-- Ingested source summaries: 137
-- Raw pages without source summaries: 94
+- Ingested source summaries: 145
+- Raw pages without source summaries: 86
 
 ## Sources
 
@@ -298,6 +298,14 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 - [[source-metronome-api-reference-credit-grants-void-a-credit-grant]] — deprecated Plans grant voiding, optional purchase-invoice and uniqueness-key effects, and lifecycle unknowns
 - [[source-metronome-guides-implement-metronome-core-concepts-packages-overview]] — package templates, restricted contract provisioning, immutable versioning, aliases, and custom-field propagation
 - [[source-metronome-integrations-marketplace-integrations-azure]] — Azure Marketplace setup, USD-cent metering, lifecycle ownership, late-event limits, and provider-transition conflict
+- [[source-metronome-api-reference-contracts-get-the-rate-schedule-for-a-contract]] — entitled contract rate schedule, effective-time and selector scope, returned rate surfaces, and visibility limits
+- [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]] — deprecated Plans credit ledgers, ordering and amount-sign contradictions, pagination, and migration boundaries
+- [[source-metronome-api-reference-contracts-update-invoice-issue-date]] — draft-invoice issue-date rescheduling, lifecycle preconditions, future-schedule separation, and retry limits
+- [[source-metronome-api-reference-security-get-audit-logs]] — account audit retrieval, filters, cursor polling, response-shape contradiction, and completeness limits
+- [[source-metronome-integrations-marketplace-integrations-gcp]] — GCP marketplace identity, workload federation, metering, currency, late-event, correction, and lifecycle boundaries
+- [[source-metronome-guides-get-started-api-quickstart]] — sandbox API onboarding, object order, event matching, stale example timestamps, draft invoicing, and provider boundary
+- [[source-metronome-guides-customers-billing-set-up-notifications-system-notifications]] — contract, commit, and credit lifecycle events, payload families, account-wide enablement, and prospective-only behavior
+- [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — aggregate and identity-bearing seat changes, credit and invoice effects, alert scoping, history routes, and retry risk
 
 ## Related
 

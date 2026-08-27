@@ -6,6 +6,16 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-27 — Metronome Campaign 24 larger confirmation promoted
+
+- Result: eight approved source pages from complete raw-page reads across twelve Sol worker attempts and twelve independent full Sol reviews; four pages passed attempt 1 and four passed attempt 2, with no targeted review, failure, or rejection.
+- Sources: [[source-metronome-api-reference-contracts-get-the-rate-schedule-for-a-contract]], [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]], [[source-metronome-api-reference-contracts-update-invoice-issue-date]], [[source-metronome-api-reference-security-get-audit-logs]], [[source-metronome-integrations-marketplace-integrations-gcp]], [[source-metronome-guides-get-started-api-quickstart]], [[source-metronome-guides-customers-billing-set-up-notifications-system-notifications]], and [[source-metronome-guides-pricing-packaging-subscription-manage-seats]].
+- Minimum Sufficient Source result: all eight sources retain query-critical facts, material contradictions and unknowns, primary concept routes, coverage maps, and exact immutable raw links without reproducing complete schemas or walkthroughs.
+- Retry findings: the credit ledger required explicit entry-versus-ledger ordering and a positive-deduction amount contradiction; audit logs required the narrative-versus-OpenAPI `next_page` placement conflict; API Quickstart required replacement of stale worked timestamps; Manage Seats required API-wide POST idempotency and corrected nested requiredness.
+- Concepts: updated subscriptions, credits and commits, alerts and notifications, API idempotency, customers and contracts, invoicing, reporting and analytics, security, integrations, event ingestion, currencies, usage billing, billable metrics, products and rate cards, packages and aliases, and webhooks; no new concept page was required.
+- Coverage after promotion: 225 collected documentation pages, 145 source summaries, and 86 raw pages without source summaries.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-24/monitor.md), [quality audit](../tracking/ingest/metronome/metronome-campaign-24/quality-audit.md), and [retrospective](../tracking/ingest/metronome/metronome-campaign-24/retrospective.md).
+
 ## 2026-08-26 — Metronome Campaign 23 Minimum Sufficient Source pilot promoted
 
 - Result: five approved source pages from complete raw-page reads, each accepted on attempt 1 after an independent complete-source Sol review; no worker retry, targeted review, failure, or rejection was required.

@@ -1,13 +1,13 @@
 # Metronome Campaign 24
 
-- Campaign state: `active`
+- Campaign state: `complete`
 - Worker concurrency: `3`
 - Started at: `2026-08-27T11:03:46Z`
-- Completed at: `incomplete`
+- Completed at: `2026-08-27T11:54:34Z`
 - Full reviews: 12
 - Targeted reviews: 0
 - Coordinator repairs: 1
-- Elapsed: `in progress`
+- Elapsed: `3048 seconds`
 - Queued: 0
 - Running: 0
 - Candidate ready: 0
