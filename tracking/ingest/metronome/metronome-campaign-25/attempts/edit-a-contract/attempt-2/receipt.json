@@ -1,0 +1,136 @@
+{
+  "job_id": "edit-a-contract",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome API Reference: Edit a Contract\"\ntype: source\ndate_ingested: 2026-08-27\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/contracts/edit-a-contract.md\"\nraw_files:\n  - \"metronome/api-reference/contracts/edit-a-contract-2026-07-13.md\"\ntags: [metronome, contracts, contract-editing, api, invoicing]\n---\n\n## Overview\n\nThis OpenAPI page documents bearer-authenticated `POST /v2/contracts/edit`, a feature-enabled mutation for changing an existing contract's commercial terms and lifecycle configuration without replacing the contract. The endpoint can add, update, archive, or remove many contract components and returns an edit-related result, while leaving important atomicity and recovery behavior undefined.\n\n## Query-critical facts\n\n- When a JSON payload is supplied, `EditContractPayload` requires UUID-formatted `customer_id` and `contract_id`. The enclosing OpenAPI `requestBody` is not marked required, so omitted-body behavior is undocumented. The payload schema does not declare `additionalProperties`, so top-level unknown-field behavior is also unspecified.\n- The mutation surface includes commits and credits, recurring grants, discounts, overrides, scheduled charges, subscriptions, spend and prepaid-balance thresholds, spend trackers, contract name and end date, payment terms, and billing- or revenue-system configuration. Arrays and nested objects represent distinct add, update, archive, and remove actions; the page does not establish atomicity across a mixed edit, validation order, partial-success behavior, or concurrent-edit ordering.\n- Draft invoices update immediately to reflect a contract edit. Finalized invoices remain unchanged unless they are voided and regenerated in the UI or API; the page does not extend that statement to downstream billing providers, payment, refunds, tax, revenue systems, or accounting reconciliation. Contract editing must be enabled for the endpoint.\n- `update_contract_end_date` sets an exclusive RFC 3339 end timestamp and is nullable. The separate `allow_contract_ending_before_finalized_invoice` control defaults to `true`: it permits an end date earlier than the `end_timestamp` of existing finalized invoices, leaves those invoices unchanged, and requires voiding and regenerating finalized usage invoices to incorporate the new end date. The page does not define how a mixed edit is rolled back if another component fails.\n- Updates to recurring commits and recurring credits affect only generated grants whose access schedules have not started. Expired grants and grants with active access schedules remain unchanged, but the endpoint does not define mixed eligible/ineligible-array behavior, error reporting, or the visibility timing of generated-child changes.\n- For either the spend-threshold or prepaid-balance-threshold update, changing `is_enabled` from `false` to `true` causes immediate evaluation regardless of prior state. Usage reaching the spend threshold, or balance falling to the prepaid threshold, initiates a threshold charge. The page does not say that charge initiation guarantees payment or commit availability, nor define atomicity with other edits, evaluation ordering, downstream invoice/provider effects, concurrency, or ambiguous-failure recovery.\n- HTTP `200` requires `data.id`; `data.edit` is optional in the schema. The narrative instead promises the edit ID and complete edit details, while the success example reuses the request's `contract_id` as `data.id`. The page does not reconcile whether the required ID identifies the edit or contract, nor whether complete edit details are guaranteed in every success.\n- This endpoint snapshot exposes optional `uniqueness_key` with a 1-128 character schema and wording that reuse prevents a duplicate record and fails with HTTP `409`, although the operation response map omits `409`. The same-date [[source-metronome-api-reference-idempotency|API-wide idempotency authority]] labels contract-edit uniqueness-key support as coming soon, so schema exposure here does not resolve runtime enablement. This unresolved authority conflict is distinct from API-wide POST `Idempotency-Key` result replay. Neither page defines the two keys' interaction, uniqueness-key scope or release, no-key or expired-key retries, concurrent ordering, or recovery after cached or ambiguous failures.\n\n## Material boundaries and contradictions\n\nThe request schema says `add_billing_provider_configuration_update` and the feature-gated revenue-system equivalent currently support only adding a configuration to a contract that does not already have one. That is an API-page limitation, not proof of external-provider readiness, invoice delivery, revenue posting, or reconciliation.\n\n> [!warning] Billing-provider edit scope conflict\n> This endpoint schema limits the billing-provider field to adding a configuration when the contract has none, while [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] documents provider-to-provider changes on existing contracts through the same edit surface. The sources do not establish whether the API description is stale, configuration-dependent, or narrower than the guide; verify current account enablement and runtime behavior before implementing a provider transition.\n\nThe page also does not define authorization errors, rollback, cross-component validation and atomicity, edit-history propagation timing, webhook behavior, or recovery after a timeout or cached error. Its schema is not a legal, accounting, tax, or external-system authority.\n\n## Raw-detail coverage map\n\nUse the raw page for the exact production server, bearer security declaration, operation ID, request example, complete add/update/archive/remove payload families, conditional required properties, null and omission semantics that are explicitly documented, schedule timestamps and effective-time enums, feature-gated fields, limits, nested pricing and payment-gate schemas, complete `ContractEdit` response schema, success example, and `400` error enum. The raw page also exposes response/request naming asymmetries, enum casing variants, and every nested subscription, credit, commit, override, threshold, spend-tracker, provider, and revenue-system schema; those ordinary details are intentionally routed to raw rather than reconstructed here.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-customers-and-contracts]], [[metronome-invoicing]], [[metronome-credits-and-commits]], [[metronome-spend-threshold-billing]], [[metronome-api-idempotency]], [[metronome-integrations]]\n- Related sources: [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-contract]], [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/contracts/edit-a-contract-2026-07-13|2026-07-13 snapshot - contract-edit mutation, required identifiers, mutable term families, invoice and recurring-grant lifecycle effects, threshold charge initiation, duplicate prevention, provider limits, response schema, and errors]]\n",
+  "quotes": [
+    {
+      "text": "### Key response fields:\n- The `id` of the edit\n- Complete edit details. For example, if you edited the contract to add new overrides and credits, you will receive the IDs of those overrides and credits in the response.\n\n### Usage guidelines:\n- When you edit a contract, any draft invoices update immediately to reflect that edit. Finalized invoices remain unchanged - you must void and regenerate them in the UI or API to reflect the edit.\n- Contract editing must be enabled to use this endpoint. Reach out to your Metronome representative to learn more.",
+      "location": "raw/metronome/api-reference/contracts/edit-a-contract-2026-07-13.md:17-23"
+    },
+    {
+      "text": "    EditContractPayload:\n      type: object\n      required:\n        - customer_id\n        - contract_id\n      properties:\n        customer_id:\n          type: string\n          format: uuid\n          description: ID of the customer whose contract is being edited\n        contract_id:\n          type: string\n          format: uuid\n          description: ID of the contract being edited\n        uniqueness_key:\n          $ref: '#/components/schemas/UniquenessKey'\n          description: Optional uniqueness key to prevent duplicate contract edits.\n        add_commits:\n          type: array\n          items:\n            $ref: '#/components/schemas/CommitInputV2'\n        add_credits:\n          type: array\n          items:\n            $ref: '#/components/schemas/CreditInputV2'\n        add_recurring_commits:\n          type: array\n          items:\n            $ref: '#/components/schemas/RecurringCommitInputV2'\n        add_recurring_credits:\n          type: array\n          items:\n            $ref: '#/components/schemas/RecurringCreditInputV2'\n        add_discounts:\n          x-mint:\n            groups:\n              - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2\n          type: array\n          items:\n            $ref: '#/components/schemas/DiscountInputV2'\n        add_overrides:\n          type: array\n          items:\n            $ref: '#/components/schemas/OverrideInputV2'\n        add_scheduled_charges:\n          type: array\n          items:\n            $ref: '#/components/schemas/ScheduledChargeInputV2'\n        add_professional_services:\n          x-mint:\n            groups:\n              - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2\n          type: array\n          description: >-\n            This field's availability is dependent on your client's\n            configuration.\n          items:\n            $ref: '#/components/schemas/ProServiceInput'\n        add_reseller_royalties:\n          x-mint:\n            groups:\n              - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2\n          type: array\n          items:\n            $ref: '#/components/schemas/ResellerRoyaltyOrUpdateInput'\n        add_subscriptions:\n          $ref: '#/components/schemas/SubscriptionsInputV2'\n        add_spend_threshold_configuration:\n          $ref: '#/components/schemas/SpendThresholdConfigurationV2'\n        add_prepaid_balance_threshold_configuration:\n          $ref: '#/components/schemas/PrepaidBalanceThresholdConfigurationV2'\n          type: object\n        add_billing_provider_configuration_update:\n          $ref: '#/components/schemas/BillingProviderConfigurationUpdate'\n          type: object\n          description: >-\n            Update the billing provider configuration on the contract. Currently\n            only supports adding a billing provider configuration to a contract\n            that does not already have one.\n        add_revenue_system_configuration_update:\n          $ref: '#/components/schemas/RevenueSystemConfigurationUpdate'\n          x-mint:\n            groups:\n              - ff:revenue-rec-configurations-enabled\n          description: >-\n            Update the revenue system configuration on the contract. Currently\n            only supports adding a revenue system configuration to a contract\n            that does not already have one.",
+      "location": "raw/metronome/api-reference/contracts/edit-a-contract-2026-07-13.md:199-286"
+    },
+    {
+      "text": "        update_recurring_commits:\n          type: array\n          description: >-\n            Edits to these recurring commits will only affect commits whose\n            access schedules has not started. Expired commits, and commits with\n            an active access schedule will remain unchanged.\n          items:\n            $ref: '#/components/schemas/UpdateRecurringCommitInput'\n        update_recurring_credits:\n          type: array\n          description: >-\n            Edits to these recurring credits will only affect credits whose\n            access schedules has not started. Expired credits, and credits with\n            an active access schedule will remain unchanged.\n          items:\n            $ref: '#/components/schemas/UpdateRecurringCreditInput'\n        update_subscriptions:\n          type: array\n          description: Optional list of subscriptions to update.\n          items:\n            $ref: '#/components/schemas/UpdateSubscriptionInput'\n        update_spend_threshold_configuration:\n          $ref: '#/components/schemas/UpdateSpendThresholdConfiguration'\n        update_prepaid_balance_threshold_configuration:\n          $ref: '#/components/schemas/UpdatePrepaidBalanceThresholdConfiguration'\n        update_contract_end_date:\n          type: string\n          format: date-time\n          description: >-\n            RFC 3339 timestamp indicating when the contract will end\n            (exclusive).\n          nullable: true\n        update_net_payment_terms_days:\n          type: number\n          description: >-\n            Number of days after issuance of invoice after which the invoice is\n            due (e.g. Net 30).\n          nullable: true\n        allow_contract_ending_before_finalized_invoice:\n          type: boolean\n          description: >-\n            If true, allows setting the contract end date earlier than the\n            end_timestamp of existing finalized invoices. Finalized invoices\n            will be unchanged; if you want to incorporate the new end date, you\n            can void and regenerate finalized usage invoices. Defaults to true.",
+      "location": "raw/metronome/api-reference/contracts/edit-a-contract-2026-07-13.md:315-359"
+    },
+    {
+      "text": "    UniquenessKey:\n      type: string\n      minLength: 1\n      maxLength: 128\n      description: >-\n        Prevents the creation of duplicates. If a request to create a record is\n        made with a previously used uniqueness key, a new record will not be\n        created and the request will fail with a 409 error.",
+      "location": "raw/metronome/api-reference/contracts/edit-a-contract-2026-07-13.md:569-576"
+    },
+    {
+      "text": "    UpdateSpendThresholdConfiguration:\n      type: object\n      properties:\n        is_enabled:\n          type: boolean\n          description: >-\n            When set to false, the contract will not be evaluated against the\n            threshold_amount. Toggling to true will result an immediate\n            evaluation, regardless of prior state.\n        threshold_amount:\n          description: >-\n            Specify the threshold amount for the contract. Each time the\n            contract's usage hits this amount, a threshold charge will be\n            initiated.\n          type: number\n        commit:\n          $ref: '#/components/schemas/UpdateSpendThresholdCommit'\n        payment_gate_config:\n          $ref: '#/components/schemas/PaymentGateConfigV2'\n        discount_configuration:\n          x-mint:\n            groups:\n              - ff:threshold-billing-discounts\n          nullable: true\n          allOf:\n            - $ref: '#/components/schemas/UpdateDiscountConfiguration'\n    UpdatePrepaidBalanceThresholdConfiguration:\n      type: object\n      properties:\n        is_enabled:\n          type: boolean\n          description: >-\n            When set to false, the contract will not be evaluated against the\n            threshold_amount. Toggling to true will result an immediate\n            evaluation, regardless of prior state.\n        threshold_amount:\n          description: >-\n            Specify the threshold amount for the contract. Each time the\n            contract's balance lowers to this amount, a threshold charge will be\n            initiated.\n          type: number",
+      "location": "raw/metronome/api-reference/contracts/edit-a-contract-2026-07-13.md:1493-1533"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "edit-a-contract-endpoint-contract-and-result-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Contract edit history",
+        "proposed_markdown": "Bearer-authenticated `POST /v2/contracts/edit` mutates one identified customer contract and requires contract-editing enablement. Within a supplied payload, UUID `customer_id` and `contract_id` are required; the enclosing `requestBody` is not marked required and top-level `additionalProperties` is unspecified. `update_contract_end_date` is an exclusive nullable timestamp, while `allow_contract_ending_before_finalized_invoice` defaults to `true`, permits ending before existing finalized-invoice end timestamps, leaves those invoices unchanged, and requires void-and-regenerate to incorporate the new end date. HTTP `200` requires `data.id` but makes `data.edit` optional, while the narrative promises an edit ID and complete details and the example reuses the request contract ID; edit-versus-contract identity and detail completeness are unresolved. Mixed-edit atomicity, validation order, partial success, concurrency, visibility, and recovery are not defined. [[source-metronome-api-reference-contracts-edit-a-contract]]",
+        "quote_indexes": [
+          0,
+          2
+        ],
+        "warnings": [
+          "Do not identify data.id as definitively the edit ID until the narrative, schema, and example conflict is resolved.",
+          "Keep requestBody requiredness separate from required properties inside a supplied EditContractPayload.",
+          "Ending a contract before a finalized invoice does not rewrite that invoice; incorporate the new end date only through the documented void-and-regenerate lifecycle."
+        ]
+      },
+      {
+        "update_id": "edit-a-contract-invoice-state-propagation",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Credit, correction, and re-bill state boundaries",
+        "proposed_markdown": "`POST /v2/contracts/edit` applies contract changes immediately to draft invoices. Finalized invoices remain unchanged unless voided and regenerated in the UI or API. The default-true `allow_contract_ending_before_finalized_invoice` control can permit a new contract end before existing finalized-invoice end timestamps without changing those invoices; finalized usage invoices must be voided and regenerated to incorporate the end date. Enabling either spend or prepaid-balance thresholds from `false` to `true` causes immediate evaluation, and reaching the usage or balance threshold initiates a charge, but initiation does not prove collection, commit availability, or downstream invoice/provider reconciliation. Mixed-edit atomicity, payment/refund behavior, tax recalculation, external posting, webhook timing, and ambiguous-failure recovery remain undefined. [[source-metronome-api-reference-contracts-edit-a-contract]]",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "The Metronome draft/finalized effect is not evidence that downstream billing or revenue-system records changed or reconciled.",
+          "Treat threshold charge initiation as a financial side effect, not proof of successful payment or usable balance."
+        ]
+      },
+      {
+        "update_id": "edit-a-contract-recurring-grant-eligibility",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Targeted commit edits",
+        "proposed_markdown": "The general `POST /v2/contracts/edit` surface can add, update, and archive contract commits and credits alongside other terms. Updates to recurring commits and recurring credits affect only generated grants whose access schedules have not started; expired grants and grants with active access schedules remain unchanged. The page does not define mixed eligible/ineligible-array behavior, child-generation visibility timing, concurrency, partial success, or recovery. [[source-metronome-api-reference-contracts-edit-a-contract]]",
+        "quote_indexes": [
+          2
+        ],
+        "warnings": [
+          "Do not treat a recurring-parent update as retroactively changing active or expired generated grants."
+        ]
+      },
+      {
+        "update_id": "edit-a-contract-threshold-financial-side-effects",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Prepaid balance thresholds",
+        "proposed_markdown": "On `POST /v2/contracts/edit`, setting prepaid-balance-threshold `is_enabled` from `false` to `true` causes immediate evaluation regardless of prior state; each time the contract balance falls to `threshold_amount`, a threshold charge is initiated. The same endpoint gives spend-threshold activation the same immediate-evaluation behavior and initiates a charge when usage reaches its threshold. The schema does not establish successful collection, commit availability, evaluation order within a mixed edit, atomicity, concurrency behavior, downstream reconciliation, or safe recovery after an ambiguous failure. [[source-metronome-api-reference-contracts-edit-a-contract]]",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Re-enabling a threshold can initiate financial activity immediately; do not treat it as a passive configuration toggle.",
+          "A charge being initiated is not evidence that payment succeeded or gated balance became available."
+        ]
+      },
+      {
+        "update_id": "edit-a-contract-spend-threshold-activation",
+        "target_path": "wiki/concepts/metronome/metronome-spend-threshold-billing.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Configuration and lifecycle",
+        "proposed_markdown": "The contract-edit update schema states that toggling spend-threshold `is_enabled` from `false` to `true` causes immediate evaluation regardless of prior state, and each time usage reaches `threshold_amount` a threshold charge is initiated. It does not define successful payment, generated-commit availability, ordering with other changes in the same edit, atomicity, concurrency, downstream invoice/provider effects, or recovery after an ambiguous failure. [[source-metronome-api-reference-contracts-edit-a-contract]]",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Do not infer that immediate evaluation is synchronous completion or that charge initiation proves collection."
+        ]
+      },
+      {
+        "update_id": "edit-a-contract-dual-idempotency-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Retry and error boundary",
+        "proposed_markdown": "The `POST /v2/contracts/edit` snapshot exposes optional 1-128 character `uniqueness_key`; its schema says reuse prevents a duplicate record and fails with HTTP `409`, even though the operation response map omits `409`. The same-date API-wide idempotency page still labels contract-edit uniqueness-key support as coming soon. Preserve that unresolved documentation/runtime-enablement conflict: endpoint schema exposure alone does not prove the feature is enabled. This resource-uniqueness mechanism is distinct from API-wide POST `Idempotency-Key` result replay. The sources do not define uniqueness-key scope or release, failed-attempt consumption, interaction or precedence between the two keys, safe use after expiry, concurrency ordering, or recovery after cached or ambiguous failures. [[source-metronome-api-reference-contracts-edit-a-contract]] [[source-metronome-api-reference-idempotency]]",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "Do not remove the API-wide coming-soon qualification until current runtime support for this endpoint is independently verified.",
+          "Do not conflate uniqueness_key duplicate prevention with Idempotency-Key response replay, or rotate the header key automatically after uncertain contract-edit state."
+        ]
+      },
+      {
+        "update_id": "edit-a-contract-provider-scope-conflict",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Billing-provider transitions",
+        "proposed_markdown": "> [!warning] Contract-edit provider scope conflict\n> The `POST /v2/contracts/edit` schema says `add_billing_provider_configuration_update` currently supports only adding a provider configuration to a contract that has none, and gives the same add-only boundary for the feature-gated revenue-system update. The dedicated provider-transition guide separately documents provider-to-provider changes on existing contracts. The sources do not establish whether the endpoint description is stale, configuration-dependent, or narrower than the guide. Neither source proves downstream provider readiness, invoice delivery, revenue posting, or reconciliation; verify current account enablement and runtime transition support. [[source-metronome-api-reference-contracts-edit-a-contract]] [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]]",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "Preserve both authorities and the unresolved scope conflict; do not silently treat the add-only schema as provider-transition support."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/contracts/edit-a-contract-2026-07-13.md",
+  "raw_sha256": "c11d34a673eab4eeffa090986f9372f6a8f77f644ffd75715f2069d2e3698a8d",
+  "status": "candidate_ready"
+}

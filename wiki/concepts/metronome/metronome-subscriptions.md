@@ -30,6 +30,8 @@ A shared seat-credit pool links the subscription to a recurring credit by a temp
 
 ## Lifecycle
 
+The dedicated seat-balance read is `POST /v1/contracts/seatBalances/list`. It scopes one customer's contract and can filter seats by `SEAT_BASED` subscription UUIDs or stable seat IDs; a subscription ID not mapped to a seat-based subscription is documented as an error. Missing seat IDs fail by default or are silently omitted when `skip_missing_seat_ids` is true. Results group current and initial combined credit/commit balance by seat and credit type. Optional credit, commit, and nested ledger details are sibling seat expansions whose item schemas omit `credit_type_id`, so the response alone cannot attribute them to a particular balance entry or prove their reconciliation. The page also does not define read-after-seat-change visibility, ordering, snapshot consistency, freshness, or reconciliation with subscription quantity and seat histories. [[source-metronome-api-reference-credits-and-commits-list-seat-balances]]
+
 Seat management after contract creation has two modes. Aggregate subscriptions and shared credit pools use `update_subscription` with either total `quantity` or `quantity_delta`; equal-`starting_at` aggregate updates apply in submission order, and invoice plus recurring-credit effects follow configured proration and `access_amount`. Seat-based credit subscriptions instead add or remove stable `seat_ids` and can add or remove unassigned capacity. Reassignment without changing total quantity removes the old identity and adds one unassigned seat, leaving capacity available for a later assignee. The guide does not extend aggregate same-time ordering to seat updates or define proration calculations, rounding, atomicity, errors, or recovery. [[source-metronome-guides-pricing-packaging-subscription-manage-seats]]
 
 - Metronome's subscription quantity-history endpoint returns historical quantities and prices for customer-facing seat-count history, but excludes future scheduled quantity changes; those future changes must be retrieved through `getContract`.
@@ -51,6 +53,8 @@ The lifecycle page labels one operation as create-contract guidance while linkin
 - [[source-metronome-guides-pricing-packaging-subscription-subscription-overview]] — subscription object model, quantity, collection direction, and credit scope
 - [[source-metronome-guides-pricing-packaging-subscription-define-subscription-pricing]] — per-offering products, quantity-one rates, seat key, and multi-rate recommendation
 - [[source-metronome-guides-pricing-packaging-subscription-manage-subscription-lifecycle]] — price propagation, trials, transitions, proration, and cancellation boundaries
+
+- [[source-metronome-api-reference-credits-and-commits-list-seat-balances]] - seat-based subscription and seat filtering, missing-seat semantics, balance identity, sibling detail expansions without credit-type attribution, and visibility unknowns
 
 ## Related
 

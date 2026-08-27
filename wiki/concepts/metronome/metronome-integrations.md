@@ -14,6 +14,10 @@ Metronome integrations connect its usage-billing and contract workflows to exter
 The product catalog's `initial` and `current` state schemas and its update schema can expose `netsuite_internal_item_id` and `netsuite_overage_item_id`; both fields state that their availability depends on the client's configuration. This retrieval schema does not define what either identifier maps to, external-item validation, freshness, propagation, synchronization, invoice delivery, or reconciliation. [[source-metronome-api-reference-products-list-products]]
 
 
+## Native NetSuite integration boundary
+
+Metronome's Public Beta NetSuite integration supports direct billing and revenue-system use cases. A contract selects a customer configuration: billing mode sends finalized invoices to NetSuite for NetSuite-owned distribution, tax, and collection, while revenue mode sends invoices after another system attempts payment and creates payment objects when successful. Product custom fields map Metronome line items to NetSuite item IDs, and zero-dollar prepaid-consumption invoices require a separate Commit Application item. Billing status and errors appear under `external_invoice`; revenue-system status and errors appear under `revenue_system_invoices`; invoice and payment sync webhooks expose outcome signals, and an item-mapping failure can be corrected before a manual UI resend. The guide does not turn those signals into guarantees of delivery, payment finality, tax correctness, revenue posting, settlement, or reconciliation. The beta excludes custom currencies and account hierarchy, assumes compatible standard NetSuite configuration, and assigns client-specific changes and sandbox validation to the client.
+
 ## TypeScript SDK boundary
 
 `@metronome/sdk@3.10.0` is a generated server-side TypeScript and JavaScript client with no runtime dependencies. It defaults bearer authentication from `METRONOME_BEARER_TOKEN`, supports configurable fetch, proxy, timeout, retry, logging, raw-response, and pagination behavior, and exposes both typed resources and generic HTTP methods. Its generated types prove an exact package's client surface, not feature enablement or current service behavior. React Native is explicitly unsupported in this release. [[source-github-metronome-node]]
@@ -93,6 +97,9 @@ The returned identifiers and settings are described as inputs for mapping custom
 The single-invoice response can expose nullable `external_invoice` and `revenue_system_invoices`. An external-invoice object requires a billing-provider type when present and can optionally report an external ID, issued time, provider status, PDF URL, beta tax and invoiced totals, provider error, and external payment ID. Each revenue-system item requires provider, sync status, and external entity type, with optional external entity ID and error. The endpoint does not define observation freshness, status transitions, provider precedence, retry, terminality, or reconciliation; a returned identifier or paid-like status does not independently prove delivery, settlement finality, tax correctness, revenue posting, or reconciliation, and absence of an error is not success proof.
 
 ## Billing-provider transitions
+
+> [!warning] Contract-edit provider scope conflict
+> The `POST /v2/contracts/edit` schema says `add_billing_provider_configuration_update` currently supports only adding a provider configuration to a contract that has none, and gives the same add-only boundary for the feature-gated revenue-system update. The dedicated provider-transition guide separately documents provider-to-provider changes on existing contracts. The sources do not establish whether the endpoint description is stale, configuration-dependent, or narrower than the guide. Neither source proves downstream provider readiness, invoice delivery, revenue posting, or reconciliation; verify current account enablement and runtime transition support. [[source-metronome-api-reference-contracts-edit-a-contract]] [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]]
 
 Metronome can schedule contract invoice delivery among Stripe, NetSuite, and AWS, Azure, or GCP Marketplace. Marketplace-involved transitions must start next period because marketplace billing covers a complete period; Stripe and NetSuite changes can also correct the current period while the invoice remains a draft.
 
@@ -178,6 +185,10 @@ Metronome's native Salesforce integration uses Census as an ETL layer to push Me
 
 
 
+
+- [[source-metronome-integrations-invoice-integrations-netsuite]] - Public Beta NetSuite billing and revenue-system modes, product and customer mappings, contract routing, sync-state recovery, and downstream authority boundaries
+
+- [[source-metronome-api-reference-sdks]] — first-party Python, Go, Ruby, and Node.js SDK overview, generic typed/pagination/retry features, bearer-token setup, and end-to-end application integration walkthrough
 
 ## Related
 

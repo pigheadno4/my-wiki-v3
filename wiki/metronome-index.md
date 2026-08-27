@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 145 |
-| Raw pages without source summaries | 86 |
+| Source summaries ingested | 151 |
+| Raw pages without source summaries | 80 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -176,6 +176,13 @@ Operational evidence:
 - [[source-metronome-guides-get-started-api-quickstart]] — programmatic sandbox onboarding, event-to-invoice flow, stale timestamps, diagnostics, and integration limits
 - [[source-metronome-guides-customers-billing-set-up-notifications-system-notifications]] — lifecycle policy catalog, payload-family distinction, account-wide webhook scope, and prospective enablement
 - [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — aggregate and identity-bearing seat lifecycle, configuration-dependent billing, seat alerts, history, and retry risk
+
+- [[source-metronome-api-reference-contracts-edit-a-contract]] — contract mutation scope, invoice and grant lifecycle, threshold charges, idempotency conflict, and provider-boundary contradiction
+- [[source-metronome-api-reference-credits-and-commits-list-seat-balances]] — seat balance identity, filtering, detail expansions, pagination, completeness, and reconciliation limits
+- [[source-metronome-integrations-invoice-integrations-netsuite]] — Public Beta NetSuite billing and revenue-system modes, identity mappings, sync diagnostics, recovery, and external authority limits
+- [[source-metronome-api-reference-alerts-get-a-threshold-notification]] — customer threshold current-state lookup, archived behavior, targeted scope, timestamp conflict, and replay freshness boundary
+- [[source-metronome-api-reference-plans-get-plan-details]] — deprecated Plan retrieval, legacy price and credit-grant configuration, custom fields, and Contracts migration boundary
+- [[source-metronome-api-reference-sdks]] — Python, Node.js, Ruby, and Go usage-billing route with retry, chronology, grouping, and authority boundaries
 
 ## Concepts
 

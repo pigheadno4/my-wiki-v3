@@ -44,6 +44,10 @@ Billing-provider and revenue-system configurations can be attached during creati
 
 The implementation guide states that a customer needs at least one contract before rating begins. A customer can hold several provider configurations, while each contract selects one, separating customer creation from rating and invoice routing.
 
+### NetSuite customer and contract routing layers
+
+A Metronome customer can hold multiple NetSuite billing or revenue-system configurations, but a configuration does not route invoices until the relevant configuration ID is selected on a contract. Billing configuration sends finalized contract invoices to NetSuite for NetSuite-owned distribution, tax, and collection. Revenue-system configuration sends invoices and available payment state after billing occurs elsewhere; a failed first payment can leave the NetSuite invoice `OPEN`, followed by a retroactive `PAID` update after later success. The external `netsuite_customer_id`, account-level `delivery_method_id`, and contract selectors `billing_provider_configuration_id` or `revenue_system_configuration_id` remain distinct identity layers.
+
 ## Customer archival API
 
 On the documented production server `https://api.metronome.com`, top-level bearer-secured `POST /v1/customers/archive` takes a JSON `Id` payload whose required property is UUID `id`, while the enclosing `requestBody` is not marked required. Metronome positions archival for a mistakenly onboarded customer, makes it irreversible, keeps the customer visible through the API and UI for audit, automatically archives all contracts as of the current date, and voids all corresponding invoices. Ingest aliases remain reserved unless removed before archival. The page does not define retention, archive timestamp propagation, read-after-write consistency, contract or invoice state partitioning, atomicity, repeated-call behavior, or partial-failure recovery. [[source-metronome-api-reference-customers-archive-a-customer]]
@@ -61,6 +65,8 @@ Bearer-authenticated `POST /v1/contracts/getContractRateSchedule` reads the enti
 A provisioned contract is the primary invoice-generation mechanism and produces invoices on predefined schedules throughout its lifecycle. Usage invoices follow the contract's usage-statement cadence, while commitments and scheduled charges can produce scheduled invoices. Draft usage invoices update as usage arrives; finalized invoices no longer change, and their distribution and collection follow contract billing configuration without establishing provider acceptance or payment success. [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]]
 
 ### Deprecated Plans listing boundary
+
+Bearer-authenticated `GET /v1/planDetails/{plan_id}` requires a UUID Plan ID and returns high-level configuration for one legacy Plan. The detail representation requires plan `id`, `name`, and `custom_fields` while leaving `description` optional; the separate Plan-list representation instead requires `description` and leaves `custom_fields` optional. Preserve operation-specific requiredness. Metronome directs new clients to Contracts but supplies no replacement endpoint, Plan-to-Contract identity or field mapping, migration procedure, compatibility period, or removal date. [[source-metronome-api-reference-plans-get-plan-details]]
 
 The deprecated Plans `POST /v1/credits/listEntries` endpoint lists credit ledgers across customers and directs new clients to Contracts. The page does not name an equivalent Contracts route, map Plan credit-grant or ledger identity to Contract credits or commits, provide migration steps, or state a removal date. Its exclusion of entries associated with voided grants is a Plans-surface visibility rule and does not establish current Contracts archival or ledger-retention behavior. [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]]
 
@@ -87,6 +93,8 @@ For a grandfathered customer that opts into new pricing, the pricing-change guid
 Metronome account hierarchies link distinct parent and child customers through their contracts. The guide limits a hierarchy to one parent-child level and 10 active nodes, requires every customer to retain its own contract, and configures the relationship during contract creation. A child contract identifies both the parent customer and parent contract, then selects parent-versus-self payment and consolidated-versus-separate usage-statement behavior. Each child's usage remains separately rated under that child's contract; parent tiered pricing applies only to direct parent usage, not aggregated child usage. For shared parent-commit access, both contracts must be active during the same period. The guide does not define reparenting, detachment, deletion, concurrent hierarchy changes, or validation responses.
 
 ### Customer balance views
+
+The seat-specific alternative is `POST /v1/contracts/seatBalances/list`, whose supplied JSON object requires both customer and contract UUIDs and returns balances from that contract's seat-based subscriptions. It can filter by subscription or seat, request sibling seat-level credit and commit objects plus their nested ledgers, and paginate seats through a body cursor. The expanded object schemas omit `credit_type_id`, so they cannot be mapped from this response alone to the per-credit-type balance entries. Unlike the customer-level `customerBalances/list` envelope, HTTP 200 requires a nested `pagination` object with seat counts and an optional nullable `next_page`; the endpoint does not define hierarchy behavior, seat order, cursor lifetime, snapshot consistency, freshness, cross-contract aggregation, or reconciliation. [[source-metronome-api-reference-credits-and-commits-list-seat-balances]]
 
 Metronome documents `/getNetBalance` as a customer-scoped single aggregate with filters for balance type, currency, pending charges, and custom fields. `listBalances` provides the detailed per-credit or per-commit alternative. The page does not define whether the aggregate crosses all customer contracts, how customer- and contract-level balances interact, how hierarchy affects the result, or whether reads are snapshot-consistent.
 
@@ -119,6 +127,8 @@ Package creation is customer agnostic; customer binding occurs later through `/c
 With payment gating enabled, a failed payment changes `is_enabled` to `false`; Metronome does not retry automatically. Setting it back to `true` causes another balance evaluation and payment attempt. The threshold guide does not define duplicate-evaluation suppression or concurrency ordering.
 
 ## Contract edit history
+
+Bearer-authenticated `POST /v2/contracts/edit` mutates one identified customer contract and requires contract-editing enablement. Within a supplied payload, UUID `customer_id` and `contract_id` are required; the enclosing `requestBody` is not marked required and top-level `additionalProperties` is unspecified. `update_contract_end_date` is an exclusive nullable timestamp, while `allow_contract_ending_before_finalized_invoice` defaults to `true`, permits ending before existing finalized-invoice end timestamps, leaves those invoices unchanged, and requires void-and-regenerate to incorporate the new end date. HTTP `200` requires `data.id` but makes `data.edit` optional, while the narrative promises an edit ID and complete details and the example reuses the request contract ID; edit-versus-contract identity and detail completeness are unresolved. Mixed-edit atomicity, validation order, partial success, concurrency, visibility, and recovery are not defined. [[source-metronome-api-reference-contracts-edit-a-contract]]
 
 After contract creation, subscription capacity is edited through `update_subscription`. Aggregate updates accept total `quantity` or `quantity_delta`, while seat-based updates add or remove identified and unassigned seats; replacing an assignee without changing quantity removes the old seat ID and adds unassigned capacity. The source does not define atomicity across seat operations, validation, error mapping, concurrent-edit behavior, or when the new state becomes visible in contract reads and edit history. [[source-metronome-guides-pricing-packaging-subscription-manage-seats]]
 
@@ -266,6 +276,12 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]] - deprecated Plans customer-ledger listing and the undocumented Contracts replacement, identity-mapping, migration, and removal-date boundaries
 
 
+
+- [[source-metronome-api-reference-credits-and-commits-list-seat-balances]] - contract-scoped seat-balance listing, customer and contract identity, subscription and seat filters, sibling expansion attribution boundary, endpoint-specific pagination, and consistency unknowns
+
+- [[source-metronome-integrations-invoice-integrations-netsuite]] - customer billing and revenue-system configurations, external customer identity, contract-level selection, and per-contract NetSuite routing
+
+- [[source-metronome-api-reference-sdks]] — application-owned ingest aliases, customer and contract provisioning, rate-card linkage, and contract-start invoice behavior, with stale worked usage and a Go start date that falls after every shown event
 
 ## Related
 

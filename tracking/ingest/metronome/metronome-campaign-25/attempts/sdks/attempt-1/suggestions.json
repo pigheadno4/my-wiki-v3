@@ -1,0 +1,147 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "sdks-usage-billing-route",
+      "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-sdks]] \u2014 four-language SDK route from usage ingestion through metrics, customers, catalog pricing, contracts, and a running draft invoice, with transport and lifecycle boundaries",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Treat the walkthrough as an onboarding router, not a complete billing architecture, lifecycle, or downstream-outcome authority.",
+        "Keep the parallel older guide canonical visible until collection authority resolves whether either route supersedes the other."
+      ]
+    },
+    {
+      "update_id": "sdks-event-ingestion-route",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-sdks]] \u2014 SDK ingest examples, 100-event request limit, transaction-ID duplicate-suppression claim, 34-day historical timestamp statement, customer identifiers, and matching sequence",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "The SDK page does not define duplicate lifetime, changed-payload collision behavior, partial-batch outcomes, or generic-retry interaction; retain the dedicated ingest and idempotency authorities.",
+        "Accepted usage is not automatically billable until metric and customer matching occur."
+      ]
+    },
+    {
+      "update_id": "sdks-billable-metric-route",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-sdks]] \u2014 SDK metric creation, filters, `SUM`/`COUNT`/`MAX`, invoice grouping, and the default forward-only matching boundary",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "The Go metric example omits `group_keys` even though the prose and other languages use `user_id` grouping.",
+        "Route reflow, immutability, complete schema, errors, and propagation behavior to dedicated metric sources."
+      ]
+    },
+    {
+      "update_id": "sdks-products-rate-cards-route",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-sdks]] \u2014 SDK product-to-metric presentation, quantity conversion, reusable rate-card pricing, entitlement, flat and tiered rate forms, and effective-date walkthrough",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": [
+        "The worked catalog is illustrative and does not define complete schemas, price precedence, missing-rate fallback, atomicity, mutation lifecycle, or invoice recalculation.",
+        "Apply the dedicated currency authority rather than generalizing denomination or precision beyond the page's USD-versus-other-currency statement."
+      ]
+    },
+    {
+      "update_id": "sdks-customers-contracts-route",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-sdks]] \u2014 application-owned ingest aliases, basic customer and contract provisioning, rate-card linkage, contract-start invoice generation, and introductory draft-update timing",
+      "quote_indexes": [
+        0,
+        2,
+        4
+      ],
+      "warnings": [
+        "Do not treat the happy-path examples as complete customer, alias, contract, amendment, concurrency, or recovery contracts.",
+        "The Go contract starts one month later than the Python, Node.js, and Ruby examples; do not infer language-specific effective-time behavior."
+      ]
+    },
+    {
+      "update_id": "sdks-invoicing-route",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-sdks]] \u2014 introductory contract-to-draft-invoice path, current-period usage application, grouping, and stated seconds-scale draft line-item updates",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": [
+        "The draft-update wording is not a service level and supplies no ordering, completeness, correction, finalized-state, delivery, collection, tax, accounting, or reconciliation guarantee.",
+        "The walkthrough's screenshots and worked totals are examples, not an invoice schema or independently reproducible accounting calculation."
+      ]
+    },
+    {
+      "update_id": "sdks-generic-retry-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "The SDK reference says the Python, Go, Ruby, and Node.js clients automatically retry each request upon failure up to three times by default and allow the count to be configured. It does not identify retryable statuses or exceptions, attempt counting, backoff, jitter, timeout behavior, method safety, or whether retries inject or preserve an API-wide `Idempotency-Key`. Event `transaction_id` is a separate usage-deduplication identity and must not be generalized to billable-metric, customer, product, rate-card, rate, or contract creation. [[source-metronome-api-reference-sdks]]",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Keep generic SDK retry behavior separate from the API-wide same-key POST result-replay contract and every endpoint-specific state and recovery boundary.",
+        "Do not infer that automatic retries make every mutation safe after an ambiguous result."
+      ]
+    },
+    {
+      "update_id": "sdks-currency-route",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-sdks]] \u2014 introductory rate example stating USD-cent API prices and whole-unit encoding for other currencies, with effective-date context",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Use the dedicated currency guide for the supported set, custom pricing units, precision, conversion, and unresolved wording boundaries.",
+        "Do not infer universal ISO minor-unit scaling, precision, or rounding from this one rate example."
+      ]
+    },
+    {
+      "update_id": "sdks-developer-integration-route",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-sdks]] \u2014 first-party Python, Go, Ruby, and Node.js SDK overview, generic typed/pagination/retry features, bearer-token setup, and end-to-end application integration walkthrough",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "This is a client-library integration route, not a billing-provider, revenue-system, tax, payment, settlement, or reconciliation guarantee.",
+        "Language-specific version and transport behavior remains with the linked SDK repositories."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

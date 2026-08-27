@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 145
+source_count: 151
 ---
 
 ## Overview
@@ -306,6 +306,13 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 - [[source-metronome-guides-get-started-api-quickstart]] — sandbox API onboarding, object order, event matching, stale example timestamps, draft invoicing, and provider boundary
 - [[source-metronome-guides-customers-billing-set-up-notifications-system-notifications]] — contract, commit, and credit lifecycle events, payload families, account-wide enablement, and prospective-only behavior
 - [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — aggregate and identity-bearing seat changes, credit and invoice effects, alert scoping, history routes, and retry risk
+
+- [[source-metronome-api-reference-contracts-edit-a-contract]] — contract editing, invoice-state effects, threshold charges, idempotency conflict, and mixed-mutation unknowns
+- [[source-metronome-api-reference-credits-and-commits-list-seat-balances]] — seat-scoped balances, filters, sibling detail expansions, pagination, and reconciliation ambiguity
+- [[source-metronome-integrations-invoice-integrations-netsuite]] — Public Beta NetSuite billing and revenue-system routing, mappings, sync recovery, and ownership boundaries
+- [[source-metronome-api-reference-alerts-get-a-threshold-notification]] — targeted current threshold state, archived behavior, timestamp-path conflict, and freshness boundary
+- [[source-metronome-api-reference-plans-get-plan-details]] — deprecated Plan detail, legacy pricing and grant configuration, custom fields, and migration limits
+- [[source-metronome-api-reference-sdks]] — four-language usage-billing walkthrough, retry boundaries, stale chronology, and Go lifecycle conflict
 
 ## Related
 

@@ -11,6 +11,8 @@ Metronome spend-threshold billing configures a contract-spend amount that trigge
 
 ## Configuration and lifecycle
 
+The contract-edit update schema states that toggling spend-threshold `is_enabled` from `false` to `true` causes immediate evaluation regardless of prior state, and each time usage reaches `threshold_amount` a threshold charge is initiated. It does not define successful payment, generated-commit availability, ordering with other changes in the same edit, atomicity, concurrency, downstream invoice/provider effects, or recovery after an ambiguous failure. [[source-metronome-api-reference-contracts-edit-a-contract]]
+
 Stripe collection can use a Stripe Billing invoice or direct PaymentIntent and requires valid contract billing configuration. `is_enabled: true` requests immediate evaluation after contract creation. A threshold can be added to an existing contract or updated later, and the page says changes take effect immediately without defining synchronous evaluation, payment, concurrency, or invoice effects.
 
 ## Payment gates

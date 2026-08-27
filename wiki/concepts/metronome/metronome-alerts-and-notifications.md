@@ -17,6 +17,10 @@ The merchant owns any email, access restriction, or feature re-enablement that f
 
 ## Notification types and lifecycle
 
+### Point-in-time threshold lookup
+
+`POST /v1/customer-alerts/get` retrieves the current evaluation state and configuration for one customer/threshold-notification pair identified by customer and alert UUIDs. `customer_status` is `ok`, `in_alarm`, `evaluating`, or `null` for an archived notification; archived lookup still returns the alert configuration. The operation is targeted rather than bulk and returns current state rather than history, which the page routes to webhook notifications or event logs. The API-wide POST idempotency rule means a same-key retry can replay an earlier result rather than establish a fresh evaluation. The narrative lists `updated_at` with the customer-alert surface, but the schema and example nest it under `alert`, so clients should not assume a top-level path. [[source-metronome-api-reference-alerts-get-a-threshold-notification]]
+
 ### Shared Plan and Contract endpoint surface
 
 Metronome documents a shared alert endpoint family for Plans and Contracts: `/alerts/create`, `/customer-alerts/get`, `/customer-alerts/list`, `/customer-alerts/reset`, and `/alerts/archive`. The shared overview says entity-targeted input and response parameters can differ, but it does not identify which fields vary or provide HTTP methods, version prefixes, or operation schemas. For plan targeting, it lists `low_credit_balance_reached`, `low_remaining_days_in_plan_reached`, `low_remaining_credit_percentage_reached`, and `usage_threshold_reached` as supported `alert_type` values. Its unversioned `/customer-alerts/reset` route label does not replace the dedicated reference's `POST /v1/customer-alerts/reset` contract.
@@ -80,6 +84,8 @@ For a parent contract's shared commit, child consumption does not automatically 
 - [[source-metronome-api-reference-customers-archive-a-customer]] - customer-archive suppression of associated notification triggers, with timing and already-generated or in-flight scope unspecified
 - [[source-metronome-guides-customers-billing-set-up-notifications-system-notifications]] - contract, commit, and credit lifecycle policy catalog; account-wide enablement; payload-family distinction; and prospective-only, immutable-policy boundaries
 
+
+- [[source-metronome-api-reference-alerts-get-a-threshold-notification]] — customer/notification identity, current evaluation state, archived-state behavior, targeted-read scope, configuration response, and timestamp-path conflict
 
 ## Related
 

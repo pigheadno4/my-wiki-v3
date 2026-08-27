@@ -11,6 +11,9 @@ Metronome event ingestion accepts application usage payloads through the `/inges
 
 ## Event contract
 
+> [!warning] Stale SDK walkthrough timestamps
+> The SDK API-reference snapshot fetched July 13, 2026 uses August 1, 15, 16, and 17, 2024 timestamps across its usage examples while stating that historical events may be only 34 days old. None of those payloads can be ingested unchanged at snapshot time. Replace every timestamp with a current, non-future in-window value and preserve unique `transaction_id` values before expecting acceptance, metric matching, ingest-alias customer association, rating, or a running draft invoice. [[source-metronome-api-reference-sdks]]
+
 > [!warning] Stale API quickstart timestamps
 > The API quickstart snapshot fetched July 13, 2026 uses March 9, 2026 timestamps in both its event-schema and `/v1/ingest` examples while stating that events may be backdated only 34 days and future events are rejected. Callers must substitute current, non-future timestamps within the rolling window, and retain unique transaction IDs, before using those payloads to test metric matching, rating, or draft invoicing. [[source-metronome-guides-get-started-api-quickstart]]
 

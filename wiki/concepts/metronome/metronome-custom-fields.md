@@ -11,6 +11,8 @@ Metronome custom fields attach metadata such as foreign keys and other descripto
 
 ## Entity scope and persistence
 
+The legacy Plan-detail representation requires `custom_fields` and models it as an arbitrary-key object with string values annotated for the `plan` entity. The endpoint establishes this response shape but does not define configured-key completeness, key or value limits, ordering, permissions, redaction, freshness, mutation, persistence, export behavior, or propagation into invoices. [[source-metronome-api-reference-plans-get-plan-details]]
+
 The overview lists customers, products, contracts, commits, credits, scheduled charges, rate cards, and alerts as supported entities. Values persist with an object and are returned wherever that object appears in the Metronome app, API calls, and data exports.
 
 The customer-credit create schema accepts `custom_fields` for the `contract_credit` entity. The referenced `CustomField` is a typed object with `additionalProperties: {type: string}`. Under OpenAPI 3.0.1, neither schema sets `nullable: true`, so a supplied `custom_fields` value must be a non-null object and each supplied arbitrary property value must be a non-null string at the schema boundary. The endpoint does not define configured-key validation, uniqueness, limits, endpoint-specific runtime error mapping for invalid nulls, deletion-by-null semantics, overwrite behavior, persistence, API or export visibility, invoice propagation, or archived-credit handling; those behaviors must come from the dedicated custom-fields authority rather than this create operation.
@@ -82,6 +84,8 @@ The overview establishes the purpose, supported object examples, persistence, un
 - [[source-metronome-api-reference-products-list-products]] — optional string-valued product custom-field map and endpoint-specific visibility and freshness unknowns
 
 
+
+- [[source-metronome-integrations-invoice-integrations-netsuite]] - product custom fields as NetSuite item foreign keys, mapping-error repair, and case-sensitive invoice metadata IDs for reconciliation
 
 ## Related
 

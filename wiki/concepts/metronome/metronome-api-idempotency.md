@@ -27,6 +27,12 @@ The documented `uniqueness_key` examples include contracts, alerts, and customer
 
 ## Retry and error boundary
 
+The `POST /v2/contracts/edit` snapshot exposes optional 1-128 character `uniqueness_key`; its schema says reuse prevents a duplicate record and fails with HTTP `409`, even though the operation response map omits `409`. The same-date API-wide idempotency page still labels contract-edit uniqueness-key support as coming soon. Preserve that unresolved documentation/runtime-enablement conflict: endpoint schema exposure alone does not prove the feature is enabled. This resource-uniqueness mechanism is distinct from API-wide POST `Idempotency-Key` result replay. The sources do not define uniqueness-key scope or release, failed-attempt consumption, interaction or precedence between the two keys, safe use after expiry, concurrency ordering, or recovery after cached or ambiguous failures. [[source-metronome-api-reference-contracts-edit-a-contract]] [[source-metronome-api-reference-idempotency]]
+
+`POST /v1/customer-alerts/get` is a point-in-time threshold-status read under the API-wide `Idempotency-Key` contract. Identical same-key parameters replay the original result, so that replay is not evidence of a fresh `ok`, `in_alarm`, `evaluating`, or archived-state evaluation. The endpoint page adds no read-specific guarantee for caching, freshness, another or expired key, concurrent calls, or ambiguous-failure recovery. [[source-metronome-api-reference-alerts-get-a-threshold-notification]]
+
+The SDK reference says the Python, Go, Ruby, and Node.js clients automatically retry each request upon failure up to three times by default and allow the count to be configured. It does not identify retryable statuses or exceptions, attempt counting, backoff, jitter, timeout behavior, method safety, or whether retries inject or preserve an API-wide `Idempotency-Key`. Event `transaction_id` is a separate usage-deduplication identity and must not be generalized to billable-metric, customer, product, rate-card, rate, or contract creation. [[source-metronome-api-reference-sdks]]
+
 Applied to manage-seats operations, the existing API-wide POST rule has financially material retry consequences. `quantity_delta` expresses a change, while `add_unassigned_seats` increases capacity with configuration-dependent invoice and credit effects; reissuing either mutation with a different or expired key after an ambiguous result may apply the change again. The guide adds no edit-, alert-, history-, or balance-endpoint guarantee for atomicity, read-after-write visibility, concurrency, another-key behavior, or ambiguous-failure recovery. Investigate state after a cached or ambiguous failure under the separate API-wide authority rather than assuming a new key is safe. [[source-metronome-guides-pricing-packaging-subscription-manage-seats]]
 
 The API-wide `Idempotency-Key` contract applies to `POST /v1/contracts/updateInvoiceIssueDate`: identical same-key parameters replay the original result, changed parameters conflict, retention is at least 24 hours, and a cached result can be HTTP `500`. The endpoint adds no issue-date-specific semantics for another or expired key, concurrent rescheduling, read-after-write visibility, or recovery and final invoice state after a cached or ambiguous failure. [[source-metronome-api-reference-contracts-update-invoice-issue-date]] [[source-metronome-api-reference-idempotency]]
@@ -88,6 +94,10 @@ The assigned product-catalog reference documents `POST /v1/contract-pricing/prod
 
 - [[source-metronome-api-reference-contracts-get-a-contract-v2]] - POST contract-state read, historical-view and optional balance/ledger controls, and the boundary that same-key result replay does not establish a fresh read
 - [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]] - read-only POST ledger listing, cursor and time-window inputs, and the boundary that API-wide same-key replay does not establish a fresh ledger view
+
+- [[source-metronome-api-reference-credits-and-commits-list-seat-balances]] - read-only POST seat-balance listing, body cursor and time-window inputs, and the boundary that API-wide same-key replay does not establish a fresh balance view
+
+- [[source-metronome-api-reference-alerts-get-a-threshold-notification]] — POST threshold-status read and the boundary that same-key result replay does not establish a fresh evaluation
 
 ## Related
 

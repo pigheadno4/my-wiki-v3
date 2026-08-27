@@ -42,6 +42,8 @@ Bearer-authenticated `POST /v1/contract-pricing/products/list` returns a cursor-
 
 ## Rate cards and rates
 
+The deprecated Plan-detail read can expose minimum and overage-rate configuration. Minimum entries require a value, credit type, and `start_period`; overage entries require `to_fiat_conversion_factor`, fiat and source credit types, and `start_period`. The shared `start_period` description counts billing periods before the charge applies. This read does not establish current Contract pricing, product-rate selection, precedence, denomination, calculation, invoice outcome, or migration behavior. [[source-metronome-api-reference-plans-get-plan-details]]
+
 The contract rate-schedule read combines rate-card scheduled changes with contract overrides at an optional effective timestamp and returns only entitled rates. Each returned segment identifies its rate card and product and requires a list rate; optional fields can expose an override rate or commit rate. The endpoint does not define ordering, cross-page consistency, overlap precedence, freshness, or whether the returned surfaces equal a final invoice amount. [[source-metronome-api-reference-contracts-get-the-rate-schedule-for-a-contract]]
 
 `POST /v1/contract-pricing/rate-cards/archive` permanently disables a rate card for new contracts, removes it from contract-creation workflows, and preserves pricing for existing contracts. The endpoint page does not define whether preservation uses a snapshot or retained reference, how later catalog changes interact with those contracts, visibility outside creation workflows, restoration, propagation timing, in-flight contract creation, idempotency, or concurrency. [[source-metronome-api-reference-rate-cards-archive-a-rate-card]]
@@ -170,6 +172,10 @@ The customer-credit create payload requires a UUID `product_id` even when eligib
 
 
 
+
+- [[source-metronome-integrations-invoice-integrations-netsuite]] - many-to-one Metronome product to NetSuite item mapping through product custom fields and a separate Commit Application item for zero-dollar consumption invoices
+
+- [[source-metronome-api-reference-sdks]] — SDK product-to-metric presentation, quantity conversion, reusable rate-card pricing, entitlement, flat and tiered rate forms, and effective-date walkthrough
 
 ## Related
 

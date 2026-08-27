@@ -87,3 +87,4 @@ These remaining questions require dedicated sources and are not fully answered b
 - [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] — contract-driven usage-invoice cadence, draft updates, configurable default grace period, finalized immutability, and downstream-outcome boundary
 
 - [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - incremental billing for falling `LATEST` values, effective-window pricing, and invoice-breakdown versus absolute usage-query semantics
+- [[source-metronome-api-reference-sdks]] — four-language SDK route from usage ingestion through metrics, customers, catalog pricing, contracts, and a draft invoice, qualified by stale August 2024 event payloads and a Go contract/grouping sequence that does not establish the narrated result

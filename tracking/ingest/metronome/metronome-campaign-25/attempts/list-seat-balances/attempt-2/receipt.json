@@ -1,0 +1,187 @@
+{
+  "job_id": "list-seat-balances",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome List Seat Balances API\"\ntype: source\ndate_ingested: 2026-08-27\ncanonical_url: \"https://docs.metronome.com/api-reference/credits-and-commits/list-seat-balances.md\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/credits-and-commits/list-seat-balances-2026-07-13.md\"\ntags: [metronome, api, seat-balances, credits, commits, pagination]\n---\n\n## Overview\n\nThis reference documents bearer-authenticated `POST /v1/contracts/seatBalances/list`, which retrieves credit and commit balances from one customer's contract subscriptions, grouped by individual seat. It is the detailed API authority for customer-dashboard seat balances, optional subscription or seat filtering, and seat-level credit, commit, and nested ledger expansions.\n\n## Query-critical facts\n\n- Within a supplied JSON object, `customer_id` and `contract_id` are required UUID properties. Optional `subscription_ids` restrict results to subscriptions mapped as `SEAT_BASED`; the page says a non-seat-based subscription ID returns an error. Optional `seat_ids` restrict results to named seats.\n- Missing requested seat IDs return HTTP `400` by default. `skip_missing_seat_ids: true` instead silently omits them, so a successful response does not prove that every requested seat exists.\n- Each result requires `seat_id` and a `balances` array. Every balance item requires `credit_type_id`, current `balance` across all credits and commits for that seat and credit type, and `starting_balance`, the combined initial balance for the same scope. The page does not define currency or custom-unit scaling, precision, rounding, or reconciliation timing.\n- `include_credits_and_commits` defaults to `false` and requests seat-level `commits` and `credits` arrays alongside `balances`. `include_ledgers` defaults to `false` and applies only when that first expansion is `true`; each expanded credit or commit can carry its own typed amount-and-timestamp ledger history. The sibling credit and commit item schemas do not expose `credit_type_id`, so this response alone cannot map an expanded object or ledger to a particular per-credit-type `balances` entry.\n- Body `limit` controls seats, ranges from 1 to 100, and defaults to 25. Body `cursor` accepts a prior page token; HTTP `200` requires `data` plus `pagination`, whose required counts distinguish seats returned from seats available for the next page. The nullable `next_page` property is documented but is not required by the pagination schema.\n- When credit/commit details are requested and their cross-seat total exceeds 100, the page says a total-detail limit of 100 applies and seats are included greedily, yet its example returns two complete seats containing 108 commits. Treat 100 as an inclusion threshold that can be exceeded at a seat boundary, not as a hard maximum number of detail objects returned.\n\n## Material boundaries and contradictions\n\n> [!warning] Sibling expansion schemas do not establish balance attribution or reconciliation\n> `balances`, `commits`, and `credits` are sibling fields of a seat object. Only a `balances` item exposes `credit_type_id`; the expanded commit and credit schemas do not. In the success example, seat 1's sole balance item reports current `30000` and starting `50000`, matching the expanded commit's current balance and segment-start amount, while a separate expanded credit reports current `20000` and a `25000` segment-start amount. The page does not identify either expanded record's credit type or establish whether or how the sibling figures reconcile. Do not attribute an expanded credit, commit, or ledger to a per-credit-type balance from this response alone.\n\n> [!warning] Date-filter names conflict across prose and schema\n> The usage guideline says to choose `covering_date` or `starting_at`/`ending_before`, and the `covering_date` schema repeats `ending_before`. The actual request properties contain `starting_at`, `effective_before`, and `covering_date`, not `ending_before`; `effective_before` is described as including items effective **on or before** the supplied time. The page does not resolve which upper-bound field name the runtime accepts or whether the upper bound is inclusive. Verify the live contract before implementation.\n\n> [!warning] Documented HTTP 400 paths are absent from the response map\n> Property descriptions say non-`SEAT_BASED` subscription IDs and missing requested seats can return an error or HTTP `400`, but the operation response map lists only `200` and generic `404`. The page does not define error bodies or whether mixed valid and invalid subscription IDs fail atomically.\n\n- Neither the enclosing `requestBody` nor the JSON media type is marked required; only properties inside the object are required. Omitted-body runtime behavior is therefore undocumented. The request object also does not declare `additionalProperties: false`, so unknown-field behavior is undocumented.\n- The page defines no seat ordering, greedy-selection order or tie-breaker, cursor lifetime, snapshot consistency, duplicate/skip behavior during concurrent balance changes, freshness, retention, authorization scope, rate limits, or broader reconciliation guarantee.\n- The separate API-wide `Idempotency-Key` authority applies to this POST read. An identical same-key retry can replay the original result rather than prove a fresh seat-balance view; this endpoint adds no cursor-replay, cached-error, concurrent-update, or recovery semantics.\n\n## Raw-detail coverage map\n\nUse the raw snapshot for the complete request-property catalog and example; customer, contract, subscription, and seat identifiers; missing-seat behavior; the conflicting `effective_before`/`ending_before` time-window descriptions; expansion flags; the seat limit, greedy detail-threshold example, and body cursor; success pagination counts; the sibling placement of `balances`, `commits`, and `credits`; the absence of `credit_type_id` from expanded credit and commit items; the seat-1 `30000`/`50000` balance and commit versus separate `20000`/`25000` credit example; nullable and required-property distinctions; full ledger schemas and enums; bearer security declaration; and generic `404` response schema.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-credits-and-commits]], [[metronome-subscriptions]], [[metronome-reporting-and-analytics]], [[metronome-api-idempotency]]\n- Related concept: [[metronome-customers-and-contracts]]\n- Related sources: [[source-metronome-guides-pricing-packaging-subscription-manage-seats]], [[source-metronome-api-reference-credits-and-commits-list-balances]], [[source-metronome-api-reference-pagination]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/credits-and-commits/list-seat-balances-2026-07-13|2026-07-13 snapshot - seat-balance scope, sibling expansion schemas, example reconciliation ambiguity, filters, pagination, completeness limits, and ledger enums]]",
+  "quotes": [
+    {
+      "text": "> Retrieve detailed balance for seat-based credits and commits from the contract's subscriptions, broken down by individual seats.\n\n### Use this endpoint to:\n- Display per-seat balance information in customer dashboards\n- Filter balance data by subscription or specific seats\n\n### Key response fields:\nAn array of seat balance objects containing:\n- Seat id\n- Balance: current total balance across all commits and credits\n\n### Usage guidelines:\n- Date filtering: use `covering_date` OR `starting_at`/`ending_before` to filter balance data by time range\n- Set `include_credits_and_commits=true` for detailed commits and credits breakdown per seat\n- Set `include_ledgers=true` for detailed transaction history per commit/credit per seat",
+      "location": "lines 11-25, purpose, dashboard use, balance summary, documented date-filter names, and expansion guidance"
+    },
+    {
+      "text": "      requestBody:\n        description: List seat-level balances for commits and credits.\n        content:\n          application/json:\n            schema:\n              type: object\n              required:\n                - customer_id\n                - contract_id\n              properties:\n                customer_id:\n                  type: string\n                  format: uuid\n                  description: The customer ID to retrieve seat balances for\n                contract_id:\n                  type: string\n                  format: uuid\n                  description: The contract ID to retrieve seat balances for\n                subscription_ids:\n                  type: array\n                  items:\n                    type: string\n                    format: uuid\n                  description: >-\n                    Optional filter to only include seats from specific\n                    subscriptions. If subscriptions ids are not mapped to\n                    SEAT_BASED subscriptions, error will be returned.\n                seat_ids:\n                  type: array\n                  items:\n                    type: string\n                  description: Optional filter to only include specific seats.\n                skip_missing_seat_ids:\n                  type: boolean\n                  default: false\n                  description: >-\n                    When true, any seat_ids not found in contract subscriptions\n                    will be silently omitted from the response instead of\n                    returning a 400 error.\n                include_credits_and_commits:\n                  type: boolean\n                  default: false\n                  description: Include credits and commits in the response\n                include_ledgers:\n                  type: boolean\n                  default: false\n                  description: >-\n                    Include ledger entries for each commit and commit.\n                    `include_credits_and_commits` must be set to `true` for\n                    `include_ledgers=true` to apply.",
+      "location": "lines 139-188, request-body wrapper, required payload properties, subscription and seat filters, missing-seat failure behavior, and expansion dependency"
+    },
+    {
+      "text": "                starting_at:\n                  type: string\n                  format: date-time\n                  description: >-\n                    Include only commits or credits with access effective on or\n                    after this date (cannot be used with covering_date).\n                effective_before:\n                  type: string\n                  format: date-time\n                  description: >-\n                    Include only commits or credits with access effective on or\n                    before this date (cannot be used with covering_date).\n                covering_date:\n                  type: string\n                  format: date-time\n                  description: >-\n                    Include only commits or credits with access that cover this\n                    specific date (cannot be used with starting_at or\n                    ending_before).\n                limit:\n                  type: integer\n                  description: >\n                    Maximum number of seats to return. Range: 1-100. Default:\n                    25.\n\n                    When `include_credits_and_commits = true`, if the total\n                    commits/credits across all seats exceeds 100, a limit of 100\n                    applies to the total credits and commits. Seats are included\n                    greedily to maximize the number of seats returned.\n\n                    Example: if seat 1 has 98 commits and seat 2 has 10 commits,\n                    both seats will be returned (total: 108 commits). Each\n                    returned seat includes all of its associated credits and\n                    commits.\n                cursor:\n                  type: string\n                  description: >-\n                    Page token from a previous response to retrieve the next\n                    page",
+      "location": "lines 189-227, time-window fields and conflict, seat limit, greedy detail threshold, over-100 example, and body cursor"
+    },
+    {
+      "text": "              example:\n                data:\n                  - seat_id: seat_1\n                    balances:\n                      - credit_type_id: 2714e483-4ff1-48e4-9e25-ac732e8f24f2\n                        balance: 30000\n                        starting_balance: 50000\n                    commits:\n                      - id: 62c0cb84-bf3f-48b9-9bcf-a8ddf8c1cf35\n                        balance: 30000\n                        start_date: '2024-01-01T00:00:00.000Z'\n                        end_date: '2024-02-01T00:00:00.000Z'\n                        ledger_entries:\n                          - type: PREPAID_COMMIT_SEGMENT_START\n                            amount: 50000\n                            timestamp: '2024-01-01T00:00:00.000Z'\n                          - type: PREPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION\n                            amount: -20000\n                            timestamp: '2024-01-31T00:00:00.000Z'\n                    credits:\n                      - id: fa411f5b-fb85-4755-9d4d-530717be083c\n                        balance: 20000\n                        start_date: '2024-01-01T00:00:00.000Z'\n                        end_date: '2024-02-01T00:00:00.000Z'\n                        ledger_entries:\n                          - type: CREDIT_SEGMENT_START\n                            amount: 25000\n                            timestamp: '2024-01-01T00:00:00.000Z'\n                          - type: CREDIT_AUTOMATED_INVOICE_DEDUCTION\n                            amount: -5000\n                            timestamp: '2024-01-31T00:00:00.000Z'\n                  - seat_id: seat_2\n                    balances:\n                      - credit_type_id: 2714e483-4ff1-48e4-9e25-ac732e8f24f2\n                        balance: 45000\n                        starting_balance: 45000\n                    commits:\n                      - id: 62c0cb84-bf3f-48b9-9bcf-a8ddf8c1cf35\n                        balance: 45000\n                        start_date: '2024-01-01T00:00:00.000Z'\n                        end_date: '2024-02-01T00:00:00.000Z'\n                        ledger_entries:\n                          - type: PREPAID_COMMIT_SEGMENT_START\n                            amount: 45000\n                            timestamp: '2024-01-01T00:00:00.000Z'\n                    credits: []\n                pagination:\n                  next_page: eyJsYXN0X3NlYXRfaWQiai\n                  seats_included: 2\n                  seats_available_for_next_page: 8",
+      "location": "lines 270-319, success example showing sibling balance, commit, and credit arrays plus the seat-1 30000/50000 versus 20000/25000 ambiguity"
+    },
+    {
+      "text": "    SeatBalance:\n      type: object\n      required:\n        - seat_id\n        - balances\n      properties:\n        seat_id:\n          type: string\n          description: The unique identifier for the seat\n        balances:\n          type: array\n          items:\n            $ref: '#/components/schemas/SeatBalanceByCreditType'\n        commits:\n          type: array\n          nullable: true\n          description: Array of commits applicable to this seat with their balances\n          items:\n            $ref: '#/components/schemas/SeatCommitBalance'\n        credits:\n          type: array\n          description: Array of credits applicable to this seat with their balances\n          items:\n            $ref: '#/components/schemas/SeatCreditBalance'\n    SeatBalanceByCreditType:\n      type: object\n      required:\n        - credit_type_id\n        - balance\n        - starting_balance\n      properties:\n        credit_type_id:\n          type: string\n          format: uuid\n        balance:\n          type: number\n          description: >-\n            The total balance across all commits and credits for this seat, of\n            this credit type.\n        starting_balance:\n          type: number\n          description: >-\n            The total initial balances of all commits and credits for this seat,\n            of this credit type.\n    SeatCommitBalance:\n      type: object\n      required:\n        - id\n        - balance\n        - start_date\n      properties:\n        id:\n          type: string\n          format: uuid\n          description: The commit or credit ID\n        balance:\n          type: number\n          description: The current balance for this commit for this specific seat\n        start_date:\n          type: string\n          format: date-time\n          description: The datetime when the commit becomes active\n        end_date:\n          type: string\n          format: date-time\n          nullable: true\n          description: The datetime when the commit expires\n        ledger_entries:\n          type: array\n          items:\n            $ref: '#/components/schemas/SeatBalanceCommitLedger'\n          description: >-\n            Transaction history for this commit for this seat (only included if\n            include_ledgers=true)\n    SeatCreditBalance:\n      type: object\n      required:\n        - id\n        - balance\n        - start_date\n      properties:\n        id:\n          type: string\n          format: uuid\n          description: The credit ID\n        balance:\n          type: number\n          description: The current balance for this credit for this specific seat\n        start_date:\n          type: string\n          format: date-time\n          description: The datetime when the credit becomes active\n        end_date:\n          type: string\n          format: date-time\n          nullable: true\n          description: The datetime when the credit expires\n        ledger_entries:\n          type: array\n          items:\n            $ref: '#/components/schemas/SeatBalanceCreditLedger'\n          description: >-\n            Transaction history for this credit for this seat (only included if\n            include_ledgers=true)",
+      "location": "lines 324-427, sibling seat fields, per-credit-type balance items, expanded credit and commit item schemas without credit_type_id, and optional ledger history"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "list-seat-balances-credits-fact",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Balance retrieval and ledger calculation",
+        "proposed_markdown": "`POST /v1/contracts/seatBalances/list` returns current credit and commit balances from one customer's contract subscriptions, grouped by seat and credit type. Within a supplied payload, customer and contract UUIDs are required; optional subscription filters accept only `SEAT_BASED` subscriptions, while seat filters fail on a missing seat by default or silently omit it when `skip_missing_seat_ids` is true. Each balance item supplies current combined balance and combined initial balance for that seat and credit type. Optional seat-level sibling `commits` and `credits` arrays can include each object's own ledger history, but their item schemas omit `credit_type_id`; this response alone therefore cannot attribute an expanded object or ledger to a particular per-credit-type balance. In the example, the sole seat-1 balance reports current `30000` and starting `50000`, matching the commit detail, while a separate credit reports current `20000` and a `25000` segment-start amount. The page does not establish whether or how those sibling figures reconcile, and it also leaves amount denomination, precision, rounding, freshness, and snapshot consistency undefined.\n\nBody `limit` ranges from 1 to 100 seats and defaults to 25. With detail expansion, a second 100-item threshold governs cross-seat credits and commits, but the example returns two complete seats containing 108 commits; seats are included greedily, with no documented order or tie-breaker. The prose names `ending_before`, while the request schema exposes `effective_before` and describes it inclusively as on-or-before. The endpoint therefore does not resolve the accepted upper-bound field or inclusivity. Missing-seat and non-seat-subscription descriptions document `400` or error behavior, but the response map omits `400`. [[source-metronome-api-reference-credits-and-commits-list-seat-balances]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the per-seat, per-credit-type scope of balances while keeping commits and credits as separate sibling expansions.",
+          "Do not map an expanded credit, commit, or ledger to a balance item because the expanded schemas omit credit_type_id.",
+          "Preserve the seat-1 30000/50000 balance-and-commit match plus separate 20000/25000 credit without inventing a reconciliation.",
+          "Preserve the effective_before versus ending_before conflict and the soft 100-detail threshold."
+        ]
+      },
+      {
+        "update_id": "list-seat-balances-credits-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-seat-balances]] - contract-subscription seat balances by credit type, sibling credit and commit expansions without credit-type attribution, example reconciliation ambiguity, missing-seat behavior, time-filter conflict, and greedy pagination completeness limits",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "list-seat-balances-subscriptions-fact",
+        "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Lifecycle",
+        "proposed_markdown": "The dedicated seat-balance read is `POST /v1/contracts/seatBalances/list`. It scopes one customer's contract and can filter seats by `SEAT_BASED` subscription UUIDs or stable seat IDs; a subscription ID not mapped to a seat-based subscription is documented as an error. Missing seat IDs fail by default or are silently omitted when `skip_missing_seat_ids` is true. Results group current and initial combined credit/commit balance by seat and credit type. Optional credit, commit, and nested ledger details are sibling seat expansions whose item schemas omit `credit_type_id`, so the response alone cannot attribute them to a particular balance entry or prove their reconciliation. The page also does not define read-after-seat-change visibility, ordering, snapshot consistency, freshness, or reconciliation with subscription quantity and seat histories. [[source-metronome-api-reference-credits-and-commits-list-seat-balances]]",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not treat a successful skip-missing query as proof that every requested seat exists.",
+          "Keep the optional expanded objects separate from per-credit-type balances; do not infer attribution or reconciliation.",
+          "Do not infer read-after-write or reconciliation guarantees with seat history from this list reference."
+        ]
+      },
+      {
+        "update_id": "list-seat-balances-subscriptions-link",
+        "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-seat-balances]] - seat-based subscription and seat filtering, missing-seat semantics, balance identity, sibling detail expansions without credit-type attribution, and visibility unknowns",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "list-seat-balances-contracts-fact",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Customer balance views",
+        "proposed_markdown": "The seat-specific alternative is `POST /v1/contracts/seatBalances/list`, whose supplied JSON object requires both customer and contract UUIDs and returns balances from that contract's seat-based subscriptions. It can filter by subscription or seat, request sibling seat-level credit and commit objects plus their nested ledgers, and paginate seats through a body cursor. The expanded object schemas omit `credit_type_id`, so they cannot be mapped from this response alone to the per-credit-type balance entries. Unlike the customer-level `customerBalances/list` envelope, HTTP 200 requires a nested `pagination` object with seat counts and an optional nullable `next_page`; the endpoint does not define hierarchy behavior, seat order, cursor lifetime, snapshot consistency, freshness, cross-contract aggregation, or reconciliation. [[source-metronome-api-reference-credits-and-commits-list-seat-balances]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this contract-subscription seat scope distinct from customerBalances/list and getNetBalance.",
+          "Do not describe the sibling expanded objects as contributors to a particular credit-type balance.",
+          "Requiredness applies to properties within a supplied object; omitted-body runtime behavior remains undocumented."
+        ]
+      },
+      {
+        "update_id": "list-seat-balances-contracts-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-seat-balances]] - contract-scoped seat-balance listing, customer and contract identity, subscription and seat filters, sibling expansion attribution boundary, endpoint-specific pagination, and consistency unknowns",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "list-seat-balances-reporting-fact",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Query model",
+        "proposed_markdown": "For merchant-facing seat-balance views, `POST /v1/contracts/seatBalances/list` supplies one contract's current and initial combined credit/commit balances by seat and credit type. Optional seat-level sibling credit and commit arrays can include their own ledgers, but the expanded schemas omit `credit_type_id`; a dashboard or reconciliation process cannot map those objects to a particular per-credit-type balance from this response alone. The example's sole seat-1 balance reports current `30000` and starting `50000`, matching the commit detail, while a separate credit reports current `20000` and a `25000` segment-start amount, with no established reconciliation. Complete seat retrieval requires following the body cursor and nested seat-count pagination. With detail expansion, the documented 100-item threshold can be exceeded to return a complete seat, as the 108-commit example shows; no seat ordering or greedy-selection tie-breaker is documented. Missing requested seats can be silently omitted when configured, and the page establishes no retention, freshness, snapshot consistency, duplicate/skip, or broader reconciliation guarantee. [[source-metronome-api-reference-credits-and-commits-list-seat-balances]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not attribute sibling expanded credit, commit, or ledger data to a per-credit-type balance.",
+          "Preserve the exact seat-1 example ambiguity instead of summing or otherwise reconciling its sibling figures.",
+          "Do not report the requested seat set as complete when skip_missing_seat_ids is true.",
+          "Do not describe 100 as a hard returned-detail maximum or imply a stable result order."
+        ]
+      },
+      {
+        "update_id": "list-seat-balances-reporting-link",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-seat-balances]] - dashboard-oriented seat balances, sibling detail expansions without credit-type attribution, example reconciliation ambiguity, endpoint-specific pagination, completeness limits, and reporting consistency unknowns",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "list-seat-balances-idempotency-link",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-seat-balances]] - read-only POST seat-balance listing, body cursor and time-window inputs, and the boundary that API-wide same-key replay does not establish a fresh balance view",
+        "quote_indexes": [
+          1,
+          2
+        ],
+        "warnings": [
+          "The replay, conflict, retention, and cached-error guarantees come from the separate API-wide idempotency authority, not this endpoint page."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/list-seat-balances-2026-07-13.md",
+  "raw_sha256": "a2a19decd6328e9412441ffaeaa0aa803055015dc9650bc833dd2fc7e078b4f8",
+  "status": "candidate_ready"
+}

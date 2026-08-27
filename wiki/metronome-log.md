@@ -6,6 +6,16 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-27 — Metronome Campaign 25 shadow risk-review calibration promoted
+
+- Result: six approved source pages from complete raw-page reads across nine Sol worker attempts and nine independent full Sol reviews; three pages passed attempt 1 and three passed attempt 2, with no targeted review, failed attempt, or rejected job.
+- Sources: [[source-metronome-api-reference-contracts-edit-a-contract]], [[source-metronome-api-reference-credits-and-commits-list-seat-balances]], [[source-metronome-integrations-invoice-integrations-netsuite]], [[source-metronome-api-reference-alerts-get-a-threshold-notification]], [[source-metronome-api-reference-plans-get-plan-details]], and [[source-metronome-api-reference-sdks]].
+- Shadow verdict: `inconclusive`. All three provisional pages exposed listed material triggers during their complete worker reads and therefore escalated to mandatory review; no page remained eligible for an unreviewed simulated release, so this campaign neither passes nor fails a sampled-review policy.
+- Material retries: contract editing restored finalized-invoice/end-date effects, threshold-charge behavior, and two documentation authority conflicts; seat balances corrected unsupported credit-type attribution and example reconciliation; SDKs corrected stale usage timestamps and a Go contract/grouping lifecycle conflict.
+- Concepts: applied 48 reviewer-approved durable-fact and reciprocal-link updates across 16 existing Metronome concepts; no new concept page was required.
+- Coverage after promotion: 225 collected documentation pages, 151 source summaries, and 80 raw pages without source summaries.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-25/monitor.md), [quality audit](../tracking/ingest/metronome/metronome-campaign-25/quality-audit.md), and [retrospective](../tracking/ingest/metronome/metronome-campaign-25/retrospective.md).
+
 ## 2026-08-27 — Metronome Campaign 24 larger confirmation promoted
 
 - Result: eight approved source pages from complete raw-page reads across twelve Sol worker attempts and twelve independent full Sol reviews; four pages passed attempt 1 and four passed attempt 2, with no targeted review, failure, or rejection.

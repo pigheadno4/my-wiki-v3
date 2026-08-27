@@ -134,6 +134,8 @@ Dimension-scoped spend alerts require their `group_values` key to be a group key
 
 
 
+- [[source-metronome-api-reference-sdks]] — SDK metric creation, filters, `SUM`/`COUNT`/`MAX`, invoice grouping, and the default forward-only matching boundary
+
 ## Related
 
 - [[metronome-event-ingestion]]

@@ -23,6 +23,8 @@ The notification lifecycle guide confirms asynchronous JSON delivery for all not
 
 ## Authenticity and authoritative data
 
+The customer-alert get endpoint provides the current threshold evaluation state for one customer/notification pair, not a historical sequence. Its documentation routes threshold-notification history to webhook notifications or event logs and positions live API lookup for targeted rather than bulk monitoring. [[source-metronome-api-reference-alerts-get-a-threshold-notification]]
+
 Webhook payloads contain minimal event information. A consumer can treat the notification as a change hint and retrieve authoritative details from the corresponding Metronome API, or verify the webhook directly.
 
 For signature verification, compute HMAC-SHA256 over `X-Metronome-Date`, a newline, and the exact request-body bytes using the secret unique to that webhook. Compare the result with `Metronome-Webhook-Signature`, reject requests older than five minutes, and avoid reserializing parsed JSON before verification.
@@ -67,6 +69,10 @@ Metronome's go-live checklist places three checks in its webhook-and-error-handl
 - [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] — asynchronous HTTPS delivery, jittered retries, at-least-once semantics, and idempotent receiver guidance
 - [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] — offset-specific payload shape, source-event timestamp semantics, and all-configured-webhooks UI behavior
 - [[source-metronome-guides-customers-billing-set-up-notifications-system-notifications]] - system-event publication to all configured webhooks, notification-family payload differences, and lifecycle payload examples
+
+- [[source-metronome-integrations-invoice-integrations-netsuite]] - `invoice.invoice_sync_status` and `payment.payment_status_sync` outcome signals, failure details, and manual invoice-resend context
+
+- [[source-metronome-api-reference-alerts-get-a-threshold-notification]] — current-state API lookup versus webhook or event-log history routing and targeted-monitoring scope
 
 ## Related
 

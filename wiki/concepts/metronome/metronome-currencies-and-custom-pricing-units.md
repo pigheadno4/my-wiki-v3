@@ -32,6 +32,8 @@ Custom units are created and named in the Metronome app for invoice presentation
 
 ## Credits, commits, and invoice conversion
 
+A deprecated Plan-detail overage-rate entry requires numeric `to_fiat_conversion_factor`, a fiat credit type, a source credit type, and the price-ramp `start_period`. This schema exposes a conversion configuration surface but defines no factor direction, denomination, precision, rounding, applicability, timing beyond billing-period offset, invoice calculation, or equivalence to current rate-card custom-pricing-unit conversion. [[source-metronome-api-reference-plans-get-plan-details]]
+
 Customer- or contract-level credits and prepaid commits can have access schedules in custom units or selected currencies. Usage priced in a custom unit first burns down applicable balances with schedules in that same unit. If none remains, Metronome adds a conversion line item and calculates the residual cost in the rate card's fiat currency. A CHF-paid commit granting Cloud Compute Tokens illustrates that payment currency and access unit can differ; it does not prove arbitrary cross-currency balance conversion.
 
 For customer-credit creation, `access_schedule.credit_type_id` is optional and defaults to USD cents. Every schedule item requires numeric `amount`, but the endpoint schema supplies no integer, positivity, zero, precision, maximum, or rounding constraint and no non-USD denomination rule. The schedule array is required without `minItems`; its items require inclusive RFC 3339 start and exclusive end, while ordering, overlap, chronology, gaps, and time-zone behavior beyond RFC 3339 remain unspecified.
@@ -79,3 +81,6 @@ The guide does not define custom-unit creation APIs, precision, conversion formu
 - [[source-metronome-integrations-marketplace-integrations-aws]] — AWS Marketplace USD-only contract and invoice-delivery boundary plus USD-cent metering quantity
 
 - [[source-metronome-integrations-platform-integrations-sfdc-integration]] - Salesforce credit-type, invoice, and invoice-line references plus the commit-or-credit denomination and missing-lookup boundary
+- [[source-metronome-integrations-invoice-integrations-netsuite]] - Public Beta NetSuite integration limitation excluding custom currencies
+
+- [[source-metronome-api-reference-sdks]] — introductory rate example stating USD-cent API prices and whole-unit encoding for other currencies, with effective-date context

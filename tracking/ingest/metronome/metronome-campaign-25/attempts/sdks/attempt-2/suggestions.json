@@ -1,0 +1,152 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "sdks-usage-billing-route",
+      "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-sdks]] \u2014 four-language SDK route from usage ingestion through metrics, customers, catalog pricing, contracts, and a draft invoice, qualified by stale August 2024 event payloads and a Go contract/grouping sequence that does not establish the narrated result",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Replace every August 2024 event timestamp with a current non-future value inside the 34-day window and preserve unique transaction IDs before using this route to test matching, rating, or invoicing.",
+        "The Go contract starts after all shown usage and its metric omits the grouping later required by product and invoice presentation; do not treat the running draft as reproduced by that sequence.",
+        "Keep the parallel older guide canonical visible until collection authority resolves whether either route supersedes the other."
+      ]
+    },
+    {
+      "update_id": "sdks-event-ingestion-route",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Event contract",
+      "proposed_markdown": "> [!warning] Stale SDK walkthrough timestamps\n> The SDK API-reference snapshot fetched July 13, 2026 uses August 1, 15, 16, and 17, 2024 timestamps across its usage examples while stating that historical events may be only 34 days old. None of those payloads can be ingested unchanged at snapshot time. Replace every timestamp with a current, non-future in-window value and preserve unique `transaction_id` values before expecting acceptance, metric matching, ingest-alias customer association, rating, or a running draft invoice. [[source-metronome-api-reference-sdks]]",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "The page's claims that the worked events entered Metronome and matched are historical illustration, not proof that the literal stale payloads remain valid.",
+        "Keep event transaction-ID deduplication separate from the SDK's generic retry policy and the API-wide POST Idempotency-Key authority."
+      ]
+    },
+    {
+      "update_id": "sdks-billable-metric-route",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-sdks]] \u2014 SDK metric creation, filters, `SUM`/`COUNT`/`MAX`, invoice grouping, and the default forward-only matching boundary",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "The Go metric example omits `group_keys` even though the prose and other languages use `user_id` grouping.",
+        "Route reflow, immutability, complete schema, errors, and propagation behavior to dedicated metric sources."
+      ]
+    },
+    {
+      "update_id": "sdks-products-rate-cards-route",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-sdks]] \u2014 SDK product-to-metric presentation, quantity conversion, reusable rate-card pricing, entitlement, flat and tiered rate forms, and effective-date walkthrough",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": [
+        "The worked catalog is illustrative and does not define complete schemas, price precedence, missing-rate fallback, atomicity, mutation lifecycle, or invoice recalculation.",
+        "Apply the dedicated currency authority rather than generalizing denomination or precision beyond the page's USD-versus-other-currency statement."
+      ]
+    },
+    {
+      "update_id": "sdks-customers-contracts-route",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-sdks]] \u2014 application-owned ingest aliases, customer and contract provisioning, rate-card linkage, and contract-start invoice behavior, with stale worked usage and a Go start date that falls after every shown event",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "The August 2024 events were outside the stated 34-day ingest window at snapshot time, so they cannot reproduce the claimed alias matching or invoice application unchanged.",
+        "The Go contract starts September 1 after every August event; because the page says invoices cover periods after starting_at, its claim that prior usage was applied is not established for Go.",
+        "Do not treat the examples as complete customer, alias, contract, amendment, concurrency, or recovery contracts."
+      ]
+    },
+    {
+      "update_id": "sdks-invoicing-route",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-sdks]] \u2014 introductory contract-to-draft-invoice route whose literal August 2024 usage is stale and whose Go September contract start and missing metric grouping do not establish the claimed prior-usage or user-grouped invoice outcome",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Replace the stale timestamps and preserve unique transaction IDs before attempting the worked invoice route; the screenshots and totals are historical examples, not reproducible proof for the literal payloads.",
+        "For Go, usage predates the contract and the metric omits group_keys even though invoice presentation relies on user_id; the narrated current draft and grouped totals are not established by that sequence.",
+        "The seconds-scale draft-update wording is not a service level and supplies no ordering, completeness, correction, finalized-state, delivery, collection, tax, accounting, or reconciliation guarantee."
+      ]
+    },
+    {
+      "update_id": "sdks-generic-retry-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "The SDK reference says the Python, Go, Ruby, and Node.js clients automatically retry each request upon failure up to three times by default and allow the count to be configured. It does not identify retryable statuses or exceptions, attempt counting, backoff, jitter, timeout behavior, method safety, or whether retries inject or preserve an API-wide `Idempotency-Key`. Event `transaction_id` is a separate usage-deduplication identity and must not be generalized to billable-metric, customer, product, rate-card, rate, or contract creation. [[source-metronome-api-reference-sdks]]",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "Keep generic SDK retry behavior separate from the API-wide same-key POST result-replay contract and every endpoint-specific state and recovery boundary.",
+        "Do not infer that automatic retries make every mutation safe after an ambiguous result."
+      ]
+    },
+    {
+      "update_id": "sdks-currency-route",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-sdks]] \u2014 introductory rate example stating USD-cent API prices and whole-unit encoding for other currencies, with effective-date context",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Use the dedicated currency guide for the supported set, custom pricing units, precision, conversion, and unresolved wording boundaries.",
+        "Do not infer universal ISO minor-unit scaling, precision, or rounding from this one rate example."
+      ]
+    },
+    {
+      "update_id": "sdks-developer-integration-route",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-sdks]] \u2014 first-party Python, Go, Ruby, and Node.js SDK overview, generic typed/pagination/retry features, bearer-token setup, and end-to-end application integration walkthrough",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "This is a client-library integration route, not a billing-provider, revenue-system, tax, payment, settlement, or reconciliation guarantee.",
+        "Language-specific version and transport behavior remains with the linked SDK repositories."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}
