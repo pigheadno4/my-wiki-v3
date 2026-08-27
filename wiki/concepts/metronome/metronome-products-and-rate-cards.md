@@ -42,6 +42,8 @@ Bearer-authenticated `POST /v1/contract-pricing/products/list` returns a cursor-
 
 ## Rate cards and rates
 
+The contract rate-schedule read combines rate-card scheduled changes with contract overrides at an optional effective timestamp and returns only entitled rates. Each returned segment identifies its rate card and product and requires a list rate; optional fields can expose an override rate or commit rate. The endpoint does not define ordering, cross-page consistency, overlap precedence, freshness, or whether the returned surfaces equal a final invoice amount. [[source-metronome-api-reference-contracts-get-the-rate-schedule-for-a-contract]]
+
 `POST /v1/contract-pricing/rate-cards/archive` permanently disables a rate card for new contracts, removes it from contract-creation workflows, and preserves pricing for existing contracts. The endpoint page does not define whether preservation uses a snapshot or retained reference, how later catalog changes interact with those contracts, visibility outside creation workflows, restoration, propagation timing, in-flight contract creation, idempotency, or concurrency. [[source-metronome-api-reference-rate-cards-archive-a-rate-card]]
 
 - The currency guide enumerates 18 fiat currencies and defines Metronome-specific API scaling: USD uses cents, while every other listed fiat currency uses whole units. One rate card carries one fiat currency; a product rate can use that currency or a custom pricing unit with a conversion from the underlying fiat currency. After a product rate is saved in one pricing unit, that rate's unit cannot be changed. The guide does not define replacement, effective-dating, contract migration, precision, rounding, or invoice-recalculation behavior.

@@ -31,6 +31,8 @@ The deprecated Plans `POST /v1/credits/voidGrant` operation voids a grant by UUI
 
 ## Drawdown and invoice attribution
 
+The contract rate-schedule response can expose an optional `commit_rate` beside required `list_rate` and optional `override_rate`. This read surface does not specify when commit rate is selected over list or override rate, how balances affect selection, or whether the values equal final invoice charges. [[source-metronome-api-reference-contracts-get-the-rate-schedule-for-a-contract]]
+
 Credits and prepaid commits at contract or customer level can carry access schedules in custom pricing units or selected currencies. Usage priced in a custom unit burns down applicable balances whose access schedules use that same unit; when none remains, invoice conversion to the rate card's fiat currency covers the residual usage. A CHF-paid prepaid commit granting Cloud Compute Tokens illustrates differing payment and access denominations, but the guide does not define arbitrary balance conversion, applicability priority, exchange rates, precision, or rounding.
 
 

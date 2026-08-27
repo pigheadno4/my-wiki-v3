@@ -57,6 +57,7 @@ The assigned product-catalog reference documents `POST /v1/contract-pricing/prod
 
 ## Sources
 
+- [[source-metronome-api-reference-contracts-get-the-rate-schedule-for-a-contract]] - POST contract-rate read, effective-time and entitlement scope, and the boundary that same-key result replay does not establish a fresh schedule
 - [[source-metronome-guides-events-send-usage-events]] — 34-day transaction-ID duplicate suppression, retry reuse, deterministic heartbeat IDs, and the unqualified-versus-windowed guarantee tension
 
 - [[source-metronome-api-reference-idempotency]] — mechanism selection, key lifetimes, conflict behavior, cached errors, and retry guidance
