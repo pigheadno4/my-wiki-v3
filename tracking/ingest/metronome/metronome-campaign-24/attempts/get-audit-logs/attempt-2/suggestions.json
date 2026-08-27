@@ -1,0 +1,72 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "get-audit-logs-security-fact",
+      "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Audit visibility and attribution",
+      "proposed_markdown": "Bearer-authenticated `GET /v1/auditLogs` retrieves account operations attributed to API, web-interface, or automated activity and supports inclusive `starting_on`, exclusive `ending_before`, paired resource-type and resource-ID filters, timestamp ordering, 1-100 result limits, and cursor polling. The narrative lists `next_page` among fields contained by AuditLog objects, but the OpenAPI-defined integration shape places required nullable `next_page` beside required `data` in the top-level HTTP 200 envelope. Each AuditLog requires only entry identity, timestamp, and request identity; actor, resource, action, outcome status, and description are optional. The endpoint presents cursor reuse as protection against missed logs, yet it defines no retention, historical-coverage, visibility-latency, backfill, cursor-lifetime, snapshot, duplicate/skip, immutability, deletion, export, or tamper-evidence guarantee. [[source-metronome-api-reference-security-get-audit-logs]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Preserve the narrative-versus-OpenAPI response-shape contradiction and use top-level next_page beside data as the schema-defined integration placement.",
+        "Preserve the narrative-versus-schema attribution boundary: actor, resource, action, status, and description are not required on every AuditLog.",
+        "Do not elevate cursor polling guidance into proof of retention, historical completeness, exactly-once delivery, immutability, or tamper evidence."
+      ]
+    },
+    {
+      "update_id": "get-audit-logs-security-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-security-get-audit-logs]] - account-wide audit retrieval, time and resource filters, continuous cursor polling, narrative-versus-OpenAPI next_page placement, attribution requiredness, status visibility, and completeness boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "get-audit-logs-reporting-fact",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Definition",
+      "proposed_markdown": "## Audit-log reporting surface\n\nMetronome's `GET /v1/auditLogs` is a cursor-pollable account-activity source intended for compliance reporting, security monitoring, and troubleshooting across API, UI, and automated actions. Time filters are inclusive-start and exclusive-end and cannot be combined with a cursor; paired resource filters and explicit timestamp sort can narrow retrieval. Empty `data` means no new logs yet, not permanent completion, but the page does not define retention, earliest coverage, visibility latency, cursor recovery, cross-page consistency, export, or evidence-integrity guarantees. Because actor, resource, action, and status are optional in the item schema, retrieval alone does not establish a complete attributable compliance population. [[source-metronome-api-reference-security-get-audit-logs]]",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "Treat compliance reporting as the documented use, not a certification that the retrieved population is audit-complete or tamper-evident.",
+        "Keep this API retrieval surface distinct from Data Export and generated in-app report delivery contracts."
+      ]
+    },
+    {
+      "update_id": "get-audit-logs-reporting-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-security-get-audit-logs]] - compliance-reporting audit stream, time and resource filters, cursor polling, attribution gaps, and historical-completeness boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

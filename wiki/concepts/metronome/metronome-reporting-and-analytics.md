@@ -9,6 +9,10 @@ tags: [metronome, data-export, warehouse, reporting, analytics]
 
 Metronome data export exposes billing and operational data as warehouse tables for reporting, reconciliation, and custom analysis. The database reference spans raw events, customers, invoices, contracts and balances, pricing, packages, payments, alerts, and client-specific metadata.
 
+## Audit-log reporting surface
+
+Metronome's `GET /v1/auditLogs` is a cursor-pollable account-activity source intended for compliance reporting, security monitoring, and troubleshooting across API, UI, and automated actions. Time filters are inclusive-start and exclusive-end and cannot be combined with a cursor; paired resource filters and explicit timestamp sort can narrow retrieval. Empty `data` means no new logs yet, not permanent completion, but the page does not define retention, earliest coverage, visibility latency, cursor recovery, cross-page consistency, export, or evidence-integrity guarantees. Because actor, resource, action, and status are optional in the item schema, retrieval alone does not establish a complete attributable compliance population. [[source-metronome-api-reference-security-get-audit-logs]]
+
 ## Invoice-list reporting surface
 
 Metronome's customer invoice-list API supports billing-history, current-draft, reconciliation, support, and date-bounded reporting queries. Its date filters use inclusive billing-period start and exclusive billing-period end rather than issue date, and complete retrieval requires following nullable `next_page` cursors. The page does not establish cursor snapshot consistency or reporting freshness, and its conflicting default-order descriptions require callers that depend on order to pass the `sort` parameter explicitly. [[source-metronome-api-reference-invoices-list-invoices]]
@@ -111,6 +115,7 @@ Metronome's GTM reporting guide models expected commit pacing from access schedu
 
 
 - [[source-metronome-api-reference-invoices-list-invoices]] - invoice-history and current-draft retrieval, billing-period filters, pagination completeness, and ordering boundaries
+- [[source-metronome-api-reference-security-get-audit-logs]] - compliance-reporting audit stream, time and resource filters, cursor polling, attribution gaps, and historical-completeness boundaries
 
 ## Related
 

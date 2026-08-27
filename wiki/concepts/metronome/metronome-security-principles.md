@@ -59,6 +59,8 @@ New API tokens can be assigned a selected role at creation, and that role cannot
 
 Metronome says its audit log tracks actions across the system, including app and API activity, and records the time, responsible user or API token, affected resource, action, and success outcome. Example entries also carry an audit-entry ID, actor details, resource type and ID, request ID, and status, and the guide links to `/auditLogs` for access. This supports monitoring and change attribution but does not establish retention, completeness, delivery order or latency, export, access permissions, immutability, tamper evidence, authorization of the recorded action, or the full endpoint schema. The two example timestamps use an impossible April 32 date and an extra colon-delimited time component, so they are not valid timestamp-format evidence.
 
+Bearer-authenticated `GET /v1/auditLogs` retrieves account operations attributed to API, web-interface, or automated activity and supports inclusive `starting_on`, exclusive `ending_before`, paired resource-type and resource-ID filters, timestamp ordering, 1-100 result limits, and cursor polling. The narrative lists `next_page` among fields contained by AuditLog objects, but the OpenAPI-defined integration shape places required nullable `next_page` beside required `data` in the top-level HTTP 200 envelope. Each AuditLog requires only entry identity, timestamp, and request identity; actor, resource, action, outcome status, and description are optional. The endpoint presents cursor reuse as protection against missed logs, yet it defines no retention, historical-coverage, visibility-latency, backfill, cursor-lifetime, snapshot, duplicate/skip, immutability, deletion, export, or tamper-evidence guarantee. [[source-metronome-api-reference-security-get-audit-logs]]
+
 ## Production-environment checklist boundary
 
 Metronome's go-live checklist recommends creating and securely storing a production API token, enabling IP allowlisting when required, and pointing API calls to `https://api.metronome.com`. It does not define token scope, expiry, rotation, storage controls, allowlist maintenance, or evidence sufficient to establish secure, auditable, or reconciled billing. [[source-metronome-guides-implement-metronome-production-checklist]]
@@ -82,6 +84,7 @@ Metronome's go-live checklist recommends creating and securely storing a product
 
 
 - [[source-metronome-integrations-marketplace-integrations-aws]] — cross-account AWS role permissions, account and external-ID trust, role-name constraint, and credential-lifecycle unknowns
+- [[source-metronome-api-reference-security-get-audit-logs]] - account-wide audit retrieval, time and resource filters, continuous cursor polling, narrative-versus-OpenAPI next_page placement, attribution requiredness, status visibility, and completeness boundaries
 
 ## Related
 

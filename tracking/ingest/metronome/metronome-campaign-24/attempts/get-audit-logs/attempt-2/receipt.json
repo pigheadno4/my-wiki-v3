@@ -1,0 +1,102 @@
+{
+  "job_id": "get-audit-logs",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome Get Audit Logs API\"\ntype: source\ndate_ingested: 2026-08-27\ncanonical_url: \"https://docs.metronome.com/api-reference/security/get-audit-logs.md\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/security/get-audit-logs-2026-07-13.md\"\ntags: [metronome, api, audit-logs, security-monitoring, compliance-reporting, pagination]\n---\n\n## Overview\n\nThis reference documents bearer-authenticated `GET /v1/auditLogs`, an account-wide retrieval surface for operations initiated through Metronome's API, web interface, or automated processes. It is intended for compliance reporting, security monitoring, and operational troubleshooting, with time and resource filters plus cursor-based continuous polling.\n\n## Query-critical facts\n\n- Optional `starting_on` is an inclusive RFC 3339 lower bound and `ending_before` is an exclusive RFC 3339 upper bound; neither can be combined with `next_page`. Optional `resource_type` and `resource_id` must be supplied together.\n- Optional `sort` orders by timestamp as `date_asc` or `date_desc` and defaults to ascending. Optional `limit` accepts 1 through 100 results, while `next_page` identifies where the next page starts.\n- The OpenAPI-defined HTTP `200` shape is a top-level object requiring an AuditLog array under `data` and a nullable string `next_page` beside `data`. The endpoint describes saving each returned cursor for later polling and says an empty array is a temporary absence of new logs rather than proof that future polls will remain empty.\n- Each AuditLog requires only `id`, RFC 3339 `timestamp`, and a `request` object whose own only required field is request `id`. `actor`, `resource_type`, `resource_id`, `action`, `status`, and `description` are optional; when an actor is present it requires `id` and `name`, while `email` is optional.\n- Optional `status` is one of `success`, `failure`, or `pending`; optional request context can include IP address and user agent. The page defines labels and fields but not a stable action or resource-type taxonomy.\n\n## Material boundaries and documentation tensions\n\n> [!warning] Narrative-versus-OpenAPI response shape\n> The narrative introduces a list of fields as being contained by each AuditLog object and includes `next_page` in that list. The OpenAPI schema instead places `next_page` beside `data` in the required top-level HTTP `200` envelope; it is not an AuditLog property. Preserve the OpenAPI placement as the schema-defined integration shape while retaining this documentation contradiction.\n\n> [!warning] Narrative-versus-schema attribution boundary\n> The narrative calls this a comprehensive trail of all account operations and describes logs of who did what and when, but the AuditLog schema requires neither actor, resource identity, action, status, nor description. Only entry identity, timestamp, and request identity are required. Do not treat every returned entry as guaranteed to contain complete actor, resource, operation, or outcome attribution.\n\nThe page says saving cursors supports uninterrupted retrieval and helps ensure no logs are missed, but it does not define retention, earliest historical coverage, ingestion or visibility latency, backfill, cursor lifetime, invalid-cursor recovery, snapshot consistency, duplicate or skip behavior during concurrent activity, exactly-once delivery, immutability, deletion, export, or tamper evidence. Those omissions prevent the endpoint alone from proving an audit population is compliance-complete.\n\nThe API-wide pagination guide treats nullable `next_page` as the completion signal for a finite list, while this endpoint instructs callers to keep polling after an empty `data` array and to reuse the cursor. The page does not resolve how continuous polling should proceed if an empty response carries `next_page: null`; preserve this endpoint-specific ambiguity rather than assuming a terminal or nonterminal null. Only HTTP `200` is documented, and the page supplies no authorization-scope, rate-limit, timeout, cache, or error contract. None of its object schemas declares `additionalProperties: false`, so unknown-property handling and closed-schema guarantees remain undocumented.\n\n## Raw-detail coverage map\n\nUse the raw snapshot for the complete time, resource, sort, limit, and cursor parameter definitions; incompatibility and pairing constraints; bearer security declaration; the narrative placement of `next_page` inside its AuditLog field list versus the OpenAPI-defined top-level sibling placement beside `data`; the required success envelope; continuous-polling description; AuditLog, request, and Actor requiredness; optional attribution and request-context fields; status enum; RFC 3339 formats; and the absence of documented non-200 responses and closed-object declarations.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-security-principles]], [[metronome-reporting-and-analytics]]\n- Related sources: [[source-metronome-guides-platform-configuration-audit-logs]], [[source-metronome-api-reference-pagination]], [[source-metronome-api-reference-authentication]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/security/get-audit-logs-2026-07-13|2026-07-13 snapshot - account-wide audit-log retrieval, filters, continuous cursor polling, response-shape contradiction, attribution schema, and completeness boundaries]]",
+  "quotes": [
+    {
+      "text": "> Get a comprehensive audit trail of all operations performed in your Metronome account, whether initiated through the API, web interface, or automated processes. This endpoint provides detailed logs of who did what and when, enabling compliance reporting, security monitoring, and operational troubleshooting across all interaction channels.\n\n### Use this endpoint to:\n- Monitor all account activity for security and compliance purposes\n- Track configuration changes regardless of source (API, UI, or system)\n- Investigate issues by reviewing historical operations",
+      "location": "lines 11-16, page summary and stated uses"
+    },
+    {
+      "text": "### Usage guidelines:\n- Continuous retrieval: The next_page token enables uninterrupted log streaming\u2014save it between requests to ensure no logs are missed\n- Empty responses: An empty data array means no new logs yet; continue polling with the same next_page token\n- Date filtering:\n    - `starting_on`: Earliest logs to return (inclusive)\n    - `ending_before`: Latest logs to return (exclusive)\n    - Cannot be used with `next_page`\n- Resource filtering: Must specify both `resource_type` and `resource_id` together\n- Sort order: Default is `date_asc`; use `date_desc` for newest first",
+      "location": "lines 29-37, usage guidelines for polling, filters, and ordering"
+    },
+    {
+      "text": "### Key response fields: \nAn array of AuditLog objects containing:\n- id: Unique identifier for the audit log entry\n- timestamp: When the action occurred (RFC 3339 format)\n- actor: Information about who performed the action\n- request: Details including request ID, IP address, and user agent\n- `resource_type`: The type of resource affected (e.g., customer, contract, invoice)\n- `resource_id`: The specific resource identifier\n- `action`: The operation performed\n- `next_page`: Cursor for continuous log retrieval",
+      "location": "lines 18-27, narrative AuditLog field list including next_page"
+    },
+    {
+      "text": "      responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                  - next_page\n                properties:\n                  data:\n                    type: array\n                    items:\n                      $ref: '#/components/schemas/AuditLog'\n                  next_page:\n                    type: string\n                    description: >-\n                      The next_page parameter is always returned to support\n                      ongoing log retrieval. It enables continuous querying,\n                      even when some requests return no new data. Save the\n                      next_page token from each response and use it for future\n                      requests to ensure no logs are missed. This setup is ideal\n                      for regular updates via automated processes, like cron\n                      jobs, to fetch logs continuously as they become available.\n                      When you receive an empty data array, it indicates a\n                      temporary absence of new logs, but subsequent requests\n                      might return new data.\n                    nullable: true\ncomponents:\n  parameters:\n    PageLimit:\n      name: limit\n      in: query\n      description: Max number of results that should be returned\n      required: false\n      schema:\n        type: integer\n        minimum: 1\n        maximum: 100\n    NextPage:\n      name: next_page\n      in: query\n      description: Cursor that indicates where the next page of results should start.\n      required: false\n      schema:\n        type: string",
+      "location": "lines 223-269, OpenAPI success envelope, top-level next_page, continuous polling, and pagination parameters"
+    },
+    {
+      "text": "    AuditLog:\n      type: object\n      required:\n        - id\n        - timestamp\n        - request\n      properties:\n        id:\n          type: string\n        timestamp:\n          type: string\n          format: date-time\n        actor:\n          $ref: '#/components/schemas/Actor'\n        request:\n          type: object\n          required:\n            - id\n          properties:\n            id:\n              type: string\n            ip:\n              type: string\n            user_agent:\n              type: string\n        resource_type:\n          type: string\n        resource_id:\n          type: string\n        action:\n          type: string\n        status:\n          type: string\n          enum:\n            - success\n            - failure\n            - pending\n        description:\n          type: string\n    Actor:\n      type: object\n      required:\n        - id\n        - name\n      properties:\n        id:\n          type: string\n        email:\n          type: string\n        name:\n          type: string",
+      "location": "lines 271-321, AuditLog, request, Actor, and status schemas"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "get-audit-logs-security-fact",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Audit visibility and attribution",
+        "proposed_markdown": "Bearer-authenticated `GET /v1/auditLogs` retrieves account operations attributed to API, web-interface, or automated activity and supports inclusive `starting_on`, exclusive `ending_before`, paired resource-type and resource-ID filters, timestamp ordering, 1-100 result limits, and cursor polling. The narrative lists `next_page` among fields contained by AuditLog objects, but the OpenAPI-defined integration shape places required nullable `next_page` beside required `data` in the top-level HTTP 200 envelope. Each AuditLog requires only entry identity, timestamp, and request identity; actor, resource, action, outcome status, and description are optional. The endpoint presents cursor reuse as protection against missed logs, yet it defines no retention, historical-coverage, visibility-latency, backfill, cursor-lifetime, snapshot, duplicate/skip, immutability, deletion, export, or tamper-evidence guarantee. [[source-metronome-api-reference-security-get-audit-logs]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the narrative-versus-OpenAPI response-shape contradiction and use top-level next_page beside data as the schema-defined integration placement.",
+          "Preserve the narrative-versus-schema attribution boundary: actor, resource, action, status, and description are not required on every AuditLog.",
+          "Do not elevate cursor polling guidance into proof of retention, historical completeness, exactly-once delivery, immutability, or tamper evidence."
+        ]
+      },
+      {
+        "update_id": "get-audit-logs-security-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-security-get-audit-logs]] - account-wide audit retrieval, time and resource filters, continuous cursor polling, narrative-versus-OpenAPI next_page placement, attribution requiredness, status visibility, and completeness boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "get-audit-logs-reporting-fact",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Definition",
+        "proposed_markdown": "## Audit-log reporting surface\n\nMetronome's `GET /v1/auditLogs` is a cursor-pollable account-activity source intended for compliance reporting, security monitoring, and troubleshooting across API, UI, and automated actions. Time filters are inclusive-start and exclusive-end and cannot be combined with a cursor; paired resource filters and explicit timestamp sort can narrow retrieval. Empty `data` means no new logs yet, not permanent completion, but the page does not define retention, earliest coverage, visibility latency, cursor recovery, cross-page consistency, export, or evidence-integrity guarantees. Because actor, resource, action, and status are optional in the item schema, retrieval alone does not establish a complete attributable compliance population. [[source-metronome-api-reference-security-get-audit-logs]]",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat compliance reporting as the documented use, not a certification that the retrieved population is audit-complete or tamper-evident.",
+          "Keep this API retrieval surface distinct from Data Export and generated in-app report delivery contracts."
+        ]
+      },
+      {
+        "update_id": "get-audit-logs-reporting-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-security-get-audit-logs]] - compliance-reporting audit stream, time and resource filters, cursor polling, attribution gaps, and historical-completeness boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/security/get-audit-logs-2026-07-13.md",
+  "raw_sha256": "ff17bac74f3ef21b46d58d018c30c75d0a2c853491719831913081546c731610",
+  "status": "candidate_ready"
+}
