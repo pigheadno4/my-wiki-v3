@@ -1520,6 +1520,33 @@
   Release: [manifest](../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.0/2026-07-30/manifest.json)
   Comparison: Not applicable
 
+## `github-d7a121b45c762cec959d`
+
+- Repository: `stripe/sync-engine`
+- SHA: `93321ab3644d5460213725abe0595247c403eb46`
+- Collection date: `2026-08-26`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/manifest.json)
+- Packet: [review packet](repos/stripe/sync-engine/ingest-packets/github-d7a121b45c762cec959d/packet.md)
+- Review priority: `high`
+- Required reading: `105` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@93321ab` (recommended `full`)
+  Ref: `dev`
+  From SHA: `baseline`
+  To SHA: `93321ab3644d5460213725abe0595247c403eb46`
+  Comparison: Not applicable
+
 ## `github-db5e3553fa18c09a0d75`
 
 - Repository: `stripe/stripe-js`

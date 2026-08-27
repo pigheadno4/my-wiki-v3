@@ -65,7 +65,7 @@ APPENDIX_A_INVENTORY = (
     ('stripe/stripe-php', 'https://github.com/stripe/stripe-php', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-node', 'https://github.com/stripe/stripe-node', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-js', 'https://github.com/stripe/stripe-js', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
-    ('stripe/sync-engine', 'https://github.com/stripe/sync-engine', 'tooling', 'tier2', 'commit', False, 'default-branch', 'monthly'),
+    ('stripe/sync-engine', 'https://github.com/stripe/sync-engine', 'tooling', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('stripe/react-stripe-js', 'https://github.com/stripe/react-stripe-js', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-terminal-ios', 'https://github.com/stripe/stripe-terminal-ios', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-terminal-android', 'https://github.com/stripe/stripe-terminal-android', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
@@ -877,6 +877,82 @@ class RegistryTests(unittest.TestCase):
         self.assertFalse(any(path.endswith(".abi.json") for path in capsule.include_paths))
         self.assertFalse(any(path.endswith("/AdyenWeChatPayInternal") for path in capsule.include_paths))
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+
+    def test_stripe_sync_engine_uses_operational_commit_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(item for item in repos if item.id == "stripe/sync-engine")
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual("commit", repo.version_strategy)
+        self.assertEqual("default-branch", repo.track)
+        self.assertEqual((), repo.version_tracks)
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("stripe-sync-engine-operational", capsule.id)
+        self.assertEqual("commit-tree-v1", capsule.adapter)
+        self.assertEqual("stripe-sync-engine", capsule.source_id)
+        self.assertEqual("configured-repository-paths", capsule.dependency_scope)
+        self.assertEqual("policy-bounded", capsule.changed_path_policy)
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertTrue({
+            "docs/architecture",
+            "docs/engine",
+            "docs/service",
+            "apps/engine/src/api",
+            "apps/engine/src/bin",
+            "apps/engine/src/cli",
+            "apps/engine/src/lib/progress",
+            "apps/service/src/api",
+            "apps/service/src/bin",
+            "apps/service/src/cli",
+            "apps/service/src/lib",
+            "apps/service/src/temporal",
+            "packages/protocol/src",
+            "packages/source-stripe/src/transforms",
+            "packages/source-stripe/src/utils",
+            "packages/destination-postgres/src",
+            "packages/state-postgres/src",
+            "packages/util-postgres/src",
+        }.issubset(set(capsule.default_required_roots)))
+        self.assertNotIn("apps/engine/src/lib", capsule.default_required_roots)
+        self.assertTrue({
+            "README.md",
+            "CHANGELOG.md",
+            "package.json",
+            "pnpm-workspace.yaml",
+            "apps/engine/package.json",
+            "apps/engine/src/index.ts",
+            "apps/service/package.json",
+            "apps/service/src/index.ts",
+            "packages/protocol/package.json",
+            "packages/source-stripe/package.json",
+            "packages/source-stripe/src/catalog.ts",
+            "packages/source-stripe/src/client.ts",
+            "packages/source-stripe/src/src-list-api.ts",
+            "packages/source-stripe/src/src-webhook.ts",
+            "packages/destination-postgres/package.json",
+            "packages/state-postgres/package.json",
+            "packages/util-postgres/package.json",
+        }.issubset(set(capsule.include_paths)))
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertTrue({
+            "README.md",
+            "CHANGELOG.md",
+            "docs/architecture/packages.md",
+            "docs/engine/ARCHITECTURE.md",
+            "docs/service/ARCHITECTURE.md",
+            "apps/engine/src/lib/engine.ts",
+            "apps/service/src/temporal/workflows/pipeline-lifecycle.ts",
+            "packages/protocol/src/protocol.ts",
+            "packages/source-stripe/src/catalog.ts",
+            "packages/source-stripe/src/src-list-api.ts",
+            "packages/source-stripe/src/src-webhook.ts",
+            "packages/destination-postgres/src/index.ts",
+            "packages/state-postgres/src/state-store.ts",
+            "packages/util-postgres/src/upsert.ts",
+        }.issubset(set(repo.ingest_required_paths)))
+        self.assertFalse(any("__generated__" in path for path in capsule.default_required_roots))
+        self.assertFalse(any("__snapshots__" in path for path in capsule.default_required_roots))
 
     def test_braintree_web_uses_the_reviewed_public_source_capsule(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")

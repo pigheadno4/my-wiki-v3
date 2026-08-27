@@ -472,6 +472,8 @@ Operations history: [[stripe-log]]
 - [[changelog-github-stripe-cli]] — package-qualified Stripe CLI baseline and exact `1.50.0` agent-identity telemetry change (github-repo, 2026-08-14)
 - [[source-github-link-cli]] — `@stripe/link-cli@0.13.0`: consumer Link wallet agent, virtual cards, SPT/MPP, Link Pay Token, approval lifecycle, MCP, and financial insights (github-repo, 2026-08-15)
 - [[changelog-github-link-cli]] — package-qualified Link CLI baseline and exact `0.13.0` financial-insight and duplicate-request messaging changes (github-repo, 2026-08-15)
+- [[source-github-sync-engine]] — `default-branch@93321ab`: experimental Stripe-to-Postgres discovery, backfill, live events, state, destination, and Temporal orchestration (github-repo, 2026-08-27)
+- [[changelog-github-sync-engine]] — commit-qualified Sync Engine baseline, operational boundaries, documentation drift, and comparison rule (github-repo, 2026-08-27)
 - [[source-github-stripe-php]] — `stripe-php@21.2.0`: PHP server SDK services, v1/v2 encoding, retries/idempotency, webhook and thin-event handling, Checkout, subscriptions, and Terminal (github-repo, 2026-08-15)
 - [[changelog-github-stripe-php]] — package-qualified Stripe PHP baseline and exact v21.2.0 event-notification and pre-verified parser changes (github-repo, 2026-08-15)
 - [[source-github-react-stripe-js]] — `@stripe/react-stripe-js` legacy v6.3.0→retained v6.8.0: provider-specific Checkout hooks, lifecycle, SSR, compatibility, beta Terms Element (github-repo, updated 2026-07-30)

@@ -65,7 +65,7 @@ _SOURCE_SUFFIXES = (
     ".cts",
     ".tsx",
 )
-_DOCUMENT_SUFFIXES = (".md", ".mdx", ".rst", ".txt")
+_DOCUMENT_SUFFIXES = (".md", ".mdx", ".puml", ".rst", ".txt")
 _DEPENDENCY_FIELDS = (
     "dependencies",
     "optionalDependencies",
@@ -396,6 +396,19 @@ def build_ref_ingest_packet(
                     "reason": "selected-change-missing-from-snapshots",
                 }
             )
+    ingest_selectors = config.ingest_required_paths
+    if ingest_selectors:
+        for selected in ingest_selectors:
+            if not any(_within(path, selected) for path in current.files):
+                raise PacketBuildError(
+                    "ingest required path matches no retained evidence: " + selected
+                )
+
+    def assigned_to_ingest(path: str) -> bool:
+        return not ingest_selectors or any(
+            _within(path, selected) for selected in ingest_selectors
+        )
+
     required = {current.relative_path}
     current_root = PurePosixPath(current.relative_path).parent / "files"
     prior_root = (
@@ -404,15 +417,24 @@ def build_ref_ingest_packet(
     if prior is not None:
         required.add(prior.relative_path)
     if mode == "full":
-        required.update(str(current_root / path) for path in current.files)
+        required.update(
+            str(current_root / path)
+            for path in current.files
+            if assigned_to_ingest(path)
+        )
         if prior is not None and prior_root is not None:
-            required.update(str(prior_root / path) for path in prior.files)
+            required.update(
+                str(prior_root / path)
+                for path in prior.files
+                if assigned_to_ingest(path)
+            )
     else:
         for row in selected_changes:
             if row["status"] == "removed":
-                if prior_root is not None:
-                    required.add(str(prior_root / (row["old_path"] or row["path"])))
-            else:
+                prior_path = row["old_path"] or row["path"]
+                if prior_root is not None and assigned_to_ingest(prior_path):
+                    required.add(str(prior_root / prior_path))
+            elif assigned_to_ingest(row["path"]):
                 required.add(str(current_root / row["path"]))
     if comparison is not None:
         comparison_path = PurePosixPath(ref_input.comparison_manifest)

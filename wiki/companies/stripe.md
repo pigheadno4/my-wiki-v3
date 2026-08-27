@@ -2,7 +2,7 @@
 title: "Stripe"
 type: company
 tags: [stripe, payment-gateway, payment-intents, checkout, subscriptions, elements, webhooks, payment-links]
-source_count: 661
+source_count: 662
 ---
 
 ## Stripe
@@ -56,6 +56,10 @@ The `@stripe/stripe-js` npm package is the web loader and TypeScript declaration
 ### AI Developer and Token-Billing Tooling
 
 The `stripe/ai` repository supplies independently versioned LLM token-billing packages, a local bridge to Stripe's remote MCP server, TypeScript and Python agent toolkits, provider-specific agent skills/plugins, and integration benchmarks. At the retained SHA, token billing is private preview, the Stripe AI SDK proxy does not support tool calling, native token-meter delivery is fire-and-forget, and the agent toolkits require remote MCP availability. See [[source-github-ai]] and [[changelog-github-ai]].
+
+### Operational Data Synchronization
+
+`stripe/sync-engine` is an experimental Stripe-to-Postgres synchronization framework with OpenAPI-driven discovery, resumable backfill, event and webhook live paths, account-qualified records, PostgreSQL projection, and Temporal orchestration. The retained baseline is exact default-branch commit `93321ab`, not a tagged `0.2.5` release. It assumes trusted internal deployment, exposes an unauthenticated internal query endpoint, and redirects active development to a separately owned fork. See [[source-github-sync-engine]] and [[changelog-github-sync-engine]].
 
 ### Stripe CLI
 
@@ -144,6 +148,8 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 - [[changelog-github-stripe-cli]] — package-qualified Stripe CLI history and exact `1.50.0` telemetry change
 - [[source-github-link-cli]] — `@stripe/link-cli@0.13.0` agent wallet baseline: virtual cards, SPT/MPP, Link Pay Token, spend requests, MCP, and financial insights
 - [[changelog-github-link-cli]] — package-qualified Link CLI baseline and exact `0.13.0` financial-insight and duplicate-request messaging changes
+- [[source-github-sync-engine]] — `default-branch@93321ab` operational data baseline: Stripe discovery, backfill, live events, Postgres destination, state, and Temporal workflows
+- [[changelog-github-sync-engine]] — commit-qualified Sync Engine baseline, documentation drift, trust boundaries, and future comparison rule
 - [[source-github-stripe-php]] — `stripe-php@21.2.0` server SDK baseline: client services, encoding, retries, webhooks, Checkout, subscriptions, and Terminal
 - [[changelog-github-stripe-php]] — package-qualified Stripe PHP baseline and exact v21.2.0 event helper changes
 - [[source-stripe-billing-benchmarks]] — billing benchmarking: k-NN peer matching, ≥5 subs access, peer eligibility ≥100 subs, 7 metrics benchmarked, percentile display

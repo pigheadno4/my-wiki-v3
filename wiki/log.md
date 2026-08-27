@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-27] ingest | GitHub stripe/sync-engine - `default-branch@93321ab`
+
+- Full-ingested work item `github-d7a121b45c762cec959d` at exact SHA `93321ab3644d5460213725abe0595247c403eb46` after serial full reading of all 105 required evidence and context paths.
+- Added cumulative and commit-qualified sources for Stripe-to-Postgres discovery, backfill, live synchronization, destination/state handling, and Temporal orchestration.
+- Preserved the experimental trusted-network boundary, unauthenticated internal query endpoint, active-fork separation, partial-stream failure behavior, and documentation drift.
+
 ## [2026-08-26] ingest | GitHub adyen/adyen-wechatpay-ios - `AdyenWeChatPayInternal@2.2.0`
 
 - Full-ingested work item `github-3da269c833aa3c1fde17` at exact SHA `1127f793854d8624dbe6741d5c42be39dadd4f93` after serial full reading of all 14 required evidence paths.

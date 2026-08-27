@@ -531,6 +531,61 @@ class GitHubIngestPacketTests(unittest.TestCase):
                 packet.document["required_reading"],
             )
 
+    def test_ref_baseline_ingest_paths_narrow_reading_without_dropping_evidence(self):
+        current = self.snapshot(
+            self.current_sha,
+            "current",
+            {
+                "client/button.ts": (
+                    "export const button = 1;\n",
+                    "source-capsule",
+                    "required-root",
+                    "sample-integration",
+                ),
+                "server/orders.ts": (
+                    "export const orders = 1;\n",
+                    "source-capsule",
+                    "required-root",
+                    "sample-integration",
+                ),
+            },
+        )
+        config = replace(
+            self.commit_config(),
+            ingest_required_paths=("client",),
+        )
+
+        packet = build_ref_ingest_packet(
+            self.root,
+            config,
+            "github-" + ("4" * 20),
+            self.relative(current),
+            RefPacketInput(
+                ref_kind="default-branch",
+                ref_name="main",
+                from_sha="",
+                to_sha=self.current_sha,
+                comparison_manifest="",
+                prior_snapshot_manifest="",
+                upstream_changes=(),
+            ),
+            "queued",
+        )
+
+        self.assertEqual(
+            ["client/button.ts", "server/orders.ts"],
+            [row["path"] for row in packet.document["selected_changes"]],
+        )
+        required = packet.document["required_reading"]
+        self.assertIn(
+            self.relative(current.parent / "files/client/button.ts"),
+            required,
+        )
+        self.assertNotIn(
+            self.relative(current.parent / "files/server/orders.ts"),
+            required,
+        )
+
     def test_ref_baseline_classifies_nested_license_as_repository_context(self):
         current = self.snapshot(
             self.current_sha,
@@ -935,6 +990,12 @@ class GitHubIngestPacketTests(unittest.TestCase):
                 "client/.nvmrc": ("22\n", "source-capsule", "required-root", "widgets"),
                 "client/index.html": ("<main></main>\n", "source-capsule", "required-root", "widgets"),
                 "client/styles.css": ("main { display: block; }\n", "source-capsule", "required-root", "widgets"),
+                "client/architecture.puml": (
+                    "@startuml\nA -> B\n@enduml\n",
+                    "source-capsule",
+                    "required-root",
+                    "widgets",
+                ),
                 ".github/workflows/sync.yml": (
                     "name: Sync\n",
                     "source-capsule",
@@ -984,6 +1045,7 @@ class GitHubIngestPacketTests(unittest.TestCase):
         self.assertEqual("build-configuration", classified["client/.nvmrc"])
         self.assertEqual("public-source", classified["client/index.html"])
         self.assertEqual("public-source", classified["client/styles.css"])
+        self.assertEqual("documentation", classified["client/architecture.puml"])
         self.assertEqual(
             "build-configuration",
             classified[".github/workflows/sync.yml"],

@@ -1,0 +1,289 @@
+# GitHub ingest packet
+
+- Repository: `stripe/sync-engine`
+- Work item: `github-d7a121b45c762cec959d`
+- Snapshot: `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/manifest.json`
+- Recommended mode: `full`
+- Review priority: `high`
+
+- Ref: `default-branch@93321ab` (`dev`)
+- Transition: `baseline` -> `93321ab3644d5460213725abe0595247c403eb46`
+- Author date: `2026-08-20T17:25:51-05:00`
+- Commit date: `2026-08-20T17:25:51-05:00`
+
+## Required reading
+
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/CHANGELOG.md`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/README.md`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/package.json`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/src/api/app.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/src/api/openapi-utils.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/src/cli/command.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/src/cli/source-config-cache.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/src/cli/sync.tsx`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/src/index.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/src/lib/createSchemas.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/src/lib/default-connectors.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/src/lib/destination-exec.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/src/lib/destination-filter.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/src/lib/engine.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/src/lib/exec-helpers.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/src/lib/pipeline.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/src/lib/remote-engine.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/src/lib/resolver.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/src/lib/source-exec.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/engine/src/lib/state-reducer.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/service/package.json`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/service/src/api/app.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/service/src/index.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/service/src/lib/stores.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/service/src/temporal/activities/_shared.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/service/src/temporal/activities/discover-catalog.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/service/src/temporal/activities/index.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/service/src/temporal/activities/pipeline-setup.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/service/src/temporal/activities/pipeline-sync.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/service/src/temporal/activities/pipeline-teardown.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/service/src/temporal/activities/update-pipeline-status.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/service/src/temporal/lib/backfill-loop.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/service/src/temporal/workflows/pipeline-backfill.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/apps/service/src/temporal/workflows/pipeline-lifecycle.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/docs/architecture/cloud.md`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/docs/architecture/packages.md`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/docs/architecture/principles.md`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/docs/engine/ARCHITECTURE.md`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/docs/engine/catalog-workflow.md`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/docs/engine/connector-loading.md`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/docs/engine/pipeline-handle-events.md`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/docs/engine/protocol.md`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/docs/engine/scenarios.md`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/docs/index.md`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/docs/service/ARCHITECTURE.md`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/docs/service/cli.md`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/docs/service/pipeline-workflow-dual-lane.md`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/docs/service/scenarios.md`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/docs/service/temporal.md`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/package.json`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/destination-postgres/package.json`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/destination-postgres/src/aws.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/destination-postgres/src/index.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/destination-postgres/src/schemaProjection.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/destination-postgres/src/spec.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/protocol/package.json`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/protocol/src/cli.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/protocol/src/helpers.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/protocol/src/index.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/protocol/src/ndjson.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/protocol/src/protocol.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/protocol/src/utils/binary-subdivision.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/package.json`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/account-metadata.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/catalog.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/client.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/index.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/process-event.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/rate-limiter.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/resourceRegistry.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/retry.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/spec.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/src-events-api.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/src-list-api.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/src-webhook.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/src-websocket.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/transforms/backfillDependencies.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/transforms/expandLists.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/transforms/index.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/transforms/subscriptionItems.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/transport.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/utils/expandEntity.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/source-stripe/src/webhookVerify.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/state-postgres/package.json`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/state-postgres/src/index.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/state-postgres/src/migrate.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/state-postgres/src/migrations/0000_bootstrap.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/state-postgres/src/migrations/0001_stripe_metadata.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/state-postgres/src/migrations/0002_sync_state.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/state-postgres/src/migrations/0003_drop_unused_metadata.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/state-postgres/src/migrations/index.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/state-postgres/src/state-store.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/util-postgres/package.json`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/util-postgres/src/httpConnectStream.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/util-postgres/src/index.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/util-postgres/src/rateLimiter.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/util-postgres/src/sql.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/util-postgres/src/sslConfigFromConnectionString.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/packages/util-postgres/src/upsert.ts`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/files/pnpm-workspace.yaml`
+- `raw/github/stripe/sync-engine/snapshots/2026-08-26-93321ab/manifest.json`
+- `wiki/companies/stripe.md`
+- `wiki/log.md`
+- `wiki/stripe-index.md`
+- `wiki/stripe-log.md`
+
+## Selected changes
+
+- `added` `CHANGELOG.md`
+- `added` `LICENSE.md`
+- `added` `README.md`
+- `added` `apps/engine/package.json`
+- `added` `apps/engine/src/api/app.ts`
+- `added` `apps/engine/src/api/helpers.ts`
+- `added` `apps/engine/src/api/index.ts`
+- `added` `apps/engine/src/api/openapi-utils.ts`
+- `added` `apps/engine/src/api/server.ts`
+- `added` `apps/engine/src/bin/bootstrap.ts`
+- `added` `apps/engine/src/bin/serve.ts`
+- `added` `apps/engine/src/bin/sync-engine.ts`
+- `added` `apps/engine/src/bin/test-pg-proxy.ts`
+- `added` `apps/engine/src/cli/command.ts`
+- `added` `apps/engine/src/cli/resolver-flags.ts`
+- `added` `apps/engine/src/cli/source-config-cache.ts`
+- `added` `apps/engine/src/cli/subprocess.ts`
+- `added` `apps/engine/src/cli/sync.tsx`
+- `added` `apps/engine/src/http-server-options.ts`
+- `added` `apps/engine/src/index.ts`
+- `added` `apps/engine/src/lib/createSchemas.ts`
+- `added` `apps/engine/src/lib/default-connectors.ts`
+- `added` `apps/engine/src/lib/destination-exec.ts`
+- `added` `apps/engine/src/lib/destination-filter.ts`
+- `added` `apps/engine/src/lib/destination-test.ts`
+- `added` `apps/engine/src/lib/engine.ts`
+- `added` `apps/engine/src/lib/exec-helpers.ts`
+- `added` `apps/engine/src/lib/index.ts`
+- `added` `apps/engine/src/lib/ndjson.ts`
+- `added` `apps/engine/src/lib/pipeline.ts`
+- `added` `apps/engine/src/lib/progress/format.tsx`
+- `added` `apps/engine/src/lib/progress/index.ts`
+- `added` `apps/engine/src/lib/progress/ranges.ts`
+- `added` `apps/engine/src/lib/progress/reducer.ts`
+- `added` `apps/engine/src/lib/remote-engine.ts`
+- `added` `apps/engine/src/lib/resolver.ts`
+- `added` `apps/engine/src/lib/source-exec.ts`
+- `added` `apps/engine/src/lib/source-test.ts`
+- `added` `apps/engine/src/lib/state-reducer.ts`
+- `added` `apps/engine/src/logger.ts`
+- `added` `apps/engine/src/request-context.ts`
+- `added` `apps/engine/src/version.ts`
+- `added` `apps/service/package.json`
+- `added` `apps/service/src/api/app.ts`
+- `added` `apps/service/src/api/index.ts`
+- `added` `apps/service/src/bin/sync-service.ts`
+- `added` `apps/service/src/cli.ts`
+- `added` `apps/service/src/cli/pipeline-sync.tsx`
+- `added` `apps/service/src/cli/pretty-output.tsx`
+- `added` `apps/service/src/index.ts`
+- `added` `apps/service/src/lib/cli-connector-shorthand.ts`
+- `added` `apps/service/src/lib/createSchemas.ts`
+- `added` `apps/service/src/lib/stores-fs.ts`
+- `added` `apps/service/src/lib/stores-memory.ts`
+- `added` `apps/service/src/lib/stores.ts`
+- `added` `apps/service/src/lib/utils.ts`
+- `added` `apps/service/src/logger.ts`
+- `added` `apps/service/src/temporal/activities/_shared.ts`
+- `added` `apps/service/src/temporal/activities/discover-catalog.ts`
+- `added` `apps/service/src/temporal/activities/index.ts`
+- `added` `apps/service/src/temporal/activities/pipeline-setup.ts`
+- `added` `apps/service/src/temporal/activities/pipeline-sync.ts`
+- `added` `apps/service/src/temporal/activities/pipeline-teardown.ts`
+- `added` `apps/service/src/temporal/activities/update-pipeline-status.ts`
+- `added` `apps/service/src/temporal/lib/backfill-loop.ts`
+- `added` `apps/service/src/temporal/worker.ts`
+- `added` `apps/service/src/temporal/workflows/_shared.ts`
+- `added` `apps/service/src/temporal/workflows/index.ts`
+- `added` `apps/service/src/temporal/workflows/pipeline-backfill.ts`
+- `added` `apps/service/src/temporal/workflows/pipeline-lifecycle.ts`
+- `added` `docs/architecture/binary-subdivision.md`
+- `added` `docs/architecture/binary-subdivision.puml`
+- `added` `docs/architecture/cloud.md`
+- `added` `docs/architecture/decisions.md`
+- `added` `docs/architecture/packages.md`
+- `added` `docs/architecture/principles.md`
+- `added` `docs/architecture/protocol-comparison.md`
+- `added` `docs/architecture/quality.md`
+- `added` `docs/engine/ARCHITECTURE.md`
+- `added` `docs/engine/catalog-workflow.md`
+- `added` `docs/engine/connector-loading.md`
+- `added` `docs/engine/header-size-limits.md`
+- `added` `docs/engine/pipeline-handle-events.md`
+- `added` `docs/engine/protocol.md`
+- `added` `docs/engine/scenarios.md`
+- `added` `docs/engine/sync-engine-api.ts`
+- `added` `docs/engine/sync-engine-examples.sh`
+- `added` `docs/engine/sync-engine-examples.ts`
+- `added` `docs/engine/sync-engine-types.ts`
+- `added` `docs/index.md`
+- `added` `docs/service/ARCHITECTURE.md`
+- `added` `docs/service/cli.md`
+- `added` `docs/service/entities.puml`
+- `added` `docs/service/pipeline-workflow-dual-lane.md`
+- `added` `docs/service/scenarios.md`
+- `added` `docs/service/sync-api.ts`
+- `added` `docs/service/sync-examples.sh`
+- `added` `docs/service/sync-examples.ts`
+- `added` `docs/service/sync-types.ts`
+- `added` `docs/service/temporal.md`
+- `added` `package.json`
+- `added` `packages/destination-postgres/package.json`
+- `added` `packages/destination-postgres/src/aws.ts`
+- `added` `packages/destination-postgres/src/bin.ts`
+- `added` `packages/destination-postgres/src/index.ts`
+- `added` `packages/destination-postgres/src/logger.ts`
+- `added` `packages/destination-postgres/src/schemaProjection.ts`
+- `added` `packages/destination-postgres/src/spec.ts`
+- `added` `packages/protocol/package.json`
+- `added` `packages/protocol/src/cli.ts`
+- `added` `packages/protocol/src/helpers.ts`
+- `added` `packages/protocol/src/index.ts`
+- `added` `packages/protocol/src/iter-utils/takeThroughStates.ts`
+- `added` `packages/protocol/src/ndjson.ts`
+- `added` `packages/protocol/src/protocol.ts`
+- `added` `packages/protocol/src/utils/async-iterable.ts`
+- `added` `packages/protocol/src/utils/binary-subdivision.ts`
+- `added` `packages/source-stripe/package.json`
+- `added` `packages/source-stripe/src/account-metadata.ts`
+- `added` `packages/source-stripe/src/bin.ts`
+- `added` `packages/source-stripe/src/browser.ts`
+- `added` `packages/source-stripe/src/catalog.ts`
+- `added` `packages/source-stripe/src/client.ts`
+- `added` `packages/source-stripe/src/index.ts`
+- `added` `packages/source-stripe/src/logger.ts`
+- `added` `packages/source-stripe/src/process-event.ts`
+- `added` `packages/source-stripe/src/rate-limiter.ts`
+- `added` `packages/source-stripe/src/resourceRegistry.ts`
+- `added` `packages/source-stripe/src/retry.ts`
+- `added` `packages/source-stripe/src/spec.ts`
+- `added` `packages/source-stripe/src/src-events-api.ts`
+- `added` `packages/source-stripe/src/src-list-api.ts`
+- `added` `packages/source-stripe/src/src-webhook.ts`
+- `added` `packages/source-stripe/src/src-websocket.ts`
+- `added` `packages/source-stripe/src/transforms/backfillDependencies.ts`
+- `added` `packages/source-stripe/src/transforms/expandLists.ts`
+- `added` `packages/source-stripe/src/transforms/index.ts`
+- `added` `packages/source-stripe/src/transforms/subscriptionItems.ts`
+- `added` `packages/source-stripe/src/transport.ts`
+- `added` `packages/source-stripe/src/types.ts`
+- `added` `packages/source-stripe/src/utils/expandEntity.ts`
+- `added` `packages/source-stripe/src/utils/hashApiKey.ts`
+- `added` `packages/source-stripe/src/webhookVerify.ts`
+- `added` `packages/state-postgres/package.json`
+- `added` `packages/state-postgres/src/index.ts`
+- `added` `packages/state-postgres/src/migrate.ts`
+- `added` `packages/state-postgres/src/migrationTemplate.ts`
+- `added` `packages/state-postgres/src/migrations/0000_bootstrap.ts`
+- `added` `packages/state-postgres/src/migrations/0001_stripe_metadata.ts`
+- `added` `packages/state-postgres/src/migrations/0002_sync_state.ts`
+- `added` `packages/state-postgres/src/migrations/0003_drop_unused_metadata.ts`
+- `added` `packages/state-postgres/src/migrations/index.ts`
+- `added` `packages/state-postgres/src/state-store.ts`
+- `added` `packages/util-postgres/package.json`
+- `added` `packages/util-postgres/src/httpConnectStream.ts`
+- `added` `packages/util-postgres/src/index.ts`
+- `added` `packages/util-postgres/src/queryLogging.ts`
+- `added` `packages/util-postgres/src/rateLimiter.ts`
+- `added` `packages/util-postgres/src/sql.ts`
+- `added` `packages/util-postgres/src/sslConfigFromConnectionString.ts`
+- `added` `packages/util-postgres/src/upsert.ts`
+- `added` `pnpm-workspace.yaml`
+
+## Excluded changes
+
+- None

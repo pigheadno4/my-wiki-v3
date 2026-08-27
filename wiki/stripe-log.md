@@ -6,6 +6,13 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-27] ingest | stripe/sync-engine `default-branch@93321ab`
+
+- Full-ingested work item `github-d7a121b45c762cec959d` at exact SHA `93321ab3644d5460213725abe0595247c403eb46` after serial full reading of all 105 required evidence and context paths.
+- Established cumulative and commit-qualified sources for OpenAPI-driven Stripe discovery, account-qualified records, resumable backfill, live events and verified webhooks, PostgreSQL destination/state behavior, and Temporal lifecycle workflows.
+- Preserved the experimental/internal deployment boundary, unauthenticated `/internal/query` risk, partial-stream failure semantics, active-fork separation, and documentation drift.
+- Recorded workspace version `0.2.5` only as metadata; the retained baseline remains default-branch commit `93321ab` because no matching release tag was collected.
+
 ## [2026-08-15] ingest | stripe/link-cli `@stripe/link-cli@0.13.0`
 
 - Full-ingested work item `github-62b2da34c81f87c986c9` at exact SHA `d540389e030d0f475a6b85cd64ccaf978ff498ac` after serial full reading of all 110 required evidence paths.
