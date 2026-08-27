@@ -62,6 +62,8 @@ A provisioned contract is the primary invoice-generation mechanism and produces 
 
 ### Deprecated Plans listing boundary
 
+The deprecated Plans `POST /v1/credits/listEntries` endpoint lists credit ledgers across customers and directs new clients to Contracts. The page does not name an equivalent Contracts route, map Plan credit-grant or ledger identity to Contract credits or commits, provide migration steps, or state a removal date. Its exclusion of entries associated with voided grants is a Plans-surface visibility rule and does not establish current Contracts archival or ledger-retention behavior. [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]]
+
 `GET /v1/plans` is a deprecated bearer-authenticated Plans endpoint that lists legacy plan records with optional cursor pagination. The response requires a plan array plus a nullable `next_page`; each plan requires a UUID `id`, `name`, and `description`, with an optional string-valued custom-field map. Metronome directs new clients to Contracts, but this source does not name an equivalent Contracts route, define a Plan-to-Contract field or identity mapping, supply a migration procedure, or state a removal date.
 
 The deprecated Plans `POST /v1/credits/voidGrant` page directs new clients to Contracts but does not identify a replacement Contracts operation, map Plan grant identity to a contract credit or commit, provide migration steps, or state a removal date. [[source-metronome-api-reference-credit-grants-void-a-credit-grant]]
@@ -255,6 +257,7 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 
 - [[source-metronome-integrations-platform-integrations-sfdc-integration]] - Salesforce account linkage and selected-customer sync, customer and ingest-alias replicas, contract lookup and effective-time fields, and linkage and lifecycle unknowns
 - [[source-metronome-guides-customers-billing-set-up-notifications-system-notifications]] - contract create, start, edit, end, and archive event policies; customer and contract payload context; and prospective account-wide enablement
+- [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]] - deprecated Plans customer-ledger listing and the undocumented Contracts replacement, identity-mapping, migration, and removal-date boundaries
 
 
 

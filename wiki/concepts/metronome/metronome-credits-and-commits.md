@@ -58,6 +58,13 @@ Historical invoice import combines supplied line-item quantities with unit price
 
 ### Balance retrieval and ledger calculation
 
+The deprecated Plans `POST /v1/credits/listEntries` operation returns credit-type ledgers grouped by customer. Optional payload filters select customer IDs, credit-type IDs, an inclusive `starting_on`, and an exclusive non-future `ending_before`; when the upper bound is omitted, the window runs through the start of each customer's next billing period. Nullable `next_page` paginates the required customer-ledger array. The page says ledger entries are chronological, while query `sort` orders ledgers by date and defaults to ascending; it does not define their relationship, the ledger sort key, tie-breakers, or ordering across customers, credit types, and pages. Each ledger separates posted from pending entries and starting and ending balances that expose `excluding_pending`, `including_pending`, and an effective timestamp. Entries associated with voided credit grants are omitted, so this surface is not a complete grant history.
+
+> [!warning] Legacy amount-sign contradiction
+> The success example starts both balances at `400`, leaves ending `excluding_pending` at `400`, and lowers ending `including_pending` and the pending entry's `running_balance` to `110`, yet the automated invoice-deduction entry carries positive `amount: 290` while `amount` is described as the balance change. The page does not resolve whether legacy deduction amounts are unsigned magnitudes, the example has a missing sign, or another calculation applies. Do not import current Contracts signed-entry semantics.
+
+The legacy entry schema does not expose a Contracts-style ledger-entry type, and the page defines no page size, cursor lifecycle, snapshot consistency, freshness, or Plan-to-Contract replacement mapping. [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]]
+
 Archiving a contract also archives all associated commits and credits. For prepaid commits with active segments, Metronome automatically creates expiration ledger entries to close remaining balances and shows them in commit transaction history as `PREPAID_COMMIT_EXPIRATION`. The archive page does not define association behavior for customer-level balances shared across contracts, entry amounts or effective timestamps, ordering against invoice deductions, atomicity, or reconciliation after partial failure. Its uppercase type spelling differs from the lowercase `prepaid_commit_expiration` documented by the remaining-balance guide, so enum casing should be verified per surface. [[source-metronome-api-reference-contracts-archive-a-contract]]
 
 `POST /v1/contracts/customerBalances/list` is the detailed balance read. Its payload schema requires `customer_id`, although the request-body wrapper is not marked required; omitted-body and top-level unknown-field behavior remain undocumented. Optional access-window filters, balance and ledger expansions, contract and archive inclusion, feature-gated zero exclusion, and JSON-body cursor pagination are available. HTTP 200 is an object requiring `data` and nullable `next_page`; `data` is the Commit-or-Credit union. The endpoint's body `limit` is 1-25 and defaults to 25, unlike the separate pagination authority's query-parameter convention and general 100 cap.
@@ -267,6 +274,7 @@ A merchant can create `low_remaining_commit_balance_reached` for a customer, cre
 
 - [[source-metronome-integrations-platform-integrations-sfdc-integration]] - daily Salesforce commit-or-credit replica, schedule and amount fields, current-draft-inclusive burn-down balance, cost basis, and freshness and reconciliation boundaries
 - [[source-metronome-guides-customers-billing-set-up-notifications-system-notifications]] - commit and credit create, edit, archive, segment-start, and segment-end policies with recurring-parent and segment payload context
+- [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]] - deprecated Plans credit-ledger listing, filters and pagination, entry-versus-ledger ordering boundary, pending-balance separation, positive-deduction amount conflict, and voided-grant visibility limit
 
 
 

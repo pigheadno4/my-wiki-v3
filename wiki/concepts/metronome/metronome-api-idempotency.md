@@ -81,6 +81,7 @@ The assigned product-catalog reference documents `POST /v1/contract-pricing/prod
 
 
 - [[source-metronome-api-reference-contracts-get-a-contract-v2]] - POST contract-state read, historical-view and optional balance/ledger controls, and the boundary that same-key result replay does not establish a fresh read
+- [[source-metronome-api-reference-credit-grants-list-credit-ledger-entries]] - read-only POST ledger listing, cursor and time-window inputs, and the boundary that API-wide same-key replay does not establish a fresh ledger view
 
 ## Related
 

@@ -1,0 +1,157 @@
+{
+  "job_id": "api-quickstart",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome API Quickstart\"\ntype: source\ndate_ingested: 2026-08-27\ncanonical_url: \"https://docs.metronome.com/guides/get-started/api-quickstart.md\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/get-started/api-quickstart-2026-07-13.md\"\ntags: [metronome, api, usage-based-billing, event-ingestion, billable-metrics, rate-cards, contracts, invoicing]\n---\n\n## Overview\n\nThis guide is a sandbox onboarding route from an application usage schema to a first Metronome draft invoice. It shows the principal data flow: an application sends identified customer usage; billable metrics aggregate it; products and a shared rate card define presentation and price; a customer contract supplies customer-specific billing terms; and Metronome rates matching events into invoices, with an optional billing provider handling downstream collection.\n\n## Query-critical facts\n\n- The bearer token selects the environment: sandbox tokens access only sandbox data and production tokens only production data. The quickstart requires a sandbox account and token and does not make a sandbox setup production-ready.\n- The programmatic onboarding order is billable metric, product, rate card and rates, customer, then contract; events follow. The contract links customer and rate card, while the event-to-invoice path depends on exact agreement among event type, metric filters and group keys, product group-key assignment, dimensional rate values, and customer identity.\n- Event design is an early decision point. `transaction_id`, `customer_id`, `event_type`, and `timestamp` are required by this guide; customer identity may be the Metronome UUID or a configured ingest alias; timestamps may be backdated up to 34 days and future timestamps are rejected; property values should be strings, and the guide states a 2,000-property maximum.\n- The worked event-schema and `/v1/ingest` payloads use March 9, 2026 timestamps, but this page was fetched July 13, 2026 and says events older than 34 days are rejected. Callers must replace the examples' `timestamp` values with current, non-future timestamps inside the rolling 34-day window, and use unique transaction IDs, for the walkthrough events to reach usage calculations and the draft invoice.\n- Billable-metric group keys must be selected before creation for any dimension that may drive pricing or invoice display. The guide says group keys, property filters, and aggregation settings cannot later be changed; streaming group-key properties must also have an existence property filter. Product pricing and presentation keys must be subsets of the metric's group keys.\n- A customer can be created with application-owned ingest aliases. A contract can generate Metronome-visible invoices without a billing provider; Stripe delivery is optional and requires the separate account and customer configuration described by the Stripe integration authority.\n- HTTP `200` from `/v1/ingest` means acceptance, but the response can contain per-event errors. Stored events may still fail to enter usage calculations when no billable metric matches, and a matched event may fail to rate when its pricing-group values do not match a rate-card entry. Transaction-ID search and the Events dashboard are diagnostic views, not proof of complete billing or collection.\n- The quickstart's invoice outcome is a draft that accumulates usage, followed by a stated 24-hour end-of-period grace period and finalization. Its optional Stripe route is described as pushing the invoice about one hour after finalization, while payment status and collection remain with the billing provider.\n\n## Material boundaries\n\n> [!warning] Stale worked event timestamps\n> The raw snapshot was fetched on July 13, 2026, but its event-schema and ingest examples use March 9, 2026 timestamps. Those timestamps were already outside the page's stated 34-day backdating window at collection time. Copying the payloads literally therefore cannot complete the advertised first-invoice path: substitute current, non-future in-window timestamps before ingestion, and keep transaction IDs unique.\n\n- The curl payloads are a worked onboarding path, not complete API request, response, validation, error, concurrency, or recovery contracts. Every shown REST operation is a POST; the separate API-wide [[source-metronome-api-reference-idempotency|idempotency authority]] says `Idempotency-Key` applies to all POST endpoints, but the quickstart examples omit that header and establish no endpoint-specific retry or ambiguous-failure recovery behavior. Event `transaction_id` deduplication is a distinct ingest mechanism.\n- The shared-rate-card recommendation and pricing examples do not define propagation timing, grandfathering, override precedence, missing-dimensional-rate fallback, retroactive recalculation, or invoice correction. Dedicated product, rate-card, contract, and invoice authorities remain controlling.\n- The guide's approximate batching throughput, dashboard timing, draft visibility, and Stripe-delivery timing are onboarding statements, not service-level, provider-acceptance, payment, settlement, tax, accounting, reconciliation, or production-readiness guarantees.\n\n## Raw-detail coverage map\n\nUse the complete raw page for the core-object diagram and definitions; prerequisites and token environment behavior; the event payload, its stale March 9, 2026 example timestamps and required substitution with current non-future timestamps inside the stated 34-day window, required fields, common event patterns, property guidance, and 2,000-property limit; both streaming and SQL metric examples, aggregation choices, group-key table, and immutability warning; product types, conversions, and product payload; rate-card creation, rate entries, dimensional and tiered pricing, custom pricing units, and commit-rate examples; customer alias and contract payloads; optional Stripe configuration; batched event payload, stated throughput, acceptance and rating diagnostics, troubleshooting; and the draft-to-provider invoice walkthrough and next-step routes. Dedicated API references remain authoritative for complete schemas, error catalogs, idempotency, and operational guarantees.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-usage-based-billing]], [[metronome-event-ingestion]], [[metronome-billable-metrics]], [[metronome-products-and-rate-cards]], [[metronome-customers-and-contracts]], [[metronome-invoicing]], [[metronome-api-idempotency]]\n- Secondary concept: [[metronome-packages-and-aliases]]\n- Related sources: [[source-metronome-api-reference-idempotency]], [[source-metronome-guides-get-started-metronome-dashboard-quickstart]], [[source-metronome-integrations-invoice-integrations-stripe]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/get-started/api-quickstart-2026-07-13|2026-07-13 snapshot - complete API onboarding flow, stale event timestamps and 34-day boundary, payload examples, rating diagnostics, invoice verification, and integration limits]]\n",
+  "quotes": [
+    {
+      "text": "* **Usage Events** \u2014 Raw records of customer activity sent to Metronome (e.g., \"customer X used 1,500 input tokens on model gpt-5 at timestamp Z\")\n* **Billable Metrics** \u2014 Rules that aggregate your events into billable quantities (e.g., \"sum the `input_tokens` property for events of type `llm_request`\"). This is also where you define **group keys** \u2014 the properties you'll use to price by or display on invoices.\n* **Products** \u2014 Named line items on an invoice.\n* **Rate Cards** \u2014 A centralized price book assigning a price to each product. A single rate card can be shared across many customers, making pricing updates easy to roll out.\n* **Contracts** \u2014 Customer-specific agreements referencing a rate card, defining the billing period, and optionally including credits, commits, or overrides.\n* **Packages** \u2014 Encodes your rate card and contract details in a single package to be applied across new customers.\n* **Invoices** \u2014 Automatically generated each billing period based on a customer\u2019s recurring charges and usage, rated against the contract.\n\n**What you need to create (in this order):**\n\n1. A billable metric\n2. A product\n3. A rate card with rates for each product\n4. A customer\n5. A contract linking the customer to the rate card\n\nThen you send events and Metronome handles the rest.",
+      "location": "lines 36-52"
+    },
+    {
+      "text": "Before creating anything, decide what your usage events look like. Every event sent to Metronome has this structure:\n\n```json theme={null}\n{\n  \"transaction_id\": \"2026-03-09T14:30:00Z_req_abc123\",\n  \"customer_id\": \"your-customer-uuid-in-metronome\",\n  \"event_type\": \"llm_request\",\n  \"timestamp\": \"2026-03-09T14:30:00Z\",\n  \"properties\": {\n    \"model\": \"gpt-5\",\n    \"input_tokens\": \"1500\",\n    \"output_tokens\": \"350\",\n    \"provider\": \"openai\",\n    \"region\": \"us-east-1\",\n    \"user_id\": \"user_8f3a\",\n    \"cost\": \"0.0042\"\n  }\n}\n```\n\n### Required fields\n\n* **`transaction_id`** \u2014 Unique per event for idempotency. If the same `transaction_id` is sent twice, Metronome deduplicates. Tip: combine timestamp + request ID.\n* **`customer_id`** \u2014 Metronome customer UUID, or an `ingest_alias` configured on the customer (so you can use your own internal ID).\n* **`event_type`** \u2014 String connecting this event to a billable metric. Must exactly match the billable metric's `event_type_filter` `in_values`.\n* **`timestamp`** \u2014 ISO 8601 format. Must be within the last **34 days** (Metronome's backdating window). Future-dated events are rejected.\n\n### Properties (metric-dependent)\n\n* **`properties`** \u2014 Key-value pairs. **All values should be strings** (even numbers) \u2014 Metronome uses arbitrary-precision decimals internally to avoid floating point issues. Metronome also supports up to **2,000 properties** per event.",
+      "location": "lines 56-85"
+    },
+    {
+      "text": "<Warning>\n  **Billable metrics are immutable after creation**\n\n  You cannot add or change group keys, property filters, or aggregation settings. Include group keys for any dimension you might price by or display in the future.\n</Warning>",
+      "location": "lines 174-178"
+    },
+    {
+      "text": "Batch up to **100 events** per request. Metronome supports approximately **6.6 million events per minute** with batching.\n\n```bash theme={null}\ncurl -X POST https://api.metronome.com/v1/ingest \\\n  -H \"Authorization: Bearer $METRONOME_API_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '[{\n    \"transaction_id\": \"test-001\",\n    \"customer_id\": \"<your-customer-id>\",\n    \"event_type\": \"llm_request\",\n    \"timestamp\": \"2026-03-09T12:00:00Z\",\n    \"properties\": {\n      \"model\": \"gpt-5\",\n      \"input_tokens\": \"1500\",\n      \"user_id\": \"user_1\"\n    }\n  },\n  {\n    \"transaction_id\": \"test-002\",\n    \"customer_id\": \"<your-customer-id>\",\n    \"event_type\": \"llm_request\",\n    \"timestamp\": \"2026-03-09T12:01:00Z\",\n    \"properties\": {\n      \"model\": \"gpt-5-mini\",\n      \"input_tokens\": \"800\",\n      \"user_id\": \"user_2\"\n    }\n  }]'\n```\n\n### Important behaviors\n\n* A **`200` response** means events were accepted for ingestion. Check the response body for per-event errors.\n* Note that if there's no matching BM for the `event_type` or required properties are not included, events are stored but may not appear in usage calculations. Be sure to create billable metrics before sending events if they are needed for rating.\n* Events can be **backdated up to 34 days**. Events with future timestamps are rejected.\n* **`transaction_id`** is used for deduplication. Sending the same ID twice won't double-bill.",
+      "location": "lines 361-396"
+    },
+    {
+      "text": "Navigate to **Customers \u2192 \\[Your Customer] \u2192 Invoices** in the dashboard. The draft invoice should show your usage and charges.\n\n**Invoice lifecycle:**\n\n1. **Draft** \u2014 Accumulates usage throughout the billing period (viewable in Metronome)\n2. **Finalized** \u2014 Locked at end of billing period. There is a **24 hour grace period** at the end of the billing period before invoices are finalized to make any necessary changes to an invoice.\n3. **Sent to billing provider** \u2014 If Stripe is connected, pushed within \\~1 hour of finalization. Payment status managed in Stripe's dashboard.\n4. **Paid / Failed** \u2014 Collection handled by your billing provider",
+      "location": "lines 414-421"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "api-quickstart-usage-billing-route",
+        "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-get-started-api-quickstart]] \u2014 programmatic sandbox onboarding order from event schema and billing objects to a draft invoice, including the stale worked timestamp boundary",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "The March 9 examples were outside the stated 34-day window by the July 13 snapshot; current in-window timestamps are required to complete the first-invoice path."
+        ]
+      },
+      {
+        "update_id": "api-quickstart-stale-event-timestamps",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Event contract",
+        "proposed_markdown": "> [!warning] Stale API quickstart timestamps\n> The API quickstart snapshot fetched July 13, 2026 uses March 9, 2026 timestamps in both its event-schema and `/v1/ingest` examples while stating that events may be backdated only 34 days and future events are rejected. Callers must substitute current, non-future timestamps within the rolling window, and retain unique transaction IDs, before using those payloads to test metric matching, rating, or draft invoicing. [[source-metronome-guides-get-started-api-quickstart]]",
+        "quote_indexes": [
+          1,
+          3
+        ],
+        "warnings": [
+          "Do not copy the fixed timestamps literally or imply that event acceptance, metric matching, rating, invoicing, and collection are the same outcome."
+        ]
+      },
+      {
+        "update_id": "api-quickstart-billable-metric-route",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-get-started-api-quickstart]] \u2014 metric placement in the onboarding flow, event-type and property matching, group-key decisions, creation-time immutability, and stale-event test boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Route complete metric schemas, SQL behavior, aggregation conflicts, reflow, and error behavior to dedicated authorities."
+        ]
+      },
+      {
+        "update_id": "api-quickstart-products-rate-cards-route",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-get-started-api-quickstart]] \u2014 product and shared-rate-card roles in first-invoice onboarding, dimensional group-key dependencies, and missing-rate diagnostic",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not infer rate propagation timing, fallback, precedence, recalculation, or correction behavior from the quickstart examples."
+        ]
+      },
+      {
+        "update_id": "api-quickstart-customers-contracts-route",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-get-started-api-quickstart]] \u2014 customer alias identity, ordered customer and contract provisioning, rate-card linkage, provider-optional invoice generation, and in-window event prerequisite",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": [
+          "The quickstart payload is not the complete customer, contract, provider-routing, lifecycle, or recovery contract."
+        ]
+      },
+      {
+        "update_id": "api-quickstart-invoicing-route",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-get-started-api-quickstart]] \u2014 first draft-invoice verification, required in-window event substitution, mismatch diagnosis, stated grace-period and optional Stripe-delivery timing, and provider-owned collection",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Literal March 9 example timestamps cannot reach the advertised invoice path under the stated window; approximate Stripe timing does not prove downstream outcomes."
+        ]
+      },
+      {
+        "update_id": "api-quickstart-idempotency-route",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-get-started-api-quickstart]] \u2014 multi-POST onboarding walkthrough whose event `transaction_id` deduplication is distinct from the API-wide POST `Idempotency-Key` authority",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": [
+          "The quickstart omits Idempotency-Key from its REST examples and supplies no endpoint-specific ambiguous-failure recovery semantics."
+        ]
+      },
+      {
+        "update_id": "api-quickstart-packages-route",
+        "target_path": "wiki/concepts/metronome/metronome-packages-and-aliases.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-get-started-api-quickstart]] \u2014 core-object orientation that identifies packages as reusable rate-card and contract detail bundles while the direct first-invoice sequence provisions without one",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": [
+          "Secondary route only; the quickstart does not define package creation, aliases, versioning, or restricted package-mode contract provisioning."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/get-started/api-quickstart-2026-07-13.md",
+  "raw_sha256": "521295819c83ea92a5c555447b427f591921df73e854dda1fe727db8641501df",
+  "status": "candidate_ready"
+}
