@@ -1,0 +1,151 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "list-seat-balances-credits-fact",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Balance retrieval and ledger calculation",
+      "proposed_markdown": "`POST /v1/contracts/seatBalances/list` returns current credit and commit balances from one customer's contract subscriptions, grouped by seat and credit type. Within a supplied payload, customer and contract UUIDs are required; optional subscription filters accept only `SEAT_BASED` subscriptions, while seat filters fail on a missing seat by default or silently omit it when `skip_missing_seat_ids` is true. Each balance item supplies current combined balance and combined initial balance for that seat and credit type. Optional expansions return the contributing credit and commit objects and, when both flags are enabled, their typed amount-and-timestamp ledger histories. The page does not define amount denomination, precision, rounding, freshness, snapshot consistency, or reconciliation timing.\n\nBody `limit` ranges from 1 to 100 seats and defaults to 25. With detail expansion, a second 100-item threshold governs cross-seat credits and commits, but the example returns two complete seats containing 108 commits; seats are included greedily, with no documented order or tie-breaker. The prose names `ending_before`, while the request schema exposes `effective_before` and describes it inclusively as on-or-before. The endpoint therefore does not resolve the accepted upper-bound field or inclusivity. Missing-seat and non-seat-subscription descriptions document `400` or error behavior, but the response map omits `400`. [[source-metronome-api-reference-credits-and-commits-list-seat-balances]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Preserve the per-seat, per-credit-type balance scope; do not collapse it into a customer or contract aggregate.",
+        "Preserve the effective_before versus ending_before conflict and do not choose a runtime field by inference.",
+        "Treat 100 as a greedy inclusion threshold that can be exceeded at a seat boundary, not a hard returned-detail maximum."
+      ]
+    },
+    {
+      "update_id": "list-seat-balances-credits-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-seat-balances]] - contract-subscription seat balances by credit type, detail and ledger expansions, missing-seat behavior, time-filter conflict, and greedy pagination completeness limits",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-seat-balances-subscriptions-fact",
+      "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Lifecycle",
+      "proposed_markdown": "The dedicated seat-balance read is `POST /v1/contracts/seatBalances/list`. It scopes one customer's contract and can filter seats by `SEAT_BASED` subscription UUIDs or stable seat IDs; a subscription ID not mapped to a seat-based subscription is documented as an error. Missing seat IDs fail by default or are silently omitted when `skip_missing_seat_ids` is true. Results group current and initial combined credit/commit balance by seat and credit type, with optional contributing-balance and ledger expansions. The page does not define read-after-seat-change visibility, ordering, snapshot consistency, freshness, or reconciliation with subscription quantity and seat histories. [[source-metronome-api-reference-credits-and-commits-list-seat-balances]]",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not treat a successful skip-missing query as proof that every requested seat exists.",
+        "Do not infer read-after-write or reconciliation guarantees with seat history from this list reference."
+      ]
+    },
+    {
+      "update_id": "list-seat-balances-subscriptions-link",
+      "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-seat-balances]] - seat-based subscription and seat filtering, missing-seat semantics, balance identity, optional ledgers, and visibility unknowns",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-seat-balances-contracts-fact",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Customer balance views",
+      "proposed_markdown": "The seat-specific alternative is `POST /v1/contracts/seatBalances/list`, whose supplied JSON object requires both customer and contract UUIDs and returns balances from that contract's seat-based subscriptions. It can filter by subscription or seat, expand contributing credits and commits plus their ledgers, and paginate seats through a body cursor. Unlike the customer-level `customerBalances/list` envelope, HTTP 200 requires a nested `pagination` object with seat counts and an optional nullable `next_page`; the endpoint does not define hierarchy behavior, seat order, cursor lifetime, snapshot consistency, freshness, or cross-contract aggregation. [[source-metronome-api-reference-credits-and-commits-list-seat-balances]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Keep this contract-subscription seat scope distinct from customerBalances/list and getNetBalance.",
+        "Requiredness applies to properties within a supplied object; omitted-body runtime behavior remains undocumented."
+      ]
+    },
+    {
+      "update_id": "list-seat-balances-contracts-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-seat-balances]] - contract-scoped seat-balance listing, customer and contract identity, subscription and seat filters, endpoint-specific pagination, and consistency unknowns",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-seat-balances-reporting-fact",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Query model",
+      "proposed_markdown": "For merchant-facing seat-balance views, `POST /v1/contracts/seatBalances/list` supplies one contract's current and initial combined credit/commit balances by seat and credit type, with optional contributing credits, commits, and ledger histories. Complete retrieval requires following its body cursor and nested seat-count pagination. With detail expansion, the documented 100-item credit/commit threshold can be exceeded to return a complete seat, as the 108-commit example shows; no seat ordering or greedy-selection tie-breaker is documented. Missing requested seats can be silently omitted when configured, and the page establishes no retention, freshness, snapshot consistency, duplicate/skip, or reconciliation guarantee. [[source-metronome-api-reference-credits-and-commits-list-seat-balances]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not report the requested seat set as complete when skip_missing_seat_ids is true.",
+        "Do not describe 100 as a hard returned-detail maximum or imply a stable result order."
+      ]
+    },
+    {
+      "update_id": "list-seat-balances-reporting-link",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-seat-balances]] - dashboard-oriented seat-balance response, detail and ledger expansion, endpoint-specific pagination, completeness limits, and reporting consistency unknowns",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-seat-balances-idempotency-link",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-seat-balances]] - read-only POST seat-balance listing, body cursor and time-window inputs, and the boundary that API-wide same-key replay does not establish a fresh balance view",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "The replay, conflict, retention, and cached-error guarantees come from the separate API-wide idempotency authority, not this endpoint page."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

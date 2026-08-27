@@ -1,0 +1,208 @@
+{
+  "job_id": "netsuite",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome NetSuite Integration\"\ntype: source\ndate_ingested: 2026-08-27\ncanonical_url: \"https://docs.metronome.com/integrations/invoice-integrations/netsuite.md\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/integrations/invoice-integrations/netsuite-2026-07-13.md\"\ntags: [metronome, netsuite, invoicing, revenue-recognition, payments, erp, integrations]\n---\n\n## Overview\n\nThis guide documents Metronome's Public Beta NetSuite integration for two contract-routed outcomes: sending finalized invoices to NetSuite for billing, or sending invoices and available payment state to NetSuite as a revenue system when another provider performs billing. It defines the principal configuration layers, product and customer identity mappings, state and recovery surfaces, and the limits that must be checked before production use.\n\n## Query-critical facts\n\n- The integration is Public Beta and may introduce breaking changes before general availability. Custom currencies and account hierarchy are explicitly unsupported; inventory items that require a location are also unsupported, and NetSuite invoice-line `amount`, `quantity`, and `total` fields must be writable. Metronome directs clients to validate the full flow in a NetSuite sandbox. The page states support for up to 25,000 arrears invoices per month and warns that higher volume may sync more slowly; initial object indexing can itself take up to an hour.\n- Billing and revenue-system configurations have different responsibility boundaries. With NetSuite as `customer_billing_configuration`, Metronome sends the invoice after finalization and NetSuite handles distribution, tax calculation, and payment collection. With NetSuite as `revenue_system_configuration`, billing occurs elsewhere; Metronome sends the invoice after a payment attempt and creates the NetSuite payment object when payment succeeds. A failed first payment can leave the NetSuite invoice `OPEN`, followed by a later retroactive `PAID` update after a successful reattempt.\n- Product identity is mapped from a Metronome product custom field, such as `netsuite_item_internal_id`, to the internal NetSuite invoice-item ID; many Metronome products may map to one NetSuite item. For prepaid consumption represented by a zero-dollar invoice, negative commit-burn lines require a separate NetSuite Commit Application item and mapping so purchase and consumption can receive different revenue treatment. A mismatch in revenue treatment among invoice items causes the invoice to fail to send.\n- Customer-level configuration does not route invoices by itself. A customer may have several billing or revenue-system configurations, and the relevant configuration ID must be selected on the contract. The `netsuite_customer_id` identifies the external customer, while `delivery_method_id`, `billing_provider_configuration_id`, and `revenue_system_configuration_id` occupy distinct configuration and selection layers and should not be conflated.\n- Billing-mode sync state appears under `external_invoice`, including the created NetSuite invoice ID, `external_status`, and provider error. Revenue-mode sync state appears under `revenue_system_invoices`, including provider, external entity identity, `sync_status`, and error message. The guide names `invoice.invoice_sync_status` for invoice-sync outcomes and `payment.payment_status_sync` for payment-object sync outcomes. A corrected item mapping can be followed by a manual UI **Send to NetSuite** reattempt; the page does not define a general automatic retry contract.\n- NetSuite owns tax calculation through the client's chosen NetSuite tax integration. Metronome neither calculates nor sends tax amounts to NetSuite, and tax is not synchronized back to Metronome. Optional case-sensitive NetSuite invoice fields `metronome_invoice_id`, `metronome_contract_id`, and `metronome_customer_id` preserve cross-system identifiers for reconciliation; their presence supports matching, not proof that accounting or reconciliation completed.\n\n## Material boundaries\n\n- Connection setup, an Active Integrations row, returned IDs, `SUCCEEDED`, `FINALIZED`, or `PAID`-like states are Metronome-documented observations, not complete guarantees of NetSuite configuration compatibility, external acceptance, distribution, customer delivery, collection, payment finality, tax correctness, settlement, revenue posting, or reconciliation. Metronome does not adapt the integration for instance-specific NetSuite customizations; the client owns required compatibility changes and sandbox validation.\n- The stated one-hour indexing and status-update timing and the 25,000-arrears-invoices monthly throughput figure are planning boundaries, not service-level or completeness guarantees. The guide does not define queue ordering, exactly-once behavior, automatic retries, terminality, partial-failure recovery, concurrency, replay, or a reconciliation procedure after ambiguous outcomes.\n- The guide's POST examples remain subject to the separate [[metronome-api-idempotency|API-wide `Idempotency-Key` authority]]. This page adds no endpoint-specific guarantee for retries without a key, an expired key, concurrency, cached errors, or ambiguous failure recovery. The UI invoice-sync reattempt is a downstream recovery action and must not be treated as the API-wide POST idempotency contract.\n- Several code blocks are illustrative rather than copy-ready endpoint authority: the customer payload contains malformed JSON, the block described as contract creation calls `/v1/customers`, and invoice-read examples also call `/v1/customers`. Use the dedicated customer, contract, invoice, and configuration API references for current methods and schemas; do not infer that the displayed routes or example field requiredness are normative.\n\n## Raw-detail coverage map\n\nUse the raw page for the full Public Beta and compatibility checklist; sandbox, throughput, customization, and initial-indexing notes; UI connection and credential workflow; product and Commit Application mapping steps; customer billing and revenue-system configuration payloads; the complete PLG and SLG contract examples; tax flow; billing-mode and revenue-mode invoice-state examples; invoice and payment webhook payload examples; failure objects and manual resend walkthrough; reconciliation custom-field IDs; and the zero-dollar-invoice control. Dedicated API and webhook sources remain authoritative for complete schemas, authentication, transport, signing, retry, ordering, idempotency, and recovery behavior.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-integrations]], [[metronome-invoicing]], [[metronome-customers-and-contracts]]\n- Supporting concepts: [[metronome-products-and-rate-cards]], [[metronome-custom-fields]], [[metronome-credits-and-commits]], [[metronome-webhooks]], [[metronome-reporting-and-analytics]], [[metronome-currencies-and-custom-pricing-units]]\n- Related source: [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/integrations/invoice-integrations/netsuite-2026-07-13|2026-07-13 snapshot - Public Beta scope, NetSuite mappings, contract routing, invoice and payment state, recovery, tax, and reconciliation boundaries]]\n",
+  "quotes": [
+    {
+      "text": "Metronome's NetSuite integration is currently in a Public Beta. Breaking changes may occur between now and GA.\n\n  Not all Metronome features are supported during Public Beta. Please contact your Metronome representative if you have questions.\n\n  Features known to be unsupported:\n\n  * Custom currencies\n  * Account hierarchy\n</Note>\n\nMetronome's NetSuite integration enables clients to sync invoices and payments to NetSuite for two core use cases:\n\n* **Billing:** Send invoices to NetSuite for distribution and collection.\n* **Revenue recognition:** If a different system (e.g. Stripe) is used for billing, sync invoices and payment status to NetSuite to power revenue operations.",
+      "location": "raw/metronome/integrations/invoice-integrations/netsuite-2026-07-13.md:14-27 (Public Beta limits and the two core use cases)"
+    },
+    {
+      "text": "Metronome products map to NetSuite items, where the product id on the Metronome line item maps to an item id on the NetSuite invoice line.\n\nFirst create your items in NetSuite. You can map many Metronome products to a single NetSuite item. Once your NetSuite items are set up, follow the next steps\n\n* Create a custom field on the product object. Name it something like `netsuite_item_internal_id`.\n* For each product in Metronome, set the field with the corresponding internal item ID in NetSuite.\n* Use the edit mapping feature to set the relationship between the Metronome product custom field and the NetSuite item ID. Click on the NetSuite row in the **Active Integrations** table and select **Edit Mapping**.\n* The mapping should look like `Invoice.Items: internal_id -> ContractProduct: your key`\n\n### Commit application for \\$0 invoices\n\nIf you operate a prepaid credit model and wish to send $0 invoices to NetSuite to recognize revenue against consumption, you will need to create a \"Commit Application\" item in NS. For the $0 invoices, the negative line items, which represent commit burn-down, will post against the commit application item.",
+      "location": "raw/metronome/integrations/invoice-integrations/netsuite-2026-07-13.md:74-85 (product-item identity mapping and zero-dollar commit application)"
+    },
+    {
+      "text": "Create either billing or revenue system configurations on the Metronome customer object. Once created, these can then be referenced on the customer's contract to route contract invoices to NetSuite:\n\n* **Customer billing configuration:** For billing use cases, Metronome syncs the invoice to NetSuite once the invoice is finalized. NetSuite then handles invoice distribution, tax calculation, and payment collection.\n* **Revenue system configuration:** Metronome syncs invoices to NetSuite after payment has been attempted in a different system (e.g. Stripe). If payment was successful, Metronome will sync the associated payment information to NetSuite as a payment object. If payment fails upon first attempt but later succeeds, Metronome will create the payment object once successful.",
+      "location": "raw/metronome/integrations/invoice-integrations/netsuite-2026-07-13.md:104-107 (customer and contract routing plus billing and revenue-system responsibility split)"
+    },
+    {
+      "text": "If the customer is billed outside of NetSuite, but NetSuite needs the invoice information for revenue recognition, set up a `revenue_system_configuration` for the customer via the API or UI. Metronome syncs both invoices and payments (if available) for contracts with a revenue system configuration.\n\nIf payment fails for the invoice after the first attempt, Metronome will still sync the invoice to NetSuite as `OPEN`. If payment is reattempted later and succeeds, Metronome will retroactively update the associated invoice in NetSuite as 'PAID'.",
+      "location": "raw/metronome/integrations/invoice-integrations/netsuite-2026-07-13.md:139-141 (revenue-system scope and OPEN-to-PAID recovery transition)"
+    },
+    {
+      "text": "When the error occurs, Metronome will emit a `invoice.invoice_sync_status` webhook notification providing the invoice details with associated error information. Clients should consume these webhooks to identify when an invoice fails to sync to NetSuite and adjudicate based on error details.\n\nIn the example given above, the error message identifies that the item id for one of the Metronome products is incorrect. To address this problem, update the corresponding custom field with the correct NetSuite item id. Once fixed, you can reattempt the sync to NetSuite via the UI by clicking **Send to NetSuite** button on the invoice UI page.\n\nWhen NetSuite is set as the `revenue_system_configuration`, `sync_status` will be updated to `FAILED` in the event of a failure. The associated error for why the invoice failed will be stored in the `error_message` property. See example below:",
+      "location": "raw/metronome/integrations/invoice-integrations/netsuite-2026-07-13.md:401-405 (failure notification, mapping repair, manual resend, and revenue-system failure state)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "netsuite-native-integration-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## NetSuite product-item retrieval surface",
+        "proposed_markdown": "## Native NetSuite integration boundary\n\nMetronome's Public Beta NetSuite integration supports direct billing and revenue-system use cases. A contract selects a customer configuration: billing mode sends finalized invoices to NetSuite for NetSuite-owned distribution, tax, and collection, while revenue mode sends invoices after another system attempts payment and creates payment objects when successful. Product custom fields map Metronome line items to NetSuite item IDs, and zero-dollar prepaid-consumption invoices require a separate Commit Application item. Billing status and errors appear under `external_invoice`; revenue-system status and errors appear under `revenue_system_invoices`; invoice and payment sync webhooks expose outcome signals, and an item-mapping failure can be corrected before a manual UI resend. The guide does not turn those signals into guarantees of delivery, payment finality, tax correctness, revenue posting, settlement, or reconciliation. The beta excludes custom currencies and account hierarchy, assumes compatible standard NetSuite configuration, and assigns client-specific changes and sandbox validation to the client.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep billing-provider and revenue-system configuration, identifiers, status surfaces, and responsibilities distinct.",
+          "Do not extend Metronome status or webhook signals into NetSuite acceptance, payment finality, accounting, tax, settlement, or reconciliation guarantees."
+        ]
+      },
+      {
+        "update_id": "netsuite-integrations-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-netsuite]] - Public Beta NetSuite billing and revenue-system modes, product and customer mappings, contract routing, sync-state recovery, and downstream authority boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "netsuite-invoice-payment-flow",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ### AWS Marketplace metering and delivery limits",
+        "proposed_markdown": "### Native NetSuite billing and revenue-system delivery\n\nA contract can route a finalized invoice to NetSuite as billing provider, after which NetSuite owns distribution, tax calculation, and payment collection. Alternatively, NetSuite can be the revenue system while another provider bills: Metronome sends the invoice after a payment attempt, adds a linked payment object on success, can represent a first-attempt failure as `OPEN`, and can later update it to `PAID` after a successful reattempt. Billing-mode observations live under `external_invoice`, while revenue-mode observations live under `revenue_system_invoices`; failure information and sync notifications support diagnosis, and a corrected item mapping can be followed by a manual resend. These surfaces do not prove external acceptance, customer delivery, payment finality, tax correctness, revenue posting, settlement, or reconciliation.",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not conflate Metronome invoice finalization with NetSuite distribution, collection, payment, tax, or accounting completion.",
+          "Treat the documented manual resend as scoped recovery guidance, not a general retry, exactly-once, or idempotency guarantee."
+        ]
+      },
+      {
+        "update_id": "netsuite-invoicing-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-netsuite]] - native NetSuite billing and revenue-system invoice flows, OPEN-to-PAID recovery, sync diagnostics, zero-dollar commit application, and tax ownership boundary",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "netsuite-customer-contract-routing",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Customer creation API",
+        "proposed_markdown": "### NetSuite customer and contract routing layers\n\nA Metronome customer can hold multiple NetSuite billing or revenue-system configurations, but a configuration does not route invoices until the relevant configuration ID is selected on a contract. Billing configuration sends finalized contract invoices to NetSuite for NetSuite-owned distribution, tax, and collection. Revenue-system configuration sends invoices and available payment state after billing occurs elsewhere; a failed first payment can leave the NetSuite invoice `OPEN`, followed by a retroactive `PAID` update after later success. The external `netsuite_customer_id`, account-level `delivery_method_id`, and contract selectors `billing_provider_configuration_id` or `revenue_system_configuration_id` remain distinct identity layers.",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not treat customer-level configuration as invoice routing without the contract selection.",
+          "Do not conflate the external NetSuite customer ID, account delivery-method ID, customer configuration IDs, and contract selectors."
+        ]
+      },
+      {
+        "update_id": "netsuite-customers-contracts-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-netsuite]] - customer billing and revenue-system configurations, external customer identity, contract-level selection, and per-contract NetSuite routing",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "netsuite-products-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-netsuite]] - many-to-one Metronome product to NetSuite item mapping through product custom fields and a separate Commit Application item for zero-dollar consumption invoices",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "The documented mapping uses NetSuite item IDs; it does not prove mapping validation, item readiness, or accounting treatment."
+        ]
+      },
+      {
+        "update_id": "netsuite-custom-fields-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-netsuite]] - product custom fields as NetSuite item foreign keys, mapping-error repair, and case-sensitive invoice metadata IDs for reconciliation",
+        "quote_indexes": [
+          1,
+          4
+        ],
+        "warnings": [
+          "Custom-field presence supports identity mapping and diagnosis; it does not prove synchronization or reconciliation completeness."
+        ]
+      },
+      {
+        "update_id": "netsuite-credits-commits-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-netsuite]] - zero-dollar prepaid-consumption invoices, negative commit-burn lines, and the separate NetSuite Commit Application item mapping",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "The integration guide does not establish complete accounting-policy or revenue-recognition authority for commit application."
+        ]
+      },
+      {
+        "update_id": "netsuite-webhooks-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-netsuite]] - `invoice.invoice_sync_status` and `payment.payment_status_sync` outcome signals, failure details, and manual invoice-resend context",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "This integration page does not define webhook signing, transport retries, ordering, deduplication, latency, or replay; retain the dedicated webhook authority."
+        ]
+      },
+      {
+        "update_id": "netsuite-reporting-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-netsuite]] - revenue-system invoice and payment synchronization, cross-system identifiers for reconciliation, and accounting-outcome boundaries",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not treat NetSuite sync state or identifier matching as proof of revenue posting, accounting correctness, or completed reconciliation."
+        ]
+      },
+      {
+        "update_id": "netsuite-currencies-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-netsuite]] - Public Beta NetSuite integration limitation excluding custom currencies",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": [
+          "Treat the unsupported custom-currency statement as dated Public Beta scope, not a permanent product guarantee."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/integrations/invoice-integrations/netsuite-2026-07-13.md",
+  "raw_sha256": "e213d88bab3bdab9f33389f9f02dfe3059bac1d5f84970503f5800adf9395397",
+  "status": "candidate_ready"
+}

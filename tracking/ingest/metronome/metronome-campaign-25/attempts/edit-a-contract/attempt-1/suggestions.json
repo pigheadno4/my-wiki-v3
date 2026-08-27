@@ -1,0 +1,76 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "edit-a-contract-endpoint-contract-and-result-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Contract edit history",
+      "proposed_markdown": "Bearer-authenticated `POST /v2/contracts/edit` mutates one identified customer contract and requires contract-editing enablement. Within a supplied payload, UUID `customer_id` and `contract_id` are required; the enclosing `requestBody` is not marked required and top-level `additionalProperties` is unspecified. HTTP `200` requires `data.id` but makes `data.edit` optional, while the narrative promises an edit ID and complete details and the example reuses the request contract ID; edit-versus-contract identity and detail completeness are unresolved. Mixed-edit atomicity, validation order, partial success, concurrency, visibility, and recovery are not defined. [[source-metronome-api-reference-contracts-edit-a-contract]]",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Do not identify data.id as definitively the edit ID until the narrative, schema, and example conflict is resolved.",
+        "Keep requestBody requiredness separate from required properties inside a supplied EditContractPayload."
+      ]
+    },
+    {
+      "update_id": "edit-a-contract-invoice-state-propagation",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Credit, correction, and re-bill state boundaries",
+      "proposed_markdown": "`POST /v2/contracts/edit` applies contract changes immediately to draft invoices. Finalized invoices remain unchanged unless voided and regenerated in the UI or API. The endpoint does not define mixed-edit atomicity, downstream redistribution, payment or refund behavior, tax recalculation, external A/R or revenue-system posting, ledger reconciliation, webhook timing, or recovery after ambiguous failure. [[source-metronome-api-reference-contracts-edit-a-contract]]",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The Metronome draft/finalized effect is not evidence that downstream billing or revenue-system records changed or reconciled."
+      ]
+    },
+    {
+      "update_id": "edit-a-contract-recurring-grant-eligibility",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Targeted commit edits",
+      "proposed_markdown": "The general `POST /v2/contracts/edit` surface can add, update, and archive contract commits and credits alongside other terms. Updates to recurring commits and recurring credits affect only generated grants whose access schedules have not started; expired grants and grants with active access schedules remain unchanged. The page does not define mixed eligible/ineligible-array behavior, child-generation visibility timing, concurrency, partial success, or recovery. [[source-metronome-api-reference-contracts-edit-a-contract]]",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Do not treat a recurring-parent update as retroactively changing active or expired generated grants."
+      ]
+    },
+    {
+      "update_id": "edit-a-contract-dual-idempotency-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "`POST /v2/contracts/edit` now exposes optional 1-128 character `uniqueness_key`; reuse prevents a duplicate edit and says the request fails with HTTP `409`, even though the operation response map omits `409`. This endpoint-specific resource guard is distinct from API-wide POST `Idempotency-Key` result replay. The pages do not define uniqueness-key scope or release, failed-attempt consumption, interaction or precedence between the two keys, safe use after key expiry, concurrency ordering, or recovery after cached or ambiguous failures. [[source-metronome-api-reference-contracts-edit-a-contract]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        1,
+        4
+      ],
+      "warnings": [
+        "Replace the existing coming-soon qualification for contract-edit uniqueness only for this exact endpoint; do not generalize it to unsupported mutations.",
+        "Do not use a changed header key automatically after uncertain contract-edit state."
+      ]
+    },
+    {
+      "update_id": "edit-a-contract-provider-scope-conflict",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Scheduled provider routing",
+      "proposed_markdown": "> [!warning] Contract-edit provider scope conflict\n> The `POST /v2/contracts/edit` schema says `add_billing_provider_configuration_update` currently supports only adding a provider configuration to a contract that has none, and gives the same add-only boundary for the feature-gated revenue-system update. The dedicated provider-schedule guide separately documents provider-to-provider changes on existing contracts. The sources do not establish whether the endpoint description is stale, configuration-dependent, or narrower than the guide. Neither source proves downstream provider readiness, delivery, posting, or reconciliation; verify current account enablement and runtime transition support. [[source-metronome-api-reference-contracts-edit-a-contract]] [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]]",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Preserve both authorities and the unresolved scope conflict; do not silently treat the add-only schema as provider-transition support."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}
