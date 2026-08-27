@@ -1,0 +1,32 @@
+{
+  "job_id": "list-seat-balances",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full independent review against the complete 503-line raw at trusted SHA-256 a2a19decd6328e9412441ffaeaa0aa803055015dc9650bc833dd2fc7e078b4f8 verified candidate/receipt equality, suggestions/receipt equality, all five exact excerpts and stated raw locations, canonical URL, absent canonical target, exact path-qualified raw backlink, unique shared anchors, collection scope, required payload properties, subscription and seat filters, missing-seat behavior, time-field conflict, expansion dependency, seat and detail pagination limits, success envelope, response-map conflict, requiredness and additional-properties boundaries, primary routes, coverage map, and API-wide POST idempotency attribution. One material API List / Schema defect remains: `SeatBalance.commits` and `.credits` are seat-level sibling arrays, not children of `SeatBalanceByCreditType`, and their item schemas expose no `credit_type_id`. The candidate's overview calls this a per-balance ledger expansion and the source and affected shared facts do not preserve that the expanded records cannot be mapped from this schema alone to the per-credit-type `balances` entries. The response example makes this integration boundary material: its only balance item reports current `30000` and starting `50000`, matching the commit's current balance and segment-start amount, while a separate credit reports current `20000` and a `25000` segment-start amount; because neither expanded record exposes its credit type, the page does not establish whether or how those figures reconcile. This omission can cause a merchant dashboard or reconciliation implementation to attribute expanded detail to the wrong credit-type balance, so it is blocking under the Campaign 23/24 material contract and requires a full semantic retry.",
+  "required_changes": [
+    "Add a material schema/example boundary stating that `commits` and `credits` are seat-level sibling expansions whose item schemas omit `credit_type_id`, so this response alone cannot map an expanded record to a `balances` entry by credit type. Preserve the example ambiguity exactly: the sole `30000` current / `50000` starting balance matches the commit detail while a separate `20000` current / `25000` starting credit is also present, and the page does not establish whether or how they reconcile. Replace the overview's `per-balance ledger expansion` wording and revise affected durable-fact proposals, especially the credits-and-commits and reporting updates, so they do not imply direct per-credit-type attribution or reconciliation."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "full",
+  "shared_update_decisions": [
+    {
+      "update_id": "list-seat-balances-credits-fact",
+      "verdict": "rejected",
+      "reason": "The proposed fact describes contributing credit and commit expansion without preserving that the sibling detail objects omit credit_type_id or the material response-example reconciliation ambiguity."
+    },
+    "list-seat-balances-credits-link",
+    "list-seat-balances-subscriptions-fact",
+    "list-seat-balances-subscriptions-link",
+    "list-seat-balances-contracts-fact",
+    "list-seat-balances-contracts-link",
+    {
+      "update_id": "list-seat-balances-reporting-fact",
+      "verdict": "rejected",
+      "reason": "A merchant-facing reporting fact must preserve that expanded credit and commit details cannot be mapped by this schema to the per-credit-type balance entries and that the example does not establish reconciliation."
+    },
+    "list-seat-balances-reporting-link",
+    "list-seat-balances-idempotency-link"
+  ],
+  "reviewer_identity": "/root/c25_r_seat_balances",
+  "reviewer_model": "Sol"
+}

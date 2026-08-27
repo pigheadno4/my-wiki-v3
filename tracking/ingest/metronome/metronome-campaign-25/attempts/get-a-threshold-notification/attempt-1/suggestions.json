@@ -1,0 +1,97 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "get-threshold-alerts-current-state",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Notification types and lifecycle",
+      "proposed_markdown": "### Point-in-time threshold lookup\n\n`POST /v1/customer-alerts/get` retrieves the current evaluation state and configuration for one customer/threshold-notification pair identified by customer and alert UUIDs. `customer_status` is `ok`, `in_alarm`, `evaluating`, or `null` for an archived notification; archived lookup still returns the alert configuration. The operation is targeted rather than bulk and returns current state rather than history, which the page routes to webhook notifications or event logs. The API-wide POST idempotency rule means a same-key retry can replay an earlier result rather than establish a fresh evaluation. The narrative lists `updated_at` with the customer-alert surface, but the schema and example nest it under `alert`, so clients should not assume a top-level path. [[source-metronome-api-reference-alerts-get-a-threshold-notification]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Preserve the updated_at narrative-versus-schema conflict and the same-key replay versus fresh-read boundary."
+      ]
+    },
+    {
+      "update_id": "get-threshold-alerts-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-alerts-get-a-threshold-notification]] \u2014 customer/notification identity, current evaluation state, archived-state behavior, targeted-read scope, configuration response, and timestamp-path conflict",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "get-threshold-idempotency-freshness",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "`POST /v1/customer-alerts/get` is a point-in-time threshold-status read under the API-wide `Idempotency-Key` contract. Identical same-key parameters replay the original result, so that replay is not evidence of a fresh `ok`, `in_alarm`, `evaluating`, or archived-state evaluation. The endpoint page adds no read-specific guarantee for caching, freshness, another or expired key, concurrent calls, or ambiguous-failure recovery. [[source-metronome-api-reference-alerts-get-a-threshold-notification]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "API-wide key guarantees come from the existing idempotency authority; the assigned endpoint contributes the current/live status semantics and its endpoint-specific omissions."
+      ]
+    },
+    {
+      "update_id": "get-threshold-idempotency-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-alerts-get-a-threshold-notification]] \u2014 POST threshold-status read and the boundary that same-key result replay does not establish a fresh evaluation",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "get-threshold-webhook-history-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Authenticity and authoritative data",
+      "proposed_markdown": "The customer-alert get endpoint provides the current threshold evaluation state for one customer/notification pair, not a historical sequence. Its documentation routes threshold-notification history to webhook notifications or event logs and positions live API lookup for targeted rather than bulk monitoring. [[source-metronome-api-reference-alerts-get-a-threshold-notification]]",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": [
+        "Do not imply that webhook delivery alone is an ordered or complete history beyond the separately documented delivery contract."
+      ]
+    },
+    {
+      "update_id": "get-threshold-webhook-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-alerts-get-a-threshold-notification]] \u2014 current-state API lookup versus webhook or event-log history routing and targeted-monitoring scope",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}
