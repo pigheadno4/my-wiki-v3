@@ -66,6 +66,7 @@ Metronome's go-live checklist places three checks in its webhook-and-error-handl
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-create-a-trial]] — trial balance-alert delivery example
 - [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] — asynchronous HTTPS delivery, jittered retries, at-least-once semantics, and idempotent receiver guidance
 - [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]] — offset-specific payload shape, source-event timestamp semantics, and all-configured-webhooks UI behavior
+- [[source-metronome-guides-customers-billing-set-up-notifications-system-notifications]] - system-event publication to all configured webhooks, notification-family payload differences, and lifecycle payload examples
 
 ## Related
 

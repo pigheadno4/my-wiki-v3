@@ -266,6 +266,7 @@ A merchant can create `low_remaining_commit_balance_reached` for a customer, cre
 - [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]] - effective-range incremental coverage, chronological no-look-ahead credit application, negative-total example, and conflicting full-period recommendation
 
 - [[source-metronome-integrations-platform-integrations-sfdc-integration]] - daily Salesforce commit-or-credit replica, schedule and amount fields, current-draft-inclusive burn-down balance, cost basis, and freshness and reconciliation boundaries
+- [[source-metronome-guides-customers-billing-set-up-notifications-system-notifications]] - commit and credit create, edit, archive, segment-start, and segment-end policies with recurring-parent and segment payload context
 
 
 

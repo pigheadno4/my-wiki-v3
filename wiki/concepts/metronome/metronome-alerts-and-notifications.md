@@ -74,6 +74,7 @@ For a parent contract's shared commit, child consumption does not automatically 
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] — customer-configured spend, grouped-dimension, commit-balance, and invoice-total alert patterns with merchant-action boundaries
 
 - [[source-metronome-api-reference-customers-archive-a-customer]] - customer-archive suppression of associated notification triggers, with timing and already-generated or in-flight scope unspecified
+- [[source-metronome-guides-customers-billing-set-up-notifications-system-notifications]] - contract, commit, and credit lifecycle policy catalog; account-wide enablement; payload-family distinction; and prospective-only, immutable-policy boundaries
 
 
 ## Related

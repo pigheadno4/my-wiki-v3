@@ -1,0 +1,170 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "manage-seats-subscriptions-fact",
+      "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Lifecycle",
+      "proposed_markdown": "Seat management after contract creation has two modes. Aggregate subscriptions and shared credit pools use `update_subscription` with either total `quantity` or `quantity_delta`; equal-`starting_at` aggregate updates apply in submission order, and invoice plus recurring-credit effects follow the configured proration and `access_amount`. Seat-based credit subscriptions instead add or remove stable `seat_ids` and can add or remove unassigned capacity. Reassignment without changing total quantity removes the old identity and adds one unassigned seat, leaving capacity available for a later assignee. The guide does not extend aggregate same-time ordering to seat updates or define proration calculations, rounding, atomicity, errors, or recovery. [[source-metronome-guides-pricing-packaging-subscription-manage-seats]]",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Keep the same-starting_at ordering claim limited to aggregate quantity updates.",
+        "Do not infer exact proration, invoice timing, credit timing, atomicity, or recovery."
+      ]
+    },
+    {
+      "update_id": "manage-seats-subscriptions-link",
+      "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] \u2014 aggregate and identity-bearing seat updates, unassigned-seat reassignment, configuration-dependent proration, and seat history and balance routes",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "manage-seats-credits-fact",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Subscription, manual-gate, and trial extensions",
+      "proposed_markdown": "Managing subscription seats changes both access identity and credit balance. Aggregate quantity changes on a recurring-credit subscription release balance according to the recurring credit's proration settings and `access_amount`; seat-based additions or removals bill invoices and release credits according to the subscription and recurring-credit configurations. Seat-balance reads can return all seats or one `seat_id`, and optional ledgers expose grant and burn-down history over a requested time window. This guide does not define the amount formula, rounding, release timing, ledger-entry types, consistency, or recovery. [[source-metronome-guides-pricing-packaging-subscription-manage-seats]]",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": [
+        "Preserve configuration dependence; do not calculate balance amounts from this guide.",
+        "Do not infer ledger schema, consistency, or lifecycle guarantees from the navigation summary."
+      ]
+    },
+    {
+      "update_id": "manage-seats-credits-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] \u2014 seat-change credit release, customer/contract versus seat-scoped threshold boundary, and per-seat current-balance and ledger-history navigation",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "manage-seats-alerts-fact",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Customer-configured controls",
+      "proposed_markdown": "A customer- or contract-level credit-balance threshold explicitly excludes seat-scoped credits. Seat-scoped balance monitoring instead uses `low_remaining_seat_balance_reached` with request-body `seat_filter.seat_group_key`; optional `seat_group_value` narrows the signal or lookup to one seat. Webhook receipt can drive merchant-owned access gating, but the guide does not make the alert an entitlement mutation or define delivery latency, retries, or deduplication. [[source-metronome-guides-pricing-packaging-subscription-manage-seats]]",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Keep general customer or contract thresholds separate from seat-scoped balance evaluation.",
+        "Treat access gating as merchant-owned and preserve the separate webhook-delivery authority."
+      ]
+    },
+    {
+      "update_id": "manage-seats-alerts-link",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] \u2014 exclusion of seat-scoped credits from general balance alerts, seat-filtered threshold monitoring, and merchant-owned access response",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "manage-seats-contracts-fact",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Contract edit history",
+      "proposed_markdown": "After contract creation, subscription capacity is edited through `update_subscription`. Aggregate updates accept total `quantity` or `quantity_delta`, while seat-based updates add or remove identified and unassigned seats; replacing an assignee without changing quantity removes the old seat ID and adds unassigned capacity. The source does not define atomicity across seat operations, validation, error mapping, concurrent-edit behavior, or when the new state becomes visible in contract reads and edit history. [[source-metronome-guides-pricing-packaging-subscription-manage-seats]]",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Do not infer contract-edit atomicity, concurrency, error, or visibility semantics."
+      ]
+    },
+    {
+      "update_id": "manage-seats-contracts-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] \u2014 post-creation aggregate and identity-bearing subscription edits, unassigned-seat reassignment, and contract-state visibility unknowns",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "manage-seats-invoicing-fact",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Calculation and timing boundary",
+      "proposed_markdown": "Subscription seat changes have configuration-dependent billing effects. Aggregate quantity updates are invoiced according to the subscription's contract proration settings; seat-based updates say invoices are billed and credits released according to the subscription and recurring-credit configurations. The guide does not provide a proration formula, rounding, invoice placement or state, finalization, delivery, collection, tax, payment, accounting, or correction behavior. [[source-metronome-guides-pricing-packaging-subscription-manage-seats]]",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Do not turn configuration-dependent billing into an exact amount or invoice-lifecycle guarantee."
+      ]
+    },
+    {
+      "update_id": "manage-seats-invoicing-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] \u2014 configuration-dependent seat-change invoicing and proration, with amount and invoice-lifecycle limits",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "manage-seats-reporting-fact",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Query model",
+      "proposed_markdown": "For merchant-facing seat views, Metronome routes aggregate quantity changes to subscription quantity history and identity-bearing changes to per-`seat_id` history. Its seat-balance list can return current balance for all seats or one seat and can include grant and burn-down ledgers over optional date bounds. The guide does not establish response schemas, pagination, ordering, retention, freshness, snapshot consistency, or reconciliation guarantees; use the dedicated API references for those details. [[source-metronome-guides-pricing-packaging-subscription-manage-seats]]",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Treat the guide as route and purpose authority only; preserve API-level schema and consistency unknowns."
+      ]
+    },
+    {
+      "update_id": "manage-seats-reporting-link",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] \u2014 aggregate and per-seat history routes plus current seat-balance and ledger-view navigation",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

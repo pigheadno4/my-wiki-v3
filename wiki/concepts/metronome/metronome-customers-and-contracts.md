@@ -254,6 +254,7 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - [[source-metronome-api-reference-customers-archive-a-customer]] - production bearer-authenticated customer archival, irreversible lifecycle, audit visibility, contract and invoice effects, alias reservation, request schema, and lifecycle unknowns
 
 - [[source-metronome-integrations-platform-integrations-sfdc-integration]] - Salesforce account linkage and selected-customer sync, customer and ingest-alias replicas, contract lookup and effective-time fields, and linkage and lifecycle unknowns
+- [[source-metronome-guides-customers-billing-set-up-notifications-system-notifications]] - contract create, start, edit, end, and archive event policies; customer and contract payload context; and prospective account-wide enablement
 
 
 
