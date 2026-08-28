@@ -13,14 +13,14 @@ In the SDK guide's pricing flow, a product supplies invoice presentation and con
 
 - The guide lists usage, fixed, composite, and subscription product types.
 - Usage products vary with reported usage and each references exactly one previously created billable metric; one metric can support multiple products.
-- Composite products apply a percentage charge over applicable products, subscription products charge recurring fees, and fixed products support scheduled charges, commits, and credits.
+- Composite products apply a percentage charge over applicable products selected by product ID or product tag, and configuration can optionally include spend from nested composite products; subscription products charge recurring fees; and fixed products support scheduled charges, commits, and credits. The guide does not define composite recursion, cycle handling, percentage-calculation order, overlapping-selector behavior, whether nested-composite inclusion or selectors can be edited after creation, or historical replay.
 - Products determine charge mechanics and invoice presentation, but price ownership remains downstream: usage, composite, and subscription prices live on rate cards and can be modified on contracts; fixed-product prices live on contracts.
 - `presentation_group_key` can group invoice line items by an event-property value.
 - Pricing and presentation group keys on a product must be a subset of the underlying metric's group keys; both can be used together.
 - When both presentation and pricing dimensions are required, the metric must define one compound group key containing every property used by either product key.
 - `quantity_conversion` can multiply or divide displayed quantities, such as converting individual tokens to millions of tokens.
 - A rounding conversion can change display granularity, such as rounding seconds to minutes.
-- Product edits are effective-dated and can start in the future or apply retroactively from a past `Starting at` value. Name, tags, metric, conversion, rounding, and API-only group-key fields are editable while billing is active, but product type is immutable; correcting it requires a replacement product and archival of the original.
+- Products remain editable while actively used for customer billing, and product changes generally use a `Starting at` effective time that may be future-scheduled or retroactive. The guide expressly enumerates name, tags, billable metric, quantity conversion, rounding, and API-only group-key edits only for usage products; it does not enumerate editable fields for composite, subscription, or fixed products. Product type is immutable, so correcting it requires a replacement product and archival of the original.
 - Product tags can also store internal catalog identifiers and select products for composites, commits, and discounts.
 
 
@@ -41,6 +41,8 @@ Bearer-authenticated `POST /v1/contract-pricing/products/list` returns a cursor-
 
 
 ## Rate cards and rates
+
+In private preview, a managed AI rate card for [[metronome-token-billing]] creates selected-model billable metrics, products, and rates from configured markups and automatically adds newly released models at the default markup. Provider-driven repricing for changed underlying rates is only described as coming soon; update timing, effective dating, removal, fallback, rounding, and reconciliation remain undocumented. [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]]
 
 The deprecated Plan-detail read can expose minimum and overage-rate configuration. Minimum entries require a value, credit type, and `start_period`; overage entries require `to_fiat_conversion_factor`, fiat and source credit types, and `start_period`. The shared `start_period` description counts billing periods before the charge applies. This read does not establish current Contract pricing, product-rate selection, precedence, denomination, calculation, invoice outcome, or migration behavior. [[source-metronome-api-reference-plans-get-plan-details]]
 

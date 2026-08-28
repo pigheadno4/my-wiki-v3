@@ -122,6 +122,8 @@ Metronome's go-live checklist recommends queueing usage events, sampling `search
 
 ## Sources
 
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] - Token Billing event type, model/provider rate selection, per-token-type usage properties, and the Events-page metric-match verification boundary
+
 - [[source-metronome-api-reference-usage-search-events]] — 34-day transaction-ID search, sampling-only rate-limit boundary, event/customer/metric matching diagnostics, duplicate flag, and revenue-leakage guarantee limits
 
 - [[source-github-ai]] - agent workflow guidance for event design, deterministic IDs, batching, migration, and the numeric-property contradiction

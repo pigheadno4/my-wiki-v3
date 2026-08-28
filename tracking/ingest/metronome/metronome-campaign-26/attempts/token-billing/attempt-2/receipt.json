@@ -1,0 +1,161 @@
+{
+  "job_id": "token-billing",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome Token Billing\"\ntype: source\ndate_ingested: 2026-08-28\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/pricing-packaging/billing-model-guides/token-billing\"\nraw_files:\n  - \"metronome/guides/pricing-packaging/billing-model-guides/token-billing-2026-08-28.md\"\ntags: [metronome, token-billing, ai, usage-based-billing, rate-cards, pricing]\n---\n\n## Overview\n\nThis private-preview guide describes Metronome's managed Token Billing workflow for passing LLM-token costs to customers with a markup. It connects managed AI products and rates on a rate card to optional custom pricing units and package allowances, customer contracts, and token-usage events.\n\n## Query-critical facts\n\n- Token Billing is in private preview and requires access through Metronome support or the waitlist.\n- Enabling managed AI-provider pricing on a rate card lets an operator select models and enter markup percentages. Metronome then creates the managed AI billable metrics, products, and rates rather than requiring those objects to be created separately.\n- Token Billing does not support non-USD fiat because the documented provider prices are denominated in USD. A merchant may instead price in a custom unit by defining a USD-to-custom-unit conversion; the custom unit is not another fiat-currency path.\n- The rate card's default markup applies when newly released models are added automatically. Automatic rate-card repricing after a provider changes an existing model's underlying price is described only as coming soon, so this page does not establish that behavior today.\n- The worked credit-based plan uses a Package to combine a monthly custom-unit allocation with the rate card, then provisioning by package creates a customer-specific contract. The guide also points to payment-gated incremental credits and contract overrides as optional extensions.\n- Usage events use `event_type: token-billing`; token counts are separated into input, cached input, output, and cache-write properties, while `model` and `provider` select the applicable rate. The guide instructs operators to confirm in Events that an event matched a billable metric; submission alone is not documented as proof of rating or billing.\n\n## Material boundaries and unknowns\n\n- This is a product workflow and worked example, not a complete schema or operational contract for metric creation, pricing calculations, package or contract provisioning, event validation, rating, invoicing, or recovery. The complete UI steps, API and SDK examples, field names, and token-type details remain in raw.\n- The documented automation covers adding newly released models at the configured default markup. The page does not define catalog-update latency, model removal or renaming, fallback behavior, rate effective time, precision or rounding, provider-cost verification, margin guarantees, or reconciliation after either model or provider-price changes.\n- The contract-create and ingest examples are POST operations and omit `Idempotency-Key`. The separate API-wide authority applies that header to POST requests, while usage `transaction_id` is a distinct ingest-deduplication mechanism; this guide adds no endpoint-specific retry, concurrency, partial-success, or ambiguous-failure recovery guarantee.\n- The fictional Designr amounts, identifiers, models, markup, and credit allocation are illustrative. They do not establish recommended economics, provider availability, or a runnable production configuration.\n\n## Raw-detail coverage map\n\n| Detail category | Exact evidence route |\n| --- | --- |\n| Private-preview access, use case, and managed rate-card setup in USD or a custom pricing unit | [[raw/metronome/guides/pricing-packaging/billing-model-guides/token-billing-2026-08-28|complete raw snapshot]] |\n| Model selection, default and per-model markups, conversion setup, and model/token-type rate verification | [[raw/metronome/guides/pricing-packaging/billing-model-guides/token-billing-2026-08-28|complete raw snapshot]] |\n| Package allowance, contract provisioning examples across SDKs, incremental-credit route, and overrides | [[raw/metronome/guides/pricing-packaging/billing-model-guides/token-billing-2026-08-28|complete raw snapshot]] |\n| Event payloads across SDKs, token property meanings and support note, metric-match check, and model-update boundary | [[raw/metronome/guides/pricing-packaging/billing-model-guides/token-billing-2026-08-28|complete raw snapshot]] |\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-token-billing]], [[metronome-usage-based-billing]], [[metronome-products-and-rate-cards]], [[metronome-billable-metrics]], [[metronome-event-ingestion]]\n- Secondary concepts: [[metronome-currencies-and-custom-pricing-units]], [[metronome-packages-and-aliases]], [[metronome-customers-and-contracts]], [[metronome-api-idempotency]]\n- Related sources: [[source-metronome-api-reference-idempotency]], [[source-metronome-api-reference-usage-ingest-events]], [[source-metronome-guides-implement-metronome-core-concepts-packages-overview]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/pricing-packaging/billing-model-guides/token-billing-2026-08-28|2026-08-28 snapshot - private-preview managed token pricing, markup and custom-unit setup, package provisioning, token-event tracking, and model-update boundary]]\n",
+  "quotes": [
+    {
+      "text": "Many companies pass through the cost of LLM tokens to their customers, adding a markup to remain margin-positive. This guide describes how to bill customers for AI usage by token consumption in Metronome, including:\n\n* Selecting common models from Anthropic, OpenAI, Google, and other providers\n* Creating billable metrics, products, and rates based on your configured markup percentage(s)\n* Automatically syncing newly released models to your rate card at your configured markup",
+      "location": "lines 11-15, introduction"
+    },
+    {
+      "text": "<Info>\n  **Private preview**\n\n  Token Billing is in private preview. To request access, contact us via the [Metronome support portal](https://support.metronome.com/) or [sign up for the waitlist](https://docs.stripe.com/billing/token-billing).\n</Info>\n\n## Use case\n\nFictional company Designr is an AI-powered design tool. Customers use Designr to generate design assets, including prototypes, mockups, and images. Designr uses common AI models and charges customers a 10% markup on underlying model costs.\n\nDesignr offers several plan tiers. Its Pro Plan includes 200 Designr Credits -- a custom pricing unit -- each month. If a customer uses all of their Designr Credits, they can purchase additional credits during the month.\n\n## Set up your rate card\n\nIn Metronome, a rate card is your centralized price book, where you define pricing for all products. When you use Token Billing, Metronome automatically creates billable metrics, products, and rates for managed AI products based on the markup you enter. You do not need to create these separately.\n\nBecause Designr uses a custom pricing unit, Designr Credits, first navigate to **Offering > Pricing Units > Custom Pricing Units**. Click **+ Add**, then create a custom pricing unit named **Designr Credits**. Next, create your rate card.\n\n> **Note:** When using Token Billing, non-USD fiat currencies are not supported, as provider prices are denominated in USD.",
+      "location": "lines 17-35, private-preview callout, use case, and rate-card setup"
+    },
+    {
+      "text": "1. Under **Default markup for future AI models**, enter the markup percentage that should automatically apply when new models are added to the rate card.\n2. In the upper-right corner of the AI models section, select **USD**. In the dropdown, select the **Designr Credits** custom pricing unit.\n3. In the modal, define a conversion rate between USD and Designr Credits.\n4. Expand each model to verify its distinct rates by author, provider, and token type.",
+      "location": "lines 48-51, Set rates - Custom Pricing Unit"
+    },
+    {
+      "text": "Because Designr\u2019s Pro Plan includes an allocation of 200 Designr Credits per month, you can create a Package to encode the credit allocation alongside the rate card you just created. In Metronome, [Packages](/guides/implement-metronome/core-concepts/packages-overview) define customer-facing offerings, such as Pro Plan or Max Plan, and simplify assigning PLG customers to these offerings.\n\n## Provision customers\n\nYou are now ready to assign customers to the Pro Plan. Provisioning a customer with a package creates a contract: a customer-specific agreement that applies the terms from the package.\n\nUse the API call below to provision a customer with the Pro Plan:\n\n<CodeGroup>\n  ```bash cURL theme={null}\n  curl --request POST \\\n    --url https://api.metronome.com/v1/contracts/create \\\n    --header \"Authorization: Bearer $METRONOME_API_TOKEN\" \\\n    --header \"Content-Type: application/json\" \\\n    --data '{\n      \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n      \"package_alias\": \"designr_pro\",\n      \"starting_at\": \"2026-08-28T00:00:00.000Z\"\n    }'\n  ```",
+      "location": "lines 63-82, package context and contract-create POST cURL example with complete request headers"
+    },
+    {
+      "text": "Ensure that your events follow the format below, with `event_type` set to `token-billing`.\n\n<CodeGroup>\n  ```bash cURL theme={null}\n  curl --request POST \\\n    --url https://api.metronome.com/v1/ingest \\\n    --header \"Authorization: Bearer $METRONOME_API_TOKEN\" \\\n    --header \"Content-Type: application/json\" \\\n    --data '[{\n      \"transaction_id\": \"b1d52889-f8f7-4aee-a41f-f2eb89789ece\",\n      \"timestamp\": \"2026-08-24T18:38:50.597Z\",\n      \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n      \"event_type\": \"token-billing\",\n      \"properties\": {\n        \"model\": \"anthropic/claude-fable-5\",\n        \"provider\": \"anthropic\",\n        \"input_tokens\": 233,\n        \"cached_input_tokens\": 1459,\n        \"output_tokens\": 83,\n        \"cached_write_tokens\": 210\n      }\n    }]'\n  ```\n\n  ```python Python theme={null}\n  response = client.v1.usage.ingest(\n    usage=[\n      {\n        \"transaction_id\": \"b1d52889-f8f7-4aee-a41f-f2eb89789ece\",\n        \"timestamp\": \"2026-08-24T18:38:50.597Z\",\n        \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n        \"event_type\": \"token-billing\",\n        \"properties\": {\n          \"model\": \"anthropic/claude-fable-5\",\n          \"provider\": \"anthropic\",\n          \"input_tokens\": 233,\n          \"cached_input_tokens\": 1459,\n          \"output_tokens\": 83,\n          \"cached_write_tokens\": 210\n        }\n      }\n    ]\n  )\n  ```\n\n  ```javascript Node theme={null}\n  async function main() {\n    await client.v1.usage.ingest({\n      usage: [{\n        transaction_id: 'b1d52889-f8f7-4aee-a41f-f2eb89789ece',\n        timestamp: '2026-08-24T18:38:50.597Z',\n        customer_id: '13117714-3f05-48e5-a6e9-a66093f13b4d',\n        event_type: 'token-billing',\n        properties: {\n          model: 'anthropic/claude-fable-5',\n          provider: 'anthropic',\n          input_tokens: 233,\n          cached_input_tokens: 1459,\n          output_tokens: 83,\n          cached_write_tokens: 210\n        }\n      }],\n    });\n  }\n\n  main();\n  ```\n\n  ```ruby Ruby theme={null}\n  result = metronome.v1.usage.ingest(\n      usage: [\n        {\n          transaction_id: 'b1d52889-f8f7-4aee-a41f-f2eb89789ece',\n          timestamp: '2026-08-24T18:38:50.597Z',\n          customer_id: '13117714-3f05-48e5-a6e9-a66093f13b4d',\n          event_type: 'token-billing',\n          properties: {\n            model: 'anthropic/claude-fable-5',\n            provider: 'anthropic',\n            input_tokens: 233,\n            cached_input_tokens: 1459,\n            output_tokens: 83,\n            cached_write_tokens: 210\n          }\n        }\n      ]\n  )\n\n  puts(result)\n  ```\n\n  ```go Go theme={null}\n  err := client.V1.Usage.Ingest(context.TODO(), metronome.UsageIngestParams{\n    Usage: []metronome.UsageIngestParamsUsage{{\n      TransactionID: metronome.F(\"b1d52889-f8f7-4aee-a41f-f2eb89789ece\"),\n      Timestamp:     metronome.F(\"2026-08-24T18:38:50.597Z\"),\n      CustomerID:    metronome.F(\"13117714-3f05-48e5-a6e9-a66093f13b4d\"),\n      EventType:     metronome.F(\"token-billing\"),\n      Properties: metronome.F(map[string]interface{}{\n        \"model\":               \"anthropic/claude-fable-5\",\n        \"provider\":            \"anthropic\",\n        \"input_tokens\":        233,\n        \"cached_input_tokens\": 1459,\n        \"output_tokens\":       83,\n        \"cached_write_tokens\": 210,\n      }),\n    }},\n  })\n  if err != nil {\n    panic(err.Error())\n  }\n  ```\n</CodeGroup>\n\nThe token usage fields track the number of tokens consumed by type:\n\n* `input_tokens`: Tokens in the prompt\n* `cached_input_tokens`: Cached prompt tokens\n* `output_tokens`: Tokens in the response\n* `cached_write_tokens`: Cache-write tokens. Supported for Anthropic models and OpenAI GPT-5.6+ models only\n\nThe `model` and `provider` fields match each token count to the correct rate.\n\nSend events in the correct format to Metronome\u2019s `/ingest` endpoint. Then navigate to the **Events** page to confirm that the events have matched a billable metric.\n\n## Token price updates\n\nWhen model providers release new models, Metronome automatically updates your rate card to include those models at the default markup specified on the rate card.\n\nComing soon: Metronome will support automatically updating prices on your rate card when a provider changes its underlying rates.",
+      "location": "lines 129-258, event_type instruction, usage-ingest examples including cURL POST fields and headers, token-field interpretation, metric-match check, and Token price updates"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "token-billing-new-primary-concept",
+        "target_path": "wiki/concepts/metronome/metronome-token-billing.md",
+        "update_kind": "durable_fact",
+        "anchor": "new concept page",
+        "proposed_markdown": "Create a provider-specific concept defining Metronome Token Billing as a private-preview managed AI-pricing workflow: managed rate cards generate AI billable metrics, products, and rates from configured markups; selected token-usage events map model, provider, and token type to those rates; non-USD fiat is unsupported, while a USD-to-custom-unit conversion can support credit-denominated plans. Preserve that newly released models are auto-added at the default markup but automatic repricing for provider changes is only coming soon. Link reciprocally to [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]], [[metronome-usage-based-billing]], [[metronome-products-and-rate-cards]], and [[metronome-event-ingestion]].",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not describe private preview as generally available.",
+          "Do not collapse automatic addition of new models into automatic repricing when providers change existing rates.",
+          "Treat the Designr economics, models, identifiers, and allocation as illustrative rather than recommended or guaranteed."
+        ]
+      },
+      {
+        "update_id": "token-billing-usage-based-billing-route",
+        "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Pricing and packaging patterns",
+        "proposed_markdown": "Add a concise umbrella-level Token Billing pattern and reciprocal links without repeating the product-specific concept: [[metronome-token-billing]] is a distinct private-preview managed token-cost-plus-markup workflow. It can create managed AI billing objects from configured markups; non-USD fiat is unsupported, while a USD-to-custom-unit conversion supports custom credit-denominated pricing. Newly released models are added at the default markup, but provider-price refresh for existing models is only described as coming soon. The guide does not establish catalog-update timing, removal or fallback behavior, precision or rounding, provider-cost verification, margin guarantees, reconciliation, or endpoint recovery semantics. [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Keep this as an umbrella pattern and leave detailed workflow, event-property, package, and API examples to [[metronome-token-billing]].",
+          "Do not describe private preview as generally available or custom pricing units as non-USD fiat support.",
+          "Keep automatic addition of newly released models distinct from the coming-soon provider-price refresh, and preserve undocumented operational boundaries."
+        ]
+      },
+      {
+        "update_id": "token-billing-products-rate-cards-route",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Rate cards and rates",
+        "proposed_markdown": "Add a bounded Token Billing paragraph and reciprocal link: in private preview, a managed AI rate card creates selected-model billable metrics, products, and rates from configured markups and automatically adds newly released models at the default markup. Provider-driven repricing for changed underlying rates is only described as coming soon; update timing, effective dating, removal, fallback, rounding, and reconciliation remain undocumented. [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Keep new-model catalog additions distinct from future provider-price synchronization.",
+          "The guide does not establish provider catalog completeness, price accuracy, margin outcomes, or rate-change lifecycle semantics."
+        ]
+      },
+      {
+        "update_id": "token-billing-event-ingestion-route",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] - Token Billing event type, model/provider rate selection, per-token-type usage properties, and the Events-page metric-match verification boundary",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "The worked payload does not replace the complete ingest schema or establish that submission, dashboard visibility, or metric matching proves rating, invoicing, or collection.",
+          "Keep usage transaction-ID deduplication distinct from API-wide POST Idempotency-Key behavior."
+        ]
+      },
+      {
+        "update_id": "token-billing-billable-metrics-route",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] - private-preview managed creation of AI billable metrics from configured model markups and event-side verification that Token Billing usage matched a metric",
+        "quote_indexes": [
+          1,
+          4
+        ],
+        "warnings": [
+          "This guide does not expose the generated metric schemas, matching filters, aggregation behavior, lifecycle, or recovery; retain dedicated billable-metric and ingest authorities for those mechanics."
+        ]
+      },
+      {
+        "update_id": "token-billing-custom-pricing-unit-route",
+        "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] - Token Billing's non-USD-fiat restriction and USD-to-custom-unit conversion route for credit-denominated AI pricing",
+        "quote_indexes": [
+          1,
+          2
+        ],
+        "warnings": [
+          "Also retain the source body's directly documented non-USD-fiat restriction; a custom pricing unit is not another fiat currency.",
+          "The guide does not define conversion precision, rounding, effective dating, replacement, or invoice recalculation."
+        ]
+      },
+      {
+        "update_id": "token-billing-packages-route",
+        "target_path": "wiki/concepts/metronome/metronome-packages-and-aliases.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] - illustrative credit-allocation package layered on a managed AI rate card and package-based customer contract provisioning",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "Secondary route: this source does not define the complete package schema, restricted package-mode provisioning contract, versioning, or alias lifecycle; retain the dedicated package guide as authority."
+        ]
+      },
+      {
+        "update_id": "token-billing-idempotency-route",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] - contract-create and usage-ingest POST examples that omit Idempotency-Key, with event transaction identity remaining a separate deduplication mechanism",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": [
+          "The Token Billing guide adds no endpoint-specific retry, concurrency, partial-success, or ambiguous-failure recovery semantics; retain the API-wide idempotency source as authority."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/pricing-packaging/billing-model-guides/token-billing-2026-08-28.md",
+  "raw_sha256": "0e2dd11fd2dfbcfb1c6f9727722e23e885ec4984d09f8d674584f705b0f6533e",
+  "status": "candidate_ready"
+}

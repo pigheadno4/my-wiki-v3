@@ -66,6 +66,8 @@ The guide does not define custom-unit creation APIs, precision, conversion formu
 
 ## Sources
 
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] - Token Billing's non-USD-fiat restriction and USD-to-custom-unit conversion route for credit-denominated AI pricing
+
 - [[source-metronome-api-reference-settings-list-pricing-units]] — bearer-authenticated pricing-unit enumeration, USD (cents) identifier, cursor pagination, and successful response schema
 
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] — $10M, $200K, and $500K hierarchy commitment labels whose paired numeric amounts conflict with the USD-cent convention

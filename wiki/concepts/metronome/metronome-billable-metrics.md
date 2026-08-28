@@ -96,6 +96,8 @@ Dimension-scoped spend alerts require their `group_values` key to be a group key
 
 ## Sources
 
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] - private-preview managed creation of AI billable metrics from configured model markups and event-side verification that Token Billing usage matched a metric
+
 - [[source-metronome-guides-get-started-api-quickstart]] — metric placement in the onboarding flow, event-type and property matching, group-key decisions, creation-time immutability, and stale-event test boundary
 
 - [[source-metronome-api-reference-usage-search-events]] — sampled transaction-ID retrieval, optional matched-metric configuration diagnostics, 34-day occurrence window, heavy-rate-limit boundary, and non-exhaustive leakage evidence

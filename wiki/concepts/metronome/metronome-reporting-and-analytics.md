@@ -63,6 +63,7 @@ Metronome defines one Row Exported as one row written to a configured Data Expor
 
 ## Global cautions
 
+- The 2026-08-28 database reference documents `contracts_commits.cost_basis` directly as amount paid for a commit divided by credit granted. The broader `contracts_balances` table includes postpaid, prepaid, and credit rows but retains that commit-specific `cost_basis` wording; applicability and denominator meaning for credit rows, denominator-zero behavior, and accounting treatment are not documented. The snapshot also adds created-commit duration, rollover, and rate fields to prepaid balance-threshold exports and nullable customer scoping to alert exports. Treat these as versioned schema additions and consult the current raw field catalog before production queries. [[source-metronome-guides-reporting-insights-data-export-database-reference]]
 - Because of the export methodology, every column may appear nullable in the destination schema even when its business meaning is normally required.
 - Deprecated columns remain present in several tables and are documented as expected to be null.
 - Draft invoices can be `DRAFT_INCOMPLETE`, with no total or line items until a later snapshot hydrates them.

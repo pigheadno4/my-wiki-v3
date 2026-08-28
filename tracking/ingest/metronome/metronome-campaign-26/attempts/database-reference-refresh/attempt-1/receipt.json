@@ -1,0 +1,93 @@
+{
+  "job_id": "database-reference-refresh",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Data Export Database Reference\"\ntype: source\ndate_ingested: 2026-08-28\ncanonical_url: \"https://docs.metronome.com/guides/reporting-insights/data-export/database-reference\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/reporting-insights/data-export/database-reference-2026-08-28.md\"\n  - \"metronome/guides/reporting-insights/data-export/database-reference-2026-07-13.md\"\ntags: [metronome, data-export, warehouse-schema, invoices, contracts]\n---\n\n## Overview\n\nThis reference routes warehouse consumers across Metronome's exported schema. Use it to choose the table family and row grain, then follow the complete retained raw page for exact columns, nested JSON types, enumerations, and field-level caveats.\n\n## Key takeaways\n\n- Destination columns may all appear nullable because of the export methodology; generated warehouse nullability does not establish business optionality.\n- Exported identity and row grain vary by table: object IDs, metadata IDs, snapshot IDs or timestamps, versions, effective-time bounds, and watermarks can all matter to correct selection.\n- Finalized invoices, daily draft invoice snapshots, finalized breakdowns, and daily month-to-date draft breakdown snapshots are distinct reporting grains.\n- Contract exports span snapshot-style object tables and effective or versioned records; `contracts_commits` is narrower than the broader balance domain.\n- The 2026-08-28 snapshot adds material fields and scope signals without changing this page's role as a router: consult the current raw schema before production queries.\n\n## Table-family and row-grain map\n\n| Family | Navigate here for | Grain or selection signal to verify in raw |\n| --- | --- | --- |\n| Core entities | Billable metrics, credit types, deduplicated raw events, and customers | Stable entity or event identity; customer aliases can join to events |\n| Finalized invoicing | `invoice` and `line_item` | `FINALIZED` or `VOID` invoices and their line items; these records are documented as no longer changing |\n| Draft invoicing | `draft_invoice` and `draft_line_item` | Daily point-in-time rows keyed by invoice or line-item identity plus snapshot time; `DRAFT_INCOMPLETE` can lack totals and line items until a later snapshot |\n| Invoice breakdowns | Finalized and draft invoice/line-item breakdown pairs | Finalized rows export incrementally; draft snapshots contain month-to-date breakdown periods and use breakdown, snapshot, and watermark fields |\n| Contract state and balances | Contracts, commits, balances, recurring configurations, filters, thresholds, subscriptions, charges, and hierarchy | Snapshot IDs, object IDs, effective bounds, versions, and nested schedule or ledger identity are table-specific |\n| Contract changes and pricing | Overrides, transitions, edits, amendments, rate cards, entries, and product-list-item versions | Transition or amendment identity, effective intervals, versions, and snapshots must be selected deliberately |\n| Other domains | Packages, payments, alerts/history, and client-specific metadata | Follow each table's object identity and scope notes; the Payments section's Private Beta statement is scoped to Metronome invoicing |\n\nThis map is not a substitute for the complete table list, column catalog, or nested type definitions.\n\n## Selection and completeness boundaries\n\n### Nullability and schema shape\n\nAll exported columns may appear nullable in the destination schema. Several fields are also explicitly deprecated and expected to be null, so consumers should use the table documentation rather than generated types to decide whether a value is optional, deprecated, or temporarily absent. The page is a rendered warehouse schema reference rather than an OpenAPI object contract and does not document unknown-column runtime behavior as a closed-schema guarantee.\n\n### Invoice snapshots and completeness\n\nDraft invoice rows are calculated once per day through the billing period: `updated_at` is calculation time while `snapshot_time` aligns to start of day UTC. A `DRAFT_INCOMPLETE` row signals that an invoice exists but has not been fully computed; a later snapshot is expected to hydrate it. Draft breakdown snapshots contain all month-to-date periods through their snapshot so backdated usage and mid-period pricing changes can be reflected in the latest snapshot. Optional zero-value or zero-quantity breakdown filtering is enabled through the Metronome support portal.\n\n### Contract identity, scope, and time selection\n\nContract tables mix snapshot IDs with object IDs, nested JSON schedules and ledgers, effective ranges, and explicit versions. The two usage-filter exports publish different time-selection recipes, so consumers should follow the exact table-specific instructions rather than apply one generic latest-row rule. `contracts_commits` contains only contract-level commits and excludes customer-level commits or credits and contract-level credits; `contracts_balances` covers the broader credit-or-commit balance domain.\n\n## 2026-08-28 schema-change watch\n\n- `contracts_commits` and `contracts_balances` now document `cost_basis` as the ratio of amount paid for a commit to credit granted. The reference does not define denominator-zero behavior or make an accounting-policy claim.\n- `contracts_prepaid_balance_threshold_configurations` now exposes created-commit duration value and unit, rollover fraction, and rate type; exact defaults and allowed values remain in the raw field catalog.\n- `alert.customer_id` is now documented: a null value means the configured alert applies to all customers. This is export-row scope, not a delivery, evaluation, or webhook guarantee.\n- `contracts_transitions.type` is now described with renewal as an example rather than as an exhaustive two-value list. Do not infer a closed transition enum from the current reference.\n\n## Raw-detail coverage map\n\nUse the 2026-08-28 raw page for the complete table and column catalog; precise ID, environment, snapshot, version, effective-time, watermark, and update fields; nested access, invoice, recurring, subscription, schedule, rate, specifier, ledger, gateway, and metadata types; deprecated-field notes; status and enum literals; invoice-breakdown filter choices; and every table-specific nullability or scope caveat. The 2026-07-13 raw page remains available for schema-delta and historical wording checks.\n\n## Change history\n\n- 2026-08-28: Refreshed from the new collection snapshot; preserved prior raw history, updated the invoice-breakdown filter contact route, added schema-change navigation for commit/balance cost basis, prepaid-threshold commit fields, and alert customer scope, and removed any implication that transition types form a closed two-value set.\n- 2026-07-14: Initial ingest from the 2026-07-13 collection snapshot; strengthened schema-navigation, row-grain, nullability, and beta-scope language.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concept: [[metronome-reporting-and-analytics]]\n- Related domains: [[metronome-event-ingestion]], [[metronome-invoicing]], [[metronome-customers-and-contracts]], [[metronome-credits-and-commits]], [[metronome-products-and-rate-cards]], [[metronome-alerts-and-notifications]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/reporting-insights/data-export/database-reference-2026-08-28|2026-08-28 snapshot - complete current table, column, and nested-type reference]]\n- [[raw/metronome/guides/reporting-insights/data-export/database-reference-2026-07-13|2026-07-13 snapshot - prior complete table and column reference]]\n",
+  "quotes": [
+    {
+      "text": "Due to our export methodology, all columns may appear as nullable in your destination schema.",
+      "location": "lines 15-19, NULLABLE COLUMNS note"
+    },
+    {
+      "text": "The draft invoice data exports in snapshots that contains all month-to-date breakdown periods up to the snapshot timestamp.",
+      "location": "lines 231-234, Invoice breakdowns introduction"
+    },
+    {
+      "text": "The ratio of the amount paid for the commit to the amount of credit granted",
+      "location": "lines 454 and 682, contracts_commits.cost_basis and contracts_balances.cost_basis"
+    },
+    {
+      "text": "Fraction of the created commit's unused balance that will roll over on contract transitions. Between 0 and 1. If not set, defaults to 1 (100%)",
+      "location": "line 1136, contracts_prepaid_balance_threshold_configurations.commit_rollover_fraction"
+    },
+    {
+      "text": "The customer ID associated with the alert. If null, the configured alert applies to all customers.",
+      "location": "line 1587, alert.customer_id"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "database-reference-refresh-reporting-schema-delta",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Global cautions",
+        "proposed_markdown": "- The 2026-08-28 database reference adds `cost_basis` to both contract commits and balances, created-commit duration/rollover/rate fields to prepaid balance-threshold exports, and nullable customer scoping to alert exports. Treat these as versioned schema additions and consult the current raw field catalog before production queries. [[source-metronome-guides-reporting-insights-data-export-database-reference]]",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw defines cost_basis as a ratio but does not define denominator-zero behavior or accounting treatment.",
+          "All destination columns may appear nullable, so warehouse nullability does not establish business optionality."
+        ]
+      },
+      {
+        "update_id": "database-reference-refresh-credits-commits-export-fields",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Prepaid balance thresholds",
+        "proposed_markdown": "The 2026-08-28 Data Export reference carries `cost_basis` on both `contracts_commits` and the broader `contracts_balances` table, defining it as amount paid divided by credit granted. Its prepaid balance-threshold configuration export also exposes created-commit duration value and unit, rollover fraction, and rate type. These are warehouse schema facts, not proof that every mutation surface accepts the same fields or that the ratio supplies an accounting policy. [[source-metronome-guides-reporting-insights-data-export-database-reference]]",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not infer mutation support, lifecycle behavior, or accounting treatment from exported fields alone."
+        ]
+      },
+      {
+        "update_id": "database-reference-refresh-contract-threshold-export-fields",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Prepaid threshold configuration",
+        "proposed_markdown": "The 2026-08-28 warehouse schema adds created-commit duration value and unit, rollover fraction, and rate type to `contracts_prepaid_balance_threshold_configurations`. This export surface helps inspect configured contract state but does not establish edit-request support, propagation timing, or payment recovery behavior. [[source-metronome-guides-reporting-insights-data-export-database-reference]]",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "Keep exported-state visibility separate from the threshold mutation and payment-gate lifecycle authorities."
+        ]
+      },
+      {
+        "update_id": "database-reference-refresh-alert-export-scope",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Notification types and lifecycle",
+        "proposed_markdown": "The Data Export `alert` table now documents nullable `customer_id`: a null value means the configured alert applies to all customers. This identifies warehouse row scope only; it does not establish evaluation cadence, webhook delivery, ordering, or reset behavior. [[source-metronome-guides-reporting-insights-data-export-database-reference]]",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Do not generalize export-row scope into notification-delivery or customer-evaluation guarantees."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/reporting-insights/data-export/database-reference-2026-08-28.md",
+  "raw_sha256": "bac617a1c66c789869aa6ab18f9ff36927cb6261752e0003cdc381603bf4e7d9",
+  "status": "candidate_ready"
+}

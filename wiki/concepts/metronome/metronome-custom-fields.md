@@ -32,6 +32,8 @@ Uniqueness is intended for foreign entities that have a one-to-one relationship 
 
 A Product custom field can propagate to the associated invoice line item. The overview's `stripe_product_id` example uses this propagation to link an invoice line item to a Stripe product when creating invoices in Stripe.
 
+For native Stripe Tax, a Product custom field named `stripe_product_id` maps the external Stripe product onto `invoiceitem.price.product`. Multiple Metronome products can intentionally share one Stripe product when they share a tax code, so the guide prohibits `enforce_uniqueness`; it also creates the field on `Product` while the mapping row names `ContractProduct`, leaving that entity-label relationship unresolved. [[source-metronome-integrations-tax-integrations-stripe-tax]]
+
 
 The single-invoice response can expose optional invoice-level `custom_fields`. That property declares an object with unrestricted `additionalProperties: true` and no value schema, while client-group annotations qualify its documented availability. This endpoint does not establish key or value types, limits, redaction, permissions, freshness, configured-field absence, or general availability for that invoice-level map.
 

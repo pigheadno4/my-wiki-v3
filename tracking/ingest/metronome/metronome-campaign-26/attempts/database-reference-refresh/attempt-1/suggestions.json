@@ -1,0 +1,63 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "database-reference-refresh-reporting-schema-delta",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Global cautions",
+      "proposed_markdown": "- The 2026-08-28 database reference adds `cost_basis` to both contract commits and balances, created-commit duration/rollover/rate fields to prepaid balance-threshold exports, and nullable customer scoping to alert exports. Treat these as versioned schema additions and consult the current raw field catalog before production queries. [[source-metronome-guides-reporting-insights-data-export-database-reference]]",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The raw defines cost_basis as a ratio but does not define denominator-zero behavior or accounting treatment.",
+        "All destination columns may appear nullable, so warehouse nullability does not establish business optionality."
+      ]
+    },
+    {
+      "update_id": "database-reference-refresh-credits-commits-export-fields",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Prepaid balance thresholds",
+      "proposed_markdown": "The 2026-08-28 Data Export reference carries `cost_basis` on both `contracts_commits` and the broader `contracts_balances` table, defining it as amount paid divided by credit granted. Its prepaid balance-threshold configuration export also exposes created-commit duration value and unit, rollover fraction, and rate type. These are warehouse schema facts, not proof that every mutation surface accepts the same fields or that the ratio supplies an accounting policy. [[source-metronome-guides-reporting-insights-data-export-database-reference]]",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "Do not infer mutation support, lifecycle behavior, or accounting treatment from exported fields alone."
+      ]
+    },
+    {
+      "update_id": "database-reference-refresh-contract-threshold-export-fields",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Prepaid threshold configuration",
+      "proposed_markdown": "The 2026-08-28 warehouse schema adds created-commit duration value and unit, rollover fraction, and rate type to `contracts_prepaid_balance_threshold_configurations`. This export surface helps inspect configured contract state but does not establish edit-request support, propagation timing, or payment recovery behavior. [[source-metronome-guides-reporting-insights-data-export-database-reference]]",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Keep exported-state visibility separate from the threshold mutation and payment-gate lifecycle authorities."
+      ]
+    },
+    {
+      "update_id": "database-reference-refresh-alert-export-scope",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Notification types and lifecycle",
+      "proposed_markdown": "The Data Export `alert` table now documents nullable `customer_id`: a null value means the configured alert applies to all customers. This identifies warehouse row scope only; it does not establish evaluation cadence, webhook delivery, ordering, or reset behavior. [[source-metronome-guides-reporting-insights-data-export-database-reference]]",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Do not generalize export-row scope into notification-delivery or customer-evaluation guarantees."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

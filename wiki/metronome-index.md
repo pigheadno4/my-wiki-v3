@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 225 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 151 |
-| Raw pages without source summaries | 80 |
+| Source summaries ingested | 152 |
+| Raw pages without source summaries | 160 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -183,10 +183,12 @@ Operational evidence:
 - [[source-metronome-api-reference-alerts-get-a-threshold-notification]] — customer threshold current-state lookup, archived behavior, targeted scope, timestamp conflict, and replay freshness boundary
 - [[source-metronome-api-reference-plans-get-plan-details]] — deprecated Plan retrieval, legacy price and credit-grant configuration, custom fields, and Contracts migration boundary
 - [[source-metronome-api-reference-sdks]] — Python, Node.js, Ruby, and Go usage-billing route with retry, chronology, grouping, and authority boundaries
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] — private-preview managed token pricing, custom-unit and package flow, event mapping, and model-update boundaries
 
 ## Concepts
 
 - [[metronome-usage-based-billing]] — pay as you go, enterprise commitments, subscriptions with usage, and prepaid credits
+- [[metronome-token-billing]] — private-preview managed LLM token-cost-plus-markup workflow
 - [[metronome-invoicing]] — native Stripe, marketplace, and ERP invoicing paths
 - [[metronome-integrations]] — external-system integration boundaries and workflows
 - [[metronome-credits-and-commits]] — commitment access and invoice schedules, rollover, and lifecycle boundaries

@@ -1,0 +1,63 @@
+{
+  "job_id": "stripe-tax-refresh",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Configure Stripe Tax with Metronome\"\ntype: source\ndate_ingested: 2026-08-28\ncanonical_url: \"https://docs.metronome.com/integrations/tax-integrations/stripe-tax\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/integrations/tax-integrations/stripe-tax-2026-08-28.md\"\n  - \"metronome/integrations/tax-integrations/stripe-tax-2026-07-13.md\"\ntags: [metronome, stripe, stripe-tax, tax-integration, invoicing]\n---\n\n## Overview\n\nThis guide configures Stripe Tax as the tax-calculation layer for invoices that Metronome creates through its native Stripe invoice integration. Metronome supplies customer and product mappings and creates the Stripe invoice; Stripe Tax calculates and applies sales tax when Stripe finalizes that invoice. The page covers Stripe's own tax product, not Anrok or Avalara connected through Stripe's third-party tax-app framework.\n\n## Query-critical facts\n\n- Activate Stripe Tax and complete applicable sales-tax, VAT, and GST registrations in Stripe before using this path. Metronome's Stripe invoice connection and each customer-to-Stripe-customer link must already exist, and Metronome support must enable tax application on the account after initial setup.\n- Each linked Stripe customer needs its `address` object populated and must be marked Taxable. The address determines tax jurisdiction, and a missing Customer Address causes tax application to fail.\n- Stripe Tax derives classification from the Stripe product attached to each invoice line. Metronome stores that ID in a Product custom field named `stripe_product_id` and maps `ContractProduct.stripe_product_id` to `invoiceitem.price.product`.\n- Multiple Metronome products may reuse one Stripe product when they share a tax code. Do not enable `enforce_uniqueness` on `stripe_product_id`, because that reuse is intentional and uniqueness cannot be undone without archiving and recreating the field. If a Stripe product has no tax code, Stripe Tax falls back to the account's preset product tax code.\n- Account-level tax enablement covers arrears invoices but not prepaid-balance thresholds, spend thresholds, or one-off payment-gated commits. Those flows must explicitly set `payment_gate_type: \"STRIPE\"`, `tax_type: \"STRIPE\"`, and `stripe_config.payment_type: \"INVOICE\"`.\n- Stripe automatic tax calculates inline when the invoice is finalized. Keeping Stripe invoices as drafts defers calculation until manual finalization; the collection method determines payment behavior after finalization and is independent of whether tax applies.\n\n## Configuration and mapping\n\nCreate the `stripe_product_id` custom field on Metronome's **Product** entity, populate it with the matching Stripe product ID, and configure the mapping under **Developer \u2192 Integrations \u2192 Stripe \u2192 Edit Mapping**:\n\n| Stripe vendor entity | Stripe vendor key | Metronome entity | Metronome key |\n| --- | --- | --- | --- |\n| `invoiceitem.price` | `product` | `ContractProduct` | `stripe_product_id` |\n\nOptional mappings can send Product custom fields to `invoiceitem.metadata.*` and Customer custom fields to `invoice.metadata.*`; they are not prerequisites for native Stripe Tax.\n\n> [!warning] Documentation ambiguity\n> The guide creates `stripe_product_id` on Metronome's **Product** entity but names `ContractProduct` in the required mapping row. It does not reconcile those labels, so verify the mapping context rather than assuming they are interchangeable API entities.\n\n## Invoice lifecycle and failure boundaries\n\nFor a sandbox check, create a Metronome test customer linked to a valid Stripe customer, generate an invoice, and inspect the corresponding Stripe invoice for calculated tax. This verifies the observed test invoice only; it does not establish external payment, settlement, filing, remittance, or end-to-end reconciliation. Stripe's tax documentation remains authoritative for Stripe's tax-code and default-tax-behavior semantics, while this Metronome guide is configuration guidance rather than legal, accounting, or tax-registration advice.\n\nBoth collection methods support tax but produce different post-finalization behavior. `charge_automatically` requires a default Stripe payment method before finalization or payment fails; `send_invoice` emails payment instructions and requires `days_until_due`. Under **Developer \u2192 Integrations \u2192 Stripe \u2192 Settings**, turning **Leave invoices as drafts** off lets Metronome finalize synced invoices so Stripe calculates tax automatically; leaving it on requires manual finalization in Stripe.\n\nIf tax is absent, verify Stripe Tax enablement, customer address and Taxable status, saved entity mapping, populated `stripe_product_id` values, valid Stripe product tax codes, and a selected default tax behavior. Missing address explicitly causes tax application failure. The troubleshooting section says incomplete location or mapping can accompany an invoice failure or finalization without tax, but it does not assign one deterministic outcome to each cause. If checks pass, use the Metronome support portal to inspect account configuration. The guide defines no automatic fallback rate, retry schedule, retroactive repair, or reconciliation process.\n\n## Raw-detail coverage map\n\n- **Prerequisites and UI setup:** Stripe activation and registrations, customer address and Taxable status, account enablement through Metronome support, and current Stripe and Metronome menu paths are in the latest raw page.\n- **Mapping detail:** the exact required entity-mapping row, optional invoice and line-item metadata mappings, custom-field example value, uniqueness warning, tax-code fallback, and FAQ are in the latest raw page.\n- **Threshold payloads:** complete prepaid-balance and spend-threshold JSON examples, numeric example amounts, and the one-off edit-contract statement are in the latest raw page; the examples do not specify currency.\n- **Testing and troubleshooting:** the sandbox walkthrough, diagnostic checklist, collection-method email and payment behavior, draft-finalization preference, support escalation, and default-tax-behavior reminder are in the latest raw page.\n\n## Related\n\n- Companies: [[metronome]], [[stripe]]\n- Primary concepts: [[stripe-tax]], [[metronome-integrations]], [[metronome-invoicing]]\n- Supporting concepts: [[metronome-products-and-rate-cards]], [[metronome-custom-fields]], [[metronome-credits-and-commits]], [[metronome-spend-threshold-billing]]\n- Related sources: [[source-metronome-integrations-invoice-integrations-stripe]], [[source-stripe-billing-taxes-collect]]\n\n## Raw Sources\n\n- [[raw/metronome/integrations/tax-integrations/stripe-tax-2026-08-28|2026-08-28 snapshot \u2014 current Stripe Tax prerequisites, mappings, threshold configuration, finalization, and troubleshooting]]\n- [[raw/metronome/integrations/tax-integrations/stripe-tax-2026-07-13|2026-07-13 snapshot \u2014 prior Stripe Tax setup, mapping, threshold billing, and invoice finalization]]\n",
+  "quotes": [
+    {
+      "text": "[Stripe Tax](https://docs.stripe.com/tax) is Stripe's native tax calculation engine. When configured, Stripe automatically calculates and applies sales tax to invoices that Metronome creates in Stripe.",
+      "location": "lines 13-13"
+    },
+    {
+      "text": "The Customer Address field is the `address` object on the [Stripe Customer object](https://docs.stripe.com/api/customers/object#customer_object-address), which determines tax jurisdiction. Failure to assign a Customer Address results in failure to apply tax.",
+      "location": "lines 30-32"
+    },
+    {
+      "text": "**Do not** enable \"Enforce uniqueness\" (`enforce_uniqueness`). The same Stripe product ID is intentionally reused across multiple Metronome products. Enabling uniqueness can't be undone\u2014you would need to archive the field and create a new one.",
+      "location": "lines 54-56"
+    },
+    {
+      "text": "The account-level tax enablement does **not** apply to threshold billing\u2014you must explicitly set the tax type in the API.\n</Warning>\n\nWhen setting up the `payment_gate_config`, specify `tax_type: \"STRIPE\"` and `\"payment_type\": \"INVOICE\"`:",
+      "location": "lines 103-107"
+    },
+    {
+      "text": "This setting (under **Developer > Integrations > Stripe > Settings**) controls whether Metronome immediately finalizes invoices in Stripe or leaves them as drafts. Stripe's [automatic tax](https://docs.stripe.com/tax) calculates tax inline when the invoice is finalized. It is generally recommended to switch this preference to **OFF** for automatic tax calculation upon invoice syncing.",
+      "location": "lines 166-168"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "stripe-tax-refresh-custom-fields",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Invoice propagation",
+        "proposed_markdown": "For native Stripe Tax, a Product custom field named `stripe_product_id` maps the external Stripe product onto `invoiceitem.price.product`. Multiple Metronome products can intentionally share one Stripe product when they share a tax code, so the guide prohibits `enforce_uniqueness`; it also creates the field on `Product` while the mapping row names `ContractProduct`, leaving that entity-label relationship unresolved. [[source-metronome-integrations-tax-integrations-stripe-tax]]",
+        "quote_indexes": [
+          2
+        ],
+        "warnings": [
+          "Preserve the Product-versus-ContractProduct terminology ambiguity; do not infer that the entities are interchangeable."
+        ]
+      },
+      {
+        "update_id": "stripe-tax-refresh-spend-threshold-tax",
+        "target_path": "wiki/concepts/metronome/metronome-spend-threshold-billing.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Payment gates",
+        "proposed_markdown": "Native Stripe Tax account enablement does not extend to spend-threshold billing. A Stripe-invoice threshold gate must explicitly set `payment_gate_type: \"STRIPE\"`, `tax_type: \"STRIPE\"`, and `stripe_config.payment_type: \"INVOICE\"`; the tax setting does not itself prove invoice payment, settlement, or reconciliation. [[source-metronome-integrations-tax-integrations-stripe-tax]]",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "Keep this native Stripe Tax configuration separate from external payment-gate ownership and from third-party tax providers using Stripe's framework."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/integrations/tax-integrations/stripe-tax-2026-08-28.md",
+  "raw_sha256": "c7341f378016be9171cfdb97d614630dadc7fbf9601b234bed277b064c91f06e",
+  "status": "candidate_ready"
+}

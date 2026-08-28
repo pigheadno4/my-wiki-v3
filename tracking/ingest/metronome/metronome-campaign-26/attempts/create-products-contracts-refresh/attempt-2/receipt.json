@@ -1,0 +1,67 @@
+{
+  "job_id": "create-products-contracts-refresh",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome Create Products\"\ntype: source\ndate_ingested: 2026-08-28\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/implement-metronome/core-concepts/create-products-contracts\"\nraw_files:\n  - \"metronome/guides/implement-metronome/core-concepts/create-products-contracts-2026-08-28.md\"\n  - \"metronome/guides/implement-metronome/core-concepts/create-products-contracts-2026-07-13.md\"\ntags: [metronome, products, rate-cards, contracts, pricing, invoices]\n---\n\n## Overview\n\nThis guide defines Metronome products as catalog objects analogous to SKUs or ERP items. Products connect offerings to charge mechanics and invoice presentation, while billable metrics, rate cards, and contracts supply the metering and pricing context.\n\n## Query-critical facts\n\n- Metronome documents four product types: usage, composite, subscription, and fixed. Usage products vary with reported usage; subscription products carry scheduled recurring fees; fixed products support scheduled charges, commits, and credits.\n- Products determine how a customer is charged and how charges appear on invoices, but do not hold the price itself. Usage, composite, and subscription prices are set on a rate card and may be modified on a contract; fixed-product prices are set on a contract.\n- Each usage product attaches to one previously created billable metric, while one metric can support multiple products. Product-side pricing and presentation group keys must already exist on that metric.\n- Composite products apply a percentage charge to selected products. Applicable products can be selected by product ID or product tag, and configuration can include spend from nested composite products.\n- Products can be edited while active in customer billing, and product changes generally use `Starting at` effective dating: a future timestamp schedules a change and a past timestamp applies it retroactively from that time. The guide expressly limits its enumerated editable-field list to usage products: name, tags, billable metric, quantity conversion, rounding, and API-only pricing or presentation group keys. Product type cannot be changed; correcting it requires a replacement product and archival of the original.\n- Pricing group keys select dimension-specific rate-card prices, while presentation group keys group invoice line items. The guide warns that high-cardinality combinations can increase API latency.\n\n## Actors, relationships, and lifecycle\n\nA merchant defines products in the Metronome app, connects usage products to billable metrics, and assigns prices downstream through rate cards or contracts. Product names and presentation configuration affect generated invoice lines. Tags can carry internal catalog identifiers and select products for composite charges, commits, or discounts.\n\nThe current guide adds a dedicated composite-product creation flow: choose whether nested composite spend is included, then select applicable products or tags. Separately, it documents active-billing edits and `Starting at` effective dating for product changes generally, while expressly enumerating editable fields only for usage products. It does not enumerate the editable fields for composite, subscription, or fixed products. It does not establish whether nested-composite inclusion or selectors can be changed.\n\n## Material boundaries and conflicts\n\n- The guide does not define composite recursion, cycle handling, percentage-calculation order, overlapping ID/tag selection, or historical replay when nested composite spend is enabled. It also does not say whether nested-composite inclusion or selectors are editable after creation.\n- Past `Starting at` values are documented as applying product changes retroactively, but the guide does not define recalculation, draft-versus-finalized invoice effects, or propagation to existing commits, credits, discounts, or scheduled charges.\n- The guide does not enumerate editable fields for composite, subscription, or fixed products; this narrower field-level unknown does not negate its general effective-dating statement for product changes.\n- The guide says Metronome supports four product types, while existing product read/list API sources expose a fifth `PRO_SERVICE` enum value. The sources do not establish whether that value is creatable, API-only, feature-gated, or legacy; see [[metronome-products-and-rate-cards]].\n- The high-cardinality note directs customers to the Metronome support portal for configuration discussion; it is not a documented hard limit or latency guarantee.\n\n## Raw-detail coverage map\n\n| Detail category | Exact evidence route |\n| --- | --- |\n| Product definitions, type purposes, and price ownership | [[raw/metronome/guides/implement-metronome/core-concepts/create-products-contracts-2026-08-28|latest raw snapshot]] |\n| Usage and composite app creation steps, tags, conversions, and rounding | [[raw/metronome/guides/implement-metronome/core-concepts/create-products-contracts-2026-08-28|latest raw snapshot]] |\n| General effective-dated product changes, usage-specific editable-field list, and immutable product type | [[raw/metronome/guides/implement-metronome/core-concepts/create-products-contracts-2026-08-28|latest raw snapshot]] |\n| Pricing-key rate example, presentation-key invoice example, and cardinality warning | [[raw/metronome/guides/implement-metronome/core-concepts/create-products-contracts-2026-08-28|latest raw snapshot]] |\n| Prior wording before composite nesting, separate composite creation flow, and usage-specific edit-list clarification | [[raw/metronome/guides/implement-metronome/core-concepts/create-products-contracts-2026-07-13|2026-07-13 raw snapshot]] |\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-products-and-rate-cards]], [[metronome-billable-metrics]], [[metronome-customers-and-contracts]]\n- Related source: [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/implement-metronome/core-concepts/create-products-contracts-2026-08-28|2026-08-28 snapshot \u2014 product roles, composite selection and nesting, creation flows, effective-dated edits, tags, and group keys]]\n- [[raw/metronome/guides/implement-metronome/core-concepts/create-products-contracts-2026-07-13|2026-07-13 snapshot \u2014 earlier product types, creation, effective-dated edits, tags, and group-key guidance]]\n",
+  "quotes": [
+    {
+      "text": "Products determine *how* a customer is charged (for example, which billable metrics impact a charge), but they don't dictate  *how much* a customer pays. For usage-based, composite, and subscription products, prices are set on a [rate card](/guides/get-started/core-concepts/create-manage-rate-cards), which you can modify on a [contract](/guides/get-started/core-concepts/provision-contract). Prices on fixed products are set on a contract.",
+      "location": "line 30, PRODUCTS DON'T HAVE PRICES note"
+    },
+    {
+      "text": "* **Composite** , percentage charge on a group of applicable products. You can define the applicable products by id or product tag, and can choose whether nested composite charges are included.",
+      "location": "line 38, Product types"
+    },
+    {
+      "text": "Within Metronome, you can edit products even when they're actively in use for customer billing. Changes to products are scheduled to take effect at a specified `Starting at` time, which you can define when changing a product. This date can be set in the future to schedule out product changes ahead of time. If set in the past, it will be retroactively applied at the time specified.",
+      "location": "line 68, Update products"
+    },
+    {
+      "text": "The following fields are available to edit for usage-based products:\n\n* Name\n* Tags\n* Billable metric\n* Quantity conversion\n* Rounding\n* Pricing and presentation group keys (only editable with the API)",
+      "location": "lines 70-77, Update products usage-specific editable-field list"
+    },
+    {
+      "text": "You cannot change the product type. If you create a product with the wrong type, create a new product with the correct type and archive the original product.",
+      "location": "line 79, Update products"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "create-products-contracts-refresh-products-composite-nesting",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Products",
+        "proposed_markdown": "Replace the existing generic composite-product bullet with: `- Composite products apply a percentage charge over applicable products selected by product ID or product tag. Configuration can include spend from nested composite products; the guide does not define recursion, cycle handling, percentage-calculation order, overlapping-selector behavior, whether nested inclusion or selectors can be edited after creation, or historical replay.` Retain the existing reciprocal source entry for [[source-metronome-guides-implement-metronome-core-concepts-create-products-contracts]].",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "The new guide establishes selectable nested composite spend but does not define its calculation or lifecycle semantics.",
+          "Audit found the assigned source already linked reciprocally from metronome-products-and-rate-cards, metronome-billable-metrics, and metronome-customers-and-contracts; no duplicate reciprocal-link suggestion is needed."
+        ]
+      },
+      {
+        "update_id": "create-products-contracts-refresh-products-edit-lifecycle-scope",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Products",
+        "proposed_markdown": "Replace the existing product-edit bullet with:\n\n- Products remain editable while actively used for customer billing, and product changes generally use a `Starting at` effective time that may be future-scheduled or retroactive. The guide expressly enumerates name, tags, billable metric, quantity conversion, rounding, and API-only group-key edits only for usage products; it does not enumerate editable fields for composite, subscription, or fixed products. Product type is immutable, so correcting it requires a replacement product and archival of the original.\n\nRetain the separate Retroactive edit boundary and the existing reciprocal source entry.",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not narrow Starting at effective dating itself to usage products; only the enumerated editable-field list is expressly usage-product-specific.",
+          "The guide does not establish whether nested-composite inclusion or selectors can be edited, how retroactive changes recalculate charges, or their draft, finalized-invoice, and historical-replay effects."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/implement-metronome/core-concepts/create-products-contracts-2026-08-28.md",
+  "raw_sha256": "1f19fcfe77188f23c1238cb27c090ae2f2ce077983d79e97004a6641023c901d",
+  "status": "candidate_ready"
+}

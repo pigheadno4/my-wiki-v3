@@ -6,6 +6,17 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-28 — Metronome Campaign 26 recollection refresh and Token Billing promoted
+
+- Result: five approved source pages across nine Sol worker attempts, seven full independent Sol reviews, and two unchanged-hash targeted reviews; no failed or rejected job.
+- Sources: [[source-metronome-api-reference-contracts-edit-a-contract]], [[source-metronome-guides-reporting-insights-data-export-database-reference]], [[source-metronome-integrations-tax-integrations-stripe-tax]], [[source-metronome-guides-implement-metronome-core-concepts-create-products-contracts]], and [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]].
+- Review findings: corrected the warehouse `cost_basis` schema-context ambiguity and product-edit effective-dating scope through full semantic retries; targeted retries repaired Token Billing's umbrella route and quote ranges plus one unsafe shared-file replacement instruction.
+- Concepts: created [[metronome-token-billing]] and applied 20 reviewer-approved durable-fact or reciprocal-link updates across 15 Metronome concept targets.
+- Coordinator work: one mechanical fixed-schema repair removed reviewer identity metadata from a temporary result; it did not change reviewed semantics or canonical content.
+- Coverage after promotion: 225 current English canonical documentation identities are retained as 310 immutable raw snapshots, with 152 source summaries and 160 raw snapshots without source summaries.
+- Timing: completed in 2,698 seconds (44 minutes 58 seconds); two of five pages passed attempt 1.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-26/monitor.md), [quality audit](../tracking/ingest/metronome/metronome-campaign-26/quality-audit.md), and [retrospective](../tracking/ingest/metronome/metronome-campaign-26/retrospective.md).
+
 ## 2026-08-27 — Metronome Campaign 25 shadow risk-review calibration promoted
 
 - Result: six approved source pages from complete raw-page reads across nine Sol worker attempts and nine independent full Sol reviews; three pages passed attempt 1 and three passed attempt 2, with no targeted review, failed attempt, or rejected job.

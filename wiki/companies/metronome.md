@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 151
+source_count: 152
 ---
 
 ## Overview
@@ -313,6 +313,7 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 - [[source-metronome-api-reference-alerts-get-a-threshold-notification]] — targeted current threshold state, archived behavior, timestamp-path conflict, and freshness boundary
 - [[source-metronome-api-reference-plans-get-plan-details]] — deprecated Plan detail, legacy pricing and grant configuration, custom fields, and migration limits
 - [[source-metronome-api-reference-sdks]] — four-language usage-billing walkthrough, retry boundaries, stale chronology, and Go lifecycle conflict
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] — private-preview managed token pricing, custom-unit and package flow, event mapping, and model-update boundaries
 
 ## Related
 
@@ -320,6 +321,7 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 - [[metronome-log]] — collection and future ingest history
 - [[stripe-index]] — related Stripe catalog
 - [[metronome-usage-based-billing]] — platform-specific billing concept
+- [[metronome-token-billing]] — private-preview managed LLM token-cost-plus-markup workflow
 - [[metronome-invoicing]] — platform-specific invoicing options
 - [[metronome-integrations]] — external-system integration boundaries and workflows
 - [[metronome-credits-and-commits]] — commitment schedules, rollover, and contract lifecycle

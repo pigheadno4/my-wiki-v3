@@ -19,6 +19,8 @@ Stripe collection can use a Stripe Billing invoice or direct PaymentIntent and r
 
 A payment gate can delay commit release. With `EXTERNAL`, the integrator receives `payment_gate.external_initiate`, stores its `workflow_id`, collects through its own gateway, and calls the threshold-release endpoint to release the commit on success or cancel it on failure. The source does not define ordinary Stripe failure events, retries, pending-commit visibility, event ordering, workflow expiry, or idempotency.
 
+Native Stripe Tax account enablement does not extend to spend-threshold billing. A Stripe-invoice threshold gate must explicitly set `payment_gate_type: "STRIPE"`, `tax_type: "STRIPE"`, and `stripe_config.payment_type: "INVOICE"`; the tax setting does not itself prove invoice payment, settlement, or reconciliation. [[source-metronome-integrations-tax-integrations-stripe-tax]]
+
 `POST /v1/contracts/commits/threshold-billing/release` continues an external payment-gate workflow by using the saved `payment_gate.external_initiate` `workflow_id` to release or cancel its pending commit according to the external-payment outcome. The request requires the UUID `workflow_id` and an outcome of `paid`, `PAID`, `failed`, or `FAILED`; its operation page supplies only a bare `200`. It does not define workflow expiry or single-use behavior, duplicate or conflicting submissions, operation-specific retry/failure recovery, event ordering, concurrency, or propagation to balance, ledger, invoice, read, or webhook surfaces. [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]]
 
 ## Documentation boundaries

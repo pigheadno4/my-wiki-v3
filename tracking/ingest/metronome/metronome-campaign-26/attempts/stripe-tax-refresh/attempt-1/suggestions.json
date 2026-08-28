@@ -1,0 +1,33 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "stripe-tax-refresh-custom-fields",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Invoice propagation",
+      "proposed_markdown": "For native Stripe Tax, a Product custom field named `stripe_product_id` maps the external Stripe product onto `invoiceitem.price.product`. Multiple Metronome products can intentionally share one Stripe product when they share a tax code, so the guide prohibits `enforce_uniqueness`; it also creates the field on `Product` while the mapping row names `ContractProduct`, leaving that entity-label relationship unresolved. [[source-metronome-integrations-tax-integrations-stripe-tax]]",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Preserve the Product-versus-ContractProduct terminology ambiguity; do not infer that the entities are interchangeable."
+      ]
+    },
+    {
+      "update_id": "stripe-tax-refresh-spend-threshold-tax",
+      "target_path": "wiki/concepts/metronome/metronome-spend-threshold-billing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Payment gates",
+      "proposed_markdown": "Native Stripe Tax account enablement does not extend to spend-threshold billing. A Stripe-invoice threshold gate must explicitly set `payment_gate_type: \"STRIPE\"`, `tax_type: \"STRIPE\"`, and `stripe_config.payment_type: \"INVOICE\"`; the tax setting does not itself prove invoice payment, settlement, or reconciliation. [[source-metronome-integrations-tax-integrations-stripe-tax]]",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Keep this native Stripe Tax configuration separate from external payment-gate ownership and from third-party tax providers using Stripe's framework."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

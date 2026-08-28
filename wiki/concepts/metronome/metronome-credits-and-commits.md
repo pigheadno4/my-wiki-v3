@@ -33,6 +33,8 @@ The deprecated Plans `POST /v1/credits/voidGrant` operation voids a grant by UUI
 
 ## Drawdown and invoice attribution
 
+For commits and credits added through contract edit, the feature-gated access schedule `access_type` determines whether drawdown consumes priced spend (`SPEND`) or usage units (`QUANTITY`), and omission defaults to `SPEND`. The page does not define migration of an existing balance between modes, unit compatibility, mixed-mode priority, or invoice and ledger representation. [[source-metronome-api-reference-contracts-edit-a-contract]]
+
 The contract rate-schedule response can expose an optional `commit_rate` beside required `list_rate` and optional `override_rate`. This read surface does not specify when commit rate is selected over list or override rate, how balances affect selection, or whether the values equal final invoice charges. [[source-metronome-api-reference-contracts-get-the-rate-schedule-for-a-contract]]
 
 Credits and prepaid commits at contract or customer level can carry access schedules in custom pricing units or selected currencies. Usage priced in a custom unit burns down applicable balances whose access schedules use that same unit; when none remains, invoice conversion to the rate card's fiat currency covers the residual usage. A CHF-paid prepaid commit granting Cloud Compute Tokens illustrates differing payment and access denominations, but the guide does not define arbitrary balance conversion, applicability priority, exchange rates, precision, or rounding.
@@ -123,6 +125,8 @@ Under GCP Marketplace metering, prepaid purchase amounts follow scheduled-invoic
 ## Prepaid balance thresholds
 
 On `POST /v2/contracts/edit`, setting prepaid-balance-threshold `is_enabled` from `false` to `true` causes immediate evaluation regardless of prior state; each time the contract balance falls to `threshold_amount`, a threshold charge is initiated. The same endpoint gives spend-threshold activation the same immediate-evaluation behavior and initiates a charge when usage reaches its threshold. The schema does not establish successful collection, commit availability, evaluation order within a mixed edit, atomicity, concurrency behavior, downstream reconciliation, or safe recovery after an ambiguous failure. [[source-metronome-api-reference-contracts-edit-a-contract]]
+
+The 2026-08-28 Data Export reference documents `contracts_commits.cost_basis` directly as amount paid for a commit divided by credit granted. `contracts_balances` also carries `cost_basis`, but that broader table includes postpaid, prepaid, and credit rows while the field description remains commit-specific; the page does not establish applicability or denominator meaning for credit rows, denominator-zero behavior, or accounting treatment. Its prepaid balance-threshold configuration export also exposes created-commit duration value and unit, rollover fraction, and rate type. These are warehouse schema facts, not proof that every mutation surface accepts the same fields. [[source-metronome-guides-reporting-insights-data-export-database-reference]]
 
 A contract-provisioning example separates a one-year prepaid commit's access schedule from its one-time upfront invoice schedule and scopes the balance to `cloud`-tagged products. A quarterly platform charge has its own schedule. Optional usage-invoice consolidation applies to scheduled charges including commits when the service-period end date aligns and the usage invoice remains unfinalized.
 

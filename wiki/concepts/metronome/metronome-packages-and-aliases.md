@@ -25,6 +25,8 @@ This describes future provisioning, not mutation of already-provisioned contract
 
 ## Sources
 
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] - illustrative credit-allocation package layered on a managed AI rate card and package-based customer contract provisioning
+
 - [[source-metronome-guides-get-started-api-quickstart]] — core-object orientation that identifies packages as reusable rate-card and contract detail bundles while the direct first-invoice sequence provisions without one
 
 - [[source-metronome-guides-pricing-packaging-make-pricing-changes-make-a-pricing-change]] — package-based cohort grandfathering, rate-card inheritance boundary, and effective-dated alias transition

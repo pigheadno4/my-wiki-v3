@@ -1,0 +1,35 @@
+{
+  "job_id": "database-reference-refresh",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Complete-source review found the candidate accurate on table families and grain, invoice and breakdown snapshots, identity and time-selection signals, nullability, completeness boundaries, canonical URL, newest-first raw history, exact backlinks, transition-enum scope, and the prepaid-threshold and alert deltas. One material schema-context ambiguity is not preserved: contracts_balances includes postpaid, prepaid, and credit rows, but its new cost_basis description is written only as amount paid for a commit divided by credit granted. The candidate and two shared suggestions repeat that formula for the broader table without saying that applicability and meaning for credit rows are undocumented. Because this is an unresolved authority contradiction that can change downstream financial interpretation, it requires a full semantic retry. The threshold-only and alert-only shared updates are independently supported. Quote text is verbatim, though the duplicated cost_basis quote would be more auditable with table-specific context; that quote-range precision is non-blocking once the semantic ambiguity is corrected.",
+  "required_changes": [
+    "Revise the candidate's cost_basis watch item and both affected shared suggestions to state that contracts_commits documents the commit ratio directly, while contracts_balances is a broader credit-or-commit table whose cost_basis description remains commit-specific; do not infer applicability, denominator semantics, or accounting treatment for credit rows, and preserve this as an explicit schema-context ambiguity."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "full",
+  "shared_update_decisions": [
+    {
+      "update_id": "database-reference-refresh-reporting-schema-delta",
+      "verdict": "rejected",
+      "reason": "The bundled update accurately covers threshold and alert deltas but overstates the broader contracts_balances cost_basis semantics by omitting the commit-specific-description versus credit-inclusive-table ambiguity."
+    },
+    {
+      "update_id": "database-reference-refresh-credits-commits-export-fields",
+      "verdict": "rejected",
+      "reason": "The update repeats the commit-specific ratio as the definition for the broader credit-or-commit balance table without preserving that applicability and meaning for credit rows are undocumented."
+    },
+    {
+      "update_id": "database-reference-refresh-contract-threshold-export-fields",
+      "verdict": "approved",
+      "reason": "The added duration value and unit, rollover fraction, and rate type are grounded in the current warehouse schema and the proposal correctly separates exported state from mutation, propagation, and payment-recovery authority."
+    },
+    {
+      "update_id": "database-reference-refresh-alert-export-scope",
+      "verdict": "approved",
+      "reason": "The nullable customer_id all-customer scope is grounded in the alert table and the proposal correctly limits the claim to export-row scope rather than notification evaluation or delivery behavior."
+    }
+  ],
+  "reviewer_identity": "/root/c26_r_database_reference",
+  "reviewer_model": "Sol"
+}

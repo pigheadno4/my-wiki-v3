@@ -11,6 +11,8 @@ Metronome's documentation presents usage-oriented billing as a pricing and packa
 
 ## Pricing and packaging patterns
 
+[[metronome-token-billing]] is a distinct private-preview managed token-cost-plus-markup workflow. It can create managed AI billing objects from configured markups; non-USD fiat is unsupported, while a USD-to-custom-unit conversion supports custom credit-denominated pricing. Newly released models are added at the default markup, but provider-price refresh for existing models is only described as coming soon. The guide does not establish catalog-update timing, removal or fallback behavior, precision or rounding, provider-cost verification, margin guarantees, reconciliation, or endpoint recovery semantics. [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]]
+
 ## Metronome commercial pricing boundary
 
 Metronome's own customer pricing is distinct from the prices merchants configure for their end users. It combines an annual platform fee, excluded from consumption charge categories, with consumption-based charges that begin at production go-live. An order-form Consumption Commitment is a prepaid, non-refundable minimum against those platform-usage charges; unused value expires at the end of the applicable service term. This commercial commitment must not be treated as a Metronome credit or commit object configured for a merchant's customer. [[source-metronome-guides-platform-configuration-metronome-pricing-model]]

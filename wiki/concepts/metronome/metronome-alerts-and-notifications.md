@@ -33,6 +33,8 @@ Metronome separates threshold, system, and offset notifications. Threshold notif
 
 System and offset notifications are stateless. Threshold notifications are continuously evaluated, use `OK` and `IN_ALARM` as their ongoing states, and list `EVALUATING` before the initial evaluation. Evaluation occurs at least every three minutes, and the guide documents firing within five minutes after triggering usage is ingested. A return from `IN_ALARM` to `OK` may emit an optional `*_resolved` event.
 
+The Data Export `alert` table now documents nullable `customer_id`: a null value means the configured alert applies to all customers. This identifies warehouse row scope only; it does not establish evaluation cadence, webhook delivery, ordering, or reset behavior. [[source-metronome-guides-reporting-insights-data-export-database-reference]]
+
 Archiving a customer stops notifications associated with that customer from being triggered. The archive page does not specify the timing of that suppression or treatment of notification work already generated or in flight. [[source-metronome-api-reference-customers-archive-a-customer]]
 
 

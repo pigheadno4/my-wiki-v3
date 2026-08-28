@@ -22,6 +22,8 @@ Contract provisioning uses a `subscriptions` config for each subscription. The c
 
 A shared seat-credit pool links the subscription to a recurring credit by a temporary subscription identifier. Each period grants shared balance equal to `access_amount` per seat, and newly added seats release additional shared balance according to proration. For individual-seat credits, the streaming metric must define the seat group key before creation, applicable usage products use it as a presentation group key, every event carries a stable unique seat identifier, and the subscription uses `quantity_management_mode: SEAT_BASED` with seat configuration. The guide documents default support for up to 1,000 individual-credit seats and directs larger cases to Metronome.
 
+The refreshed contract-edit schema exposes feature-gated Stripe `payment_gate_config` when adding a subscription. A subscription-linked recurring commit or credit can choose `BILLING_PERIOD_PAID`, which releases each child balance after payment for that billing period, or `INITIAL_BILLING_PERIOD_PAID_ONLY`, which releases all child balances after the first payment. The page does not define payment-state authority, failure and retry behavior, pending-balance visibility, revocation, concurrency, or Stripe reconciliation. [[source-metronome-api-reference-contracts-edit-a-contract]]
+
 > [!warning] Documentation contradiction
 > The provisioning guide names the unassigned-seat field `initial_unassigned_seats_quantity`, while the dedicated create-contract schema from the same 2026-07-13 collection names it `initial_unassigned_seats`. Neither source establishes which spelling is current runtime truth; verify the live schema before implementation.
 
@@ -44,6 +46,8 @@ Seat management after contract creation has two modes. Aggregate subscriptions a
 The lifecycle page labels one operation as create-contract guidance while linking to edit-contract documentation. Endpoint choice should therefore be verified against the current API.
 
 ## Sources
+
+- [[source-metronome-api-reference-contracts-edit-a-contract]] - feature-gated subscription payment configuration and recurring child-balance release policies
 
 - [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — aggregate and identity-bearing seat updates, unassigned-seat reassignment, configuration-dependent proration, and seat history and balance routes
 

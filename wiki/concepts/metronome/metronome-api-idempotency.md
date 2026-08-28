@@ -27,7 +27,7 @@ The documented `uniqueness_key` examples include contracts, alerts, and customer
 
 ## Retry and error boundary
 
-The `POST /v2/contracts/edit` snapshot exposes optional 1-128 character `uniqueness_key`; its schema says reuse prevents a duplicate record and fails with HTTP `409`, even though the operation response map omits `409`. The same-date API-wide idempotency page still labels contract-edit uniqueness-key support as coming soon. Preserve that unresolved documentation/runtime-enablement conflict: endpoint schema exposure alone does not prove the feature is enabled. This resource-uniqueness mechanism is distinct from API-wide POST `Idempotency-Key` result replay. The sources do not define uniqueness-key scope or release, failed-attempt consumption, interaction or precedence between the two keys, safe use after expiry, concurrency ordering, or recovery after cached or ambiguous failures. [[source-metronome-api-reference-contracts-edit-a-contract]] [[source-metronome-api-reference-idempotency]]
+The 2026-08-28 `POST /v2/contracts/edit` snapshot exposes optional 1-128 character `uniqueness_key`; its schema says reuse prevents a duplicate record and fails with HTTP `409`, even though the operation response map omits `409`. The earlier 2026-07-13 API-wide idempotency page labels contract-edit uniqueness-key support as coming soon. Preserve that unresolved documentation/runtime-enablement conflict: newer endpoint schema exposure alone does not prove the feature is enabled. This resource-uniqueness mechanism is distinct from API-wide POST `Idempotency-Key` result replay. The sources do not define uniqueness-key scope or release, failed-attempt consumption, interaction or precedence between the two keys, safe use after expiry, concurrency ordering, or recovery after cached or ambiguous failures. [[source-metronome-api-reference-contracts-edit-a-contract]] [[source-metronome-api-reference-idempotency]]
 
 `POST /v1/customer-alerts/get` is a point-in-time threshold-status read under the API-wide `Idempotency-Key` contract. Identical same-key parameters replay the original result, so that replay is not evidence of a fresh `ok`, `in_alarm`, `evaluating`, or archived-state evaluation. The endpoint page adds no read-specific guarantee for caching, freshness, another or expired key, concurrent calls, or ambiguous-failure recovery. [[source-metronome-api-reference-alerts-get-a-threshold-notification]]
 
@@ -64,6 +64,8 @@ The assigned product-catalog reference documents `POST /v1/contract-pricing/prod
 - [[metronome-credits-and-commits]] covers uniqueness keys on credit and commit creation.
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] - contract-create and usage-ingest POST examples that omit `Idempotency-Key`, with event transaction identity remaining a separate deduplication mechanism
 
 - [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — quantity-delta and unassigned-seat retry materiality plus endpoint-specific atomicity, visibility, concurrency, and recovery unknowns
 

@@ -1,0 +1,57 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "edit-a-contract-refresh-api-idempotency-authority-age",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "Replace the existing edit-contract paragraph with: The 2026-08-28 `POST /v2/contracts/edit` snapshot exposes optional 1-128 character `uniqueness_key`; its schema says reuse prevents a duplicate record and fails with HTTP `409`, even though the operation response map omits `409`. The earlier 2026-07-13 API-wide idempotency page labels contract-edit uniqueness-key support as coming soon. Preserve that unresolved documentation/runtime-enablement conflict: newer endpoint schema exposure alone does not prove the feature is enabled. This resource-uniqueness mechanism is distinct from API-wide POST `Idempotency-Key` result replay. The sources do not define uniqueness-key scope or release, failed-attempt consumption, interaction or precedence between the two keys, safe use after expiry, concurrency ordering, or recovery after cached or ambiguous failures. [[source-metronome-api-reference-contracts-edit-a-contract]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "The endpoint authority is newer than the API-wide uniqueness-key table; preserve the conflict rather than treating either page as confirmed runtime behavior."
+      ]
+    },
+    {
+      "update_id": "edit-a-contract-refresh-subscription-payment-gating",
+      "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Pricing and provisioning",
+      "proposed_markdown": "The refreshed contract-edit schema exposes feature-gated Stripe `payment_gate_config` when adding a subscription. A subscription-linked recurring commit or credit can choose `BILLING_PERIOD_PAID`, which releases each child balance after payment for that billing period, or `INITIAL_BILLING_PERIOD_PAID_ONLY`, which releases all child balances after the first payment. The page does not define payment-state authority, failure and retry behavior, pending-balance visibility, revocation, concurrency, or Stripe reconciliation. [[source-metronome-api-reference-contracts-edit-a-contract]]",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Both fields are feature-gated in the OpenAPI snapshot; do not generalize them to every account."
+      ]
+    },
+    {
+      "update_id": "edit-a-contract-refresh-subscription-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-contracts-edit-a-contract]] - feature-gated subscription payment configuration and recurring child-balance release policies",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "edit-a-contract-refresh-balance-access-type",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Drawdown and invoice attribution",
+      "proposed_markdown": "For commits and credits added through contract edit, the feature-gated access schedule `access_type` determines whether drawdown consumes priced spend (`SPEND`) or usage units (`QUANTITY`), and omission defaults to `SPEND`. The page does not define migration of an existing balance between modes, unit compatibility, mixed-mode priority, or invoice and ledger representation. [[source-metronome-api-reference-contracts-edit-a-contract]]",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "The access type is feature-gated in this OpenAPI snapshot."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}
