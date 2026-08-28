@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-28] ingest | GitHub adyen/release-automation-action - `default-branch@9675ced`
+
+- Full-ingested work item `github-631f3be17d0207a5120c` at exact SHA `9675cedc9efe9d0b5563bd7dd0f8ef88f26ad03b` from the complete seven-file retained capsule plus required context.
+- Added cumulative and commit-qualified sources and extended [[adyen-sdk-automation]] for semantic version selection, prerelease handling, release pull requests, optional auto-merge, and GitHub release creation.
+- Preserved the non-payment boundary and recorded the bounded GraphQL comparison, label-normalization and version-input limitations, repository-permission prerequisites, and README version drift.
+
 ## [2026-08-27] ingest | GitHub braintree/mobile-sdk-tooling - `default-branch@a3b0ffe`
 
 - Full-ingested work item `github-c10bd0ceb7090dd5898f` at exact SHA `a3b0ffe7931cde179f8b0dfdd5162979adf81683` after serial full reading of all seven required evidence and context paths.

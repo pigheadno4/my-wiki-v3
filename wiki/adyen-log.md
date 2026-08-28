@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-28] ingest | adyen/release-automation-action `default-branch@9675ced`
+
+- Approved and full-ingested work item `github-631f3be17d0207a5120c` at exact SHA `9675cedc9efe9d0b5563bd7dd0f8ef88f26ad03b` from the complete seven-file retained capsule plus required context.
+- Established [[source-github-release-automation-action]] and its commit-qualified changelog for merged-PR discovery, label-based semantic version selection, prerelease transitions, version-file updates, release pull requests, optional auto-merge, and GitHub releases.
+- Extended [[adyen-sdk-automation]] while preserving repository ownership: generic release orchestration remains independent from OpenAPI generation and every downstream SDK release history.
+- Preserved the engineering-tooling boundary and recorded the bounded GraphQL query, label-normalization limitation, unvalidated version input, token and branch-setting prerequisites, and stale README example version.
+
 ## [2026-08-26] ingest | adyen/adyen-wechatpay-ios `AdyenWeChatPayInternal@2.2.0`
 
 - Approved and full-ingested work item `github-3da269c833aa3c1fde17` at exact SHA `1127f793854d8624dbe6741d5c42be39dadd4f93` after serial full reading of all 14 required evidence paths.

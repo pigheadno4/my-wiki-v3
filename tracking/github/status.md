@@ -587,6 +587,33 @@
   Release: [manifest](../../raw/github/stripe/link-cli/releases/link-cli/0.13.0/2026-08-15/manifest.json)
   Comparison: Not applicable
 
+## `github-631f3be17d0207a5120c`
+
+- Repository: `adyen/release-automation-action`
+- SHA: `9675cedc9efe9d0b5563bd7dd0f8ef88f26ad03b`
+- Collection date: `2026-08-28`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/release-automation-action/snapshots/2026-08-28-9675ced/manifest.json)
+- Packet: [review packet](repos/adyen/release-automation-action/ingest-packets/github-631f3be17d0207a5120c/packet.md)
+- Review priority: `normal`
+- Required reading: `12` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@9675ced` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `9675cedc9efe9d0b5563bd7dd0f8ef88f26ad03b`
+  Comparison: Not applicable
+
 ## `github-63997abe9a7d60c5179b`
 
 - Repository: `paypal/paypal-messages-ios`

@@ -10,6 +10,8 @@ Operations history: [[adyen-log]]
 
 ## Sources
 
+- [[source-github-release-automation-action]] — exact-commit release-action baseline: merged-PR discovery, semantic version selection, prerelease handling, release pull requests, and GitHub releases (github-repo, 2026-08-28)
+- [[changelog-github-release-automation-action]] — commit-qualified release-action history beginning at `default-branch@9675ced` (github-repo, 2026-08-28)
 - [[source-github-adyen-wechatpay-ios]] — cumulative `AdyenWeChatPayInternal@2.2.0` wrapper baseline: Tencent SDK 2.0.4, distribution, native handoff, public payment request/response, and simulator boundary (github-repo, 2026-08-26)
 - [[changelog-github-adyen-wechatpay-ios]] — package-qualified WeChat Pay iOS wrapper history beginning at `2.2.0` (github-repo, 2026-08-26)
 - [[source-github-adyen-magento2]] — cumulative `adyen/module-payment@11.0.0` Adobe Commerce baseline: storefront and headless checkout, modifications, vault, webhooks, gift cards, POS Cloud, and Giving (github-repo, 2026-08-25)
@@ -39,7 +41,7 @@ Operations history: [[adyen-log]]
 
 - [[adyen-wechatpay-ios-wrapper]] — Tencent SDK packaging, public native handoff, simulator restriction, and checkout query boundary
 - [[adyen-magento2]] — Adobe Commerce plugin architecture, checkout lifecycle, vault, webhooks, POS, and version boundary
-- [[adyen-sdk-automation]] — OpenAPI-to-SDK generation, language-specific configuration, CI provenance, and release-note validation
+- [[adyen-sdk-automation]] — OpenAPI-to-SDK generation, language-specific configuration, CI provenance, release-note validation, and separate generic release-action mechanics
 - [[adyen-php-api-library]] — PHP server SDK, Checkout API v71, recurring, tokenization, transport, and evidence boundaries
 - [[adyen-3ds2-ios-sdk]] — delegated iOS 3DS2 transaction, challenge, lifecycle, security, privacy, and UI runtime
 - [[adyen-3ds2-android-sdk]] — delegated Android 3DS2 transaction, challenge, lifecycle, security, and UI runtime

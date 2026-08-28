@@ -1002,6 +1002,12 @@ class GitHubIngestPacketTests(unittest.TestCase):
                     "include-path",
                     "widgets",
                 ),
+                "action.yml": (
+                    "name: Widget action\nruns:\n  using: composite\n",
+                    "source-capsule",
+                    "include-path",
+                    "widgets",
+                ),
                 "client/Module.swiftmodule/arm64-apple-ios.abi.json": (
                     '{"ABIRoot":{"kind":"Root"}}\n',
                     "source-capsule",
@@ -1050,6 +1056,7 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "build-configuration",
             classified[".github/workflows/sync.yml"],
         )
+        self.assertEqual("runtime-configuration", classified["action.yml"])
         self.assertEqual(
             "build-configuration",
             classified["client/Module.swiftmodule/arm64-apple-ios.abi.json"],

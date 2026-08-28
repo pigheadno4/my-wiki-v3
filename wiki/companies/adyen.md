@@ -1,13 +1,13 @@
 ---
 title: "Adyen"
 type: company
-tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, openapi, adobe-commerce, magento2, wechat-pay]
-source_count: 12
+tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, release-automation, openapi, adobe-commerce, magento2, wechat-pay]
+source_count: 13
 ---
 
 ## Overview
 
-Adyen is represented in this wiki by independently versioned Web, iOS, Android, Android and iOS 3DS2, React Native, Node.js, and PHP SDKs; an Adobe Commerce plugin; plus exact-commit Postman API examples and SDK-generation automation. The retained sources cover browser, native, cross-platform, and Magento checkout presentation; delegated mobile 3DS2 authentication runtimes; merchant-server Checkout APIs v71 and v72; Terminal API payment and shopper-interaction messages; and the OpenAPI-to-SDK generation lifecycle.
+Adyen is represented in this wiki by independently versioned Web, iOS, Android, Android and iOS 3DS2, React Native, Node.js, and PHP SDKs; an Adobe Commerce plugin; plus exact-commit Postman API examples, SDK-generation automation, and generic repository release automation. The retained sources cover browser, native, cross-platform, and Magento checkout presentation; delegated mobile 3DS2 authentication runtimes; merchant-server Checkout APIs v71 and v72; Terminal API payment and shopper-interaction messages; and the OpenAPI-to-SDK generation and repository-release lifecycles.
 
 ## Web checkout surface
 
@@ -83,6 +83,12 @@ The retained `adyen-sdk-automation` baseline at exact commit `2f180b958babc6bbd6
 
 This evidence describes build and release machinery rather than merchant checkout behavior. Generated SDK repositories remain independently versioned and authoritative for their retained runtime interfaces; official product documentation and account configuration remain authoritative for current eligibility.
 
+## Repository release automation
+
+The retained `adyen/release-automation-action` baseline at exact commit `9675cedc9efe9d0b5563bd7dd0f8ef88f26ad03b` and repository version `1.4.0` provides a composite GitHub Action for merged-PR discovery, label-based semantic version selection, prerelease handling, version-file updates, release pull requests, optional auto-merge, and GitHub release creation.
+
+This action is independent from `adyen-sdk-automation` and from every downstream SDK repository. Its comparison query is bounded to 100 commits, five associated pull requests per commit, and five labels per pull request. It establishes release mechanics, not checkout functionality, merchant eligibility, or the contents of a downstream SDK release.
+
 ## Adobe Commerce plugin
 
 The retained `adyen/module-payment@11.0.0` baseline integrates Adyen with Adobe Commerce 2.4.8 on PHP 8.2 through 8.5. It covers headful and headless payment-method discovery, `/payments` and `/payments/details`, stored methods, capture and refund, gift-card partial payments, POS Cloud, Giving, and asynchronous webhook processing.
@@ -91,13 +97,15 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 ## Knowledge status
 
-- Ingested cumulative GitHub repository sources: 12
+- Ingested cumulative GitHub repository sources: 13
 - Ingested package releases: 12
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
-- Latest ingest: `adyen/adyen-wechatpay-ios` at `AdyenWeChatPayInternal@2.2.0`, exact SHA `1127f793854d8624dbe6741d5c42be39dadd4f93`
+- Latest ingest: `adyen/release-automation-action` at `default-branch@9675ced`, exact SHA `9675cedc9efe9d0b5563bd7dd0f8ef88f26ad03b`
 
 ## Sources
 
+- [[source-github-release-automation-action]] — cumulative semantic-version and GitHub release-orchestration baseline
+- [[changelog-github-release-automation-action]] — commit-qualified release-action history
 - [[source-github-adyen-wechatpay-ios]] — cumulative WeChat SDK XCFramework wrapper baseline
 - [[changelog-github-adyen-wechatpay-ios]] — package-qualified wrapper release ledger
 - [[source-github-adyen-magento2]] — cumulative Adobe Commerce checkout and operations baseline

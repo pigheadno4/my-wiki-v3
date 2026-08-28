@@ -1135,7 +1135,13 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "repository-context"
     if filename in ("composer.json", "package.json"):
         return "package-manifest"
-    if filename in (".env.example", ".env.sample", "example.env"):
+    if filename in (
+        ".env.example",
+        ".env.sample",
+        "action.yaml",
+        "action.yml",
+        "example.env",
+    ):
         return "runtime-configuration"
     if filename.endswith(".crt"):
         return "runtime-configuration"
