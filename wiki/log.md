@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-28] ingest | GitHub stripe/stripe-apps - `default-branch@9b14b71`
+
+- Full-ingested work item `github-963480d18adba0763347` at exact SHA `9b14b71be496ca299401b3303b572856fd19baf4` from the complete 72-file retained capsule plus required Stripe context.
+- Added cumulative and commit-qualified sources plus [[stripe-apps]] for app manifests, Dashboard UI extensions, distribution/API-access configuration, and the retained full-page example.
+- Preserved the mock-only implementation boundary, independent UI SDK release history, and standard-schema versus example-manifest contradiction.
+
 ## [2026-08-28] ingest | GitHub adyen/release-automation-action - `default-branch@9675ced`
 
 - Full-ingested work item `github-631f3be17d0207a5120c` at exact SHA `9675cedc9efe9d0b5563bd7dd0f8ef88f26ad03b` from the complete seven-file retained capsule plus required context.

@@ -56,7 +56,7 @@ APPENDIX_A_INVENTORY = (
     ('braintree/braintree-ios-drop-in', 'https://github.com/braintree/braintree-ios-drop-in', 'drop-in', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/braintree-android-drop-in', 'https://github.com/braintree/braintree-android-drop-in', 'drop-in', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-ios', 'https://github.com/stripe/stripe-ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
-    ('stripe/stripe-apps', 'https://github.com/stripe/stripe-apps', 'developer-platform', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('stripe/stripe-apps', 'https://github.com/stripe/stripe-apps', 'developer-platform', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('stripe/stripe-cli', 'https://github.com/stripe/stripe-cli', 'cli', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('stripe/stripe-android', 'https://github.com/stripe/stripe-android', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/link-cli', 'https://github.com/stripe/link-cli', 'cli', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
@@ -953,6 +953,43 @@ class RegistryTests(unittest.TestCase):
         }.issubset(set(repo.ingest_required_paths)))
         self.assertFalse(any("__generated__" in path for path in capsule.default_required_roots))
         self.assertFalse(any("__snapshots__" in path for path in capsule.default_required_roots))
+
+    def test_stripe_apps_uses_manifest_and_full_page_commit_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(item for item in repos if item.id == "stripe/stripe-apps")
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual("commit", repo.version_strategy)
+        self.assertEqual("default-branch", repo.track)
+        self.assertEqual((), repo.version_tracks)
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("stripe-apps-platform", capsule.id)
+        self.assertEqual("commit-tree-v1", capsule.adapter)
+        self.assertEqual("stripe-apps", capsule.source_id)
+        self.assertEqual(
+            ("examples/full-page/src",),
+            capsule.default_required_roots,
+        )
+        self.assertTrue({
+            "README.md",
+            "CHANGELOG.md",
+            "SECURITY.md",
+            "LICENSE",
+            "schema/README.md",
+            "schema/package.json",
+            "schema/stripe-app-local.schema.json",
+            "schema/stripe-app.schema.json",
+            "schema/stripe-app.schema.yaml",
+            "examples/full-page/README.md",
+            "examples/full-page/package.json",
+            "examples/full-page/stripe-app.json",
+            "examples/full-page/tsconfig.json",
+            "examples/full-page/ui-extensions.d.ts",
+        }.issubset(set(capsule.include_paths)))
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertFalse(any("lock" in path for path in capsule.include_paths))
+        self.assertFalse(any(path.startswith(".github/") for path in capsule.include_paths))
 
     def test_braintree_web_uses_the_reviewed_public_source_capsule(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")

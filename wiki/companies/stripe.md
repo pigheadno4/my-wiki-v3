@@ -2,7 +2,7 @@
 title: "Stripe"
 type: company
 tags: [stripe, payment-gateway, payment-intents, checkout, subscriptions, elements, webhooks, payment-links]
-source_count: 662
+source_count: 664
 ---
 
 ## Stripe
@@ -60,6 +60,10 @@ The `stripe/ai` repository supplies independently versioned LLM token-billing pa
 ### Operational Data Synchronization
 
 `stripe/sync-engine` is an experimental Stripe-to-Postgres synchronization framework with OpenAPI-driven discovery, resumable backfill, event and webhook live paths, account-qualified records, PostgreSQL projection, and Temporal orchestration. The retained baseline is exact default-branch commit `93321ab`, not a tagged `0.2.5` release. It assumes trusted internal deployment, exposes an unauthenticated internal query endpoint, and redirects active development to a separately owned fork. See [[source-github-sync-engine]] and [[changelog-github-sync-engine]].
+
+### Stripe Apps
+
+`stripe/stripe-apps` provides manifest schemas and examples for embedding custom UI extensions in the Stripe Dashboard. The retained `default-branch@9b14b71` baseline covers standard, local-development, and extension manifests plus a full-page React example. The example is fully mock-backed, its manifest drifts from the retained standard schema, and payment-related permission enums do not establish a live Checkout flow or merchant eligibility. See [[source-github-stripe-apps]], [[changelog-github-stripe-apps]], and [[stripe-apps]].
 
 ### Stripe CLI
 
@@ -150,6 +154,8 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 - [[changelog-github-link-cli]] — package-qualified Link CLI baseline and exact `0.13.0` financial-insight and duplicate-request messaging changes
 - [[source-github-sync-engine]] — `default-branch@93321ab` operational data baseline: Stripe discovery, backfill, live events, Postgres destination, state, and Temporal workflows
 - [[changelog-github-sync-engine]] — commit-qualified Sync Engine baseline, documentation drift, trust boundaries, and future comparison rule
+- [[source-github-stripe-apps]] — `default-branch@9b14b71` Stripe Apps baseline: manifest schemas, Dashboard UI extensions, full-page example, and mock-data boundaries
+- [[changelog-github-stripe-apps]] — commit-qualified Stripe Apps baseline, schema/example drift, and future comparison rule
 - [[source-github-stripe-php]] — `stripe-php@21.2.0` server SDK baseline: client services, encoding, retries, webhooks, Checkout, subscriptions, and Terminal
 - [[changelog-github-stripe-php]] — package-qualified Stripe PHP baseline and exact v21.2.0 event helper changes
 - [[source-stripe-billing-benchmarks]] — billing benchmarking: k-NN peer matching, ≥5 subs access, peer eligibility ≥100 subs, 7 metrics benchmarked, percentile display

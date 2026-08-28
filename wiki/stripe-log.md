@@ -6,6 +6,13 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-28] ingest | stripe/stripe-apps `default-branch@9b14b71`
+
+- Full-ingested work item `github-963480d18adba0763347` at exact SHA `9b14b71be496ca299401b3303b572856fd19baf4` after serial review of the complete 72-file retained capsule and required Stripe context.
+- Established cumulative and commit-qualified sources plus [[stripe-apps]] for standard, local-development, and extension manifests; Dashboard UI-extension architecture; and the complete retained full-page example.
+- Preserved the mock-only data boundary, independent `@stripe/ui-extension-sdk` release history, preview-mode warning, and payment-permission versus payment-behavior distinction.
+- Recorded the contradiction between the retained standard schema and example manifest instead of presenting the example as a universal template.
+
 ## [2026-08-27] ingest | stripe/sync-engine `default-branch@93321ab`
 
 - Full-ingested work item `github-d7a121b45c762cec959d` at exact SHA `93321ab3644d5460213725abe0595247c403eb46` after serial full reading of all 105 required evidence and context paths.

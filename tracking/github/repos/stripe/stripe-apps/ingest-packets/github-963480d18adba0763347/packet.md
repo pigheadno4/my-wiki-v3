@@ -1,0 +1,171 @@
+# GitHub ingest packet
+
+- Repository: `stripe/stripe-apps`
+- Work item: `github-963480d18adba0763347`
+- Snapshot: `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/manifest.json`
+- Recommended mode: `full`
+- Review priority: `high`
+
+- Ref: `default-branch@9b14b71` (`main`)
+- Transition: `baseline` -> `9b14b71be496ca299401b3303b572856fd19baf4`
+- Author date: `2026-08-21T10:54:58+02:00`
+- Commit date: `2026-08-21T10:54:58+02:00`
+
+## Required reading
+
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/CHANGELOG.md`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/LICENSE`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/README.md`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/SECURITY.md`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/README.md`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/package.json`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/components/FieldGrid.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/components/StatsCard.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/constants.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/data/api.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/data/cache-mutations.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/data/config.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/data/index.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/data/mock.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/data/network.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/data/queries.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/data/query-cache.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/data/query-keys.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/data/types.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/hooks/useQueuedToast.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/components/EditMemberDrawer.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/components/EditRewardDrawer.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/components/FilterSelect.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/components/GrantPointsDrawer.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/hooks/useHome.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/index.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/tabs/ActivityTab/hooks/useActivityTab.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/tabs/ActivityTab/index.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/tabs/MembersTab/hooks/useMembersTab.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/tabs/MembersTab/index.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/tabs/OverviewTab/components/ChartsModule.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/tabs/OverviewTab/components/GrowthIndicator.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/tabs/OverviewTab/components/MembersByTierModule.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/tabs/OverviewTab/components/ProgramSummaryModule.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/tabs/OverviewTab/components/QuickActionsModule.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/tabs/OverviewTab/components/RecentActivityModule.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/tabs/OverviewTab/hooks/useOverviewTab.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/tabs/OverviewTab/index.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/tabs/RewardsTab/hooks/useRewardsTab.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/Home/tabs/RewardsTab/index.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/MemberDetail/components/DetailsModule.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/MemberDetail/components/PointsBreakdownModule.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/MemberDetail/components/RecentActivityModule.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/MemberDetail/components/SummaryModule.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/MemberDetail/hooks/useMemberDetailPage.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/MemberDetail/index.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/RewardDetail/components/DetailsModule.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/RewardDetail/components/RecentRedemptionsModule.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/RewardDetail/components/SummaryModule.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/RewardDetail/hooks/useRewardDetailPage.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/RewardDetail/index.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/TransactionDetail/components/MemberDetailsModule.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/TransactionDetail/components/OrderModule.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/TransactionDetail/components/SummaryModule.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/TransactionDetail/hooks/useTransactionDetailPage.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/pages/TransactionDetail/index.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/providers/AppProviders.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/routes.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/utils/date.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/utils/format.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/utils/roles.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/views/AppSettings.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/views/DrawerDefaultView.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/src/views/FullPage.tsx`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/stripe-app.json`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/tsconfig.json`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/examples/full-page/ui-extensions.d.ts`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/schema/README.md`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/schema/package.json`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/schema/stripe-app-local.schema.json`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/schema/stripe-app.schema.json`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/files/schema/stripe-app.schema.yaml`
+- `raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/manifest.json`
+- `wiki/companies/stripe.md`
+- `wiki/log.md`
+- `wiki/stripe-index.md`
+- `wiki/stripe-log.md`
+
+## Selected changes
+
+- `added` `CHANGELOG.md`
+- `added` `LICENSE`
+- `added` `README.md`
+- `added` `SECURITY.md`
+- `added` `examples/full-page/README.md`
+- `added` `examples/full-page/package.json`
+- `added` `examples/full-page/src/components/FieldGrid.tsx`
+- `added` `examples/full-page/src/components/StatsCard.tsx`
+- `added` `examples/full-page/src/constants.ts`
+- `added` `examples/full-page/src/data/api.ts`
+- `added` `examples/full-page/src/data/cache-mutations.ts`
+- `added` `examples/full-page/src/data/config.ts`
+- `added` `examples/full-page/src/data/index.ts`
+- `added` `examples/full-page/src/data/mock.ts`
+- `added` `examples/full-page/src/data/network.ts`
+- `added` `examples/full-page/src/data/queries.ts`
+- `added` `examples/full-page/src/data/query-cache.ts`
+- `added` `examples/full-page/src/data/query-keys.ts`
+- `added` `examples/full-page/src/data/types.ts`
+- `added` `examples/full-page/src/hooks/useQueuedToast.ts`
+- `added` `examples/full-page/src/pages/Home/components/EditMemberDrawer.tsx`
+- `added` `examples/full-page/src/pages/Home/components/EditRewardDrawer.tsx`
+- `added` `examples/full-page/src/pages/Home/components/FilterSelect.tsx`
+- `added` `examples/full-page/src/pages/Home/components/GrantPointsDrawer.tsx`
+- `added` `examples/full-page/src/pages/Home/hooks/useHome.ts`
+- `added` `examples/full-page/src/pages/Home/index.tsx`
+- `added` `examples/full-page/src/pages/Home/tabs/ActivityTab/hooks/useActivityTab.ts`
+- `added` `examples/full-page/src/pages/Home/tabs/ActivityTab/index.tsx`
+- `added` `examples/full-page/src/pages/Home/tabs/MembersTab/hooks/useMembersTab.ts`
+- `added` `examples/full-page/src/pages/Home/tabs/MembersTab/index.tsx`
+- `added` `examples/full-page/src/pages/Home/tabs/OverviewTab/components/ChartsModule.tsx`
+- `added` `examples/full-page/src/pages/Home/tabs/OverviewTab/components/GrowthIndicator.tsx`
+- `added` `examples/full-page/src/pages/Home/tabs/OverviewTab/components/MembersByTierModule.tsx`
+- `added` `examples/full-page/src/pages/Home/tabs/OverviewTab/components/ProgramSummaryModule.tsx`
+- `added` `examples/full-page/src/pages/Home/tabs/OverviewTab/components/QuickActionsModule.tsx`
+- `added` `examples/full-page/src/pages/Home/tabs/OverviewTab/components/RecentActivityModule.tsx`
+- `added` `examples/full-page/src/pages/Home/tabs/OverviewTab/hooks/useOverviewTab.ts`
+- `added` `examples/full-page/src/pages/Home/tabs/OverviewTab/index.tsx`
+- `added` `examples/full-page/src/pages/Home/tabs/RewardsTab/hooks/useRewardsTab.ts`
+- `added` `examples/full-page/src/pages/Home/tabs/RewardsTab/index.tsx`
+- `added` `examples/full-page/src/pages/MemberDetail/components/DetailsModule.tsx`
+- `added` `examples/full-page/src/pages/MemberDetail/components/PointsBreakdownModule.tsx`
+- `added` `examples/full-page/src/pages/MemberDetail/components/RecentActivityModule.tsx`
+- `added` `examples/full-page/src/pages/MemberDetail/components/SummaryModule.tsx`
+- `added` `examples/full-page/src/pages/MemberDetail/hooks/useMemberDetailPage.ts`
+- `added` `examples/full-page/src/pages/MemberDetail/index.tsx`
+- `added` `examples/full-page/src/pages/RewardDetail/components/DetailsModule.tsx`
+- `added` `examples/full-page/src/pages/RewardDetail/components/RecentRedemptionsModule.tsx`
+- `added` `examples/full-page/src/pages/RewardDetail/components/SummaryModule.tsx`
+- `added` `examples/full-page/src/pages/RewardDetail/hooks/useRewardDetailPage.ts`
+- `added` `examples/full-page/src/pages/RewardDetail/index.tsx`
+- `added` `examples/full-page/src/pages/TransactionDetail/components/MemberDetailsModule.tsx`
+- `added` `examples/full-page/src/pages/TransactionDetail/components/OrderModule.tsx`
+- `added` `examples/full-page/src/pages/TransactionDetail/components/SummaryModule.tsx`
+- `added` `examples/full-page/src/pages/TransactionDetail/hooks/useTransactionDetailPage.ts`
+- `added` `examples/full-page/src/pages/TransactionDetail/index.tsx`
+- `added` `examples/full-page/src/providers/AppProviders.tsx`
+- `added` `examples/full-page/src/routes.tsx`
+- `added` `examples/full-page/src/utils/date.ts`
+- `added` `examples/full-page/src/utils/format.ts`
+- `added` `examples/full-page/src/utils/roles.ts`
+- `added` `examples/full-page/src/views/AppSettings.tsx`
+- `added` `examples/full-page/src/views/DrawerDefaultView.tsx`
+- `added` `examples/full-page/src/views/FullPage.tsx`
+- `added` `examples/full-page/stripe-app.json`
+- `added` `examples/full-page/tsconfig.json`
+- `added` `examples/full-page/ui-extensions.d.ts`
+- `added` `schema/README.md`
+- `added` `schema/package.json`
+- `added` `schema/stripe-app-local.schema.json`
+- `added` `schema/stripe-app.schema.json`
+- `added` `schema/stripe-app.schema.yaml`
+
+## Excluded changes
+
+- None

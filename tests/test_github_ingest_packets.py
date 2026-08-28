@@ -1008,6 +1008,18 @@ class GitHubIngestPacketTests(unittest.TestCase):
                     "include-path",
                     "widgets",
                 ),
+                "schema/stripe-app.schema.json": (
+                    '{"title":"Stripe App manifest"}\n',
+                    "source-capsule",
+                    "include-path",
+                    "widgets",
+                ),
+                "schema/stripe-app.schema.yaml": (
+                    "title: Stripe App manifest\n",
+                    "source-capsule",
+                    "include-path",
+                    "widgets",
+                ),
                 "client/Module.swiftmodule/arm64-apple-ios.abi.json": (
                     '{"ABIRoot":{"kind":"Root"}}\n',
                     "source-capsule",
@@ -1057,6 +1069,14 @@ class GitHubIngestPacketTests(unittest.TestCase):
             classified[".github/workflows/sync.yml"],
         )
         self.assertEqual("runtime-configuration", classified["action.yml"])
+        self.assertEqual(
+            "public-source",
+            classified["schema/stripe-app.schema.json"],
+        )
+        self.assertEqual(
+            "public-source",
+            classified["schema/stripe-app.schema.yaml"],
+        )
         self.assertEqual(
             "build-configuration",
             classified["client/Module.swiftmodule/arm64-apple-ios.abi.json"],

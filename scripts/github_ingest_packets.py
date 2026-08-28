@@ -1167,6 +1167,8 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "build-configuration"
     if filename.endswith(".abi.json"):
         return "build-configuration"
+    if filename.endswith((".schema.json", ".schema.yaml", ".schema.yml")):
+        return "public-source"
     if lowered.startswith(".github/workflows/") and filename.endswith(
         (".yml", ".yaml")
     ):

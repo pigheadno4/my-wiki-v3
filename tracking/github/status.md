@@ -1028,6 +1028,33 @@
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.2/2026-07-22/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.1.1--10.1.2/comparison.json)
 
+## `github-963480d18adba0763347`
+
+- Repository: `stripe/stripe-apps`
+- SHA: `9b14b71be496ca299401b3303b572856fd19baf4`
+- Collection date: `2026-08-28`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-apps/snapshots/2026-08-28-9b14b71/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-apps/ingest-packets/github-963480d18adba0763347/packet.md)
+- Review priority: `high`
+- Required reading: `77` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@9b14b71` (recommended `full`)
+  Ref: `main`
+  From SHA: `baseline`
+  To SHA: `9b14b71be496ca299401b3303b572856fd19baf4`
+  Comparison: Not applicable
+
 ## `github-986685252a62505561c4`
 
 - Repository: `paypal/paypal-js`
