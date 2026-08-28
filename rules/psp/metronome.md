@@ -375,3 +375,21 @@ a result-contract field, registry, score, classifier agent, scheduler state,
 validator, or performance-monitoring layer. This authorization does not permit
 an unreviewed canonical source, a seventh page, Luna or Terra routing, another
 provider, cross-PSP rollout, or bulk migration.
+
+## Post-Campaign 25 planning and close simplification
+
+For each separately approved later Metronome campaign, use the raw corpus
+metadata already available during selection to consider total raw lines, the
+largest single page, and semantic risk in addition to page count. This is an
+advisory dispatch order, not new manifest or scheduler state: start the longest
+or highest-risk pages first so their complete reads overlap shorter work and do
+not become avoidable tail latency. Keep the existing dynamic slots, per-page
+strong Sol worker and independent strong Sol reviewer, bounded retry policy,
+and coordinator-owned promotion unchanged.
+
+For a documentation-only campaign close, follow the mature close path already
+defined in `rules/ingest.md`: run the targeted wiki and capsule checks plus the
+existing hash, link, count, query-audit, and diff checks. Run the full unit suite
+only when the campaign changes code, rules, or validators. Do not add a
+registry, timing schema, scheduler feature, or performance-monitoring layer to
+implement this ordering or close-path choice.
