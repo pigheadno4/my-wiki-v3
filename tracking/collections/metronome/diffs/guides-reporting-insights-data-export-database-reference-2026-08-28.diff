@@ -1,0 +1,102 @@
+--- raw/metronome/guides/reporting-insights/data-export/database-reference-2026-07-13.md
++++ raw/metronome/guides/reporting-insights/data-export/database-reference-2026-08-28.md
+@@ -237,7 +237,7 @@
+   * All \$0 total and >0 quantity invoices and line items
+   * All \$0 and 0 quantity invoices and line items
+ 
+-  To enable filters, contact your Metronome Solutions Architect.
++  To enable filters, contact us via the [Metronome support portal](https://support.metronome.com/).
+ </Note>
+ 
+ <AccordionGroup>
+@@ -447,6 +447,7 @@
+     | `recurring_commit_id`          | `string`    | The ID of the parent config that created this commit (null if this commit was not created by a recurring commit)                                                                                                                                                                                                                                                                                                                                                                                                                             |
+     | `metadata`                     | `json`      | [`Metadata`](/guides/reporting-insights/data-export/database-reference#metadata)                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+     | `balance`                      | `float`     | The current balance of the commit. This balance reflects the amount of commit that the customer has access to use at this moment. Expired and upcoming commit segments contribute 0 to the balance. The balance matches the sum of all ledger entries except when the sum of negative manual ledger entries exceeds the positive amount remaining on the commit. In that case, the balance is 0. All manual ledger entries associated with active commit segments are included in the balance, including future-dated manual ledger entries. |
++    | `cost_basis`                   | `float`     | The ratio of the amount paid for the commit to the amount of credit granted                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+     | `updated_at`                   | `timestamp` | The timestamp (UTC) of when the commit was last updated                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+ 
+     #### `contracts_commits.AccessSchedule`
+@@ -674,6 +675,7 @@
+     | `recurring_commit_id`          | `string`    | The ID of the parent config that created this commit / credit (null if this commit was not created by a recurring commit / credit)                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+     | `metadata`                     | `json`      | [`Metadata`](/guides/reporting-insights/data-export/database-reference#metadata)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+     | `balance`                      | `float`     | The current balance of the credit or commit. This balance reflects the amount of credit or commit that the customer has access to use at this moment. Expired and upcoming credit or commit segments contribute 0 to the balance. The balance matches the sum of all ledger entries except when the sum of negative manual ledger entries exceeds the positive amount remaining on the credit or commit. In that case, the balance is 0. All manual ledger entries associated with active credit or commit segments are included in the balance, including future-dated manual ledger entries. |
++    | `cost_basis`                   | `float`     | The ratio of the amount paid for the commit to the amount of credit granted                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+     | `updated_at`                   | `timestamp` | The timestamp (UTC) at which this row was exported                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+ 
+     #### `contracts_balances.AccessSchedule`
+@@ -1106,25 +1108,29 @@
+   <Accordion title="contracts_prepaid_balance_threshold_configurations">
+     ### `contracts_prepaid_balance_threshold_configurations`
+ 
+-    | Column                           | Type        | Description                                                                       |
+-    | -------------------------------- | ----------- | --------------------------------------------------------------------------------- |
+-    | `id`                             | `string`    | Same as `contract_id`                                                             |
+-    | `environment_type`               | `string`    | The Metronome environment, `SANDBOX` or `PRODUCTION`                              |
+-    | `snapshot_id`                    | `string`    | The snapshot ID for the row                                                       |
+-    | `contract_id`                    | `string`    | The contract ID associated with the prepaid balance threshold configuration       |
+-    | `enabled`                        | `boolean`   | Whether prepaid balance threshold billing is enabled                              |
+-    | `threshold_amount`               | `float`     | The prepaid balance threshold at which to trigger threshold commit creation       |
+-    | `recharge_to_amount`             | `float`     | The amount to recharge the balance to when the threshold is reached               |
+-    | `commit_name`                    | `string`    | The name to use as the line item of the threshold charge                          |
+-    | `commit_description`             | `string`    | The description used in the threshold commit                                      |
+-    | `commit_product_id`              | `string`    | The fixed product ID used for prepaid balance threshold commits                   |
+-    | `commit_applicable_product_ids`  | `json`      | JSON encoded list of applicable product IDs for the commit                        |
+-    | `commit_applicable_product_tags` | `json`      | JSON encoded list of applicable product tags for the commit                       |
+-    | `payment_gate_type`              | `string`    | The payment gate type: `STRIPE`, `EXTERNAL`, or `NONE`                            |
+-    | `tax_type`                       | `string`    | The tax provider used: `STRIPE`, `ANROK`, `PRECALCULATED`, or `NONE`              |
+-    | `stripe_payment_type`            | `string`    | The payment type if using Stripe payment gate: `PAYMENT_INTENT` or `INVOICE`      |
+-    | `metadata`                       | `json`      | [`Metadata`](/guides/reporting-insights/data-export/database-reference/#metadata) |
+-    | `updated_at`                     | `timestamp` | The timestamp (UTC) at which this row was exported                                |
++    | Column                           | Type        | Description                                                                                                                                    |
++    | -------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
++    | `id`                             | `string`    | Same as `contract_id`                                                                                                                          |
++    | `environment_type`               | `string`    | The Metronome environment, `SANDBOX` or `PRODUCTION`                                                                                           |
++    | `snapshot_id`                    | `string`    | The snapshot ID for the row                                                                                                                    |
++    | `contract_id`                    | `string`    | The contract ID associated with the prepaid balance threshold configuration                                                                    |
++    | `enabled`                        | `boolean`   | Whether prepaid balance threshold billing is enabled                                                                                           |
++    | `threshold_amount`               | `float`     | The prepaid balance threshold at which to trigger threshold commit creation                                                                    |
++    | `recharge_to_amount`             | `float`     | The amount to recharge the balance to when the threshold is reached                                                                            |
++    | `commit_name`                    | `string`    | The name to use as the line item of the threshold charge                                                                                       |
++    | `commit_description`             | `string`    | The description used in the threshold commit                                                                                                   |
++    | `commit_product_id`              | `string`    | The fixed product ID used for prepaid balance threshold commits                                                                                |
++    | `commit_applicable_product_ids`  | `json`      | JSON encoded list of applicable product IDs for the commit                                                                                     |
++    | `commit_applicable_product_tags` | `json`      | JSON encoded list of applicable product tags for the commit                                                                                    |
++    | `payment_gate_type`              | `string`    | The payment gate type: `STRIPE`, `EXTERNAL`, or `NONE`                                                                                         |
++    | `tax_type`                       | `string`    | The tax provider used: `STRIPE`, `ANROK`, `PRECALCULATED`, or `NONE`                                                                           |
++    | `stripe_payment_type`            | `string`    | The payment type if using Stripe payment gate: `PAYMENT_INTENT` or `INVOICE`                                                                   |
++    | `metadata`                       | `json`      | [`Metadata`](/guides/reporting-insights/data-export/database-reference/#metadata)                                                              |
++    | `updated_at`                     | `timestamp` | The timestamp (UTC) at which this row was exported                                                                                             |
++    | `commit_duration_value`          | `integer`   | The numeric component of the commit duration, starting from the end of the invoice's service period. If not set, defaults to one year          |
++    | `commit_duration_unit`           | `string`    | The unit component of the commit duration: `DAYS`, `WEEKS`, `MONTHS`, or `YEARS`. If not set, defaults to one year                             |
++    | `commit_rollover_fraction`       | `float`     | Fraction of the created commit's unused balance that will roll over on contract transitions. Between 0 and 1. If not set, defaults to 1 (100%) |
++    | `commit_rate_type`               | `string`    | Either `COMMIT_RATE` or `LIST_RATE`                                                                                                            |
+   </Accordion>
+ 
+   <Accordion title="contracts_spend_threshold_configurations">
+@@ -1350,7 +1356,7 @@
+     | `id`               | `string`    | The ID of the transition event                                                    |
+     | `environment_type` | `string`    | The Metronome environment, `SANDBOX` or `PRODUCTION`                              |
+     | `snapshot_id`      | `string`    | The snapshot ID for the row                                                       |
+-    | `type`             | `string`    | Either "renewal" or "supersede"                                                   |
++    | `type`             | `string`    | The transition type, e.g. "renewal"                                               |
+     | `contract_id`      | `string`    | The current contract ID                                                           |
+     | `from_contract_id` | `string`    | The contract ID that applies prior to the transition                              |
+     | `to_contract_id`   | `string`    | The contract ID that applies after the transition                                 |
+@@ -1511,7 +1517,7 @@
+ <Note>
+   **Private Beta**
+ 
+-  Metronome invoicing is currently in Private Beta. Contact your Metronome representative for early access.
++  Metronome invoicing is currently in Private Beta. Contact us via the [Metronome support portal](https://support.metronome.com/) for early access.
+ </Note>
+ 
+ Payment information when invoicing with Metronome.
+@@ -1574,6 +1580,7 @@
+     | `archived_at`      | `timestamp` | The timestamp (UTC) of when the alert was archived                                                       |
+     | `group_values`     | `json`      | The group value filters associated with the alert. Only present for `spend_threshold_reached` alerts.    |
+     | `seat_filter`      | `json`      | The seat filter associated with the alert. Only present for `low_remaining_seat_balance_reached` alerts. |
++    | `customer_id`      | `string`    | The customer ID associated with the alert. If null, the configured alert applies to all customers.       |
+   </Accordion>
+ 
+   <Accordion title="customer_alert_history">

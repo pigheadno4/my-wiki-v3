@@ -1,0 +1,44 @@
+--- raw/metronome/api-reference/invoices/get-an-invoice-2026-07-13.md
++++ raw/metronome/api-reference/invoices/get-an-invoice-2026-08-28.md
+@@ -408,8 +408,8 @@
+               - client_id:8e3a848a-4566-4cfb-be49-64d80118a7fc
+           type: object
+           description: >-
+-            This field's availability is dependent on your client's
+-            configuration.
++            Indicates if the invoice has been or will be sent to the configured
++            customer billing provider. Defaults to `billable`.
+         constituent_invoices:
+           type: array
+           description: >-
+@@ -701,6 +701,11 @@
+             contract_id:
+               type: string
+               format: uuid
++        quantity_consumed:
++          type: number
++          description: >-
++            Present on applied commit line items for quantity-based commits.
++            Represents the unit quantity deducted the commit.
+     InvoiceStatus:
+       type: string
+       example: DRAFT, VOID, or FINALIZED
+@@ -919,6 +924,18 @@
+         - id
+         - type
+       properties:
++        access_type:
++          x-mint:
++            groups:
++              - ff:create-quantity-based-commits
++          x-stainless-skip: true
++          type: string
++          enum:
++            - SPEND
++            - QUANTITY
++          description: >-
++            Indicates how the balance is drawn down. `SPEND` deducts the dollar
++            cost of usage. `QUANTITY` deducts the number of units used.
+         id:
+           type: string
+           format: uuid

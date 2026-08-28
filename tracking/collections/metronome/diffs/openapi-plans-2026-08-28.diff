@@ -1,0 +1,920 @@
+--- raw/metronome/_artifacts/openapi-plans-2026-07-13.json
++++ raw/metronome/_artifacts/openapi-plans-2026-08-28.json
+@@ -11,7 +11,7 @@
+     }
+   ],
+   "paths": {
+-    "/approval_requests/submit": {
++    "/approval_requests": {
+       "post": {
+         "x-mint": {
+           "groups": [
+@@ -21,7 +21,7 @@
+         "x-stainless-skip": true,
+         "operationId": "submitApprovalRequests",
+         "summary": "Submit a write operation for human approval",
+-        "description": "Queues a write operation for human review when an agentic token is in use.\n\nWhen an agent attempts a write operation (e.g. `POST /v1/contracts/create`) using an\nagentic token, the server returns a `403 Agentic Restricted` error with a pointer to\nthis endpoint. The agent should then call this endpoint with the original request details\nso a human can review and approve the action.\n\nOn success, a pending approval request is created and the response includes an\n`approval_url` linking to the Approval Dashboard where a human can review, approve, or\nreject the request. Once approved, the original operation is executed automatically and\nthe dashboard reflects the completed status.\n",
++        "description": "Queues a write operation for human review when an agentic token is in use.\n\nWhen an agent attempts a write operation (e.g. `POST /v1/contracts/create`) using an\nagentic token, the server returns a `403 AgenticMutationBlocked` error with a pointer to\nthis endpoint. The agent should then call this endpoint with the original request details\nso a human can review and approve the action.\n\nOn success, a pending approval request is created and the response includes an\n`approval_url` linking to the Approval Dashboard where a human can review, approve, or\nreject the request. Once approved, the original operation is executed automatically and\nthe dashboard reflects the completed status.\n\nAgents should surface the `approval_url` to the human user (e.g. via chat message or UI link)\nso they can navigate directly to the approval dashboard to review the request.\n",
+         "tags": [
+           "Approval Requests"
+         ],
+@@ -34,8 +34,9 @@
+                 "required": [
+                   "name",
+                   "description",
+-                  "request_type",
+-                  "request_payload"
++                  "method",
++                  "path",
++                  "body"
+                 ],
+                 "properties": {
+                   "name": {
+@@ -48,15 +49,23 @@
+                     "minLength": 1,
+                     "maxLength": 512
+                   },
+-                  "request_type": {
++                  "method": {
+                     "type": "string",
+-                    "pattern": "^/",
++                    "enum": [
++                      "POST",
++                      "PUT",
++                      "PATCH",
++                      "DELETE"
++                    ],
++                    "description": "The HTTP method of the operation being requested."
++                  },
++                  "path": {
++                    "type": "string",
+                     "description": "The API path of the operation being requested (e.g. /v1/contracts/create)."
+                   },
+-                  "request_payload": {
++                  "body": {
+                     "type": "object",
+                     "additionalProperties": true,
+-                    "minProperties": 1,
+                     "description": "The full request body of the operation being requested."
+                   }
+                 }
+@@ -64,8 +73,9 @@
+               "example": {
+                 "name": "Create enterprise contract for Acme Corp",
+                 "description": "Onboarding new enterprise customer with annual commitment",
+-                "request_type": "/v1/contracts/create",
+-                "request_payload": {
++                "method": "POST",
++                "path": "/v1/contracts/create",
++                "body": {
+                   "customer_id": "4db51251-61de-4bfe-b9ce-495e244f3491",
+                   "starting_at": "2026-06-01T00:00:00.000Z"
+                 }
+@@ -85,37 +95,267 @@
+                   ],
+                   "properties": {
+                     "data": {
+-                      "type": "object",
+-                      "required": [
+-                        "id",
+-                        "approval_url",
+-                        "created_at"
+-                      ],
+-                      "properties": {
+-                        "id": {
+-                          "type": "string",
+-                          "format": "uuid"
+-                        },
+-                        "approval_url": {
+-                          "type": "string"
+-                        },
+-                        "created_at": {
+-                          "type": "string",
+-                          "format": "date-time"
+-                        }
+-                      }
++                      "$ref": "#/components/schemas/ApprovalRequest"
+                     }
+                   }
+-                },
+-                "example": {
+-                  "data": {
+-                    "id": "7b34e1f2-516e-4436-875a-70eddca536f2",
+-                    "approval_url": "https://app.metronome.com/connections/agent-requests?id=7b34e1f2-516e-4436-875a-70eddca536f2",
+-                    "created_at": "2024-01-15T10:30:00Z"
++                }
++              }
++            }
++          }
++        }
++      },
++      "get": {
++        "x-mint": {
++          "groups": [
++            "ff:agentic-api-tokens"
++          ]
++        },
++        "x-stainless-skip": true,
++        "operationId": "listApprovalRequests",
++        "summary": "List approval requests",
++        "description": "Lists all approval requests submitted by agentic tokens for your account. Returns request details including status, token name, approval URL, and the original request payload. Use status and date filters to narrow results.\n",
++        "tags": [
++          "Approval Requests"
++        ],
++        "parameters": [
++          {
++            "name": "status",
++            "in": "query",
++            "required": false,
++            "schema": {
++              "type": "string",
++              "enum": [
++                "pending_approval",
++                "approved",
++                "denied",
++                "execution_succeeded",
++                "execution_error",
++                "expired"
++              ]
++            },
++            "description": "Filter by approval request status."
++          },
++          {
++            "name": "limit",
++            "in": "query",
++            "required": false,
++            "schema": {
++              "type": "integer",
++              "minimum": 1,
++              "maximum": 100
++            },
++            "description": "Number of items to return per page. Defaults to 20."
++          },
++          {
++            "name": "next_page",
++            "in": "query",
++            "required": false,
++            "schema": {
++              "type": "string"
++            },
++            "description": "Cursor for pagination. Use the value from the previous response's next_page field."
++          },
++          {
++            "name": "created_before",
++            "in": "query",
++            "required": false,
++            "schema": {
++              "type": "string",
++              "format": "date-time"
++            },
++            "description": "Filter to requests created before this timestamp (exclusive)."
++          },
++          {
++            "name": "created_after",
++            "in": "query",
++            "required": false,
++            "schema": {
++              "type": "string",
++              "format": "date-time"
++            },
++            "description": "Filter to requests created on or after this timestamp (inclusive)."
++          }
++        ],
++        "responses": {
++          "200": {
++            "description": "Success",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "type": "object",
++                  "required": [
++                    "data",
++                    "next_page"
++                  ],
++                  "properties": {
++                    "data": {
++                      "type": "array",
++                      "items": {
++                        "$ref": "#/components/schemas/ApprovalRequest"
++                      }
++                    },
++                    "next_page": {
++                      "type": "string",
++                      "nullable": true,
++                      "description": "Cursor to use for fetching the next page of results."
++                    }
+                   }
+                 }
+               }
+             }
++          }
++        }
++      }
++    },
++    "/approval_requests/{id}": {
++      "get": {
++        "x-mint": {
++          "groups": [
++            "ff:agentic-api-tokens"
++          ]
++        },
++        "x-stainless-skip": true,
++        "operationId": "getApprovalRequest",
++        "summary": "Get an approval request",
++        "description": "Retrieves the details of a single approval request by its ID.\n",
++        "tags": [
++          "Approval Requests"
++        ],
++        "parameters": [
++          {
++            "name": "id",
++            "in": "path",
++            "required": true,
++            "schema": {
++              "type": "string",
++              "format": "uuid"
++            },
++            "description": "The ID of the approval request to retrieve."
++          }
++        ],
++        "responses": {
++          "200": {
++            "description": "Success",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "type": "object",
++                  "required": [
++                    "data"
++                  ],
++                  "properties": {
++                    "data": {
++                      "$ref": "#/components/schemas/ApprovalRequest"
++                    }
++                  }
++                }
++              }
++            }
++          },
++          "404": {
++            "$ref": "#/components/responses/NotFound"
++          }
++        }
++      }
++    },
++    "/approval_requests/{id}/approve": {
++      "post": {
++        "x-mint": {
++          "groups": [
++            "ff:agentic-api-tokens"
++          ]
++        },
++        "x-stainless-skip": true,
++        "operationId": "approveApprovalRequest",
++        "summary": "Approve a pending approval request",
++        "description": "Approves a pending approval request, allowing the queued operation to proceed.\n\nOnce approved, the original write operation will be executed automatically and the\napproval request status will transition to reflect the execution result.\n",
++        "tags": [
++          "Approval Requests"
++        ],
++        "parameters": [
++          {
++            "name": "id",
++            "in": "path",
++            "required": true,
++            "schema": {
++              "type": "string",
++              "format": "uuid"
++            },
++            "description": "The ID of the approval request to approve."
++          }
++        ],
++        "responses": {
++          "200": {
++            "description": "Success",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "type": "object",
++                  "required": [
++                    "data"
++                  ],
++                  "properties": {
++                    "data": {
++                      "$ref": "#/components/schemas/ApprovalRequest"
++                    }
++                  }
++                }
++              }
++            }
++          },
++          "404": {
++            "$ref": "#/components/responses/NotFound"
++          }
++        }
++      }
++    },
++    "/approval_requests/{id}/deny": {
++      "post": {
++        "x-mint": {
++          "groups": [
++            "ff:agentic-api-tokens"
++          ]
++        },
++        "x-stainless-skip": true,
++        "operationId": "denyApprovalRequest",
++        "summary": "Deny a pending approval request",
++        "description": "Denies a pending approval request, preventing the queued operation from executing.\n\nOnce denied, the approval request is closed and the original write operation will\nnot be performed.\n",
++        "tags": [
++          "Approval Requests"
++        ],
++        "parameters": [
++          {
++            "name": "id",
++            "in": "path",
++            "required": true,
++            "schema": {
++              "type": "string",
++              "format": "uuid"
++            },
++            "description": "The ID of the approval request to deny."
++          }
++        ],
++        "responses": {
++          "200": {
++            "description": "Success",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "type": "object",
++                  "required": [
++                    "data"
++                  ],
++                  "properties": {
++                    "data": {
++                      "$ref": "#/components/schemas/ApprovalRequest"
++                    }
++                  }
++                }
++              }
++            }
++          },
++          "404": {
++            "$ref": "#/components/responses/NotFound"
+           }
+         }
+       }
+@@ -4785,7 +5025,7 @@
+     },
+     "/dashboards/getEmbeddableUrl": {
+       "post": {
+-        "description": "Generate secure, embeddable dashboard URLs that allow you to seamlessly integrate Metronome's billing visualizations directly into your application. This endpoint creates authenticated iframe-ready URLs for customer-specific dashboards, providing a white-labeled billing experience without building custom UI.\n\n### Use this endpoint to:\n- Embed billing dashboards directly in your customer portal or admin interface\n- Provide self-service access to invoices, usage data, and credit balances\n- Build white-labeled billing experiences with minimal development effort\n\n### Key response fields:\n- A secure, time-limited URL that can be embedded in an iframe\n- The URL includes authentication tokens and configuration parameters\n- URLs are customer-specific and respect your security settings\n\n### Usage guidelines:\n- Dashboard types: Choose from `invoices`, `usage`, or `commits_and_credits`\n- Customization options:\n    - `dashboard_options`: Configure dashboard behavior. For the invoices dashboard, supported keys include: `show_zero_usage_line_items` (\"true\"/\"false\"), `hide_voided_invoices` (\"true\"/\"false\"), `contract_id` (UUID, filters invoices by contract), `invoice_type` (\"USAGE\" or \"SCHEDULED\", filters by invoice type), `invoice_status_filter` (\"VOID\", \"FINALIZED\", \"DRAFT\", \"FINALIZED_AND_DRAFT\", or \"ALL\"), and `billable_status_filter` (\"BILLABLE\", \"UNBILLABLE\", or \"ALL\")\n    - `color_overrides`: Match your brand's color palette\n    - `bm_group_key_overrides`: Customize how dimensions are displayed (for the usage embeddable dashboard)\n- Iframe implementation: Embed the returned URL directly in an iframe element\n- Responsive design: Dashboards automatically adapt to container dimensions\n",
++        "description": "Generate secure, embeddable dashboard URLs that allow you to seamlessly integrate Metronome's billing visualizations directly into your application. This endpoint creates authenticated iframe-ready URLs for customer-specific dashboards, providing a white-labeled billing experience without building custom UI.\n\n### Use this endpoint to:\n- Embed billing dashboards directly in your customer portal or admin interface\n- Provide self-service access to invoices, usage data, and credit balances\n- Build white-labeled billing experiences with minimal development effort\n\n### Key response fields:\n- A secure, time-limited URL that can be embedded in an iframe\n- The URL includes authentication tokens and configuration parameters\n- URLs are customer-specific and respect your security settings\n\n### Usage guidelines:\n- Dashboard types: Choose from `invoices`, `usage`, or `commits_and_credits`\n- Customization options:\n    - `dashboard_options`: Configure dashboard behavior. Supported for the invoices dashboard only. Available keys include: `show_zero_usage_line_items` (\"true\"/\"false\"), `contract_id` (UUID, filters invoices by contract), `invoice_type` (\"USAGE\" or \"SCHEDULED\", filters by invoice type), and `invoice_status_filter` (\"VOID\", \"FINALIZED\", \"DRAFT\", \"FINALIZED_AND_DRAFT\", or \"ALL\")\n    - `color_overrides`: Match your brand's color palette\n- Iframe implementation: Embed the returned URL directly in an iframe element\n- Responsive design: Dashboards automatically adapt to container dimensions\n",
+         "operationId": "embeddableDashboard",
+         "summary": "Get an embeddable customer dashboard",
+         "tags": [
+@@ -4807,24 +5047,14 @@
+                     "value": "false"
+                   },
+                   {
+-                    "key": "hide_voided_invoices",
+-                    "value": "true"
++                    "key": "invoice_status_filter",
++                    "value": "FINALIZED"
+                   }
+                 ],
+                 "color_overrides": [
+                   {
+                     "name": "Gray_dark",
+                     "value": "#ff0000"
+-                  }
+-                ],
+-                "bm_group_key_overrides": [
+-                  {
+-                    "group_key_name": "tenant_id",
+-                    "display_name": "Org ID",
+-                    "value_display_names": {
+-                      "48ecb18f358f": "Cluster EU",
+-                      "e358f3ce242d": "Cluster APAC"
+-                    }
+                   }
+                 ]
+               }
+@@ -5614,6 +5844,114 @@
+       }
+     },
+     "schemas": {
++      "ApprovalRequest": {
++        "type": "object",
++        "required": [
++          "id",
++          "status",
++          "token_name",
++          "created_at",
++          "expires_at",
++          "approval_url",
++          "reviewed_by",
++          "reviewed_at",
++          "completed_at",
++          "approval_request_payload",
++          "response"
++        ],
++        "properties": {
++          "id": {
++            "type": "string",
++            "format": "uuid"
++          },
++          "status": {
++            "type": "string",
++            "enum": [
++              "pending_approval",
++              "approved",
++              "denied",
++              "execution_succeeded",
++              "execution_error",
++              "expired"
++            ]
++          },
++          "token_name": {
++            "type": "string"
++          },
++          "created_at": {
++            "type": "string",
++            "format": "date-time"
++          },
++          "expires_at": {
++            "type": "string",
++            "format": "date-time",
++            "nullable": true
++          },
++          "approval_url": {
++            "type": "string"
++          },
++          "reviewed_by": {
++            "type": "string",
++            "nullable": true
++          },
++          "reviewed_at": {
++            "type": "string",
++            "format": "date-time",
++            "nullable": true
++          },
++          "completed_at": {
++            "type": "string",
++            "format": "date-time",
++            "nullable": true
++          },
++          "approval_request_payload": {
++            "type": "object",
++            "required": [
++              "name",
++              "description",
++              "method",
++              "path",
++              "body"
++            ],
++            "properties": {
++              "name": {
++                "type": "string"
++              },
++              "description": {
++                "type": "string"
++              },
++              "method": {
++                "type": "string"
++              },
++              "path": {
++                "type": "string"
++              },
++              "body": {
++                "type": "object",
++                "additionalProperties": true
++              }
++            }
++          },
++          "response": {
++            "type": "object",
++            "required": [
++              "response_status",
++              "response_body"
++            ],
++            "properties": {
++              "response_status": {
++                "type": "number",
++                "nullable": true
++              },
++              "response_body": {
++                "type": "object",
++                "additionalProperties": true,
++                "nullable": true
++              }
++            }
++          }
++        }
++      },
+       "SetClientWebhookSecretPayload": {
+         "required": [
+           "webhook_secret"
+@@ -5785,11 +6123,26 @@
+               "properties": {
+                 "key": {
+                   "type": "string",
+-                  "description": "The option key name"
++                  "description": "The option key name",
++                  "enum": [
++                    "show_zero_usage_line_items",
++                    "contract_id",
++                    "invoice_type",
++                    "invoice_status_filter",
++                    "hide_voided_invoices",
++                    "billable_status_filter",
++                    "hide_grant_name",
++                    "credit_ledger_credit_type_id"
++                  ],
++                  "x-mint-enum": {
++                    "billable_status_filter": [
++                      "client_id:11db091c-975b-4908-9f67-b1ceb126acdf"
++                    ]
++                  }
+                 },
+                 "value": {
+                   "type": "string",
+-                  "description": "The option value"
++                  "description": "The option value. For show_zero_usage_line_items: \"true\" or \"false\" (default \"false\"). For contract_id: a UUID filtering invoices to a specific contract. For invoice_type: \"USAGE\" or \"SCHEDULED\". For invoice_status_filter: \"VOID\", \"FINALIZED\", \"DRAFT\", \"FINALIZED_AND_DRAFT\", or \"ALL\". For hide_voided_invoices (deprecated): \"true\" or \"false\". For hide_grant_name (credits dashboard): \"true\" or \"false\". For credit_ledger_credit_type_id (credits dashboard): a UUID filtering to a specific credit type."
+                 }
+               }
+             }
+@@ -9519,7 +9872,7 @@
+             },
+             "type": "object",
+             "$ref": "#/components/schemas/BillableStatus",
+-            "description": "This field's availability is dependent on your client's configuration."
++            "description": "Indicates if the invoice has been or will be sent to the configured customer billing provider. Defaults to `billable`."
+           },
+           "constituent_invoices": {
+             "type": "array",
+@@ -10625,12 +10978,6 @@
+           },
+           "include_composite_spend": {
+             "type": "boolean",
+-            "x-mint": {
+-              "groups": [
+-                "ff:m2-composite-on-composite"
+-              ]
+-            },
+-            "x-stainless-skip": true,
+             "description": "Only for composite products. If true, allows a composite to incorporate spend from other composite products. Defaults to false"
+           },
+           "pricing_group_key": {
+@@ -10823,12 +11170,6 @@
+           },
+           "include_composite_spend": {
+             "type": "boolean",
+-            "x-mint": {
+-              "groups": [
+-                "ff:m2-composite-on-composite"
+-              ]
+-            },
+-            "x-stainless-skip": true,
+             "description": "Only for composite products. If true, allows a composite to incorporate spend from other composite products. Defaults to false"
+           },
+           "tags": {
+@@ -10935,12 +11276,6 @@
+           },
+           "include_composite_spend": {
+             "type": "boolean",
+-            "x-mint": {
+-              "groups": [
+-                "ff:m2-composite-on-composite"
+-              ]
+-            },
+-            "x-stainless-skip": true,
+             "description": "Only for composite products. If true, allows a composite to incorporate spend from other composite products. Defaults to false"
+           },
+           "pricing_group_key": {
+@@ -10987,12 +11322,6 @@
+           },
+           "include_composite_spend": {
+             "type": "boolean",
+-            "x-mint": {
+-              "groups": [
+-                "ff:m2-composite-on-composite"
+-              ]
+-            },
+-            "x-stainless-skip": true,
+             "description": "Only for composite products. If true, allows a composite to incorporate spend from other composite products. Defaults to false"
+           },
+           "billable_metric_id": {
+@@ -11657,6 +11986,13 @@
+               "$ref": "#/components/schemas/RateCardAlias"
+             },
+             "description": "Reference this alias when creating a contract. If the same alias is assigned to multiple rate cards, it will reference the rate card to which it was most recently assigned. It is not exposed to end customers."
++          },
++          "add_credit_type_conversions": {
++            "type": "array",
++            "items": {
++              "$ref": "#/components/schemas/CreditTypeConversionInput"
++            },
++            "description": "Add credit type conversions for using custom pricing units in rates. Existing conversions cannot be modified."
+           }
+         }
+       },
+@@ -13909,6 +14245,10 @@
+           "custom_fields": {
+             "x-cf-entity": "subscription",
+             "$ref": "#/components/schemas/CustomField"
++          },
++          "product_custom_fields": {
++            "$ref": "#/components/schemas/CustomField",
++            "description": "Custom fields from the subscription product referenced by `subscription_rate.product`. These are distinct from the subscription instance's `custom_fields`."
+           }
+         }
+       },
+@@ -14133,6 +14473,47 @@
+           },
+           "billing_cycle_config": {
+             "$ref": "#/components/schemas/SubscriptionBillingCycleConfigInput"
++          },
++          "payment_gate_config": {
++            "x-stainless-skip": true,
++            "x-mint": {
++              "groups": [
++                "ff:payment-gated-subscriptions-enabled"
++              ]
++            },
++            "$ref": "#/components/schemas/SubscriptionPaymentGateConfigInput"
++          }
++        }
++      },
++      "SubscriptionPaymentGateConfigInput": {
++        "type": "object",
++        "x-stainless-skip": true,
++        "x-mint": {
++          "groups": [
++            "ff:payment-gated-subscriptions-enabled"
++          ]
++        },
++        "required": [
++          "payment_gate_type"
++        ],
++        "properties": {
++          "payment_gate_type": {
++            "type": "string",
++            "enum": [
++              "STRIPE",
++              "stripe"
++            ],
++            "description": "Gate access to the subscription based on successful collection of payment. Select STRIPE for Metronome to facilitate payment via Stripe."
++          },
++          "tax_type": {
++            "type": "string",
++            "enum": [
++              "NONE",
++              "STRIPE",
++              "none",
++              "stripe"
++            ],
++            "description": "Stripe tax is only supported for Stripe payment gateway. Select NONE if you do not wish Metronome to calculate tax on your behalf. Leaving this field blank will default to NONE."
+           }
+         }
+       },
+@@ -14663,6 +15044,24 @@
+           {
+             "type": "object",
+             "properties": {
++              "duration": {
++                "$ref": "#/components/schemas/RelativeDate",
++                "description": "The length of time the created commit will be valid, starting from the end of the invoice's service period. If not provided, defaults to one year."
++              },
++              "rollover_fraction": {
++                "type": "number",
++                "description": "Fraction of the created commit's unused balance that will roll over. Must be between 0 and 1."
++              },
++              "rate_type": {
++                "type": "string",
++                "enum": [
++                  "COMMIT_RATE",
++                  "commit_rate",
++                  "LIST_RATE",
++                  "list_rate"
++                ],
++                "description": "Whether the created commits will be charged at commit rate or list rate."
++              },
+               "applicable_product_ids": {
+                 "type": "array",
+                 "items": {
+@@ -15883,7 +16282,8 @@
+           "priority",
+           "commit_duration",
+           "starting_at",
+-          "rate_type"
++          "rate_type",
++          "anchor_date"
+         ],
+         "properties": {
+           "id": {
+@@ -16039,6 +16439,11 @@
+               "daily"
+             ],
+             "description": "The frequency at which the recurring commits will be created. If not provided: - The commits will be created on the usage invoice frequency. If provided: - The period defined in the duration will correspond to this frequency. - Commits will be created aligned with the recurring commit's starting_at rather than the usage invoice dates. - Daily recurring commits have a limit of one per contract, and are unable to be created with seat-based subscriptions"
++          },
++          "anchor_date": {
++            "type": "string",
++            "format": "date-time",
++            "description": "The date this recurring commit's billing periods are anchored to."
+           },
+           "proration": {
+             "type": "string",
+@@ -16178,6 +16583,15 @@
+             "type": "number",
+             "description": "If multiple credits or commits are applicable, the one with the lower priority will apply first."
+           },
++          "cost_basis": {
++            "x-mint": {
++              "groups": [
++                "ff:commit-cost-basis"
++              ]
++            },
++            "type": "number",
++            "description": "The ratio of the amount paid for the commit to the amount of credit granted."
++          },
+           "product": {
+             "type": "object",
+             "required": [
+@@ -16573,6 +16987,20 @@
+           "starting_balance"
+         ],
+         "properties": {
++          "access_type": {
++            "x-mint": {
++              "groups": [
++                "ff:create-quantity-based-commits"
++              ]
++            },
++            "x-stainless-skip": true,
++            "type": "string",
++            "enum": [
++              "SPEND",
++              "QUANTITY"
++            ],
++            "description": "Indicates how the balance is drawn down. `SPEND` deducts the dollar cost of usage. `QUANTITY` deducts the number of units used."
++          },
+           "credit_type_id": {
+             "type": "string",
+             "format": "uuid"
+@@ -17589,6 +18017,20 @@
+           "subscription_id": {
+             "type": "string",
+             "description": "ID of the subscription to configure on the recurring commit/credit."
++          },
++          "access_policy": {
++            "x-stainless-skip": true,
++            "type": "string",
++            "enum": [
++              "BILLING_PERIOD_PAID",
++              "INITIAL_BILLING_PERIOD_PAID_ONLY"
++            ],
++            "x-mint": {
++              "groups": [
++                "ff:payment-gated-subscriptions-enabled"
++              ]
++            },
++            "description": "Controls when a customer can access recurring commit or credit child balances when the subscription is payment-gated. `BILLING_PERIOD_PAID` releases each balance after payment for its billing period. `INITIAL_BILLING_PERIOD_PAID_ONLY` releases all balances after the first payment."
+           }
+         }
+       },
+@@ -18263,6 +18705,22 @@
+           "schedule_items"
+         ],
+         "properties": {
++          "access_type": {
++            "x-mint": {
++              "groups": [
++                "ff:create-quantity-based-commits"
++              ]
++            },
++            "x-stainless-skip": true,
++            "type": "string",
++            "enum": [
++              "SPEND",
++              "spend",
++              "QUANTITY",
++              "quantity"
++            ],
++            "description": "Determines how the balance is drawn down. `SPEND` deducts the dollar cost of usage. `QUANTITY` deducts the number of units used. Defaults to `SPEND` if omitted."
++          },
+           "credit_type_id": {
+             "type": "string",
+             "format": "uuid",
+@@ -18302,6 +18760,20 @@
+           "schedule_items"
+         ],
+         "properties": {
++          "access_type": {
++            "x-mint": {
++              "groups": [
++                "ff:create-quantity-based-commits"
++              ]
++            },
++            "x-stainless-skip": true,
++            "type": "string",
++            "enum": [
++              "SPEND",
++              "QUANTITY"
++            ],
++            "description": "Indicates how the balance is drawn down. `SPEND` deducts the dollar cost of usage. `QUANTITY` deducts the number of units used."
++          },
+           "credit_type": {
+             "$ref": "#/components/schemas/CreditType"
+           },
+@@ -18847,6 +19319,9 @@
+             "type": "string",
+             "format": "date-time",
+             "description": "RFC 3339 timestamp indicating when the manual adjustment takes place. If not provided, it will default to the start of the segment."
++          },
++          "uniqueness_key": {
++            "$ref": "#/components/schemas/UniquenessKey"
+           }
+         }
+       },
+@@ -19318,6 +19793,37 @@
+           }
+         }
+       },
++      "UnbillableInvoiceRule": {
++        "type": "object",
++        "description": "An individual rule that, when evaluated to true, indicates that any invoices for this billing provider will not be sent to its associated destination for the associated contract. Rules only apply to the specified `invoice_type` (or all invoices if omitted) and `fiat_credit_type_id` (or all invoices if omitted). Rule precedence is evaluated from more specific to less specific. This method will fail with a 400 if multiple rules with the same specificity are included.",
++        "required": [
++          "invoice_type"
++        ],
++        "properties": {
++          "invoice_type": {
++            "type": "string",
++            "enum": [
++              "usage",
++              "scheduled"
++            ],
++            "description": "The type of invoice this rule applies to."
++          },
++          "fiat_credit_type_id": {
++            "type": "string",
++            "format": "uuid",
++            "description": "Restricts the rule to invoices in this fiat currency. Omit for a catch-all rule that applies to every currency of the `invoice_type`. Required when `max_amount` is set."
++          },
++          "max_amount": {
++            "type": "number",
++            "description": "A positive decimal, in the units of `fiat_credit_type_id`. Only invoices whose total is at or below this amount are suppressed; a higher total is still sent to the billing provider. When omitted, every matching invoice is suppressed regardless of amount."
++          }
++        },
++        "example": {
++          "invoice_type": "usage",
++          "fiat_credit_type_id": "2714e483-4ff1-48e4-9e25-ac732e8f24f2",
++          "max_amount": 1000
++        }
++      },
+       "CustomerBillingProviderConfigurationInput": {
+         "type": "object",
+         "properties": {
+@@ -20857,6 +21363,22 @@
+           "schedule_items"
+         ],
+         "properties": {
++          "access_type": {
++            "x-mint": {
++              "groups": [
++                "ff:create-quantity-based-commits"
++              ]
++            },
++            "x-stainless-skip": true,
++            "type": "string",
++            "enum": [
++              "SPEND",
++              "spend",
++              "QUANTITY",
++              "quantity"
++            ],
++            "description": "Determines how the balance is drawn down. `SPEND` deducts the dollar cost of usage. `QUANTITY` deducts the number of units used. Defaults to `SPEND` if omitted."
++          },
+           "credit_type_id": {
+             "type": "string",
+             "format": "uuid",
+@@ -22001,6 +22523,20 @@
+           "schedule_items"
+         ],
+         "properties": {
++          "access_type": {
++            "x-mint": {
++              "groups": [
++                "ff:create-quantity-based-commits"
++              ]
++            },
++            "x-stainless-skip": true,
++            "type": "string",
++            "enum": [
++              "SPEND",
++              "QUANTITY"
++            ],
++            "description": "Indicates how the balance is drawn down. `SPEND` deducts the dollar cost of usage. `QUANTITY` deducts the number of units used."
++          },
+           "credit_type": {
+             "$ref": "#/components/schemas/CreditType"
+           },

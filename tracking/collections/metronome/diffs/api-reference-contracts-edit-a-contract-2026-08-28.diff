@@ -1,0 +1,304 @@
+--- raw/metronome/api-reference/contracts/edit-a-contract-2026-07-13.md
++++ raw/metronome/api-reference/contracts/edit-a-contract-2026-08-28.md
+@@ -16,7 +16,7 @@
+ 
+ ### Usage guidelines:
+ - When you edit a contract, any draft invoices update immediately to reflect that edit. Finalized invoices remain unchanged - you must void and regenerate them in the UI or API to reflect the edit.
+-- Contract editing must be enabled to use this endpoint. Reach out to your Metronome representative to learn more.
++- Contract editing must be enabled to use this endpoint. Contact us via the [Metronome support portal](https://support.metronome.com/) to learn more.
+ 
+ 
+ 
+@@ -125,8 +125,9 @@
+         reflect that edit. Finalized invoices remain unchanged - you must void
+         and regenerate them in the UI or API to reflect the edit.
+ 
+-        - Contract editing must be enabled to use this endpoint. Reach out to
+-        your Metronome representative to learn more.
++        - Contract editing must be enabled to use this endpoint. Contact us via
++        the [Metronome support portal](https://support.metronome.com/) to learn
++        more.
+       operationId: editContract-v2
+       requestBody:
+         description: Contract and customer IDs and fields to update
+@@ -1131,6 +1132,7 @@
+             billing_provider_configuration_id:
+               type: string
+               format: uuid
++              nullable: true
+             billing_provider:
+               $ref: '#/components/schemas/BillingProviderType'
+             delivery_method:
+@@ -1162,6 +1164,7 @@
+             revenue_system_configuration_id:
+               type: string
+               format: uuid
++              nullable: true
+             provider:
+               $ref: '#/components/schemas/RevenueSystemProviderTypeV2'
+             delivery_method:
+@@ -1431,6 +1434,8 @@
+         subscription_id:
+           type: string
+           format: uuid
++        name:
++          type: string
+         ending_before:
+           type: string
+           format: date-time
+@@ -2258,6 +2263,8 @@
+         id:
+           type: string
+           format: uuid
++        name:
++          type: string
+         ending_before:
+           type: string
+           format: date-time
+@@ -2283,6 +2290,21 @@
+       required:
+         - schedule_items
+       properties:
++        access_type:
++          x-mint:
++            groups:
++              - ff:create-quantity-based-commits
++          x-stainless-skip: true
++          type: string
++          enum:
++            - SPEND
++            - spend
++            - QUANTITY
++            - quantity
++          description: >-
++            Determines how the balance is drawn down. `SPEND` deducts the dollar
++            cost of usage. `QUANTITY` deducts the number of units used. Defaults
++            to `SPEND` if omitted.
+         credit_type_id:
+           type: string
+           format: uuid
+@@ -2974,6 +2996,12 @@
+           $ref: '#/components/schemas/SubscriptionSeatConfigInput'
+         billing_cycle_config:
+           $ref: '#/components/schemas/SubscriptionBillingCycleConfigInput'
++        payment_gate_config:
++          $ref: '#/components/schemas/SubscriptionPaymentGateConfigInput'
++          x-stainless-skip: true
++          x-mint:
++            groups:
++              - ff:payment-gated-subscriptions-enabled
+     SpendThresholdCommit:
+       type: object
+       allOf:
+@@ -3108,9 +3136,6 @@
+       enum:
+         - START_OF_CURRENT_PERIOD
+         - START_OF_NEXT_PERIOD
+-      x-mint-enum:
+-        START_OF_NEXT_PERIOD:
+-          - ff:billing-provider-schedule-api
+     RevenueSystemProviderTypeV2:
+       type: string
+       enum:
+@@ -3124,9 +3149,6 @@
+       enum:
+         - START_OF_CURRENT_PERIOD
+         - START_OF_NEXT_PERIOD
+-      x-mint-enum:
+-        START_OF_NEXT_PERIOD:
+-          - ff:billing-provider-schedule-api
+       description: When the revenue system configuration update will take effect.
+     SpendTrackerApplicableSpendSpecifierInput:
+       type: object
+@@ -3522,6 +3544,18 @@
+       required:
+         - schedule_items
+       properties:
++        access_type:
++          x-mint:
++            groups:
++              - ff:create-quantity-based-commits
++          x-stainless-skip: true
++          type: string
++          enum:
++            - SPEND
++            - QUANTITY
++          description: >-
++            Indicates how the balance is drawn down. `SPEND` deducts the dollar
++            cost of usage. `QUANTITY` deducts the number of units used.
+         credit_type:
+           $ref: '#/components/schemas/CreditType'
+         schedule_items:
+@@ -3587,6 +3621,7 @@
+         - commit_duration
+         - starting_at
+         - rate_type
++        - anchor_date
+       properties:
+         id:
+           type: string
+@@ -3719,6 +3754,10 @@
+             the recurring commit's starting_at rather than the usage invoice
+             dates. - Daily recurring commits have a limit of one per contract,
+             and are unable to be created with seat-based subscriptions
++        anchor_date:
++          type: string
++          format: date-time
++          description: The date this recurring commit's billing periods are anchored to.
+         proration:
+           type: string
+           enum:
+@@ -3812,6 +3851,12 @@
+         custom_fields:
+           $ref: '#/components/schemas/CustomField'
+           x-cf-entity: subscription
++        product_custom_fields:
++          $ref: '#/components/schemas/CustomField'
++          description: >-
++            Custom fields from the subscription product referenced by
++            `subscription_rate.product`. These are distinct from the
++            subscription instance's `custom_fields`.
+     InvoiceScheduleUpdate:
+       type: object
+       properties:
+@@ -4010,6 +4055,21 @@
+         subscription_id:
+           type: string
+           description: ID of the subscription to configure on the recurring commit/credit.
++        access_policy:
++          x-stainless-skip: true
++          type: string
++          enum:
++            - BILLING_PERIOD_PAID
++            - INITIAL_BILLING_PERIOD_PAID_ONLY
++          x-mint:
++            groups:
++              - ff:payment-gated-subscriptions-enabled
++          description: >-
++            Controls when a customer can access recurring commit or credit child
++            balances when the attached subscription is payment-gated.
++            `BILLING_PERIOD_PAID` releases each balance after payment for its
++            billing period. `INITIAL_BILLING_PERIOD_PAID_ONLY` releases all
++            balances after the first payment.
+     Tier:
+       type: object
+       required:
+@@ -4123,6 +4183,35 @@
+             Controls whether this subscription consolidates onto usage invoices
+             or gets its own scheduled invoice. Defaults to ON_USAGE_INVOICE if
+             omitted.
++    SubscriptionPaymentGateConfigInput:
++      type: object
++      x-stainless-skip: true
++      x-mint:
++        groups:
++          - ff:payment-gated-subscriptions-enabled
++      required:
++        - payment_gate_type
++      properties:
++        payment_gate_type:
++          type: string
++          enum:
++            - STRIPE
++            - stripe
++          description: >-
++            Gate access to the subscription based on successful collection of
++            payment. Select STRIPE for Metronome to facilitate payment via
++            Stripe.
++        tax_type:
++          type: string
++          enum:
++            - NONE
++            - STRIPE
++            - none
++            - stripe
++          description: >-
++            Stripe tax is only supported for Stripe payment gateway. Select NONE
++            if you do not wish Metronome to calculate tax on your behalf.
++            Leaving this field blank will default to NONE.
+     BaseThresholdCommit:
+       type: object
+       required:
+@@ -4193,6 +4282,27 @@
+             body of `specifiers`.
+           items:
+             $ref: '#/components/schemas/CommitSpecifierInput'
++        duration:
++          $ref: '#/components/schemas/RelativeDate'
++          description: >-
++            The length of time the created commit will be valid, starting from
++            the end of the invoice's service period. If not provided, defaults
++            to one year.
++        rollover_fraction:
++          type: number
++          description: >-
++            Fraction of the created commit's unused balance that will roll over.
++            Must be between 0 and 1.
++        rate_type:
++          type: string
++          enum:
++            - COMMIT_RATE
++            - commit_rate
++            - LIST_RATE
++            - list_rate
++          description: >-
++            Whether the created commits will be charged at commit rate or list
++            rate.
+     ExcludeThresholdBalanceSpecifierV2:
+       type: object
+       required:
+@@ -4305,6 +4415,32 @@
+             body of `specifiers`.
+           items:
+             $ref: '#/components/schemas/CommitSpecifierInput'
++        duration:
++          nullable: true
++          allOf:
++            - $ref: '#/components/schemas/RelativeDate'
++          description: >-
++            The length of time the created commit will be valid, starting from
++            the end of the invoice's service period. Set to null to clear a
++            previously configured duration.
++        rollover_fraction:
++          type: number
++          nullable: true
++          description: >-
++            Fraction of the created commit's unused balance that will roll over.
++            Must be between 0 and 1. Set to null to clear a previously
++            configured rollover fraction.
++        rate_type:
++          type: string
++          nullable: true
++          enum:
++            - COMMIT_RATE
++            - commit_rate
++            - LIST_RATE
++            - list_rate
++          description: >-
++            Whether the created commits will be charged at commit rate or list
++            rate. Set to null to clear a previously configured rate type.
+     CreditType:
+       required:
+         - name
+@@ -4483,6 +4619,21 @@
+         is_prorated:
+           type: boolean
+           description: Indicates whether a mid-period seat increase should be prorated.
++    RelativeDate:
++      type: object
++      required:
++        - value
++        - unit
++      properties:
++        value:
++          type: integer
++        unit:
++          type: string
++          enum:
++            - DAYS
++            - WEEKS
++            - MONTHS
++            - YEARS
+     BalanceCustomFieldFilterType:
+       type: object
+       required:

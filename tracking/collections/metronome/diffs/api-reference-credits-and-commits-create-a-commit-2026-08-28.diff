@@ -1,0 +1,51 @@
+--- raw/metronome/api-reference/credits-and-commits/create-a-commit-2026-07-13.md
++++ raw/metronome/api-reference/credits-and-commits/create-a-commit-2026-08-28.md
+@@ -4,7 +4,9 @@
+ 
+ # Create a commit
+ 
+-> Creates customer-level commits that establish spending commitments for customers across their Metronome usage. Commits represent contracted spending obligations that can be either prepaid (paid upfront) or postpaid (billed later). 
++> ⚠️ For most contract amendments, use `contracts/edit` directly. Use this endpoint only for cross-contract or enterprise-wide commits.
++
++Creates customer-level commits that establish spending commitments for customers across their Metronome usage. Commits represent contracted spending obligations that can be either prepaid (paid upfront) or postpaid (billed later).
+ 
+ Note: In most cases, you should add commitments directly to customer contracts using the contract/create or contract/edit APIs.
+ 
+@@ -119,10 +121,14 @@
+         - Credits and commits
+       summary: Create a commit
+       description: >
++        ⚠️ For most contract amendments, use `contracts/edit` directly. Use this
++        endpoint only for cross-contract or enterprise-wide commits.
++
++
+         Creates customer-level commits that establish spending commitments for
+         customers across their Metronome usage. Commits represent contracted
+         spending obligations that can be either prepaid (paid upfront) or
+-        postpaid (billed later). 
++        postpaid (billed later).
+ 
+ 
+         Note: In most cases, you should add commitments directly to customer
+@@ -394,6 +400,21 @@
+       required:
+         - schedule_items
+       properties:
++        access_type:
++          x-mint:
++            groups:
++              - ff:create-quantity-based-commits
++          x-stainless-skip: true
++          type: string
++          enum:
++            - SPEND
++            - spend
++            - QUANTITY
++            - quantity
++          description: >-
++            Determines how the balance is drawn down. `SPEND` deducts the dollar
++            cost of usage. `QUANTITY` deducts the number of units used. Defaults
++            to `SPEND` if omitted.
+         credit_type_id:
+           type: string
+           format: uuid

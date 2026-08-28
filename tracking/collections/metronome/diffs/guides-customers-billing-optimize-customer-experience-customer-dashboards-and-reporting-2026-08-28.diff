@@ -1,0 +1,47 @@
+--- raw/metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-07-13.md
++++ raw/metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-08-28.md
+@@ -7,6 +7,14 @@
+ This use case walks through examples for how to build an API-powered customer dashboard.
+ 
+ Metronome integrates with your core product by providing cost visibility to end customers. This helps them optimize usage patterns and derive maximum value from your product. With your usage-based offerings, customers expect transparency into their consumption and associated costs. Metronome's APIs and data export features integrate with your product, enabling you to create end-user dashboards that provide this critical visibility.
++
++## Interactive demo
++
++Explore a fully working reference dashboard built on the Metronome API. This example dashboard shows how you can display usage tracking, credit balance management, invoice history, and self-serve controls, powered by the same endpoints documented below.
++
++<a className="mint-inline-block mint-bg-[#82FB8E] mint-text-gray-900 mint-font-medium mint-px-6 mint-py-3 mint-rounded-full" href="/guides/customers-billing/demo-dashboard/app">
++  Open demo dashboard →
++</a>
+ 
+ ## Show customers data they want to see
+ 
+@@ -25,7 +33,7 @@
+ 
+ Metronome offers several API endpoints that provide data useful for powering dashboards that your customers want to see. This section explores a few of these endpoints.
+ 
+-For assistance in designing your customer dashboard with Metronome APIs, contact your Metronome representative.
++For assistance in designing your customer dashboard with Metronome APIs, contact us via the [Metronome support portal](https://support.metronome.com/).
+ 
+ ### Backend integration pattern best practice
+ 
+@@ -660,13 +668,18 @@
+ 
+ ### Invoice Dashboard
+ 
+-The invoice dashboard allows your customers to view their current and historical invoices (draft, finalized, and voided), up to 90 days old. For clients using Metronome's invoicing product, your customers can also manually attempt payment on outstanding invoices.
++The invoice dashboard allows your customers to view their current and historical invoices (draft, finalized, and voided), up to 90 days old.
+ 
+ <Frame>
+   <img src="https://mintcdn.com/metronome-b35a6a36/C_lGxKgdkdHt6xoX/images/optimize-customer-experience/embed-invoice-dashboard-d7f7d0437f79ff47d7fb1ef59c7b0494.png?fit=max&auto=format&n=C_lGxKgdkdHt6xoX&q=85&s=7af99751ce28ec6bbbe1dae1a182dee3" alt="Invoice dashboard screenshot" width="1313" height="405" data-path="images/optimize-customer-experience/embed-invoice-dashboard-d7f7d0437f79ff47d7fb1ef59c7b0494.png" />
+ </Frame>
+ 
+-The invoice dashboard supports showing or hiding invoice line items with zero usage. To control this, provide the optional `dashboard_options` array with a key `show_zero_usage_line_items` and value of `true` or `false`. The default is `false`.
++Filter the invoices returned using the `dashboard_options` array, which has the following optional parameters:
++
++* `show_zero_usage_line_items`: Configure whether line items with zero quantity are shown on the invoice. Defaults to false.
++* `contract_id`: For customers with multiple contracts, display only the invoices on a specific contract. Defaults to all.
++* `invoice_type`: Display invoices by type to show only usage invoices or only scheduled (subscription, commit purchase, or scheduled charge invoices). Defaults to all.
++* `invoice_status_filter`: Display invoices by status ("VOID", "FINALIZED", "DRAFT", "FINALIZED\_AND\_DRAFT", or "ALL"). Defaults to all.
+ 
+ ### Usage dashboard
+ 

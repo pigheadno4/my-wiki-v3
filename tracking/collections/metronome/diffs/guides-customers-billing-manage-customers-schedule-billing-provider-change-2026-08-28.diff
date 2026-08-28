@@ -1,0 +1,55 @@
+--- raw/metronome/guides/customers-billing/manage-customers/schedule-billing-provider-change-2026-07-13.md
++++ raw/metronome/guides/customers-billing/manage-customers/schedule-billing-provider-change-2026-08-28.md
+@@ -6,7 +6,7 @@
+ 
+ > Switch billing providers on an existing contract without creating a new one.
+ 
+-Metronome supports switching between any combination of Stripe, NetSuite, and marketplace providers (AWS, Azure, GCP) on a contract. A contract stores a **billing provider configuration schedule** — an ordered list of segments each with an `effective_at` timestamp aligned to a billing period boundary. The active configuration for a given invoice is the segment with the latest `effective_at` date before the service period end date or `issued~at` date if there is no service period end date.
++Schedule the addition, removal, correction, or switching of a billing provider on a contract. A contract stores a **billing provider configuration schedule** — an ordered list of segments each with an `effective_at` timestamp aligned to a billing period boundary. The active configuration for a given invoice is the segment with the latest `effective_at` date before the service period end date or `issued~at` date if there is no service period end date.
+ 
+ ## Supported transitions
+ 
+@@ -14,12 +14,15 @@
+ | :--------------------------------------- | :------------: | :---------: |
+ | Stripe → Stripe                          |        ✅       |      ✅      |
+ | Stripe → NetSuite                        |        ✅       |      ✅      |
++| Stripe → null                            |        ✅       |      ✅      |
+ | NetSuite → Stripe                        |        ✅       |      ✅      |
++| NetSuite → null                          |        ✅       |      ✅      |
+ | Stripe → Marketplace (AWS / Azure / GCP) |        ❌       |      ✅      |
+ | Marketplace → Stripe                     |        ❌       |      ✅      |
+ | Marketplace → Marketplace                |        ❌       |      ✅      |
+ | NetSuite → Marketplace                   |        ❌       |      ✅      |
+ | Marketplace → NetSuite                   |        ❌       |      ✅      |
++| Marketplace → null                       |        ❌       |      ✅      |
+ 
+ ## Schedule a change
+ 
+@@ -64,6 +67,27 @@
+       },
+       "schedule": {
+         "effective_at": "START_OF_NEXT_PERIOD"
++    }
++  }'
++```
++
++**Example: Transition from Stripe to no billing provider, effective current period**
++
++All invoices from the current billing period *will not* be routed to any downstream destination.
++
++```bash theme={null}
++curl https://api.metronome.com/v2/contracts/edit \
++  -H "Authorization: Bearer <TOKEN>" \
++  -H "Content-Type: application/json" \
++  -d '{
++    "customer_id": "8cecbf69-960f-4f66-9575-edebb7d95e88",
++    "contract_id": "6058587f-763c-400f-a822-3edb3eb2b86b",
++    "add_billing_provider_configuration_update": {
++      "billing_provider_configuration": {
++        "billing_provider_configuration_id": null
++      }
++      "schedule": {
++        "effective_at": "START_OF_CURRENT_PERIOD"
+     }
+   }'
+ ```

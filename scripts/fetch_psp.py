@@ -25,6 +25,7 @@ import argparse
 import datetime as _dt
 import difflib
 import hashlib
+import json
 import re
 import sys
 import time
@@ -263,6 +264,7 @@ def _next_artifact_target(artifact_root: Path, stem: str, collection_date: str) 
             stem + "-" + collection_date + "-r" + str(revision) + ".json"
         )
         revision += 1
+    return target
 
 
 def latest_artifact_prior(artifact_root: Path, stem: str) -> Optional[Path]:
@@ -275,7 +277,6 @@ def latest_artifact_prior(artifact_root: Path, stem: str) -> Optional[Path]:
         if match:
             candidates.append((match.group(1), int(match.group(2) or "1"), path))
     return sorted(candidates)[-1][2] if candidates else None
-    return target
 
 
 def collect_metronome(

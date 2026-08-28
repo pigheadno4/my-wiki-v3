@@ -70,6 +70,45 @@ class FetchPspTests(unittest.TestCase):
                 expected,
             )
 
+    def test_artifact_target_returns_next_available_same_day_revision(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "openapi-2026-08-28.json").write_text("first", encoding="utf-8")
+
+            self.assertEqual(
+                fetch_psp._next_artifact_target(root, "openapi", "2026-08-28"),
+                root / "openapi-2026-08-28-r2.json",
+            )
+
+    def test_metronome_collection_persists_empty_inventory_and_manifest(self):
+        config = {
+            "raw_root": "raw/metronome",
+            "discovery": [
+                {"name": "llms", "url": "https://example.test/llms.txt"},
+                {"name": "sitemap", "url": "https://example.test/sitemap.xml"},
+            ],
+        }
+        with (
+            tempfile.TemporaryDirectory() as tmp,
+            patch.object(fetch_psp, "ROOT", Path(tmp)),
+            patch("fetch_psp.http_get", return_value=""),
+            patch("fetch_psp.build_metronome_inventory", return_value=[]),
+        ):
+            fetch_psp.collect_metronome(
+                config,
+                limit=None,
+                dry_run=False,
+                collection_date="2026-08-28",
+                run_id="test-run",
+            )
+
+            self.assertTrue(
+                (Path(tmp) / "tracking/collections/metronome/inventory-current.json").exists()
+            )
+            self.assertTrue(
+                (Path(tmp) / "tracking/collections/metronome/runs/test-run-manifest.md").exists()
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

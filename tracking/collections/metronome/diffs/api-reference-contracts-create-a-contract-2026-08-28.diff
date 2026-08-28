@@ -1,0 +1,278 @@
+--- raw/metronome/api-reference/contracts/create-a-contract-2026-07-13.md
++++ raw/metronome/api-reference/contracts/create-a-contract-2026-08-28.md
+@@ -1511,6 +1511,14 @@
+           description: >-
+             If multiple credits or commits are applicable, the one with the
+             lower priority will apply first.
++        cost_basis:
++          x-mint:
++            groups:
++              - ff:commit-cost-basis
++          type: number
++          description: >-
++            The ratio of the amount paid for the commit to the amount of credit
++            granted.
+         product:
+           type: object
+           required:
+@@ -2115,6 +2123,22 @@
+           type: string
+           format: date-time
+           nullable: true
++        unbillable_invoices_configuration:
++          x-mint:
++            metadata:
++              tag: Beta
++          type: array
++          items:
++            $ref: '#/components/schemas/UnbillableInvoiceRule'
++          description: >-
++            Rules that stop matching invoices from being sent to the billing
++            provider. Only supported for Stripe billing provider configurations.
++            When omitted, every invoice is sent to the billing provider.
++          example:
++            - invoice_type: usage
++              fiat_credit_type_id: 2714e483-4ff1-48e4-9e25-ac732e8f24f2
++              max_amount: 1000
++            - invoice_type: usage
+     HierarchyConfiguration:
+       oneOf:
+         - $ref: '#/components/schemas/ParentHierarchyConfiguration'
+@@ -2127,6 +2151,21 @@
+       required:
+         - schedule_items
+       properties:
++        access_type:
++          x-mint:
++            groups:
++              - ff:create-quantity-based-commits
++          x-stainless-skip: true
++          type: string
++          enum:
++            - SPEND
++            - spend
++            - QUANTITY
++            - quantity
++          description: >-
++            Determines how the balance is drawn down. `SPEND` deducts the dollar
++            cost of usage. `QUANTITY` deducts the number of units used. Defaults
++            to `SPEND` if omitted.
+         credit_type_id:
+           type: string
+           format: uuid
+@@ -2804,6 +2843,27 @@
+         - $ref: '#/components/schemas/BaseThresholdCommit'
+         - type: object
+           properties:
++            duration:
++              $ref: '#/components/schemas/RelativeDate'
++              description: >-
++                The length of time the created commit will be valid, starting
++                from the end of the invoice's service period. If not provided,
++                defaults to one year.
++            rollover_fraction:
++              type: number
++              description: >-
++                Fraction of the created commit's unused balance that will roll
++                over. Must be between 0 and 1.
++            rate_type:
++              type: string
++              enum:
++                - COMMIT_RATE
++                - commit_rate
++                - LIST_RATE
++                - list_rate
++              description: >-
++                Whether the created commits will be charged at commit rate or
++                list rate.
+             applicable_product_ids:
+               type: array
+               items:
+@@ -2942,6 +3002,12 @@
+           $ref: '#/components/schemas/SubscriptionSeatConfigInput'
+         billing_cycle_config:
+           $ref: '#/components/schemas/SubscriptionBillingCycleConfigInput'
++        payment_gate_config:
++          $ref: '#/components/schemas/SubscriptionPaymentGateConfigInput'
++          x-stainless-skip: true
++          x-mint:
++            groups:
++              - ff:payment-gated-subscriptions-enabled
+     ContractParentHierarchyConfigurationInput:
+       type: object
+       required:
+@@ -2959,6 +3025,18 @@
+       required:
+         - schedule_items
+       properties:
++        access_type:
++          x-mint:
++            groups:
++              - ff:create-quantity-based-commits
++          x-stainless-skip: true
++          type: string
++          enum:
++            - SPEND
++            - QUANTITY
++          description: >-
++            Indicates how the balance is drawn down. `SPEND` deducts the dollar
++            cost of usage. `QUANTITY` deducts the number of units used.
+         credit_type:
+           $ref: '#/components/schemas/CreditType'
+         schedule_items:
+@@ -3149,6 +3227,7 @@
+         - commit_duration
+         - starting_at
+         - rate_type
++        - anchor_date
+       properties:
+         id:
+           type: string
+@@ -3281,6 +3360,10 @@
+             the recurring commit's starting_at rather than the usage invoice
+             dates. - Daily recurring commits have a limit of one per contract,
+             and are unable to be created with seat-based subscriptions
++        anchor_date:
++          type: string
++          format: date-time
++          description: The date this recurring commit's billing periods are anchored to.
+         proration:
+           type: string
+           enum:
+@@ -3551,6 +3634,12 @@
+         custom_fields:
+           $ref: '#/components/schemas/CustomField'
+           x-cf-entity: subscription
++        product_custom_fields:
++          $ref: '#/components/schemas/CustomField'
++          description: >-
++            Custom fields from the subscription product referenced by
++            `subscription_rate.product`. These are distinct from the
++            subscription instance's `custom_fields`.
+     BillingProviderType:
+       type: string
+       enum:
+@@ -3572,6 +3661,43 @@
+           - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+         gcp_marketplace:
+           - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
++    UnbillableInvoiceRule:
++      type: object
++      description: >-
++        An individual rule that, when evaluated to true, indicates that any
++        invoices for this billing provider will not be sent to its associated
++        destination for the associated contract. Rules only apply to the
++        specified `invoice_type` (or all invoices if omitted) and
++        `fiat_credit_type_id` (or all invoices if omitted). Rule precedence is
++        evaluated from more specific to less specific. This method will fail
++        with a 400 if multiple rules with the same specificity are included.
++      required:
++        - invoice_type
++      properties:
++        invoice_type:
++          type: string
++          enum:
++            - usage
++            - scheduled
++          description: The type of invoice this rule applies to.
++        fiat_credit_type_id:
++          type: string
++          format: uuid
++          description: >-
++            Restricts the rule to invoices in this fiat currency. Omit for a
++            catch-all rule that applies to every currency of the `invoice_type`.
++            Required when `max_amount` is set.
++        max_amount:
++          type: number
++          description: >-
++            A positive decimal, in the units of `fiat_credit_type_id`. Only
++            invoices whose total is at or below this amount are suppressed; a
++            higher total is still sent to the billing provider. When omitted,
++            every matching invoice is suppressed regardless of amount.
++      example:
++        invoice_type: usage
++        fiat_credit_type_id: 2714e483-4ff1-48e4-9e25-ac732e8f24f2
++        max_amount: 1000
+     ParentHierarchyConfiguration:
+       type: object
+       required:
+@@ -3706,6 +3832,21 @@
+         subscription_id:
+           type: string
+           description: ID of the subscription to configure on the recurring commit/credit.
++        access_policy:
++          x-stainless-skip: true
++          type: string
++          enum:
++            - BILLING_PERIOD_PAID
++            - INITIAL_BILLING_PERIOD_PAID_ONLY
++          x-mint:
++            groups:
++              - ff:payment-gated-subscriptions-enabled
++          description: >-
++            Controls when a customer can access recurring commit or credit child
++            balances when the subscription is payment-gated.
++            `BILLING_PERIOD_PAID` releases each balance after payment for its
++            billing period. `INITIAL_BILLING_PERIOD_PAID_ONLY` releases all
++            balances after the first payment.
+     MinimumConfig:
+       type: object
+       description: >-
+@@ -3752,6 +3893,21 @@
+         amount:
+           type: number
+           description: Accumulated spend ceiling above which the discount stops applying.
++    RelativeDate:
++      type: object
++      required:
++        - value
++        - unit
++      properties:
++        value:
++          type: integer
++        unit:
++          type: string
++          enum:
++            - DAYS
++            - WEEKS
++            - MONTHS
++            - YEARS
+     ExcludeThresholdBalanceSpecifier:
+       type: object
+       required:
+@@ -3857,6 +4013,35 @@
+             Controls whether this subscription consolidates onto usage invoices
+             or gets its own scheduled invoice. Defaults to ON_USAGE_INVOICE if
+             omitted.
++    SubscriptionPaymentGateConfigInput:
++      type: object
++      x-stainless-skip: true
++      x-mint:
++        groups:
++          - ff:payment-gated-subscriptions-enabled
++      required:
++        - payment_gate_type
++      properties:
++        payment_gate_type:
++          type: string
++          enum:
++            - STRIPE
++            - stripe
++          description: >-
++            Gate access to the subscription based on successful collection of
++            payment. Select STRIPE for Metronome to facilitate payment via
++            Stripe.
++        tax_type:
++          type: string
++          enum:
++            - NONE
++            - STRIPE
++            - none
++            - stripe
++          description: >-
++            Stripe tax is only supported for Stripe payment gateway. Select NONE
++            if you do not wish Metronome to calculate tax on your behalf.
++            Leaving this field blank will default to NONE.
+     PrepaidCommitSegmentStartLedgerEntry:
+       type: object
+       required:

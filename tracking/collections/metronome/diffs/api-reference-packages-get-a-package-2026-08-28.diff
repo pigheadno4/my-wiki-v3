@@ -1,0 +1,49 @@
+--- raw/metronome/api-reference/packages/get-a-package-2026-07-13.md
++++ raw/metronome/api-reference/packages/get-a-package-2026-08-28.md
+@@ -818,6 +818,18 @@
+         - credit_type
+         - schedule_items
+       properties:
++        access_type:
++          x-mint:
++            groups:
++              - ff:create-quantity-based-commits
++          x-stainless-skip: true
++          type: string
++          enum:
++            - SPEND
++            - QUANTITY
++          description: >-
++            Indicates how the balance is drawn down. `SPEND` deducts the dollar
++            cost of usage. `QUANTITY` deducts the number of units used.
+         credit_type:
+           $ref: '#/components/schemas/CreditType'
+         schedule_items:
+@@ -1298,6 +1310,27 @@
+         - $ref: '#/components/schemas/BaseThresholdCommit'
+         - type: object
+           properties:
++            duration:
++              $ref: '#/components/schemas/RelativeDate'
++              description: >-
++                The length of time the created commit will be valid, starting
++                from the end of the invoice's service period. If not provided,
++                defaults to one year.
++            rollover_fraction:
++              type: number
++              description: >-
++                Fraction of the created commit's unused balance that will roll
++                over. Must be between 0 and 1.
++            rate_type:
++              type: string
++              enum:
++                - COMMIT_RATE
++                - commit_rate
++                - LIST_RATE
++                - list_rate
++              description: >-
++                Whether the created commits will be charged at commit rate or
++                list rate.
+             applicable_product_ids:
+               type: array
+               items:

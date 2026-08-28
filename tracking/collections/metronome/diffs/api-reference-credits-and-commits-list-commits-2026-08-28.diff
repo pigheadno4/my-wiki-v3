@@ -1,0 +1,58 @@
+--- raw/metronome/api-reference/credits-and-commits/list-commits-2026-07-13.md
++++ raw/metronome/api-reference/credits-and-commits/list-commits-2026-08-28.md
+@@ -197,6 +197,21 @@
+                 commit_id:
+                   type: string
+                   format: uuid
++                access_type:
++                  x-mint:
++                    groups:
++                      - ff:create-quantity-based-commits
++                  x-stainless-skip: true
++                  type: string
++                  enum:
++                    - SPEND
++                    - spend
++                    - QUANTITY
++                    - quantity
++                  description: >-
++                    Filters commits by how their balances are drawn down.
++                    `SPEND` deducts the dollar cost of usage. `QUANTITY` deducts
++                    the number of units used.
+                 covering_date:
+                   description: >-
+                     Include only commits that have access schedules that "cover"
+@@ -350,6 +365,14 @@
+           description: >-
+             If multiple credits or commits are applicable, the one with the
+             lower priority will apply first.
++        cost_basis:
++          x-mint:
++            groups:
++              - ff:commit-cost-basis
++          type: number
++          description: >-
++            The ratio of the amount paid for the commit to the amount of credit
++            granted.
+         product:
+           type: object
+           required:
+@@ -507,6 +530,18 @@
+       required:
+         - schedule_items
+       properties:
++        access_type:
++          x-mint:
++            groups:
++              - ff:create-quantity-based-commits
++          x-stainless-skip: true
++          type: string
++          enum:
++            - SPEND
++            - QUANTITY
++          description: >-
++            Indicates how the balance is drawn down. `SPEND` deducts the dollar
++            cost of usage. `QUANTITY` deducts the number of units used.
+         credit_type:
+           $ref: '#/components/schemas/CreditType'
+         schedule_items:

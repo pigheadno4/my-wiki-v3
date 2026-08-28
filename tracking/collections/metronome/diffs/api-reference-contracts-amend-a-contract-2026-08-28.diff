@@ -1,0 +1,45 @@
+--- raw/metronome/api-reference/contracts/amend-a-contract-2026-07-13.md
++++ raw/metronome/api-reference/contracts/amend-a-contract-2026-08-28.md
+@@ -4,7 +4,7 @@
+ 
+ # Amend a contract
+ 
+-> Amendments will be replaced by Contract editing. New clients should implement using the `editContract` endpoint. Read more about the migration to contract editing [here](/guides/implement-metronome/migrate-amendments-to-edits/) and reach out to your Metronome representative for more details. Once contract editing is enabled, access to this endpoint will be removed.
++> Amendments will be replaced by Contract editing. New clients should implement using the `editContract` endpoint. Read more about the migration to contract editing [here](/guides/implement-metronome/migrate-amendments-to-edits/) and contact us via the [Metronome support portal](https://support.metronome.com/) for more details. Once contract editing is enabled, access to this endpoint will be removed.
+ 
+ 
+ 
+@@ -91,8 +91,9 @@
+         implement using the `editContract` endpoint. Read more about the
+         migration to contract editing
+         [here](/guides/implement-metronome/migrate-amendments-to-edits/) and
+-        reach out to your Metronome representative for more details. Once
+-        contract editing is enabled, access to this endpoint will be removed.
++        contact us via the [Metronome support
++        portal](https://support.metronome.com/) for more details. Once contract
++        editing is enabled, access to this endpoint will be removed.
+       operationId: amendContract-v1
+       requestBody:
+         description: Amend a contract
+@@ -666,6 +667,21 @@
+       required:
+         - schedule_items
+       properties:
++        access_type:
++          x-mint:
++            groups:
++              - ff:create-quantity-based-commits
++          x-stainless-skip: true
++          type: string
++          enum:
++            - SPEND
++            - spend
++            - QUANTITY
++            - quantity
++          description: >-
++            Determines how the balance is drawn down. `SPEND` deducts the dollar
++            cost of usage. `QUANTITY` deducts the number of units used. Defaults
++            to `SPEND` if omitted.
+         credit_type_id:
+           type: string
+           format: uuid

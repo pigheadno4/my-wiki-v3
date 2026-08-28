@@ -4,14 +4,15 @@
 
 | State | Count |
 | --- | ---: |
-| collected-new | 222 |
-| unchanged | 5 |
+| collected-changed | 82 |
+| collected-new | 1 |
+| unchanged | 145 |
 
 ## Discovery reconciliation
 
 | Membership | Count |
 | --- | ---: |
-| both | 208 |
+| both | 209 |
 | llms-only | 0 |
 | sitemap-only | 17 |
 

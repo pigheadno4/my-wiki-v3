@@ -1,0 +1,63 @@
+--- raw/metronome/guides/implement-metronome/core-concepts/create-products-contracts-2026-07-13.md
++++ raw/metronome/guides/implement-metronome/core-concepts/create-products-contracts-2026-08-28.md
+@@ -14,7 +14,7 @@
+ 
+ * **How a customer gets charged**
+ 
+-  Products can either be usage-based, composite (derived from usage-based products), subscription-based, or fixed (for example, a platform fee).
++  Products can either be usage-based, composite (derived from usage-based or other composite products), subscription-based, or fixed (for example, a platform fee).
+ 
+ * **Invoice line item display**
+ 
+@@ -31,7 +31,7 @@
+ Metronome supports four types of products:
+ 
+ * **Usage** , variably priced based on reported customer usage for the period. With usage products, you must [set up billable metrics beforehand](/guides/get-started/core-concepts/create-billable-metrics/). Associate each product to a single billable metric. The same billable metric can be associated with multiple products.
+-* **Composite** , percentage charge on a group of applicable products.
++* **Composite** , percentage charge on a group of applicable products. You can define the applicable products by id or product tag, and can choose whether nested composite charges are included.
+ * **Subscription** , a recurring fee billed on a schedule. Use subscription fees for seat billing models, platform fees, or other recurring charges.
+ * **Fixed** , used to power scheduled charges, commits, and credits.
+ 
+@@ -39,20 +39,31 @@
+ 
+ To define products in the [Metronome app](https://app.metronome.com/products), go to Offering -> Products -> click **+ Add new product** :
+ 
++### Usage-based products
++
+ 1. Give the product a meaningful name; this will appear on customer invoices.
+-2. Optionally enter any product tags.
+-3. Select the product type.
+-4. For usage-based products, select a billable metric.
++2. (Optional) Enter any product tags. Product tags simplify new product launches and bulk discounting.
++3. Select the product type: usage.
++4. Select a billable metric.
+ 5. (Optional) Add presentation and pricing group keys. Presentation and pricing group keys can only be added if they have been defined as group keys on the underlying billable metric. This field is only applicable for usage products.
+ 6. (Optional) Add a quantity conversion. Multiply or divide by a conversion factor. This field is only applicable for usage products.
+ 7. (Optional) Add rounding. Round up, down, or half up to the specified number of decimal places. This field is only applicable for usage products.
+ 8. Click **Save**.
+ 
++### Composite products
++
++1. Give the product a meaningful name; this will appear on customer invoices.
++2. (Optional) Enter any product tags. Product tags simplify new product launches and bulk discounting.
++3. Select the product type: composite.
++4. Choose to include nested composite spend. If enabled, composite products will appear in the product selection list.
++5. Select applicable products or applicable product tags.
++6. Click **Save**.
++
+ ## Update products​
+ 
+ Within Metronome, you can edit products even when they're actively in use for customer billing. Changes to products are scheduled to take effect at a specified `Starting at` time, which you can define when changing a product. This date can be set in the future to schedule out product changes ahead of time. If set in the past, it will be retroactively applied at the time specified.
+ 
+-The following fields are available to edit:
++The following fields are available to edit for usage-based products:
+ 
+ * Name
+ * Tags
+@@ -111,5 +122,5 @@
+ <Note>
+   **CONFIGURATION NOTE**
+ 
+-  Using multiple pricing and presentation group keys with many possible values for a given customer can increase latency when calling the Metronome API. If you anticipate the cardinality of these possible values reaching one thousand, contact your Metronome representative to discuss your configuration.
++  Using multiple pricing and presentation group keys with many possible values for a given customer can increase latency when calling the Metronome API. If you anticipate the cardinality of these possible values reaching one thousand, contact us via the [Metronome support portal](https://support.metronome.com/) to discuss your configuration.
+ </Note>

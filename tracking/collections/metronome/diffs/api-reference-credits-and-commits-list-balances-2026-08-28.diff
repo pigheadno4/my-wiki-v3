@@ -1,0 +1,58 @@
+--- raw/metronome/api-reference/credits-and-commits/list-balances-2026-07-13.md
++++ raw/metronome/api-reference/credits-and-commits/list-balances-2026-08-28.md
+@@ -184,6 +184,21 @@
+                 id:
+                   type: string
+                   format: uuid
++                access_type:
++                  x-mint:
++                    groups:
++                      - ff:create-quantity-based-commits
++                  x-stainless-skip: true
++                  type: string
++                  enum:
++                    - SPEND
++                    - spend
++                    - QUANTITY
++                    - quantity
++                  description: >-
++                    Filters balances by how they are drawn down. `SPEND` deducts
++                    the dollar cost of usage. `QUANTITY` deducts the number of
++                    units used.
+                 covering_date:
+                   description: >-
+                     Return only balances that have access schedules that "cover"
+@@ -383,6 +398,14 @@
+           description: >-
+             If multiple credits or commits are applicable, the one with the
+             lower priority will apply first.
++        cost_basis:
++          x-mint:
++            groups:
++              - ff:commit-cost-basis
++          type: number
++          description: >-
++            The ratio of the amount paid for the commit to the amount of credit
++            granted.
+         product:
+           type: object
+           required:
+@@ -682,6 +705,18 @@
+       required:
+         - schedule_items
+       properties:
++        access_type:
++          x-mint:
++            groups:
++              - ff:create-quantity-based-commits
++          x-stainless-skip: true
++          type: string
++          enum:
++            - SPEND
++            - QUANTITY
++          description: >-
++            Indicates how the balance is drawn down. `SPEND` deducts the dollar
++            cost of usage. `QUANTITY` deducts the number of units used.
+         credit_type:
+           $ref: '#/components/schemas/CreditType'
+         schedule_items:

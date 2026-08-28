@@ -1,0 +1,70 @@
+--- raw/metronome/api-reference/customers/set-billing-provider-configurations-for-a-customer-2026-07-13.md
++++ raw/metronome/api-reference/customers/set-billing-provider-configurations-for-a-customer-2026-08-28.md
+@@ -292,6 +292,23 @@
+           description: >-
+             The method to use for delivering invoices to this customer. If not
+             provided, the `delivery_method_id` must be provided.
++        unbillable_invoices_configuration:
++          x-mint:
++            metadata:
++              tag: Beta
++          type: array
++          items:
++            $ref: '#/components/schemas/UnbillableInvoiceRule'
++          description: >-
++            Rules that stop matching invoices from being sent to the billing
++            provider. Only supported for Stripe billing provider configurations.
++            When omitted, every invoice is sent to the billing provider.
++          example:
++            - invoice_type: usage
++            - invoice_type: usage
++              fiat_credit_type_id: 2714e483-4ff1-48e4-9e25-ac732e8f24f2
++              max_amount: 1000
++            - invoice_type: scheduled
+       required:
+         - billing_provider
+         - customer_id
+@@ -364,6 +381,43 @@
+         - aws_sqs
+         - tackle
+         - aws_sns
++    UnbillableInvoiceRule:
++      type: object
++      description: >-
++        An individual rule that, when evaluated to true, indicates that any
++        invoices for this billing provider will not be sent to its associated
++        destination for the associated contract. Rules only apply to the
++        specified `invoice_type` (or all invoices if omitted) and
++        `fiat_credit_type_id` (or all invoices if omitted). Rule precedence is
++        evaluated from more specific to less specific. This method will fail
++        with a 400 if multiple rules with the same specificity are included.
++      required:
++        - invoice_type
++      properties:
++        invoice_type:
++          type: string
++          enum:
++            - usage
++            - scheduled
++          description: The type of invoice this rule applies to.
++        fiat_credit_type_id:
++          type: string
++          format: uuid
++          description: >-
++            Restricts the rule to invoices in this fiat currency. Omit for a
++            catch-all rule that applies to every currency of the `invoice_type`.
++            Required when `max_amount` is set.
++        max_amount:
++          type: number
++          description: >-
++            A positive decimal, in the units of `fiat_credit_type_id`. Only
++            invoices whose total is at or below this amount are suppressed; a
++            higher total is still sent to the billing provider. When omitted,
++            every matching invoice is suppressed regardless of amount.
++      example:
++        invoice_type: usage
++        fiat_credit_type_id: 2714e483-4ff1-48e4-9e25-ac732e8f24f2
++        max_amount: 1000
+   securitySchemes:
+     bearerAuth:
+       type: http

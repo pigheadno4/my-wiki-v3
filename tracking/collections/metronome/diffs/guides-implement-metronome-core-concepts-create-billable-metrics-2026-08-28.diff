@@ -1,0 +1,36 @@
+--- raw/metronome/guides/implement-metronome/core-concepts/create-billable-metrics-2026-07-13.md
++++ raw/metronome/guides/implement-metronome/core-concepts/create-billable-metrics-2026-08-28.md
+@@ -54,12 +54,14 @@
+ 
+ `LATEST` returns the most recent value for the property within the billing period—useful for metrics where you want to bill on a point-in-time reading (for example, the latest reported seat count or storage size) rather than a sum or max across the period.
+ 
++`LATEST` metrics can be used with group keys, but cannot currently be used with contract-level usage filters. See [Usage filters](/guides/customers-billing/manage-customers/provision-a-customer#create-a-usage-filter) for details.
++
+ If you need to count distinct values (for example, unique users), use a [SQL billable metric](/guides/implement-metronome/core-concepts/billable-metrics-sql-editor) with `count(distinct …)`.
+ 
+ <Info>
+   **INFO**
+ 
+-  When using streaming billable metrics, the billable metric must be defined in Metronome before any usage can be associated with it. If usage is sent before a streaming metric is defined, it isn't attributed to the metric by default. Since Metronome retains all raw events received, we can perform a reflow if you ever need past events to apply to a new streaming billable metric — reach out to your Metronome representative to get this performed.
++  When using streaming billable metrics, the billable metric must be defined in Metronome before any usage can be associated with it. If usage is sent before a streaming metric is defined, it isn't attributed to the metric by default. Since Metronome retains all raw events received, we can perform a reflow if you ever need past events to apply to a new streaming billable metric — contact us via the [Metronome support portal](https://support.metronome.com/) to request a reflow.
+ </Info>
+ 
+ * **SQL billable metrics** : metrics designed with SQL queries to support more complex calculations.
+@@ -68,7 +70,7 @@
+ <Info>
+   **INFO**
+ 
+-  For many alerting workloads, SQL billable metrics will have comparable performance to streaming billable metrics. For complex queries or high numbers of SQL billable metrics, the Metronome team can help provide guidance to achieve desired latency. Please reach out to your Metronome team if you are interested in using SQL billable metrics with alerts.
++  For many alerting workloads, SQL billable metrics will have comparable performance to streaming billable metrics. For complex queries or high numbers of SQL billable metrics, we can help provide guidance to achieve desired latency. Please contact us via the [Metronome support portal](https://support.metronome.com/) if you are interested in using SQL billable metrics with alerts.
+ </Info>
+ 
+ ## 3. Define group keys​
+@@ -89,7 +91,7 @@
+ <Note>
+   **CONFIGURATION NOTE**
+ 
+-  Using group keys with many possible values for a given customer can increase latency when calling the Metronome API. If you anticipate the cardinality of these possible values reaching one thousand, contact your Metronome representative to discuss your configuration.
++  Using group keys with many possible values for a given customer can increase latency when calling the Metronome API. If you anticipate the cardinality of these possible values reaching one thousand, contact us via the [Metronome support portal](https://support.metronome.com/) to discuss your configuration.
+ </Note>
+ 
+ ### Define group keys on streaming billable metrics​
