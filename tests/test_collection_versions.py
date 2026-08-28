@@ -39,6 +39,23 @@ class VersionTests(unittest.TestCase):
                 "home-2026-08-05-r2.md",
             )
 
+    def test_latest_prior_does_not_match_a_longer_sibling_stem(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            raw = Path(tmp)
+            parent = raw / "guides"
+            parent.mkdir(parents=True)
+            expected = parent / "revenue-recognition-2026-07-13.md"
+            expected.write_text("current page", encoding="utf-8")
+            (parent / "revenue-recognition-examples-2026-07-13.md").write_text(
+                "different sibling page",
+                encoding="utf-8",
+            )
+
+            self.assertEqual(
+                latest_prior(raw, Path("guides/revenue-recognition.md")),
+                expected,
+            )
+
     def test_classification(self):
         self.assertEqual(classify_candidate(None, "body"), "new")
         self.assertEqual(classify_candidate("body", "body"), "unchanged")

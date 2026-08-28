@@ -36,7 +36,11 @@ def _version_key(path: Path) -> Tuple[str, int]:
 def latest_prior(raw_root: Path, relative_path: Path) -> Optional[Path]:
     parent = raw_root / relative_path.parent
     stem = relative_path.stem
-    candidates = [path for path in parent.glob(stem + "-*.md") if DATED_RE.search(path.name)]
+    candidates = []
+    for path in parent.glob(stem + "-*.md"):
+        match = DATED_RE.search(path.name)
+        if match is not None and path.name[: match.start()] == stem:
+            candidates.append(path)
     return sorted(candidates, key=_version_key)[-1] if candidates else None
 
 
