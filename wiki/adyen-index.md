@@ -10,6 +10,8 @@ Operations history: [[adyen-log]]
 
 ## Sources
 
+- [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)
+- [[changelog-github-adyen-3ds2-ios-swift]] — package-qualified Swift-native iOS 3DS2 release ledger beginning at `3.0.1`, including binary and upstream-metadata boundaries (github-repo, 2026-08-29)
 - [[source-github-release-automation-action]] — exact-commit release-action baseline: merged-PR discovery, semantic version selection, prerelease handling, release pull requests, and GitHub releases (github-repo, 2026-08-28)
 - [[changelog-github-release-automation-action]] — commit-qualified release-action history beginning at `default-branch@9675ced` (github-repo, 2026-08-28)
 - [[source-github-adyen-wechatpay-ios]] — cumulative `AdyenWeChatPayInternal@2.2.0` wrapper baseline: Tencent SDK 2.0.4, distribution, native handoff, public payment request/response, and simulator boundary (github-repo, 2026-08-26)
@@ -43,7 +45,7 @@ Operations history: [[adyen-log]]
 - [[adyen-magento2]] — Adobe Commerce plugin architecture, checkout lifecycle, vault, webhooks, POS, and version boundary
 - [[adyen-sdk-automation]] — OpenAPI-to-SDK generation, language-specific configuration, CI provenance, release-note validation, and separate generic release-action mechanics
 - [[adyen-php-api-library]] — PHP server SDK, Checkout API v71, recurring, tokenization, transport, and evidence boundaries
-- [[adyen-3ds2-ios-sdk]] — delegated iOS 3DS2 transaction, challenge, lifecycle, security, privacy, and UI runtime
+- [[adyen-3ds2-ios-sdk]] — independently versioned Objective-C-oriented and Swift-native iOS 3DS2 transaction, challenge, lifecycle, security, privacy, and UI runtimes
 - [[adyen-3ds2-android-sdk]] — delegated Android 3DS2 transaction, challenge, lifecycle, security, and UI runtime
 - [[adyen-terminal-api]] — Nexo Terminal API message architecture, in-person flows, and Checkout/Management API boundaries
 - [[adyen-ios-sdk]] — native iOS architecture, integration modes, payment and server boundaries, and delegated dependencies

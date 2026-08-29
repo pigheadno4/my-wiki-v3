@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-29] ingest | adyen/adyen-3ds2-ios-swift `adyen-3ds2-ios-swift@3.0.1`
+
+- Approved and full-ingested work item `github-a200548203865cde87a4` at exact SHA `1596f558f39d9e706030ab77ebcf8c01492d1ecd` after serial full reading of all 12 required evidence paths.
+- Established [[source-github-adyen-3ds2-ios-swift]] and its package-qualified changelog, and extended [[adyen-3ds2-ios-sdk]] without merging the independent `adyen/adyen-3ds2-ios` history.
+- Recorded Swift-native transaction initialization, authentication parameters, callback and async challenge execution, lifecycle controls, security warnings, appearance, privacy declarations, and deprecated `LegacyInterface` compatibility.
+- Preserved the binary implementation boundary and recorded the Apache-versus-MIT license conflict, incorrect Carthage repository reference, classic API-version caveat, and exact Swift 6 warning/iOS 26 logo release claims.
+
 ## [2026-08-28] ingest | adyen/release-automation-action `default-branch@9675ced`
 
 - Approved and full-ingested work item `github-631f3be17d0207a5120c` at exact SHA `9675cedc9efe9d0b5563bd7dd0f8ef88f26ad03b` from the complete seven-file retained capsule plus required context.

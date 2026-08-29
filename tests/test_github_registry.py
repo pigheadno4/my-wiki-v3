@@ -87,7 +87,7 @@ APPENDIX_A_INVENTORY = (
     ('adyen/adyen-php-api-library', 'https://github.com/Adyen/adyen-php-api-library', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-sdk-automation', 'https://github.com/Adyen/adyen-sdk-automation', 'automation', 'tier3', 'commit', True, 'default-branch', 'on-demand'),
     ('adyen/release-automation-action', 'https://github.com/Adyen/release-automation-action', 'automation', 'tier3', 'commit', True, 'default-branch', 'on-demand'),
-    ('adyen/adyen-3ds2-ios-swift', 'https://github.com/Adyen/adyen-3ds2-ios-swift', 'authentication-sdk', 'tier2', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('adyen/adyen-3ds2-ios-swift', 'https://github.com/Adyen/adyen-3ds2-ios-swift', 'authentication-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-wechatpay-ios', 'https://github.com/Adyen/adyen-wechatpay-ios', 'payment-method-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-3ds2-android', 'https://github.com/Adyen/adyen-3ds2-android', 'authentication-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-3ds2-ios', 'https://github.com/Adyen/adyen-3ds2-ios', 'authentication-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
@@ -837,6 +837,53 @@ class RegistryTests(unittest.TestCase):
             capsule.include_paths,
         )
         self.assertFalse(any(path.endswith("Info.plist") for path in capsule.include_paths))
+        self.assertNotIn("XCFramework/Static", capsule.default_required_roots)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+
+    def test_adyen_3ds2_ios_swift_uses_canonical_public_api_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(
+            item for item in repos if item.id == "adyen/adyen-3ds2-ios-swift"
+        )
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:adyen-3ds2-ios-swift@3",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("3.0.1",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("adyen-3ds2-ios-swift-public-api", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("adyen-3ds2-ios-swift",), capsule.focus_packages)
+        self.assertEqual(
+            (
+                "XCFramework/Dynamic/Adyen3DS2_Swift.xcframework/ios-arm64/Adyen3DS2_Swift.framework/Headers",
+            ),
+            capsule.default_required_roots,
+        )
+        public_interface = (
+            "XCFramework/Dynamic/Adyen3DS2_Swift.xcframework/ios-arm64/"
+            "Adyen3DS2_Swift.framework/Modules/Adyen3DS2_Swift.swiftmodule/"
+            "arm64-apple-ios.swiftinterface"
+        )
+        self.assertIn(public_interface, capsule.include_paths)
+        self.assertIn("Adyen3DS2_Swift.podspec", capsule.include_paths)
+        self.assertIn("Package.swift", capsule.include_paths)
+        self.assertTrue(
+            all("private.swiftinterface" not in path for path in capsule.include_paths)
+        )
+        self.assertFalse(
+            any(path.endswith(".abi.json") for path in capsule.include_paths)
+        )
         self.assertNotIn("XCFramework/Static", capsule.default_required_roots)
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
 

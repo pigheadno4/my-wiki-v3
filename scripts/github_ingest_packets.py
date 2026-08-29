@@ -59,6 +59,7 @@ _SOURCE_SUFFIXES = (
     ".rs",
     ".sh",
     ".swift",
+    ".swiftinterface",
     ".api",
     ".ts",
     ".mts",

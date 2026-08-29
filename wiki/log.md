@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-29] ingest | GitHub adyen/adyen-3ds2-ios-swift - `adyen-3ds2-ios-swift@3.0.1`
+
+- Full-ingested work item `github-a200548203865cde87a4` at exact SHA `1596f558f39d9e706030ab77ebcf8c01492d1ecd` after serial full reading of all 12 required evidence paths.
+- Added cumulative and package-qualified sources and extended [[adyen-3ds2-ios-sdk]] with Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and deprecated legacy compatibility.
+- Preserved the binary implementation and independent-repository boundaries; recorded the Apache-versus-MIT license conflict, incorrect Carthage repository reference, classic API-version caveat, and exact `3.0.1` Swift 6/iOS 26 release claims.
+
 ## [2026-08-29] ingest | GitHub paypal/paypal-messaging-components - `@paypal/messaging-components@1.95.1`
 
 - Full-ingested work item `github-763f3bed066811458a49` at exact SHA `2bdaf940cdb0dcd29a8a3bc992eea975798d6d00` from the complete 667-file retained capsule and its 483 assigned evidence paths.

@@ -1158,6 +1158,31 @@
   Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.41.0/2026-07-26/manifest.json)
   Comparison: Not applicable
 
+## `github-a200548203865cde87a4`
+
+- Repository: `adyen/adyen-3ds2-ios-swift`
+- SHA: `1596f558f39d9e706030ab77ebcf8c01492d1ecd`
+- Collection date: `2026-08-29`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-3ds2-ios-swift/snapshots/2026-08-29-1596f55/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-3ds2-ios-swift/ingest-packets/github-a200548203865cde87a4/packet.md)
+- Review priority: `normal`
+- Required reading: `12` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen-3ds2-ios-swift@3.0.1` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-3ds2-ios-swift/releases/adyen-3ds2-ios-swift/3.0.1/2026-08-29/manifest.json)
+  Comparison: Not applicable
+
 ## `github-a3e31c47bd77ac327a7b`
 
 - Repository: `braintree/braintree_node`

@@ -2,12 +2,12 @@
 title: "Adyen"
 type: company
 tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, release-automation, openapi, adobe-commerce, magento2, wechat-pay]
-source_count: 13
+source_count: 14
 ---
 
 ## Overview
 
-Adyen is represented in this wiki by independently versioned Web, iOS, Android, Android and iOS 3DS2, React Native, Node.js, and PHP SDKs; an Adobe Commerce plugin; plus exact-commit Postman API examples, SDK-generation automation, and generic repository release automation. The retained sources cover browser, native, cross-platform, and Magento checkout presentation; delegated mobile 3DS2 authentication runtimes; merchant-server Checkout APIs v71 and v72; Terminal API payment and shopper-interaction messages; and the OpenAPI-to-SDK generation and repository-release lifecycles.
+Adyen is represented in this wiki by independently versioned Web, iOS, Android, Android 3DS2, Objective-C-oriented and Swift-native iOS 3DS2, React Native, Node.js, and PHP SDKs; an Adobe Commerce plugin; plus exact-commit Postman API examples, SDK-generation automation, and generic repository release automation. The retained sources cover browser, native, cross-platform, and Magento checkout presentation; delegated mobile 3DS2 authentication runtimes; merchant-server Checkout APIs v71 and v72; Terminal API payment and shopper-interaction messages; and the OpenAPI-to-SDK generation and repository-release lifecycles.
 
 ## Web checkout surface
 
@@ -53,6 +53,10 @@ The retained `adyen-3ds2-ios@2.4.4` baseline documents the delegated native runt
 
 The exact release adds Device Information 1.7 support and fixes memory warnings plus navigation behavior for iOS 26. The implementation is retained only as a binary framework with public headers, so code-level verification remains outside the capsule. Its privacy manifest declares non-linked coarse location for app functionality and tracking disabled.
 
+The independently versioned Swift-native `adyen-3ds2-ios-swift@3.0.1` baseline adds a retained public `.swiftinterface` covering async transaction initialization, authentication parameters, callback and async challenge execution, security warnings, lifecycle controls, appearance, and a deprecated `LegacyInterface`. Release `3.0.1` documents Swift 6 warning fixes and an iOS 26 clipped-logo fix, but implementation-level verification remains unavailable because the runtime is binary.
+
+The Swift package metadata has two upstream contradictions: its podspec says Apache 2.0 while `LICENSE` and README say MIT, and its Carthage instructions point to the older `adyen/adyen-3ds2-ios` repository. These require Adyen clarification rather than local inference.
+
 ## React Native checkout surface
 
 The retained `@adyen/react-native@2.12.0` baseline wraps Adyen iOS `5.25.1` and Adyen Android `5.19.0`. It exposes Drop-in, individual Components, Sessions and advanced callbacks, follow-up actions, embedded Fabric card UI, Apple Pay, Google Pay, instant payments, and client-side encryption.
@@ -97,10 +101,10 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 ## Knowledge status
 
-- Ingested cumulative GitHub repository sources: 13
-- Ingested package releases: 12
-- Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
-- Latest ingest: `adyen/release-automation-action` at `default-branch@9675ced`, exact SHA `9675cedc9efe9d0b5563bd7dd0f8ef88f26ad03b`
+- Ingested cumulative GitHub repository sources: 14
+- Ingested package releases: 13
+- Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
+- Latest ingest: `adyen/adyen-3ds2-ios-swift` at `adyen-3ds2-ios-swift@3.0.1`, exact SHA `1596f558f39d9e706030ab77ebcf8c01492d1ecd`
 
 ## Sources
 
@@ -120,6 +124,8 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - [[changelog-github-adyen-3ds2-android]] — package-qualified 3DS2 release ledger
 - [[source-github-adyen-3ds2-ios]] — cumulative delegated iOS 3DS2 runtime baseline
 - [[changelog-github-adyen-3ds2-ios]] — package-qualified iOS 3DS2 release ledger
+- [[source-github-adyen-3ds2-ios-swift]] — cumulative Swift-native iOS 3DS2 runtime baseline
+- [[changelog-github-adyen-3ds2-ios-swift]] — package-qualified Swift-native release ledger
 - [[source-github-adyen-react-native]] — cumulative Adyen React Native wrapper baseline
 - [[changelog-github-adyen-react-native]] — package-qualified wrapper release ledger
 - [[source-github-adyen-node-api-library]] — cumulative Adyen Node.js server-library baseline
