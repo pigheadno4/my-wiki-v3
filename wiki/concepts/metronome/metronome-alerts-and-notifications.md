@@ -17,6 +17,8 @@ The merchant owns any email, access restriction, or feature re-enablement that f
 
 ## Notification types and lifecycle
 
+The product-access overview positions alerts and notifications as communication about entitlement-state changes. It does not define alert evaluation, transport, delivery, latency, ordering, or access-enforcement behavior, so dedicated notification and webhook sources remain authoritative. [[source-metronome-guides-customers-billing-manage-customers-manage-product-access]]
+
 ### Point-in-time threshold lookup
 
 `POST /v1/customer-alerts/get` retrieves the current evaluation state and configuration for one customer/threshold-notification pair identified by customer and alert UUIDs. `customer_status` is `ok`, `in_alarm`, `evaluating`, or `null` for an archived notification; archived lookup still returns the alert configuration. The operation is targeted rather than bulk and returns current state rather than history, which the page routes to webhook notifications or event logs. The API-wide POST idempotency rule means a same-key retry can replay an earlier result rather than establish a fresh evaluation. The narrative lists `updated_at` with the customer-alert surface, but the schema and example nest it under `alert`, so clients should not assume a top-level path. [[source-metronome-api-reference-alerts-get-a-threshold-notification]]
@@ -66,6 +68,7 @@ For a parent contract's shared commit, child consumption does not automatically 
 
 ## Sources
 
+- [[source-metronome-guides-customers-billing-manage-customers-manage-product-access]] - product-access navigation framing alerts and notifications as communication about entitlement-state changes
 - [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — exclusion of seat-scoped credits from general balance alerts, seat-filter object requiredness, optional one-seat scoping, malformed lookup example, and merchant-owned access response
 
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-prepaid-credits]] — zero-balance entitlement signal and merchant-owned access-control boundary in a prepaid-credit flow

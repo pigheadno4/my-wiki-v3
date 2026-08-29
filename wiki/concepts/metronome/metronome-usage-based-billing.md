@@ -26,6 +26,8 @@ Metronome's own customer pricing is distinct from the prices merchants configure
 
 ## Adjacent billing domains
 
+Metronome's product-access overview says entitlement status is tracked in real time based on usage and payment and tied to contract-defined customer access across packaging models. The navigation page supplies no evaluation algorithm, payment-state authority, latency, consistency, enforcement, or recovery contract; those questions require dedicated billing, contract, notification, and integration sources. [[source-metronome-guides-customers-billing-manage-customers-manage-product-access]]
+
 The documentation landing page routes readers toward billing architecture planning and getting-started material, then highlights contracts, invoicing, and revenue recognition as adjacent areas. The architecture guide establishes the main sequence: applications send usage events; billable metrics calculate quantities; products and rate cards define what is sold and its default price; contracts add customer-specific commercial terms; and invoices apply those inputs. It separates event-time alert evaluation and on-demand API views from invoice finalization at billing-cycle close.
 
 The credits-and-commits guide supplies one implementation path for hybrid subscription and usage models: recurring credits provide free periodic usage, recurring commits provide paid periodic usage, and each period receives a distinct balance ledger. Uncovered usage remains available for overage billing.
@@ -71,6 +73,7 @@ These remaining questions require dedicated sources and are not fully answered b
 
 ## Sources
 
+- [[source-metronome-guides-customers-billing-manage-customers-manage-product-access]] - contract-defined access and usage/payment-driven entitlement-status framing, qualified by navigation-page limits
 - [[source-metronome-guides-get-started-api-quickstart]] — programmatic sandbox onboarding order from event schema and billing objects to a draft invoice, including the stale worked timestamp boundary
 
 - [[source-github-ai]] - agent-oriented catalog, PLG, CSM, and Stripe usage-billing migration workflows

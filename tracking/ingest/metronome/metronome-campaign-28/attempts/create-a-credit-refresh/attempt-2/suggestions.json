@@ -1,0 +1,61 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "create-credit-warning-credit-commit-contradiction",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Customer-level credit creation",
+      "proposed_markdown": "The refreshed page adds a warning that says to use `contracts/edit` for most contract amendments and to use this endpoint only for cross-contract or enterprise-wide **commits**. That wording conflicts with the page's credit title, `createCustomerCredit-v1` operation, `CreateCustomerCreditPayload`, and surrounding credit-creation description; it does not establish that this endpoint creates commits. Separately, the page continues to recommend contract create or edit for most credits. [[source-metronome-api-reference-credits-and-commits-create-a-credit]]",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Preserve the warning contradiction and the contract-create/edit preference as separate statements; do not silently treat commit wording as runtime truth."
+      ]
+    },
+    {
+      "update_id": "create-credit-access-type-drawdown",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Drawdown and invoice attribution",
+      "proposed_markdown": "The 2026-08-28 customer-credit create schema exposes optional, feature-gated access-schedule `access_type`: `SPEND` deducts the dollar cost of usage, `QUANTITY` deducts the number of units used, and omission defaults to `SPEND`. The property is also marked `x-stainless-skip: true`; the page does not establish rollout scope, generated-client exposure, non-USD or custom-unit compatibility, quantity denomination, conversion, precision, rounding, mixed-mode priority, or invoice and ledger representation. [[source-metronome-api-reference-credits-and-commits-create-a-credit]]",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Keep this endpoint-local schema exposure distinct from contract-edit availability and do not infer universal SDK support, broader spend semantics, or unit compatibility from the vendor extensions."
+      ]
+    },
+    {
+      "update_id": "create-credit-customer-contract-scope",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Contract and invoice behavior",
+      "proposed_markdown": "`POST /v1/contracts/customerCredits/create` creates one customer-level credit that can be limited with `applicable_contract_ids` or used across all of the customer's contracts when that selector is omitted; the prose also calls an empty value cross-contract. Metronome recommends contract create or edit for most credits. The endpoint does not define behavior for invalid, archived, duplicate, foreign-customer, or later-created contract IDs, nor customer-credit lifecycle or read-after-write visibility. [[source-metronome-api-reference-credits-and-commits-create-a-credit]]",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "Do not convert the page warning's phrase enterprise-wide commits into authority that this credit endpoint creates commits."
+      ]
+    },
+    {
+      "update_id": "create-credit-quantity-unit-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Credits, commits, and invoice conversion",
+      "proposed_markdown": "The refreshed customer-credit schema makes optional `access_type` choose the dollar cost of usage (`SPEND`) or the number of units used (`QUANTITY`) and defaults it to `SPEND`, while optional `credit_type_id` independently defaults to USD cents. The page does not define non-USD or custom-unit compatibility, quantity denomination, conversion, precision, rounding, mixed-mode priority, or invoice and ledger representation for the quantity mode. [[source-metronome-api-reference-credits-and-commits-create-a-credit]]",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Preserve the feature-gate and x-stainless-skip annotations; do not generalize quantity mode or dollar-cost semantics to every credit surface."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

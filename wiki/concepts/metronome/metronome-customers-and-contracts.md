@@ -55,6 +55,8 @@ On the documented production server `https://api.metronome.com`, top-level beare
 
 ## Contract and invoice behavior
 
+`POST /v1/contracts/customerCredits/create` creates one customer-level credit that can be limited with `applicable_contract_ids` or used across all of the customer's contracts when that selector is omitted; the prose also calls an empty value cross-contract. Metronome recommends contract create or edit for most credits. The endpoint does not define behavior for invalid, archived, duplicate, foreign-customer, or later-created contract IDs, nor customer-credit lifecycle or read-after-write visibility. [[source-metronome-api-reference-credits-and-commits-create-a-credit]]
+
 Bearer-authenticated `POST /v1/contracts/getContractRateSchedule` reads the entitled rate schedule for one customer contract. Required payload properties identify the customer and contract, optional `at` selects overlapping schedule segments and defaults to the current timestamp, and selectors use OR semantics across selector objects while supplying no selectors returns all rates. The result incorporates the contract's rate card, scheduled changes, and overrides but does not establish invoice, authorization, freshness, or snapshot-consistency behavior. [[source-metronome-api-reference-contracts-get-the-rate-schedule-for-a-contract]]
 
 `POST /v1/contracts/updateInvoiceIssueDate` changes the issue date of one identified draft invoice without changing the contract's terms or later billing cycles. Metronome directs callers to edit-contract or edit-commit operations when the future billing schedule must also change; this page does not establish those operations' request contracts or the rescheduling mutation's concurrency and recovery behavior. [[source-metronome-api-reference-contracts-update-invoice-issue-date]]
@@ -196,6 +198,7 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 
 ## Subscription, trial, and metric-discovery extensions
 
+- The product-access overview frames customer access as contract terms across packaging models. It identifies customer provisioning plus contract assignment as the basis for encoding entitlements, and routes renewal, upsell, and upgrade entitlement changes to contract lifecycle management. The page does not define transition semantics, evaluation timing, or application-side enforcement. [[source-metronome-guides-customers-billing-manage-customers-manage-product-access]]
 - A purchased subscription plan is represented through a customer contract. The subscription guides assign quantity, proration, collection direction, applicable rate or rates, and associated credits to contract provisioning, but do not define complete request schemas or multi-rate resolution.
 - Subscription upgrades and downgrades use renewal transitions in the lifecycle guide. Only upgrades are prorated; downgrades take effect next period. Most cancellations should end the contract, and later restarts should create a new contract so the contract remains the active-plan record.
 - A PayGo illustration provisions a Stripe customer, attaches its ID through a Metronome customer billing-provider configuration, and then creates a contract. Its Best payload uses top-level `ending_at`, conflicting with the create-contract API's exclusive `ending_before`; preserve the six-month intent but verify the schema.
@@ -206,6 +209,7 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 
 ## Sources
 
+- [[source-metronome-guides-customers-billing-manage-customers-manage-product-access]] - contract terms as the product-access frame, provisioning and assignment as the entitlement basis, and lifecycle navigation for renewal, upsell, and upgrade changes
 - [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — post-creation aggregate and identity-bearing subscription edits, unassigned-seat reassignment, and contract-state visibility unknowns
 
 - [[source-metronome-guides-get-started-api-quickstart]] — customer alias identity, ordered customer and contract provisioning, rate-card linkage, provider-optional invoice generation, and in-window event prerequisite

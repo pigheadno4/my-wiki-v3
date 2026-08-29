@@ -6,6 +6,17 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-29 — Metronome Campaign 28 first-pass confirmation promoted
+
+- Result: five refreshed sources approved across seven Sol worker attempts and seven full independent Sol reviews; three pages passed on attempt 1, with no targeted review, rejection, or coordinator semantic repair.
+- Sources: [[source-metronome-guides-customers-billing-manage-customers-manage-product-access]], [[source-metronome-integrations-tax-integrations-anrok]], [[source-metronome-guides-reporting-insights-data-export-overview]], [[source-metronome-api-reference-products-list-products]], and [[source-metronome-api-reference-credits-and-commits-create-a-credit]].
+- Review findings: List Products required one full retry to place `custom_fields` at the top-level product item rather than state or update records. Create Credit required one full retry to preserve exact dollar-cost semantics, narrow unsupported lifecycle and product attribution, and retain the page's credit-versus-commit warning contradiction.
+- Concepts: applied eleven reviewer-approved durable-fact or reciprocal-link updates across six existing Metronome concepts; no new concept page was required.
+- Query audit: the fixed Anrok, List Products, and Create Credit sample passed 9/9 factual, boundary or contradiction, and exact raw deep-dive checks.
+- Coverage after promotion: 225 current English canonical documentation identities remain retained as 310 immutable raw snapshots, with 152 source summaries and 150 raw snapshots without source summaries.
+- Timing and gate: completed in 1,936 seconds (32 minutes 16 seconds), within the non-binding 35-minute target but with only three of five first-pass approvals and two full retries; final quality passed while the planned throughput gates failed.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-28/monitor.md), [quality audit](../tracking/ingest/metronome/metronome-campaign-28/quality-audit.md), and [retrospective](../tracking/ingest/metronome/metronome-campaign-28/retrospective.md).
+
 ## 2026-08-29 — Metronome Campaign 27 first-pass-rate pilot promoted
 
 - Result: five refreshed sources approved across six Sol worker attempts and six full independent Sol reviews; four pages passed on attempt 1, with no targeted review, rejection, or coordinator semantic repair.
