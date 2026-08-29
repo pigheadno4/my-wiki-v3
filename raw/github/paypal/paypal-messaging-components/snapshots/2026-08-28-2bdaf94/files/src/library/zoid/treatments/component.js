@@ -1,0 +1,182 @@
+/** @jsx node */
+import { create } from '@krakenjs/zoid/src';
+import { node, dom } from '@krakenjs/jsx-pragmatic/src';
+import { getCurrentScriptUID } from '@krakenjs/belter/src';
+
+// Direct imports to avoid import cycle by importing from ../../../utils
+import { TAG } from '../../../utils/constants';
+import {
+    getMeta,
+    getEnv,
+    getLibraryVersion,
+    getStageTag,
+    getOrCreateDeviceID,
+    updateStorage,
+    getDisableSetCookie,
+    getFeatures,
+    getDefaultNamespace,
+    getClientId
+} from '../../../utils/sdk';
+import { getGlobalUrl, createGlobalVariableGetter, globalEvent, getGlobalState } from '../../../utils/global';
+import { ppDebug } from '../../../utils/debug';
+
+const CLIENT_ID_ACCOUNT_PREFIX = 'client-id:';
+
+function getGlobalConfigAccount() {
+    const { account } = getGlobalState().config;
+
+    return typeof account === 'string' ? account : undefined;
+}
+
+function getTreatmentClientId() {
+    if (__MESSAGES__.__TARGET__ === 'SDK') {
+        return getClientId();
+    }
+
+    const account = getGlobalConfigAccount();
+
+    return account?.startsWith(CLIENT_ID_ACCOUNT_PREFIX) ? account.slice(CLIENT_ID_ACCOUNT_PREFIX.length) : undefined;
+}
+
+function getTreatmentPayerId() {
+    if (__MESSAGES__.__TARGET__ === 'SDK') {
+        return undefined;
+    }
+
+    const account = getGlobalConfigAccount();
+
+    return account && !account.startsWith(CLIENT_ID_ACCOUNT_PREFIX) ? account : undefined;
+}
+
+export default createGlobalVariableGetter('__paypal_credit_treatments__', () =>
+    create({
+        tag: TAG.TREATEMENTS,
+        url: getGlobalUrl('TREATMENTS'),
+        // eslint-disable-next-line security/detect-unsafe-regex
+        domain: /\.paypal\.com(:\d+)?$/,
+
+        containerTemplate: ({ uid, prerenderFrame, frame, doc }) => {
+            const styles = `
+                #${uid} {
+                    position: absolute!important;
+                    left: -99999px;
+                    top: -99999px;
+                    width: 1px;
+                    height: 1px;
+                }
+            `;
+
+            return (
+                <span id={uid}>
+                    <style>{styles}</style>
+                    <node el={frame} />
+                    <node el={prerenderFrame} />
+                </span>
+            ).render(dom({ doc }));
+        },
+
+        props: {
+            disableSetCookie: {
+                type: 'boolean',
+                queryParam: true,
+                required: false,
+                value: getDisableSetCookie
+            },
+            features: {
+                type: 'string',
+                queryParam: 'features',
+                required: false,
+                value: getFeatures
+            },
+            namespace: {
+                type: 'string',
+                queryParam: false,
+                value: getDefaultNamespace
+            },
+            deviceID: {
+                type: 'string',
+                queryParam: true,
+                value: getOrCreateDeviceID
+            },
+            clientId: {
+                type: 'string',
+                queryParam: 'client_id',
+                required: false,
+                value: getTreatmentClientId
+            },
+            payerId: {
+                type: 'string',
+                queryParam: 'payer_id',
+                required: false,
+                value: getTreatmentPayerId
+            },
+
+            onReady: {
+                type: 'function',
+                queryParam: false,
+                value: () => {
+                    // 15 minutes in milliseconds
+                    const TREATMENTS_MAX_AGE = 1000 * 60 * 15;
+
+                    return ({ treatmentsHash }) => {
+                        updateStorage({
+                            experiments: {
+                                treatmentsHash,
+                                // Experiments can only be maintained for 15 minutes
+                                expiration: Date.now() + TREATMENTS_MAX_AGE
+                            }
+                        });
+
+                        globalEvent.trigger('treatments');
+                    };
+                }
+            },
+
+            sdkMeta: {
+                type: 'string',
+                queryParam: true,
+                sendToChild: false,
+                required: false,
+                value: getMeta,
+                debug: ppDebug(`SDK Meta: ${getMeta()}`)
+            },
+
+            uid: {
+                type: 'string',
+                queryParam: true,
+                value: getCurrentScriptUID,
+                debug: ppDebug(`ScriptUID: ${getCurrentScriptUID()}`)
+            },
+            stageTag: {
+                type: 'string',
+                queryParam: true,
+                required: false,
+                value: getStageTag
+            },
+            env: {
+                type: 'string',
+                queryParam: true,
+                value: getEnv,
+                debug: ppDebug(`Environment: ${getEnv()}`)
+            },
+            scriptUID: {
+                type: 'string',
+                queryParam: true,
+                value: getCurrentScriptUID,
+                debug: ppDebug(`ScriptUID: ${getCurrentScriptUID()}`)
+            },
+            version: {
+                type: 'string',
+                queryParam: true,
+                value: getLibraryVersion,
+                debug: ppDebug(`Library Version: ${getLibraryVersion()}`)
+            },
+            integrationType: {
+                type: 'string',
+                queryParam: true,
+                value: () => __MESSAGES__.__TARGET__,
+                debug: ppDebug(`Library Integration: ${__MESSAGES__.__TARGET__}`)
+            }
+        }
+    })
+);

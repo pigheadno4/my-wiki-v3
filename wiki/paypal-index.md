@@ -93,6 +93,8 @@ Operations history: [[paypal-log]]
 - [[changelog-github-paypal-checkout-components]] — package-qualified checkout-components release ledger through `5.0.425` (github-repo, updated 2026-07-23)
 - [[source-github-paypal-sdk-release]] — `@paypal/sdk-release@5.0.569`: 12-component assembly manifest, wrapper entry point, and release/deployment automation (github-repo, 2026-08-21)
 - [[changelog-github-paypal-sdk-release]] — package-qualified SDK release-assembly ledger beginning at `5.0.569` (github-repo, 2026-08-21)
+- [[source-github-paypal-messaging-components]] — `@paypal/messaging-components@1.95.1`: web message rendering, dynamic updates, PayPal-hosted modal lifecycle, and offer-processing fixes (github-repo, 2026-08-29)
+- [[changelog-github-paypal-messaging-components]] — package-qualified web Messaging Components ledger beginning at `1.95.1` (github-repo, 2026-08-29)
 - [[source-github-react-paypal-js-v8]] — GitHub react-paypal-js v8: ScriptProvider/reducer, Buttons lifecycle, CardFields provider+hooks (github-repo, 2026-04-13)
 - [[source-paypal-expanded-checkout-integrate]] — Expanded Checkout integration: CardFields+Buttons dual-render, 3DS SCA_ALWAYS, billing address, authorize/captureAuthorize routes (webpage, 2026-04-13)
 - [[source-paypal-android-card-payments]] — Android SDK: CardClient 8-step flow, WebPayments, deprecated NativePayments, FraudProtection (webpage, 2026-04-13)

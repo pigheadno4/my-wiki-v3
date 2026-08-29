@@ -1,0 +1,258 @@
+/** @jsx h */
+import { h, Fragment } from 'preact';
+import { useState } from 'preact/hooks';
+import { useXProps, useServerData, getComputedVariables, usePrequalification, getEuroStyleClass } from '../../../lib';
+import Calculator from '../../Calculator';
+import ProductListLink from '../../ProductListLink';
+import Instructions from '../../Instructions';
+import InlineLinks from '../../InlineLinks';
+import Button from '../../Button';
+import OfferTerms from '../../OfferTerms';
+import Icon from '../../Icon';
+import styles from './styles.scss';
+
+/**
+ * Checks qualifying offer APRs in order to determine which APR disclaimer to render.
+ */
+export const getAPRDetails = ({ offers, genericDisclaimer, disclaimer: { zeroAPR, mixedAPR, nonZeroAPR } = {} }) => {
+    const qualifyingOffers = offers.filter(offer => offer?.meta?.qualifying === 'true');
+
+    let totalNonZero = 0;
+    let totalZero = 0;
+
+    qualifyingOffers.forEach(offer => {
+        if (offer?.meta?.apr?.replace?.('.00', '') === '0') {
+            totalZero += 1;
+        } else {
+            totalNonZero += 1;
+        }
+    });
+
+    if (qualifyingOffers.length === 0) {
+        return {
+            /**
+             * Specifically, this impacts US Long Term and which legal disclaimer shows underneath the offer cards.
+             * If no initial amount is passed in or there is an error, we default to a generic disclaimer.
+             * i.e. Terms may vary based on purchase amount.
+             */
+            default: {
+                aprDisclaimer: genericDisclaimer ?? zeroAPR,
+                /**
+                 * Used by DE Long Term to determine which legal disclosure shows at the bottom of the modal.
+                 * If no initial amount is passed in, set the default legal disclosure to the nonZeroAPR disclosure.
+                 */
+                aprType: 'nonZeroAPR'
+            }
+        };
+    }
+
+    // TODO: Clean up backwards compatible code after release and content updates.
+    // Keyed by each offer's own term (total_payments) so the disclaimer stays paired with its offer
+    // regardless of what order `offers` is rendered/sorted in downstream.
+    return qualifyingOffers.reduce(
+        (acc, { meta, content: { disclaimer } }) => {
+            if (qualifyingOffers.length === totalNonZero) {
+                acc[meta.total_payments] = {
+                    aprDisclaimer: disclaimer?.nonZeroAPR ?? nonZeroAPR,
+                    aprType: 'nonZeroAPR'
+                };
+            } else if (qualifyingOffers.length === totalZero) {
+                acc[meta.total_payments] = {
+                    aprDisclaimer: disclaimer?.zeroAPR ?? zeroAPR,
+                    aprType: 'zeroAPR'
+                };
+            } else {
+                acc[meta.total_payments] = {
+                    aprDisclaimer: disclaimer?.mixedAPR ?? mixedAPR,
+                    aprType: 'mixedAPR'
+                };
+            }
+
+            return acc;
+        },
+        { default: { aprDisclaimer: genericDisclaimer ?? nonZeroAPR, aprType: 'nonZeroAPR' } }
+    );
+};
+
+export const LongTerm = ({
+    content: {
+        calculator,
+        disclaimer,
+        genericDisclaimer,
+        instructions,
+        disclosure,
+        navLinkPrefix,
+        linkToProductList,
+        cta,
+        offerTerms,
+        spendingPowerSubtext
+    },
+    productMeta: { useV4Design, useV5Design, showPromoContent, prequalExperience, product },
+    openProductList,
+    useNewCheckoutDesign,
+    use5Dot1Design,
+    useDarkMode
+}) => {
+    const [expandedState, setExpandedState] = useState(false);
+    const { amount, onClick, onClose } = useXProps();
+    const { views, country } = useServerData();
+    const spendingPowerClickTitle = 'Check Spending Power';
+    const handlePrequalification = usePrequalification(spendingPowerClickTitle, onClick, {
+        offer: product
+    });
+    const { offers } = views.find(view => view.offers);
+    const { minAmount, maxAmount } = getComputedVariables(offers);
+    const offerAPRDisclaimers = getAPRDetails({ offers, disclaimer, genericDisclaimer });
+
+    const isQualifyingAmount = amount >= minAmount && amount <= maxAmount;
+    const showOfferTerms = showPromoContent === 'true';
+    const isPrequalExperience = prequalExperience === 'true';
+
+    /**
+     * The presence of "cta" in the content means the channel is checkout and the checkout-specific
+     * partial content has been added. Because we do not want to show the link to the product list modal if we are in checkout,
+     * we make sure "cta" is not in the content. If "cta" is not undefined, return the Checkout-specific cta button.
+     * Otherwise, render the Product List link.
+     */
+    const renderCheckoutCtaButton = () => {
+        /**
+         * Event link name used in Pay Monthly XO version of the modal.
+         * If initial amount is qualfying and eligible for Pay Monthly in XO, use eligibleClickTitle and vice versa if ineligible.
+         */
+        const eligibleClickTitle = 'Pay Monthly Continue';
+        const ineligibleClickTitle = 'Back to Checkout';
+
+        if (isQualifyingAmount && isPrequalExperience) {
+            return (
+                <div className="button__fixed-wrapper">
+                    <div className={`button__container ${useNewCheckoutDesign === 'true' ? 'checkout' : ''}`}>
+                        <p className="spending-power__subtext">{spendingPowerSubtext}</p>
+                        <Button onClick={handlePrequalification} className="cta">
+                            <span className="cta__content">
+                                {cta?.buttonTextSpendingPower ?? 'Check your Spending Power'}
+                                <Icon name="lightning-bolt" />
+                            </span>
+                        </Button>
+                    </div>
+                </div>
+            );
+        }
+
+        if (typeof cta !== 'undefined') {
+            return (
+                <div className={`button__container ${useNewCheckoutDesign === 'true' ? 'checkout' : ''}`}>
+                    {isQualifyingAmount ? (
+                        <Button
+                            onClick={() => {
+                                onClick({ linkName: eligibleClickTitle });
+                                onClose({ linkName: eligibleClickTitle });
+                            }}
+                            className="cta"
+                        >
+                            {cta.buttonTextEligible}
+                        </Button>
+                    ) : (
+                        <Button
+                            onClick={() => {
+                                onClick({ linkName: ineligibleClickTitle });
+                                onClose({ linkName: ineligibleClickTitle });
+                            }}
+                            className="cta"
+                        >
+                            {cta.buttonTextIneligible}
+                        </Button>
+                    )}
+                </div>
+            );
+        }
+        if (views?.length > 2) {
+            return (
+                <Fragment>
+                    {navLinkPrefix && <div className="content__row nav__link-prefix">{navLinkPrefix}</div>}
+                    <ProductListLink openProductList={openProductList} className={country?.toLowerCase()}>
+                        {linkToProductList}
+                    </ProductListLink>
+                </Fragment>
+            );
+        }
+        return null;
+    };
+
+    // New checkout modal designs utilize a sticky button
+    const conditionalStickyButton =
+        useNewCheckoutDesign === 'true' && cta ? (
+            <div className="button__fixed-wrapper">{renderCheckoutCtaButton()}</div>
+        ) : (
+            renderCheckoutCtaButton()
+        );
+
+    // Determine disclosure content based on type
+    const getDisclosure = disclosureContent => {
+        const aprType = Object.values(offerAPRDisclaimers)[0]?.aprType;
+
+        let text = disclosureContent;
+        if (typeof disclosureContent !== 'string' && !Array.isArray(disclosureContent)) {
+            const aprText = disclosureContent?.[aprType];
+            text = Array.isArray(aprText) ? aprText : (aprText ?? '').replace(/\D00\s?(EUR|€)/g, ' €');
+        }
+
+        return <InlineLinks text={text} useNewCheckoutDesign={useNewCheckoutDesign} />;
+    };
+
+    return (
+        <Fragment>
+            <style>{styles._getCss()}</style>
+            <div
+                className={`content__row dynamic ${useNewCheckoutDesign === 'true' ? 'checkout' : ''} ${
+                    useDarkMode ? 'darkMode' : ''
+                }`}
+            >
+                <div className="content__col">
+                    <Calculator
+                        setExpandedState={setExpandedState}
+                        calculator={calculator}
+                        cta={cta}
+                        aprDisclaimer={offerAPRDisclaimers}
+                        genericDisclaimer={genericDisclaimer}
+                        useV4Design={useV4Design}
+                        useV5Design={useV5Design}
+                        use5Dot1Design={use5Dot1Design}
+                        useNewCheckoutDesign={useNewCheckoutDesign}
+                        useDarkMode={useDarkMode}
+                    />
+                    {showOfferTerms && offerTerms && (
+                        <OfferTerms
+                            headline={offerTerms.headline}
+                            bullets={offerTerms.bullets}
+                            footer={offerTerms.footer}
+                            seeTermsLink={offerTerms.seeTermsLink}
+                        />
+                    )}
+                    <div className={`content__col ${expandedState ? '' : 'collapsed'}`}>
+                        <div className="branded-image">
+                            {/* TODO: include Icon component when desktop images are final */}
+                        </div>
+                    </div>
+                </div>
+                <Instructions
+                    instructions={instructions}
+                    cta={cta}
+                    useV4Design={useV4Design}
+                    useV5Design={useV5Design}
+                    useNewCheckoutDesign={useNewCheckoutDesign}
+                    expandedState={expandedState}
+                />
+            </div>
+            <div
+                className={`content__row disclosure ${expandedState ? '' : 'collapsed'} ${
+                    useNewCheckoutDesign === 'true' ? 'checkout' : ''
+                } ${useV5Design === 'true' ? 'v5Design' : ''} ${getEuroStyleClass(country)} ${
+                    isPrequalExperience ? 'prequal-fixed-offset' : ''
+                } ${useDarkMode ? 'darkMode' : ''}`}
+            >
+                {getDisclosure(disclosure)}
+            </div>
+            {conditionalStickyButton}
+        </Fragment>
+    );
+};

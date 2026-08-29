@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-29] ingest | GitHub paypal/paypal-messaging-components - `@paypal/messaging-components@1.95.1`
+
+- Full-ingested work item `github-763f3bed066811458a49` at exact SHA `2bdaf940cdb0dcd29a8a3bc992eea975798d6d00` from the complete 667-file retained capsule and its 483 assigned evidence paths.
+- Added cumulative and package-qualified sources and extended [[paypal-pay-later]] with browser message rendering, dynamic updates, PayPal-hosted modal behavior, responsive presentation, and exact `1.95.1` offer-filter/sort fixes.
+- Preserved product boundaries: messaging is promotional rather than payment execution, implementation source does not establish eligibility, SDK Release `5.0.569` separately pins `1.94.0`, and v2 Venmo logo support is not Venmo checkout evidence.
+
 ## [2026-08-28] ingest | GitHub stripe/stripe-apps - `default-branch@9b14b71`
 
 - Full-ingested work item `github-963480d18adba0763347` at exact SHA `9b14b71be496ca299401b3303b572856fd19baf4` from the complete 72-file retained capsule plus required Stripe context.

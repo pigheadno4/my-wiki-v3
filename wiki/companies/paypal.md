@@ -2,7 +2,7 @@
 title: "PayPal"
 type: company
 tags: [paypal, payment-gateway, checkout, venmo, javascript-sdk, orders-api, vault, recurring-payments, payouts, disputes, reporting, agentic-commerce]
-source_count: 175
+source_count: 177
 ---
 
 ## PayPal
@@ -36,6 +36,8 @@ The independent `paypal-examples/paypal-ios-sdk-demo-app` baseline at `047a50e` 
 The independent `paypal/paypal-checkout-components` history begins with `@paypal/checkout-components@4.1.47` and now extends through `5.0.425`. The v4 runtime implemented Zoid-based Buttons and Checkout with mobile-only secondary Venmo. The accumulated v5 runtime adds separate Card Fields, Payment Fields, Hosted Buttons, Wallet, Saved Payment Methods, Venmo, and QR component boundaries; its Venmo vault-without-purchase path is experiment-gated. These package-qualified facts do not replace current availability guidance.
 
 The separate `paypal/paypal-sdk-release` baseline records how the combined browser SDK is assembled and promoted. `@paypal/sdk-release@5.0.569` pins twelve direct components, including Checkout Components `5.0.428`, Messaging Components `1.94.0`, Apple Pay Components `1.8.2`, Google Pay Components `1.3.5`, and SDK Client `4.0.204`. This is component bill-of-materials evidence, not merchant eligibility or component behavior; its checkout version is newer than the current local checkout-components snapshot.
+
+The independently released `@paypal/messaging-components@1.95.1` baseline implements web Pay Later and PayPal Credit promotional messages, responsive text/flex rendering, dynamic `data-pp-*` updates, and PayPal-hosted offer modals. Its `1.95.1` fixes filter qualifying offers before numeric term sorting, apply explicit country-specific order, preserve APR disclaimer fallback, and guard null modal targets. It is newer than the `1.94.0` component pinned by the collected SDK-release baseline; neither repository alone proves current merchant or buyer eligibility, and v2 Venmo logo rendering is not Venmo checkout evidence.
 
 The separate `@paypal/sdk-logos` package provides inline and external-image rendering for PayPal, Venmo, card brands, wallets, and local-payment-method artwork. The retained history preserves 117 generated `2.3.3` CDN SVGs and the complete policy-selected `2.3.7` public source. Logo presence is asset evidence only: it does not establish merchant eligibility, regional availability, payment enablement, or permission to use protected marks.
 
@@ -269,6 +271,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[changelog-github-paypal-checkout-components]] — package-qualified checkout-components release ledger through `5.0.425`
 - [[source-github-paypal-sdk-release]] — `@paypal/sdk-release@5.0.569` component bill of materials and release/deployment workflow
 - [[changelog-github-paypal-sdk-release]] — package-qualified SDK release-assembly ledger
+- [[source-github-paypal-messaging-components]] — `@paypal/messaging-components@1.95.1` web message, modal, rendering, update, and offer-processing runtime
+- [[changelog-github-paypal-messaging-components]] — package-qualified Messaging Components ledger beginning at `1.95.1`
 - [[source-github-react-paypal-js-v8]] — GitHub react-paypal-js v8 source: ScriptProvider internals, reducer state machine, Buttons lifecycle, CardFields architecture
 - [[source-paypal-expanded-checkout-integrate]] — Expanded Checkout integration: CardFields+Buttons, 3DS SCA, billing address submit, authorize routes
 - [[source-paypal-android-card-payments]] — Android SDK: CardClient, WebPayments, deprecated NativePayments, FraudProtection, 3DS SCA

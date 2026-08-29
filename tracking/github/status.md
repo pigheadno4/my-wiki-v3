@@ -745,6 +745,31 @@
   To SHA: `d1137d5daa3a3befdcf6c72e6a1e8144bf765ba2`
   Comparison: Not applicable
 
+## `github-763f3bed066811458a49`
+
+- Repository: `paypal/paypal-messaging-components`
+- SHA: `2bdaf940cdb0dcd29a8a3bc992eea975798d6d00`
+- Collection date: `2026-08-28`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messaging-components/snapshots/2026-08-28-2bdaf94/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messaging-components/ingest-packets/github-763f3bed066811458a49/packet.md)
+- Review priority: `high`
+- Required reading: `483` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/messaging-components@1.95.1` (recommended `full`)
+  Release: [manifest](../../raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.95.1/2026-08-28/manifest.json)
+  Comparison: Not applicable
+
 ## `github-7afbbbad6ed794ece5d5`
 
 - Repository: `paypal/paypal-sdk-release`

@@ -68,6 +68,14 @@ Add `messages` to `components` in the JS SDK script tag: `components=messages,bu
 
 Key attributes: `data-pp-message`, `data-pp-amount`, `data-pp-placement`, `data-pp-style-layout`.
 
+### Web Messaging Runtime
+
+The independent `@paypal/messaging-components@1.95.1` package is the browser implementation behind PayPal Credit and Pay Later promotional messaging. It exposes `Messages(options).render(selector)`, defaults to `[data-pp-message]`, merges SDK, JavaScript, and inline `data-pp-*` options, and updates an existing message instance when its amount or style changes. Dynamically inserted message containers and later `data-pp-*` attribute changes are observed and re-rendered.
+
+The message itself is PayPal-served iframe content. Clicking it can open a PayPal-hosted learn-more or application modal; nested-frame contexts fall back to a popup. This is promotional presentment, not checkout execution, and the package does not establish merchant, buyer, country, or transaction eligibility.
+
+At `1.95.1`, the long-term modal filters out non-qualifying offers before display, validates numeric payment counts, and applies explicit country-specific term ordering: ascending for US, ES, IT, and CA, and descending for AT, DE, and FR. The renderer also includes a Venmo logo mapping for PayPal-supplied v2 message content. That asset/rendering support is not evidence that Venmo is a Pay Later product or that the component enables Venmo checkout. See [[source-github-paypal-messaging-components]] and [[changelog-github-paypal-messaging-components]].
+
 For the v6 React web component, `@paypal/react-paypal-js@10.1.2` expands the typed `logo-type` attribute from `MONOGRAM | WORDMARK` to `MONOGRAM | WORDMARK | TEXT`. This is a TypeScript/JSX contract for `<paypal-message>`, not evidence that every older JS SDK messaging integration accepts the same value.
 
 For Braintree integrations, `@paypal/react-paypal-js@10.2.0` adds `useBraintreePayPalMessages()`. The hook asynchronously creates a Messages instance from Braintree's shared `paypalCheckoutV6` object, then exposes readiness, loading, error, and content-fetch state. Returned content can update its amount without a new fetch. An empty failure sentinel is still passed to `<paypal-message>` so the element can collapse while the hook exposes the fetch error.
@@ -100,6 +108,8 @@ Pay Later offerings differ by country — Australia, France, Germany, Italy, Spa
 
 - [[source-paypal-pay-later]] — Pay Later by country (US, AU, CA, FR, DE): product tables, purchase ranges, eligibility, bilingual support (CA)
 - [[source-github-paypal-js]] — package-qualified React v10.1.2 Messages typing and v10.2.0 Braintree Messages hook behavior
+- [[source-github-paypal-messaging-components]] — web messaging runtime, PayPal-hosted iframe/modal lifecycle, style and update behavior, and exact `1.95.1` offer-processing fixes
+- [[changelog-github-paypal-messaging-components]] — package-qualified web Messaging Components release ledger beginning at `1.95.1`
 - [[source-github-paypal-messages-ios]] — native iOS Pay Later and PayPal Credit message configuration, rendering, modal, and lifecycle
 - [[source-github-paypal-messages-android]] — native Android message view, modal, callbacks, caching, analytics, availability warning, and `1.3.0` source risks
 - [[changelog-github-paypal-messages-android]] — managed Android `1.3.0` release plus cumulative earlier stable context
