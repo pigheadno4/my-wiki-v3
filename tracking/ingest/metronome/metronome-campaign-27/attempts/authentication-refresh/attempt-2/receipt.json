@@ -1,0 +1,52 @@
+{
+  "job_id": "authentication-refresh",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome API Authentication\"\ntype: source\ndate_ingested: 2026-08-29\ncanonical_url: \"https://docs.metronome.com/api-reference/authentication\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/authentication-2026-08-28.md\"\n  - \"metronome/api-reference/authentication-2026-07-13.md\"\ntags: [metronome, api-authentication, bearer-tokens, api-security]\n---\n\n## Overview\n\nThis API overview documents Metronome customer bearer-token creation, request authentication, SDK and Postman configuration, permission scoping, and irreversible archival. It is an operational credential guide rather than a complete token-lifecycle, authorization-policy, or error contract.\n\n## Query-critical facts\n\n- Metronome API requests use bearer tokens. The 2026-08-28 authentication page's app flow creates a descriptively named token under **Developer** \u2192 **API tokens** \u2192 **+ Add**; the full token must be copied to secure storage before completing the flow because it cannot be viewed again.\n- Metronome says a token's name is associated with API calls made using it, which can help attribute changes and requests in audit logs.\n- Direct calls provide the token through the `Authorization` header. The Python, Node.js, Ruby, and Go examples accept a token explicitly and document `METRONOME_BEARER_TOKEN` as the default environment-variable source when it is omitted.\n- On this page, a valid token can yield endpoint data or a `404` JSON error when no resource is found; an invalid token yields `401` or `403`. These statements do not replace endpoint-specific success and error contracts.\n- Tokens inherit the creating user's permissions by default. This page documents restriction by access level, environment, or endpoint and directs permission adjustments to Metronome's support portal.\n- Tokens that are no longer used can be archived with the Trash control in the Metronome UI; the page says archival cannot be undone and recommends removing unused tokens and rotating active ones regularly.\n\n## Material boundaries\n\n- This page does not specify token format, expiry, automatic rotation, recovery after loss, rotation overlap, a self-service scope-change flow, or API endpoints for token creation, permission changes, or archival. It documents app-based creation and archival and a support-mediated permission route.\n- Environment is a documented scope dimension, but this page does not define environment selection for API base URLs or establish that a token is valid in any particular environment unless its actual scope is known.\n- The separate security-principles authority's 12-hour credential lifetime applies to credentials minted by Metronome engineers. This authentication page states no lifetime for customer-created bearer tokens, so the two credential classes must not be assigned the same lifecycle.\n\n> [!warning] Authorization-model conflict\n> This authentication page says tokens inherit the creating user's permissions by default and can be restricted by access level, environment, or endpoint through the support portal. The linked RBAC source separately documents selecting a built-in role when creating a token and says that role cannot later be changed. The sources do not define precedence between default inheritance and explicit role assignment, or say whether support-mediated scope adjustment changes an assigned immutable role; treat them as separate source-scoped statements rather than one reconciled permission model.\n\n> [!warning] Token-creation UI route conflict\n> The 2026-08-28 authentication snapshot routes token creation through **Developer** \u2192 **API tokens**. The retained 2026-07-13 snapshot and the linked quickstart and RBAC source summaries instead route it through **Connections** \u2192 **API tokens & webhooks**. The newer path is current evidence only for this authentication page; the related older instructions are not reconciled, so verify the route in the actual account UI.\n\n## Raw-detail coverage map\n\nUse the complete raw page for the exact 2026-08-28 **Developer** and **API tokens** creation steps; compare the retained 2026-07-13 raw and dedicated quickstart and RBAC sources for the unresolved **Connections** and **API tokens & webhooks** route; the one-time token-display warning; token naming and audit-log association; Python, Node.js, Ruby, and Go initialization examples; page-local `404`, `401`, and `403` statements; OpenAPI import and Postman bearer-variable setup; permission-scope examples and support route; and the irreversible archival control and rotation guidance. Dedicated endpoint references remain authoritative for each operation's complete success and error behavior, and dedicated security and RBAC sources remain authoritative for broader credential and authorization policy.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concept: [[metronome-security-principles]]\n- Related sources: [[source-metronome-guides-platform-configuration-security-principles]], [[source-metronome-guides-platform-configuration-role-based-access-rbac]], [[source-metronome-guides-platform-configuration-audit-logs]], [[source-metronome-guides-get-started-developer-sdks]], [[source-metronome-api-reference-api-quickstart]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/authentication-2026-08-28|2026-08-28 snapshot - bearer-token creation, use, permissions, errors, Postman setup, and archival]]\n- [[raw/metronome/api-reference/authentication-2026-07-13|2026-07-13 snapshot - prior immutable API-authentication reference]]\n",
+  "quotes": [
+    {
+      "text": "Metronome\u2019s API uses bearer tokens to authenticate requests. This page walks through how to create and manage tokens.\n\n## **Create a token**\n\nAPI tokens can be created through the Metronome app.\n\n1. Click on\u00a0**Developer**\u00a0in the navigation bar.\n2. Click on\u00a0**API tokens**\u00a0in the horizontal navigation bar on the resulting page.\n3. Click on the\u00a0**+ Add**\u00a0button.\n4. Enter a descriptive name for the token and click\u00a0**Create new token.**\n5. Copy the token string to a secure location before clicking\u00a0**Done.**\n\n<Warning>\n  **SAVE YOUR TOKEN**\n\n  Be sure to save the token you create. You cannot view the full token again.\n</Warning>\n\nCreate as many tokens as is useful, providing descriptive names for each. The token's name is associated with API calls made using it, which can be helpful when tracking changes and requests in the Metronome's [audit logs](../guides/platform-configuration/audit-logs).",
+      "location": "lines 11-29"
+    },
+    {
+      "text": "When making API calls, provide the token using the\u00a0`Authorization`\u00a0header. If using the SDK, the SDK will\u00a0look for the API key under the environment variable\u00a0`METRONOME_BEARER_TOKEN` by default. See **SDK documentation** for more details.",
+      "location": "lines 31-33"
+    },
+    {
+      "text": "If your token is valid, you\u2019ll receive a JSON payload from the API\u2014either data (if the endpoint returns records) or a 404 JSON error object if no resources are found.\n\nIf your token is invalid, you\u2019ll receive a 401 or 403 error. See API status codes for more detail.",
+      "location": "lines 80-82"
+    },
+    {
+      "text": "By default, Metronome API tokens will retain the same permissions as the user that created them. Metronome API tokens can also be limited in scope to reduce risk and follow the principle of least privilege. Metronome supports scoping by:\n\n* Access level (e.g., read-only)\n* Environment (e.g., sandbox only)\n* Endpoint (e.g., only getCustomers)\n\nTo adjust permissions, contact us via the [Metronome support portal](https://support.metronome.com/).",
+      "location": "lines 96-102"
+    },
+    {
+      "text": "Metronome enables archiving tokens that are no longer in use. To do this, simply hit the Trash icon next to the relevant token in the Metronome UI. This action cannot be undone.\n\n<Tip>\n  **BEST PRACTICES**\n\n  Follow security best practices by removing unused tokens and regularly rotating tokens in use.\n</Tip>",
+      "location": "lines 106-112"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "authentication-refresh-security-token-use-and-attribution",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Customer API tokens",
+        "proposed_markdown": "API callers provide the bearer token through the `Authorization` header. Metronome says the descriptive token name is associated with API calls and can help track changes and requests in audit logs; permission adjustments for access-level, environment, or endpoint scopes are routed through the support portal. [[source-metronome-api-reference-authentication]]",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": [
+          "Preserve the adjacent 12-hour engineer-credential boundary and the existing RBAC assignment-versus-default-inheritance ambiguity; this page does not resolve either lifecycle or precedence question."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/authentication-2026-08-28.md",
+  "raw_sha256": "48dc2286a7e92df979b44ebdcaf9d68df475980afd19b3e507e477fcfe23241c",
+  "status": "candidate_ready"
+}

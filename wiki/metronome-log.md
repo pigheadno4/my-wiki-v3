@@ -6,6 +6,17 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-29 — Metronome Campaign 27 first-pass-rate pilot promoted
+
+- Result: five refreshed sources approved across six Sol worker attempts and six full independent Sol reviews; four pages passed on attempt 1, with no targeted review, rejection, or coordinator semantic repair.
+- Sources: [[source-metronome-guides-platform-configuration-allowlist]], [[source-metronome-api-reference-authentication]], [[source-metronome-api-reference-invoices-regenerate-an-invoice]], [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]], and [[source-metronome-api-reference-products-get-a-product]].
+- Review finding: Authentication required one full semantic retry to preserve the unresolved default-inheritance versus selected-role permission model and the current **Developer** route versus older **Connections** token-creation instructions.
+- Concepts: applied eight reviewer-approved durable-fact or reciprocal-link updates across six existing Metronome concepts; no new concept page was required.
+- Query audit: the fixed Authentication, Custom Invoice Integrations, and Get Product sample passed 9/9 factual, boundary or contradiction, and exact raw deep-dive checks; expansion was not required.
+- Coverage after promotion: 225 current English canonical documentation identities remain retained as 310 immutable raw snapshots, with 152 source summaries and 155 raw snapshots without source summaries.
+- Timing: completed in 1,847 seconds (30 minutes 47 seconds), 851 seconds faster than Campaign 26; the non-binding 30-minute observation target was missed by 47 seconds.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-27/monitor.md), [quality audit](../tracking/ingest/metronome/metronome-campaign-27/quality-audit.md), and [retrospective](../tracking/ingest/metronome/metronome-campaign-27/retrospective.md).
+
 ## 2026-08-28 — Metronome Campaign 26 recollection refresh and Token Billing promoted
 
 - Result: five approved source pages across nine Sol worker attempts, seven full independent Sol reviews, and two unchanged-hash targeted reviews; no failed or rejected job.

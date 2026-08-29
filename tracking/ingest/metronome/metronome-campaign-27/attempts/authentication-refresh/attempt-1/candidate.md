@@ -16,11 +16,11 @@ This API overview documents Metronome customer bearer-token creation, request au
 
 ## Query-critical facts
 
-- Metronome API requests use bearer tokens. The 2026-08-28 authentication page's app flow creates a descriptively named token under **Developer** → **API tokens** → **+ Add**; the full token must be copied to secure storage before completing the flow because it cannot be viewed again.
+- Metronome API requests use bearer tokens. The current app flow creates a descriptively named token under **Developer** → **API tokens** → **+ Add**; the full token must be copied to secure storage before completing the flow because it cannot be viewed again.
 - Metronome says a token's name is associated with API calls made using it, which can help attribute changes and requests in audit logs.
 - Direct calls provide the token through the `Authorization` header. The Python, Node.js, Ruby, and Go examples accept a token explicitly and document `METRONOME_BEARER_TOKEN` as the default environment-variable source when it is omitted.
 - On this page, a valid token can yield endpoint data or a `404` JSON error when no resource is found; an invalid token yields `401` or `403`. These statements do not replace endpoint-specific success and error contracts.
-- Tokens inherit the creating user's permissions by default. This page documents restriction by access level, environment, or endpoint and directs permission adjustments to Metronome's support portal.
+- Tokens inherit the creating user's permissions by default. Metronome documents restriction by access level, environment, or endpoint and directs permission adjustments to its support portal.
 - Tokens that are no longer used can be archived with the Trash control in the Metronome UI; the page says archival cannot be undone and recommends removing unused tokens and rotating active ones regularly.
 
 ## Material boundaries
@@ -29,15 +29,9 @@ This API overview documents Metronome customer bearer-token creation, request au
 - Environment is a documented scope dimension, but this page does not define environment selection for API base URLs or establish that a token is valid in any particular environment unless its actual scope is known.
 - The separate security-principles authority's 12-hour credential lifetime applies to credentials minted by Metronome engineers. This authentication page states no lifetime for customer-created bearer tokens, so the two credential classes must not be assigned the same lifecycle.
 
-> [!warning] Authorization-model conflict
-> This authentication page says tokens inherit the creating user's permissions by default and can be restricted by access level, environment, or endpoint through the support portal. The linked RBAC source separately documents selecting a built-in role when creating a token and says that role cannot later be changed. The sources do not define precedence between default inheritance and explicit role assignment, or say whether support-mediated scope adjustment changes an assigned immutable role; treat them as separate source-scoped statements rather than one reconciled permission model.
-
-> [!warning] Token-creation UI route conflict
-> The 2026-08-28 authentication snapshot routes token creation through **Developer** → **API tokens**. The retained 2026-07-13 snapshot and the linked quickstart and RBAC source summaries instead route it through **Connections** → **API tokens & webhooks**. The newer path is current evidence only for this authentication page; the related older instructions are not reconciled, so verify the route in the actual account UI.
-
 ## Raw-detail coverage map
 
-Use the complete raw page for the exact 2026-08-28 **Developer** and **API tokens** creation steps; compare the retained 2026-07-13 raw and dedicated quickstart and RBAC sources for the unresolved **Connections** and **API tokens & webhooks** route; the one-time token-display warning; token naming and audit-log association; Python, Node.js, Ruby, and Go initialization examples; page-local `404`, `401`, and `403` statements; OpenAPI import and Postman bearer-variable setup; permission-scope examples and support route; and the irreversible archival control and rotation guidance. Dedicated endpoint references remain authoritative for each operation's complete success and error behavior, and dedicated security and RBAC sources remain authoritative for broader credential and authorization policy.
+Use the complete raw page for the exact **Developer** and **API tokens** creation steps; the one-time token-display warning; token naming and audit-log association; Python, Node.js, Ruby, and Go initialization examples; page-local `404`, `401`, and `403` statements; OpenAPI import and Postman bearer-variable setup; permission-scope examples and support route; and the irreversible archival control and rotation guidance. Dedicated endpoint references remain authoritative for each operation's complete success and error behavior, and dedicated security and RBAC sources remain authoritative for broader credential and authorization policy.
 
 ## Related
 

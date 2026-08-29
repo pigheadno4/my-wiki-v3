@@ -42,6 +42,8 @@ The GCP guide uses Workload Identity Federation so Metronome can access the merc
 
 Metronome's public API uses bearer tokens created and archived through the dashboard. Tokens inherit the creating user's permissions by default and can be restricted by access level, environment, or endpoint through a Metronome representative. The full token is visible only at creation, the SDKs default to `METRONOME_BEARER_TOKEN`, and archiving a token cannot be undone.
 
+API callers provide the bearer token through the `Authorization` header. Metronome says the descriptive token name is associated with API calls and can help track changes and requests in audit logs; permission adjustments for access-level, environment, or endpoint scopes are routed through the support portal. [[source-metronome-api-reference-authentication]]
+
 The API quickstart corroborates the creation boundary: give the token a descriptive name and copy it to a secure location before completing the flow. Its setup examples accept a bearer token directly or use `METRONOME_BEARER_TOKEN`, but the quickstart adds no expiry, recovery, rotation, scope, or revocation policy.
 
 > [!info] Credential-scope boundary

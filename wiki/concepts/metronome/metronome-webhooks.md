@@ -21,6 +21,8 @@ Retries and multiple configured destinations can produce duplicate deliveries. C
 
 The notification lifecycle guide confirms asynchronous JSON delivery for all notification types over HTTPS POST. It describes exponential-backoff retries with jitter for up to 48 hours and at-least-once delivery, so receivers must tolerate duplicates and make processing idempotent.
 
+The managed custom-invoice guide uses `invoice.finalized` after the grace period as the trigger for retrieving finalized invoice data and upserting a downstream invoice. The event is not enabled by default and the refreshed page routes enablement through the Metronome support portal. This integration sequence does not replace the dedicated webhook authority for verification, retry, ordering, deduplication, or delivery semantics, and it does not establish downstream upsert idempotency or recovery. [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]]
+
 ## Authenticity and authoritative data
 
 The customer-alert get endpoint provides the current threshold evaluation state for one customer/notification pair, not a historical sequence. Its documentation routes threshold-notification history to webhook notifications or event logs and positions live API lookup for targeted rather than bulk monitoring. [[source-metronome-api-reference-alerts-get-a-threshold-notification]]

@@ -27,6 +27,8 @@ The documented `uniqueness_key` examples include contracts, alerts, and customer
 
 ## Retry and error boundary
 
+`POST /v1/invoices/regenerate` regenerates a voided invoice and can distribute the replacement through configured billing-provider routing. The existing API-wide `Idempotency-Key` contract applies to this POST, but the endpoint adds no regeneration-specific behavior for another or expired key, concurrent calls, timeout recovery, resulting invoice state after cached or ambiguous failure, or whether a changed key can create and distribute another invoice. Investigate state rather than assuming a new key is safe. [[source-metronome-api-reference-invoices-regenerate-an-invoice]] [[source-metronome-api-reference-idempotency]]
+
 The 2026-08-28 `POST /v2/contracts/edit` snapshot exposes optional 1-128 character `uniqueness_key`; its schema says reuse prevents a duplicate record and fails with HTTP `409`, even though the operation response map omits `409`. The earlier 2026-07-13 API-wide idempotency page labels contract-edit uniqueness-key support as coming soon. Preserve that unresolved documentation/runtime-enablement conflict: newer endpoint schema exposure alone does not prove the feature is enabled. This resource-uniqueness mechanism is distinct from API-wide POST `Idempotency-Key` result replay. The sources do not define uniqueness-key scope or release, failed-attempt consumption, interaction or precedence between the two keys, safe use after expiry, concurrency ordering, or recovery after cached or ambiguous failures. [[source-metronome-api-reference-contracts-edit-a-contract]] [[source-metronome-api-reference-idempotency]]
 
 `POST /v1/customer-alerts/get` is a point-in-time threshold-status read under the API-wide `Idempotency-Key` contract. Identical same-key parameters replay the original result, so that replay is not evidence of a fresh `ok`, `in_alarm`, `evaluating`, or archived-state evaluation. The endpoint page adds no read-specific guarantee for caching, freshness, another or expired key, concurrent calls, or ambiguous-failure recovery. [[source-metronome-api-reference-alerts-get-a-threshold-notification]]
@@ -64,6 +66,8 @@ The assigned product-catalog reference documents `POST /v1/contract-pricing/prod
 - [[metronome-credits-and-commits]] covers uniqueness keys on credit and commit creation.
 
 ## Sources
+
+- [[source-metronome-api-reference-invoices-regenerate-an-invoice]] - POST invoice regeneration, configured distribution side effect, and endpoint-specific concurrency and ambiguous-failure recovery boundaries
 
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] - contract-create and usage-ingest POST examples that omit `Idempotency-Key`, with event transaction identity remaining a separate deduplication mechanism
 

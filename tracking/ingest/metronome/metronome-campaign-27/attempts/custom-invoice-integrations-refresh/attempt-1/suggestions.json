@@ -1,0 +1,49 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "custom-invoice-integrations-refresh-invoicing-support-route",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Custom downstream invoice delivery",
+      "proposed_markdown": "The guide says finalization occurs after the grace period and that `invoice.finalized` is not enabled by default; the refreshed page routes enablement through the Metronome support portal. [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]]",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "Replace the existing representative-based enablement sentence. This is a contact-channel refresh only; preserve the existing delivery, list-selection, idempotency, recovery, payment, tax, credit-memo, and reconciliation boundaries."
+      ]
+    },
+    {
+      "update_id": "custom-invoice-integrations-refresh-custom-fields-identity-map",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Invoice propagation",
+      "proposed_markdown": "A managed custom-invoice integration can use Metronome custom fields as external-system identity mappings. The QuickBooks example recommends `qbo_item_id` on Product, `qbo_customer_id` on Customer, and optional `qbo_memo_ref` on Contract; customer and item objects live in the selected billing system, and a newly created QBO customer ID is written back to Metronome. These names and mappings are QBO-specific examples, not universal foreign-key, synchronization, uniqueness, or reconciliation guarantees. [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]]",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "Do not infer uniqueness enforcement, match keys, bidirectional synchronization, rename or deletion propagation, or external acceptance from the example mappings."
+      ]
+    },
+    {
+      "update_id": "custom-invoice-integrations-refresh-webhooks-route",
+      "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Delivery model",
+      "proposed_markdown": "The managed custom-invoice guide uses `invoice.finalized` after the grace period as the trigger for retrieving finalized invoice data and upserting a downstream invoice. The event is not enabled by default and the refreshed page routes enablement through the Metronome support portal. This integration sequence does not replace the dedicated webhook authority for verification, retry, ordering, deduplication, or delivery semantics, and it does not establish downstream upsert idempotency or recovery. [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]]",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep Metronome webhook-delivery idempotency separate from destination invoice-upsert idempotency and payment retry."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

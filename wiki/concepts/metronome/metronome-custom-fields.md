@@ -32,6 +32,8 @@ Uniqueness is intended for foreign entities that have a one-to-one relationship 
 
 A Product custom field can propagate to the associated invoice line item. The overview's `stripe_product_id` example uses this propagation to link an invoice line item to a Stripe product when creating invoices in Stripe.
 
+A managed custom-invoice integration can use Metronome custom fields as external-system identity mappings. The QuickBooks example recommends `qbo_item_id` on Product, `qbo_customer_id` on Customer, and optional `qbo_memo_ref` on Contract; customer and item objects live in the selected billing system, and a newly created QBO customer ID is written back to Metronome. These names and mappings are QBO-specific examples, not universal foreign-key, synchronization, uniqueness, or reconciliation guarantees. [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]]
+
 For native Stripe Tax, a Product custom field named `stripe_product_id` maps the external Stripe product onto `invoiceitem.price.product`. Multiple Metronome products can intentionally share one Stripe product when they share a tax code, so the guide prohibits `enforce_uniqueness`; it also creates the field on `Product` while the mapping row names `ContractProduct`, leaving that entity-label relationship unresolved. [[source-metronome-integrations-tax-integrations-stripe-tax]]
 
 

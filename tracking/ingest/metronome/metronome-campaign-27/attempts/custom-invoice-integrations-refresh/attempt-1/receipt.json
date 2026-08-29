@@ -1,0 +1,79 @@
+{
+  "job_id": "custom-invoice-integrations-refresh",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Invoice with Other Systems Using a Managed Integration\"\ntype: source\ndate_ingested: 2026-08-29\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/integrations/invoice-integrations/custom-invoice-integrations\"\nraw_files:\n  - \"metronome/integrations/invoice-integrations/custom-invoice-integrations-2026-08-28.md\"\n  - \"metronome/integrations/invoice-integrations/custom-invoice-integrations-2026-07-13.md\"\ntags: [metronome, invoicing, managed-integrations, billing-integrations, quickbooks]\n---\n\n## Overview\n\nThis guide describes invoicing through systems outside Metronome's native integrations. It offers Data Export or a managed integration built with Data Export or Metronome APIs, then uses QuickBooks Online (QBO) to illustrate external setup, identity mapping, finalized-invoice retrieval, transformation, destination creation, and orchestration. The QBO fields and request are a worked example rather than a complete guarantee for QuickBooks or another billing platform.\n\n## Query-critical facts\n\n- The non-native routes are to collaborate with Metronome on a data export or build a managed integration connecting to the selected billing system. The guide directs managed-integration setup questions to `solutions@metronome.com`.\n- The implementer prepares the external application's organization, permissions, and credentials; creates or finds external customer and item objects; and stores their identifiers in Metronome custom fields. The QBO example recommends `qbo_item_id` on Product, `qbo_customer_id` on Customer, and optional `qbo_memo_ref` on Contract.\n- QBO item identity can be per Metronome product, preserving product-level reporting at the cost of naming and governance, or one generic item, simplifying setup while collapsing downstream revenue detail. These alternatives are QBO example choices, not universal external-system capabilities.\n- The recommended API flow listens for `invoice.finalized` after Metronome's grace period, uses the payload's `customer_id` to list `FINALIZED` invoices for the associated billing period, transforms the returned invoice and line-item data, and upserts the destination invoice and lines. The event is not enabled by default; the refreshed page routes enablement to the Metronome support portal. Although the sample payload also contains `invoice_id`, this guide does not document a direct-fetch flow or how to select among several list matches.\n- The orchestration layer can run in the implementer's developer environment or a third-party tool. Metronome recommends Workato to teams investigating an IPaaS and describes its public connector as an SDK-like Metronome API wrapper; the guide routes API and connector questions to the support portal.\n\n## Responsibility and recovery boundaries\n\nMetronome supplies the finalized-invoice event and invoice data, while the implementer maps external identities, transforms fields, and performs the downstream upsert; the selected billing system owns its customer, item, and invoice objects. The page does not assign hosting or operational support, nor define webhook verification, delivery ordering or deduplication, list pagination or consistency, destination idempotency, partial-failure recovery, replay, concurrency, rate limits, ongoing object synchronization, or reconciliation. Dedicated webhook and API references remain authoritative for mechanics they establish.\n\nThe QBO mapping tells implementers to verify whether amounts are cents or dollars before conversion. It does not define universal currency, rounding, tax, discount, credit, negative-amount, due-date, duplicate-document, invoice-update, payment-collection, refund, credit-memo, accounting-close, or status-synchronization behavior, and it is not authority for external-platform acceptance, payment, settlement, or reconciliation.\n\n## Raw-detail coverage map\n\n- **External setup and identity:** complete Intuit app, Accounting-scope, OAuth, callback, token, Realm ID, customer and item creation, custom-field key, and QBO object-mapping steps are in the latest raw page.\n- **Invoice retrieval:** the exact `invoice.finalized` example payload, enablement note, invoice-list curl example, status and billing-period filters, and returned invoice and line-item field list are in the latest raw page.\n- **Transformation and creation:** full header and line mapping tables, amount-unit warning, QBO invoice request example, example identifiers, dates, notes, quantities, and prices are in the latest raw page.\n- **Orchestration and contacts:** the developer-environment and Workato options, connector positioning, `solutions@metronome.com` managed-integration route, and support-portal routes are in the latest raw page.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-integrations]], [[metronome-invoicing]], [[metronome-custom-fields]]\n- Supporting concepts: [[metronome-webhooks]], [[metronome-reporting-and-analytics]], [[metronome-products-and-rate-cards]], [[metronome-customers-and-contracts]]\n- Related sources: [[source-metronome-guides-reporting-insights-data-export-overview]], [[source-metronome-guides-platform-configuration-setup-webhooks]], [[source-metronome-integrations-platform-integrations-workato-connector]], [[source-metronome-integrations-invoice-integrations-stripe]], [[source-metronome-guides-invoices-overview]]\n\n## Raw Sources\n\n- [[raw/metronome/integrations/invoice-integrations/custom-invoice-integrations-2026-08-28|2026-08-28 snapshot - current managed custom-invoice routes, QuickBooks mapping and finalized-invoice flow, Workato option, and support contacts]]\n- [[raw/metronome/integrations/invoice-integrations/custom-invoice-integrations-2026-07-13|2026-07-13 snapshot - prior managed custom-invoice guide using representative-based contact directions]]\n",
+  "quotes": [
+    {
+      "text": "To support these workflows, you can collaborate with Metronome to create [data exports](/guides/reporting-insights/data-export/overview) or build a managed integration that connects to your billing system of choice. Managed integrations get built using the data export feature or Metronome APIs.",
+      "location": "line 13"
+    },
+    {
+      "text": "To support this use case, start by building out your customer and item objects inside of your selected billing system and store them in custom fields in Metronome. Learn more about how to use [custom fields](/api-reference/custom-fields).\n\nRecommended custom fields in Metronome:\n\n| Metronome entity | Custom field key  | Value                                                          |\n| ---------------- | ----------------- | -------------------------------------------------------------- |\n| Product          | `qbo_item_id`     | The QBO Item ID for this Metronome product                     |\n| Customer         | `qbo_customer_id` | The QBO Customer ID for this Metronome customer                |\n| Contract         | `qbo_memo_ref`    | Optional \u2014 reference to help link contracts to invoices in QBO |\n\n### Customer mapping\n\nFor each Metronome customer, either find or create a corresponding QBO Customer. The recommended approach is to store the QBO Customer ID as a custom field on the Metronome customer object (e.g., `qbo_customer_id`).\n\nIf no match is found, create the customer in QBO and store the resulting QBO Customer ID back in Metronome as a custom field.",
+      "location": "lines 39-53"
+    },
+    {
+      "text": "1. Set up a [webhook endpoint](/guides/platform-configuration/setup-webhooks) and listen for the `invoice.finalized` event. This event gets created once an invoice is finalized in Metronome after the grace period ends.",
+      "location": "line 68"
+    },
+    {
+      "text": "The `invoice.finalized` event is not enabled by default for Metronome clients. To turn this event on, contact us via the [Metronome support portal](https://support.metronome.com/).",
+      "location": "line 85"
+    },
+    {
+      "text": "The response includes the full invoice objects with header-level fields (`id`, `status`, `total`, `subtotal`, `issued_at`, `start_timestamp`, `end_timestamp`, `contract_id`) and the `line_items` array with per-line details (`name`, `type`, `quantity`, `unit_price`, `total`, `product_id`, etc.).\n\n3. Parse and transform the response into the appropriate format and upsert the invoice and line items.",
+      "location": "lines 99-101"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "custom-invoice-integrations-refresh-invoicing-support-route",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Custom downstream invoice delivery",
+        "proposed_markdown": "The guide says finalization occurs after the grace period and that `invoice.finalized` is not enabled by default; the refreshed page routes enablement through the Metronome support portal. [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]]",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": [
+          "Replace the existing representative-based enablement sentence. This is a contact-channel refresh only; preserve the existing delivery, list-selection, idempotency, recovery, payment, tax, credit-memo, and reconciliation boundaries."
+        ]
+      },
+      {
+        "update_id": "custom-invoice-integrations-refresh-custom-fields-identity-map",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Invoice propagation",
+        "proposed_markdown": "A managed custom-invoice integration can use Metronome custom fields as external-system identity mappings. The QuickBooks example recommends `qbo_item_id` on Product, `qbo_customer_id` on Customer, and optional `qbo_memo_ref` on Contract; customer and item objects live in the selected billing system, and a newly created QBO customer ID is written back to Metronome. These names and mappings are QBO-specific examples, not universal foreign-key, synchronization, uniqueness, or reconciliation guarantees. [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]]",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "Do not infer uniqueness enforcement, match keys, bidirectional synchronization, rename or deletion propagation, or external acceptance from the example mappings."
+        ]
+      },
+      {
+        "update_id": "custom-invoice-integrations-refresh-webhooks-route",
+        "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Delivery model",
+        "proposed_markdown": "The managed custom-invoice guide uses `invoice.finalized` after the grace period as the trigger for retrieving finalized invoice data and upserting a downstream invoice. The event is not enabled by default and the refreshed page routes enablement through the Metronome support portal. This integration sequence does not replace the dedicated webhook authority for verification, retry, ordering, deduplication, or delivery semantics, and it does not establish downstream upsert idempotency or recovery. [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]]",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep Metronome webhook-delivery idempotency separate from destination invoice-upsert idempotency and payment retry."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/integrations/invoice-integrations/custom-invoice-integrations-2026-08-28.md",
+  "raw_sha256": "1b1c051739a32a2048039ce1d949058a81830536103c95a358766160909c6112",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "regenerate-an-invoice-refresh-invoicing-identity-resolution",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "Metronome exposes globally bearer-secured `POST /v1/invoices/regenerate`",
+      "proposed_markdown": "Replace the existing regeneration paragraph and its identity-contradiction callout with: Metronome exposes globally bearer-secured `POST /v1/invoices/regenerate` to regenerate a voided invoice. It recalculates from up-to-date rates, available balances, and other fees regardless of billing period, and says an invoice attached to a contract with a billing provider will be distributed according to that configuration. Within a supplied JSON object, UUID `id` is required, while the enclosing `requestBody` is not marked required and `additionalProperties` behavior is unspecified. HTTP `200` defines optional top-level `data`; within `data`, UUID `id` is required and described as the new invoice ID. The refreshed request and response examples use different UUIDs, aligning with the prose that the replacement ID is distinct; the schema itself does not encode inequality. The page does not define the new invoice's state or amounts, calculation as-of or atomicity semantics, balance and ledger reconciliation, distribution timing or outcome, downstream voiding, payment or refund effects, errors, or endpoint-specific repeated-call, concurrency, and timeout-recovery behavior. Apply the separate API-wide `Idempotency-Key` contract without assuming a changed key is safe after uncertain regeneration state. Its billing-period wording does not establish that corrected usage bypasses a separately documented historical-submission limit. [[source-metronome-api-reference-invoices-regenerate-an-invoice]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Remove the existing identity-contradiction callout: the refreshed request and response examples now use distinct UUIDs. Preserve the runtime identity boundary because schema inequality and lineage fields remain undocumented."
+      ]
+    },
+    {
+      "update_id": "regenerate-an-invoice-refresh-api-idempotency-route",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "`POST /v1/invoices/regenerate` regenerates a voided invoice and can distribute the replacement through configured billing-provider routing. The existing API-wide `Idempotency-Key` contract applies to this POST, but the endpoint adds no regeneration-specific behavior for another or expired key, concurrent calls, timeout recovery, resulting invoice state after cached or ambiguous failure, or whether a changed key can create and distribute another invoice. Investigate state rather than assuming a new key is safe. [[source-metronome-api-reference-invoices-regenerate-an-invoice]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "Keep API-wide same-key result replay separate from endpoint-specific invoice creation, distribution, concurrency, and recovery unknowns."
+      ]
+    },
+    {
+      "update_id": "regenerate-an-invoice-refresh-api-idempotency-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-invoices-regenerate-an-invoice]] - POST invoice regeneration, configured distribution side effect, and endpoint-specific concurrency and ambiguous-failure recovery boundaries",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}
