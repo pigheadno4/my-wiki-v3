@@ -34,7 +34,7 @@ deep-dive links with matching SHA-256 values.
 
 - All five manifest raw SHA-256 values matched the immutable files.
 - All five canonical source targets were byte-identical to their approved final candidates.
-- Twenty reviewer-approved shared updates appeared exactly once across nine existing concepts.
+- Nineteen reviewer-approved shared updates appeared exactly once across nine existing concepts.
 - Each source remained represented exactly once in the company catalog and provider index.
 - Fourteen touched source and concept pages passed targeted `validate_wiki.py` checks.
 - The Metronome capsule validator passed with 310 raw snapshots, 152 source summaries, and 140 raw snapshots without source summaries.
@@ -42,7 +42,7 @@ deep-dive links with matching SHA-256 values.
 
 ## Verdict
 
-Campaign 30 is approved for its five canonical refreshes and twenty shared
+Campaign 30 is approved for its five canonical refreshes and nineteen shared
 updates. The actor reminder was consistent with Customer Controls passing on
 attempt 1, but the added reminders did not improve the overall 3/5 first-pass
 rate. Create Commit still lost conditional and timing boundaries, while the
