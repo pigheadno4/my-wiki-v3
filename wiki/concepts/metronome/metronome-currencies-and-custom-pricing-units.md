@@ -32,6 +32,8 @@ Custom units are created and named in the Metronome app for invoice presentation
 
 ## Credits, commits, and invoice conversion
 
+The targeted commit-edit schema models access-schedule `amount` and invoice-schedule `amount`, `quantity`, and `unit_price` as numbers under their respective nested item objects. This endpoint page supplies no currency, cost basis, balance unit, quantity unit, relationship among those invoice fields, denomination, precision, rounding, sign, or bounds. Dedicated currency and credit-type authorities should not be imported as endpoint-local guarantees. [[source-metronome-api-reference-credits-and-commits-edit-a-commit]]
+
 The refreshed customer-credit schema makes optional `access_type` choose the dollar cost of usage (`SPEND`) or the number of units used (`QUANTITY`) and defaults it to `SPEND`, while optional `credit_type_id` independently defaults to USD cents. The page does not define non-USD or custom-unit compatibility, quantity denomination, conversion, precision, rounding, mixed-mode priority, or invoice and ledger representation for the quantity mode. [[source-metronome-api-reference-credits-and-commits-create-a-credit]]
 
 A deprecated Plan-detail overage-rate entry requires numeric `to_fiat_conversion_factor`, a fiat credit type, a source credit type, and the price-ramp `start_period`. This schema exposes a conversion configuration surface but defines no factor direction, denomination, precision, rounding, applicability, timing beyond billing-period offset, invoice calculation, or equivalence to current rate-card custom-pricing-unit conversion. [[source-metronome-api-reference-plans-get-plan-details]]

@@ -87,6 +87,8 @@ The Salesforce integration synchronizes invoice and invoice-line custom objects 
 
 ### Customer invoice-list read
 
+In the 2026-08-28 List snapshot, optional top-level `Invoice.billable_status` is described as indicating whether the invoice has been or will be sent to the configured customer billing provider and defaults to `billable`. The same property combines a `$ref` to `BillableStatus` with sibling `type: object`, leaving its referenced-versus-object shape unresolved on this page. Keep this List-level delivery-intent field separate from nested `Invoice.external_invoice.external_status`; neither establishes external acceptance, customer delivery, payment, settlement, tax, accounting, or reconciliation. [[source-metronome-api-reference-invoices-list-invoices]]
+
 Bearer-authenticated `GET /v1/customers/{customer_id}/invoices` lists a customer's invoices with cursor pagination and filters for status, invoice type, credit type, contract, and inclusive-start/exclusive-end billing-period boundaries. The prose says drafts update as usage arrives and void invoices are included by default, but it gives no freshness or snapshot guarantee. Its ordering authorities conflict: prose says creation-date descending by default, while the `sort` parameter says `issued_at` ordering defaults to `date_asc`; callers needing deterministic order should pass `sort` explicitly. The prose also calls results summaries, while the response schema references an invoice object requiring `line_items`, so neither line-item omission nor single-invoice completeness is established. [[source-metronome-api-reference-invoices-list-invoices]]
 
 ## Event-based invoice preview
