@@ -1,0 +1,128 @@
+{
+  "job_id": "stripe-invoice-integration-refresh",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Invoice with Stripe\"\ntype: source\ndate_ingested: 2026-08-30\ncanonical_url: \"https://docs.metronome.com/integrations/invoice-integrations/stripe\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/integrations/invoice-integrations/stripe-2026-08-28.md\"\n  - \"metronome/integrations/invoice-integrations/stripe-2026-07-13.md\"\ntags: [metronome, stripe, invoicing, billing-integration, multi-entity-billing]\n---\n\n## Overview\n\nThis guide documents Metronome's native Stripe invoice integration: Metronome finalizes its billing record and creates the corresponding Stripe invoice, while Stripe and the selected tax provider perform downstream collection and tax work. It defines connection scope, account and customer identity mapping, contract routing, status observation, recovery signals, and the representation limits operators must account for.\n\n## Query-critical facts\n\n- A Stripe connection is scoped to one Metronome environment and grants Metronome read and write access to the connected Stripe account. Metronome Sandbox connects to Stripe test mode; a production connection and a sandbox connection are separate setup surfaces, and a single Metronome environment can connect to multiple Stripe accounts.\n- Integration settings and mapping rules are enforced per Stripe account and environment, not per customer. In a multi-account environment, customer setup must use `delivery_method_id` to select the Stripe account; contract creation selects an existing customer configuration with `billing_provider_configuration_id`. These identifiers are different routing layers.\n- Customer configuration maps to a Stripe customer through `stripe_customer_id` and chooses `charge_automatically` or `send_invoice`. Stripe owns the collection action: automatic charge requires a default payment method before finalization, while `send_invoice` emails payment instructions and uses the account-level due-date setting.\n- Adding a Stripe configuration to an existing contract is prospective. Metronome does not resend previously finalized invoices; the first delivery is the in-arrears usage invoice for the period in which the configuration was attached, based on attachment time rather than contract start or configuration-creation time.\n- Metronome writes `metronome_id` on the Stripe invoice to map it back to the Metronome invoice and can map additional custom fields. Payment-gated commits have a stricter product-identity requirement: every participating product needs a valid mapped `stripe_product_id`, otherwise Stripe cannot construct the line item, payment fails, and the commit is voided.\n- Metronome imports Stripe invoice-status changes from Stripe webhooks and exposes mapped external status through invoice reads and data export. Tax calculation occurs on the Stripe invoice: Metronome supplies entity mappings, the selected tax provider calculates tax, and Stripe finalization includes it. A deliberately draft Stripe invoice has no Stripe status in Metronome.\n- For `charge_automatically`, Metronome sends the finalized invoice immediately, but this Metronome guide documents a Stripe-side up-to-one-hour wait before its payment attempt and a 72-hour fallback when `invoice.created` delivery fails. Decimal quantities, more than 250 line items, Stripe's documented maximum charge, and credit-memo absence can change or limit the Stripe representation even though the detailed Metronome invoice remains available.\n\n## Material boundaries\n\n- Metronome owns usage rating, its invoice record, routing configuration, and creation of the corresponding Stripe invoice. Stripe owns invoice acceptance, collection method execution, payment timing and retries, and the external payment status; the selected tax provider owns tax calculation. This Metronome guide does not guarantee Stripe acceptance, customer delivery, payment or settlement finality, tax correctness, accounting posting, or end-to-end reconciliation.\n- The multi-account contract section says in prose to use `billing_configuration_id`, while its payload uses `billing_provider_configuration_id`. Preserve that documentation ambiguity and follow the dedicated contract schema rather than silently treating the two names as interchangeable. Likewise, the status table labels `invoice.deleted` but links to `invoiceitem.deleted`; verify the external event authority before implementing that deletion mapping.\n- `invoice.billing_provider_error` is a Metronome notification for errors sending an invoice to Stripe; operators must trigger their own internal response. Imported external status and `metronome_id` support observation and matching, but neither proves complete delivery, payment finality, settlement, or reconciliation, and this page defines no exhaustive recovery contract for an ambiguous cross-system outcome.\n- The Metronome API POST examples remain subject to the separate [[metronome-api-idempotency|API-wide `Idempotency-Key` authority]]. This guide adds no endpoint-specific Metronome retry, concurrency, cached-error, freshness, or ambiguous-failure guarantee. Its Stripe PaymentIntent-confirm workaround is a Stripe API action and must not be conflated with Metronome POST idempotency or a general payment-retry guarantee.\n\n## Raw-detail coverage map\n\n- **Connection and environment setup:** current Developer \u2192 Integrations paths, per-environment setup, Stripe test-mode behavior, multiple-account aliases, and the automatic-payment-retry recommendation are in the latest raw page.\n- **Account settings and mappings:** due dates, `auto_advance`, minimum-charge skipping, `effective_at`, Stripe Tax incompatibility, line-item presentation, `metronome_id`, custom metadata, product mapping, and payment-gated-commit prerequisites are in the latest raw page.\n- **Customer and contract routing:** complete `/customers`, `/setCustomerBillingProviderConfigurations`, and `/contracts/create` examples; collection-method fields; `delivery_method` and ID layers; account enumeration; and the prospective attachment timeline are in the latest raw page. Dedicated API references remain authoritative for exact request schemas and requiredness.\n- **Status, tax, payment, and recovery:** the complete Stripe-event mapping table, data-export visibility, draft-status exception, tax-provider matrix and flow, one-hour tax window, automatic-charge timing, 72-hour fallback, PaymentIntent-confirm workaround, and `invoice.billing_provider_error` action signal are in the latest raw page.\n- **Stripe representation limits:** decimal-quantity transformation, 250-line-item collapse, maximum-charge error, and lack of native Stripe credit-memo issuance are in the latest raw page; these statements are Metronome's description of the integration, not a complete external-platform guarantee.\n\n## Related\n\n- Companies: [[metronome]], [[stripe]]\n- Primary concepts: [[metronome-integrations]], [[metronome-invoicing]], [[metronome-customers-and-contracts]]\n- Supporting concepts: [[metronome-custom-fields]], [[metronome-products-and-rate-cards]], [[metronome-credits-and-commits]], [[metronome-webhooks]], [[metronome-api-idempotency]]\n- Related sources: [[source-metronome-integrations-tax-integrations-stripe-tax]], [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]], [[source-metronome-api-reference-customers-create-a-customer]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/integrations/invoice-integrations/stripe-2026-08-28|2026-08-28 snapshot - current native Stripe invoice routing, identity mapping, status, payment timing, tax flow, recovery signals, and limits]]\n- [[raw/metronome/integrations/invoice-integrations/stripe-2026-07-13|2026-07-13 snapshot - prior native Stripe integration setup and behavior]]\n",
+  "quotes": [
+    {
+      "text": "Use Metronome\u2019s native [Stripe](https://stripe.com/) integration to invoice your customers with Stripe. With the Stripe integration, when an invoice finalizes at the end of the billing period, Metronome automatically creates a corresponding invoice in Stripe to collect payment.",
+      "location": "raw/metronome/integrations/invoice-integrations/stripe-2026-08-28.md:11 (integration outcome and Metronome-to-Stripe invoice flow)"
+    },
+    {
+      "text": "If you use [payment-gated commits](/guides/pricing-packaging/apply-credits-and-commits/manual-payment-gated-commits), every Metronome product used on a payment-gated commit **must** have a `stripe_product_id` custom field mapped to a valid Stripe Product ID. Without this mapping, Stripe cannot generate the invoice line item and the payment attempt will fail, voiding the commit.",
+      "location": "raw/metronome/integrations/invoice-integrations/stripe-2026-08-28.md:95 (payment-gated product mapping and failure consequence)"
+    },
+    {
+      "text": "For the API, set this configuration during the customer creation process using the `/customers`endpoint or after the customer already exists with `/setCustomerBillingProviderConfigurations` [setting the billing configuration](/api-reference/customers/set-billing-provider-configurations-for-a-customer).\n\nTo set the a billing configuration, Metronome requires you to either specify a `delivery_method` or `delivery_method_id`. If you are only connecting to a single Stripe account, use the `delivery_method`. If connecting to multiple Stripe accounts, you must use `delivery_method_id`. Metronome uses this ID to determine which Stripe account each invoice should be sent to.\n\n<Info>\n  **INFO**\n\n  You can find the `delivery_method_id` by using the `/listConfiguredBillingProviders` endpoint to fetch configured Stripe accounts in the Metronome environment.\n</Info>",
+      "location": "raw/metronome/integrations/invoice-integrations/stripe-2026-08-28.md:114-122 (customer routing layer and multi-account delivery-method identity)"
+    },
+    {
+      "text": "If connected to multiple Stripe accounts, one customer may be mapped to multiple Stripe accounts. When creating the contract, use the `billing_configuration_id` which can be fetched from the `/getCustomerBillingProviderConfigurations` endpoint:\n\n```bash theme={null}\ncurl https://api.metronome.com/v1/contracts/create \\\n  -H \"Authorization: Bearer <TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"customer_id\": \"6ae46ff3-a73e-4553-a139-346eafcea608\",\n    \"rate_card_id\": \"cfe45e46-0277-42e0-b66a-45ccbd028913\",\n    \"starting_at\": \"2025-01-01T00:00:00.000Z\",\n    \"billing_provider_configuration\": {\n      \"billing_provider_configuration_id\": \"561ea579-e830-41d9-9161-d35313c061c5\"\n    }\n  }'\n```\n\n### Adding a billing provider to an existing contract\n\nWhen you add a billing provider configuration to an existing contract, Metronome does **not** retroactively send previously finalized invoices to Stripe. Only invoices that finalize after the configuration is added to the contract are sent to Stripe.\n\nThe first invoice sent to Stripe is the in-arrears usage invoice for the billing period in which the configuration was added. For example:\n\n| Date      | Event                                                     |\n| --------- | --------------------------------------------------------- |\n| Jan 1     | Contract starts                                           |\n| Feb 1     | Billing provider configuration created                    |\n| Apr 15    | Configuration added to contract                           |\n| **May 1** | **First invoice sent to Stripe** (April in-arrears usage) |\n\n<Info>\n  Metronome determines the first invoice to send based on when the configuration was added to the contract, not when the contract started or when the configuration was created.\n</Info>",
+      "location": "raw/metronome/integrations/invoice-integrations/stripe-2026-08-28.md:199-230 (contract selector naming, prospective attachment, and first-delivery rule)"
+    },
+    {
+      "text": "Metronome finalizes invoices immediately at the end of the billing period \u2014 there is no wait before the invoice is sent to Stripe. However, when Metronome sends a finalized invoice to Stripe with `charge_automatically`, Stripe waits **up to one hour** after delivering the `invoice.created` webhook before attempting payment. The invoice sits in `open` state during that window.\n\nThis delay is a Stripe-side behavior that applies specifically to invoices that are manually finalized through the API (which is how Metronome submits all invoices today). It is not configurable in the Stripe Dashboard \u2014 the \"grace period\" setting in Stripe only controls the draft \u2192 finalized transition, not the finalized \u2192 payment-attempted transition.\n\nThis delay does **not** apply to:\n\n* [Auto-recharge invoices](/guides/customers-billing/optimize-customer-experience/auto-recharge-options).\n* [Payment-gated commits](/guides/pricing-packaging/apply-credits-and-commits/manual-payment-gated-commits), where payment is collected manually.\n\n**If you see delays longer than an hour:** Stripe falls back to a **72-hour** wait when the `invoice.created` webhook delivery fails. If invoices are sitting in `open` well past an hour, check that your Stripe webhook endpoint is configured correctly and is returning a 2xx response.\n\n**Workaround to bypass the one-hour wait:** Confirm the payment intent yourself immediately after the invoice is finalized:\n\n1. Listen for the Stripe `invoice.finalized` or `payment_intent.created` webhook.\n2. Extract the `payment_intent` ID from the event payload.\n3. Call [`POST /v1/payment_intents/:id/confirm`](https://docs.stripe.com/api/payment_intents/confirm) on the Stripe API.\n\nThis reduces the time between finalization and payment attempt to a few seconds.\n\n### Listen for Errors\u200b\n\nInvoicing errors can happen. For example, errors happen when Stripe customers don\u2019t exist. To receive notifications from Metronome when an error sending an invoice to Stripe occurs, listen for the [webhook](/guides/platform-configuration/setup-webhooks#webhook-types) type `invoice.billing_provider_error` . When receiving those webhooks, trigger internal notifications and actions to ensure proper invoicing of your customers.",
+      "location": "raw/metronome/integrations/invoice-integrations/stripe-2026-08-28.md:299-320 (Stripe-owned payment delay, bounded workaround, and Metronome send-error notification)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "stripe-customer-contract-routing-layers",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Customer creation API",
+        "proposed_markdown": "### Stripe customer and contract routing layers\n\nA Metronome customer billing configuration selects a connected Stripe account with `delivery_method` for a single-account setup or `delivery_method_id` for a multi-account setup. Contract creation then selects one of the customer's configurations with the payload field `billing_provider_configuration_id`; the guide's surrounding prose instead calls that selector `billing_configuration_id`, so the dedicated contract schema must resolve the naming ambiguity. Adding the configuration to an existing contract is prospective: previously finalized invoices are not sent, and the first Stripe delivery is the in-arrears usage invoice for the period in which the configuration was attached, based on attachment time rather than contract start or configuration-creation time.",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep the account-level delivery-method identifier and customer-configuration contract selector distinct.",
+          "Preserve the prose-versus-payload selector-name ambiguity rather than silently normalizing it."
+        ]
+      },
+      {
+        "update_id": "stripe-customers-contracts-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-stripe]] \u2014 single- versus multi-account customer routing identifiers, contract selector ambiguity, and prospective first-invoice delivery after configuration attachment",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "stripe-products-rate-cards-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-stripe]] \u2014 required `stripe_product_id` mapping for every product used by a payment-gated commit and the documented line-item, payment-failure, and commit-void consequence when it is absent",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "This integration guide establishes the payment-gated mapping consequence, not general Stripe product validation or synchronization guarantees."
+        ]
+      },
+      {
+        "update_id": "stripe-custom-fields-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-stripe]] \u2014 `stripe_product_id` as the required Metronome product custom-field mapping for payment-gated Stripe invoice line-item creation",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "Custom-field presence does not by itself prove that the Stripe Product ID remains valid or that payment succeeds."
+        ]
+      },
+      {
+        "update_id": "stripe-credits-commits-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-stripe]] \u2014 payment-gated commit dependency on valid per-product `stripe_product_id` mapping and the documented failed-payment and void outcome when mapping is missing",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "Keep this mapping-triggered failure distinct from the dedicated manual payment-gate retry and lifecycle authority."
+        ]
+      },
+      {
+        "update_id": "stripe-send-error-notification-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Delivery model",
+        "proposed_markdown": "For native Stripe invoice delivery, `invoice.billing_provider_error` is the Metronome notification type for an error sending an invoice to Stripe, and the guide assigns the receiver responsibility for triggering internal notifications and actions. The same page separately documents a Stripe-side 72-hour wait when `invoice.created` webhook delivery fails, extending the payment-timing surface beyond the usual up-to-one-hour wait. This assigned guide does not establish that either condition results in successful invoice delivery, eventual Stripe collection, payment finality, or end-to-end reconciliation.",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Keep the merchant's Stripe webhook endpoint, Stripe-side delivery fallback, and Metronome outbound notification contract distinct.",
+          "Do not treat receipt of a send-error notification as a complete recovery or reconciliation contract."
+        ]
+      },
+      {
+        "update_id": "stripe-webhooks-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-integrations-invoice-integrations-stripe]] \u2014 `invoice.billing_provider_error` operator action, Stripe `invoice.created` delivery fallback, and separation of Metronome notification handling from Stripe payment timing",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/integrations/invoice-integrations/stripe-2026-08-28.md",
+  "raw_sha256": "477f51a11bfc48ad1284bccbde2edcb5d0ec86daa8f92199b0a2fa42ab1f306f",
+  "status": "candidate_ready"
+}

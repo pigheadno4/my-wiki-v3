@@ -89,6 +89,8 @@ The Salesforce integration synchronizes invoice and invoice-line custom objects 
 
 In the 2026-08-28 List snapshot, optional top-level `Invoice.billable_status` is described as indicating whether the invoice has been or will be sent to the configured customer billing provider and defaults to `billable`. The same property combines a `$ref` to `BillableStatus` with sibling `type: object`, leaving its referenced-versus-object shape unresolved on this page. Keep this List-level delivery-intent field separate from nested `Invoice.external_invoice.external_status`; neither establishes external acceptance, customer delivery, payment, settlement, tax, accounting, or reconciliation. [[source-metronome-api-reference-invoices-list-invoices]]
 
+The 2026-08-28 Get Invoice schema independently describes `Invoice.billable_status` as indicating whether the invoice has been or will be sent to the configured customer billing provider and says it defaults to `billable`. The property simultaneously references `BillableStatus` and declares sibling `type: object`, so its documented shape remains internally unresolved on this page. [[source-metronome-api-reference-invoices-get-an-invoice]]
+
 Bearer-authenticated `GET /v1/customers/{customer_id}/invoices` lists a customer's invoices with cursor pagination and filters for status, invoice type, credit type, contract, and inclusive-start/exclusive-end billing-period boundaries. The prose says drafts update as usage arrives and void invoices are included by default, but it gives no freshness or snapshot guarantee. Its ordering authorities conflict: prose says creation-date descending by default, while the `sort` parameter says `issued_at` ordering defaults to `date_asc`; callers needing deterministic order should pass `sort` explicitly. The prose also calls results summaries, while the response schema references an invoice object requiring `line_items`, so neither line-item omission nor single-invoice completeness is established. [[source-metronome-api-reference-invoices-list-invoices]]
 
 ## Event-based invoice preview
@@ -111,6 +113,8 @@ Metronome's financial-reporting guide classifies `CONTRACT_SCHEDULED` invoices a
 The dashboard quickstart describes a draft invoice accumulating usage during the billing period, followed by a 24-hour grace period before finalization. With a billing provider connected, it says the invoice is pushed within approximately one hour after finalization. Payment collection and paid or failed status remain the billing provider's responsibility.
 
 ## Credit and commit application
+
+For customer-commit creation, postpaid-specific guidance requires an invoice schedule whose total matches the access schedule, permits one item in each schedule, and requires an invoicing contract unless `do_not_invoice` is true. The narrative places customer payment at commitment expiry, the end of `access_schedule`, while `invoice_schedule` says the true-up invoice is generated at its scheduled time; the page documents no alignment constraint between those times. Prepaid commits can omit the invoice schedule to create a complimentary commit without an invoice. The reusable invoice-schedule component separately supports point-in-time and recurring forms and says `do_not_invoice` is specific to commit invoice schedules; the page does not resolve postpaid recurring-schedule support or establish finalization, delivery, tax, collection, settlement, or reconciliation outcomes. [[source-metronome-api-reference-credits-and-commits-create-a-commit]]
 
 ### Conditional suppression of a postpaid true-up invoice
 
@@ -305,7 +309,7 @@ Metronome's go-live checklist asks teams to understand the draft-to-grace-period
 
 - [[source-metronome-api-reference-customers-update-a-customer-name]] — immediate customer-name propagation claim across billing documents and interfaces, with finalized-artifact and downstream scope unresolved
 
-- [[source-metronome-api-reference-invoices-get-an-invoice]] - customer-scoped invoice retrieval, required invoice and line-item fields, mutable draft and void representation, uppercase-VOID versus lowercase-voided uncertainty, downstream-record boundaries, and schema gaps
+- [[source-metronome-api-reference-invoices-get-an-invoice]] - customer-scoped retrieval, required envelope and invoice fields, mutable draft and void representation, delivery-intent billable status, quantity-based applied-commit attribution, and schema boundaries
 
 - [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] — contract-driven usage and scheduled invoice types, lifecycle and finalization timing, line-item presentation, and schema-example boundaries
 

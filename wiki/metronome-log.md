@@ -6,6 +6,17 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-30 — Metronome Campaign 30 five-source refresh promoted
+
+- Result: five refreshed sources approved across seven strong-model worker attempts and seven full independent reviews; three pages passed on attempt 1, with no targeted review, rejection, or coordinator semantic repair.
+- Sources: [[source-metronome-api-reference-invoices-get-an-invoice]], [[source-metronome-api-reference-credits-and-commits-create-a-commit]], [[source-metronome-integrations-invoice-integrations-stripe]], [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]], and [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]].
+- Review findings: Create Commit required a full retry to preserve immediate-parent schemas, schedule and unit boundaries, and idempotency distinctions. Stripe invoice integration required a full retry to correct actor responsibilities, customer and contract routing identifiers, payment-gated product mapping, and webhook boundaries.
+- Concepts: applied reviewer-approved durable facts and reciprocal links across nine existing Metronome concepts; no new concept or source page was required, so source count remains 152.
+- Query audit: the fixed Get Invoice, Create Commit, and Customer Controls sample passed 9/9 factual, boundary or contradiction, and exact raw deep-dive checks.
+- Coverage after promotion: 225 current English canonical documentation identities remain retained as 310 immutable raw snapshots, with 152 source summaries and 140 raw snapshots without source summaries.
+- Timing and gate: completed in 2,883 seconds (48 minutes 3 seconds). Final quality passed, but three of five first-pass approvals and two full semantic retries missed both planned throughput gates.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-30/monitor.md), [quality audit](../tracking/ingest/metronome/metronome-campaign-30/quality-audit.md), and [retrospective](../tracking/ingest/metronome/metronome-campaign-30/retrospective.md).
+
 ## 2026-08-30 — Metronome Campaign 29 bounded first-pass correction promoted
 
 - Result: five refreshed sources approved across seven Sol worker attempts, six full independent Sol reviews, and one targeted review; three pages passed on attempt 1, with no rejection or coordinator semantic repair.

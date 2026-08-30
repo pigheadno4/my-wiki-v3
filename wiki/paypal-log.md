@@ -6,6 +6,24 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-30] analysis | React Apple Pay `10.3.0` to `10.4.0`
+
+- Filed [[analysis-paypal-react-apple-pay-10-3-to-10-4-migration]] from the approved core `11.0.0`, React `10.4.0`, and v6 sample evidence.
+- Documented the native `ApplePaySession` and `@types/applepayjs` migration, corrected the retained sample's older `window.ApplePaySession` capability check, and preserved the unchanged merchant-validation, order, confirmation, and capture lifecycle.
+- Added root and PayPal index links; no source count changed.
+
+## [2026-08-30] ingest | paypal/paypal-js React `10.4.0`
+
+- Delta-ingested work item `github-8de40f116989bb397efc` at shared exact SHA `1246244faf376b5abe3ab35335d95b82426d74f5`; the core `11.0.0` package remains a separate full-ingested release identity.
+- Recorded Google Pay post-sheet 3DS orchestration, approval-after-authentication timing, liability-shift payload, error and unmount guards, the core `^11.0.0` dependency, and the native Apple Pay global migration.
+- Updated [[source-github-paypal-js]], [[changelog-github-paypal-js]], [[paypal-apple-pay]], and [[paypal-google-pay]]. PayPal source count is unchanged.
+
+## [2026-08-30] ingest | paypal/paypal-js core `11.0.0`
+
+- Full-ingested work item `github-fc71679cce8b99ae9a10` at exact SHA `1246244faf376b5abe3ab35335d95b82426d74f5` from its 30-path packet and reused 148-file, 1,113,460-byte snapshot; 98 test/fixture files remain excluded by policy.
+- Added the breaking Apple Pay global-type removal, Google Pay 3DS payer-action promise and liability-shift types, and component-narrowed contracts for 50 v6 local methods while preserving every older package section.
+- Updated [[source-github-paypal-js]], [[changelog-github-paypal-js]], [[paypal-apple-pay]], [[paypal-google-pay]], and [[paypal-apm]]. At this point the independently versioned React `10.4.0` item was still un-ingested; it was delta-ingested later the same day. PayPal source count is unchanged.
+
 ## [2026-08-24] ingest | paypal/paypal-php-server-sdk `paypal/paypal-server-sdk@2.4.0`
 
 - Full-ingested work item `github-26220457423a12b6b561` after serial review of all 64 required evidence paths and the complete 689-entry snapshot manifest.

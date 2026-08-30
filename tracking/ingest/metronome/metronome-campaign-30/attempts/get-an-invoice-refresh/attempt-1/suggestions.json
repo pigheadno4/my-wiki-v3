@@ -1,0 +1,62 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "get-an-invoice-refresh-invoicing-billable-status-fact",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append in `### Customer invoice-list read` after the existing List-level billable-status paragraph, preserving separate List and Get authority.",
+      "proposed_markdown": "The 2026-08-28 Get Invoice schema independently describes `Invoice.billable_status` as indicating whether the invoice has been or will be sent to the configured customer billing provider and says it defaults to `billable`. The property simultaneously references `BillableStatus` and declares sibling `type: object`, so its documented shape remains internally unresolved on this page. [[source-metronome-api-reference-invoices-get-an-invoice]]",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Do not normalize the property to either the referenced string shape or the sibling object shape; this page documents both."
+      ]
+    },
+    {
+      "update_id": "get-an-invoice-refresh-invoicing-reciprocal-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Replace the existing Get Invoice entry under `## Sources`; do not add a duplicate.",
+      "proposed_markdown": "- [[source-metronome-api-reference-invoices-get-an-invoice]] - customer-scoped retrieval, required envelope and invoice fields, mutable draft and void representation, delivery-intent billable status, quantity-based applied-commit attribution, and schema boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "get-an-invoice-refresh-credit-quantity-attribution-fact",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append in `### Balance retrieval and ledger calculation` immediately after the 2026-08-28 List-schema access_type paragraph, preserving separate List, Get, and mutation authority.",
+      "proposed_markdown": "The 2026-08-28 Get Invoice schema exposes `InvoiceLineItem.quantity_consumed` on applied-commit lines for quantity-based commits and describes it as the unit quantity deducted from the commit. Its `AppliedCommitOrCredit` component requires only `id` and `type`; feature-annotated `access_type` distinguishes `SPEND`, which deducts the dollar cost of usage, from `QUANTITY`, which deducts units. This response component states no default. [[source-metronome-api-reference-invoices-get-an-invoice]]",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep InvoiceLineItem.quantity_consumed at its immediate parent and access_type under AppliedCommitOrCredit; neither is a top-level Invoice property."
+      ]
+    },
+    {
+      "update_id": "get-an-invoice-refresh-credit-reciprocal-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Replace the existing Get Invoice entry under `## Sources`; do not add a duplicate.",
+      "proposed_markdown": "- [[source-metronome-api-reference-invoices-get-an-invoice]] - separate negative application lines, quantity-consumed attribution, SPEND-versus-QUANTITY response access type, and immediate-parent schema boundaries",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

@@ -46,12 +46,18 @@ In `@paypal/react-paypal-js@10.1.0`, the hook fails loudly when Google's `pay.js
 
 In `@paypal/react-paypal-js@10.3.0`, the TypeScript payload for server-side `fetchEligibleMethods()` adds optional `merchant_info.merchant_origin`. The release notes say previous origin overwriting caused a bug particularly in the Google Pay payments flow. Retained code proves typed request support, not a change to Google's payment sheet, PayPal's eligibility decision, or merchant availability.
 
+In `@paypal/paypal-js@11.0.0`, the core `/sdk-v6` contract replaces the no-argument 3DS placeholder with `initiatePayerAction({ orderId }): Promise<InitiatePayerActionResponse>`. A successful result can include `liabilityShift` as `UNKNOWN`, `NO`, `YES`, or `POSSIBLE`; buyer cancellation or authentication failure rejects. The declaration warns that Google's authorization callback must first return success to close the Google Pay sheet, after which payer action runs out of band. This proves the core package contract, not the separately versioned React orchestration or PayPal runtime implementation.
+
+`@paypal/react-paypal-js@10.4.0` implements the corresponding wrapper orchestration. On `PAYER_ACTION_REQUIRED`, it starts payer action with the order ID, returns success to close Google's sheet, and calls `onApprove` only after authentication resolves. The callback's new `GooglePayOnApproveData` can include `liabilityShift`; cancellation or authentication failure instead reaches `onError`, and an unmounted component receives neither callback. Merchants needing enrollment and authentication statuses must retrieve `payment_source.google_pay.card.authentication_result` from the order server-side.
+
 > [!info] Version-specific 3DS boundary
-> In the exact `@paypal/paypal-js@9.8.0` type surface, `initiatePayerAction()` is documented as a no-argument placeholder for future 3DS support. This differs from the established integration guidance above, which calls `initiatePayerAction({ orderId })`. Do not infer complete Google Pay 3DS handling from the 9.8.0 wrapper types alone; verify the deployed SDK and current product documentation.
+> In the exact `@paypal/paypal-js@9.8.0` type surface, `initiatePayerAction()` is a no-argument placeholder. Core `11.0.0` establishes the typed `{ orderId }` promise contract, but runtime behavior still belongs to the deployed PayPal SDK. Resolve the package and runtime versions before applying current 3DS guidance to an older integration.
 
 ## 3DS Handling
 
 `confirmOrder()` returns `status: PAYER_ACTION_REQUIRED` → call `initiatePayerAction({ orderId })` → check `orderResponse.payment_source.google_pay.card.authentication_result.liability_shift` → capture if acceptable.
+
+For React `10.4.0`, do not capture directly from the initial Google authorization callback when 3DS is required. The hook closes Google's sheet, completes payer action asynchronously, and then invokes `onApprove`; use that callback or a separately verified server decision as the capture boundary. Treat `onError` as a non-approval path.
 
 At `default-branch@b5f2df2`, the sample does not await `initiatePayerAction()` inside Google's `onPaymentAuthorized` callback. It first returns `transactionState: "SUCCESS"` so the Google Pay sheet closes, then starts 3DS and retrieves `paymentSource.googlePay.card.authenticationResult`. The sample always captures afterward; production code may instead gate capture on the returned authentication and liability-shift values.
 

@@ -1000,6 +1000,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.4.0/2026-08-10/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-typescript-server-sdk/comparisons/paypal-server-sdk/2.3.0--2.4.0/comparison.json)
 
+## `github-8de40f116989bb397efc`
+
+- Repository: `paypal/paypal-js`
+- SHA: `1246244faf376b5abe3ab35335d95b82426d74f5`
+- Collection date: `2026-08-30`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-js/snapshots/2026-08-30-1246244/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-js/ingest-packets/github-8de40f116989bb397efc/packet.md)
+- Review priority: `high`
+- Required reading: `21` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/react-paypal-js@10.4.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.4.0/2026-08-30/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.3.0--10.4.0/comparison.json)
+
 ## `github-92242b9e450d596215e2`
 
 - Repository: `braintree/braintree-ios-drop-in`
@@ -2007,6 +2032,31 @@
 - `credit-card-type@10.3.0` (recommended `full`)
   Release: [manifest](../../raw/github/braintree/credit-card-type/releases/credit-card-type/10.3.0/2026-08-29/manifest.json)
   Comparison: Not applicable
+
+## `github-fc71679cce8b99ae9a10`
+
+- Repository: `paypal/paypal-js`
+- SHA: `1246244faf376b5abe3ab35335d95b82426d74f5`
+- Collection date: `2026-08-30`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-js/snapshots/2026-08-30-1246244/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-js/ingest-packets/github-fc71679cce8b99ae9a10/packet.md)
+- Review priority: `high`
+- Required reading: `30` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/paypal-js@11.0.0` (recommended `full`)
+  Release: [manifest](../../raw/github/paypal/paypal-js/releases/paypal-js/11.0.0/2026-08-30/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-js/comparisons/paypal-js/10.1.0--11.0.0/comparison.json)
 
 ## `github-fed285eccd42cc9507d5`
 

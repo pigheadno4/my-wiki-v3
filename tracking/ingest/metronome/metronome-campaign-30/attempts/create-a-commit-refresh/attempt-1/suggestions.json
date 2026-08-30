@@ -1,0 +1,94 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "create-commit-access-and-invoice-contract-refresh",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Customer-level create API",
+      "proposed_markdown": "The refreshed customer-commit create page limits this endpoint to cross-contract or enterprise-wide commitments and adds feature-gated `access_schedule.access_type` at immediate parent `ScheduleDurationInput`: `SPEND` deducts the dollar cost of usage, `QUANTITY` deducts the number of units used, and omission defaults to `SPEND`; it is also marked `x-stainless-skip: true`. Postpaid commits require matching access and invoice totals, one item in each schedule, and an invoice contract unless `do_not_invoice` is true; a prepaid commit can omit its invoice schedule to be complimentary. The reusable invoice-schedule schema separately exposes a recurring form, leaving postpaid recurring-schedule support unresolved. [[source-metronome-api-reference-credits-and-commits-create-a-commit]]",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "Preserve immediate parent schemas, feature annotations, exact SPEND and QUANTITY wording, and the unresolved one-item-versus-recurring boundary."
+      ]
+    },
+    {
+      "update_id": "create-commit-customer-contract-scope-refresh",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Contract and invoice behavior",
+      "proposed_markdown": "The refreshed customer-commit endpoint is the customer-level path for cross-contract or enterprise-wide commitments; Metronome recommends contract create or edit for standard cases. `applicable_contract_ids` can limit the commit to selected contracts, while the narrative calls an empty value cross-contract and the schema says omission applies to all contracts. The page does not resolve empty-array versus omission behavior or define invalid, archived, duplicate, foreign-customer, or later-created contract IDs, lifecycle visibility, or propagation. [[source-metronome-api-reference-credits-and-commits-create-a-commit]]",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Do not silently equate an empty array with omission or generalize this customer-level endpoint to ordinary contract amendments."
+      ]
+    },
+    {
+      "update_id": "create-commit-fixed-product-and-targeting-refresh",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Enterprise design",
+      "proposed_markdown": "Customer-commit creation requires UUID `product_id` for the fixed product used to invoice the commit amount even when eligible usage is unrestricted. Eligible usage can be selected through product IDs, product tags, or `specifiers`; omitting all three applies the commit to all products, and `specifiers` cannot be combined with either direct selector. The page does not define whether both direct selectors may coexist, empty-array behavior, missing-dimension matching, duplicate selectors, or validation of unknown enclosing fields. [[source-metronome-api-reference-credits-and-commits-create-a-commit]]",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "Keep the required fixed product distinct from the separately optional applicability selectors."
+      ]
+    },
+    {
+      "update_id": "create-commit-financial-units-refresh",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Credits, commits, and invoice conversion",
+      "proposed_markdown": "The refreshed customer-commit schema makes optional access-schedule `access_type` choose dollar-cost drawdown (`SPEND`) or number-of-units drawdown (`QUANTITY`) and defaults it to `SPEND`, while the same immediate parent independently defaults optional `credit_type_id` to USD cents. The invoice-schedule parent also defaults its optional `credit_type_id` to USD cents and defines amount as either explicit `amount` or `unit_price` multiplied by `quantity`. The page does not define non-USD or custom-unit compatibility, quantity denomination, conversion, precision, rounding, sign, or reconciliation between the access and invoice units. [[source-metronome-api-reference-credits-and-commits-create-a-commit]]",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Do not relabel every numeric field as cents or assume that access and invoice schedules share one unit merely because both can omit credit_type_id."
+      ]
+    },
+    {
+      "update_id": "create-commit-invoice-schedule-refresh",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Credit and commit application",
+      "proposed_markdown": "For customer-commit creation, postpaid-specific guidance requires an invoice schedule whose total matches the access schedule, permits one item in each schedule, and requires an invoicing contract unless `do_not_invoice` is true. Prepaid commits can omit the invoice schedule to create a complimentary commit without an invoice. The reusable invoice-schedule component separately supports point-in-time and recurring forms and says `do_not_invoice` is specific to commit invoice schedules; the page does not resolve postpaid recurring-schedule support or establish finalization, delivery, tax, payment, collection, settlement, or reconciliation outcomes. [[source-metronome-api-reference-credits-and-commits-create-a-commit]]",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "Treat schedule generation and invoice suppression as endpoint configuration, not proof of downstream invoice or payment outcomes."
+      ]
+    },
+    {
+      "update_id": "create-commit-resource-identity-refresh",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Mechanisms",
+      "proposed_markdown": "Customer-commit creation exposes a 1-128 character `uniqueness_key`; reuse after creation of a commit or credit prevents a new record and fails with HTTP `409`, although the operation response map lists only `200`, `400`, and `404`. This resource-creation guard remains distinct from the separately documented API-wide POST `Idempotency-Key` result-replay authority. The endpoint page defines neither the two keys' interaction or precedence nor uniqueness scope, release, failed-attempt consumption, concurrent creation, or ambiguous-failure recovery. [[source-metronome-api-reference-credits-and-commits-create-a-commit]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "Do not attribute API-wide header replay guarantees to the endpoint page or treat uniqueness_key as request-result caching."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

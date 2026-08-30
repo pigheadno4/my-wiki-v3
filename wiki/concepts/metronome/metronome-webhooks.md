@@ -23,6 +23,8 @@ The notification lifecycle guide confirms asynchronous JSON delivery for all not
 
 The managed custom-invoice guide uses `invoice.finalized` after the grace period as the trigger for retrieving finalized invoice data and upserting a downstream invoice. The event is not enabled by default and the refreshed page routes enablement through the Metronome support portal. This integration sequence does not replace the dedicated webhook authority for verification, retry, ordering, deduplication, or delivery semantics, and it does not establish downstream upsert idempotency or recovery. [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]]
 
+For native Stripe invoice delivery, `invoice.billing_provider_error` is the Metronome notification type for an error sending an invoice to Stripe, and the guide assigns the receiver responsibility for triggering internal notifications and actions. The same page separately documents a Stripe-side 72-hour wait when `invoice.created` webhook delivery fails, extending the payment-timing surface beyond the usual up-to-one-hour wait. This assigned guide does not establish that either condition results in successful invoice delivery, eventual Stripe collection, payment finality, or end-to-end reconciliation.
+
 ## Authenticity and authoritative data
 
 The customer-alert get endpoint provides the current threshold evaluation state for one customer/notification pair, not a historical sequence. Its documentation routes threshold-notification history to webhook notifications or event logs and positions live API lookup for targeted rather than bulk monitoring. [[source-metronome-api-reference-alerts-get-a-threshold-notification]]
@@ -54,6 +56,8 @@ Offset-notification payloads omit the `properties` field used by threshold paylo
 Metronome's go-live checklist places three checks in its webhook-and-error-handling section: keep the endpoint online and verify signatures with the Metronome webhook secret, make processing safe on duplicate deliveries, and exercise a policy worded as retry on `5xx` or network failure, backoff on `429`, and dead-letter plus alert on `4xx`. The source does not identify that status policy's direction or owner, so it must not be labeled either a webhook-receiver contract or Metronome's outbound-delivery contract. The dedicated webhook guide remains authoritative: Metronome retries outbound delivery responses above `299`. Webhook-delivery retry, API-call retry, and payment retry remain distinct, and these checks do not guarantee timely delivery, revenue preservation, processing success, event ordering, or payment recovery. [[source-metronome-guides-implement-metronome-production-checklist]]
 
 ## Sources
+
+- [[source-metronome-integrations-invoice-integrations-stripe]] — `invoice.billing_provider_error` operator action, Stripe `invoice.created` delivery fallback, and separation of Metronome notification handling from Stripe payment timing
 
 - [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]] — `payment_gate.external_initiate` workflow-ID correlation and the downstream outcome-reporting endpoint
 

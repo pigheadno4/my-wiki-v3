@@ -53,6 +53,8 @@ Non-monotonically increasing measurements, such as connected-device or storage-i
 
 ## Lifecycle boundary
 
+Within the guide's streaming-metric section, `LATEST` metrics can use group keys but currently cannot use contract-level usage filters. [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]]
+
 ### Sampled event-to-metric diagnostics
 
 `POST /v1/events/search` can return an optional `matched_billable_metrics` array for events retrieved by transaction ID within the last 34 days. Each returned metric object inherits required `id` and `name` and may expose aggregation, grouping, filtering, custom-field, SQL, and archive fields in the returned schema alongside deprecated `group_by`, `aggregate`, `aggregate_keys`, and `filter`. Its search-specific aggregation enum includes case variants of count, latest, max, sum, and unique plus `custom_sql`; this does not resolve the existing `UNIQUE`-versus-SQL-distinct ambiguity or promise case normalization.
@@ -92,7 +94,7 @@ The product catalog's `initial` and `current` states, and each update entry, can
 
 ## Group-key alert scoping
 
-Dimension-scoped spend alerts require their `group_values` key to be a group key on the underlying billable metrics associated with the customer's contract. Products whose metric lacks the key do not contribute to that threshold. Metronome recomputes the selected usage as if the key were a presentation group, so tiered pricing, quantity rounding, and `MAX` aggregation apply to the subset. A customer can use three distinct keys for spend-threshold notifications; a fourth is blocked. When one key has more than 5,000 values for that customer, the guide calls for representative consultation rather than defining a hard maximum.
+Dimension-scoped spend alerts require their `group_values` key to be a group key on the underlying billable metrics associated with the customer's contract. Products whose metric lacks the key do not contribute to that threshold. Metronome recomputes the selected usage as if the key were a presentation group, so tiered pricing, quantity rounding, and `MAX` aggregation apply to the subset. A customer can use three distinct keys for spend-threshold notifications; a fourth is blocked. When one key has more than 5,000 values for that customer, the current guide routes configuration discussion through the Metronome support portal rather than defining a hard maximum. [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]]
 
 ## Sources
 

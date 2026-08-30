@@ -1,5 +1,27 @@
 # Wiki Log
 
+## [2026-08-30] ingest | Metronome Campaign 30 five-source refresh
+
+- Promoted five independently approved source refreshes covering invoice retrieval, customer-commit creation, Stripe invoice integration, customer controls, and billable-metric creation.
+- Applied reviewed updates across nine existing Metronome concepts and retained source count 152; Campaign 30 completed with seven full reviews, two full retries, and no targeted review, rejection, or coordinator repair.
+
+## [2026-08-30] analysis | PayPal React Apple Pay `10.3.0` to `10.4.0`
+
+- Added [[analysis-paypal-react-apple-pay-10-3-to-10-4-migration]] with the package upgrade, corrected native-global capability check, React prebuilt-button example, unchanged payment lifecycle, and production boundaries.
+- Updated the root and PayPal indexes; no source count changed.
+
+## [2026-08-30] ingest | GitHub paypal/paypal-js - `@paypal/react-paypal-js@10.4.0`
+
+- Delta-ingested work item `github-8de40f116989bb397efc` at the same exact SHA as core `11.0.0`, preserving separate package identities in one repository change set.
+- Added Google Pay approval-after-3DS callback timing, failure routing, unmount protection, liability-shift typing, and the native Apple Pay global migration.
+- Updated existing sources and concepts; no source count changed.
+
+## [2026-08-30] ingest | GitHub paypal/paypal-js - `@paypal/paypal-js@11.0.0`
+
+- Full-ingested work item `github-fc71679cce8b99ae9a10` at exact SHA `1246244faf376b5abe3ab35335d95b82426d74f5`, preserving the cumulative v8-v10 history.
+- Added the Apple Pay TypeScript migration, Google Pay 3DS payer-action contract, and typed v6 Local Payment Method surface to the cumulative source, changelog, and existing concepts.
+- Kept React `10.4.0` as a separate pending item; it was delta-ingested later the same day. No source count changed.
+
 ## [2026-08-30] ingest | GitHub braintree/restricted-input - `default-branch@8dcc6ea`
 
 - Full-ingested work item `github-b52bdd6b17240e0c7792` at exact SHA `8dcc6ea9e6cea44eef2b02fbc3f7569a602fa089` from the complete current 24-file source capsule and the exact `79053ef` to `8dcc6ea` comparison.

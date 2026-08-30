@@ -36,6 +36,12 @@ Both PayPal JS SDK (`components=applepay`) and Apple Pay JS SDK (`applepay.cdn-a
 
 `@paypal/react-paypal-js@10.1.2` removes the non-functional `disabled` prop from `ApplePayOneTimePaymentButton`. The component no longer writes a `disabled` attribute while its payment hook is pending because Apple's `<apple-pay-button>` ignores that attribute and manages its own state through `canMakePayments()`. Merchants control whether and how the button is presented; the component still attaches its click listener directly because React's `onClick` does not cross the element's shadow DOM.
 
+### Core v11 TypeScript migration
+
+`@paypal/paypal-js@11.0.0` removes PayPal's reduced `ApplePaySession` declaration and its augmentation of `window.ApplePaySession` from the `/sdk-v6` type barrel. The bundled declaration conflicted with the community Apple Pay definitions and affected compilation even when an integration did not use Apple Pay. TypeScript applications that reference Apple's browser global should install `@types/applepayjs` and use the native `ApplePaySession` type. This is a breaking compile-time contract change; the retained loader implementation and Apple Pay session bridge do not establish a new payment flow.
+
+`@paypal/react-paypal-js@10.4.0` adopts that migration in its Apple Pay hook. It guards the bare native global with `typeof ApplePaySession`, uses the community payment-request and authorization-event types internally, and updates its core dependency to `@paypal/paypal-js ^11.0.0`. The React package's development dependency does not supply typings to merchant application code, so direct application references still require `@types/applepayjs`.
+
 ## Vault Flow
 
 1. Buyer opts in during checkout
@@ -70,5 +76,5 @@ Account Settings → Payment Method → Enable Apple Pay → Get Started → sub
 
 - [[source-paypal-apm-apple-pay]] — One-time checkout integration: domain validation, 4 SDK touchpoints, `ApplePaySession`, non-Safari browser support, go-live onboarding
 - [[source-paypal-save-applepay-js-sdk]] — Save Apple Pay vault integration: request/response samples, APPROVED vs VAULTED status, webhook, platform headers, go-live steps
-- [[source-github-paypal-js]] — package-qualified React v10.1.2 Apple Pay button behavior
+- [[source-github-paypal-js]] — package-qualified React v10.1.2 button behavior, core v11 Apple Pay type migration, and React v10.4 adoption
 - [[source-github-v6-web-sdk-sample-integration]] — runnable merchant validation, confirm, capture, and purchase-with-vault examples

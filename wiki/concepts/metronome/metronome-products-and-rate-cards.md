@@ -83,6 +83,8 @@ Packages let one rate card support multiple standardized pricing plans by adding
 
 ## Enterprise design
 
+Customer-commit creation requires UUID `product_id` for the fixed product used to invoice the commit amount even when eligible usage is unrestricted. Eligible usage can be selected through product IDs, product tags, or `specifiers`; omitting all three applies the commit to all products, and `specifiers` cannot be combined with either direct selector. The page does not define whether both direct selectors may coexist, empty-array behavior, missing-dimension matching, duplicate selectors, or validation of unknown enclosing fields. [[source-metronome-api-reference-credits-and-commits-create-a-commit]]
+
 - Contracts build on a selected rate card but may also carry fixed products outside it. The provisioning guide's cloud-tag example adds an entitled `0.95` multiplier; dimensional pricing requires an override for each relevant group-key and product combination.
 
 - Product tags can group products that are priced, discounted, or packaged similarly, allowing contract overrides to target a group instead of enumerating product IDs.
@@ -125,6 +127,8 @@ The customer-credit create payload requires a UUID `product_id` even when eligib
 - Trial packaging can use `entitled: false` for merchant-enforced feature restriction or a time-bounded multiplier `0` for uncapped free usage, after which list pricing resumes. Overlapping-override precedence, missing-rate behavior, and automatic product gating remain unknown.
 
 ## Sources
+
+- [[source-metronome-integrations-invoice-integrations-stripe]] — required `stripe_product_id` mapping for every product used by a payment-gated commit and the documented line-item, payment-failure, and commit-void consequence when it is absent
 
 - [[source-metronome-guides-get-started-api-quickstart]] — product and shared-rate-card roles in first-invoice onboarding, dimensional group-key dependencies, and missing-rate diagnostic
 

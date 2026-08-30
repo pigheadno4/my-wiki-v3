@@ -87,8 +87,8 @@ Operations history: [[paypal-log]]
 - [[source-paypal-javascript-sdk-performance]] — JS SDK performance: instant vs delayed render patterns, pre-caching, hidden container trick (webpage, 2026-04-13)
 - [[source-paypal-javascript-sdk-best-practices]] — JS SDK best practices: CSP (unsafe-inline vs nonce), COOP same-origin-allow-popups (webpage, 2026-04-13)
 - [[source-paypal-react-paypal-js-readme]] — @paypal/react-paypal-js v8.x: PayPalScriptProvider, all 11 components, usePayPalScriptReducer, Card Fields hooks (npm README, 2026-04-13)
-- [[source-github-paypal-js]] — cumulative package-qualified knowledge; v8/v9 history through core 10.1.0 and React 10.3.0, including loader hardening, SSR eligibility coordination, and merchant-origin request typing (github-repo, updated 2026-08-08)
-- [[changelog-github-paypal-js]] — package-qualified release ledger through core 10.1.0 and React 10.3.0 (github-repo, updated 2026-08-08)
+- [[source-github-paypal-js]] — cumulative package-qualified knowledge through core 11.0.0 and React 10.4.0, including Apple Pay typing migration, Google Pay 3DS orchestration, and typed v6 local methods (github-repo, updated 2026-08-30)
+- [[changelog-github-paypal-js]] — package-qualified release ledger through core 11.0.0 and React 10.4.0 (github-repo, updated 2026-08-30)
 - [[source-github-paypal-checkout-components]] — cumulative checkout runtime from `4.1.47` through `5.0.425`: component interfaces, funding eligibility, Venmo desktop/QR and gated vault behavior (github-repo, updated 2026-07-23)
 - [[changelog-github-paypal-checkout-components]] — package-qualified checkout-components release ledger through `5.0.425` (github-repo, updated 2026-07-23)
 - [[source-github-paypal-sdk-release]] — `@paypal/sdk-release@5.0.569`: 12-component assembly manifest, wrapper entry point, and release/deployment automation (github-repo, 2026-08-21)
@@ -229,6 +229,7 @@ Operations history: [[paypal-log]]
 ## Analyses
 
 - [[analysis-paypal-messages-ios-vs-android]] — PayPal Messages iOS vs Android: released baselines, Braintree-only untagged policy, platform risks, and rollout recommendation
+- [[analysis-paypal-react-apple-pay-10-3-to-10-4-migration]] — React Apple Pay 10.3→10.4 migration: core 11 dependency, native `ApplePaySession`, `@types/applepayjs`, prebuilt button integration, and server boundaries
 
 ## Comparisons involving PayPal
 

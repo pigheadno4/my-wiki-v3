@@ -44,6 +44,10 @@ Billing-provider and revenue-system configurations can be attached during creati
 
 The implementation guide states that a customer needs at least one contract before rating begins. A customer can hold several provider configurations, while each contract selects one, separating customer creation from rating and invoice routing.
 
+### Stripe customer and contract routing layers
+
+A Metronome customer billing configuration selects a connected Stripe account with `delivery_method` for a single-account setup or `delivery_method_id` for a multi-account setup. Contract creation then selects one of the customer's configurations with the payload field `billing_provider_configuration_id`; the guide's surrounding prose instead calls that selector `billing_configuration_id`, so the dedicated contract schema must resolve the naming ambiguity. Adding the configuration to an existing contract is prospective: previously finalized invoices are not sent, and the first Stripe delivery is the in-arrears usage invoice for the period in which the configuration was attached, based on attachment time rather than contract start or configuration-creation time.
+
 ### NetSuite customer and contract routing layers
 
 A Metronome customer can hold multiple NetSuite billing or revenue-system configurations, but a configuration does not route invoices until the relevant configuration ID is selected on a contract. Billing configuration sends finalized contract invoices to NetSuite for NetSuite-owned distribution, tax, and collection. Revenue-system configuration sends invoices and available payment state after billing occurs elsewhere; a failed first payment can leave the NetSuite invoice `OPEN`, followed by a retroactive `PAID` update after later success. The external `netsuite_customer_id`, account-level `delivery_method_id`, and contract selectors `billing_provider_configuration_id` or `revenue_system_configuration_id` remain distinct identity layers.
@@ -54,6 +58,8 @@ On the documented production server `https://api.metronome.com`, top-level beare
 
 
 ## Contract and invoice behavior
+
+The refreshed customer-commit endpoint is the customer-level path for cross-contract or enterprise-wide commitments; Metronome recommends contract create or edit for standard cases. `applicable_contract_ids` can limit the commit to selected contracts, while the narrative calls an empty value cross-contract and the schema says omission applies to all contracts. The page does not resolve empty-array versus omission behavior or define invalid, archived, duplicate, foreign-customer, or later-created contract IDs, lifecycle visibility, or propagation. [[source-metronome-api-reference-credits-and-commits-create-a-commit]]
 
 `POST /v1/contracts/customerCredits/create` creates one customer-level credit that can be limited with `applicable_contract_ids` or used across all of the customer's contracts when that selector is omitted; the prose also calls an empty value cross-contract. Metronome recommends contract create or edit for most credits. The endpoint does not define behavior for invalid, archived, duplicate, foreign-customer, or later-created contract IDs, nor customer-credit lifecycle or read-after-write visibility. [[source-metronome-api-reference-credits-and-commits-create-a-credit]]
 
@@ -210,6 +216,8 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - Commercial-design planning should make prepaid-versus-arrears terms, seat and usage interaction, commitments and overages, ramp and multi-year structures, exceeded-limit policy, and segment-specific payment terms explicit. The planning guide does not itself establish supported contract fields, lifecycle behavior, or enforcement.
 
 ## Sources
+
+- [[source-metronome-integrations-invoice-integrations-stripe]] — single- versus multi-account customer routing identifiers, contract selector ambiguity, and prospective first-invoice delivery after configuration attachment
 
 - [[source-metronome-guides-customers-billing-manage-customers-manage-product-access]] - contract terms as the product-access frame, provisioning and assignment as the entitlement basis, and lifecycle navigation for renewal, upsell, and upgrade changes
 - [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — post-creation aggregate and identity-bearing subscription edits, unassigned-seat reassignment, and contract-state visibility unknowns

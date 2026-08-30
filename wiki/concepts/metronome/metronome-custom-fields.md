@@ -66,6 +66,8 @@ The overview establishes the purpose, supported object examples, persistence, un
 
 ## Sources
 
+- [[source-metronome-integrations-invoice-integrations-stripe]] — `stripe_product_id` as the required Metronome product custom-field mapping for payment-gated Stripe invoice line-item creation
+
 - [[source-metronome-api-reference-custom-fields]] — overview, supported entity scope, persistence, uniqueness, and product-to-invoice-line propagation
 
 - [[source-metronome-api-reference-billable-metrics-list-all-billable-metrics]] - billable-metric response custom fields as an arbitrary-key, string-valued object and undocumented limits

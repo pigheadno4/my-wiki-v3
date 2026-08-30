@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal/paypal-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-08-08
+date_updated: 2026-08-30
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-08-30-1246244/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-08-08-1ce6b30/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-30-7ff3eee/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-07-30-b496f3a/manifest.json"
@@ -21,6 +22,43 @@ tags: [paypal, javascript-sdk, react, npm, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for the independently versioned packages in `paypal/paypal-js`. Detailed implementation knowledge belongs in [[source-github-paypal-js]] and the linked immutable snapshots.
+
+## Repository change set: `1246244` (2026-08-26)
+
+### Package timelines
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@paypal/paypal-js` | `10.1.0` | `11.0.0` | 2026-08-26 | `1246244faf376b5abe3ab35335d95b82426d74f5` | Full |
+| `@paypal/react-paypal-js` | `10.3.0` | `10.4.0` | 2026-08-26 | `1246244faf376b5abe3ab35335d95b82426d74f5` | Delta |
+
+The package-qualified releases are `@paypal/paypal-js@11.0.0` and `@paypal/react-paypal-js@10.4.0`.
+
+**Important change:** Core removes its bundled `ApplePaySession` browser-global declaration, replaces the Google Pay 3DS placeholder with a typed `{ orderId }` promise contract and liability-shift result, and adds component-narrowed TypeScript sessions for 50 v6 Local Payment Methods. React coordinates that core contract by closing Google's sheet before payer action, delaying `onApprove` until authentication completes, routing cancellation or failure to `onError`, and suppressing callbacks after unmount.
+
+**Developer or merchant impact:** Apple Pay TypeScript consumers may need `@types/applepayjs`. Google Pay React integrations no longer approve before required 3DS completes, and `onApprove` can include `liabilityShift`; complete authentication status still belongs to the server-side order. LPM integrations gain precise compile-time session methods and field shapes, but the type catalog is not proof of merchant, regional, buyer, or runtime availability.
+
+**Migration action:** Upgrade React with core `^11.0.0`, install community Apple Pay typings when application code references the native global, capture only after the React approval callback or an equivalent verified server decision, handle 3DS errors, and inspect the complete order authentication result server-side when needed. Request only the required LPM components and retain separate product-eligibility checks.
+
+**Updated source sections:** core version 11 and React version 10; [[paypal-apple-pay]], [[paypal-google-pay]], and [[paypal-apm]]; PayPal company summary; provider index and logs.
+
+**Evidence:**
+
+- [Core release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.0.0/2026-08-30/manifest.json)
+- [Core release notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.0.0/2026-08-30/release-notes.md)
+- [Snapshot manifest](../../../../raw/github/paypal/paypal-js/snapshots/2026-08-30-1246244/manifest.json)
+- [Core comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/10.1.0--11.0.0/comparison.json)
+- [React release record](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.4.0/2026-08-30/manifest.json)
+- [React release notes](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.4.0/2026-08-30/release-notes.md)
+- [React comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.3.0--10.4.0/comparison.json)
+- [Apple Pay types](../../../../raw/github/paypal/paypal-js/snapshots/2026-08-30-1246244/files/packages/paypal-js/types/v6/components/applepay-payments.d.ts)
+- [Google Pay types](../../../../raw/github/paypal/paypal-js/snapshots/2026-08-30-1246244/files/packages/paypal-js/types/v6/components/googlepay-payments.d.ts)
+- [LPM types](../../../../raw/github/paypal/paypal-js/snapshots/2026-08-30-1246244/files/packages/paypal-js/types/v6/components/lpm-payments.d.ts)
+- [Core v6 barrel](../../../../raw/github/paypal/paypal-js/snapshots/2026-08-30-1246244/files/packages/paypal-js/types/v6/index.d.ts)
+
+### Evidence boundary
+
+The core release proves package declarations and package-version metadata; the loader implementation is unchanged. The React release proves wrapper callback ordering and error routing, not the deployed PayPal runtime, merchant enablement, regional availability, or a universal capture policy.
 
 ## Repository change set: `1ce6b30` (2026-07-31)
 
@@ -375,6 +413,11 @@ The same SHA contains `@paypal/react-paypal-js@8.9.1`, but no React release is r
 
 ## Raw Sources
 
+- [Core 11.0.0 snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-08-30-1246244/manifest.json) — exact-SHA source capsule
+- [Core 11.0.0 release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.0.0/2026-08-30/manifest.json) — package-qualified release identity
+- [Core 10.1.0 to 11.0.0 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/10.1.0--11.0.0/comparison.json)
+- [React 10.4.0 release record](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.4.0/2026-08-30/manifest.json) — package-qualified release identity
+- [React 10.3.0 to 10.4.0 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.3.0--10.4.0/comparison.json)
 - [React 10.3.0 snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-08-08-1ce6b30/manifest.json) — exact-SHA source capsule
 - [React 10.3.0 release record](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.3.0/2026-08-08/manifest.json) — package-qualified release identity
 - [React 10.2.1 to 10.3.0 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.2.1--10.3.0/comparison.json)

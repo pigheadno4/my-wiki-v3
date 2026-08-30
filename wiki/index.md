@@ -35,6 +35,7 @@
 - [[analysis-paypal-pay-later-multi-country-integration-guide]] — PayPal Pay Later button + message integration for US, FR, GB, IT, ES: per-country products, cross-border messaging, funding eligibility
 - [[analysis-paypal-sdk-v5-vs-v6-multi-country]] — PayPal JS SDK v5 vs v6 multi-country switching: runtime config, React v8→v9, Pay Later messaging, performance patterns, SSR
 - [[analysis-paypal-messages-ios-vs-android]] — PayPal Messages native mobile comparison: Braintree-only policy, separate release/ref histories, configuration traps, callback/state risks, and rollout guidance
+- [[analysis-paypal-react-apple-pay-10-3-to-10-4-migration]] — React Apple Pay 10.3→10.4 migration: native browser global, community typings, corrected availability check, and unchanged checkout lifecycle
 
 ## Concepts (generic)
 

@@ -37,6 +37,12 @@ The `default-branch@b5f2df2` v6 sample catalog contains 46 local-method implemen
 > [!warning] Contradiction - shared sample guidance
 > The repository's shared local-method README describes auto-completion as universal, but those six retained implementations use explicit capture. Determine completion behavior from the exact method implementation and current product documentation rather than applying one repository-wide rule.
 
+## v6 Core Type Surface
+
+`@paypal/paypal-js@11.0.0` adds `/sdk-v6` TypeScript contracts for 50 local-payment components. `createInstance({ components })` accepts package names such as `ideal-payments`, `bancontact-payments`, `blik-payments`, `pix-international-payments`, `wechatpay-payments`, and `sepa-payments`, and narrows the returned instance to the session-creation methods actually requested.
+
+An LPM session accepts presentation options plus a separate promise resolving to `orderId` and any merchant-collected phone, billing-address, tax, expiry-date, birth-date, or installment fields required by that method. The declared billing address requires both `addressLine2` and `adminArea2`. These declarations prove compile-time integration contracts only: they do not establish that all 50 methods are enabled for a merchant, available in every country, or implemented by this loader package at runtime.
+
 ## Swish (Sweden) — Added Nov 2025
 
 > [!info] Not in APM overview table
@@ -190,6 +196,7 @@ All APMs use these 5 core webhooks: `CHECKOUT.ORDER.APPROVED`, `CHECKOUT.PAYMENT
 - [[source-paypal-apm-pay-upon-invoice]] — Pay upon Invoice/Ratepay (Germany): BNPL, 5–2500 EUR, immediate merchant funding, VAT ID required, date of birth collected, 10-day dispute window
 - [[source-paypal-apm-google-pay]] — Google Pay: 36 countries, all browsers, dual SDK, `confirmOrder`/`initiatePayerAction`, Japan PAN_ONLY override
 - [[source-github-v6-web-sdk-sample-integration]] — v6 session constructors, eligibility checks, sandbox examples, and completion discrepancy
+- [[source-github-paypal-js]] — package-qualified core v11 LPM component and session type contracts
 - [[source-paypal-apm-eps]] — EPS (Austria/EUR): same restrictions as Bancontact/BLIK (capture-only, no chargebacks, global ex RU/JP/BR)
 - [[source-paypal-apm-blik]] — BLIK (Poland/PLN): same restrictions as Bancontact (capture-only, no chargebacks, global ex RU/JP/BR)
 - [[source-paypal-apm-bancontact]] — Bancontact (Belgium): capture-only, no chargebacks, JS SDK integration (single/multi-page), Progressive Onboarding not supported for APMs

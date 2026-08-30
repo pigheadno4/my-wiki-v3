@@ -1,0 +1,552 @@
+diff --git a/packages/paypal-js/CHANGELOG.md b/packages/paypal-js/CHANGELOG.md
+index 0c160dc..3b94a5c 100644
+--- a/packages/paypal-js/CHANGELOG.md
++++ b/packages/paypal-js/CHANGELOG.md
+@@ -1,5 +1,36 @@
+ # Changelog
+ 
++## 11.0.0
++
++### Major Changes
++
++- 6b10c2b: A breaking change that removes PayPal's homegrown `ApplePaySession` browser-global typing from the v6 types.
++
++  `@paypal/paypal-js/sdk-v6` no longer declares a stripped `ApplePaySession` class or augments the global `Window` interface with `ApplePaySession`. That augmentation conflicted with the community `@types/applepayjs` package (`TS2717` / `TS2687`), and because it shipped through the `sdk-v6` barrel it landed in every consumer's compilation — even projects that never use Apple Pay.
++
++### Minor Changes
++
++- c3b5dbe: Update the v6 Google Pay types for 3D Secure (SCA) support.
++
++  `GooglePayOneTimePaymentSession.initiatePayerAction` changes from the previous no-op
++  placeholder to its real signature — `initiatePayerAction(options: { orderId: string }):
++Promise<InitiatePayerActionResponse>` — which resolves with the 3DS `liabilityShift` and
++  rejects if the buyer cancels or authentication fails.
++
++  Adds and exports three supporting types: `LiabilityShiftType`
++  (`"UNKNOWN" | "NO" | "YES" | "POSSIBLE"`), `InitiatePayerActionOptions`, and
++  `InitiatePayerActionResponse`.
++
++- be48634: Add TypeScript types for the v6 local payment methods (LPM) components. `LPMPaymentsInstance` and the `LPMComponents` union are now exported from `@paypal/paypal-js/sdk-v6`, and `SdkInstance`/`Components`/`CreateInstanceOptions` recognize LPM component names (e.g. `"ideal-payments"`, `"bancontact-payments"`) so `createInstance` returns the LPM methods when an LPM component is requested.
++
++  `SdkInstance` now narrows the LPM methods it exposes to only the components actually requested — for example `createInstance({ components: ["ideal-payments"] })` now types `createIdealOneTimePaymentSession` only, instead of surfacing all 50 LPM session-creation methods as optional. This is powered by a new single-source-of-truth `LPMComponentToSessionMethod` map (also exported) and an `LPMInstanceFor<T>` helper type, which replace the previous positionally-aligned `LPMComponents`/`LPMSessionMethodName` unions.
++
++  Remove optional chaining (`?`) from `LPMInstanceFor<T>` methods since requested LPM components are guaranteed to exist at runtime on the SDK instance.
++
++### Patch Changes
++
++- be48634: Make `addressLine2` and `adminArea2` required (not optional) on the LPM `LPMSessionFieldBillingAddress` type, matching the internal SDK's `BillingAddress` shape where both fields are required.
++
+ ## 10.1.0
+ 
+ ### Minor Changes
+diff --git a/packages/paypal-js/README.md b/packages/paypal-js/README.md
+index 2cf1b5e..23fca02 100644
+--- a/packages/paypal-js/README.md
++++ b/packages/paypal-js/README.md
+@@ -371,6 +371,11 @@ These are the components that currently support the TypeScript types offered for
+ | `applepay-payments`                | Apple Pay payment integration                       |
+ | `googlepay-payments`               | Google Pay payment integration                      |
+ 
++> **Apple Pay & TypeScript:** the Apple Pay flow relies on Apple's native
++> `window.ApplePaySession` browser global. `paypal-js` does not ship types for it. If you
++> reference it in your own code, install the community typings:
++> `npm install --save-dev @types/applepayjs`.
++
+ ### V6 TypeScript Types
+ 
+ Import types from the `@paypal/paypal-js/sdk-v6` subpath:
+diff --git a/packages/paypal-js/package.json b/packages/paypal-js/package.json
+index 634c978..3539dfe 100644
+--- a/packages/paypal-js/package.json
++++ b/packages/paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@paypal/paypal-js",
+-  "version": "10.1.0",
++  "version": "11.0.0",
+   "description": "Loading wrapper and TypeScript types for the PayPal JS SDK",
+   "main": "index.js",
+   "module": "dist/esm/paypal-js.js",
+diff --git a/packages/paypal-js/src/v6/index.test.ts b/packages/paypal-js/src/v6/index.test.ts
+index bd1ed84..58c164f 100644
+--- a/packages/paypal-js/src/v6/index.test.ts
++++ b/packages/paypal-js/src/v6/index.test.ts
+@@ -150,7 +150,7 @@ describe("loadCoreSdkScript()", () => {
+ 
+   test("should error when environment is omitted", async () => {
+     await expect(async () => {
+-      // @ts-expect-error environment is required
++      // @ts-expect-error invalid arguments
+       await loadCoreSdkScript({});
+     }).rejects.toThrow(
+       'The "environment" option is required and must be either "production" or "sandbox"',
+@@ -159,7 +159,7 @@ describe("loadCoreSdkScript()", () => {
+ 
+   test("should error when environment is explicitly undefined", async () => {
+     await expect(async () => {
+-      // @ts-expect-error environment is required
++      // @ts-expect-error invalid arguments
+       await loadCoreSdkScript({ environment: undefined });
+     }).rejects.toThrow(
+       'The "environment" option is required and must be either "production" or "sandbox"',
+@@ -186,8 +186,7 @@ describe("loadCoreSdkScript()", () => {
+       );
+ 
+       expect(result).toBeDefined();
+-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+-      expect(window[customNamespace as any]).toBeDefined();
++      expect(customNamespace in window).toBe(true);
+     });
+ 
+     test("should error when dataNamespace is an empty string", async () => {
+diff --git a/packages/paypal-js/types/v6/components/applepay-payments.d.ts b/packages/paypal-js/types/v6/components/applepay-payments.d.ts
+index a069ed2..d4c6ce8 100644
+--- a/packages/paypal-js/types/v6/components/applepay-payments.d.ts
++++ b/packages/paypal-js/types/v6/components/applepay-payments.d.ts
+@@ -210,6 +210,11 @@ export type ApplePayOneTimePaymentSession = {
+  * The {@link ApplePayPaymentsInstance} enables seamless integration with Apple Pay's payment flow,
+  * providing a secure and user-friendly way to process payments through the Apple Pay platform.
+  *
++ * @remarks
++ * The examples below reference Apple's native `ApplePaySession` browser global. PayPal does not
++ * ship types for it; install the community typings to type it in your own code:
++ * `npm install --save-dev @types/applepayjs`.
++ *
+  */
+ export interface ApplePayPaymentsInstance {
+   /**
+@@ -230,7 +235,7 @@ export interface ApplePayPaymentsInstance {
+    * ```typescript
+    * // Check if Apple Pay is available
+    * const isApplePayAvailable =
+-   *   window.ApplePaySession && ApplePaySession.canMakePayments();
++   *   typeof window.ApplePaySession !== "undefined" && window.ApplePaySession.canMakePayments();
+    *
+    * if (!isApplePayAvailable) {
+    *   return;
+@@ -294,34 +299,3 @@ export interface ApplePayPaymentsInstance {
+    */
+   createApplePayOneTimePaymentSession: () => ApplePayOneTimePaymentSession;
+ }
+-
+-/**
+- * Native Apple Pay session API (Safari-only).
+- * @see https://developer.apple.com/documentation/apple_pay_on_the_web/applepaysession
+- */
+-declare class ApplePaySession {
+-  static STATUS_SUCCESS: number;
+-  static STATUS_FAILURE: number;
+-  static canMakePayments(): boolean;
+-  static supportsVersion(version: number): boolean;
+-  constructor(version: number, paymentRequest: unknown);
+-
+-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+-  onvalidatemerchant: ((event: any) => void) | null;
+-  onpaymentmethodselected: (() => void) | null;
+-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+-  onpaymentauthorized: ((event: any) => void) | null;
+-  oncancel: (() => void) | null;
+-
+-  completeMerchantValidation(merchantSession: unknown): void;
+-  completePaymentMethodSelection(update: unknown): void;
+-  completePayment(result: { status: number }): void;
+-  begin(): void;
+-  abort(): void;
+-}
+-
+-declare global {
+-  interface Window {
+-    ApplePaySession?: typeof ApplePaySession;
+-  }
+-}
+diff --git a/packages/paypal-js/types/v6/components/googlepay-payments.d.ts b/packages/paypal-js/types/v6/components/googlepay-payments.d.ts
+index eee8b0c..615a40e 100644
+--- a/packages/paypal-js/types/v6/components/googlepay-payments.d.ts
++++ b/packages/paypal-js/types/v6/components/googlepay-payments.d.ts
+@@ -266,6 +266,35 @@ export type GooglePayApprovePaymentResponse = {
+   }>;
+ };
+ 
++/**
++ * Outcome of the issuer's 3D Secure authentication, indicating whether
++ * liability for the transaction has shifted to the card issuer.
++ */
++export type LiabilityShiftType = "UNKNOWN" | "NO" | "YES" | "POSSIBLE";
++
++/**
++ * Options passed when launching the 3DS payer action flow.
++ */
++export type InitiatePayerActionOptions = {
++  /** The PayPal order ID returned when the order was created. */
++  orderId: string;
++};
++
++/**
++ * Result of a successful 3DS payer action flow.
++ *
++ * If the buyer cancels the 3DS modal or authentication fails, the promise
++ * rejects instead of resolving, so the merchant does not attempt to capture an
++ * unauthenticated order.
++ */
++export type InitiatePayerActionResponse = {
++  /**
++   * The outcome of the issuer's authentication, indicating whether liability
++   * for the transaction has shifted to the card issuer.
++   */
++  liabilityShift?: LiabilityShiftType;
++};
++
+ /**
+  * Options for confirming a Google Pay order
+  *
+@@ -365,14 +394,29 @@ export interface GooglePayOneTimePaymentSession {
+   ): Promise<GooglePayApprovePaymentResponse>;
+ 
+   /**
+-   * Initiates 3DS authentication flow (placeholder)
++   * Launches the 3DS (Strong Customer Authentication) flow for an order.
+    *
+    * @remarks
+-   * This method is currently a placeholder for future 3DS support.
++   * Call this after `confirmOrder` returns a `status` of
++   * `"PAYER_ACTION_REQUIRED"`. It opens PayPal's 3DS iframe modal and resolves
++   * once the buyer completes authentication, with the resulting `liabilityShift`.
++   *
++   * If the buyer cancels the modal or authentication fails, the promise
++   * **rejects** so the merchant does not capture an unauthenticated order.
++   *
++   * Note for Google Pay: the 3DS modal can only open after Google's payment
++   * sheet has closed, and that sheet stays open until the `onPaymentAuthorized`
++   * callback resolves. Do **not** `await` this method inside
++   * `onPaymentAuthorized` — return `{ transactionState: "SUCCESS" }` to close the
++   * sheet first, then handle this promise out-of-band.
+    *
+-   * @internal
++   * @param options - Object containing the PayPal `orderId`
++   * @returns Promise resolving with the 3DS `liabilityShift` outcome on success,
++   *   and rejecting on cancel or failure
+    */
+-  initiatePayerAction(): void;
++  initiatePayerAction(
++    options: InitiatePayerActionOptions,
++  ): Promise<InitiatePayerActionResponse>;
+ }
+ 
+ /**
+diff --git a/packages/paypal-js/types/v6/components/lpm-payments.d.ts b/packages/paypal-js/types/v6/components/lpm-payments.d.ts
+new file mode 100644
+index 0000000..956c200
+--- /dev/null
++++ b/packages/paypal-js/types/v6/components/lpm-payments.d.ts
+@@ -0,0 +1,166 @@
++import {
++  BasePaymentSessionOptions,
++  BasePaymentSession,
++  PresentationModeOptionsForPopup,
++} from "./base-component";
++
++export type LPMOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
++  orderId?: string;
++};
++
++export type LPMPresentationModeOptions = PresentationModeOptionsForPopup;
++
++/** Merchant-provided session-level inputs required by specific LPMs. */
++export type LPMSessionFieldPhone = {
++  countryCode: string;
++  nationalNumber: string;
++};
++
++export type LPMSessionFieldBillingAddress = {
++  addressLine1: string;
++  addressLine2: string;
++  adminArea1: string;
++  adminArea2: string;
++  postalCode: string;
++  countryCode: string;
++};
++
++export type LPMSessionFieldTaxInfo = {
++  taxId: string;
++  taxIdType: string;
++};
++
++export type LPMSessionFieldExpiryDate = {
++  expiry_date: string;
++};
++
++/**
++ * Optional session-level inputs collected by the merchant and forwarded to the
++ * SDK when starting an LPM payment session. Only a subset of fields is required
++ * per LPM (see `LPMConfig.sessionFields` in the registry).
++ */
++export type LPMSessionFields = {
++  phone?: LPMSessionFieldPhone;
++  billingAddress?: LPMSessionFieldBillingAddress;
++  taxInfo?: LPMSessionFieldTaxInfo;
++  expiryDate?: LPMSessionFieldExpiryDate;
++  dateOfBirth?: string;
++  numberOfInstallments?: number;
++};
++
++/**
++ * Options passed to `LPMOneTimePaymentSession.start()`.
++ * Merchant-collected session fields (phone, billingAddress, taxInfo, etc.)
++ * required by some LPMs are provided via the `paymentSessionPromise` second
++ * argument, not via these presentation-mode options.
++ */
++export type LPMStartOptions = LPMPresentationModeOptions;
++
++export type LPMOneTimePaymentSessionPromise = Promise<
++  {
++    orderId: string;
++  } & LPMSessionFields
++>;
++
++export type LPMOneTimePaymentSession = Omit<BasePaymentSession, "start"> & {
++  start: (
++    options: LPMStartOptions,
++    paymentSessionPromise?: LPMOneTimePaymentSessionPromise,
++  ) => Promise<void>;
++  createPaymentFields: (options: { type: "email" | "name" | "tax_id" | "tax_id_type"; style?: Record<string, unknown>; value?: string }) => HTMLElement;
++  validate: () => Promise<boolean>;
++};
++
++/**
++ * Single source of truth mapping each LPM component to the session-creation
++ * method it adds to the SDK instance. `LPMComponents` and `LPMSessionMethodName`
++ * are both derived from this map so they can never drift out of alignment, and
++ * {@link LPMInstanceFor} uses it to narrow the instance type to only the methods
++ * for the components actually requested in `createInstance`.
++ */
++export type LPMComponentToSessionMethod = {
++  "ideal-payments": "createIdealOneTimePaymentSession";
++  "bancontact-payments": "createBancontactOneTimePaymentSession";
++  "eps-payments": "createEpsOneTimePaymentSession";
++  "blik-payments": "createBlikOneTimePaymentSession";
++  "mybank-payments": "createMyBankOneTimePaymentSession";
++  "trustly-payments": "createTrustlyOneTimePaymentSession";
++  "p24-payments": "createP24OneTimePaymentSession";
++  "multibanco-payments": "createMultibancoOneTimePaymentSession";
++  "bizum-payments": "createBizumOneTimePaymentSession";
++  "swish-payments": "createSwishOneTimePaymentSession";
++  "klarna-payments": "createKlarnaOneTimePaymentSession";
++  "twint-payments": "createTwintOneTimePaymentSession";
++  "wechatpay-payments": "createWechatpayOneTimePaymentSession";
++  "afterpay-payments": "createAfterpayOneTimePaymentSession";
++  "oxxopay-payments": "createOxxopayOneTimePaymentSession";
++  "boletobancario-payments": "createBoletobancarioOneTimePaymentSession";
++  "verkkopankki-payments": "createVerkkopankkiOneTimePaymentSession";
++  "payu-payments": "createPayuOneTimePaymentSession";
++  "paysafecard-payments": "createPaysafecardOneTimePaymentSession";
++  "mbway-payments": "createMbWayOneTimePaymentSession";
++  "satispay-payments": "createSatispayOneTimePaymentSession";
++  "wero-payments": "createWeroOneTimePaymentSession";
++  "floa-payments": "createFloaOneTimePaymentSession";
++  "scalapay-payments": "createScalapayOneTimePaymentSession";
++  "grabpay-payments": "createGrabpayOneTimePaymentSession";
++  "pix-international-payments": "createPixInternationalOneTimePaymentSession";
++  "sepa-payments": "createSepaOneTimePaymentSession";
++  "crypto-payments": "createCryptoOneTimePaymentSession";
++  "doku-payments": "createDOKUOneTimePaymentSession";
++  "dragonpay-payments": "createDragonpayOneTimePaymentSession";
++  "estoniabank-payments": "createEstoniaOneTimePaymentSession";
++  "fpx-payments": "createFpxOneTimePaymentSession";
++  "gopay-payments": "createGopayOneTimePaymentSession";
++  "alipay-payments": "createAlipayOneTimePaymentSession";
++  "indomaret-payments": "createIndomaretOneTimePaymentSession";
++  "indonesiabanks-payments": "createIndonesiaBanksOneTimePaymentSession";
++  "kredivo-payments": "createKredivoOneTimePaymentSession";
++  "linkaja-payments": "createLinkajaOneTimePaymentSession";
++  "ovo-payments": "createOvoOneTimePaymentSession";
++  "paysera-payments": "createPayseraOneTimePaymentSession";
++  "skrill-payments": "createSkrillOneTimePaymentSession";
++  "thailand-banks-payments": "createThailandBanksOneTimePaymentSession";
++  "blikpaylater-payments": "createBlikPayLaterOneTimePaymentSession";
++  "alfamart-payments": "createAlfamartOneTimePaymentSession";
++  "zip-payments": "createZipOneTimePaymentSession";
++  "bancomatpay-payments": "createBancomatPayOneTimePaymentSession";
++  "latviabanks-payments": "createLatviaBanksOneTimePaymentSession";
++  "fiuu-cash-payments": "createFIUUOneTimePaymentSession";
++  "lithuaniabanks-payments": "createLithuaniaBanksOneTimePaymentSession";
++  "jeniuspay-payments": "createJeniuspayOneTimePaymentSession";
++};
++
++export type LPMComponents = keyof LPMComponentToSessionMethod;
++
++export type LPMSessionMethodName =
++  LPMComponentToSessionMethod[keyof LPMComponentToSessionMethod];
++
++/**
++ * The {@link LPMPaymentsInstance} provides access to Local Payment Method (LPM)
++ * session creation methods, enabling integration with a wide range of regional
++ * payment methods (e.g. iDEAL, Bancontact, BLIK, Pix). Each method corresponds
++ * to a specific LPM component passed to `createInstance`.
++ */
++export type LPMPaymentsInstance = {
++  [K in LPMSessionMethodName]?: (
++    options: LPMOneTimePaymentSessionOptions,
++  ) => LPMOneTimePaymentSession;
++};
++
++/**
++ * Narrows {@link LPMPaymentsInstance} down to only the session-creation methods
++ * for the LPM components present in `T`. Requesting `["ideal-payments"]` yields
++ * only `createIdealOneTimePaymentSession`, instead of all LPM methods.
++ * `T` is generic over `readonly string[]` (rather than `Components[]`) to avoid
++ * a circular import with `../index`; non-LPM entries in `T` are ignored via
++ * `Extract`, and an empty extraction resolves to `{}` (a no-op intersection).
++ */
++export type LPMInstanceFor<T extends readonly string[]> = {
++  [C in Extract<
++    T[number],
++    LPMComponents
++  > as LPMComponentToSessionMethod[C]]: (
++    options: LPMOneTimePaymentSessionOptions,
++  ) => LPMOneTimePaymentSession;
++};
+diff --git a/packages/paypal-js/types/v6/index.d.ts b/packages/paypal-js/types/v6/index.d.ts
+index 8f96726..4f20c12 100644
+--- a/packages/paypal-js/types/v6/index.d.ts
++++ b/packages/paypal-js/types/v6/index.d.ts
+@@ -4,6 +4,10 @@ import { PayPalLegacyBillingInstance } from "./components/paypal-legacy-billing-
+ import { VenmoPaymentsInstance } from "./components/venmo-payments";
+ import { ApplePayPaymentsInstance } from "./components/applepay-payments";
+ import { GooglePayPaymentsInstance } from "./components/googlepay-payments";
++import type {
++  LPMComponents,
++  LPMInstanceFor,
++} from "./components/lpm-payments";
+ import {
+   EligiblePaymentMethodsOutput,
+   FindEligibleMethodsOptions,
+@@ -49,7 +53,8 @@ export type Components =
+   | "paypal-legacy-billing-agreements"
+   | "card-fields"
+   | "applepay-payments"
+-  | "googlepay-payments";
++  | "googlepay-payments"
++  | LPMComponents;
+ 
+ export type PageTypes =
+   | "cart"
+@@ -101,6 +106,7 @@ export type CreateInstanceOptions<T extends readonly Components[]> =
+  * - `"paypal-subscriptions"` - Adds PayPalSubscriptionsInstance methods
+  * - `"applepay-payments"` - Adds ApplePayPaymentsInstance methods
+  * - `"googlepay-payments"` - Adds GooglePayPaymentsInstance methods
++ * - LPM components (e.g. `"ideal-payments"`, `"bancontact-payments"`) - Adds only the session-creation method for each requested LPM component (e.g. `createIdealOneTimePaymentSession`)
+  *
+  * @example
+  * ```typescript
+@@ -163,7 +169,8 @@ export type SdkInstance<T extends readonly Components[]> = BaseInstance &
+   ("applepay-payments" extends T[number] ? ApplePayPaymentsInstance : unknown) &
+   ("googlepay-payments" extends T[number]
+     ? GooglePayPaymentsInstance
+-    : unknown);
++    : unknown) &
++  LPMInstanceFor<T>;
+ 
+ /**
+  * @internal
+@@ -256,6 +263,7 @@ export * from "./components/paypal-messages";
+ export * from "./components/paypal-subscriptions";
+ export * from "./components/applepay-payments";
+ export * from "./components/googlepay-payments";
++export * from "./components/lpm-payments";
+ export * from "./components/web-components";
+ 
+ // export a subset of types from base-component
+diff --git a/packages/paypal-js/types/v6/tests/googlepay-payments.test.ts b/packages/paypal-js/types/v6/tests/googlepay-payments.test.ts
+index be1e792..eb2aa6e 100644
+--- a/packages/paypal-js/types/v6/tests/googlepay-payments.test.ts
++++ b/packages/paypal-js/types/v6/tests/googlepay-payments.test.ts
+@@ -118,7 +118,10 @@ async function main() {
+ 
+   // Check if 3DS is required
+   if (approveResponse.status === "PAYER_ACTION_REQUIRED") {
+-    googlePaySession.initiatePayerAction();
++    const payerActionResult = await googlePaySession.initiatePayerAction({
++      orderId: "ORDER-123",
++    });
++    payerActionResult.liabilityShift;
+   }
+ 
+   // Verify GooglePayPaymentsInstance narrowing from SdkInstance
+diff --git a/packages/paypal-js/types/v6/tests/lpm-payments.test.ts b/packages/paypal-js/types/v6/tests/lpm-payments.test.ts
+new file mode 100644
+index 0000000..def542b
+--- /dev/null
++++ b/packages/paypal-js/types/v6/tests/lpm-payments.test.ts
+@@ -0,0 +1,72 @@
++import { loadCoreSdkScript } from "../../../src/v6";
++import type {
++  LPMOneTimePaymentSession,
++  LPMPaymentsInstance,
++  LPMStartOptions,
++  LPMSessionFields,
++  PayPalV6Namespace,
++} from "../index";
++
++// eslint-disable-next-line @typescript-eslint/no-unused-vars
++async function main() {
++  let paypal: PayPalV6Namespace | null;
++
++  try {
++    paypal = await loadCoreSdkScript({
++      environment: "sandbox",
++      debug: true,
++    });
++  } catch (err) {
++    throw new Error(`Failed to load the paypal sdk script: ${err}`);
++  }
++
++  if (!paypal?.createInstance) {
++    throw new Error("Invalid paypal object for v6");
++  }
++
++  const sdkInstance = await paypal.createInstance({
++    clientToken: "fakeValue",
++    components: ["ideal-payments"],
++  });
++
++  const idealSession: LPMOneTimePaymentSession =
++    sdkInstance.createIdealOneTimePaymentSession({
++      onApprove: async () => undefined,
++    });
++
++  // Session fields belong in the promise passed as the 2nd argument to
++  // start(), not on the presentation-mode options (1st argument).
++  const sessionFields: LPMSessionFields = {
++    phone: { countryCode: "31", nationalNumber: "612345678" },
++  };
++  const startOptions: LPMStartOptions = { presentationMode: "popup" };
++
++  await idealSession.start(
++    startOptions,
++    Promise.resolve({ orderId: "ORDER-123", ...sessionFields }),
++  );
++
++  // LPM sessions do not support "auto" presentation mode.
++  // @ts-expect-error "auto" is not a valid LPM presentation mode
++  await idealSession.start({ presentationMode: "auto" });
++
++  // Session fields must not be passed as part of the start() options.
++  await idealSession.start({
++    presentationMode: "popup",
++    // @ts-expect-error phone belongs on the paymentSessionPromise, not start options
++    phone: sessionFields.phone,
++  });
++
++  // A narrower LPM instance (only the requested component's method) is
++  // always assignable to the full LPMPaymentsInstance (all methods optional).
++  const instance: LPMPaymentsInstance = sdkInstance;
++  instance.createIdealOneTimePaymentSession?.({
++    onApprove: async () => undefined,
++  });
++
++  // Requesting only "ideal-payments" must narrow the instance down to just
++  // createIdealOneTimePaymentSession; other LPM methods should not exist on
++  // the type at all (not merely be `undefined`).
++  // @ts-expect-error createBancontactOneTimePaymentSession is not part of the type when only "ideal-payments" was requested
++  sdkInstance.createBancontactOneTimePaymentSession;
++}
