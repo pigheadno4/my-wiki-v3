@@ -1233,6 +1233,33 @@
   Release: [manifest](../../raw/github/braintree/braintree_node/releases/braintree/3.39.0/2026-08-09/manifest.json)
   Comparison: Not applicable
 
+## `github-a7964cb187666bb0930f`
+
+- Repository: `paypal-examples/v6-web-sdk-sample-integration`
+- SHA: `de90a89c90b06421ca34241e7162236e2b04fd79`
+- Collection date: `2026-08-30`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/manifest.json)
+- Packet: [review packet](repos/paypal/v6-web-sdk-sample-integration/ingest-packets/github-a7964cb187666bb0930f/packet.md)
+- Review priority: `high`
+- Required reading: `527` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@de90a89` (recommended `full`)
+  Ref: `main`
+  From SHA: `b5f2df209b0bfd10b1a3cde600088ddf21e43523`
+  To SHA: `de90a89c90b06421ca34241e7162236e2b04fd79`
+  Comparison: [manifest](repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/b5f2df2--de90a89/comparison.json)
+
 ## `github-a9880c38e9e3a0e271a3`
 
 - Repository: `stripe/stripe-react-native`

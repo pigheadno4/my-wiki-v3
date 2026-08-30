@@ -767,6 +767,7 @@ def _validate_packets(
                         kind,
                         document.get("wiki_context"),
                         document.get("expected_wiki_targets"),
+                        stored_policy_hash,
                     )
                 else:
                     rebuilt = build_ingest_packet(

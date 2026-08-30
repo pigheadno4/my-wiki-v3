@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal-examples/v6-web-sdk-sample-integration"
 type: source
 date_ingested: 2026-08-04
-date_updated: 2026-08-04
+date_updated: 2026-08-30
 original_format: github-repo
 raw_files:
+  - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/manifest.json"
   - "github-paypal-v6-samples.md"
 tags: [paypal, web-sdk-v6, samples, changelog, github-repository]
@@ -13,6 +14,40 @@ tags: [paypal, web-sdk-v6, samples, changelog, github-repository]
 ## Overview
 
 Commit-qualified history for `paypal-examples/v6-web-sdk-sample-integration`. Durable integration guidance belongs in [[source-github-v6-web-sdk-sample-integration]].
+
+## `default-branch@de90a89` - Basic Apple Pay Delta (2026-08-29)
+
+| Ref | Prior SHA | Current SHA | Ingest mode |
+| --- | --- | --- | --- |
+| `main` | `b5f2df209b0bfd10b1a3cde600088ddf21e43523` | `de90a89c90b06421ca34241e7162236e2b04fd79` | Delta |
+
+### Payment behavior
+
+- Adds a Basic Apple Pay one-time-payment example using a browser-safe client token, `basic_apple_pay` eligibility, and `createBasicApplePayOneTimePaymentSession()`.
+- PayPal's session drives merchant validation, payment-method selection, and authorization through `start()`; the Basic page does not load Apple's separate JavaScript SDK.
+- The merchant server still creates the PayPal order and captures the approved `orderId`.
+- Existing recommended and purchase-with-vault Apple Pay examples remain merchant-driven and unchanged.
+
+### React and dependency changes
+
+- Upgrades `@paypal/react-paypal-js` from `^10.1.0` to `^10.4.0` and adds `@types/applepayjs ^14.0.9`.
+- Changes the React capability guard from optional `window.ApplePaySession` access to a guarded native `ApplePaySession` global.
+- Updates React, router, Vite, lint, formatting, Dotenv, and Node development dependencies.
+- Keeps `@paypal/paypal-server-sdk ^2.4.0`; no server route implementation changed.
+
+### Evidence and impact
+
+The generated comparison contains eight retained path changes with no evidence gaps or unclassified changes. The update adds one alternative Apple Pay orchestration contract and does not establish merchant enablement, regional availability, or production eligibility.
+
+**Updated wiki areas:** cumulative repository source; PayPal Apple Pay concept; PayPal company and provider index.
+
+**Evidence:**
+
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/manifest.json`
+- `tracking/github/repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/b5f2df2--de90a89/comparison.json`
+- `tracking/github/repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/b5f2df2--de90a89/diff.patch`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/files/client/components/applepayPayments/basicOneTimePayment/html/src/app.js`
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/files/client/prebuiltPages/react/package.json`
 
 ## `default-branch@b5f2df2` - Full Baseline (2026-07-15)
 

@@ -22,8 +22,8 @@ Operations history: [[paypal-log]]
 - [[source-stripe-paypal-custom-payment-method]] — PayPal as CPM: low-code adapter for Checkout, EU→standard PM vs global→CPM adapter decision rule (webpage, 2026-05-08)
 - [[source-stripe-subscriptions-paypal]] — PayPal subscription: Checkout + Direct API, off_session required, billing agreement ID, mandate.updated on revoke (webpage, 2026-05-13)
 - [[stripe-paypal]] — Stripe PayPal Integration: Checkout + SetupIntents, off_session critical, BAID, mandate.updated, detach cancels billing agreement
-- [[source-github-v6-web-sdk-sample-integration]] — cumulative v6 Web SDK samples: HTML, React, Node, PayPal, Venmo, cards, Fastlane, wallets, vault, subscriptions, and 46 local methods (`dd9ef8a` → `b5f2df2`)
-- [[changelog-github-v6-web-sdk-sample-integration]] — commit-qualified sample expansion and implementation/documentation discrepancies
+- [[source-github-v6-web-sdk-sample-integration]] — cumulative v6 Web SDK samples through `de90a89`: Basic and recommended Apple Pay, React `^10.4.0`, HTML, Node, PayPal, Venmo, cards, Fastlane, vault, subscriptions, and 46 local methods
+- [[changelog-github-v6-web-sdk-sample-integration]] — commit-qualified history through the `b5f2df2` to `de90a89` Basic Apple Pay delta
 - [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — Braintree-merchant v6 sample: one-time, vault, billing agreements, Pay Later/Credit, Messages, React, and Node at `f1c7123`
 - [[changelog-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — first commit-qualified Braintree v6 sample baseline and production-boundary ledger (`f1c7123`)
 - [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample: Orders, partner headers, Hosted Fields, shipping patches, subscriptions, and retained defects (`5409a3b`)
@@ -218,7 +218,7 @@ Operations history: [[paypal-log]]
 - [[paypal-ios-sdk]] — PayPal iOS SDK 2.x: Result/async APIs, CardPayments, PayPalWebPayments, vault, PaymentButtons, FraudProtection, and native Venmo boundary
 - [[paypal-vault]] — PayPal Vault / Payment Method Tokens: setup tokens, payment tokens, stored credentials, APPROVED vs VAULTED status
 - [[paypal-apm]] — PayPal APMs: 11 methods (Apple/Google Pay, 7 bank redirects, Multibanco, Pay upon Invoice); Trustly 365-day refunds; giropay/Sofort sunset
-- [[paypal-apple-pay]] — Apple Pay via PayPal: Safari-only, vault for merchant-initiated recurring only, cannot show as returning buyer saved payment
+- [[paypal-apple-pay]] — Apple Pay via PayPal: Basic SDK-managed and recommended merchant-driven v6 flows, native Apple Pay typing, domain validation, and recurring-vault boundaries
 - [[paypal-google-pay]] — Google Pay via PayPal: all browsers, 36 countries, one-time only (no vault), dual SDK, Japan PAN_ONLY override
 - [[paypal-fraud-risk]] — PayPal fraud & risk stack: FraudNet (web JS) + Magnes (mobile SDK) → Risk Services → Fraud Protection / FPA / Chargeback Protection
 - [[paypal-payouts]] — PayPal Payouts: Standard (96 countries, self-serve) vs Advanced (240+ countries, enterprise, multiple rails)

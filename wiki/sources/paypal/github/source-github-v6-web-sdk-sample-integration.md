@@ -2,9 +2,10 @@
 title: "GitHub: paypal-examples/v6-web-sdk-sample-integration"
 type: source
 date_ingested: 2026-04-17
-date_updated: 2026-08-04
+date_updated: 2026-08-30
 original_format: github-repo
 raw_files:
+  - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/manifest.json"
   - "github-paypal-v6-samples.md"
 tags: [paypal, web-sdk-v6, samples, node-js, react, card-fields, venmo, google-pay, apple-pay, apm, subscriptions, vault, fastlane, github-repository]
@@ -12,13 +13,13 @@ tags: [paypal, web-sdk-v6, samples, node-js, react, card-fields, venmo, google-p
 
 ## Overview
 
-`paypal-examples/v6-web-sdk-sample-integration` is PayPal's runnable sample repository for v6 Web SDK checkout flows. This cumulative page preserves the manually selected April 2026 evidence at commit `dd9ef8a53c71d9d2107ad94c23b73b62f9811258` and adds the approved full baseline at `default-branch@b5f2df2` (`b5f2df209b0bfd10b1a3cde600088ddf21e43523`).
+`paypal-examples/v6-web-sdk-sample-integration` is PayPal's runnable sample repository for v6 Web SDK checkout flows. This cumulative page preserves the manually selected April 2026 evidence at commit `dd9ef8a53c71d9d2107ad94c23b73b62f9811258`, the approved full baseline at `default-branch@b5f2df2`, and the contained Apple Pay delta at `default-branch@de90a89` (`de90a89c90b06421ca34241e7162236e2b04fd79`).
 
 Repository: <https://github.com/paypal-examples/v6-web-sdk-sample-integration>
 
 ## Evidence Boundary
 
-- The current capsule retains 257 files totaling 854,493 bytes. It excludes three tests, seven images, and one lockfile under reviewed capsule policy.
+- The current `de90a89` capsule retains 259 files totaling 864,367 bytes and excludes 11 files totaling 393,130 bytes under reviewed capsule policy. The generated comparison identifies eight retained changes from `b5f2df2`.
 - The sample demonstrates public integration contracts and orchestration. It does not establish merchant eligibility, regional availability, account enablement, certification, or production behavior.
 - No generated comparison connects the legacy `dd9ef8a` selection to `b5f2df2`; the earlier 36-file review is preserved as historical context and the current full baseline was compared manually during ingest.
 - Upstream README statements are not treated as stronger than contradictory implementation code.
@@ -44,6 +45,18 @@ Repository: <https://github.com/paypal-examples/v6-web-sdk-sample-integration>
 > "Awaiting initiatePayerAction here would leave the Google Pay window open on top of (and blocking) the 3DS modal."
 >
 > `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/googlepayPayments/threeDSecure/html/src/app.js:102-109`
+
+> "Using a clientToken (instead of a bare clientId) lets the Web SDK derive the merchantId it needs internally from the token itself"
+>
+> `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/files/client/components/applepayPayments/basicOneTimePayment/html/src/app.js:7-10`
+
+> "The Web SDK drives the entire Apple Pay sheet (merchant validation, payment method selection, and authorization) on your behalf."
+>
+> `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/files/client/components/applepayPayments/basicOneTimePayment/html/src/app.js:94-97`
+
+> "Apple's own apple-pay-sdk.js script is not required here."
+>
+> `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/files/client/components/applepayPayments/basicOneTimePayment/html/src/index.html:115-120`
 
 ## Current Architecture at `b5f2df2`
 
@@ -79,7 +92,11 @@ The subscription example initializes `paypal-subscriptions`, requests `RECURRING
 
 ## Apple Pay and Google Pay
 
-Apple Pay requires both SDKs, device capability, merchant/domain validation, and a matching amount between the Apple payment request and PayPal order. The sample validates the merchant, confirms the order with Apple's token and contacts, then captures. Its setup README also requires enabling Apple Pay on the PayPal app and registering the HTTPS domain.
+The merchant-driven recommended Apple Pay flow requires both SDKs, device capability, merchant/domain validation, and a matching amount between the Apple payment request and PayPal order. It validates the merchant, confirms the order with Apple's token and contacts, then captures. Its setup README also requires enabling Apple Pay on the PayPal app and registering the HTTPS domain.
+
+At `de90a89`, a separate **Basic Apple Pay** example offers a narrower merchant integration. It initializes `applepay-payments` with a browser-safe client token, checks `isEligible("basic_apple_pay")`, creates `createBasicApplePayOneTimePaymentSession()` with approve/cancel/error callbacks, checks `canMakePayments()`, and calls `start()` with a create-order promise. In this path the PayPal Web SDK drives merchant validation, payment-method selection, and authorization, so the example does not load Apple's separate JavaScript SDK. The merchant server still creates and captures the PayPal order.
+
+The existing recommended and vault examples remain merchant-driven: they load Apple's SDK, create `ApplePaySession`, handle Apple's callbacks, call PayPal merchant validation and order confirmation, and then capture. The Basic addition is therefore an alternative orchestration pattern, not a replacement or proof of eligibility.
 
 Google Pay similarly combines the PayPal and Google SDKs. The 3DS example treats `PAYER_ACTION_REQUIRED` specially: it resolves Google's authorization callback so the Google sheet closes, then invokes `initiatePayerAction({ orderId })`, retrieves the order's authentication result, and captures. The example always captures after authentication; production code may instead gate capture on liability-shift and authentication values.
 
@@ -94,7 +111,9 @@ Most newer examples send `ORDER_COMPLETE_ON_PAYMENT_APPROVAL` and retrieve the c
 
 ## React Multi-Flow Application
 
-The React capsule declares `@paypal/react-paypal-js@10.1.0`, React 19.2.5, TypeScript 6.0.2, and `@paypal/paypal-server-sdk@2.1.0`. `PayPalProvider` uses the `/sdk-v6` export with `environment="sandbox"` and loads PayPal, Venmo, Guest Payments, Subscriptions, Card Fields, Messages, Apple Pay, and Google Pay components.
+The `b5f2df2` React capsule declared `@paypal/react-paypal-js@10.1.0`, React 19.2.5, and TypeScript 6.0.2. At `de90a89`, the sample moves to `@paypal/react-paypal-js@^10.4.0`, React/React DOM 19.2.8, TypeScript 6.0.3, and adds `@types/applepayjs@^14.0.9`. Its Apple Pay availability guard now checks the native `ApplePaySession` global with `typeof`, matching the core 11/React 10.4 type migration. `PayPalProvider` continues to use the `/sdk-v6` export with `environment="sandbox"` and loads PayPal, Venmo, Guest Payments, Subscriptions, Card Fields, Messages, Apple Pay, and Google Pay components.
+
+The Node server keeps `@paypal/paypal-server-sdk@^2.4.0`; its `de90a89` package changes are Dotenv and development-tool upgrades, not PayPal API or route behavior changes. The README change only corrects list indentation.
 
 Pages demonstrate product, cart, and checkout routing; stacked and dropdown payment choices; Card Fields; Apple Pay; Google Pay; subscriptions; vault-with-purchase; save-without-purchase; PayPal Messages; and error boundaries. The dropdown gates Venmo, Pay Later, and Credit with `useEligibleMethods()` and always includes PayPal and guest card choices.
 
@@ -114,6 +133,16 @@ The earlier review retained 36 selected files. The current baseline expands the 
 
 Existing core PayPal, Venmo, Card Fields, Apple Pay, Google Pay, Guest Payments, Messages, and subscription examples mostly receive error handling, naming, or supporting-page updates. Server order handling now accepts a validated intent and optional processing instruction and exposes an order-retrieval route.
 
+## Change from `b5f2df2` to `de90a89`
+
+The generated comparison contains eight paths: two added Basic Apple Pay files and six modified navigation, React, typing, documentation, and package-manifest files. No server route or PayPal Server SDK source changed.
+
+- Adds the Basic Apple Pay one-time-payment example and links it from the sample catalog.
+- Moves merchant identity input from browser-safe client ID to browser-safe client token for that Basic flow.
+- Replaces merchant-driven Apple lifecycle callbacks with PayPal session callbacks and `start()` for the Basic flow; recommended and vault flows remain unchanged.
+- Upgrades the React sample from `@paypal/react-paypal-js ^10.1.0` to `^10.4.0`, adds native Apple Pay typings, and corrects the capability guard.
+- Updates React, router, Vite, lint, formatting, and Node development dependencies; `@paypal/paypal-server-sdk ^2.4.0` is unchanged.
+
 ## Related
 
 - Company: [[paypal]]
@@ -128,6 +157,11 @@ Existing core PayPal, Venmo, Card Fields, Apple Pay, Google Pay, Guest Payments,
 
 ## Raw Sources
 
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/manifest.json` - immutable exact-SHA snapshot for the Basic Apple Pay delta
+- `tracking/github/repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/b5f2df2--de90a89/comparison.json` - generated eight-path comparison
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/files/client/components/applepayPayments/basicOneTimePayment/html/src/app.js` - Basic Apple Pay initialization, eligibility, session, order, and capture orchestration
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/files/client/components/applepayPayments/basicOneTimePayment/html/src/index.html` - Basic flow scripts and UI entry point
+- `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/files/client/prebuiltPages/react/package.json` - React 10.4 and Apple Pay typing dependencies
 - `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/manifest.json` - immutable exact-SHA baseline at `b5f2df209b0bfd10b1a3cde600088ddf21e43523`
 - `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/README.md` - repository scope and setup
 - `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-04-b5f2df2/files/client/components/localPaymentMethods/README.md` - current local-method catalog and shared guidance

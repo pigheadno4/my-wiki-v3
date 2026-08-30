@@ -30,7 +30,22 @@ Four integration touchpoints:
 3. `paypal.Applepay().validateMerchant()` — in `onvalidatemerchant` callback
 4. `paypal.Applepay().confirmOrder({ orderId, token, billingContact })` — in `onpaymentauthorized` callback
 
-Both PayPal JS SDK (`components=applepay`) and Apple Pay JS SDK (`applepay.cdn-apple.com/jsapi/1.latest/apple-pay-sdk.js`) must be loaded.
+For this merchant-driven integration, both PayPal JS SDK (`components=applepay`) and Apple Pay JS SDK (`applepay.cdn-apple.com/jsapi/1.latest/apple-pay-sdk.js`) must be loaded. The v6 Basic flow below is a separate contract.
+
+### v6 Basic versus recommended integration
+
+The `paypal-examples/v6-web-sdk-sample-integration` sample at `default-branch@de90a89` adds a second, explicitly **Basic** one-time-payment path alongside the existing merchant-driven integration:
+
+| Concern | Basic flow at `de90a89` | Existing recommended flow |
+| --- | --- | --- |
+| Browser initialization | Browser-safe client token; the sample says the Web SDK derives merchant identity from the token | Browser-safe client ID |
+| Eligibility key | `basic_apple_pay` | `applepay` plus method details/config |
+| Session | `createBasicApplePayOneTimePaymentSession()` | `createApplePayOneTimePaymentSession()` |
+| Apple Pay lifecycle | PayPal session `start()` drives merchant validation, method selection, and authorization | Merchant code creates `ApplePaySession`, handles Apple callbacks, validates the merchant, and confirms the order |
+| Apple JavaScript SDK | Not loaded by the Basic sample | Loaded explicitly |
+| Order completion | `onApprove` receives `orderId`, then the merchant server captures | Merchant confirms with Apple's token/contact data, then captures |
+
+The Basic sample still checks PayPal eligibility and device capability separately, creates the PayPal order on the merchant server, and captures on the merchant server. It demonstrates a simpler orchestration contract, not merchant enablement, production availability, or regional support.
 
 ### React v10.1.2 button behavior
 
@@ -77,4 +92,4 @@ Account Settings → Payment Method → Enable Apple Pay → Get Started → sub
 - [[source-paypal-apm-apple-pay]] — One-time checkout integration: domain validation, 4 SDK touchpoints, `ApplePaySession`, non-Safari browser support, go-live onboarding
 - [[source-paypal-save-applepay-js-sdk]] — Save Apple Pay vault integration: request/response samples, APPROVED vs VAULTED status, webhook, platform headers, go-live steps
 - [[source-github-paypal-js]] — package-qualified React v10.1.2 button behavior, core v11 Apple Pay type migration, and React v10.4 adoption
-- [[source-github-v6-web-sdk-sample-integration]] — runnable merchant validation, confirm, capture, and purchase-with-vault examples
+- [[source-github-v6-web-sdk-sample-integration]] — runnable recommended merchant-driven Apple Pay, purchase-with-vault, and `de90a89` Basic SDK-managed examples

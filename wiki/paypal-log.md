@@ -6,6 +6,12 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-30] ingest | paypal-examples/v6-web-sdk-sample-integration `default-branch@de90a89`
+
+- Delta-ingested work item `github-a7964cb187666bb0930f` from `b5f2df2` to exact SHA `de90a89c90b06421ca34241e7162236e2b04fd79`; eight retained paths changed and no evidence gap or unclassified change remained.
+- Added the Basic Apple Pay client-token flow, `basic_apple_pay` eligibility, SDK-managed Apple sheet lifecycle, and its distinction from the existing merchant-driven recommended flow.
+- Recorded the React sample upgrade from `@paypal/react-paypal-js ^10.1.0` to `^10.4.0`, native Apple Pay typings/capability guard, unchanged `@paypal/paypal-server-sdk ^2.4.0`, and tooling-only server dependency updates. PayPal source count is unchanged.
+
 ## [2026-08-30] analysis | React Apple Pay `10.3.0` to `10.4.0`
 
 - Filed [[analysis-paypal-react-apple-pay-10-3-to-10-4-migration]] from the approved core `11.0.0`, React `10.4.0`, and v6 sample evidence.

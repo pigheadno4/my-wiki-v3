@@ -321,6 +321,7 @@ def build_ref_ingest_packet(
     packet_kind: str,
     wiki_context_override: Optional[Sequence[str]] = None,
     expected_wiki_targets_override: Optional[Sequence[str]] = None,
+    capsule_policy_sha256_override: Optional[str] = None,
 ) -> IngestPacket:
     """Build one canonical review packet for exact default-branch evidence."""
     root = Path(root).resolve()
@@ -463,6 +464,10 @@ def build_ref_ingest_packet(
     required_reading = tuple(sorted(required))
     _enforce_packet_budget(root, config.capsules[0], required_reading)
     policy_hash = build_effective_policy(config.capsules[0], (), (), ()).policy_hash
+    if capsule_policy_sha256_override is not None:
+        if _SHA256.fullmatch(capsule_policy_sha256_override) is None:
+            raise PacketBuildError("packet policy hash override is invalid")
+        policy_hash = capsule_policy_sha256_override
     document = {
         "author_date": str(current.manifest.get("author_date", "")),
         "capsule_policy_sha256": policy_hash,

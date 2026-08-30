@@ -1,0 +1,481 @@
+diff --git a/client/components/applepayPayments/basicOneTimePayment/html/src/app.js b/client/components/applepayPayments/basicOneTimePayment/html/src/app.js
+new file mode 100644
+index 0000000..613478a
+--- /dev/null
++++ b/client/components/applepayPayments/basicOneTimePayment/html/src/app.js
+@@ -0,0 +1,198 @@
++const COUNTRY_TO_CURRENCY = { US: "USD", MX: "MXN", BR: "BRL" };
++
++let currentCurrencyCode;
++
++async function onPayPalWebSdkLoaded() {
++  try {
++    // Using a clientToken (instead of a bare clientId) lets the Web SDK
++    // derive the merchantId it needs internally from the token itself, so
++    // there's no separate Merchant ID to configure for this example.
++    const clientToken = await getBrowserSafeClientToken();
++    const sdkInstance = await window.paypal.createInstance({
++      clientToken,
++      components: ["applepay-payments"],
++      pageType: "checkout",
++    });
++
++    const countrySelect = document.getElementById("country-select");
++    const currencyDisplay = document.getElementById("currency-display");
++    currentCurrencyCode = COUNTRY_TO_CURRENCY[countrySelect.value];
++
++    // The country/currency selector only affects what currency is used when
++    // creating the order below; Apple Pay eligibility itself doesn't depend
++    // on currency, so there's no need to re-run findEligibleMethods here.
++    countrySelect.addEventListener("change", () => {
++      currentCurrencyCode = COUNTRY_TO_CURRENCY[countrySelect.value];
++      currencyDisplay.value = currentCurrencyCode;
++    });
++
++    const eligibility = await sdkInstance.findEligibleMethods();
++
++    if (!eligibility.isEligible("basic_apple_pay")) {
++      return renderAlert({
++        type: "warning",
++        message: "Basic Apple Pay is not eligible",
++      });
++    }
++
++    const applePayPaymentSession =
++      await sdkInstance.createBasicApplePayOneTimePaymentSession({
++        onApprove: async ({ orderId }) => {
++          console.log(`Payment approved, capturing order ${orderId}...`);
++          const orderData = await captureOrder({ orderId });
++          console.log(JSON.stringify(orderData, null, 2));
++          renderAlert({
++            type: "success",
++            message: `Order captured successfully: ${orderId}`,
++          });
++        },
++        onCancel: () => {
++          renderAlert({ type: "info", message: "Payment cancelled" });
++        },
++        onError: (error) => {
++          console.error(error);
++          renderAlert({
++            type: "danger",
++            message: `Payment error: ${error.message ?? error}`,
++          });
++        },
++      });
++
++    if (!(await applePayPaymentSession.canMakePayments())) {
++      return renderAlert({
++        type: "warning",
++        message: "This device cannot make Apple Pay payments",
++      });
++    }
++
++    document.getElementById("payment-method-radio-group").hidden = false;
++    configureApplePayButton(applePayPaymentSession);
++  } catch (error) {
++    console.error(error);
++    renderAlert({
++      type: "danger",
++      message: `Failed to initialize Apple Pay: ${error.message ?? error}`,
++    });
++  }
++}
++
++function configureApplePayButton(applePayPaymentSession) {
++  const applePayButton = createApplePayButton();
++  applePayButton.addEventListener("click", () =>
++    onApplePayButtonClick(applePayPaymentSession),
++  );
++  document
++    .getElementById("apple-pay-button-container")
++    .appendChild(applePayButton);
++}
++
++async function onApplePayButtonClick(applePayPaymentSession) {
++  try {
++    const checkoutSessionOptionsPromise = createOrder(currentCurrencyCode).then(
++      ({ orderId }) => ({ orderId }),
++    );
++    // The Web SDK drives the entire Apple Pay sheet (merchant validation,
++    // payment method selection, and authorization) on your behalf.
++    await applePayPaymentSession.start({}, checkoutSessionOptionsPromise);
++  } catch (error) {
++    console.error(error);
++    renderAlert({
++      type: "danger",
++      message: `Payment cancelled or failed: ${error.message ?? error}`,
++    });
++  }
++}
++
++function createApplePayButton() {
++  const applePayButton = document.createElement("button");
++  applePayButton.id = "apple-pay-button";
++  applePayButton.textContent = "Checkout";
++  return applePayButton;
++}
++
++async function getBrowserSafeClientToken() {
++  const response = await fetch("/paypal-api/auth/browser-safe-client-token", {
++    method: "GET",
++    headers: {
++      "Content-Type": "application/json",
++    },
++  });
++
++  if (!response.ok) {
++    const errorBody = await response.text();
++    const message = `Failed to get browser-safe client token: ${response.status} ${response.statusText}${errorBody ? ` - ${errorBody}` : ""}`;
++    renderAlert({ type: "danger", message });
++    throw new Error(message);
++  }
++
++  const { accessToken } = await response.json();
++
++  return accessToken;
++}
++
++async function createOrder(currencyCode) {
++  const response = await fetch(
++    "/paypal-api/checkout/orders/create-order-for-one-time-payment",
++    {
++      method: "POST",
++      headers: {
++        "Content-Type": "application/json",
++      },
++      body: JSON.stringify({
++        cart: [
++          {
++            // $20 amount (2 baseballs at $10 each)
++            sku: "3xk9m4n2",
++            quantity: 2,
++          },
++        ],
++        currencyCode,
++      }),
++    },
++  );
++
++  if (!response.ok) {
++    const errorBody = await response.text();
++    const message = `Failed to create order: ${response.status} ${response.statusText}${errorBody ? ` - ${errorBody}` : ""}`;
++    renderAlert({ type: "danger", message });
++    throw new Error(message);
++  }
++
++  const { id } = await response.json();
++  renderAlert({ type: "info", message: `Order successfully created: ${id}` });
++
++  return { orderId: id };
++}
++
++async function captureOrder({ orderId }) {
++  const response = await fetch(
++    `/paypal-api/checkout/orders/${orderId}/capture`,
++    {
++      method: "POST",
++      headers: {
++        "Content-Type": "application/json",
++      },
++    },
++  );
++
++  if (!response.ok) {
++    const errorBody = await response.text();
++    const message = `Failed to capture order ${orderId}: ${response.status} ${response.statusText}${errorBody ? ` - ${errorBody}` : ""}`;
++    renderAlert({ type: "danger", message });
++    throw new Error(message);
++  }
++
++  const data = await response.json();
++
++  return data;
++}
++
++function renderAlert({ type, message }) {
++  const alertComponentElement = document.querySelector("alert-component");
++  if (!alertComponentElement) {
++    return;
++  }
++
++  alertComponentElement.setAttribute("type", type);
++  alertComponentElement.innerText = message;
++}
+diff --git a/client/components/applepayPayments/basicOneTimePayment/html/src/index.html b/client/components/applepayPayments/basicOneTimePayment/html/src/index.html
+new file mode 100644
+index 0000000..c3d901b
+--- /dev/null
++++ b/client/components/applepayPayments/basicOneTimePayment/html/src/index.html
+@@ -0,0 +1,129 @@
++<!doctype html>
++<html lang="en">
++  <head>
++    <meta charset="UTF-8" />
++    <title>One-Time Payment - Basic Apple Pay - PayPal Web SDK</title>
++    <meta name="viewport" content="width=device-width, initial-scale=1" />
++    <link rel="stylesheet" href="/client/shared/styles.css" />
++    <style>
++      alert-component {
++        max-width: 50rem;
++        margin-top: 4rem;
++      }
++
++      .payment-config {
++        display: flex;
++        gap: 1rem;
++        align-items: flex-end;
++        margin-bottom: 1.5rem;
++      }
++
++      .payment-config-item {
++        display: flex;
++        flex-direction: column;
++        gap: 0.25rem;
++      }
++
++      .payment-config-field {
++        height: 40px;
++        padding: 0 0.5rem;
++        border: 1px solid #ccc;
++        border-radius: 4px;
++      }
++
++      .payment-method-radio-group {
++        display: flex;
++        flex-direction: column;
++        gap: 0.5rem;
++        margin-bottom: 1.5rem;
++      }
++
++      .payment-method-radio-group[hidden] {
++        display: none;
++      }
++
++      .payment-method-radio-option {
++        display: flex;
++        align-items: center;
++        gap: 0.625rem;
++        padding: 0.75rem;
++        border: 2px solid #e0e0e0;
++        border-radius: 8px;
++        cursor: pointer;
++        width: 20rem;
++      }
++
++      .payment-method-radio-option:has(input:checked) {
++        border-color: #003087;
++      }
++
++      #apple-pay-button {
++        width: 20rem;
++      }
++    </style>
++  </head>
++  <body>
++    <h1>Basic One-Time Payment Apple Pay Integration</h1>
++    <p>
++      This example demonstrates the Basic Apple Pay flow, where the PayPal Web
++      SDK manages the Apple Pay session for you instead of requiring you to
++      drive the Apple Pay JS APIs directly.
++    </p>
++
++    <div class="payment-config">
++      <div class="payment-config-item">
++        <label for="country-select">Country</label>
++        <select id="country-select" class="payment-config-field">
++          <option value="US">US</option>
++          <option value="MX">MX</option>
++          <option value="BR">BR</option>
++        </select>
++      </div>
++      <div class="payment-config-item">
++        <label for="currency-display">Currency</label>
++        <input
++          id="currency-display"
++          class="payment-config-field"
++          type="text"
++          readonly
++          value="USD"
++        />
++      </div>
++    </div>
++
++    <div
++      id="payment-method-radio-group"
++      class="payment-method-radio-group"
++      hidden
++    >
++      <label class="payment-method-radio-option">
++        <input type="radio" name="payment-method" value="apple-pay" checked />
++        <apple-pay-mark></apple-pay-mark>
++      </label>
++    </div>
++
++    <div id="apple-pay-button-container"></div>
++    <alert-component></alert-component>
++
++    <script src="app.js"></script>
++
++    <script
++      async
++      src="https://www.sandbox.paypal.com/web-sdk/v6/core"
++      onload="onPayPalWebSdkLoaded()"
++    ></script>
++    <!--
++      Note: unlike the recommended ApplePay integration, the Basic ApplePay
++      flow is managed entirely by the PayPal Web SDK, so Apple's own
++      apple-pay-sdk.js script is not required here.
++    -->
++
++    <!-- Provides the <apple-pay-mark> custom element used above -->
++    <script
++      async
++      src="https://www.sandbox.paypal.com/web-sdk/v6/brand"
++    ></script>
++
++    <script async src="/client/shared/alert-component.js"></script>
++  </body>
++</html>
+diff --git a/client/index.html b/client/index.html
+index 02cef01..2ab5b79 100644
+--- a/client/index.html
++++ b/client/index.html
+@@ -176,6 +176,12 @@
+               >One-time payment with Vault for ApplePay</a
+             >
+           </li>
++          <li>
++            <a
++              href="/client/components/applepayPayments/basicOneTimePayment/html/src/index.html"
++              >Basic Apple Pay one-time payment</a
++            >
++          </li>
+         </ul>
+       </li>
+       <li>
+diff --git a/client/prebuiltPages/react/package.json b/client/prebuiltPages/react/package.json
+index 4ecfdd4..707bbda 100644
+--- a/client/prebuiltPages/react/package.json
++++ b/client/prebuiltPages/react/package.json
+@@ -13,26 +13,27 @@
+     "typecheck": "tsc --build --noEmit"
+   },
+   "dependencies": {
+-    "@paypal/react-paypal-js": "^10.1.0",
+-    "react": "19.2.5",
+-    "react-dom": "19.2.5",
+-    "react-error-boundary": "6.1.1",
+-    "react-router-dom": "^7.14.0"
++    "@paypal/react-paypal-js": "^10.4.0",
++    "react": "19.2.8",
++    "react-dom": "19.2.8",
++    "react-error-boundary": "6.1.2",
++    "react-router-dom": "^7.18.2"
+   },
+   "devDependencies": {
+     "@eslint/js": "^9.39.4",
+-    "@types/react": "^19.2.14",
+-    "@types/react-dom": "^19.2.3",
+-    "@vitejs/plugin-react": "^6.0.1",
++    "@types/applepayjs": "^14.0.9",
++    "@types/react": "^19.2.18",
++    "@types/react-dom": "^19.2.4",
++    "@vitejs/plugin-react": "^6.0.5",
+     "eslint": "^9.39.4",
+-    "eslint-import-resolver-typescript": "^4.4.4",
+-    "eslint-plugin-import-x": "^4.16.2",
+-    "eslint-plugin-react-hooks": "^7.0.1",
+-    "eslint-plugin-react-refresh": "^0.5.2",
+-    "globals": "^17.4.0",
+-    "prettier": "^3.8.2",
+-    "typescript": "^6.0.2",
+-    "typescript-eslint": "^8.58.1",
+-    "vite": "^8.0.8"
++    "eslint-import-resolver-typescript": "^4.4.5",
++    "eslint-plugin-import-x": "^4.17.1",
++    "eslint-plugin-react-hooks": "^7.1.1",
++    "eslint-plugin-react-refresh": "^0.5.4",
++    "globals": "^17.9.0",
++    "prettier": "^3.9.6",
++    "typescript": "^6.0.3",
++    "typescript-eslint": "^8.67.0",
++    "vite": "^8.2.1"
+   }
+ }
+diff --git a/client/prebuiltPages/react/src/paymentFlowCheckoutPages/ApplePayOneTimePaymentCheckout.tsx b/client/prebuiltPages/react/src/paymentFlowCheckoutPages/ApplePayOneTimePaymentCheckout.tsx
+index 842c076..2b9335e 100644
+--- a/client/prebuiltPages/react/src/paymentFlowCheckoutPages/ApplePayOneTimePaymentCheckout.tsx
++++ b/client/prebuiltPages/react/src/paymentFlowCheckoutPages/ApplePayOneTimePaymentCheckout.tsx
+@@ -93,7 +93,8 @@ const ApplePayOneTimePaymentCheckout = () => {
+   try {
+     isApplePayAvailable =
+       typeof window !== "undefined" &&
+-      !!window.ApplePaySession?.canMakePayments() &&
++      typeof ApplePaySession !== "undefined" &&
++      ApplePaySession.canMakePayments() &&
+       isHttps;
+   } catch {
+     isApplePayAvailable = false;
+diff --git a/client/prebuiltPages/react/src/vite-env.d.ts b/client/prebuiltPages/react/src/vite-env.d.ts
+index 11f02fe..4b6a7c9 100644
+--- a/client/prebuiltPages/react/src/vite-env.d.ts
++++ b/client/prebuiltPages/react/src/vite-env.d.ts
+@@ -1 +1,2 @@
+ /// <reference types="vite/client" />
++/// <reference types="applepayjs" />
+diff --git a/server/node/README.md b/server/node/README.md
+index 109bdd7..4929e03 100644
+--- a/server/node/README.md
++++ b/server/node/README.md
+@@ -350,7 +350,7 @@ Accepts serveral optional parameters like currency and customer country code. Ch
+ **Responses:**
+ 
+ - `200 Created`  
+-   Returns the eligible payment methods.
++  Returns the eligible payment methods.
+ 
+   ```json
+   {
+diff --git a/server/node/package.json b/server/node/package.json
+index f9783c1..9b13236 100644
+--- a/server/node/package.json
++++ b/server/node/package.json
+@@ -19,7 +19,7 @@
+   },
+   "license": "Apache-2.0",
+   "dependencies": {
+-    "@dotenvx/dotenvx": "^1.75.1",
++    "@dotenvx/dotenvx": "^2.20.1",
+     "@paypal/paypal-server-sdk": "^2.4.0",
+     "cors": "^2.8.6",
+     "express": "^5.2.1",
+@@ -31,19 +31,19 @@
+     "@ngrok/ngrok": "^1.7.0",
+     "@types/cors": "^2.8.19",
+     "@types/express": "^5.0.6",
+-    "@types/node": "^25.9.2",
+-    "@types/semver": "^7.7.1",
+-    "@types/supertest": "^7.2.0",
+-    "eslint": "^10.5.0",
++    "@types/node": "^26.2.0",
++    "@types/semver": "^7.8.0",
++    "@types/supertest": "^7.2.1",
++    "eslint": "^10.8.1",
+     "eslint-plugin-unicorn": "^65.0.0",
+-    "globals": "^17.7.0",
++    "globals": "^17.9.0",
+     "jiti": "^2.7.0",
+-    "prettier": "^3.8.4",
++    "prettier": "^3.9.6",
+     "semver": "^7.8.5",
+     "supertest": "^7.2.2",
+-    "tsx": "^4.22.4",
++    "tsx": "^4.23.12",
+     "typescript": "^6.0.3",
+-    "typescript-eslint": "^8.62.0",
+-    "vitest": "^4.1.9"
++    "typescript-eslint": "^8.66.0",
++    "vitest": "^4.1.10"
+   }
+ }

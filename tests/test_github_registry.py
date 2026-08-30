@@ -2266,8 +2266,12 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(512000, capsule.max_file_bytes)
         self.assertEqual(300, capsule.max_capsule_files)
         self.assertEqual(1000000, capsule.max_capsule_utf8_bytes)
-        self.assertEqual(320, capsule.max_packet_files)
-        self.assertEqual(1900000, capsule.max_packet_utf8_bytes)
+        self.assertEqual(550, capsule.max_packet_files)
+        self.assertEqual(3000000, capsule.max_packet_utf8_bytes)
+        self.assertEqual(
+            ("24146810ee2bfac4384859a127e11a7631160f0a8ca5079ea47fb2658d865416",),
+            capsule.historical_policy_hashes,
+        )
 
     def test_paypal_mobile_demo_apps_have_reviewed_enabled_commit_policies(self):
         repos = {

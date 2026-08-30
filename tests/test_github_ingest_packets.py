@@ -429,6 +429,44 @@ class GitHubIngestPacketTests(unittest.TestCase):
         self.assertTrue(packet.document["concept_audit_required"])
         self.assertIn("default-branch@bbbbbbb", packet.markdown.decode("utf-8"))
 
+    def test_ref_packet_preserves_historical_policy_hash_override(self):
+        current = self.snapshot(
+            self.current_sha,
+            "current",
+            {
+                "client/button.ts": (
+                    "export const button = 2;\n",
+                    "source-capsule",
+                    "required-root",
+                    "sample-integration",
+                ),
+            },
+        )
+        historical_policy_hash = "c" * 64
+
+        packet = build_ref_ingest_packet(
+            self.root,
+            self.commit_config(),
+            "github-" + ("4" * 20),
+            self.relative(current),
+            RefPacketInput(
+                ref_kind="default-branch",
+                ref_name="main",
+                from_sha="",
+                to_sha=self.current_sha,
+                comparison_manifest="",
+                prior_snapshot_manifest="",
+                upstream_changes=(),
+            ),
+            "queued",
+            capsule_policy_sha256_override=historical_policy_hash,
+        )
+
+        self.assertEqual(
+            historical_policy_hash,
+            packet.document["capsule_policy_sha256"],
+        )
+
     def test_ref_packet_accepts_tagged_tree_capsule_without_release_evidence(self):
         prior = self.snapshot(
             self.prior_sha,
