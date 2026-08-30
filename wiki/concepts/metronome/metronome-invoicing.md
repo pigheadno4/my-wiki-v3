@@ -103,6 +103,8 @@ These results are previews, not finalized, delivered, collectible, or documented
 
 ## Revenue-reporting invoice classification
 
+Metronome's ASC 606 guide says recognition follows satisfaction or control transfer and warns that invoice timing and recognition often differ. Its appendix nevertheless describes on-demand and overage amounts as recognized upon invoicing and a postpaid true-up as recognized on finalization. Preserve those as illustrative reporting treatments rather than a universal trigger: invoice issuance, finalization, usage, drawdown, expiration, or true-up does not by itself prove the merchant's performance-obligation, allocation, variable-consideration, breakage, or recognition conclusion. [[source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition]]
+
 Metronome's financial-reporting guide classifies `CONTRACT_SCHEDULED` invoices as scheduled charges including prepaid purchases, `CONTRACT_USAGE` invoices as usage charges, and `CONTRACT_TRUEUP` invoices as postpaid true-up charges. Invoice service-period timestamps select the target ERP accounting period, `line_items.product_id` maps the amount to a product or ERP SKU, and a populated `line_items.commit_id` joins to `balances.id` so `balances.type` classifies the amount as `credit`, `prepaid`, or `postpaid`. A null commit ID leaves on-demand versus overage classification to client-defined contract or commit metadata. The guide maps `FINALIZED` invoices to recognized-revenue reporting and `DRAFT` invoices to accrued-revenue reporting, with finalized and draft invoices transferred in separate export tables. It does not define metadata completeness, void and correction handling, downstream posting state, journal entries, or whether those status filters satisfy a particular accounting standard or close control.
 
 > [!warning] Revenue-example invoice labels and IDs
@@ -211,6 +213,8 @@ Stripe owns mandate creation and lifecycle. Metronome returns the custom-field v
 
 ## Custom downstream invoice delivery
 
+The custom-field key creation reference says values for customers, contracts, invoices, products, commits, scheduled charges, and subscriptions are passed down to the invoice, and says product custom fields can set Stripe-integration invoice metadata. This is value-propagation guidance, not a side effect of merely creating an allowed key. The page does not define invoice or line-item destination paths, precedence, timing, draft-versus-finalized scope, retroactivity, update or deletion behavior, provider acceptance, payment, tax, accounting, export visibility, or reconciliation. [[source-metronome-api-reference-custom-fields-create-a-custom-field-key]]
+
 Metronome's recommended API pattern for a non-native downstream provider listens for `invoice.finalized`, then uses the webhook's `customer_id` to query `/listInvoices` for finalized invoices in the associated billing period, transforms the returned invoice and line-item fields, and upserts them into the destination. The guide says finalization occurs after the grace period and that `invoice.finalized` is not enabled by default; the refreshed page routes enablement through the Metronome support portal. Its QuickBooks example requires a preexisting downstream customer and at least one item. This is a recommended integration sequence, not an exactly-once or complete synchronization contract: the source does not define webhook ordering or duplicate handling, invoice-list pagination or consistency, how several matches are selected, destination idempotency, partial-failure recovery, replay, downstream status synchronization, payment collection, tax, credit-memo behavior, or reconciliation. [[source-metronome-integrations-invoice-integrations-custom-invoice-integrations]]
 
 ## Account-level marketplace delivery setup
@@ -218,6 +222,8 @@ Metronome's recommended API pattern for a non-native downstream provider listens
 `POST /v1/setUpBillingProvider` creates account-level AWS, Azure, or GCP Marketplace delivery configuration and returns a UUID `delivery_method_id` for later mapping. Its setup success response contains only that identifier; it does not establish customer or contract attachment, provider readiness, invoice routing, marketplace metering, payment collection, tax handling, delivery success, or reconciliation. Provider-specific configuration is open-ended, and the page does not define activation timing, read-after-write visibility, update or rollback, or external-provider validation. [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]]
 
 ## Scheduled provider routing
+
+Customer billing-provider creation can include Stripe-only `unbillable_invoices_configuration`. Matching rules stop invoices from being sent to the associated contract destination, with more-specific rules taking precedence; duplicate rules of the same specificity fail this method with HTTP `400`. The rule description allows omission of `invoice_type` for all invoices, while the schema requires `invoice_type`, so that requiredness is unresolved. Optional `fiat_credit_type_id` narrows currency, and `max_amount` suppresses only totals at or below its positive threshold and is described as requiring that currency ID. These are routing-suppression semantics, not proof of invoice cancellation, provider acceptance, payment, tax, settlement, or reconciliation. [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]]
 
 Scheduled and commit charges can optionally consolidate onto a usage invoice when the exclusive service-period end day matches the scheduled invoice date and the usage invoice has not finalized. Metronome reevaluates this at contract creation and later changes; this does not make the creation-time consolidation setting editable.
 
@@ -245,6 +251,10 @@ Metronome's go-live checklist asks teams to understand the draft-to-grace-period
 - Related platform: [[stripe]]
 
 ## Sources
+
+- [[source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition]] - service and invoice timing inputs, billed-versus-earned separation, appendix recognition examples, and the invoice-versus-accounting-recognition boundary
+
+- [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]] - customer destination creation, Stripe-only invoice-suppression rules, requiredness conflict, duplicate-specificity failure, and downstream outcome boundaries
 
 - [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — configuration-dependent seat-change invoicing and proration, with amount and invoice-lifecycle limits
 

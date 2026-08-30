@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 152
+source_count: 157
 ---
 
 ## Overview
@@ -150,11 +150,17 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 
 ## Knowledge status
 
-- Collected documentation pages: 225
-- Ingested source summaries: 145
-- Raw pages without source summaries: 86
+- Collected documentation pages: 226
+- Official documentation source summaries: 151
+- Raw snapshots without source summaries: 135
 
 ## Sources
+
+- [[source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition]] — ASC 606 five-step product mapping, reporting inputs, timing tensions, worked examples, and accounting-ownership boundary
+- [[source-metronome-api-reference-alerts-create-a-threshold-notification]] — customer threshold creation, conditional fields, evaluation and response conflicts, Plan-surface boundary, and retry unknowns
+- [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]] — customer billing-provider configuration creation, routing identifiers, invoice-suppression rules, and downstream boundaries
+- [[source-metronome-api-reference-custom-fields-create-a-custom-field-key]] — custom-field key creation, entity-scope tensions, uniqueness, invoice propagation, and lifecycle unknowns
+- [[source-metronome-api-reference-custom-fields-delete-a-custom-field-key]] — custom-field key removal, managed-entity scope, value inaccessibility, response boundary, and retry unknowns
 
 - [[source-metronome-api-reference-products-get-a-product]] — single-product identity, state, history, composite configuration, group keys, custom fields, and integration boundaries
 - [[source-metronome-api-reference-products-list-products]] — paginated product catalog, archive filtering, complete-version-history claim, reusable schemas, and documented contradictions

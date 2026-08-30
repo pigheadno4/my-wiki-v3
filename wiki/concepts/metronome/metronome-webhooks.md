@@ -15,6 +15,8 @@ Metronome webhooks deliver HTTP POST notifications when billing and configuratio
 
 ## Delivery model
 
+The threshold-notification create page says threshold notifications trigger webhooks and tells operators to configure endpoints before creation, but it does not define a create-specific payload, emission condition, evaluation-to-delivery latency, destination selection, retry, deduplication, ordering, signature, or failure contract. The create page's narrative and OpenAPI success representations also conflict, so a successful `POST /v1/alerts/create` must not be treated as evidence that evaluation completed or a webhook was emitted or delivered. Dedicated webhook authority remains controlling for at-least-once delivery, retries, duplicate handling, and verification. [[source-metronome-api-reference-alerts-create-a-threshold-notification]] [[source-metronome-guides-platform-configuration-setup-webhooks]]
+
 A receiver must expose a public HTTPS endpoint and return a successful status such as `200 OK`. Responses above `299` trigger exponential-backoff retries that eventually settle at a 15-minute cadence and can continue until two days after the initial attempt. Metronome recommends storing the payload, acknowledging it, and processing it asynchronously.
 
 Retries and multiple configured destinations can produce duplicate deliveries. Consumers should therefore use the notification `id` as a deduplication key.

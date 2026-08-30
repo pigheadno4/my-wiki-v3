@@ -39,6 +39,8 @@ Metronome's Public Beta NetSuite integration supports direct billing and revenue
 
 ## Native Stripe invoicing boundary
 
+The custom-field key creation reference says product custom-field values can be used by the Stripe integration to set invoice metadata. It does not define the metadata key or value mapping, target Stripe object, timing, overwrite precedence, validation, failure handling, retroactivity, delivery, or reconciliation. Creating an allowed key is also separate from assigning a product value and from generating or delivering an invoice, so a successful `addKey` response proves no Stripe-side mutation. [[source-metronome-api-reference-custom-fields-create-a-custom-field-key]]
+
 - Metronome owns usage rating and its invoice record, then creates the corresponding Stripe invoice for payment collection.
 - Connections and mapping rules are configured per Metronome environment and Stripe account.
 - Customer configuration uses `delivery_method_id` to select a Stripe account in a multi-account setup. Contract creation instead selects one of the customer's configured providers with `billing_provider_configuration_id`, obtained from `/getCustomerBillingProviderConfigurations`.
@@ -111,6 +113,8 @@ The architecture overview names payment systems and marketplaces as the contract
 
 ## Customer-provisioning configuration
 
+The dedicated customer mutation `POST /v1/setCustomerBillingProviderConfigurations` can add multiple customer configurations across AWS Marketplace, Stripe, NetSuite, custom, Azure Marketplace, QuickBooks Online, Workday, GCP Marketplace, or Metronome. Delivery is named as direct provider API, AWS SQS, Tackle, or AWS SNS, or selected by account-level UUID `delivery_method_id`; that ID is mandatory for multiple connected Stripe accounts. Provider configuration explicitly permits arbitrary properties and the examples are not closed provider schemas. Creation makes a configuration available for later contract association but proves neither contract selection nor provider readiness, external acceptance, delivery, payment, settlement, tax, or reconciliation. [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]]
+
 The external billing system must be connected before its customer configuration is created. Customer-level AWS configuration alone does not route invoices; a contract must select it. Beta archival makes a configuration reusable elsewhere but immediately removes it from an active contract and stops destination billing, with no replacement allowed on that contract according to this guide.
 
 Customer creation can attach configurations for Stripe, NetSuite, AWS Marketplace, Azure Marketplace, or GCP Marketplace. Each billing configuration requires a provider; delivery can be identified by a delivery-method UUID or a named method such as direct provider delivery, AWS SQS, Tackle, or AWS SNS. Provider-specific configuration is open-ended, and its empty-object default is invalid for most provider/delivery combinations.
@@ -138,6 +142,8 @@ Metronome's native Salesforce integration uses Census as an ETL layer to push Me
 
 
 ## Sources
+
+- [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]] - customer-level provider configuration creation, delivery routes, identifier layers, open provider schema, and downstream authority boundaries
 
 - [[source-metronome-api-reference-settings-list-account-level-billing-providers]] — account-level billing-provider delivery-method enumeration, configuration exposure, pagination, and identifier boundaries
 

@@ -6,6 +6,16 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-30 — Metronome Campaign 31 never-ingested coverage promoted
+
+- Result: five previously unreferenced canonical pages gained new Minimum Sufficient Sources across eight Sol worker attempts and eight full independent Sol reviews; three pages passed on attempt 1, with no targeted review, rejection, or coordinator semantic repair.
+- Sources: [[source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition]], [[source-metronome-api-reference-alerts-create-a-threshold-notification]], [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]], [[source-metronome-api-reference-custom-fields-create-a-custom-field-key]], and [[source-metronome-api-reference-custom-fields-delete-a-custom-field-key]].
+- Review findings: Create Custom Field Key required one complete retry to retain unreconciled entity-applicability and uniqueness-authority boundaries. Create Threshold Notification required two complete retries to restore conditional fields, response and uniqueness conflicts, quote coverage, and the distinct Plan-or-Contract alert surface.
+- Concepts: applied twenty-eight reviewer-approved durable facts and reciprocal links across eleven existing concept pages; no new concept page was required.
+- Coverage after promotion: 226 current English canonical documentation identities remain retained as 310 immutable raw snapshots, with 157 total source summaries, 151 official-documentation summaries, and 135 raw snapshots without source summaries. The pre-campaign planning inventory remains an immutable 80-page snapshot; 75 of those canonical pages now remain without source coverage.
+- Timing and gate: completed in 2,639 seconds (43 minutes 59 seconds), 244 seconds faster than Campaign 30. Final quality and the 9/9 fixed query audit passed, but three of five first-pass approvals and three full semantic retry attempts missed both planned throughput gates.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-31/monitor.md), [quality audit](../tracking/ingest/metronome/metronome-campaign-31/quality-audit.md), and [retrospective](../tracking/ingest/metronome/metronome-campaign-31/retrospective.md).
+
 ## 2026-08-30 — Metronome Campaign 30 five-source refresh promoted
 
 - Result: five refreshed sources approved across seven strong-model worker attempts and seven full independent reviews; three pages passed on attempt 1, with no targeted review, rejection, or coordinator semantic repair.

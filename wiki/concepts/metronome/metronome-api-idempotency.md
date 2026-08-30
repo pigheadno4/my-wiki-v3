@@ -11,6 +11,8 @@ Metronome uses several idempotency mechanisms rather than one universal key. The
 
 ## Mechanisms
 
+`POST /v1/alerts/create` attaches a 1-128 character resource `uniqueness_key` to `CreateCustomerAlertPayload`. Narrative guidance says every threshold notification must have one unique within the organization and may release it during archival, while the payload required array omits the field. Reuse prevents a new record and documents HTTP `409`, although the operation response map lists only `200`. This organizational resource-identity guard is distinct from API-wide POST `Idempotency-Key` result replay. The endpoint and API-wide authority do not define the two keys' interaction or precedence, uniqueness-key normalization, concurrent-creation ordering, release visibility, failed-attempt key consumption, behavior after the header key expires, or recovery after a cached or ambiguous failure. [[source-metronome-api-reference-alerts-create-a-threshold-notification]] [[source-metronome-api-reference-idempotency]]
+
 | Mechanism | Scope | Duplicate or conflict behavior | Documented lifetime |
 | --- | --- | --- | --- |
 | `transaction_id` | Usage events sent through `/ingest` or Segment | Later events with the same ID are ignored | 34 days |
@@ -28,6 +30,12 @@ Customer-commit creation exposes a 1-128 character `uniqueness_key`; reuse after
 > The deprecated Plans credit-grant void endpoint documents `release_uniqueness_key: true`, which resets that grant's uniqueness key for reuse. This qualifies the API-wide overview's statement that release is available only for Alerts. The endpoint does not define release visibility, concurrent reuse, rollback, or interaction with the API-wide `Idempotency-Key` mechanism. [[source-metronome-api-reference-credit-grants-void-a-credit-grant]]
 
 ## Retry and error boundary
+
+`POST /v1/setCustomerBillingProviderConfigurations` creates a batch of customer-level provider configurations and returns configuration records whose `id` is resource identity, not an idempotency key. The separate API-wide `Idempotency-Key` contract applies to this POST and replays the original result for identical same-key parameters, but the endpoint adds no semantics for another or expired key, concurrent mutations, partial batch success or recovery, duplicate resource prevention, read-after-write visibility, or provider-side deduplication and reconciliation. After a cached or ambiguous failure, investigate state rather than assume a changed key is safe. [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]] [[source-metronome-api-reference-idempotency]]
+
+`POST /v1/customFields/addKey` falls under the separate API-wide `Idempotency-Key` contract: identical same-key parameters replay the original result, changed parameters conflict, retention is at least 24 hours, and a cached result can be HTTP `500`. The endpoint documents only HTTP `200` and adds no create-key-specific behavior for another or expired key, concurrent calls, read-after-create visibility, cached-error state, or recovery. Its required `enforce_uniqueness` boolean constrains later custom-field values; it is not a resource `uniqueness_key` or a request-result replay mechanism, and the page does not define duplicate-key creation. [[source-metronome-api-reference-custom-fields-create-a-custom-field-key]] [[source-metronome-api-reference-idempotency]]
+
+`POST /v1/customFields/removeKey` falls under the separate API-wide `Idempotency-Key` contract. Identical same-key parameters replay the original result, but that replay is not fresh proof that the key remains absent or that existing-value inaccessibility has propagated to every read, export, invoice, or integration surface. The endpoint adds no local behavior for an already absent key, another or expired key, concurrent removal or re-creation, read-after-write visibility, or recovery after cached or ambiguous failure. [[source-metronome-api-reference-custom-fields-delete-a-custom-field-key]] [[source-metronome-api-reference-idempotency]]
 
 `POST /v2/contracts/commits/edit` uses required payload `commit_id` to identify an existing commit and returns a generic UUID `data.id` whose meaning is not defined by the endpoint. The separate API-wide `Idempotency-Key` contract applies to this POST and replays the original result for identical same-key parameters; that request-result replay is not a commit-resource uniqueness key or evidence of current commit state. The endpoint adds no behavior for another or expired key, concurrent edits, cached or ambiguous failure, read-after-write visibility, or recovery. [[source-metronome-api-reference-credits-and-commits-edit-a-commit]] [[source-metronome-api-reference-idempotency]]
 
@@ -70,6 +78,8 @@ The assigned product-catalog reference documents `POST /v1/contract-pricing/prod
 - [[metronome-credits-and-commits]] covers uniqueness keys on credit and commit creation.
 
 ## Sources
+
+- [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]] - POST customer-configuration mutation, returned resource identity, API-wide result replay, and endpoint-specific batch, concurrency, and recovery unknowns
 
 - [[source-metronome-api-reference-invoices-regenerate-an-invoice]] - POST invoice regeneration, configured distribution side effect, and endpoint-specific concurrency and ambiguous-failure recovery boundaries
 

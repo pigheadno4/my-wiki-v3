@@ -1,0 +1,83 @@
+{
+  "job_id": "create-threshold-notification-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Create a Threshold Notification\"\ntype: source\ndate_ingested: 2026-08-30\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/alerts/create-a-threshold-notification\"\nraw_files:\n  - \"metronome/api-reference/alerts/create-a-threshold-notification-2026-08-28.md\"\ntags: [metronome, api, alerts, threshold-notifications, webhooks, idempotency]\n---\n\n## Overview\n\nBearer-authenticated `POST /v1/alerts/create` creates a threshold-notification configuration for one customer or all customers. The operation covers spend, usage, invoice-total, credit, commit, and seat-balance signals; it creates an action signal, not an automatic customer-access, collection, or billing intervention.\n\n## Query-critical facts\n\n- When a JSON payload is supplied, `alert_type`, `name`, and numeric `threshold` are required. The enclosing OpenAPI `requestBody` is not marked `required: true`, so omitted-body behavior is not established. The payload schema does not declare `additionalProperties: false`, so unknown-field handling is also unspecified.\n- Supplying UUID `customer_id` scopes the configuration to that customer; omitting it creates a notification for all customers. The twelve documented `alert_type` values span spend, monthly-invoice spend, usage, remaining days, balances or percentages for commits and contract credits, combined credit-and-commit balance, invoice total, and seat balance. The numeric threshold can represent a financial amount, days remaining, or a percentage depending on type; the page does not define denomination, comparison boundary, rounding, or percentage basis.\n- Type-specific fields remain under the top-level payload: `billable_metric_id` selects the metric for `usage_threshold_reached`; `group_values` applies only to `spend_threshold_reached`; `invoice_types_filter` applies only to `invoice_total_reached`; and `alert_specifiers` applies only to the combined contract-credit-and-commit balance type. For `low_remaining_seat_balance_reached`, the description conditionally requires the `seat_filter` object, whose own schema requires nested `seat_group_key` while leaving `seat_group_value` optional. The raw reference remains authoritative for every filter, supported-type list, and nested schema.\n- `evaluate_on_create` defaults to true: true immediately evaluates existing customers already meeting the threshold, while false evaluates only future customers that trigger it. This does not define a completion response, evaluation snapshot, initial state, latency, ordering with concurrent billing data, or whether a webhook is emitted during the create call.\n- Optional 1-128 character `uniqueness_key` is stored as resource identity: reuse prevents another record and documents HTTP `409`, although the operation response map lists only `200`. Separately, the API-wide [[source-metronome-api-reference-idempotency|POST idempotency authority]] applies `Idempotency-Key`: identical same-key parameters replay the original result, changed parameters return `409`, retention is at least 24 hours, and a cached result can be HTTP `500`. The two keys' scope, precedence, failed-attempt consumption, concurrency behavior, and recovery interaction are not defined.\n- The OpenAPI `200` response requires only `data.id`, a UUID identifying the created record. The page does not establish read-after-create visibility, the created notification's initial status, or evaluation outcome in the create response.\n\n## Material boundaries\n\n> [!warning] Response-shape conflict\n> The narrative says a successful response returns a `CustomerAlert` containing configuration and `ok`, `in_alarm`, or `evaluating` customer status, but the operation's `200` schema and example return only `data.id`. Treat only the UUID response shape as the OpenAPI contract and use the dedicated get operation for current customer evaluation state; this page does not reconcile the conflict.\n\nThe page calls evaluation and webhook integration real-time and tells users to configure webhook endpoints before creating notifications. It gives no create-specific evaluation or delivery SLA, payload, destination-selection, retry, deduplication, ordering, signature, or failure guarantee. Dedicated notification guidance documents an ordinary threshold-evaluation cadence and dedicated webhook guidance documents at-least-once delivery; neither turns successful creation or evaluation into automatic access enforcement, payment recovery, invoice finalization, or another downstream action.\n\nBeyond the `uniqueness_key` description's `409`, the operation declares no error responses. It does not define validation failures for incompatible or missing type-specific fields, authorization or not-found behavior, partial creation, rollback, update or archive lifecycle, uniqueness-key release timing, propagation to reads or exports, concurrent creation, or recovery after an ambiguous or cached failure.\n\n## Raw-detail coverage map\n\nUse the exact raw page for the complete twelve-value alert-type enum; every top-level filter and its supported notification types; the `access_type` spellings and QUANTITY/credit-type restriction; custom-field, group-value, seat-filter, invoice-type, and nested alert-specifier schemas; feature annotations; request and response examples; bearer-security declaration; operation ID; and the complete shared OpenAPI tag descriptions. The raw page also preserves the exact narrative-versus-`200` response conflict, conditionally required descriptions, schemas without closed-object declarations, and the absence of an operation-level error catalog.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-alerts-and-notifications]], [[metronome-api-idempotency]], [[metronome-webhooks]]\n- Related sources: [[source-metronome-api-reference-alerts-get-a-threshold-notification]], [[source-metronome-api-reference-alerts-reset-a-threshold-notification]], [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]], [[source-metronome-guides-platform-configuration-setup-webhooks]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/alerts/create-a-threshold-notification-2026-08-28|2026-08-28 snapshot - complete threshold-notification create narrative, request and nested filter schemas, response schema, and OpenAPI metadata]]\n",
+  "quotes": [
+    {
+      "text": "requestBody:\n        description: The details of the threshold notification to create\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/CreateCustomerAlertPayload'",
+      "location": "lines 182-187"
+    },
+    {
+      "text": "CreateCustomerAlertPayload:\n      required:\n        - alert_type\n        - name\n        - threshold",
+      "location": "lines 213-217"
+    },
+    {
+      "text": "evaluate_on_create:\n          type: boolean\n          description: >-\n            If true, the threshold notification will evaluate immediately on\n            customers that already meet the notification threshold. If false, it\n            will only evaluate on future customers that trigger the threshold.\n            Defaults to true.",
+      "location": "lines 277-283"
+    },
+    {
+      "text": "UniquenessKey:\n      type: string\n      minLength: 1\n      maxLength: 128\n      description: >-\n        Prevents the creation of duplicates. If a request to create a record is\n        made with a previously used uniqueness key, a new record will not be\n        created and the request will fail with a 409 error.",
+      "location": "lines 351-358"
+    },
+    {
+      "text": "'200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/Id'",
+      "location": "lines 197-207"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "create-threshold-alert-configuration-and-response-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Customer-configured controls",
+        "proposed_markdown": "### Threshold-notification creation contract\n\n`POST /v1/alerts/create` creates a customer-scoped or all-customer threshold configuration. Within a supplied payload, `alert_type`, `name`, and numeric `threshold` are required; the request-body wrapper is not marked required. Type-specific fields remain under the top-level payload, while `low_remaining_seat_balance_reached` conditionally requires `seat_filter` and that nested object requires `seat_group_key`. `evaluate_on_create` defaults to true and immediately evaluates existing customers already meeting the threshold; false limits evaluation to future customers that trigger it. The page does not define the evaluation snapshot, completion, initial state, or notification timing. Its narrative says the response contains `CustomerAlert` configuration and evaluation status, but the OpenAPI `200` schema and example return only UUID `data.id`; preserve that response-shape conflict. [[source-metronome-api-reference-alerts-create-a-threshold-notification]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Keep requestBody requiredness separate from required payload properties and conditional nested requiredness.",
+          "Do not merge the narrative CustomerAlert response with the OpenAPI data.id response."
+        ]
+      },
+      {
+        "update_id": "create-threshold-alert-two-idempotency-mechanisms",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Mechanisms",
+        "proposed_markdown": "`POST /v1/alerts/create` exposes an optional 1-128 character resource `uniqueness_key`; reuse prevents another record and documents HTTP `409`, although the operation response map lists only `200`. This resource-identity guard is distinct from API-wide POST `Idempotency-Key` result replay. The endpoint and API-wide authority do not define the two keys' interaction or precedence, uniqueness-key scope or normalization, failed-attempt consumption, concurrent creation, release visibility, another- or expired-header-key behavior, or recovery after a cached or ambiguous failure. [[source-metronome-api-reference-alerts-create-a-threshold-notification]] [[source-metronome-api-reference-idempotency]]",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not treat uniqueness_key as request-result replay or Idempotency-Key as proof of fresh alert state.",
+          "The create page mentions release only through archival guidance and does not define the archive operation or release timing."
+        ]
+      },
+      {
+        "update_id": "create-threshold-alert-webhook-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Delivery model",
+        "proposed_markdown": "The threshold-notification create page says threshold notifications trigger webhooks and tells operators to configure endpoints before creation, but it does not define a create-specific payload, emission condition, evaluation-to-delivery latency, destination selection, retry, deduplication, ordering, signature, or failure contract. Successful `POST /v1/alerts/create` returns a configuration UUID under the OpenAPI schema, not evidence that evaluation completed or a webhook was emitted or delivered. Dedicated webhook authority remains controlling for at-least-once delivery, retries, duplicate handling, and verification. [[source-metronome-api-reference-alerts-create-a-threshold-notification]] [[source-metronome-guides-platform-configuration-setup-webhooks]]",
+        "quote_indexes": [
+          2,
+          4
+        ],
+        "warnings": [
+          "Do not convert the page's real-time language into an end-to-end latency, ordering, or downstream-action guarantee."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/alerts/create-a-threshold-notification-2026-08-28.md",
+  "raw_sha256": "b6d89ce893c05c23b814200d6ede3eea03f702c28c2792b9344064900f0f35f3",
+  "status": "candidate_ready"
+}

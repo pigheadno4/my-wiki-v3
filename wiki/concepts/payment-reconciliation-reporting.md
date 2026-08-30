@@ -108,6 +108,8 @@ Metronome documents a billing-data reconciliation pattern that extends beyond ma
 
 ## Sources
 
+- [[source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition]] - product-level and period-specific billing data for merchant-owned ASC 606 workflows, external subledger and ERP routing, and accounting, completeness, and sign-off boundaries
+
 - [[source-metronome-guides-reporting-insights-financial-reporting-revenue-recognition-examples]] — illustrative billing-data revenue scenarios, sample-key conflicts, and accounting-authority boundary
 - [[source-paypal-reports-analytics]] — Reports & Analytics overview, integration options, SFTP automation
 - [[source-paypal-reports-fields-formats]] — Full Activity Download Report field reference (87 fields)

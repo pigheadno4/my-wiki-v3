@@ -46,6 +46,8 @@ The implementation guide states that a customer needs at least one contract befo
 
 ### Stripe customer and contract routing layers
 
+Bearer-authenticated `POST /v1/setCustomerBillingProviderConfigurations` inserts one or more configurations for existing customers. Its supplied wrapper requires `data`; each input requires `billing_provider` and UUID `customer_id`, while `configuration` is an open provider- and delivery-specific object that defaults empty but is invalid for most combinations. A customer may hold several configurations, including several for one destination. Creating another configuration does not replace an existing one or change a contract: the returned customer-configuration `id` is later selected through the distinct contract `billing_provider_configuration_id`, while account-level `delivery_method_id` and provider-specific external customer IDs remain separate identity layers. The endpoint does not define activation, precedence, archival, propagation, read-after-write visibility, or existing-contract and invoice effects. [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]]
+
 A Metronome customer billing configuration selects a connected Stripe account with `delivery_method` for a single-account setup or `delivery_method_id` for a multi-account setup. Contract creation then selects one of the customer's configurations with the payload field `billing_provider_configuration_id`; the guide's surrounding prose instead calls that selector `billing_configuration_id`, so the dedicated contract schema must resolve the naming ambiguity. Adding the configuration to an existing contract is prospective: previously finalized invoices are not sent, and the first Stripe delivery is the in-arrears usage invoice for the period in which the configuration was attached, based on attachment time rather than contract start or configuration-creation time.
 
 ### NetSuite customer and contract routing layers
@@ -58,6 +60,8 @@ On the documented production server `https://api.metronome.com`, top-level beare
 
 
 ## Contract and invoice behavior
+
+For ASC 606-oriented reporting, Metronome's guide treats persistent contract identity, dates, amendments, version history, related-agreement linkage, and CRM or ERP identifiers as inputs to the customer's contract assessment. Usage, charges, and credits should retain contract attribution, but Metronome does not determine whether agreements must be combined, whether a modification is prospective or retrospective, the enforceable period under an opt-out, or the accounting treatment of free periods. Those decisions remain customer-owned accounting conclusions. [[source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition]]
 
 The refreshed customer-commit endpoint is the customer-level path for cross-contract or enterprise-wide commitments; Metronome recommends contract create or edit for standard cases. `applicable_contract_ids` can limit the commit to selected contracts, while the narrative calls an empty value cross-contract and the schema says omission applies to all contracts. The page does not resolve empty-array versus omission behavior or define invalid, archived, duplicate, foreign-customer, or later-created contract IDs, lifecycle visibility, or propagation. [[source-metronome-api-reference-credits-and-commits-create-a-commit]]
 
@@ -216,6 +220,10 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 - Commercial-design planning should make prepaid-versus-arrears terms, seat and usage interaction, commitments and overages, ramp and multi-year structures, exceeded-limit policy, and segment-specific payment terms explicit. The planning guide does not itself establish supported contract fields, lifecycle behavior, or enforcement.
 
 ## Sources
+
+- [[source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition]] - contract identity, amendment and linkage inputs for ASC 606 workflows, with customer-owned combination, modification, enforceable-period, and policy decisions
+
+- [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]] - batched customer billing-provider configuration creation, immediate-parent schema, routing identifiers, non-replacement boundary, and lifecycle unknowns
 
 - [[source-metronome-integrations-invoice-integrations-stripe]] — single- versus multi-account customer routing identifiers, contract selector ambiguity, and prospective first-invoice delivery after configuration attachment
 

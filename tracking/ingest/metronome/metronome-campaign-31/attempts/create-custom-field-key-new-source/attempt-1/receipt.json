@@ -1,0 +1,110 @@
+{
+  "job_id": "create-custom-field-key-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Create a Custom Field Key\"\ntype: source\ndate_ingested: 2026-08-30\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/custom-fields/create-a-custom-field-key\"\nraw_files:\n  - \"metronome/api-reference/custom-fields/create-a-custom-field-key-2026-07-13.md\"\ntags: [metronome, api, custom-fields, metadata, idempotency, invoicing]\n---\n\n## Overview\n\nBearer-authenticated `POST /v1/customFields/addKey` creates an allowed custom-field key for a selected Metronome managed-entity type. The operation defines a key and whether later values must be unique; setting an object-specific value is a separate operation. The page also identifies alert-scoping and invoice-metadata uses, but successful key creation is not evidence that any value has been set, evaluated, or propagated.\n\n## Query-critical facts\n\n- Within a supplied JSON payload, `entity`, `key`, and boolean `enforce_uniqueness` are required. The enclosing OpenAPI `requestBody` is not marked `required: true`, and the payload object does not declare `additionalProperties: false`; omitted-body and unknown-field runtime behavior are therefore not established. The page gives no key syntax, length, normalization, case-sensitivity, namespace, or reserved-name rules.\n- `entity` references `ManagedEntity`, whose 19 documented values are `alert`, `billable_metric`, `charge`, `commit`, `contract_credit`, `contract_product`, `contract`, `customer`, `discount`, `invoice`, `professional_service`, `product`, `rate_card`, `scheduled_charge`, `subscription`, `package_commit`, `package_credit`, `package_subscription`, and `package_scheduled_charge`. The narrative's billable-metric, contract, alert, and Customer examples are illustrative rather than a smaller operation limit. The page does not explain relationships between labels such as product and `contract_product`, credit and `contract_credit`, or package and non-package entities.\n- `enforce_uniqueness` configures a constraint on values later assigned under the key: if uniqueness is enabled, an attempt to set a value that already exists fails. This page does not define the comparison or entity scope, treatment of null or empty values, normalization, archived-object behavior, when the constraint becomes active, whether the failed value belongs to the same or another object type, or an error status or body for that later failure.\n- Custom-field values on commits, credits, and contracts can scope alert evaluation. Product custom fields can set Stripe-integration invoice metadata, and values for customers, contracts, invoices, products, commits, scheduled charges, and subscriptions are described as passed down to the invoice. The page does not define destination field paths, precedence, timing, draft-versus-finalized behavior, retroactivity, update or deletion propagation, export visibility, downstream acceptance, or reconciliation; creating the key alone does not trigger these outcomes.\n- The operation documents only HTTP `200 Success`, with no response content schema or example. It gives no create-key failure catalog, duplicate-key behavior, authorization or validation mapping, atomicity, read-after-create visibility, concurrent-create ordering, update or deletion lifecycle, or recovery after an ambiguous result.\n- Separately, the API-wide [[source-metronome-api-reference-idempotency|POST idempotency authority]] supports `Idempotency-Key` on all POST endpoints: after a request begins execution, an identical same-key retry returns the persisted original result, changed parameters return HTTP `409`, keys are retained for at least 24 hours, and a cached result can be HTTP `500`. The create-key page adds no endpoint-specific rule for another or expired key, concurrent calls, cached-error state, or reconciliation. Its `enforce_uniqueness` flag is a future value constraint, not an idempotency key or create-request replay mechanism.\n\n## Material boundaries and tensions\n\n- The page alternates between broad managed-entity language, a Customer use example, prose terms such as credits and products, and the more granular `ManagedEntity` enum. Preserve the exact enum as the request-schema authority without inferring undocumented equivalence, inheritance, or propagation among those labels.\n- The documented uniqueness failure occurs when a later value is set, not necessarily when the key is created. The page does not establish whether creating a duplicate key succeeds, conflicts, or changes an existing definition, nor whether `enforce_uniqueness` can later be changed.\n- Alert scoping and invoice propagation describe uses of set custom-field values. A successful empty-schema `200` from `addKey` proves neither that a value exists nor that an alert, invoice, Stripe object, data export, or external-system record has changed.\n\n## Raw-detail coverage map\n\nUse the exact raw page for the complete `ManagedEntity` enum and its `professional_service` vendor annotation; operation path, method, operation ID, bearer-security declaration, request description, required payload-property list, example payload, uniqueness wording, alert and invoice usage guidance, sparse success response, and shared OpenAPI tag descriptions. The raw page also preserves the absent operation-level request-body required marker, absent closed-object declaration, absent response body schema, and absent create-key error catalog. Use the dedicated custom-fields overview and value-mutation references for object-value persistence and lifecycle, the dedicated idempotency authority for POST retry guarantees, and dedicated alert, invoice, Stripe-integration, and export sources for downstream behavior.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-custom-fields]], [[metronome-api-idempotency]], [[metronome-invoicing]]\n- Supporting concepts: [[metronome-alerts-and-notifications]], [[metronome-integrations]]\n- Related sources: [[source-metronome-api-reference-custom-fields]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/custom-fields/create-a-custom-field-key-2026-07-13|2026-07-13 snapshot \u2014 custom-field key creation schema, managed-entity scope, uniqueness constraint, downstream uses, and response boundary]]\n",
+  "quotes": [
+    {
+      "text": "### Use this endpoint to:\n- Create a new custom field key for Customer objects in Metronome. You can then use the Set Custom Field Values endpoint to set the value of this key for a specific customer. \n- Specify whether the key should enforce uniqueness. If the key is set to enforce uniqueness and you attempt to set a custom field value for the key that already exists, it will fail.",
+      "location": "lines 15-17"
+    },
+    {
+      "text": "### Usage guidelines:\n- Custom fields set on commits, credits, and contracts can be used to scope alert evaluation. For example, you can create a spend threshold alert that only considers spend associated with contracts with custom field key `contract_type` and value `paygo`\n- Custom fields set on products can be used in the Stripe integration to set metadata on invoices.\n- Custom fields for customers, contracts, invoices, products, commits, scheduled charges, and subscriptions are passed down to the invoice.",
+      "location": "lines 19-22"
+    },
+    {
+      "text": "requestBody:\n        description: Add a key to the allow list for an entity\n        content:\n          application/json:\n            schema:\n              type: object\n              required:\n                - entity\n                - key\n                - enforce_uniqueness\n              properties:\n                entity:\n                  $ref: '#/components/schemas/ManagedEntity'\n                key:\n                  type: string\n                enforce_uniqueness:\n                  type: boolean",
+      "location": "lines 142-158"
+    },
+    {
+      "text": "ManagedEntity:\n      type: string\n      enum:\n        - alert\n        - billable_metric\n        - charge\n        - commit\n        - contract_credit\n        - contract_product\n        - contract\n        - customer\n        - discount\n        - invoice\n        - professional_service\n        - product\n        - rate_card\n        - scheduled_charge\n        - subscription\n        - package_commit\n        - package_credit\n        - package_subscription\n        - package_scheduled_charge",
+      "location": "lines 168-189"
+    },
+    {
+      "text": "responses:\n        '200':\n          description: Success",
+      "location": "lines 163-165"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "create-custom-field-key-contract-and-managed-entity-scope",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Entity scope and persistence",
+        "proposed_markdown": "### Custom-field key creation contract\n\n`POST /v1/customFields/addKey` adds an allowed custom-field key for one selected `ManagedEntity`. Within a supplied payload, `entity`, `key`, and boolean `enforce_uniqueness` are required, while the enclosing request body is not marked required and the object is not explicitly closed to unknown properties. The 19-value entity schema covers alerts, billable metrics, charges, commits, contract credits and products, contracts, customers, discounts, invoices, professional services, products, rate cards, scheduled charges, subscriptions, and four package entity types. The page does not explain relationships between prose labels such as credit or product and schema labels such as `contract_credit` or `contract_product`. `enforce_uniqueness` governs later value assignment: setting an already-existing value fails, but the page does not define scope, normalization, archived-object behavior, activation timing, or an error response for that failure. The create operation itself lists only an empty-schema HTTP `200` and does not define duplicate-key behavior, visibility, concurrency, or lifecycle. [[source-metronome-api-reference-custom-fields-create-a-custom-field-key]]",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep requestBody requiredness separate from the three required properties inside a supplied payload.",
+          "Do not import the overview's archived-object value behavior into this endpoint's create-key contract or infer equivalence among managed-entity labels."
+        ]
+      },
+      {
+        "update_id": "create-custom-field-key-api-idempotency-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Retry and error boundary",
+        "proposed_markdown": "`POST /v1/customFields/addKey` falls under the separate API-wide `Idempotency-Key` contract: identical same-key parameters replay the original result, changed parameters conflict, retention is at least 24 hours, and a cached result can be HTTP `500`. The endpoint documents only HTTP `200` and adds no create-key-specific behavior for another or expired key, concurrent calls, read-after-create visibility, cached-error state, or recovery. Its required `enforce_uniqueness` boolean constrains later custom-field values; it is not a resource `uniqueness_key` or a request-result replay mechanism, and the page does not define duplicate-key creation. [[source-metronome-api-reference-custom-fields-create-a-custom-field-key]] [[source-metronome-api-reference-idempotency]]",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "Do not conflate enforce_uniqueness with either a resource uniqueness_key or the Idempotency-Key header.",
+          "The endpoint supplies no evidence that switching keys after an ambiguous or cached failure is safe."
+        ]
+      },
+      {
+        "update_id": "create-custom-field-key-invoice-propagation-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Custom downstream invoice delivery",
+        "proposed_markdown": "The custom-field key creation reference says values for customers, contracts, invoices, products, commits, scheduled charges, and subscriptions are passed down to the invoice, and says product custom fields can set Stripe-integration invoice metadata. This is value-propagation guidance, not a side effect of merely creating an allowed key. The page does not define invoice or line-item destination paths, precedence, timing, draft-versus-finalized scope, retroactivity, update or deletion behavior, provider acceptance, payment, tax, accounting, export visibility, or reconciliation. [[source-metronome-api-reference-custom-fields-create-a-custom-field-key]]",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "Do not treat successful key creation as proof that an invoice or downstream Stripe object changed.",
+          "Preserve the source's exact entity list and do not generalize propagation to every ManagedEntity enum value."
+        ]
+      },
+      {
+        "update_id": "create-custom-field-key-alert-scope-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Customer-configured controls",
+        "proposed_markdown": "The custom-field key creation page says values on commits, credits, and contracts can scope alert evaluation and illustrates a spend threshold limited to contracts with `contract_type=paygo`. Creating the key does not set that value or create, evaluate, reset, archive, or deliver an alert. The page does not define filter matching, missing-value treatment, evaluation timing, state, webhook delivery, or enforcement behavior; dedicated alert and webhook authorities remain controlling. [[source-metronome-api-reference-custom-fields-create-a-custom-field-key]]",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "Keep key creation, value assignment, alert configuration, evaluation, and webhook delivery as separate operations and authorities."
+        ]
+      },
+      {
+        "update_id": "create-custom-field-key-stripe-invoice-metadata-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Native Stripe invoicing boundary",
+        "proposed_markdown": "The custom-field key creation reference says product custom-field values can be used by the Stripe integration to set invoice metadata. It does not define the metadata key or value mapping, target Stripe object, timing, overwrite precedence, validation, failure handling, retroactivity, delivery, or reconciliation. Creating an allowed key is also separate from assigning a product value and from generating or delivering an invoice, so a successful `addKey` response proves no Stripe-side mutation. [[source-metronome-api-reference-custom-fields-create-a-custom-field-key]]",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "Do not convert this page's usage statement into a guarantee of Stripe invoice creation, acceptance, or metadata visibility."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/custom-fields/create-a-custom-field-key-2026-07-13.md",
+  "raw_sha256": "54ffdb826b8aeddafd3226aa1e7e3b8b6ca41835ea27cddefdcf478daf9e5231",
+  "status": "candidate_ready"
+}

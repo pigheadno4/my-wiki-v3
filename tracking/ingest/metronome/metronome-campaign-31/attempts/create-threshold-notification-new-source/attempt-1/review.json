@@ -1,0 +1,33 @@
+{
+  "job_id": "create-threshold-notification-new-source",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Complete independent review against the full 451-line raw at verified SHA-256 b6d89ce893c05c23b814200d6ede3eea03f702c28c2792b9344064900f0f35f3, the candidate, receipt, suggestions, API-wide idempotency authority, relevant alert, webhook, idempotency concepts and reciprocal source routes found the Minimum Sufficient Source mechanically valid but semantically incomplete. All five grounding quotes are byte-exact within their stated line ranges, candidate and receipt are identical, suggestions and receipt are equal, the canonical URL and exact path-qualified raw backlink are correct, and the coverage map is otherwise broad. Approval is blocked because the candidate calls uniqueness_key optional and its scope undocumented even though the page's usage guidance says every threshold notification must have a key unique within the organization while the payload required array omits it; that narrative/schema contradiction and documented organizational scope must be preserved. It also omits the page's narrative conditional requirements for billable_metric_id on usage notifications and credit_type_id on credit-based notifications, and incorrectly says denomination is undefined even though credit_type_id selects the pricing unit or currency and defaults to USD; the schema does not place either field in its required array, so the scope conflict must remain explicit. The response warning improperly directs readers to treat only data.id as the contract rather than preserving the unresolved narrative CustomerAlert versus OpenAPI data.id conflict without claiming observed runtime authority. Finally, every shared proposal has an evidence-closure defect: the alerts proposal's selected quotes do not cover customer scope or the type-specific and seat-filter claims, the idempotency proposal's quotes do not show uniqueness_key attached to this payload or its organization scope, and the webhook proposal's quotes do not cover the page's webhook statements.",
+  "required_changes": [
+    "Correct the source and the alert/idempotency proposals to preserve the uniqueness_key authority conflict: the usage guidance says each threshold notification must have a uniqueness_key unique within the organization, while CreateCustomerAlertPayload does not list uniqueness_key as required. Retain the 1-128 character and duplicate-409 facts, the distinction from Idempotency-Key replay, and only the genuinely undocumented interaction, normalization, concurrency, release-visibility, failed-attempt, expiry, and recovery behavior.",
+    "Add the type-specific requiredness and denomination boundary to the source and the primary alerts proposal: narrative guidance says billable_metric_id is required for usage notifications and credit_type_id for credit-based notifications, but neither appears in the payload required array; credit_type_id selects the pricing unit or currency and defaults to USD. Do not state that denomination is wholly undefined, and keep these narrative conditions distinct from seat_filter's description-level requirement and its nested seat_group_key required array.",
+    "Revise the response-shape warning to preserve, without resolving as observed runtime truth, the narrative claim that success returns CustomerAlert configuration and evaluation status versus the OpenAPI 200 schema and example returning only UUID data.id. It may route current evaluation lookup to the dedicated get source, but must not elevate either conflicting representation beyond its documented scope.",
+    "Close shared-evidence coverage while preserving all update IDs, targets, anchors, and supported meaning: select byte-exact evidence for the alerts proposal's customer scope and type-specific or seat-filter claims, for the idempotency proposal's payload attachment plus organizational uniqueness scope and schema conflict, and for the webhook proposal's trigger and pre-configuration statements. Also reword the overview so the endpoint creates a configuration and a later threshold notification or webhook is the merchant action signal."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "full",
+  "shared_update_decisions": [
+    {
+      "update_id": "create-threshold-alert-configuration-and-response-boundary",
+      "verdict": "rejected",
+      "reason": "The proposal preserves payload-wrapper requiredness, seat-filter nesting, evaluate_on_create, and the response conflict, but it omits the narrative conditional requirements for billable_metric_id and credit_type_id and its selected quotes do not cover customer scope or the type-specific and seat-filter claims."
+    },
+    {
+      "update_id": "create-threshold-alert-two-idempotency-mechanisms",
+      "verdict": "rejected",
+      "reason": "It correctly distinguishes resource uniqueness from POST result replay, but falsely says uniqueness-key scope is undocumented, omits the usage-guidance versus required-array conflict, and its selected quotes show only the standalone component rather than uniqueness_key attached to this endpoint payload or the documented organization scope."
+    },
+    {
+      "update_id": "create-threshold-alert-webhook-boundary",
+      "verdict": "rejected",
+      "reason": "Its webhook and successful-create boundaries are semantically sound, but selected quotes 2 and 4 cover evaluate_on_create and the 200 response only; they do not ground the proposal's endpoint-local webhook-trigger and configure-before-creation claims."
+    }
+  ],
+  "reviewer_identity": "c31-r-threshold",
+  "reviewer_model": "gpt-5.6-sol-high"
+}

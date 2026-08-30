@@ -1,0 +1,53 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "create-threshold-alert-configuration-and-response-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Customer-configured controls",
+      "proposed_markdown": "### Threshold-notification creation contract\n\n`POST /v1/alerts/create` creates a customer-scoped or all-customer threshold configuration. Within a supplied payload, `alert_type`, `name`, and numeric `threshold` are required; the request-body wrapper is not marked required. Type-specific fields remain under the top-level payload, while `low_remaining_seat_balance_reached` conditionally requires `seat_filter` and that nested object requires `seat_group_key`. `evaluate_on_create` defaults to true and immediately evaluates existing customers already meeting the threshold; false limits evaluation to future customers that trigger it. The page does not define the evaluation snapshot, completion, initial state, or notification timing. Its narrative says the response contains `CustomerAlert` configuration and evaluation status, but the OpenAPI `200` schema and example return only UUID `data.id`; preserve that response-shape conflict. [[source-metronome-api-reference-alerts-create-a-threshold-notification]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "Keep requestBody requiredness separate from required payload properties and conditional nested requiredness.",
+        "Do not merge the narrative CustomerAlert response with the OpenAPI data.id response."
+      ]
+    },
+    {
+      "update_id": "create-threshold-alert-two-idempotency-mechanisms",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Mechanisms",
+      "proposed_markdown": "`POST /v1/alerts/create` exposes an optional 1-128 character resource `uniqueness_key`; reuse prevents another record and documents HTTP `409`, although the operation response map lists only `200`. This resource-identity guard is distinct from API-wide POST `Idempotency-Key` result replay. The endpoint and API-wide authority do not define the two keys' interaction or precedence, uniqueness-key scope or normalization, failed-attempt consumption, concurrent creation, release visibility, another- or expired-header-key behavior, or recovery after a cached or ambiguous failure. [[source-metronome-api-reference-alerts-create-a-threshold-notification]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not treat uniqueness_key as request-result replay or Idempotency-Key as proof of fresh alert state.",
+        "The create page mentions release only through archival guidance and does not define the archive operation or release timing."
+      ]
+    },
+    {
+      "update_id": "create-threshold-alert-webhook-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Delivery model",
+      "proposed_markdown": "The threshold-notification create page says threshold notifications trigger webhooks and tells operators to configure endpoints before creation, but it does not define a create-specific payload, emission condition, evaluation-to-delivery latency, destination selection, retry, deduplication, ordering, signature, or failure contract. Successful `POST /v1/alerts/create` returns a configuration UUID under the OpenAPI schema, not evidence that evaluation completed or a webhook was emitted or delivered. Dedicated webhook authority remains controlling for at-least-once delivery, retries, duplicate handling, and verification. [[source-metronome-api-reference-alerts-create-a-threshold-notification]] [[source-metronome-guides-platform-configuration-setup-webhooks]]",
+      "quote_indexes": [
+        2,
+        4
+      ],
+      "warnings": [
+        "Do not convert the page's real-time language into an end-to-end latency, ordering, or downstream-action guarantee."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

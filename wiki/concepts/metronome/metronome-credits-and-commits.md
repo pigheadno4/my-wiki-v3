@@ -242,6 +242,8 @@ A merchant can create `low_remaining_commit_balance_reached` for a customer, cre
 
 ## Sources
 
+- [[source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition]] - ASC 606-oriented prepaid and postpaid, drawdown, true-up, expiration, rollover, breakage, overage, and free-credit examples under an explicit non-prescriptive accounting disclaimer
+
 - [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — seat-change credit release, customer/contract versus seat-scoped threshold boundary, and per-seat current-balance and ledger-history navigation
 
 - [[source-metronome-api-reference-credits-and-commits-disable-trueup-for-commit]] — bearer-secured postpaid true-up invoice suppression, payload requiredness distinction, success and error envelopes, API-wide idempotency context, and lifecycle unknowns

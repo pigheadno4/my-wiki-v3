@@ -1,0 +1,116 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "set-customer-billing-provider-config-new-source-customers-routing-layers",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Stripe customer and contract routing layers",
+      "proposed_markdown": "Bearer-authenticated `POST /v1/setCustomerBillingProviderConfigurations` inserts one or more configurations for existing customers. Its supplied wrapper requires `data`; each input requires `billing_provider` and UUID `customer_id`, while `configuration` is an open provider- and delivery-specific object that defaults empty but is invalid for most combinations. A customer may hold several configurations, including several for one destination. Creating another configuration does not replace an existing one or change a contract: the returned customer-configuration `id` is later selected through the distinct contract `billing_provider_configuration_id`, while account-level `delivery_method_id` and provider-specific external customer IDs remain separate identity layers. The endpoint does not define activation, precedence, archival, propagation, read-after-write visibility, or existing-contract and invoice effects. [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "Keep customer configuration creation separate from contract selection and scheduled provider change; do not describe this endpoint as replacing a route."
+      ]
+    },
+    {
+      "update_id": "set-customer-billing-provider-config-new-source-customers-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]] - batched customer billing-provider configuration creation, immediate-parent schema, routing identifiers, non-replacement boundary, and lifecycle unknowns",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "set-customer-billing-provider-config-new-source-integrations-provider-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Customer-provisioning configuration",
+      "proposed_markdown": "The dedicated customer mutation `POST /v1/setCustomerBillingProviderConfigurations` can add multiple customer configurations across AWS Marketplace, Stripe, NetSuite, custom, Azure Marketplace, QuickBooks Online, Workday, GCP Marketplace, or Metronome. Delivery is named as direct provider API, AWS SQS, Tackle, or AWS SNS, or selected by account-level UUID `delivery_method_id`; that ID is mandatory for multiple connected Stripe accounts. Provider configuration explicitly permits arbitrary properties and the examples are not closed provider schemas. Creation makes a configuration available for later contract association but proves neither contract selection nor provider readiness, external acceptance, delivery, payment, settlement, tax, or reconciliation. [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]]",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": [
+        "Do not infer provider-method compatibility or external platform guarantees from Metronome's delivery-method descriptions and examples."
+      ]
+    },
+    {
+      "update_id": "set-customer-billing-provider-config-new-source-integrations-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]] - customer-level provider configuration creation, delivery routes, identifier layers, open provider schema, and downstream authority boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "set-customer-billing-provider-config-new-source-invoicing-suppression-routing",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Scheduled provider routing",
+      "proposed_markdown": "Customer billing-provider creation can include Stripe-only `unbillable_invoices_configuration`. Matching rules stop invoices from being sent to the associated contract destination, with more-specific rules taking precedence; duplicate rules of the same specificity fail this method with HTTP `400`. The rule description allows omission of `invoice_type` for all invoices, while the schema requires `invoice_type`, so that requiredness is unresolved. Optional `fiat_credit_type_id` narrows currency, and `max_amount` suppresses only totals at or below its positive threshold and is described as requiring that currency ID. These are routing-suppression semantics, not proof of invoice cancellation, provider acceptance, payment, tax, settlement, or reconciliation. [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]]",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Preserve the intra-page conflict between `invoice_type` being schema-required and the description's all-invoices behavior when omitted."
+      ]
+    },
+    {
+      "update_id": "set-customer-billing-provider-config-new-source-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]] - customer destination creation, Stripe-only invoice-suppression rules, requiredness conflict, duplicate-specificity failure, and downstream outcome boundaries",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "set-customer-billing-provider-config-new-source-api-idempotency-route",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "`POST /v1/setCustomerBillingProviderConfigurations` creates a batch of customer-level provider configurations and returns configuration records whose `id` is resource identity, not an idempotency key. The separate API-wide `Idempotency-Key` contract applies to this POST and replays the original result for identical same-key parameters, but the endpoint adds no semantics for another or expired key, concurrent mutations, partial batch success or recovery, duplicate resource prevention, read-after-write visibility, or provider-side deduplication and reconciliation. After a cached or ambiguous failure, investigate state rather than assume a changed key is safe. [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "Keep API-wide request-result replay separate from the returned customer-configuration resource identity and endpoint-specific batch and downstream unknowns."
+      ]
+    },
+    {
+      "update_id": "set-customer-billing-provider-config-new-source-api-idempotency-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]] - POST customer-configuration mutation, returned resource identity, API-wide result replay, and endpoint-specific batch, concurrency, and recovery unknowns",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

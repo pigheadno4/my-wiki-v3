@@ -10,10 +10,10 @@
 
 | State | Count |
 | --- | ---: |
-| English canonical documentation pages collected | 225 |
+| English canonical documentation pages collected | 226 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 152 |
-| Raw pages without source summaries | 155 |
+| Source summaries ingested | 157 |
+| Raw snapshots without source summaries | 135 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -22,6 +22,12 @@ Operational evidence:
 - [2026-07-13 collection manifest](../tracking/collections/metronome/runs/2026-07-13T100930-manifest.md)
 
 ## Sources
+
+- [[source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition]] — ASC 606 product mapping, reporting and reconciliation inputs, timing tensions, examples, and accounting-authority limits
+- [[source-metronome-api-reference-alerts-create-a-threshold-notification]] — customer threshold configuration, schema boundaries, evaluation and response conflicts, and distinct Plan alert surface
+- [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]] — customer provider-configuration creation, routing layers, Stripe suppression rules, and lifecycle unknowns
+- [[source-metronome-api-reference-custom-fields-create-a-custom-field-key]] — key allowlisting, entity-applicability tension, uniqueness, downstream invoice use, and response limits
+- [[source-metronome-api-reference-custom-fields-delete-a-custom-field-key]] — key removal, managed-entity scope, existing-value inaccessibility, and propagation limits
 
 - [[source-metronome-api-reference-products-get-a-product]] — single-product state and update history, composite configuration, group keys, custom fields, and integration boundaries
 - [[source-metronome-api-reference-products-list-products]] — paginated catalog retrieval, archive filtering, complete-version-history claim, product schemas, and contradictions

@@ -1,0 +1,64 @@
+{
+  "job_id": "delete-custom-field-key-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Delete a Custom Field Key\"\ntype: source\ndate_ingested: 2026-08-30\ncanonical_url: \"https://docs.metronome.com/api-reference/custom-fields/delete-a-custom-field-key\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/custom-fields/delete-a-custom-field-key-2026-07-13.md\"\ntags: [metronome, api-reference, custom-fields, lifecycle, idempotency]\n---\n\n## Overview\n\nThis API reference documents the bearer-authenticated production `POST /v1/customFields/removeKey` mutation. It removes one key from the custom-field allowlist for one managed entity type, blocking future use across that entity type and making existing values inaccessible; it does not establish physical data erasure.\n\n## Query-critical facts\n\n- The operation identifies the allowlist entry by `entity` plus `key`. If a JSON payload is supplied, its object schema requires both properties; `key` is a string and `entity` references `ManagedEntity`. The enclosing `requestBody` itself is not marked required, and the request object has no explicit `additionalProperties` policy, so omitted-body and unknown-field behavior are not established.\n- `ManagedEntity` is a string enum covering `alert`, `billable_metric`, `charge`, `commit`, `contract_credit`, `contract_product`, `contract`, `customer`, `discount`, `invoice`, `professional_service`, `product`, `rate_card`, `scheduled_charge`, `subscription`, `package_commit`, `package_credit`, `package_subscription`, and `package_scheduled_charge`. The `professional_service` enum member carries client-specific `x-mint-enum` metadata whose availability meaning is not explained.\n- Removal is scoped to the selected entity type and applies across all its instances: the key cannot be used in the future, and values already set under it become inaccessible. The page does not say those values are physically erased, whether they remain in storage or exports, or whether re-adding the key restores access.\n- The operation documents only HTTP `200` with description `Success`; it supplies no response-body schema, returned deletion record, affected-instance count, or explicit error response. A successful response therefore does not expose which historical values became inaccessible or prove propagation to every read, export, invoice, or integration surface.\n- The separate API-wide authority applies `Idempotency-Key` to all POST endpoints: identical same-key parameters replay the original result, changed parameters conflict, keys persist for at least 24 hours, and cached results can include HTTP `500`. This endpoint adds no remove-key-specific behavior for an already absent key, another or expired key, concurrent removal or re-creation, read-after-write visibility, or recovery after cached or ambiguous failure.\n\n## Material boundaries and contradictions\n\n> [!warning] Delete label versus documented lifecycle effect\n> The title and summary call this operation a delete, while its description and request text define removal from an allowlist. The durable documented effects are prevention of future use and inaccessibility of existing values; the page does not establish irreversible value deletion, retention duration, or restoration behavior.\n\nThe endpoint does not define authorization beyond bearer authentication, environment-to-environment scope, atomicity across entity instances, propagation timing, audit history, effects on finalized historical artifacts, partial failure, or ordering against value writes and key creation. The API-wide request-result replay contract must not be treated as fresh proof that allowlist state or downstream visibility has converged.\n\n## Raw-detail coverage map\n\n| Raw detail category | Exact raw coverage |\n| --- | --- |\n| Operation identity and authority | Production server, bearer security, `POST /v1/customFields/removeKey`, Custom fields tag, summary, and `disableCustomFieldKey-v1` operation ID |\n| Request identity and requiredness | Enclosing request-body description, JSON object schema, payload-required `entity` and `key`, string key type, and customer-key example |\n| Managed-entity applicability | Complete 19-value `ManagedEntity` enum and the unexplained client-specific metadata attached to `professional_service` |\n| Lifecycle and propagation | Selected-entity allowlist removal, future-use prevention across all instances, existing-value inaccessibility, and undocumented erasure, restoration, timing, and downstream visibility |\n| Result, failure, and retry | Sole HTTP `200` description, absent response/error schemas, separate API-wide POST idempotency authority, and endpoint-local concurrency and recovery unknowns |\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-custom-fields]], [[metronome-api-idempotency]]\n- Related sources: [[source-metronome-api-reference-custom-fields]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/custom-fields/delete-a-custom-field-key-2026-07-13|2026-07-13 snapshot - remove-key identity, managed-entity scope, lifecycle effect, request schema, and success boundary]]\n",
+  "quotes": [
+    {
+      "text": "Removes a custom field key from the allowlist for a specific entity type, preventing future use of that key across all instances of the entity. Existing values for this key on entity instances will no longer be accessible once the key is removed.",
+      "location": "raw/metronome/api-reference/custom-fields/delete-a-custom-field-key-2026-07-13.md:11 (allowlist-removal scope, future-use prevention, and existing-value inaccessibility)"
+    },
+    {
+      "text": "  /v1/customFields/removeKey:\n    post:\n      tags:\n        - Custom fields\n      summary: Delete a custom field key\n      description: >\n        Removes a custom field key from the allowlist for a specific entity\n        type, preventing future use of that key across all instances of the\n        entity. Existing values for this key on entity instances will no longer\n        be accessible once the key is removed.\n      operationId: disableCustomFieldKey-v1",
+      "location": "raw/metronome/api-reference/custom-fields/delete-a-custom-field-key-2026-07-13.md:88-98 (POST path, delete label, documented lifecycle effect, and operation identity)"
+    },
+    {
+      "text": "      requestBody:\n        description: Remove a key from the allow list for an entity\n        content:\n          application/json:\n            schema:\n              type: object\n              required:\n                - entity\n                - key\n              properties:\n                entity:\n                  $ref: '#/components/schemas/ManagedEntity'\n                key:\n                  type: string\n            example:\n              entity: customer\n              key: x_account_id",
+      "location": "raw/metronome/api-reference/custom-fields/delete-a-custom-field-key-2026-07-13.md:99-115 (request-body marker, payload requiredness, entity/key schema, and example)"
+    },
+    {
+      "text": "      responses:\n        '200':\n          description: Success\ncomponents:\n  schemas:\n    ManagedEntity:\n      type: string\n      enum:\n        - alert\n        - billable_metric\n        - charge\n        - commit\n        - contract_credit\n        - contract_product\n        - contract\n        - customer\n        - discount\n        - invoice\n        - professional_service\n        - product\n        - rate_card\n        - scheduled_charge\n        - subscription\n        - package_commit\n        - package_credit\n        - package_subscription\n        - package_scheduled_charge\n      x-mint-enum:\n        professional_service:\n          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2",
+      "location": "raw/metronome/api-reference/custom-fields/delete-a-custom-field-key-2026-07-13.md:116-145 (success boundary, complete managed-entity enum, and client-specific extension metadata)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "delete-custom-field-key-lifecycle-and-managed-entity-scope",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Entity scope and persistence",
+        "proposed_markdown": "`POST /v1/customFields/removeKey` removes an `entity` and `key` pair from the custom-field allowlist. Within a supplied payload both properties are required, and `entity` is selected from the endpoint's 19-value managed-entity enum. Removal prevents future use across every instance of that entity type and makes existing values inaccessible, but the page does not say that stored values are physically erased, whether historical exports or invoices retain them, or whether re-adding the key restores access. The enclosing request body is not marked required, unknown-property behavior is unspecified, and the sole documented response is HTTP `200` without a response schema. [[source-metronome-api-reference-custom-fields-delete-a-custom-field-key]]",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep the operation scoped to the selected managed entity type; do not generalize allowlist removal into physical erasure, cross-entity deletion, or irreversible loss.",
+          "Preserve the distinction between payload-required properties and the enclosing request body, which is not marked required."
+        ]
+      },
+      {
+        "update_id": "delete-custom-field-key-api-wide-idempotency-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Retry and error boundary",
+        "proposed_markdown": "`POST /v1/customFields/removeKey` falls under the separate API-wide `Idempotency-Key` contract. Identical same-key parameters replay the original result, but that replay is not fresh proof that the key remains absent or that existing-value inaccessibility has propagated to every read, export, invoice, or integration surface. The endpoint adds no local behavior for an already absent key, another or expired key, concurrent removal or re-creation, read-after-write visibility, or recovery after cached or ambiguous failure. [[source-metronome-api-reference-custom-fields-delete-a-custom-field-key]] [[source-metronome-api-reference-idempotency]]",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "Attribute replay, changed-parameter conflict, retention, and cached-error behavior to the separate API-wide idempotency authority, not to this endpoint page.",
+          "Do not treat replay of the original HTTP result as a fresh state read or propagation guarantee."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/custom-fields/delete-a-custom-field-key-2026-07-13.md",
+  "raw_sha256": "271549e978d195fc8294289cf7343257c3f2c9fac6554c40b7e6f19d7af62e10",
+  "status": "candidate_ready"
+}

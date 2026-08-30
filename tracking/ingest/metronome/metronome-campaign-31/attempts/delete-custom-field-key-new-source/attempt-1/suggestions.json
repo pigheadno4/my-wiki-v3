@@ -1,0 +1,38 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "delete-custom-field-key-lifecycle-and-managed-entity-scope",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Entity scope and persistence",
+      "proposed_markdown": "`POST /v1/customFields/removeKey` removes an `entity` and `key` pair from the custom-field allowlist. Within a supplied payload both properties are required, and `entity` is selected from the endpoint's 19-value managed-entity enum. Removal prevents future use across every instance of that entity type and makes existing values inaccessible, but the page does not say that stored values are physically erased, whether historical exports or invoices retain them, or whether re-adding the key restores access. The enclosing request body is not marked required, unknown-property behavior is unspecified, and the sole documented response is HTTP `200` without a response schema. [[source-metronome-api-reference-custom-fields-delete-a-custom-field-key]]",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "Keep the operation scoped to the selected managed entity type; do not generalize allowlist removal into physical erasure, cross-entity deletion, or irreversible loss.",
+        "Preserve the distinction between payload-required properties and the enclosing request body, which is not marked required."
+      ]
+    },
+    {
+      "update_id": "delete-custom-field-key-api-wide-idempotency-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "`POST /v1/customFields/removeKey` falls under the separate API-wide `Idempotency-Key` contract. Identical same-key parameters replay the original result, but that replay is not fresh proof that the key remains absent or that existing-value inaccessibility has propagated to every read, export, invoice, or integration surface. The endpoint adds no local behavior for an already absent key, another or expired key, concurrent removal or re-creation, read-after-write visibility, or recovery after cached or ambiguous failure. [[source-metronome-api-reference-custom-fields-delete-a-custom-field-key]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Attribute replay, changed-parameter conflict, retention, and cached-error behavior to the separate API-wide idempotency authority, not to this endpoint page.",
+        "Do not treat replay of the original HTTP result as a fresh state read or propagation guarantee."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

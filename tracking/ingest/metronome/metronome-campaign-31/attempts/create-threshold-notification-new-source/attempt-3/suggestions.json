@@ -1,0 +1,55 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "create-threshold-alert-configuration-and-response-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Customer-configured controls",
+      "proposed_markdown": "### Threshold-notification creation contract\n\n`POST /v1/alerts/create` creates a customer-scoped or all-customer threshold configuration. Within a supplied payload, `alert_type`, `name`, and numeric `threshold` are required; the request-body wrapper is not marked required. Narrative guidance additionally requires `billable_metric_id` for usage notifications and `credit_type_id` for credit-based notifications, but neither appears in the payload required array; `credit_type_id` selects the applicable pricing unit or currency and defaults to USD. Separately, the `seat_filter` description requires that object for `low_remaining_seat_balance_reached`, and its nested schema requires `seat_group_key` while leaving `seat_group_value` optional. `evaluate_on_create` defaults to true and immediately evaluates existing customers already meeting the threshold; false limits evaluation to future customers that trigger it. The page does not define the evaluation snapshot, completion, initial state, or notification timing. Its narrative says success returns `CustomerAlert` configuration and customer evaluation status, while the OpenAPI `200` schema and example return only UUID `data.id`; preserve the unresolved response-shape conflict without treating either representation as observed runtime truth. [[source-metronome-api-reference-alerts-create-a-threshold-notification]]\n\nSeparately, [[source-metronome-plans-shared-endpoints-notifications]] documents the shared unversioned `/alerts/create` route as creating a Plan or Contract alert and says entity-targeted input and response parameters differ. It lists Plan `alert_type` values `low_credit_balance_reached`, `low_remaining_days_in_plan_reached`, `low_remaining_credit_percentage_reached`, and `usage_threshold_reached`, while [[source-metronome-api-reference-alerts-create-a-threshold-notification]] documents customer-scoped or all-customer `POST /v1/alerts/create` with the distinct twelve-value `CreateCustomerAlertPayload` enum. Do not merge these enums or infer the Plan surface's HTTP method, version prefix, payload mapping, precedence, migration status, or runtime support.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Keep requestBody requiredness separate from required payload properties, narrative type conditions, description-level seat_filter requiredness, and nested seat_group_key requiredness.",
+        "Do not merge or choose between the narrative CustomerAlert response and the OpenAPI data.id response.",
+        "Keep the customer/all-customer CreateCustomerAlertPayload surface distinct from the shared Plan-or-Contract route; do not merge enums or infer an undocumented Plan API contract."
+      ]
+    },
+    {
+      "update_id": "create-threshold-alert-two-idempotency-mechanisms",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Mechanisms",
+      "proposed_markdown": "`POST /v1/alerts/create` attaches a 1-128 character resource `uniqueness_key` to `CreateCustomerAlertPayload`. Narrative guidance says every threshold notification must have one unique within the organization and may release it during archival, while the payload required array omits the field. Reuse prevents a new record and documents HTTP `409`, although the operation response map lists only `200`. This organizational resource-identity guard is distinct from API-wide POST `Idempotency-Key` result replay. The endpoint and API-wide authority do not define the two keys' interaction or precedence, uniqueness-key normalization, concurrent-creation ordering, release visibility, failed-attempt key consumption, behavior after the header key expires, or recovery after a cached or ambiguous failure. [[source-metronome-api-reference-alerts-create-a-threshold-notification]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        0,
+        2,
+        4
+      ],
+      "warnings": [
+        "Preserve the organization-scoped narrative requirement versus the payload required-array omission.",
+        "Do not treat uniqueness_key as request-result replay or Idempotency-Key as proof of fresh alert state."
+      ]
+    },
+    {
+      "update_id": "create-threshold-alert-webhook-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Delivery model",
+      "proposed_markdown": "The threshold-notification create page says threshold notifications trigger webhooks and tells operators to configure endpoints before creation, but it does not define a create-specific payload, emission condition, evaluation-to-delivery latency, destination selection, retry, deduplication, ordering, signature, or failure contract. The create page's narrative and OpenAPI success representations also conflict, so a successful `POST /v1/alerts/create` must not be treated as evidence that evaluation completed or a webhook was emitted or delivered. Dedicated webhook authority remains controlling for at-least-once delivery, retries, duplicate handling, and verification. [[source-metronome-api-reference-alerts-create-a-threshold-notification]] [[source-metronome-guides-platform-configuration-setup-webhooks]]",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Do not convert the page's real-time language into an end-to-end latency, ordering, or downstream-action guarantee."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}
