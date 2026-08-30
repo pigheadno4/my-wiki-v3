@@ -6,6 +6,14 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-30] ingest | braintree/restricted-input `default-branch@8dcc6ea`
+
+- Approved and processed work item `github-b52bdd6b17240e0c7792` in full mode at exact SHA `8dcc6ea9e6cea44eef2b02fbc3f7569a602fa089`.
+- Read the complete current 24-file non-test source capsule, both exact-SHA manifests, comparison and patch, packet, and required Braintree and root context; hashes passed and the packet had no evidence gaps or unclassified changes.
+- Established cumulative and commit-qualified source pages plus [[payment-input-formatting]] for patterns, permanent characters, paste and autofill, caret preservation, and browser-specific strategies.
+- Preserved the utility boundary: formatting does not detect a card brand, validate or mask a PAN, tokenize a card, establish merchant acceptance, or process a payment.
+- Recorded the unreliable Git-tag identity, generated-package exclusion, delegated `@braintree/browser-detection@^2.1.1` behavior, and README conflict between "IE11+" and listed/source-supported legacy IE paths.
+
 ## [2026-08-29] ingest | braintree/credit-card-type `credit-card-type@10.3.0`
 
 - Approved and processed work item `github-faa7694d8e76907c4f02` in full mode at exact SHA `fbd8ed80a411fa9b238055208c19a7323cd38e21`.

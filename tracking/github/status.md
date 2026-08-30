@@ -1391,6 +1391,33 @@
   To SHA: `90e8041ffe02d80c452d2b476bedd59a8d219bdc`
   Comparison: Not applicable
 
+## `github-b52bdd6b17240e0c7792`
+
+- Repository: `braintree/restricted-input`
+- SHA: `8dcc6ea9e6cea44eef2b02fbc3f7569a602fa089`
+- Collection date: `2026-08-30`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/restricted-input/snapshots/2026-08-30-8dcc6ea/manifest.json)
+- Packet: [review packet](repos/braintree/restricted-input/ingest-packets/github-b52bdd6b17240e0c7792/packet.md)
+- Review priority: `normal`
+- Required reading: `22` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@8dcc6ea` (recommended `delta`)
+  Ref: `main`
+  From SHA: `79053ef3a0843d2c68a167a4830159bb787f6fb1`
+  To SHA: `8dcc6ea9e6cea44eef2b02fbc3f7569a602fa089`
+  Comparison: [manifest](repos/braintree/restricted-input/comparisons/default-branch/79053ef--8dcc6ea/comparison.json)
+
 ## `github-b8f0d09e7fd89635c59f`
 
 - Repository: `adyen/adyen-3ds2-ios`

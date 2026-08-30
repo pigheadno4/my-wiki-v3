@@ -1,6 +1,6 @@
 # GitHub repository collection index
 
-Generated: `2026-08-29`
+Generated: `2026-08-30`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -34,7 +34,7 @@ Generated: `2026-08-29`
 | braintree | `braintree/mobile-sdk-tooling` | tier3 | commit / commit-tree-v1 | on-demand | 2026-08-27 | ingested | - | `wait` |
 | braintree | `braintree/popup-bridge-android` | tier3 | semver-tags / tagged-tree-v1 | monthly | 2026-08-27 | ingested | 2026-09-27 | `wait` |
 | braintree | `braintree/popup-bridge-ios` | tier3 | semver-tags / tagged-tree-v1 | monthly | 2026-08-27 | ingested | 2026-09-27 | `wait` |
-| braintree | `braintree/restricted-input` | tier3 | semver-tags | monthly | - | - | - | `disabled` |
+| braintree | `braintree/restricted-input` | tier3 | commit / commit-tree-v1 | monthly | 2026-08-30 | ingested | 2026-09-30 | `wait` |
 | braintree | `braintree/uuid` | tier3 | semver-tags | monthly | - | - | - | `disabled` |
 | braintree | `braintree/web-sdk-github-actions` | tier3 | commit | on-demand | - | - | - | `disabled` |
 | metronome | `metronome-industries/ai` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-15 | ingested | 2026-09-15 | `wait` |
@@ -50,7 +50,7 @@ Generated: `2026-08-29`
 | paypal | `paypal/paypal-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-07-31 | ingested | 2026-08-07 | `collect-baseline` |
 | paypal | `paypal/paypal-checkout-components` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-07-23 | ingested | 2026-07-30 | `collect-baseline` |
 | paypal | `paypal/paypal-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-07-31 | ingested | 2026-08-07 | `collect-baseline` |
-| paypal | `paypal/paypal-js` | tier1 | monorepo-packages / npm-tracked-source-v1 | weekly | 2026-08-23 | ingested | 2026-08-30 | `wait` |
+| paypal | `paypal/paypal-js` | tier1 | monorepo-packages / npm-tracked-source-v1 | weekly | 2026-08-23 | ingested | 2026-08-30 | `collect-baseline` |
 | paypal | `paypal/paypal-messaging-components` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-28 | ingested | 2026-09-04 | `wait` |
 | paypal | `paypal/paypal-rest-api-specifications` | tier1 | commit / commit-tree-v1 | monthly | 2026-08-11 | ingested | 2026-09-11 | `wait` |
 | paypal | `paypal/paypal-messages-android` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-12 | ingested | 2026-09-12 | `wait` |

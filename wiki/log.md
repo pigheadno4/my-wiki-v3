@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-30] ingest | GitHub braintree/restricted-input - `default-branch@8dcc6ea`
+
+- Full-ingested work item `github-b52bdd6b17240e0c7792` at exact SHA `8dcc6ea9e6cea44eef2b02fbc3f7569a602fa089` from the complete current 24-file source capsule and the exact `79053ef` to `8dcc6ea` comparison.
+- Added cumulative and commit-qualified sources plus [[payment-input-formatting]] for pattern filtering, separators, paste and autofill, selection preservation, and browser-specific strategies.
+- Preserved validation and payment boundaries and recorded the unreliable tag identity, excluded generated package output, delegated browser detection, and contradictory legacy IE documentation.
+
 ## [2026-08-29] ingest | GitHub braintree/credit-card-type - `credit-card-type@10.3.0`
 
 - Full-ingested work item `github-faa7694d8e76907c4f02` at exact SHA `fbd8ed80a411fa9b238055208c19a7323cd38e21` after serial full reading of all 17 required evidence paths.

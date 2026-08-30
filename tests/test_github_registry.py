@@ -47,7 +47,7 @@ APPENDIX_A_INVENTORY = (
     ('braintree/braintree-web', 'https://github.com/braintree/braintree-web', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/uuid', 'https://github.com/braintree/uuid', 'utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/popup-bridge-ios', 'https://github.com/braintree/popup-bridge-ios', 'mobile-utility', 'tier3', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
-    ('braintree/restricted-input', 'https://github.com/braintree/restricted-input', 'web-utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('braintree/restricted-input', 'https://github.com/braintree/restricted-input', 'web-utility', 'tier3', 'commit', True, 'default-branch', 'monthly'),
     ('braintree/braintree-web-drop-in', 'https://github.com/braintree/braintree-web-drop-in', 'drop-in', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/popup-bridge-android', 'https://github.com/braintree/popup-bridge-android', 'mobile-utility', 'tier3', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree_php', 'https://github.com/braintree/braintree_php', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
@@ -1267,6 +1267,39 @@ class RegistryTests(unittest.TestCase):
         )
         self.assertNotIn("package-lock.json", capsule.include_paths)
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+
+    def test_braintree_restricted_input_uses_commit_tracked_source_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(
+            item for item in repos if item.id == "braintree/restricted-input"
+        )
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual("commit", repo.version_strategy)
+        self.assertEqual("default-branch", repo.track)
+        self.assertEqual((), repo.version_tracks)
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("restricted-input-public-source", capsule.id)
+        self.assertEqual("commit-tree-v1", capsule.adapter)
+        self.assertEqual("restricted-input", capsule.source_id)
+        self.assertEqual(("src",), capsule.default_required_roots)
+        self.assertEqual(
+            (
+                "CHANGELOG.md",
+                "LICENSE",
+                "README.md",
+                "package.json",
+                "supports-input-formatting.js",
+                "tsconfig.json",
+            ),
+            capsule.include_paths,
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertNotIn("package-lock.json", capsule.include_paths)
+        self.assertEqual(40, capsule.max_capsule_files)
+        self.assertEqual(250000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(1000000, capsule.max_packet_utf8_bytes)
 
     def test_braintree_web_drop_in_uses_the_reviewed_public_source_capsule(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")

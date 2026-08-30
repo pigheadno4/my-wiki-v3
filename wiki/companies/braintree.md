@@ -1,13 +1,13 @@
 ---
 title: "Braintree"
 type: company
-tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, developer-tooling, github-actions]
-source_count: 14
+tags: [braintree, payments, checkout, graphql, javascript-sdk, node-js-sdk, php-sdk, ruby-sdk, android-sdk, ios-sdk, popup-bridge, webview, card-brand-detection, input-formatting, developer-tooling, github-actions]
+source_count: 15
 ---
 
 ## Overview
 
-Braintree is represented in this wiki by fourteen independently tracked repositories: the GraphQL API contract, Node.js, PHP, and Ruby server SDKs, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, native Braintree Android and iOS SDKs, separately versioned Android and iOS Drop-in UIs, independent Android and iOS PopupBridge WebView transports, the standalone `credit-card-type` detector, and shared mobile SDK review tooling. Client SDKs produce payment-method nonces for server processing; the server SDKs perform gateway operations; PopupBridge only transports browser popup results; `credit-card-type` only infers likely card brands; and mobile SDK tooling only coordinates engineering review. The GraphQL schema describes a separate API contract. Their commit or package identities and evidence histories remain separate.
+Braintree is represented in this wiki by fifteen independently tracked repositories: the GraphQL API contract, Node.js, PHP, and Ruby server SDKs, modular Braintree Web SDK, prebuilt Braintree Web Drop-in UI, native Braintree Android and iOS SDKs, separately versioned Android and iOS Drop-in UIs, independent Android and iOS PopupBridge WebView transports, the standalone `credit-card-type` detector, the `restricted-input` formatter, and shared mobile SDK review tooling. Client SDKs produce payment-method nonces for server processing; the server SDKs perform gateway operations; PopupBridge only transports browser popup results; `credit-card-type` infers likely card brands; `restricted-input` formats browser input; and mobile SDK tooling only coordinates engineering review. The GraphQL schema describes a separate API contract. Their commit or package identities and evidence histories remain separate.
 
 ## GraphQL API Contract
 
@@ -46,6 +46,12 @@ The active 4.x package requires Ruby 2.6 or later and supports key credentials o
 `credit-card-type@10.3.0` is a standalone CommonJS utility that infers likely card brands from partial or complete number prefixes and supplies expected number lengths, formatting gaps, and security-code metadata. Its exact release adds Troy; the retained v10 changelog also records Naranja and Verve additions.
 
 The package has no runtime dependencies and can be used independently of Braintree processing. It does not validate a PAN, choose a co-badged processing network, tokenize a card, establish merchant acceptance, or authorize a payment. Its mutable custom-card and ordering APIs affect subsequent detector calls in the same loaded module.
+
+## Input Formatting Utility
+
+`braintree/restricted-input` at `default-branch@8dcc6ea` contains package metadata for `restricted-input@4.2.0` and provides pattern-driven filtering and formatting for browser inputs. It accepts alpha, digit, and wildcard placeholders, inserts permanent characters, preserves selection state, handles paste and autofill events, and exposes the unformatted value and runtime pattern changes.
+
+The utility uses separate iOS, Android Chrome or ChromeOS, KitKat WebView, IE9, and base strategies. Detected Samsung browser cases disable active formatting because the source notes that digits can be dropped. Exact classification is delegated to `@braintree/browser-detection@^2.1.1`. The package does not detect a card brand, validate a PAN, mask sensitive data, tokenize a card, establish merchant acceptance, or process a payment.
 
 ## Drop-in Surface
 
@@ -107,7 +113,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 
 ## Knowledge Status
 
-- Ingested cumulative GitHub repository sources: 14
+- Ingested cumulative GitHub repository sources: 15
 - Ingested package releases: 13
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`
 - Latest retained Braintree Node release: `braintree@3.39.0` at `7a9270aaf31eb87819add64a768652243f90007c`
@@ -115,6 +121,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - Latest retained Braintree Ruby release: `braintree@4.40.0` at `1217992763cc13f33dbd8b6c51ad2ae058ddd2a8`
 - Latest retained Braintree Web release: `braintree-web@3.144.0` at `41460fba05c1ea1222e795b36a10765a6699b8e7`
 - Latest retained card-brand detector release: `credit-card-type@10.3.0` at `fbd8ed80a411fa9b238055208c19a7323cd38e21`
+- Latest retained input formatter ref: `default-branch@8dcc6ea` at `8dcc6ea9e6cea44eef2b02fbc3f7569a602fa089` (`package.json` 4.2.0)
 - Latest retained Drop-in release: `braintree-web-drop-in@1.47.0` at `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`
 - Latest retained Android release: `braintree-android@5.30.0` at `51f183a48557d0fd00eefa541712df0c4f21ee28`
 - Latest retained Android Drop-in release: `drop-in@6.17.0` at `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7`
@@ -138,6 +145,8 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - [[changelog-github-braintree-web]] — package-qualified release ledger
 - [[source-github-credit-card-type]] - cumulative card-brand detection implementation baseline
 - [[changelog-github-credit-card-type]] - package-qualified card-brand detector release ledger
+- [[source-github-restricted-input]] - cumulative browser input-formatting implementation baseline
+- [[changelog-github-restricted-input]] - commit-qualified formatter and package-history ledger
 - [[source-github-braintree-web-drop-in]] - cumulative Drop-in implementation baseline
 - [[changelog-github-braintree-web-drop-in]] - package-qualified Drop-in release ledger
 - [[source-github-braintree-android]] - cumulative native Android implementation baseline
@@ -161,6 +170,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - [[braintree-log]] — collection and ingest history
 - [[braintree-web-sdk]] — browser SDK concept
 - [[card-brand-detection]] - generic brand inference, ambiguity, UI metadata, and validation boundary
+- [[payment-input-formatting]] - generic pattern, browser-event, paste, caret, and validation boundaries
 - [[braintree-server-sdk]] - shared server integration boundary and package-qualified evidence rules
 - [[braintree-web-drop-in]] - prebuilt checkout UI and migration boundary
 - [[braintree-android-sdk]] - native Android request, launcher, nonce, PayPal, and Venmo model

@@ -39,6 +39,7 @@
 ## Concepts (generic)
 
 - [[card-brand-detection]] — partial BIN/IIN brand inference, ambiguity resolution, checkout metadata, and validation/acceptance boundaries
+- [[payment-input-formatting]] — pattern-driven filtering, separators, caret and paste handling, browser compatibility, and validation boundaries
 - [[disputes]] — Disputes & Chargebacks: direct vs bank-chargeback paths, merchant implications, PayPal Disputes API
 - [[recurring-payments]] — Recurring payments: generic concept — stored credentials standard, dunning/retry, SCA, platform comparison table (PayPal/Stripe/Adyen)
 - [[agentic-commerce]] — Agentic Commerce: AI agents that discover products, manage carts, and complete purchases; inbound (Store Sync) vs outbound (Agent Ready) patterns
