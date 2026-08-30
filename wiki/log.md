@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-29] ingest | GitHub braintree/credit-card-type - `credit-card-type@10.3.0`
+
+- Full-ingested work item `github-faa7694d8e76907c4f02` at exact SHA `fbd8ed80a411fa9b238055208c19a7323cd38e21` after serial full reading of all 17 required evidence paths.
+- Added cumulative and package-qualified sources plus [[card-brand-detection]] for partial brand inference, ambiguity resolution, UI metadata, and mutable configuration.
+- Preserved validation, merchant-acceptance, co-badged-network, tokenization, and payment-processing boundaries; recorded documentation/runtime edge-case differences and the Braintree Web `10.2.0` dependency boundary.
+
 ## [2026-08-29] ingest | GitHub adyen/adyen-3ds2-ios-swift - `adyen-3ds2-ios-swift@3.0.1`
 
 - Full-ingested work item `github-a200548203865cde87a4` at exact SHA `1596f558f39d9e706030ab77ebcf8c01492d1ecd` after serial full reading of all 12 required evidence paths.

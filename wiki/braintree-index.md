@@ -22,6 +22,8 @@ Operations history: [[braintree-log]]
 - [[changelog-github-braintree-ruby]] - package-qualified Braintree Ruby release ledger beginning at `4.40.0` (github-repo, 2026-08-23)
 - [[source-github-braintree-web]] — cumulative `braintree-web` implementation knowledge through `3.144.0`: Hosted Fields, 3DS, PayPal v6, View/Edit Funding Instrument, Venmo, wallets, local payments, and decision-support components (github-repo, 2026-07-28)
 - [[changelog-github-braintree-web]] — package-qualified Braintree Web release ledger from `3.143.0` through `3.144.0` (github-repo, 2026-07-28)
+- [[source-github-credit-card-type]] - `credit-card-type@10.3.0` partial brand detection, ambiguity resolution, formatting/security-code metadata, mutable custom-card APIs, and validation boundary (github-repo, 2026-08-29)
+- [[changelog-github-credit-card-type]] - package-qualified card-brand detector release ledger beginning at `10.3.0` (github-repo, 2026-08-29)
 - [[source-github-braintree-web-drop-in]] - `braintree-web-drop-in@1.47.0` prebuilt UI, payment methods, vault behavior, 3DS, localization, and migration boundary (github-repo, 2026-07-28)
 - [[changelog-github-braintree-web-drop-in]] - package-qualified Drop-in release ledger beginning at `1.47.0` (github-repo, 2026-07-28)
 - [[source-github-braintree-android]] - `braintree-android@5.30.0` native clients, nonce flow, PayPal, Venmo, cards, 3DS, redirect handling, and exact release changes (github-repo, 2026-08-01)
@@ -48,6 +50,7 @@ Operations history: [[braintree-log]]
 
 ## Cross-Cutting Concepts
 
+- [[card-brand-detection]] - generic brand inference, ambiguity, UI metadata, and validation/acceptance boundary
 - [[paypal-braintree-integration]] — PayPal Web SDK v6 sessions converted to Braintree payment-method nonces
 
 ## Operations

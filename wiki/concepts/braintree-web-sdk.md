@@ -26,6 +26,8 @@ Component presence proves an SDK integration surface at this exact version. It d
 
 Hosted Fields keeps sensitive card inputs inside injected Braintree frames while exposing styling, validation-state events, card-type changes, BIN availability, and tokenization to the merchant page. Direct card submission through the lower-level client API is a different PCI scope.
 
+The retained `braintree-web@3.144.0` release updates its `credit-card-type` dependency to `10.2.0`. The independently retained standalone package is `credit-card-type@10.3.0`; its Troy addition must not be attributed to Braintree Web `3.144.0` without a newer exact dependency snapshot. See [[card-brand-detection]].
+
 The 3D Secure component verifies a card nonce and BIN, can collect device data, supports lookup inspection before challenge continuation, and returns liability-shift indicators. The merchant still decides whether a result without liability shift is acceptable.
 
 ## Wallet and PayPal Boundary
@@ -57,3 +59,4 @@ The first retained baseline is `braintree-web@3.143.0` at SHA `bae582d791026c143
 - [[braintree-web-drop-in]] - independently versioned prebuilt UI and migration boundary
 - [[paypal-braintree-integration]] — PayPal v6 and Braintree nonce-processing boundary
 - [[paypal-fastlane]] — delegated Fastlane product concept
+- [[card-brand-detection]] - standalone detector behavior and validation boundary

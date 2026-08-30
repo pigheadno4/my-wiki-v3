@@ -43,7 +43,7 @@ APPENDIX_A_INVENTORY = (
     ('braintree/web-sdk-github-actions', 'https://github.com/braintree/web-sdk-github-actions', 'automation', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
     ('braintree/mobile-sdk-tooling', 'https://github.com/braintree/mobile-sdk-tooling', 'tooling', 'tier3', 'commit', True, 'default-branch', 'on-demand'),
     ('braintree/graphql-api', 'https://github.com/braintree/graphql-api', 'api-specification', 'tier1', 'commit', True, 'default-branch', 'monthly'),
-    ('braintree/credit-card-type', 'https://github.com/braintree/credit-card-type', 'utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('braintree/credit-card-type', 'https://github.com/braintree/credit-card-type', 'utility', 'tier3', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree-web', 'https://github.com/braintree/braintree-web', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('braintree/uuid', 'https://github.com/braintree/uuid', 'utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
     ('braintree/popup-bridge-ios', 'https://github.com/braintree/popup-bridge-ios', 'mobile-utility', 'tier3', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
@@ -1228,6 +1228,45 @@ class RegistryTests(unittest.TestCase):
             android_capsule.default_required_roots,
         )
         self.assertEqual(("fixtures", "tests"), android_capsule.excluded_categories)
+
+    def test_braintree_credit_card_type_uses_reviewed_source_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(
+            item for item in repos if item.id == "braintree/credit-card-type"
+        )
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:credit-card-type@10",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("10.3.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("credit-card-type-public-source", capsule.id)
+        self.assertEqual("npm-tracked-source-v1", capsule.adapter)
+        self.assertEqual(("credit-card-type",), capsule.focus_packages)
+        self.assertEqual(("src",), capsule.default_required_roots)
+        self.assertEqual(("dist/",), capsule.default_generated_target_paths)
+        self.assertTrue(
+            {
+                "CHANGELOG.md",
+                "LICENSE",
+                "README.md",
+                "SECURITY.md",
+                "package.json",
+                "tsconfig.json",
+            }.issubset(capsule.include_paths)
+        )
+        self.assertNotIn("package-lock.json", capsule.include_paths)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
 
     def test_braintree_web_drop_in_uses_the_reviewed_public_source_capsule(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")

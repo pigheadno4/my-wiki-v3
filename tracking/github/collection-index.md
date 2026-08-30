@@ -30,7 +30,7 @@ Generated: `2026-08-29`
 | braintree | `braintree/braintree_node` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-08-09 | ingested | 2026-09-09 | `wait` |
 | braintree | `braintree/braintree_php` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-19 | ingested | 2026-09-19 | `wait` |
 | braintree | `braintree/braintree_ruby` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-23 | ingested | 2026-09-23 | `wait` |
-| braintree | `braintree/credit-card-type` | tier3 | semver-tags | monthly | - | - | - | `disabled` |
+| braintree | `braintree/credit-card-type` | tier3 | semver-tags / npm-tracked-source-v1 | monthly | 2026-08-29 | ingested | 2026-09-29 | `wait` |
 | braintree | `braintree/mobile-sdk-tooling` | tier3 | commit / commit-tree-v1 | on-demand | 2026-08-27 | ingested | - | `wait` |
 | braintree | `braintree/popup-bridge-android` | tier3 | semver-tags / tagged-tree-v1 | monthly | 2026-08-27 | ingested | 2026-09-27 | `wait` |
 | braintree | `braintree/popup-bridge-ios` | tier3 | semver-tags / tagged-tree-v1 | monthly | 2026-08-27 | ingested | 2026-09-27 | `wait` |

@@ -6,6 +6,14 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-29] ingest | braintree/credit-card-type `credit-card-type@10.3.0`
+
+- Approved and processed work item `github-faa7694d8e76907c4f02` in full mode at exact SHA `fbd8ed80a411fa9b238055208c19a7323cd38e21`.
+- Read the complete 17-path evidence packet covering the 14-file non-test TypeScript and documentation capsule, release record, and snapshot manifest; the packet had no evidence gaps or unclassified files.
+- Established the cumulative source, package-qualified changelog, and [[card-brand-detection]] concept for partial brand inference, ambiguity resolution, formatting/security-code metadata, and mutable custom-card behavior.
+- Preserved the detector boundary: it does not validate a PAN, establish merchant or network acceptance, select a co-badged network, tokenize a card, or process a payment.
+- Recorded exact documentation/runtime differences for numeric normalization, unknown `getTypeInfo`, and boxed `String` handling, plus the `braintree-web@3.144.0` dependency boundary at `credit-card-type@10.2.0`.
+
 ## [2026-08-27] ingest | braintree/mobile-sdk-tooling `default-branch@a3b0ffe`
 
 - Approved and processed work item `github-c10bd0ceb7090dd5898f` in full mode at exact SHA `a3b0ffe7931cde179f8b0dfdd5162979adf81683`.

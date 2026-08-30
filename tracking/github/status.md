@@ -1956,6 +1956,31 @@
   Release: [manifest](../../raw/github/adyen/adyen-magento2/releases/module-payment/11.0.0/2026-08-25/manifest.json)
   Comparison: Not applicable
 
+## `github-faa7694d8e76907c4f02`
+
+- Repository: `braintree/credit-card-type`
+- SHA: `fbd8ed80a411fa9b238055208c19a7323cd38e21`
+- Collection date: `2026-08-29`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/credit-card-type/snapshots/2026-08-29-fbd8ed8/manifest.json)
+- Packet: [review packet](repos/braintree/credit-card-type/ingest-packets/github-faa7694d8e76907c4f02/packet.md)
+- Review priority: `high`
+- Required reading: `17` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `credit-card-type@10.3.0` (recommended `full`)
+  Release: [manifest](../../raw/github/braintree/credit-card-type/releases/credit-card-type/10.3.0/2026-08-29/manifest.json)
+  Comparison: Not applicable
+
 ## `github-fed285eccd42cc9507d5`
 
 - Repository: `paypal/paypal-messages-android`
