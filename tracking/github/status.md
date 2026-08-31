@@ -1882,6 +1882,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-node/releases/stripe/22.4.0/2026-08-08/manifest.json)
   Comparison: Not applicable
 
+## `github-eb6d76e762d6316a4a73`
+
+- Repository: `braintree/uuid`
+- SHA: `d134a2ca93d12705a76ff036baeba568016f9b13`
+- Collection date: `2026-08-31`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/uuid/snapshots/2026-08-31-d134a2c/manifest.json)
+- Packet: [review packet](repos/braintree/uuid/ingest-packets/github-eb6d76e762d6316a4a73/packet.md)
+- Review priority: `high`
+- Required reading: `9` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@braintree/uuid@2.0.0` (recommended `full`)
+  Release: [manifest](../../raw/github/braintree/uuid/releases/uuid/2.0.0/2026-08-31/manifest.json)
+  Comparison: Not applicable
+
 ## `github-ee6197518787f8152774`
 
 - Repository: `paypal/paypal-js`

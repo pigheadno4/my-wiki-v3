@@ -6,6 +6,14 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-31] ingest | braintree/uuid `@braintree/uuid@2.0.0`
+
+- Approved and processed work item `github-eb6d76e762d6316a4a73` in full mode at exact SHA `d134a2ca93d12705a76ff036baeba568016f9b13`.
+- Read the complete nine-path packet covering the six-file implementation and documentation capsule, release record, empty upstream release notes, and snapshot manifest; the packet had no evidence gaps or unclassified files.
+- Established cumulative and package-qualified source pages for the `crypto.randomUUID()` to `crypto.getRandomValues()` fallback chain, explicit v4 and variant bits, and failure when no secure random source is available.
+- Preserved the utility boundary: UUID generation does not create payment resources, provide API idempotency, tokenize payment data, establish eligibility, or process a transaction.
+- Recorded the `braintree-web@3.144.0` UUID `2.0.0` dependency, the Drop-in `1.47.0` UUID `1.0.1` boundary, missing exact v1 comparison, unavailable release-note body, and MIT-versus-ISC metadata conflict.
+
 ## [2026-08-30] ingest | braintree/restricted-input `default-branch@8dcc6ea`
 
 - Approved and processed work item `github-b52bdd6b17240e0c7792` in full mode at exact SHA `8dcc6ea9e6cea44eef2b02fbc3f7569a602fa089`.

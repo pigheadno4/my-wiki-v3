@@ -45,7 +45,7 @@ APPENDIX_A_INVENTORY = (
     ('braintree/graphql-api', 'https://github.com/braintree/graphql-api', 'api-specification', 'tier1', 'commit', True, 'default-branch', 'monthly'),
     ('braintree/credit-card-type', 'https://github.com/braintree/credit-card-type', 'utility', 'tier3', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('braintree/braintree-web', 'https://github.com/braintree/braintree-web', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
-    ('braintree/uuid', 'https://github.com/braintree/uuid', 'utility', 'tier3', 'semver-tags', False, 'releases-and-default-branch', 'monthly'),
+    ('braintree/uuid', 'https://github.com/braintree/uuid', 'utility', 'tier3', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('braintree/popup-bridge-ios', 'https://github.com/braintree/popup-bridge-ios', 'mobile-utility', 'tier3', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('braintree/restricted-input', 'https://github.com/braintree/restricted-input', 'web-utility', 'tier3', 'commit', True, 'default-branch', 'monthly'),
     ('braintree/braintree-web-drop-in', 'https://github.com/braintree/braintree-web-drop-in', 'drop-in', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
@@ -1266,6 +1266,43 @@ class RegistryTests(unittest.TestCase):
             }.issubset(capsule.include_paths)
         )
         self.assertNotIn("package-lock.json", capsule.include_paths)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+
+    def test_braintree_uuid_uses_reviewed_flat_package_capsule(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(item for item in repos if item.id == "braintree/uuid")
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:@braintree/uuid@2",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("2.0.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("braintree-uuid-public-source", capsule.id)
+        self.assertEqual("npm-tracked-source-v1", capsule.adapter)
+        self.assertEqual(("@braintree/uuid",), capsule.focus_packages)
+        self.assertEqual(("index.js",), capsule.default_required_roots)
+        self.assertEqual((), capsule.default_generated_target_paths)
+        self.assertEqual(
+            (
+                "CHANGELOG.md",
+                "LICENSE",
+                "README.md",
+                "index.d.ts",
+                "package.json",
+            ),
+            capsule.include_paths,
+        )
+        self.assertNotIn("SECURITY.md", capsule.include_paths)
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
 
     def test_braintree_restricted_input_uses_commit_tracked_source_capsule(self):

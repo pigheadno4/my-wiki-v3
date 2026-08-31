@@ -28,6 +28,8 @@ Hosted Fields keeps sensitive card inputs inside injected Braintree frames while
 
 The retained `braintree-web@3.144.0` release updates its `credit-card-type` dependency to `10.2.0`. The independently retained standalone package is `credit-card-type@10.3.0`; its Troy addition must not be attributed to Braintree Web `3.144.0` without a newer exact dependency snapshot. See [[card-brand-detection]].
 
+The same Braintree Web release pins `@braintree/uuid@2.0.0`. That utility uses global `crypto.randomUUID()`, falls back to `crypto.getRandomValues()` with explicit v4 and variant bits, and throws when no secure random source is available. It supplies internal identifiers rather than payment-resource creation or API idempotency. See [[source-github-uuid]].
+
 The 3D Secure component verifies a card nonce and BIN, can collect device data, supports lookup inspection before challenge continuation, and returns liability-shift indicators. The merchant still decides whether a result without liability shift is acceptable.
 
 ## Wallet and PayPal Boundary
@@ -60,3 +62,4 @@ The first retained baseline is `braintree-web@3.143.0` at SHA `bae582d791026c143
 - [[paypal-braintree-integration]] — PayPal v6 and Braintree nonce-processing boundary
 - [[paypal-fastlane]] — delegated Fastlane product concept
 - [[card-brand-detection]] - standalone detector behavior and validation boundary
+- [[source-github-uuid]] - exact secure UUID generation and runtime boundary

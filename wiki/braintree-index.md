@@ -24,6 +24,8 @@ Operations history: [[braintree-log]]
 - [[changelog-github-braintree-web]] — package-qualified Braintree Web release ledger from `3.143.0` through `3.144.0` (github-repo, 2026-07-28)
 - [[source-github-credit-card-type]] - `credit-card-type@10.3.0` partial brand detection, ambiguity resolution, formatting/security-code metadata, mutable custom-card APIs, and validation boundary (github-repo, 2026-08-29)
 - [[changelog-github-credit-card-type]] - package-qualified card-brand detector release ledger beginning at `10.3.0` (github-repo, 2026-08-29)
+- [[source-github-uuid]] - `@braintree/uuid@2.0.0` secure UUID v4 generation, global Web Crypto fallback chain, explicit failure behavior, and consumer-version boundary (github-repo, 2026-08-31)
+- [[changelog-github-uuid]] - package-qualified UUID utility release ledger beginning at `2.0.0` (github-repo, 2026-08-31)
 - [[source-github-restricted-input]] - commit-qualified `restricted-input@4.2.0` pattern formatting, paste, caret, browser strategies, and validation boundary at `default-branch@8dcc6ea` (github-repo, 2026-08-30)
 - [[changelog-github-restricted-input]] - commit-qualified `4.1.3` to `4.2.0` transition and retained package-history statements (github-repo, 2026-08-30)
 - [[source-github-braintree-web-drop-in]] - `braintree-web-drop-in@1.47.0` prebuilt UI, payment methods, vault behavior, 3DS, localization, and migration boundary (github-repo, 2026-07-28)

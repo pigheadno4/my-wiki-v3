@@ -23,6 +23,8 @@ A customer-scoped client token can display supported vaulted cards and PayPal ac
 
 The first retained release is `braintree-web-drop-in@1.47.0` at SHA `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`. It pins `braintree-web@3.123.2`, so it must not inherit claims from the independently collected `braintree-web@3.144.0` source.
 
+It also pins `@braintree/uuid@1.0.1`. The independently retained UUID source is `2.0.0`, so its secure-random implementation and explicit no-secure-source error must not be attributed to this Drop-in release without exact v1 evidence.
+
 The repository schedules deprecated status for 2026-09-01 and unsupported status for 2027-09-01, and directs merchants to migrate to the Braintree SDK. The notice says processing will be supported for one year after deprecation, while processing on unsupported SDKs may be suspended at any time. These statements describe the retained snapshot; current operational status should be rechecked when answering time-sensitive questions.
 
 ## Related
@@ -30,4 +32,5 @@ The repository schedules deprecated status for 2026-09-01 and unsupported status
 - [[source-github-braintree-web-drop-in]] - cumulative exact-SHA implementation evidence
 - [[changelog-github-braintree-web-drop-in]] - package-qualified release ledger
 - [[braintree-web-sdk]] - modular SDK and migration target
+- [[source-github-uuid]] - independently versioned UUID utility and v1/v2 evidence boundary
 - [[braintree]] - company page

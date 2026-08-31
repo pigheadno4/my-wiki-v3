@@ -1,6 +1,6 @@
 # GitHub repository collection index
 
-Generated: `2026-08-30`
+Generated: `2026-08-31`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -35,7 +35,7 @@ Generated: `2026-08-30`
 | braintree | `braintree/popup-bridge-android` | tier3 | semver-tags / tagged-tree-v1 | monthly | 2026-08-27 | ingested | 2026-09-27 | `wait` |
 | braintree | `braintree/popup-bridge-ios` | tier3 | semver-tags / tagged-tree-v1 | monthly | 2026-08-27 | ingested | 2026-09-27 | `wait` |
 | braintree | `braintree/restricted-input` | tier3 | commit / commit-tree-v1 | monthly | 2026-08-30 | ingested | 2026-09-30 | `wait` |
-| braintree | `braintree/uuid` | tier3 | semver-tags | monthly | - | - | - | `disabled` |
+| braintree | `braintree/uuid` | tier3 | semver-tags / npm-tracked-source-v1 | monthly | 2026-08-31 | ingested | 2026-09-30 | `wait` |
 | braintree | `braintree/web-sdk-github-actions` | tier3 | commit | on-demand | - | - | - | `disabled` |
 | metronome | `metronome-industries/ai` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-15 | ingested | 2026-09-15 | `wait` |
 | metronome | `metronome-industries/metronome-node` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-08-12 | ingested | 2026-09-12 | `wait` |

@@ -1059,7 +1059,7 @@ def _target_reasons(target: DeclaredTarget) -> Tuple[str, ...]:
 
 
 def _below_root(path: str, root: str) -> bool:
-    return not root or path.startswith(root + "/")
+    return not root or path == root or path.startswith(root + "/")
 
 
 def _join(left: str, right: str) -> str:

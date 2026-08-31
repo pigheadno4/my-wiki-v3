@@ -407,6 +407,30 @@ class CapsuleSelectionTests(unittest.TestCase):
         schema = next(item for item in result.files if item.path == "schema.graphql")
         self.assertEqual("required-root", schema.classification_reason)
 
+    def test_npm_dispatch_accepts_exact_root_file(self):
+        tree = self.tree(
+            {
+                "README.md": "# UUID\n",
+                "index.js": "module.exports = function uuid() {};\n",
+                "package.json": manifest(main="index.js"),
+            }
+        )
+        capsule = self.capsule(
+            default_required_roots=("index.js",),
+            include_paths=("README.md",),
+        )
+
+        result = resolve_npm_capsule(tree, capsule, ())
+
+        self.assertEqual(
+            {"README.md", "index.js", "package.json"},
+            {item.path for item in result.files},
+        )
+        self.assertEqual(
+            (("example", "index.js", "default"),),
+            result.required_roots,
+        )
+
     def test_commit_dispatch_reuses_secret_binary_and_budget_guards(self):
         secret_tree = self.tree(
             {
@@ -1163,8 +1187,6 @@ class CapsuleSelectionTests(unittest.TestCase):
     def test_missing_required_root_and_include_need_policy_review(self):
         tree = self.tree({"package.json": manifest(), "other.js": "other\n"})
         self.assert_policy_review("missing-required-root", tree)
-        exact_file = self.tree({"package.json": manifest(), "src": "not a directory\n"})
-        self.assert_policy_review("missing-required-root", exact_file)
         valid_root = self.tree(
             {
                 "package.json": manifest(),
