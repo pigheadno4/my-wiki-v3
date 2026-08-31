@@ -1,0 +1,157 @@
+{
+  "job_id": "get-embeddable-customer-dashboard-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Get an Embeddable Customer Dashboard\"\ntype: source\ndate_ingested: 2026-08-31\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/customers/get-an-embeddable-customer-dashboard\"\nraw_files:\n  - \"metronome/api-reference/customers/get-an-embeddable-customer-dashboard-2026-08-28.md\"\ntags: [metronome, api, dashboards, embedded-ui, customer-portals]\n---\n\n## Overview\n\nBearer-authenticated `POST /v1/dashboards/getEmbeddableUrl` generates a customer-specific URL for embedding a Metronome billing dashboard in an iframe. The operation covers invoice, usage, and commit-and-credit views plus optional presentation controls, but its generated-URL contract is intentionally narrow: the page does not establish an exact lifetime, refresh or revocation behavior, browser-exposure controls, or dashboard-data freshness.\n\n## Query-critical facts\n\n- Within a supplied JSON payload, UUID `customer_id` and `dashboard` are required; `dashboard` is one of `invoices`, `usage`, or `commits_and_credits`. The enclosing OpenAPI `requestBody` is not marked `required: true`, and neither the payload nor its nested option objects declare `additionalProperties: false`, so omitted-body and unknown-field runtime behavior are not established.\n- Optional `dashboard_options` is an array whose items require string `key` and `value`. The narrative says dashboard options are supported only for the invoices dashboard and documents zero-usage-line-item, contract, invoice-type, and invoice-status filters. The schema additionally lists deprecated `hide_voided_invoices` and `billable_status_filter`; it gives value semantics for the deprecated key but none for `billable_status_filter`. The page does not define whether option/dashboard mismatches are rejected, ignored, or applied.\n- Optional `color_overrides` supplies named dashboard colors and hex-string values. Its item schema does not require either `name` or `value`, and the page defines no validation, fallback, contrast, accessibility, or unsupported-color behavior.\n- HTTP `200` requires a top-level `data` object whose `url` property is a string, but `url` is not listed as required inside `data`. The example places the generated URL at `data.url` on `embeddable-dashboards.metronome.com`; there is no separately returned token, expiry timestamp, dashboard identifier, or refresh handle.\n- The narrative characterizes the returned URL as secure, time-limited, iframe-ready, customer-specific, and containing authentication tokens plus configuration parameters. That is generated-URL authority, distinct from the bearer token used to call the API. The page does not define whether the URL inherits caller permissions, its exact TTL or start time, single-use or sharing behavior, rotation, revocation, regeneration, invalidation after customer or contract changes, origin restrictions, CSP or cookie requirements, logging or referrer exposure, or behavior after expiry.\n- The operation documents only generic HTTP `400 Bad request`. It gives no endpoint-specific authorization, not-found, unsupported-dashboard, option-validation, rate-limit, timeout, token-minting, partial-result, or recovery contract.\n- The separate API-wide POST idempotency authority applies `Idempotency-Key` result replay to all POST endpoints: identical same-key parameters return the original result and keys persist for at least 24 hours. The endpoint does not relate that retention window to the generated URL's unspecified lifetime, so replay is not proof that a URL was newly minted, remains valid, or reflects fresh dashboard configuration or customer state.\n\n## Material boundaries and tensions\n\n> [!warning] Narrative versus option schema\n> The narrative's invoices-only option list names four keys, while the payload schema enumerates two more: deprecated `hide_voided_invoices` and undocumented-value `billable_status_filter`. Treat the schema as evidence that those key names are documented, not as proof of runtime acceptance for every dashboard type or of any unlisted value semantics.\n\n> [!warning] Promised URL versus response requiredness\n> The prose presents a secure time-limited URL as the key result, but the success schema requires only `data`; nested `data.url` is optional in the schema. The page does not resolve whether a successful response can omit the URL or how a caller should recover if it does.\n\nThis API surface is separate from Metronome's beta dashboards and generated CSV reports inside the Metronome app, whose enablement, audience, and freshness statements do not define the embedded URL's lifecycle. It is also separate from the operator-focused Metronome Dashboard Quickstart. A dedicated hierarchy guide separately says invoice and commit embeddable dashboards do not work for customers whose contract participates in a hierarchy; this endpoint page does not repeat that limitation, explain its failure mode, or say whether the `usage` dashboard is affected.\n\n## Raw-detail coverage map\n\n- **Operation and request:** use the raw page for the exact production path, POST method, bearer-security declaration, operation ID, request example, supplied-payload requiredness, dashboard enum, and absence of an operation-level request-body required marker or closed-object declaration.\n- **Dashboard controls:** use raw for the complete dashboard-option key enum and value descriptions, the deprecated key annotation, the full color-name enum, the example overrides, and immediate-parent requiredness.\n- **Response and failure:** use raw for the required outer `data` object, optional nested URL schema, example host and placement, and the sole documented `400` response.\n- **Lifecycle and exposure:** the raw prose establishes only that the URL is customer-specific, contains authentication tokens and configuration parameters, and is time-limited and iframe-ready. It does not provide an expiry value, freshness marker, refresh or revocation API, browser isolation requirements, failure recovery, or a relationship between URL lifetime and API-wide idempotency retention.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-reporting-and-analytics]], [[metronome-security-principles]], [[metronome-customers-and-contracts]], [[metronome-api-idempotency]]\n- Related sources: [[source-metronome-guides-reporting-insights-in-app-reporting]], [[source-metronome-guides-get-started-metronome-dashboard-quickstart]], [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]], [[source-metronome-api-reference-authentication]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/customers/get-an-embeddable-customer-dashboard-2026-08-28|2026-08-28 snapshot - customer-scoped embedded dashboard request, generated URL response, options, colors, authentication, and lifecycle boundaries]]\n",
+  "quotes": [
+    {
+      "text": "> Generate secure, embeddable dashboard URLs that allow you to seamlessly integrate Metronome's billing visualizations directly into your application. This endpoint creates authenticated iframe-ready URLs for customer-specific dashboards, providing a white-labeled billing experience without building custom UI.\n\n### Use this endpoint to:\n- Embed billing dashboards directly in your customer portal or admin interface\n- Provide self-service access to invoices, usage data, and credit balances\n- Build white-labeled billing experiences with minimal development effort\n\n### Key response fields:\n- A secure, time-limited URL that can be embedded in an iframe\n- The URL includes authentication tokens and configuration parameters\n- URLs are customer-specific and respect your security settings",
+      "location": "lines 11-21, introductory description and key response fields"
+    },
+    {
+      "text": "### Usage guidelines:\n- Dashboard types: Choose from `invoices`, `usage`, or `commits_and_credits`\n- Customization options:\n    - `dashboard_options`: Configure dashboard behavior. Supported for the invoices dashboard only. Available keys include: `show_zero_usage_line_items` (\"true\"/\"false\"), `contract_id` (UUID, filters invoices by contract), `invoice_type` (\"USAGE\" or \"SCHEDULED\", filters by invoice type), and `invoice_status_filter` (\"VOID\", \"FINALIZED\", \"DRAFT\", \"FINALIZED_AND_DRAFT\", or \"ALL\")\n    - `color_overrides`: Match your brand's color palette\n- Iframe implementation: Embed the returned URL directly in an iframe element\n- Responsive design: Dashboards automatically adapt to container dimensions",
+      "location": "lines 23-29, dashboard types, customization, and iframe guidance"
+    },
+    {
+      "text": "      requestBody:\n        description: The details of the dashboard to retrieve\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/EmbeddableDashboardPayload'\n            example:\n              customer_id: 4db51251-61de-4bfe-b9ce-495e244f3491\n              dashboard: invoices\n              dashboard_options:\n                - key: show_zero_usage_line_items\n                  value: 'false'\n                - key: invoice_status_filter\n                  value: FINALIZED\n              color_overrides:\n                - name: Gray_dark\n                  value: '#ff0000'\n      responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                properties:\n                  data:\n                    type: object\n                    properties:\n                      url:\n                        type: string\n              example:\n                data:\n                  url: >-\n                    https://embeddable-dashboards.metronome.com/customers/invoices/v1?...\n        '400':\n          description: Bad request",
+      "location": "lines 154-191, request body, success envelope and URL placement, and documented failure"
+    },
+    {
+      "text": "    EmbeddableDashboardPayload:\n      required:\n        - customer_id\n        - dashboard\n      type: object\n      properties:\n        customer_id:\n          type: string\n          format: uuid\n        dashboard:\n          type: string\n          enum:\n            - invoices\n            - usage\n            - commits_and_credits\n          description: The type of dashboard to retrieve.\n        dashboard_options:\n          type: array\n          description: Optional dashboard specific options\n          items:\n            type: object\n            required:\n              - key\n              - value\n            properties:\n              key:\n                type: string\n                description: The option key name\n                enum:\n                  - show_zero_usage_line_items\n                  - contract_id\n                  - invoice_type\n                  - invoice_status_filter\n                  - hide_voided_invoices\n                  - billable_status_filter\n                x-mint-enum:\n                  billable_status_filter:\n                    - client_id:11db091c-975b-4908-9f67-b1ceb126acdf\n              value:\n                type: string\n                description: >-\n                  The option value. For show_zero_usage_line_items: \"true\" or\n                  \"false\" (default \"false\"). For contract_id: a UUID filtering\n                  invoices to a specific contract. For invoice_type: \"USAGE\" or\n                  \"SCHEDULED\". For invoice_status_filter: \"VOID\", \"FINALIZED\",\n                  \"DRAFT\", \"FINALIZED_AND_DRAFT\", or \"ALL\". For\n                  hide_voided_invoices (deprecated): \"true\" or \"false\".",
+      "location": "lines 198-244, payload required properties and dashboard-option schema"
+    },
+    {
+      "text": "security:\n  - bearerAuth: []",
+      "location": "lines 44-45, OpenAPI bearer-security declaration"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "embeddable-customer-dashboard-reporting-surface",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append under `### In-app reports and dashboards` as a separate `### Embeddable customer dashboards` subsection, preserving the distinction from app-native beta dashboards and generated reports.",
+        "proposed_markdown": "### Embeddable customer dashboards\n\nBearer-authenticated `POST /v1/dashboards/getEmbeddableUrl` generates an iframe-ready, customer-specific URL for `invoices`, `usage`, or `commits_and_credits`. The prose calls the URL secure and time-limited and says it contains authentication tokens plus configuration parameters, while HTTP `200` requires only outer `data` and does not require nested `url`. Invoice-only dashboard options cover zero-usage lines, contract, invoice type, and invoice status; the schema additionally names deprecated `hide_voided_invoices` and `billable_status_filter` without defining a value contract for the latter. This embedded external-app surface is distinct from app-native beta dashboards and generated CSV reports. The endpoint defines no data-refresh cadence, URL TTL or expiry timestamp, permission inheritance, revocation, regeneration, origin restriction, browser-exposure, or failure-recovery behavior. [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not import generated-report daily freshness or app-dashboard real-time wording into this embedded URL contract.",
+          "Keep the narrative URL promise separate from the schema, which requires data but not nested url."
+        ]
+      },
+      {
+        "update_id": "embeddable-customer-dashboard-reporting-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add once under `## Sources`; do not duplicate the durable-fact citation.",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]] - customer-scoped embedded invoice, usage, and commit-and-credit dashboard URLs, request and response placement, customization, and lifecycle, freshness, and exposure boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "embeddable-customer-dashboard-generated-url-security-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append under `## Customer API tokens` as a separate generated embedded-URL boundary.",
+        "proposed_markdown": "### Generated embedded-dashboard URL boundary\n\n`POST /v1/dashboards/getEmbeddableUrl` is bearer-authenticated, but its result is a distinct customer-specific iframe URL that the page says contains authentication tokens and configuration parameters and is time-limited. The response does not expose a token separately or return an expiry timestamp, and the page does not say that the generated URL contains the caller bearer token or inherits its permission scope. It also defines no exact TTL, single-use or sharing rule, referrer or logging exposure control, allowed-origin or CSP behavior, cookie requirement, refresh, rotation, revocation, regeneration, invalidation after customer or contract changes, or post-expiry failure contract. Treat the generated URL as a separate credential-bearing artifact whose lifecycle is not established by the customer API-token guide. [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]]",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "Do not apply the Metronome-engineer 12-hour credential lifetime or an unstated customer-token lifetime to the generated dashboard URL.",
+          "Do not claim the generated URL contains the API caller's bearer token; the page only says it includes authentication tokens."
+        ]
+      },
+      {
+        "update_id": "embeddable-customer-dashboard-security-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add once under `## Sources`.",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]] - bearer-authenticated URL generation, credential-bearing iframe URL placement, and unspecified lifetime, permission inheritance, exposure, refresh, and revocation behavior",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "embeddable-customer-dashboard-customer-and-hierarchy-scope",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append after the existing account-hierarchy paragraph and before `### Customer balance views`.",
+        "proposed_markdown": "A supplied embeddable-dashboard payload requires one Metronome customer UUID and selects `invoices`, `usage`, or `commits_and_credits`; the endpoint returns a customer-specific URL rather than a cross-customer catalog. It does not define archived-customer eligibility, contract selection outside the invoice-only `contract_id` option, hierarchy aggregation, or behavior when the customer has several contracts. The separate hierarchy guide remains the authority that invoice and commit embeddable dashboards do not work for customers whose contract participates in a hierarchy; this endpoint neither repeats that limit nor states whether `usage` is affected or which error occurs. [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]] [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]]",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": [
+          "Preserve the hierarchy limitation as authority from the separate hierarchy guide rather than attributing it to this endpoint page.",
+          "Do not infer cross-contract aggregation or archived-customer support from customer_id alone."
+        ]
+      },
+      {
+        "update_id": "embeddable-customer-dashboard-customers-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add once under `## Sources` near other customer read surfaces.",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]] - required customer UUID within a supplied dashboard payload, customer-specific generated URL scope, contract-filter option, and archived, multi-contract, and hierarchy unknowns",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "embeddable-customer-dashboard-post-idempotency-freshness-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append under `## Retry and error boundary` near other read-only POST operations.",
+        "proposed_markdown": "`POST /v1/dashboards/getEmbeddableUrl` generates a customer-specific URL that its endpoint prose calls time-limited. The separate API-wide `Idempotency-Key` contract applies to this POST and returns the original result for identical same-key parameters, but the endpoint does not relate the at-least-24-hour idempotency retention window to the URL's unspecified lifetime. A same-key replay is therefore recovery of the original result, not evidence that the URL was newly minted, remains unexpired, or reflects current dashboard configuration, customer state, contract filters, or security settings. The endpoint also adds no local behavior for another or expired key, concurrent generation, cached or ambiguous failure, revocation, or regeneration. [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]] [[source-metronome-api-reference-idempotency]]",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not equate API-wide POST result replay with dashboard URL refresh or current-state retrieval.",
+          "Do not infer that the generated URL lifetime is at least 24 hours from the idempotency-key retention period."
+        ]
+      },
+      {
+        "update_id": "embeddable-customer-dashboard-idempotency-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add once under `## Sources` near other POST read or generated-result surfaces.",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]] - time-limited generated URL response and the boundary that same-key POST replay does not establish a newly minted, unexpired, or fresh dashboard URL",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/customers/get-an-embeddable-customer-dashboard-2026-08-28.md",
+  "raw_sha256": "c6f0535816a05896b52d0d08fd0e6b7ea6279730dda4cb82f815a4995e0cfbc1",
+  "status": "candidate_ready"
+}

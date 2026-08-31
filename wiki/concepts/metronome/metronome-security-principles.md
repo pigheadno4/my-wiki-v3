@@ -49,6 +49,10 @@ The API quickstart corroborates the creation boundary: give the token a descript
 > [!info] Credential-scope boundary
 > The 12-hour lifetime above describes credentials minted by Metronome engineers. The API-authentication page does not state a lifetime or expiry policy for customer-created bearer tokens, so the two credential classes should not be treated as having the same lifecycle.
 
+### Generated embedded-dashboard URL boundary
+
+`POST /v1/dashboards/getEmbeddableUrl` is bearer-authenticated, but its result is a distinct customer-specific iframe URL that the page says contains authentication tokens and configuration parameters and is time-limited. The response does not expose a token separately or return an expiry timestamp, and the page does not say that the generated URL contains the caller bearer token or inherits its permission scope. It also defines no exact TTL, single-use or sharing rule, referrer or logging exposure control, allowed-origin or CSP behavior, cookie requirement, refresh, rotation, revocation, regeneration, invalidation after customer or contract changes, or post-expiry failure contract. Treat the generated URL as a separate credential-bearing artifact whose lifecycle is not established by the customer API-token guide. [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]]
+
 ## Role-based access control
 
 Metronome separately documents SAML 2.0 SSO for team-member login, supporting both service-provider-initiated and identity-provider-initiated authentication. Identity-provider-side removal prevents subsequent login, but Metronome retains user metadata in Team Settings, including the role recorded at the user's last login. After attribute mapping and joint verification, an account switched to SSO no longer accepts its existing username-and-password logins. Although the page says Metronome handles user provisioning, it does not define SCIM, account-creation timing, profile-update behavior, record deletion, reactivation, active-session revocation, or fallback login.
@@ -69,6 +73,7 @@ Metronome's go-live checklist recommends creating and securely storing a product
 
 ## Sources
 
+- [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]] - bearer-authenticated URL generation, credential-bearing iframe URL placement, and unspecified lifetime, permission inheritance, exposure, refresh, and revocation behavior
 - [[source-metronome-guides-platform-configuration-audit-logs]] — cross-channel action attribution, outcome visibility, request correlation, and audit-evidence boundaries
 
 - [[source-metronome-guides-platform-configuration-single-sign-on-sso]] - SAML 2.0 team login, identity-provider-controlled access removal, retained user metadata, and password-login cutover

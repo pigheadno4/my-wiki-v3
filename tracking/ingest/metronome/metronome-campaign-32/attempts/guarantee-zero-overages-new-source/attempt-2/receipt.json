@@ -1,0 +1,238 @@
+{
+  "job_id": "guarantee-zero-overages-new-source",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Guarantee zero overages\"\ntype: source\ndate_ingested: 2026-08-31\ncanonical_url: \"https://docs.metronome.com/guides/pricing-packaging/apply-credits-and-commits/guarantee-zero-overages\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/pricing-packaging/apply-credits-and-commits/guarantee-zero-overages-2026-07-13.md\"\ntags: [metronome, zero-overages, credits-and-commits, rate-cards, access-control]\n---\n\n## Overview\n\nThis guide presents a billing-safety pattern for customers who must not incur a nonzero usage charge after a commit is depleted. The merchant gives the product a zero list rate and makes the real usage price applicable only while Metronome is consuming an eligible commit balance; post-exhaustion product access remains a separate merchant-application responsibility.\n\n## Query-critical facts\n\n- The documented actors are the merchant configuring Metronome pricing and commits, Metronome rating submitted usage and producing billing records, and the merchant application deciding whether a customer may continue consuming the product. The named use cases are capped trials, fraud-sensitive accounts, and strict customer budgets.\n- The invariant in both worked options is a `0` list rate. While an eligible commit has balance, usage draws down that balance at the real price; after exhaustion, the commit-only price stops applying and the list-rate fallback prices later usage at zero instead of ordinary nonzero overage pricing. This is a configured usage-based-billing pattern, not a universal platform default.\n- Option A stores a default `commit_rate` next to the zero list rate on the rate card and creates the commit with `rate_type: commit_rate`. Customers using that rate card inherit the commit price, making the option suitable for mostly uniform pricing.\n- Option B leaves only the zero list rate on the rate card and places an `overwrite` rate on each contract, scoped to the relevant commit through `override_specifiers.commit_ids`. It supports customer-specific commit pricing. A contract commit-specific override takes precedence over a default rate-card commit rate when the two patterns are combined.\n- The guide distinguishes this no-overage-charge pattern from prepaid-balance auto-recharge and spend-threshold billing, which are alternatives when overages remain allowed but the merchant wants payment or exposure controls.\n\n## Billing and access boundary\n\nThe assigned guide's documented outcome is that post-exhaustion usage reaching Metronome resolves at the zero list rate rather than generating a nonzero overage charge. It does not establish that a zero-dollar usage invoice or line item is suppressed, that no billing record is generated, or that any downstream invoice is withheld. The separate [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]] authority says credits or prepaid commitments can reduce a usage invoice to zero and that such an invoice may remain a revenue record without being sent for payment collection; that cross-source invoice fact qualifies possible record handling without extending this assigned pricing guide into invoice suppression, downstream delivery, payment, tax, accounting, or reconciliation authority.\n\nThe pattern does not reject submitted usage or enforce the merchant product's authorization decision. The guide expressly requires application-side gating, using balance thresholds or webhooks as signals after depletion. Merchant systems own the access check, cutoff, restoration, and tolerance for usage processed before a signal is evaluated and delivered; this page defines no alert or webhook latency, ordering, freshness, exactly-once delivery, or maximum-overshoot guarantee.\n\n## Material boundaries and documentation cautions\n\n- The result depends on the documented zero list rate, applicable commit, real commit-only rate, product and credit-type relationships, schedule, and contract or rate-card scope all being configured as intended. The page does not define behavior for missing or mismatched rates, several eligible balances, priority, partial exhaustion within a unit or event, concurrent usage near zero, quantity-based drawdown, retroactive changes, precision, rounding, or recovery after a configuration or rating failure. Do not convert the worked setup into a guarantee for every product, contract, event, or access path.\n- Both examples use literal prices of `100`, then call the result `100 USD/unit`. The separate [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]] authority says USD API monetary values use cents, where `100` represents $1.00. The assigned guide does not reconcile this denomination conflict; preserve its payload and prose literally and verify the intended amount and current API schema rather than silently changing either the number or label. The separate currency source supplies denomination semantics, not a correction to this worked example.\n- The cURL examples are implementation illustrations, not complete endpoint contracts. They use casing such as `FLAT` and `flat`, show identifiers and dates tied to one scenario, and omit request/response schemas, validation, errors, concurrency, and recovery behavior. The separate API-wide authority applies `Idempotency-Key` to all POST requests: identical same-key parameters replay the original result, changed parameters conflict, retention is at least 24 hours, and cached errors require state investigation. This guide adds no endpoint-specific retry or ambiguous-failure guarantee.\n\n## Raw-detail coverage map\n\nUse the raw page for the full use-case rationale; comparison with prepaid-balance and spend thresholds; the Option A rate-card and customer-commit cURL payloads; the Option B rate-card, contract, commit, schedule, temporary-ID, and commit-scoped override payload; all example UUIDs, timestamps, amounts, casing, and inheritance wording; and the closing application-gating note. Use dedicated rate-card, contract, commit, invoice, balance, notification, webhook, currency, and idempotency sources for complete schemas, precedence outside this example, denominations, lifecycle behavior, delivery guarantees, and operational recovery.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-credits-and-commits]], [[metronome-products-and-rate-cards]], [[metronome-usage-based-billing]], [[metronome-invoicing]]\n- Supporting concepts: [[metronome-customers-and-contracts]], [[metronome-alerts-and-notifications]], [[metronome-webhooks]], [[metronome-currencies-and-custom-pricing-units]], [[metronome-api-idempotency]]\n- Related sources: [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-create-a-pre-paid-commit]], [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]], [[source-metronome-guides-customers-billing-manage-customers-manage-product-access]], [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]], [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/pricing-packaging/apply-credits-and-commits/guarantee-zero-overages-2026-07-13|2026-07-13 snapshot - zero-list-rate and commit-only pricing patterns, worked configurations, and merchant access-gating boundary]]\n",
+  "quotes": [
+    {
+      "text": "Some customers must never be billed for usage beyond their committed balance\u2014free trial accounts, fraud-sensitive segments, or customers on strict internal budgets. Guarantee zero overages in Metronome by setting list rates to 0 USD and encoding the real prices either as a commit rate on the rate card or as a commit-specific override on the contract. Usage burns down the commit at the real prices while balance exists, and falls back to 0 USD after the commit is exhausted.",
+      "location": "raw/metronome/guides/pricing-packaging/apply-credits-and-commits/guarantee-zero-overages-2026-07-13.md:9-11"
+    },
+    {
+      "text": "**Only use this pattern when customers must never be charged for overages.** If you want to allow overages but need controls around them, Metronome offers two complementary mechanisms instead:\n\n  * **[Prepaid balance thresholds](/guides/customers-billing/optimize-customer-experience/prepaid-balance-thresholds)** auto-recharge a customer's prepaid commit balance when it drops to a `threshold_amount`, topping it back up to a `recharge_to_amount`. Useful when you want continuous service with automatic top-ups.\n  * **[Spend thresholds](/guides/customers-billing/optimize-customer-experience/set-customer-spend-control)** cap how much a customer can accrue before a payment is triggered\u2014useful for limiting fraud exposure in PLG workflows.\n\n  The pattern below is the right choice only when there is no tolerance for charging customers overages.",
+      "location": "raw/metronome/guides/pricing-packaging/apply-credits-and-commits/guarantee-zero-overages-2026-07-13.md:13-20"
+    },
+    {
+      "text": "Two pieces work together:\n\n1. **List rate of 0 USD** on the rate card. This is the fallback price after any commit is exhausted, so any leaked usage is billed at 0 USD.\n2. **A real per-unit price that only applies while a commit is being drawn down.** You can encode this real price in one of two ways depending on whether prices are uniform across customers or set per customer.\n\nBecause both mechanisms only apply while usage is consuming a commit, pricing reverts to the 0 USD list rate the moment the commit hits zero. From that point forward, the line item resolves to 0 USD and the customer is never invoiced for overages.",
+      "location": "raw/metronome/guides/pricing-packaging/apply-credits-and-commits/guarantee-zero-overages-2026-07-13.md:30-37"
+    },
+    {
+      "text": "| **Where prices live**    | On the rate card, alongside the 0 USD list rate                          | On each customer's contract                        |\n| **Best for**             | Uniform pricing across all (or most) customers on the rate card          | Per-customer customization of commit prices        |\n| **Setup cost**           | Configure once on the rate card                                          | Add an override on every contract                  |\n| **Customer inheritance** | All customers using the rate card automatically inherit the commit price | Each contract specifies its own commit price       |\n\n<Tip>\n  You can combine the two: set a default commit rate on the rate card for most customers, and use commit-specific overrides on contracts that need a different price. Overrides on the contract take precedence.\n</Tip>",
+      "location": "raw/metronome/guides/pricing-packaging/apply-credits-and-commits/guarantee-zero-overages-2026-07-13.md:41-50"
+    },
+    {
+      "text": "    \"overrides\": [\n      {\n        \"starting_at\": \"2024-10-01T00:00:00.000Z\",\n        \"is_commit_specific\": true,\n        \"product_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n        \"type\": \"overwrite\",\n        \"overwrite_rate\": {\n          \"rate_type\": \"flat\",\n          \"price\": 100\n        },\n        \"override_specifiers\": [\n          {\n            \"commit_ids\": [\"prepaid_commit_A\"]\n          }\n        ]\n      }\n    ]\n  }'\n```\n\nWhile the commit has balance, the override applies and usage is priced at 100 USD/unit. After the commit is exhausted, the override no longer applies and usage falls back to the rate card's 0 USD list rate.\n\n<Note>\n  **App-side gating is still required**\n\n  This pattern guarantees zero billing for any usage that leaks through, but it does not stop usage from being submitted. Gate access in your application using [balance thresholds](/guides/pricing-packaging/apply-credits-and-commits/alerts) or webhooks so customers can't continue consuming the product after their commit is exhausted.\n</Note>",
+      "location": "raw/metronome/guides/pricing-packaging/apply-credits-and-commits/guarantee-zero-overages-2026-07-13.md:179-205"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "zero-overages-credits-commits-pattern",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "after ## Drawdown and invoice attribution",
+        "proposed_markdown": "### Zero-overage commit pricing pattern\n\nMetronome documents a no-overage-charge pattern that gives the applicable product a zero list rate and applies its real price only while an eligible commit is being consumed. The real price can be a default rate-card `commit_rate` or a contract `overwrite` scoped through `override_specifiers.commit_ids`; the contract override takes precedence when both exist. Once the commit is exhausted, the commit-only rate stops applying and submitted usage falls back to the zero list rate. This is a configured pricing outcome, not automatic application access enforcement or a universal guarantee for mismatched products, balances, events, or configurations; merchant systems still own cutoff and restoration.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not generalize the worked configuration into a platform default or product-access guarantee.",
+          "Keep post-exhaustion zero pricing separate from invoice suppression, usage rejection, and merchant authorization."
+        ]
+      },
+      {
+        "update_id": "zero-overages-credits-commits-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - zero-list-rate fallback, rate-card commit rates, commit-scoped contract overrides, post-exhaustion zero pricing, and merchant gating boundary",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "zero-overages-products-rate-cards-pattern",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "within ## Rate cards and rates",
+        "proposed_markdown": "A zero-overage guide uses a zero product list rate as the post-commit fallback and places the real price either in a rate-card `commit_rate` for inherited pricing or in a contract commit-specific overwrite for per-customer pricing. A contract commit-specific override takes precedence over the default rate-card commit rate. The pattern is illustrative and does not define missing-rate behavior, multiple-balance resolution, concurrency at exhaustion, or complete add-rate and override schemas.",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Retain the distinction between inherited rate-card commit pricing and contract-specific overwrite pricing.",
+          "Do not infer access-control behavior from rate entitlement or zero-list-rate configuration."
+        ]
+      },
+      {
+        "update_id": "zero-overages-products-rate-cards-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - zero-list-rate fallback, inherited rate-card commit pricing, per-contract commit-specific overwrite pricing, and override precedence",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "zero-overages-invoice-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "within ## Native invoice model",
+        "proposed_markdown": "A zero-overage configuration can make usage after commit exhaustion resolve at a zero list rate, preventing a nonzero overage charge for usage that reaches Metronome under the configured pattern. The guide does not establish that a zero-dollar usage line or invoice is omitted, that a billing record is never generated, or that downstream delivery is suppressed; it also does not define finalization, payment, tax, accounting, or reconciliation outcomes. Merchant product access remains separately enforced.",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "Phrase the durable outcome as zero post-exhaustion pricing or no nonzero overage charge, not universal invoice suppression.",
+          "Do not turn the source into downstream payment, tax, accounting, or reconciliation authority."
+        ]
+      },
+      {
+        "update_id": "zero-overages-invoicing-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - post-commit zero-list-rate fallback, nonzero-overage prevention, zero-dollar-record unknowns, and invoice-versus-access boundary",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "zero-overages-alerts-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - balance-threshold or webhook signals as inputs to merchant-owned post-commit access gating rather than native usage rejection",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Keep alert evaluation and webhook transport semantics with their dedicated authorities; this guide supplies no latency or delivery guarantee."
+        ]
+      },
+      {
+        "update_id": "zero-overages-webhooks-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - webhook-triggered merchant access gating after commit exhaustion, with no guide-local transport, ordering, or cutoff-timing guarantee",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Do not replace the dedicated at-least-once delivery, retry, duplicate, and verification authority with this guide's gating note."
+        ]
+      },
+      {
+        "update_id": "zero-overages-currency-denomination-conflict",
+        "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+        "update_kind": "durable_fact",
+        "anchor": "within ## Fiat currencies and API denomination",
+        "proposed_markdown": "> [!warning] Zero-overage example denomination conflict\n> The zero-overage guide's rate payloads use `price: 100` and then call the resulting commit or override rate `100 USD/unit`. The separate currency authority says USD API values are cents, where `100` represents $1.00. The guide does not reconcile the numeric payload and prose label, so preserve both source-scoped representations and verify the intended amount before adapting the example.",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Do not silently relabel the example as either $1/unit or $100/unit without current schema and product-intent verification."
+        ]
+      },
+      {
+        "update_id": "zero-overages-currencies-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - worked `price: 100` values labeled 100 USD/unit, which remain unresolved against the documented USD-cent convention",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "zero-overages-customers-contracts-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - per-contract commit and commit-scoped override configuration for customer-specific zero-overage pricing, with merchant-owned access enforcement",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat the shown contract as one worked configuration, not a complete contract schema or universal enforcement guarantee."
+        ]
+      },
+      {
+        "update_id": "zero-overages-idempotency-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - multiple POST pricing and contract examples that omit `Idempotency-Key`, requiring the separate API-wide replay and cached-error boundary",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide defines no add-rate, commit-create, or contract-create endpoint-specific retry, concurrency, or ambiguous-failure recovery behavior."
+        ]
+      },
+      {
+        "update_id": "zero-overages-usage-based-billing-pattern",
+        "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+        "update_kind": "durable_fact",
+        "anchor": "within ## Pricing and packaging patterns",
+        "proposed_markdown": "Metronome documents a configured zero-overage usage-pricing pattern: the real usage price applies only while an eligible commit is being consumed, then the product falls back to a zero list rate after exhaustion instead of ordinary nonzero overage pricing. The merchant can place the commit price on the rate card or use a commit-scoped contract override. This pattern does not reject usage submission or enforce product access; merchant systems still own gating and restoration, and the worked configuration does not establish a platform default or a guarantee for other products, balances, events, or configurations.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the usage-pricing outcome scoped to the documented zero-list-rate and commit-only-price configuration.",
+          "Do not describe the pattern as native usage rejection, automatic entitlement enforcement, invoice suppression, or a universal zero-overage default."
+        ]
+      },
+      {
+        "update_id": "zero-overages-usage-based-billing-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - configured commit-only real pricing with zero-list-rate fallback after exhaustion, contrasted with ordinary nonzero overage pricing and separated from merchant-owned access enforcement",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not generalize the worked pattern beyond its configured product, commit, rate-card, and contract scope."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/pricing-packaging/apply-credits-and-commits/guarantee-zero-overages-2026-07-13.md",
+  "raw_sha256": "1e5118389bf8924dc5d27d963b235d10c346b127aab875271387ebc5f0683f96",
+  "status": "candidate_ready"
+}

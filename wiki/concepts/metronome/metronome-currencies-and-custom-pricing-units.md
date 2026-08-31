@@ -25,6 +25,8 @@ The `listBalances` response models access- and invoice-schedule `amount`, `unit_
 
 The daily Salesforce sync includes a credit-type object with credit-type ID, name, and Metronome environment; its invoice and invoice-line objects each reference a credit type. The combined commit-or-credit object has no documented credit-type lookup even though its total-amount description uses dollar wording. This Salesforce schema does not establish denomination or USD-cent, non-USD, custom-pricing-unit, conversion, precision, or rounding semantics for those replicas.
 
+> [!warning] Zero-overage example denomination conflict
+> The zero-overage guide's rate payloads use `price: 100` and then call the resulting commit or override rate `100 USD/unit`. The separate currency authority says USD API values are cents, where `100` represents $1.00. The guide does not reconcile the numeric payload and prose label, so preserve both source-scoped representations and verify the intended amount before adapting the example.
 
 ## Rate-card setup and immutability
 
@@ -72,6 +74,7 @@ The guide does not define custom-unit creation APIs, precision, conversion formu
 
 ## Sources
 
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - worked `price: 100` values labeled 100 USD/unit, which remain unresolved against the documented USD-cent convention
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] - Token Billing's non-USD-fiat restriction and USD-to-custom-unit conversion route for credit-denominated AI pricing
 
 - [[source-metronome-api-reference-settings-list-pricing-units]] — bearer-authenticated pricing-unit enumeration, USD (cents) identifier, cursor pagination, and successful response schema

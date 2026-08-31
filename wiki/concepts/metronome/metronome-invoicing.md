@@ -18,6 +18,8 @@ Contracts are Metronome's primary invoice generator. Usage invoices (`USAGE`) fo
 
 The guide names draft, grace period, finalized, and void as the four states. `FINALIZED` invoices are immutable within Metronome; a finalized invoice created in error may become `VOID` and be regenerated from updated usage and pricing. Distribution and collection follow contract billing configuration, but the guide does not prove provider delivery, settlement, payment, tax, or accounting outcomes. Its worked JSON also uses `issued_at`, `start_timestamp`, and `end_timestamp` where its schema prose names `issue_date`, `billing_period_start_date`, and `billing_period_end_date`, and its negative commitment adjustment omits quantity and unit price despite the universal line-item list. Use dedicated API schemas for exact fields. [[source-metronome-guides-implement-metronome-core-concepts-how-invoicing-works]]
 
+A zero-overage configuration can make usage after commit exhaustion resolve at a zero list rate, preventing a nonzero overage charge for usage that reaches Metronome under the configured pattern. The guide does not establish that a zero-dollar usage line or invoice is omitted, that a billing record is never generated, or that downstream delivery is suppressed; it also does not define finalization, payment, tax, accounting, or reconciliation outcomes. Merchant product access remains separately enforced.
+
 ## Invoicing options
 
 | Option | Documented scope |
@@ -92,6 +94,10 @@ In the 2026-08-28 List snapshot, optional top-level `Invoice.billable_status` is
 The 2026-08-28 Get Invoice schema independently describes `Invoice.billable_status` as indicating whether the invoice has been or will be sent to the configured customer billing provider and says it defaults to `billable`. The property simultaneously references `BillableStatus` and declares sibling `type: object`, so its documented shape remains internally unresolved on this page. [[source-metronome-api-reference-invoices-get-an-invoice]]
 
 Bearer-authenticated `GET /v1/customers/{customer_id}/invoices` lists a customer's invoices with cursor pagination and filters for status, invoice type, credit type, contract, and inclusive-start/exclusive-end billing-period boundaries. The prose says drafts update as usage arrives and void invoices are included by default, but it gives no freshness or snapshot guarantee. Its ordering authorities conflict: prose says creation-date descending by default, while the `sort` parameter says `issued_at` ordering defaults to `date_asc`; callers needing deterministic order should pass `sort` explicitly. The prose also calls results summaries, while the response schema references an invoice object requiring `line_items`, so neither line-item omission nor single-invoice completeness is established. [[source-metronome-api-reference-invoices-list-invoices]]
+
+### Customer invoice-breakdown read
+
+Bearer-authenticated `GET /v1/customers/{customer_id}/invoices/breakdowns` returns customer-scoped hourly or daily invoice windows. Required `starting_on` and `ending_before` retain only windows whose starts are on or after the lower bound and whose ends are on or before the upper bound; daily requests cover at most 35 days and hourly requests at most 24 hours, with envelope-level cursor pagination for additional results. The page says backdated usage arriving after invoice finalization updates breakdowns, but does not explain whether the base finalized invoice, totals, exports, or downstream copies change; this remains in tension with the guide-level finalized-invoice immutability rule. `next_page` belongs beside `data`, not inside each breakdown item, despite the narrative field list. [[source-metronome-api-reference-invoices-list-invoice-breakdowns]]
 
 ## Event-based invoice preview
 
@@ -252,6 +258,8 @@ Metronome's go-live checklist asks teams to understand the draft-to-grace-period
 
 ## Sources
 
+- [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] - customer-scoped hourly or daily invoice windows, immediate-parent cursor envelope, temporal limits, mutable finalized-period breakdown boundary, and reconciliation unknowns
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - post-commit zero-list-rate fallback, nonzero-overage prevention, zero-dollar-record unknowns, and invoice-versus-access boundary
 - [[source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition]] - service and invoice timing inputs, billed-versus-earned separation, appendix recognition examples, and the invoice-versus-accounting-recognition boundary
 
 - [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]] - customer destination creation, Stripe-only invoice-suppression rules, requiredness conflict, duplicate-specificity failure, and downstream outcome boundaries

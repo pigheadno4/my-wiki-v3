@@ -13,6 +13,8 @@ Metronome's documentation presents usage-oriented billing as a pricing and packa
 
 [[metronome-token-billing]] is a distinct private-preview managed token-cost-plus-markup workflow. It can create managed AI billing objects from configured markups; non-USD fiat is unsupported, while a USD-to-custom-unit conversion supports custom credit-denominated pricing. Newly released models are added at the default markup, but provider-price refresh for existing models is only described as coming soon. The guide does not establish catalog-update timing, removal or fallback behavior, precision or rounding, provider-cost verification, margin guarantees, reconciliation, or endpoint recovery semantics. [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]]
 
+Metronome documents a configured zero-overage usage-pricing pattern: the real usage price applies only while an eligible commit is being consumed, then the product falls back to a zero list rate after exhaustion instead of ordinary nonzero overage pricing. The merchant can place the commit price on the rate card or use a commit-scoped contract override. This pattern does not reject usage submission or enforce product access; merchant systems still own gating and restoration, and the worked configuration does not establish a platform default or a guarantee for other products, balances, events, or configurations.
+
 ## Metronome commercial pricing boundary
 
 Metronome's own customer pricing is distinct from the prices merchants configure for their end users. It combines an annual platform fee, excluded from consumption charge categories, with consumption-based charges that begin at production go-live. An order-form Consumption Commitment is a prepaid, non-refundable minimum against those platform-usage charges; unused value expires at the end of the applicable service term. This commercial commitment must not be treated as a Metronome credit or commit object configured for a merchant's customer. [[source-metronome-guides-platform-configuration-metronome-pricing-model]]
@@ -39,6 +41,7 @@ The invoice guide adds the usage-invoice lifecycle: a contract's usage-statement
 
 For non-monotonically increasing metrics that typically use `LATEST`, Metronome bills the incremental change between consecutive reporting windows, including a negative quantity and customer credit when the reported value decreases. The same guide distinguishes this billed quantity from usage-query output: invoice breakdowns show each window's incremental quantity and cost, while usage endpoints show the absolute latest value in each requested window. With no breakdown, the usage example returns the latest value across the full queried period. Exact endpoint schemas, pagination, ordering, freshness, and consistency remain with the dedicated API references.
 
+The dedicated invoice-breakdown read turns customer invoice data into hourly or daily windows whose line items carry quantities and costs for the specific period. Required timestamp bounds select windows by their own start and end, and optional filtering can remove zero-quantity line items. The endpoint says late usage after invoice finalization is reflected in breakdowns, but it does not define aggregation-specific quantity calculation, event attribution, baselines, correction cutoffs, or whether invoice totals change; retain the separate `LATEST`-metric guide as authority for incremental-versus-absolute quantity semantics. [[source-metronome-api-reference-invoices-list-invoice-breakdowns]]
 
 ## Pre-processing validation
 
@@ -73,6 +76,8 @@ These remaining questions require dedicated sources and are not fully answered b
 
 ## Sources
 
+- [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] - customer invoice time windows, required interval bounds, temporal and zero-quantity filters, late-usage updates, and aggregation-semantics boundary
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - configured commit-only real pricing with zero-list-rate fallback after exhaustion, contrasted with ordinary nonzero overage pricing and separated from merchant-owned access enforcement
 - [[source-metronome-guides-customers-billing-manage-customers-manage-product-access]] - contract-defined access and usage/payment-driven entitlement-status framing, qualified by navigation-page limits
 - [[source-metronome-guides-get-started-api-quickstart]] — programmatic sandbox onboarding order from event schema and billing objects to a draft invoice, including the stale worked timestamp boundary
 

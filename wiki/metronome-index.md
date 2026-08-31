@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 226 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 157 |
-| Raw snapshots without source summaries | 135 |
+| Source summaries ingested | 162 |
+| Raw snapshots without source summaries | 130 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -22,6 +22,12 @@ Operational evidence:
 - [2026-07-13 collection manifest](../tracking/collections/metronome/runs/2026-07-13T100930-manifest.md)
 
 ## Sources
+
+- [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] — customer invoice windows, required bounds, temporal caps, cursor pagination, late-usage mutation, and reconciliation boundaries
+- [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]] — generated customer dashboard URLs, view options, response placement, and security and freshness limits
+- [[source-metronome-api-reference-customers-create-or-update-customer-ingest-aliases]] — full alias-set replacement, usage-attribution movement, POST idempotency, and visibility and recovery unknowns
+- [[source-metronome-api-reference-billable-metrics-archive-a-billable-metric]] — metric archival, Product lifecycle effects, sparse generic response, and conflicting continued-metering authority
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] — configured zero-overage billing pattern, commit drawdown, currency conflict, and merchant access boundary
 
 - [[source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition]] — ASC 606 product mapping, reporting and reconciliation inputs, timing tensions, examples, and accounting-authority limits
 - [[source-metronome-api-reference-alerts-create-a-threshold-notification]] — customer threshold configuration, schema boundaries, evaluation and response conflicts, and distinct Plan alert surface

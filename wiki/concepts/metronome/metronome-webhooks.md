@@ -59,6 +59,7 @@ Metronome's go-live checklist places three checks in its webhook-and-error-handl
 
 ## Sources
 
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - webhook-triggered merchant access gating after commit exhaustion, with no guide-local transport, ordering, or cutoff-timing guarantee
 - [[source-metronome-integrations-invoice-integrations-stripe]] — `invoice.billing_provider_error` operator action, Stripe `invoice.created` delivery fallback, and separation of Metronome notification handling from Stripe payment timing
 
 - [[source-metronome-api-reference-credits-and-commits-release-external-payment-gate-threshold-commit]] — `payment_gate.external_initiate` workflow-ID correlation and the downstream outcome-reporting endpoint

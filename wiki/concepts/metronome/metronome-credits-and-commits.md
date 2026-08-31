@@ -128,6 +128,12 @@ Under Azure Marketplace metering, prepaid purchase amounts follow scheduled-invo
 
 Under GCP Marketplace metering, prepaid purchase amounts follow scheduled-invoice service-period dates, free credits are not sent and only post-drawdown overage is metered, and an end-of-contract postpaid true-up that finalizes after the marketplace window is merchant-owned. GCP's positive-only quantities prevent a later Metronome credit from reducing a previously reported total. [[source-metronome-integrations-marketplace-integrations-gcp]]
 
+Invoice-breakdown records inherit invoice line items for each requested time window. The embedded schema describes applied commits and credits as their own negative-total line items and says a postpaid-commit application line is excluded from the invoice total because postpaid commits are paid in arrears. The read does not establish balance or ledger mutation, partial allocation, denomination, precision, rounding, or reconciliation between windowed applications and the invoice total. [[source-metronome-api-reference-invoices-list-invoice-breakdowns]]
+
+### Zero-overage commit pricing pattern
+
+Metronome documents a no-overage-charge pattern that gives the applicable product a zero list rate and applies its real price only while an eligible commit is being consumed. The real price can be a default rate-card `commit_rate` or a contract `overwrite` scoped through `override_specifiers.commit_ids`; the contract override takes precedence when both exist. Once the commit is exhausted, the commit-only rate stops applying and submitted usage falls back to the zero list rate. This is a configured pricing outcome, not automatic application access enforcement or a universal guarantee for mismatched products, balances, events, or configurations; merchant systems still own cutoff and restoration.
+
 ## Prepaid balance thresholds
 
 On `POST /v2/contracts/edit`, setting prepaid-balance-threshold `is_enabled` from `false` to `true` causes immediate evaluation regardless of prior state; each time the contract balance falls to `threshold_amount`, a threshold charge is initiated. The same endpoint gives spend-threshold activation the same immediate-evaluation behavior and initiates a charge when usage reaches its threshold. The schema does not establish successful collection, commit availability, evaluation order within a mixed edit, atomicity, concurrency behavior, downstream reconciliation, or safe recovery after an ambiguous failure. [[source-metronome-api-reference-contracts-edit-a-contract]]
@@ -242,6 +248,8 @@ A merchant can create `low_remaining_commit_balance_reached` for a customer, cre
 
 ## Sources
 
+- [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] - time-windowed credit and commit line-item attribution, negative application totals, postpaid invoice-total exclusion, and ledger-reconciliation limits
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - zero-list-rate fallback, rate-card commit rates, commit-scoped contract overrides, post-exhaustion zero pricing, and merchant gating boundary
 - [[source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition]] - ASC 606-oriented prepaid and postpaid, drawdown, true-up, expiration, rollover, breakage, overage, and free-credit examples under an explicit non-prescriptive accounting disclaimer
 
 - [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — seat-change credit release, customer/contract versus seat-scoped threshold boundary, and per-seat current-balance and ledger-history navigation

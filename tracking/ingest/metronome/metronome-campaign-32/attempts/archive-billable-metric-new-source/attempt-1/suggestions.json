@@ -1,0 +1,60 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "archive-billable-metric-lifecycle-and-metering-conflict",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Lifecycle boundary",
+      "proposed_markdown": "Bearer-authenticated `POST /v1/billable-metrics/archive` targets a billable metric through required UUID `id` inside a supplied payload, although the enclosing request body is not marked required and the `Id` object has no closed-object policy. Archival prevents the metric from being selected for new Products, while the endpoint says Products already associated with it continue functioning and metering from the archived definition. The metric remains visible through Get and List with populated `archived_at`; the List authority separately excludes archived metrics by default unless `include_archived=true`. The archive page does not define restoration, retention, already-archived behavior, accepted or late-event handling, propagation timing, read-after-write consistency, concurrency with Product changes, invoice recalculation, or downstream convergence. Its existing-Product metering claim materially conflicts with the Get endpoint's statement that an archived metric stops processing new usage events; preserve both scopes and verify runtime cutoff behavior. [[source-metronome-api-reference-billable-metrics-archive-a-billable-metric]] [[source-metronome-api-reference-billable-metrics-get-a-billable-metric]] [[source-metronome-api-reference-billable-metrics-list-all-billable-metrics]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Do not silently reconcile the archive page's continued existing-Product metering with the Get page's stopped-new-event-processing claim.",
+        "Do not infer reversibility or irreversibility from the absence of a restore control.",
+        "Qualify list visibility with the List endpoint's include_archived requirement."
+      ]
+    },
+    {
+      "update_id": "archive-billable-metric-existing-versus-new-product-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Products",
+      "proposed_markdown": "Archiving a billable metric creates an asymmetric Product boundary: the metric can no longer define metering for a new Product, but the archive endpoint says a Product already associated with it continues to function and meter from the archived definition. The page does not require the metric to be unused, expose affected Product IDs, define whether future effective-dated Product updates count as new, or specify ordering against concurrent Product creation or metric reassignment. Its `200` response returns only the metric UUID and does not prove Product-state, rating, invoice, report, export, or downstream propagation. The existing-Product claim also remains in tension with the dedicated Get-metric source's statement that archived metrics stop processing new usage events. [[source-metronome-api-reference-billable-metrics-archive-a-billable-metric]] [[source-metronome-api-reference-billable-metrics-get-a-billable-metric]]",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "Keep the documented new-Product prohibition separate from the continued-existing-Product statement.",
+        "Do not infer behavior for concurrent creation, later Product edits, replacement metrics, or historical invoice recalculation.",
+        "Preserve the cross-source metering conflict rather than selecting one claim as runtime truth."
+      ]
+    },
+    {
+      "update_id": "archive-billable-metric-identity-and-post-idempotency-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "`POST /v1/billable-metrics/archive` uses payload UUID `id` to identify the metric and returns required UUID `data.id`; neither is an idempotency key or a separate archive-operation identity. The API-wide `Idempotency-Key` authority applies to this POST: after execution begins, identical same-key parameters replay the persisted original result, changed parameters return HTTP `409`, retention is at least 24 hours, and a cached result can be HTTP `500`. The endpoint itself documents only `200` and generic `404` and adds no semantics for repeated archival, an already archived metric, another or expired key, no-key retries, concurrent archival or Product association, read-after-write freshness, cached-error state, partial effects, rollback, or ambiguous-failure recovery. A same-key replay is not fresh proof of current archive visibility, Product behavior, event processing, invoice state, or downstream propagation. [[source-metronome-api-reference-billable-metrics-archive-a-billable-metric]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Keep metric resource identity and archive operationId separate from Idempotency-Key result replay.",
+        "Do not infer endpoint-level repeated-call or already-archived behavior from the API-wide cache contract.",
+        "After a cached or ambiguous failure, do not assume a changed key is safe without reconciling metric, Product, and usage state."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

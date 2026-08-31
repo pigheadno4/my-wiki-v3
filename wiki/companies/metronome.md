@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 157
+source_count: 162
 ---
 
 ## Overview
@@ -151,10 +151,16 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 226
-- Official documentation source summaries: 151
-- Raw snapshots without source summaries: 135
+- Official documentation source summaries: 156
+- Raw snapshots without source summaries: 130
 
 ## Sources
+
+- [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] — customer invoice time windows, interval filters, pagination, late-usage mutation, and reporting-completeness limits
+- [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]] — customer-scoped embedded dashboard URL generation, customization, and lifecycle, freshness, and exposure boundaries
+- [[source-metronome-api-reference-customers-create-or-update-customer-ingest-aliases]] — ingest-alias replacement, customer attribution movement, idempotency distinctions, and propagation unknowns
+- [[source-metronome-api-reference-billable-metrics-archive-a-billable-metric]] — billable-metric archival, existing-versus-new Product behavior, generic response identity, and unresolved metering conflict
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] — commit-only real usage pricing, zero list-rate fallback, invoice boundaries, and merchant-owned access enforcement
 
 - [[source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition]] — ASC 606 five-step product mapping, reporting inputs, timing tensions, worked examples, and accounting-ownership boundary
 - [[source-metronome-api-reference-alerts-create-a-threshold-notification]] — customer threshold creation, conditional fields, evaluation and response conflicts, Plan-surface boundary, and retry unknowns

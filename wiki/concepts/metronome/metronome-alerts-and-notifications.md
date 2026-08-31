@@ -76,6 +76,7 @@ For a parent contract's shared commit, child consumption does not automatically 
 
 ## Sources
 
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - balance-threshold or webhook signals as inputs to merchant-owned post-commit access gating rather than native usage rejection
 - [[source-metronome-guides-customers-billing-manage-customers-manage-product-access]] - product-access navigation framing alerts and notifications as communication about entitlement-state changes
 - [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — exclusion of seat-scoped credits from general balance alerts, seat-filter object requiredness, optional one-seat scoping, malformed lookup example, and merchant-owned access response
 

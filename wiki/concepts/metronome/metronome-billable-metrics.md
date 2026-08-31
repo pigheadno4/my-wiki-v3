@@ -51,6 +51,8 @@ Non-monotonically increasing measurements, such as connected-device or storage-i
 - SQL metric swaps may be scheduled within a billing period. In the guide’s two-SQL-metric average example, the combined value after the swap is the new metric through the current day plus the old metric through the swap day minus the new metric through the swap day; the new metric’s pre-swap term is zero in that example, and the documented incurred quantities are example-scoped. The page does not define exact cutoff inclusivity, timezones, one-SQL/one-streaming transitions, `service period` interactions, falling values, negative adjustments, late corrections, finalized-invoice behavior, or subsequent-period behavior.
 - The documented SQL item list does not identify a dialect or define literal Unicode-versus-ASCII comparison syntax, type coercion, null behavior, precision, output limits, tie handling, or error semantics.
 
+The invoice-breakdown endpoint exposes invoice and line-item results in requested hourly or daily windows and can suppress zero-quantity line items. It is output authority for the request filters and cursor envelope, but it does not define how a billable metric computes quantity, how SQL `hour` or `service period` granularity selects a window, or how non-monotonic `LATEST` values become incremental charges. Those calculation semantics remain with the metric guides. [[source-metronome-api-reference-invoices-list-invoice-breakdowns]]
+
 ## Lifecycle boundary
 
 Within the guide's streaming-metric section, `LATEST` metrics can use group keys but currently cannot use contract-level usage filters. [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]]
@@ -79,6 +81,8 @@ After metric creation, the guide recommends sending test events through `/ingest
 
 Because usage-event structures target particular metrics, changing the producer schema can stop downstream metrics from recording usage. Metronome recommends validating and testing event-structure changes with a representative.
 
+Bearer-authenticated `POST /v1/billable-metrics/archive` targets a billable metric through required UUID `id` inside a supplied payload, although the enclosing request body is not marked required and the `Id` object has no closed-object policy. Archival prevents the metric from being selected for new Products, while the endpoint says Products already associated with it continue functioning and metering from the archived definition. The metric remains visible through Get and List with populated `archived_at`; the List authority separately excludes archived metrics by default unless `include_archived=true`. HTTP `200` requires top-level `data` referencing a generic `Id` object with required UUID `id`; its example repeats the request UUID, but the schema does not separately label the returned value or establish metric-resource versus archive-operation identity. The archive page does not define restoration, retention, already-archived behavior, accepted or late-event handling, propagation timing, read-after-write consistency, concurrency with Product changes, invoice recalculation, or downstream convergence. Its existing-Product metering claim materially conflicts with the Get endpoint's statement that an archived metric stops processing new usage events; preserve both scopes and verify runtime cutoff behavior. [[source-metronome-api-reference-billable-metrics-archive-a-billable-metric]] [[source-metronome-api-reference-billable-metrics-get-a-billable-metric]] [[source-metronome-api-reference-billable-metrics-list-all-billable-metrics]]
+
 ## Retrieval APIs
 
 `GET /v1/billable-metrics/{billable_metric_id}` returns one metric configuration under `data`; only `id` and `name` are required in `BillableMetricV1`. An archived metric remains retrievable with RFC 3339 `archived_at` and stops processing new usage events. The endpoint documents `404`, but not archive propagation, permissions, rate limits, or consistency.
@@ -98,6 +102,7 @@ Dimension-scoped spend alerts require their `group_values` key to be a group key
 
 ## Sources
 
+- [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] - hourly or daily breakdown output, window filters, zero-quantity suppression, cursor envelope, and metric-calculation authority boundary
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] - private-preview managed creation of AI billable metrics from configured model markups and event-side verification that Token Billing usage matched a metric
 
 - [[source-metronome-guides-get-started-api-quickstart]] — metric placement in the onboarding flow, event-type and property matching, group-key decisions, creation-time immutability, and stale-event test boundary

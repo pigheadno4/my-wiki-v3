@@ -1,0 +1,152 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "list-invoice-breakdowns-new-source-invoicing-read",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Customer invoice-list read",
+      "proposed_markdown": "### Customer invoice-breakdown read\n\nBearer-authenticated `GET /v1/customers/{customer_id}/invoices/breakdowns` returns customer-scoped hourly or daily invoice windows. Required `starting_on` and `ending_before` retain only windows whose starts are on or after the lower bound and whose ends are on or before the upper bound; daily requests cover at most 35 days and hourly requests at most 24 hours, with envelope-level cursor pagination for additional results. The page says backdated usage arriving after invoice finalization updates breakdowns, but does not explain whether the base finalized invoice, totals, exports, or downstream copies change; this remains in tension with the guide-level finalized-invoice immutability rule. `next_page` belongs beside `data`, not inside each breakdown item, despite the narrative field list. [[source-metronome-api-reference-invoices-list-invoice-breakdowns]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Preserve the unresolved boundary between mutable post-finalization breakdowns and the separate guide's finalized-invoice immutability statement.",
+        "Keep envelope next_page separate from BreakdownInvoice item fields."
+      ]
+    },
+    {
+      "update_id": "list-invoice-breakdowns-new-source-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] - customer-scoped hourly or daily invoice windows, immediate-parent cursor envelope, temporal limits, mutable finalized-period breakdown boundary, and reconciliation unknowns",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-invoice-breakdowns-new-source-reporting-timeseries",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Invoice-list reporting surface",
+      "proposed_markdown": "## Invoice-breakdown reporting surface\n\nThe invoice-breakdown API supplies one customer's hourly or daily invoice time windows for usage and cost dashboards, reports, and dispute investigation. Required timestamp filters select whole breakdown windows, while daily and hourly reads have separate 35-day and 24-hour temporal caps and a nullable envelope cursor for further results. Because backdated usage can update breakdowns after invoice finalization and the page defines no revision, as-of time, freshness SLA, cursor snapshot, or stable ordering among windows of one invoice, a completed traversal is not proof of an immutable reporting population. This API read also remains distinct from daily draft-breakdown warehouse snapshots and finalized export rows. [[source-metronome-api-reference-invoices-list-invoice-breakdowns]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Do not import Data Export snapshot, watermark, or delivery semantics into this API cursor contract."
+      ]
+    },
+    {
+      "update_id": "list-invoice-breakdowns-new-source-reporting-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] - hourly or daily invoice time-series read, required window bounds, temporal caps, envelope pagination, late-usage mutation, and reporting-completeness limits",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-invoice-breakdowns-new-source-usage-window-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Adjacent billing domains",
+      "proposed_markdown": "The dedicated invoice-breakdown read turns customer invoice data into hourly or daily windows whose line items carry quantities and costs for the specific period. Required timestamp bounds select windows by their own start and end, and optional filtering can remove zero-quantity line items. The endpoint says late usage after invoice finalization is reflected in breakdowns, but it does not define aggregation-specific quantity calculation, event attribution, baselines, correction cutoffs, or whether invoice totals change; retain the separate `LATEST`-metric guide as authority for incremental-versus-absolute quantity semantics. [[source-metronome-api-reference-invoices-list-invoice-breakdowns]]",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Do not generalize the separate non-monotonic LATEST guide's incremental semantics to every metric from this endpoint page alone."
+      ]
+    },
+    {
+      "update_id": "list-invoice-breakdowns-new-source-usage-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] - customer invoice time windows, required interval bounds, temporal and zero-quantity filters, late-usage updates, and aggregation-semantics boundary",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-invoice-breakdowns-new-source-billable-metric-route",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## SQL query, output, and timing semantics",
+      "proposed_markdown": "The invoice-breakdown endpoint exposes invoice and line-item results in requested hourly or daily windows and can suppress zero-quantity line items. It is output authority for the request filters and cursor envelope, but it does not define how a billable metric computes quantity, how SQL `hour` or `service period` granularity selects a window, or how non-monotonic `LATEST` values become incremental charges. Those calculation semantics remain with the metric guides. [[source-metronome-api-reference-invoices-list-invoice-breakdowns]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Keep endpoint output shape separate from billable-metric aggregation and product breakdown-granularity configuration."
+      ]
+    },
+    {
+      "update_id": "list-invoice-breakdowns-new-source-billable-metric-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] - hourly or daily breakdown output, window filters, zero-quantity suppression, cursor envelope, and metric-calculation authority boundary",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-invoice-breakdowns-new-source-credit-attribution",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Drawdown and invoice attribution",
+      "proposed_markdown": "Invoice-breakdown records inherit invoice line items for each requested time window. The embedded schema describes applied commits and credits as their own negative-total line items and says a postpaid-commit application line is excluded from the invoice total because postpaid commits are paid in arrears. The read does not establish balance or ledger mutation, partial allocation, denomination, precision, rounding, or reconciliation between windowed applications and the invoice total. [[source-metronome-api-reference-invoices-list-invoice-breakdowns]]",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "Treat these as response attribution semantics, not evidence of a balance or ledger mutation contract."
+      ]
+    },
+    {
+      "update_id": "list-invoice-breakdowns-new-source-credit-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] - time-windowed credit and commit line-item attribution, negative application totals, postpaid invoice-total exclusion, and ledger-reconciliation limits",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

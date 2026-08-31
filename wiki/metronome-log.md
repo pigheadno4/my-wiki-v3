@@ -6,6 +6,16 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-31 — Metronome Campaign 32 never-ingested coverage promoted
+
+- Result: five previously unreferenced canonical pages gained new Minimum Sufficient Sources across eight Sol worker attempts, seven full independent Sol reviews, and one targeted review; two pages passed on attempt 1, with no rejection or coordinator semantic repair.
+- Sources: [[source-metronome-api-reference-invoices-list-invoice-breakdowns]], [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]], [[source-metronome-api-reference-customers-create-or-update-customer-ingest-aliases]], [[source-metronome-api-reference-billable-metrics-archive-a-billable-metric]], and [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]].
+- Review findings: the alias page received a targeted response-boundary correction; archive behavior and zero-overage pricing each required one complete retry for authority, contradiction, route, and exact-evidence gaps.
+- Concepts: applied thirty-eight reviewer-approved durable facts and reciprocal links across thirteen existing concept pages; no new concept page was required.
+- Coverage after promotion: 226 current English canonical documentation identities remain retained as 310 immutable raw snapshots, with 162 total source summaries, 156 official-documentation summaries, and 130 raw snapshots without source summaries. The immutable pre-Campaign-31 planning inventory remains unchanged; 70 of those canonical pages now remain without source coverage.
+- Timing and gate: completed in 3,867 seconds (1 hour 4 minutes 27 seconds). Final quality and the 9/9 fixed query audit passed, but two of five first-pass approvals and two full semantic retries missed both planned throughput gates.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-32/monitor.md), [quality audit](../tracking/ingest/metronome/metronome-campaign-32/quality-audit.md), and [retrospective](../tracking/ingest/metronome/metronome-campaign-32/retrospective.md).
+
 ## 2026-08-30 — Metronome Campaign 31 never-ingested coverage promoted
 
 - Result: five previously unreferenced canonical pages gained new Minimum Sufficient Sources across eight Sol worker attempts and eight full independent Sol reviews; three pages passed on attempt 1, with no targeted review, rejection, or coordinator semantic repair.

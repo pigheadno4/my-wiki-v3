@@ -1,0 +1,57 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "set-ingest-aliases-customer-replacement-and-move-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Customer matching",
+      "proposed_markdown": "Bearer-authenticated `POST /v1/customers/{customer_id}/setIngestAliases` targets one required UUID customer and fully replaces, rather than merges into, that customer's alias set. A supplied payload requires `ingest_aliases`, with at most 2,000 strings of 1-128 characters each; the enclosing body is not marked required, no closed-object policy is declared, and the array has no `minItems`, so omitted-body, unknown-field, duplicate-element, and runtime empty-array behavior remain undocumented. The endpoint says switching an alias associates all corresponding usage with the new customer. Read with the API-wide alias authority, switching requires removal from the original customer first, including when that customer is archived; the endpoint does not establish atomic cross-customer transfer, concurrent-writer ordering, read-after-write visibility, rollback, or which historical, rated, invoiced, finalized, exported, or downstream records are reassociated. The operation lists HTTP `200` with description `Success` but provides no response content schema or example, and therefore exposes no documented applied-set representation, affected-event list, propagation state, or operation identifier; the endpoint failure catalog also remains undocumented. [[source-metronome-api-reference-customers-create-or-update-customer-ingest-aliases]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Treat the explicit full-replacement guideline as controlling over the weaker request description 'The aliases to add'; do not implement additive merge semantics.",
+        "Do not interpret switching as atomic alias stealing; the API-wide authority requires remove-first lifecycle.",
+        "Do not infer that absent minItems proves endpoint-specific runtime acceptance or successful clearing with an empty array."
+      ]
+    },
+    {
+      "update_id": "set-ingest-aliases-event-attribution-and-propagation-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Event contract",
+      "proposed_markdown": "`POST /v1/customers/{customer_id}/setIngestAliases` replaces the aliases that usage events may supply in their `customer_id` field. The page says moving an alias to another customer associates all corresponding usage with the new customer and permits several aliases to model child organizations under one Metronome customer. The API-wide authority requires removing an in-use alias from its original customer before assignment elsewhere. Neither source defines when the new match becomes visible; atomicity with concurrent ingestion; event reprocessing; transient unmatched state; or effects on already rated usage, credit ledgers, alerts, draft or finalized invoices, reports, exports, webhooks, CRM replicas, or downstream billing systems. The operation lists HTTP `200` with description `Success` but provides no response content schema or example, and therefore exposes no documented applied-set representation, affected-event list, propagation state, or operation identifier; it does not prove that every usage and financial surface has converged. [[source-metronome-api-reference-customers-create-or-update-customer-ingest-aliases]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "Preserve the documented usage reassociation without inventing a historical window, propagation SLA, financial recalculation guarantee, or downstream reconciliation result.",
+        "Keep usage-event transaction_id deduplication separate from customer alias attribution."
+      ]
+    },
+    {
+      "update_id": "set-ingest-aliases-endpoint-and-post-idempotency-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "`POST /v1/customers/{customer_id}/setIngestAliases` is endpoint-idempotent desired-state replacement: repeating the same alias set should not create another alias resource or a different final set. This is distinct from ingest-alias identity reservation and from the API-wide `Idempotency-Key` request cache. The alias authority says an alias in use conflicts with HTTP `409` until removed from its original active or archived customer. Separately, identical same-key POST parameters replay the persisted original result, changed parameters conflict, retention is at least 24 hours, and a cached result can be HTTP `500`; replay is not a fresh read of the current alias set or usage attribution. The endpoint itself lists HTTP `200` with description `Success` but provides no response content schema or example, and therefore exposes no documented applied-set representation, affected-event list, propagation state, or operation identifier; it adds no no-key, another-key, expired-key, concurrent-replacement, partial-failure, propagation, cached-error-state, or ambiguous-failure recovery behavior. [[source-metronome-api-reference-customers-create-or-update-customer-ingest-aliases]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "Keep endpoint state idempotence, ingest-alias reservation, usage transaction_id deduplication, and Idempotency-Key result replay as separate mechanisms.",
+        "Do not treat a same-key replay as proof of fresh alias state, completed event reassociation, or downstream convergence.",
+        "After a cached or ambiguous failure, do not assume that switching to a new key is safe without reconciling customer and usage state."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

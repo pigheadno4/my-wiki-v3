@@ -17,6 +17,10 @@ Metronome's `GET /v1/auditLogs` is a cursor-pollable account-activity source int
 
 Metronome's customer invoice-list API supports billing-history, current-draft, reconciliation, support, and date-bounded reporting queries. Its date filters use inclusive billing-period start and exclusive billing-period end rather than issue date, and complete retrieval requires following nullable `next_page` cursors. The page does not establish cursor snapshot consistency or reporting freshness, and its conflicting default-order descriptions require callers that depend on order to pass the `sort` parameter explicitly. [[source-metronome-api-reference-invoices-list-invoices]]
 
+## Invoice-breakdown reporting surface
+
+The invoice-breakdown API supplies one customer's hourly or daily invoice time windows for usage and cost dashboards, reports, and dispute investigation. Required timestamp filters select whole breakdown windows, while daily and hourly reads have separate 35-day and 24-hour temporal caps and a nullable envelope cursor for further results. Because backdated usage can update breakdowns after invoice finalization and the page defines no revision, as-of time, freshness SLA, cursor snapshot, or stable ordering among windows of one invoice, a completed traversal is not proof of an immutable reporting population. This API read also remains distinct from daily draft-breakdown warehouse snapshots and finalized export rows. [[source-metronome-api-reference-invoices-list-invoice-breakdowns]]
+
 ## Query model
 
 For merchant-facing seat-balance views, `POST /v1/contracts/seatBalances/list` supplies one contract's current and initial combined credit/commit balances by seat and credit type. Optional seat-level sibling credit and commit arrays can include their own ledgers, but the expanded schemas omit `credit_type_id`; a dashboard or reconciliation process cannot map those objects to a particular per-credit-type balance from this response alone. The example's sole seat-1 balance reports current `30000` and starting `50000`, matching the commit detail, while a separate credit reports current `20000` and a `25000` segment-start amount, with no established reconciliation. Complete seat retrieval requires following the body cursor and nested seat-count pagination. With detail expansion, the documented 100-item threshold can be exceeded to return a complete seat, as the 108-commit example shows; no seat ordering or greedy-selection tie-breaker is documented. Missing requested seats can be silently omitted when configured, and the page establishes no retention, freshness, snapshot consistency, duplicate/skip, or broader reconciliation guarantee. [[source-metronome-api-reference-credits-and-commits-list-seat-balances]]
@@ -49,6 +53,9 @@ The separately documented in-app dashboards are beta and require support-portal 
 
 The native Salesforce integration is a distinct CRM-facing reporting surface from Data Export and in-app reporting: Census pushes selected Metronome customer, contract, commit or credit, rate-card, invoice, and invoice-line data into Salesforce once per day. The initial sync can take a couple of hours, and the cadence cannot currently be configured more frequently. Completed-sync totals count only rows changed since the prior sync, while the downloadable error CSV samples at most 100 failures for one object type and sync. Those counters and samples do not establish full-population completeness, end-to-end Salesforce visibility, retry or recovery, ordering across object types, or a financial-reconciliation guarantee.
 
+### Embeddable customer dashboards
+
+Bearer-authenticated `POST /v1/dashboards/getEmbeddableUrl` generates an iframe-ready, customer-specific URL for `invoices`, `usage`, or `commits_and_credits`. The prose calls the URL secure and time-limited and says it contains authentication tokens plus configuration parameters, while HTTP `200` requires only outer `data` and does not require nested `url`. Invoice-only dashboard options cover zero-usage lines, contract, invoice type, and invoice status; the schema additionally names deprecated `hide_voided_invoices` and `billable_status_filter` without defining a value contract for the latter. This embedded external-app surface is distinct from app-native beta dashboards and generated CSV reports. The endpoint defines no data-refresh cadence, URL TTL or expiry timestamp, permission inheritance, revocation, regeneration, origin restriction, browser-exposure, or failure-recovery behavior. [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]]
 
 ## Commercial export-row accounting
 
@@ -97,6 +104,8 @@ Metronome's GTM reporting guide models expected commit pacing from access schedu
 
 ## Sources
 
+- [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] - hourly or daily invoice time-series read, required window bounds, temporal caps, envelope pagination, late-usage mutation, and reporting-completeness limits
+- [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]] - customer-scoped embedded invoice, usage, and commit-and-credit dashboard URLs, request and response placement, customization, and lifecycle, freshness, and exposure boundaries
 - [[source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition]] - ASC 606 five-step product mapping, reporting and reconciliation inputs, timing tensions, worked-detail route, and accounting-authority boundary
 
 - [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — aggregate and per-seat history routes plus current seat-balance and ledger-view navigation
