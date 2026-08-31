@@ -641,6 +641,8 @@ Operations history: [[stripe-log]]
 - [[stripe-ios-sdk]] — Stripe iOS SDK: v26.4.1 requirements, PaymentSheet, Embedded Payment Element, Apple Pay, low-level payment and 3DS APIs, specialized modules, and fulfillment boundary
 - [[source-github-stripe-terminal-ios]] — `StripeTerminal@5.8.0` native card-present SDK: backend token boundary, readers, Tap to Pay, payments, SetupIntents, refunds, offline forwarding, updates, and support lifecycle (github-repo, 2026-08-31)
 - [[changelog-github-stripe-terminal-ios]] — package-qualified Terminal iOS v5 ledger; exact 5.8.0 buzzer, expanded SetupIntent, logging, disconnect, printer, and Tap to Pay changes (github-repo, 2026-08-31)
+- [[source-github-stripe-terminal-android]] — `stripeterminal@5.8.0` native card-present SDK: Android permissions and lifecycle, readers, Tap to Pay, payments, SetupIntents, refunds, offline forwarding, updates, and support lifecycle (github-repo, 2026-08-31)
+- [[changelog-github-stripe-terminal-android]] — package-qualified Terminal Android v5 ledger; exact 5.8.0 permission, buzzer, printer, Keystore, update, and Tap to Pay PIN changes (github-repo, 2026-08-31)
 - [[source-github-stripe-react-native]] — cumulative `@stripe/stripe-react-native`: legacy v0.65.1 plus v0.72.0 PaymentSheet, Embedded Payment Element, Platform Pay, Connect, onramp, and private-preview Link Controller (github-repo, updated 2026-07-30)
 - [[changelog-github-stripe-react-native]] — package-qualified release ledger; v0.72.0 native SDK upgrades and explicit Link SetupIntent confirmation (github-repo, 2026-07-30)
 - [[stripe-react-native-sdk]] — Stripe React Native SDK: PaymentSheet, Embedded Payment Element, Platform Pay, Connect, onramp, app-store boundary, and migration notes

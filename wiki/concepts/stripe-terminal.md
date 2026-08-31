@@ -50,7 +50,7 @@ Five distinct ways to integrate Terminal, ranging from full custom builds to no-
 | --- | --- | --- | --- |
 | JavaScript SDK v1 | Web / browser-based POS | v1 | Load from `js.stripe.com` only; Chrome 142+ needs local network permission; same-network + local DNS required |
 | iOS SDK | Native iOS | 5.8.0 retained baseline | iOS 15+; explicit `Terminal.initWithTokenProvider`; location mandatory |
-| Android SDK | Native Android | 5.4.1 | AndroidX required; Java 8 target; lifecycle-aware init |
+| Android SDK | Native Android | 5.8.0 retained baseline | API 26+; Java 8/Kotlin; lifecycle delegate; separate matched Tap to Pay artifacts |
 | React Native SDK | Cross-platform mobile | latest (public preview) | `requestNeededAndroidPermissions` helper; Android 12+ needs `exported=true` |
 
 A server-driven API is also available for any backend regardless of platform.
@@ -62,6 +62,14 @@ Server-driven does **not** support mobile readers (M2, WisePad 3) or offline pay
 ### SDK setup: location required on iOS and Android
 
 Both iOS and Android require location services for payments. If location access is revoked, payments are disabled until restored.
+
+### Retained Android SDK baseline
+
+The approved `stripeterminal@5.8.0` repository capsule confirms `ACCESS_COARSE_LOCATION` is sufficient for SDK location reporting, while apps needing precise location must declare it independently. A custom `Application` calls `TerminalApplicationDelegate.onCreate`, then `Terminal.init` receives the token provider, listeners, optional offline listener, and locale configuration.
+
+Standard integrations use `com.stripe:stripeterminal`; Tap to Pay uses matching `stripeterminal-taptopay` and `stripeterminal-core` versions. Version 5 provides both split collect/confirm APIs and combined `processPaymentIntent`, `processSetupIntent`, and `processRefund` APIs. Manual capture, ConnectionToken creation, and authoritative reconciliation remain backend responsibilities.
+
+The SDK implementation is proprietary. Generated API docs and open Java/Kotlin examples establish the public contract and integration patterns, not internal runtime behavior or merchant/device eligibility.
 
 ## Key Features
 
@@ -453,6 +461,8 @@ Terminal shares the same Dashboard and payment infrastructure as Stripe's online
 
 ## Sources
 
+- [[source-github-stripe-terminal-android]] — exact `stripeterminal@5.8.0` Android SDK baseline: permissions, lifecycle, reader connection, payments, SetupIntents, refunds, offline forwarding, Tap to Pay, updates, and support policy
+- [[changelog-github-stripe-terminal-android]] — package-qualified Android Terminal history: v5 migration boundary, `5.6.0` offline migration risk, and exact `5.8.0` permission, buzzer, printing, Keystore, update, and PIN changes
 - [[source-github-stripe-terminal-ios]] — exact `StripeTerminal@5.8.0` iOS SDK baseline: initialization, reader lifecycle, payments, SetupIntents, offline mode, Tap to Pay, QR methods, updates, and support policy
 - [[changelog-github-stripe-terminal-ios]] — package-qualified iOS Terminal history: v5 migration boundary, accumulated v5 milestones, and exact 5.8.0 changes
 - [[source-stripe-terminal-overview]] — Terminal landing page: 5 integration paths, SDK list, in-person fundamentals, features, Connect support

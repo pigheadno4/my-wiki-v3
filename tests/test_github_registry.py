@@ -68,7 +68,7 @@ APPENDIX_A_INVENTORY = (
     ('stripe/sync-engine', 'https://github.com/stripe/sync-engine', 'tooling', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('stripe/react-stripe-js', 'https://github.com/stripe/react-stripe-js', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-terminal-ios', 'https://github.com/stripe/stripe-terminal-ios', 'terminal-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
-    ('stripe/stripe-terminal-android', 'https://github.com/stripe/stripe-terminal-android', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('stripe/stripe-terminal-android', 'https://github.com/stripe/stripe-terminal-android', 'terminal-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/ai', 'https://github.com/stripe/ai', 'developer-tooling', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('metronome-industries/metronome-node', 'https://github.com/Metronome-Industries/metronome-node', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('metronome-industries/ai', 'https://github.com/Metronome-Industries/ai', 'developer-tooling', 'tier2', 'commit', True, 'default-branch', 'monthly'),
@@ -1783,6 +1783,82 @@ class RegistryTests(unittest.TestCase):
         self.assertNotIn("Example/Example", capsule.default_required_roots)
         self.assertNotIn("docs", capsule.default_required_roots)
         self.assertNotIn("Example/Pods", capsule.default_required_roots)
+
+    def test_stripe_terminal_android_uses_public_docs_and_example_capsule(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["stripe/stripe-terminal-android"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:stripeterminal@5",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("5.8.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("stripe-terminal-android-public-api", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("stripeterminal",), capsule.focus_packages)
+        self.assertTrue(
+            {
+                "Example/javaapp/src/main/java",
+                "Example/kotlinapp/src/main/java",
+                "docs/core/com.stripe.stripeterminal/-terminal",
+                "docs/external/com.stripe.stripeterminal.external.api",
+                "docs/external/com.stripe.stripeterminal.external.callable",
+                "docs/external/com.stripe.stripeterminal.external.models/-connection-configuration",
+                "docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration",
+                "docs/external/com.stripe.stripeterminal.external.models/-offline-status",
+                "docs/external/com.stripe.stripeterminal.external.models/-payment-intent",
+                "docs/external/com.stripe.stripeterminal.external.models/-reader",
+                "docs/external/com.stripe.stripeterminal.external.models/-setup-intent",
+            }.issubset(capsule.default_required_roots)
+        )
+        self.assertTrue(
+            {
+                "CHANGELOG.md",
+                "Example/build.gradle.kts",
+                "Example/javaapp/build.gradle.kts",
+                "Example/javaapp/src/main/AndroidManifest.xml",
+                "Example/kotlinapp/build.gradle.kts",
+                "Example/kotlinapp/src/main/AndroidManifest.xml",
+                "Example/settings.gradle.kts",
+                "LICENSE",
+                "README.md",
+                "SUPPORT.md",
+            }.issubset(capsule.include_paths)
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(520, capsule.max_capsule_files)
+        self.assertEqual(8000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(560, capsule.max_packet_files)
+        self.assertEqual(9000000, capsule.max_packet_utf8_bytes)
+        self.assertIn(
+            "docs/core/com.stripe.stripeterminal/-terminal",
+            repo.ingest_required_paths,
+        )
+        self.assertIn(
+            "Example/kotlinapp/src/main/java/com/stripe/example/fragment/PaymentFragment.kt",
+            repo.ingest_required_paths,
+        )
+        self.assertIn(
+            "Example/javaapp/src/main/java/com/stripe/example/javaapp/fragment/PaymentFragment.java",
+            repo.ingest_required_paths,
+        )
+        self.assertNotIn("docs", capsule.default_required_roots)
+        self.assertNotIn("Example", capsule.default_required_roots)
 
     def test_stripe_php_uses_broad_public_runtime_tagged_profile(self):
         repos = {

@@ -668,6 +668,31 @@
   To SHA: `b5f2df209b0bfd10b1a3cde600088ddf21e43523`
   Comparison: Not applicable
 
+## `github-647016eaa69d9b32d93d`
+
+- Repository: `stripe/stripe-terminal-android`
+- SHA: `b3de15b57201df0aa0e0235ccbe8e81bf9abaa8f`
+- Collection date: `2026-08-31`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-terminal-android/snapshots/2026-08-31-b3de15b/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-terminal-android/ingest-packets/github-647016eaa69d9b32d93d/packet.md)
+- Review priority: `normal`
+- Required reading: `88` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripeterminal@5.8.0` (recommended `full`)
+  Release: [manifest](../../raw/github/stripe/stripe-terminal-android/releases/stripeterminal/5.8.0/2026-08-31/manifest.json)
+  Comparison: Not applicable
+
 ## `github-64aa2131b6b057d2f41c`
 
 - Repository: `braintree/braintree-android-drop-in`

@@ -2,7 +2,7 @@
 title: "Stripe"
 type: company
 tags: [stripe, payment-gateway, payment-intents, checkout, subscriptions, elements, webhooks, payment-links]
-source_count: 664
+source_count: 666
 ---
 
 ## Stripe
@@ -148,6 +148,8 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 - [[changelog-github-stripe-ios]] — package-qualified iOS release history, iOS 15 migration boundary, and exact v26.4.1 Alipay result fix
 - [[source-github-stripe-terminal-ios]] — `StripeTerminal@5.8.0` card-present iOS SDK baseline: readers, Tap to Pay, payments, SetupIntents, offline processing, refunds, and updates
 - [[changelog-github-stripe-terminal-ios]] — package-qualified Stripe Terminal iOS v5 history and exact `5.8.0` reader-setting, SetupIntent, logging, disconnect, and Tap to Pay changes
+- [[source-github-stripe-terminal-android]] — `stripeterminal@5.8.0` card-present Android SDK baseline: permissions, lifecycle, readers, Tap to Pay, payments, SetupIntents, offline processing, refunds, and updates
+- [[changelog-github-stripe-terminal-android]] — package-qualified Stripe Terminal Android v5 history and exact `5.8.0` permission, buzzer, printer, Keystore, update, and Tap to Pay PIN changes
 - [[source-github-stripe-react-native]] — stripe-react-native cumulative SDK source: legacy v0.65.1 plus v0.72.0 PaymentSheet, Embedded Payment Element, Platform Pay, Connect, onramp, and Link Controller
 - [[changelog-github-stripe-react-native]] — package-qualified release history and v0.72.0 explicit Link SetupIntent confirmation migration
 - [[source-github-ai]] — exact-SHA Stripe AI implementation baseline: LLM token billing, MCP bridge, agent toolkits, skills/plugins, and benchmarks

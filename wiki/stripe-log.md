@@ -6,6 +6,13 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-31] ingest | stripe/stripe-terminal-android `stripeterminal@5.8.0`
+
+- Full-ingested work item `github-647016eaa69d9b32d93d` at exact SHA `b3de15b57201df0aa0e0235ccbe8e81bf9abaa8f` after serial review of all 88 required evidence paths.
+- Established cumulative and package-qualified pages for Android permissions and lifecycle, initialization, reader discovery and connection, Tap to Pay, payments, SetupIntents, refunds, offline forwarding, reader settings and updates, and support lifecycle.
+- Preserved the proprietary-runtime boundary, backend ConnectionToken/capture/reconciliation responsibilities, device and merchant eligibility constraints, and patch-versus-baseline attribution.
+- Attributed coarse-location sufficiency, Bluetooth manifest changes, buzzer controls, printer low-battery handling, and Keystore, slow-update, and Tap to Pay PIN fixes specifically to `5.8.0`.
+
 ## [2026-08-31] ingest | stripe/stripe-terminal-ios `StripeTerminal@5.8.0`
 
 - Full-ingested work item `github-7b9dc5a5eae785348011` at exact SHA `c027d6dc2258c774412cb7933cbb959488c16b63` after serial review of all 196 required evidence paths.
