@@ -1,0 +1,194 @@
+//
+//  SCPDeviceType.h
+//  StripeTerminal
+//
+//  Created by Ben Guo on 9/9/18.
+//  Copyright © 2018 Stripe. All rights reserved.
+//
+//  Use of this SDK is subject to the Stripe Terminal Terms:
+//  https://stripe.com/terminal/legal
+//
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+/**
+ The possible device types for a reader.
+
+ @see https://stripe.com/docs/terminal/readers
+ */
+typedef NS_ENUM(NSUInteger, SCPDeviceType) {
+    /**
+     The BBPOS Chipper 2X BT mobile reader.
+
+     @see https://stripe.com/docs/terminal/readers/bbpos-chipper2xbt
+     */
+    SCPDeviceTypeChipper2X,
+
+    /**
+     The BBPOS WisePad 3 mobile reader.
+
+     @see https://stripe.com/docs/terminal/readers/bbpos-wisepad3
+     */
+    SCPDeviceTypeWisePad3,
+
+    /**
+     The Stripe Reader M2 mobile reader.
+
+     @see https://stripe.com/docs/terminal/readers/stripe-m2
+     */
+    SCPDeviceTypeStripeM2,
+
+    /**
+     The Stripe Reader U200 mobile reader.
+     USB-powered (no battery).
+     */
+    SCPDeviceTypeStripeU200,
+
+    /**
+     The BBPOS WisePOS E countertop reader.
+
+     @see https://stripe.com/docs/terminal/readers/bbpos-wisepos-e
+     */
+    SCPDeviceTypeWisePosE,
+
+    /**
+     The BBPOS WisePOS E DevKit countertop reader.
+
+     @see https://stripe.com/docs/terminal/readers/bbpos-wisepos-e
+     */
+    SCPDeviceTypeWisePosEDevKit,
+
+    /**
+     The BBPOS Etna countertop reader.
+
+     :nodoc: Support for this reader is not generally available.
+     */
+    SCPDeviceTypeEtna,
+
+    /**
+     The BBPOS Chipper mobile reader.
+
+     :nodoc: Support for this reader is not generally available.
+     */
+    SCPDeviceTypeChipper1X,
+
+    /**
+     The BBPOS WiseCube reader.
+
+     :nodoc: Support for this reader is not generally available.
+     */
+    SCPDeviceTypeWiseCube,
+
+    /**
+     Stripe Reader S700.
+     */
+    SCPDeviceTypeStripeS700,
+
+    /**
+     Stripe Reader S700 DevKit.
+     */
+    SCPDeviceTypeStripeS700DevKit,
+
+    /**
+     Stripe Reader S710.
+     */
+    SCPDeviceTypeStripeS710,
+
+    /**
+     Stripe Reader S710 DevKit.
+     */
+    SCPDeviceTypeStripeS710DevKit,
+
+    /**
+     Verifone V660p
+     */
+    SCPDeviceTypeVerifoneV660p,
+
+    /**
+     Verifone V660p DevKit
+     */
+    SCPDeviceTypeVerifoneV660pDevKit,
+
+    /**
+     Verifone M425
+     */
+    SCPDeviceTypeVerifoneM425,
+
+    /**
+     Verifone M450
+     */
+    SCPDeviceTypeVerifoneM450,
+
+    /**
+     Verifone P630
+     */
+    SCPDeviceTypeVerifoneP630,
+
+    /**
+     Verifone UX700
+     */
+    SCPDeviceTypeVerifoneUX700,
+
+    /**
+     Verifone UX700 DevKit
+     */
+    SCPDeviceTypeVerifoneUX700DevKit,
+
+    /**
+     Verifone VM100
+     */
+    SCPDeviceTypeVerifoneVM100,
+
+    /**
+     Verifone VP100
+     */
+    SCPDeviceTypeVerifoneVP100,
+
+    /**
+     Verifone VL110
+     */
+    SCPDeviceTypeVerifoneVL110,
+
+    /**
+     Verifone VM110
+     */
+    SCPDeviceTypeVerifoneVM110,
+
+    /**
+     Verifone VP110
+     */
+    SCPDeviceTypeVerifoneVP110,
+
+    /**
+     Tap To Pay reader.
+     */
+    SCPDeviceTypeTapToPay,
+
+    /**
+     Stripe Reader T600
+     */
+    SCPDeviceTypeStripeT600,
+
+    /**
+     Stripe Reader T600 DevKit
+     */
+    SCPDeviceTypeStripeT600DevKit,
+
+    /**
+     Stripe Reader T610
+     */
+    SCPDeviceTypeStripeT610,
+
+    /**
+     Stripe Reader T610 DevKit
+     */
+    SCPDeviceTypeStripeT610DevKit,
+
+    /**
+     * Unknown device type.
+     */
+    SCPDeviceTypeUnknown,
+} NS_SWIFT_NAME(DeviceType);
+
+NS_ASSUME_NONNULL_END

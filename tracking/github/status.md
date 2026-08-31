@@ -795,6 +795,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.569/2026-08-21/manifest.json)
   Comparison: Not applicable
 
+## `github-7b9dc5a5eae785348011`
+
+- Repository: `stripe/stripe-terminal-ios`
+- SHA: `c027d6dc2258c774412cb7933cbb959488c16b63`
+- Collection date: `2026-08-31`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-terminal-ios/snapshots/2026-08-31-c027d6d/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-terminal-ios/ingest-packets/github-7b9dc5a5eae785348011/packet.md)
+- Review priority: `high`
+- Required reading: `196` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `StripeTerminal@5.8.0` (recommended `full`)
+  Release: [manifest](../../raw/github/stripe/stripe-terminal-ios/releases/stripeterminal/5.8.0/2026-08-31/manifest.json)
+  Comparison: Not applicable
+
 ## `github-7ecc6c2199897656ffe3`
 
 - Repository: `stripe/stripe-ios`

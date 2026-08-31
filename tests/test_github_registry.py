@@ -67,7 +67,7 @@ APPENDIX_A_INVENTORY = (
     ('stripe/stripe-js', 'https://github.com/stripe/stripe-js', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/sync-engine', 'https://github.com/stripe/sync-engine', 'tooling', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('stripe/react-stripe-js', 'https://github.com/stripe/react-stripe-js', 'web-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
-    ('stripe/stripe-terminal-ios', 'https://github.com/stripe/stripe-terminal-ios', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
+    ('stripe/stripe-terminal-ios', 'https://github.com/stripe/stripe-terminal-ios', 'terminal-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('stripe/stripe-terminal-android', 'https://github.com/stripe/stripe-terminal-android', 'terminal-sdk', 'tier1', 'semver-tags', False, 'releases-and-default-branch', 'weekly'),
     ('stripe/ai', 'https://github.com/stripe/ai', 'developer-tooling', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('metronome-industries/metronome-node', 'https://github.com/Metronome-Industries/metronome-node', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
@@ -1711,6 +1711,78 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(2500000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(220, capsule.max_packet_files)
         self.assertEqual(3200000, capsule.max_packet_utf8_bytes)
+
+    def test_stripe_terminal_ios_uses_public_headers_and_example_capsule(self):
+        repos = {
+            repo.id: repo
+            for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
+        }
+        repo = repos["stripe/stripe-terminal-ios"]
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual(
+            (
+                VersionTrack(
+                    "package:StripeTerminal@5",
+                    "latest-stable",
+                    "all-stable",
+                    False,
+                    ("5.8.0",),
+                ),
+            ),
+            repo.version_tracks,
+        )
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("stripe-terminal-ios-public-api", capsule.id)
+        self.assertEqual("tagged-tree-v1", capsule.adapter)
+        self.assertEqual(("StripeTerminal",), capsule.focus_packages)
+        self.assertEqual(
+            ("PublicHeaders",),
+            capsule.default_required_roots,
+        )
+        self.assertTrue(
+            {
+                "CHANGELOG.md",
+                "Example/Example/Example-Bridging-Header.h",
+                "Example/Example/Info.plist",
+                "Example/Example/PaymentViewController.swift",
+                "Example/Example/ReaderDiscoveryViewController.swift",
+                "Example/Podfile",
+                "Example/Podfile.lock",
+                "LICENSE",
+                "Package.swift",
+                "README.md",
+                "SUPPORT.md",
+            }.issubset(capsule.include_paths)
+        )
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertEqual("text-secrets-v1", capsule.secret_detector)
+        self.assertEqual(512000, capsule.max_file_bytes)
+        self.assertEqual(340, capsule.max_capsule_files)
+        self.assertEqual(4000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(380, capsule.max_packet_files)
+        self.assertEqual(5000000, capsule.max_packet_utf8_bytes)
+        self.assertIn("PublicHeaders", repo.ingest_required_paths)
+        self.assertIn(
+            "Example/Example/PaymentViewController.swift",
+            repo.ingest_required_paths,
+        )
+        self.assertIn(
+            "Example/Example/ReaderDiscoveryViewController.swift",
+            repo.ingest_required_paths,
+        )
+        self.assertIn(
+            "Example/Example/PaymentViewController.swift",
+            capsule.include_paths,
+        )
+        self.assertIn(
+            "Example/Example/ReaderDiscoveryViewController.swift",
+            capsule.include_paths,
+        )
+        self.assertNotIn("Example/Example", capsule.default_required_roots)
+        self.assertNotIn("docs", capsule.default_required_roots)
+        self.assertNotIn("Example/Pods", capsule.default_required_roots)
 
     def test_stripe_php_uses_broad_public_runtime_tagged_profile(self):
         repos = {

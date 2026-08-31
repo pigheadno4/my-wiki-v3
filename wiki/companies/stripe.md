@@ -53,6 +53,8 @@ The `@stripe/stripe-js` npm package is the web loader and TypeScript declaration
 
 `stripe-ios` is the native Swift SDK behind Stripe's prebuilt and low-level iOS payment surfaces. The cumulative source preserves the legacy `25.14.0` capsule and adds the approved `26.4.1` baseline: PaymentSheet, FlowController, Embedded Payment Element, CustomerSheet, Apple Pay, low-level Intent and 3DS APIs, and specialized Connect, Identity, Financial Connections, Issuing, and alpha Crypto Onramp modules. Version 26 requires iOS 15+, and a completed SDK result can still represent a processing payment, so fulfillment remains event-gated. See [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
 
+`stripe-terminal-ios` is the separate native SDK for card-present checkout and reader control. The retained `StripeTerminal@5.8.0` baseline covers backend-issued ConnectionTokens, reader discovery and connection, Tap to Pay, split and combined payment/SetupIntent flows, in-person refunds, offline forwarding, reader updates, QR methods, and the v5 iOS 15 migration boundary. Manual capture and authoritative reconciliation remain backend responsibilities. See [[source-github-stripe-terminal-ios]] and [[changelog-github-stripe-terminal-ios]].
+
 ### AI Developer and Token-Billing Tooling
 
 The `stripe/ai` repository supplies independently versioned LLM token-billing packages, a local bridge to Stripe's remote MCP server, TypeScript and Python agent toolkits, provider-specific agent skills/plugins, and integration benchmarks. At the retained SHA, token billing is private preview, the Stripe AI SDK proxy does not support tool calling, native token-meter delivery is fire-and-forget, and the agent toolkits require remote MCP availability. See [[source-github-ai]] and [[changelog-github-ai]].
@@ -144,6 +146,8 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 - [[changelog-github-stripe-android]] — package-qualified Android release history and exact v23.13.1 Alipay test-mode reconciliation fix
 - [[source-github-stripe-ios]] — cumulative stripe-ios SDK source: legacy v25.14.0 plus v26.4.1 PaymentSheet, Embedded Payment Element, Apple Pay, low-level Intents, Connect, Identity, Financial Connections, Issuing, and onramp
 - [[changelog-github-stripe-ios]] — package-qualified iOS release history, iOS 15 migration boundary, and exact v26.4.1 Alipay result fix
+- [[source-github-stripe-terminal-ios]] — `StripeTerminal@5.8.0` card-present iOS SDK baseline: readers, Tap to Pay, payments, SetupIntents, offline processing, refunds, and updates
+- [[changelog-github-stripe-terminal-ios]] — package-qualified Stripe Terminal iOS v5 history and exact `5.8.0` reader-setting, SetupIntent, logging, disconnect, and Tap to Pay changes
 - [[source-github-stripe-react-native]] — stripe-react-native cumulative SDK source: legacy v0.65.1 plus v0.72.0 PaymentSheet, Embedded Payment Element, Platform Pay, Connect, onramp, and Link Controller
 - [[changelog-github-stripe-react-native]] — package-qualified release history and v0.72.0 explicit Link SetupIntent confirmation migration
 - [[source-github-ai]] — exact-SHA Stripe AI implementation baseline: LLM token billing, MCP bridge, agent toolkits, skills/plugins, and benchmarks

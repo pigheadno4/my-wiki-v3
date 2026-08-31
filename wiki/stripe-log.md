@@ -6,6 +6,13 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-08-31] ingest | stripe/stripe-terminal-ios `StripeTerminal@5.8.0`
+
+- Full-ingested work item `github-7b9dc5a5eae785348011` at exact SHA `c027d6dc2258c774412cb7933cbb959488c16b63` after serial review of all 196 required evidence paths.
+- Established cumulative and package-qualified pages for initialization, reader discovery and connection, Tap to Pay, payments, SetupIntents, in-person refunds, offline forwarding, reader updates, QR methods, and support lifecycle.
+- Preserved the proprietary-runtime boundary, backend ConnectionToken/capture/reconciliation responsibilities, preview and firmware constraints, and conditional iOS USB evidence.
+- Attributed buzzer controls, expanded SetupIntent PaymentMethods, granular logging, unknown-device handling, printer low-battery error, disconnect corrections, and the Tap to Pay crash fix specifically to `5.8.0`.
+
 ## [2026-08-28] ingest | stripe/stripe-apps `default-branch@9b14b71`
 
 - Full-ingested work item `github-963480d18adba0763347` at exact SHA `9b14b71be496ca299401b3303b572856fd19baf4` after serial review of the complete 72-file retained capsule and required Stripe context.

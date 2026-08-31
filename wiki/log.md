@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-31] ingest | GitHub stripe/stripe-terminal-ios - `StripeTerminal@5.8.0`
+
+- Full-ingested work item `github-7b9dc5a5eae785348011` at exact SHA `c027d6dc2258c774412cb7933cbb959488c16b63` after serial review of all 196 required evidence paths.
+- Added cumulative and package-qualified sources and updated the existing [[stripe-terminal]] concept with the iOS 15, backend-token, reader, payment, SetupIntent, offline, update, and support boundaries.
+- Preserved preview, hardware, firmware, conditional USB, capture, reconciliation, and proprietary-runtime limitations.
+
 ## [2026-08-31] ingest | GitHub braintree/uuid - `@braintree/uuid@2.0.0`
 
 - Full-ingested work item `github-eb6d76e762d6316a4a73` at exact SHA `d134a2ca93d12705a76ff036baeba568016f9b13` after serial full reading of all nine required evidence paths.

@@ -49,7 +49,7 @@ Five distinct ways to integrate Terminal, ranging from full custom builds to no-
 | SDK | Platform | Version | Notes |
 | --- | --- | --- | --- |
 | JavaScript SDK v1 | Web / browser-based POS | v1 | Load from `js.stripe.com` only; Chrome 142+ needs local network permission; same-network + local DNS required |
-| iOS SDK | Native iOS | ~5.0 (CocoaPods/SPM) | iOS 13+; 4 Info.plist entries required; location mandatory |
+| iOS SDK | Native iOS | 5.8.0 retained baseline | iOS 15+; explicit `Terminal.initWithTokenProvider`; location mandatory |
 | Android SDK | Native Android | 5.4.1 | AndroidX required; Java 8 target; lifecycle-aware init |
 | React Native SDK | Cross-platform mobile | latest (public preview) | `requestNeededAndroidPermissions` helper; Android 12+ needs `exported=true` |
 
@@ -185,7 +185,7 @@ All Verifone models share: Android 13, quad-core Cortex A53, 2GB RAM, 32GB, E2EE
 - **Standby mode**: do NOT call `disconnectReader` to save power — reader manages power in standby.
 - **Reader reboot**: M2 and WisePad 3 auto-reboot after 24h; force with `rebootReader` API.
 - **Auto-reconnect on app start**: NOT automatic — store serial number persistently, re-discover on launch.
-- **USB connections**: Android only; iOS uses Bluetooth.
+- **USB connections**: General setup guidance describes USB for Android and Bluetooth for iOS. The retained iOS `5.8.0` public headers also contain conditionally compiled USB types, so do not treat iOS USB as generally available without current Stripe confirmation.
 
 ### WisePad 3 Bluetooth pairing (Nov 2025 change)
 
@@ -453,6 +453,8 @@ Terminal shares the same Dashboard and payment infrastructure as Stripe's online
 
 ## Sources
 
+- [[source-github-stripe-terminal-ios]] — exact `StripeTerminal@5.8.0` iOS SDK baseline: initialization, reader lifecycle, payments, SetupIntents, offline mode, Tap to Pay, QR methods, updates, and support policy
+- [[changelog-github-stripe-terminal-ios]] — package-qualified iOS Terminal history: v5 migration boundary, accumulated v5 milestones, and exact 5.8.0 changes
 - [[source-stripe-terminal-overview]] — Terminal landing page: 5 integration paths, SDK list, in-person fundamentals, features, Connect support
 - [[source-stripe-terminal-how-it-works]] — Architecture (4 components), connection types, encryption tiers (E2EE vs P2PE), fleet management, integration scope
 - [[source-stripe-terminal-global-availability]] — 23 GA countries, 15 preview countries, payment method × reader matrix, Maestro sunset
