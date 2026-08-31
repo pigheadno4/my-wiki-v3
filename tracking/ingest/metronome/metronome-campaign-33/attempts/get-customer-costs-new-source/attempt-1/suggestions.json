@@ -1,0 +1,95 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "get-customer-costs-legacy-pending-cost-invoice-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Shared Plan and Contract invoice surface",
+      "proposed_markdown": "The deprecated Plans `GET /v1/customers/{customer_id}/costs` endpoint returns documented daily pending-cost intervals for one customer, grouped by arbitrary credit-type ID and then optionally by line items. It is not an invoice-object read: the response exposes no invoice, Plan, contract, status, issue, finalization, revision, or downstream-provider identity. Required inclusive `starting_on` and exclusive `ending_before` bound the read; cursor traversal has no documented ordering, snapshot, freshness, or consistency guarantee. The operation is unsupported when the customer's Plan includes a `UNIQUE`-type billable metric and directs new clients to Contracts without naming a replacement route or mapping. Do not treat current invoice List, Get, or Breakdowns endpoints as an inferred substitute, and do not extend pending costs to invoice creation, finalization, delivery, collection, payment, tax, accounting, or reconciliation. [[source-metronome-api-reference-invoices-get-customer-costs]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep pending-cost intervals separate from invoice objects and lifecycle states.",
+        "Do not infer a Contracts replacement from adjacent current invoice APIs.",
+        "Do not infer downstream billing, payment, tax, accounting, or reconciliation outcomes."
+      ]
+    },
+    {
+      "update_id": "get-customer-costs-reporting-completeness-and-freshness",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Invoice-breakdown reporting surface",
+      "proposed_markdown": "The legacy Plans customer-cost read supplies documented daily pending-cost intervals for one customer between required inclusive `starting_on` and exclusive `ending_before` timestamps. Each result nests an arbitrary credit-type-ID map and optional per-credit-type line-item breakdown; complete traversal requires following nullable envelope `next_page` with optional page size `1` through `100`. The page defines no default page size, ordering, total count, cursor lifetime, stable snapshot, duplicate-or-skip behavior, revision, as-of selector, or freshness SLA. \u201cPending\u201d therefore does not prove immutability or reconciliation to a draft, finalized, exported, or downstream invoice. This deprecated read is distinct from the current invoice-breakdown API's hourly/daily invoice windows and is not documented as its Contracts equivalent. [[source-metronome-api-reference-invoices-get-customer-costs]] [[source-metronome-api-reference-invoices-list-invoice-breakdowns]]",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Cursor exhaustion is not proof of an immutable or point-in-time reporting population.",
+        "Do not conflate pending-cost intervals with current invoice-breakdown windows or warehouse snapshots.",
+        "Do not infer freshness or reconciliation guarantees from the word pending."
+      ]
+    },
+    {
+      "update_id": "get-customer-costs-plans-contracts-migration-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Deprecated Plans listing boundary",
+      "proposed_markdown": "Bearer-authenticated `GET /v1/customers/{customer_id}/costs` is a deprecated Plans endpoint for one customer's daily pending costs. Required inclusive and exclusive time bounds and optional cursor pagination return interval records grouped by credit type and optional line-item breakdown. Metronome directs new clients to Contracts but provides no replacement operation, Plan-to-Contract or cost-field mapping, historical-continuity rule, migration procedure, compatibility period, or removal date. The endpoint also supplies no Plan or contract identifier in its response and does not define how the unsupported `UNIQUE`-metric condition maps to Contracts. [[source-metronome-api-reference-invoices-get-customer-costs]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not present deprecation direction as a documented replacement contract.",
+        "Do not infer Plan-to-Contract identity, field mapping, or historical continuity.",
+        "Keep the unsupported-metric rule scoped to this legacy operation."
+      ]
+    },
+    {
+      "update_id": "get-customer-costs-unique-metric-operation-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Lifecycle boundary",
+      "proposed_markdown": "The deprecated Plans customer-cost endpoint says it is unsupported when the customer's Plan includes a `UNIQUE`-type billable metric. This is an operation-specific availability boundary: the page does not define how `UNIQUE` is classified, whether one matching metric blocks every interval, the failure status or body, partial-data behavior, or a Contracts equivalent. Preserve the broader documentation tension in which billable-metric schemas enumerate case variants of `UNIQUE` while guides direct distinct counts to SQL; do not use this endpoint to conclude that all SQL metrics are unsupported, that every spelling is accepted, or that `UNIQUE` semantics are resolved. [[source-metronome-api-reference-invoices-get-customer-costs]]",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Do not generalize this endpoint exclusion to all SQL billable metrics.",
+        "Do not resolve the existing UNIQUE-versus-SQL-distinct documentation tension by inference.",
+        "A missing operation-specific error schema does not establish success, rejection, or partial results."
+      ]
+    },
+    {
+      "update_id": "get-customer-costs-credit-type-breakdown-denomination-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Fiat currencies and API denomination",
+      "proposed_markdown": "The deprecated Plans customer-cost response places an arbitrary `credit_types` map inside each required cost interval. Each map key is a credit-type identifier, and the value may carry a name, numeric cost, and nested line-item breakdown; the value fields themselves are not schema-required. The worked example uses the documented USD-cents identifier `2714e483-4ff1-48e4-9e25-ac732e8f24f2` and name `USD (cents)` with decimal cost `123.45`, but it does not define precision, rounding, scaling, whether every key is fiat, or how costs reconcile to invoice totals. Use the pricing-unit listing and dedicated currency authorities for taxonomy and denomination rather than applying a universal divide-by-100 rule or treating the example as a closed set. [[source-metronome-api-reference-invoices-get-customer-costs]] [[source-metronome-api-reference-settings-list-pricing-units]]",
+      "quote_indexes": [
+        2,
+        4
+      ],
+      "warnings": [
+        "Do not infer denomination, precision, or rounding from the decimal example alone.",
+        "Do not treat optional per-credit-type properties as universally present.",
+        "Do not equate a credit-type breakdown with credit or commit balance mutation."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

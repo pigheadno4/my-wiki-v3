@@ -1,0 +1,78 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "create-alert-specifiers-evaluation-and-authority-boundaries",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Customer-configured controls",
+      "proposed_markdown": "For `low_remaining_contract_credit_and_commit_balance_reached`, the default customer evaluation combines all active commits and credits into one balance and one threshold notification. `alert_specifiers` can instead include balances by custom-field conditions, exclude matching balances from the included set, or evaluate each value of one custom-field key independently. Explicit conditions inside one inclusion filter are ANDed, multiple specifiers are ORed, and exclusion entries are ORed but must remain inside the same specifier's entity scope. A grouped first crossing produces both the specific key-value webhook and an additional alert-level webhook without the value; grouping permits only one key, up to three per-key balance alerts per customer, and up to 1,000 values per key before support consultation. The `$0` promotion example and literal `threshold: 10000` exclusion example are illustrative; the guide does not assign currency or minor-unit meaning to `10000`. Creating configuration, triggering reevaluation, delivering a webhook, mutating a balance, changing an invoice, and enforcing merchant action remain separate authorities. The note's singular `alert_specifiers[].custom_field_filter` conflicts with the plural field used throughout, and the grouped request's `ContractCreditorCommit` label conflicts with later `ContractCreditOrCommit` examples. [[source-metronome-guides-customers-billing-set-up-notifications-create-alert-specifiers]] [[source-metronome-api-reference-alerts-create-a-threshold-notification]] [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not convert threshold 10000 into a currency amount without a separate denomination authority.",
+        "Do not treat alert creation, reevaluation, webhook delivery, balance mutation, invoice behavior, or merchant enforcement as one synchronous action.",
+        "Preserve both source-local field and entity-label tensions until the current create schema is verified."
+      ]
+    },
+    {
+      "update_id": "create-alert-specifiers-credit-commit-balance-segmentation",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Prepaid balance thresholds",
+      "proposed_markdown": "A `low_remaining_contract_credit_and_commit_balance_reached` alert normally evaluates the combined balance of all active customer commits and credits. Alert specifiers can narrow that evaluation by ANDed custom-field key-value conditions, OR multiple specifiers, remove balances through ORed exclusions within the same included entity scope, or group the threshold independently for every value of one custom-field key. Updating a custom field on an applicable credit or commit triggers alert reevaluation, but the guide does not say that reevaluation changes the balance, ledger, contract, or invoice. Its worked patterns isolate a `$0` tagged promotion and exclude product-specific balances from a general alert whose request literally uses `threshold: 10000`; no currency, pricing-unit, or minor-unit meaning is documented for that second value. [[source-metronome-guides-customers-billing-set-up-notifications-create-alert-specifiers]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "Keep alert evaluation scope distinct from credit or commit balance mutation and invoice attribution.",
+        "Do not infer denomination for the literal 10000 threshold.",
+        "Do not generalize this guide's custom-field matching rules to credit drawdown or applicability specifiers."
+      ]
+    },
+    {
+      "update_id": "create-alert-specifiers-custom-field-reevaluation",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Entity scope and persistence",
+      "proposed_markdown": "Alert specifiers for the combined credit-and-commit low-balance alert filter applicable commits and credits by custom-field key-value conditions. A specific key and value includes matching balances; a key without a value groups evaluation by each unique value; exclusions remove matching balances after inclusion. Setting or updating a custom-field value on an applicable credit or commit triggers reevaluation of each balance alert using those specifiers. This is alert-evaluation behavior, not proof that the custom-field change mutates balance, ledger, contract, invoice, payment, or merchant entitlement state. The guide does not define case sensitivity, missing-key handling, duplicate conditions, concurrent-update ordering, or group-history behavior. [[source-metronome-guides-customers-billing-set-up-notifications-create-alert-specifiers]] [[source-metronome-api-reference-custom-fields]]",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep the assigned guide's alert reevaluation fact distinct from the custom-fields overview's persistence and entity-scope authority.",
+        "Do not infer balance mutation or invoice propagation from reevaluation.",
+        "Do not treat undocumented matching, missing-key, or concurrency behavior as guaranteed."
+      ]
+    },
+    {
+      "update_id": "create-alert-specifiers-grouped-webhook-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Delivery model",
+      "proposed_markdown": "For one-key grouped `low_remaining_contract_credit_and_commit_balance_reached` evaluation, Metronome sends a webhook when a specific custom-field value's grouped balance crosses the threshold; the payload's `alert_specifiers` identifies the triggering key-value pair. The first grouped value to cross also produces an additional alert-level webhook whose filter omits the value. The alert-specifier guide establishes these emission semantics but no delivery ordering, atomicity, duplicate suppression, evaluation-to-delivery SLA, or guarantee that both messages arrive together. Dedicated webhook guidance remains authoritative for public HTTPS delivery, retries, at-least-once duplicates, deduplication, and signature verification, and merchant applications remain responsible for downstream customer action. [[source-metronome-guides-customers-billing-set-up-notifications-create-alert-specifiers]] [[source-metronome-guides-platform-configuration-setup-webhooks]] [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]]",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "Do not turn grouped emission semantics into an ordering, exactly-once, or paired-delivery guarantee.",
+        "Keep evaluation cadence separate from HTTP delivery and retry behavior.",
+        "Do not treat webhook receipt as proof of balance mutation, invoice behavior, payment, or merchant enforcement."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

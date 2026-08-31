@@ -1,0 +1,89 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "create-historical-invoices-invoice-state-and-correction-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Historical invoice import",
+      "proposed_markdown": "The dedicated bearer-authenticated `POST /v1/contracts/createHistoricalInvoices` schema requires `invoices` and `preview` only within a supplied payload; the enclosing request body is not marked required. Each historical invoice requires customer, contract, credit-type, service-period, issue-date, and usage-line inputs, while HTTP `200` requires a `data` array of generic invoice objects whose immediate required fields are `id`, `customer_id`, `credit_type`, `line_items`, `status`, `total`, and `type`. The same response schema covers preview and creation, so it does not establish preview persistence, stable IDs, a commit operation, one output per input or input order, the exact created status or type, or whether an existing past-period invoice is replaced. Although the endpoint describes both migrations and correcting past billing periods, it defines no correction-state precondition, overlap or uniqueness control, void/regenerate action, external A/R effect, refund, tax, payment, provider acceptance, or reconciliation. Keep it distinct from draft usage correction, finalized-invoice compensating action, and credit-and-rebill. [[source-metronome-api-reference-contracts-create-historical-invoices]] [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]] [[source-metronome-guides-invoices-invoice-optimization-issue-credit-memos]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Do not infer that the generic Invoice response guarantees a finalized, billable, corrected, externally delivered, paid, or reconciled invoice.",
+        "Preserve the endpoint's broader correction wording without converting it into the separate draft/finalized credit-and-rebill workflow."
+      ]
+    },
+    {
+      "update_id": "create-historical-invoices-contract-period-and-batch-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Historical invoice migration",
+      "proposed_markdown": "`POST /v1/contracts/createHistoricalInvoices` accepts an array whose items each require UUID customer, contract, and credit-type identities; inclusive start, exclusive end, issue date; and usage-line items. The operation is contract-scoped but does not establish that the customer owns the contract, that invoice and line-item periods align with the contract or one another, that periods are actually past, or that an imported period cannot overlap an automatically generated or previously imported invoice. Neither `invoices` nor required `usage_line_items` declares `minItems`, and the endpoint does not define batch ordering, all-or-nothing atomicity, partial success, rollback, contract edit-history visibility, or propagation. Deferred automatic generation through `invoice_generation_starting_at` remains a separate contract-creation control rather than a uniqueness or overlap guard for this endpoint. [[source-metronome-api-reference-contracts-create-historical-invoices]] [[source-metronome-api-reference-contracts-create-a-contract]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "Do not infer empty-array acceptance from absent minItems or infer customer-contract ownership validation from UUID formats.",
+        "Do not treat deferred automatic invoice generation as endpoint-level duplicate or overlap prevention."
+      ]
+    },
+    {
+      "update_id": "create-historical-invoices-balance-and-ledger-reconciliation-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Historical invoice balance effects",
+      "proposed_markdown": "The historical-invoice endpoint requires `credit_type_id` per invoice and product plus time bounds per usage line, but `quantity` and `subtotals_with_quantity` are optional siblings and the schema does not require one, make them exclusive, or define subtotal gap, overlap, aggregation, precision, rounding, sign, or bounds. The dedicated migration guide, not this endpoint schema, says Metronome combines supplied quantities with contract unit prices to calculate totals and effects on credit and commit balances. The generic response can contain applied-credit or commit line items, yet neither authority defines ledger-entry identity, effective timestamps, drawdown ordering, preview side effects, transaction atomicity, rollback, reversal, or reconciliation against pre-existing balances and an externally issued invoice. [[source-metronome-api-reference-contracts-create-historical-invoices]] [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]]",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep endpoint schema authority separate from the migration guide's contract-price and balance-effect narrative.",
+        "Do not infer ledger reconciliation or durable preview balance effects from generic invoice line-item fields."
+      ]
+    },
+    {
+      "update_id": "create-historical-invoices-post-replay-and-resource-identity-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "`POST /v1/contracts/createHistoricalInvoices` falls under API-wide `Idempotency-Key` result replay: identical same-key parameters replay the original result, changed parameters conflict, retention is at least 24 hours, and a cached result can be HTTP `500`. This is distinct from each returned invoice `data[].id`; the endpoint exposes no batch-operation ID or resource `uniqueness_key`. Because `preview` is a required request parameter, changing it from `true` to `false` changes the idempotency parameters rather than committing a prior preview, while replaying the preview key returns the original result rather than fresh validation. The endpoint adds no safe behavior for an absent, another, or expired key; concurrent or overlapping batches; partial creation; duplicate-invoice prevention; result freshness; or recovery and ledger/downstream reconciliation after cached or ambiguous failure. [[source-metronome-api-reference-contracts-create-historical-invoices]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": [
+        "Do not treat returned invoice IDs as request idempotency keys or a batch-operation identity.",
+        "Do not treat preview replay as fresh validation or changing preview to false as a documented commit protocol.",
+        "Investigate invoice, balance, ledger, and downstream state before assuming a new key is safe after an ambiguous result."
+      ]
+    },
+    {
+      "update_id": "create-historical-invoices-breakdown-schema-and-reporting-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Imported-invoice time breakdowns",
+      "proposed_markdown": "The dedicated historical-invoice schema permits optional invoice `breakdown_granularity` with hour/day casing variants and optional line-level `subtotals_with_quantity`; each subtotal requires inclusive start, exclusive end, and quantity. The line item itself requires only product and time bounds, so the schema does not require line `quantity` or subtotals, make them mutually exclusive, or define subtotal ordering, complete coverage, gaps, overlaps, aggregation, time-zone normalization, precision, rounding, or reconciliation to returned invoice totals. The response uses the generic invoice object and exposes no reporting-freshness, snapshot, export-coverage, or preview-versus-created visibility contract. [[source-metronome-api-reference-contracts-create-historical-invoices]] [[source-metronome-guides-invoices-invoice-optimization-import-existing-invoices]]",
+      "quote_indexes": [
+        1,
+        4
+      ],
+      "warnings": [
+        "Do not infer validation of a complete non-overlapping subtotal partition from required fields inside each supplied subtotal.",
+        "Keep Contracts-page/API visibility and Data Export or snapshot completeness as separate authorities."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

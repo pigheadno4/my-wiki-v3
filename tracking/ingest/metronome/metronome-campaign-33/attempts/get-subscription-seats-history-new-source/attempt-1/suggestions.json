@@ -1,0 +1,102 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "subscription-seats-history-temporal-read",
+      "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append in `## Lifecycle` after the existing manage-seats paragraph and before the quantity-history bullet.",
+      "proposed_markdown": "Bearer-authenticated `POST /v1/contracts/getSubscriptionSeatsHistory` reads effective-dated seat-schedule segments for one UUID subscription inside an identified customer contract. `covering_date` selects the segment active at a point and is mutually exclusive with `starting_at` and `ending_before`; range filters can leave either side unbounded. Each returned segment directly carries `starting_at`, nullable `ending_before`, total assigned-plus-unassigned quantity, and assigned seat IDs. Results are ordered by `starting_at` and paged at at most 10 entries through body `cursor` and sibling `next_page`, but direction, ties, cursor stability, snapshot consistency, retention, and exhaustive-history guarantees are undefined. The page does not say whether future scheduled seat segments are included, so the separate quantity-history endpoint's future-exclusion rule must not be generalized. [[source-metronome-api-reference-contracts-get-subscription-seats-history]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not infer exact upper-bound exclusivity from ending_before; its description says active at or before.",
+        "Do not treat a null entry ending_before as proof that no future replacement is scheduled."
+      ]
+    },
+    {
+      "update_id": "subscription-seats-history-subscriptions-reciprocal-link",
+      "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add once under `## Sources` beside quantity history and manage seats.",
+      "proposed_markdown": "- [[source-metronome-api-reference-contracts-get-subscription-seats-history]] - contract-scoped seat-assignment and total-capacity schedule history, covering-date and range selection, ordered pagination, and future-state and snapshot-completeness unknowns",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "subscription-seats-history-contract-scope",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append under `## Subscription, trial, and metric-discovery extensions` near the existing subscription lifecycle bullets.",
+      "proposed_markdown": "`POST /v1/contracts/getSubscriptionSeatsHistory` scopes a seat-schedule read with required UUID `customer_id`, `contract_id`, and `subscription_id` properties inside a supplied payload. HTTP `200` places the required schedule array at top-level `data` and required nullable continuation cursor at sibling `next_page`; each array item, rather than a nested wrapper, carries its effective period, total capacity, and assigned seat IDs. The endpoint lists not-found errors for all three resource types plus `InvalidArgument`, but does not define identifier-relationship mismatch behavior, current-contract authority, archived or ended resource visibility, read-after-edit timing, snapshot consistency, or reconciliation with contract, balance, credit, invoice, and ledger state. [[source-metronome-api-reference-contracts-get-subscription-seats-history]]",
+      "quote_indexes": [
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not infer that three individually valid UUIDs are accepted when their customer-contract-subscription relationship is inconsistent.",
+        "Keep returned history separate from proof of downstream billing, credit, invoice, or ledger convergence."
+      ]
+    },
+    {
+      "update_id": "subscription-seats-history-contracts-reciprocal-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add once under `## Sources` near other contract-scoped read surfaces.",
+      "proposed_markdown": "- [[source-metronome-api-reference-contracts-get-subscription-seats-history]] - three-resource contract and subscription identity, immediate-parent schedule and cursor placement, temporal filters, and relationship, visibility, and consistency unknowns",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "subscription-seats-history-post-idempotency-freshness-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "Append under `## Retry and error boundary` near other read-only POST history endpoints.",
+      "proposed_markdown": "`POST /v1/contracts/getSubscriptionSeatsHistory` is a paginated temporal read under the separate API-wide `Idempotency-Key` contract. Identical same-key parameters replay the original result, so replay is not proof of a fresh seat schedule, current assignments, a newly established pagination snapshot, or visibility of a recent seat edit. The endpoint adds no read-specific behavior for another or expired key, cursor replay with a key, concurrent reads and edits, cached errors, read-after-write timing, or ambiguous-failure recovery. [[source-metronome-api-reference-contracts-get-subscription-seats-history]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Attribute same-key replay, changed-parameter conflict, retention, and cached-error behavior only to the API-wide idempotency authority.",
+        "Do not treat POST result replay as an endpoint freshness or cursor-consistency guarantee."
+      ]
+    },
+    {
+      "update_id": "subscription-seats-history-idempotency-reciprocal-link",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Add once under `## Sources` near contract-state and ledger-history POST reads.",
+      "proposed_markdown": "- [[source-metronome-api-reference-contracts-get-subscription-seats-history]] - paginated POST seat-schedule history and the boundary that same-key replay does not establish fresh assignments, recent-edit visibility, or a new stable pagination snapshot",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

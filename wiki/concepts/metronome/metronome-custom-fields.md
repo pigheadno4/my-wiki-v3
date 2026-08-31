@@ -30,6 +30,8 @@ The single-product response can expose optional `custom_fields` on `ProductListI
 
 Package-term custom fields pass down to associated contracts. Package custom fields cannot be changed after they are set, while their contract-level descendants can be updated through `/customFields/setValues`; the guide lists package commit, credit, scheduled-charge, and subscription entities. [[source-metronome-guides-implement-metronome-core-concepts-packages-overview]]
 
+Alert specifiers for the combined credit-and-commit low-balance alert filter applicable commits and credits by custom-field key-value conditions. A specific key and value includes matching balances; a key without a value groups evaluation by each unique value; exclusions remove matching balances after inclusion. Setting or updating a custom-field value on an applicable credit or commit triggers reevaluation of each balance alert using those specifiers. This is alert-evaluation behavior, not proof that the custom-field change mutates balance, ledger, contract, invoice, payment, or merchant entitlement state. The guide does not define case sensitivity, missing-key handling, duplicate conditions, concurrent-update ordering, or group-history behavior. [[source-metronome-guides-customers-billing-set-up-notifications-create-alert-specifiers]] [[source-metronome-api-reference-custom-fields]]
+
 ## Uniqueness
 
 Uniqueness is intended for foreign entities that have a one-to-one relationship with a Metronome object. Enforcement continues for archived objects; resolving a duplicate involving an archived object requires resetting that object's field value.

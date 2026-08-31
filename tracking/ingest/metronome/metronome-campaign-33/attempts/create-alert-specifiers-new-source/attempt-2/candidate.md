@@ -1,0 +1,58 @@
+---
+title: "Metronome Guide: Create Alert Specifiers"
+type: source
+date_ingested: 2026-08-31
+original_format: webpage
+canonical_url: "https://docs.metronome.com/guides/customers-billing/set-up-notifications/create-alert-specifiers"
+raw_files:
+  - "metronome/guides/customers-billing/set-up-notifications/create-alert-specifiers-2026-08-28.md"
+tags: [metronome, alerts, notifications, credits, commits, custom-fields]
+---
+
+## Overview
+
+Metronome alert specifiers segment evaluation of `low_remaining_contract_credit_and_commit_balance_reached` by custom fields on commits and credits. Without specifiers, the alert evaluates one combined balance of all active commits and credits for a customer; specifiers can include matching balances, exclude matching balances, or evaluate a separate group for each value of one custom-field key. Customer scope, balance filtering, evaluation, webhook delivery, balance mutation, invoicing, and merchant action remain separate authorities.
+
+## Query-critical facts
+
+- `alert_specifiers` applies here to `low_remaining_contract_credit_and_commit_balance_reached`. Within one specifier, explicit inclusion key-value conditions are ANDed; separate specifiers are ORed. Omitting `custom_field_filters` includes all commits and credits, after which any matching exclusion condition removes a balance even if it met the inclusion conditions. Exclusion entries are ORed and must target entities already within that same specifier's inclusion scope.
+- The filters depend on custom fields set on commits or credits. Setting or updating an applicable custom-field value triggers reevaluation of a balance alert using `alert_specifiers`; this is an evaluation trigger, not a documented change to the credit or commit balance itself. [[source-metronome-api-reference-custom-fields]] remains the current authority for broad custom-field entity scope and persistence, while [[source-metronome-api-reference-alerts-create-a-threshold-notification]] remains the exact create-operation and nested-schema authority.
+- Customer scope is independent of the custom-field filter. The tagged-promotion and grouped create bodies omit `customer_id`; the current create-operation authority says that omission creates an all-customer notification. The grouped guide then explicitly says the one configuration automatically applies to all customers and all current and future promotions. Filters narrow which credits or commits are evaluated within that configuration; a later webhook's `customer_id` identifies the customer whose grouped balance crossed the threshold and does not retroactively make the alert customer-scoped. The exclusion example supplies `customer_id` and is therefore the only worked create body that explicitly selects one customer.
+- A key without a value creates per-value evaluation. This mode requires exactly one specifier with one group key and cannot group by multiple keys. The guide permits up to three per-key balance alerts for one customer and up to 1,000 unique values for each group key; configurations above 1,000 values are routed to the Metronome support portal rather than assigned a documented higher limit.
+- When a grouped value crosses the threshold, Metronome sends a webhook whose returned `alert_specifiers` identifies that key-value pair. The first value to cross also produces an additional alert-level webhook whose filter omits the value. The guide does not define ordering, atomicity, duplicate suppression, evaluation-to-delivery latency, or whether the two deliveries arrive together. [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] is the authority for ordinary threshold cadence and state, and [[source-metronome-guides-platform-configuration-setup-webhooks]] is the authority for HTTP delivery, retries, deduplication, and verification.
+- The worked include pattern filters `ContractCredit` by `promo_code: may_the_fourth` at a `$0` threshold. The worked exclude pattern removes `ContractCreditOrCommit` balances tagged `is_product_specific: true` and uses literal `threshold: 10000`. All three create bodies omit `credit_type_id`. The current create authority says credit-based notification types require that property in narrative guidance even though the payload required array omits it, and its property description says the currency defaults to USD. The separate [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]] authority says USD API monetary thresholds use cents, but those cross-source rules do not make these incomplete guide bodies copy-ready or establish the accepted pricing-unit selection, minor-unit scaling, `access_type` interpretation, rounding, or conversion for this example. Do not render `10000` as a dollar amount by inference.
+- All three worked create bodies also omit `uniqueness_key`. The current create prose says every threshold notification must have an organization-unique key, while the OpenAPI payload required array omits it; preserve that unresolved narrative/schema requiredness boundary. Resource-level `uniqueness_key` reuse prevents a new alert and returns `409`, while the separate API-wide [[source-metronome-api-reference-idempotency|`Idempotency-Key` authority]] applies to `POST /v1/alerts/create`: identical parameters with the same header key replay the original result, changed parameters return `409`, retention is at least 24 hours, and a cached result can be HTTP `500`. The create endpoint adds no safe another-key, expiry, concurrency, or ambiguous-failure recovery guarantee; resource uniqueness and request-result replay are distinct.
+- `POST /v1/customer-alerts/get` retrieves current status for one customer and specified key-value pair; the example returns `in_alarm`. Because it is POST, API-wide same-key replay can return the prior result and is not evidence of a fresh alert evaluation. The dedicated [[source-metronome-api-reference-alerts-get-a-threshold-notification]] adds no endpoint-specific caching, another-key, expiry, concurrency, or ambiguous-failure recovery guarantee. A return from `IN_ALARM` to `OK` can produce `low_remaining_contract_credit_and_commit_balance_resolved`, but this guide requires support enablement and does not define its delivery timing or recovery behavior.
+
+## Material boundaries and documentation tensions
+
+Alert creation stores configuration; `customer_id` selects one-customer versus all-customer configuration scope; custom-field filters select balances within that scope; custom-field changes can trigger reevaluation; and a threshold crossing can create webhook signals. None of those statements proves synchronous evaluation, fresh status on a same-key POST replay, successful delivery, balance or ledger mutation, invoice creation or recalculation, payment or collection, or downstream customer action. [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]] assigns customer communication, service cutoff, restoration, and other product responses to the merchant application.
+
+> [!warning] Worked-request scope and completeness
+> The first example says it is for a subset of customers, but its body omits `customer_id`; under the current create authority that body is all-customer. The grouped body also omits `customer_id` and explicitly applies to all customers and all current and future promotions. All three guide create bodies omit `uniqueness_key` and `credit_type_id` despite the create page's narrative requirements, while its OpenAPI required array omits both. Treat the guide bodies as matching illustrations, not complete copy-ready requests.
+
+> [!warning] Field-name tension
+> The note comparing alert specifiers with the top-level filter names `alert_specifiers[].custom_field_filter` in the singular, while the guide's definitions and every request or webhook example use `custom_field_filters` in the plural. Use the current create-operation schema rather than silently treating the singular spelling as an accepted request field.
+
+> [!warning] Entity-label tension
+> The grouped create example uses `ContractCreditorCommit`, while later grouped webhook examples use `ContractCreditOrCommit`. The guide does not reconcile those labels or establish that both are accepted enum values; verify the current create schema before copying the request.
+
+The page does not define case sensitivity, missing-key treatment, duplicate conditions, overlap across specifiers, grouping of objects without the key, transitions for newly created or retagged groups, concurrent update ordering, historical replay, endpoint-specific create failures, pricing-unit acceptance, precision, rounding, conversion, or safe recovery after an ambiguous POST result. It also does not say that alert evaluation mutates balances or ledgers, changes contracts, recalculates or finalizes invoices, delivers invoices, collects payment, or enforces access.
+
+## Raw-detail coverage map
+
+- **Configuration, matching, and scope:** include, exclude, multi-specifier OR, within-filter AND, same-specifier exclusion scope, single-key grouping, omitted-versus-supplied `customer_id`, and all-customer/current-and-future grouped promotion scope.
+- **Worked requests and authority gaps:** the `$0` tagged-promotion request, all-promotion grouped request, customer-scoped exclusion request with literal `threshold: 10000`, exact entity labels, and omitted `uniqueness_key`, `credit_type_id`, and `Idempotency-Key` header.
+- **Notification and status examples:** grouped key-value payload, additional first-crossing alert-level payload, customer-specific status lookup and `in_alarm` response, support-enabled resolved event, and same-key POST freshness boundary.
+- **Limits and tensions:** three per-key alerts per customer, 1,000-value group-key guidance, support route above that cardinality, first-example subset prose versus all-customer body semantics, narrative-versus-schema requiredness, singular-versus-plural filter spelling, and `ContractCreditorCommit` versus `ContractCreditOrCommit`.
+- **Exact authorities:** threshold-create for customer scope, conditional field requiredness, resource uniqueness, and default USD; API idempotency for POST replay and cached errors; currency/custom-pricing-unit guidance for denomination; threshold-get for current-state and freshness boundaries; notification lifecycle for evaluation; webhook guidance for transport; and customer controls for merchant-owned action.
+
+## Related
+
+- Company: [[metronome]]
+- Primary concepts: [[metronome-alerts-and-notifications]], [[metronome-credits-and-commits]], [[metronome-custom-fields]], [[metronome-webhooks]]
+- Related sources: [[source-metronome-api-reference-alerts-create-a-threshold-notification]], [[source-metronome-api-reference-alerts-get-a-threshold-notification]], [[source-metronome-api-reference-idempotency]], [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]], [[source-metronome-api-reference-custom-fields]], [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]], [[source-metronome-guides-platform-configuration-setup-webhooks]], [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]], [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-alerts]]
+
+## Raw Sources
+
+- [[raw/metronome/guides/customers-billing/set-up-notifications/create-alert-specifiers-2026-08-28|2026-08-28 snapshot - complete alert-specifier matching, grouping, scope, webhook, status, limit, and worked-example guide]]

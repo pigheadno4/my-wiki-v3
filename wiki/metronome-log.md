@@ -6,6 +6,16 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-08-31 — Metronome Campaign 33 never-ingested coverage promoted
+
+- Result: five previously unreferenced canonical pages gained new Minimum Sufficient Sources across nine Sol worker attempts and nine full independent Sol reviews; two pages passed on attempt 1, with no targeted review, rejection, or coordinator semantic repair.
+- Sources: [[source-metronome-api-reference-contracts-create-historical-invoices]], [[source-metronome-guides-customers-billing-set-up-notifications-create-alert-specifiers]], [[source-metronome-api-reference-contracts-get-subscription-seats-history]], [[source-metronome-api-reference-billable-metrics-update-a-billable-metric]], and [[source-metronome-api-reference-invoices-get-customer-costs]].
+- Review findings: Seat History and Historical Invoices each required one complete retry for primary routing or authority and grounding gaps. Alert Specifiers required two complete retries to preserve customer and promotion scope, uniqueness, currency, idempotency, freshness, and a guide-versus-current-schema status-response contradiction.
+- Concepts: applied twenty-eight reviewer-approved durable facts and reciprocal links across twelve existing concept pages; no new concept page was required.
+- Coverage after promotion: 226 current English canonical documentation identities remain retained as 310 immutable raw snapshots, with 167 total source summaries, 161 official-documentation summaries, and 125 raw snapshots without source summaries. The immutable pre-Campaign-31 planning inventory remains unchanged; 65 of those canonical pages now remain without source coverage.
+- Timing and gate: completed in 4,825 seconds (1 hour 20 minutes 25 seconds). Final quality and the 9/9 fixed query audit passed, but two of five first-pass approvals, four full semantic retries, and elapsed time missed all planned throughput gates.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-33/monitor.md), [quality audit](../tracking/ingest/metronome/metronome-campaign-33/quality-audit.md), and [retrospective](../tracking/ingest/metronome/metronome-campaign-33/retrospective.md).
+
 ## 2026-08-31 — Metronome Campaign 32 never-ingested coverage promoted
 
 - Result: five previously unreferenced canonical pages gained new Minimum Sufficient Sources across eight Sol worker attempts, seven full independent Sol reviews, and one targeted review; two pages passed on attempt 1, with no rejection or coordinator semantic repair.

@@ -1,0 +1,165 @@
+{
+  "job_id": "get-subscription-seats-history-new-source",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome API Reference: Get Subscription Seats History\"\ntype: source\ndate_ingested: 2026-08-31\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/contracts/get-subscription-seats-history\"\nraw_files:\n  - \"metronome/api-reference/contracts/get-subscription-seats-history-2026-07-13.md\"\ntags: [metronome, api, contracts, subscriptions, seats, temporal-history]\n---\n\n## Overview\n\nBearer-authenticated `POST /v1/contracts/getSubscriptionSeatsHistory` reads the effective-dated seat schedule for one subscription identified within a customer contract. It can select the segment covering one timestamp or page through range-filtered history, returning each period's total capacity and assigned seat identities; it does not establish whether future scheduled segments are included or whether a multi-page traversal is a stable snapshot.\n\n## Query-critical facts\n\n- Within a supplied JSON object, UUID `customer_id`, `contract_id`, and `subscription_id` are required properties. The enclosing OpenAPI `requestBody` is not marked `required: true`, and the object does not declare `additionalProperties: false`, so omitted-body and unknown-field behavior are not documented. The three identifiers jointly scope the read, but the page does not define mismatch behavior when each UUID exists under a different customer, contract, or subscription relationship.\n- `covering_date` asks for the seat-history segment active at one point in time and cannot be combined with `starting_at` or `ending_before`. The range filters may be used together or independently: the lower description includes segments active at or after its timestamp and the upper description includes segments active at or before its timestamp; omission removes the corresponding bound. The page does not define equality and overlap treatment beyond that wording, validate that a lower bound precedes an upper bound, or reconcile the parameter name `ending_before` with its description's \"at or before\" language.\n- Body `limit` defaults to 10 and permits 1 through 10 seat-schedule entries. Body `cursor` consumes the prior response's `next_page`; HTTP `200` requires `data` and nullable `next_page` as siblings. Results are ordered by `starting_at`, but direction and tie handling are unspecified. The endpoint does not define cursor lifetime, snapshot consistency across pages, behavior when schedules change during traversal, or an endpoint-specific completeness guarantee.\n- Each object directly inside `data` requires `starting_at`, nullable `ending_before`, `total_quantity`, and `assigned_seat_ids`. `total_quantity` is a non-negative integer covering assigned plus unassigned seats, while `assigned_seat_ids` contains only assigned identities. A null entry-level `ending_before` means the period is ongoing; these fields are immediate children of each array item, not nested under another schedule object, and `next_page` remains outside `data`.\n- The page calls this seat-schedule history and shows an ongoing segment, but it does not say whether results contain only recorded effective state, also include future scheduled seat changes, retain all past periods, or reconcile exactly with the separate quantity-history, contract-state, seat-balance, invoice, credit, or ledger surfaces. The separate quantity-history page explicitly excludes future quantity changes; that boundary must not be generalized to this endpoint without authority.\n- The documented HTTP `400` object requires `code` and `message`, with `ContractNotFound`, `CustomerNotFound`, `SubscriptionNotFound`, and `InvalidArgument` codes. The page gives no code-to-condition mapping and no endpoint-specific authorization, malformed-UUID, identifier-relationship, empty-result, rate-limit, timeout, retry, partial-page, freshness, read-after-edit, or recovery contract.\n- The separate API-wide authority applies `Idempotency-Key` result replay to all POST endpoints. For this read, an identical same-key retry can recover the original result, but replay is not evidence of a fresh seat schedule, a new pagination snapshot, or current assignment state; the endpoint adds no local guarantee for another or expired key, concurrent reads and edits, cursor replay, cached errors, or ambiguous failures.\n\n## Material boundaries and tensions\n\n> [!warning] Upper-bound naming tension\n> The request property is named `ending_before`, while its description says to include segments active \"at or before\" the supplied timestamp. The page does not define whether the cutoff is exclusive, inclusive, or evaluated against any overlap with a segment; consumers should not derive exact boundary logic from the name alone.\n\nA null segment `ending_before` establishes an ongoing period in the returned representation, not that the segment is the authoritative current state at read time or that no future replacement is scheduled. Likewise, ordered pages do not prove retained-history exhaustiveness or a transactionally consistent snapshot. Reconcile operational access, billing capacity, credits, invoices, and current contract state through their dedicated authorities rather than treating this history read as proof of downstream convergence.\n\nAPI-wide same-key POST replay can preserve an earlier response. It must not be used as a freshness check after seat edits, and this endpoint supplies no read-after-write delay, cache invalidation, mutation-to-history propagation, or concurrent-edit ordering guarantee.\n\n## Raw-detail coverage map\n\n- **Operation and identity:** use the raw page for the production path, POST method, bearer-security declaration, operation ID, request example, the three required UUID properties inside a supplied payload, and the absence of operation-level request-body requiredness or a closed-object declaration.\n- **Temporal selection:** use raw for `covering_date` exclusivity, independent lower and upper range fields, exact \"active at or after\" and \"active at or before\" descriptions, nullable fields, and unbounded-side behavior.\n- **Pagination and order:** use raw for the 1-10 body limit, default 10, body `cursor`, required nullable sibling `next_page`, sample cursor, and the documented `starting_at` ordering statement; direction, ties, cursor stability, and snapshot completeness remain unspecified.\n- **Schedule representation:** use raw for the complete immediate-parent entry schema and example periods, including start and end placement, ongoing-null representation, assigned IDs, total assigned-plus-unassigned quantity, and the non-negative quantity constraint.\n- **Failure and consistency:** use raw for the complete documented `400` enum and message placement. It provides no additional status catalog, retention, future-state, freshness, propagation, read-after-write, concurrency, retry, or reconciliation contract.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-subscriptions]], [[metronome-customers-and-contracts]], [[metronome-reporting-and-analytics]], [[metronome-api-idempotency]]\n- Related sources: [[source-metronome-api-reference-contracts-get-subscription-quantity-history]], [[source-metronome-guides-pricing-packaging-subscription-manage-seats]], [[source-metronome-api-reference-pagination]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/contracts/get-subscription-seats-history-2026-07-13|2026-07-13 snapshot - subscription and contract identity, covering-date and range filters, ordered paginated seat-schedule entries, quantity and assignment placement, and documented errors]]\n",
+  "quotes": [
+    {
+      "text": "> Get the history of subscription seats schedule over time for a given `subscription_id`. This endpoint provides information about seat assignments and total quantities for different time periods, allowing you to track how seat assignments have changed over time.\n\n### Use this endpoint to:\n- Track changes to seat assignments over time\n- Get seat schedule for a specific date using the `covering_date` parameter\n- Get seat schedule history with optional date range filtering using `starting_at` and `ending_before`\n\n### Key response fields:\n- data: array of seat schedule entries with time periods, quantity, and assignments\n- next_page: cursor for pagination to retrieve additional results\n\n### Usage guidelines:\n- Use `covering_date` to get the active seats for a specific point in time. `covering_date` cannot be used with `starting_at` or `ending_before`.\n- Use `starting_at` and `ending_before` to filter results by time range. `starting_at` and `ending_before` cannot be used with `covering_date`.\n- Maximum limit is 10 seat schedule entries per request\n- Results are ordered by `starting_at` timestamp",
+      "location": "lines 11-26, endpoint purpose, filters, pagination surface, limit, and ordering"
+    },
+    {
+      "text": "      requestBody:\n        content:\n          application/json:\n            schema:\n              type: object\n              required:\n                - customer_id\n                - contract_id\n                - subscription_id\n              properties:\n                customer_id:\n                  type: string\n                  format: uuid\n                contract_id:\n                  type: string\n                  format: uuid\n                subscription_id:\n                  type: string\n                  format: uuid\n                limit:\n                  type: integer\n                  default: 10\n                  nullable: true\n                  description: >-\n                    Maximum number of seat schedule entries to return. Defaults\n                    to 10. Required range: 1 <= x <= 10.\n                cursor:\n                  type: string\n                  nullable: true\n                  description: >-\n                    Cursor for pagination. Use the value from the `next_page`\n                    field of the previous response to retrieve the next page of\n                    results.",
+      "location": "lines 147-179, request-body placement, required identity properties, limit, and cursor"
+    },
+    {
+      "text": "                covering_date:\n                  type: string\n                  format: date-time\n                  nullable: true\n                  description: >-\n                    Get the seats history segment for the covering date. Cannot\n                    be used with `starting_at` or `ending_before`.\n                starting_at:\n                  type: string\n                  format: date-time\n                  nullable: true\n                  description: >-\n                    Include seats history segments that are active at or after\n                    this timestamp. Use with `ending_before` to get a specific\n                    time range. If not set, there's no lower bound.\n                ending_before:\n                  type: string\n                  format: date-time\n                  nullable: true\n                  description: >-\n                    Include seats history segments that are active at or before\n                    this timestamp. Use with `starting_at` to get a specific\n                    time range. If not set, there's no upper bound.",
+      "location": "lines 180-202, covering-date exclusivity and exact range-filter semantics"
+    },
+    {
+      "text": "        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                  - next_page\n                properties:\n                  data:\n                    type: array\n                    items:\n                      $ref: '#/components/schemas/SubscriptionSeatsScheduleEntry'\n                  next_page:\n                    type: string\n                    nullable: true\n                    description: Cursor for the next page of results",
+      "location": "lines 210-227, immediate-parent success envelope and pagination placement"
+    },
+    {
+      "text": "    SubscriptionSeatsScheduleEntry:\n      type: object\n      required:\n        - starting_at\n        - ending_before\n        - total_quantity\n        - assigned_seat_ids\n      properties:\n        starting_at:\n          type: string\n          format: date-time\n          description: The start time of this seat schedule period\n        ending_before:\n          type: string\n          format: date-time\n          nullable: true\n          description: The end time of this seat schedule period (null if ongoing)\n        total_quantity:\n          type: integer\n          minimum: 0\n          description: Total number of assigned and unassigned seats in this period\n        assigned_seat_ids:\n          type: array\n          items:\n            type: string\n          description: Array of seat IDs that are assigned in this period",
+      "location": "lines 268-293, required seat-schedule entry fields, quantity meaning, assignments, and ongoing period"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "subscription-seats-history-temporal-read",
+        "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append in `## Lifecycle` after the existing manage-seats paragraph and before the quantity-history bullet.",
+        "proposed_markdown": "Bearer-authenticated `POST /v1/contracts/getSubscriptionSeatsHistory` reads effective-dated seat-schedule segments for one UUID subscription inside an identified customer contract. `covering_date` selects the segment active at a point and is mutually exclusive with `starting_at` and `ending_before`; range filters can leave either side unbounded. Each returned segment directly carries `starting_at`, nullable `ending_before`, total assigned-plus-unassigned quantity, and assigned seat IDs. Results are ordered by `starting_at` and paged at at most 10 entries through body `cursor` and sibling `next_page`, but direction, ties, cursor stability, snapshot consistency, retention, and exhaustive-history guarantees are undefined. The page does not say whether future scheduled seat segments are included, so the separate quantity-history endpoint's future-exclusion rule must not be generalized. [[source-metronome-api-reference-contracts-get-subscription-seats-history]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer exact upper-bound exclusivity from ending_before; its description says active at or before.",
+          "Do not treat a null entry ending_before as proof that no future replacement is scheduled."
+        ]
+      },
+      {
+        "update_id": "subscription-seats-history-subscriptions-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add once under `## Sources` beside quantity history and manage seats.",
+        "proposed_markdown": "- [[source-metronome-api-reference-contracts-get-subscription-seats-history]] - contract-scoped seat-assignment and total-capacity schedule history, covering-date and range selection, ordered pagination, and future-state and snapshot-completeness unknowns",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "subscription-seats-history-contract-scope",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append under `## Subscription, trial, and metric-discovery extensions` near the existing subscription lifecycle bullets.",
+        "proposed_markdown": "`POST /v1/contracts/getSubscriptionSeatsHistory` scopes a seat-schedule read with required UUID `customer_id`, `contract_id`, and `subscription_id` properties inside a supplied payload. HTTP `200` places the required schedule array at top-level `data` and required nullable continuation cursor at sibling `next_page`; each array item, rather than a nested wrapper, carries its effective period, total capacity, and assigned seat IDs. The endpoint lists not-found errors for all three resource types plus `InvalidArgument`, but does not define identifier-relationship mismatch behavior, current-contract authority, archived or ended resource visibility, read-after-edit timing, snapshot consistency, or reconciliation with contract, balance, credit, invoice, and ledger state. [[source-metronome-api-reference-contracts-get-subscription-seats-history]]",
+        "quote_indexes": [
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer that three individually valid UUIDs are accepted when their customer-contract-subscription relationship is inconsistent.",
+          "Keep returned history separate from proof of downstream billing, credit, invoice, or ledger convergence."
+        ]
+      },
+      {
+        "update_id": "subscription-seats-history-contracts-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add once under `## Sources` near other contract-scoped read surfaces.",
+        "proposed_markdown": "- [[source-metronome-api-reference-contracts-get-subscription-seats-history]] - three-resource contract and subscription identity, immediate-parent schedule and cursor placement, temporal filters, and relationship, visibility, and consistency unknowns",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "subscription-seats-history-post-idempotency-freshness-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append under `## Retry and error boundary` near other read-only POST history endpoints.",
+        "proposed_markdown": "`POST /v1/contracts/getSubscriptionSeatsHistory` is a paginated temporal read under the separate API-wide `Idempotency-Key` contract. Identical same-key parameters replay the original result, so replay is not proof of a fresh seat schedule, current assignments, a newly established pagination snapshot, or visibility of a recent seat edit. The endpoint adds no read-specific behavior for another or expired key, cursor replay with a key, concurrent reads and edits, cached errors, read-after-write timing, or ambiguous-failure recovery. [[source-metronome-api-reference-contracts-get-subscription-seats-history]] [[source-metronome-api-reference-idempotency]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Attribute same-key replay, changed-parameter conflict, retention, and cached-error behavior only to the API-wide idempotency authority.",
+          "Do not treat POST result replay as an endpoint freshness or cursor-consistency guarantee."
+        ]
+      },
+      {
+        "update_id": "subscription-seats-history-idempotency-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add once under `## Sources` near contract-state and ledger-history POST reads.",
+        "proposed_markdown": "- [[source-metronome-api-reference-contracts-get-subscription-seats-history]] - paginated POST seat-schedule history and the boundary that same-key replay does not establish fresh assignments, recent-edit visibility, or a new stable pagination snapshot",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "subscription-seats-history-reporting-query-route",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append under `## Query model` immediately after the existing merchant-facing seat-history paragraph.",
+        "proposed_markdown": "The dedicated merchant-facing identity-bearing seat-history read is bearer-authenticated `POST /v1/contracts/getSubscriptionSeatsHistory`, scoped by customer, contract, and subscription UUIDs inside a supplied payload. `covering_date` selects one active schedule segment and cannot be combined with `starting_at` or `ending_before`; either range side can be omitted for an unbounded side. The endpoint uses a body `limit` of 1-10, default 10, and body `cursor`, with required nullable `next_page` as a sibling of top-level `data`. Returned immediate schedule items require `starting_at`, nullable `ending_before`, total assigned-plus-unassigned quantity, and assigned seat IDs. Results are ordered by `starting_at`, but direction, ties, cursor lifetime, cross-page snapshot consistency, retention, and exhaustive-history guarantees are unspecified. The page also does not establish whether future scheduled seat segments are included. This identity-bearing schedule is distinct from aggregate subscription quantity history, whose separate endpoint explicitly excludes future changes; do not generalize that future-exclusion rule to seat history. [[source-metronome-api-reference-contracts-get-subscription-seats-history]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this direct endpoint route distinct from the existing manage-seats navigation summary and from current seat-balance reporting.",
+          "Do not import aggregate quantity history's explicit future-exclusion rule into the seat-history endpoint."
+        ]
+      },
+      {
+        "update_id": "subscription-seats-history-reporting-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add once under `## Sources` beside the manage-seats and seat-balances sources.",
+        "proposed_markdown": "- [[source-metronome-api-reference-contracts-get-subscription-seats-history]] - dedicated contract- and subscription-scoped seat schedule reporting, covering-date and unbounded-side range selection, endpoint-specific body pagination, starting-time ordering, assigned-plus-unassigned totals, assigned identities, and future-state and cross-page completeness unknowns",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/contracts/get-subscription-seats-history-2026-07-13.md",
+  "raw_sha256": "445810693dbd99e7dcffb549c17aa17718e56b5de0e308c630b7f81911922f2b",
+  "status": "candidate_ready"
+}

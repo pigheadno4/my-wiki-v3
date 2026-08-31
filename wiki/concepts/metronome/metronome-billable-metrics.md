@@ -55,6 +55,8 @@ The invoice-breakdown endpoint exposes invoice and line-item results in requeste
 
 ## Lifecycle boundary
 
+Bearer-authenticated `PUT /v1/billable-metrics/{billable_metric_id}` targets one required UUID path metric and changes only its display name. Within a supplied JSON object, `name` is the sole property and is required, while the enclosing `requestBody` is not marked required and no closed-object policy is declared; omitted-body and unknown-field runtime behavior remain undocumented. Calculation configuration cannot be edited after creation. HTTP `200` requires top-level `data` referencing a generic `Id` object with required UUID `id`; prose calls it the metric ID, but the response and path examples differ and the schema does not encode equality. The page returns no updated name, configuration, version, audit timestamp, or propagation state and does not define repeated-PUT, concurrency, read-after-write, historical-name, recalculation, report, export, invoice, or downstream behavior. [[source-metronome-api-reference-billable-metrics-update-a-billable-metric]]
+
 Within the guide's streaming-metric section, `LATEST` metrics can use group keys but currently cannot use contract-level usage filters. [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]]
 
 ### Sampled event-to-metric diagnostics
@@ -83,6 +85,8 @@ Because usage-event structures target particular metrics, changing the producer 
 
 Bearer-authenticated `POST /v1/billable-metrics/archive` targets a billable metric through required UUID `id` inside a supplied payload, although the enclosing request body is not marked required and the `Id` object has no closed-object policy. Archival prevents the metric from being selected for new Products, while the endpoint says Products already associated with it continue functioning and metering from the archived definition. The metric remains visible through Get and List with populated `archived_at`; the List authority separately excludes archived metrics by default unless `include_archived=true`. HTTP `200` requires top-level `data` referencing a generic `Id` object with required UUID `id`; its example repeats the request UUID, but the schema does not separately label the returned value or establish metric-resource versus archive-operation identity. The archive page does not define restoration, retention, already-archived behavior, accepted or late-event handling, propagation timing, read-after-write consistency, concurrency with Product changes, invoice recalculation, or downstream convergence. Its existing-Product metering claim materially conflicts with the Get endpoint's statement that an archived metric stops processing new usage events; preserve both scopes and verify runtime cutoff behavior. [[source-metronome-api-reference-billable-metrics-archive-a-billable-metric]] [[source-metronome-api-reference-billable-metrics-get-a-billable-metric]] [[source-metronome-api-reference-billable-metrics-list-all-billable-metrics]]
 
+The deprecated Plans customer-cost endpoint says it is unsupported when the customer's Plan includes a `UNIQUE`-type billable metric. This is an operation-specific availability boundary: the page does not define how `UNIQUE` is classified, whether one matching metric blocks every interval, the failure status or body, partial-data behavior, or a Contracts equivalent. Preserve the broader documentation tension in which billable-metric schemas enumerate case variants of `UNIQUE` while guides direct distinct counts to SQL; do not use this endpoint to conclude that all SQL metrics are unsupported, that every spelling is accepted, or that `UNIQUE` semantics are resolved. [[source-metronome-api-reference-invoices-get-customer-costs]]
+
 ## Retrieval APIs
 
 `GET /v1/billable-metrics/{billable_metric_id}` returns one metric configuration under `data`; only `id` and `name` are required in `BillableMetricV1`. An archived metric remains retrievable with RFC 3339 `archived_at` and stops processing new usage events. The endpoint documents `404`, but not archive propagation, permissions, rate limits, or consistency.
@@ -102,6 +106,7 @@ Dimension-scoped spend alerts require their `group_values` key to be a group key
 
 ## Sources
 
+- [[source-metronome-api-reference-billable-metrics-update-a-billable-metric]] - UUID-targeted name-only PUT, immutable calculation configuration, generic response identity placement, replacement routing, and propagation and history unknowns
 - [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] - hourly or daily breakdown output, window filters, zero-quantity suppression, cursor envelope, and metric-calculation authority boundary
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] - private-preview managed creation of AI billable metrics from configured model markups and event-side verification that Token Billing usage matched a metric
 

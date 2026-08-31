@@ -36,6 +36,8 @@ The dedicated seat-balance read is `POST /v1/contracts/seatBalances/list`. It sc
 
 Seat management after contract creation has two modes. Aggregate subscriptions and shared credit pools use `update_subscription` with either total `quantity` or `quantity_delta`; equal-`starting_at` aggregate updates apply in submission order, and invoice plus recurring-credit effects follow configured proration and `access_amount`. Seat-based credit subscriptions instead add or remove stable `seat_ids` and can add or remove unassigned capacity. Reassignment without changing total quantity removes the old identity and adds one unassigned seat, leaving capacity available for a later assignee. The guide does not extend aggregate same-time ordering to seat updates or define proration calculations, rounding, atomicity, errors, or recovery. [[source-metronome-guides-pricing-packaging-subscription-manage-seats]]
 
+Bearer-authenticated `POST /v1/contracts/getSubscriptionSeatsHistory` reads effective-dated seat-schedule segments for one UUID subscription inside an identified customer contract. `covering_date` selects the segment active at a point and is mutually exclusive with `starting_at` and `ending_before`; range filters can leave either side unbounded. Each returned segment directly carries `starting_at`, nullable `ending_before`, total assigned-plus-unassigned quantity, and assigned seat IDs. Results are ordered by `starting_at` and paged at at most 10 entries through body `cursor` and sibling `next_page`, but direction, ties, cursor stability, snapshot consistency, retention, and exhaustive-history guarantees are undefined. The page does not say whether future scheduled seat segments are included, so the separate quantity-history endpoint's future-exclusion rule must not be generalized. [[source-metronome-api-reference-contracts-get-subscription-seats-history]]
+
 - Metronome's subscription quantity-history endpoint returns historical quantities and prices for customer-facing seat-count history, but excludes future scheduled quantity changes; those future changes must be retrieved through `getContract`.
 - A subscription rate-card price change reaches inheriting contracts in the next billing period; a contract overwrite retains its assigned price.
 - A sub-cycle trial can use consecutive subscriptions with a time-bounded `$0` override on the first. A full-cycle trial can use one `$0` override that expires before list pricing applies in the next period.
@@ -47,6 +49,7 @@ The lifecycle page labels one operation as create-contract guidance while linkin
 
 ## Sources
 
+- [[source-metronome-api-reference-contracts-get-subscription-seats-history]] - contract-scoped seat-assignment and total-capacity schedule history, covering-date and range selection, ordered pagination, and future-state and snapshot-completeness unknowns
 - [[source-metronome-api-reference-contracts-edit-a-contract]] - feature-gated subscription payment configuration and recurring child-balance release policies
 
 - [[source-metronome-guides-pricing-packaging-subscription-manage-seats]] — aggregate and identity-bearing seat updates, unassigned-seat reassignment, configuration-dependent proration, and seat history and balance routes

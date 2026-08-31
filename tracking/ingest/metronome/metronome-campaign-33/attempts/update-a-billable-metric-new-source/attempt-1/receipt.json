@@ -1,0 +1,126 @@
+{
+  "job_id": "update-a-billable-metric-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Update a Billable Metric\"\ntype: source\ndate_ingested: 2026-08-31\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/billable-metrics/update-a-billable-metric\"\nraw_files:\n  - \"metronome/api-reference/billable-metrics/update-a-billable-metric-2026-07-13.md\"\ntags: [metronome, api, billable-metrics, metric-lifecycle, products]\n---\n\n## Overview\n\nBearer-authenticated `PUT /v1/billable-metrics/{billable_metric_id}` changes only an existing billable metric's display name. Its OpenAPI success envelope places a required UUID `id` under required top-level `data`; calculation configuration must instead be replaced through a new metric and an effective-dated Product reference change. The page does not establish repeated-PUT safety, propagation timing, configuration-history treatment, or historical reporting behavior.\n\n## Query-critical facts\n\n- The required path parameter `billable_metric_id` is a UUID and identifies the existing metric. Inside a supplied JSON object, `name` is the only property and is required; it is the new metric name. The enclosing OpenAPI `requestBody` is not marked `required: true`, and the object does not declare `additionalProperties: false`, so omitted-body and unknown-field runtime behavior are not documented.\n- The endpoint changes only the display name. Filters, aggregation, grouping, SQL, and other calculation configuration are not mutable through this operation; the page says configurations cannot be changed after creation. It does not document name length, emptiness, uniqueness, normalization, authorization beyond bearer authentication, or an endpoint error catalog.\n- For a streaming-metric configuration change, the documented example workflow is to duplicate the metric, make and save the changes, navigate to the Product associated with the incorrect metric, and schedule that Product to reference the new metric on the appropriate date. This is a replacement workflow, not an in-place configuration edit.\n- HTTP `200` requires top-level `data`; `data` references a generic `Id` object that requires UUID `id`. The prose calls this the billable metric ID returned to confirm the update, but the response example's UUID differs from the path-parameter example and the generic schema does not encode equality. Treat `data.id` as the documented response identity placement without asserting from this page alone that it equals the requested metric UUID or represents a separate operation resource.\n- The separate [[source-metronome-api-reference-idempotency|Metronome API-wide idempotency authority]] documents `Idempotency-Key` only for all **POST** endpoints. This operation is `PUT`, exposes no resource `uniqueness_key`, and provides no endpoint-specific retry, repeated-call, concurrent-rename, lost-update, timeout, cached-error, or ambiguous-failure recovery contract. A desired final name must not be treated as proof of request-result replay or concurrency safety.\n\n## Replacement, propagation, and history boundaries\n\nThe five-step replacement workflow is introduced as an example for a streaming billable metric and names one associated Product. It does not establish that every associated Product is discovered or migrated, that the original metric is archived, that Product scheduling and metric creation are atomic, or that failed and concurrent changes roll back. It also does not define effective-date inclusivity, timezone, accepted or late-event matching, cross-transition aggregation, read-after-write visibility, or when the new reference reaches rating, invoice, report, export, alert, or downstream-integration surfaces. Dedicated Product and metric authorities remain necessary for those mechanics.\n\nFor a name-only update, the page returns no updated name, configuration snapshot, version, audit record, timestamp, or propagation status. It does not say when Get or List results, Product views, invoices, reports, or exports show the new display name; whether earlier records retain the old name; or whether any historical calculation or financial result is recomputed. The sparse identifier response confirms neither propagation nor historical convergence.\n\n> [!warning] Response-identity evidence boundary\n> The narrative says the response returns the billable metric ID, while the generic `Id` schema only requires `data.id` and the response and path examples use different UUIDs. Preserve the immediate-parent placement and narrative meaning, but do not infer equality, operation-resource identity, or fresh metric state from the examples.\n\n## Raw-detail coverage map\n\nUse the exact raw page for the production server and bearer-security declaration; exact route and operation ID; required path UUID; request-body nesting, required `name` property, and example; complete HTTP `200` envelope and generic `Id` schema; response example; duplicated endpoint description; and the numbered streaming-metric replacement workflow. The raw page contains no non-200 response map, endpoint-specific idempotency or retry rule, concurrency/version field, propagation status, audit history, or historical-reporting contract.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-billable-metrics]], [[metronome-products-and-rate-cards]], [[metronome-api-idempotency]]\n- Related sources: [[source-metronome-api-reference-billable-metrics-create-a-billable-metric]], [[source-metronome-guides-implement-metronome-core-concepts-create-billable-metrics]], [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-sql-editor]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/billable-metrics/update-a-billable-metric-2026-07-13|2026-07-13 snapshot \u2014 name-only metric update, immutable-configuration replacement workflow, request and response identity placement, and lifecycle unknowns]]",
+  "quotes": [
+    {
+      "text": "> Updates only the display name of an existing billable metric. Use this to correct mistakes or apply standardized naming conventions across all billable metrics. Returns the billable metric ID to confirm the update. \n\nImportant: Only the name can be modified via this endpoint; configurations cannot be changed after creation.",
+      "location": "lines 11-13, name-only mutation, returned identity narrative, and immutable configuration boundary"
+    },
+    {
+      "text": "#### Example workflow:\nIf you need to make changes to a streaming billable metric, for example, Metronome supports easily rolling out these changes using a simple workflow:\n1. Duplicate the billable metric\n2. Make required changes\n3. Save the metric\n4. Navigate to the product you have associated with the incorrect metric\n5. Schedule the product to reference the newly created metric on the appropriate date",
+      "location": "lines 15-21, streaming-metric replacement and Product scheduling workflow"
+    },
+    {
+      "text": "      parameters:\n        - $ref: '#/components/parameters/BillableMetricId'\n      requestBody:\n        description: The billable metric to update\n        content:\n          application/json:\n            schema:\n              type: object\n              required:\n                - name\n              properties:\n                name:\n                  type: string\n                  description: The new name of the metric\n            example:\n              name: CPU hours",
+      "location": "lines 130-145, path identity reference, request-body placement, required payload name, and example"
+    },
+    {
+      "text": "      responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/Id'\n              example:\n                data:\n                  id: 8deed800-1b7a-495d-a207-6c52bac54dc9",
+      "location": "lines 146-160, HTTP 200 immediate-parent response placement and identifier example"
+    },
+    {
+      "text": "    BillableMetricId:\n      name: billable_metric_id\n      in: path\n      required: true\n      schema:\n        type: string\n        format: uuid\n      example: 13117714-3f05-48e5-a6e9-a66093f13b4d\n  schemas:\n    Id:\n      required:\n        - id\n      type: object\n      properties:\n        id:\n          type: string\n          format: uuid",
+      "location": "lines 162-179, required UUID path parameter, generic required UUID response-identity schema, and differing path example"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "billable-metric-name-only-update-lifecycle",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append under `## Lifecycle boundary` before archival semantics.",
+        "proposed_markdown": "Bearer-authenticated `PUT /v1/billable-metrics/{billable_metric_id}` targets one required UUID path metric and changes only its display name. Within a supplied JSON object, `name` is the sole property and is required, while the enclosing `requestBody` is not marked required and no closed-object policy is declared; omitted-body and unknown-field runtime behavior remain undocumented. Calculation configuration cannot be edited after creation. HTTP `200` requires top-level `data` referencing a generic `Id` object with required UUID `id`; prose calls it the metric ID, but the response and path examples differ and the schema does not encode equality. The page returns no updated name, configuration, version, audit timestamp, or propagation state and does not define repeated-PUT, concurrency, read-after-write, historical-name, recalculation, report, export, invoice, or downstream behavior. [[source-metronome-api-reference-billable-metrics-update-a-billable-metric]]",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer omitted-body or unknown-field behavior from the missing OpenAPI declarations.",
+          "Preserve the prose-versus-example response identity boundary rather than asserting that data.id equals the path UUID."
+        ]
+      },
+      {
+        "update_id": "billable-metric-update-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add once under `## Sources` beside create, get, list, and archive metric references.",
+        "proposed_markdown": "- [[source-metronome-api-reference-billable-metrics-update-a-billable-metric]] - UUID-targeted name-only PUT, immutable calculation configuration, generic response identity placement, replacement routing, and propagation and history unknowns",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "billable-metric-replacement-product-schedule",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append in `## Products` near effective-dated usage-product billable-metric edits.",
+        "proposed_markdown": "When a streaming billable metric's calculation configuration must change, the Update Metric reference gives a replacement workflow: duplicate the metric, make and save the changes, navigate to the Product associated with the incorrect metric, and schedule that Product to reference the new metric on the appropriate date. This does not establish discovery or migration of every associated Product, archival of the original metric, atomicity, rollback, effective-time inclusivity or timezone, accepted or late-event behavior, cross-transition aggregation, historical invoice or report recalculation, or propagation to rating and downstream systems. [[source-metronome-api-reference-billable-metrics-update-a-billable-metric]]",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "Keep the workflow scoped to the page's streaming-metric example; do not generalize it as a complete SQL or cross-product migration contract.",
+          "Do not infer that the original metric is archived or that every Product association changes automatically."
+        ]
+      },
+      {
+        "update_id": "billable-metric-replacement-product-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add once under `## Sources` near Product effective-dating and billable-metric dependencies.",
+        "proposed_markdown": "- [[source-metronome-api-reference-billable-metrics-update-a-billable-metric]] - name-only metric mutation and streaming-metric replacement through a scheduled Product reference, with migration, effective-time, atomicity, and historical-outcome boundaries",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "billable-metric-put-idempotency-scope",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "Append under `## Retry and error boundary` near other operation-specific scope qualifications.",
+        "proposed_markdown": "`PUT /v1/billable-metrics/{billable_metric_id}` changes only a metric display name. The separate API-wide `Idempotency-Key` authority explicitly covers all POST endpoints, not this PUT, and the Update Metric page exposes no resource `uniqueness_key` or endpoint-specific repeated-call, retry, concurrent-rename, lost-update, timeout, cached-error, or ambiguous-failure recovery guarantee. Its required path UUID and returned generic `data.id` are operation input and response identity surfaces, not documented idempotency keys. [[source-metronome-api-reference-billable-metrics-update-a-billable-metric]] [[source-metronome-api-reference-idempotency]]",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not extend the API-wide all-POST result-replay guarantee to PUT.",
+          "Do not infer request idempotency or concurrency safety merely because the payload expresses a desired final name."
+        ]
+      },
+      {
+        "update_id": "billable-metric-put-idempotency-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "Add once under `## Sources` near operation-specific method-scope boundaries.",
+        "proposed_markdown": "- [[source-metronome-api-reference-billable-metrics-update-a-billable-metric]] - name-only PUT mutation outside the documented all-POST `Idempotency-Key` scope and its endpoint-specific retry, concurrency, and recovery unknowns",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/billable-metrics/update-a-billable-metric-2026-07-13.md",
+  "raw_sha256": "8fbf84ab0c80616cd415966da0649ea45cf0aee203e3d724154f0bba660663f0",
+  "status": "candidate_ready"
+}

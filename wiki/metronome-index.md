@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 226 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 162 |
-| Raw snapshots without source summaries | 130 |
+| Source summaries ingested | 167 |
+| Raw snapshots without source summaries | 125 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -22,6 +22,12 @@ Operational evidence:
 - [2026-07-13 collection manifest](../tracking/collections/metronome/runs/2026-07-13T100930-manifest.md)
 
 ## Sources
+
+- [[source-metronome-api-reference-contracts-create-historical-invoices]] — historical invoice backfill and preview, request and response schema, migration-guide tensions, and financial recovery boundaries
+- [[source-metronome-guides-customers-billing-set-up-notifications-create-alert-specifiers]] — alert balance inclusion, exclusion and grouping, customer scope, unit and uniqueness tensions, and response-schema contradiction
+- [[source-metronome-api-reference-contracts-get-subscription-seats-history]] — effective-dated seat periods, point and range filters, body pagination, assigned identities, and temporal completeness limits
+- [[source-metronome-api-reference-billable-metrics-update-a-billable-metric]] — display-name-only metric update, immutable configuration, scheduled replacement path, and PUT retry and propagation unknowns
+- [[source-metronome-api-reference-invoices-get-customer-costs]] — legacy pending-cost intervals, credit and line-item groups, unsupported metric boundary, and absent Contracts replacement mapping
 
 - [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] — customer invoice windows, required bounds, temporal caps, cursor pagination, late-usage mutation, and reconciliation boundaries
 - [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]] — generated customer dashboard URLs, view options, response placement, and security and freshness limits

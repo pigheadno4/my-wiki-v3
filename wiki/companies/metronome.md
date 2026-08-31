@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 162
+source_count: 167
 ---
 
 ## Overview
@@ -151,10 +151,16 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 226
-- Official documentation source summaries: 156
-- Raw snapshots without source summaries: 130
+- Official documentation source summaries: 161
+- Raw snapshots without source summaries: 125
 
 ## Sources
+
+- [[source-metronome-api-reference-contracts-create-historical-invoices]] — historical usage-invoice creation and preview, custom line quantities, response placement, and migration, correction, idempotency, and downstream boundaries
+- [[source-metronome-guides-customers-billing-set-up-notifications-create-alert-specifiers]] — custom-field balance segmentation, all-customer promotion scope, worked-request tensions, evaluation status conflict, and merchant-action boundary
+- [[source-metronome-api-reference-contracts-get-subscription-seats-history]] — contract-scoped seat schedule history, temporal filters, pagination, assigned identities, and future-segment and snapshot unknowns
+- [[source-metronome-api-reference-billable-metrics-update-a-billable-metric]] — name-only metric mutation, immutable calculation configuration, replacement workflow, response identity, and retry limits
+- [[source-metronome-api-reference-invoices-get-customer-costs]] — deprecated Plans pending-cost read, credit and line-item breakdowns, UNIQUE exclusion, Contracts migration, and completeness limits
 
 - [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] — customer invoice time windows, interval filters, pagination, late-usage mutation, and reporting-completeness limits
 - [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]] — customer-scoped embedded dashboard URL generation, customization, and lifecycle, freshness, and exposure boundaries

@@ -1,0 +1,80 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "create-alert-specifiers-evaluation-and-authority-boundaries",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Customer-configured controls",
+      "proposed_markdown": "For `low_remaining_contract_credit_and_commit_balance_reached`, the default customer evaluation combines all active commits and credits into one balance and one threshold notification. `alert_specifiers` can include balances by ANDed custom-field conditions, OR multiple specifiers, remove balances through same-scope ORed exclusions, or evaluate each value of one custom-field key independently. Customer configuration scope is separate: the first two worked bodies omit `customer_id`, which the current create authority makes all-customer; the grouped guide explicitly applies that alert to all customers and all current and future promotions. A webhook's customer ID identifies the crossing customer's group rather than narrowing the stored configuration. The three create illustrations omit `uniqueness_key` and `credit_type_id` even though create prose calls each required for this use, while the payload required array omits both; they are matching illustrations, not complete requests. `uniqueness_key` resource duplication is distinct from API-wide `Idempotency-Key` result replay. The property-level default-USD statement and separate USD-cent authority do not justify converting the guide's literal `threshold: 10000` without accepted pricing-unit and scaling evidence. Same-key replay of the POST status lookup is not fresh evaluation proof. The guide lookup response keeps `customer_status: in_alarm` but uses `data.alert.alert_type`, `status: active`, and no `updated_at`; the dedicated current get schema instead requires `data.alert.type`, requires `updated_at`, and limits status to `enabled`, `archived`, or `disabled`. Keep the dedicated get source authoritative and do not normalize either response representation into runtime truth. Configuration, evaluation, delivery, balance mutation, invoicing, and merchant action remain separate, and the guide retains its singular/plural filter and `ContractCreditorCommit`/`ContractCreditOrCommit` tensions. [[source-metronome-guides-customers-billing-set-up-notifications-create-alert-specifiers]] [[source-metronome-api-reference-alerts-create-a-threshold-notification]] [[source-metronome-api-reference-alerts-get-a-threshold-notification]] [[source-metronome-api-reference-idempotency]] [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]] [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep omitted customer_id all-customer scope separate from custom-field balance filtering and customer-specific emitted payloads.",
+        "Keep uniqueness_key resource duplication separate from Idempotency-Key result replay and ambiguous-failure recovery.",
+        "Do not convert threshold 10000 into a dollar amount from cross-source defaults alone; preserve both source-local spelling and entity-label tensions.",
+        "Preserve customer_status: in_alarm while keeping the guide alert_type/status/updated_at response conflict explicit and the dedicated get schema authoritative."
+      ]
+    },
+    {
+      "update_id": "create-alert-specifiers-credit-commit-balance-segmentation",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Commit-balance notifications",
+      "proposed_markdown": "A `low_remaining_contract_credit_and_commit_balance_reached` alert normally evaluates the combined balance of all active commits and credits for each customer. Alert specifiers can narrow evaluated balances through ANDed custom-field conditions, OR multiple specifiers, remove balances through same-scope ORed exclusions, or group the threshold for every value of one custom-field key. Configuration scope is independent: the tagged-promotion and grouped create bodies omit `customer_id`, which the current create authority makes all-customer, and the guide explicitly applies the grouped configuration to all customers and all current and future promotions. Each emitted payload can still identify the customer whose group crossed. Updating a custom field triggers reevaluation but not documented balance, ledger, contract, or invoice mutation. All worked bodies omit `credit_type_id`; create prose calls it required for credit-based alerts while the payload required array omits it and the property defaults to USD. The separate USD-cent authority does not make the literal `threshold: 10000` a supported dollar conversion here because accepted pricing-unit selection, minor-unit scaling, access type, rounding, and conversion remain unstated. [[source-metronome-guides-customers-billing-set-up-notifications-create-alert-specifiers]] [[source-metronome-api-reference-alerts-create-a-threshold-notification]] [[source-metronome-guides-pricing-packaging-make-pricing-changes-use-currency-custompricingunits]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not confuse all-customer alert configuration with the per-customer balance evaluation or emitted customer_id.",
+        "Keep alert reevaluation distinct from balance mutation and invoice attribution.",
+        "Do not infer a dollar amount for threshold 10000 from the default-USD and USD-cent authorities without resolving the guide request gaps."
+      ]
+    },
+    {
+      "update_id": "create-alert-specifiers-custom-field-reevaluation",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Entity scope and persistence",
+      "proposed_markdown": "Alert specifiers for the combined credit-and-commit low-balance alert filter applicable commits and credits by custom-field key-value conditions. A specific key and value includes matching balances; a key without a value groups evaluation by each unique value; exclusions remove matching balances after inclusion. Setting or updating a custom-field value on an applicable credit or commit triggers reevaluation of each balance alert using those specifiers. This is alert-evaluation behavior, not proof that the custom-field change mutates balance, ledger, contract, invoice, payment, or merchant entitlement state. The guide does not define case sensitivity, missing-key handling, duplicate conditions, concurrent-update ordering, or group-history behavior. [[source-metronome-guides-customers-billing-set-up-notifications-create-alert-specifiers]] [[source-metronome-api-reference-custom-fields]]",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep the assigned guide's alert reevaluation fact distinct from the custom-fields overview's persistence and entity-scope authority.",
+        "Do not infer balance mutation or invoice propagation from reevaluation.",
+        "Do not treat undocumented matching, missing-key, or concurrency behavior as guaranteed."
+      ]
+    },
+    {
+      "update_id": "create-alert-specifiers-grouped-webhook-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Delivery model",
+      "proposed_markdown": "For one-key grouped `low_remaining_contract_credit_and_commit_balance_reached` evaluation, Metronome sends a webhook when a specific custom-field value's grouped balance crosses the threshold; `alert_specifiers` identifies the triggering key-value pair, and the first crossing also produces an alert-level webhook omitting the value. The grouped create body omits `customer_id` and the guide says the configuration applies to all customers and all current and future promotions; a webhook payload's `customer_id` identifies the crossing customer and does not make the alert configuration customer-scoped. The guide establishes emission semantics but no delivery ordering, atomicity, duplicate suppression, evaluation-to-delivery SLA, or guarantee that both messages arrive together. Dedicated webhook guidance remains authoritative for HTTPS delivery, retries, at-least-once duplicates, deduplication, and verification; merchant applications remain responsible for downstream action. [[source-metronome-guides-customers-billing-set-up-notifications-create-alert-specifiers]] [[source-metronome-guides-platform-configuration-setup-webhooks]] [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]]",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "Do not infer customer-scoped configuration from a customer-specific grouped webhook payload.",
+        "Do not turn grouped emission into an ordering, exactly-once, or paired-delivery guarantee.",
+        "Keep evaluation, HTTP delivery, balance mutation, invoicing, payment, and merchant enforcement separate."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}
