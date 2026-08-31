@@ -58,8 +58,18 @@ For coordinator-controlled ingest, dispatch the generated worker order without r
 - For OpenAPI pages, distinguish the enclosing `requestBody` requiredness from required properties inside its payload schema, and do not infer unknown-field behavior when `additionalProperties` is unspecified.
 - For every POST operation, check the existing Metronome API-wide idempotency authority and separate its guarantees from endpoint-specific retry, concurrency, freshness, and recovery unknowns.
 - For each durable fact, audit every relevant existing Metronome concept and propose the required reciprocal source links instead of stopping after the first plausible concept.
+- For guide worked examples, compare retained request and response fields against current dedicated API authorities. Preserve omitted-field blast radius, defaults, units, requiredness, field-name and enum conflicts, and other material contradictions.
+- Reserve grounding evidence for query-critical method, path, authentication, and immediate-parent response placement instead of spending every quote on leaf-schema detail.
 
 These are submission checks, not new campaign state. The existing validator remains the fail-closed authority, and an invalid result follows the existing bounded retry path.
+
+Judge semantic risk by authority fan-out, not raw length alone. A short guide or
+reference can still be high risk when it crosses multiple dedicated APIs,
+worked examples, idempotency, currency or unit semantics, or lifecycle
+authority. Name those known boundaries in `routing_reason`; do not downgrade a
+page merely because it is short or appears to match a familiar archetype. This
+classification strengthens the existing worker brief and effort choice only;
+it does not add a scheduler branch or campaign state.
 
 These three semantic checks were added after Campaign 19. They are worker reminders, not deterministic proof and not a replacement for independent review.
 
@@ -92,6 +102,13 @@ then fill the remaining free slots with queued workers:
   worker is already active.
 - When the worker queue is empty, all available sub-agent slots may review.
 - The reviewer must be a different agent from the candidate's worker.
+
+Before a full reviewer returns `changes_requested`, it performs one final
+blocker-completeness pass across the candidate coverage map, worked examples,
+current dedicated authorities, primary query routes, and fact-bearing
+reciprocal links. Return all currently visible material blockers together so a
+later full review does not rediscover an issue already present in the original
+attempt. This is a reviewer-order preflight, not another review stage.
 
 With the current Codex capacity of three sub-agent slots beside the
 coordinator, the intended allocation is:

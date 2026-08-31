@@ -141,12 +141,29 @@ class SchedulerTests(unittest.TestCase):
                     "Return exactly result_contract.top_level_keys and no other top-level keys.",
                     "Ensure every quote has non-empty text and location.",
                     "For OpenAPI pages, distinguish requestBody requiredness, required payload properties, and additionalProperties behavior; do not infer omitted-body or unknown-field behavior.",
+                    "For guide worked examples, compare every retained request and response field against current dedicated API authorities; preserve omitted-field blast radius, defaults, units, requiredness, enums, and contradictions.",
+                    "Ground query-critical method, path, authentication, and immediate-parent response placement with direct quotes; do not spend all quote slots on leaf-schema detail.",
                     "For every POST operation, check the existing Metronome API-wide idempotency authority and separate its guarantees from endpoint-specific unknowns.",
                     "For each durable fact, audit every relevant existing Metronome concept and provide reciprocal source-link suggestions; do not stop after the first plausible concept.",
                 ],
                 "recommended_worker_tier": "strong",
                 "routing_reason": "schema-heavy API",
             },
+        )
+
+    def test_full_review_order_requires_one_complete_blocker_sweep(self):
+        jobs = make_jobs(1)
+        jobs[0]["state"] = "candidate_ready"
+
+        order = review_order(jobs)
+
+        self.assertEqual(
+            order["preflight"],
+            [
+                "Before returning changes_requested from a full review, perform one blocker-completeness pass across every coverage-map row and return all currently visible material blockers together.",
+                "Compare guide worked requests and responses against current dedicated API authorities, including omitted-field scope, requiredness, field names, enums, defaults, units, and contradictions.",
+                "Verify every realistic query route is represented among primary concepts with fact-bearing reciprocal source-link suggestions.",
+            ],
         )
 
     def test_retry_orders_carry_context_and_targeted_reviewer_preference(self):

@@ -15,6 +15,12 @@ WORKER_RESULT_KEYS = [
     "status",
 ]
 
+FULL_REVIEW_PREFLIGHT = [
+    "Before returning changes_requested from a full review, perform one blocker-completeness pass across every coverage-map row and return all currently visible material blockers together.",
+    "Compare guide worked requests and responses against current dedicated API authorities, including omitted-field scope, requiredness, field names, enums, defaults, units, and contradictions.",
+    "Verify every realistic query route is represented among primary concepts with fact-bearing reciprocal source-link suggestions.",
+]
+
 
 def _queued_jobs(jobs: List[dict], max_attempts: int) -> List[dict]:
     return sorted(
@@ -37,6 +43,7 @@ def _review_context(job: dict) -> Dict[str, object]:
             retry_context.get("prior_reviewer_identity")
             if review_scope == "targeted" else None
         ),
+        "preflight": deepcopy(FULL_REVIEW_PREFLIGHT) if review_scope == "full" else [],
     }
 
 
@@ -67,6 +74,8 @@ def worker_orders(
                 "Return exactly result_contract.top_level_keys and no other top-level keys.",
                 "Ensure every quote has non-empty text and location.",
                 "For OpenAPI pages, distinguish requestBody requiredness, required payload properties, and additionalProperties behavior; do not infer omitted-body or unknown-field behavior.",
+                "For guide worked examples, compare every retained request and response field against current dedicated API authorities; preserve omitted-field blast radius, defaults, units, requiredness, enums, and contradictions.",
+                "Ground query-critical method, path, authentication, and immediate-parent response placement with direct quotes; do not spend all quote slots on leaf-schema detail.",
                 "For every POST operation, check the existing Metronome API-wide idempotency authority and separate its guarantees from endpoint-specific unknowns.",
                 "For each durable fact, audit every relevant existing Metronome concept and provide reciprocal source-link suggestions; do not stop after the first plausible concept.",
             ],
