@@ -73,6 +73,8 @@ Metronome's go-live checklist recommends creating and securely storing a product
 
 ## Sources
 
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - merchant-backend custody of customer-created API bearer tokens, prohibition on frontend API-token exposure, API-token permission boundary, and the separate customer-specific token-bearing iframe URL artifact
+
 - [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]] - bearer-authenticated URL generation, credential-bearing iframe URL placement, and unspecified lifetime, permission inheritance, exposure, refresh, and revocation behavior
 - [[source-metronome-guides-platform-configuration-audit-logs]] — cross-channel action attribution, outcome visibility, request correlation, and audit-evidence boundaries
 

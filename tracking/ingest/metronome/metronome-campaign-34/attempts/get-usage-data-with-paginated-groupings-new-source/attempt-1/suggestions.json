@@ -1,0 +1,72 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "usage-groupings-billable-metric-query",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retrieval APIs",
+      "proposed_markdown": "Bearer-authenticated `POST /v1/usage/groups` reads aggregated usage for one required customer UUID and billable-metric UUID. For streaming metrics, `group_key` must exactly match a complete simple or compound group-key definition on the metric; partial compound combinations are unsupported, filter keys must be members of that array, and omitted or empty filter dimensions include all values. The read does not validate metric configuration, product compatibility, pricing, invoice results, or freshness. [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]]",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "Keep query grouping distinct from billable-metric creation and Product pricing or presentation configuration.",
+        "Do not infer omitted-body behavior from required properties inside the payload schema."
+      ]
+    },
+    {
+      "update_id": "usage-groupings-reporting-pagination",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Query model",
+      "proposed_markdown": "`POST /v1/usage/groups` is a customer- and billable-metric-scoped dimensional usage read with hour, day, whole-period, or current-billing-period windows. HTTP `200` requires a top-level `data` array and nullable sibling `next_page`; query `limit` is 1 through 100 and query `next_page` continues traversal. The page provides no ordering, total count, cursor lifetime, stable snapshot, duplicate-or-skip, as-of, freshness, or read-after-write guarantee, so complete pagination does not prove an immutable or current reporting population. Its narrative misplaces `next_page` inside aggregate objects, while the schema and examples place it beside `data`. [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]]",
+      "quote_indexes": [
+        0,
+        2,
+        4
+      ],
+      "warnings": [
+        "Preserve the response-placement conflict and use the OpenAPI envelope plus examples for cursor location.",
+        "Do not generalize analytics and dashboard use cases into billing, accounting, or completeness guarantees."
+      ]
+    },
+    {
+      "update_id": "usage-groupings-usage-query-route",
+      "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]] - customer and billable-metric usage aggregates by requested windows and exact simple or compound metric groups, with filter, pagination, response-placement, and freshness boundaries",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "This source returns usage quantities, not prices, costs, invoice state, or accounting results."
+      ]
+    },
+    {
+      "update_id": "usage-groupings-post-replay-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]] - paginated POST dimensional-usage read and the boundary that API-wide same-key result replay does not establish fresh usage or a new stable pagination snapshot",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "API-wide Idempotency-Key replay behavior comes from the existing idempotency authority, not from this endpoint page.",
+        "The endpoint defines no cursor and idempotency-key interaction, cache freshness, or ambiguous-failure recovery behavior."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

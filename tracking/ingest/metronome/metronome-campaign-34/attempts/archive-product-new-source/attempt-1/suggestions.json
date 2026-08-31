@@ -1,0 +1,45 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "archive-product-existing-rate-and-lifecycle-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Products",
+      "proposed_markdown": "Bearer-authenticated `POST /v1/contract-pricing/products/archive` irreversibly archives one product selected by required payload UUID `product_id`. Current rate cards already associated with the product continue to function, but the archived product is no longer selectable for newly created rates; it remains retrievable in the UI and API and cannot be unarchived. The narrow continuity statement does not define whether existing rates retain a snapshot or live product reference, nor behavior for concurrent or scheduled new-rate creation, aliases, packages, contracts, overrides, late or corrected usage, historical rating, invoice recalculation, exports, reports, or propagation across catalog surfaces. HTTP `200` requires `data.id` and the example repeats the requested UUID, but the generic schema does not label product-resource versus archive-operation identity or expose affected rates, state, or completion time. [[source-metronome-api-reference-products-archive-a-product]] [[source-metronome-api-reference-products-get-a-product]] [[source-metronome-api-reference-products-list-products]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep already associated rate-card continuity separate from prohibition on newly created rates.",
+        "Do not extend retrieval and continuity to restoration, historical-rating stability, invoice recalculation, or downstream propagation.",
+        "Preserve the generic returned-ID identity and concurrency unknowns."
+      ]
+    },
+    {
+      "update_id": "archive-product-post-replay-and-propagation-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "`POST /v1/contract-pricing/products/archive` is an irreversible product-lifecycle mutation under the API-wide `Idempotency-Key` result-replay contract. Identical same-key parameters replay the original result, changed parameters conflict, retention is at least 24 hours, and a cached result can be HTTP `500`; the endpoint's required `product_id` and returned generic `data.id` are resource or result identity surfaces, not idempotency keys. The archive page adds no behavior for no-key, another-key, or expired-key calls; repeated archival or an already archived product; concurrency with new-rate creation or reads; cached or ambiguous failure state; read-after-write visibility; cross-surface propagation; or historical rating and invoice outcomes. Same-key replay is not fresh proof that every catalog, rate, contract, UI, invoice, export, or report reflects the archive. [[source-metronome-api-reference-products-archive-a-product]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not treat product or returned IDs as API-wide idempotency keys.",
+        "Do not infer already-archived, concurrent, expired-key, or ambiguous-failure behavior.",
+        "Result replay does not establish fresh visibility or downstream propagation."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

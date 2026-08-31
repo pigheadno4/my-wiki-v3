@@ -1,0 +1,152 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "customer-dashboard-guide-reporting-facts",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "before ### Embeddable customer dashboards",
+      "proposed_markdown": "### Merchant-built customer dashboards\n\nMetronome's customer-dashboard guide routes a merchant backend to usage, detailed and net balances, and invoice breakdowns, while the merchant owns frontend behavior, backend transformation, API-token custody, pagination, denomination-aware rendering, and freshness handling. The guide's usage example calls `POST /v1/usage` but combines that batched path with singular selectors, deprecated `group_by`, and grouped item fields aligned with the distinct current `POST /v1/usage/groups`; neither mixed shape is copy-ready. Its customer-only getNetBalance call invokes current defaults for `access_type: SPEND`, draft-inclusive invoices, and USD cents; `QUANTITY` is a distinct unit-drawdown mode that forbids `credit_type_id`. Its detailed-balance Commit omits current required `created_at`. Its positive and deduction invoice lines omit current required line-item `type`, and the negative line omits the current `applied_commit_or_credit` object. The embeddable prose promises a secure customer URL and the example uses `data.url`, but HTTP 200 requires only outer `data`, leaving nested URL presence and missing-URL recovery undocumented. The chart backend also assumes every line has `presentation_group_values.region`, the frontend searches for `_start` keys the backend does not emit, and `/ 100` is example-specific. Use current dedicated authorities for requests, responses, pagination, amount modes and defaults, hierarchy scope, observable results, and freshness. [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Do not normalize either mixed usage shape into a current contract, conflate SPEND and QUANTITY balance modes, treat the balance and invoice worked objects as complete current responses, or assume nested data.url is present on every HTTP 200.",
+        "Do not deploy the chart pseudocode without null-safe grouping, one agreed backend/frontend shape, and pricing-unit-aware conversion."
+      ]
+    },
+    {
+      "update_id": "customer-dashboard-guide-reporting-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - merchant-built usage, detailed and net balance, and invoice-breakdown dashboard routes; embedded UI scope; guide-versus-current authority conflicts; and freshness, hierarchy, denomination, and client-security boundaries",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "customer-dashboard-guide-billable-metrics-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - customer-facing dimensional usage visualization and the material guide splice between batched `/v1/usage` and the singular selectors, deprecated grouping input, and item fields aligned with current `/v1/usage/groups`",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "Route batched plural selectors and `UsageBatchAggregate` to `/v1/usage`; route customer-and-metric grouping, `group_key`, `group_filters`, and complete compound keys to `/v1/usage/groups`."
+      ]
+    },
+    {
+      "update_id": "customer-dashboard-guide-credits-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - detailed and net customer-balance dashboard routes, available-now exclusion of expired or future segments, incomplete worked Commit shape, current `SPEND` access default, distinct `QUANTITY` mode and credit-type prohibition, draft-inclusive and USD-cent net-balance defaults, non-negative segment treatment, filter composition, hierarchy exclusion, and embedded grant-history UI",
+      "quote_indexes": [
+        2,
+        4
+      ],
+      "warnings": [
+        "Keep SPEND cost drawdown distinct from QUANTITY unit drawdown, calculated balance distinct from raw signed-ledger arithmetic, child queries distinct from shared parent commits, and denomination tied to the selected credit type."
+      ]
+    },
+    {
+      "update_id": "customer-dashboard-guide-invoicing-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - customer spend dashboards through invoice windows, useful separate-negative-line illustration, missing required line-item `type` and applied-balance object in worked responses, embedded invoice-history scope, and non-copy-ready region and chart transformations",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "`product_type` does not replace required line-item `type`; a breakdown and embedded invoice list do not prove immutable invoice state, downstream delivery, payment, tax, accounting, or reconciliation."
+      ]
+    },
+    {
+      "update_id": "customer-dashboard-guide-security-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - merchant-backend custody of customer-created API bearer tokens, prohibition on frontend API-token exposure, API-token permission boundary, and the separate customer-specific token-bearing iframe URL artifact",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "Do not invent a customer-token credential class or infer iframe-URL TTL, permission inheritance, sharing, origin/CSP, refresh, revocation, or expiry behavior."
+      ]
+    },
+    {
+      "update_id": "customer-dashboard-post-read-replay-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "before ## Sources",
+      "proposed_markdown": "The customer-dashboard guide uses POST reads for batched usage, detailed balances, and net balance, plus POST URL generation for embeddable dashboards. API-wide `Idempotency-Key` persistence begins only after a request starts execution, meaning it passed validation and did not conflict with another concurrent request; validation and pre-execution concurrency failures are not established as cached results. After admission, identical same-key parameters replay the persisted original result and changed parameters return HTTP `409`. Batched usage places `next_page` in the query and listBalances places it in the body; advancing either cursor changes parameters and therefore cannot reuse one key as an identical replay. Endpoint-local cursor lifetime, snapshot consistency, replay freshness, no-key or other-key behavior, recovery, and concurrency remain undocumented. Original-result replay does not prove fresh usage or balance state, current dashboard configuration, or a newly minted and valid iframe URL. This does not make the header mandatory or establish a preferred key policy. [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]]",
+      "quote_indexes": [
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "Keep validation and pre-execution concurrency admission failures distinct from persisted results, and keep changed-parameter HTTP 409 separate from unknown cursor snapshot, freshness, no-key or other-key, and recovery behavior."
+      ]
+    },
+    {
+      "update_id": "customer-dashboard-guide-idempotency-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - POST dashboard reads and URL generation, cursor-parameter HTTP 409 boundary, and the distinction between original-result replay and fresh usage, balance, configuration, or embedded-URL state",
+      "quote_indexes": [
+        1,
+        2,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "customer-dashboard-guide-currency-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - USD-cent worked balance and spend examples, omitted-credit-type getNetBalance default, and an unconditional `/ 100` chart conversion that must not be generalized to other fiat or custom pricing units",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "Select conversion from the actual credit type; the worked USD example and getNetBalance default are not a universal denomination rule."
+      ]
+    },
+    {
+      "update_id": "customer-dashboard-guide-customers-source-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - customer-UUID-scoped merchant and embedded dashboard routes, optional invoice-only contract filter, current-contract usage view, unresolved broader multi-contract behavior, child net-balance exclusion of shared parent commits, and the known prohibition on invoice and commit embeddable dashboards for hierarchy-participating contracts while usage-dashboard hierarchy behavior remains undocumented",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not infer cross-customer or multi-contract aggregation, and keep the known invoice-and-commit hierarchy prohibition separate from the unresolved usage-dashboard scope."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

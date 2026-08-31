@@ -31,6 +31,8 @@ For one-key grouped `low_remaining_contract_credit_and_commit_balance_reached` e
 
 ## Authenticity and authoritative data
 
+For bulk customer monitoring, `POST /v1/customer-alerts/list` returns threshold-notification configurations with current evaluation states, using an enabled-only default unless configuration statuses are explicitly included and nullable envelope cursors for traversal. It is a current-state query surface, not an event-history or webhook-delivery record, and it supplies no emission, delivery, retry, ordering, deduplication, signature, or retention contract. Those event and transport semantics remain governed by the dedicated notification-lifecycle and webhook authorities; cursor exhaustion does not prove a complete or fresh history. [[source-metronome-api-reference-alerts-get-all-threshold-notifications]] [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] [[source-metronome-guides-platform-configuration-setup-webhooks]]
+
 The customer-alert get endpoint provides the current threshold evaluation state for one customer/notification pair, not a historical sequence. Its documentation routes threshold-notification history to webhook notifications or event logs and positions live API lookup for targeted rather than bulk monitoring. [[source-metronome-api-reference-alerts-get-a-threshold-notification]]
 
 Webhook payloads contain minimal event information. A consumer can treat the notification as a change hint and retrieve authoritative details from the corresponding Metronome API, or verify the webhook directly.

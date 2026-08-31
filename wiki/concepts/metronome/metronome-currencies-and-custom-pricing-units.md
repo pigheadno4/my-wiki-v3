@@ -76,6 +76,8 @@ The guide does not define custom-unit creation APIs, precision, conversion formu
 
 ## Sources
 
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - USD-cent worked balance and spend examples, omitted-credit-type getNetBalance default, and an unconditional `/ 100` chart conversion that must not be generalized to other fiat or custom pricing units
+
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - worked `price: 100` values labeled 100 USD/unit, which remain unresolved against the documented USD-cent convention
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] - Token Billing's non-USD-fiat restriction and USD-to-custom-unit conversion route for credit-denominated AI pricing
 

@@ -89,6 +89,8 @@ The deprecated Plans customer-cost endpoint says it is unsupported when the cust
 
 ## Retrieval APIs
 
+Bearer-authenticated `POST /v1/usage/groups` reads aggregated usage for one customer and billable metric; UUID `customer_id` and `billable_metric_id` are required properties only within a supplied payload. For streaming metrics, `group_key` must exactly match a complete simple or compound metric group-key definition; partial compound combinations are unsupported, filter keys must occur in that array, and omitted or empty filter dimensions include all values. For `LATEST` metrics specifically, the dedicated non-monotonic-metric authority says this usage read returns the absolute latest value within each requested window, while invoice breakdowns return incremental quantity and associated cost. The endpoint schema does not define metric calculation and establishes no pricing, invoice equality, freshness, or accounting-completeness guarantee. [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]]
+
 `GET /v1/billable-metrics/{billable_metric_id}` returns one metric configuration under `data`; only `id` and `name` are required in `BillableMetricV1`. An archived metric remains retrievable with RFC 3339 `archived_at` and stops processing new usage events. The endpoint documents `404`, but not archive propagation, permissions, rate limits, or consistency.
 
 `GET /v1/customers/{customer_id}/billable-metrics` lists metrics available to one customer. It accepts limits from `1` to `100`, returns required nullable `next_page`, and can filter to the current plan or include archived metrics. Items require `id` and `name` and can carry current standard or SQL fields plus deprecated `group_by`, `aggregate`, `aggregate_keys`, and `filter`.
@@ -105,6 +107,8 @@ The product catalog's `initial` and `current` states, and each update entry, can
 Dimension-scoped spend alerts require their `group_values` key to be a group key on the underlying billable metrics associated with the customer's contract. Products whose metric lacks the key do not contribute to that threshold. Metronome recomputes the selected usage as if the key were a presentation group, so tiered pricing, quantity rounding, and `MAX` aggregation apply to the subset. A customer can use three distinct keys for spend-threshold notifications; a fourth is blocked. When one key has more than 5,000 values for that customer, the current guide routes configuration discussion through the Metronome support portal rather than defining a hard maximum. [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]]
 
 ## Sources
+
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - customer-facing dimensional usage visualization and the material guide splice between batched `/v1/usage` and the singular selectors, deprecated grouping input, and item fields aligned with current `/v1/usage/groups`
 
 - [[source-metronome-api-reference-billable-metrics-update-a-billable-metric]] - UUID-targeted name-only PUT, immutable calculation configuration, generic response identity placement, replacement routing, and propagation and history unknowns
 - [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] - hourly or daily breakdown output, window filters, zero-quantity suppression, cursor envelope, and metric-calculation authority boundary

@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 167
+source_count: 172
 ---
 
 ## Overview
@@ -151,10 +151,16 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 226
-- Official documentation source summaries: 161
-- Raw snapshots without source summaries: 125
+- Official documentation source summaries: 166
+- Raw snapshots without source summaries: 120
 
 ## Sources
+
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] — merchant-built and embedded customer dashboards, current API authority conflicts, hierarchy, freshness, denomination, and security boundaries
+- [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]] — dimensional usage grouping, windows, filters, pagination, LATEST reconciliation, and replay boundaries
+- [[source-metronome-api-reference-alerts-get-all-threshold-notifications]] — customer alert configuration and current evaluation listing, type conflicts, pagination, and webhook/history boundaries
+- [[source-metronome-api-reference-customers-update-a-customer-configuration]] — customer configuration mutation, Salesforce linkage, open request schema, sparse response, and retry boundaries
+- [[source-metronome-api-reference-products-archive-a-product]] — irreversible product archival, existing-rate continuity, new-rate exclusion, retrieval, and propagation boundaries
 
 - [[source-metronome-api-reference-contracts-create-historical-invoices]] — historical usage-invoice creation and preview, custom line quantities, response placement, and migration, correction, idempotency, and downstream boundaries
 - [[source-metronome-guides-customers-billing-set-up-notifications-create-alert-specifiers]] — custom-field balance segmentation, all-customer promotion scope, worked-request tensions, evaluation status conflict, and merchant-action boundary

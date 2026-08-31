@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 226 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 167 |
-| Raw snapshots without source summaries | 125 |
+| Source summaries ingested | 172 |
+| Raw snapshots without source summaries | 120 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -22,6 +22,12 @@ Operational evidence:
 - [2026-07-13 collection manifest](../tracking/collections/metronome/runs/2026-07-13T100930-manifest.md)
 
 ## Sources
+
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] — merchant-built and embedded customer dashboards, current API authority conflicts, hierarchy, freshness, denomination, and security boundaries
+- [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]] — dimensional usage grouping, windows, filters, pagination, LATEST reconciliation, and replay boundaries
+- [[source-metronome-api-reference-alerts-get-all-threshold-notifications]] — customer alert configuration and current evaluation listing, type conflicts, pagination, and webhook/history boundaries
+- [[source-metronome-api-reference-customers-update-a-customer-configuration]] — customer configuration mutation, Salesforce linkage, open request schema, sparse response, and retry boundaries
+- [[source-metronome-api-reference-products-archive-a-product]] — irreversible product archival, existing-rate continuity, new-rate exclusion, retrieval, and propagation boundaries
 
 - [[source-metronome-api-reference-contracts-create-historical-invoices]] — historical invoice backfill and preview, request and response schema, migration-guide tensions, and financial recovery boundaries
 - [[source-metronome-guides-customers-billing-set-up-notifications-create-alert-specifiers]] — alert balance inclusion, exclusion and grouping, customer scope, unit and uniqueness tensions, and response-schema contradiction

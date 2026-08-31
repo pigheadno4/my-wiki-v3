@@ -1,0 +1,89 @@
+{
+  "job_id": "update-customer-configuration-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Update a Customer Configuration\"\ntype: source\ndate_ingested: 2026-08-31\ncanonical_url: \"https://docs.metronome.com/api-reference/customers/update-a-customer-configuration\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/customers/update-a-customer-configuration-2026-07-13.md\"\ntags: [metronome, customers, customer-configuration, salesforce, integrations, api-reference]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `POST /v1/customers/{customer_id}/updateConfig`, which updates configuration for one Metronome customer without changing core customer data such as the customer's name or ingest aliases. The page names external-system linkage and customer-specific billing parameters as configuration scope, but its only concrete payload property is the nullable Salesforce account ID; it is not authority for customer billing-provider configuration, invoice routing, core-data mutations, or Salesforce synchronization.\n\n## Query-critical facts\n\n- The production operation is `POST /v1/customers/{customer_id}/updateConfig` under top-level HTTP bearer authentication. The path `customer_id` is required and UUID-formatted. The page defines no endpoint-specific token role, permission scope, authorization-failure body, or archived-customer eligibility.\n- The operation is scoped to customer configuration. Its description expressly separates configuration from core customer data such as `name` and ingest aliases, and the request schema exposes neither core field. The broader phrase \"other customer-specific billing parameters\" supplies no additional property names, validation rules, defaults, units, or billing effects.\n- The enclosing OpenAPI `requestBody` is not marked `required: true`, and `CustomerConfigPayload` has no `required` array. In a supplied JSON object, `salesforce_account_id` is therefore the sole documented property but is not schema-required; it is a nullable string. Omitted-body, empty-object, omission of that property, and the operational meaning of null are not documented.\n- `CustomerConfigPayload` declares no `additionalProperties` policy. The page therefore does not establish whether unknown fields are accepted, ignored, persisted, or rejected, and the generic phrase about billing parameters must not be treated as an open-ended runtime field contract.\n- HTTP `200` has only the immediate response description `Success`; it supplies no response content schema or example and returns no documented customer/configuration representation, operation identifier, applied value, version, or propagation state. HTTP `400` uses an error object requiring string `message`, and HTTP `404` reuses that same error schema, but the page gives no error codes, examples, or field-to-error mapping.\n\n## Material boundaries\n\n- Current customer-read authorities separately expose `customer_config.salesforce_account_id`, while the dedicated billing-provider-configuration authority creates distinct customer configuration records selected later by contracts. This mutation page neither names nor returns a billing-provider configuration ID, so do not conflate its lightweight customer configuration with invoice-destination configuration or contract routing.\n- Nullable `salesforce_account_id` is schema evidence that null is representable, not proof that null unlinks an account, that a non-null value is validated or unique, or that either value reaches Salesforce. The endpoint does not define reassignment, deletion, read-after-write visibility, synchronization cadence, propagation to reports or integrations, audit history, concurrency ordering, lost-update protection, atomicity, rollback, or recovery after partial or ambiguous failure.\n- The separate API-wide [[source-metronome-api-reference-idempotency|`Idempotency-Key` authority]] applies to all POST endpoints: identical same-key parameters replay the original result, changed parameters return HTTP `409`, retention is at least 24 hours, and a cached result can be HTTP `500`. This endpoint adds no no-key, another-key, expired-key, concurrent-mutation, cached-error-state, or recovery guarantee. Same-key replay recovers the original result; it is not a fresh read of customer configuration and does not prove Salesforce acceptance or propagation. After an ambiguous failure, investigate current state rather than assume that changing keys is safe.\n\n## Raw-detail coverage map\n\n- **Purpose and scope:** use the raw page for the complete configuration-versus-core-customer-data description and the page's external-system and billing-parameter examples.\n- **Endpoint and identity:** use raw for the production server, bearer security declaration, Customers tag context, operation ID, exact POST path, required UUID customer path parameter, and request example.\n- **Request schema:** use raw for the complete `CustomerConfigPayload`, nullable Salesforce property, absent request-body required marker, absent payload required list, and absent closed-object declaration.\n- **Immediate responses and errors:** use raw for the sparse HTTP `200` description, HTTP `400` and `404` placement, shared `Error.message` schema, and the absence of a success body, error examples, or wider endpoint failure catalog.\n- **Retry and adjacent authority:** use the linked idempotency source for API-wide POST replay and cached-error behavior; use customer get/list sources for the read representation, the Salesforce integration source for outbound sync, and the billing-provider-configuration source for invoice-destination records and contract selection.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-customers-and-contracts]], [[metronome-integrations]], [[metronome-api-idempotency]]\n- Related sources: [[source-metronome-api-reference-customers-get-a-customer]], [[source-metronome-api-reference-customers-list-customers]], [[source-metronome-api-reference-customers-update-a-customer-name]], [[source-metronome-api-reference-customers-create-or-update-customer-ingest-aliases]], [[source-metronome-integrations-platform-integrations-sfdc-integration]], [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/customers/update-a-customer-configuration-2026-07-13|2026-07-13 snapshot - customer configuration scope, endpoint, request schema, and immediate response boundaries]]",
+  "quotes": [
+    {
+      "text": "> Update configuration settings for a specific customer, such as external system integrations (e.g., Salesforce account ID) and other customer-specific billing parameters. Use this endpoint to modify customer configurations without affecting core customer data like name or ingest aliases.",
+      "location": "raw/metronome/api-reference/customers/update-a-customer-configuration-2026-07-13.md:11 (configuration purpose and core-customer-data boundary)"
+    },
+    {
+      "text": "````yaml /openapi.json post /v1/customers/{customer_id}/updateConfig\nopenapi: 3.0.1\ninfo:\n  title: Metronome\n  version: 1.0.0\nservers:\n  - url: https://api.metronome.com\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "raw/metronome/api-reference/customers/update-a-customer-configuration-2026-07-13.md:18-27 (POST path, production server, and bearer security)"
+    },
+    {
+      "text": "  /v1/customers/{customer_id}/updateConfig:\n    post:\n      tags:\n        - Customers\n      summary: Update a customer configuration\n      description: >\n        Update configuration settings for a specific customer, such as external\n        system integrations (e.g., Salesforce account ID) and other\n        customer-specific billing parameters. Use this endpoint to modify\n        customer configurations without affecting core customer data like name\n        or ingest aliases.\n      operationId: updateCustomerConfig-v1\n      parameters:\n        - $ref: '#/components/parameters/CustomerId'\n      requestBody:\n        description: The configuration for a specific customer\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/CustomerConfigPayload'\n            example:\n              salesforce_account_id: 0015500001WO1ZiABL",
+      "location": "raw/metronome/api-reference/customers/update-a-customer-configuration-2026-07-13.md:88-109 (operation, customer parameter, and requestBody without required: true)"
+    },
+    {
+      "text": "      responses:\n        '200':\n          description: Success\n        '400':\n          description: Bad request\n          content:\n            application/json:\n              schema:\n                $ref: '#/components/schemas/Error'\n        '404':\n          $ref: '#/components/responses/NotFound'",
+      "location": "raw/metronome/api-reference/customers/update-a-customer-configuration-2026-07-13.md:110-120 (immediate HTTP 200, 400, and 404 response placement)"
+    },
+    {
+      "text": "    CustomerId:\n      name: customer_id\n      in: path\n      required: true\n      schema:\n        type: string\n        format: uuid\n      example: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\n  schemas:\n    CustomerConfigPayload:\n      type: object\n      properties:\n        salesforce_account_id:\n          type: string\n          description: The Salesforce account ID for the customer\n          nullable: true",
+      "location": "raw/metronome/api-reference/customers/update-a-customer-configuration-2026-07-13.md:123-138 (required UUID path and payload with no required array or additionalProperties declaration)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "customer-configuration-update-scope",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Customer name update API",
+        "proposed_markdown": "## Customer configuration update API\n\nBearer-authenticated `POST /v1/customers/{customer_id}/updateConfig` targets one required UUID customer and changes configuration without changing core customer data such as name or ingest aliases. Within a supplied JSON object, the sole documented property is nullable string `salesforce_account_id`, but neither the enclosing `requestBody` nor any payload property is marked required and no closed-object policy is declared; omitted-body, empty-object, omitted-property, null-as-unlink, and unknown-field behavior remain undocumented. HTTP `200` has only the description `Success` and no response body, so the operation exposes no applied representation, version, or propagation state. Keep this lightweight `customer_config` surface distinct from the separate customer billing-provider configurations used for contract invoice routing. [[source-metronome-api-reference-customers-update-a-customer-configuration]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer null-as-unlink, arbitrary billing-parameter support, or unknown-field acceptance from the nullable property and absent additionalProperties declaration.",
+          "Do not conflate customer_config.salesforce_account_id with billing-provider configuration records, delivery_method_id, or contract billing_provider_configuration_id."
+        ]
+      },
+      {
+        "update_id": "customer-configuration-salesforce-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Salesforce outbound data sync",
+        "proposed_markdown": "The dedicated customer mutation `POST /v1/customers/{customer_id}/updateConfig` exposes nullable `salesforce_account_id` as its only concrete configuration field and expressly leaves name and ingest aliases outside its scope. Its sparse HTTP `200` response contains no body, and the page does not define Salesforce-account validation, uniqueness, reassignment, null-as-unlink behavior, read-after-write visibility, Census pickup timing, Salesforce acceptance, or synchronization recovery. A successful Metronome mutation is therefore configuration-result evidence, not proof that the daily outbound integration has propagated or committed the linkage in Salesforce. [[source-metronome-api-reference-customers-update-a-customer-configuration]]",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the endpoint's Metronome-side customer configuration separate from Census synchronization and Salesforce-side acceptance or visibility.",
+          "The raw page does not define whether nullable salesforce_account_id removes an existing association."
+        ]
+      },
+      {
+        "update_id": "customer-configuration-post-replay-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Related platform concepts",
+        "proposed_markdown": "`POST /v1/customers/{customer_id}/updateConfig` falls under the separate API-wide `Idempotency-Key` contract. Identical same-key parameters replay the original result, changed parameters conflict, retention is at least 24 hours, and a cached result can be HTTP `500`; the endpoint's own HTTP `200` is only a `Success` description with no body. The endpoint adds no behavior for no key, another or expired key, concurrent updates, cached-error customer state, read-after-write visibility, Salesforce propagation, or recovery after ambiguous failure. Same-key replay recovers the original result rather than proving a fresh customer-configuration read or downstream synchronization. [[source-metronome-api-reference-customers-update-a-customer-configuration]] [[source-metronome-api-reference-idempotency]]",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The replay, conflict, retention, and cached-error guarantees come from the API-wide idempotency authority, not this endpoint page.",
+          "After an ambiguous failure, investigate current state rather than assuming a changed key is safe."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/customers/update-a-customer-configuration-2026-07-13.md",
+  "raw_sha256": "e10f389d21a4a878dfd05701d7687828dd4a20bb4d13a0184636e2dd9682a938",
+  "status": "candidate_ready"
+}

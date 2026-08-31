@@ -1,0 +1,47 @@
+{
+  "job_id": "customer-dashboards-and-reporting-new-source",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full independent review against CLAUDE.md, rules/ingest.md, rules/psp/metronome.md, the Campaign 23 Minimum Sufficient Source playbook, all attempt-1 artifacts, the complete 724-line assigned raw at verified SHA-256 0ef6cc995b94feeba3f7f1fb80bd9120fe49b7b8ff6fe2e32f47117f9a05bd51, the current batched-usage and paginated-grouping usage references, listBalances, getNetBalance, invoice-breakdowns, embeddable-dashboard, authentication, and API-wide idempotency authorities, their current canonical source pages, and the relevant reporting, billable-metric, balance, invoicing, security, idempotency, currency, customer/contract, and usage-billing concepts found the mechanical evidence sound but six material semantic clusters remain. Candidate.md equals receipt.source_page, suggestions.json equals receipt.suggestions, all five excerpts are exact raw substrings at their stated ranges, the canonical URL and raw_files value are exact, the target is absent, all existing anchors resolve, and the path-qualified raw backlink and high-level merchant-backend boundary are correct. The mandatory blocker-completeness pass across every coverage-map row found: the usage treatment misses that the guide combines the batched `/v1/usage` path with request and response shapes belonging to the distinct `/v1/usage/groups` authority; the balance treatment omits amount-changing getNetBalance defaults and hierarchy behavior and misses a worked listBalances response conflict; the invoice-breakdown treatment calls the negative-line example correct without preserving missing current required line-item fields; the embedded-UI treatment omits the known hierarchy limitation; the authentication actor is mislabeled; and the idempotency proposal incorrectly says the POST reads add no cursor contract and omits the changed-parameter HTTP 409 consequence when advancing a cursor under the same key. The candidate also lacks exact evidence links for batched usage, paginated grouped usage, and getNetBalance, and incorrectly demotes customers-and-contracts from a primary route. These are core factual, authority, contradiction, amount, exposure, primary-route, and broken-evidence-route defects, so retry review must remain full.",
+  "required_changes": [
+    "Correct the granular-usage authority analysis. Preserve that the guide links and calls `POST /v1/usage`, but its singular `customer_id` and `billable_metric_id`, deprecated `group_by`, and item-level `starting_on`, `ending_before`, `group_key`, and `group_value` align with the distinct current `POST /v1/usage/groups` surface rather than the current batched `/v1/usage` payload and `UsageBatchAggregate`. Route a new implementation to the dedicated authorities: batched `/v1/usage` uses `customer_ids`, `billable_metrics[]`, required time bounds and window, and optional `groups`; `/v1/usage/groups` is the customer-and-metric dimensional route, recommends `group_key` and `group_filters`, and requires the complete compound key. Do not infer that either mixed guide example is copy-ready. Add exact authority links, including the Campaign 34 grouped-usage source target, and extend or replace the usage quote so the retained response-shape conflict is directly inspectable.",
+    "Complete the balance worked-example reconciliation. For `listBalances`, preserve that the guide's Commit example omits current required `created_at`; do not treat the worked object as a complete current Commit schema. For the guide's customer-only getNetBalance call, preserve the amount-changing current defaults: `invoice_inclusion_mode` defaults to `FINALIZED_AND_DRAFT`, omitted `credit_type_id` defaults to USD cents, negative segment balances are floored to zero, and querying a child excludes shared commits from parent contracts. Keep filter OR semantics across filter objects and AND semantics within one object routed to the dedicated authority. Add an exact getNetBalance evidence route rather than relying on the listBalances source, and expose these categories in the Balances coverage-map row.",
+    "Add the missing invoice-breakdown response contradiction. Current `InvoiceLineItem` requires `name`, `total`, `credit_type`, and `type`, but the guide's positive and negative worked lines omit `type`; `product_type` is not the required line-item `type`. The dedicated authority describes an applied commit or credit with a negative total and an `applied_commit_or_credit` object, while the guide's deduction line omits that object. Preserve the useful separate-negative-line illustration without calling the response current-contract-valid, keep the already-correct invoice-window versus line-item placement and pseudocode defects, and revise the invoicing/reporting facts accordingly.",
+    "Preserve the known embedded-dashboard hierarchy boundary and correct primary routing. The current hierarchy authority says invoice and commit embeddable dashboards do not work for a customer whose contract participates in a hierarchy; the embeddable endpoint does not repeat the limit, define its failure mode, or say whether the usage dashboard is affected. Replace the candidate's generic 'does not prove hierarchy coverage' wording with that scoped known limitation plus the usage unknown. Promote `metronome-customers-and-contracts` to Primary concepts and revise its reciprocal suggestion to carry the customer UUID, optional invoice-only contract filter, multi-contract unknowns, and exact hierarchy limitation. Keep reporting, billable metrics, credits/commits, invoicing, and security as primary routes.",
+    "Correct the credential actor and exposure language. The authentication authority documents customer-created Metronome API bearer tokens and their permissions; it does not define a separate 'customer-token' credential class. Say API-token permissions, keep the bearer token in the merchant backend, and preserve that the generated customer-specific iframe URL is a distinct token-bearing artifact whose exact TTL, permission inheritance, sharing, origin/CSP, refresh, revocation, and expiry behavior are not documented.",
+    "Correct the POST-read idempotency treatment in the candidate and `customer-dashboard-post-read-replay-boundary`. The endpoint pages do define cursor placement for batched usage and listBalances; what remains unknown is snapshot consistency, cursor lifetime, replay freshness, and endpoint-specific recovery. Under the API-wide authority, identical same-key parameters replay the original result and changed parameters return HTTP 409, so advancing `next_page` while reusing one key is not wholly undocumented. Preserve that replay does not prove fresh usage, balance, configuration, or a newly minted valid URL, without inventing mandatory header use, a preferred new-key policy, or endpoint-specific concurrency guarantees.",
+    "Repair the dedicated-authority evidence routes and freshness labels throughout Related and the coverage map. Add explicit routes for current batched usage, current paginated grouped usage, and current getNetBalance rather than presenting listBalances as authority for the aggregate operation. Qualify or replace the existing listBalances source link where it still records only the 2026-07-13 raw while the candidate relies on the 2026-08-28 authority. Retain the already-correct authentication, invoice-breakdown, embeddable-dashboard, and idempotency links and the exact assigned-raw backlink."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "full",
+  "shared_update_decisions": [
+    {
+      "update_id": "customer-dashboard-guide-reporting-facts",
+      "verdict": "rejected",
+      "reason": "It omits the distinct `/v1/usage/groups` authority, the balance-default and hierarchy boundaries, and the current invoice-line response contradictions, so the proposed dashboard route is not decision-safe."
+    },
+    "customer-dashboard-guide-reporting-source-link",
+    {
+      "update_id": "customer-dashboard-guide-billable-metrics-source-link",
+      "verdict": "rejected",
+      "reason": "It frames the guide only as conflicting with batched usage and fails to route the singular grouped request and legacy response fields to the distinct current paginated-grouping endpoint."
+    },
+    "customer-dashboard-guide-credits-source-link",
+    "customer-dashboard-guide-invoicing-source-link",
+    "customer-dashboard-guide-security-source-link",
+    {
+      "update_id": "customer-dashboard-post-read-replay-boundary",
+      "verdict": "rejected",
+      "reason": "The replay-versus-freshness distinction is useful, but saying the endpoint pages add no cursor contract is false, and advancing a cursor changes parameters and therefore falls under the documented same-key HTTP 409 rule."
+    },
+    "customer-dashboard-guide-idempotency-source-link",
+    "customer-dashboard-guide-currency-source-link",
+    {
+      "update_id": "customer-dashboard-guide-customers-source-link",
+      "verdict": "rejected",
+      "reason": "It leaves hierarchy as a generic unknown instead of preserving the known invoice-and-commit embedded-dashboard prohibition and the unresolved usage-dashboard scope; the target concept is also a primary route, not merely supporting."
+    }
+  ],
+  "reviewer_identity": "c34_r_dashboard",
+  "reviewer_model": "gpt-5.6-sol-high"
+}

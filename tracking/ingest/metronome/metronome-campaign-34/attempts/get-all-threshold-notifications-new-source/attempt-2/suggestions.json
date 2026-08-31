@@ -1,0 +1,80 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "get-all-threshold-notifications-current-state-collection",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Point-in-time threshold lookup",
+      "proposed_markdown": "`POST /v1/customer-alerts/list` returns threshold-notification configurations and current evaluation states for the required customer UUID property inside a supplied payload. The default collection contains enabled configurations only; optional non-empty `alert_statuses` can include enabled, disabled, or archived configurations. Each response item requires nested `alert` configuration and nullable `customer_status`, otherwise `ok`, `in_alarm`, or `evaluating`; archived configurations return null status. Optional `triggered_by` can state why a threshold fired, and nested `alert.updated_at` is described as the customer-status update time. Complete traversal requires following nullable envelope `next_page`, while ordering, total count, cursor lifetime, snapshot consistency, duplicate-or-skip behavior, evaluation freshness, and history completeness are undocumented.\n\n> [!warning] Alert-type and identity conflict\n> The list response example returns `low_credit_balance_reached`, which is absent from the same page's eleven-value `Alert.type` enum but appears in the separate shared Plan authority. The current customer/all-customer create authority instead includes `usage_threshold_reached` plus `billable_metric_id`, while the list and dedicated get response schemas omit both that type and its metric identity. Do not infer whether the example is stale, Plan-scoped, or runtime-valid, do not merge Plan and customer/Contract enums, and do not treat the returned configuration as exhaustive for unmatched types. This remains a current monitoring read, not alert creation, reset, archival, webhook delivery, entitlement enforcement, or merchant action. [[source-metronome-api-reference-alerts-get-all-threshold-notifications]] [[source-metronome-plans-shared-endpoints-notifications]] [[source-metronome-api-reference-alerts-create-a-threshold-notification]] [[source-metronome-api-reference-alerts-get-a-threshold-notification]]",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Preserve required customer UUID as a property inside a supplied payload, not proof that the enclosing body is required.",
+        "Preserve the enabled-only default separately from explicit disabled or archived inclusion.",
+        "Keep the worked example, eleven-value response enum, Plan types, and customer/all-customer create type and metric identity distinct.",
+        "Do not turn current configuration and evaluation state into history, delivery, or stable-snapshot proof."
+      ]
+    },
+    {
+      "update_id": "get-all-threshold-notifications-reporting-query-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Query model",
+      "proposed_markdown": "For customer alert dashboards, admin panels, triggering checks, and coverage audits, bearer-authenticated `POST /v1/customer-alerts/list` returns configurations with current customer evaluation states for the required customer UUID property inside a supplied payload. The default enabled-only filter can omit disabled and archived rules unless the caller explicitly includes those statuses, and complete retrieval requires following nullable envelope cursors. The page documents no ordering, page-size control, total count, cursor lifetime, stable snapshot, duplicate-or-skip behavior under change, as-of marker, evaluation freshness, or completeness guarantee. Nested `alert.updated_at` is a per-notification customer-status update timestamp, not a response-wide reporting watermark. Coverage interpretation must also preserve the unresolved type and identity conflict: the list example returns `low_credit_balance_reached`, absent from its eleven-value response enum but present in the separate Plan authority, while the current customer/all-customer create authority includes `usage_threshold_reached` plus `billable_metric_id`, both absent from the list and dedicated get response schemas. Do not merge those enums or assume the list can exhaustively deserialize every configured alert. This endpoint is distinct from in-app dashboards, generated reports, Data Export, webhook history, and merchant-built enforcement or notification delivery. [[source-metronome-api-reference-alerts-get-all-threshold-notifications]] [[source-metronome-plans-shared-endpoints-notifications]] [[source-metronome-api-reference-alerts-create-a-threshold-notification]] [[source-metronome-api-reference-alerts-get-a-threshold-notification]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Dashboard and audit use cases do not establish a dashboard rendering, freshness, snapshot, or completeness contract.",
+        "Include configuration-status scope and the type and metric-identity conflicts when interpreting coverage.",
+        "Keep current API state distinct from reports, exports, webhook history, and downstream action."
+      ]
+    },
+    {
+      "update_id": "get-all-threshold-notifications-post-replay-freshness",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "`POST /v1/customer-alerts/list` is a paginated current-state read under the separate API-wide `Idempotency-Key` contract. Identical same-key parameters replay the original result, so replay is not proof of a fresh threshold evaluation, newly current configuration, or a new stable pagination snapshot. Advancing response `next_page` changes the request parameters; under the API-wide authority, reusing that same key with the changed cursor returns HTTP `409`, so this is not an endpoint-local wholly undocumented same-key case. Neither authority requires header use for this endpoint, prescribes a preferred new-key policy for later pages, or establishes cross-page snapshot stability. The endpoint adds no behavior for absent, different, or expired keys; concurrent alert configuration or evaluation changes; cursor lifetime or replay; cached-error recovery; read-after-change visibility; or endpoint-specific retry and recovery. [[source-metronome-api-reference-alerts-get-all-threshold-notifications]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Apply the API-wide changed-parameter HTTP 409 rule when next_page changes under the same key.",
+        "Separate request-result replay from current evaluation freshness and cross-page snapshot consistency.",
+        "Do not invent required header use, a preferred new-key policy, or endpoint-specific retry and recovery guarantees."
+      ]
+    },
+    {
+      "update_id": "get-all-threshold-notifications-webhook-current-state-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Authenticity and authoritative data",
+      "proposed_markdown": "For bulk customer monitoring, `POST /v1/customer-alerts/list` returns threshold-notification configurations with current evaluation states, using an enabled-only default unless configuration statuses are explicitly included and nullable envelope cursors for traversal. It is a current-state query surface, not an event-history or webhook-delivery record, and it supplies no emission, delivery, retry, ordering, deduplication, signature, or retention contract. Those event and transport semantics remain governed by the dedicated notification-lifecycle and webhook authorities; cursor exhaustion does not prove a complete or fresh history. [[source-metronome-api-reference-alerts-get-all-threshold-notifications]] [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]] [[source-metronome-guides-platform-configuration-setup-webhooks]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Route bulk current configuration and evaluation state to the list source, not to webhook history.",
+        "Keep emission, delivery, retries, ordering, deduplication, signatures, and retention under dedicated notification and webhook authorities.",
+        "Do not interpret current-state traversal as delivery or historical completeness proof."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

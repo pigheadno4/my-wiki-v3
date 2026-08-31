@@ -1,0 +1,61 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "get-all-threshold-notifications-current-state-collection",
+      "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Point-in-time threshold lookup",
+      "proposed_markdown": "`POST /v1/customer-alerts/list` returns threshold-notification configurations and current evaluation states for one required customer UUID. The default collection contains enabled configurations only; optional non-empty `alert_statuses` can include enabled, disabled, or archived configurations. Each response item requires nested `alert` configuration and nullable `customer_status`, which is otherwise `ok`, `in_alarm`, or `evaluating`; archived configurations return null status. Optional `triggered_by` can state why a threshold fired, and nested `alert.updated_at` is described as the customer-status update time. Complete traversal requires following nullable envelope `next_page`, while ordering, total count, snapshot consistency, duplicate-or-skip behavior, evaluation freshness, and history completeness are undocumented. This is a current monitoring read, not alert creation, reset, archival, webhook delivery, entitlement enforcement, or merchant action. [[source-metronome-api-reference-alerts-get-all-threshold-notifications]]",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Preserve the enabled-only default separately from explicit disabled or archived inclusion.",
+        "Do not turn current configuration and evaluation state into notification history or delivery proof.",
+        "Do not treat cursor exhaustion as a stable or fresh monitoring snapshot."
+      ]
+    },
+    {
+      "update_id": "get-all-threshold-notifications-reporting-query-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Query model",
+      "proposed_markdown": "For customer alert dashboards, admin panels, triggering checks, and coverage audits, bearer-authenticated `POST /v1/customer-alerts/list` returns configurations with current customer evaluation states. The default enabled-only filter can omit disabled and archived rules unless the caller explicitly includes those statuses, and complete retrieval requires following nullable envelope cursors. The page documents no ordering, page-size control, total count, cursor lifetime, stable snapshot, duplicate-or-skip behavior under change, as-of marker, evaluation freshness, or completeness guarantee. Nested `alert.updated_at` is a per-notification customer-status update timestamp, not a response-wide reporting watermark. This endpoint is distinct from in-app dashboards, generated reports, Data Export, webhook history, and merchant-built enforcement or notification delivery. [[source-metronome-api-reference-alerts-get-all-threshold-notifications]]",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "Dashboard and audit use cases do not establish a dashboard rendering, freshness, or completeness contract.",
+        "Include configuration-status scope when interpreting coverage.",
+        "Keep current API state distinct from reports, exports, webhook history, and downstream action."
+      ]
+    },
+    {
+      "update_id": "get-all-threshold-notifications-post-replay-freshness",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "`POST /v1/customer-alerts/list` is a paginated current-state read under the separate API-wide `Idempotency-Key` contract. Identical same-key parameters replay the original result, so replay is not proof of a fresh threshold evaluation, newly current configuration, or a new stable pagination snapshot. The endpoint page adds no behavior for absent, different, or expired keys; reuse or replacement of keys across `next_page` requests; concurrent alert configuration or evaluation changes; cursor replay; cached-error recovery; or read-after-change visibility. [[source-metronome-api-reference-alerts-get-all-threshold-notifications]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Separate request-result replay from current evaluation freshness.",
+        "Do not infer pagination snapshot stability from use of the same idempotency key.",
+        "Preserve endpoint-specific retry, cursor, concurrency, and recovery unknowns."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

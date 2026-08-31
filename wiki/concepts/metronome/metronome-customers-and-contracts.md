@@ -34,6 +34,10 @@ The Salesforce integration can synchronize every Metronome customer or only cust
 
 
 
+## Customer configuration update API
+
+Bearer-authenticated `POST /v1/customers/{customer_id}/updateConfig` targets one required UUID customer and changes configuration without changing core customer data such as name or ingest aliases. Within a supplied JSON object, the sole documented property is nullable string `salesforce_account_id`, but neither the enclosing `requestBody` nor any payload property is marked required and no closed-object policy is declared; omitted-body, empty-object, omitted-property, null-as-unlink, and unknown-field behavior remain undocumented. HTTP `200` has only the description `Success` and no response body, so the operation exposes no applied representation, version, or propagation state. Keep this lightweight `customer_config` surface distinct from the separate customer billing-provider configurations used for contract invoice routing. [[source-metronome-api-reference-customers-update-a-customer-configuration]]
+
 ## Customer name update API
 
 Bearer-authenticated `POST /v1/customers/{customer_id}/setName` targets a required UUID path identifier. Its JSON payload schema requires string `name`, while the enclosing `requestBody` is not marked required; names longer than 160 characters are truncated. HTTP `200` requires `data` containing a customer whose required identity fields are UUID `id`, deprecated `external_id`, `ingest_aliases`, and the updated `name`. Metronome says the new name is applied immediately across all billing documents and interfaces, but this page does not define the scope across historical, draft, finalized, exported, rendered, or downstream-provider copies; archived-customer eligibility; errors; concurrency; or partial-failure recovery. [[source-metronome-api-reference-customers-update-a-customer-name]]
@@ -230,6 +234,8 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 `POST /v1/contracts/getSubscriptionSeatsHistory` scopes a seat-schedule read with required UUID `customer_id`, `contract_id`, and `subscription_id` properties inside a supplied payload. HTTP `200` places the required schedule array at top-level `data` and required nullable continuation cursor at sibling `next_page`; each array item, rather than a nested wrapper, carries its effective period, total capacity, and assigned seat IDs. The endpoint lists not-found errors for all three resource types plus `InvalidArgument`, but does not define identifier-relationship mismatch behavior, current-contract authority, archived or ended resource visibility, read-after-edit timing, snapshot consistency, or reconciliation with contract, balance, credit, invoice, and ledger state. [[source-metronome-api-reference-contracts-get-subscription-seats-history]]
 
 ## Sources
+
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - customer-UUID-scoped merchant and embedded dashboard routes, optional invoice-only contract filter, current-contract usage view, unresolved broader multi-contract behavior, child net-balance exclusion of shared parent commits, and the known prohibition on invoice and commit embeddable dashboards for hierarchy-participating contracts while usage-dashboard hierarchy behavior remains undocumented
 
 - [[source-metronome-api-reference-contracts-get-subscription-seats-history]] - three-resource contract and subscription identity, immediate-parent schedule and cursor placement, temporal filters, and relationship, visibility, and consistency unknowns
 - [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]] - required customer UUID within a supplied dashboard payload, customer-specific generated URL scope, contract-filter option, and archived, multi-contract, and hierarchy unknowns

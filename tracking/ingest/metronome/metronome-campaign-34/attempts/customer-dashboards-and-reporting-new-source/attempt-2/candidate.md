@@ -1,0 +1,62 @@
+---
+title: "Build API-powered customer dashboards"
+type: source
+date_ingested: 2026-08-31
+canonical_url: "https://docs.metronome.com/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting"
+original_format: webpage
+raw_files:
+  - "metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-08-28.md"
+tags: [metronome, customer-dashboards, usage, balances, invoice-breakdowns, embedded-ui]
+---
+
+## Overview
+
+This guide presents two customer-facing billing-visibility patterns: a merchant-owned dashboard whose backend queries Metronome APIs, and Metronome-hosted invoice, usage, or commit-and-credit dashboards embedded by generated URL. It routes usage, current spend, detailed and net balances, invoice history, and self-service presentation, but its worked payloads and pseudocode mix older shapes with current routes and are illustrations rather than copy-ready endpoint contracts.
+
+## Query-critical facts
+
+- The merchant-owned pattern is frontend to merchant backend to Metronome. Customer-created Metronome API bearer tokens stay in the backend and are sent in the `Authorization` header; the authentication authority documents API-token permissions, not a separate “customer-token” credential class.
+- The guide links and calls bearer-authenticated `POST /v1/usage`, but its singular `customer_id` and `billable_metric_id`, deprecated top-level `group_by`, and returned item fields `starting_on`, `ending_before`, `group_key`, and `group_value` align with the distinct current `POST /v1/usage/groups` surface rather than the current batch payload and `UsageBatchAggregate`. Current `/v1/usage` uses optional `customer_ids`, optional `billable_metrics[]` entries with required metric `id`, required `starting_on`, `ending_before`, and `window_size`, optional nested grouping, and aggregate fields including customer and metric identity plus `start_timestamp`, `end_timestamp`, `value`, and optional `groups`. Current `/v1/usage/groups` is scoped to one required customer UUID and billable-metric UUID, recommends `group_key` and `group_filters`, and requires the complete configured compound key. Both current responses place nullable `next_page` beside `data`; neither mixed guide example is a current copy-ready contract.
+- `POST /v1/contracts/customerBalances/list` is the detailed commit-or-credit route. `include_balance: true` returns the calculated value accessible now and excludes expired or future segments, while current calculated balance floors excessive negative manual-ledger results at zero. The guide's worked Commit object omits the current required `created_at`, so it is not a complete current Commit response. Current pagination uses `next_page` and 1–25 `limit` inside the JSON body. The existing curated List source records only the 2026-07-13 raw; current schema claims here were checked against the linked 2026-08-28 authority.
+- `POST /v1/contracts/customerBalances/getNetBalance` is the aggregate route. The guide sends only `customer_id`, which invokes amount-changing current defaults: `invoice_inclusion_mode` is `FINALIZED_AND_DRAFT`, omitted `credit_type_id` selects USD cents, and negative segment balances count as zero. A child-customer query excludes shared commits from parent contracts. Multiple filter objects are ORed, while conditions within one filter object are ANDed. Current success requires `data.balance` and `data.credit_type_id`; the endpoint does not establish multi-contract aggregation detail, freshness, or reconciliation.
+- Current spend authority is bearer-authenticated `GET /v1/customers/{customer_id}/invoices/breakdowns`, with required RFC 3339 `starting_on` and `ending_before`, optional hourly or daily windows, and top-level `data` plus nullable `next_page`. Each `data` item is an invoice window containing `line_items`, not one response object per line item. Current `InvoiceLineItem` requires `name`, `total`, `credit_type`, and `type`; both guide examples omit `type`, and `product_type` is not its substitute. The separate negative deduction remains a useful illustration, but current authority describes it as `type: applied_commit_or_credit` with a negative total and an `applied_commit_or_credit` object, which the guide omits. Therefore neither worked response is current-contract-valid.
+- The invoice-breakdown authority caps a daily request at 35 days and an hourly request at 24 hours, supports cursor traversal, and says backdated usage can change breakdowns after invoice finalization. It defines no revision, as-of selector, freshness SLA, stable cursor snapshot, or immutable historical-population guarantee. The guide's “real-time” usage, balance, and spend language likewise supplies no measurable visibility or cross-endpoint consistency commitment.
+- Bearer-authenticated `POST /v1/dashboards/getEmbeddableUrl` accepts required `customer_id` and dashboard selector within a supplied payload; invoice-only options include an optional contract UUID filter. It returns a distinct customer-specific, time-limited, token-bearing iframe URL artifact. Exact TTL, permission inheritance from the creating API token, sharing, origin or CSP restrictions, refresh, revocation, expiry behavior, and data freshness are undocumented. The hierarchy authority separately says invoice and commit embeddable dashboards do not work for a customer whose contract participates in a hierarchy; it does not define the failure mode or say whether the usage dashboard is affected. The endpoint page itself does not repeat that limitation.
+
+## Material boundaries and contradictions
+
+> [!warning] Usage worked example crosses two current APIs
+> The guide calls the batched `/v1/usage` path with singular selectors and returns legacy-looking grouped items that align with `/v1/usage/groups`. Use the dedicated batched and paginated-grouping authorities for request nesting, required fields, grouping, response fields, and pagination; do not normalize either mixed guide shape into a current contract.
+
+> [!warning] Balance and spend responses are incomplete current objects
+> The worked Commit omits current required `created_at`. The positive and negative invoice lines omit required line-item `type`, and the deduction omits the current `applied_commit_or_credit` object. Preserve the guide's UI intent, available-now explanation, and separate-negative-line illustration without treating the shown objects as schema-valid current responses.
+
+> [!warning] Spend pseudocode is not copy-ready
+> The backend unconditionally reads `line_item['presentation_group_values']['region']`, while the guide's deduction line has no `presentation_group_values`. Its backend emits direct region keys, but the frontend searches for `_start` keys. The unconditional `/ 100` conversion is supported only by the example's `USD (cents)` credit type and must not be generalized to other fiat or custom pricing units.
+
+The guide's lowercase color names such as `gray_dark` and `primary_medium` differ from the dedicated request enum's `Gray_dark` and `Primary_medium`; do not infer case normalization. Its Data Export mention supplies no destination, table grain, cadence, freshness, duplicate-delivery, completeness, or reconciliation contract.
+
+The API-wide `Idempotency-Key` authority applies to the POST usage, balance, and URL-generation operations. Identical same-key parameters replay the original result; changed parameters return HTTP `409`, retention is at least 24 hours, and cached results can include HTTP `500`. The batched-usage and listBalances pages define where their cursors are supplied, but not cursor lifetime or snapshot consistency. Advancing `next_page` changes parameters and therefore falls under the documented same-key `409` rule. Replay does not prove fresh usage, balances, dashboard configuration, or a newly minted and valid URL; endpoint-specific recovery and concurrency guarantees remain undocumented. This does not make the header mandatory or establish a preferred new-key policy.
+
+## Raw-detail coverage map
+
+- **Merchant-owned UI and authentication:** use raw for the frontend/backend flow, dashboard goals, illustrative identifiers, screenshots, and transformation code; use the authentication authority for customer-created API-token custody, header use, permissions, and lifecycle boundaries.
+- **Usage:** use raw for the October region example and its mixed request and response; use the exact batched `/v1/usage` authority for plural selectors, required bounds and window, aggregate fields, optional groups, and query cursor, and the Campaign 34 `/v1/usage/groups` source for customer-and-metric dimensional grouping, complete compound keys, filters, legacy fields, response placement, and cursor behavior.
+- **Balances:** use raw for the prepaid-and-reward scenario, worked ledger objects, available-now explanation, aggregation pseudocode, and customer-only net-balance call. Use the current 2026-08-28 List authority for required Commit fields including `created_at`, body pagination, ledgers, calculated-balance floor, schedules, and schemas; use the exact current getNetBalance authority for invoice and credit-type defaults, OR/AND filters, hierarchy exclusion, negative-segment floor, response placement, and denomination. Neither authority supplies a freshness or reconciliation SLA.
+- **Invoice breakdowns:** use raw for the positive and negative worked lines, October window, chart transformations, and pseudocode defects; use the current dedicated source for invoice-window versus line-item placement, required line fields, applied-balance object and type, temporal caps, pagination, mutable finalized-period breakdowns, and reconciliation unknowns.
+- **Embedded UI and customer scope:** use raw for the three dashboard descriptions, 90-day invoice history, 30/60/90-day current-contract usage view, commit-and-credit history, invoice options, iframe flow, and color walkthrough. Use the endpoint authority for the customer UUID, invoice-only contract filter, option enums, URL placement and lifecycle unknowns, and the hierarchy authority for the known invoice-and-commit prohibition; usage-dashboard hierarchy behavior and broader multi-contract behavior remain unknown.
+- **Adjacent export:** the raw page only names Data Export. It does not contain the export delivery, schema, freshness, environment, deduplication, or completeness contract.
+
+## Related
+
+- Company: [[metronome]]
+- Primary concepts: [[metronome-reporting-and-analytics]], [[metronome-billable-metrics]], [[metronome-credits-and-commits]], [[metronome-invoicing]], [[metronome-security-principles]], [[metronome-customers-and-contracts]]
+- Supporting concepts: [[metronome-api-idempotency]], [[metronome-currencies-and-custom-pricing-units]], [[metronome-usage-based-billing]]
+- Current curated authorities: [[source-metronome-api-reference-authentication]], [[source-metronome-api-reference-invoices-list-invoice-breakdowns]], [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]], [[source-metronome-api-reference-idempotency]], [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]]
+- Exact usage authorities: [[raw/metronome/api-reference/usage/get-batched-usage-data-2026-07-13|current collected batched `/v1/usage` reference]], [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings|Campaign 34 paginated `/v1/usage/groups` source target]]
+- Exact balance authorities: [[raw/metronome/api-reference/credits-and-commits/list-balances-2026-08-28|current collected listBalances reference]], [[raw/metronome/api-reference/credits-and-commits/get-the-net-balance-of-a-customer-2026-08-28|current collected getNetBalance reference]]; [[source-metronome-api-reference-credits-and-commits-list-balances]] is retained as prior 2026-07-13 curated context only.
+- Export context: [[source-metronome-guides-reporting-insights-data-export-overview]], [[source-metronome-guides-reporting-insights-data-export-database-reference]]
+
+## Raw Sources
+
+- [[raw/metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-08-28|2026-08-28 snapshot - merchant-built and embedded customer dashboards, worked API examples, UI scopes, and authority conflicts]]

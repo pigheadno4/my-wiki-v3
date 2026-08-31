@@ -1,0 +1,22 @@
+{
+  "job_id": "update-customer-configuration-new-source",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full independent review against all 158 lines of the assigned raw at verified SHA-256 e10f389d21a4a878dfd05701d7687828dd4a20bb4d13a0184636e2dd9682a938, the complete Campaign 34 job and attempt artifacts, CLAUDE.md, rules/ingest.md, rules/psp/metronome.md, the Campaign 23 Minimum Sufficient Source playbook and API Mutation lesson, the complete current customer create/get/list/name/alias and billing-provider-configuration authorities, the current Salesforce integration and API-wide idempotency authorities, and all three proposed concept targets found the candidate mechanically valid and otherwise semantically strong. Candidate and receipt are byte-identical, suggestions and receipt agree, the canonical target is absent, the canonical URL and exact path-qualified raw backlink match the manifest, every submitted quote is byte-exact at its stated location, all three anchors exist uniquely, and the method, path, bearer security declaration, requestBody-versus-payload requiredness, unspecified additionalProperties behavior, required UUID path identity, sparse immediate HTTP 200 placement, generic 400/404 placement, nullable-without-unlink semantics, configuration-versus-core-customer and billing-provider scope, Salesforce propagation boundary, coverage map, primary routes, and reciprocal source links verify. The blocker-completeness pass found one material retry-authority defect: the candidate and idempotency proposal say identical same-key parameters replay or recover the original result without preserving the API-wide prerequisite that the provided Idempotency-Key request must begin execution, meaning it has passed validation and does not conflict with another concurrent request, before its result is persisted. That omission can misclassify a validation failure or pre-execution concurrent-request conflict as a cached result and overpromise same-key recovery. It also blurs the API-wide concurrency admission boundary with the endpoint-local concurrent-update, ordering, lost-update, state, and recovery unknowns. Because Campaign 34 explicitly tests POST failure, concurrency, and recovery treatment, this authority error is material and requires a full semantic retry. No other material blocker is currently visible.",
+  "required_changes": [
+    "Revise the candidate's Material boundaries, retry coverage route, and customer-configuration-post-replay-boundary proposal to preserve the complete API-wide condition: only when a provided Idempotency-Key request begins execution after passing validation and not conflicting with another concurrent request is the result persisted for identical same-key replay. Do not imply that validation failures or pre-execution concurrent-request conflicts are cached or that same-key replay is always available. Keep changed-parameter HTTP 409, at-least-24-hour retention, cached HTTP 500, and investigation guidance separately attributed to the idempotency authority; keep endpoint-local no-key, another/expired-key, concurrent mutation ordering, lost-update protection, read-after-write visibility, Salesforce propagation, partial/ambiguous failure, rollback, and recovery unknown. Preserve the get-customer current-state evidence route without turning it into a consistency guarantee or prescribing a changed-key strategy."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "full",
+  "shared_update_decisions": [
+    "customer-configuration-update-scope",
+    "customer-configuration-salesforce-boundary",
+    {
+      "update_id": "customer-configuration-post-replay-boundary",
+      "verdict": "rejected",
+      "reason": "Its endpoint-local freshness, propagation, cached-error-state, and recovery unknowns are sound, but it overstates identical same-key replay as unconditional and omits the API-wide requirement that the request first begin execution after validation and concurrent-request conflict checks before the result is persisted."
+    }
+  ],
+  "reviewer_identity": "c34_r_customer_config",
+  "reviewer_model": "gpt-5.6-sol-high"
+}

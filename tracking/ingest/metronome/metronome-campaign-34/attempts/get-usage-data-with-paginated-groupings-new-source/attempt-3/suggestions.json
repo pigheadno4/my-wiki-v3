@@ -1,0 +1,93 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "usage-groupings-billable-metric-query",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retrieval APIs",
+      "proposed_markdown": "Bearer-authenticated `POST /v1/usage/groups` reads aggregated usage for one customer and billable metric; UUID `customer_id` and `billable_metric_id` are required properties only within a supplied payload. For streaming metrics, `group_key` must exactly match a complete simple or compound metric group-key definition; partial compound combinations are unsupported, filter keys must occur in that array, and omitted or empty filter dimensions include all values. For `LATEST` metrics specifically, the dedicated non-monotonic-metric authority says this usage read returns the absolute latest value within each requested window, while invoice breakdowns return incremental quantity and associated cost. The endpoint schema does not define metric calculation and establishes no pricing, invoice equality, freshness, or accounting-completeness guarantee. [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Keep query grouping distinct from billable-metric creation and Product pricing or presentation configuration.",
+        "Do not infer omitted-body behavior from required properties inside the supplied payload schema.",
+        "The LATEST absolute-versus-incremental rule comes from the dedicated non-monotonically increasing metric guide and must not be generalized to other aggregation types."
+      ]
+    },
+    {
+      "update_id": "usage-groupings-reporting-pagination",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Query model",
+      "proposed_markdown": "`POST /v1/usage/groups` is a customer- and billable-metric-scoped dimensional usage read with hourly, daily, one-full-period, or current-billing-period windows. HTTP `200` requires a top-level `data` array and nullable sibling `next_page`; the endpoint query `limit` range is 1 through 100, while the separate pagination authority supplies repeat-until-null traversal. The endpoint provides no ordering, total count, cursor lifetime, stable snapshot, duplicate-or-skip, as-of, freshness, or read-after-write guarantee, so complete pagination does not prove an immutable or current reporting population. Its narrative misplaces `next_page` inside aggregate objects, while the schema and examples place it beside `data`. For `LATEST` metrics only, usage reads expose the absolute latest value within each requested window, unlike incremental quantity and associated cost in invoice breakdowns; this does not establish pricing, invoice equality, freshness, or accounting completeness. [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]]",
+      "quote_indexes": [
+        0,
+        2,
+        4
+      ],
+      "warnings": [
+        "Preserve the response-placement conflict and use the OpenAPI envelope plus examples for cursor location.",
+        "Keep the endpoint's 1-to-100 schema and compound-only narrative default distinct from the API-wide repeat-until-null pagination authority.",
+        "The LATEST calculation distinction comes from the dedicated metric guide; the endpoint remains authority for request and response shape."
+      ]
+    },
+    {
+      "update_id": "usage-groupings-usage-query-route",
+      "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]] - customer and billable-metric usage aggregates by requested windows and exact simple or compound metric groups, with filter, pagination, response-placement, `LATEST` reconciliation, and freshness boundaries",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "This source returns usage quantities, not prices, costs, invoice state, or accounting results.",
+        "Apply the absolute-latest usage rule only to LATEST metrics under the dedicated non-monotonic-metric authority."
+      ]
+    },
+    {
+      "update_id": "usage-groupings-post-replay-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]] - paginated POST dimensional-usage read: a provided-key result is persisted only after the request begins execution by passing validation and not conflicting with another concurrent request; after persistence, identical same-key parameters replay that original result, while advancing `next_page` changes parameters and returns HTTP `409` under the same key; validation failures and pre-execution concurrent-request conflicts are not established cached results, and replay is not a fresh calculation or stable snapshot",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": [
+        "API-wide Idempotency-Key replay and changed-parameter conflict behavior comes from the existing idempotency authority, not from this endpoint page.",
+        "The endpoint adds no cursor lifetime, cross-page snapshot, no-key or different-key policy, read-after-write timing, or endpoint-specific recovery guarantee.",
+        "Do not infer mandatory header use or prescribe a new-key strategy."
+      ]
+    },
+    {
+      "update_id": "usage-groupings-event-ingestion-route",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Processing boundary",
+      "proposed_markdown": "After events are accepted and matched to a customer and billable metric, bearer-authenticated `POST /v1/usage/groups` can read their aggregated post-metric usage by requested time windows and complete simple or compound metric dimensions. The usage page defines no read-after-ingest timing, freshness, stable snapshot, or completeness guarantee, so a completed paginated read does not prove that every submitted event was accepted, deduplicated, matched, or made visible. Raw-event submission, transaction-ID deduplication, matching, and ingest recovery remain with their dedicated ingestion authorities. [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]]",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not treat aggregated usage output as a raw-event receipt, deduplication record, match result, or recovery proof.",
+        "Keep transaction-ID behavior and ingest failure handling with dedicated event-ingestion authorities."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

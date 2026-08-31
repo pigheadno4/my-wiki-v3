@@ -262,6 +262,8 @@ Metronome's go-live checklist asks teams to understand the draft-to-grace-period
 
 ## Sources
 
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - customer spend dashboards through invoice windows, useful separate-negative-line illustration, missing required line-item `type` and applied-balance object in worked responses, embedded invoice-history scope, and non-copy-ready region and chart transformations
+
 - [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] - customer-scoped hourly or daily invoice windows, immediate-parent cursor envelope, temporal limits, mutable finalized-period breakdown boundary, and reconciliation unknowns
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - post-commit zero-list-rate fallback, nonzero-overage prevention, zero-dollar-record unknowns, and invoice-versus-access boundary
 - [[source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition]] - service and invoice timing inputs, billed-versus-earned separation, appendix recognition examples, and the invoice-versus-accounting-recognition boundary

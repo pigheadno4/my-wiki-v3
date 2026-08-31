@@ -1,0 +1,123 @@
+{
+  "job_id": "get-usage-data-with-paginated-groupings-new-source",
+  "attempt": 3,
+  "source_page": "---\ntitle: \"Metronome API: Get Usage Data with Paginated Groupings\"\ntype: source\ndate_ingested: 2026-08-31\ncanonical_url: \"https://docs.metronome.com/api-reference/usage/get-usage-data-with-paginated-groupings\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/usage/get-usage-data-with-paginated-groupings-2026-07-13.md\"\ntags: [metronome, api, usage, billable-metrics, grouping, pagination]\n---\n\n## Overview\n\nBearer-authenticated `POST /v1/usage/groups` retrieves aggregated usage for one customer and billable metric, divided into requested time windows and simple or compound metric dimensions. It is a post-metric usage-analysis read for dimensional exploration and merchant-built dashboards; it does not return raw submitted events, prices, costs, invoice state, or a durable dashboard resource.\n\n## Query-critical facts\n\n- Within a supplied JSON payload, UUID `customer_id`, UUID `billable_metric_id`, and `window_size` are required. The enclosing OpenAPI `requestBody` is not marked required, so omitted-body behavior is not established.\n- `window_size` accepts documented case variants of `hour`, `day`, and `none`. Hour and day segment the selected period into hourly or daily windows; none uses one full-period time window, without establishing that grouping yields only one response row. Optional `starting_on` and `ending_before` date-time fields select the period. Alternatively, `current_period: true` requests the current billing period and returns an error when the customer is uncontracted or when `starting_on` and `ending_before` are specified together. The examples cover day windows only, not a `none` response or `current_period` request.\n- `group_key` is an array supporting one or multiple dimensions. For streaming metrics it must match a complete simple or compound group-key definition on the billable metric; partial compound combinations are unsupported, and `group_key` cannot be combined with deprecated single-key `group_by`.\n- `group_filters` maps dimensions to accepted values. Every filter key must occur in `group_key`; omitting a dimension or giving it an empty array includes all values for that dimension.\n- Optional query `limit` accepts 1 through 100 and query `next_page` supplies the continuation cursor. HTTP `200` requires a top-level `data` array plus nullable top-level `next_page`; the separate [[source-metronome-api-reference-pagination|pagination authority]] says complete traversal repeats with the returned cursor until `next_page` is null.\n- Each aggregate represents one `starting_on`/`ending_before` window, one grouped dimension map, and a nullable numeric usage `value`. Deprecated required-but-nullable `group_key` and `group_value` fields remain in the aggregate schema for single-key compatibility.\n\n## Material boundaries\n\n- The narrative calls the result an array of `PagedUsageAggregate` objects containing `next_page`, but the response schema and both examples place `next_page` once at the top level beside `data`. Clients should follow the schema/example envelope rather than look for a cursor on each aggregate.\n- The prose says group values can be null when events lack the group property, while the `group` map schema permits string values and does not mark them nullable; `group` is also omitted from the aggregate required array. Preserve this documentation conflict instead of assuming a closed parser contract.\n- For compound grouping, the prose states that the default and maximum limit are 100; the endpoint query schema encodes only a 1-to-100 range and no default. The separate pagination authority supplies general traversal guidance but does not create an endpoint default.\n- The current [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics|non-monotonically increasing metric authority]] qualifies this endpoint for `LATEST` metrics only: usage reads return the absolute latest reported value within each requested window, whereas invoice breakdowns return incremental quantity and associated cost for each window. This distinction does not define other aggregation types or establish pricing, invoice equality, freshness, or accounting completeness; endpoint request and response shape remains with this API reference, while metric calculation remains with the guide.\n- Under the separate API-wide [[source-metronome-api-reference-idempotency|idempotency authority]], a result is persisted only after a provided-key request begins execution, meaning it has passed validation and does not conflict with another concurrent request. After that admission and persistence, identical parameters under the same `Idempotency-Key` replay the original result. Advancing query `next_page` changes parameters, so using that same key returns HTTP `409 Conflict`. Validation failures and pre-execution concurrent-request conflicts are not established cached results. Replay is not a fresh usage calculation or a stable pagination snapshot, and this endpoint adds no cursor lifetime, cross-page snapshot, no-key or different-key policy, read-after-write timing, endpoint-specific recovery, ordering, total count, duplicate-or-skip, retention, as-of, or freshness guarantee.\n- The endpoint reads aggregated event data after customer and billable-metric matching. It does not establish raw-event acceptance, transaction-ID deduplication, matching success, ingest recovery, pricing, invoice reconciliation, accounting completeness, dashboard refresh behavior, or authorization beyond bearer authentication.\n\n## Raw-detail coverage map\n\n| Raw detail category | Exact raw coverage |\n| --- | --- |\n| Operation and request identity | Production server, bearer security, `POST /v1/usage/groups`, operation ID, query parameters, unmarked request-body requiredness, and payload-required customer, metric, and window properties |\n| Time-window selection and examples | Hour, day, and none casing variants; hourly/daily segmentation; one full-period window for none without response-row cardinality inference; explicit date-time bounds; exact `current_period` error wording for an uncontracted customer or jointly specified bounds; and day-only request/response examples with no none-window response example |\n| Grouping and filtering | Deprecated single-key `group_by`; simple and complete compound `group_key`; streaming-metric key identity; partial-compound exclusion; filter-map shape; member-key requirement; omitted and empty-filter behavior; and simple/compound examples |\n| Results and documentation conflicts | Aggregate required fields, nullable value, deprecated nullable single-key fields, optional group map, narrative-versus-schema group nullability, and narrative-versus-schema cursor placement |\n| Pagination and replay boundaries | Endpoint query `limit` range and `next_page`, required nullable response cursor, compound-only narrative default wording, repeat-until-null route to the pagination authority, API-wide execution-admission prerequisite, same-key persisted-result replay and changed-parameter conflict route, validation-failure and pre-execution concurrent-conflict cache boundary, and endpoint-local ordering, snapshot, freshness, and recovery unknowns |\n| Cross-surface calculation and ingest boundaries | `LATEST` absolute usage-window values versus incremental invoice-breakdown quantity and cost in the dedicated metric guide, plus aggregated post-metric reads versus raw-event submission, deduplication, matching, and recovery in dedicated ingestion authorities |\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-billable-metrics]], [[metronome-reporting-and-analytics]], [[metronome-usage-based-billing]], [[metronome-event-ingestion]], [[metronome-api-idempotency]]\n- Related sources: [[source-metronome-api-reference-idempotency]], [[source-metronome-api-reference-pagination]], [[source-metronome-guides-implement-metronome-core-concepts-non-monotonically-increasing-metrics]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/usage/get-usage-data-with-paginated-groupings-2026-07-13|2026-07-13 snapshot - complete dimensional usage query, grouping, time-window, response, and pagination reference]]\n",
+  "quotes": [
+    {
+      "text": "````yaml /openapi.json post /v1/usage/groups\nopenapi: 3.0.1\ninfo:\n  title: Metronome\n  version: 1.0.0\nservers:\n  - url: https://api.metronome.com\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "raw lines 52-61 (OpenAPI operation header, production server, and bearer security)"
+    },
+    {
+      "text": "      requestBody:\n        description: The usage query to run\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/PagedUsageQueryPayload'",
+      "location": "raw lines 206-211 (requestBody declaration without required: true)"
+    },
+    {
+      "text": "    PagedUsageQueryPayload:\n      required:\n        - billable_metric_id\n        - customer_id\n        - window_size\n      type: object\n      properties:\n        customer_id:\n          type: string\n          format: uuid\n        billable_metric_id:\n          type: string\n          format: uuid\n        window_size:\n          type: string\n          description: >-\n            A window_size of \"day\" or \"hour\" will return the usage for the\n            specified period segmented into daily or hourly aggregates. A\n            window_size of \"none\" will return a single usage aggregate for the\n            entirety of the specified period.\n          enum:\n            - hour\n            - day\n            - none\n            - HOUR\n            - DAY\n            - NONE\n            - Hour\n            - Day\n            - None\n        starting_on:\n          type: string\n          format: date-time\n        ending_before:\n          type: string\n          format: date-time\n        group_by:\n          type: object\n          description: >-\n            Use group_key and group_filters instead. Use a single group key to\n            group by. Compound group keys are not supported.\n          deprecated: true\n          required:\n            - key\n          properties:\n            key:\n              type: string\n              description: The name of the group_by key to use\n            values:\n              type: array\n              description: >-\n                Values of the group_by key to return in the query. Omit this if\n                you'd like all values for the key returned.\n              minItems: 1\n              items:\n                type: string\n                minLength: 1\n        group_key:\n          $ref: '#/components/schemas/GroupKey'\n        group_filters:\n          $ref: '#/components/schemas/GroupFilter'\n        current_period:\n          type: boolean\n          description: >-\n            If true, will return the usage for the current billing period. Will\n            return an error if the customer is currently uncontracted or\n            starting_on and ending_before are specified when this is true.",
+      "location": "raw lines 322-388 (payload required properties, time-window schema, deprecated group_by, and exact current_period error condition)"
+    },
+    {
+      "text": "    GroupKey:\n      type: array\n      description: >\n        Group key to group usage by. Supports both simple (single key) and\n        compound (multiple keys) group keys.\n\n\n        For simple group keys, provide a single key e.g. `[\"region\"]`.\n\n        For compound group keys, provide multiple keys e.g. `[\"region\",\n        \"team\"]`.\n\n\n        For streaming metrics, the keys must be defined as a simple or compound\n        group key on the billable metric.\n\n        For compound group keys, all keys must match an exact compound group key\n        definition \u2014 partial matches are not allowed.\n\n\n        Cannot be used together with `group_by`.\n      items:\n        type: string\n        minLength: 1\n      minItems: 1\n      example:\n        - region\n        - team\n    GroupFilter:\n      type: object\n      description: >\n        Object mapping group keys to arrays of values to filter on. Only usage\n        matching these filter values will be returned.\n\n        Keys must be present in group_key. Omit a key or use an empty array to\n        include all values for that dimension.",
+      "location": "raw lines 430-465 (simple and compound group-key semantics plus complete filter behavior)"
+    },
+    {
+      "text": "        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                  - next_page\n                properties:\n                  data:\n                    type: array\n                    items:\n                      $ref: '#/components/schemas/PagedUsageAggregate'\n                  next_page:\n                    type: string\n                    nullable: true",
+      "location": "raw lines 245-261 (HTTP 200 envelope, data array, and top-level nullable next_page)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "usage-groupings-billable-metric-query",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Retrieval APIs",
+        "proposed_markdown": "Bearer-authenticated `POST /v1/usage/groups` reads aggregated usage for one customer and billable metric; UUID `customer_id` and `billable_metric_id` are required properties only within a supplied payload. For streaming metrics, `group_key` must exactly match a complete simple or compound metric group-key definition; partial compound combinations are unsupported, filter keys must occur in that array, and omitted or empty filter dimensions include all values. For `LATEST` metrics specifically, the dedicated non-monotonic-metric authority says this usage read returns the absolute latest value within each requested window, while invoice breakdowns return incremental quantity and associated cost. The endpoint schema does not define metric calculation and establishes no pricing, invoice equality, freshness, or accounting-completeness guarantee. [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep query grouping distinct from billable-metric creation and Product pricing or presentation configuration.",
+          "Do not infer omitted-body behavior from required properties inside the supplied payload schema.",
+          "The LATEST absolute-versus-incremental rule comes from the dedicated non-monotonically increasing metric guide and must not be generalized to other aggregation types."
+        ]
+      },
+      {
+        "update_id": "usage-groupings-reporting-pagination",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Query model",
+        "proposed_markdown": "`POST /v1/usage/groups` is a customer- and billable-metric-scoped dimensional usage read with hourly, daily, one-full-period, or current-billing-period windows. HTTP `200` requires a top-level `data` array and nullable sibling `next_page`; the endpoint query `limit` range is 1 through 100, while the separate pagination authority supplies repeat-until-null traversal. The endpoint provides no ordering, total count, cursor lifetime, stable snapshot, duplicate-or-skip, as-of, freshness, or read-after-write guarantee, so complete pagination does not prove an immutable or current reporting population. Its narrative misplaces `next_page` inside aggregate objects, while the schema and examples place it beside `data`. For `LATEST` metrics only, usage reads expose the absolute latest value within each requested window, unlike incremental quantity and associated cost in invoice breakdowns; this does not establish pricing, invoice equality, freshness, or accounting completeness. [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]]",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "Preserve the response-placement conflict and use the OpenAPI envelope plus examples for cursor location.",
+          "Keep the endpoint's 1-to-100 schema and compound-only narrative default distinct from the API-wide repeat-until-null pagination authority.",
+          "The LATEST calculation distinction comes from the dedicated metric guide; the endpoint remains authority for request and response shape."
+        ]
+      },
+      {
+        "update_id": "usage-groupings-usage-query-route",
+        "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]] - customer and billable-metric usage aggregates by requested windows and exact simple or compound metric groups, with filter, pagination, response-placement, `LATEST` reconciliation, and freshness boundaries",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This source returns usage quantities, not prices, costs, invoice state, or accounting results.",
+          "Apply the absolute-latest usage rule only to LATEST metrics under the dedicated non-monotonic-metric authority."
+        ]
+      },
+      {
+        "update_id": "usage-groupings-post-replay-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]] - paginated POST dimensional-usage read: a provided-key result is persisted only after the request begins execution by passing validation and not conflicting with another concurrent request; after persistence, identical same-key parameters replay that original result, while advancing `next_page` changes parameters and returns HTTP `409` under the same key; validation failures and pre-execution concurrent-request conflicts are not established cached results, and replay is not a fresh calculation or stable snapshot",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": [
+          "API-wide Idempotency-Key replay and changed-parameter conflict behavior comes from the existing idempotency authority, not from this endpoint page.",
+          "The endpoint adds no cursor lifetime, cross-page snapshot, no-key or different-key policy, read-after-write timing, or endpoint-specific recovery guarantee.",
+          "Do not infer mandatory header use or prescribe a new-key strategy."
+        ]
+      },
+      {
+        "update_id": "usage-groupings-event-ingestion-route",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Processing boundary",
+        "proposed_markdown": "After events are accepted and matched to a customer and billable metric, bearer-authenticated `POST /v1/usage/groups` can read their aggregated post-metric usage by requested time windows and complete simple or compound metric dimensions. The usage page defines no read-after-ingest timing, freshness, stable snapshot, or completeness guarantee, so a completed paginated read does not prove that every submitted event was accepted, deduplicated, matched, or made visible. Raw-event submission, transaction-ID deduplication, matching, and ingest recovery remain with their dedicated ingestion authorities. [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]]",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not treat aggregated usage output as a raw-event receipt, deduplication record, match result, or recovery proof.",
+          "Keep transaction-ID behavior and ingest failure handling with dedicated event-ingestion authorities."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/usage/get-usage-data-with-paginated-groupings-2026-07-13.md",
+  "raw_sha256": "9ce647ead8fa4e3186e0576dc27084166d9bd5b787e824939f995c3312bf4636",
+  "status": "candidate_ready"
+}

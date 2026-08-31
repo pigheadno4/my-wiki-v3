@@ -53,6 +53,8 @@ Metronome's Segment integration uses the Metronome (Actions) destination and req
 
 ## Processing boundary
 
+After events are accepted and matched to a customer and billable metric, bearer-authenticated `POST /v1/usage/groups` can read their aggregated post-metric usage by requested time windows and complete simple or compound metric dimensions. The usage page defines no read-after-ingest timing, freshness, stable snapshot, or completeness guarantee, so a completed paginated read does not prove that every submitted event was accepted, deduplicated, matched, or made visible. Raw-event submission, transaction-ID deduplication, matching, and ingest recovery remain with their dedicated ingestion authorities. [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]]
+
 An accepted event is not automatically billable. It must match a billable metric and a customer before it contributes to billing. New streaming metrics match later events by default; the create-metrics guide says Metronome retains raw events and can perform a representative-assisted reflow for earlier events, without documenting service guarantees.
 
 One event can feed multiple billable metrics. Metronome presents this separation as allowing the producer's instrumentation to remain stable while metering configuration changes, but the architecture guide does not define edit eligibility, effective timing, or retroactive behavior; the forward-only default and assisted-reflow exception below still apply.

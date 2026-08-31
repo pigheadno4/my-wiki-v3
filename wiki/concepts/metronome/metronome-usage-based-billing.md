@@ -76,6 +76,8 @@ These remaining questions require dedicated sources and are not fully answered b
 
 ## Sources
 
+- [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]] - customer and billable-metric usage aggregates by requested windows and exact simple or compound metric groups, with filter, pagination, response-placement, `LATEST` reconciliation, and freshness boundaries
+
 - [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] - customer invoice time windows, required interval bounds, temporal and zero-quantity filters, late-usage updates, and aggregation-semantics boundary
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - configured commit-only real pricing with zero-list-rate fallback after exhaustion, contrasted with ordinary nonzero overage pricing and separated from merchant-owned access enforcement
 - [[source-metronome-guides-customers-billing-manage-customers-manage-product-access]] - contract-defined access and usage/payment-driven entitlement-status framing, qualified by navigation-page limits

@@ -252,6 +252,8 @@ A `low_remaining_contract_credit_and_commit_balance_reached` alert normally eval
 
 ## Sources
 
+- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - detailed and net customer-balance dashboard routes, available-now exclusion of expired or future segments, incomplete worked Commit shape, current `SPEND` access default, distinct `QUANTITY` mode and credit-type prohibition, draft-inclusive and USD-cent net-balance defaults, non-negative segment treatment, filter composition, hierarchy exclusion, and embedded grant-history UI
+
 - [[source-metronome-api-reference-invoices-list-invoice-breakdowns]] - time-windowed credit and commit line-item attribution, negative application totals, postpaid invoice-total exclusion, and ledger-reconciliation limits
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - zero-list-rate fallback, rate-card commit rates, commit-scoped contract overrides, post-exhaustion zero pricing, and merchant gating boundary
 - [[source-metronome-guides-reporting-insights-financial-reporting-asc-606-revenue-recognition]] - ASC 606-oriented prepaid and postpaid, drawdown, true-up, expiration, rollover, breakage, overage, and free-credit examples under an explicit non-prescriptive accounting disclaimer

@@ -1,0 +1,182 @@
+{
+  "job_id": "customer-dashboards-and-reporting-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Build API-powered customer dashboards\"\ntype: source\ndate_ingested: 2026-08-31\ncanonical_url: \"https://docs.metronome.com/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-08-28.md\"\ntags: [metronome, customer-dashboards, usage, balances, invoice-breakdowns, embedded-ui]\n---\n\n## Overview\n\nThis guide presents two customer-facing billing-visibility patterns: a merchant-owned dashboard whose backend queries Metronome APIs, and Metronome-hosted invoice, usage, or commit-and-credit dashboards embedded by generated URL. It routes usage, current spend, detailed and net balances, invoice history, and self-service presentation, but its worked payloads and pseudocode are illustrations rather than current endpoint authority.\n\n## Query-critical facts\n\n- The merchant-owned pattern is frontend to merchant backend to Metronome. Metronome API bearer tokens stay in the backend; the guide expressly says not to expose them to users or frontend clients. The dedicated authentication authority places the bearer value in the `Authorization` header and documents customer-token permissions separately from the credential-bearing URL returned for an embedded dashboard.\n- Current granular-usage authority is bearer-authenticated `POST /v1/usage`. Its supplied payload requires `starting_on`, `ending_before`, and `window_size`; customer selection is `customer_ids`, while metric selection is `billable_metrics`, whose items carry `id` and optional nested `group_by`. HTTP `200` requires sibling `data` and nullable `next_page`; each current item uses customer and metric identity, `start_timestamp`, `end_timestamp`, `value`, and optional `groups`. The guide instead sends singular top-level `customer_id`, `billable_metric_id`, and `group_by`, then illustrates `group_key`, `group_value`, `starting_on`, and `ending_before` inside each item. Preserve this as material guide-versus-current-API drift and do not implement the guide shape as the current contract.\n- For customer balances, bearer-authenticated `POST /v1/contracts/customerBalances/list` is the detailed commit-or-credit route. The guide requests ledgers, calculated balance, contract balances, and records with access on or after `starting_at`; it says `include_balance: true` returns value available now and excludes upcoming segments. Current HTTP `200` requires envelope siblings `data` and nullable `next_page`. Bearer-authenticated `POST /v1/contracts/customerBalances/getNetBalance` is the aggregate route; current success places required `balance` and `credit_type_id` under required outer `data`. Both operations have required properties inside supplied payloads while their OpenAPI `requestBody` wrappers are not marked required, and neither page establishes omitted-body behavior.\n- Current spend authority is bearer-authenticated `GET /v1/customers/{customer_id}/invoices/breakdowns`, with required RFC 3339 `starting_on` and `ending_before` query values and optional hourly or daily `window_size`. HTTP `200` requires sibling `data` and nullable `next_page`; each `data` item is an invoice window containing `line_items`, not one response object per line item. The guide correctly illustrates negative commit or credit application lines, but those observations do not prove ledger mutation, immutable accounting state, downstream delivery, payment, tax, or reconciliation.\n- The current invoice-breakdown authority caps a daily request at 35 days and an hourly request at 24 hours, supports cursor traversal, and says backdated usage can change breakdowns after invoice finalization. It defines no revision, as-of selector, freshness SLA, cursor snapshot, or immutable historical-population guarantee. The guide's \"real-time\" usage, balance, and spend language likewise supplies no measurable visibility or cross-endpoint consistency commitment.\n- Bearer-authenticated `POST /v1/dashboards/getEmbeddableUrl` accepts required `customer_id` and dashboard selector within a supplied payload; the dashboard enum is `invoices`, `usage`, or `commits_and_credits`. Current HTTP `200` requires outer `data` but does not require nested `data.url`. The dedicated page calls the customer-specific iframe URL time-limited and token-bearing but gives no TTL, expiry timestamp, refresh, revocation, origin, sharing, browser-exposure, permission-inheritance, or data-freshness contract.\n- The guide describes embedded invoice history for draft, finalized, and voided invoices up to 90 days old; usage metrics on the current contract for the past 30, 60, or 90 days; and current and historical commit and credit grants, deductions, access schedules, balances, and expirations. Invoice-only options cover zero-usage lines, contract, invoice type, and status. These UI descriptions do not broaden the generated-URL lifecycle or prove complete API, export, accounting, or hierarchy coverage.\n\n## Material boundaries and contradictions\n\n> [!warning] Usage worked example conflicts with the current dedicated API\n> The guide's singular usage selectors and item-level group and time fields do not match the current batch payload or `UsageBatchAggregate` schema. Use the dedicated current operation for method, body nesting, required fields, item placement, grouping, and pagination; retain this guide for the customer-dashboard outcome and illustrative transformation only.\n\n> [!warning] Spend pseudocode is not copy-ready\n> The backend loop unconditionally reads `line_item['presentation_group_values']['region']`, while the guide's own applied-credit line has no `presentation_group_values`. Its backend emits direct region keys, but the frontend searches for keys ending `_start`, so the two snippets do not share one chart-data contract. The unconditional `/ 100` conversion is supported only by the example's `USD (cents)` credit type and must not be generalized to other fiat or custom pricing units.\n\nThe guide's lowercase color names such as `gray_dark` and `primary_medium` differ from the dedicated request enum's `Gray_dark` and `Primary_medium`. Treat the current dedicated schema as request authority and do not infer case normalization. The guide also mentions Data Export as an adjacent integration option but supplies no destination, table-grain, cadence, freshness, duplicate-delivery, completeness, or reconciliation procedure; use the dedicated Data Export sources for those decisions.\n\nBecause `/v1/usage`, `/list`, `/getNetBalance`, and `/getEmbeddableUrl` are POST operations, the separate API-wide `Idempotency-Key` authority applies. Identical same-key parameters replay the original result, changed parameters conflict, retention is at least 24 hours, and a cached result can be HTTP `500`. For these read or URL-generation operations, replay does not prove fresh usage, balance, invoice, dashboard configuration, or a newly minted and still-valid embedded URL; endpoint-specific cursor, concurrency, recovery, and freshness behavior remains undocumented.\n\n## Raw-detail coverage map\n\n- **Merchant-owned UI:** use raw for dashboard goals, the backend/frontend boundary, all usage, detailed-balance, net-balance, and invoice-breakdown requests and responses, chart pseudocode, screenshots, and illustrative identifiers and values.\n- **Usage and spend examples:** use raw for the October windows, region breakdowns, response examples, commit-deduction illustration, and pseudocode defects; use current dedicated API authorities for request nesting, requiredness, response placement, pagination, temporal caps, and schema.\n- **Balances:** use raw for the prepaid-and-reward scenario, grant and ledger examples, available-now statement, aggregation pseudocode, and net-balance route; use dedicated authorities for complete filters, pagination, denomination, calculated-balance floor, freshness, and response schemas.\n- **Embedded UI:** use raw for the three dashboard descriptions, 90-day invoice history, 30/60/90-day usage views, commit-and-credit history, invoice option list, iframe flow, and color walkthrough; use the dedicated endpoint for current option enums, supplied-payload requiredness, `data.url` placement, errors, and URL-lifecycle unknowns.\n- **Adjacent export:** the raw page only names Data Export as an integration feature. It does not contain the export delivery, schema, freshness, environment, deduplication, or completeness contract.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-reporting-and-analytics]], [[metronome-billable-metrics]], [[metronome-credits-and-commits]], [[metronome-invoicing]], [[metronome-security-principles]]\n- Supporting concepts: [[metronome-api-idempotency]], [[metronome-currencies-and-custom-pricing-units]], [[metronome-customers-and-contracts]], [[metronome-usage-based-billing]]\n- Dedicated authorities: [[source-metronome-api-reference-authentication]], [[source-metronome-api-reference-credits-and-commits-list-balances]], [[source-metronome-api-reference-invoices-list-invoice-breakdowns]], [[source-metronome-api-reference-customers-get-an-embeddable-customer-dashboard]], [[source-metronome-api-reference-idempotency]]\n- Export context: [[source-metronome-guides-reporting-insights-data-export-overview]], [[source-metronome-guides-reporting-insights-data-export-database-reference]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-08-28|2026-08-28 snapshot - merchant-built and embedded customer dashboards, worked API examples, UI scopes, and authority conflicts]]\n",
+  "quotes": [
+    {
+      "text": "When integrating Metronome data into your application to expose to your end users, you must ensure that all Metronome APIs get called from one of your backend services to return data to your frontend application. Implement all authentication against Metronome using a securely stored [token](/api-reference/authorization) available to your backend service. Never expose Metronome API tokens to users or use them on frontend clients.\n\n```\nYour Frontend App <--> Your Backend Service <--> Metronome APIs\n```",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-08-28.md:44-48 (backend authentication and frontend exposure boundary)"
+    },
+    {
+      "text": "The Metronome [usage endpoint](/api-reference/usage/get-batched-usage-data) provides the foundation for showing users visibility into usage from each of their billable metrics over time.\n\nFor example, this request shows daily usage from the `CPU hours` billable metric over the month of October 2024, broken out by region:\n\n```bash theme={null}\ncurl https://api.metronome.com/v1/usage \\\n  -H \"Authorization: Bearer <TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"customer_id\": \"140a7113-76c4-4ce2-9379-29fa3375d23c\",\n    \"billable_metric_id\": \"f3b17844-a98d-413a-b310-5be1df72213d\",\n    \"starting_on\": \"2024-10-01T00:00:00Z\",\n    \"ending_before\": \"2024-11-01T00:00:00Z\",\n    \"window_size\": \"day\",\n    \"group_by\": {\n      \"key\": \"region\"\n    }\n  }'\n```",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-08-28.md:60-78 (worked usage route, bearer authentication, window, and guide payload shape)"
+    },
+    {
+      "text": "Use the `/listBalances` endpoint to retrieve information about the prepaid commit and bonus credit from September 1st onward in one response. Because the request includes the `include_balance: true` parameter, for each commit or credit a `balance` field returns that reflects the amount of commit or credit available to use now. Note that any upcoming, not-yet-started commit or credit segments are not included in this balance as they are not available to use.\n\n```bash theme={null}\ncurl -X POST https://api.metronome.com/v1/contracts/customerBalances/list \\\n -H \"Authorization: Bearer <TOKEN>\" \\\n -H \"Content-Type: application/json\" \\\n -d '{\n    \"customer_id\": \"23f894af-c350-45df-bb3e-3b134e352109\",\n    \"include_ledgers\": true,\n    \"include_balance\": true,\n    \"starting_at\": \"2024-09-01T00:00:00Z\",\n    \"include_contract_balances\": true\n  }'\n```",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-08-28.md:203-216 (available-now balance semantics and detailed balance POST)"
+    },
+    {
+      "text": "Use the Metronome [invoice breakdown endpoint](/api-reference/invoices/list-invoice-breakdowns) to view spend over a given time window. The invoice breakdown endpoint gets returned for each line item on a customer's invoice in hourly or daily buckets.\n\nIf commits or credits get consumed against certain line items during the period, they display as separate line items to mark the deductions for the amount of credits used.\n\nFor example, this request generates a customer's daily spend across all line items for the month of October 2024. In this example a customer doesn't burn against any set of credits or commits and only pays in arrears.\n\n```bash theme={null}\ncurl https://api.metronome.com/v1/customers/d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc/invoices/breakdowns?starting_on=2024-10-01T00%3A00%3A00Z&ending_before=2024-11-01T00%3A00%3A00Z&window_size=day \\\n  -H \"Authorization: Bearer <TOKEN>\" \\\n  -H \"Content-Type: application/json\"\n```",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-08-28.md:433-443 (invoice-breakdown route, time window, authentication, and commit-credit line treatment)"
+    },
+    {
+      "text": "## Embeddable dashboards\n\nShare Metronome invoices and usage data with your customers through customizable embeddable dashboards.\n\n### Invoice Dashboard\n\nThe invoice dashboard allows your customers to view their current and historical invoices (draft, finalized, and voided), up to 90 days old.\n\n<Frame>\n  <img src=\"https://mintcdn.com/metronome-b35a6a36/C_lGxKgdkdHt6xoX/images/optimize-customer-experience/embed-invoice-dashboard-d7f7d0437f79ff47d7fb1ef59c7b0494.png?fit=max&auto=format&n=C_lGxKgdkdHt6xoX&q=85&s=7af99751ce28ec6bbbe1dae1a182dee3\" alt=\"Invoice dashboard screenshot\" width=\"1313\" height=\"405\" data-path=\"images/optimize-customer-experience/embed-invoice-dashboard-d7f7d0437f79ff47d7fb1ef59c7b0494.png\" />\n</Frame>\n\nFilter the invoices returned using the `dashboard_options` array, which has the following optional parameters:\n\n* `show_zero_usage_line_items`: Configure whether line items with zero quantity are shown on the invoice. Defaults to false.\n* `contract_id`: For customers with multiple contracts, display only the invoices on a specific contract. Defaults to all.\n* `invoice_type`: Display invoices by type to show only usage invoices or only scheduled (subscription, commit purchase, or scheduled charge invoices). Defaults to all.\n* `invoice_status_filter`: Display invoices by status (\"VOID\", \"FINALIZED\", \"DRAFT\", \"FINALIZED\\_AND\\_DRAFT\", or \"ALL\"). Defaults to all.\n\n### Usage dashboard\n\nThe usage dashboard shows usage metrics attached to a customer's current contract for the past 30, 60, or 90 days.",
+      "location": "raw/metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-08-28.md:669-690 (embedded invoice and usage dashboard scope and invoice options)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "customer-dashboard-guide-reporting-facts",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ### Embeddable customer dashboards",
+        "proposed_markdown": "### Merchant-built customer dashboards\n\nMetronome's customer-dashboard guide routes merchant backends to `POST /v1/usage` for granular usage, `POST /v1/contracts/customerBalances/list` and `/getNetBalance` for detailed and aggregate balances, and `GET /v1/customers/{customer_id}/invoices/breakdowns` for time-windowed spend. The merchant owns the frontend, backend transformation, token custody, pagination, currency handling, and safe rendering. Its usage worked payload and response use singular selectors and legacy-looking item fields that conflict with the current dedicated batch schema; its spend pseudocode also assumes every line has `presentation_group_values.region`, although its own applied-credit line lacks that object, and the frontend searches for `_start` keys that the backend never emits. Treat the examples as UI illustrations and use current dedicated authorities for request, response, freshness, and pagination contracts.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not normalize the guide's usage body or item fields into the current batch API schema.",
+          "Do not deploy the chart pseudocode without handling missing group values, agreeing one backend/frontend shape, and applying the row's actual pricing unit."
+        ]
+      },
+      {
+        "update_id": "customer-dashboard-guide-reporting-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - merchant-built usage, balance, and spend dashboard routes; embedded UI scope; guide-versus-current-API conflicts; and freshness, currency, and client-security boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "customer-dashboard-guide-billable-metrics-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - customer-facing usage visualization, property grouping, and the guide payload and item-shape conflict with the current batched-usage authority",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "Use the current dedicated usage schema for selectors, grouping placement, item fields, and pagination."
+        ]
+      },
+      {
+        "update_id": "customer-dashboard-guide-credits-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - detailed and net customer-balance dashboard routes, available-now exclusion of future segments, worked ledger aggregation, and embedded grant-history UI",
+        "quote_indexes": [
+          2,
+          4
+        ],
+        "warnings": [
+          "Keep the calculated non-negative balance distinct from raw signed-ledger arithmetic and apply the dedicated denomination authority."
+        ]
+      },
+      {
+        "update_id": "customer-dashboard-guide-invoicing-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - customer spend dashboards through invoice breakdowns, separate applied-credit lines, embedded invoice-history scope, and non-copy-ready region and chart transformations",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": [
+          "A breakdown view and embedded invoice list do not prove immutable invoice state, downstream delivery, payment, tax, accounting, or reconciliation."
+        ]
+      },
+      {
+        "update_id": "customer-dashboard-guide-security-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-security-principles.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - merchant-backend bearer-token custody, prohibition on frontend token exposure, and the separate generated iframe-URL integration boundary",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": [
+          "Do not conflate the backend API bearer token with the generated dashboard URL or infer URL TTL, revocation, origin, permission, or exposure controls."
+        ]
+      },
+      {
+        "update_id": "customer-dashboard-post-read-replay-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "before ## Sources",
+        "proposed_markdown": "The customer-dashboard guide uses POST reads for batched usage, detailed balances, and net balance, plus POST URL generation for embeddable dashboards. API-wide `Idempotency-Key` replay applies, but identical same-key replay returns the original result rather than proving fresh usage or balance state, a new pagination snapshot, current dashboard configuration, or a newly minted and still-valid iframe URL. The endpoint pages add no read-specific key, cursor, concurrency, freshness, or cached-error recovery contract.",
+        "quote_indexes": [
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Keep request-result replay separate from read freshness and generated-URL lifetime."
+        ]
+      },
+      {
+        "update_id": "customer-dashboard-guide-idempotency-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - POST dashboard-read routes and the boundary that same-key replay does not prove fresh usage, balance, cursor, configuration, or embedded-URL state",
+        "quote_indexes": [
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "customer-dashboard-guide-currency-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - USD-cent worked balance and spend examples whose unconditional `/ 100` chart conversion must not be generalized to other fiat or custom pricing units",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": [
+          "Select conversion from the actual credit type; the worked USD example is not universal denomination authority."
+        ]
+      },
+      {
+        "update_id": "customer-dashboard-guide-customers-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - customer-scoped merchant and embedded dashboard routes, optional invoice contract filter, current-contract usage view, and multi-contract and hierarchy limits left to dedicated authorities",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer cross-customer, multi-contract, archived-customer, or hierarchy aggregation from the worked examples."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/customers-billing/optimize-customer-experience/customer-dashboards-and-reporting-2026-08-28.md",
+  "raw_sha256": "0ef6cc995b94feeba3f7f1fb80bd9120fe49b7b8ff6fe2e32f47117f9a05bd51",
+  "status": "candidate_ready"
+}
