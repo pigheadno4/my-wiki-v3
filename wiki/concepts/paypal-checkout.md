@@ -136,11 +136,13 @@ The exact `@paypal/checkout-components@5.0.425` source exposes separate interfac
 
 The v5 Venmo funding config supports purchase and experiment-gated vault-without-purchase flows. Its implementation distinguishes desktop-web from mobile-web channels and carries native-browser, popup, app-switch, and QR-related state. Product availability and merchant eligibility must still be checked against current documentation.
 
+At `@paypal/checkout-components@5.0.428`, the generic Buttons iframe title changes from `PayPal` to `PayPal Payment Buttons` when no funding source is set, while funding-specific titles remain `PayPal-<fundingSource>`. The changelog identifies this as a duplicate screen-reader-announcement fix. `5.0.429` completely reverts that branch, restoring plain `PayPal` for the generic iframe without documenting the rollback rationale or a replacement mitigation. The iframe remains presentational and no merchant callback, eligibility, or payment API changes are reported. Treat the fix as `5.0.428`-only behavior.
+
 ### SDK release assembly baseline: `@paypal/sdk-release@5.0.569`
 
 The independent `paypal/paypal-sdk-release` repository records the component bill of materials used to assemble and release the combined PayPal and Braintree browser SDK. Baseline `5.0.569` pins Checkout Components `5.0.428`, Messaging Components `1.94.0`, Apple Pay Components `1.8.2`, Google Pay Components `1.3.5`, SDK Client `4.0.204`, and seven other direct PayPal component packages.
 
-This manifest is release-composition evidence, not merchant eligibility or component-behavior evidence. Its Checkout Components version is three patches newer than the current local checkout-components snapshot, so behavior introduced only in `5.0.426` through `5.0.428` remains unresolved until that repository is recollected. See [[source-github-paypal-sdk-release]].
+This manifest is release-composition evidence, not merchant eligibility or component-behavior evidence. Its pinned Checkout Components `5.0.428` contains the short-lived screen-reader title fix and is three patches behind the latest locally ingested `5.0.431`; `5.0.429` reverted that fix, while `5.0.430` and `5.0.431` add no authored source change. See [[source-github-paypal-sdk-release]].
 
 ### Historical package evidence: `@paypal/paypal-js@8.4.2`
 

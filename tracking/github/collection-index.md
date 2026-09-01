@@ -1,6 +1,6 @@
 # GitHub repository collection index
 
-Generated: `2026-08-31`
+Generated: `2026-09-01`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -47,9 +47,9 @@ Generated: `2026-08-31`
 | paypal | `paypal-examples/paypal-sdk-server-side-integration` | tier1 | commit / commit-tree-v1 | monthly | 2026-08-04 | ingested | 2026-09-04 | `wait` |
 | paypal | `paypal-examples/v6-web-sdk-sample-integration` | tier1 | commit / commit-tree-v1 | monthly | 2026-08-30 | ingested | 2026-09-30 | `wait` |
 | paypal | `paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration` | tier1 | commit / commit-tree-v1 | monthly | 2026-08-30 | ingested | 2026-09-30 | `wait` |
-| paypal | `paypal/paypal-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-07-31 | ingested | 2026-08-07 | `collect-baseline` |
-| paypal | `paypal/paypal-checkout-components` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-07-23 | ingested | 2026-07-30 | `collect-baseline` |
-| paypal | `paypal/paypal-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-07-31 | ingested | 2026-08-07 | `collect-baseline` |
+| paypal | `paypal/paypal-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-31 | ingested | 2026-09-07 | `wait` |
+| paypal | `paypal/paypal-checkout-components` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-09-01 | ingested | 2026-09-08 | `wait` |
+| paypal | `paypal/paypal-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-31 | ingested | 2026-09-07 | `wait` |
 | paypal | `paypal/paypal-js` | tier1 | monorepo-packages / npm-tracked-source-v1 | weekly | 2026-08-30 | ingested | 2026-09-06 | `wait` |
 | paypal | `paypal/paypal-messaging-components` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-28 | ingested | 2026-09-04 | `wait` |
 | paypal | `paypal/paypal-rest-api-specifications` | tier1 | commit / commit-tree-v1 | monthly | 2026-08-11 | ingested | 2026-09-11 | `wait` |

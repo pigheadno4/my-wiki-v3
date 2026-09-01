@@ -96,6 +96,12 @@ A parallel untagged `develop` README commit, `0424354`, documents the same Brain
 
 Like iOS, Android Messages is promotional presentment rather than payment execution. The `1.3.0` capsule adds rendered-language analytics and `%bold%` message styling, but also preserves version-qualified callback, environment-update, and shared-state risks. See [[source-github-paypal-messages-android]] and [[changelog-github-paypal-messages-android]].
 
+### Checkout Button Runtime
+
+At `@paypal/checkout-components@5.0.427`, an eligible backend-provided Pay Later variant of `AT` joins `DE` in rendering the German-language `Später Bezahlen` button label. The normal responsive and disable-max-height sizing paths also treat `AT` as a label requiring the smaller size calculation. This is version-qualified browser presentation evidence; it does not establish Austrian merchant enablement, buyer eligibility, purchase limits, or current product availability.
+
+The same release changes rebranded button and overlay CSS from `PayPal Plain` to `PayPalOpen-Regular`. No merchant JavaScript API change was detected. See [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]].
+
 ## Available Countries (beyond US)
 
 Pay Later offerings differ by country — Australia, France, Germany, Italy, Spain, UK each have their own products. Check the Expanded Checkout eligibility page for which countries support Pay Later.
@@ -113,3 +119,5 @@ Pay Later offerings differ by country — Australia, France, Germany, Italy, Spa
 - [[source-github-paypal-messages-ios]] — native iOS Pay Later and PayPal Credit message configuration, rendering, modal, and lifecycle
 - [[source-github-paypal-messages-android]] — native Android message view, modal, callbacks, caching, analytics, availability warning, and `1.3.0` source risks
 - [[changelog-github-paypal-messages-android]] — managed Android `1.3.0` release plus cumulative earlier stable context
+- [[source-github-paypal-checkout-components]] — version-qualified Pay Later button label, sizing, and checkout presentation runtime
+- [[changelog-github-paypal-checkout-components]] — package-qualified checkout-components release history

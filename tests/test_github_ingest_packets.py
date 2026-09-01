@@ -1355,6 +1355,162 @@ class GitHubIngestPacketTests(unittest.TestCase):
         self.assertEqual("build-configuration", classified["types/.eslintrc.yml"])
         self.assertEqual("build-configuration", classified["src/eslint.config.mjs"])
 
+    def test_removed_bundlemon_config_is_build_configuration(self):
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            ".bundlemonrc.json": '{"baseDir":"./dist","files":[]}',
+        }
+        current = {
+            "package.json": self.manifest_content("10.1.0"),
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            (
+                UpstreamChange("modified", "package.json", "package.json"),
+                UpstreamChange("deleted", ".bundlemonrc.json", None),
+            ),
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        self.assertEqual(
+            "build-configuration",
+            classified[".bundlemonrc.json"],
+        )
+
+    def test_web_tooling_files_are_build_configuration(self):
+        tooling_files = {
+            ".eslintignore": "dist\n",
+            ".flowconfig": "[ignore]\n",
+            ".gitignore": "node_modules\n",
+            ".husky/.gitignore": "_\n",
+            ".husky/pre-commit": "npm test\n",
+            ".percy.yml": "version: 2\n",
+            ".prettierignore": "dist\n",
+            ".prettierrc.json": '{"semi":true}',
+            ".github/codecov.yml": "coverage:\n  status: {}\n",
+            ".github/issue_label_bot.yaml": "labels: []\n",
+            "babel.config.json": '{"presets":[]}',
+        }
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            **tooling_files,
+        }
+        current = {
+            "package.json": self.manifest_content("10.1.0"),
+            **{path: content + "\n" for path, content in tooling_files.items()},
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            tuple(
+                UpstreamChange("modified", path, path)
+                for path in sorted(tooling_files)
+            ),
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        for path in tooling_files:
+            self.assertEqual("build-configuration", classified[path])
+
+    def test_codeowners_is_repository_context(self):
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            ".github/CODEOWNERS": "* @payments-team\n",
+        }
+        current = {
+            "package.json": self.manifest_content("10.1.0"),
+            ".github/CODEOWNERS": "* @checkout-team\n",
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            (
+                UpstreamChange(
+                    "modified",
+                    ".github/CODEOWNERS",
+                    ".github/CODEOWNERS",
+                ),
+            ),
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        self.assertEqual(
+            "repository-context",
+            classified[".github/CODEOWNERS"],
+        )
+
+    def test_scss_is_classified_as_public_source(self):
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            "src/funding/paypal/style.scoped.scss": ".button { color: blue; }\n",
+        }
+        current = {
+            "package.json": self.manifest_content("10.1.0"),
+            "src/funding/paypal/style.scoped.scss": ".button { color: navy; }\n",
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            (
+                UpstreamChange(
+                    "modified",
+                    "src/funding/paypal/style.scoped.scss",
+                    "src/funding/paypal/style.scoped.scss",
+                ),
+            ),
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        self.assertEqual(
+            "public-source",
+            classified["src/funding/paypal/style.scoped.scss"],
+        )
+
+    def test_checkout_classification_does_not_reclassify_nested_repository_files(self):
+        prior = {
+            "package.json": self.manifest_content("10.0.0"),
+            "examples/.gitignore": "node_modules\n",
+            "packages/lib/src/components/Card.scss": ".card { color: blue; }\n",
+        }
+        current = {
+            "package.json": self.manifest_content("10.1.0"),
+            "examples/.gitignore": "node_modules\n",
+            "packages/lib/src/components/Card.scss": ".card { color: blue; }\n",
+        }
+
+        packet = self.build(
+            prior,
+            current,
+            (UpstreamChange("modified", "package.json", "package.json"),),
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        rows = packet.document["packages"][0]["retained_evidence"]["files"]
+        classified = {row["path"]: row["classification"] for row in rows}
+        self.assertEqual("example", classified["examples/.gitignore"])
+        self.assertEqual(
+            "unclassified",
+            classified["packages/lib/src/components/Card.scss"],
+        )
+
     def test_native_package_metadata_is_classified_as_build_configuration(self):
         native_files = {
             "Cartfile": "github \"example/dependency\"\n",

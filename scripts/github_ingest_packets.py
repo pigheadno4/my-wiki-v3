@@ -1153,6 +1153,17 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "runtime-configuration"
     if _is_agent_tool_manifest(lowered, filename):
         return "runtime-configuration"
+    if lowered in (
+        ".bundlemonrc.json",
+        ".eslintignore",
+        ".flowconfig",
+        ".gitignore",
+        ".percy.yml",
+        ".prettierignore",
+        ".prettierrc.json",
+        "babel.config.json",
+    ):
+        return "build-configuration"
     if filename in (
         ".npmrc",
         ".nvmrc",
@@ -1167,6 +1178,15 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
         return "build-configuration"
     if lowered == ".factory/settings.json":
         return "build-configuration"
+    if lowered in (
+        ".github/codecov.yml",
+        ".github/issue_label_bot.yaml",
+    ) or lowered.startswith(".husky/"):
+        return "build-configuration"
+    if lowered in (".github/codeowners", "codeowners"):
+        return "repository-context"
+    if lowered.startswith("src/") and lowered.endswith(".scss"):
+        return "public-source"
     if filename == "tsconfig.json" or (
         filename.startswith("tsconfig.") and filename.endswith(".json")
     ):

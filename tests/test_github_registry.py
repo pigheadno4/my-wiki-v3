@@ -575,6 +575,16 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual((disabled,), select_repos(repos, company="stripe", enabled_only=False))
         self.assertEqual((disabled,), select_repos(repos, repo_id="stripe/stripe-ios", enabled_only=False))
 
+    def test_paypal_checkout_components_uses_the_reviewed_packet_budget(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(item for item in repos if item.id == "paypal/paypal-checkout-components")
+
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual(3_000_000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(380, capsule.max_packet_files)
+        self.assertEqual(4_500_000, capsule.max_packet_utf8_bytes)
+
     def test_paypal_messages_ios_uses_the_reviewed_release_capsule(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
         repo = next(item for item in repos if item.id == "paypal/paypal-messages-ios")

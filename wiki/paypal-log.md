@@ -6,6 +6,42 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-01] ingest | paypal/paypal-checkout-components `@paypal/checkout-components@5.0.431`
+
+- Delta-ingested work item `github-7b5d690482390010d09c` from `5.0.430` to exact SHA `9bb1162373b4dd96d5a3196dbfab41990f606bb7` after serial review of all 12 required paths.
+- Recorded a second release-only boundary: package version, cumulative changelog, and generated bundles changed; no retained authored source changed.
+- Carried forward the `5.0.429` iframe-title behavior through `5.0.431`. No public API export, dependency, concept, contradiction, merchant behavior, or PayPal source-count change was established.
+
+## [2026-09-01] ingest | paypal/paypal-checkout-components `@paypal/checkout-components@5.0.430`
+
+- Delta-ingested work item `github-06ee06345a65e7231cb5` from `5.0.429` to exact SHA `1e6da3424d7bb5654bf4a2479702b521dc69aa01` after serial review of all 12 required paths.
+- Recorded a release-only boundary: package version, cumulative changelog, and generated bundles changed; no retained authored source changed.
+- Carried forward the `5.0.429` iframe-title behavior. No public API export, dependency, concept, contradiction, merchant behavior, or PayPal source-count change was established.
+
+## [2026-09-01] ingest | paypal/paypal-checkout-components `@paypal/checkout-components@5.0.429`
+
+- Delta-ingested work item `github-0b8ca83daa9799dbe228` from `5.0.428` to exact SHA `a7b2d958ce0510951a811e5c152181fd16d1512a` after serial review of all 13 required paths.
+- Recorded the complete revert of the `5.0.428` screen-reader title fix: a no-funding-source Buttons iframe returns from `PayPal Payment Buttons` to plain `PayPal`.
+- Preserved `5.0.428` as short-lived version-specific accessibility history. No rollback rationale, replacement mitigation, public API export, dependency, merchant callback, eligibility, payment-flow, contradiction, or PayPal source-count change was established.
+
+## [2026-09-01] ingest | paypal/paypal-checkout-components `@paypal/checkout-components@5.0.428`
+
+- Delta-ingested work item `github-787247be57e3d755f4ef` from `5.0.427` to exact SHA `861ab38f819840054eaed903bfc1ce32eb9b535f` after serial review of all 15 required paths.
+- Recorded the no-funding-source iframe title change from `PayPal` to `PayPal Payment Buttons`, which the changelog identifies as fixing a duplicate PayPal screen-reader announcement.
+- No public API export, dependency, merchant callback, eligibility, payment-flow, contradiction, or PayPal source-count change was established.
+
+## [2026-09-01] ingest | paypal/paypal-checkout-components `@paypal/checkout-components@5.0.427`
+
+- Delta-ingested work item `github-dac96e3489eeeca5d8e0` from `5.0.426` to exact SHA `6afd3b4e8a9c176ef3d59217cab257af286d1c03` after serial review of all 33 required paths.
+- Recorded Austria's eligible Pay Later `Später Bezahlen` label and compact responsive sizing branches, plus the rebranded CSS move from `PayPal Plain` to `PayPalOpen-Regular`.
+- Preserved the eligibility boundary: an `AT` runtime variant does not establish Austrian product availability, buyer eligibility, or merchant enablement. No public API export, contradiction, or PayPal source-count change was established.
+
+## [2026-09-01] ingest | paypal/paypal-checkout-components `@paypal/checkout-components@5.0.426`
+
+- Delta-ingested work item `github-09305ae410e9c491d343` from `5.0.425` to exact SHA `48d428cb79a6d13162cc223cac044043afacdfe5` after serial review of all 163 required paths.
+- Recorded the Node `^22`/npm `10` development baseline, `.nvmrc` `22.22.3` pin, Prettier 3 migration, and `@krakenjs/zoid ^10.6.0` dependency change.
+- Preserved all earlier checkout and Venmo runtime history. No public API export, new payment capability, merchant eligibility, concept, contradiction, or PayPal source-count change was established.
+
 ## [2026-08-30] ingest | paypal-examples/v6-web-sdk-sample-integration `default-branch@de90a89`
 
 - Delta-ingested work item `github-a7964cb187666bb0930f` from `b5f2df2` to exact SHA `de90a89c90b06421ca34241e7162236e2b04fd79`; eight retained paths changed and no evidence gap or unclassified change remained.

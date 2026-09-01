@@ -1,0 +1,253 @@
+# GitHub package comparison
+
+- Repository: `paypal/paypal-checkout-components`
+- Package: `@paypal/checkout-components`
+- From: `5.0.425` (`e03bffc45b7a3c7f36346a514f34ebbd168dd403`)
+- To: `5.0.426` (`48d428cb79a6d13162cc223cac044043afacdfe5`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `.nvmrc`
+- `.prettierignore`
+- `CHANGELOG.md`
+- `demo/card.htm`
+- `demo/dev/button-with-message.htm`
+- `demo/dev/button.htm`
+- `demo/dev/checkout.htm`
+- `demo/dev/index.htm`
+- `demo/dev/subscribe.htm`
+- `demo/dev/wallet.htm`
+- `demo/vue.htm`
+- `dist/button.js`
+- `dist/test/button.js`
+- `package.json`
+- `scripts/check-node-version.js`
+- `src/connect/component.jsx`
+- `src/connect/component.test.js`
+- `src/funding/card/config.jsx`
+- `src/funding/card/config.test.jsx`
+- `src/funding/funding.js`
+- `src/funding/funding.test.js`
+- `src/funding/paylater/config.jsx`
+- `src/funding/paypal/template.jsx`
+- `src/funding/util.js`
+- `src/funding/util.test.js`
+- `src/hosted-buttons/index.test.js`
+- `src/hosted-buttons/types.js`
+- `src/hosted-buttons/utils.js`
+- `src/hosted-buttons/utils.test.js`
+- `src/lib/api.js`
+- `src/lib/appSwitchResume.js`
+- `src/lib/perceived-latency-instrumentation.js`
+- `src/lib/security.js`
+- `src/marks/component.jsx`
+- `src/marks/templateRebrand.test.jsx`
+- `src/shopper-insights/shopperSession.js`
+- `src/shopper-insights/shopperSession.test.js`
+- `src/three-domain-secure/api.js`
+- `src/three-domain-secure/api.test.js`
+- `src/three-domain-secure/component.jsx`
+- `src/three-domain-secure/component.test.js`
+- `src/types.js`
+- `src/ui/buttons/buttons.jsx`
+- `src/ui/buttons/buttons.test.js`
+- `src/ui/buttons/config.js`
+- `src/ui/buttons/props.bnpl.test.js`
+- `src/ui/buttons/props.js`
+- `src/ui/buttons/props.test.js`
+- `src/ui/buttons/script.jsx`
+- `src/ui/buttons/styles/button.js`
+- `src/ui/buttons/styles/disableMaxHeightConfig.test.js`
+- `src/ui/buttons/styles/labelContainerHeight.test.js`
+- `src/ui/buttons/styles/labels.js`
+- `src/ui/buttons/styles/responsive.js`
+- `src/ui/buttons/styles/styleUtils.js`
+- `src/ui/buttons/styles/styleUtils.test.js`
+- `src/ui/buttons/util.js`
+- `src/ui/overlay/three-domain-secure/overlay.jsx`
+- `src/ui/saved-payment-methods/template.jsx`
+- `src/ui/text/text.jsx`
+- `src/zoid/buttons/component.jsx`
+- `src/zoid/buttons/container.jsx`
+- `src/zoid/buttons/prerender.jsx`
+- `src/zoid/buttons/util.js`
+- `src/zoid/buttons/util.test.js`
+- `src/zoid/card-fields/component.jsx`
+- `src/zoid/card-form/component.js`
+- `src/zoid/checkout/component.jsx`
+- `src/zoid/payment-fields/component.jsx`
+- `src/zoid/qr-code/container.test.jsx`
+- `src/zoid/qr-code/prerender.test.jsx`
+- `src/zoid/saved-payment-methods/component.jsx`
+- `src/zoid/saved-payment-methods/util.js`
+- `src/zoid/saved-payment-methods/util.test.js`
+- `src/zoid/wallet/component.jsx`
+- `test/e2e/common.js`
+- `test/e2e/config.js`
+- `test/e2e/paypal.test.js`
+- `test/e2e/procedures.js`
+- `test/globals.js`
+- `test/integration/index.js`
+- `test/integration/tests/button/clone.js`
+- `test/integration/tests/button/drivers.js`
+- `test/integration/tests/button/eligibility.js`
+- `test/integration/tests/button/happy.js`
+- `test/integration/tests/button/instant.js`
+- `test/integration/tests/button/layout.js`
+- `test/integration/tests/button/message.js`
+- `test/integration/tests/button/multiple.js`
+- `test/integration/tests/button/paypalAppSwitchOverlay.js`
+- `test/integration/tests/button/popupBridge.js`
+- `test/integration/tests/button/props.js`
+- `test/integration/tests/button/renderOrder.js`
+- `test/integration/tests/button/size.js`
+- `test/integration/tests/button/standalone.js`
+- `test/integration/tests/button/style.js`
+- `test/integration/tests/checkout/happy.js`
+- `test/integration/tests/common.js`
+- `test/integration/tests/fields/standalone.js`
+- `test/integration/tests/funding/applepay/index.js`
+- `test/integration/tests/funding/paylater/index.js`
+- `test/integration/tests/funding/venmo/index.js`
+- `test/integration/tests/marks/standalone.js`
+- `test/integration/tests/payment-fields/standalone.js`
+- `test/integration/vendor/angular.min.js`
+- `test/integration/vendor/react_v15.1.0.js`
+- `test/integration/windows/button/index.jsx`
+- `test/integration/windows/checkout/index.js`
+- `test/integration/windows/saved-payment-methods/index.jsx`
+- `test/paypal.js`
+- `test/percy/globals.js`
+- `test/percy/server/createButtonConfigs.js`
+- `test/percy/server/index.html`
+- `test/percy/server/index.js`
+- `test/screenshot/lib/browser.js`
+- `test/screenshot/lib/image.js`
+- `test/screenshot/lib/util.js`
+- `test/screenshot/screenshot.test.js`
+- `test/ssr/ssr.test.js`
+- `vitestSetup.js`
+
+## Upstream changes
+
+- `modified`: `.nvmrc`
+- `modified`: `.prettierignore`
+- `modified`: `CHANGELOG.md`
+- `modified`: `demo/card.htm`
+- `modified`: `demo/dev/button-with-message.htm`
+- `modified`: `demo/dev/button.htm`
+- `modified`: `demo/dev/checkout.htm`
+- `modified`: `demo/dev/index.htm`
+- `modified`: `demo/dev/subscribe.htm`
+- `modified`: `demo/dev/wallet.htm`
+- `modified`: `demo/vue.htm`
+- `modified`: `dist/button.js`
+- `modified`: `dist/test/button.js`
+- `modified`: `package.json`
+- `modified`: `scripts/check-node-version.js`
+- `modified`: `src/connect/component.jsx`
+- `modified`: `src/connect/component.test.js`
+- `modified`: `src/funding/card/config.jsx`
+- `modified`: `src/funding/card/config.test.jsx`
+- `modified`: `src/funding/funding.js`
+- `modified`: `src/funding/funding.test.js`
+- `modified`: `src/funding/paylater/config.jsx`
+- `modified`: `src/funding/paypal/template.jsx`
+- `modified`: `src/funding/util.js`
+- `modified`: `src/funding/util.test.js`
+- `modified`: `src/hosted-buttons/index.test.js`
+- `modified`: `src/hosted-buttons/types.js`
+- `modified`: `src/hosted-buttons/utils.js`
+- `modified`: `src/hosted-buttons/utils.test.js`
+- `modified`: `src/lib/api.js`
+- `modified`: `src/lib/appSwitchResume.js`
+- `modified`: `src/lib/perceived-latency-instrumentation.js`
+- `modified`: `src/lib/security.js`
+- `modified`: `src/marks/component.jsx`
+- `modified`: `src/marks/templateRebrand.test.jsx`
+- `modified`: `src/shopper-insights/shopperSession.js`
+- `modified`: `src/shopper-insights/shopperSession.test.js`
+- `modified`: `src/three-domain-secure/api.js`
+- `modified`: `src/three-domain-secure/api.test.js`
+- `modified`: `src/three-domain-secure/component.jsx`
+- `modified`: `src/three-domain-secure/component.test.js`
+- `modified`: `src/types.js`
+- `modified`: `src/ui/buttons/buttons.jsx`
+- `modified`: `src/ui/buttons/buttons.test.js`
+- `modified`: `src/ui/buttons/config.js`
+- `modified`: `src/ui/buttons/props.bnpl.test.js`
+- `modified`: `src/ui/buttons/props.js`
+- `modified`: `src/ui/buttons/props.test.js`
+- `modified`: `src/ui/buttons/script.jsx`
+- `modified`: `src/ui/buttons/styles/button.js`
+- `modified`: `src/ui/buttons/styles/disableMaxHeightConfig.test.js`
+- `modified`: `src/ui/buttons/styles/labelContainerHeight.test.js`
+- `modified`: `src/ui/buttons/styles/labels.js`
+- `modified`: `src/ui/buttons/styles/responsive.js`
+- `modified`: `src/ui/buttons/styles/styleUtils.js`
+- `modified`: `src/ui/buttons/styles/styleUtils.test.js`
+- `modified`: `src/ui/buttons/util.js`
+- `modified`: `src/ui/overlay/three-domain-secure/overlay.jsx`
+- `modified`: `src/ui/saved-payment-methods/template.jsx`
+- `modified`: `src/ui/text/text.jsx`
+- `modified`: `src/zoid/buttons/component.jsx`
+- `modified`: `src/zoid/buttons/container.jsx`
+- `modified`: `src/zoid/buttons/prerender.jsx`
+- `modified`: `src/zoid/buttons/util.js`
+- `modified`: `src/zoid/buttons/util.test.js`
+- `modified`: `src/zoid/card-fields/component.jsx`
+- `modified`: `src/zoid/card-form/component.js`
+- `modified`: `src/zoid/checkout/component.jsx`
+- `modified`: `src/zoid/payment-fields/component.jsx`
+- `modified`: `src/zoid/qr-code/container.test.jsx`
+- `modified`: `src/zoid/qr-code/prerender.test.jsx`
+- `modified`: `src/zoid/saved-payment-methods/component.jsx`
+- `modified`: `src/zoid/saved-payment-methods/util.js`
+- `modified`: `src/zoid/saved-payment-methods/util.test.js`
+- `modified`: `src/zoid/wallet/component.jsx`
+- `modified`: `test/e2e/common.js`
+- `modified`: `test/e2e/config.js`
+- `modified`: `test/e2e/paypal.test.js`
+- `modified`: `test/e2e/procedures.js`
+- `modified`: `test/globals.js`
+- `modified`: `test/integration/index.js`
+- `modified`: `test/integration/tests/button/clone.js`
+- `modified`: `test/integration/tests/button/drivers.js`
+- `modified`: `test/integration/tests/button/eligibility.js`
+- `modified`: `test/integration/tests/button/happy.js`
+- `modified`: `test/integration/tests/button/instant.js`
+- `modified`: `test/integration/tests/button/layout.js`
+- `modified`: `test/integration/tests/button/message.js`
+- `modified`: `test/integration/tests/button/multiple.js`
+- `modified`: `test/integration/tests/button/paypalAppSwitchOverlay.js`
+- `modified`: `test/integration/tests/button/popupBridge.js`
+- `modified`: `test/integration/tests/button/props.js`
+- `modified`: `test/integration/tests/button/renderOrder.js`
+- `modified`: `test/integration/tests/button/size.js`
+- `modified`: `test/integration/tests/button/standalone.js`
+- `modified`: `test/integration/tests/button/style.js`
+- `modified`: `test/integration/tests/checkout/happy.js`
+- `modified`: `test/integration/tests/common.js`
+- `modified`: `test/integration/tests/fields/standalone.js`
+- `modified`: `test/integration/tests/funding/applepay/index.js`
+- `modified`: `test/integration/tests/funding/paylater/index.js`
+- `modified`: `test/integration/tests/funding/venmo/index.js`
+- `modified`: `test/integration/tests/marks/standalone.js`
+- `modified`: `test/integration/tests/payment-fields/standalone.js`
+- `modified`: `test/integration/vendor/angular.min.js`
+- `modified`: `test/integration/vendor/react_v15.1.0.js`
+- `modified`: `test/integration/windows/button/index.jsx`
+- `modified`: `test/integration/windows/checkout/index.js`
+- `modified`: `test/integration/windows/saved-payment-methods/index.jsx`
+- `modified`: `test/paypal.js`
+- `modified`: `test/percy/globals.js`
+- `modified`: `test/percy/server/createButtonConfigs.js`
+- `modified`: `test/percy/server/index.html`
+- `modified`: `test/percy/server/index.js`
+- `modified`: `test/screenshot/lib/browser.js`
+- `modified`: `test/screenshot/lib/image.js`
+- `modified`: `test/screenshot/lib/util.js`
+- `modified`: `test/screenshot/screenshot.test.js`
+- `modified`: `test/ssr/ssr.test.js`
+- `modified`: `vitestSetup.js`
