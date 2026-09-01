@@ -1,5 +1,15 @@
 # Wiki Log
 
+## [2026-09-01] ingest | GitHub stripe/react-stripe-js - `@stripe/react-stripe-js@6.8.2`
+
+- Delta-ingested work item `github-63d1c788da3330896fd0` at exact SHA `c48d6515c48da2fa5e2eefc9c8168b95e3026ef2` after serial review of all 11 required evidence paths.
+- Added production-oriented Checkout Sessions readiness, submission, error, and server-response guidance while recording that runtime source and public APIs did not change.
+
+## [2026-09-01] ingest | GitHub stripe/react-stripe-js - `@stripe/react-stripe-js@6.8.1`
+
+- Delta-ingested work item `github-87a18c639834d62a679f` at exact SHA `e8146742ffe374ff54301cbdc6fb566e3218a220` after serial review of all 69 required evidence paths.
+- Added Checkout Sessions-first React guidance and typed Storybook demos while preserving the Payment Intents path and recording that public-source edits were formatting-only, with no public API or peer-range change.
+
 ## [2026-08-31] ingest | GitHub stripe/stripe-terminal-android - `stripeterminal@5.8.0`
 
 - Full-ingested work item `github-647016eaa69d9b32d93d` at exact SHA `b3de15b57201df0aa0e0235ccbe8e81bf9abaa8f` after serial review of all 88 required evidence paths.

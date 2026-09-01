@@ -716,6 +716,31 @@
   To SHA: `fdd18681f486a3b2f1c60e3c47f8669f55a73a96`
   Comparison: [manifest](repos/paypal/paypal-messages-ios/comparisons/default-branch/432d6b8--fdd1868/comparison.json)
 
+## `github-63d1c788da3330896fd0`
+
+- Repository: `stripe/react-stripe-js`
+- SHA: `c48d6515c48da2fa5e2eefc9c8168b95e3026ef2`
+- Collection date: `2026-09-01`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/react-stripe-js/snapshots/2026-09-01-c48d651/manifest.json)
+- Packet: [review packet](repos/stripe/react-stripe-js/ingest-packets/github-63d1c788da3330896fd0/packet.md)
+- Review priority: `high`
+- Required reading: `11` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/react-stripe-js@6.8.2` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.2/2026-09-01/manifest.json)
+  Comparison: [manifest](repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.1--6.8.2/comparison.json)
+
 ## `github-6403ae7181617adc4020`
 
 - Repository: `paypal-examples/v6-web-sdk-sample-integration`
@@ -1124,6 +1149,31 @@
   From SHA: `baseline`
   To SHA: `5409a3b9c0b6d0049fc3be9386092759fd6a1d5c`
   Comparison: Not applicable
+
+## `github-87a18c639834d62a679f`
+
+- Repository: `stripe/react-stripe-js`
+- SHA: `e8146742ffe374ff54301cbdc6fb566e3218a220`
+- Collection date: `2026-09-01`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/manifest.json)
+- Packet: [review packet](repos/stripe/react-stripe-js/ingest-packets/github-87a18c639834d62a679f/packet.md)
+- Review priority: `high`
+- Required reading: `69` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/react-stripe-js@6.8.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.1/2026-09-01/manifest.json)
+  Comparison: [manifest](repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.0--6.8.1/comparison.json)
 
 ## `github-88d13a8f0c219387aab4`
 

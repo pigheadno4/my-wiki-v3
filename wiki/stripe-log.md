@@ -6,6 +6,18 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-01] ingest | stripe/react-stripe-js `@stripe/react-stripe-js@6.8.2`
+
+- Delta-ingested work item `github-63d1c788da3330896fd0` from `6.8.1` to exact SHA `c48d6515c48da2fa5e2eefc9c8168b95e3026ef2` after serial review of all 11 required evidence and context paths.
+- Added trusted-pricing, client-secret, readiness, loading, duplicate-submit, confirmation-error, and server-response checks from the strengthened Checkout Sessions example.
+- Preserved the runtime boundary: only README guidance and the package version changed, and removing the full Payment Intents snippet does not establish deprecation.
+
+## [2026-09-01] ingest | stripe/react-stripe-js `@stripe/react-stripe-js@6.8.1`
+
+- Delta-ingested work item `github-87a18c639834d62a679f` from `6.8.0` to exact SHA `e8146742ffe374ff54301cbdc6fb566e3218a220` after serial review of all 69 required evidence and context paths.
+- Recorded Checkout Sessions with `ui_mode: 'elements'` as the recommended path for most new custom React checkout pages while preserving the lower-level Payment Intents path for existing or finer-control integrations.
+- Recorded typed TSX demos, Storybook 10, Node 24, and development-dependency updates while preserving the evidence boundary that public-source edits were formatting-only and no public runtime API or peer range changed.
+
 ## [2026-09-01] ingest | stripe/stripe-js `@stripe/stripe-js@9.15.0`
 
 - Delta-ingested work item `github-7744a04feefa263d4371` from `9.14.0` to exact SHA `9c83132a5333ffd757be55c75f44524023b5a39e` after serial review of all 12 required evidence and context paths.

@@ -2,9 +2,11 @@
 title: "GitHub changelog: stripe/react-stripe-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-07-30
+date_updated: 2026-09-01
 original_format: github-repo
 raw_files:
+  - "github/stripe/react-stripe-js/snapshots/2026-09-01-c48d651/manifest.json"
+  - "github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/manifest.json"
   - "github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/manifest.json"
   - "github-react-stripe-js.md"
 tags: [stripe, react, stripe-js, elements, checkout, changelog, github-repository]
@@ -13,6 +15,60 @@ tags: [stripe, react, stripe-js, elements, checkout, changelog, github-repositor
 ## Overview
 
 Chronological release synthesis for `stripe/react-stripe-js`. Cumulative implementation knowledge belongs in [[source-github-react-stripe-js]] and the linked immutable evidence.
+
+## `@stripe/react-stripe-js@6.8.2` - Change Set `c48d651` (2026-08-20)
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@stripe/react-stripe-js` | `6.8.1` | `6.8.2` | 2026-08-20 | `c48d6515c48da2fa5e2eefc9c8168b95e3026ef2` | Delta |
+
+**Important change:** The Checkout Sessions README example now uses trusted server-side pricing, validates the returned client secret, checks `checkout.canConfirm`, handles loading and error states, prevents duplicate confirmation, and displays Session line items and totals.
+
+**Developer or merchant impact:** The documented client pattern handles both `checkout.confirm()` error results and thrown exceptions, supplies the client secret as a checked fetch promise, and nests Appearance under `elementsOptions`. These are stronger integration examples, not new React Stripe.js APIs.
+
+**Migration action:** New Checkout Elements implementations should adopt the readiness, submission, error, and server-response checks. Existing Payment Intents integrations are not deprecated by the README shortening and do not require migration solely because of `6.8.2`.
+
+**Updated source sections:** evidence boundary; package status; version history; integration guidance; Stripe company; Stripe Checkout concept.
+
+**Evidence boundary:** Only `README.md` and the package version changed from `6.8.1`. No retained runtime source, public export, dependency, or peer-dependency range changed.
+
+**Evidence:**
+
+- Release manifest: `raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.2/2026-09-01/manifest.json`
+- Release notes: `raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.2/2026-09-01/release-notes.md`
+- Snapshot manifest: `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-c48d651/manifest.json`
+- README: `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-c48d651/files/README.md`
+- Package manifest: `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-c48d651/files/package.json`
+- Comparison manifest: `tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.1--6.8.2/comparison.json`
+- Comparison summary: `tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.1--6.8.2/comparison.md`
+- Exact patch: `tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.1--6.8.2/diff.patch`
+
+## `@stripe/react-stripe-js@6.8.1` - Change Set `e814674` (2026-08-10)
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@stripe/react-stripe-js` | `6.8.0` | `6.8.1` | 2026-08-10 | `e8146742ffe374ff54301cbdc6fb566e3218a220` | Delta |
+
+**Important change:** The README and demos now emphasize Checkout Sessions with `ui_mode: 'elements'`, `CheckoutElementsProvider`, and `useCheckoutElements()` as the recommended path for most new custom payment forms. The lower-level Payment Intents example remains for existing integrations and finer-grained control.
+
+**Developer or merchant impact:** All retained demos move from JavaScript to typed TSX and receive Storybook stories. Storybook advances to v10 and the repository development environment moves to Node 24. These changes improve the maintained examples and contributor workflow but do not add or remove a public React Stripe.js API.
+
+**Migration action:** New custom checkout implementations should evaluate the Checkout Sessions path first. Existing Payment Intents implementations do not need to migrate solely because of `6.8.1`; continue using that path when its lower-level control justifies the additional code and maintenance.
+
+**Updated source sections:** evidence boundary; package status and compatibility; version history; integration guidance; Stripe company; Stripe Checkout concept.
+
+**Evidence boundary:** Changes across retained `src/` files are formatting-only under the upgraded Prettier configuration. PostCSS, `fast-uri`, Storybook, Prettier, Babel, and Node changes affect repository tooling or development dependencies; the package's public entrypoints, peer ranges, and retained runtime behavior are unchanged.
+
+**Evidence:**
+
+- Release manifest: `raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.1/2026-09-01/manifest.json`
+- Release notes: `raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.1/2026-09-01/release-notes.md`
+- Snapshot manifest: `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/manifest.json`
+- README: `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/README.md`
+- Package manifest: `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/package.json`
+- Comparison manifest: `tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.0--6.8.1/comparison.json`
+- Comparison summary: `tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.0--6.8.1/comparison.md`
+- Exact patch: `tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.0--6.8.1/diff.patch`
 
 ## `@stripe/react-stripe-js@6.8.0` — Change Set `a742a10` (2026-07-15)
 

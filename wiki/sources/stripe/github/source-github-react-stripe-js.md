@@ -2,9 +2,11 @@
 title: "GitHub: stripe/react-stripe-js"
 type: source
 date_ingested: 2026-05-08
-date_updated: 2026-07-30
+date_updated: 2026-09-01
 original_format: github-repo
 raw_files:
+  - "github/stripe/react-stripe-js/snapshots/2026-09-01-c48d651/manifest.json"
+  - "github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/manifest.json"
   - "github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/manifest.json"
   - "github-react-stripe-js.md"
 tags: [stripe, react, stripe-js, elements, checkout, typescript, github-repository]
@@ -12,7 +14,7 @@ tags: [stripe, react, stripe-js, elements, checkout, typescript, github-reposito
 
 ## Overview
 
-`stripe/react-stripe-js` publishes `@stripe/react-stripe-js`, the official React component and hook layer for Stripe.js and Elements. This cumulative page preserves the legacy `6.3.0` manual capsule and adds the approved `@stripe/react-stripe-js@6.8.0` baseline at commit `a742a105cdf297aa28f87bac5292c27a60defad3`.
+`stripe/react-stripe-js` publishes `@stripe/react-stripe-js`, the official React component and hook layer for Stripe.js and Elements. This cumulative page preserves the legacy `6.3.0` manual capsule, the approved `6.8.0` baseline, and approved deltas through `@stripe/react-stripe-js@6.8.2` at commit `c48d6515c48da2fa5e2eefc9c8168b95e3026ef2`.
 
 Repository: <https://github.com/stripe/react-stripe-js>
 
@@ -23,6 +25,8 @@ Repository: <https://github.com/stripe/react-stripe-js>
 - The current immutable collector first retained `6.8.0`. The older `6.3.0` evidence is a legacy manual capsule, so this page preserves it as historical context without presenting an automated exact diff.
 - Generated `dist/` targets are declared public package outputs but are not tracked in the upstream repository. The retained source capsule covers their source inputs rather than generated bundles.
 - Tests were excluded by the approved capsule policy. Examples and the complete retained public source were included.
+- The `6.8.1` public-source edits are formatting-only under the upgraded Prettier configuration. They do not establish a React API or runtime behavior change; the substantive integration change is in the README and demo organization.
+- Version `6.8.2` changes only `README.md` and the package version. Removing the full Payment Intents sample from the README does not establish an API removal, deprecation, or hosted-runtime change.
 
 > [!warning] Contradiction
 > The 2025 summary in [[source-stripe-react-stripejs]] describes the entire `Elements.options` prop as immutable. The retained `6.8.0` implementation blocks updates only for `clientSecret` and `fonts`, then forwards other changed options through `elements.update()`. Treat the older statement as dated documentation context.
@@ -55,13 +59,13 @@ Repository: <https://github.com/stripe/react-stripe-js>
 
 | Package | Latest ingested release | Exact SHA | Evidence status |
 | --- | --- | --- | --- |
-| `@stripe/react-stripe-js` | `6.8.0` | `a742a105cdf297aa28f87bac5292c27a60defad3` | Approved full baseline; legacy v6.3.0 retained |
+| `@stripe/react-stripe-js` | `6.8.2` | `c48d6515c48da2fa5e2eefc9c8168b95e3026ef2` | Approved delta; `6.8.0` full baseline and prior history retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
 ## Package Shape and Compatibility
 
-Version `6.8.0` publishes two explicit entrypoints:
+Version `6.8.2` preserves the two explicit entrypoints established by the `6.8.0` baseline:
 
 - `@stripe/react-stripe-js` for standard Elements, Embedded Checkout, disclosure components, hooks, and the root Element component set.
 - `@stripe/react-stripe-js/checkout` for Checkout Elements and beta Checkout Form providers, hooks, and components.
@@ -126,6 +130,34 @@ Standard and Checkout providers also allow a `null` Stripe value for server rend
 
 ## Version History
 
+### `@stripe/react-stripe-js@6.8.2`
+
+This patch strengthens the Checkout Sessions README guidance introduced in `6.8.1`. It recommends creating the Session from trusted product and pricing data and explicitly failing when Stripe does not return `session.client_secret`.
+
+The client example now treats `useCheckoutElements()` as a stateful result. It renders loading and initialization failures, checks `checkout.canConfirm`, prevents duplicate submission, clears prior errors, handles both returned confirmation errors and thrown exceptions, and renders Session line items and the total before presenting `PaymentElement`. Session creation is represented as a promise supplied through `options.clientSecret`, while Appearance configuration is nested under `elementsOptions`.
+
+> "Create a Checkout Session on your server using trusted product and pricing data, then return its client secret:"
+>
+> `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-c48d651/files/README.md:46-47`
+
+> "if (result.type !== 'success' || !result.checkout.canConfirm)"
+>
+> `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-c48d651/files/README.md:91-96`
+
+> "<button type=\"submit\" disabled={!checkout.canConfirm || isSubmitting}>"
+>
+> `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-c48d651/files/README.md:138-143`
+
+Only `README.md` and the package version changed from `6.8.1`. The README no longer includes the complete direct Payment Intents sample, but it still identifies Payment Intents as the fine-grained-control path. No retained runtime source, public export, dependency, or peer range changed.
+
+### `@stripe/react-stripe-js@6.8.1`
+
+This patch changes the recommended starting point for a new custom payment form. The README now leads with Checkout Sessions using `ui_mode: 'elements'`, a server-created Checkout Session client secret, `CheckoutElementsProvider`, `useCheckoutElements()`, and `checkout.confirm({returnUrl})`. It retains a lower-level Payment Intents example for existing integrations or merchants that need finer control and accept the additional implementation and maintenance work.
+
+The repository demos were converted from JavaScript to typed TSX and exposed as Storybook stories across card, split-card, Payment Request Button, IBAN, custom Checkout, Embedded Checkout, Checkout Form, Payment Element, and Issuing scenarios. Storybook moved to v10, the development workflow moved to Node 24, and development dependencies including PostCSS, `fast-uri`, and Prettier were updated.
+
+No public export, peer-dependency range, or merchant runtime contract changed in the retained diff. The apparent edits across public source files are formatting-only; do not interpret them as new API behavior.
+
 ### `@stripe/react-stripe-js@6.8.0`
 
 The exact release note is limited to adding Terms Element. The retained full baseline also establishes the current package shape, compatibility window, provider-specific Checkout hooks, Checkout Form surface, Issuing components, SSR behavior, and component lifecycle. Those broader findings describe the complete `6.8.0` capsule and must not be attributed solely to the patch note.
@@ -147,6 +179,9 @@ The `6.8.0` baseline preserves these responsibilities while adding later public 
 - Treat Stripe objects and initialization secrets as immutable provider inputs. Remount a new provider for a genuinely new instance.
 - Re-run TypeScript checks whenever either React Stripe.js or `@stripe/stripe-js` changes because the React package imports its runtime-facing types from Stripe.js.
 - Verify beta access and runtime feature availability independently of the React export surface.
+- For a new custom checkout page, prefer the documented Checkout Sessions plus Checkout Elements path unless the integration specifically needs direct Payment Intents control. Existing Payment Intents integrations remain supported by the retained examples.
+- In Checkout Elements UI, gate confirmation on `checkout.canConfirm`, represent loading and initialization failures explicitly, disable the submit button while confirming, and handle both returned and thrown confirmation errors.
+- Create Checkout Sessions from server-trusted product and pricing data, verify that `session.client_secret` exists, and check the HTTP response before passing the secret promise to the provider.
 
 ## Related
 
@@ -158,6 +193,22 @@ The `6.8.0` baseline preserves these responsibilities while adding later public 
 
 ## Raw Sources
 
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-c48d651/manifest.json` — exact-SHA `6.8.2` source capsule
+- `raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.2/2026-09-01/manifest.json` — package-qualified `6.8.2` release record
+- `raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.2/2026-09-01/release-notes.md` — exact upstream `6.8.2` release note
+- `tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.1--6.8.2/comparison.json` — machine-readable `6.8.2` change inventory
+- `tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.1--6.8.2/comparison.md` — human-readable `6.8.2` change inventory
+- `tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.1--6.8.2/diff.patch` — exact `6.8.1--6.8.2` patch
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-c48d651/files/README.md` — strengthened Checkout Sessions implementation guidance
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-c48d651/files/package.json` — `6.8.2` identity with unchanged package contract
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/manifest.json` — exact-SHA `6.8.1` source capsule
+- `raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.1/2026-09-01/manifest.json` — package-qualified `6.8.1` release record
+- `raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.1/2026-09-01/release-notes.md` — exact upstream `6.8.1` release note
+- `tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.0--6.8.1/comparison.json` — retained machine-readable change inventory
+- `tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.0--6.8.1/comparison.md` — retained human-readable change inventory
+- `tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.0--6.8.1/diff.patch` — exact retained patch
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/README.md` — Checkout Sessions-first recommendation and both integration paths
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/package.json` — unchanged public entrypoints and peer ranges plus development-tool updates
 - `raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/manifest.json` — exact-SHA `6.8.0` source capsule
 - `raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.0/2026-07-30/manifest.json` — package-qualified release record
 - `raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.0/2026-07-30/release-notes.md` — exact upstream release note

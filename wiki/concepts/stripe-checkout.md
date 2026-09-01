@@ -70,6 +70,10 @@ The approved `@stripe/stripe-js@9.14.0` delta adds Payment Element `walletOption
 
 Embedded Checkout remains a separate root-package path through `EmbeddedCheckoutProvider` and `EmbeddedCheckout`. Its provider accepts either `clientSecret` or `fetchClientSecret`, creates the embedded page once, and destroys it on unmount. These React bindings depend on `@stripe/stripe-js`; they do not independently prove the behavior or rollout of the Stripe-hosted runtime. See [[source-github-react-stripe-js]].
 
+The `@stripe/react-stripe-js@6.8.1` documentation makes Checkout Sessions with `ui_mode: 'elements'` the recommended starting point for most new custom React checkout pages. The server creates the Session from trusted pricing data and returns its client secret; the client passes that secret to `CheckoutElementsProvider`, reads state through `useCheckoutElements()`, and confirms through `checkout.confirm({returnUrl})`. The lower-level `Elements` plus Payment Intents path remains documented for existing integrations or cases requiring finer-grained control. This is a guidance and demo change, not a removal of Payment Intents support or a React runtime API change.
+
+Version `6.8.2` strengthens that example without changing the runtime surface. The server must verify `session.client_secret`; the client should handle loading and initialization errors, require `checkout.canConfirm`, disable duplicate submission, process both returned and thrown confirmation errors, and validate the Session-creation HTTP response. Removing the complete Payment Intents snippet from the README does not deprecate that lower-level integration path.
+
 ## Checkout Sessions vs Payment Intents (for Elements)
 
 Both integrate with Elements + Appearance API. **Use Checkout Sessions for most integrations** — it handles the same payment flows as Payment Intents with significantly less code.

@@ -1,0 +1,141 @@
+# GitHub ingest packet
+
+- Repository: `stripe/react-stripe-js`
+- Work item: `github-87a18c639834d62a679f`
+- Snapshot: `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `high`
+
+## `@stripe/react-stripe-js`
+
+- Version: `6.8.0` -> `6.8.1`
+- Recommendation: `delta` / `high`
+- Unchanged retained files: `15`
+
+### Required reading
+
+- `raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.1/2026-09-01/manifest.json`
+- `raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.8.1/2026-09-01/release-notes.md`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/files/examples/class-components/0-Card-Minimal.js`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/files/examples/class-components/1-Card-Detailed.js`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/files/examples/class-components/2-Split-Card.js`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/files/examples/class-components/3-Payment-Request-Button.js`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/files/examples/class-components/4-IBAN.js`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/files/examples/hooks/0-Card-Minimal.js`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/files/examples/hooks/1-Card-Detailed.js`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/files/examples/hooks/11-Custom-Checkout.js`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/files/examples/hooks/12-Embedded-Checkout.js`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/files/examples/hooks/13-Checkout-Form.js`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/files/examples/hooks/2-Split-Card.js`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/files/examples/hooks/3-Payment-Request-Button.js`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/files/examples/hooks/4-IBAN.js`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/files/examples/hooks/9-Payment-Element.js`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/files/examples/util.js`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-07-30-a742a10/manifest.json`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/README.md`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/.eslintrc.yml`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/class-components/0-Card-Minimal.stories.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/class-components/0-Card-Minimal.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/class-components/1-Card-Detailed.stories.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/class-components/1-Card-Detailed.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/class-components/2-Split-Card.stories.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/class-components/2-Split-Card.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/class-components/3-Payment-Request-Button.stories.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/class-components/3-Payment-Request-Button.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/class-components/4-IBAN.stories.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/class-components/4-IBAN.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/0-Card-Minimal.stories.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/0-Card-Minimal.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/1-Card-Detailed.stories.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/1-Card-Detailed.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/11-Custom-Checkout.stories.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/11-Custom-Checkout.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/12-Embedded-Checkout.stories.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/12-Embedded-Checkout.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/13-Checkout-Form.stories.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/13-Checkout-Form.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/14-Issuing-Elements.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/2-Split-Card.stories.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/2-Split-Card.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/3-Payment-Request-Button.stories.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/3-Payment-Request-Button.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/4-IBAN.stories.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/4-IBAN.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/9-Payment-Element.stories.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/hooks/9-Payment-Element.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/examples/util.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/package.json`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/src/checkout/components/CheckoutContext.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/src/checkout/components/CheckoutElementsProvider.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/src/checkout/components/CheckoutFormProvider.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/src/checkout/index.ts`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/src/checkout/types/index.ts`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/src/components/Elements.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/src/components/EmbeddedCheckoutProvider.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/src/components/FinancialAccountDisclosure.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/src/components/IssuingDisclosure.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/src/components/createElementComponent.tsx`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/src/index.ts`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/files/src/types/index.ts`
+- `raw/github/stripe/react-stripe-js/snapshots/2026-09-01-e814674/manifest.json`
+- `tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.0--6.8.1/comparison.json`
+- `tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.0--6.8.1/comparison.md`
+- `tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.8.0--6.8.1/diff.patch`
+
+### Upstream changes
+
+- `modified` `.github/workflows/build.yml`: `intentional-policy-exclusion`
+- `added` `.node-version`: `intentional-policy-exclusion`
+- `added` `.storybook/constants.ts`: `intentional-policy-exclusion`
+- `deleted` `.storybook/example.stories.js`: `intentional-policy-exclusion`
+- `deleted` `.storybook/main.js`: `intentional-policy-exclusion`
+- `added` `.storybook/main.ts`: `intentional-policy-exclusion`
+- `modified` `README.md`: `retained-evidence`
+- `modified` `examples/.eslintrc.yml`: `retained-evidence`
+- `added` `examples/class-components/0-Card-Minimal.stories.tsx`: `retained-evidence`
+- `renamed` `examples/class-components/0-Card-Minimal.tsx`: `retained-evidence`
+- `added` `examples/class-components/1-Card-Detailed.stories.tsx`: `retained-evidence`
+- `renamed` `examples/class-components/1-Card-Detailed.tsx`: `retained-evidence`
+- `added` `examples/class-components/2-Split-Card.stories.tsx`: `retained-evidence`
+- `renamed` `examples/class-components/2-Split-Card.tsx`: `retained-evidence`
+- `added` `examples/class-components/3-Payment-Request-Button.stories.tsx`: `retained-evidence`
+- `renamed` `examples/class-components/3-Payment-Request-Button.tsx`: `retained-evidence`
+- `added` `examples/class-components/4-IBAN.stories.tsx`: `retained-evidence`
+- `renamed` `examples/class-components/4-IBAN.tsx`: `retained-evidence`
+- `added` `examples/hooks/0-Card-Minimal.stories.tsx`: `retained-evidence`
+- `renamed` `examples/hooks/0-Card-Minimal.tsx`: `retained-evidence`
+- `added` `examples/hooks/1-Card-Detailed.stories.tsx`: `retained-evidence`
+- `renamed` `examples/hooks/1-Card-Detailed.tsx`: `retained-evidence`
+- `added` `examples/hooks/11-Custom-Checkout.stories.tsx`: `retained-evidence`
+- `renamed` `examples/hooks/11-Custom-Checkout.tsx`: `retained-evidence`
+- `added` `examples/hooks/12-Embedded-Checkout.stories.tsx`: `retained-evidence`
+- `renamed` `examples/hooks/12-Embedded-Checkout.tsx`: `retained-evidence`
+- `added` `examples/hooks/13-Checkout-Form.stories.tsx`: `retained-evidence`
+- `renamed` `examples/hooks/13-Checkout-Form.tsx`: `retained-evidence`
+- `modified` `examples/hooks/14-Issuing-Elements.tsx`: `retained-evidence`
+- `added` `examples/hooks/2-Split-Card.stories.tsx`: `retained-evidence`
+- `renamed` `examples/hooks/2-Split-Card.tsx`: `retained-evidence`
+- `added` `examples/hooks/3-Payment-Request-Button.stories.tsx`: `retained-evidence`
+- `renamed` `examples/hooks/3-Payment-Request-Button.tsx`: `retained-evidence`
+- `added` `examples/hooks/4-IBAN.stories.tsx`: `retained-evidence`
+- `renamed` `examples/hooks/4-IBAN.tsx`: `retained-evidence`
+- `added` `examples/hooks/9-Payment-Element.stories.tsx`: `retained-evidence`
+- `renamed` `examples/hooks/9-Payment-Element.tsx`: `retained-evidence`
+- `renamed` `examples/util.tsx`: `retained-evidence`
+- `modified` `package.json`: `retained-evidence`
+- `modified` `src/checkout/components/CheckoutContext.tsx`: `retained-evidence`
+- `modified` `src/checkout/components/CheckoutElementsProvider.test.tsx`: `intentional-policy-exclusion`
+- `modified` `src/checkout/components/CheckoutElementsProvider.tsx`: `retained-evidence`
+- `modified` `src/checkout/components/CheckoutFormProvider.test.tsx`: `intentional-policy-exclusion`
+- `modified` `src/checkout/components/CheckoutFormProvider.tsx`: `retained-evidence`
+- `modified` `src/checkout/index.ts`: `retained-evidence`
+- `modified` `src/checkout/types/index.ts`: `retained-evidence`
+- `modified` `src/components/Elements.tsx`: `retained-evidence`
+- `modified` `src/components/EmbeddedCheckoutProvider.tsx`: `retained-evidence`
+- `modified` `src/components/FinancialAccountDisclosure.tsx`: `retained-evidence`
+- `modified` `src/components/IssuingDisclosure.tsx`: `retained-evidence`
+- `modified` `src/components/createElementComponent.test.tsx`: `intentional-policy-exclusion`
+- `modified` `src/components/createElementComponent.tsx`: `retained-evidence`
+- `modified` `src/index.ts`: `retained-evidence`
+- `modified` `src/types/index.ts`: `retained-evidence`
+- `modified` `yarn.lock`: `intentional-policy-exclusion`
