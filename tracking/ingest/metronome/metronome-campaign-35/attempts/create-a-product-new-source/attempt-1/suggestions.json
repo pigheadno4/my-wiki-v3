@@ -1,0 +1,79 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "create-product-operation-and-pricing-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Products",
+      "proposed_markdown": "Bearer-authenticated `POST /v1/contract-pricing/products/create` creates a product from schema-required `name` and `type` properties inside a supplied payload and returns required UUID `data.id`. The enclosing request body is not marked required. Usage products describe `billable_metric_id` as required, while composite products describe both product IDs and tags as required, but those conditional fields are absent from the schema-level required array. Creation establishes catalog identity and invoice-line presentation, not a price, rate-card or contract attachment, invoice adoption, uniqueness, propagation, or read-after-write guarantee. The professional-service enum values carry client-group annotations and do not prove universal availability. [[source-metronome-api-reference-products-create-a-product]]",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "Preserve the conditional-description versus schema-requiredness boundary.",
+        "Do not infer pricing, rate-card adoption, contract adoption, invoice adoption, uniqueness, or propagation from creation."
+      ]
+    },
+    {
+      "update_id": "create-product-billable-metric-configuration",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Lifecycle boundary",
+      "proposed_markdown": "The Product-create operation describes `billable_metric_id` as required for a usage product. For SQL metrics, product `sql_breakdown_granularity` defaults to service-period evaluation and recommends hourly evaluation for most use cases; it has no effect on streaming metrics. Pricing and presentation key values used by the product must be configured together as one compound billable-metric group key. The endpoint does not establish metric existence validation, archived-metric acceptance, propagation, historical rating, or invoice adoption. [[source-metronome-api-reference-products-create-a-product]]",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "The conditional billable-metric requirement is descriptive and is not included in the payload schema's top-level required array."
+      ]
+    },
+    {
+      "update_id": "create-product-invoice-line-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Native invoice model",
+      "proposed_markdown": "Metronome describes a Product as the basic unit of an invoice line item and says its meaningful name is displayed on customer invoices. The create operation returns only `data.id`; it does not assign pricing, attach the product to a rate card or contract, prove invoice adoption, or define invoice propagation, draft/finalized behavior, delivery, collection, tax, payment, accounting, or reconciliation outcomes. [[source-metronome-api-reference-products-create-a-product]]",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "Treat invoice-line role and name display as presentation semantics when the product is used, not proof that creation causes an invoice line."
+      ]
+    },
+    {
+      "update_id": "create-product-custom-field-input",
+      "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Product listing surface",
+      "proposed_markdown": "Product creation accepts optional `custom_fields` through an object whose arbitrary properties must have string values. This create schema does not establish that a key was configured, uniqueness enforcement, key or value limits, update semantics, API or export visibility, persistence, invoice-line propagation, or downstream integration adoption; those behaviors remain with dedicated custom-field authorities. [[source-metronome-api-reference-products-create-a-product]]",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Do not infer allowed-key validation, uniqueness, persistence, or invoice propagation from the open string-map shape."
+      ]
+    },
+    {
+      "update_id": "create-product-post-execution-admission",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "`POST /v1/contract-pricing/products/create` falls under the separate API-wide `Idempotency-Key` authority. A provided-key result is persisted only after execution begins, meaning validation passed and no pre-execution concurrent-request conflict prevented execution; identical same-key parameters then replay the original result and changed parameters return HTTP `409`. Validation failures and pre-execution conflicts are not established cached results. The product endpoint adds no resource `uniqueness_key`, duplicate-product rule, another- or expired-key behavior, concurrency ordering, visibility or propagation guarantee, or ambiguous-failure recovery rule. [[source-metronome-api-reference-products-create-a-product]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "API-wide replay semantics come from the existing idempotency authority, not from the Product-create raw page.",
+        "Keep execution admission separate from endpoint-specific uniqueness, propagation, and recovery unknowns."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

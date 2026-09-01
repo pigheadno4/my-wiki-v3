@@ -1,0 +1,122 @@
+{
+  "job_id": "get-batched-usage-data-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Get Batched Usage Data\"\ntype: source\ndate_ingested: 2026-09-01\ncanonical_url: \"https://docs.metronome.com/api-reference/usage/get-batched-usage-data\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/usage/get-batched-usage-data-2026-07-13.md\"\ntags: [metronome, api, usage, billable-metrics, analytics, pagination]\n---\n\n## Overview\n\nBearer-authenticated `POST /v1/usage` retrieves aggregated usage across multiple customers and billable metrics in one query, divided into requested hourly, daily, or whole-period windows. It is a post-metric analytics and reporting read; it does not return raw submitted events, prices, costs, invoice state, or an accounting-complete billing population.\n\n## Query-critical facts\n\n- Within a supplied JSON payload, `window_size`, `starting_on`, and `ending_before` are required. The enclosing OpenAPI `requestBody` is not marked required, so omitted-body behavior is not established. The payload schema does not declare `additionalProperties: false`, so unknown-field handling is also undocumented.\n- `customer_ids` is an optional array of Metronome customer UUIDs; omitting it requests usage for all customers. `billable_metrics` is an optional array of metric selectors; omitting it requests all billable metrics, while every supplied selector requires UUID `id`. The page does not define empty-array behavior, identifier validation beyond UUID format, archived-resource visibility, or the semantics of mixing missing, inaccessible, or unrelated customer and metric IDs.\n- A supplied metric selector may include `group_by`, whose supplied object requires `key`. Optional `values` has 1 through 200 nonempty strings; omitting `values` requests all available values, up to 200. The page does not define which 200 values are selected, their order, a continuation mechanism for excess group values, duplicate-value behavior, or whether omitted `group_by` returns ungrouped usage.\n- `window_size` accepts documented lower-, title-, and uppercase variants of `hour`, `day`, and `none`. Hour and day segment the selected interval into hourly or daily aggregates; none requests one usage aggregate for the entire specified period. The page does not define timezone alignment, partial-window behavior, maximum interval, retention, late-event treatment, or calculation semantics for particular metric aggregation types.\n- Optional query `next_page` indicates where the next result page begins. HTTP `200` requires a top-level `data` array and nullable sibling `next_page`; the separate [[source-metronome-api-reference-pagination|pagination authority]] supplies repeat-with-cursor-until-null traversal. Each immediate `data[]` aggregate requires customer and metric identity, start and end timestamps, and nullable numeric `value`; optional `groups` maps group values to nullable numbers, where null means no usage matched that group value.\n\n## Material boundaries\n\n- The narrative lists `next_page` as if it were contained by each `UsageBatchAggregate`, but the response schema and example place one nullable cursor at the top-level envelope beside `data`. Clients should follow the schema and example placement.\n- The endpoint has no query `limit`, documented ordering, total count, default page size, cursor lifetime, filter-binding rule, stable snapshot, duplicate-or-skip behavior, as-of selector, read-after-ingest timing, or freshness guarantee. Completing cursor traversal therefore does not prove an immutable or newly current usage population.\n- Under the separate API-wide [[source-metronome-api-reference-idempotency|idempotency authority]], a provided-key result is persisted only after the request begins execution, meaning validation passed and no pre-execution concurrent-request conflict prevented execution. Only after that admission and persistence do identical same-key parameters replay the original result. Advancing query `next_page` changes parameters, so reusing that key returns HTTP `409 Conflict`; validation failures and pre-execution concurrency conflicts are not established cached results. Replay is not a fresh usage calculation or a stable pagination snapshot. This endpoint adds no requirement to send the header, no preferred key policy for later pages, and no endpoint-specific retry, recovery, concurrency, cursor-replay, or freshness guarantee.\n- This page is authoritative for batched aggregate request and response shape, not raw-event acceptance, transaction-ID deduplication, customer or metric matching success, metric-definition correctness, pricing, invoice reconciliation, capacity enforcement, financial reporting, or accounting completeness. Its dashboard, reporting, monitoring, and capacity-planning use cases do not elevate the result into billing or ledger authority.\n\n## Raw-detail coverage map\n\n| Raw detail category | Exact raw coverage |\n| --- | --- |\n| Operation and request identity | Production server, bearer security, `POST /v1/usage`, operation ID, query cursor reference, unmarked request-body requiredness, and supplied-payload required properties |\n| Batch scope and selectors | Optional customer UUID array with all-customer omission behavior; optional metric-selector array with all-metric omission behavior; per-selector required UUID `id`; nested optional `group_by`; and unspecified empty-array, inaccessible-ID, and cross-scope behavior |\n| Time-window contract | Required RFC 3339-style date-time bounds, hour/day/none casing variants, hourly and daily segmentation, whole-period none behavior, and exact worked interval example |\n| Group selection and result values | Required group key inside a supplied grouping object; optional 1-200 nonempty values; omitted-values all-available behavior capped at 200; aggregate identity and timestamps; nullable numeric value; optional arbitrary group-value map; and documented null meaning |\n| Response placement and examples | Required top-level `data` plus nullable sibling `next_page`, two daily aggregate examples, narrative-versus-schema cursor-placement conflict, and the absence of a grouped response example |\n| Pagination and replay boundaries | Query `next_page` without endpoint `limit`; repeat-until-null route to the separate pagination authority; API-wide execution-admission prerequisite; admitted identical-parameter replay; changed-cursor HTTP 409 boundary; uncached validation and pre-execution concurrency failures; and endpoint-local ordering, snapshot, freshness, and recovery unknowns |\n| Cross-surface authority | Analytics, reporting, monitoring, and capacity-planning use cases; aggregated post-metric output versus raw-event ingestion; and the absence of pricing, cost, invoice, ledger, or accounting authority |\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-billable-metrics]], [[metronome-reporting-and-analytics]], [[metronome-usage-based-billing]], [[metronome-event-ingestion]], [[metronome-api-idempotency]]\n- Related sources: [[source-metronome-api-reference-idempotency]], [[source-metronome-api-reference-pagination]], [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/usage/get-batched-usage-data-2026-07-13|2026-07-13 snapshot - complete batched usage query, time-window, grouping, aggregate, and pagination reference]]\n",
+  "quotes": [
+    {
+      "text": "````yaml /openapi.json post /v1/usage\nopenapi: 3.0.1\ninfo:\n  title: Metronome\n  version: 1.0.0\nservers:\n  - url: https://api.metronome.com\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "OpenAPI operation header, production server, and document-level bearer security"
+    },
+    {
+      "text": "      parameters:\n        - $ref: '#/components/parameters/NextPage'\n      requestBody:\n        description: The usage query to run\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/UsageBatchQueryPayload'",
+      "location": "POST /v1/usage operation parameters and requestBody declaration without required: true"
+    },
+    {
+      "text": "    UsageBatchQueryPayload:\n      required:\n        - window_size\n        - starting_on\n        - ending_before\n      type: object\n      properties:\n        customer_ids:\n          type: array\n          description: >-\n            A list of Metronome customer IDs to fetch usage for. If absent,\n            usage for all customers will be returned.\n          items:\n            type: string\n            format: uuid\n        billable_metrics:\n          type: array\n          description: >-\n            A list of billable metrics to fetch usage for. If absent, all\n            billable metrics will be returned.",
+      "location": "UsageBatchQueryPayload required properties and optional all-customer/all-metric selector semantics"
+    },
+    {
+      "text": "                  data:\n                    type: array\n                    items:\n                      $ref: '#/components/schemas/UsageBatchAggregate'\n                  next_page:\n                    type: string\n                    nullable: true",
+      "location": "HTTP 200 response envelope properties showing aggregate data and sibling nullable next_page"
+    },
+    {
+      "text": "                  values:\n                    type: array\n                    description: >-\n                      Values of the group_by key to return in the query. If this\n                      field is omitted, all available values will be returned,\n                      up to a maximum of 200.\n                    minItems: 1\n                    maxItems: 200\n                    items:\n                      type: string\n                      minLength: 1",
+      "location": "billable_metrics[].group_by.values omission behavior and 1-to-200 value constraints"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "batched-usage-billable-metric-query",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Retrieval APIs",
+        "proposed_markdown": "Bearer-authenticated `POST /v1/usage` reads aggregated usage across multiple customers and billable metrics between required time bounds and requested hourly, daily, or whole-period windows. Omitting optional `customer_ids` selects all customers; omitting optional `billable_metrics` selects all metrics. Each supplied metric selector requires UUID `id` and may request one `group_by.key`; omitted group values return all available values up to 200. The endpoint does not define metric calculation, archived-metric visibility, empty-selector behavior, group-value selection beyond 200, pricing, invoice equality, freshness, or accounting completeness. [[source-metronome-api-reference-usage-get-batched-usage-data]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Keep batched aggregate retrieval distinct from metric creation, matching, calculation, and Product pricing or presentation configuration.",
+          "Do not infer omitted-body behavior from required properties inside the supplied payload schema.",
+          "The page does not define behavior for empty customer or metric arrays, archived metrics, or more than 200 available group values."
+        ]
+      },
+      {
+        "update_id": "batched-usage-reporting-pagination",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Query model",
+        "proposed_markdown": "`POST /v1/usage` is a multi-customer, multi-billable-metric aggregate read for internal analytics, reports, trend monitoring, comparisons, and capacity planning. Required bounds and window size select hourly, daily, or whole-period results; optional selectors can narrow customer and metric scope. HTTP `200` requires top-level aggregate `data` and nullable sibling `next_page`, despite narrative wording that places the cursor inside aggregate objects. The endpoint has no `limit`, ordering, total count, cursor lifetime, stable snapshot, duplicate-or-skip, as-of, freshness, or read-after-ingest guarantee, so complete traversal does not prove an immutable or newly current reporting population. It returns usage quantities rather than prices, costs, invoice state, ledger state, or accounting-complete financial results. [[source-metronome-api-reference-usage-get-batched-usage-data]]",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "Preserve the narrative-versus-schema cursor-placement conflict and use the OpenAPI envelope plus example for integration shape.",
+          "The endpoint's analytics use cases do not make it financial-reporting, invoice, or accounting authority.",
+          "Keep endpoint-local absence of limit and ordering distinct from the separate pagination authority's general traversal guidance."
+        ]
+      },
+      {
+        "update_id": "batched-usage-usage-billing-route",
+        "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-usage-get-batched-usage-data]] - multi-customer and multi-metric aggregate usage by required interval and window, optional metric grouping, top-level cursor traversal, analytics-versus-billing authority boundary, and freshness and snapshot unknowns",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This source returns post-metric usage quantities, not configured prices, costs, invoice totals, balances, or accounting outcomes.",
+          "Do not infer metric aggregation semantics, event completeness, or invoice reconciliation from the endpoint schema."
+        ]
+      },
+      {
+        "update_id": "batched-usage-event-ingestion-route",
+        "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Processing boundary",
+        "proposed_markdown": "After events are accepted and matched to customers and billable metrics, bearer-authenticated `POST /v1/usage` can read aggregated post-metric usage across multiple customers and metrics by requested time windows. The page defines no read-after-ingest timing, freshness, stable snapshot, or completeness guarantee, so a completed batched traversal does not prove that every submitted event was accepted, deduplicated, matched, or made visible. Raw-event submission, transaction-ID deduplication, matching diagnostics, and ingest recovery remain with their dedicated authorities. [[source-metronome-api-reference-usage-get-batched-usage-data]]",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not treat batched aggregate output as a raw-event receipt, deduplication record, per-event match result, or ingest recovery proof.",
+          "Keep transaction-ID behavior, event acceptance, and ingest failure handling with dedicated event-ingestion authorities."
+        ]
+      },
+      {
+        "update_id": "batched-usage-post-replay-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-usage-get-batched-usage-data]] - paginated POST batched-usage read: under the separate API-wide authority, a provided-key result is persisted only after validation and pre-execution concurrency admission; after persistence, identical same-key parameters replay the original result, while advancing query `next_page` changes parameters and returns HTTP `409` under the same key; validation failures and pre-execution concurrent conflicts are not established cached results, and replay is not a fresh usage calculation or stable pagination snapshot",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": [
+          "Execution admission, replay, and changed-parameter conflict behavior comes from the existing API-wide idempotency authority, not this endpoint page.",
+          "The endpoint adds no requirement to use Idempotency-Key, preferred key policy for later cursor pages, cursor lifetime, cross-page snapshot, read-after-ingest timing, or endpoint-specific recovery guarantee.",
+          "Do not treat same-key replay as a newly evaluated usage result."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/usage/get-batched-usage-data-2026-07-13.md",
+  "raw_sha256": "c3124c5620213df5cb392f335be431a240d5be42e9f955312017d2432c3be924",
+  "status": "candidate_ready"
+}

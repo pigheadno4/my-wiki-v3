@@ -1,0 +1,61 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "list-customer-plans-customer-contract-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Deprecated Plans listing boundary",
+      "proposed_markdown": "Bearer-authenticated `GET /v1/customers/{customer_id}/plans` lists one UUID-identified customer's legacy Plan assignments in reverse-chronological order. Each item distinguishes customer-plan `id` from catalog `plan_id`, requires `starting_on`, and may expose `ending_before`, but the page does not define the ordering timestamp, active-versus-ended filtering, archived or scheduled visibility, freshness, or snapshot consistency. Optional `limit` and `next_page` paginate a required top-level `data` array plus nullable sibling cursor. Metronome directs new clients to Contracts without naming a replacement route, Plan-to-Contract or assignment-to-contract identity mapping, field mapping, migration procedure, historical-continuity rule, compatibility period, or removal date. [[source-metronome-api-reference-plans-list-customer-plans]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep customer-plan assignment ID distinct from the Plan catalog ID and from current Contract identity.",
+        "Do not infer that the list contains only current plans or that optional ending_before defines an endpoint filter.",
+        "Do not treat the current contract read as a shape-compatible replacement; this page supplies no migration mapping."
+      ]
+    },
+    {
+      "update_id": "list-customer-plans-pricing-route",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Rate cards and rates",
+      "proposed_markdown": "The deprecated customer-plan list returns assignment and legacy Plan metadata\u2014customer-plan and Plan IDs, name, description, start time, optional end time and net payment terms, optional trial spending-cap state, and string-valued customer-plan custom fields. It does not return current Contract products, rate cards, rate schedules, overrides, denomination rules, calculation detail, or invoice results, and the page defines no Plan-to-Contract pricing migration. Use it as a legacy assignment-discovery route rather than current Contract pricing authority. [[source-metronome-api-reference-plans-list-customer-plans]]",
+      "quote_indexes": [
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "Plan name and description are not a current product, rate-card, or Contract price representation.",
+        "Trial spending-cap amounts have no documented denomination, calculation, invoice, payment, or accounting guarantee on this page.",
+        "Preserve the deprecated Plans-to-Contracts boundary without inventing a replacement pricing route."
+      ]
+    },
+    {
+      "update_id": "list-customer-plans-reporting-pagination",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Query model",
+      "proposed_markdown": "`GET /v1/customers/{customer_id}/plans` is a deprecated customer-scoped history-style list ordered reverse-chronologically, with optional `limit` from 1 through 100 and `next_page` cursor traversal. HTTP `200` requires top-level customer-plan `data` and nullable sibling `next_page`. The page does not identify the ordering timestamp or tie-breaker and defines no default page size, total count, cursor lifetime, stable snapshot, cross-page duplicate-or-skip behavior, as-of selector, cache behavior, freshness, or read-after-write visibility, so complete traversal does not prove an immutable or newly current customer-plan population. It is not current Contract, invoice, balance, payment, or accounting-reporting authority. [[source-metronome-api-reference-plans-list-customer-plans]]",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Reverse chronological is documented, but the ordering field and tie-breaker are not.",
+        "Cursor completion does not establish snapshot consistency or freshness.",
+        "Do not import API-wide POST Idempotency-Key replay semantics into this GET operation."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

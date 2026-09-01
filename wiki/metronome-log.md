@@ -6,6 +6,16 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-09-01 — Metronome Campaign 35 provider-preflight calibration promoted
+
+- Result: five previously unreferenced canonical API pages gained new Minimum Sufficient Sources across eleven Sol worker attempts and ten full independent Sol reviews; no page passed on attempt 1, with no targeted review, terminal rejection, or coordinator semantic repair.
+- Sources: [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]], [[source-metronome-api-reference-usage-get-batched-usage-data]], [[source-metronome-api-reference-products-create-a-product]], [[source-metronome-api-reference-plans-list-customer-plans]], and [[source-metronome-api-reference-alerts-archive-a-threshold-notification]].
+- Calibration finding: all four POST first attempts preserved the execution-admission prerequisite and no retry was caused by its omission or misstatement; the legacy Customer Plans GET correctly excluded POST idempotency. Page-specific cross-authority completeness still caused five semantic retries, and one Product result needed a mechanical third attempt for an unsupported shared-update kind.
+- Concepts: applied twenty-eight reviewer-approved durable facts and reciprocal links across fourteen existing concept pages; no new concept page was required.
+- Coverage after promotion: 226 current English canonical documentation identities remain retained as 310 immutable raw snapshots, with 177 total source summaries, 171 official-documentation summaries, and 115 raw snapshots without source summaries. The immutable pre-Campaign-31 planning inventory remains unchanged; 55 of those canonical pages now remain without source coverage.
+- Timing and gate: completed in 2,657 seconds (44 minutes 17 seconds), meeting the observational 45-minute target. Final quality and the 9/9 fixed query audit passed, but zero first-pass approvals and eleven worker attempts missed both throughput gates.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-35/monitor.md), [quality audit](../tracking/ingest/metronome/metronome-campaign-35/quality-audit.md), and [retrospective](../tracking/ingest/metronome/metronome-campaign-35/retrospective.md).
+
 ## 2026-09-01 — Metronome Campaign 34 never-ingested coverage promoted
 
 - Result: five previously unreferenced canonical pages gained new Minimum Sufficient Sources across twelve Sol worker attempts and twelve full independent Sol reviews; one page passed on attempt 1, one on attempt 2, and three on attempt 3, with no targeted review, rejection, or coordinator semantic repair.

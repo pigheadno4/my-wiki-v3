@@ -1,0 +1,62 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "list-customer-plans-customer-contract-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Deprecated Plans listing boundary",
+      "proposed_markdown": "Bearer-authenticated `GET /v1/customers/{customer_id}/plans` lists one UUID-identified customer's legacy Plan assignments in reverse-chronological order. Each item distinguishes customer-plan `id` from catalog `plan_id`, requires `starting_on`, and may expose `ending_before`; optional `limit` and `next_page` paginate required top-level `data` plus a nullable sibling cursor. For new integrations, the separately authoritative [List customer contracts (v2)](https://docs.metronome.com/api-reference/contracts/list-customer-contracts-v2) route is `POST /v2/contracts/list`: it lists a customer's Contracts chronologically for provisioning, current-agreement, and tier-history queries, supports `starting_at`, mutually exclusive `covering_date`, and `include_archived` filters, and requires a `data` array without documenting the legacy Plan GET's cursor. [[source-metronome-api-reference-contracts-get-a-contract-v2]] covers `POST /v2/contracts/get` for one identified Contract, and [List customer contracts (v1)](https://docs.metronome.com/api-reference/contracts/list-customer-contracts-v1) is itself a legacy `POST /v1/contracts/list` authority. These exact routes and source-scoped differences do not establish shape compatibility or a Plan-to-Contract or assignment-to-contract identity, field, or migration mapping. [[source-metronome-api-reference-plans-list-customer-plans]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep customer-plan assignment ID distinct from the Plan catalog ID and from current Contract identity; no authority supplies their mapping.",
+        "Route current customer Contract history and active-agreement queries to POST /v2/contracts/list, one identified Contract to POST /v2/contracts/get, and treat POST /v1/contracts/list as legacy.",
+        "Do not infer shape compatibility from route purpose, ordering, filters, response fields, or examples.",
+        "Keep API-wide POST Idempotency-Key semantics scoped to covered Contract POST operations; they do not apply to GET /v1/customers/{customer_id}/plans."
+      ]
+    },
+    {
+      "update_id": "list-customer-plans-pricing-route",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Rate cards and rates",
+      "proposed_markdown": "The deprecated customer-plan list returns assignment and legacy Plan metadata\u2014customer-plan and Plan IDs, name, description, start time, optional end time and net payment terms, optional trial spending-cap state, and string-valued customer-plan custom fields. It does not return current Contract products, rate cards, rate schedules, overrides, denomination rules, calculation detail, or invoice results, and the page defines no Plan-to-Contract pricing migration. Use it as a legacy assignment-discovery route rather than current Contract pricing authority. [[source-metronome-api-reference-plans-list-customer-plans]]",
+      "quote_indexes": [
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "Plan name and description are not a current product, rate-card, or Contract price representation.",
+        "Trial spending-cap amounts have no documented denomination, calculation, invoice, payment, or accounting guarantee on this page.",
+        "Preserve the deprecated Plans-to-Contracts boundary without inventing a replacement pricing mapping."
+      ]
+    },
+    {
+      "update_id": "list-customer-plans-reporting-pagination",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Query model",
+      "proposed_markdown": "`GET /v1/customers/{customer_id}/plans` is a deprecated customer-scoped history-style list ordered reverse-chronologically, with optional `limit` from 1 through 100 and `next_page` cursor traversal. HTTP `200` requires top-level customer-plan `data` and nullable sibling `next_page`. The page does not identify the ordering timestamp or tie-breaker and defines no default page size, total count, cursor lifetime, stable snapshot, cross-page duplicate-or-skip behavior, as-of selector, cache behavior, freshness, or read-after-write visibility, so complete traversal does not prove an immutable or newly current customer-plan population. It is not current Contract, invoice, balance, payment, or accounting-reporting authority. [[source-metronome-api-reference-plans-list-customer-plans]]",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Reverse chronological is documented, but the ordering field and tie-breaker are not.",
+        "Cursor completion does not establish snapshot consistency or freshness.",
+        "Do not import API-wide POST Idempotency-Key replay semantics into this GET operation."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

@@ -32,6 +32,8 @@ The refreshed contract-edit schema exposes feature-gated Stripe `payment_gate_co
 
 ## Lifecycle
 
+For an individually configured commit or credit attached to a seat-managed subscription, `POST /v1/contracts/addManualBalanceLedgerEntry` can include `per_group_amounts`, a numeric map described as the amount to add for each seat; the map must sum to the required total `amount`. The page does not define the map keys' identifier format, omitted-seat treatment, whether negative per-seat values are allowed, or validation, rollback, and visibility when the allocation and total disagree. [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]]
+
 The dedicated seat-balance read is `POST /v1/contracts/seatBalances/list`. It scopes one customer's contract and can filter seats by `SEAT_BASED` subscription UUIDs or stable seat IDs; a subscription ID not mapped to a seat-based subscription is documented as an error. Missing seat IDs fail by default or are silently omitted when `skip_missing_seat_ids` is true. Results group current and initial combined credit/commit balance by seat and credit type. Optional credit, commit, and nested ledger details are sibling seat expansions whose item schemas omit `credit_type_id`, so the response alone cannot attribute them to a particular balance entry or prove their reconciliation. The page also does not define read-after-seat-change visibility, ordering, snapshot consistency, freshness, or reconciliation with subscription quantity and seat histories. [[source-metronome-api-reference-credits-and-commits-list-seat-balances]]
 
 Seat management after contract creation has two modes. Aggregate subscriptions and shared credit pools use `update_subscription` with either total `quantity` or `quantity_delta`; equal-`starting_at` aggregate updates apply in submission order, and invoice plus recurring-credit effects follow configured proration and `access_amount`. Seat-based credit subscriptions instead add or remove stable `seat_ids` and can add or remove unassigned capacity. Reassignment without changing total quantity removes the old identity and adds one unassigned seat, leaving capacity available for a later assignee. The guide does not extend aggregate same-time ordering to seat updates or define proration calculations, rounding, atomicity, errors, or recovery. [[source-metronome-guides-pricing-packaging-subscription-manage-seats]]
@@ -48,6 +50,8 @@ Bearer-authenticated `POST /v1/contracts/getSubscriptionSeatsHistory` reads effe
 The lifecycle page labels one operation as create-contract guidance while linking to edit-contract documentation. Endpoint choice should therefore be verified against the current API.
 
 ## Sources
+
+- [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]] - conditional per-seat manual balance allocation for individually configured seat-managed credits or commits and its sum and validation boundaries
 
 - [[source-metronome-api-reference-contracts-get-subscription-seats-history]] - contract-scoped seat-assignment and total-capacity schedule history, covering-date and range selection, ordered pagination, and future-state and snapshot-completeness unknowns
 - [[source-metronome-api-reference-contracts-edit-a-contract]] - feature-gated subscription payment configuration and recurring child-balance release policies

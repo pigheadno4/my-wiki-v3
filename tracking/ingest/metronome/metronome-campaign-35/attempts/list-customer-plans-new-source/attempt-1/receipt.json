@@ -1,0 +1,91 @@
+{
+  "job_id": "list-customer-plans-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: List Customer Plans\"\ntype: source\ndate_ingested: 2026-09-01\ncanonical_url: \"https://docs.metronome.com/api-reference/plans/list-customer-plans\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/plans/list-customer-plans-2026-07-13.md\"\ntags: [metronome, api, customers, plans, contracts, pagination]\n---\n\n## Overview\n\nBearer-authenticated `GET /v1/customers/{customer_id}/plans` lists one customer's legacy Plan assignments in reverse-chronological order. The operation belongs to the deprecated Plans surface; Metronome directs new clients to Contracts, but this page does not identify a replacement Contract route or define how customer-plan identity and state migrate.\n\n## Query-critical facts\n\n- The required path locator is UUID-formatted `customer_id`. The returned `CustomerPlan` keeps customer-assignment identity distinct from catalog identity: required UUID `id` is the customer-plan ID, while required UUID `plan_id` identifies the Plan.\n- The page promises reverse-chronological ordering, but does not name the ordering timestamp, tie-breaker, or treatment of assignments with the same start time. Each returned item requires `starting_on`; optional `ending_before` can expose an end boundary, but the endpoint does not define whether the collection contains active, ended, archived, scheduled, or otherwise filtered assignments.\n- Optional query `limit` accepts 1 through 100, and optional `next_page` supplies the cursor at which the next page begins. HTTP `200` requires top-level `data`, an array of customer plans, and nullable sibling `next_page`; the separate [[source-metronome-api-reference-pagination|pagination authority]] supplies repeat-with-cursor-until-null traversal.\n- Every customer-plan item also requires `plan_name`, `plan_description`, and `custom_fields`. Optional `net_payment_terms_days` and `trial_info` are ordinary response detail; when `trial_info` is present, its schema requires `ending_before` and `spending_caps`, and every spending-cap item requires `amount`, `amount_remaining`, and `credit_type`. These returned fields do not establish current Contract pricing, an available balance, invoice state, payment collection, or accounting outcome.\n- `custom_fields` is an explicitly open map with string values and is annotated for the `customer_plan` entity. The enclosing customer-plan, trial-info, and spending-cap objects do not declare `additionalProperties: false`; unknown-property behavior must not be inferred as closed from the documented property catalogs.\n\n## Material boundaries\n\n- This is a deprecated Plans read. The page tells new clients to use Contracts but names no equivalent Contracts endpoint, Plan-to-Contract or customer-plan-to-contract identity mapping, field mapping, migration procedure, compatibility period, historical-continuity rule, or removal date. The current contract read is a separate authority and must not be treated as a shape-compatible replacement merely because both surfaces describe customer pricing state.\n- Reverse-chronological order and cursor traversal do not establish a stable snapshot. The page defines no default page size, total count, cursor lifetime, cursor filter binding, cross-page duplicate-or-skip behavior under change, as-of selector, cache behavior, freshness, or read-after-write visibility. A completed traversal therefore does not prove an immutable or newly current customer-plan history.\n- This GET page documents no endpoint-specific retry, timeout-recovery, rate-limit, or non-`200` error contract. It has no request body and establishes no state transition; do not import the separate API-wide POST `Idempotency-Key` execution-admission and replay rules into this operation.\n\n## Raw-detail coverage map\n\n| Raw detail category | Exact raw coverage |\n| --- | --- |\n| Operation and authority | OpenAPI version, production `/v1` server, document-level bearer security, `GET /customers/{customer_id}/plans`, operation ID, Plans tag, and full provider tag catalog |\n| Customer scope and ordering | Required UUID customer path parameter, customer-plan versus Plan identifiers, reverse-chronological statement, required `starting_on`, optional `ending_before`, and unspecified ordering key, tie-breaker, and active-versus-ended filter |\n| Pagination and completeness | Optional `limit` bounds of 1 through 100, optional `next_page` request cursor, required top-level `data` and nullable sibling `next_page`, success example, and endpoint-local snapshot, freshness, cursor-lifetime, and retry unknowns |\n| Customer-plan representation | Complete requiredness and types for assignment ID, Plan ID, name, description, start and end times, net payment terms, trial information, and customer-plan custom fields |\n| Trial and spending-cap detail | Nested trial end, spending-cap array, amount and remaining-amount fields, credit-type identity schema, exact example values, and the absence of denomination, calculation, balance-authority, and lifecycle guarantees |\n| Deprecation and migration | Legacy Plans status, direction to Contracts for new clients, and the absence of replacement-route, identity-mapping, field-mapping, migration, continuity, compatibility-period, and removal-date guarantees |\n| Schema and error boundary | Explicit open string-valued custom-field map; no closed-object declaration on the other response objects; only documented HTTP `200`; and no endpoint-specific non-success, cache, retry, timeout-recovery, or read-after-write contract |\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-customers-and-contracts]], [[metronome-products-and-rate-cards]], [[metronome-reporting-and-analytics]]\n- Secondary concepts: [[metronome-credits-and-commits]], [[metronome-custom-fields]]\n- Related sources: [[source-metronome-api-reference-pagination]], [[source-metronome-api-reference-plans-list-plans]], [[source-metronome-api-reference-plans-get-plan-details]], [[source-metronome-api-reference-contracts-get-a-contract-v2]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/plans/list-customer-plans-2026-07-13|2026-07-13 snapshot - complete deprecated customer-plan listing, pagination, assignment schema, and Contracts migration boundary]]\n",
+  "quotes": [
+    {
+      "text": "````yaml /openapi.plans.json get /customers/{customer_id}/plans\nopenapi: 3.0.1\ninfo:\n  title: Metronome\n  version: 1.0.0\nservers:\n  - url: https://api.metronome.com/v1\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "lines 18-27, OpenAPI operation header, production /v1 server, and document-level bearer security"
+    },
+    {
+      "text": "  /customers/{customer_id}/plans:\n    get:\n      tags:\n        - Plans\n      summary: List customer plans\n      description: >\n        List the given customer's plans in reverse-chronological order. This is\n        a Plans (deprecated) endpoint. New clients should implement using\n        Contracts.\n      operationId: listCustomerPlans\n      parameters:\n        - $ref: '#/components/parameters/CustomerId'\n        - $ref: '#/components/parameters/PageLimit'\n        - $ref: '#/components/parameters/NextPage'",
+      "location": "lines 92-105, GET path, legacy ordering and deprecation statement, operation ID, and parameter references"
+    },
+    {
+      "text": "      responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                  - next_page\n                properties:\n                  data:\n                    type: array\n                    items:\n                      $ref: '#/components/schemas/CustomerPlan'\n                  next_page:\n                    type: string\n                    nullable: true",
+      "location": "lines 106-123, HTTP 200 immediate-parent response envelope with required customer-plan data and nullable sibling cursor"
+    },
+    {
+      "text": "    CustomerId:\n      name: customer_id\n      in: path\n      required: true\n      schema:\n        type: string\n        format: uuid\n      example: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\n    PageLimit:\n      name: limit\n      in: query\n      description: Max number of results that should be returned\n      required: false\n      schema:\n        type: integer\n        minimum: 1\n        maximum: 100\n    NextPage:\n      name: next_page\n      in: query\n      description: Cursor that indicates where the next page of results should start.\n      required: false\n      schema:\n        type: string",
+      "location": "lines 139-162, required customer UUID locator and optional bounded page-size and continuation-cursor query parameters"
+    },
+    {
+      "text": "    CustomerPlan:\n      required:\n        - id\n        - plan_id\n        - plan_name\n        - plan_description\n        - starting_on\n        - custom_fields\n      type: object\n      properties:\n        id:\n          type: string\n          format: uuid\n          description: the ID of the customer plan\n        plan_id:\n          type: string\n          format: uuid\n          description: the ID of the plan\n        plan_name:\n          type: string\n        plan_description:\n          type: string\n        starting_on:\n          type: string\n          format: date-time\n        ending_before:\n          type: string\n          format: date-time\n        net_payment_terms_days:\n          type: number\n        trial_info:\n          type: object\n          required:\n            - ending_before\n            - spending_caps\n          properties:\n            ending_before:\n              type: string\n              format: date-time\n            spending_caps:\n              type: array\n              items:\n                type: object\n                required:\n                  - amount\n                  - amount_remaining\n                  - credit_type\n                properties:\n                  credit_type:\n                    $ref: '#/components/schemas/CreditType'\n                  amount:\n                    type: number\n                    example: 123.45\n                  amount_remaining:\n                    type: number\n                    example: 123\n        custom_fields:\n          $ref: '#/components/schemas/CustomField'\n          x-cf-entity: customer_plan",
+      "location": "lines 164-222, customer-plan identity, lifecycle timestamps, trial spending-cap requiredness, and customer-plan custom-field placement"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "list-customer-plans-customer-contract-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Deprecated Plans listing boundary",
+        "proposed_markdown": "Bearer-authenticated `GET /v1/customers/{customer_id}/plans` lists one UUID-identified customer's legacy Plan assignments in reverse-chronological order. Each item distinguishes customer-plan `id` from catalog `plan_id`, requires `starting_on`, and may expose `ending_before`, but the page does not define the ordering timestamp, active-versus-ended filtering, archived or scheduled visibility, freshness, or snapshot consistency. Optional `limit` and `next_page` paginate a required top-level `data` array plus nullable sibling cursor. Metronome directs new clients to Contracts without naming a replacement route, Plan-to-Contract or assignment-to-contract identity mapping, field mapping, migration procedure, historical-continuity rule, compatibility period, or removal date. [[source-metronome-api-reference-plans-list-customer-plans]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep customer-plan assignment ID distinct from the Plan catalog ID and from current Contract identity.",
+          "Do not infer that the list contains only current plans or that optional ending_before defines an endpoint filter.",
+          "Do not treat the current contract read as a shape-compatible replacement; this page supplies no migration mapping."
+        ]
+      },
+      {
+        "update_id": "list-customer-plans-pricing-route",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Rate cards and rates",
+        "proposed_markdown": "The deprecated customer-plan list returns assignment and legacy Plan metadata\u2014customer-plan and Plan IDs, name, description, start time, optional end time and net payment terms, optional trial spending-cap state, and string-valued customer-plan custom fields. It does not return current Contract products, rate cards, rate schedules, overrides, denomination rules, calculation detail, or invoice results, and the page defines no Plan-to-Contract pricing migration. Use it as a legacy assignment-discovery route rather than current Contract pricing authority. [[source-metronome-api-reference-plans-list-customer-plans]]",
+        "quote_indexes": [
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Plan name and description are not a current product, rate-card, or Contract price representation.",
+          "Trial spending-cap amounts have no documented denomination, calculation, invoice, payment, or accounting guarantee on this page.",
+          "Preserve the deprecated Plans-to-Contracts boundary without inventing a replacement pricing route."
+        ]
+      },
+      {
+        "update_id": "list-customer-plans-reporting-pagination",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Query model",
+        "proposed_markdown": "`GET /v1/customers/{customer_id}/plans` is a deprecated customer-scoped history-style list ordered reverse-chronologically, with optional `limit` from 1 through 100 and `next_page` cursor traversal. HTTP `200` requires top-level customer-plan `data` and nullable sibling `next_page`. The page does not identify the ordering timestamp or tie-breaker and defines no default page size, total count, cursor lifetime, stable snapshot, cross-page duplicate-or-skip behavior, as-of selector, cache behavior, freshness, or read-after-write visibility, so complete traversal does not prove an immutable or newly current customer-plan population. It is not current Contract, invoice, balance, payment, or accounting-reporting authority. [[source-metronome-api-reference-plans-list-customer-plans]]",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Reverse chronological is documented, but the ordering field and tie-breaker are not.",
+          "Cursor completion does not establish snapshot consistency or freshness.",
+          "Do not import API-wide POST Idempotency-Key replay semantics into this GET operation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/plans/list-customer-plans-2026-07-13.md",
+  "raw_sha256": "896c2977fe8543ab3e348665a9cf8e98c3a25e59cedd3cdd1bac43c7d6c021f6",
+  "status": "candidate_ready"
+}

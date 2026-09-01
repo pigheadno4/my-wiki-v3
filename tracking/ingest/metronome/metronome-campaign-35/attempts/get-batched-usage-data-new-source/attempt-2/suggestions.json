@@ -1,0 +1,93 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "batched-usage-billable-metric-query",
+      "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retrieval APIs",
+      "proposed_markdown": "Bearer-authenticated `POST /v1/usage` reads aggregated usage across multiple customers and billable metrics between required time bounds and requested hourly, daily, or full-period windows. `none` selects one full-period time window but does not establish one overall response row across selected customers, metrics, or grouped values; the raw has no `none` response example resolving cardinality. Omitting optional `customer_ids` selects all customers and omitting optional `billable_metrics` selects all metrics. Each supplied metric selector requires UUID `id` and may request one `group_by.key`; omitted group values return all available values up to 200. For `LATEST` metrics only, the separate non-monotonic-metric authority says usage endpoints return the absolute latest value in each requested window while invoice breakdowns return incremental quantity and associated cost. This endpoint remains the request-and-response-shape authority; the guide remains metric-calculation authority. Neither source generalizes that distinction to other aggregation types or establishes pricing, invoice equality, freshness, or accounting completeness. [[source-metronome-api-reference-usage-get-batched-usage-data]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Keep batched aggregate retrieval distinct from metric creation, matching, Product pricing, and invoice authority.",
+        "Do not infer overall response-row cardinality from the full-period `none` time-window description.",
+        "The `LATEST` calculation distinction comes from the linked non-monotonic-metric guide, not the endpoint schema, and cannot be generalized to other aggregation types."
+      ]
+    },
+    {
+      "update_id": "batched-usage-reporting-pagination",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Query model",
+      "proposed_markdown": "`POST /v1/usage` is a multi-customer, multi-billable-metric aggregate read for internal analytics, reports, trend monitoring, comparisons, and capacity planning. Required bounds and window size select hourly, daily, or one full-period time window; optional selectors narrow customer and metric scope, and `none` does not establish one overall response row. HTTP `200` requires top-level aggregate `data` and nullable sibling `next_page`, despite narrative wording that places the cursor inside aggregate objects. The endpoint has no `limit`, ordering, total count, cursor lifetime, stable snapshot, duplicate-or-skip, as-of, freshness, or read-after-ingest guarantee. For `LATEST` metrics only, the separate calculation guide distinguishes absolute latest usage values per requested window from incremental invoice-breakdown quantity and cost; it does not establish pricing, invoice equality, freshness, or accounting completeness. The current customer-dashboard guide is not copy-ready because it calls batched `/v1/usage` with singular selectors, deprecated top-level grouping, and item fields aligned with `/v1/usage/groups`; use this dedicated endpoint schema for the current batched request, aggregate, and query-cursor shape. [[source-metronome-api-reference-usage-get-batched-usage-data]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Preserve the narrative-versus-schema cursor-placement conflict and use the OpenAPI envelope plus example for integration shape.",
+        "Do not normalize the customer-dashboard guide's mixed batched and grouped shapes into either current API contract.",
+        "Keep endpoint shape authority separate from `LATEST` calculation authority and from invoice or accounting completeness."
+      ]
+    },
+    {
+      "update_id": "batched-usage-usage-billing-route",
+      "target_path": "wiki/concepts/metronome/metronome-usage-based-billing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-usage-get-batched-usage-data]] - multi-customer and multi-metric aggregate usage by required interval and window, full-period `none` without overall row-cardinality inference, optional metric grouping, top-level cursor traversal, `LATEST` absolute-window-value versus incremental invoice-breakdown boundary, dashboard-guide shape contradiction, and freshness and snapshot unknowns",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "This endpoint defines request and response shape; the separate non-monotonic-metric guide defines the `LATEST` usage-versus-invoice quantity distinction.",
+        "Do not infer pricing, invoice equality, accounting completeness, or semantics for aggregation types other than `LATEST`.",
+        "The dashboard guide mixes two usage API shapes and is not a copy-ready contract."
+      ]
+    },
+    {
+      "update_id": "batched-usage-event-ingestion-route",
+      "target_path": "wiki/concepts/metronome/metronome-event-ingestion.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Processing boundary",
+      "proposed_markdown": "After events are accepted and matched to customers and billable metrics, bearer-authenticated `POST /v1/usage` can read aggregated post-metric usage across multiple customers and metrics by requested time windows. The page defines no read-after-ingest timing, freshness, stable snapshot, or completeness guarantee, so a completed batched traversal does not prove that every submitted event was accepted, deduplicated, matched, or made visible. Raw-event submission, transaction-ID deduplication, matching diagnostics, and ingest recovery remain with their dedicated authorities. [[source-metronome-api-reference-usage-get-batched-usage-data]]",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "Do not treat batched aggregate output as a raw-event receipt, deduplication record, per-event match result, or ingest recovery proof.",
+        "Keep transaction-ID behavior, event acceptance, and ingest failure handling with dedicated event-ingestion authorities."
+      ]
+    },
+    {
+      "update_id": "batched-usage-post-replay-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-usage-get-batched-usage-data]] - paginated POST batched-usage read: under the separate API-wide authority, a provided-key result is persisted only after validation and pre-execution concurrency admission; after persistence, identical same-key parameters replay the original result, while advancing query `next_page` changes parameters and returns HTTP `409` under the same key; validation failures and pre-execution concurrent conflicts are not established cached results, and replay is not a fresh usage calculation or stable pagination snapshot",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": [
+        "Execution admission, replay, and changed-parameter conflict behavior comes from the existing API-wide idempotency authority, not this endpoint page.",
+        "The endpoint adds no requirement to use Idempotency-Key, preferred key policy for later cursor pages, cursor lifetime, cross-page snapshot, read-after-ingest timing, or endpoint-specific recovery guarantee.",
+        "Do not treat same-key replay as a newly evaluated usage result."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

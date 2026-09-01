@@ -1,0 +1,89 @@
+{
+  "job_id": "archive-a-threshold-notification-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Archive a Threshold Notification API\"\ntype: source\ndate_ingested: 2026-09-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/alerts/archive-a-threshold-notification\"\nraw_files:\n  - \"metronome/api-reference/alerts/archive-a-threshold-notification-2026-07-13.md\"\ntags: [metronome, api, alerts, threshold-notifications, monitoring, archival, idempotency]\n---\n\n## Overview\n\nThis OpenAPI page documents bearer-authenticated `POST /v1/alerts/archive`, which permanently disables one threshold-notification configuration identified by UUID and removes it from active evaluation across all customers. The operation can also release that configuration's resource `uniqueness_key`, but notification archival, uniqueness-key reuse, API-request replay, and webhook or history behavior are separate surfaces.\n\n## Query-critical facts\n\n- In a supplied JSON payload, UUID `id` is required and identifies the threshold notification to archive. The enclosing OpenAPI `requestBody` is not marked `required: true`, so omitted-body behavior is not established; the object schema also does not declare `additionalProperties: false`, so unknown-field behavior is undocumented.\n- Archival is irreversible for evaluation: the configuration cannot be re-enabled, and Metronome directs callers to create a new threshold notification to resume monitoring. The page says evaluation stops immediately across all customers, but it does not define an acknowledgement-versus-completion boundary, treatment of an evaluation already in progress, or read and export propagation timing.\n- Optional boolean `release_uniqueness_key` resets the archived notification's resource key for reuse when set to `true`. The page does not specify omitted or explicit-false semantics, release visibility, atomic ordering between archival and release, concurrent reuse, rollback, or interaction with an in-flight creation attempt. This resource-key lifecycle is distinct from the API-wide `Idempotency-Key` request-result cache.\n- The page asserts that archival preserves threshold-notification history and configuration for compliance and auditing. It does not identify the retained records, access surface, retention period, completeness, immutability, export behavior, or any compliance standard. Current Get authority separately says an archived notification can still return its configuration with nullable `customer_status`, while current List authority requires explicitly including archived configurations; neither authority turns the archive response into history or proves webhook-event retention.\n- HTTP `200` requires top-level `data`, whose generic `Id` object requires UUID `id`; the narrative labels it the archived threshold notification's ID, and the example repeats the request UUID. The response exposes no archived representation, per-customer states, released key, affected-evaluation count, history locator, completion timestamp, or propagation status. Generic HTTP `404` means the specified resource was not found.\n\n## Material boundaries\n\nThe dedicated archive page's immediate stop and preservation statements are authority for this threshold-configuration mutation only. They do not establish cancellation of notifications already emitted, queued, or in flight; webhook delivery or retry suppression; retraction of merchant actions; preservation of webhook or event-log history; read-after-archive freshness; or propagation to exports, dashboards, and reports. The separate shared Plan-and-Contract overview identifies `/alerts/archive` only as an unversioned route that archives a configuration so it no longer triggers; it does not replace this page's POST method, versioned path, payload, authentication, response, or all-customer scope, and neither source defines entity-specific parameter differences here.\n\nThe endpoint declares only HTTP `200` and generic `404`. It does not map a missing body, missing or malformed UUID, unknown versus inaccessible notification, already archived state, conflict, authorization failure, throttling, timeout, or server failure to specific outcomes; nor does it define atomicity, partial success, rollback, concurrent archive/create behavior, recovery after an ambiguous result, or whether a failed archive releases a uniqueness key.\n\nBecause this mutation uses POST, the separate API-wide [[metronome-api-idempotency|`Idempotency-Key` authority]] applies only after execution admission: Metronome persists a result once the request begins executing, meaning validation passed and no pre-execution concurrent-request conflict prevented execution. For an admitted request, identical same-key parameters replay the original persisted result, changed parameters return HTTP `409`, retention is at least 24 hours, and a persisted result can be HTTP `500`. Validation failures and pre-execution concurrency conflicts are not established as cached results. This endpoint adds no archive-specific behavior for no key, a different or expired key, repeated archival, release visibility, cached or ambiguous failure state, or recovery. Same-key replay is not fresh proof of current evaluation cessation, configuration visibility, webhook state, historical retention, or uniqueness-key availability. [[source-metronome-api-reference-idempotency]]\n\n## Raw-detail coverage map\n\n- **Operation and admission:** production server, global bearer authentication, POST `/v1/alerts/archive`, operation ID, request media type, request example, unmarked request-body wrapper, and required UUID `id` inside a supplied payload are in raw. API-wide execution-admission and replay semantics remain in the dedicated idempotency source.\n- **Archive lifecycle and monitoring:** permanent disablement, removal from active monitoring across all customers, immediate evaluation stop, inability to re-enable, and create-new-to-resume guidance are in raw; in-progress work, acknowledgement versus completion, per-customer state transitions, read freshness, and cross-surface propagation are undocumented.\n- **Uniqueness-key lifecycle:** optional `release_uniqueness_key`, its documented true-to-reset behavior, and intended future reuse are in raw; omitted or false behavior, release timing and visibility, concurrency, failed-archive treatment, and interaction with API request replay are not defined.\n- **Response and failures:** required `data`, nested required UUID `data.id`, repeated-ID example, generic `404` error with required string `message`, and absence of an archived representation, key-release result, affected-customer count, history locator, or propagation marker are in raw.\n- **History, delivery, and schema limits:** the page's historical-configuration preservation assertion and compliance/auditing rationale are in raw, but retention duration, record completeness, access path, webhook-event preservation, already-generated delivery handling, export behavior, and compliance guarantees are not. Request and response objects do not declare closed-schema behavior.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-alerts-and-notifications]], [[metronome-api-idempotency]], [[metronome-webhooks]]\n- Related sources: [[source-metronome-api-reference-alerts-create-a-threshold-notification]], [[source-metronome-api-reference-alerts-get-a-threshold-notification]], [[source-metronome-api-reference-alerts-get-all-threshold-notifications]], [[source-metronome-plans-shared-endpoints-notifications]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/alerts/archive-a-threshold-notification-2026-07-13|2026-07-13 snapshot - complete threshold-notification archive lifecycle, uniqueness-key release, request and response schemas, errors, and OpenAPI metadata]]\n",
+  "quotes": [
+    {
+      "text": "> Permanently disable a threshold notification and remove it from active monitoring across all customers. Archived threshold notifications stop evaluating immediately and can optionally release their uniqueness key for reuse in future threshold notification configurations.",
+      "location": "line 11"
+    },
+    {
+      "text": "### Usage guidelines:\n- Irreversible for evaluation: Archived threshold notifications cannot be re-enabled; create a new threshold notification to resume monitoring\n- Uniqueness key handling: Set `release_uniqueness_key` : `true` to reuse the key in future threshold notifications\n- Immediate effect: Threshold notification evaluation stops instantly across all customers\n- Historical preservation: Archive operation maintains threshold notification history and configuration for compliance and auditing",
+      "location": "lines 23-27"
+    },
+    {
+      "text": "````yaml /openapi.json post /v1/alerts/archive\nopenapi: 3.0.1\ninfo:\n  title: Metronome\n  version: 1.0.0\nservers:\n  - url: https://api.metronome.com\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "lines 34-43"
+    },
+    {
+      "text": "operationId: archiveAlert-v1\n      requestBody:\n        description: The ID of the threshold notification to archive\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/ArchiveAlertPayload'\n            example:\n              id: 8deed800-1b7a-495d-a207-6c52bac54dc9\n      responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/Id'\n              example:\n                data:\n                  id: 8deed800-1b7a-495d-a207-6c52bac54dc9",
+      "location": "lines 148-171"
+    },
+    {
+      "text": "responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/Id'\n              example:\n                data:\n                  id: 8deed800-1b7a-495d-a207-6c52bac54dc9\n        '404':\n          $ref: '#/components/responses/NotFound'\ncomponents:\n  schemas:\n    ArchiveAlertPayload:\n      required:\n        - id\n      type: object\n      properties:\n        id:\n          type: string\n          format: uuid\n          description: The Metronome ID of the threshold notification\n        release_uniqueness_key:\n          type: boolean\n          description: >-\n            If true, resets the uniqueness key on this threshold notification so\n            it can be re-used",
+      "location": "lines 157-189"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "archive-threshold-notification-lifecycle-and-history-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Notification types and lifecycle",
+        "proposed_markdown": "Bearer-authenticated `POST /v1/alerts/archive` permanently disables one threshold-notification configuration selected by required payload UUID `id`, removes it from active monitoring across all customers, and says evaluation stops immediately. The configuration cannot be re-enabled; Metronome directs callers to create a new threshold notification to resume monitoring. Optional `release_uniqueness_key: true` resets its resource uniqueness key for reuse, but omitted or false behavior, release timing and visibility, atomicity, concurrent reuse, and failed-archive key treatment are undocumented. HTTP `200` returns required `data.id` but no archived representation, per-customer states, released-key result, affected count, history locator, or propagation status. The page asserts preservation of threshold-notification history and configuration for compliance and auditing, while current Get separately exposes archived configuration with nullable customer status and List requires explicit archived filtering; these sources do not define retention duration, history completeness, webhook-event preservation, compliance guarantees, or cross-surface propagation. [[source-metronome-api-reference-alerts-archive-a-threshold-notification]] [[source-metronome-api-reference-alerts-get-a-threshold-notification]] [[source-metronome-api-reference-alerts-get-all-threshold-notifications]]",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep irreversible archive state, evaluation cessation, retained configuration, and optional uniqueness-key release distinct.",
+          "Do not infer cancellation of in-progress evaluation or already-generated notification delivery.",
+          "Preserve the source's history assertion without inventing access, duration, completeness, export, or compliance guarantees."
+        ]
+      },
+      {
+        "update_id": "archive-threshold-notification-post-admission-and-key-release-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Retry and error boundary",
+        "proposed_markdown": "`POST /v1/alerts/archive` is an irreversible threshold-notification lifecycle mutation that may also release the notification's resource `uniqueness_key`; that key lifecycle is distinct from API-wide `Idempotency-Key` result replay. Under the API-wide authority, a result is persisted only after execution admission, meaning validation passed and no pre-execution concurrent-request conflict prevented execution. Identical same-key parameters then replay the original result, changed parameters return HTTP `409`, retention is at least 24 hours, and a persisted result can be HTTP `500`; validation failures and pre-execution concurrency conflicts are not established cached results. The endpoint adds no behavior for no, different, or expired header keys; repeated or concurrent archival; uniqueness-key release timing, visibility, rollback, or concurrent reuse; cached or ambiguous failure state; or recovery. Same-key replay is not fresh proof of evaluation cessation, archived-read visibility, history retention, webhook state, or resource-key availability. [[source-metronome-api-reference-alerts-archive-a-threshold-notification]] [[source-metronome-api-reference-idempotency]]",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Apply result replay only after execution admission; do not treat validation or pre-execution concurrency failures as established cached results.",
+          "Keep resource uniqueness-key release separate from request-result replay.",
+          "Do not infer fresh archive or release state from a same-key replay."
+        ]
+      },
+      {
+        "update_id": "archive-threshold-notification-webhook-and-history-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Authenticity and authoritative data",
+        "proposed_markdown": "Archiving a threshold-notification configuration through `POST /v1/alerts/archive` removes it from active monitoring across all customers and says evaluation stops immediately. That archive contract does not establish cancellation, retraction, deduplication, or delivery suppression for a webhook notification already emitted, queued, retrying, or in flight. Its separate assertion that threshold-notification history and configuration are preserved for compliance and auditing does not identify webhook-event retention, delivery-attempt history, ordering, access path, duration, or completeness. Keep configuration archival and evaluation cessation separate from webhook emission and at-least-once transport behavior. [[source-metronome-api-reference-alerts-archive-a-threshold-notification]] [[source-metronome-guides-platform-configuration-setup-webhooks]]",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "Do not treat immediate evaluation stop as proof that already-generated webhook work is cancelled.",
+          "Do not equate preserved threshold-notification history with webhook delivery history.",
+          "Keep merchant actions and webhook transport outside the archive response contract."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/alerts/archive-a-threshold-notification-2026-07-13.md",
+  "raw_sha256": "dbe2678c59b5b3471905149e8aa329b476e12f6d32a2cb290b74372c6e69d467",
+  "status": "candidate_ready"
+}

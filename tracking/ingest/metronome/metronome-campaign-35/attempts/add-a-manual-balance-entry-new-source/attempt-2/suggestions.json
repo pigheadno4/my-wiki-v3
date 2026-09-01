@@ -1,0 +1,152 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "manual-balance-entry-credits-fact",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Balance retrieval and ledger calculation",
+      "proposed_markdown": "Bearer-authenticated `POST /v1/contracts/addManualBalanceLedgerEntry` targets one identified commit-or-credit segment and appends a new manual ledger event that changes available balance. Within a supplied payload, customer, balance, segment, signed amount, and reason are required; omitted RFC 3339 `timestamp` defaults the entry to the segment start. The remaining-balance authority says ledger amounts may be fractional, USD amounts are cents, and adjustments serialize as `credit_manual`, `prepaid_manual`, or `postpaid_manual` by balance family; the mutation endpoint itself does not define non-USD or custom-unit selection, precision, or rounding. The detailed-balance authority says active-segment manual entries contribute to calculated balance even when future-dated, and excessive negative entries can make signed ledger arithmetic negative while calculated balance floors at zero. The contract-edit authority says removing an access-schedule segment removes its manual ledger entry, so endpoint creation is not a global append-only or permanent-retention guarantee. HTTP `200` has no response representation, and these cross-authority facts establish neither endpoint-local read-after-write timing nor atomic visibility across ledger, balance, and invoice views. [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]] [[source-metronome-guides-customers-billing-optimize-customer-experience-get-remaining-balance]] [[source-metronome-api-reference-credits-and-commits-list-balances]] [[source-metronome-guides-pricing-packaging-make-pricing-changes-edit-contract]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Attribute fractional and USD-cent amounts, manual-entry families, calculated-balance behavior, and access-segment removal to their linked cross-authorities, not to the mutation page alone.",
+        "Do not describe the new event as globally append-only or permanently retained.",
+        "Keep documented calculated-balance behavior distinct from endpoint-local read-after-write timing, atomicity, propagation, and reconciliation unknowns.",
+        "Keep the narrative optional-description wording visibly separate from the schema-required reason property."
+      ]
+    },
+    {
+      "update_id": "manual-balance-entry-credits-link",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]] - signed manual ledger-event mutation, balance and segment identity, effective-time default, fractional and USD-cent ledger scope, manual-entry families, calculated-balance floor and future-dated inclusion, access-segment-removal qualification, seat allocation, correction boundary, duplicate guard, and endpoint-local visibility and atomicity unknowns",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Preserve the linked cross-authority scopes; the endpoint alone does not establish denomination, calculated-view, retention, or removal behavior."
+      ]
+    },
+    {
+      "update_id": "manual-balance-entry-contracts-fact",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Customer balance views",
+      "proposed_markdown": "`POST /v1/contracts/addManualBalanceLedgerEntry` selects a required customer, balance, and segment. Optional `contract_id` selects a contract-level balance; leaving it blank updates a customer-level balance. This establishes targeting, not whether a balance belongs to the supplied customer or contract when identifiers conflict, how customer-level balance is shared across contracts, or how the adjustment propagates to contract reads, hierarchy views, invoices, or exports. [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]]",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Do not infer identifier-relationship validation or cross-contract scope from UUID formatting.",
+        "Keep customer-level targeting distinct from proof of aggregation, hierarchy, or downstream contract behavior."
+      ]
+    },
+    {
+      "update_id": "manual-balance-entry-contracts-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]] - customer, optional contract, balance, and segment targeting for a manual ledger event, with relationship-validation and propagation boundaries",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "manual-balance-entry-invoicing-fact",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Credit, correction, and re-bill state boundaries",
+      "proposed_markdown": "A manual commit-or-credit balance entry can address discrepancy scenarios, but it appends a balance-ledger event rather than correcting the underlying usage or pricing record. The endpoint guidance says most inaccurate-billing corrections can instead be performed upstream through contract editing, rate editing, or another action that recalculates the invoice. A successful manual entry does not establish invoice recalculation or regeneration, finalized-invoice change, refund, payment, tax recomputation, revenue posting, external A/R correction, or reconciliation; those require their own authorities and state checks. [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]]",
+      "quote_indexes": [
+        1,
+        3
+      ],
+      "warnings": [
+        "Do not present a manual balance change as an invoice correction or credit memo.",
+        "Keep upstream correction guidance distinct from a guarantee that any particular edit recalculates or propagates an invoice."
+      ]
+    },
+    {
+      "update_id": "manual-balance-entry-invoicing-link",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]] - manual balance-ledger correction versus upstream contract, rate, and invoice-recalculation routes, with downstream financial-state boundaries",
+      "quote_indexes": [
+        1,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "manual-balance-entry-idempotency-fact",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "`POST /v1/contracts/addManualBalanceLedgerEntry` exposes optional 1-128 character resource `uniqueness_key`; reuse prevents a new record and is documented to fail with HTTP `409`, although the operation response map lists only `200`, `400`, and `404`. This resource-level duplicate guard is distinct from API-wide `Idempotency-Key` result replay, and the API-wide authority recommends a dedicated `uniqueness_key` when available. For a provided header key, persistence begins only after execution admission\u2014validation passed and no pre-execution concurrent-request conflict prevented execution\u2014after which identical same-key parameters replay the persisted result and changed parameters return `409`. Keyed results are retained for at least 24 hours, and an admitted HTTP `500` result is persisted and replayed. Validation failures and pre-execution conflicts are not established cached results. After a cached or ambiguous failure, investigate system state rather than assuming a different key is safe; replay is not fresh proof of ledger, balance, invoice, or downstream state. The pages do not define the keys' interaction, uniqueness-key scope or release, no-key, another-key, or expired-key behavior, concurrent adjustment ordering, cached-error ledger state, propagation, or endpoint-specific recovery. [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "Attribute execution admission, replay, retention, persisted HTTP 500 behavior, investigation guidance, and dedicated-key preference only to the separate API-wide idempotency authority.",
+        "Do not treat validation failures or pre-execution concurrency conflicts as established cached results.",
+        "Do not infer that a same-key replay is a fresh ledger, balance, invoice, or propagation check.",
+        "Do not infer that changing keys after a cached or ambiguous failure is safe, or invent interaction and precedence between the two key mechanisms."
+      ]
+    },
+    {
+      "update_id": "manual-balance-entry-idempotency-link",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]] - manual-ledger resource uniqueness key, omitted operation-level `409`, API-wide POST execution-admission boundary, and endpoint-specific retry, concurrency, freshness, propagation, and recovery unknowns",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "The execution-admission and replay contract is supplied by [[source-metronome-api-reference-idempotency]], not by the endpoint page."
+      ]
+    },
+    {
+      "update_id": "manual-balance-entry-subscriptions-fact",
+      "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Lifecycle",
+      "proposed_markdown": "For an individually configured commit or credit attached to a seat-managed subscription, `POST /v1/contracts/addManualBalanceLedgerEntry` can include `per_group_amounts`, a numeric map described as the amount to add for each seat; the map must sum to the required total `amount`. The page does not define the map keys' identifier format, omitted-seat treatment, whether negative per-seat values are allowed, or validation, rollback, and visibility when the allocation and total disagree. [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]]",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Treat this as a conditional seat-managed balance field, not a general subscription-quantity mutation.",
+        "Do not invent group-key identity or per-seat validation rules beyond the documented sum constraint."
+      ]
+    },
+    {
+      "update_id": "manual-balance-entry-subscriptions-link",
+      "target_path": "wiki/concepts/metronome/metronome-subscriptions.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]] - conditional per-seat manual balance allocation for individually configured seat-managed credits or commits and its sum and validation boundaries",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

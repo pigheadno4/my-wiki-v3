@@ -1,0 +1,124 @@
+{
+  "job_id": "create-a-product-new-source",
+  "attempt": 3,
+  "source_page": "---\ntitle: \"Metronome API: Create a Product\"\ntype: source\ndate_ingested: 2026-09-01\ncanonical_url: \"https://docs.metronome.com/api-reference/products/create-a-product\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/products/create-a-product-2026-08-28.md\"\ntags: [metronome, api, products, pricing, invoicing]\n---\n\n## Overview\n\nBearer-authenticated `POST /v1/contract-pricing/products/create` creates a Metronome product. HTTP `200` requires `data` referencing a generic `Id` object with required UUID `id`, but the schema does not explicitly identify that value as the created Product resource. Metronome describes a product as an individual offering and the basic unit of an invoice line item; its meaningful name appears on customer invoices when the product is used.\n\n## Query-critical facts\n\n- Within a supplied JSON payload, `name` and `type` are schema-required. The enclosing OpenAPI `requestBody` is not marked required, so omitted-body behavior is not established. The payload schema also does not declare `additionalProperties: false`, so unknown-field rejection must not be inferred.\n- The create request accepts upper- and lowercase forms of `FIXED`, `USAGE`, `COMPOSITE`, and `SUBSCRIPTION`, plus client-annotated `PROFESSIONAL_SERVICE` and `PRO_SERVICE` forms. Current [[source-metronome-api-reference-products-get-a-product|Get]] and [[source-metronome-api-reference-products-list-products|List]] responses expose only uppercase `USAGE`, `SUBSCRIPTION`, `COMPOSITE`, `FIXED`, and `PRO_SERVICE`, while the [[source-metronome-guides-implement-metronome-core-concepts-create-products-contracts|product guide]] documents four types. These surfaces do not establish response spelling, round-trip normalization, creation support, or general tenant availability for either professional-service label.\n- `billable_metric_id` is described as required for a `USAGE` product. Both `composite_product_ids` and `composite_tags` are described as required for a `COMPOSITE` product, although none appears in the payload schema's top-level required array. The product guide instead says applicable composite products can be selected by product ID or product tag. The sources do not establish whether runtime validation requires both arrays, either array, or at least one selector.\n- Nullable `quantity_conversion` and `quantity_rounding` are usage-only. Only a supplied non-null conversion object requires `conversion_factor` plus `operation`, and only a supplied non-null rounding object requires `rounding_method` plus `decimal_places`; a supplied `null` does not trigger those nested required lists.\n- The create schema says SQL `sql_breakdown_granularity` defaults to `service_period` and recommends `hour`, whereas the current [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-sql-editor|SQL Editor authority]] says `hour` is the default and `service period` is optional. That guide also shows that the choice changes when cost is incurred, which rate applies, and whether a credit or commit covers the final instant. Current Product Get/List schemas do not expose this field, so they do not establish how to read back or verify the selected value.\n- The optional `custom_fields` input is an open string-valued map without an entity annotation. The dedicated [[source-metronome-api-reference-custom-fields|custom-fields authority]] says configured values can be set during object creation, persist and are returned through app, API, and export surfaces, and a Product value propagates to its associated invoice line. The [[source-metronome-api-reference-custom-fields-create-a-custom-field-key|create-key authority]] separately exposes both `product` and `contract_product`, while Product Get/List annotate returned maps as `contract_product`; those names are not reconciled.\n\n## Material boundaries and contradictions\n\n> [!warning] Product-type and composite-selector contracts disagree\n> Preserve the create enum, Get/List response enum, four-type guide, create-schema composite descriptions, and guide's ID-or-tag selection as source-scoped surfaces. Do not normalize them into one undocumented runtime contract.\n\n> [!warning] SQL granularity defaults disagree\n> The create schema says `service_period` is the default, while the SQL Editor guide says `hour` is the default. Neither source resolves the conflict, and Product Get/List do not expose a read-back field.\n\n- Product creation does not itself assign a price, attach the product to a rate card or contract, or prove invoice adoption. Custom-field propagation applies after a configured value exists and is associated with a product; it does not establish destination precedence, timing, draft-versus-finalized behavior, retroactivity, update or deletion propagation, provider acceptance, payment, tax, accounting, or reconciliation.\n- The response does not establish that generic `data.id` is Product identity, product-name uniqueness, duplicate handling, read-after-write visibility, propagation timing, rate-card or contract adoption, invoice adoption, or endpoint-specific recovery after a partial or ambiguous failure.\n- The separate API-wide [[source-metronome-api-reference-idempotency|POST idempotency authority]] persists a provided-key result only after execution begins, meaning validation passed and no pre-execution concurrent-request conflict prevented execution. An admitted result is retained for at least 24 hours, may be HTTP `500`, and identical same-key parameters replay that cached result; changed parameters return HTTP `409`. After a cached or ambiguous failure, investigate system state rather than assuming a changed key is safe. Validation failures and pre-execution conflicts are not established cached results, and no-key, another-key, expired-key, product uniqueness, concurrency ordering, propagation, visibility, and endpoint-specific recovery remain unknown.\n\n## Raw-detail coverage map\n\n| Detail category | Exact evidence route |\n| --- | --- |\n| Method, bearer security, operation description, example payload, success envelope, generic error, and response-identity shape | [[raw/metronome/api-reference/products/create-a-product-2026-08-28|complete create-operation raw]] |\n| Full create enum, client annotations, conditional USAGE and COMPOSITE fields, composite scope and beta options, tags, NetSuite and refund fields | [[raw/metronome/api-reference/products/create-a-product-2026-08-28|complete create-operation raw]] |\n| SQL granularity wording, pricing and presentation group keys, quantity conversion and rounding schemas, nullability, enums, and numeric minimum | [[raw/metronome/api-reference/products/create-a-product-2026-08-28|complete create-operation raw]] |\n| Open string-valued custom-field input and complete schema-requiredness versus description-level requiredness | [[raw/metronome/api-reference/products/create-a-product-2026-08-28|complete create-operation raw]] |\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-products-and-rate-cards]], [[metronome-billable-metrics]], [[metronome-custom-fields]], [[metronome-invoicing]], [[metronome-api-idempotency]]\n- Product authorities: [[source-metronome-guides-implement-metronome-core-concepts-create-products-contracts]], [[source-metronome-api-reference-products-get-a-product]], [[source-metronome-api-reference-products-list-products]]\n- SQL authority: [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-sql-editor]]\n- Custom-field authorities: [[source-metronome-api-reference-custom-fields]], [[source-metronome-api-reference-custom-fields-create-a-custom-field-key]]\n- Retry authority: [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/products/create-a-product-2026-08-28|2026-08-28 snapshot - complete create operation, payload schemas, response envelope, and errors]]\n",
+  "quotes": [
+    {
+      "text": "/v1/contract-pricing/products/create:\n    post:\n      tags:\n        - Products\n      summary: Create a product\n      description: >\n        Create a new product object. Products in Metronome represent your\n        company's individual product or service offerings. A Product can be\n        thought of as the basic unit of a line item on the invoice. This is\n        analogous to SKUs or items in an ERP system. Give the product a\n        meaningful name as they will appear on customer invoices.",
+      "location": "lines 88-98, OpenAPI operation path, method, and description"
+    },
+    {
+      "text": "security:\n  - bearerAuth: []",
+      "location": "lines 26-27, OpenAPI top-level security"
+    },
+    {
+      "text": "CreateProductListItemPayload:\n      type: object\n      required:\n        - name\n        - type\n      properties:\n        name:\n          type: string\n          description: displayed on invoices\n        type:\n          type: string\n          enum:\n            - FIXED\n            - fixed\n            - USAGE\n            - usage\n            - COMPOSITE\n            - composite\n            - SUBSCRIPTION\n            - subscription\n            - PROFESSIONAL_SERVICE\n            - professional_service\n            - PRO_SERVICE\n            - pro_service",
+      "location": "lines 133-156, create payload required properties and complete product-type enum"
+    },
+    {
+      "text": "required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/Id'",
+      "location": "lines 117-121, HTTP 200 immediate response envelope"
+    },
+    {
+      "text": "billable_metric_id:\n          type: string\n          format: uuid\n          description: Required for USAGE products\n        sql_breakdown_granularity:\n          type: string\n          enum:\n            - HOUR\n            - hour\n            - SERVICE_PERIOD\n            - service_period\n          description: >-\n            Defines the breakdown behavior when calculating usage from SQL\n            Billable Metrics. If set to 'service_period' (default), the usage\n            will be evaluated once for all events the invoice service period and\n            the usage will be applied at the last instant of the invoice. If set\n            to 'hour', it will be broken down and evaluated for each hour. For\n            most use cases, 'hour' is recommended. The setting has no effect for\n            Streaming Billable Metrics.\n        composite_product_ids:\n          type: array\n          items:\n            type: string\n            format: uuid\n          description: Required for COMPOSITE products\n        composite_tags:\n          type: array\n          items:\n            type: string\n          description: Required for COMPOSITE products",
+      "location": "lines 182-211, conditional usage fields, SQL granularity wording, and composite selector descriptions"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "create-product-operation-and-pricing-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Products",
+        "proposed_markdown": "Bearer-authenticated `POST /v1/contract-pricing/products/create` creates a product from schema-required `name` and `type` properties inside a supplied payload; the enclosing request body is not marked required. HTTP `200` requires `data` referencing a generic `Id` with UUID `id`, but does not label that value as created-Product identity. The create request accepts case variants of four guide-documented types plus client-annotated `PROFESSIONAL_SERVICE` and `PRO_SERVICE`; current Get/List responses expose only five uppercase values including `PRO_SERVICE`, while the guide documents four. For composites, create descriptions call both product-ID and tag arrays required despite their absence from the schema required array, while the guide says applicable products can be selected by ID or tag. Preserve these source-scoped enum and selector conflicts without inferring response normalization, professional-service availability, or whether both, either, or at least one selector is enforced. Creation does not itself assign pricing or attach the product to a rate card, contract, or invoice. [[source-metronome-api-reference-products-create-a-product]] [[source-metronome-api-reference-products-get-a-product]] [[source-metronome-api-reference-products-list-products]] [[source-metronome-guides-implement-metronome-core-concepts-create-products-contracts]]",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve generic response-identity ambiguity and do not identify data.id as the Product UUID without dedicated labeling.",
+          "Preserve the create-versus-read-versus-guide product-type mismatch and the composite both-required-versus-ID-or-tag contradiction."
+        ]
+      },
+      {
+        "update_id": "create-product-billable-metric-configuration",
+        "target_path": "wiki/concepts/metronome/metronome-billable-metrics.md",
+        "update_kind": "durable_fact",
+        "anchor": "## SQL query, output, and timing semantics",
+        "proposed_markdown": "> [!warning] Product-create SQL granularity contradiction\n> The Product-create schema says `service_period` is the default and recommends `hour`, while the current SQL Editor guide says `hour` is the default and `service period` is opt-in. The guide's examples make this decision financially material: it changes when usage cost is incurred, which scheduled rate applies, and whether a credit or commit covers the final instant. Current Product Get/List schemas do not expose `sql_breakdown_granularity`, so they do not establish a read-back or verification route. Preserve both source scopes rather than selecting one default as runtime truth. The create endpoint separately describes `billable_metric_id` as required for USAGE products without including it in the payload schema's required array, and says the setting has no effect on streaming metrics. [[source-metronome-api-reference-products-create-a-product]] [[source-metronome-guides-implement-metronome-core-concepts-billable-metrics-sql-editor]] [[source-metronome-api-reference-products-get-a-product]] [[source-metronome-api-reference-products-list-products]]",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Do not insert either SQL default as an unqualified platform rule.",
+          "The Product Get/List authorities do not expose the field and therefore do not prove the selected value."
+        ]
+      },
+      {
+        "update_id": "create-product-invoice-line-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Native invoice model",
+        "proposed_markdown": "Metronome describes a Product as the basic unit of an invoice line item and says its meaningful name appears on customer invoices. The create operation itself does not assign a price, attach the product to a rate card or contract, prove invoice adoption, or define draft/finalized behavior, delivery, collection, tax, payment, accounting, or reconciliation. Its HTTP `200` generic `data.id` schema also does not explicitly identify the returned UUID as Product-resource identity. [[source-metronome-api-reference-products-create-a-product]]",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": [
+          "Treat invoice-line role and displayed name as catalog and presentation semantics when the product is used, not proof that creation causes an invoice line."
+        ]
+      },
+      {
+        "update_id": "create-product-custom-field-input",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Entity scope and persistence",
+        "proposed_markdown": "Product creation accepts optional `custom_fields` as an open string-valued map but gives it no entity annotation. The dedicated custom-fields authority says a configured value may be set during object creation, then persists and is returned through Metronome app, API, and export surfaces; a Product value propagates to its associated invoice line. The create-key enum separately exposes both `product` and `contract_product`, while current Product Get/List annotate their returned custom-field maps as `contract_product`; those labels are not reconciled. These authorities do not establish unconfigured-key acceptance, key/value limits, precedence, propagation timing, retroactivity, update or deletion propagation, downstream acceptance, payment, tax, accounting, or reconciliation. [[source-metronome-api-reference-products-create-a-product]] [[source-metronome-api-reference-custom-fields]] [[source-metronome-api-reference-custom-fields-create-a-custom-field-key]] [[source-metronome-api-reference-products-get-a-product]] [[source-metronome-api-reference-products-list-products]]",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": [
+          "Preserve the product versus contract_product entity-label boundary.",
+          "Do not treat the open string-map shape as proof that an unconfigured key is accepted or that propagation is immediate."
+        ]
+      },
+      {
+        "update_id": "create-product-custom-field-invoice-route",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Custom downstream invoice delivery",
+        "proposed_markdown": "The Product-create schema accepts an optional open string-valued `custom_fields` map without an entity annotation. Dedicated custom-field authority says a configured Product value can be set during object creation and propagates to the associated invoice line, but current Product reads annotate returned maps as `contract_product` and the create-key enum exposes both `product` and `contract_product` without reconciliation. Propagation requires a configured value and does not establish destination precedence, timing, draft-versus-finalized scope, retroactivity, update or deletion behavior, provider acceptance, payment, tax, accounting, export visibility, or reconciliation. [[source-metronome-api-reference-products-create-a-product]] [[source-metronome-api-reference-custom-fields]] [[source-metronome-api-reference-custom-fields-create-a-custom-field-key]] [[source-metronome-api-reference-products-get-a-product]] [[source-metronome-api-reference-products-list-products]]",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": [
+          "Do not treat Product creation alone as proof that a field is configured, persisted, or already present on an invoice line."
+        ]
+      },
+      {
+        "update_id": "create-product-post-execution-admission",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Retry and error boundary",
+        "proposed_markdown": "`POST /v1/contract-pricing/products/create` falls under the separate API-wide `Idempotency-Key` authority. A provided-key result is persisted only after execution begins, meaning validation passed and no pre-execution concurrent-request conflict prevented execution. An admitted result is retained for at least 24 hours, may be HTTP `500`, and identical same-key parameters replay that cached result; changed parameters return HTTP `409`. After a cached or ambiguous failure, investigate system state rather than assuming a changed key is safe. Validation failures and pre-execution conflicts are not established cached results. The Product-create endpoint adds no resource `uniqueness_key`, duplicate-product rule, no-key, another-key, or expired-key behavior, concurrency ordering, visibility or propagation guarantee, or endpoint-specific recovery rule. [[source-metronome-api-reference-products-create-a-product]] [[source-metronome-api-reference-idempotency]]",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": [
+          "API-wide admission, retention, cached-error, and replay semantics come from the dedicated idempotency authority, not the Product-create raw.",
+          "Do not interpret same-key replay as fresh Product state or a changed key as automatically safe after ambiguous failure."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/products/create-a-product-2026-08-28.md",
+  "raw_sha256": "4dc37e6068537d60bdfbf927d35b4bd3ceca5c05f35b6d927b1abc6b0320e3d0",
+  "status": "candidate_ready"
+}

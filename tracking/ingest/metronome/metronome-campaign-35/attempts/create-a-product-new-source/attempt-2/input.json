@@ -1,0 +1,53 @@
+{
+  "action": "spawn_worker",
+  "job_id": "create-a-product-new-source",
+  "attempt": 2,
+  "raw_path": "raw/metronome/api-reference/products/create-a-product-2026-08-28.md",
+  "raw_sha256": "4dc37e6068537d60bdfbf927d35b4bd3ceca5c05f35b6d927b1abc6b0320e3d0",
+  "source_target": "wiki/sources/metronome/source-metronome-api-reference-products-create-a-product.md",
+  "canonical_url": "https://docs.metronome.com/api-reference/products/create-a-product",
+  "contract_version": 2,
+  "result_contract": {
+    "top_level_keys": [
+      "job_id",
+      "attempt",
+      "source_page",
+      "quotes",
+      "suggestions",
+      "raw_path",
+      "raw_sha256",
+      "status"
+    ],
+    "quote_required_keys": [
+      "text",
+      "location"
+    ]
+  },
+  "preflight": [
+    "Copy canonical_url exactly into source_page frontmatter.",
+    "Return exactly result_contract.top_level_keys and no other top-level keys.",
+    "Ensure every quote has non-empty text and location.",
+    "For OpenAPI pages, distinguish requestBody requiredness, required payload properties, and additionalProperties behavior; do not infer omitted-body or unknown-field behavior.",
+    "For guide worked examples, compare every retained request and response field against current dedicated API authorities; preserve omitted-field blast radius, defaults, units, requiredness, enums, and contradictions.",
+    "Ground query-critical method, path, authentication, and immediate-parent response placement with direct quotes; do not spend all quote slots on leaf-schema detail.",
+    "For every POST operation, check the existing Metronome API-wide idempotency authority and separate its guarantees from endpoint-specific unknowns.",
+    "For each durable fact, audit every relevant existing Metronome concept and provide reciprocal source-link suggestions; do not stop after the first plausible concept."
+  ],
+  "retry_context": {
+    "prior_attempt": 1,
+    "review_scope": "full",
+    "required_changes": [
+      "Correct the immediate request/response schema treatment. The HTTP 200 schema requires data.id through a generic Id object but does not explicitly label that UUID as the created Product resource rather than another result identity, so remove the overview's definitive 'its UUID' claim and preserve the identity ambiguity. Also state that quantity_conversion and quantity_rounding are nullable: only a supplied non-null object requires conversion_factor plus operation or rounding_method plus decimal_places; a supplied null does not trigger those nested required lists.",
+      "Preserve the full product-type authority mismatch. The create request enum accepts upper- and lowercase forms of FIXED, USAGE, COMPOSITE, and SUBSCRIPTION plus client-annotated PROFESSIONAL_SERVICE and PRO_SERVICE forms, while current Get and List responses expose only the five uppercase values USAGE, SUBSCRIPTION, COMPOSITE, FIXED, and PRO_SERVICE, and the product guide documents only four product types. Link the current Get/List authorities and do not infer response spelling, round-trip normalization, creation support, or general tenant availability for either professional-service label.",
+      "Add the composite-selector contradiction. The create schema descriptions call both composite_product_ids and composite_tags required for a COMPOSITE product even though neither appears in the schema required array, while the current product guide says a composite selects applicable products by ID or product tag. Preserve all three source-scoped surfaces without concluding that both arrays, either array, or one-at-least validation is the runtime rule; revise the products-and-rate-cards proposal accordingly.",
+      "Add the material SQL granularity contradiction and read-back boundary. This create raw says service_period is the default and hour is recommended, whereas the current SQL Editor authority says hour is the default and service period is opt-in; the latter also shows that the choice changes when usage cost is incurred, which rate applies, and whether a credit or commit covers the final instant. Current Product Get/List schemas do not expose sql_breakdown_granularity, so they do not establish how to verify the selected value. Add the SQL Editor evidence route, a reciprocal contradiction warning, and revise the billable-metrics proposal rather than inserting an unqualified service-period default into a concept that currently records hour.",
+      "Complete the primary custom-field and invoice route. The Product-create raw accepts an optional open string-valued custom_fields map but carries no entity annotation. Current dedicated authority creates product fields with entity contract_product, says values can be set during object creation, persist and are returned across app/API/export surfaces, and propagate from a product to its associated invoice line; the create-key enum separately exposes both product and contract_product without reconciling them, and Product Get/List annotate their returned map contract_product. Preserve the known persistence and invoice-line behavior with its timing, configured-key, propagation, and downstream limits, explicitly retain the product-versus-contract_product naming boundary, link the create-key and Get/List authorities, and revise or add fact-bearing custom-field and invoicing reciprocal proposals.",
+      "Keep the correctly stated POST execution-admission boundary, but complete the material API-wide failure contract in the candidate and idempotency proposal: an admitted persisted result is retained for at least 24 hours, can be an HTTP 500, and the same key replays that cached error, so ambiguous state must be investigated rather than treating a changed key as automatically safe. Keep validation failures and pre-execution concurrent-request conflicts outside established cached results and keep no-key, another-key, expired-key, product uniqueness, concurrency ordering, propagation, visibility, and endpoint-specific recovery unknown."
+    ],
+    "prior_reviewer_identity": "c35_r_product_a1"
+  },
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Campaign 35 API Mutation / Product Creation: read the complete raw and create one Minimum Sufficient Source covering product identity and invoice-line role, request-body versus property requiredness, naming and custom-field boundaries, response identity, creation versus later rate-card or pricing behavior, failure and visibility unknowns, every primary product, pricing, invoicing, custom-field and idempotency route, the coverage map, and exact raw deep dive. Apply the Metronome POST execution-admission preflight on the first attempt without inferring uniqueness, propagation, or invoice adoption.",
+  "worker_identity": "c35_w_product_a2",
+  "worker_model": "gpt-5.6-sol-medium"
+}

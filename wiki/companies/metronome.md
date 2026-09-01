@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 172
+source_count: 177
 ---
 
 ## Overview
@@ -151,8 +151,8 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 226
-- Official documentation source summaries: 166
-- Raw snapshots without source summaries: 120
+- Official documentation source summaries: 171
+- Raw snapshots without source summaries: 115
 
 ## Sources
 
@@ -338,6 +338,12 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 - [[source-metronome-api-reference-plans-get-plan-details]] — deprecated Plan detail, legacy pricing and grant configuration, custom fields, and migration limits
 - [[source-metronome-api-reference-sdks]] — four-language usage-billing walkthrough, retry boundaries, stale chronology, and Go lifecycle conflict
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] — private-preview managed token pricing, custom-unit and package flow, event mapping, and model-update boundaries
+
+- [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]] — signed manual commit-or-credit ledger adjustment, balance calculation, correction, and retry boundaries
+- [[source-metronome-api-reference-usage-get-batched-usage-data]] — multi-customer and multi-metric aggregate usage, windows, grouping, pagination, LATEST, and guide-shape boundaries
+- [[source-metronome-api-reference-products-create-a-product]] — product creation schema, type and composite contradictions, SQL granularity, custom fields, and retry boundaries
+- [[source-metronome-api-reference-plans-list-customer-plans]] — deprecated customer Plan history, pagination, and exact Contracts migration routes
+- [[source-metronome-api-reference-alerts-archive-a-threshold-notification]] — irreversible threshold-alert archival, uniqueness release, export history, webhook, and recovery boundaries
 
 ## Related
 

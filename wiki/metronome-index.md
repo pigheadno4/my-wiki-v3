@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 226 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 172 |
-| Raw snapshots without source summaries | 120 |
+| Source summaries ingested | 177 |
+| Raw snapshots without source summaries | 115 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -208,6 +208,12 @@ Operational evidence:
 - [[source-metronome-api-reference-plans-get-plan-details]] — deprecated Plan retrieval, legacy price and credit-grant configuration, custom fields, and Contracts migration boundary
 - [[source-metronome-api-reference-sdks]] — Python, Node.js, Ruby, and Go usage-billing route with retry, chronology, grouping, and authority boundaries
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-token-billing]] — private-preview managed token pricing, custom-unit and package flow, event mapping, and model-update boundaries
+
+- [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]] — signed manual commit-or-credit ledger adjustment, balance calculation, correction, and retry boundaries
+- [[source-metronome-api-reference-usage-get-batched-usage-data]] — multi-customer and multi-metric aggregate usage, windows, grouping, pagination, LATEST, and guide-shape boundaries
+- [[source-metronome-api-reference-products-create-a-product]] — product creation schema, type and composite contradictions, SQL granularity, custom fields, and retry boundaries
+- [[source-metronome-api-reference-plans-list-customer-plans]] — deprecated customer Plan history, pagination, and exact Contracts migration routes
+- [[source-metronome-api-reference-alerts-archive-a-threshold-notification]] — irreversible threshold-alert archival, uniqueness release, export history, webhook, and recovery boundaries
 
 ## Concepts
 
