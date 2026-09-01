@@ -6,6 +6,12 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-01] ingest | stripe/stripe-js `@stripe/stripe-js@9.15.0`
+
+- Delta-ingested work item `github-7744a04feefa263d4371` from `9.14.0` to exact SHA `9c83132a5333ffd757be55c75f44524023b5a39e` after serial review of all 12 required evidence and context paths.
+- Added `metadata?: MetadataParam` to the retained `stripe.createConfirmationToken()` parameter contract and `buttonBoxShadow?: string` to Elements appearance variables.
+- Preserved the loader/runtime boundary: no dependency, loader, removal, or hosted-runtime implementation change was established, and declaration presence does not prove rollout or merchant eligibility.
+
 ## [2026-08-31] ingest | stripe/stripe-terminal-android `stripeterminal@5.8.0`
 
 - Full-ingested work item `github-647016eaa69d9b32d93d` at exact SHA `b3de15b57201df0aa0e0235ccbe8e81bf9abaa8f` after serial review of all 88 required evidence paths.

@@ -2,9 +2,10 @@
 title: "GitHub changelog: stripe/stripe-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-08-21
+date_updated: 2026-09-01
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-js/snapshots/2026-09-01-9c83132/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-08-21-1a6a2c6/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-07-30-43d35b1/manifest.json"
@@ -15,6 +16,33 @@ tags: [stripe, stripe-js, javascript, typescript, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `stripe/stripe-js`. Cumulative implementation knowledge belongs in [[source-github-stripe-js]] and the linked immutable snapshots.
+
+## `@stripe/stripe-js@9.15.0` — Change Set `9c83132` (2026-08-31)
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@stripe/stripe-js` | `9.14.0` | `9.15.0` | 2026-08-31 | `9c83132a5333ffd757be55c75f44524023b5a39e` | Delta |
+
+**Important change:** `ConfirmationTokenCreateParams` adds `metadata?: MetadataParam`, and Elements `Appearance.variables` adds `buttonBoxShadow?: string`.
+
+**Developer or merchant impact:** TypeScript integrations can now pass typed metadata to `stripe.createConfirmationToken()` and type a button shadow in Elements appearance configuration. The package loader and remotely hosted runtime implementation do not change.
+
+**Migration action:** None documented. Existing integrations can adopt either option when needed and should verify Stripe-hosted runtime and server behavior separately from declaration presence.
+
+**Updated source sections:** overview; evidence boundary; grounding excerpts; package status; v9.15.0 delta; compatibility notes; Stripe company; Stripe Elements and Payment Intents concepts; provider index.
+
+**Evidence boundary:** The release is an additive declaration update. Two modified type-test fixtures confirm intended values but remain intentionally excluded from the raw source capsule; their exact diff is retained in the comparison. No dependency, loader, removal, or runtime implementation change is present.
+
+**Evidence:**
+
+- Release manifest: `raw/github/stripe/stripe-js/releases/stripe-js/9.15.0/2026-09-01/manifest.json`
+- Release notes: `raw/github/stripe/stripe-js/releases/stripe-js/9.15.0/2026-09-01/release-notes.md`
+- Snapshot manifest: `raw/github/stripe/stripe-js/snapshots/2026-09-01-9c83132/manifest.json`
+- Comparison manifest: `tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/9.14.0--9.15.0/comparison.json`
+- Comparison: `tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/9.14.0--9.15.0/comparison.md`
+- Exact patch: `tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/9.14.0--9.15.0/diff.patch`
+- ConfirmationToken types: `raw/github/stripe/stripe-js/snapshots/2026-09-01-9c83132/files/types/api/confirmation-tokens.d.ts`
+- Elements appearance types: `raw/github/stripe/stripe-js/snapshots/2026-09-01-9c83132/files/types/stripe-js/elements-group.d.ts`
 
 ## `@stripe/stripe-js@9.14.0` — Change Set `8daa6fa` (2026-08-20)
 

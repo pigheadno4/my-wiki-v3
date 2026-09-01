@@ -870,6 +870,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.95.1/2026-08-28/manifest.json)
   Comparison: Not applicable
 
+## `github-7744a04feefa263d4371`
+
+- Repository: `stripe/stripe-js`
+- SHA: `9c83132a5333ffd757be55c75f44524023b5a39e`
+- Collection date: `2026-09-01`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-js/snapshots/2026-09-01-9c83132/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-js/ingest-packets/github-7744a04feefa263d4371/packet.md)
+- Review priority: `normal`
+- Required reading: `12` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-js@9.15.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-js/releases/stripe-js/9.15.0/2026-09-01/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-js/comparisons/stripe-js/9.14.0--9.15.0/comparison.json)
+
 ## `github-787247be57e3d755f4ef`
 
 - Repository: `paypal/paypal-checkout-components`

@@ -110,6 +110,10 @@ stripe.paymentIntents.create({
 // To charge later: off_session: true, confirm: true
 ```
 
+## ConfirmationToken Metadata
+
+`@stripe/stripe-js@9.15.0` adds `metadata?: MetadataParam` to `ConfirmationTokenCreateParams`, so typed web integrations can attach metadata while calling `stripe.createConfirmationToken({elements, params})`. The declaration documents a maximum of 50 keys and rejects unsupported value types at compile time. This is package-level TypeScript evidence; server persistence and Stripe-hosted runtime availability still require current API and product confirmation.
+
 ## Related Concepts
 
 - [[stripe-elements]] — Stripe Elements (UI component library used with Payment Intents)
@@ -129,5 +133,6 @@ stripe.paymentIntents.create({
 - [[source-stripe-two-step-confirmation]] — Two-step checkout: ConfirmationToken flow, Elements options table, saved PMs, tax calc, layouts, limitations
 - [[source-stripe-accept-payment-deferred]] — Deferred intent: render Element before PI, elements.submit() required, dynamic updates, payment+setup modes
 - [[source-stripe-finalize-payments-server]] — Server-side confirmation: paymentMethodCreation='manual', ConfirmationToken (12hr expiry), handleNextAction, SDK min versions
+- [[source-github-stripe-js]] — package-qualified Stripe.js loader and declaration history through `@stripe/stripe-js@9.15.0`, including ConfirmationToken metadata typing
 - [[source-stripe-payments-without-auth]] — Legacy US/CA-only: CardElement + createPaymentMethod, error_on_requires_action, synchronous, no webhooks
 - [[source-stripe-migrate-basic-card-integration]] — Migrate legacy to auth-handling: remove error_on_requires_action, add confirmation_method='manual', handleCardAction, 1-hour re-confirm window

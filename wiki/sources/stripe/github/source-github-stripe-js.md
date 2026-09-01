@@ -2,9 +2,10 @@
 title: "GitHub: stripe/stripe-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-08-21
+date_updated: 2026-09-01
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-js/snapshots/2026-09-01-9c83132/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-08-21-1a6a2c6/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-07-30-43d35b1/manifest.json"
@@ -14,7 +15,7 @@ tags: [stripe, stripe-js, javascript, typescript, elements, checkout, github-rep
 
 ## Overview
 
-`stripe/stripe-js` publishes `@stripe/stripe-js`, the CommonJS and ES module loader plus TypeScript declarations for Stripe.js. This cumulative page preserves the approved `@stripe/stripe-js@8.11.0` baseline, the full major-version transition to `@stripe/stripe-js@9.12.1`, and approved declaration deltas through `9.14.0` at commit `8daa6fad5d318aa9e18aa0e1833e4249c08e4682`.
+`stripe/stripe-js` publishes `@stripe/stripe-js`, the CommonJS and ES module loader plus TypeScript declarations for Stripe.js. This cumulative page preserves the approved `@stripe/stripe-js@8.11.0` baseline, the full major-version transition to `@stripe/stripe-js@9.12.1`, and approved declaration deltas through `9.15.0` at commit `9c83132a5333ffd757be55c75f44524023b5a39e`.
 
 Repository: <https://github.com/stripe/stripe-js>
 
@@ -26,6 +27,7 @@ Repository: <https://github.com/stripe/stripe-js>
 - The declarations track a broad API surface, including legacy APIs. A declared method is not by itself a recommendation to start a new integration with that method.
 - Current Stripe documentation can be newer than either retained package version. Later package releases are added cumulatively rather than replacing older sections.
 - The 9.14.0 upstream release notes retain their empty-section template and do not classify the listed commits. The exact retained comparison is the authority for the release findings below.
+- The 9.15.0 release changes declarations only: it does not change the loader or include the remotely hosted Stripe.js implementation. The new types do not independently prove runtime rollout or merchant eligibility.
 
 > [!warning] Contradiction
 > The v9 declarations conflict with the April 2026 snapshot in [[source-stripe-checkout-elements-beta-changelog]] on which train is latest and whether `initCheckout()` remains a current entrypoint. Treat that page as historical Clover migration guidance and use package-qualified evidence for version-specific implementation work.
@@ -96,11 +98,23 @@ Repository: <https://github.com/stripe/stripe-js>
 >
 > `raw/github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/files/types/stripe-js/embedded-checkout.d.ts:164-169`
 
+> `"version": "9.15.0"`
+>
+> `raw/github/stripe/stripe-js/snapshots/2026-09-01-9c83132/files/package.json:3`
+
+> `metadata?: MetadataParam;`
+>
+> `raw/github/stripe/stripe-js/snapshots/2026-09-01-9c83132/files/types/api/confirmation-tokens.d.ts:116`
+
+> `buttonBoxShadow?: string;`
+>
+> `raw/github/stripe/stripe-js/snapshots/2026-09-01-9c83132/files/types/stripe-js/elements-group.d.ts:1250`
+
 ## Package Status
 
 | Package | Latest ingested release | Stripe.js train | Evidence status |
 | --- | --- | --- | --- |
-| `@stripe/stripe-js` | `9.14.0` | `dahlia` | Approved 9.14 declaration delta; prior v9 and v8 retained |
+| `@stripe/stripe-js` | `9.15.0` | `dahlia` | Approved 9.15 declaration delta; prior v9 and v8 retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -264,6 +278,20 @@ A beta `expressCheckout` property adds an embedded Custom Payment Method button 
 
 `StripeEmbeddedCheckoutOptions.onShippingDetailsChange` remains declared but is now marked deprecated because dynamic shipping updates are deprecated in Embedded Checkout. Existing integrations can retain the callback for their pinned version, but new work must verify Stripe's current replacement path rather than following older dynamic-shipping guidance unchanged.
 
+### `@stripe/stripe-js@9.15.0`
+
+Version 9.15.0 is a contained additive TypeScript declaration update on the retained `dahlia` train. The package loader, entrypoints, Node engine, and dependency ranges do not change.
+
+#### ConfirmationToken Metadata
+
+`ConfirmationTokenCreateParams` adds `metadata?: MetadataParam`, allowing typed web integrations to include metadata under `params` when calling `stripe.createConfirmationToken({elements, params})`. The declaration documents a maximum of 50 keys and uses the existing Stripe metadata parameter type. The exact type tests accept a string-valued `order_id` and reject a boolean value.
+
+This declaration adds compile-time support; it does not independently establish server persistence behavior or the availability of the remotely hosted Stripe.js implementation.
+
+#### Elements Button Shadow Variable
+
+`Appearance.variables` adds `buttonBoxShadow?: string`. This is an additive styling type for Stripe Elements buttons. No other Appearance variable, Element lifecycle, or payment behavior changes in the retained comparison.
+
 ## Compatibility and Operational Notes
 
 - Stripe.js must be loaded from `js.stripe.com` for the documented PCI boundary.
@@ -274,6 +302,7 @@ A beta `expressCheckout` property adds an embedded Custom Payment Method button 
 - Minor and patch package releases can include small backwards-incompatible declaration corrections without changing the remote Stripe.js runtime.
 - In `9.13.0`, Checkout Form promotion-code visibility depends on the server-created Session setting, and Payment Element wallet visibility must be configured at creation rather than through the typed `update()` call.
 - In `9.14.0`, wallet contact requirements can be created or updated through `walletOptions`; this does not make the separate `wallets` visibility option updateable.
+- In `9.15.0`, ConfirmationToken metadata and `buttonBoxShadow` are additive typed options; existing integrations have no documented migration requirement.
 - Embedded Custom Payment Method rendering requires trusted content, explicit cleanup, and beta-access verification. The declaration does not transfer third-party payment processing to Stripe.
 - Embedded Checkout dynamic shipping updates are deprecated; version-specific maintenance guidance must not be presented as the recommended new-integration path.
 
@@ -285,6 +314,13 @@ A beta `expressCheckout` property adds an embedded Custom Payment Method button 
 
 ## Raw Sources
 
+- `raw/github/stripe/stripe-js/snapshots/2026-09-01-9c83132/manifest.json` — exact-SHA v9.15.0 source capsule
+- `raw/github/stripe/stripe-js/releases/stripe-js/9.15.0/2026-09-01/manifest.json` — package-qualified v9.15.0 release record
+- `raw/github/stripe/stripe-js/releases/stripe-js/9.15.0/2026-09-01/release-notes.md` — upstream v9.15.0 release notes
+- `tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/9.14.0--9.15.0/comparison.md` — retained v9.14.0-to-v9.15.0 comparison
+- `tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/9.14.0--9.15.0/diff.patch` — exact retained delta
+- `raw/github/stripe/stripe-js/snapshots/2026-09-01-9c83132/files/types/api/confirmation-tokens.d.ts` — ConfirmationToken metadata typing
+- `raw/github/stripe/stripe-js/snapshots/2026-09-01-9c83132/files/types/stripe-js/elements-group.d.ts` — Elements `buttonBoxShadow` appearance variable
 - `raw/github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/manifest.json` — exact-SHA v9.14.0 source capsule
 - `raw/github/stripe/stripe-js/releases/stripe-js/9.14.0/2026-08-21/manifest.json` — package-qualified v9.14.0 release record
 - `raw/github/stripe/stripe-js/releases/stripe-js/9.14.0/2026-08-21/release-notes.md` — upstream release notes with unfinished template

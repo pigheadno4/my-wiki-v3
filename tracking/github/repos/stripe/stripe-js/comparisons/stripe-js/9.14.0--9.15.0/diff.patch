@@ -1,0 +1,86 @@
+diff --git a/package.json b/package.json
+index ed1f0d1..811fabb 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@stripe/stripe-js",
+-  "version": "9.14.0",
++  "version": "9.15.0",
+   "description": "Stripe.js loading utility",
+   "repository": "github:stripe/stripe-js",
+   "main": "lib/index.js",
+diff --git a/tests/types/src/invalid.ts b/tests/types/src/invalid.ts
+index 43af142..777cb72 100644
+--- a/tests/types/src/invalid.ts
++++ b/tests/types/src/invalid.ts
+@@ -596,6 +596,16 @@ stripe
+     result.confirmationToken.mandate_data;
+   });
+ 
++stripe.createConfirmationToken({
++  elements,
++  params: {
++    metadata: {
++      // @ts-expect-error metadata values must be string, number, or null
++      order_id: true,
++    },
++  },
++});
++
+ const paymentRequest = stripe.paymentRequest({
+   country: 'US',
+   currency: 'usd',
+diff --git a/tests/types/src/valid.ts b/tests/types/src/valid.ts
+index 265383e..b7919bb 100644
+--- a/tests/types/src/valid.ts
++++ b/tests/types/src/valid.ts
+@@ -2538,6 +2538,9 @@ stripe
+         name: 'Jenny Rosen',
+       },
+       return_url: 'https://shop.example.com/success.html',
++      metadata: {
++        order_id: '6735',
++      },
+     },
+   })
+   .then((result) => {
+diff --git a/types/api/confirmation-tokens.d.ts b/types/api/confirmation-tokens.d.ts
+index 1ea0414..a3ec522 100644
+--- a/types/api/confirmation-tokens.d.ts
++++ b/types/api/confirmation-tokens.d.ts
+@@ -1,5 +1,5 @@
+ import {StripeElements} from '../stripe-js';
+-import {Address} from './shared';
++import {Address, MetadataParam} from './shared';
+ import {PaymentMethod, PaymentMethodCreateParams} from './payment-methods';
+ import {PaymentIntent} from './payment-intents';
+ 
+@@ -105,6 +105,15 @@ export interface ConfirmationTokenCreateParams {
+    * The url your customer will be directed to after they complete authentication.
+    */
+   return_url?: string | null;
++
++  /**
++   * Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format. Individual keys can be unset by posting an empty value to them. All keys can be unset by posting an empty value to `metadata`.
++   *
++   * This can be a maximum of 50 keys.
++   *
++   * @docs https://docs.stripe.com/js/confirmation_tokens/create_confirmation_token#create_confirmation_token-options-params-metadata
++   */
++  metadata?: MetadataParam;
+ }
+ 
+ export interface CreateConfirmationToken {
+diff --git a/types/stripe-js/elements-group.d.ts b/types/stripe-js/elements-group.d.ts
+index 5dc4741..7f9aa53 100644
+--- a/types/stripe-js/elements-group.d.ts
++++ b/types/stripe-js/elements-group.d.ts
+@@ -1247,6 +1247,7 @@ export interface Appearance {
+     colorWarning?: string;
+ 
+     // Buttons
++    buttonBoxShadow?: string;
+     buttonColorBackground?: string;
+     buttonColorText?: string;
+     buttonFontSize?: string;
