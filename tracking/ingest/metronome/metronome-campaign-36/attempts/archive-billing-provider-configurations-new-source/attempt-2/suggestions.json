@@ -1,0 +1,108 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "archive-customer-billing-provider-configurations-contract-lifecycle",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Billing-provider schedule",
+      "proposed_markdown": "Bearer-authenticated `POST /v1/archiveCustomerBillingProviderConfigurations` archives one customer's selected billing-provider configurations immediately. For an active contract using one, the endpoint says Metronome archives the configuration on the contract and immediately stops metering to downstream systems; a grace-period invoice is not sent to the customer, and associated spend- and credit-based threshold recharge configurations are disabled. This is not the scheduled provider-change operation and does not establish continuity to another destination. The endpoint does not identify affected contracts, define whether downstream metering includes Metronome rating or only provider reporting, or specify replacement, restoration, retention, read-after-write visibility, concurrent schedule-edit ordering, invoice cancellation, downstream cancellation, or reconciliation. The separate provisioning guide adds a beta-scoped statement that the configuration becomes reusable on another customer and cannot be replaced on the affected active contract; the archive endpoint itself promises only uniqueness-key reuse for new configurations, not configuration-ID reassignment. [[source-metronome-api-reference-customers-archive-billing-provider-configurations-for-a-customer]] [[source-metronome-guides-implement-metronome-core-concepts-provision-customer]] [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]]",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep immediate archival separate from an effective-dated provider schedule change.",
+        "Do not infer Metronome-rating shutdown, replacement, restoration, or atomic contract migration from downstream-metering wording.",
+        "Preserve the provisioning guide's reusable-elsewhere and no-replacement statements as guide-scoped beta authority."
+      ]
+    },
+    {
+      "update_id": "archive-customer-billing-provider-configurations-integration-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Customer-provisioning configuration",
+      "proposed_markdown": "`POST /v1/archiveCustomerBillingProviderConfigurations` is the immediate lifecycle counterpart to customer provider-configuration creation. Inside a supplied payload, it targets required customer and configuration UUIDs, and every targeted billing-provider configuration is a configuration belonging to that supplied single customer. The page does not map a foreign-customer configuration ID to a response or define validation order, atomicity, rollback, or partial effects after execution begins. For an attached configuration on an active contract, Metronome archives it and says it immediately stops metering to downstream systems. A grace-period invoice is not sent, and associated threshold recharge configurations are disabled. These statements establish Metronome-side archive and routing effects, not provider-side customer deletion, invoice cancellation, payment cancellation, marketplace entitlement change, webhook completion, tax, settlement, accounting, or reconciliation. The page does not identify the downstream system, provider-specific cutoff, readiness check, accepted-but-unreported usage treatment, provider object state, downstream convergence, or final recovery. [[source-metronome-api-reference-customers-archive-billing-provider-configurations-for-a-customer]] [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]]",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Preserve the intended same-customer ownership contract while keeping foreign-customer runtime enforcement, response mapping, validation order, atomicity, rollback, and partial effects undocumented.",
+        "Do not generalize the endpoint's downstream-metering phrase into a complete Stripe, NetSuite, marketplace, custom-delivery, payment, or reconciliation contract.",
+        "Do not claim deletion or cancellation of external-provider objects."
+      ]
+    },
+    {
+      "update_id": "archive-customer-billing-provider-configurations-invoice-delivery-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Scheduled provider routing",
+      "proposed_markdown": "Archiving a billing-provider configuration during an invoice grace period results in that invoice not being sent to the customer. When an active contract uses the configuration, the archive is immediate rather than an effective-dated provider transition. This is a delivery-suppression fact, not evidence that the invoice is voided, deleted, finalized, recalculated, credited, refunded, or canceled in a downstream provider; the endpoint says nothing about previously finalized or already-sent invoices. Its conflicting success documentation\u2014narrative `success`/`error` versus OpenAPI required `data` echoing customer and configuration identity\u2014exposes no invoice ID, affected-contract list, archive timestamp, downstream status, or reconciliation result. [[source-metronome-api-reference-customers-archive-billing-provider-configurations-for-a-customer]]",
+      "quote_indexes": [
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep grace-period non-delivery separate from invoice voiding, cancellation, finalization, recalculation, payment, refund, or downstream reconciliation.",
+        "Preserve the narrative-versus-OpenAPI response-shape conflict."
+      ]
+    },
+    {
+      "update_id": "archive-customer-billing-provider-configurations-prepaid-threshold-disablement",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Prepaid balance thresholds",
+      "proposed_markdown": "Archiving a billing-provider configuration automatically disables credit-based threshold recharge configurations for contracts using that provider. The archive endpoint does not define whether credit-based maps exactly to `prepaid_balance_threshold_configuration`, what happens to an already initiated payment, payment-gate workflow, pending commit, invoice, balance or ledger record, whether disablement is atomic with contract archival, or how operators restore or replace the billing route and safely re-enable recharge. Do not infer cancellation, rollback, provider reconciliation, or duplicate-charge prevention from disablement alone. [[source-metronome-api-reference-customers-archive-billing-provider-configurations-for-a-customer]]",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Do not silently normalize credit-based threshold recharge to a particular schema field without dedicated mapping authority.",
+        "Do not infer cancellation or reconciliation of in-flight payment-gate, commit, invoice, balance, ledger, or provider state."
+      ]
+    },
+    {
+      "update_id": "archive-customer-billing-provider-configurations-spend-threshold-disablement",
+      "target_path": "wiki/concepts/metronome/metronome-spend-threshold-billing.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Configuration and lifecycle",
+      "proposed_markdown": "Archiving a billing-provider configuration automatically disables spend-based threshold recharge configurations for contracts using the archived provider. The endpoint does not define the state of an already triggered threshold charge, pending commit, Stripe invoice or PaymentIntent, external payment-gate workflow, webhook, or collected payment; nor does it define atomicity, re-enable behavior, replacement-provider prerequisites, duplicate prevention, or reconciliation after partial or ambiguous failure. Provider archive disablement must therefore remain separate from a documented paid/failed threshold-release outcome. [[source-metronome-api-reference-customers-archive-billing-provider-configurations-for-a-customer]]",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Do not infer release, cancellation, rollback, refund, or reconciliation for an in-flight threshold workflow.",
+        "Do not treat provider archival as a threshold-release outcome."
+      ]
+    },
+    {
+      "update_id": "archive-customer-billing-provider-configurations-idempotency-and-response-boundary",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "The API-wide `Idempotency-Key` authority applies to `POST /v1/archiveCustomerBillingProviderConfigurations`: a provided-key result is persisted only after execution begins, meaning validation passed and no pre-execution concurrent-request conflict prevented execution. Identical same-key parameters then replay the original result, changed parameters return HTTP `409`, retention is at least 24 hours, and an admitted HTTP `500` can be persisted; the same key then replays that cached error. The authority directs callers to investigate resulting system state and decide whether to resolve manually or retry rather than assume a changed key is safe. The separate status-code authority instead advises checking for partial creation after `5XX` and then retrying with a different key. Neither authority defines one universally safe recovery sequence for immediate provider-configuration archival, contract detachment, grace-period invoice suppression, threshold disablement, or downstream convergence. Validation failures and pre-execution conflicts are not established cached results. The endpoint separately says one invalid configuration prevents the whole multi-configuration operation from succeeding, but adds no no-key, another-key, expired-key, repeated-archive, concurrent archive or provider-change, partial-effect, read-after-write, rollback, downstream-convergence, or final-recovery behavior. Its reference to freeing uniqueness keys for new billing-provider configurations is resource-lifecycle language, not the header cache; the key, scope, and release timing are not identified. A same-key replay is the original response, not fresh proof of current contract, invoice, threshold, metering, provider, or reconciliation state. [[source-metronome-api-reference-customers-archive-billing-provider-configurations-for-a-customer]] [[source-metronome-api-reference-idempotency]] [[source-metronome-api-reference-status-codes]]",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep configuration uniqueness-key reuse distinct from API-wide Idempotency-Key request-result replay.",
+        "Do not treat validation failures or pre-execution conflicts as established cached results.",
+        "Preserve the unresolved tension between state investigation before changed-key action and the status-code page's different-key advice.",
+        "Do not treat same-key replay as a fresh lifecycle or downstream-state read, and do not prescribe one universally safe archive recovery sequence."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

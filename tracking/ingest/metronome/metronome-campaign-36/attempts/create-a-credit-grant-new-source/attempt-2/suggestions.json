@@ -1,0 +1,92 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "c36-credit-grant-credits-fact",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Lifecycle",
+      "proposed_markdown": "The deprecated Plans `POST /v1/credits/createGrant` creates a customer credit grant with required granted and paid amounts, expiry, invoice-visible name, and an unexplained numeric priority within a supplied payload. Optional effective timing and `product_ids` govern when and where it applies; product omission applies it to all products, while supplied array order controls legacy invoice-line application. Do not import that rule as the current Contract balance or invoice-line algorithm: the dedicated prioritization authority first separates rollover, prepaid, and postpaid balance types and then applies source-specific tie-breakers, while eligible invoice lines use product type, start date, unit price, and name. Optional resource `uniqueness_key` rejects reuse with HTTP `409`; the legacy void endpoint can reset that grant key with `release_uniqueness_key: true`, qualifying the API-wide page's Alerts-only release statement. The independently documented current customer-level route is `POST /v1/contracts/customerCredits/create`, and current guidance recommends contract create or edit for most credits, but these authorities establish no one-to-one replacement, identity mapping, field mapping, migration procedure, or removal date for the legacy grant. [[source-metronome-api-reference-credit-grants-create-a-credit-grant]] [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-prioritization-rules]] [[source-metronome-api-reference-credit-grants-void-a-credit-grant]] [[source-metronome-api-reference-credits-and-commits-create-a-credit]] [[source-metronome-api-reference-contracts-create-a-contract]] [[source-metronome-api-reference-contracts-edit-a-contract]]",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep the deprecated endpoint facts, the current ordering rules, the uniqueness-key release qualification, and the current credit and contract routes source-scoped; none documents a one-to-one migration mapping."
+      ]
+    },
+    {
+      "update_id": "c36-credit-grant-contracts-route",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Deprecated Plans listing boundary",
+      "proposed_markdown": "Bearer-authenticated `POST /v1/credits/createGrant` is a deprecated Plans mutation for one `customer_id`; it directs new clients to Contracts without naming a replacement. Current authority independently documents customer-level `POST /v1/contracts/customerCredits/create`, while recommending `POST /v1/contracts/create` or `POST /v2/contracts/edit` for most credits. The current endpoints use their own payload, applicability, ordering, and lifecycle semantics. None of these sources establishes that one current operation is a one-to-one replacement for the legacy grant, or supplies a grant-to-credit or grant-to-contract identity mapping, field mapping, migration procedure, compatibility period, or removal date. [[source-metronome-api-reference-credit-grants-create-a-credit-grant]] [[source-metronome-api-reference-credits-and-commits-create-a-credit]] [[source-metronome-api-reference-contracts-create-a-contract]] [[source-metronome-api-reference-contracts-edit-a-contract]]",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "Do not imply shape compatibility or a documented one-to-one replacement from the existence of the current routes."
+      ]
+    },
+    {
+      "update_id": "c36-credit-grant-products-route",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Products",
+      "proposed_markdown": "On deprecated Plans `POST /v1/credits/createGrant`, optional `product_ids` limits a grant to selected products; omission applies credits to charges for all products, and supplied array order determines legacy application across invoice line items. Its required numeric `priority` is not explained. Do not import either statement as the current Contract ordering algorithm: the dedicated prioritization authority orders current applicable balances by balance type and then source-specific priority, applicability, cost-basis, and schedule tie-breakers, while eligible invoice lines are independently ordered by product type, earlier start date, higher unit price, and name. The legacy page also leaves empty arrays, invalid or duplicate IDs, later-created products, and interaction with current Contract applicability undefined. [[source-metronome-api-reference-credit-grants-create-a-credit-grant]] [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-prioritization-rules]]",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Preserve the legacy product-array rule and current prioritization guide as separate authorities."
+      ]
+    },
+    {
+      "update_id": "c36-credit-grant-idempotency-link",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credit-grants-create-a-credit-grant]] - deprecated Plans POST creation with a 1-128 character resource `uniqueness_key` that rejects reuse with HTTP `409`; the separate legacy void authority can reset that grant key, qualifying the API-wide Alerts-only release statement. API-wide admitted HTTP `500` caching and same-key cached-error replay require state investigation and possible manual resolution, while the status-code page's different-key advice after checking partial creation is a separate guidance tension and does not make another key universally safe.",
+      "quote_indexes": [
+        2,
+        4
+      ],
+      "warnings": [
+        "The endpoint raw directly supports its POST and resource-key behavior; grant-key release, admitted-result caching, manual investigation, and different-key tension come from the linked void, idempotency, and status-code authorities respectively."
+      ]
+    },
+    {
+      "update_id": "c36-credit-grant-pricing-unit-route",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credit-grants-create-a-credit-grant]] - deprecated Plans granted and paid amount objects, each requiring numeric `amount` and pricing-unit `credit_type_id` inside a supplied payload even though each nested property description says that pricing unit defaults to USD cents if omitted; the schema and default wording conflict and do not establish accepted omission behavior",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Preserve the nested `credit_type_id` required/default contradiction; do not resolve it by assuming either validation failure or defaulting."
+      ]
+    },
+    {
+      "update_id": "c36-credit-grant-invoicing-route",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Legacy credit-grant purchase-invoice boundary",
+      "proposed_markdown": "The deprecated Plans credit-grant create schema requires `paid_amount`, says the grant `name` appears on invoices, and defines optional `invoice_date` as the date to issue an invoice for `paid_amount`. Its optional `product_ids` array order controls legacy application across invoice line items. Do not import that ordering as the current invoice-line algorithm: the dedicated prioritization authority instead orders eligible current lines by product type, earlier start date, higher unit price, and name. The create page does not define invoice state, finalization, delivery, collection, payment, tax, accounting, refund, downstream-provider effects, or propagation timing. [[source-metronome-api-reference-credit-grants-create-a-credit-grant]] [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-prioritization-rules]]",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep the legacy product-array statement separate from current invoice-line prioritization, and do not infer downstream invoice outcomes."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

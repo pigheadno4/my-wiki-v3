@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 226 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 177 |
-| Raw snapshots without source summaries | 115 |
+| Source summaries ingested | 182 |
+| Raw snapshots without source summaries | 110 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -22,6 +22,12 @@ Operational evidence:
 - [2026-07-13 collection manifest](../tracking/collections/metronome/runs/2026-07-13T100930-manifest.md)
 
 ## Sources
+
+- [[source-metronome-api-reference-credit-grants-create-a-credit-grant]] — deprecated Plans credit-grant creation, current Contracts routing, amount and product scope, ordering, uniqueness, invoicing, and retry boundaries
+- [[source-metronome-api-reference-customers-archive-billing-provider-configurations-for-a-customer]] — immediate provider-configuration archival, contract and downstream metering effects, invoice and threshold suppression, response conflict, and recovery limits
+- [[source-metronome-api-reference-custom-fields-list-custom-field-keys]] — active custom-field key-definition discovery, entity filtering, uniqueness settings, caller-visible scope, and pagination-authority conflict
+- [[source-metronome-api-reference-contracts-list-contracts-associated-with-a-package]] — package-scoped customer and contract associations, time filters, pagination, cohort reporting, and migration-authority limits
+- [[source-metronome-api-reference-notifications-list-offset-lifecycle-event-notification-configurations]] — offset-notification configuration inventory, lifecycle-relative policies, archive filtering, endpoint-specific cursor semantics, and delivery boundaries
 
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] — merchant-built and embedded customer dashboards, current API authority conflicts, hierarchy, freshness, denomination, and security boundaries
 - [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]] — dimensional usage grouping, windows, filters, pagination, LATEST reconciliation, and replay boundaries

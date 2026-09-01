@@ -1,0 +1,117 @@
+{
+  "job_id": "create-a-credit-grant-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Create a Credit Grant\"\ntype: source\ndate_ingested: 2026-09-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/credit-grants/create-a-credit-grant\"\nraw_files:\n  - \"metronome/api-reference/credit-grants/create-a-credit-grant-2026-07-13.md\"\ntags: [metronome, api, credit-grants, plans, contracts, idempotency]\n---\n\n## Overview\n\nThis reference documents bearer-authenticated `POST /v1/credits/createGrant`, which creates a customer credit grant on Metronome's deprecated Plans surface. Metronome directs new clients to Contracts, but this page does not identify a replacement operation or define a Plan-grant-to-Contract-credit mapping.\n\n## Key takeaways\n\n- Within a supplied JSON payload, `customer_id`, `grant_amount`, `name`, `expires_at`, `paid_amount`, and `priority` are required. Both amount objects require a numeric `amount` and pricing-unit `credit_type_id`; despite their property descriptions saying the pricing unit defaults to USD cents when not passed, the schema still marks each nested `credit_type_id` required. The enclosing `requestBody` is not marked required, and top-level `additionalProperties` behavior is unspecified, so omitted-body and unknown-field behavior remain undocumented.\n- `effective_at` makes the grant apply only to usage or charges dated on or after that timestamp, while required `expires_at` is exclusive. Optional `product_ids` narrows applicability; omission applies the credits to charges for all products, and array order controls application order across invoice line items. The page does not define priority ordering, timestamp validation, empty-product-array behavior, or balance and ledger propagation timing.\n- `name` is described as appearing on invoices. Optional `invoice_date` schedules an invoice for `paid_amount`, but the page does not establish invoice state, delivery, collection, payment, tax, accounting, refund, or downstream-provider effects.\n- Optional `uniqueness_key` is 1-128 characters and rejects reuse with HTTP `409` without creating a new record. Optional rollover settings are opt-in beta and can cap rollover by a 0-1 fraction or a fixed amount; the page does not define rollover execution timing, source-grant state, atomicity, recovery, or visibility.\n- HTTP `200` requires top-level `data`, whose referenced object requires UUID `id`. No other endpoint response, error catalog, read-after-write guarantee, concurrency ordering, partial-failure recovery, or current grant/balance/invoice state is documented.\n\n## Retry, migration, and authority boundaries\n\nThe separate API-wide authority says all POST endpoints accept `Idempotency-Key`. Only after a request begins execution\u2014after validation and without a pre-execution concurrent-request conflict\u2014is its result persisted; identical same-key parameters replay that original result, changed parameters return HTTP `409`, keys remain for at least 24 hours, and HTTP `500` results can be cached. This request-result replay is distinct from the endpoint's resource-level `uniqueness_key` and must not be treated as a fresh grant, balance, ledger, invoice, or propagation read. The endpoint adds no guarantee for another or expired key, concurrent mutations, recovery after an ambiguous failure, or migration to Contracts.\n\n## Raw-detail coverage map\n\nThe exact raw page preserves the complete request example; required and optional payload properties; customer, amount, pricing-unit, display, timing, priority, reason, type, product, rollover, and custom-field schemas; the `data.id` response placement; uniqueness-key bounds and conflict text; rollover beta annotation, variants, enums, and numeric bounds; server, bearer-security, tag descriptions, and OpenAPI component definitions. Use the linked API-wide idempotency source for execution-admission, replay, retention, cached-error, and retry guidance; use current Contract authorities for Contract credit creation or editing rather than inferring a replacement from this deprecated page.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-credits-and-commits]], [[metronome-customers-and-contracts]], [[metronome-products-and-rate-cards]], [[metronome-api-idempotency]]\n- Supporting concepts: [[metronome-currencies-and-custom-pricing-units]], [[metronome-invoicing]]\n- Related source: [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/credit-grants/create-a-credit-grant-2026-07-13|2026-07-13 snapshot - complete deprecated Plans credit-grant creation request, response, applicability, uniqueness, and rollover schema]]\n",
+  "quotes": [
+    {
+      "text": "Create a new credit grant. This is a Plans (deprecated) endpoint. New clients should implement using Contracts.",
+      "location": "line 11, introductory scope statement"
+    },
+    {
+      "text": "servers:\n  - url: https://api.metronome.com/v1\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "lines 23-27, OpenAPI server and security"
+    },
+    {
+      "text": "  /credits/createGrant:\n    post:\n      tags:\n        - Credit grants\n      summary: Create a credit grant\n      description: >\n        Create a new credit grant. This is a Plans (deprecated) endpoint. New\n        clients should implement using Contracts.",
+      "location": "lines 92-99, operation path and method"
+    },
+    {
+      "text": "      responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                properties:\n                  data:\n                    $ref: '#/components/schemas/Id'\n              example:\n                data:\n                  id: 8b24d3dc-6db5-432d-9416-8439b3fbf242\ncomponents:\n  schemas:\n    CreateCreditGrantPayload:\n      required:\n        - customer_id\n        - grant_amount\n        - name\n        - expires_at\n        - paid_amount\n        - priority",
+      "location": "lines 121-145, success envelope and payload required properties"
+    },
+    {
+      "text": "        name:\n          type: string\n          description: the name of the credit grant as it will appear on invoices\n        effective_at:\n          type: string\n          format: date-time\n          description: >-\n            The credit grant will only apply to usage or charges dated on or\n            after this timestamp\n        expires_at:\n          type: string\n          format: date-time\n          description: >-\n            The credit grant will only apply to usage or charges dated before\n            this timestamp\n        invoice_date:\n          type: string\n          format: date-time\n          description: The date to issue an invoice for the paid_amount.\n        priority:\n          type: number\n        reason:\n          type: string\n        credit_grant_type:\n          type: string\n        product_ids:\n          type: array\n          items:\n            type: string\n            format: uuid\n          description: >-\n            The product(s) which these credits will be applied to. (If\n            unspecified, the credits will be applied to charges for all\n            products.). The array ordering specified here will be used to\n            determine the order in which credits will be applied to invoice line\n            items\n        rollover_settings:\n          $ref: '#/components/schemas/CreditGrantRolloverSettings'\n        custom_fields:\n          $ref: '#/components/schemas/CustomField'\n          description: Custom fields to attach to the credit grant.\n    Id:\n      required:\n        - id\n      type: object\n      properties:\n        id:\n          type: string\n          format: uuid\n    UniquenessKey:\n      type: string\n      minLength: 1\n      maxLength: 128\n      description: >-\n        Prevents the creation of duplicates. If a request to create a record is\n        made with a previously used uniqueness key, a new record will not be\n        created and the request will fail with a 409 error.\n    CreditGrantRolloverSettings:\n      type: object\n      description: >-\n        Configure a rollover for this credit grant so if it expires it rolls\n        over a configured amount to a new credit grant. This feature is\n        currently opt-in only. Contact Metronome to be added to the beta.",
+      "location": "lines 184-246, timing, invoice, applicability, identity, uniqueness, and rollover semantics"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c36-credit-grant-credits-fact",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Lifecycle",
+        "proposed_markdown": "The deprecated Plans `POST /v1/credits/createGrant` creates a customer credit grant with required granted and paid amounts, expiry, display name, and priority within a supplied payload. Optional effective timing and product IDs govern when and where the grant applies; product omission applies it across all products, while supplied product order controls invoice-line application order. Optional resource-level `uniqueness_key` rejects reuse with HTTP `409`, and opt-in beta rollover settings can cap a successor grant by percentage or fixed amount. The page does not establish balance or ledger visibility, propagation timing, invoice/payment outcomes, rollover atomicity, or a Contracts replacement mapping. [[source-metronome-api-reference-credit-grants-create-a-credit-grant]]",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the deprecated Plans scope and do not infer current Contracts lifecycle behavior."
+        ]
+      },
+      {
+        "update_id": "c36-credit-grant-contracts-route",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "Deprecated Plans endpoints and Contract routing",
+        "proposed_markdown": "The deprecated Plans `POST /v1/credits/createGrant` creates a credit grant for one Metronome customer and directs new clients to Contracts. It does not name a replacement operation, define a Plan-grant-to-Contract-credit identity or field mapping, supply migration steps, or state a removal date. [[source-metronome-api-reference-credit-grants-create-a-credit-grant]]",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not present an existing Contracts credit endpoint as an explicitly documented one-to-one replacement."
+        ]
+      },
+      {
+        "update_id": "c36-credit-grant-products-route",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Products",
+        "proposed_markdown": "On the deprecated Plans credit-grant create surface, optional `product_ids` limits a grant to selected products; omission applies credits to charges for all products, and array order determines credit application order across invoice line items. The page does not define empty-array behavior, invalid or duplicate IDs, later-created products, or interaction with current Contract applicability and priority rules. [[source-metronome-api-reference-credit-grants-create-a-credit-grant]]",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c36-credit-grant-idempotency-link",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credit-grants-create-a-credit-grant]] - deprecated Plans POST creation with a resource-level uniqueness key, API-wide execution-admission context, and endpoint-specific replay, state, and recovery unknowns",
+        "quote_indexes": [
+          2,
+          4
+        ],
+        "warnings": [
+          "API-wide Idempotency-Key guarantees come from the separate idempotency authority; this endpoint raw directly supports only its uniqueness-key behavior."
+        ]
+      },
+      {
+        "update_id": "c36-credit-grant-pricing-unit-route",
+        "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credit-grants-create-a-credit-grant]] - deprecated Plans granted-versus-paid amount objects, required pricing-unit identifiers within supplied objects, and USD-cent default wording conflict",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "The nested `credit_type_id` descriptions say they default when omitted, while both nested schemas mark the property required; preserve the conflict."
+        ]
+      },
+      {
+        "update_id": "c36-credit-grant-invoicing-route",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Legacy credit-grant purchase-invoice boundary",
+        "proposed_markdown": "The deprecated Plans credit-grant create schema says the grant `name` appears on invoices and optional `invoice_date` is the date to issue an invoice for `paid_amount`. It does not define invoice state, line placement, finalization, delivery, collection, payment, tax, accounting, refund, downstream-provider effects, or propagation timing. [[source-metronome-api-reference-credit-grants-create-a-credit-grant]]",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/credit-grants/create-a-credit-grant-2026-07-13.md",
+  "raw_sha256": "d98d95d8c3235f6a89eb6992d8601cc39b83e56047845102412169629622cca4",
+  "status": "candidate_ready"
+}

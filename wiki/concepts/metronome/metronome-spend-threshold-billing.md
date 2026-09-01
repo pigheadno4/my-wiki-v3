@@ -11,6 +11,9 @@ Metronome spend-threshold billing configures a contract-spend amount that trigge
 
 ## Configuration and lifecycle
 
+Archiving a billing-provider configuration automatically disables spend-based threshold recharge configurations for contracts using the archived provider. The endpoint does not define the state of an already triggered threshold charge, pending commit, Stripe invoice or PaymentIntent, external payment-gate workflow, webhook, or collected payment; nor does it define atomicity, re-enable behavior, replacement-provider prerequisites, duplicate prevention, or reconciliation after partial or ambiguous failure. Provider archive disablement must therefore remain separate from a documented paid/failed threshold-release outcome. [[source-metronome-api-reference-customers-archive-billing-provider-configurations-for-a-customer]]
+
+
 The contract-edit update schema states that toggling spend-threshold `is_enabled` from `false` to `true` causes immediate evaluation regardless of prior state, and each time usage reaches `threshold_amount` a threshold charge is initiated. It does not define successful payment, generated-commit availability, ordering with other changes in the same edit, atomicity, concurrency, downstream invoice/provider effects, or recovery after an ambiguous failure. [[source-metronome-api-reference-contracts-edit-a-contract]]
 
 Stripe collection can use a Stripe Billing invoice or direct PaymentIntent and requires valid contract billing configuration. `is_enabled: true` requests immediate evaluation after contract creation. A threshold can be added to an existing contract or updated later, and the page says changes take effect immediately without defining synchronous evaluation, payment, concurrency, or invoice effects.

@@ -6,6 +6,16 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-09-01 — Metronome Campaign 36 risk-gated review pilot promoted
+
+- Ingested five new Minimum Sufficient Sources covering credit-grant creation, billing-provider configuration archival, custom-field key listing, package-contract association listing, and offset-notification configuration listing.
+- Review result: 5/5 final approval after nine full reviews and four semantic retries; coordinator semantic repairs remained zero.
+- Risk result: the fixed custom-field sample correctly escalated to `review_required`, so the gate failed closed, all provisional candidates received full review, and no waiver or throughput success was claimed.
+- Quality: the immutable three-page pre-promotion candidate audit passed 9/9 before canonical writes; sources preserved the approved candidate content and only reviewer-approved concept updates were applied.
+- Timing and gate: completed in 4,331 seconds (72 minutes 11 seconds), missing the 35-minute observational target. The fixed sample did not remain eligible and no review waiver was issued, so this pilot validates fail-closed safety but not review-throughput improvement.
+- Coverage after promotion: 226 current English canonical documentation identities remain retained as 310 immutable raw snapshots, with 182 total source summaries, 176 official-documentation summaries, and 110 raw snapshots without source summaries. The immutable pre-Campaign-31 planning inventory remains unchanged; 50 of those canonical pages now remain without source coverage.
+- Evidence: [campaign monitor](../tracking/ingest/metronome/metronome-campaign-36/monitor.md), [quality audit](../tracking/ingest/metronome/metronome-campaign-36/quality-audit.md), and [retrospective](../tracking/ingest/metronome/metronome-campaign-36/retrospective.md).
+
 ## 2026-09-01 — Metronome Campaign 35 provider-preflight calibration promoted
 
 - Result: five previously unreferenced canonical API pages gained new Minimum Sufficient Sources across eleven Sol worker attempts and ten full independent Sol reviews; no page passed on attempt 1, with no targeted review, terminal rejection, or coordinator semantic repair.

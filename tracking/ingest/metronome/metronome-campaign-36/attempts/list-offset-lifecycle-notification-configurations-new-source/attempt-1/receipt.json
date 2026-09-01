@@ -1,0 +1,159 @@
+{
+  "job_id": "list-offset-lifecycle-notification-configurations-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: List Offset Lifecycle Event Notification Configurations\"\ntype: source\ndate_ingested: 2026-09-01\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/notifications/list-offset-lifecycle-event-notification-configurations\"\nraw_files:\n  - \"metronome/api-reference/notifications/list-offset-lifecycle-event-notification-configurations-2026-07-13.md\"\ntags: [metronome, api, notifications, lifecycle-events, webhooks, pagination, idempotency]\n---\n\n## Overview\n\nThis reference documents bearer-authenticated `POST /v2/notifications/offset/list`, which inventories user-created offset-notification configurations scheduled relative to lifecycle events. It is configuration-discovery authority with a documented 400-result maximum per request, not authority for creating, editing, archiving, firing, delivering, or reconciling notifications.\n\n## Query-critical facts\n\n- The operation uses the production API server and bearer authentication. Its enclosing `requestBody` is explicitly optional; a supplied object has no required properties and does not declare `additionalProperties: false`, so omitted-body behavior is allowed by the contract while unknown-field runtime behavior remains undocumented.\n- Optional body `limit` is numeric but has no documented integer constraint, lower bound, default, or direct schema maximum; the operation description separately says a request returns at most 400 results. Optional body `cursor` supplies pagination state, and `archive_filter` accepts `ARCHIVED`, `NOT_ARCHIVED`, or `ALL`, defaulting to `NOT_ARCHIVED`.\n- HTTP `200` requires top-level `data`; optional nullable sibling `cursor` is the only response pagination field. The endpoint does not define ordering, total count, cursor lifetime, completion semantics when `cursor` is omitted, snapshot consistency, duplicate-or-skip behavior during configuration changes, as-of time, freshness, or read-after-mutation visibility. The separate API-wide pagination page documents query `next_page`, not this endpoint's body and response `cursor`, so its repeat-until-null convention must not be substituted without endpoint-specific authority.\n- Each configuration requires UUID `id`, `name`, `type`, `policy`, `environment_type`, creation time and actor, and nullable `archived_at`. Its policy requires lifecycle-event `type` plus an ISO-8601 duration `offset`; positive values mean after the base event and negative values mean before it. The page does not enumerate lifecycle-event types or constrain configuration `type` or `environment_type`, and the response does not expose a calculated fire time, generation state, enablement, delivery state, webhook identity, retry state, or event history.\n- The separate API-wide `Idempotency-Key` authority applies to all POST endpoints. After execution admission, identical same-key parameters replay the persisted original result, while changing `limit`, `cursor`, or `archive_filter` changes parameters and returns HTTP `409` under that authority. Replay is not proof of a fresh configuration inventory or stable pagination snapshot, and this endpoint adds no local error, retry, concurrency, cache, propagation, or recovery contract.\n\n## Material boundaries\n\n- Listing a configuration does not prove that its lifecycle-event type is currently available or enabled, that a future source event will occur, that a notification will be generated at the requested offset, or that any webhook will be emitted or delivered. Dedicated system-event, offset-notification, and webhook authorities govern those separate surfaces.\n- `archived_at` and the archive filter expose configuration lifecycle state, but this page does not define archival transition timing, already-generated or in-flight work, restoration, or historical completeness. Absence from the default non-archived view is not proof of deletion or of delivery suppression.\n\n## Raw-detail coverage map\n\nUse the exact raw snapshot for the production server and bearer declaration; `POST /v2/notifications/offset/list` identity and operation ID; user-created lifecycle-relative scope and 400-result request maximum; optional request body; full `limit`, body `cursor`, and three-value archive-filter schema and example; required top-level `data`, optional nullable sibling response `cursor`, and response example; every required configuration identity, environment, creation, and archive field; the required policy fields and positive and negative ISO-8601 offset examples; the absent closed-object declaration, operation-level error catalog, limit range and default, ordering, totals, cursor completion and lifetime, snapshot, freshness, generation, delivery, and reconciliation guarantees. Use the dedicated pagination source only to recognize that its query `next_page` convention differs from this endpoint, the idempotency source for API-wide POST replay, and dedicated notification and webhook authorities for event catalogs, configuration mutations, scheduling behavior, payloads, delivery, retry, deduplication, and verification.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-alerts-and-notifications]], [[metronome-customers-and-contracts]], [[metronome-webhooks]], [[metronome-reporting-and-analytics]], [[metronome-api-idempotency]]\n- Related sources: [[source-metronome-api-reference-notifications-list-system-notification-event-types]], [[source-metronome-guides-customers-billing-set-up-notifications-create-and-manage-notifications]], [[source-metronome-guides-customers-billing-set-up-notifications-offset-notifications]], [[source-metronome-guides-platform-configuration-setup-webhooks]], [[source-metronome-api-reference-pagination]], [[source-metronome-api-reference-authentication]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/notifications/list-offset-lifecycle-event-notification-configurations-2026-07-13|2026-07-13 snapshot - offset-notification configuration identity, lifecycle-event policy, archive filtering, endpoint-specific cursor placement, response schema, and authority boundaries]]",
+  "quotes": [
+    {
+      "text": "servers:\n  - url: https://api.metronome.com\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "lines 23-27"
+    },
+    {
+      "text": "/v2/notifications/offset/list:\n    post:\n      tags:\n        - Notifications\n      summary: List offset lifecycle event notification configurations\n      description: >\n        List offset lifecycle event notification configurations. These are\n        user-created notifications that trigger at a specified time offset\n        relative to lifecycle events. Returns a maximum of 400 results per\n        request.\n      operationId: listOffsetNotificationConfigs-v2\n      requestBody:\n        description: Optional pagination and filtering parameters\n        required: false",
+      "location": "lines 88-101"
+    },
+    {
+      "text": "ListOffsetNotificationConfigsPayload:\n      type: object\n      properties:\n        limit:\n          type: number\n        cursor:\n          type: string\n        archive_filter:\n          type: string\n          enum:\n            - ARCHIVED\n            - NOT_ARCHIVED\n            - ALL\n          description: >-\n            Filter options for the notification configurations. If not provided,\n            defaults to NOT_ARCHIVED.",
+      "location": "lines 142-157"
+    },
+    {
+      "text": "responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                properties:\n                  data:\n                    type: array\n                    items:\n                      $ref: >-\n                        #/components/schemas/LifecycleEventOffsetNotificationConfig\n                  cursor:\n                    type: string\n                    nullable: true",
+      "location": "lines 110-127"
+    },
+    {
+      "text": "LifecycleEventOffsetNotificationConfig:\n      type: object\n      required:\n        - id\n        - name\n        - type\n        - policy\n        - environment_type\n        - created_at\n        - created_by\n        - archived_at\n      properties:\n        id:\n          type: string\n          format: uuid\n          description: ID for this offset notification configuration\n        name:\n          type: string\n          description: |\n            The name for this offset notification configuration.\n        type:\n          type: string\n          description: Indicates this is an offset lifecycle event notification\n        policy:\n          $ref: '#/components/schemas/LifecycleEventOffsetPolicy'\n        environment_type:\n          type: string\n          description: >\n            The environment type where this notification configuration was\n            created.\n        created_at:\n          type: string\n          format: date-time\n          description: |\n            RFC 3339 timestamp when this notification configuration was created.\n        created_by:\n          type: string\n          description: Who created this notification configuration\n        archived_at:\n          type: string\n          format: date-time\n          nullable: true\n          description: When this notification configuration was archived\n    LifecycleEventOffsetPolicy:\n      type: object\n      required:\n        - type\n        - offset\n      properties:\n        type:\n          type: string\n          description: |\n            The type of lifecycle event that this offset is based on.\n        offset:\n          type: string\n          description: >\n            ISO-8601 duration string indicating how much time before or after\n            the base event this notification should be sent. Positive values\n            indicate notifications after the event, negative values indicate\n            notifications before the event. Examples: \"P1D\" (1 day after),\n            \"-PT2H\" (2 hours before)",
+      "location": "lines 158-218"
+    }
+  ],
+  "suggestions": {
+    "concepts": [
+      {
+        "update_id": "list-offset-notification-configs-alerts-fact",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Offset notifications",
+        "proposed_markdown": "### Offset-notification configuration inventory\n\nBearer-authenticated `POST /v2/notifications/offset/list` inventories user-created offset-notification configurations and returns at most 400 records per request. Optional body `cursor` paginates, while `archive_filter` accepts archived, non-archived, or all configurations and defaults to non-archived; HTTP `200` requires `data` and may expose nullable sibling `cursor`. Each item requires configuration identity, name, type, environment, creator, creation time, nullable archive time, and a policy whose required lifecycle-event type and ISO-8601 offset distinguish before-event from after-event schedules. The endpoint defines no event-type catalog, ordering, total count, cursor completion or lifetime, stable snapshot, freshness, calculated fire time, generation state, delivery state, or history completeness. It lists configurations only and does not establish creation, edit, archival transition, event enablement, generation, webhook delivery, or reconciliation behavior. [[source-metronome-api-reference-notifications-list-offset-lifecycle-event-notification-configurations]]",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep configuration inventory distinct from scheduling execution and webhook delivery authority.",
+          "Do not infer a complete event-type catalog or stable inventory from cursor exhaustion.",
+          "Preserve body cursor placement and the default NOT_ARCHIVED filter."
+        ]
+      },
+      {
+        "update_id": "list-offset-notification-configs-alerts-link",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-notifications-list-offset-lifecycle-event-notification-configurations]] - offset-notification configuration inventory, lifecycle-relative policy identity, archive filtering, endpoint-specific cursor placement, and scheduling and delivery boundaries",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "list-offset-notification-configs-contracts-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-notifications-list-offset-lifecycle-event-notification-configurations]] - lifecycle-event-relative notification configuration discovery and the boundary that returned policies do not prove a contract event occurred, a schedule fired, or delivery completed",
+        "quote_indexes": [
+          1,
+          4
+        ],
+        "warnings": [
+          "The response example uses contract.start, but the policy schema does not enumerate lifecycle-event types; do not generalize an exhaustive contract-event catalog from it."
+        ]
+      },
+      {
+        "update_id": "list-offset-notification-configs-webhooks-link",
+        "target_path": "wiki/concepts/metronome/metronome-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-notifications-list-offset-lifecycle-event-notification-configurations]] - offset-notification configuration inventory whose returned policy and archive metadata do not establish webhook emission, destination, delivery, retry, ordering, deduplication, or reconciliation state",
+        "quote_indexes": [
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep configuration discovery separate from dedicated webhook transport and verification authority."
+        ]
+      },
+      {
+        "update_id": "list-offset-notification-configs-reporting-fact",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Query model",
+        "proposed_markdown": "For offset-notification configuration audits, bearer-authenticated `POST /v2/notifications/offset/list` returns user-created lifecycle-relative configurations with a maximum of 400 results per request. Body `cursor` and optional nullable response `cursor` are endpoint-specific pagination surfaces; the archive filter defaults to non-archived. Returned records expose identity, environment, creation and archive metadata, plus lifecycle-event type and signed ISO-8601 offset, but not calculated fire time, generation outcome, delivery state, webhook destination, or event history. The endpoint defines no ordering, total count, cursor completion or lifetime, stable snapshot, duplicate-or-skip behavior during changes, as-of marker, freshness, or read-after-mutation visibility. Complete traversal therefore cannot by itself prove a point-in-time configuration inventory, schedule execution, delivery completeness, or cross-system reconciliation. [[source-metronome-api-reference-notifications-list-offset-lifecycle-event-notification-configurations]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat the endpoint as configuration-audit inventory, not notification-delivery or reconciliation reporting.",
+          "Do not substitute the generic query next_page traversal contract for this endpoint's body and response cursor."
+        ]
+      },
+      {
+        "update_id": "list-offset-notification-configs-reporting-link",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-notifications-list-offset-lifecycle-event-notification-configurations]] - offset-notification configuration audit, archive-state filtering, endpoint-specific pagination, and ordering, snapshot, freshness, delivery, and reconciliation boundaries",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "list-offset-notification-configs-idempotency-fact",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Retry and error boundary",
+        "proposed_markdown": "`POST /v2/notifications/offset/list` is a paginated configuration read under the separate API-wide `Idempotency-Key` authority. A provided-key result is persisted only after execution admission; identical same-key parameters then replay that original result rather than prove a fresh offset-configuration inventory or stable pagination snapshot. Changing body `limit`, `cursor`, or `archive_filter` changes parameters, so reuse of the same key returns HTTP `409` under the API-wide contract. The endpoint does not require the header, prescribe a key policy across pages, or add local error, cursor-lifetime, cache-freshness, concurrency, read-after-mutation, propagation, another-key, expired-key, or recovery behavior. [[source-metronome-api-reference-notifications-list-offset-lifecycle-event-notification-configurations]] [[source-metronome-api-reference-idempotency]]",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep execution admission and changed-parameter behavior sourced to the separate API-wide idempotency authority.",
+          "Do not treat same-key replay as a fresh configuration audit or infer a preferred key-per-page policy."
+        ]
+      },
+      {
+        "update_id": "list-offset-notification-configs-idempotency-link",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-notifications-list-offset-lifecycle-event-notification-configurations]] - paginated POST offset-configuration listing and the boundary that same-key replay is not a fresh inventory while cursor or filter changes are changed parameters",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "company": [],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/notifications/list-offset-lifecycle-event-notification-configurations-2026-07-13.md",
+  "raw_sha256": "f33d2b1223f633a907dd66c3a9a5c754782b0aac824e94c1f38291c2e0a9f261",
+  "status": "candidate_ready"
+}

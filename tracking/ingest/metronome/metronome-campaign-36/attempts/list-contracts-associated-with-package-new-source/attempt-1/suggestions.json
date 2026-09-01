@@ -1,0 +1,124 @@
+{
+  "concepts": [
+    {
+      "update_id": "list-contracts-package-associations-packages-fact",
+      "target_path": "wiki/concepts/metronome/metronome-packages-and-aliases.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Cohort pricing",
+      "proposed_markdown": "### Package-association discovery\n\nBearer-authenticated `POST /v1/packages/listContractsOnPackage` discovers customer and contract UUIDs associated with one required package UUID. Optional mutually exclusive `starting_at` and `covering_date` filters select contracts starting on or after a timestamp or active at one timestamp, while `include_archived` defaults false. HTTP `200` requires top-level `data` and exposes optional nullable sibling `next_page`; each projection requires customer, contract, and start identities but does not return package identity, alias or version, contract terms, rate card, or migration outcome. The page defines no closed interval, default ordering, total count, cursor lifetime, stable snapshot, concurrent-change behavior, or read-after-mutation visibility. Its migration example makes this list only the discovery step before separately ending contracts and provisioning replacements; it does not establish mutation atomicity, rollback, propagation, or reconciliation. [[source-metronome-api-reference-contracts-list-contracts-associated-with-a-package]]",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep association discovery distinct from package configuration, contract detail, and migration mutation authority.",
+        "Do not turn starting_at or covering_date into an undocumented closed-interval query or stable cohort snapshot."
+      ]
+    },
+    {
+      "update_id": "list-contracts-package-associations-packages-link",
+      "target_path": "wiki/concepts/metronome/metronome-packages-and-aliases.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-contracts-list-contracts-associated-with-a-package]] - package-scoped contract and customer association discovery, mutually exclusive time filters, archive visibility, pagination, and migration-authority boundaries",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-contracts-package-associations-contracts-fact",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Contract and invoice behavior",
+      "proposed_markdown": "### Package-scoped contract association list\n\nBearer-authenticated `POST /v1/packages/listContractsOnPackage` returns package-associated projection items whose required fields are `customer_id`, `contract_id`, and `starting_at`; optional `ending_before` and `archived_at` describe the projection's time and archive surfaces. A supplied payload requires `package_id`, but the enclosing request body is not marked required and unknown-property behavior is unspecified. `starting_at` and `covering_date` are mutually exclusive, `include_archived` defaults false, and query `limit` and `next_page` paginate results. This projection is not a contract-detail or current-state authority: it omits package identity, contract terms, pricing, rate-card, invoice, mutation, and migration-result fields, and the page defines no ordering, total count, snapshot consistency, freshness, relationship-validation behavior, or read-after-change guarantee. [[source-metronome-api-reference-contracts-list-contracts-associated-with-a-package]]",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not infer complete contract state or a successful package migration from a returned association projection.",
+        "Preserve requestBody-versus-payload requiredness and unspecified unknown-field behavior."
+      ]
+    },
+    {
+      "update_id": "list-contracts-package-associations-contracts-link",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-contracts-list-contracts-associated-with-a-package]] - package-scoped customer and contract projections, time and archive filters, cursor placement, and contract-detail, freshness, and migration boundaries",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-contracts-package-associations-reporting-fact",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Query model",
+      "proposed_markdown": "For package-cohort reporting, bearer-authenticated `POST /v1/packages/listContractsOnPackage` returns customer and contract identities associated with one package. `covering_date` selects contracts active at one timestamp and is mutually exclusive with the start-lower-bound `starting_at`; `include_archived` defaults false. HTTP `200` requires top-level `data` and allows nullable sibling `next_page`, while query pagination accepts a 1-100 `limit` and cursor. The endpoint defines no closed interval, default ordering, total count, cursor lifetime, stable snapshot, duplicate-or-skip behavior during contract changes, as-of marker, freshness, or read-after-mutation visibility. Its projections do not include package identity, contract terms, pricing, invoices, or mutation outcomes, so complete traversal cannot by itself prove a point-in-time cohort, financial population, migration completion, export completeness, or cross-system reconciliation. [[source-metronome-api-reference-contracts-list-contracts-associated-with-a-package]]",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": [
+        "Treat this as association inventory for cohort management, not financial or reconciliation authority.",
+        "Complete cursor traversal does not establish a stable point-in-time population while contracts change."
+      ]
+    },
+    {
+      "update_id": "list-contracts-package-associations-reporting-link",
+      "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-contracts-list-contracts-associated-with-a-package]] - package-cohort association reporting, time and archive filters, top-level cursor placement, and ordering, snapshot, freshness, financial, and reconciliation boundaries",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "list-contracts-package-associations-idempotency-fact",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Retry and error boundary",
+      "proposed_markdown": "`POST /v1/packages/listContractsOnPackage` is a paginated association read under the separate API-wide `Idempotency-Key` authority. A provided-key result is persisted only after execution admission; identical same-key parameters then replay that original result rather than prove a fresh association population or stable pagination snapshot. Advancing query `next_page` or changing `package_id`, either time filter, or `include_archived` changes parameters, so reuse of the same key returns HTTP `409` under the API-wide contract. The endpoint does not require the header, prescribe a key policy across pages, or add local cursor-lifetime, cache-freshness, concurrent-change, another-key, expired-key, or recovery behavior. [[source-metronome-api-reference-contracts-list-contracts-associated-with-a-package]] [[source-metronome-api-reference-idempotency]]",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep execution admission and changed-parameter behavior sourced to the separate API-wide authority.",
+        "Do not treat same-key replay as a fresh association read or infer a preferred key-per-page policy."
+      ]
+    },
+    {
+      "update_id": "list-contracts-package-associations-idempotency-link",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-contracts-list-contracts-associated-with-a-package]] - paginated POST package-association read and the boundary that same-key replay is not a fresh cohort while cursor or filter changes are changed parameters",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "company": [],
+  "index": [],
+  "log": []
+}

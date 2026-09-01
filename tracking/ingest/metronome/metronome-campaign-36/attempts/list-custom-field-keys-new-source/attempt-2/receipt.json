@@ -1,0 +1,129 @@
+{
+  "job_id": "list-custom-field-keys-new-source",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome List Custom Field Keys API\"\ntype: source\ndate_ingested: 2026-09-01\ncanonical_url: \"https://docs.metronome.com/api-reference/custom-fields/list-custom-field-keys\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/custom-fields/list-custom-field-keys-2026-07-13.md\"\ntags: [metronome, api-reference, custom-fields, pagination, idempotency, reporting]\n---\n\n## Overview\n\nThis reference documents bearer-authenticated `POST /v1/customFields/listKeys`, which retrieves all \"your\" active custom-field key definitions and can filter them by managed entity type. The page does not define whether \"your\" means organization, account, environment, permission, or caller-visible scope, so even a completed traversal is not authority for an organization-wide inventory. It is the dedicated discovery and configuration-audit authority for available keys within that unresolved visibility boundary; creating or removing definitions and setting or deleting entity values remain separate operations.\n\n## Query-critical facts\n\n- The operation uses the production API server and bearer authentication. Its endpoint schema documents optional query parameter `next_page` but no `limit` parameter or page-size default. The separate API-wide pagination authority says all list endpoints expose `limit` and `next_page` and caps `limit` at `100`; the sources do not resolve whether `listKeys` accepts, rejects, or ignores `limit`, what default applies, or which authority takes precedence.\n- A supplied JSON object may contain optional `entities`, an array of `ManagedEntity` values used to restrict which entity types' keys are returned. The enclosing `requestBody` is not marked required, the object has no required-property list, and it does not declare `additionalProperties: false`; omitted-body and unknown-field runtime behavior are therefore undocumented.\n- HTTP `200` requires top-level sibling fields `data` and nullable `next_page`. Each `data` item requires `entity`, string `key`, and boolean `enforce_uniqueness`. The response is a key-definition inventory: it contains no entity instance, assigned value, duplicate-value count, activation timestamp, mutation result, or downstream propagation status.\n- `ManagedEntity` is a 19-value enum shared by the request filter and each result item; the complete catalog and the client-specific `professional_service` annotation remain in the raw snapshot. The separate custom-fields overview names a narrower set of eight supported entity examples, and these authorities do not explain whether the prose list is illustrative or how labels such as `product` versus `contract_product` and `credit` versus `contract_credit` relate.\n- The separate API-wide `Idempotency-Key` authority applies to all POST endpoints. After execution admission, identical same-key parameters replay the persisted original result, while changed parameters return HTTP `409`; advancing `next_page` or changing the entity filter changes parameters. Replay is not proof of a fresh active-key inventory or a new stable pagination snapshot, and this endpoint adds no local key, cursor, cache, retry, concurrency, or recovery policy.\n\n## Material boundaries and contradictions\n\n- The narrative says the endpoint retrieves all \"your\" active keys and supports configuration audits, but it does not define organization, account, environment, permission, caller-visibility completeness, or active-state timing. A filtered or fully traversed result therefore cannot by itself establish complete configuration coverage beyond the caller-visible scope left undefined by the page.\n- Repeat requests with each returned `next_page` until it is `null` are the supported traversal route. The endpoint schema nevertheless documents only `next_page`, while the API-wide pagination authority says every list endpoint also exposes `limit`, recommends `1` and `50`, and caps it at `100`. Do not infer either that `limit` is unsupported or that this generic guidance definitely applies to `listKeys`; acceptance, rejection, default, and precedence remain unresolved. Neither authority defines ordering, total count, cursor lifetime, filter binding, snapshot consistency, duplicate-or-skip behavior while definitions change, freshness, or read-after-create/remove visibility, so traversal does not prove an immutable point-in-time inventory.\n- `enforce_uniqueness` reports how the key is configured; this page does not define the comparison scope or prove that current entity values are unique. Use the dedicated custom-fields overview and create-key authority for documented uniqueness meaning, and the value-mutation authorities for assignment behavior.\n- Listing definitions is not mutation authority. A returned key does not show that a value has been set, exported, copied to an invoice, evaluated by an alert, or reconciled with an external system; absence from a filtered or replayed page is not by itself proof that the key was removed.\n\n## Raw-detail coverage map\n\nUse the exact raw snapshot for the production server and bearer declaration; `POST /v1/customFields/listKeys` identity and operation ID; all-\"your\"-active-key and audit narrative with unresolved organization, account, environment, permission, and caller-visibility scope; optional `entities` body example; complete 19-value `ManagedEntity` enum and `professional_service` annotation; required response-envelope and item fields; nullable sibling `next_page`; response example; and the absent body-required marker, required payload properties, closed-object declaration, endpoint-local `limit`, ordering, totals, error responses, freshness, and consistency guarantees. Preserve the contradiction with the dedicated pagination source, which says all list endpoints expose `limit` and `next_page`, recommends limits `1` and `50`, caps `limit` at `100`, and supports repeat-until-null traversal; `listKeys` limit acceptance, rejection, default, applicability, and precedence remain unknown. Use the idempotency source for API-wide POST replay, and dedicated create, remove, set-value, and delete-value authorities for mutations and lifecycle behavior.\n\n## Related\n\n- Company: [[metronome]]\n- Primary concepts: [[metronome-custom-fields]], [[metronome-reporting-and-analytics]], [[metronome-api-idempotency]]\n- Related sources: [[source-metronome-api-reference-custom-fields]], [[source-metronome-api-reference-custom-fields-create-a-custom-field-key]], [[source-metronome-api-reference-custom-fields-delete-a-custom-field-key]], [[source-metronome-api-reference-pagination]], [[source-metronome-api-reference-authentication]], [[source-metronome-api-reference-idempotency]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/custom-fields/list-custom-field-keys-2026-07-13|2026-07-13 snapshot - active-key scope, entity filtering, response placement, managed-entity catalog, pagination, and discovery boundaries]]",
+  "quotes": [
+    {
+      "text": "> Retrieve all your active custom field keys, with optional filtering by entity type (customer, contract, product, etc.). Use this endpoint to discover what custom field keys are available before setting values on entities or to audit your custom field configuration across different entity types.",
+      "location": "line 11, active-key collection scope, optional entity filtering, discovery-before-mutation purpose, and configuration-audit use"
+    },
+    {
+      "text": "paths:\n  /v1/customFields/listKeys:\n    post:\n      tags:\n        - Custom fields\n      summary: List custom field keys\n      description: >\n        Retrieve all your active custom field keys, with optional filtering by\n        entity type (customer, contract, product, etc.). Use this endpoint to\n        discover what custom field keys are available before setting values on\n        entities or to audit your custom field configuration across different\n        entity types.\n      operationId: listCustomFieldKeys-v1\n      parameters:\n        - $ref: '#/components/parameters/NextPage'",
+      "location": "lines 87-101, immediate operation path and POST method, purpose, operation ID, and query-pagination reference"
+    },
+    {
+      "text": "servers:\n  - url: https://api.metronome.com\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "lines 23-27, production server and bearer-authentication declaration"
+    },
+    {
+      "text": "      requestBody:\n        content:\n          application/json:\n            schema:\n              type: object\n              properties:\n                entities:\n                  type: array\n                  description: Optional list of entity types to return keys for\n                  items:\n                    $ref: '#/components/schemas/ManagedEntity'\n            example:\n              entities:\n                - customer\n      responses:\n        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                  - next_page\n                properties:\n                  data:\n                    type: array\n                    items:\n                      type: object\n                      required:\n                        - entity\n                        - key\n                        - enforce_uniqueness\n                      properties:\n                        entity:\n                          $ref: '#/components/schemas/ManagedEntity'\n                        key:\n                          type: string\n                        enforce_uniqueness:\n                          type: boolean\n                  next_page:\n                    type: string\n                    nullable: true\n              example:\n                data:\n                  - entity: customer\n                    key: x_account_id\n                    enforce_uniqueness: true\n                next_page: null",
+      "location": "lines 102-150, request-body wrapper and optional entity filter plus required top-level response and immediate item placement"
+    },
+    {
+      "text": "components:\n  parameters:\n    NextPage:\n      name: next_page\n      in: query\n      description: Cursor that indicates where the next page of results should start.\n      required: false\n      schema:\n        type: string\n  schemas:\n    ManagedEntity:\n      type: string\n      enum:\n        - alert\n        - billable_metric\n        - charge\n        - commit\n        - contract_credit\n        - contract_product\n        - contract\n        - customer\n        - discount\n        - invoice\n        - professional_service\n        - product\n        - rate_card\n        - scheduled_charge\n        - subscription\n        - package_commit\n        - package_credit\n        - package_subscription\n        - package_scheduled_charge\n      x-mint-enum:\n        professional_service:\n          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2\n  securitySchemes:\n    bearerAuth:\n      type: http\n      scheme: bearer",
+      "location": "lines 151-189, optional query cursor, complete managed-entity enum and annotation, and bearer security scheme"
+    }
+  ],
+  "suggestions": {
+    "concepts": [
+      {
+        "update_id": "list-custom-field-keys-custom-fields-fact",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Entity scope and persistence",
+        "proposed_markdown": "### Custom-field key discovery and audit\n\nBearer-authenticated `POST /v1/customFields/listKeys` retrieves all \"your\" active custom-field key definitions and can filter by a supplied array of managed entity types. Organization, account, environment, permission, and caller-visibility scope are not defined, so completed traversal is not authority for an organization-wide inventory. HTTP `200` requires sibling `data` and nullable `next_page`; every result requires `entity`, `key`, and `enforce_uniqueness`, so the operation inventories definitions and their uniqueness setting rather than entity values or mutation outcomes. The body itself is not marked required, `entities` is not required within a supplied object, and unknown-property behavior is unspecified. The response uses the same 19-value `ManagedEntity` enum as key mutations, while the overview names a narrower eight-entity prose set; the sources do not reconcile that applicability boundary or labels such as `product` versus `contract_product`. Repeat each returned `next_page` until null for supported traversal. The endpoint schema documents no `limit`, while the API-wide pagination authority says all list endpoints expose `limit` and `next_page`, recommends `1` and `50`, and caps `limit` at `100`; whether `listKeys` accepts, rejects, or ignores `limit`, its default, applicability, and precedence are unresolved. Neither authority defines active-state timing, order, total count, cursor lifetime, stable snapshot, concurrent-change behavior, freshness, or read-after-mutation visibility. [[source-metronome-api-reference-custom-fields-list-custom-field-keys]] [[source-metronome-api-reference-pagination]]",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the definition-inventory scope; do not claim organization-wide completeness, assigned values, or that uniqueness currently holds across entity instances.",
+          "Do not reconcile the 19-value ManagedEntity schema with the overview's narrower entity prose by inference.",
+          "Do not infer omitted-body or unknown-field runtime behavior from the open request schema.",
+          "Preserve the endpoint-versus-global limit contradiction; do not infer either endpoint rejection or definite applicability of the generic limit guidance."
+        ]
+      },
+      {
+        "update_id": "list-custom-field-keys-custom-fields-link",
+        "target_path": "wiki/concepts/metronome/metronome-custom-fields.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-custom-fields-list-custom-field-keys]] - active key-definition discovery, managed-entity filtering, returned uniqueness setting, pagination placement and limit-authority contradiction, unresolved caller-visible scope, applicability tension, and completeness and freshness unknowns",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "list-custom-field-keys-reporting-fact",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Query model",
+        "proposed_markdown": "For custom-field configuration audits, bearer-authenticated `POST /v1/customFields/listKeys` returns all \"your\" active key definitions, optionally filtered by managed entity type. Organization, account, environment, permission, and caller-visibility scope are not defined, so even completed cursor traversal does not establish organization-wide configuration coverage. HTTP `200` requires sibling `data` and nullable `next_page`, and each item requires entity, key, and uniqueness-setting fields. Repeat with each returned `next_page` until null. The endpoint schema documents no `limit`, while the API-wide pagination authority says all list endpoints expose `limit` and `next_page`, recommends `1` and `50`, and caps `limit` at `100`; `listKeys` acceptance, rejection, default, applicability, and precedence remain unresolved. Neither authority defines order, total count, cursor lifetime, snapshot consistency, duplicate-or-skip behavior during concurrent key changes, as-of marker, freshness guarantee, or read-after-create/remove visibility. The inventory also contains no assigned entity values or duplicate-value counts, so it cannot by itself prove value coverage, uniqueness compliance, export completeness, invoice propagation, or external-system reconciliation. [[source-metronome-api-reference-custom-fields-list-custom-field-keys]] [[source-metronome-api-reference-pagination]]",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Treat the endpoint as caller-visible configuration discovery, not an organization-wide audit or a complete entity-value or reconciliation report.",
+          "Complete cursor traversal does not establish a stable point-in-time inventory while key definitions change.",
+          "Preserve the endpoint-versus-global limit contradiction and unknown applicability."
+        ]
+      },
+      {
+        "update_id": "list-custom-field-keys-reporting-link",
+        "target_path": "wiki/concepts/metronome/metronome-reporting-and-analytics.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-custom-fields-list-custom-field-keys]] - custom-field definition audit within unresolved caller-visible scope, entity filtering, top-level cursor placement, endpoint-versus-global limit contradiction, and ordering, snapshot, freshness, value-coverage, and reconciliation boundaries",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "list-custom-field-keys-idempotency-fact",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Retry and error boundary",
+        "proposed_markdown": "`POST /v1/customFields/listKeys` is a paginated configuration read under the separate API-wide `Idempotency-Key` authority. After execution admission, identical same-key parameters replay the persisted original result rather than prove a fresh active-key view or new stable pagination snapshot. Advancing query `next_page` or changing the body `entities` filter changes request parameters, so reusing that key then returns HTTP `409` under the API-wide contract. The endpoint does not require the header, prescribe key use across pages, or add local cursor lifetime, cache freshness, concurrent-change, read-after-mutation, another-key, expired-key, or recovery behavior. [[source-metronome-api-reference-custom-fields-list-custom-field-keys]] [[source-metronome-api-reference-idempotency]]",
+        "quote_indexes": [
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the execution-admission and changed-parameter behavior sourced to the separate API-wide idempotency authority.",
+          "Do not treat replay as a fresh configuration audit or infer a preferred key-per-page policy."
+        ]
+      },
+      {
+        "update_id": "list-custom-field-keys-idempotency-link",
+        "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-custom-fields-list-custom-field-keys]] - paginated POST key-definition listing and the boundary that same-key replay is not a fresh inventory while cursor or filter changes are changed parameters",
+        "quote_indexes": [
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "company": [],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/custom-fields/list-custom-field-keys-2026-07-13.md",
+  "raw_sha256": "f0f16c6ed70865d5bb56e8c42fe109329d05e153c1b70949ff55447d5fbd3f38",
+  "status": "candidate_ready"
+}

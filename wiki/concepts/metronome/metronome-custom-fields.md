@@ -11,6 +11,11 @@ Metronome custom fields attach metadata such as foreign keys and other descripto
 
 ## Entity scope and persistence
 
+### Custom-field key discovery and audit
+
+Bearer-authenticated `POST /v1/customFields/listKeys` retrieves all "your" active custom-field key definitions and can filter by a supplied array of managed entity types. Organization, account, environment, permission, and caller-visibility scope are not defined, so completed traversal is not authority for an organization-wide inventory. HTTP `200` requires sibling `data` and nullable `next_page`; every result requires `entity`, `key`, and `enforce_uniqueness`, so the operation inventories definitions and their uniqueness setting rather than entity values or mutation outcomes. The body itself is not marked required, `entities` is not required within a supplied object, and unknown-property behavior is unspecified. The response uses the same 19-value `ManagedEntity` enum as key mutations, while the overview names a narrower eight-entity prose set; the sources do not reconcile that applicability boundary or labels such as `product` versus `contract_product`. Repeat each returned `next_page` until null for supported traversal. The endpoint schema documents no `limit`, while the API-wide pagination authority says all list endpoints expose `limit` and `next_page`, recommends `1` and `50`, and caps `limit` at `100`; whether `listKeys` accepts, rejects, or ignores `limit`, its default, applicability, and precedence are unresolved. Neither authority defines active-state timing, order, total count, cursor lifetime, stable snapshot, concurrent-change behavior, freshness, or read-after-mutation visibility. [[source-metronome-api-reference-custom-fields-list-custom-field-keys]] [[source-metronome-api-reference-pagination]]
+
+
 Product creation accepts optional `custom_fields` as an open string-valued map but gives it no entity annotation. The dedicated custom-fields authority says a configured value may be set during object creation, then persists and is returned through Metronome app, API, and export surfaces; a Product value propagates to its associated invoice line. The create-key enum separately exposes both `product` and `contract_product`, while current Product Get/List annotate their returned custom-field maps as `contract_product`; those labels are not reconciled. These authorities do not establish unconfigured-key acceptance, key/value limits, precedence, propagation timing, retroactivity, update or deletion propagation, downstream acceptance, payment, tax, accounting, or reconciliation. [[source-metronome-api-reference-products-create-a-product]] [[source-metronome-api-reference-custom-fields]] [[source-metronome-api-reference-custom-fields-create-a-custom-field-key]] [[source-metronome-api-reference-products-get-a-product]] [[source-metronome-api-reference-products-list-products]]
 
 ### Custom-field key creation contract
@@ -75,6 +80,9 @@ The `POST /v1/customers/{customer_id}/setName` success representation can also i
 The overview establishes the purpose, supported object examples, persistence, uniqueness, and invoice-line propagation of custom fields. It does not establish endpoint methods, request or response schemas, or endpoint-specific behavior; those details require complete reads of the relevant API references.
 
 ## Sources
+
+- [[source-metronome-api-reference-custom-fields-list-custom-field-keys]] - active key-definition discovery, managed-entity filtering, returned uniqueness setting, pagination placement and limit-authority contradiction, unresolved caller-visible scope, applicability tension, and completeness and freshness unknowns
+
 
 - [[source-metronome-integrations-invoice-integrations-stripe]] — `stripe_product_id` as the required Metronome product custom-field mapping for payment-gated Stripe invoice line-item creation
 

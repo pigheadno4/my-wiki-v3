@@ -1,0 +1,87 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "c36-credit-grant-credits-fact",
+      "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Lifecycle",
+      "proposed_markdown": "The deprecated Plans `POST /v1/credits/createGrant` creates a customer credit grant with required granted and paid amounts, expiry, display name, and priority within a supplied payload. Optional effective timing and product IDs govern when and where the grant applies; product omission applies it across all products, while supplied product order controls invoice-line application order. Optional resource-level `uniqueness_key` rejects reuse with HTTP `409`, and opt-in beta rollover settings can cap a successor grant by percentage or fixed amount. The page does not establish balance or ledger visibility, propagation timing, invoice/payment outcomes, rollover atomicity, or a Contracts replacement mapping. [[source-metronome-api-reference-credit-grants-create-a-credit-grant]]",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Preserve the deprecated Plans scope and do not infer current Contracts lifecycle behavior."
+      ]
+    },
+    {
+      "update_id": "c36-credit-grant-contracts-route",
+      "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+      "update_kind": "durable_fact",
+      "anchor": "Deprecated Plans endpoints and Contract routing",
+      "proposed_markdown": "The deprecated Plans `POST /v1/credits/createGrant` creates a credit grant for one Metronome customer and directs new clients to Contracts. It does not name a replacement operation, define a Plan-grant-to-Contract-credit identity or field mapping, supply migration steps, or state a removal date. [[source-metronome-api-reference-credit-grants-create-a-credit-grant]]",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "Do not present an existing Contracts credit endpoint as an explicitly documented one-to-one replacement."
+      ]
+    },
+    {
+      "update_id": "c36-credit-grant-products-route",
+      "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Products",
+      "proposed_markdown": "On the deprecated Plans credit-grant create surface, optional `product_ids` limits a grant to selected products; omission applies credits to charges for all products, and array order determines credit application order across invoice line items. The page does not define empty-array behavior, invalid or duplicate IDs, later-created products, or interaction with current Contract applicability and priority rules. [[source-metronome-api-reference-credit-grants-create-a-credit-grant]]",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "c36-credit-grant-idempotency-link",
+      "target_path": "wiki/concepts/metronome/metronome-api-idempotency.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credit-grants-create-a-credit-grant]] - deprecated Plans POST creation with a resource-level uniqueness key, API-wide execution-admission context, and endpoint-specific replay, state, and recovery unknowns",
+      "quote_indexes": [
+        2,
+        4
+      ],
+      "warnings": [
+        "API-wide Idempotency-Key guarantees come from the separate idempotency authority; this endpoint raw directly supports only its uniqueness-key behavior."
+      ]
+    },
+    {
+      "update_id": "c36-credit-grant-pricing-unit-route",
+      "target_path": "wiki/concepts/metronome/metronome-currencies-and-custom-pricing-units.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "## Sources",
+      "proposed_markdown": "- [[source-metronome-api-reference-credit-grants-create-a-credit-grant]] - deprecated Plans granted-versus-paid amount objects, required pricing-unit identifiers within supplied objects, and USD-cent default wording conflict",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "The nested `credit_type_id` descriptions say they default when omitted, while both nested schemas mark the property required; preserve the conflict."
+      ]
+    },
+    {
+      "update_id": "c36-credit-grant-invoicing-route",
+      "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+      "update_kind": "durable_fact",
+      "anchor": "### Legacy credit-grant purchase-invoice boundary",
+      "proposed_markdown": "The deprecated Plans credit-grant create schema says the grant `name` appears on invoices and optional `invoice_date` is the date to issue an invoice for `paid_amount`. It does not define invoice state, line placement, finalization, delivery, collection, payment, tax, accounting, refund, downstream-provider effects, or propagation timing. [[source-metronome-api-reference-credit-grants-create-a-credit-grant]]",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "index": [],
+  "log": []
+}

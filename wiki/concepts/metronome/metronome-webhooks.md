@@ -65,6 +65,9 @@ Metronome's go-live checklist places three checks in its webhook-and-error-handl
 
 ## Sources
 
+- [[source-metronome-api-reference-notifications-list-offset-lifecycle-event-notification-configurations]] - offset-notification configuration inventory whose returned policy and archive metadata do not establish webhook emission, destination, delivery, retry, ordering, deduplication, or reconciliation state
+
+
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - webhook-triggered merchant access gating after commit exhaustion, with no guide-local transport, ordering, or cutoff-timing guarantee
 - [[source-metronome-integrations-invoice-integrations-stripe]] — `invoice.billing_provider_error` operator action, Stripe `invoice.created` delivery fallback, and separation of Metronome notification handling from Stripe payment timing
 

@@ -183,6 +183,9 @@ For non-monotonically increasing `LATEST` metrics, invoice quantities are change
 
 ### Legacy credit-grant purchase-invoice boundary
 
+The deprecated Plans credit-grant create schema requires `paid_amount`, says the grant `name` appears on invoices, and defines optional `invoice_date` as the date to issue an invoice for `paid_amount`. Its optional `product_ids` array order controls legacy application across invoice line items. Do not import that ordering as the current invoice-line algorithm: the dedicated prioritization authority instead orders eligible current lines by product type, earlier start date, higher unit price, and name. The create page does not define invoice state, finalization, delivery, collection, payment, tax, accounting, refund, downstream-provider effects, or propagation timing. [[source-metronome-api-reference-credit-grants-create-a-credit-grant]] [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-prioritization-rules]]
+
+
 A deprecated Plans credit-grant void can optionally set `void_credit_purchase_invoice: true` to void the purchase invoice associated with the grant. The endpoint does not define omitted or false behavior, invoice-state eligibility, downstream-provider propagation, payment or refund effects, tax or accounting treatment, or atomicity with the grant void. [[source-metronome-api-reference-credit-grants-void-a-credit-grant]]
 
 ## Threshold payment flow
@@ -238,6 +241,9 @@ Metronome's recommended API pattern for a non-native downstream provider listens
 `POST /v1/setUpBillingProvider` creates account-level AWS, Azure, or GCP Marketplace delivery configuration and returns a UUID `delivery_method_id` for later mapping. Its setup success response contains only that identifier; it does not establish customer or contract attachment, provider readiness, invoice routing, marketplace metering, payment collection, tax handling, delivery success, or reconciliation. Provider-specific configuration is open-ended, and the page does not define activation timing, read-after-write visibility, update or rollback, or external-provider validation. [[source-metronome-api-reference-settings-set-up-account-level-billing-provider]]
 
 ## Scheduled provider routing
+
+Archiving a billing-provider configuration during an invoice grace period results in that invoice not being sent to the customer. When an active contract uses the configuration, the archive is immediate rather than an effective-dated provider transition. This is a delivery-suppression fact, not evidence that the invoice is voided, deleted, finalized, recalculated, credited, refunded, or canceled in a downstream provider; the endpoint says nothing about previously finalized or already-sent invoices. Its conflicting success documentation—narrative `success`/`error` versus OpenAPI required `data` echoing customer and configuration identity—exposes no invoice ID, affected-contract list, archive timestamp, downstream status, or reconciliation result. [[source-metronome-api-reference-customers-archive-billing-provider-configurations-for-a-customer]]
+
 
 Customer billing-provider creation can include Stripe-only `unbillable_invoices_configuration`. Matching rules stop invoices from being sent to the associated contract destination, with more-specific rules taking precedence; duplicate rules of the same specificity fail this method with HTTP `400`. The rule description allows omission of `invoice_type` for all invoices, while the schema requires `invoice_type`, so that requiredness is unresolved. Optional `fiat_credit_type_id` narrows currency, and `max_amount` suppresses only totals at or below its positive threshold and is described as requiring that currency ID. These are routing-suppression semantics, not proof of invoice cancellation, provider acceptance, payment, tax, settlement, or reconciliation. [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]]
 

@@ -76,6 +76,9 @@ The guide does not define custom-unit creation APIs, precision, conversion formu
 
 ## Sources
 
+- [[source-metronome-api-reference-credit-grants-create-a-credit-grant]] - deprecated Plans granted and paid amount objects, each requiring numeric `amount` and pricing-unit `credit_type_id` inside a supplied payload even though each nested property description says that pricing unit defaults to USD cents if omitted; the schema and default wording conflict and do not establish accepted omission behavior
+
+
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - USD-cent worked balance and spend examples, omitted-credit-type getNetBalance default, and an unconditional `/ 100` chart conversion that must not be generalized to other fiat or custom pricing units
 
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-guarantee-zero-overages]] - worked `price: 100` values labeled 100 USD/unit, which remain unresolved against the documented USD-cent convention
