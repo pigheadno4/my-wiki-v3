@@ -420,3 +420,43 @@ existing hash, link, count, query-audit, and diff checks. Run the full unit suit
 only when the campaign changes code, rules, or validators. Do not add a
 registry, timing schema, scheduler feature, or performance-monitoring layer to
 implement this ordering or close-path choice.
+
+## Campaign 36 live risk-gated review authorization
+
+Campaign 36 may be initialized only after explicit approval of its exact
+five-job manifest. This is a Metronome-only live pilot of
+`review_policy: risk_gated`; it does not authorize sampled review for another
+campaign or provider.
+
+The two manifest jobs marked `mandatory` always receive a different strong Sol
+complete-source reviewer. Each `provisional` worker still reads its one raw
+page completely, returns the normal Minimum Sufficient Source candidate and
+evidence, and then receives one coordinator-recorded route:
+`review_required` or `sample_eligible`. Any state or lifecycle transition;
+financial, accounting, pricing, balance, credit, invoice, tax, or revenue
+semantics; durable failure, retry, idempotency, concurrency, or propagation
+behavior; cross-system authority, delivery, or reconciliation boundary; or
+material requiredness, pagination, time-window, or narrative-versus-schema
+conflict requires `review_required`. A mandatory or escalated job cannot be
+downgraded.
+
+The exact manifest names one provisional job as the fixed sample. If it remains
+eligible, it receives a different strong Sol complete-source review. A first
+material defect, rejection, or escalation fails the risk gate and returns every
+deferred candidate to full review. Only an approved eligible fixed sample may
+release other eligible candidates with `review-waiver.json` evidence. The
+waiver also covers their worker-proposed semantic suggestions; the coordinator
+still checks hashes, result schema, exact raw backlinks, duplicate and
+reciprocal links, and shared-file placement, but does not perform a substitute
+full semantic read.
+
+Canonical promotion waits until the fixed three-page candidate audit passes.
+That audit must include one mandatory page, the fixed sample, and one other
+provisional page. A material defect in a waived candidate fails the pilot and
+blocks promotion; do not repair it silently or treat the sample as passing.
+Run the existing close validation once after promotion.
+
+Do not read or reuse Campaign 12 candidates or decisions as source evidence.
+Do not add a risk score, registry, classifier agent, new monitoring system,
+Luna or Terra routing, a sixth page, bulk migration, cross-PSP rollout, remote
+push, or unrelated-file edits.

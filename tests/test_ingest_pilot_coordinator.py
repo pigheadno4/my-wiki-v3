@@ -13,6 +13,7 @@ from scripts.ingest_pilot.coordinator import (
     init_campaign,
     reject_job,
     retry_job,
+    route_candidate,
     run_once,
     status,
 )
@@ -49,6 +50,18 @@ class CoordinatorTests(unittest.TestCase):
             "source_target": f"wiki/sources/metronome/source-job-{number}.md",
             "canonical_url": f"https://docs.metronome.com/job-{number}",
         }
+
+    def risk_manifest(self):
+        manifest = {
+            **self.manifest,
+            "review_policy": "risk_gated",
+            "risk_sample_job_id": "job-3",
+            "audit_job_ids": ["job-1", "job-3", "job-4"],
+            "jobs": [dict(job) for job in self.manifest["jobs"]],
+        }
+        for position, job in enumerate(manifest["jobs"]):
+            job["initial_review_route"] = "mandatory" if position == 0 else "provisional"
+        return manifest
 
     def test_run_emits_five_orders_and_persists_running_attempts(self):
         init_campaign(self.root, self.manifest)
@@ -183,6 +196,282 @@ class CoordinatorTests(unittest.TestCase):
         self.assertTrue(attempt.joinpath("receipt.json").is_file())
         self.assertTrue(attempt.joinpath("suggestions.json").is_file())
         self.assertEqual(output["review_order"]["job_id"], "job-1")
+
+    def test_risk_gated_provisional_candidate_waits_for_a_route_decision(self):
+        init_campaign(self.root, self.risk_manifest())
+        run_once(self.root, self.campaign_id)
+
+        output = run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-2"),
+            reviewer_assignments=[{"identity": "reviewer-a", "model": "Sol"}],
+        )
+
+        job = load_jobs(self.root, self.campaign_id)[1]
+        self.assertEqual(job["state"], "risk_pending")
+        self.assertEqual(job["last_event"], "risk_route_pending")
+        self.assertIsNone(output["review_order"])
+        self.assertIn("- Risk pending: 1", output["monitor"])
+        self.assertIn("- Review deferred: 0", output["monitor"])
+
+    def test_route_command_defers_an_eligible_non_sample_candidate(self):
+        init_campaign(self.root, self.risk_manifest())
+        run_once(self.root, self.campaign_id)
+        run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-2"),
+        )
+        script = Path(__file__).parents[1] / "scripts" / "manage_ingest_pilot.py"
+
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(script),
+                "route",
+                "--campaign",
+                self.campaign_id,
+                "--job",
+                "job-2",
+                "--decision",
+                "sample_eligible",
+                "--reason",
+                "Complete read found no mandatory trigger.",
+            ],
+            cwd=self.root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        job = load_jobs(self.root, self.campaign_id)[1]
+        self.assertEqual(job["state"], "review_deferred")
+        self.assertIn("- Review deferred: 1", status(self.root, self.campaign_id)["monitor"])
+        route = json.loads(self.attempt("job-2", 1).joinpath("risk-route.json").read_text())
+        self.assertEqual(route["decision"], "sample_eligible")
+        self.assertEqual(route["reason"], "Complete read found no mandatory trigger.")
+
+    def prepare_risk_gate_sample(self):
+        init_campaign(self.root, self.risk_manifest())
+        run_once(self.root, self.campaign_id)
+        run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-2"),
+        )
+        route_candidate(
+            self.root,
+            self.campaign_id,
+            "job-2",
+            "sample_eligible",
+            "Complete read found no mandatory trigger.",
+        )
+        run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-3"),
+        )
+
+    def test_approved_fixed_sample_releases_deferred_candidates_with_waiver_evidence(self):
+        self.prepare_risk_gate_sample()
+        route_candidate(
+            self.root,
+            self.campaign_id,
+            "job-3",
+            "sample_eligible",
+            "Complete read found no mandatory trigger; fixed audit sample.",
+        )
+        run_once(
+            self.root,
+            self.campaign_id,
+            reviewer_assignments=[{"identity": "reviewer-a", "model": "Sol"}],
+        )
+        output = run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review("job-3", 1, "approved"),
+        )
+
+        jobs = {job["job_id"]: job for job in load_jobs(self.root, self.campaign_id)}
+        self.assertEqual(jobs["job-2"]["state"], "approved")
+        self.assertEqual(jobs["job-2"]["last_event"], "review_waived")
+        self.assertEqual(load_campaign(self.root, self.campaign_id)["risk_gate"], "passed")
+        waiver = json.loads(self.attempt("job-2", 1).joinpath("review-waiver.json").read_text())
+        self.assertEqual(waiver["sample_job_id"], "job-3")
+        self.assertEqual(waiver["sample_attempt"], 1)
+        self.assertEqual(output["jobs"][1]["state"], "approved")
+
+    def test_failed_fixed_sample_expands_deferred_candidates_to_full_review(self):
+        self.prepare_risk_gate_sample()
+        route_candidate(
+            self.root,
+            self.campaign_id,
+            "job-3",
+            "sample_eligible",
+            "Complete read found no mandatory trigger; fixed audit sample.",
+        )
+        run_once(
+            self.root,
+            self.campaign_id,
+            reviewer_assignments=[{"identity": "reviewer-a", "model": "Sol"}],
+        )
+
+        run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review(
+                "job-3",
+                1,
+                "changes_requested",
+                required_changes=["Restore one query-critical boundary."],
+                retry_review_scope="full",
+            ),
+        )
+
+        jobs = {job["job_id"]: job for job in load_jobs(self.root, self.campaign_id)}
+        self.assertEqual(jobs["job-2"]["state"], "candidate_ready")
+        self.assertEqual(jobs["job-2"]["risk_route"], "review_required")
+        self.assertEqual(load_campaign(self.root, self.campaign_id)["risk_gate"], "failed")
+        self.assertFalse(self.attempt("job-2", 1).joinpath("review-waiver.json").exists())
+
+    def test_escalated_fixed_sample_expands_deferred_candidates_before_review(self):
+        self.prepare_risk_gate_sample()
+
+        route_candidate(
+            self.root,
+            self.campaign_id,
+            "job-3",
+            "review_required",
+            "Complete read found durable lifecycle semantics.",
+        )
+
+        jobs = {job["job_id"]: job for job in load_jobs(self.root, self.campaign_id)}
+        self.assertEqual(jobs["job-2"]["state"], "candidate_ready")
+        self.assertEqual(jobs["job-3"]["state"], "candidate_ready")
+        self.assertEqual(load_campaign(self.root, self.campaign_id)["risk_gate"], "failed")
+
+    def test_risk_gate_transition_persists_before_shared_slot_dispatch(self):
+        self.prepare_risk_gate_sample()
+        route_candidate(
+            self.root,
+            self.campaign_id,
+            "job-3",
+            "sample_eligible",
+            "Complete read found no mandatory trigger; fixed audit sample.",
+        )
+        run_once(
+            self.root,
+            self.campaign_id,
+            reviewer_assignments=[{"identity": "reviewer-a", "model": "Sol"}],
+        )
+        jobs = load_jobs(self.root, self.campaign_id)
+        for job in jobs:
+            if job["job_id"] in {"job-1", "job-4", "job-5"}:
+                job["state"] = "rejected"
+        save_jobs(self.root, self.campaign_id, jobs)
+
+        output = run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review(
+                "job-3",
+                1,
+                "changes_requested",
+                required_changes=["Restore one query-critical boundary."],
+                retry_review_scope="full",
+            ),
+            total_subagent_slots=3,
+            worker_assignments={},
+            reviewer_assignments={},
+        )
+
+        self.assertEqual(output["worker_orders"], [])
+        self.assertEqual(output["review_orders"], [])
+        self.assertEqual(load_campaign(self.root, self.campaign_id)["risk_gate"], "failed")
+
+    def test_late_provisional_candidate_requires_review_after_gate_failure(self):
+        self.prepare_risk_gate_sample()
+        route_candidate(
+            self.root,
+            self.campaign_id,
+            "job-3",
+            "review_required",
+            "Complete read found durable lifecycle semantics.",
+        )
+
+        output = run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-4"),
+            reviewer_assignments=[{"identity": "reviewer-b", "model": "Sol"}],
+        )
+
+        job = {item["job_id"]: item for item in load_jobs(self.root, self.campaign_id)}["job-4"]
+        self.assertEqual(job["risk_route"], "review_required")
+        self.assertEqual(job["state"], "candidate_ready")
+        self.assertEqual(output["review_order"]["job_id"], "job-2")
+
+    def test_late_eligible_candidate_uses_the_already_passed_sample(self):
+        self.prepare_risk_gate_sample()
+        route_candidate(
+            self.root,
+            self.campaign_id,
+            "job-3",
+            "sample_eligible",
+            "Complete read found no mandatory trigger; fixed audit sample.",
+        )
+        run_once(
+            self.root,
+            self.campaign_id,
+            reviewer_assignments=[{"identity": "reviewer-a", "model": "Sol"}],
+        )
+        run_once(
+            self.root,
+            self.campaign_id,
+            review_result_path=self.write_review("job-3", 1, "approved"),
+        )
+        run_once(
+            self.root,
+            self.campaign_id,
+            worker_result_path=self.write_worker_result("job-4", suggestions={
+                "company": [],
+                "concepts": [{
+                    "update_id": "job-4-concept",
+                    "target_path": "wiki/concepts/metronome/metronome-billing.md",
+                    "update_kind": "durable_fact",
+                    "anchor": "## Sources",
+                    "proposed_markdown": "- [[source-job-4]] — worker-grounded fact",
+                    "quote_indexes": [0],
+                    "warnings": [],
+                }],
+                "index": [],
+                "log": [],
+            }),
+        )
+
+        output = route_candidate(
+            self.root,
+            self.campaign_id,
+            "job-4",
+            "sample_eligible",
+            "Complete read found no mandatory trigger.",
+        )
+
+        job = {item["job_id"]: item for item in load_jobs(self.root, self.campaign_id)}["job-4"]
+        self.assertEqual(job["state"], "approved")
+        self.assertEqual(job["last_event"], "review_waived")
+        self.assertEqual(
+            output["shared_update_plan"]["wiki/concepts/metronome/metronome-billing.md"][0]["update_id"],
+            "job-4-concept",
+        )
+        waiver_path = self.attempt("job-4", 1).joinpath("review-waiver.json")
+        waiver = json.loads(waiver_path.read_text())
+        waiver["sample_job_id"] = "job-5"
+        waiver_path.write_text(json.dumps(waiver), encoding="utf-8")
+        with self.assertRaisesRegex(PilotError, "approved shared update evidence is invalid"):
+            status(self.root, self.campaign_id)
 
     def test_archived_audit_only_campaign_cannot_be_resumed(self):
         init_campaign(self.root, self.manifest)

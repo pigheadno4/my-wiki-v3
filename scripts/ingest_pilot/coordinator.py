@@ -85,7 +85,7 @@ def _load_result(path: Path) -> Dict[str, Any]:
 
 
 def _approved_shared_updates(root: Path, campaign_id: str, jobs: list) -> Dict[str, list[dict]]:
-    """Group only the current reviewer-approved schema-v2 shared updates."""
+    """Group only the current review- or waiver-authorized shared updates."""
     campaign = load_campaign(root, campaign_id)
     if campaign.get("schema_version", 1) != 2:
         return {}
@@ -119,11 +119,13 @@ def _approved_shared_updates(root: Path, campaign_id: str, jobs: list) -> Dict[s
             / job_id / f"attempt-{attempt}"
         )
         suggestions = _load_result(attempt_dir / "suggestions.json")
-        review = _load_result(attempt_dir / "review.json")
         receipt = _load_result(attempt_dir / "receipt.json")
+        waived = job.get("last_event") == "review_waived"
+        evidence = _load_result(
+            attempt_dir / ("review-waiver.json" if waived else "review.json")
+        )
         if (
             set(suggestions) != set(SUGGESTION_CATEGORIES)
-            or set(review) != REVIEW_EVIDENCE_KEYS
             or set(receipt) != RESULT_KEYS
         ):
             raise PilotError("approved shared update evidence is invalid")
@@ -147,28 +149,63 @@ def _approved_shared_updates(root: Path, campaign_id: str, jobs: list) -> Dict[s
                 or not quote["location"]
                 for quote in receipt["quotes"]
             )
-            or review["job_id"] != job_id
-            or isinstance(review["attempt"], bool)
-            or not isinstance(review["attempt"], int)
-            or review["attempt"] < 1
-            or review["attempt"] != attempt
-            or review["verdict"] != "approved"
-            or not isinstance(review["reason"], str)
-            or not review["reason"].strip()
-            or not isinstance(review["required_changes"], list)
-            or review["required_changes"]
-            or not isinstance(review["review_scope"], str)
-            or review["review_scope"] not in REVIEW_SCOPES
-            or review["retry_review_scope"] is not None
-            or not isinstance(review["reviewer_identity"], str)
-            or not review["reviewer_identity"].strip()
-            or review["reviewer_identity"] != job.get("reviewer_identity")
-            or not isinstance(review["reviewer_model"], str)
-            or not review["reviewer_model"].strip()
-            or review["reviewer_model"] != job.get("reviewer_model")
-            or not isinstance(review["shared_update_decisions"], list)
         ):
             raise PilotError("approved shared update evidence is invalid")
+
+        if waived:
+            sample_job_id = campaign.get("risk_sample_job_id")
+            sample_matches = [item for item in jobs if item.get("job_id") == sample_job_id]
+            if (
+                campaign.get("review_policy") != "risk_gated"
+                or campaign.get("risk_gate") != "passed"
+                or set(evidence) != {"job_id", "attempt", "sample_job_id", "sample_attempt"}
+                or evidence["job_id"] != job_id
+                or evidence["attempt"] != attempt
+                or evidence["sample_job_id"] != sample_job_id
+                or job.get("waiver_sample_job_id") != sample_job_id
+                or len(sample_matches) != 1
+                or sample_matches[0].get("state") != "approved"
+                or sample_matches[0].get("attempt") != evidence["sample_attempt"]
+                or sample_matches[0].get("risk_route") != "sample_eligible"
+            ):
+                raise PilotError("approved shared update evidence is invalid")
+            sample_review = _load_result(
+                root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
+                / sample_job_id / f"attempt-{evidence['sample_attempt']}" / "review.json"
+            )
+            if (
+                set(sample_review) != REVIEW_EVIDENCE_KEYS
+                or sample_review.get("verdict") != "approved"
+                or sample_review.get("job_id") != sample_job_id
+                or sample_review.get("attempt") != evidence["sample_attempt"]
+            ):
+                raise PilotError("approved shared update evidence is invalid")
+        else:
+            review = evidence
+            if (
+                set(review) != REVIEW_EVIDENCE_KEYS
+                or review["job_id"] != job_id
+                or isinstance(review["attempt"], bool)
+                or not isinstance(review["attempt"], int)
+                or review["attempt"] < 1
+                or review["attempt"] != attempt
+                or review["verdict"] != "approved"
+                or not isinstance(review["reason"], str)
+                or not review["reason"].strip()
+                or not isinstance(review["required_changes"], list)
+                or review["required_changes"]
+                or not isinstance(review["review_scope"], str)
+                or review["review_scope"] not in REVIEW_SCOPES
+                or review["retry_review_scope"] is not None
+                or not isinstance(review["reviewer_identity"], str)
+                or not review["reviewer_identity"].strip()
+                or review["reviewer_identity"] != job.get("reviewer_identity")
+                or not isinstance(review["reviewer_model"], str)
+                or not review["reviewer_model"].strip()
+                or review["reviewer_model"] != job.get("reviewer_model")
+                or not isinstance(review["shared_update_decisions"], list)
+            ):
+                raise PilotError("approved shared update evidence is invalid")
 
         flattened = []
         for category in SUGGESTION_CATEGORIES:
@@ -214,21 +251,26 @@ def _approved_shared_updates(root: Path, campaign_id: str, jobs: list) -> Dict[s
                     raise PilotError("approved shared update evidence is invalid")
                 flattened.append(suggestion)
         suggestion_ids = [suggestion["update_id"] for suggestion in flattened]
-        decisions = review["shared_update_decisions"]
+        if waived:
+            approved_ids = set(suggestion_ids)
+            decisions = suggestion_ids
+        else:
+            decisions = review["shared_update_decisions"]
         if len(set(suggestion_ids)) != len(suggestion_ids) or len(decisions) != len(suggestion_ids):
             raise PilotError("approved shared update evidence is invalid")
-        approved_ids = set()
-        decision_ids = []
-        for decision in decisions:
-            normalized = _shared_update_decision(decision)
-            if normalized is None or normalized[0] not in suggestion_ids:
+        if not waived:
+            approved_ids = set()
+            decision_ids = []
+            for decision in decisions:
+                normalized = _shared_update_decision(decision)
+                if normalized is None or normalized[0] not in suggestion_ids:
+                    raise PilotError("approved shared update evidence is invalid")
+                update_id, decision_verdict = normalized
+                decision_ids.append(update_id)
+                if decision_verdict == "approved":
+                    approved_ids.add(update_id)
+            if len(set(decision_ids)) != len(decisions):
                 raise PilotError("approved shared update evidence is invalid")
-            update_id, decision_verdict = normalized
-            decision_ids.append(update_id)
-            if decision_verdict == "approved":
-                approved_ids.add(update_id)
-        if len(set(decision_ids)) != len(decisions):
-            raise PilotError("approved shared update evidence is invalid")
         for suggestion in flattened:
             if suggestion["update_id"] in approved_ids:
                 plan.setdefault(suggestion["target_path"], []).append({
@@ -275,6 +317,7 @@ def init_campaign(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> Dict[
 def _apply_worker_result(
     root: Path,
     campaign_id: str,
+    campaign: Mapping[str, Any],
     jobs: list,
     result_path: Path,
     max_attempts: int,
@@ -308,11 +351,23 @@ def _apply_worker_result(
             [(attempt_dir, "failure.json", _json_bytes({"reason": str(error)}))],
         )
 
-    job["state"] = "candidate_ready"
-    job["last_event"] = "candidate_ready"
+    is_provisional = (
+        campaign.get("review_policy") == "risk_gated"
+        and job.get("initial_review_route") == "provisional"
+    )
+    if is_provisional and campaign.get("risk_gate") == "failed":
+        job["state"] = "candidate_ready"
+        job["last_event"] = "risk_review_required"
+        job["risk_route"] = "review_required"
+    elif is_provisional:
+        job["state"] = "risk_pending"
+        job["last_event"] = "risk_route_pending"
+    else:
+        job["state"] = "candidate_ready"
+        job["last_event"] = "candidate_ready"
     job["failure_reason"] = None
     return (
-        {"event": "candidate_ready", "job_id": job["job_id"]},
+        {"event": job["last_event"], "job_id": job["job_id"]},
         [
             (attempt_dir, "candidate.md", validated["source_page"].encode("utf-8")),
             (attempt_dir, "receipt.json", _json_bytes(validated)),
@@ -365,10 +420,52 @@ def _validate_review_result(result: dict, expected_scope: str, suggestion_ids: s
         raise PilotError("review result is invalid")
 
 
+def _expand_deferred_reviews(campaign: Dict[str, Any], jobs: list) -> None:
+    campaign["risk_gate"] = "failed"
+    for deferred in jobs:
+        if deferred.get("state") == "review_deferred":
+            deferred["state"] = "candidate_ready"
+            deferred["last_event"] = "risk_gate_expanded"
+            deferred["risk_route"] = "review_required"
+
+
+def _release_deferred_reviews(
+    root: Path,
+    campaign_id: str,
+    campaign: Dict[str, Any],
+    jobs: list,
+    sample_job: Mapping[str, Any],
+) -> list[tuple[Path, str, bytes]]:
+    campaign["risk_gate"] = "passed"
+    files = []
+    for deferred in jobs:
+        if deferred.get("state") != "review_deferred":
+            continue
+        deferred["state"] = "approved"
+        deferred["last_event"] = "review_waived"
+        deferred["failure_reason"] = None
+        deferred["waiver_sample_job_id"] = sample_job["job_id"]
+        attempt_dir = (
+            root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
+            / deferred["job_id"] / f"attempt-{deferred['attempt']}"
+        )
+        files.append((
+            attempt_dir,
+            "review-waiver.json",
+            _json_bytes({
+                "job_id": deferred["job_id"],
+                "attempt": deferred["attempt"],
+                "sample_job_id": sample_job["job_id"],
+                "sample_attempt": sample_job["attempt"],
+            }),
+        ))
+    return files
+
+
 def _apply_review_result(
     root: Path,
     campaign_id: str,
-    campaign: Mapping[str, Any],
+    campaign: Dict[str, Any],
     jobs: list,
     result_path: Path,
     max_attempts: int,
@@ -442,6 +539,13 @@ def _apply_review_result(
         job["failure_reason"] = None
         job.pop("active_review_scope", None)
         job.pop("retry_context", None)
+        if (
+            campaign.get("review_policy") == "risk_gated"
+            and campaign.get("risk_gate") == "pending"
+            and job["job_id"] == campaign.get("risk_sample_job_id")
+            and job.get("risk_route") == "sample_eligible"
+        ):
+            files.extend(_release_deferred_reviews(root, campaign_id, campaign, jobs, job))
         return {"event": "review_approved", "job_id": job["job_id"]}, files
     if verdict == "rejected" or job["attempt"] >= max_attempts:
         job["state"] = "rejected"
@@ -449,6 +553,13 @@ def _apply_review_result(
         job["failure_reason"] = reason
         job.pop("active_review_scope", None)
         job.pop("retry_context", None)
+        if (
+            campaign.get("review_policy") == "risk_gated"
+            and campaign.get("risk_gate") == "pending"
+            and job["job_id"] == campaign.get("risk_sample_job_id")
+            and job.get("risk_route") == "sample_eligible"
+        ):
+            _expand_deferred_reviews(campaign, jobs)
         return {"event": job["last_event"], "job_id": job["job_id"], "reason": reason}, files
     if is_schema_v2:
         job["retry_context"] = {
@@ -465,6 +576,13 @@ def _apply_review_result(
     job.pop("next_review_scope", None)
     job.pop("reviewer_identity", None)
     job.pop("reviewer_model", None)
+    if (
+        campaign.get("review_policy") == "risk_gated"
+        and campaign.get("risk_gate") == "pending"
+        and job["job_id"] == campaign.get("risk_sample_job_id")
+        and job.get("risk_route") == "sample_eligible"
+    ):
+        _expand_deferred_reviews(campaign, jobs)
     return {"event": "changes_requested", "job_id": job["job_id"], "reason": reason}, files
 
 
@@ -641,6 +759,7 @@ def run_once(
     if worker_result_path is not None and review_result_path is not None:
         raise PilotError("supply either a worker result or a review result, not both")
     campaign = load_campaign(root, campaign_id)
+    initial_risk_gate = campaign.get("risk_gate")
     _require_authorized_review_policy(campaign)
     if campaign["review_concurrency"] > 1 and total_subagent_slots is None:
         raise PilotError("parallel review requires total_subagent_slots")
@@ -657,6 +776,7 @@ def run_once(
         event, files = _apply_worker_result(
             root,
             campaign_id,
+            campaign,
             jobs,
             Path(worker_result_path),
             campaign["max_attempts"],
@@ -671,12 +791,19 @@ def run_once(
         events.append(review_event)
         pending_files.extend(files)
         changes_requested = review_event["event"] == "changes_requested"
-    if total_subagent_slots is None and campaign.get("schema_version", 1) == 2:
+    risk_gate_changed = campaign.get("risk_gate") != initial_risk_gate
+    if (
+        not risk_gate_changed
+        and total_subagent_slots is None
+        and campaign.get("schema_version", 1) == 2
+    ):
         projected_review = review_order(jobs)
         if projected_review is not None:
             _assignment_by_job(reviewer_assignments, [projected_review], "reviewer")
     review_orders = []
-    if changes_requested and total_subagent_slots is None:
+    if risk_gate_changed:
+        orders = []
+    elif changes_requested and total_subagent_slots is None:
         orders = []
     elif total_subagent_slots is None:
         orders = _start_workers(root, campaign_id, jobs, campaign, available_worker_slots)
@@ -686,7 +813,9 @@ def run_once(
         )
         orders, review_orders = shared_orders["worker_orders"], shared_orders["review_orders"]
     events.extend({"event": "worker_started", "job_id": order["job_id"]} for order in orders)
-    if total_subagent_slots is None:
+    if risk_gate_changed:
+        review = None
+    elif total_subagent_slots is None:
         review = _start_review(root, campaign_id, jobs, campaign, reviewer_assignments)
         if review is not None:
             review_orders = [review]
@@ -695,6 +824,8 @@ def run_once(
     events.extend({"event": "review_started", "job_id": order["job_id"]} for order in review_orders)
     _write_pending_files(pending_files)
     save_jobs(root, campaign_id, jobs)
+    if campaign.get("risk_gate") != initial_risk_gate:
+        save_campaign(root, campaign_id, campaign)
     warnings = []
     for event in events:
         try:
@@ -712,6 +843,61 @@ def run_once(
 
 def status(root: Path, campaign_id: str) -> Dict[str, Any]:
     """Regenerate and return the non-authoritative campaign monitor."""
+    return _campaign_payload(root, campaign_id)
+
+
+def route_candidate(
+    root: Path,
+    campaign_id: str,
+    job_id: str,
+    decision: str,
+    reason: str,
+) -> Dict[str, Any]:
+    """Record the complete-read risk route for one provisional candidate."""
+    campaign = load_campaign(root, campaign_id)
+    if campaign.get("review_policy") != "risk_gated":
+        raise PilotError("risk routing requires review_policy risk_gated")
+    if campaign.get("state") != "active":
+        raise PilotError("risk routing requires an active campaign")
+    if campaign.get("risk_gate") == "failed":
+        raise PilotError("failed risk gate requires full review")
+    if decision not in {"review_required", "sample_eligible"}:
+        raise PilotError("risk decision must be review_required or sample_eligible")
+    if not isinstance(reason, str) or not reason.strip():
+        raise PilotError("risk decision requires a reason")
+    jobs = deepcopy(load_jobs(root, campaign_id))
+    job = _job(jobs, job_id)
+    if job.get("initial_review_route") != "provisional" or job.get("state") != "risk_pending":
+        raise PilotError("risk routing requires a pending provisional candidate")
+    is_sample = job_id == campaign["risk_sample_job_id"]
+    job["risk_route"] = decision
+    if decision == "review_required" or is_sample:
+        job["state"] = "candidate_ready"
+        job["last_event"] = "risk_review_required" if decision == "review_required" else "risk_sample_ready"
+    else:
+        job["state"] = "review_deferred"
+        job["last_event"] = "risk_review_deferred"
+    if is_sample and decision == "review_required" and campaign.get("risk_gate") == "pending":
+        _expand_deferred_reviews(campaign, jobs)
+    attempt_dir = (
+        root / "tracking" / "ingest" / "metronome" / campaign_id / "attempts"
+        / job_id / f"attempt-{job['attempt']}"
+    )
+    write_attempt_file(
+        attempt_dir,
+        "risk-route.json",
+        _json_bytes({"job_id": job_id, "attempt": job["attempt"], "decision": decision, "reason": reason}),
+    )
+    waiver_files = []
+    if decision == "sample_eligible" and not is_sample and campaign.get("risk_gate") == "passed":
+        sample_job = _job(jobs, campaign["risk_sample_job_id"])
+        waiver_files = _release_deferred_reviews(
+            root, campaign_id, campaign, jobs, sample_job
+        )
+        _write_pending_files(waiver_files)
+    save_jobs(root, campaign_id, jobs)
+    save_campaign(root, campaign_id, campaign)
+    append_event(root, campaign_id, {"event": job["last_event"], "job_id": job_id})
     return _campaign_payload(root, campaign_id)
 
 

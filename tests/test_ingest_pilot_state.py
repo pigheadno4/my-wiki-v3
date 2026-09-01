@@ -239,6 +239,62 @@ class PilotStateTests(unittest.TestCase):
         self.assertEqual(campaign["review_concurrency"], 2)
         self.assertEqual(campaign["audit_job_ids"], parallel["audit_job_ids"])
 
+    def test_initialize_accepts_a_bounded_risk_gated_review_policy(self):
+        manifest = deepcopy(self.manifest)
+        manifest.update({
+            "review_policy": "risk_gated",
+            "risk_sample_job_id": "setup-webhooks",
+            "audit_job_ids": ["security-principles", "setup-webhooks", "role-based-access-rbac"],
+        })
+        for position, job in enumerate(manifest["jobs"]):
+            job["initial_review_route"] = "mandatory" if position < 2 else "provisional"
+
+        initialize_state(self.root, manifest)
+
+        campaign = load_campaign(self.root, self.campaign_id)
+        self.assertEqual(campaign["review_policy"], "risk_gated")
+        self.assertEqual(campaign["risk_sample_job_id"], "setup-webhooks")
+        self.assertEqual(campaign["risk_gate"], "pending")
+        jobs = load_jobs(self.root, self.campaign_id)
+        self.assertEqual(
+            [job["initial_review_route"] for job in jobs],
+            ["mandatory", "mandatory", "provisional", "provisional", "provisional"],
+        )
+
+    def test_initialize_rejects_an_invalid_risk_gated_manifest(self):
+        cases = []
+
+        missing_routes = deepcopy(self.manifest)
+        missing_routes["review_policy"] = "risk_gated"
+        missing_routes["risk_sample_job_id"] = "audit-logs"
+        missing_routes["audit_job_ids"] = ["security-principles", "audit-logs", "setup-webhooks"]
+        cases.append(missing_routes)
+
+        mandatory_sample = deepcopy(self.manifest)
+        mandatory_sample["review_policy"] = "risk_gated"
+        mandatory_sample["risk_sample_job_id"] = "audit-logs"
+        mandatory_sample["audit_job_ids"] = ["security-principles", "audit-logs", "setup-webhooks"]
+        for job in mandatory_sample["jobs"]:
+            job["initial_review_route"] = "provisional"
+        mandatory_sample["jobs"][1]["initial_review_route"] = "mandatory"
+        cases.append(mandatory_sample)
+
+        missing_audit = deepcopy(self.manifest)
+        missing_audit["review_policy"] = "risk_gated"
+        missing_audit["risk_sample_job_id"] = "setup-webhooks"
+        for position, job in enumerate(missing_audit["jobs"]):
+            job["initial_review_route"] = "mandatory" if position < 2 else "provisional"
+        cases.append(missing_audit)
+
+        for position, manifest in enumerate(cases, start=1):
+            manifest["campaign_id"] = f"invalid-risk-gated-{position}"
+            with self.subTest(position=position):
+                with self.assertRaisesRegex(PilotError, "risk_gated"):
+                    initialize_state(self.root, manifest)
+                self.assertFalse(
+                    campaign_paths(self.root, manifest["campaign_id"])["campaign"].exists()
+                )
+
     def test_initialize_defaults_legacy_review_concurrency_and_rejects_invalid_parallel_audit_shape(self):
         initialize_state(self.root, self.manifest)
         self.assertEqual(load_campaign(self.root, self.campaign_id)["review_concurrency"], 1)

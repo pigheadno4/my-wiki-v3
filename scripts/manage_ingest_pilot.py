@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-from ingest_pilot.coordinator import complete_campaign, init_campaign, reject_job, retry_job, run_once, status
+from ingest_pilot.coordinator import complete_campaign, init_campaign, reject_job, retry_job, route_candidate, run_once, status
 from ingest_pilot.state import PilotError
 
 
@@ -36,6 +36,12 @@ def _parser() -> argparse.ArgumentParser:
     reject.add_argument("--campaign", required=True)
     reject.add_argument("--job", required=True)
     reject.add_argument("--reason", required=True)
+
+    route = commands.add_parser("route")
+    route.add_argument("--campaign", required=True)
+    route.add_argument("--job", required=True)
+    route.add_argument("--decision", required=True, choices=("review_required", "sample_eligible"))
+    route.add_argument("--reason", required=True)
 
     complete = commands.add_parser("complete")
     complete.add_argument("--campaign", required=True)
@@ -75,6 +81,10 @@ def main() -> int:
             output = status(root, arguments.campaign)
         elif arguments.command == "retry":
             output = retry_job(root, arguments.campaign, arguments.job)
+        elif arguments.command == "route":
+            output = route_candidate(
+                root, arguments.campaign, arguments.job, arguments.decision, arguments.reason
+            )
         elif arguments.command == "complete":
             output = complete_campaign(root, arguments.campaign, arguments.coordinator_repairs)
         else:

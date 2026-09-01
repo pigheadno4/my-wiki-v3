@@ -51,7 +51,10 @@ these controls. A provider without its own authorization remains serial-only.
   three to five verbatim quotes, and returns one isolated source candidate plus
   structured shared-file suggestions.
 - Every first attempt receives a complete-source review by a different
-  strong-model reviewer. That reviewer checks the candidate, quotes,
+  strong-model reviewer unless an exact, provider-specific live risk-gated
+  pilot authorization defines its mandatory jobs, provisional jobs, fixed
+  sample, fail-closed expansion, and pre-promotion audit. That reviewer checks
+  the candidate, quotes,
   contradictions, unknowns, raw link, relevant concepts and source context,
   and the semantic validity of shared-file suggestions; reviewers do not
   reread the full company page, provider index, or provider log. A bounded

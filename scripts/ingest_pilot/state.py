@@ -105,6 +105,8 @@ def _write_monitor(campaign_dir: Path, campaign: Mapping[str, Any], jobs: List[D
         "queued",
         "running",
         "candidate_ready",
+        "risk_pending",
+        "review_deferred",
         "reviewing",
         "approved",
         "failed",
@@ -139,6 +141,8 @@ def _write_monitor(campaign_dir: Path, campaign: Mapping[str, Any], jobs: List[D
         f"- Queued: {counts['queued']}",
         f"- Running: {counts['running']}",
         f"- Candidate ready: {counts['candidate_ready']}",
+        f"- Risk pending: {counts['risk_pending']}",
+        f"- Review deferred: {counts['review_deferred']}",
         f"- Reviewing: {counts['reviewing']}",
         f"- Approved: {counts['approved']}",
         f"- Failed: {counts['failed']}",
@@ -200,20 +204,43 @@ def _review_configuration(manifest: Mapping[str, Any]) -> Dict[str, Any]:
     review_policy = manifest.get("review_policy", "per_page")
     if review_policy == "audit_only":
         raise PilotError("audit_only review_policy is not authorized")
-    if review_policy != "per_page":
-        raise PilotError("review_policy must be per_page")
+    if review_policy not in {"per_page", "risk_gated"}:
+        raise PilotError("review_policy must be per_page or risk_gated")
     review_concurrency = manifest.get("review_concurrency", 1)
     if isinstance(review_concurrency, bool) or not isinstance(review_concurrency, int) or review_concurrency < 1:
         raise PilotError("review_concurrency must be a positive integer")
+    job_ids = {source.get("job_id") for source in manifest["jobs"]}
+    risk_configuration: Dict[str, Any] = {}
+    if review_policy == "risk_gated":
+        sample_job_id = manifest.get("risk_sample_job_id")
+        routes = [source.get("initial_review_route") for source in manifest["jobs"]]
+        if (
+            not isinstance(sample_job_id, str)
+            or sample_job_id not in job_ids
+            or any(route not in {"mandatory", "provisional"} for route in routes)
+        ):
+            raise PilotError("risk_gated review requires one sample and a route for every job")
+        sample = next(source for source in manifest["jobs"] if source["job_id"] == sample_job_id)
+        if sample["initial_review_route"] != "provisional":
+            raise PilotError("risk_gated sample job must be provisional")
+        risk_configuration = {
+            "risk_sample_job_id": sample_job_id,
+            "risk_gate": "pending",
+        }
+    elif "risk_sample_job_id" in manifest or any(
+        "initial_review_route" in source for source in manifest["jobs"]
+    ):
+        raise PilotError("risk_gated fields require review_policy risk_gated")
     if "audit_job_ids" not in manifest:
+        if review_policy == "risk_gated":
+            raise PilotError("risk_gated review requires three audit job IDs")
         if review_concurrency > 1:
             raise PilotError("parallel review requires audit_job_ids")
-        configuration = {"review_concurrency": review_concurrency}
+        configuration = {"review_concurrency": review_concurrency, **risk_configuration}
         if "review_policy" in manifest:
             configuration["review_policy"] = review_policy
         return configuration
     audit_job_ids = manifest["audit_job_ids"]
-    job_ids = {source.get("job_id") for source in manifest["jobs"]}
     if (
         not isinstance(audit_job_ids, list)
         or len(audit_job_ids) != 3
@@ -222,9 +249,24 @@ def _review_configuration(manifest: Mapping[str, Any]) -> Dict[str, Any]:
         or any(job_id not in job_ids for job_id in audit_job_ids)
     ):
         raise PilotError("audit_job_ids must contain three distinct manifest job IDs")
+    if review_policy == "risk_gated":
+        route_by_job = {
+            source["job_id"]: source["initial_review_route"] for source in manifest["jobs"]
+        }
+        sample_job_id = risk_configuration["risk_sample_job_id"]
+        if (
+            sample_job_id not in audit_job_ids
+            or not any(route_by_job[job_id] == "mandatory" for job_id in audit_job_ids)
+            or not any(
+                job_id != sample_job_id and route_by_job[job_id] == "provisional"
+                for job_id in audit_job_ids
+            )
+        ):
+            raise PilotError("risk_gated audit must include mandatory, sample, and provisional jobs")
     configuration = {
         "review_concurrency": review_concurrency,
         "audit_job_ids": list(audit_job_ids),
+        **risk_configuration,
     }
     if "review_policy" in manifest:
         configuration["review_policy"] = review_policy
@@ -279,6 +321,11 @@ def initialize_state(root: Path, manifest: Union[Path, Mapping[str, Any]]) -> No
                 "canonical_url": source["canonical_url"],
                 "contract_version": 2,
                 **routing_metadata[position - 1],
+                **(
+                    {"initial_review_route": source["initial_review_route"]}
+                    if review_configuration.get("review_policy") == "risk_gated"
+                    else {}
+                ),
                 "state": "queued",
                 "attempt": 0,
                 "queue_position": position,
