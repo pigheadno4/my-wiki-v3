@@ -56,12 +56,21 @@ For coordinator-controlled ingest, dispatch the generated worker order without r
 - Return exactly the top-level keys listed in `result_contract.top_level_keys`.
 - Give every grounding quote non-empty `text` and `location` values.
 - For OpenAPI pages, distinguish the enclosing `requestBody` requiredness from required properties inside its payload schema, and do not infer unknown-field behavior when `additionalProperties` is unspecified.
-- For every POST operation, check the existing Metronome API-wide idempotency authority and separate its guarantees from endpoint-specific retry, concurrency, freshness, and recovery unknowns.
+- For every POST operation covered by the Metronome API-wide `Idempotency-Key` authority, preserve the execution-admission boundary: Metronome persists a result only after the request begins execution, meaning validation passed and no pre-execution concurrent-request conflict prevented execution. Only then do identical same-key parameters replay the persisted original result; changed parameters return HTTP `409`. Do not treat validation failures or pre-execution concurrency conflicts as established cached results, and keep these API-wide guarantees separate from endpoint-specific retry, concurrency, freshness, propagation, and recovery unknowns.
 - For each durable fact, audit every relevant existing Metronome concept and propose the required reciprocal source links instead of stopping after the first plausible concept.
 - For guide worked examples, compare retained request and response fields against current dedicated API authorities. Preserve omitted-field blast radius, defaults, units, requiredness, field-name and enum conflicts, and other material contradictions.
 - Reserve grounding evidence for query-critical method, path, authentication, and immediate-parent response placement instead of spending every quote on leaf-schema detail.
 
 These are submission checks, not new campaign state. The existing validator remains the fail-closed authority, and an invalid result follows the existing bounded retry path.
+
+The POST execution-admission rule above is a Metronome provider-wide preflight
+fact, not an ingest-system invariant and not a substitute for source evidence.
+Its authority is
+[`source-metronome-api-reference-idempotency.md`](../../wiki/sources/metronome/source-metronome-api-reference-idempotency.md),
+which links to the immutable raw snapshot. Revalidate this reminder when that
+canonical authority receives a changed raw hash; do not copy it to another PSP
+or to an uncovered Metronome API family without reading that family's own
+authority.
 
 Judge semantic risk by authority fan-out, not raw length alone. A short guide or
 reference can still be high risk when it crosses multiple dedicated APIs,
