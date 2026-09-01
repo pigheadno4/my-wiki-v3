@@ -140,6 +140,7 @@ class SchedulerTests(unittest.TestCase):
                     "Copy canonical_url exactly into source_page frontmatter.",
                     "Return exactly result_contract.top_level_keys and no other top-level keys.",
                     "Ensure every quote has non-empty text and location.",
+                    "For concept suggestions, use update_kind durable_fact or reciprocal_source_link only; represent contradictions in proposed_markdown or warnings, not as a new update_kind.",
                     "For OpenAPI pages, distinguish requestBody requiredness, required payload properties, and additionalProperties behavior; do not infer omitted-body or unknown-field behavior.",
                     "For guide worked examples, compare every retained request and response field against current dedicated API authorities; preserve omitted-field blast radius, defaults, units, requiredness, enums, and contradictions.",
                     "Ground query-critical method, path, authentication, and immediate-parent response placement with direct quotes; do not spend all quote slots on leaf-schema detail.",
