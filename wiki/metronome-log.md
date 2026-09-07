@@ -6,6 +6,16 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-09-07 — Metronome Campaign 37 retrieval-source pilot
+
+- Promoted five retrieval-oriented sources: credit listing, hybrid business models, customer provisioning, credit archival, and rate-card metadata retrieval.
+- Review: 3/5 first-pass approvals; all 5 finally approved after five full initial reviews and two targeted correction reviews. No full rereview or coordinator semantic repair was needed.
+- Concepts: five reviewer-approved reciprocal navigation entries across four existing concepts; no concept-body synthesis was required.
+- Outcome: the single ten-question retrieval audit passed 10/10 with no retrieval miss; campaign closure took 1,672 seconds (27 minutes 52 seconds). The 35-minute observational target passed, while the 4/5 first-pass target was missed.
+- Coverage: 187 total source summaries, 181 official-documentation sources, and 105 raw snapshots without source summaries. Of the frozen never-ingested planning inventory, 45 canonical identities remain uncovered.
+- Corrected stale company Knowledge status body counts alongside the campaign counts; the prior company frontmatter was already current.
+- Retrieval audit and elapsed-time result: see the [quality audit](../tracking/ingest/metronome/metronome-campaign-37/quality-audit.md) and [retrospective](../tracking/ingest/metronome/metronome-campaign-37/retrospective.md). Execution evidence: [monitor](../tracking/ingest/metronome/metronome-campaign-37/monitor.md).
+
 ## 2026-09-01 — Metronome Campaign 36 risk-gated review pilot promoted
 
 - Ingested five new Minimum Sufficient Sources covering credit-grant creation, billing-provider configuration archival, custom-field key listing, package-contract association listing, and offset-notification configuration listing.

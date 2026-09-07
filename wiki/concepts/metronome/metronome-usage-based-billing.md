@@ -76,6 +76,8 @@ These remaining questions require dedicated sources and are not fully answered b
 
 ## Sources
 
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-hybrid-business-models]] — hybrid seat subscription with pooled recurring credits, configuration-driven seat proration, merchant-controlled cutoff signals, and payment-gated top-ups
+
 - [[source-metronome-api-reference-usage-get-batched-usage-data]] - multi-customer and multi-metric aggregate usage by required interval and window, full-period `none` without overall row-cardinality inference, optional metric grouping, top-level cursor traversal, `LATEST` absolute-window-value versus incremental invoice-breakdown boundary, dashboard-guide shape contradiction, and freshness and snapshot unknowns
 
 - [[source-metronome-api-reference-usage-get-usage-data-with-paginated-groupings]] - customer and billable-metric usage aggregates by requested windows and exact simple or compound metric groups, with filter, pagination, response-placement, `LATEST` reconciliation, and freshness boundaries

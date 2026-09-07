@@ -1,0 +1,53 @@
+{
+  "job_id": "list-credits-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"List credits\"\ntype: source\ndate_ingested: 2026-09-07\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/credits-and-commits/list-credits\"\nraw_files:\n  - \"metronome/api-reference/credits-and-commits/list-credits-2026-08-28.md\"\ntags: [metronome, api-reference, credits-and-commits, customer-credits]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `POST /v1/contracts/customerCredits/list`, which retrieves customer credits, including promotional and contract-specific credits. It is the evidence route for finding credit access schedules, applicability, optional ledgers, and calculated balances; exact request fields and response schemas remain in the immutable raw snapshot.\n\nHTTP `200` returns an object whose required `data` array contains `Credit` objects and whose required, nullable `next_page` supports continuation.\n\n## Query-critical routes\n\n- Within a supplied JSON object, `customer_id` is the only required property. The enclosing OpenAPI `requestBody` is not marked required, and the request object does not declare `additionalProperties`, so omitted-body and unknown-field behavior are undocumented.\n- The raw request schema is the authority for the optional credit, date-window, contract/archive scope, ledger, balance, page-token, and limit controls. `limit` ranges from 1 to 25 and defaults to 25; the page does not define ordering, cursor lifetime, invalid-cursor behavior, or cross-page snapshot consistency.\n- `include_ledgers` requests ordered balance-impacting events and `include_balance` requests the current accessible balance; both are documented as potentially slower. The balance schema excludes expired and upcoming segments from current balance, floors the calculated value at zero when excessive negative manual entries would exceed remaining positive value, and includes future-dated manual entries on active segments. Use the raw `CreditLedger` union and ledger-entry component keys for exact event shapes.\n- Use `components.schemas.Credit` for credit identity, contract association, priority, attribution product, access schedule, applicability, subscription configuration, ledger, balance, metadata, and hierarchy fields. Ordinary property requiredness, enums, annotations, and nested shapes are intentionally retained in raw rather than reconstructed here.\n\n## Documentation cautions\n\n> [!warning] Credit-versus-commit wording\n> The operation is named **List credits**, its success `data` items reference the `Credit` schema, and the path is `/customerCredits/list`. However, the pagination description says it returns up to 25 \"commits\" and the `credit_id` guideline says it retrieves a specific \"commit\". Do not infer that this endpoint lists commits from those two phrases; verify runtime behavior if that distinction matters.\n\n> [!warning] Product field naming and purpose\n> The narrative calls the attribution field `product_id` and explicitly says it is for external quote-to-cash mapping, not the product to which the credit applies. The response schema instead exposes a required `product` object with `id` and `name`, while applicability is represented separately through `applicable_product_ids`, `applicable_product_tags`, and `specifiers`. Use the exact raw schema and live API contract before mapping these fields.\n\n## Raw-detail locators\n\n- Operation, bearer security, and request controls: OpenAPI `paths./v1/contracts/customerCredits/list.post` and `requestBody.content.application/json.schema`.\n- Success envelope and cursor placement: `responses.200.content.application/json.schema`.\n- Credit fields and applicability: `components.schemas.Credit`, `ScheduleDuration`, `CommitSpecifier`, and `ExcludeSpecifier`.\n- Optional ledger and balance expansion: `components.schemas.CreditLedger`, its referenced ledger-entry schemas, and `BalanceForCommitsAndCredits`.\n- Nested subscription, custom-field, hierarchy, and rollover shapes: their exact keys under `components.schemas`.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-credits-and-commits]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/credits-and-commits/list-credits-2026-08-28|2026-08-28 snapshot - customer-credit list purpose, request controls, response envelope, credit schemas, ledger events, and calculated balance]]\n",
+  "quotes": [
+    {
+      "text": "security:\n  - bearerAuth: []",
+      "location": "OpenAPI root security declaration, raw lines 57-58"
+    },
+    {
+      "text": "/v1/contracts/customerCredits/list:\n    post:\n      tags:\n        - Credits and commits\n      summary: List credits",
+      "location": "OpenAPI paths./v1/contracts/customerCredits/list.post, raw lines 119-123"
+    },
+    {
+      "text": "required:\n                - customer_id\n              properties:\n                customer_id:\n                  type: string\n                  format: uuid",
+      "location": "OpenAPI requestBody JSON schema, raw lines 191-196"
+    },
+    {
+      "text": "required:\n                  - data\n                  - next_page\n                properties:\n                  data:\n                    type: array\n                    items:\n                      $ref: '#/components/schemas/Credit'",
+      "location": "OpenAPI responses.200 JSON schema, raw lines 256-263"
+    },
+    {
+      "text": "The current balance of the credit or commit. This balance reflects the\n        amount of credit or commit that the customer has access to use at this\n        moment - thus, expired and upcoming credit or commit segments contribute\n        0 to the balance.",
+      "location": "OpenAPI components.schemas.BalanceForCommitsAndCredits description, raw lines 550-553"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "list-credits-main-concept-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-list-credits]] - customer-credit list route, optional schedule, ledger and balance expansion, response pagination, detailed schema locators, and credit-versus-commit wording cautions",
+        "quote_indexes": [
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Navigation-only reciprocal entry; no concept prose change is proposed.",
+          "The raw page uses commit wording in two credit-list descriptions; do not broaden this route to commit listing."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/list-credits-2026-08-28.md",
+  "raw_sha256": "7f6296f698ebf9d8b073052207481a3cbfdd33976c94a71712631f2aee44d7f6",
+  "status": "candidate_ready"
+}

@@ -250,6 +250,8 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 
 ## Sources
 
+- [[source-metronome-guides-customers-billing-manage-customers-provision-a-customer]] — end-to-end customer and contract provisioning, ingest-alias routing, billing-destination selection, invoice consolidation, and usage-filter limits
+
 - [[source-metronome-api-reference-notifications-list-offset-lifecycle-event-notification-configurations]] - lifecycle-event-relative notification configuration discovery and the boundary that returned policies do not prove a contract event occurred, a schedule fired, or delivery completed
 
 

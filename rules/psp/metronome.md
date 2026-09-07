@@ -1,5 +1,23 @@
 # Provider: Metronome - collection profile
 
+## Campaign 37 retrieval-source pilot precedence
+
+Only after approval of its exact five-job manifest, Campaign 37 uses
+`tracking/ingest/metronome/metronome-campaign-37/dispatch-contract.md` as the
+worker/reviewer semantic contract. Attach it to every dispatch beside the
+unmodified trusted order. Within this campaign it supersedes conflicting
+legacy semantic preflight, exhaustive concept propagation, unconditional
+API-wide rule expansion, and automatic full review for bounded factual
+corrections. Retained claims must be accurate; ordinary detail may remain in
+raw with useful locators, and concept updates may be reciprocal navigation.
+
+Initial independent full-raw review, provenance, result formats, quotes,
+bounded attempts, and coordinator-only writes remain required. The ten
+predetermined retrieval tasks in the campaign selection review replace the
+separate three-page full-content audit. The existing three manifest audit IDs
+remain detailed exemplars, not an additional audit. No other campaign or PSP
+inherits this exception. Preparation does not authorize execution.
+
 > Used with `rules/psp-collection.md` and `scripts/psp_config.toml`. Verified 2026-07-13.
 
 ## Ownership and wiki placement

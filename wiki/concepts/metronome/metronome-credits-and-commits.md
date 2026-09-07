@@ -260,6 +260,10 @@ A `low_remaining_contract_credit_and_commit_balance_reached` alert normally eval
 
 ## Sources
 
+- [[source-metronome-api-reference-credits-and-commits-archive-a-credit]] — credit deactivation with historical preservation, finalized-invoice correction sequence, archived-list retrieval, zero balance and null ledger, and full access-schedule deactivation
+
+- [[source-metronome-api-reference-credits-and-commits-list-credits]] - customer-credit list route, optional schedule, ledger and balance expansion, response pagination, detailed schema locators, and credit-versus-commit wording cautions
+
 - [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]] - signed manual ledger-event mutation, balance and segment identity, effective-time default, fractional and USD-cent ledger scope, manual-entry families, calculated-balance floor and future-dated inclusion, access-segment-removal qualification, seat allocation, correction boundary, duplicate guard, and endpoint-local visibility and atomicity unknowns
 
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - detailed and net customer-balance dashboard routes, available-now exclusion of expired or future segments, incomplete worked Commit shape, current `SPEND` access default, distinct `QUANTITY` mode and credit-type prohibition, draft-inclusive and USD-cent net-balance defaults, non-negative segment treatment, filter composition, hierarchy exclusion, and embedded grant-history UI

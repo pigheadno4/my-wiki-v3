@@ -1,0 +1,96 @@
+{
+  "job_id": "archive-a-credit-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API Reference: Archive a Credit\"\ntype: source\ndate_ingested: 2026-09-07\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/credits-and-commits/archive-a-credit\"\nraw_files:\n  - \"metronome/api-reference/credits-and-commits/archive-a-credit-2026-07-13.md\"\ntags: [metronome, credits, archive, api]\n---\n\n## Overview\n\nThis Metronome endpoint deactivates a contract-level or customer-level credit while preserving its historical record. Use the bearer-authenticated `POST /v2/contracts/credits/archive` operation when retiring the full credit rather than reducing its grant.\n\n## Consequential behavior\n\n> [!warning] Archive prerequisites and full-schedule effect\n> A credit cannot be archived until every finalized invoice to which it was applied has been voided. The documented correction sequence is to void the affected finalized invoice, archive the credit, and then regenerate the invoice. Archiving deactivates the credit's entire access schedule; use credit editing or a manual ledger entry when the intent is only to reduce the granted amount.\n\nAfter archival, the credit is excluded by default from `listCustomerCredits` and `listCustomerBalances`; callers can request it with `include_archived`. The archived credit has a null ledger and zero remaining balance.\n\n## Detailed evidence routes\n\n- Operation and authentication: raw OpenAPI header and operation at lines 27-38 and 99-138.\n- Request identifiers and schema: `ArchiveCreditPayload` at lines 139-147 and 181-194.\n- Success and error envelopes: response definitions and `Id` schema at lines 148-178 and 195-202.\n\nThese locators route implementation queries to the immutable snapshot; this source does not restate ordinary payload or response schema detail and does not assert endpoint-specific retry or idempotency behavior.\n\n## Related\n\n- Company: [[metronome]]\n- Concept: [[metronome-credits-and-commits]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/credits-and-commits/archive-a-credit-2026-07-13|Archive a credit raw snapshot]] \u2014 complete page and embedded OpenAPI operation\n",
+  "quotes": [
+    {
+      "text": "Archive a contract-level or customer-level credit. Use this endpoint to deactivate a credit while preserving historical records. You will not be able to archive a credit until all of the finalized invoices the credit has been applied to are voided.",
+      "location": "lines 9-11, introductory purpose and prerequisite"
+    },
+    {
+      "text": "- First, void the finalized invoice that the credit was applied to. \n- Then, use the archiveCredit endpoint to deactivate the credit. \n- Finally, regenerate the voided invoice. The invoice will be regenerated without the application of the credit, which has now been archived.",
+      "location": "lines 15-17, documented correction workflow"
+    },
+    {
+      "text": "- Once a credit has been archived, it will no longer appear by default on the endpoints `listCustomerCredits` or `listCustomerBalances`. Use the `include_archived` parameter to choose to fetch the details.",
+      "location": "line 20, archived-credit list visibility"
+    },
+    {
+      "text": "- Once a credit has been archived, it has a null ledger and 0 remaining balance. \n- Archiving a credit fully deactivates the entire access schedule. If you want to reduce the amount granted in a credit, consider editing the access schedule using the `editCredit` endpoint, or adding a manual ledger entry using the `addManualBalanceLedgerEntry` endpoint.",
+      "location": "lines 21-22, balance, ledger, and access-schedule effects"
+    },
+    {
+      "text": "````yaml /openapi.json post /v2/contracts/credits/archive\nopenapi: 3.0.1\ninfo:\n  title: Metronome\n  version: 1.0.0\nservers:\n  - url: https://api.metronome.com\n    description: Production server\nsecurity:\n  - bearerAuth: []",
+      "location": "lines 29-38, method, path, server, and bearer authentication"
+    }
+  ],
+  "suggestions": {
+    "company": [
+      {
+        "update_id": "archive-a-credit-new-source-company-catalog",
+        "target_path": "wiki/companies/metronome.md",
+        "update_kind": "catalog_entry",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-archive-a-credit]] \u2014 full-credit archival, finalized-invoice prerequisite, default archive visibility, and access-schedule deactivation",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "concepts": [
+      {
+        "update_id": "archive-a-credit-new-source-concept-reciprocal",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-archive-a-credit]] \u2014 credit deactivation with historical preservation, finalized-invoice correction sequence, archived-list retrieval, zero balance and null ledger, and full access-schedule deactivation",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep this as reciprocal navigation; the source does not require a new concept-prose paragraph."
+        ]
+      }
+    ],
+    "index": [
+      {
+        "update_id": "archive-a-credit-new-source-provider-index",
+        "target_path": "wiki/metronome-index.md",
+        "update_kind": "catalog_entry",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-credits-and-commits-archive-a-credit]] \u2014 historical-preserving credit deactivation, finalized-invoice prerequisite, archive visibility, and full access-schedule effect",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "log": [
+      {
+        "update_id": "archive-a-credit-new-source-provider-log",
+        "target_path": "wiki/metronome-log.md",
+        "update_kind": "log_entry",
+        "anchor": "## 2026-09-07 \u2014 Metronome Campaign 37 retrieval-source pilot",
+        "proposed_markdown": "- Source: [[source-metronome-api-reference-credits-and-commits-archive-a-credit]] \u2014 retrieval entry for whole-credit archival and its consequential invoice and access-schedule preconditions.",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": [
+          "Coordinator should aggregate this into the single campaign-close log entry."
+        ]
+      }
+    ]
+  },
+  "raw_path": "raw/metronome/api-reference/credits-and-commits/archive-a-credit-2026-07-13.md",
+  "raw_sha256": "56895fcea3a87dcf2e3cfbaa849a475a0f71a588aebad90bea4ca1feb2237108",
+  "status": "candidate_ready"
+}

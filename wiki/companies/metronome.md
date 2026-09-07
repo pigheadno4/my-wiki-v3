@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 182
+source_count: 187
 ---
 
 ## Overview
@@ -151,10 +151,16 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 226
-- Official documentation source summaries: 171
-- Raw snapshots without source summaries: 115
+- Official documentation source summaries: 181
+- Raw snapshots without source summaries: 105
 
 ## Sources
+
+- [[source-metronome-api-reference-credits-and-commits-list-credits]] - customer-credit list route, optional schedule, ledger and balance expansion, response pagination, detailed schema locators, and credit-versus-commit wording cautions
+- [[source-metronome-guides-pricing-packaging-billing-model-guides-hybrid-business-models]] — hybrid seat subscription with pooled recurring credits, configuration-driven seat proration, merchant-controlled cutoff signals, and payment-gated top-ups
+- [[source-metronome-guides-customers-billing-manage-customers-provision-a-customer]] — end-to-end customer and contract provisioning, ingest-alias routing, billing-destination selection, invoice consolidation, and usage-filter limits
+- [[source-metronome-api-reference-credits-and-commits-archive-a-credit]] — credit deactivation with historical preservation, finalized-invoice correction sequence, archived-list retrieval, zero balance and null ledger, and full access-schedule deactivation
+- [[source-metronome-api-reference-rate-cards-get-a-rate-card]] - single-card metadata retrieval, explicit no-rates boundary, and exact request, response, alias, conversion, and custom-field schema routes
 
 - [[source-metronome-api-reference-credit-grants-create-a-credit-grant]] — deprecated Plans credit-grant creation, current Contracts routing, amount and product scope, ordering, uniqueness, invoicing, and retry boundaries
 - [[source-metronome-api-reference-customers-archive-billing-provider-configurations-for-a-customer]] — immediate provider-configuration archival, contract and downstream metering effects, invoice and threshold suppression, response conflict, and recovery limits

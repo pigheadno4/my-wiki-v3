@@ -1,0 +1,50 @@
+{
+  "job_id": "get-a-rate-card-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Get a Rate Card\"\ntype: source\ndate_ingested: 2026-09-07\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/rate-cards/get-a-rate-card\"\nraw_files:\n  - \"metronome/api-reference/rate-cards/get-a-rate-card-2026-07-13.md\"\ntags: [metronome, api-reference, rate-cards, pricing-catalog]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `POST /v1/contract-pricing/rate-cards/get`, which retrieves one rate card by ID. It is the evidence route for the card's identifying metadata, creation metadata, credit type and conversions, aliases, and custom fields.\n\n## Retrieval boundary\n\n> [!warning] This endpoint does not return rates\n> The operation returns rate-card details, not the rates on the card. The page directs rate queries to the dedicated `getRates` or `getRateSchedule` operations; their contents were not used as evidence for this source.\n\nA successful `200` response requires a top-level `data` property referencing `RateCard`. That schema requires `id`, `name`, `created_at`, and `created_by`; its other documented detail categories remain in the raw schema rather than being reconstructed here. The operation also lists a `404` response for a resource that was not found.\n\n## Raw detail locators\n\n- Method, path, operation ID, bearer authentication, and media type: OpenAPI `security` and `paths./v1/contract-pricing/rate-cards/get.post`.\n- Request identity and requiredness: `paths./v1/contract-pricing/rate-cards/get.post.requestBody` and `components.schemas.Id`. The `Id` schema requires UUID `id`, while the enclosing `requestBody` is not marked required; omitted-body behavior is not documented.\n- Success envelope and example: `paths./v1/contract-pricing/rate-cards/get.post.responses.200`.\n- Required metadata and optional description, credit-type conversion, alias, and custom-field shapes: `components.schemas.RateCard`, `CreditType`, `CreditTypeConversion`, `RateCardAlias`, and `CustomField`.\n- Not-found response: `components.responses.NotFound` and `components.schemas.Error`.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-products-and-rate-cards]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/rate-cards/get-a-rate-card-2026-07-13|2026-07-13 snapshot - rate-card metadata retrieval, response boundary, and OpenAPI schemas]]\n",
+  "quotes": [
+    {
+      "text": "Return details for a specific rate card including name, description, and aliases. This endpoint does not return rates - use the dedicated getRates or getRateSchedule endpoints to understand the rates on a rate card.",
+      "location": "line 11, introductory purpose statement"
+    },
+    {
+      "text": "security:\n  - bearerAuth: []",
+      "location": "OpenAPI lines 26-27, top-level security"
+    },
+    {
+      "text": "  /v1/contract-pricing/rate-cards/get:\n    post:\n      tags:\n        - Rate cards\n      summary: Get a rate card",
+      "location": "OpenAPI lines 88-92, operation path and method"
+    },
+    {
+      "text": "      requestBody:\n        description: The ID of the rate card to get\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/Id'",
+      "location": "OpenAPI lines 99-104, request body schema"
+    },
+    {
+      "text": "    RateCard:\n      type: object\n      required:\n        - id\n        - name\n        - created_at\n        - created_by",
+      "location": "OpenAPI lines 145-151, required RateCard properties"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "get-rate-card-products-rate-cards-reciprocal-source",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-rate-cards-get-a-rate-card]] - single-card metadata retrieval, explicit no-rates boundary, and exact request, response, alias, conversion, and custom-field schema routes",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/rate-cards/get-a-rate-card-2026-07-13.md",
+  "raw_sha256": "daee0418ec397e41098297f231bb189129a9e7a4efb77ec4c7f5392354a7fba2",
+  "status": "candidate_ready"
+}

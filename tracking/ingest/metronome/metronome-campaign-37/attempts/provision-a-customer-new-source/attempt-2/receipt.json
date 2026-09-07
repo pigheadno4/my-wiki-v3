@@ -1,0 +1,52 @@
+{
+  "job_id": "provision-a-customer-new-source",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome Provision a Customer and Contract\"\ntype: source\ndate_ingested: 2026-09-07\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/customers-billing/manage-customers/provision-a-customer\"\nraw_files:\n  - \"metronome/guides/customers-billing/manage-customers/provision-a-customer-2026-08-28.md\"\ntags: [metronome, customers, contracts, ingest-aliases, billing-providers, usage-filters]\n---\n\n## Overview\n\nThis guide is an end-to-end entry point for provisioning a Metronome customer and the contracts that govern rating and billing. It helps locate the customer identity and ingest-alias workflow, billing-destination setup, contract terms, invoice consolidation, discounts, usage filters, and custom-field examples.\n\n## Provisioning flow\n\nA Metronome customer is an invoice recipient and may represent a user, enterprise, API key, or another organization-defined entity. Provisioning consists of creating that customer and configuring at least one contract before metering and rating begin; multiple contracts can be attached when the commercial model requires them.\n\nIngest aliases preserve an application's customer identifiers while routing usage to the matching Metronome customer. The guide also uses aliases to model enterprise sub-organizations and says that adding an alias later retroactively associates earlier usage carrying that alias.\n\nA customer may hold multiple `customer_billing_provider_configurations`, while each contract selects the configuration for its billing destination. Creating an AWS configuration on the customer does not itself route billing to AWS: a contract must select it.\n\n> [!warning] Beta billing-configuration archival\n> The guide labels this behavior **BETA**. Archiving a billing configuration that is attached to an active contract immediately archives it on that contract and stops billing to the associated destination. The guide says a new billing-provider configuration cannot then be provisioned on that contract.\n\n## Contract and invoice choices\n\nContracts build on rate cards and can include commits, scheduled charges, discounts, overrides, invoice schedules, and usage filters. Scheduled charges consolidate onto usage invoices only under the timing and invoice-finalization conditions documented in the raw section **Consolidate usage and scheduled invoices**.\n\nUsage filters route selected usage among a customer's contracts and can be changed on a schedule.\n\n> [!warning] Usage-filter compatibility\n> Contract-level usage filters are not compatible with `LATEST` billable metrics; the guide warns that combining them can cause invoice computation errors.\n\n## Raw detail map\n\nUse the immutable raw snapshot for implementation detail and worked payloads; this guide is not a substitute for the dedicated API schema authorities.\n\n- **Create a customer** \u2014 prerequisites, ingest-alias hierarchy and retroactive association, app steps, customer-creation API example, and custom fields.\n- **Add a billing configuration to a customer** \u2014 connected-system prerequisite, AWS Marketplace example, later configuration, and archival behavior.\n- **Provision a customer contract** \u2014 rate-card relationship, app flow, and the contract-create example with a prepaid commit, scheduled fee, and usage statement schedule.\n- **Consolidate usage and scheduled invoices** \u2014 consolidation conditions and invoice-timing example.\n- **Add contract discounts and overrides** \u2014 edit flow and multiplier-override example.\n- **Create a usage filter** \u2014 multi-contract routing, scheduled filter update, streaming/SQL metric requirements, and the `LATEST` limitation.\n- **Add custom fields** \u2014 downstream metadata example for CRM and revenue-recognition workflows.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-customers-and-contracts]]\n- Navigation: [[metronome-event-ingestion]], [[metronome-integrations]], [[metronome-invoicing]], [[metronome-billable-metrics]]\n- Dedicated authorities: [[source-metronome-api-reference-customers-create-a-customer]], [[source-metronome-api-reference-contracts-create-a-contract]], [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/customers-billing/manage-customers/provision-a-customer-2026-08-28|2026-08-28 snapshot \u2014 customer and contract provisioning guide]]\n",
+  "quotes": [
+    {
+      "text": "Provisioning your customer includes creating the customer object and configuring the associated contract that outlines their terms of use. A customer needs at least one contract provisioned to them to start metering and rating for billing. You can also configure multiple contracts per customer, if needed.",
+      "location": "lines 13-13, introduction"
+    },
+    {
+      "text": "Ingest aliases map your internal customer identifiers to Metronome's customer ID. When you send usage keyed on an ingest alias, Metronome automatically associates it to the correct Metronome customer. This allows you to maintain your existing customer entities without needing to swap in a Metronome customer ID.",
+      "location": "lines 28-30, Understand ingest aliases"
+    },
+    {
+      "text": "Ingest aliases can be specified on the Metronome customer object at time of creation or any point after. Retroactively adding an ingest alias on the customer is a way to take Metronome out of the hot path of customer signup while properly metering usage. For example, if you first send usage keyed on `IngestAlias1` and later add this ingest alias to an existing customer, Metronome retroactively associates that usage to the correct customer.",
+      "location": "lines 42-44, Understand ingest aliases"
+    },
+    {
+      "text": "If you archive a `customer_billing_provider_configuration` that is attached to an active contract, the config will be archived on the contract immediately and no longer bill to the associated destination. A new `billing_provider_configuration` cannot be provisioned on the contract.",
+      "location": "lines 123-127, BETA note under Add a billing configuration to a customer"
+    },
+    {
+      "text": "`LATEST` billable metrics are not currently compatible with contract-level usage filters. Applying a contract-level usage filter to a contract that rates a product backed by a `LATEST` billable metric can cause invoice computation errors. Use `LATEST` only on contracts without usage filters.",
+      "location": "lines 307-311, Usage filters have these limitations"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "provision-a-customer-new-source-concept-1",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-manage-customers-provision-a-customer]] \u2014 end-to-end customer and contract provisioning, ingest-alias routing, billing-destination selection, invoice consolidation, and usage-filter limits",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/customers-billing/manage-customers/provision-a-customer-2026-08-28.md",
+  "raw_sha256": "fa28678d19ef49f96550ae1d207a25dfb14d499e3bf3f4f012d1afa78e1cc9b0",
+  "status": "candidate_ready"
+}
