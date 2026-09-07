@@ -1,0 +1,2384 @@
+diff --git a/.github/workflows/close-resolved-issues.yml b/.github/workflows/close-resolved-issues.yml
+new file mode 100644
+index 0000000..7fd1226
+--- /dev/null
++++ b/.github/workflows/close-resolved-issues.yml
+@@ -0,0 +1,34 @@
++name: Close GitHub Issue on Jira Resolution
++on:
++  repository_dispatch:
++    types: [jira-issue-resolved]
++
++jobs:
++  close-issue:
++    runs-on: ubuntu-latest
++    permissions:
++      issues: write
++    steps:
++      - name: Close GitHub Issue
++        uses: actions/github-script@v7
++        with:
++          github-token: ${{ secrets.GITHUB_TOKEN }}
++          script: |
++            const issueNumber = parseInt(context.payload.client_payload.issue_number, 10);
++            const jiraKey    = context.payload.client_payload.jira_key;
++            const jiraUrl    = `https://jira.corp.stripe.com/browse/${jiraKey}`;
++
++            await github.rest.issues.createComment({
++              owner: context.repo.owner,
++              repo:  context.repo.repo,
++              issue_number: issueNumber,
++              body: `This issue has been resolved internally ([${jiraKey}](${jiraUrl})). Closing — please reopen if you're still experiencing this or have follow-up questions!`
++            });
++
++            await github.rest.issues.update({
++              owner: context.repo.owner,
++              repo:  context.repo.repo,
++              issue_number: issueNumber,
++              state: 'closed',
++              state_reason: 'completed'
++            });
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 5f4aaa3..03769da 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # CHANGELOG
+ 
++## 0.74.0 - 2026-08-11
++**Features**
++* [Added] iOS: Added `supportedNetworks` to the Apple Pay params, which restricts the card networks offered in the Apple Pay sheet.
++
+ ## 0.73.0 - 2026-08-04
+ **Changes**
+ * Updated Stripe iOS SDK from 26.4.1 to 26.5.0.
+diff --git a/android/gradle.properties b/android/gradle.properties
+index a84e456..be15890 100644
+--- a/android/gradle.properties
++++ b/android/gradle.properties
+@@ -3,4 +3,4 @@ StripeSdk_compileSdkVersion=36
+ StripeSdk_targetSdkVersion=36
+ StripeSdk_minSdkVersion=23
+ # Keep StripeSdk_stripeVersion in sync with https://github.com/stripe/stripe-identity-react-native/blob/main/android/gradle.properties
+-StripeSdk_stripeVersion=23.14.0
++StripeSdk_stripeVersion=23.15.0
+diff --git a/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt b/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt
+index 2e2bd26..39bf85e 100644
+--- a/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt
++++ b/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt
+@@ -1503,6 +1503,33 @@ class StripeSdkModule(
+     }
+   }
+ 
++  @ReactMethod
++  override fun presentExternalWebPage(
++    url: String,
++    promise: Promise,
++  ) {
++    val activity = getCurrentActivityOrResolveWithError(promise) ?: return
++    val uri = url.toUri()
++    if (uri.scheme?.lowercase() !in setOf("http", "https")) {
++      promise.reject(ErrorType.Failed.toString(), "Invalid web URL")
++      return
++    }
++
++    UiThreadUtil.runOnUiThread {
++      try {
++        androidx.browser.customtabs.CustomTabsIntent
++          .Builder()
++          .setShowTitle(true)
++          .setUrlBarHidingEnabled(true)
++          .build()
++          .launchUrl(activity, uri)
++        promise.resolve(null)
++      } catch (e: Exception) {
++        promise.reject(ErrorType.Failed.toString(), "Failed to open web URL", e)
++      }
++    }
++  }
++
+   @ReactMethod
+   override fun downloadAndShareFile(
+     url: String,
+diff --git a/android/src/oldarch/java/com/reactnativestripesdk/NativeStripeSdkModuleSpec.java b/android/src/oldarch/java/com/reactnativestripesdk/NativeStripeSdkModuleSpec.java
+index 1be012a..01963e7 100644
+--- a/android/src/oldarch/java/com/reactnativestripesdk/NativeStripeSdkModuleSpec.java
++++ b/android/src/oldarch/java/com/reactnativestripesdk/NativeStripeSdkModuleSpec.java
+@@ -281,6 +281,10 @@ public abstract class NativeStripeSdkModuleSpec extends ReactContextBaseJavaModu
+   @DoNotStrip
+   public abstract void openAuthenticatedWebView(String id, String url, Promise promise);
+ 
++  @ReactMethod
++  @DoNotStrip
++  public abstract void presentExternalWebPage(String url, Promise promise);
++
+   @ReactMethod
+   @DoNotStrip
+   public abstract void downloadAndShareFile(String url, @Nullable String filename, Promise promise);
+diff --git a/android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt b/android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt
+index 0bb91d8..025e83e 100644
+--- a/android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt
++++ b/android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt
+@@ -186,6 +186,7 @@ internal fun mapPaymentDetailsType(type: PaymentMethodDisplayData.Type): String
+     PaymentMethodDisplayData.Type.Card -> "Card"
+     PaymentMethodDisplayData.Type.BankAccount -> "BankAccount"
+     PaymentMethodDisplayData.Type.GooglePay -> "GooglePay"
++    PaymentMethodDisplayData.Type.SamsungPay -> "SamsungPay"
+   }
+ 
+ @OptIn(ExperimentalCryptoOnramp::class)
+diff --git a/android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt b/android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt
+index fbb6b03..ffbac51 100644
+--- a/android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt
+@@ -452,6 +452,7 @@ class OnrampMappersTest {
+     assertEquals("Card", mapPaymentDetailsType(PaymentMethodDisplayData.Type.Card))
+     assertEquals("BankAccount", mapPaymentDetailsType(PaymentMethodDisplayData.Type.BankAccount))
+     assertEquals("GooglePay", mapPaymentDetailsType(PaymentMethodDisplayData.Type.GooglePay))
++    assertEquals("SamsungPay", mapPaymentDetailsType(PaymentMethodDisplayData.Type.SamsungPay))
+   }
+ 
+   @Test
+diff --git a/etc/stripe-react-native.api.md b/etc/stripe-react-native.api.md
+index 428e67a..2f84844 100644
+--- a/etc/stripe-react-native.api.md
++++ b/etc/stripe-react-native.api.md
+@@ -271,6 +271,7 @@ type ApplePayBaseParams = {
+     merchantCountryCode: string;
+     currencyCode: string;
+     additionalEnabledNetworks?: Array<string>;
++    supportedNetworks?: Array<string>;
+     cartItems: Array<CartSummaryItem_2>;
+     requiredShippingAddressFields?: Array<ContactField>;
+     requiredBillingContactFields?: Array<ContactField>;
+diff --git a/example-stripe-connect/app/_layout.tsx b/example-stripe-connect/app/_layout.tsx
+index 08fc4ff..f4c4380 100644
+--- a/example-stripe-connect/app/_layout.tsx
++++ b/example-stripe-connect/app/_layout.tsx
+@@ -94,6 +94,14 @@ function RootLayoutNav() {
+               isModal && showComponentHeader ? renderCloseButton : undefined,
+           }}
+         />
++        <Stack.Screen
++          name="notification-banner"
++          options={{
++            title: 'Notification banner',
++            presentation: 'card',
++            headerShown: true,
++          }}
++        />
+         <Stack.Screen
+           name="payouts"
+           options={{
+diff --git a/example-stripe-connect/app/index.tsx b/example-stripe-connect/app/index.tsx
+index 8bc5e51..50339f3 100644
+--- a/example-stripe-connect/app/index.tsx
++++ b/example-stripe-connect/app/index.tsx
+@@ -31,6 +31,12 @@ export default function HomeScreen() {
+           }
+         },
+       },
++      {
++        title: 'Notification banner',
++        description: 'Show account notifications inline with your app content.',
++        badge: 'EXPERIMENTAL',
++        onPress: () => router.push('/notification-banner'),
++      },
+       {
+         title: 'Payouts',
+         description: 'Show payouts and allow your users to perform payouts.',
+diff --git a/example-stripe-connect/app/notification-banner.tsx b/example-stripe-connect/app/notification-banner.tsx
+new file mode 100644
+index 0000000..f3ee23b
+--- /dev/null
++++ b/example-stripe-connect/app/notification-banner.tsx
+@@ -0,0 +1,51 @@
++import { Stack, useRouter } from 'expo-router';
++import { SymbolView } from 'expo-symbols';
++import React from 'react';
++import { Platform, StyleSheet, Text, TouchableOpacity } from 'react-native';
++import ConnectNotificationBannerView from '../src/connect/ConnectNotificationBannerView';
++import { Colors } from '../src/constants/colors';
++
++export default function NotificationBannerScreen() {
++  const router = useRouter();
++
++  return (
++    <>
++      <Stack.Screen
++        options={{
++          title: 'Notification banner',
++          headerRight: () => (
++            <TouchableOpacity
++              onPress={() => router.push('/configure-appearance')}
++              style={styles.headerButton}
++            >
++              {Platform.OS === 'ios' ? (
++                <SymbolView
++                  name="paintpalette"
++                  size={22}
++                  tintColor={Colors.icon.primary}
++                  style={styles.symbolView}
++                />
++              ) : (
++                <Text style={styles.headerIcon}>🎨</Text>
++              )}
++            </TouchableOpacity>
++          ),
++        }}
++      />
++      <ConnectNotificationBannerView />
++    </>
++  );
++}
++
++const styles = StyleSheet.create({
++  headerButton: {
++    padding: 8,
++  },
++  headerIcon: {
++    fontSize: 24,
++  },
++  symbolView: {
++    width: 22,
++    height: 22,
++  },
++});
+diff --git a/example-stripe-connect/src/connect/ConnectNotificationBannerView.tsx b/example-stripe-connect/src/connect/ConnectNotificationBannerView.tsx
+new file mode 100644
+index 0000000..837a891
+--- /dev/null
++++ b/example-stripe-connect/src/connect/ConnectNotificationBannerView.tsx
+@@ -0,0 +1,343 @@
++import {
++  ConnectNotificationBanner,
++  type NotificationBannerInitialLoadState,
++} from '../../../src/connect/NotificationBanner';
++import React, { useEffect, useMemo, useRef, useState } from 'react';
++import {
++  Alert,
++  Animated,
++  Easing,
++  ScrollView,
++  StyleSheet,
++  Text,
++  View,
++} from 'react-native';
++import { APPEARANCE_PRESETS } from '../constants/appearancePresets';
++import { useSettings } from '../contexts/SettingsContext';
++import ConnectScreen from '../screens/ConnectScreen';
++
++export default function ConnectNotificationBannerView() {
++  return (
++    <ConnectScreen>
++      <NotificationBannerContent />
++    </ConnectScreen>
++  );
++}
++
++function NotificationBannerContent() {
++  const { appearancePreset } = useSettings();
++  const [loadState, setLoadState] =
++    useState<NotificationBannerInitialLoadState>('loading');
++  const [total, setTotal] = useState(0);
++  const [actionRequired, setActionRequired] = useState(0);
++  const [height, setHeight] = useState(0);
++  const [transitionComplete, setTransitionComplete] = useState(false);
++  const transitionHeight = useRef(new Animated.Value(SKELETON_HEIGHT)).current;
++  const skeletonOpacity = useRef(new Animated.Value(1)).current;
++  const bannerOpacity = useRef(new Animated.Value(0)).current;
++  const didCompleteInitialTransition = useRef(false);
++  const theme = useMemo(() => {
++    const variables = APPEARANCE_PRESETS[appearancePreset] ?? {};
++    return {
++      background: variables.colorBackground ?? '#FFFFFF',
++      surface: variables.offsetBackgroundColor ?? '#F6F8FA',
++      text: variables.colorText ?? '#1F2937',
++      secondaryText: variables.colorSecondaryText ?? '#667085',
++      border: variables.colorBorder ?? '#D0D5DD',
++      radius: parsePixels(variables.borderRadius, 8),
++    };
++  }, [appearancePreset]);
++
++  useEffect(() => {
++    if (loadState === 'loading') {
++      didCompleteInitialTransition.current = false;
++      setTransitionComplete(false);
++      transitionHeight.setValue(SKELETON_HEIGHT);
++      skeletonOpacity.setValue(1);
++      bannerOpacity.setValue(0);
++      return;
++    }
++
++    if (didCompleteInitialTransition.current) return;
++
++    const animation = Animated.parallel([
++      Animated.timing(transitionHeight, {
++        toValue: loadState === 'loaded' ? height : 0,
++        duration: 240,
++        easing: Easing.out(Easing.cubic),
++        useNativeDriver: false,
++      }),
++      Animated.timing(skeletonOpacity, {
++        toValue: 0,
++        duration: 160,
++        useNativeDriver: true,
++      }),
++      Animated.timing(bannerOpacity, {
++        toValue: loadState === 'loaded' ? 1 : 0,
++        duration: 200,
++        delay: 40,
++        useNativeDriver: true,
++      }),
++    ]);
++
++    animation.start(({ finished }) => {
++      if (!finished) return;
++      didCompleteInitialTransition.current = true;
++      setTransitionComplete(true);
++    });
++
++    return () => animation.stop();
++  }, [bannerOpacity, height, loadState, skeletonOpacity, transitionHeight]);
++
++  return (
++    <ScrollView
++      style={{ backgroundColor: theme.background }}
++      contentInsetAdjustmentBehavior="automatic"
++      contentContainerStyle={styles.content}
++    >
++      <Animated.View
++        style={[
++          styles.bannerTransition,
++          transitionComplete ? null : { height: transitionHeight },
++        ]}
++      >
++        <Animated.View style={{ opacity: bannerOpacity }}>
++          <ConnectNotificationBanner
++            taskTitle="Update information"
++            onInitialLoadStateChange={setLoadState}
++            onContentHeightChange={setHeight}
++            onNotificationsChange={(change) => {
++              setTotal(change.total);
++              setActionRequired(change.actionRequired);
++            }}
++            onLoadError={(error) => {
++              Alert.alert(
++                'Notification banner failed to load',
++                error.error.message
++              );
++            }}
++          />
++        </Animated.View>
++        {!transitionComplete ? (
++          <Animated.View
++            pointerEvents="none"
++            style={[styles.skeletonOverlay, { opacity: skeletonOpacity }]}
++          >
++            <BannerSkeleton theme={theme} />
++          </Animated.View>
++        ) : null}
++      </Animated.View>
++      <Text style={[styles.debugText, { color: theme.secondaryText }]}>
++        {`loadState → ${loadState}\nnotifications → total: ${total}, actionRequired: ${actionRequired}\nheight → ${height}`}
++      </Text>
++      <Text style={[styles.eyebrow, { color: theme.secondaryText }]}>
++        YOUR APP CONTENT
++      </Text>
++      <HostCard theme={theme}>
++        <Text style={{ color: theme.secondaryText }}>Available balance</Text>
++        <Text style={[styles.balance, { color: theme.text }]}>$2,438.19</Text>
++      </HostCard>
++      {SAMPLE_PAYMENTS.map(([description, date, amount]) => (
++        <HostCard key={description} theme={theme}>
++          <View style={styles.paymentRow}>
++            <View>
++              <Text style={{ color: theme.text }}>{description}</Text>
++              <Text style={[styles.caption, { color: theme.secondaryText }]}>
++                {date}
++              </Text>
++            </View>
++            <Text style={{ color: theme.text }}>{amount}</Text>
++          </View>
++        </HostCard>
++      ))}
++    </ScrollView>
++  );
++}
++
++function BannerSkeleton({ theme }: { theme: Theme }) {
++  const pulseOpacity = useRef(new Animated.Value(0.45)).current;
++
++  useEffect(() => {
++    const animation = Animated.loop(
++      Animated.sequence([
++        Animated.timing(pulseOpacity, {
++          toValue: 1,
++          duration: 800,
++          easing: Easing.inOut(Easing.quad),
++          useNativeDriver: true,
++        }),
++        Animated.timing(pulseOpacity, {
++          toValue: 0.45,
++          duration: 800,
++          easing: Easing.inOut(Easing.quad),
++          useNativeDriver: true,
++        }),
++      ])
++    );
++
++    animation.start();
++    return () => animation.stop();
++  }, [pulseOpacity]);
++
++  return (
++    <View
++      style={[
++        styles.skeleton,
++        {
++          backgroundColor: theme.background,
++          borderColor: theme.border,
++          borderRadius: theme.radius,
++        },
++      ]}
++    >
++      <Animated.View
++        style={[styles.skeletonContent, { opacity: pulseOpacity }]}
++      >
++        <View style={styles.skeletonText}>
++          <SkeletonBar width="62%" theme={theme} />
++          <SkeletonBar width="82%" theme={theme} />
++        </View>
++        <View
++          style={[
++            styles.skeletonButton,
++            { backgroundColor: withOpacity(theme.secondaryText, 0.14) },
++          ]}
++        />
++      </Animated.View>
++    </View>
++  );
++}
++
++function SkeletonBar({ width, theme }: { width: `${number}%`; theme: Theme }) {
++  return (
++    <View
++      style={[
++        styles.skeletonBar,
++        { width, backgroundColor: withOpacity(theme.secondaryText, 0.14) },
++      ]}
++    />
++  );
++}
++
++function HostCard({
++  theme,
++  children,
++}: {
++  theme: Theme;
++  children: React.ReactNode;
++}) {
++  return (
++    <View
++      style={[
++        styles.card,
++        {
++          backgroundColor: theme.surface,
++          borderColor: theme.border,
++          borderRadius: theme.radius,
++        },
++      ]}
++    >
++      {children}
++    </View>
++  );
++}
++
++function parsePixels(value: string | undefined, fallback: number): number {
++  const parsed = value ? Number.parseFloat(value) : Number.NaN;
++  return Number.isFinite(parsed) ? parsed : fallback;
++}
++
++function withOpacity(color: string, opacity: number): string {
++  if (color.startsWith('#') && color.length === 7) {
++    const alpha = Math.round(opacity * 255)
++      .toString(16)
++      .padStart(2, '0');
++    return `${color}${alpha}`;
++  }
++  return color;
++}
++
++type Theme = {
++  background: string;
++  surface: string;
++  text: string;
++  secondaryText: string;
++  border: string;
++  radius: number;
++};
++
++const SAMPLE_PAYMENTS = [
++  ['Northstar Coffee', 'Today', '+$84.00'],
++  ['Juniper Market', 'Yesterday', '+$126.50'],
++  ['Lighthouse Books', 'Jul 29', '+$42.75'],
++] as const;
++
++const SKELETON_HEIGHT = 104;
++
++const styles = StyleSheet.create({
++  content: {
++    padding: 16,
++    gap: 16,
++  },
++  bannerTransition: {
++    overflow: 'hidden',
++    position: 'relative',
++  },
++  skeletonOverlay: {
++    position: 'absolute',
++    top: 0,
++    left: 0,
++    right: 0,
++  },
++  debugText: {
++    fontFamily: 'Courier',
++    fontSize: 12,
++    lineHeight: 18,
++  },
++  eyebrow: {
++    fontSize: 12,
++    fontWeight: '600',
++  },
++  balance: {
++    fontSize: 32,
++    fontWeight: '700',
++    marginTop: 6,
++  },
++  card: {
++    borderWidth: StyleSheet.hairlineWidth,
++    padding: 16,
++  },
++  paymentRow: {
++    flexDirection: 'row',
++    alignItems: 'center',
++    justifyContent: 'space-between',
++  },
++  caption: {
++    fontSize: 12,
++    marginTop: 4,
++  },
++  skeleton: {
++    height: SKELETON_HEIGHT,
++    borderWidth: StyleSheet.hairlineWidth,
++    padding: 16,
++  },
++  skeletonContent: {
++    flex: 1,
++    flexDirection: 'row',
++    alignItems: 'center',
++  },
++  skeletonText: {
++    flex: 1,
++    gap: 10,
++  },
++  skeletonBar: {
++    height: 12,
++    borderRadius: 6,
++  },
++  skeletonButton: {
++    width: 72,
++    height: 36,
++    borderRadius: 8,
++    marginLeft: 16,
++  },
++});
+diff --git a/example/ios/Podfile.lock b/example/ios/Podfile.lock
+index 0ff999a..f6abde9 100644
+--- a/example/ios/Podfile.lock
++++ b/example/ios/Podfile.lock
+@@ -1820,14 +1820,14 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - Stripe (26.5.0):
+-    - StripeApplePay (= 26.5.0)
+-    - StripeCore (= 26.5.0)
+-    - StripeIssuing (= 26.5.0)
+-    - StripePayments (= 26.5.0)
+-    - StripePaymentsUI (= 26.5.0)
+-    - StripeUICore (= 26.5.0)
+-  - stripe-react-native (0.72.0):
++  - Stripe (26.6.0):
++    - StripeApplePay (= 26.6.0)
++    - StripeCore (= 26.6.0)
++    - StripeIssuing (= 26.6.0)
++    - StripePayments (= 26.6.0)
++    - StripePaymentsUI (= 26.6.0)
++    - StripeUICore (= 26.6.0)
++  - stripe-react-native (0.74.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1848,10 +1848,10 @@ PODS:
+     - ReactCommon/turbomodule/bridging
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+-    - stripe-react-native/Core (= 0.72.0)
+-    - stripe-react-native/NewArch (= 0.72.0)
++    - stripe-react-native/Core (= 0.74.0)
++    - stripe-react-native/NewArch (= 0.74.0)
+     - Yoga
+-  - stripe-react-native/Core (0.72.0):
++  - stripe-react-native/Core (0.74.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1872,14 +1872,14 @@ PODS:
+     - ReactCommon/turbomodule/bridging
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+-    - Stripe (= 26.5.0)
+-    - StripeApplePay (= 26.5.0)
+-    - StripeFinancialConnections (= 26.5.0)
+-    - StripePayments (= 26.5.0)
+-    - StripePaymentSheet (= 26.5.0)
+-    - StripePaymentsUI (= 26.5.0)
++    - Stripe (= 26.6.0)
++    - StripeApplePay (= 26.6.0)
++    - StripeFinancialConnections (= 26.6.0)
++    - StripePayments (= 26.6.0)
++    - StripePaymentSheet (= 26.6.0)
++    - StripePaymentsUI (= 26.6.0)
+     - Yoga
+-  - stripe-react-native/NewArch (0.72.0):
++  - stripe-react-native/NewArch (0.74.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1901,7 +1901,7 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - stripe-react-native/Onramp (0.72.0):
++  - stripe-react-native/Onramp (0.74.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1923,9 +1923,9 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - stripe-react-native/Core
+-    - StripeCryptoOnramp (= 26.5.0)
++    - StripeCryptoOnramp (= 26.6.0)
+     - Yoga
+-  - stripe-react-native/Tests (0.72.0):
++  - stripe-react-native/Tests (0.74.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1947,46 +1947,46 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - StripeApplePay (26.5.0):
+-    - StripeCore (= 26.5.0)
+-  - StripeCameraCore (26.5.0):
+-    - StripeCore (= 26.5.0)
+-  - StripeCore (26.5.0)
+-  - StripeCryptoOnramp (26.5.0):
+-    - StripeApplePay (= 26.5.0)
+-    - StripeCore (= 26.5.0)
+-    - StripeIdentity (= 26.5.0)
+-    - StripePayments (= 26.5.0)
+-    - StripePaymentSheet (= 26.5.0)
+-    - StripePaymentsUI (= 26.5.0)
+-    - StripeUICore (= 26.5.0)
+-  - StripeFinancialConnections (26.5.0):
+-    - StripeCore (= 26.5.0)
+-    - StripeUICore (= 26.5.0)
+-  - StripeIdentity (26.5.0):
+-    - StripeCameraCore (= 26.5.0)
+-    - StripeCore (= 26.5.0)
+-    - StripeUICore (= 26.5.0)
+-  - StripeIssuing (26.5.0):
+-    - StripeCore (= 26.5.0)
+-    - StripePayments (= 26.5.0)
+-    - StripePaymentsUI (= 26.5.0)
+-  - StripePayments (26.5.0):
+-    - StripeCore (= 26.5.0)
+-    - StripePayments/Stripe3DS2 (= 26.5.0)
+-  - StripePayments/Stripe3DS2 (26.5.0):
+-    - StripeCore (= 26.5.0)
+-  - StripePaymentSheet (26.5.0):
+-    - StripeApplePay (= 26.5.0)
+-    - StripeCore (= 26.5.0)
+-    - StripePayments (= 26.5.0)
+-    - StripePaymentsUI (= 26.5.0)
+-  - StripePaymentsUI (26.5.0):
+-    - StripeCore (= 26.5.0)
+-    - StripePayments (= 26.5.0)
+-    - StripeUICore (= 26.5.0)
+-  - StripeUICore (26.5.0):
+-    - StripeCore (= 26.5.0)
++  - StripeApplePay (26.6.0):
++    - StripeCore (= 26.6.0)
++  - StripeCameraCore (26.6.0):
++    - StripeCore (= 26.6.0)
++  - StripeCore (26.6.0)
++  - StripeCryptoOnramp (26.6.0):
++    - StripeApplePay (= 26.6.0)
++    - StripeCore (= 26.6.0)
++    - StripeIdentity (= 26.6.0)
++    - StripePayments (= 26.6.0)
++    - StripePaymentSheet (= 26.6.0)
++    - StripePaymentsUI (= 26.6.0)
++    - StripeUICore (= 26.6.0)
++  - StripeFinancialConnections (26.6.0):
++    - StripeCore (= 26.6.0)
++    - StripeUICore (= 26.6.0)
++  - StripeIdentity (26.6.0):
++    - StripeCameraCore (= 26.6.0)
++    - StripeCore (= 26.6.0)
++    - StripeUICore (= 26.6.0)
++  - StripeIssuing (26.6.0):
++    - StripeCore (= 26.6.0)
++    - StripePayments (= 26.6.0)
++    - StripePaymentsUI (= 26.6.0)
++  - StripePayments (26.6.0):
++    - StripeCore (= 26.6.0)
++    - StripePayments/Stripe3DS2 (= 26.6.0)
++  - StripePayments/Stripe3DS2 (26.6.0):
++    - StripeCore (= 26.6.0)
++  - StripePaymentSheet (26.6.0):
++    - StripeApplePay (= 26.6.0)
++    - StripeCore (= 26.6.0)
++    - StripePayments (= 26.6.0)
++    - StripePaymentsUI (= 26.6.0)
++  - StripePaymentsUI (26.6.0):
++    - StripeCore (= 26.6.0)
++    - StripePayments (= 26.6.0)
++    - StripeUICore (= 26.6.0)
++  - StripeUICore (26.6.0):
++    - StripeCore (= 26.6.0)
+   - Yoga (0.0.0)
+ 
+ DEPENDENCIES:
+@@ -2311,21 +2311,21 @@ SPEC CHECKSUMS:
+   RNCAsyncStorage: 3a4f5e2777dae1688b781a487923a08569e27fe4
+   RNCPicker: c8a3584b74133464ee926224463fcc54dfdaebca
+   RNScreens: 61c18865ab074f4d995ac8d7cf5060522a649d05
+-  Stripe: 42c446f3f3ee60c2e96aa27491fd88cb849a3887
+-  stripe-react-native: a58169e34430b180e14c015e6c1218475711f5da
+-  StripeApplePay: d6e62eb6150d7739e7a6aff99d3ed69905461fc4
+-  StripeCameraCore: a404c9e95a0906668f62c40ce6ee15a890e6607f
+-  StripeCore: ccde420bc8e878df43d356f8661702b921ace869
+-  StripeCryptoOnramp: 8cde3d01016a7d99c0f25e644e3d1c8fe2fd97ae
+-  StripeFinancialConnections: fb8e12e36d2e5e79a1b5413c72900a9bf571fbe2
+-  StripeIdentity: a773235907c17ae6c4a4b83492bdf365a89dc256
+-  StripeIssuing: 104bad01e6a872713b81d44821eebc958a49d6cf
+-  StripePayments: 43fb89181afd417966fa1e8bf7b8a0e5c85eb9ac
+-  StripePaymentSheet: dbe9a57e2cef4d54630b56511f501d2c355e102d
+-  StripePaymentsUI: 71c5666d50b62889d5f935f283ba6afb88135533
+-  StripeUICore: aa5d5a1ff0e8a090078303915a5c14a0bce80a01
++  Stripe: 2aa937a5b3dc1db7b42392a70cd4d4534dd2e77b
++  stripe-react-native: b75bf2cb4c4714876b2efd808532d34fa924eae2
++  StripeApplePay: 73d55b6586e0acf7c5897100bf3dc7924488cf2d
++  StripeCameraCore: d3a281318aae77233616ce0336572afe7000db7c
++  StripeCore: 06bafa6087c3fa240460d9feb6729543d1634961
++  StripeCryptoOnramp: 8953cc4ac938ffeedf524f3f9c6bc9d0ecaa9d79
++  StripeFinancialConnections: 648b3cba2b42198fce9c1f3e5f997543031a76f4
++  StripeIdentity: 0ea131379bb6d78c50dfa57861d1ff1d3472d74f
++  StripeIssuing: dfd966fd0c32dc2d38c5cea8f18d88969967eaaf
++  StripePayments: c20f9058b588fb4f677822d6d415d8d59ae21fc3
++  StripePaymentSheet: 87e00057a5867f6a594bd1285494b6efe43639a9
++  StripePaymentsUI: 8af6ccdeea136ef2c8b942b27e6a33c4ff84e877
++  StripeUICore: 500ec9fd1c7c733a33f28c6a4b75423b87496ee4
+   Yoga: 5934998fbeaef7845dbf698f698518695ab4cd1a
+ 
+ PODFILE CHECKSUM: 605f3cad878b7c0eee93ebb4a78a8141d34cd328
+ 
+-COCOAPODS: 1.17.0
++COCOAPODS: 1.16.2
+diff --git a/example/src/screens/LinkControllerScreen.tsx b/example/src/screens/LinkControllerScreen.tsx
+index 68ac418..d9e89b6 100644
+--- a/example/src/screens/LinkControllerScreen.tsx
++++ b/example/src/screens/LinkControllerScreen.tsx
+@@ -8,6 +8,7 @@ import {
+   Switch,
+   Text,
+   TextInput,
++  TouchableOpacity,
+   View,
+ } from 'react-native';
+ import {
+@@ -18,15 +19,133 @@ import {
+   useLinkController,
+   type PaymentMethod,
+ } from '@stripe/stripe-react-native';
++
++type IntentMode = 'sdk-managed' | 'server-setup-intent';
+ import Button from '../components/Button';
+ import { colors } from '../colors';
+ 
+-const CONFIG_URL =
+-  'https://link-controller-preview-demo.stripedemos.com/config';
++const BASE_URL = 'https://link-controller-preview-demo.stripedemos.com';
++
++interface PaymentMethodInfo {
++  id: string;
++  type: string;
++  card?: { brand: string; last4: string };
++  us_bank_account?: { bank_name: string; last4: string };
++  link?: { email: string };
++}
++
++interface PaymentIntentResponse {
++  status: string;
++  paymentIntentId: string;
++  clientSecret?: string;
++  code?: string;
++}
++
++async function fetchOrCreateCustomer(email: string): Promise<string> {
++  const res = await fetch(`${BASE_URL}/customers`, {
++    method: 'POST',
++    headers: { 'Content-Type': 'application/json' },
++    body: JSON.stringify({ email }),
++  });
++  if (!res.ok) throw new Error(`POST /customers failed: ${res.status}`);
++  const { customerId } = await res.json();
++  return customerId;
++}
++
++async function listPaymentMethods(
++  customerId: string
++): Promise<PaymentMethodInfo[]> {
++  const res = await fetch(
++    `${BASE_URL}/payment-methods?customerId=${encodeURIComponent(customerId)}`
++  );
++  if (!res.ok) throw new Error(`GET /payment-methods failed: ${res.status}`);
++  const data = await res.json();
++  return data.paymentMethods ?? [];
++}
++
++async function attachPaymentMethod(
++  paymentMethodId: string,
++  customerId: string
++): Promise<void> {
++  const res = await fetch(`${BASE_URL}/payment-methods/attach`, {
++    method: 'POST',
++    headers: { 'Content-Type': 'application/json' },
++    body: JSON.stringify({ paymentMethodId, customerId }),
++  });
++  if (!res.ok)
++    throw new Error(`POST /payment-methods/attach failed: ${res.status}`);
++}
++
++async function detachPaymentMethod(paymentMethodId: string): Promise<void> {
++  const res = await fetch(`${BASE_URL}/payment-methods/${paymentMethodId}`, {
++    method: 'DELETE',
++  });
++  if (!res.ok) throw new Error(`DELETE /payment-methods failed: ${res.status}`);
++}
++
++async function createPaymentIntent(
++  paymentMethodId: string,
++  customerId: string
++): Promise<PaymentIntentResponse> {
++  const res = await fetch(`${BASE_URL}/payment-intents`, {
++    method: 'POST',
++    headers: { 'Content-Type': 'application/json' },
++    body: JSON.stringify({ paymentMethodId, customerId }),
++  });
++  if (!res.ok && res.status !== 402)
++    throw new Error(`POST /payment-intents failed: ${res.status}`);
++  return res.json();
++}
++
++async function createSetupIntent(
++  customerId: string
++): Promise<{ clientSecret: string }> {
++  const res = await fetch(`${BASE_URL}/setup-intents`, {
++    method: 'POST',
++    headers: { 'Content-Type': 'application/json' },
++    body: JSON.stringify({ customerId }),
++  });
++  if (!res.ok) throw new Error(`POST /setup-intents failed: ${res.status}`);
++  return res.json();
++}
++
++async function pollPaymentIntent(
++  piId: string,
++  maxAttempts = 30,
++  intervalMs = 2000
++): Promise<PaymentIntentResponse> {
++  for (let i = 0; i < maxAttempts; i++) {
++    const res = await fetch(`${BASE_URL}/payment-intents/${piId}`);
++    if (!res.ok) throw new Error(`GET /payment-intents failed: ${res.status}`);
++    const data: PaymentIntentResponse = await res.json();
++    if (data.status !== 'processing') return data;
++    if (i < maxAttempts - 1) {
++      await new Promise<void>((resolve) => setTimeout(resolve, intervalMs));
++    }
++  }
++  throw new Error('Payment intent still processing after max attempts');
++}
++
++function displayLabel(pm: PaymentMethodInfo): string {
++  if (pm.card) {
++    const brand =
++      pm.card.brand.charAt(0).toUpperCase() + pm.card.brand.slice(1);
++    return `${brand} •••• ${pm.card.last4}`;
++  }
++  if (pm.us_bank_account) {
++    return `${pm.us_bank_account.bank_name} •••• ${pm.us_bank_account.last4}`;
++  }
++  if (pm.link) return `Link (${pm.link.email})`;
++  return pm.type;
++}
+ 
+ export default function LinkControllerScreen() {
+-  const { loading, initLinkController, presentLinkController } =
+-    useLinkController();
++  const {
++    loading,
++    initLinkController,
++    presentLinkController,
++    confirmLinkControllerSetupIntent,
++  } = useLinkController();
+ 
+   const [stripeReady, setStripeReady] = useState(false);
+   const [initialized, setInitialized] = useState(false);
+@@ -42,11 +161,20 @@ export default function LinkControllerScreen() {
+     useState<LinkController.PaymentMethodPreview | null>(null);
+   const [paymentMethod, setPaymentMethod] =
+     useState<PaymentMethod.Result | null>(null);
++  const [customerId, setCustomerId] = useState<string | null>(null);
++  const [savedPaymentMethods, setSavedPaymentMethods] = useState<
++    PaymentMethodInfo[]
++  >([]);
++  const [isProcessing, setIsProcessing] = useState(false);
++  const [intentMode, setIntentMode] = useState<IntentMode>('sdk-managed');
++  const [pendingPaymentMethod, setPendingPaymentMethod] =
++    useState<PaymentMethod.Result | null>(null);
++  const [linkOnly, setLinkOnly] = useState(false);
+ 
+   useEffect(() => {
+     async function bootstrap() {
+       try {
+-        const response = await fetch(CONFIG_URL);
++        const response = await fetch(`${BASE_URL}/config`);
+         const { publishableKey } = await response.json();
+         await initStripe({
+           publishableKey,
+@@ -81,6 +209,16 @@ export default function LinkControllerScreen() {
+     setPreview(null);
+     setPaymentMethod(null);
+     setStatusMessage(null);
++    setSavedPaymentMethods([]);
++
++    let cId: string;
++    try {
++      cId = await fetchOrCreateCustomer(email);
++      setCustomerId(cId);
++    } catch (e: any) {
++      showStatus(`Customer lookup failed: ${e?.message ?? e}`, true);
++      return;
++    }
+ 
+     const supportedTypes = [
+       ...(cardEnabled ? [LinkController.LinkPaymentMethodType.Card] : []),
+@@ -113,26 +251,37 @@ export default function LinkControllerScreen() {
+       billingDetailsCollectionConfiguration: collectName
+         ? { name: PaymentSheet.CollectionMode.ALWAYS }
+         : undefined,
++      paymentMethodTypes: linkOnly ? ['link'] : undefined,
+     });
+ 
+     if (error) {
+       showStatus(`Init failed: ${error.message}`, true);
+-    } else {
+-      setInitialized(true);
+-      showStatus('Initialized successfully.');
++      return;
++    }
++
++    try {
++      const pms = await listPaymentMethods(cId);
++      setSavedPaymentMethods(pms);
++    } catch (e: any) {
++      // Non-fatal — proceed with empty list
+     }
++
++    setInitialized(true);
++    showStatus('Initialized successfully.');
+   }, [
+     bankEnabled,
+     cardEnabled,
+     collectName,
+     email,
+     initLinkController,
++    linkOnly,
+     phone,
+     useCustomAppearance,
+   ]);
+ 
+   const handlePresent = async () => {
+     setStatusMessage(null);
++    setPendingPaymentMethod(null);
+     const result = await presentLinkController();
+ 
+     if (result.error) {
+@@ -146,7 +295,91 @@ export default function LinkControllerScreen() {
+ 
+     setPaymentMethod(result.paymentMethod);
+     setPreview(result.paymentMethodPreview ?? null);
+-    showStatus(`Payment method created: ${result.paymentMethod.id}`);
++
++    if (intentMode === 'server-setup-intent') {
++      setPendingPaymentMethod(result.paymentMethod);
++      showStatus('Payment method selected. Tap "Confirm & Save" to save it.');
++      return;
++    }
++
++    if (customerId) {
++      try {
++        await attachPaymentMethod(result.paymentMethod.id, customerId);
++        const pms = await listPaymentMethods(customerId);
++        setSavedPaymentMethods(pms);
++        showStatus(`Payment method saved: ${result.paymentMethod.id}`);
++      } catch (e: any) {
++        showStatus(`Attach failed: ${e?.message ?? e}`, true);
++      }
++    } else {
++      showStatus(`Payment method created: ${result.paymentMethod.id}`);
++    }
++  };
++
++  const handleConfirm = async () => {
++    if (!customerId || !pendingPaymentMethod) return;
++    setIsProcessing(true);
++    setStatusMessage(null);
++    try {
++      const { clientSecret } = await createSetupIntent(customerId);
++      const result = await confirmLinkControllerSetupIntent(clientSecret);
++      if (result.error) {
++        if (result.error.code === LinkControllerError.Canceled) {
++          showStatus('Confirmation canceled.');
++        } else {
++          showStatus(`Confirm failed: ${result.error.message}`, true);
++        }
++        return;
++      }
++      const pms = await listPaymentMethods(customerId);
++      setSavedPaymentMethods(pms);
++      setPendingPaymentMethod(null);
++      showStatus('Payment method confirmed and saved.');
++    } catch (e: any) {
++      showStatus(`Confirm failed: ${e?.message ?? e}`, true);
++    } finally {
++      setIsProcessing(false);
++    }
++  };
++
++  const handleCharge = async (pmId: string) => {
++    if (!customerId) return;
++    setIsProcessing(true);
++    setStatusMessage(null);
++    try {
++      let piResult = await createPaymentIntent(pmId, customerId);
++      if (piResult.status === 'processing') {
++        showStatus('Payment processing, polling for status...');
++        piResult = await pollPaymentIntent(piResult.paymentIntentId);
++      }
++      if (piResult.status === 'succeeded') {
++        showStatus(`Payment succeeded! (${piResult.paymentIntentId})`);
++      } else {
++        showStatus(
++          `Payment status: ${piResult.status}${piResult.code ? ` (${piResult.code})` : ''}`,
++          piResult.status !== 'succeeded'
++        );
++      }
++    } catch (e: any) {
++      showStatus(`Charge failed: ${e?.message ?? e}`, true);
++    } finally {
++      setIsProcessing(false);
++    }
++  };
++
++  const handleRemove = async (pmId: string) => {
++    if (!customerId) return;
++    setIsProcessing(true);
++    try {
++      await detachPaymentMethod(pmId);
++      const pms = await listPaymentMethods(customerId);
++      setSavedPaymentMethods(pms);
++      showStatus('Payment method removed.');
++    } catch (e: any) {
++      showStatus(`Remove failed: ${e?.message ?? e}`, true);
++    } finally {
++      setIsProcessing(false);
++    }
+   };
+ 
+   const handleReset = () => {
+@@ -160,6 +393,9 @@ export default function LinkControllerScreen() {
+     setPreview(null);
+     setPaymentMethod(null);
+     setStatusMessage(null);
++    setCustomerId(null);
++    setSavedPaymentMethods([]);
++    setPendingPaymentMethod(null);
+   };
+ 
+   if (!stripeReady) {
+@@ -185,6 +421,46 @@ export default function LinkControllerScreen() {
+         onChangeText={setPhone}
+       />
+ 
++      {customerId ? (
++        <Text style={styles.customerIdText}>Customer: {customerId}</Text>
++      ) : null}
++
++      <Text style={styles.sectionTitle}>Intent Mode</Text>
++      <View style={styles.segmentedControl}>
++        <TouchableOpacity
++          style={[
++            styles.segment,
++            intentMode === 'sdk-managed' && styles.segmentActive,
++          ]}
++          onPress={() => setIntentMode('sdk-managed')}
++        >
++          <Text
++            style={[
++              styles.segmentText,
++              intentMode === 'sdk-managed' && styles.segmentTextActive,
++            ]}
++          >
++            SDK Managed
++          </Text>
++        </TouchableOpacity>
++        <TouchableOpacity
++          style={[
++            styles.segment,
++            intentMode === 'server-setup-intent' && styles.segmentActive,
++          ]}
++          onPress={() => setIntentMode('server-setup-intent')}
++        >
++          <Text
++            style={[
++              styles.segmentText,
++              intentMode === 'server-setup-intent' && styles.segmentTextActive,
++            ]}
++          >
++            Server SetupIntent
++          </Text>
++        </TouchableOpacity>
++      </View>
++
+       <Text style={styles.sectionTitle}>Payment Method Types</Text>
+       <View style={styles.switchRow}>
+         <Text style={styles.switchLabel}>Card</Text>
+@@ -194,6 +470,15 @@ export default function LinkControllerScreen() {
+         <Text style={styles.switchLabel}>Bank Account</Text>
+         <Switch value={bankEnabled} onValueChange={setBankEnabled} />
+       </View>
++      <View style={styles.switchRow}>
++        <View>
++          <Text style={styles.switchLabel}>Link Only</Text>
++          <Text style={styles.switchSubLabel}>
++            Passes paymentMethodTypes: ['link']
++          </Text>
++        </View>
++        <Switch value={linkOnly} onValueChange={setLinkOnly} />
++      </View>
+ 
+       <Text style={styles.sectionTitle}>Appearance &amp; Billing</Text>
+       <View style={styles.switchRow}>
+@@ -221,6 +506,15 @@ export default function LinkControllerScreen() {
+         disabled={!initialized}
+         onPress={handlePresent}
+       />
++      {pendingPaymentMethod && (
++        <Button
++          variant="primary"
++          title="Confirm & Save"
++          loading={isProcessing}
++          disabled={isProcessing}
++          onPress={handleConfirm}
++        />
++      )}
+       <Button title="Reset" onPress={handleReset} />
+ 
+       {statusMessage && (
+@@ -229,6 +523,33 @@ export default function LinkControllerScreen() {
+         </Text>
+       )}
+ 
++      {savedPaymentMethods.length > 0 && (
++        <View style={styles.savedSection}>
++          <Text style={styles.sectionTitle}>Saved Payment Methods</Text>
++          {savedPaymentMethods.map((pm) => (
++            <View key={pm.id} style={styles.pmRow}>
++              <Text style={styles.pmLabel}>{displayLabel(pm)}</Text>
++              <View style={styles.pmActions}>
++                <TouchableOpacity
++                  style={styles.pmActionButton}
++                  disabled={isProcessing}
++                  onPress={() => handleCharge(pm.id)}
++                >
++                  <Text style={styles.pmActionText}>Pay $10.99</Text>
++                </TouchableOpacity>
++                <TouchableOpacity
++                  style={styles.pmActionButtonDanger}
++                  disabled={isProcessing}
++                  onPress={() => handleRemove(pm.id)}
++                >
++                  <Text style={styles.pmActionTextDanger}>Remove</Text>
++                </TouchableOpacity>
++              </View>
++            </View>
++          ))}
++        </View>
++      )}
++
+       {(preview || paymentMethod) && (
+         <View style={styles.previewCard}>
+           <Text style={styles.sectionTitle}>Selected Payment Method</Text>
+@@ -262,6 +583,7 @@ const styles = StyleSheet.create({
+     backgroundColor: colors.white,
+     paddingTop: 20,
+     paddingHorizontal: 16,
++    paddingBottom: 48,
+   },
+   sectionTitle: {
+     fontSize: 16,
+@@ -277,6 +599,36 @@ const styles = StyleSheet.create({
+     marginBottom: 8,
+     fontSize: 16,
+   },
++  customerIdText: {
++    fontSize: 12,
++    color: '#999',
++    marginBottom: 4,
++    fontFamily: 'Courier',
++  },
++  segmentedControl: {
++    flexDirection: 'row',
++    borderRadius: 8,
++    borderWidth: 1,
++    borderColor: colors.slate,
++    overflow: 'hidden',
++    marginBottom: 8,
++  },
++  segment: {
++    flex: 1,
++    paddingVertical: 10,
++    alignItems: 'center',
++  },
++  segmentActive: {
++    backgroundColor: colors.slate,
++  },
++  segmentText: {
++    fontSize: 14,
++    fontWeight: '500',
++    color: colors.slate,
++  },
++  segmentTextActive: {
++    color: colors.white,
++  },
+   switchRow: {
+     flexDirection: 'row',
+     justifyContent: 'space-between',
+@@ -286,6 +638,11 @@ const styles = StyleSheet.create({
+   switchLabel: {
+     fontSize: 16,
+   },
++  switchSubLabel: {
++    fontSize: 12,
++    color: '#999',
++    marginTop: 2,
++  },
+   status: {
+     marginTop: 12,
+     padding: 12,
+@@ -298,8 +655,57 @@ const styles = StyleSheet.create({
+     backgroundColor: '#fdecea',
+     color: '#c0392b',
+   },
++  savedSection: {
++    marginTop: 24,
++    marginBottom: 32,
++    borderTopWidth: StyleSheet.hairlineWidth,
++    borderTopColor: '#e0e0e0',
++    paddingTop: 8,
++  },
++  pmRow: {
++    flexDirection: 'row',
++    alignItems: 'center',
++    justifyContent: 'space-between',
++    paddingVertical: 12,
++    borderBottomWidth: StyleSheet.hairlineWidth,
++    borderBottomColor: '#e0e0e0',
++  },
++  pmLabel: {
++    fontSize: 15,
++    fontWeight: '500',
++    flex: 1,
++    marginRight: 8,
++  },
++  pmActions: {
++    flexDirection: 'row',
++    gap: 8,
++  },
++  pmActionButton: {
++    paddingHorizontal: 12,
++    paddingVertical: 8,
++    borderRadius: 8,
++    backgroundColor: colors.slate,
++  },
++  pmActionText: {
++    color: colors.white,
++    fontSize: 13,
++    fontWeight: '600',
++  },
++  pmActionButtonDanger: {
++    paddingHorizontal: 12,
++    paddingVertical: 8,
++    borderRadius: 8,
++    borderWidth: 1,
++    borderColor: '#c0392b',
++  },
++  pmActionTextDanger: {
++    color: '#c0392b',
++    fontSize: 13,
++    fontWeight: '600',
++  },
+   previewCard: {
+     marginTop: 16,
++    marginBottom: 32,
+     padding: 16,
+     borderRadius: 12,
+     borderWidth: 1,
+diff --git a/ios/ApplePayUtils.swift b/ios/ApplePayUtils.swift
+index 59d15ec..13d3407 100644
+--- a/ios/ApplePayUtils.swift
++++ b/ios/ApplePayUtils.swift
+@@ -40,6 +40,10 @@ class ApplePayUtils {
+ 
+         let paymentRequest = StripeAPI.paymentRequest(withMerchantIdentifier: merchantIdentifier, country: countryCode, currency: currencyCode)
+ 
++        if let supportedNetworks = params["supportedNetworks"] as? [String] {
++            paymentRequest.supportedNetworks = ApplePayUtils.mapToArrayOfPaymentNetworks(arrayOfStrings: supportedNetworks)
++        }
++
+         let requiredShippingAddressFields = params["requiredShippingAddressFields"] as? NSArray ?? NSArray()
+         let requiredBillingContactFields = params["requiredBillingContactFields"] as? NSArray ?? NSArray()
+         let shippingMethods = params["shippingMethods"] as? NSArray ?? NSArray()
+diff --git a/ios/StripeSdk.mm b/ios/StripeSdk.mm
+index 5472096..9290dab 100644
+--- a/ios/StripeSdk.mm
++++ b/ios/StripeSdk.mm
+@@ -480,6 +480,13 @@ RCT_EXPORT_METHOD(openAuthenticatedWebView:(nonnull NSString *)id
+   [StripeSdkImpl.shared openAuthenticatedWebView:id url:url resolver:resolve rejecter:reject];
+ }
+ 
++RCT_EXPORT_METHOD(presentExternalWebPage:(nonnull NSString *)url
++                                 resolve:(nonnull RCTPromiseResolveBlock)resolve
++                                  reject:(nonnull RCTPromiseRejectBlock)reject)
++{
++  [StripeSdkImpl.shared presentExternalWebPage:url resolver:resolve rejecter:reject];
++}
++
+ RCT_EXPORT_METHOD(downloadAndShareFile:(nonnull NSString *)url
+                               filename:(nullable NSString *)filename
+                                resolve:(nonnull RCTPromiseResolveBlock)resolve
+diff --git a/ios/StripeSdkImpl.swift b/ios/StripeSdkImpl.swift
+index c461c89..b1666ac 100644
+--- a/ios/StripeSdkImpl.swift
++++ b/ios/StripeSdkImpl.swift
+@@ -1,6 +1,7 @@
+ import AuthenticationServices
+ import Foundation
+ import PassKit
++import SafariServices
+ @_spi(DashboardOnly) @_spi(STP) import Stripe
+ @_spi(STP) @_spi(ReactNativeSDK) import StripeCore
+ import StripeFinancialConnections
+@@ -139,6 +140,8 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
+     var authenticationSession: ASWebAuthenticationSession?
+     var authenticationContextProvider: Any?
+ 
++    static let authenticatedWebViewReturnURLScheme = "stripe-connect"
++
+     @objc public func getConstants() -> [AnyHashable: Any] {
+         return [
+             "API_VERSIONS": [
+@@ -1979,7 +1982,7 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
+             // Create the authentication session with the configured URL scheme
+             self.authenticationSession = ASWebAuthenticationSession(
+                 url: url,
+-                callbackURLScheme: nil
++                callbackURLScheme: StripeSdkImpl.authenticatedWebViewReturnURLScheme
+             ) { callbackURL, error in
+                 if let error = error {
+                     // User canceled or an error occurred
+@@ -2021,6 +2024,33 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
+         }
+     }
+ 
++    @objc(presentExternalWebPage:resolver:rejecter:)
++    public func presentExternalWebPage(
++        url: String,
++        resolver resolve: @escaping RCTPromiseResolveBlock,
++        rejecter reject: @escaping RCTPromiseRejectBlock
++    ) {
++        guard let url = URL(string: url),
++              let scheme = url.scheme?.lowercased(),
++              ["http", "https"].contains(scheme) else {
++            reject(ErrorType.Failed, "Invalid web URL", nil)
++            return
++        }
++
++        DispatchQueue.main.async {
++            let safariViewController = SFSafariViewController(url: url)
++            safariViewController.dismissButtonStyle = .done
++            safariViewController.modalPresentationStyle = .pageSheet
++
++            let presenter = findViewControllerPresenter(
++                from: RCTKeyWindow()?.rootViewController ?? UIViewController()
++            )
++            presenter.present(safariViewController, animated: true) {
++                resolve(nil)
++            }
++        }
++    }
++
+     @objc(downloadAndShareFile:filename:resolver:rejecter:)
+     public func downloadAndShareFile(
+         url: String,
+diff --git a/ios/Tests/ApplePayUtilsTests.swift b/ios/Tests/ApplePayUtilsTests.swift
+index 7cfb273..78bfe67 100644
+--- a/ios/Tests/ApplePayUtilsTests.swift
++++ b/ios/Tests/ApplePayUtilsTests.swift
+@@ -8,11 +8,17 @@
+ 
+ import PassKit
+ @testable import stripe_react_native
++import StripePaymentSheet
+ import XCTest
+ 
+ @available(iOS 15.0, *)
+ class ApplePayUtilsTests: XCTestCase {
+ 
++    override func tearDown() {
++        StripeAPI.additionalEnabledApplePayNetworks = []
++        super.tearDown()
++    }
++
+     func test_buildPaymentSheetApplePayConfig_FailsWithoutMerchantIdentifier() throws {
+         XCTAssertThrowsError(
+             try ApplePayUtils.buildPaymentSheetApplePayConfig(merchantIdentifier: nil, merchantCountryCode: "", paymentSummaryItems: nil, buttonType: nil, customHandlers: nil)
+@@ -422,6 +428,55 @@ class ApplePayUtilsTests: XCTestCase {
+         XCTAssertEqual(result[0].rawValue, "customNetwork")
+     }
+ 
++    // MARK: - createPaymentRequest Tests
++
++    func test_createPaymentRequest_supportedNetworksRestrictsNetworks() {
++        let params: NSDictionary = [
++            "merchantCountryCode": TestFixtures.COUNTRY_CODE,
++            "currencyCode": "USD",
++            "cartItems": TestFixtures.CART_ITEM_DICTIONARY,
++            "supportedNetworks": ["Visa", "MasterCard"],
++        ]
++
++        let (error, paymentRequest) = ApplePayUtils.createPaymentRequest(
++            merchantIdentifier: TestFixtures.MERCHANT_ID, params: params)
++
++        XCTAssertNil(error)
++        XCTAssertEqual(paymentRequest?.supportedNetworks, [.visa, .masterCard])
++    }
++
++    func test_createPaymentRequest_withoutSupportedNetworksKeepsDefaults() {
++        let params: NSDictionary = [
++            "merchantCountryCode": TestFixtures.COUNTRY_CODE,
++            "currencyCode": "USD",
++            "cartItems": TestFixtures.CART_ITEM_DICTIONARY,
++        ]
++
++        let (error, paymentRequest) = ApplePayUtils.createPaymentRequest(
++            merchantIdentifier: TestFixtures.MERCHANT_ID, params: params)
++
++        XCTAssertNil(error)
++        // Defaults are left untouched, so the SDK's standard networks still apply.
++        XCTAssertTrue(paymentRequest?.supportedNetworks.contains(.amex) ?? false)
++        XCTAssertTrue(paymentRequest?.supportedNetworks.contains(.visa) ?? false)
++    }
++
++    func test_createPaymentRequest_supportedNetworksOverridesAdditionalEnabledNetworks() {
++        let params: NSDictionary = [
++            "merchantCountryCode": TestFixtures.COUNTRY_CODE,
++            "currencyCode": "USD",
++            "cartItems": TestFixtures.CART_ITEM_DICTIONARY,
++            "additionalEnabledNetworks": ["JCB"],
++            "supportedNetworks": ["Visa"],
++        ]
++
++        let (error, paymentRequest) = ApplePayUtils.createPaymentRequest(
++            merchantIdentifier: TestFixtures.MERCHANT_ID, params: params)
++
++        XCTAssertNil(error)
++        XCTAssertEqual(paymentRequest?.supportedNetworks, [.visa])
++    }
++
+     private struct TestFixtures {
+         static let MERCHANT_ID = "merchant.com.id"
+         static let COUNTRY_CODE = "US"
+diff --git a/package.json b/package.json
+index 2a21f19..54e752c 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@stripe/stripe-react-native",
+-  "version": "0.73.0",
++  "version": "0.74.0",
+   "author": "Stripe",
+   "description": "Stripe SDK for React Native",
+   "main": "lib/commonjs/index",
+diff --git a/scripts/native_sdk_versions.rb b/scripts/native_sdk_versions.rb
+new file mode 100644
+index 0000000..bb92f5b
+--- /dev/null
++++ b/scripts/native_sdk_versions.rb
+@@ -0,0 +1,120 @@
++require 'json'
++require 'net/http'
++require 'uri'
++
++class NativeSdkVersions
++  class Error < StandardError; end
++
++  Change = Struct.new(:name, :path, :previous_version, :version, :changed, keyword_init: true)
++
++  SDK_CONFIG = {
++    ios: {
++      name: 'stripe-ios',
++      repo: 'stripe/stripe-ios',
++      path: 'stripe-react-native.podspec',
++      pattern: /^stripe_version = '([^']+)'$/,
++      replacement: ->(version) { "stripe_version = '#{version}'" },
++    },
++    android: {
++      name: 'stripe-android',
++      repo: 'stripe/stripe-android',
++      path: 'android/gradle.properties',
++      pattern: /^StripeSdk_stripeVersion=(\S+)$/,
++      replacement: ->(version) { "StripeSdk_stripeVersion=#{version}" },
++    },
++  }.freeze
++
++  VERSION_PATTERN = /\A\d+\.\d+\.\d+\z/
++
++  def initialize(root: Dir.pwd, token: ENV['GITHUB_TOKEN'] || ENV['GH_TOKEN'], http_get: nil)
++    @root = root
++    @token = token
++    @http_get = http_get || method(:get)
++  end
++
++  def latest
++    SDK_CONFIG.to_h do |key, config|
++      [key, latest_for(config)]
++    end
++  end
++
++  def apply(versions)
++    plans = SDK_CONFIG.map do |key, config|
++      version = versions.fetch(key)
++      validate_version!(version, config[:name])
++
++      path = File.join(@root, config[:path])
++      contents = File.read(path)
++      matches = contents.scan(config[:pattern])
++      unless matches.length == 1
++        raise Error, "Expected exactly one #{config[:name]} version in #{config[:path]}"
++      end
++
++      previous_version = matches.first.first
++      updated_contents = contents.sub(config[:pattern], config[:replacement].call(version))
++      change = Change.new(
++        name: config[:name],
++        path: config[:path],
++        previous_version: previous_version,
++        version: version,
++        changed: previous_version != version,
++      )
++      [path, updated_contents, change]
++    end
++
++    plans.each do |path, updated_contents, change|
++      File.write(path, updated_contents) if change.changed
++    end
++
++    plans.map(&:last)
++  rescue KeyError => e
++    raise Error, "Missing native SDK version: #{e.message}"
++  end
++
++  private
++
++  def latest_for(config)
++    uri = URI("https://api.github.com/repos/#{config[:repo]}/releases/latest")
++    response = @http_get.call(uri, request_headers)
++    unless response.code.to_i == 200
++      raise Error, "GitHub returned HTTP #{response.code} for #{config[:repo]} releases/latest"
++    end
++
++    tag = JSON.parse(response.body).fetch('tag_name')
++    unless tag.is_a?(String)
++      raise Error, "Invalid GitHub release response for #{config[:repo]}: tag_name must be a string"
++    end
++
++    version = tag.delete_prefix('v')
++    validate_version!(version, config[:name])
++    version
++  rescue JSON::ParserError, KeyError => e
++    raise Error, "Invalid GitHub release response for #{config[:repo]}: #{e.message}"
++  end
++
++  def request_headers
++    headers = {
++      'Accept' => 'application/vnd.github+json',
++      'User-Agent' => 'stripe-react-native-release-proposer',
++      'X-GitHub-Api-Version' => '2022-11-28',
++    }
++    headers['Authorization'] = "Bearer #{@token}" unless @token.nil? || @token.empty?
++    headers
++  end
++
++  def get(uri, headers)
++    request = Net::HTTP::Get.new(uri)
++    headers.each { |name, value| request[name] = value }
++    Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
++      http.request(request)
++    end
++  rescue SocketError, SystemCallError, Timeout::Error => e
++    raise Error, "Could not reach GitHub Releases: #{e.message}"
++  end
++
++  def validate_version!(version, name)
++    return if version.is_a?(String) && version.match?(VERSION_PATTERN)
++
++    raise Error, "Invalid #{name} release version: #{version.inspect}"
++  end
++end
+diff --git a/scripts/propose.rb b/scripts/propose.rb
+index 9d9f8f3..2047087 100755
+--- a/scripts/propose.rb
++++ b/scripts/propose.rb
+@@ -5,6 +5,7 @@ require 'date'
+ require 'tmpdir'
+ require 'shellwords'
+ require_relative 'helpers'
++require_relative 'native_sdk_versions'
+ 
+ @release_type = nil
+ 
+@@ -41,14 +42,29 @@ def bump_version(version)
+   execute_or_fail("yarn version --no-git-tag-version --new-version #{version}")
+ end
+ 
+-def create_proposal_pr(version)
++def create_proposal_pr(version, native_sdk_updater, native_sdk_versions)
+   branch = "release/propose-#{version}"
+   execute_or_fail("git checkout -b #{branch}")
+ 
+   bump_version(version)
+   update_changelog(version)
++  begin
++    native_sdk_changes = native_sdk_updater.apply(native_sdk_versions)
++  rescue NativeSdkVersions::Error => e
++    abort "Error! #{e.message}"
++  end
++  native_sdk_changes.each do |change|
++    status = change.changed ? "#{change.previous_version} -> #{change.version}" : "already at #{change.version}"
++    puts "#{change.name}: #{status}"
++  end
+ 
+-  execute_or_fail("git add package.json CHANGELOG.md")
++  ios_changed = native_sdk_changes.any? { |change| change.name == 'stripe-ios' && change.changed }
++  execute_or_fail("yarn update-pods") if ios_changed
++
++  files_to_add = ['package.json', 'CHANGELOG.md']
++  files_to_add.concat(native_sdk_changes.select(&:changed).map(&:path))
++  files_to_add << 'example/ios/Podfile.lock' if ios_changed
++  execute_or_fail("git add #{files_to_add.map(&:shellescape).join(' ')}")
+   execute_or_fail("git commit -m 'Propose #{version}'")
+   execute_or_fail("git push -u origin #{branch}")
+ 
+@@ -57,6 +73,8 @@ def create_proposal_pr(version)
+     - [x] Ensure the CHANGELOG is up to date with all relevant commits since the last release
+     - [x] Add the version number for this release & the date to the CHANGELOG, underneath "## Unreleased"
+       - e.g. "## 1.2.3 - 2022-02-14"
++    - [x] Update stripe-ios to the latest GitHub release (#{native_sdk_versions.fetch(:ios)})
++    - [x] Update stripe-android to the latest GitHub release (#{native_sdk_versions.fetch(:android)})
+     - [x] Update the README if necessary (this is only required when there are breaking changes in the release, such as dropping support for an iOS || Android version)
+   BODY
+ 
+@@ -81,7 +99,8 @@ OptionParser.new do |opts|
+         ./scripts/propose.rb <release_type>
+ 
+     Creates a proposal PR for the next release. Replaces the '## Unreleased'
+-    header in CHANGELOG.md with the new version and today's date, then opens a PR.
++    header in CHANGELOG.md with the new version and today's date, updates the
++    native SDK pins to the latest GitHub releases, then opens a PR.
+ 
+     ARGS:
+         <release_type>    "patch", "minor", or "major"
+@@ -109,4 +128,11 @@ preflight_checks
+ 
+ version = next_version
+ puts "Proposing #{version} (currently #{current_version})"
+-create_proposal_pr(version)
++native_sdk_updater = NativeSdkVersions.new
++puts "Fetching latest native SDK releases"
++begin
++  native_sdk_versions = native_sdk_updater.latest
++rescue NativeSdkVersions::Error => e
++  abort "Error! #{e.message}"
++end
++create_proposal_pr(version, native_sdk_updater, native_sdk_versions)
+diff --git a/scripts/test/native_sdk_versions_test.rb b/scripts/test/native_sdk_versions_test.rb
+new file mode 100644
+index 0000000..d29a0e6
+--- /dev/null
++++ b/scripts/test/native_sdk_versions_test.rb
+@@ -0,0 +1,81 @@
++require 'fileutils'
++require 'minitest/autorun'
++require 'tmpdir'
++require_relative '../native_sdk_versions'
++
++class NativeSdkVersionsTest < Minitest::Test
++  Response = Struct.new(:code, :body)
++
++  def setup
++    @root = Dir.mktmpdir
++    FileUtils.mkdir_p(File.join(@root, 'android'))
++    File.write(File.join(@root, 'stripe-react-native.podspec'), "stripe_version = '26.4.0'\n")
++    File.write(File.join(@root, 'android/gradle.properties'), "StripeSdk_stripeVersion=23.13.0\n")
++  end
++
++  def teardown
++    FileUtils.remove_entry(@root)
++  end
++
++  def test_fetches_and_normalizes_latest_release_versions
++    requests = []
++    responses = {
++      '/repos/stripe/stripe-ios/releases/latest' => Response.new('200', '{"tag_name":"26.5.0"}'),
++      '/repos/stripe/stripe-android/releases/latest' => Response.new('200', '{"tag_name":"v23.14.0"}'),
++    }
++    http_get = lambda do |uri, headers|
++      requests << [uri, headers]
++      responses.fetch(uri.path)
++    end
++
++    versions = NativeSdkVersions.new(root: @root, token: 'token', http_get: http_get).latest
++
++    assert_equal({ios: '26.5.0', android: '23.14.0'}, versions)
++    assert_equal(2, requests.length)
++    assert(requests.all? { |_, headers| headers['Authorization'] == 'Bearer token' })
++  end
++
++  def test_rejects_an_invalid_release_tag
++    response = Response.new('200', '{"tag_name":"latest"}')
++    updater = NativeSdkVersions.new(root: @root, http_get: ->(_, _) { response })
++
++    error = assert_raises(NativeSdkVersions::Error) { updater.latest }
++
++    assert_includes(error.message, 'Invalid stripe-ios release version')
++  end
++
++  def test_rejects_a_non_string_release_tag
++    response = Response.new('200', '{"tag_name":null}')
++    updater = NativeSdkVersions.new(root: @root, http_get: ->(_, _) { response })
++
++    error = assert_raises(NativeSdkVersions::Error) { updater.latest }
++
++    assert_includes(error.message, 'tag_name must be a string')
++  end
++
++  def test_applies_both_versions
++    changes = NativeSdkVersions.new(root: @root).apply(ios: '26.5.0', android: '23.14.0')
++
++    assert_equal("stripe_version = '26.5.0'\n", File.read(File.join(@root, 'stripe-react-native.podspec')))
++    assert_equal("StripeSdk_stripeVersion=23.14.0\n", File.read(File.join(@root, 'android/gradle.properties')))
++    assert(changes.all?(&:changed))
++  end
++
++  def test_validates_every_file_before_writing
++    File.write(File.join(@root, 'android/gradle.properties'), "unrelated=true\n")
++    updater = NativeSdkVersions.new(root: @root)
++
++    assert_raises(NativeSdkVersions::Error) do
++      updater.apply(ios: '26.5.0', android: '23.14.0')
++    end
++
++    assert_equal("stripe_version = '26.4.0'\n", File.read(File.join(@root, 'stripe-react-native.podspec')))
++  end
++
++  def test_reports_versions_that_are_already_current_as_unchanged
++    updater = NativeSdkVersions.new(root: @root)
++    changes = updater.apply(ios: '26.4.0', android: '23.13.0')
++
++    refute(changes.any?(&:changed))
++  end
++end
+diff --git a/src/connect/EmbeddedComponent.tsx b/src/connect/EmbeddedComponent.tsx
+index 339dc77..df1755c 100644
+--- a/src/connect/EmbeddedComponent.tsx
++++ b/src/connect/EmbeddedComponent.tsx
+@@ -14,7 +14,10 @@ import {
+   ViewStyle,
+ } from 'react-native';
+ import type { WebView, WebViewMessageEvent } from 'react-native-webview';
+-import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes';
++import type {
++  ShouldStartLoadRequest,
++  WebViewOpenWindowEvent,
++} from 'react-native-webview/lib/WebViewTypes';
+ import type { EventSubscription } from 'react-native';
+ import pjson from '../../package.json';
+ import NativeStripeSdk from '../specs/NativeStripeSdkModule';
+@@ -136,6 +139,10 @@ type EmbeddedComponentProps = CommonComponentProps & {
+   componentProps?: Record<string, unknown>;
+ 
+   callbacks?: Record<string, ((data: any) => void) | undefined>;
++  sizeToContent?: boolean;
++  onContentHeightChange?: (height: number) => void;
++  onOpenNotificationBannerForm?: (form: Record<string, unknown>) => void;
++  presentExternalLinksInApp?: boolean;
+ };
+ 
+ type StripeConnectInitParamsInternal = StripeConnectInitParams & {
+@@ -324,6 +331,10 @@ export function EmbeddedComponent(props: EmbeddedComponentProps) {
+     onPageDidLoad,
+     callbacks,
+     style,
++    sizeToContent,
++    onContentHeightChange,
++    onOpenNotificationBannerForm,
++    presentExternalLinksInApp,
+   } = props;
+ 
+   // Initialize component analytics client
+@@ -523,8 +534,23 @@ export function EmbeddedComponent(props: EmbeddedComponentProps) {
+       } else if (message.type === 'componentLoaded') {
+         // Connect JS fully initialized
+         componentAnalytics.logComponentLoaded();
++      } else if (message.type === 'contentHeightChanged') {
++        const height = (message.data as { height?: unknown })?.height;
++        if (
++          typeof height === 'number' &&
++          Number.isFinite(height) &&
++          height >= 0
++        ) {
++          onContentHeightChange?.(height);
++        }
+       } else if (message.type === 'accountSessionClaimed') {
+         // message.data is of type {elementTagName: string, merchantId: string}
++      } else if (message.type === 'openNotificationBannerForm') {
++        if (message.data && typeof message.data === 'object') {
++          onOpenNotificationBannerForm?.(
++            message.data as Record<string, unknown>
++          );
++        }
+       } else if (message.type === 'openFinancialConnections') {
+         const messageData = message.data as {
+           clientSecret: string;
+@@ -729,10 +755,31 @@ export function EmbeddedComponent(props: EmbeddedComponentProps) {
+       handleUnexpectedError,
+       onLoadError,
+       onLoaderStart,
++      onContentHeightChange,
++      onOpenNotificationBannerForm,
+       onPageDidLoad,
+     ]
+   );
+ 
++  const openUrlOutsideComponent = useCallback(
++    (url: string) => {
++      const result =
++        presentExternalLinksInApp && isValidUrl(url)
++          ? NativeStripeSdk.presentExternalWebPage(url)
++          : Linking.openURL(url);
++
++      result.catch(handleUnexpectedError);
++    },
++    [handleUnexpectedError, presentExternalLinksInApp]
++  );
++
++  const onOpenWindow = useCallback(
++    (event: WebViewOpenWindowEvent) => {
++      openUrlOutsideComponent(event.nativeEvent.targetUrl);
++    },
++    [openUrlOutsideComponent]
++  );
++
+   const onShouldStartLoadWithRequest = useCallback(
+     (event: ShouldStartLoadRequest) => {
+       const { url, navigationType } = event;
+@@ -758,14 +805,11 @@ export function EmbeddedComponent(props: EmbeddedComponentProps) {
+         return true; // Allow in-WebView navigation
+       }
+ 
+-      // Open external links in system browser
+-      Linking.openURL(url).catch((error) => {
+-        handleUnexpectedError(error);
+-      });
++      openUrlOutsideComponent(url);
+ 
+       return false; // Block in-WebView navigation for external links
+     },
+-    [handleUnexpectedError]
++    [handleUnexpectedError, openUrlOutsideComponent]
+   );
+ 
+   const backgroundColor = appearance?.variables?.colorBackground || '#FFFFFF';
+@@ -795,7 +839,11 @@ export function EmbeddedComponent(props: EmbeddedComponentProps) {
+       }}
+       // Fixes injectedJavaScriptObject in Android https://github.com/react-native-webview/react-native-webview/issues/3326#issuecomment-3048111789
+       injectedJavaScriptBeforeContentLoaded={'(function() {})();'}
++      injectedJavaScript={
++        sizeToContent ? CONTENT_HEIGHT_OBSERVER_SCRIPT : undefined
++      }
+       onMessage={onMessageCallback}
++      onOpenWindow={presentExternalLinksInApp ? onOpenWindow : undefined}
+       onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
+       onLayout={handleLayout}
+       // Camera/Media Permissions - matches iOS SDK behavior
+@@ -806,6 +854,26 @@ export function EmbeddedComponent(props: EmbeddedComponentProps) {
+   );
+ }
+ 
++const CONTENT_HEIGHT_OBSERVER_SCRIPT = `
++  (function() {
++    if (window.__stripeConnectHeightObserver || !document.body) return;
++    window.__stripeConnectHeightObserver = true;
++    var lastHeight = -1;
++    var reportHeight = function() {
++      var height = document.body.getBoundingClientRect().height;
++      if (Math.abs(height - lastHeight) < 0.5) return;
++      lastHeight = height;
++      window.ReactNativeWebView.postMessage(JSON.stringify({
++        type: 'contentHeightChanged',
++        data: { height: height }
++      }));
++    };
++    new ResizeObserver(reportHeight).observe(document.body);
++    reportHeight();
++  })();
++  true;
++`;
++
+ const DEFAULT_FONT =
+   "-apple-system, 'system-ui', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'";
+ 
+diff --git a/src/connect/NotificationBanner.tsx b/src/connect/NotificationBanner.tsx
+new file mode 100644
+index 0000000..53424e3
+--- /dev/null
++++ b/src/connect/NotificationBanner.tsx
+@@ -0,0 +1,350 @@
++import React, {
++  forwardRef,
++  useCallback,
++  useEffect,
++  useImperativeHandle,
++  useMemo,
++  useRef,
++  useState,
++} from 'react';
++import {
++  Modal,
++  Platform,
++  SafeAreaView,
++  StatusBar,
++  StyleSheet,
++  View,
++} from 'react-native';
++import type { CollectionOptions } from './connectTypes';
++import {
++  EmbeddedComponent,
++  type CommonComponentProps,
++} from './EmbeddedComponent';
++import { NavigationBar } from './NavigationBar';
++import { useConnectComponents } from './ConnectComponentsProvider';
++
++/** The notification banner's current initial loading state. @experimental */
++export type NotificationBannerInitialLoadState =
++  | 'loading'
++  | 'loaded'
++  | 'failed';
++
++/** Notification counts emitted by the banner. @experimental */
++export type NotificationBannerChange = {
++  /** Total visible notifications. */
++  total: number;
++  /** Notifications that require user action. */
++  actionRequired: number;
++};
++
++/** An imperative snapshot of notification banner state. @experimental */
++export type ConnectNotificationBannerRef = {
++  /** The banner's current initial loading state. */
++  readonly initialLoadState: NotificationBannerInitialLoadState;
++};
++
++/** Props for {@link ConnectNotificationBanner}. @experimental */
++export type ConnectNotificationBannerProps = CommonComponentProps & {
++  /** Controls which account requirements are collected by notification tasks. */
++  collectionOptions?: CollectionOptions;
++  /** Navigation title for full-screen tasks opened from the banner. */
++  taskTitle?: string;
++  /** Called when total or action-required notification counts change. */
++  onNotificationsChange?: (change: NotificationBannerChange) => void;
++  /** Called when the banner publishes a new content height. */
++  onContentHeightChange?: (height: number) => void;
++  /** Called immediately with `loading`, then once with `loaded` or `failed`. */
++  onInitialLoadStateChange?: (
++    state: NotificationBannerInitialLoadState
++  ) => void;
++};
++
++/**
++ * An inline notification banner that sizes itself to its rendered content.
++ *
++ * @experimental
++ * @category Connect
++ */
++export const ConnectNotificationBanner = forwardRef<
++  ConnectNotificationBannerRef,
++  ConnectNotificationBannerProps
++>(function ConnectNotificationBanner(
++  {
++    collectionOptions,
++    taskTitle,
++    onNotificationsChange,
++    onContentHeightChange,
++    onInitialLoadStateChange,
++    onLoaderStart,
++    onLoadError,
++    onPageDidLoad,
++    style,
++  },
++  ref
++) {
++  const { appearance } = useConnectComponents();
++  const [initialLoadState, setInitialLoadState] =
++    useState<NotificationBannerInitialLoadState>('loading');
++  const [publishedHeight, setPublishedHeight] = useState(0);
++  const [webViewHeight, setWebViewHeight] = useState(1);
++  const [isWebContentVisible, setWebContentVisible] = useState(false);
++  const [task, setTask] = useState<Record<string, unknown> | null>(null);
++  const [bannerWebViewKey, setBannerWebViewKey] = useState(0);
++
++  const initialLoadStateRef = useRef(initialLoadState);
++  const didReceiveInitialNotifications = useRef(false);
++  const pendingContentHeight = useRef<number | undefined>(undefined);
++  const lastPublishedHeight = useRef<number | undefined>(undefined);
++  const settleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
++    undefined
++  );
++
++  useImperativeHandle(ref, () => ({ initialLoadState }), [initialLoadState]);
++
++  useEffect(() => {
++    initialLoadStateRef.current = initialLoadState;
++    onInitialLoadStateChange?.(initialLoadState);
++  }, [initialLoadState, onInitialLoadStateChange]);
++
++  useEffect(() => {
++    return () => {
++      if (settleTimer.current) clearTimeout(settleTimer.current);
++    };
++  }, []);
++
++  const publishHeight = useCallback(
++    (height: number) => {
++      setPublishedHeight(height);
++      if (lastPublishedHeight.current !== height) {
++        lastPublishedHeight.current = height;
++        onContentHeightChange?.(height);
++      }
++    },
++    [onContentHeightChange]
++  );
++
++  const finishLoadingWhenSettled = useCallback(() => {
++    if (
++      initialLoadStateRef.current !== 'loading' ||
++      !didReceiveInitialNotifications.current ||
++      pendingContentHeight.current === undefined
++    ) {
++      return;
++    }
++
++    if (settleTimer.current) clearTimeout(settleTimer.current);
++    settleTimer.current = setTimeout(() => {
++      if (initialLoadStateRef.current !== 'loading') return;
++      publishHeight(pendingContentHeight.current ?? 0);
++      setWebContentVisible(true);
++      setInitialLoadState('loaded');
++    }, SETTLE_DELAY_MS);
++  }, [publishHeight]);
++
++  const handleContentHeightChange = useCallback(
++    (height: number) => {
++      const roundedHeight = Math.max(0, Math.ceil(height));
++      pendingContentHeight.current = roundedHeight;
++      setWebViewHeight(Math.max(1, roundedHeight));
++
++      if (initialLoadStateRef.current === 'loaded') {
++        publishHeight(roundedHeight);
++      } else {
++        finishLoadingWhenSettled();
++      }
++    },
++    [finishLoadingWhenSettled, publishHeight]
++  );
++
++  const handleNotificationsChange = useCallback(
++    (change: NotificationBannerChange) => {
++      if (initialLoadStateRef.current === 'loading') {
++        didReceiveInitialNotifications.current = true;
++        finishLoadingWhenSettled();
++      }
++      onNotificationsChange?.(change);
++    },
++    [finishLoadingWhenSettled, onNotificationsChange]
++  );
++
++  const handleLoadError = useCallback(
++    (
++      error: Parameters<NonNullable<CommonComponentProps['onLoadError']>>[0]
++    ) => {
++      if (initialLoadStateRef.current === 'loading') {
++        if (settleTimer.current) clearTimeout(settleTimer.current);
++        setInitialLoadState('failed');
++      }
++      onLoadError?.(error);
++    },
++    [onLoadError]
++  );
++
++  const dismissTask = useCallback(() => {
++    setTask(null);
++    didReceiveInitialNotifications.current = false;
++    pendingContentHeight.current = undefined;
++    if (settleTimer.current) clearTimeout(settleTimer.current);
++    initialLoadStateRef.current = 'loading';
++    setInitialLoadState('loading');
++    setWebContentVisible(false);
++    setWebViewHeight(1);
++    publishHeight(0);
++    setBannerWebViewKey((key) => key + 1);
++  }, [publishHeight]);
++
++  const componentProps = useMemo(
++    () => ({ setCollectionOptions: collectionOptions }),
++    [collectionOptions]
++  );
++  const callbacks = useMemo(
++    () => ({ onNotificationsChange: handleNotificationsChange }),
++    [handleNotificationsChange]
++  );
++  const borderRadius = parsePixels(
++    appearance?.variables?.borderRadius,
++    DEFAULT_BORDER_RADIUS
++  );
++
++  return (
++    <>
++      <View
++        style={[
++          style,
++          styles.inlineContainer,
++          { height: publishedHeight, borderRadius },
++        ]}
++      >
++        <EmbeddedComponent
++          key={bannerWebViewKey}
++          component="notification-banner"
++          componentProps={componentProps}
++          callbacks={callbacks}
++          onLoaderStart={onLoaderStart}
++          onLoadError={handleLoadError}
++          onPageDidLoad={onPageDidLoad}
++          onContentHeightChange={handleContentHeightChange}
++          onOpenNotificationBannerForm={(form) => {
++            setTask((currentTask) => currentTask ?? form);
++          }}
++          presentExternalLinksInApp
++          sizeToContent
++          style={[
++            styles.inlineWebView,
++            { height: webViewHeight },
++            isWebContentVisible ? styles.visible : styles.hidden,
++          ]}
++        />
++      </View>
++      <NotificationTaskModal
++        task={task}
++        title={taskTitle}
++        collectionOptions={collectionOptions}
++        backgroundColor={
++          appearance?.variables?.colorBackground ?? DEFAULT_BACKGROUND_COLOR
++        }
++        onDismiss={dismissTask}
++        onLoadError={onLoadError}
++      />
++    </>
++  );
++});
++
++function NotificationTaskModal({
++  task,
++  title,
++  collectionOptions,
++  backgroundColor,
++  onDismiss,
++  onLoadError,
++}: {
++  task: Record<string, unknown> | null;
++  title?: string;
++  collectionOptions?: CollectionOptions;
++  backgroundColor: string;
++  onDismiss: () => void;
++  onLoadError?: CommonComponentProps['onLoadError'];
++}) {
++  const componentProps = useMemo(
++    () => ({
++      setCollectionOptions: collectionOptions,
++      setMobileNotificationBannerForm: task,
++    }),
++    [collectionOptions, task]
++  );
++  const callbacks = useMemo(() => ({ onCloseWebView: onDismiss }), [onDismiss]);
++
++  return (
++    <Modal
++      visible={task !== null}
++      animationType="slide"
++      presentationStyle="fullScreen"
++      onRequestClose={onDismiss}
++    >
++      <SafeAreaView style={[styles.taskContainer, { backgroundColor }]}>
++        <View
++          style={
++            Platform.OS === 'android'
++              ? { paddingTop: StatusBar.currentHeight ?? 0 }
++              : undefined
++          }
++        >
++          <NavigationBar
++            title={title}
++            onCloseButtonPress={onDismiss}
++            style={styles.navigationBar}
++          />
++        </View>
++        {task ? (
++          <EmbeddedComponent
++            component="notification-banner"
++            componentProps={componentProps}
++            callbacks={callbacks}
++            onLoadError={onLoadError}
++            presentExternalLinksInApp
++            style={styles.taskWebView}
++          />
++        ) : null}
++      </SafeAreaView>
++    </Modal>
++  );
++}
++
++function parsePixels(value: string | undefined, fallback: number): number {
++  if (!value) return fallback;
++  const parsed = Number.parseFloat(value);
++  return Number.isFinite(parsed) ? parsed : fallback;
++}
++
++const SETTLE_DELAY_MS = 200;
++const DEFAULT_BORDER_RADIUS = 8;
++const DEFAULT_BACKGROUND_COLOR = '#FFFFFF';
++
++const styles = StyleSheet.create({
++  inlineContainer: {
++    flexGrow: 0,
++    flexShrink: 0,
++    overflow: 'hidden',
++  },
++  inlineWebView: {
++    position: 'absolute',
++    top: 0,
++    left: 0,
++    right: 0,
++  },
++  visible: {
++    opacity: 1,
++  },
++  hidden: {
++    opacity: 0,
++  },
++  taskContainer: {
++    flex: 1,
++  },
++  navigationBar: {
++    height: 56,
++  },
++  taskWebView: {
++    flex: 1,
++  },
++});
+diff --git a/src/specs/NativeStripeSdkModule.ts b/src/specs/NativeStripeSdkModule.ts
+index d385dba..50a903a 100644
+--- a/src/specs/NativeStripeSdkModule.ts
++++ b/src/specs/NativeStripeSdkModule.ts
+@@ -263,6 +263,8 @@ export interface Spec extends TurboModule {
+     url: string
+   ): Promise<{ url?: string } | null>;
+ 
++  presentExternalWebPage(url: string): Promise<void>;
++
+   downloadAndShareFile(
+     url: string,
+     filename?: string | null
+diff --git a/src/types/PlatformPay.ts b/src/types/PlatformPay.ts
+index 6ed7aa7..0f12add 100644
+--- a/src/types/PlatformPay.ts
++++ b/src/types/PlatformPay.ts
+@@ -51,6 +51,8 @@ export type ApplePayBaseParams = {
+   currencyCode: string;
+   /** The SDK accepts Amex, Mastercard, Visa, and Discover for Apple Pay by default. Set this property to enable other card networks, for example: ["JCB", "barcode", "chinaUnionPay"]. A full list of possible networks can be found at https://developer.apple.com/documentation/passkit/pkpaymentnetwork. */
+   additionalEnabledNetworks?: Array<string>;
++  /** Set this property to only allow specific card networks for this payment, for example: ["Visa", "MasterCard"]. Overrides the default networks, including any set in `additionalEnabledNetworks`. A full list of possible networks can be found at https://developer.apple.com/documentation/passkit/pkpaymentnetwork. */
++  supportedNetworks?: Array<string>;
+   /** The list of items that describe a purchase. For example: total, tax, discount, and grand total. The final item should represent your company and the total; it'll be prepended with the word "Pay" (for example, "Pay Example Company $50"). */
+   cartItems: Array<CartSummaryItem>;
+   /** The list of fields that you need for a shipping contact in order to process the transaction. If you include ContactField.PostalAddress in this array, you must implement the PlatformPayButton component's `onShippingContactSelected` callback and call `updatePlatformPaySheet` from there.*/
+diff --git a/stripe-react-native.podspec b/stripe-react-native.podspec
+index 2500e50..c5bb313 100644
+--- a/stripe-react-native.podspec
++++ b/stripe-react-native.podspec
+@@ -2,7 +2,7 @@ require 'json'
+ 
+ package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
+ # Keep stripe_version in sync with https://github.com/stripe/stripe-identity-react-native/blob/main/stripe-identity-react-native.podspec
+-stripe_version = '26.5.0'
++stripe_version = '26.6.0'
+ 
+ fabric_enabled = ENV['RCT_NEW_ARCH_ENABLED'] == '1'
+ 

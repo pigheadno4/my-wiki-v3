@@ -1,5 +1,20 @@
 # Wiki Log
 
+## [2026-09-05] ingest | GitHub stripe/stripe-react-native - `@stripe/stripe-react-native@0.75.0`
+
+- Delta-ingested `github-295368ae3c6235174ae0`, `0.74.0` to exact SHA `e0a845f40749703480146c9d70721b9007d0516d`.
+- Added Android Onramp Samsung Pay configuration/readiness/collection, five wallet-verification error types, and native SDK pin updates. Preserved package history, Samsung runtime prerequisites, sample-amount caveats, and Android full-file evidence limits.
+
+## [2026-09-01] ingest | GitHub stripe/stripe-react-native - `@stripe/stripe-react-native@0.74.0`
+
+- Delta-ingested work item `github-8c278ff4d85ab465db92` at exact SHA `a628bc062f7018946d306e9e41b6ed5d75560cbc` after serial review of all 21 required evidence paths.
+- Added iOS Apple Pay network restriction and native SDK updates while preserving the experimental, non-root-exported Connect notification-banner boundary.
+
+## [2026-09-01] ingest | GitHub stripe/stripe-react-native - `@stripe/stripe-react-native@0.73.0`
+
+- Delta-ingested work item `github-0d48eb279179bbd22a39` at exact SHA `8b1bc1370bd493baee8e692dbff54c973e311db2` after serial review of all 20 required evidence paths.
+- Added private-preview Link billing/appearance configuration, Crypto Onramp Tempo typing, native SDK updates, and the nested iOS deferred-capture parsing correction while preserving old version history and runtime/eligibility boundaries.
+
 ## [2026-09-01] ingest | GitHub stripe/react-stripe-js - `@stripe/react-stripe-js@6.8.2`
 
 - Delta-ingested work item `github-63d1c788da3330896fd0` at exact SHA `c48d6515c48da2fa5e2eefc9c8168b95e3026ef2` after serial review of all 11 required evidence paths.

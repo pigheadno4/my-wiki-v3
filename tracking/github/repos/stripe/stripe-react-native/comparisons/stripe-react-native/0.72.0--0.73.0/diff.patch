@@ -1,0 +1,985 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index c9ef6fa..5f4aaa3 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,13 @@
+ # CHANGELOG
+ 
++## 0.73.0 - 2026-08-04
++**Changes**
++* Updated Stripe iOS SDK from 26.4.1 to 26.5.0.
++* Updated Stripe Android SDK from 23.13.1 to 23.14.0.
++* [Added] `useLinkController` (private preview): Added `billingDetailsCollectionConfiguration` to `LinkController.Configuration` to control which billing fields are collected in the Link sheet.
++* [Added] `useLinkController` (private preview): Added `appearance` to `LinkController.Configuration` to customize Link UI colors and styling.
++* [Added] Added Tempo network support to Crypto Onramp.
++
+ ## 0.72.0 - 2026-07-27
+ **Changes**
+ * Updated Stripe iOS SDK from 26.3.0 to 26.4.1.
+diff --git a/android/gradle.properties b/android/gradle.properties
+index ebf4e45..a84e456 100644
+--- a/android/gradle.properties
++++ b/android/gradle.properties
+@@ -3,4 +3,4 @@ StripeSdk_compileSdkVersion=36
+ StripeSdk_targetSdkVersion=36
+ StripeSdk_minSdkVersion=23
+ # Keep StripeSdk_stripeVersion in sync with https://github.com/stripe/stripe-identity-react-native/blob/main/android/gradle.properties
+-StripeSdk_stripeVersion=23.13.1
++StripeSdk_stripeVersion=23.14.0
+diff --git a/android/src/main/java/com/reactnativestripesdk/LinkControllerManager.kt b/android/src/main/java/com/reactnativestripesdk/LinkControllerManager.kt
+index 341b326..032a2b1 100644
+--- a/android/src/main/java/com/reactnativestripesdk/LinkControllerManager.kt
++++ b/android/src/main/java/com/reactnativestripesdk/LinkControllerManager.kt
+@@ -2,6 +2,7 @@ package com.reactnativestripesdk
+ 
+ import android.annotation.SuppressLint
+ import androidx.activity.ComponentActivity
++import androidx.compose.ui.graphics.Color
+ import androidx.lifecycle.SavedStateHandle
+ import androidx.lifecycle.lifecycleScope
+ import com.facebook.react.bridge.Arguments
+@@ -11,6 +12,7 @@ import com.facebook.react.bridge.ReadableMap
+ import com.reactnativestripesdk.utils.ErrorType
+ import com.reactnativestripesdk.utils.createError
+ import com.reactnativestripesdk.utils.mapFromPaymentMethod
++import com.stripe.android.link.LinkAppearance
+ import com.stripe.android.link.LinkController
+ import com.stripe.android.link.LinkControllerPreview
+ import kotlinx.coroutines.Dispatchers
+@@ -51,21 +53,7 @@ internal class LinkControllerManager(
+             return
+         }
+ 
+-        val phoneNumber = params.getString("phoneNumber")
+-        val allowLogout = if (params.hasKey("allowLogout")) params.getBoolean("allowLogout") else true
+-        val supportedTypes = parseSupportedPaymentMethodTypes(params)
+-        val paymentMethodTypes = parsePaymentMethodTypes(params)
+-
+-        val config = LinkController.Configuration(
+-            merchantDisplayName = merchantDisplayName,
+-            publishableKey = publishableKey,
+-            stripeAccountId = stripeAccountId
+-        )
+-            .also { if (email != null) it.email(email) }
+-            .phoneNumber(phoneNumber)
+-            .supportedPaymentMethodTypes(supportedTypes)
+-            .also { if (paymentMethodTypes != null) it.paymentMethodTypes(paymentMethodTypes) }
+-            .allowLogout(allowLogout)
++        val config = buildLinkConfiguration(params, merchantDisplayName, email)
+ 
+         // Build a new controller if this is the first call or after a reset.
+         // SavedStateHandle() is empty — state will not survive process death, which is
+@@ -134,6 +122,81 @@ internal class LinkControllerManager(
+         confirmSetupIntentPromise = null
+     }
+ 
++    private fun buildLinkConfiguration(
++        params: ReadableMap,
++        merchantDisplayName: String,
++        email: String?,
++    ): LinkController.Configuration {
++        val phoneNumber = params.getString("phoneNumber")
++        val allowLogout = if (params.hasKey("allowLogout")) params.getBoolean("allowLogout") else true
++        val supportedTypes = parseSupportedPaymentMethodTypes(params)
++        val paymentMethodTypes = parsePaymentMethodTypes(params)
++        return LinkController.Configuration(
++            merchantDisplayName = merchantDisplayName,
++            publishableKey = publishableKey,
++            stripeAccountId = stripeAccountId
++        )
++            .also { if (email != null) it.email(email) }
++            .phoneNumber(phoneNumber)
++            .supportedPaymentMethodTypes(supportedTypes)
++            .also { if (paymentMethodTypes != null) it.paymentMethodTypes(paymentMethodTypes) }
++            .allowLogout(allowLogout)
++            .also {
++                val billingMap = params.getMap("billingDetailsCollectionConfiguration")
++                if (billingMap != null) {
++                    it.billingDetailsCollectionConfiguration(
++                        buildBillingDetailsCollectionConfiguration(billingMap)
++                    )
++                }
++            }
++            .also {
++                val appearanceMap = params.getMap("appearance")
++                if (appearanceMap != null) {
++                    it.appearance(buildLinkAppearance(appearanceMap))
++                }
++            }
++    }
++
++    private fun buildLinkAppearance(appearanceMap: ReadableMap): LinkAppearance {
++        val lightColorsMap = appearanceMap.getMap("lightColors")
++        val darkColorsMap = appearanceMap.getMap("darkColors")
++        val styleStr = appearanceMap.getString("style")
++        val primaryButtonMap = appearanceMap.getMap("primaryButton")
++
++        val style = when (styleStr) {
++            "ALWAYS_LIGHT" -> LinkAppearance.Style.ALWAYS_LIGHT
++            "ALWAYS_DARK" -> LinkAppearance.Style.ALWAYS_DARK
++            else -> LinkAppearance.Style.AUTOMATIC
++        }
++
++        return LinkAppearance()
++            .also { lightColorsMap?.let { m -> it.lightColors(buildLinkColors(m)) } }
++            .also { darkColorsMap?.let { m -> it.darkColors(buildLinkColors(m)) } }
++            .style(style)
++            .also { primaryButtonMap?.let { m -> it.primaryButton(buildPrimaryButton(m)) } }
++            .also {
++                if (appearanceMap.hasKey("reduceLinkBranding")) {
++                    it.reduceLinkBranding(appearanceMap.getBoolean("reduceLinkBranding"))
++                }
++            }
++    }
++
++    private fun buildPrimaryButton(map: ReadableMap): LinkAppearance.PrimaryButton {
++        val cornerRadius = if (map.hasKey("cornerRadius")) map.getDouble("cornerRadius").toFloat() else null
++        val height = if (map.hasKey("height")) map.getDouble("height").toFloat() else null
++        return LinkAppearance.PrimaryButton().cornerRadiusDp(cornerRadius).heightDp(height)
++    }
++
++    private fun parseHexColor(hex: String) = Color(android.graphics.Color.parseColor(hex))
++
++    private fun buildLinkColors(map: ReadableMap): LinkAppearance.Colors {
++        val colors = LinkAppearance.Colors()
++        map.getString("primary")?.let { colors.primary(parseHexColor(it)) }
++        map.getString("contentOnPrimary")?.let { colors.contentOnPrimary(parseHexColor(it)) }
++        map.getString("borderSelected")?.let { colors.borderSelected(parseHexColor(it)) }
++        return colors
++    }
++
+     private fun parseSupportedPaymentMethodTypes(params: ReadableMap): List<LinkController.PaymentMethodType>? =
+         params.getArray("supportedPaymentMethodTypes")?.let { arr ->
+             (0 until arr.size()).mapNotNull { i ->
+diff --git a/android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt b/android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt
+index f7fbdc0..0bb91d8 100644
+--- a/android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt
++++ b/android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt
+@@ -1,4 +1,4 @@
+-@file:OptIn(ExperimentalCryptoOnramp::class)
++@file:OptIn(ExperimentalCryptoOnramp::class, LinkControllerPreview::class)
+ 
+ package com.reactnativestripesdk
+ 
+@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReadableMap
+ import com.facebook.react.bridge.WritableArray
+ import com.stripe.android.core.model.CountryCode
+ import com.stripe.android.crypto.onramp.ExperimentalCryptoOnramp
++import com.stripe.android.link.LinkControllerPreview
+ import com.stripe.android.crypto.onramp.model.CryptoConsumerWallet
+ import com.stripe.android.crypto.onramp.model.CryptoNetwork
+ import com.stripe.android.crypto.onramp.exception.SDKVersion
+diff --git a/android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt b/android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt
+index a4b365e..fbb6b03 100644
+--- a/android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt
+@@ -1,4 +1,4 @@
+-@file:OptIn(ExperimentalCryptoOnramp::class)
++@file:OptIn(ExperimentalCryptoOnramp::class, LinkControllerPreview::class)
+ 
+ package com.reactnativestripesdk.mappers
+ 
+@@ -24,6 +24,7 @@ import com.stripe.android.crypto.onramp.model.PaymentMethodDisplayData
+ import com.stripe.android.googlepaylauncher.GooglePayEnvironment
+ import com.stripe.android.googlepaylauncher.GooglePayPaymentMethodLauncher
+ import com.stripe.android.link.LinkAppearance.Style
++import com.stripe.android.link.LinkControllerPreview
+ import com.stripe.android.model.DateOfBirth
+ import com.stripe.android.paymentsheet.PaymentSheet
+ import org.junit.Assert.assertEquals
+diff --git a/etc/stripe-react-native.api.md b/etc/stripe-react-native.api.md
+index a168c86..428e67a 100644
+--- a/etc/stripe-react-native.api.md
++++ b/etc/stripe-react-native.api.md
+@@ -1098,6 +1098,8 @@ type Configuration_2 = {
+     paymentMethodTypes?: string[];
+     phoneNumber?: string;
+     allowLogout?: boolean;
++    billingDetailsCollectionConfiguration?: BillingDetailsCollectionConfiguration;
++    appearance?: LinkAppearance;
+ };
+ 
+ // @public (undocumented)
+@@ -1462,6 +1464,8 @@ enum CryptoNetwork {
+     // (undocumented)
+     sui = "sui",
+     // (undocumented)
++    tempo = "tempo",
++    // (undocumented)
+     worldchain = "worldchain",
+     // (undocumented)
+     xrpl = "xrpl"
+@@ -2377,6 +2381,7 @@ type LinkAppearance = {
+     darkColors?: LinkColors;
+     style?: LinkStyle;
+     primaryButton?: LinkPrimaryButton;
++    reduceLinkBranding?: boolean;
+ };
+ 
+ // @public
+@@ -2388,6 +2393,10 @@ type LinkColors = {
+ 
+ declare namespace LinkController {
+     export {
++        LinkAppearance,
++        LinkColors,
++        LinkStyle,
++        LinkPrimaryButton,
+         LinkPaymentMethodType,
+         Configuration_2 as Configuration,
+         PaymentMethodPreview_2 as PaymentMethodPreview,
+@@ -2649,16 +2658,16 @@ type OnFormCompleteEvent = NativeSyntheticEvent<{
+ 
+ declare namespace Onramp {
+     export {
++        LinkAppearance,
++        LinkColors,
++        LinkStyle,
++        LinkPrimaryButton,
+         OnrampErrorStatus,
+         Configuration,
+         GooglePayConfig,
+         GooglePayBillingAddressConfig,
+         OnrampGooglePayParams,
+         OnrampPlatformPayParams,
+-        LinkAppearance,
+-        LinkColors,
+-        LinkStyle,
+-        LinkPrimaryButton,
+         LinkUserInfo,
+         CryptoNetwork,
+         WalletOwnershipChallenge,
+diff --git a/example/ios/Podfile.lock b/example/ios/Podfile.lock
+index 45f6e0c..0ff999a 100644
+--- a/example/ios/Podfile.lock
++++ b/example/ios/Podfile.lock
+@@ -1820,14 +1820,14 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - Stripe (26.4.1):
+-    - StripeApplePay (= 26.4.1)
+-    - StripeCore (= 26.4.1)
+-    - StripeIssuing (= 26.4.1)
+-    - StripePayments (= 26.4.1)
+-    - StripePaymentsUI (= 26.4.1)
+-    - StripeUICore (= 26.4.1)
+-  - stripe-react-native (0.71.0):
++  - Stripe (26.5.0):
++    - StripeApplePay (= 26.5.0)
++    - StripeCore (= 26.5.0)
++    - StripeIssuing (= 26.5.0)
++    - StripePayments (= 26.5.0)
++    - StripePaymentsUI (= 26.5.0)
++    - StripeUICore (= 26.5.0)
++  - stripe-react-native (0.72.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1848,10 +1848,10 @@ PODS:
+     - ReactCommon/turbomodule/bridging
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+-    - stripe-react-native/Core (= 0.71.0)
+-    - stripe-react-native/NewArch (= 0.71.0)
++    - stripe-react-native/Core (= 0.72.0)
++    - stripe-react-native/NewArch (= 0.72.0)
+     - Yoga
+-  - stripe-react-native/Core (0.71.0):
++  - stripe-react-native/Core (0.72.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1872,14 +1872,14 @@ PODS:
+     - ReactCommon/turbomodule/bridging
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+-    - Stripe (= 26.4.1)
+-    - StripeApplePay (= 26.4.1)
+-    - StripeFinancialConnections (= 26.4.1)
+-    - StripePayments (= 26.4.1)
+-    - StripePaymentSheet (= 26.4.1)
+-    - StripePaymentsUI (= 26.4.1)
++    - Stripe (= 26.5.0)
++    - StripeApplePay (= 26.5.0)
++    - StripeFinancialConnections (= 26.5.0)
++    - StripePayments (= 26.5.0)
++    - StripePaymentSheet (= 26.5.0)
++    - StripePaymentsUI (= 26.5.0)
+     - Yoga
+-  - stripe-react-native/NewArch (0.71.0):
++  - stripe-react-native/NewArch (0.72.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1901,7 +1901,7 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - stripe-react-native/Onramp (0.71.0):
++  - stripe-react-native/Onramp (0.72.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1923,9 +1923,9 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - stripe-react-native/Core
+-    - StripeCryptoOnramp (= 26.4.1)
++    - StripeCryptoOnramp (= 26.5.0)
+     - Yoga
+-  - stripe-react-native/Tests (0.71.0):
++  - stripe-react-native/Tests (0.72.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1947,46 +1947,46 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - StripeApplePay (26.4.1):
+-    - StripeCore (= 26.4.1)
+-  - StripeCameraCore (26.4.1):
+-    - StripeCore (= 26.4.1)
+-  - StripeCore (26.4.1)
+-  - StripeCryptoOnramp (26.4.1):
+-    - StripeApplePay (= 26.4.1)
+-    - StripeCore (= 26.4.1)
+-    - StripeIdentity (= 26.4.1)
+-    - StripePayments (= 26.4.1)
+-    - StripePaymentSheet (= 26.4.1)
+-    - StripePaymentsUI (= 26.4.1)
+-    - StripeUICore (= 26.4.1)
+-  - StripeFinancialConnections (26.4.1):
+-    - StripeCore (= 26.4.1)
+-    - StripeUICore (= 26.4.1)
+-  - StripeIdentity (26.4.1):
+-    - StripeCameraCore (= 26.4.1)
+-    - StripeCore (= 26.4.1)
+-    - StripeUICore (= 26.4.1)
+-  - StripeIssuing (26.4.1):
+-    - StripeCore (= 26.4.1)
+-    - StripePayments (= 26.4.1)
+-    - StripePaymentsUI (= 26.4.1)
+-  - StripePayments (26.4.1):
+-    - StripeCore (= 26.4.1)
+-    - StripePayments/Stripe3DS2 (= 26.4.1)
+-  - StripePayments/Stripe3DS2 (26.4.1):
+-    - StripeCore (= 26.4.1)
+-  - StripePaymentSheet (26.4.1):
+-    - StripeApplePay (= 26.4.1)
+-    - StripeCore (= 26.4.1)
+-    - StripePayments (= 26.4.1)
+-    - StripePaymentsUI (= 26.4.1)
+-  - StripePaymentsUI (26.4.1):
+-    - StripeCore (= 26.4.1)
+-    - StripePayments (= 26.4.1)
+-    - StripeUICore (= 26.4.1)
+-  - StripeUICore (26.4.1):
+-    - StripeCore (= 26.4.1)
++  - StripeApplePay (26.5.0):
++    - StripeCore (= 26.5.0)
++  - StripeCameraCore (26.5.0):
++    - StripeCore (= 26.5.0)
++  - StripeCore (26.5.0)
++  - StripeCryptoOnramp (26.5.0):
++    - StripeApplePay (= 26.5.0)
++    - StripeCore (= 26.5.0)
++    - StripeIdentity (= 26.5.0)
++    - StripePayments (= 26.5.0)
++    - StripePaymentSheet (= 26.5.0)
++    - StripePaymentsUI (= 26.5.0)
++    - StripeUICore (= 26.5.0)
++  - StripeFinancialConnections (26.5.0):
++    - StripeCore (= 26.5.0)
++    - StripeUICore (= 26.5.0)
++  - StripeIdentity (26.5.0):
++    - StripeCameraCore (= 26.5.0)
++    - StripeCore (= 26.5.0)
++    - StripeUICore (= 26.5.0)
++  - StripeIssuing (26.5.0):
++    - StripeCore (= 26.5.0)
++    - StripePayments (= 26.5.0)
++    - StripePaymentsUI (= 26.5.0)
++  - StripePayments (26.5.0):
++    - StripeCore (= 26.5.0)
++    - StripePayments/Stripe3DS2 (= 26.5.0)
++  - StripePayments/Stripe3DS2 (26.5.0):
++    - StripeCore (= 26.5.0)
++  - StripePaymentSheet (26.5.0):
++    - StripeApplePay (= 26.5.0)
++    - StripeCore (= 26.5.0)
++    - StripePayments (= 26.5.0)
++    - StripePaymentsUI (= 26.5.0)
++  - StripePaymentsUI (26.5.0):
++    - StripeCore (= 26.5.0)
++    - StripePayments (= 26.5.0)
++    - StripeUICore (= 26.5.0)
++  - StripeUICore (26.5.0):
++    - StripeCore (= 26.5.0)
+   - Yoga (0.0.0)
+ 
+ DEPENDENCIES:
+@@ -2311,19 +2311,19 @@ SPEC CHECKSUMS:
+   RNCAsyncStorage: 3a4f5e2777dae1688b781a487923a08569e27fe4
+   RNCPicker: c8a3584b74133464ee926224463fcc54dfdaebca
+   RNScreens: 61c18865ab074f4d995ac8d7cf5060522a649d05
+-  Stripe: 1d3402c1d9ac1a842e355784214abf1b6feb60e2
+-  stripe-react-native: 93bbe61e23b3cafacad256caea3f81632eeedcb7
+-  StripeApplePay: 09150cd6fd99e8786cd03ddebc5417649163ea49
+-  StripeCameraCore: d1a6eb6bc7c719c77e9a893950457c92b248900c
+-  StripeCore: 838514a95b14b5b2afc1157c5af46cc0393e32a3
+-  StripeCryptoOnramp: 7ed9fdb873fd046190b4c1a5ead4a9b65868ed3b
+-  StripeFinancialConnections: b7594f4b2cfec59e3ba6150a0cdd338c7f260bdf
+-  StripeIdentity: aefcf07d2dfbeccb304a14b4b396853e5139564f
+-  StripeIssuing: b6b2549d65cb161113b40ac8422759fe3de98d19
+-  StripePayments: 89720d0be84699e5beb684ac49bbf318ffb77ce4
+-  StripePaymentSheet: 32cd0cbca9ea7dfa4d4ea9ba6c38729d147a26ac
+-  StripePaymentsUI: e7075dc52ee0b5ee0b298cbf310de3e57f22d016
+-  StripeUICore: 4d29f11936316fcced71f6fe2da0d6d1e6a46237
++  Stripe: 42c446f3f3ee60c2e96aa27491fd88cb849a3887
++  stripe-react-native: a58169e34430b180e14c015e6c1218475711f5da
++  StripeApplePay: d6e62eb6150d7739e7a6aff99d3ed69905461fc4
++  StripeCameraCore: a404c9e95a0906668f62c40ce6ee15a890e6607f
++  StripeCore: ccde420bc8e878df43d356f8661702b921ace869
++  StripeCryptoOnramp: 8cde3d01016a7d99c0f25e644e3d1c8fe2fd97ae
++  StripeFinancialConnections: fb8e12e36d2e5e79a1b5413c72900a9bf571fbe2
++  StripeIdentity: a773235907c17ae6c4a4b83492bdf365a89dc256
++  StripeIssuing: 104bad01e6a872713b81d44821eebc958a49d6cf
++  StripePayments: 43fb89181afd417966fa1e8bf7b8a0e5c85eb9ac
++  StripePaymentSheet: dbe9a57e2cef4d54630b56511f501d2c355e102d
++  StripePaymentsUI: 71c5666d50b62889d5f935f283ba6afb88135533
++  StripeUICore: aa5d5a1ff0e8a090078303915a5c14a0bce80a01
+   Yoga: 5934998fbeaef7845dbf698f698518695ab4cd1a
+ 
+ PODFILE CHECKSUM: 605f3cad878b7c0eee93ebb4a78a8141d34cd328
+diff --git a/example/src/screens/LinkControllerScreen.tsx b/example/src/screens/LinkControllerScreen.tsx
+index 082dfe7..68ac418 100644
+--- a/example/src/screens/LinkControllerScreen.tsx
++++ b/example/src/screens/LinkControllerScreen.tsx
+@@ -14,6 +14,7 @@ import {
+   initStripe,
+   LinkController,
+   LinkControllerError,
++  PaymentSheet,
+   useLinkController,
+   type PaymentMethod,
+ } from '@stripe/stripe-react-native';
+@@ -33,6 +34,8 @@ export default function LinkControllerScreen() {
+   const [phone, setPhone] = useState('');
+   const [cardEnabled, setCardEnabled] = useState(true);
+   const [bankEnabled, setBankEnabled] = useState(true);
++  const [useCustomAppearance, setUseCustomAppearance] = useState(false);
++  const [collectName, setCollectName] = useState(false);
+   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+   const [statusIsError, setStatusIsError] = useState(false);
+   const [preview, setPreview] =
+@@ -91,6 +94,25 @@ export default function LinkControllerScreen() {
+       merchantDisplayName: 'Example, Inc.',
+       phoneNumber: phone || undefined,
+       supportedPaymentMethodTypes: supportedTypes,
++      appearance: useCustomAppearance
++        ? {
++            style: 'ALWAYS_DARK',
++            lightColors: {
++              primary: '#7B2FBE',
++              contentOnPrimary: '#FFFFFF',
++              borderSelected: '#7B2FBE',
++            },
++            darkColors: {
++              primary: '#A855F7',
++              contentOnPrimary: '#FFFFFF',
++              borderSelected: '#A855F7',
++            },
++            primaryButton: { cornerRadius: 4 },
++          }
++        : undefined,
++      billingDetailsCollectionConfiguration: collectName
++        ? { name: PaymentSheet.CollectionMode.ALWAYS }
++        : undefined,
+     });
+ 
+     if (error) {
+@@ -99,7 +121,15 @@ export default function LinkControllerScreen() {
+       setInitialized(true);
+       showStatus('Initialized successfully.');
+     }
+-  }, [bankEnabled, cardEnabled, email, phone, initLinkController]);
++  }, [
++    bankEnabled,
++    cardEnabled,
++    collectName,
++    email,
++    initLinkController,
++    phone,
++    useCustomAppearance,
++  ]);
+ 
+   const handlePresent = async () => {
+     setStatusMessage(null);
+@@ -125,6 +155,8 @@ export default function LinkControllerScreen() {
+     setPhone('');
+     setCardEnabled(true);
+     setBankEnabled(true);
++    setUseCustomAppearance(false);
++    setCollectName(false);
+     setPreview(null);
+     setPaymentMethod(null);
+     setStatusMessage(null);
+@@ -163,6 +195,19 @@ export default function LinkControllerScreen() {
+         <Switch value={bankEnabled} onValueChange={setBankEnabled} />
+       </View>
+ 
++      <Text style={styles.sectionTitle}>Appearance &amp; Billing</Text>
++      <View style={styles.switchRow}>
++        <Text style={styles.switchLabel}>Use Custom Appearance</Text>
++        <Switch
++          value={useCustomAppearance}
++          onValueChange={setUseCustomAppearance}
++        />
++      </View>
++      <View style={styles.switchRow}>
++        <Text style={styles.switchLabel}>Always Collect Name</Text>
++        <Switch value={collectName} onValueChange={setCollectName} />
++      </View>
++
+       <Button
+         variant="primary"
+         title="Initialize"
+diff --git a/example/src/screens/Onramp/utils.ts b/example/src/screens/Onramp/utils.ts
+index 3a74367..faef490 100644
+--- a/example/src/screens/Onramp/utils.ts
++++ b/example/src/screens/Onramp/utils.ts
+@@ -11,6 +11,7 @@ export function getDefaultAddressForNetwork(
+     case Onramp.CryptoNetwork.base:
+     case Onramp.CryptoNetwork.optimism:
+     case Onramp.CryptoNetwork.worldchain:
++    case Onramp.CryptoNetwork.tempo:
+       return '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
+     case Onramp.CryptoNetwork.solana:
+       return '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM';
+@@ -58,6 +59,8 @@ export function getDestinationParamsForNetwork(network: Onramp.CryptoNetwork): {
+       return { destinationNetwork: 'xrpl', destinationCurrency: 'xrp' };
+     case Onramp.CryptoNetwork.sui:
+       return { destinationNetwork: 'sui', destinationCurrency: 'sui' };
++    case Onramp.CryptoNetwork.tempo:
++      return { destinationNetwork: 'tempo', destinationCurrency: 'usdc' };
+     default:
+       return { destinationNetwork: 'ethereum', destinationCurrency: 'eth' };
+   }
+diff --git a/ios/StripeSdkImpl+Embedded.swift b/ios/StripeSdkImpl+Embedded.swift
+index f2b0216..4446e7d 100644
+--- a/ios/StripeSdkImpl+Embedded.swift
++++ b/ios/StripeSdkImpl+Embedded.swift
+@@ -37,7 +37,7 @@ extension StripeSdkImpl {
+       resolve(nil)
+       return
+     }
+-    let captureMethodString = intentConfig["captureMethod"] as? String
++    let captureMethodString = modeParams["captureMethod"] as? String
+     let intentConfig = buildIntentConfiguration(
+       modeParams: modeParams,
+       paymentMethodTypes: intentConfig["paymentMethodTypes"] as? [String],
+@@ -168,7 +168,7 @@ extension StripeSdkImpl {
+       resolve(Errors.createError(ErrorType.Failed, "You must provide either `confirmHandler` or `confirmationTokenConfirmHandler`, but not both"))
+       return
+     }
+-    let captureMethodString = intentConfig["captureMethod"] as? String
++    let captureMethodString = modeParams["captureMethod"] as? String
+     let intentConfiguration = buildIntentConfiguration(
+       modeParams: modeParams,
+       paymentMethodTypes: intentConfig["paymentMethodTypes"] as? [String],
+diff --git a/ios/StripeSdkImpl+LinkController.swift b/ios/StripeSdkImpl+LinkController.swift
+index 83d1f43..9505211 100644
+--- a/ios/StripeSdkImpl+LinkController.swift
++++ b/ios/StripeSdkImpl+LinkController.swift
+@@ -33,15 +33,33 @@ extension StripeSdkImpl {
+ 
+         let paymentMethodTypes = params["paymentMethodTypes"] as? [String]
+ 
++        var billingConfig: PaymentSheet.BillingDetailsCollectionConfiguration?
++        if let billingParams = params["billingDetailsCollectionConfiguration"] as? [String: Any?] {
++            billingConfig = .init(
++                name: Self.mapToCollectionMode(str: billingParams["name"] as? String),
++                phone: Self.mapToCollectionMode(str: billingParams["phone"] as? String),
++                email: Self.mapToCollectionMode(str: billingParams["email"] as? String),
++                address: Self.mapToAddressCollectionMode(str: billingParams["address"] as? String),
++                attachDefaultsToPaymentMethod: billingParams["attachDefaultsToPaymentMethod"] as? Bool ?? false
++            )
++        }
++
++        var appearance: LinkAppearance?
++        if let appearanceParams = params["appearance"] as? [String: Any?] {
++            appearance = Self.mapToLinkControllerAppearance(appearanceParams)
++        }
++
+         let configuration = LinkConfiguration(
+             supportedPaymentMethodTypes: supportedPaymentMethodTypes,
+             paymentMethodTypes: paymentMethodTypes,
+             allowLogout: allowLogout,
+-            merchantDisplayName: merchantDisplayName
++            merchantDisplayName: merchantDisplayName,
++            billingDetailsCollectionConfiguration: billingConfig
+         )
+ 
+         LinkController.create(
+             apiClient: STPAPIClient.shared,
++            appearance: appearance,
+             configuration: configuration
+         ) { [weak self] result in
+             switch result {
+@@ -132,6 +150,54 @@ extension StripeSdkImpl {
+         }
+     }
+ 
++    private static func mapToLinkControllerAppearance(_ params: [String: Any?]) -> LinkAppearance {
++        let lightColorsParams = params["lightColors"] as? [String: Any?]
++        let darkColorsParams = params["darkColors"] as? [String: Any?]
++
++        func parseColor(_ hex: Any??) -> UIColor? {
++            guard let str = hex as? String else { return nil }
++            return UIColor(hexString: str)
++        }
++
++        func traitColor(light: Any??, dark: Any??) -> UIColor? {
++            let l = parseColor(light)
++            let d = parseColor(dark)
++            switch (l, d) {
++            case let (l?, d?): return UIColor { $0.userInterfaceStyle == .dark ? d : l }
++            case (nil, let d?): return d
++            case (let l?, nil): return l
++            default: return nil
++            }
++        }
++
++        let primary = traitColor(light: lightColorsParams?["primary"], dark: darkColorsParams?["primary"])
++        let contentOnPrimary = traitColor(light: lightColorsParams?["contentOnPrimary"], dark: darkColorsParams?["contentOnPrimary"])
++        let selectedBorder = traitColor(light: lightColorsParams?["borderSelected"], dark: darkColorsParams?["borderSelected"])
++
++        var colors: LinkAppearance.Colors?
++        if primary != nil || contentOnPrimary != nil || selectedBorder != nil {
++            colors = LinkAppearance.Colors(primary: primary, contentOnPrimary: contentOnPrimary, selectedBorder: selectedBorder)
++        }
++
++        var primaryButtonConfiguration: LinkAppearance.PrimaryButtonConfiguration?
++        if let pbParams = params["primaryButton"] as? [String: Any] {
++            let cornerRadius = pbParams["cornerRadius"] as? CGFloat
++            let height = pbParams["height"] as? CGFloat
++            primaryButtonConfiguration = LinkAppearance.PrimaryButtonConfiguration(cornerRadius: cornerRadius, height: height)
++        }
++
++        let style: PaymentSheet.UserInterfaceStyle
++        switch params["style"] as? String ?? "" {
++        case "ALWAYS_LIGHT": style = .alwaysLight
++        case "ALWAYS_DARK": style = .alwaysDark
++        default: style = .automatic
++        }
++
++        let reduceLinkBranding = params["reduceLinkBranding"] as? Bool ?? false
++
++        return LinkAppearance(colors: colors, primaryButton: primaryButtonConfiguration, style: style, reduceLinkBranding: reduceLinkBranding)
++    }
++
+     private static func mapLinkPaymentMethodPreview(_ preview: LinkController.PaymentMethodPreview) -> [String: Any] {
+         let iconBase64 = "data:image/png;base64," + (preview.icon.pngData()?.base64EncodedString(options: []) ?? "")
+         var result: [String: Any] = [
+diff --git a/ios/StripeSdkImpl+PaymentSheet.swift b/ios/StripeSdkImpl+PaymentSheet.swift
+index 8523f73..251d189 100644
+--- a/ios/StripeSdkImpl+PaymentSheet.swift
++++ b/ios/StripeSdkImpl+PaymentSheet.swift
+@@ -236,7 +236,7 @@ extension StripeSdkImpl {
+                 resolve(Errors.createError(ErrorType.Failed, "You must provide either `confirmHandler` or `confirmationTokenConfirmHandler`, but not both"))
+                 return
+             }
+-            let captureMethodString = intentConfiguration["captureMethod"] as? String
++            let captureMethodString = modeParams["captureMethod"] as? String
+             let intentConfig = buildIntentConfiguration(
+                 modeParams: modeParams,
+                 paymentMethodTypes: intentConfiguration["paymentMethodTypes"] as? [String],
+diff --git a/ios/Tests/PaymentSheetUtilsTests.swift b/ios/Tests/PaymentSheetUtilsTests.swift
+index f59e536..7e6c2a4 100644
+--- a/ios/Tests/PaymentSheetUtilsTests.swift
++++ b/ios/Tests/PaymentSheetUtilsTests.swift
+@@ -523,6 +523,98 @@ class PaymentSheetUtilsTests: XCTestCase {
+         XCTAssertEqual(result[1].id, "cpmt_valid2")
+     }
+ 
++    // MARK: - buildIntentConfiguration captureMethod Tests
++
++    func test_buildIntentConfiguration_manualCaptureMethod() {
++        let modeParams: NSDictionary = [
++            "amount": 1099,
++            "currencyCode": "usd",
++            "captureMethod": "Manual",
++        ]
++
++        let config = StripeSdkImpl.shared.buildIntentConfiguration(
++            modeParams: modeParams,
++            paymentMethodTypes: nil,
++            onBehalfOf: nil,
++            captureMethod: StripeSdkImpl.mapCaptureMethod(modeParams["captureMethod"] as? String),
++            useConfirmationTokenCallback: false
++        )
++
++        if case .payment(let amount, let currency, _, let captureMethod, _) = config.mode {
++            XCTAssertEqual(amount, 1099)
++            XCTAssertEqual(currency, "usd")
++            XCTAssertEqual(captureMethod, .manual)
++        } else {
++            XCTFail("Expected payment mode")
++        }
++    }
++
++    func test_buildIntentConfiguration_automaticAsyncCaptureMethod() {
++        let modeParams: NSDictionary = [
++            "amount": 2000,
++            "currencyCode": "eur",
++            "captureMethod": "AutomaticAsync",
++        ]
++
++        let config = StripeSdkImpl.shared.buildIntentConfiguration(
++            modeParams: modeParams,
++            paymentMethodTypes: nil,
++            onBehalfOf: nil,
++            captureMethod: StripeSdkImpl.mapCaptureMethod(modeParams["captureMethod"] as? String),
++            useConfirmationTokenCallback: false
++        )
++
++        if case .payment(_, _, _, let captureMethod, _) = config.mode {
++            XCTAssertEqual(captureMethod, .automaticAsync)
++        } else {
++            XCTFail("Expected payment mode")
++        }
++    }
++
++    func test_buildIntentConfiguration_missingCaptureMethod_defaultsToAutomatic() {
++        let modeParams: NSDictionary = [
++            "amount": 500,
++            "currencyCode": "usd",
++        ]
++
++        let config = StripeSdkImpl.shared.buildIntentConfiguration(
++            modeParams: modeParams,
++            paymentMethodTypes: nil,
++            onBehalfOf: nil,
++            captureMethod: StripeSdkImpl.mapCaptureMethod(modeParams["captureMethod"] as? String),
++            useConfirmationTokenCallback: false
++        )
++
++        if case .payment(_, _, _, let captureMethod, _) = config.mode {
++            XCTAssertEqual(captureMethod, .automatic)
++        } else {
++            XCTFail("Expected payment mode")
++        }
++    }
++
++    func test_buildIntentConfiguration_captureMethodFromNestedMode_notTopLevel() {
++        // Regression test: captureMethod must be read from mode params,
++        // not from the top-level intentConfiguration dictionary.
++        let topLevelIntentConfig: NSDictionary = [
++            "captureMethod": "Manual",
++            "mode": [
++                "amount": 1099,
++                "currencyCode": "usd",
++                // captureMethod intentionally absent from mode
++            ],
++        ]
++
++        let modeParams = topLevelIntentConfig["mode"] as! NSDictionary
++        // Reading from modeParams (correct behavior) should yield nil/automatic
++        let captureMethodString = modeParams["captureMethod"] as? String
++        XCTAssertNil(captureMethodString)
++        XCTAssertEqual(StripeSdkImpl.mapCaptureMethod(captureMethodString), .automatic)
++
++        // Reading from top-level (old incorrect behavior) would have yielded "Manual"
++        let topLevelCaptureMethod = topLevelIntentConfig["captureMethod"] as? String
++        XCTAssertEqual(topLevelCaptureMethod, "Manual")
++    }
++
+     // MARK: - computeAllowedCardFundingTypes Tests
+ 
+     func test_computeAllowedCardFundingTypes_nilParams_returnsNil() {
+diff --git a/package.json b/package.json
+index a366d26..2a21f19 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@stripe/stripe-react-native",
+-  "version": "0.72.0",
++  "version": "0.73.0",
+   "author": "Stripe",
+   "description": "Stripe SDK for React Native",
+   "main": "lib/commonjs/index",
+diff --git a/src/types/LinkAppearance.ts b/src/types/LinkAppearance.ts
+new file mode 100644
+index 0000000..22fda9e
+--- /dev/null
++++ b/src/types/LinkAppearance.ts
+@@ -0,0 +1,45 @@
++/**
++ * Color tokens used by Link/Stripe-provided UI.
++ */
++export type LinkColors = {
++  /** Primary brand color. */
++  primary: string;
++  /** Foreground content color to render on top of the primary color. */
++  contentOnPrimary: string;
++  /** Color used for selected borders and outlines. */
++  borderSelected: string;
++};
++
++/**
++ * UI style preference for Stripe UI.
++ * - `AUTOMATIC`: Follow the system appearance.
++ * - `ALWAYS_LIGHT`: Always render a light appearance.
++ * - `ALWAYS_DARK`: Always render a dark appearance.
++ */
++export type LinkStyle = 'AUTOMATIC' | 'ALWAYS_LIGHT' | 'ALWAYS_DARK';
++
++/**
++ * Primary button appearance overrides.
++ */
++export type LinkPrimaryButton = {
++  /** Corner radius in dp/points. */
++  cornerRadius?: number;
++  /** Button height in dp/points. */
++  height?: number;
++};
++
++/**
++ * Customization options for Link/Stripe-provided UI.
++ */
++export type LinkAppearance = {
++  /** Color overrides used when the device is in light mode. */
++  lightColors?: LinkColors;
++  /** Color overrides used when the device is in dark mode. */
++  darkColors?: LinkColors;
++  /** UI style preference for Stripe UI. */
++  style?: LinkStyle;
++  /** Primary button appearance overrides. */
++  primaryButton?: LinkPrimaryButton;
++  /** When true, reduces Link branding in the sheet. @LinkControllerPreview only. */
++  reduceLinkBranding?: boolean;
++};
+diff --git a/src/types/LinkController.ts b/src/types/LinkController.ts
+index 1308906..5ec8816 100644
+--- a/src/types/LinkController.ts
++++ b/src/types/LinkController.ts
+@@ -1,5 +1,14 @@
+ import type { Result as PaymentMethodResult } from './PaymentMethod';
+ import type { LinkControllerError, StripeError } from './Errors';
++import type { BillingDetailsCollectionConfiguration } from './PaymentSheet';
++import type { LinkAppearance } from './LinkAppearance';
++
++export type {
++  LinkAppearance,
++  LinkColors,
++  LinkStyle,
++  LinkPrimaryButton,
++} from './LinkAppearance';
+ 
+ /**
+  * @PrivatePreview Payment method types supported by the Link flow.
+@@ -25,6 +34,10 @@ export type Configuration = {
+   phoneNumber?: string;
+   /** Whether to allow the user to log out. Defaults to true. */
+   allowLogout?: boolean;
++  /** Controls which billing fields are collected in the Link sheet. */
++  billingDetailsCollectionConfiguration?: BillingDetailsCollectionConfiguration;
++  /** Customize the appearance of the Link UI. */
++  appearance?: LinkAppearance;
+ };
+ 
+ /**
+diff --git a/src/types/Onramp.ts b/src/types/Onramp.ts
+index 7aad3d7..b87d1be 100644
+--- a/src/types/Onramp.ts
++++ b/src/types/Onramp.ts
+@@ -4,6 +4,14 @@ import type {
+   ApplePayBaseParams,
+   ApplePayPaymentMethodParams,
+ } from './PlatformPay';
++import type { LinkAppearance } from './LinkAppearance';
++
++export type {
++  LinkAppearance,
++  LinkColors,
++  LinkStyle,
++  LinkPrimaryButton,
++} from './LinkAppearance';
+ 
+ /**
+  * Generic error statuses returned by Crypto Onramp APIs.
+@@ -96,50 +104,6 @@ export type OnrampPlatformPayParams = {
+   applePay?: ApplePayBaseParams & ApplePayPaymentMethodParams;
+ };
+ 
+-/**
+- * Customization options for Link/Stripe-provided UI.
+- */
+-export type LinkAppearance = {
+-  /** Color overrides used when the device is in light mode. */
+-  lightColors?: LinkColors;
+-  /** Color overrides used when the device is in dark mode. */
+-  darkColors?: LinkColors;
+-  /** UI style preference for Stripe UI. */
+-  style?: LinkStyle;
+-  /** Primary button appearance overrides. */
+-  primaryButton?: LinkPrimaryButton;
+-};
+-
+-/**
+- * Color tokens used by Link/Stripe-provided UI.
+- */
+-export type LinkColors = {
+-  /** Primary brand color. */
+-  primary: string;
+-  /** Foreground content color to render on top of the primary color. */
+-  contentOnPrimary: string;
+-  /** Color used for selected borders and outlines. */
+-  borderSelected: string;
+-};
+-
+-/**
+- * UI style preference for Stripe UI.
+- * - `AUTOMATIC`: Follow the system appearance.
+- * - `ALWAYS_LIGHT`: Always render a light appearance.
+- * - `ALWAYS_DARK`: Always render a dark appearance.
+- */
+-export type LinkStyle = 'AUTOMATIC' | 'ALWAYS_LIGHT' | 'ALWAYS_DARK';
+-
+-/**
+- * Primary button appearance overrides.
+- */
+-export type LinkPrimaryButton = {
+-  /** Corner radius in dp/points. */
+-  cornerRadius?: number;
+-  /** Button height in dp/points. */
+-  height?: number;
+-};
+-
+ /**
+  * Information used to register a new Link user for crypto onramp.
+  *
+@@ -176,6 +140,7 @@ export enum CryptoNetwork {
+   xrpl = 'xrpl',
+   sui = 'sui',
+   arbitrum = 'arbitrum',
++  tempo = 'tempo',
+ }
+ 
+ /**
+diff --git a/stripe-react-native.podspec b/stripe-react-native.podspec
+index b9e22d7..2500e50 100644
+--- a/stripe-react-native.podspec
++++ b/stripe-react-native.podspec
+@@ -2,7 +2,7 @@ require 'json'
+ 
+ package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
+ # Keep stripe_version in sync with https://github.com/stripe/stripe-identity-react-native/blob/main/stripe-identity-react-native.podspec
+-stripe_version = '26.4.1'
++stripe_version = '26.5.0'
+ 
+ fabric_enabled = ENV['RCT_NEW_ARCH_ENABLED'] == '1'
+ 

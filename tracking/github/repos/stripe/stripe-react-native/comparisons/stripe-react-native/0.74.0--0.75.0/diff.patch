@@ -1,0 +1,1766 @@
+diff --git a/.github/workflows/bump-native-sdks.yml b/.github/workflows/bump-native-sdks.yml
+index e8b726e..0359235 100644
+--- a/.github/workflows/bump-native-sdks.yml
++++ b/.github/workflows/bump-native-sdks.yml
+@@ -13,7 +13,7 @@ jobs:
+       pull-requests: write
+ 
+     steps:
+-      - uses: actions/checkout@v7
++      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+         with:
+           # Use a PAT so the resulting PR triggers pull_request CI workflows.
+           # GITHUB_TOKEN-created PRs intentionally don't trigger other workflows.
+@@ -74,7 +74,7 @@ jobs:
+ 
+       - name: Set up Node.js
+         if: steps.diff.outputs.ios_changed == 'true' || steps.diff.outputs.android_changed == 'true'
+-        uses: actions/setup-node@v4
++        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+         with:
+           node-version: 18
+           cache: yarn
+diff --git a/.github/workflows/changelog-check.yml b/.github/workflows/changelog-check.yml
+index 3246703..b2a7054 100644
+--- a/.github/workflows/changelog-check.yml
++++ b/.github/workflows/changelog-check.yml
+@@ -14,7 +14,7 @@ jobs:
+       contents: read
+     steps:
+       - name: Checkout
+-        uses: actions/checkout@v4
++        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+ 
+       - name: Check CHANGELOG.md has valid first section header
+         run: |
+diff --git a/.github/workflows/close-resolved-issues.yml b/.github/workflows/close-resolved-issues.yml
+index 7fd1226..1aa8478 100644
+--- a/.github/workflows/close-resolved-issues.yml
++++ b/.github/workflows/close-resolved-issues.yml
+@@ -10,7 +10,7 @@ jobs:
+       issues: write
+     steps:
+       - name: Close GitHub Issue
+-        uses: actions/github-script@v7
++        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+         with:
+           github-token: ${{ secrets.GITHUB_TOKEN }}
+           script: |
+diff --git a/.github/workflows/generate-docs.yml b/.github/workflows/generate-docs.yml
+index 0ab33b9..6a08082 100644
+--- a/.github/workflows/generate-docs.yml
++++ b/.github/workflows/generate-docs.yml
+@@ -13,13 +13,13 @@ jobs:
+       contents: read
+     steps:
+       - name: checkout
+-        uses: actions/checkout@v4
++        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+ 
+       - name: Get yarn cache directory path
+         id: yarn-cache-dir-path
+         run: echo "::set-output name=dir::$(yarn cache dir)"
+ 
+-      - uses: actions/cache@v4
++      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+         id: yarn-cache
+         with:
+           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+@@ -28,7 +28,7 @@ jobs:
+             ${{ runner.os }}-yarn-
+ 
+       - name: Setup Node.js environment
+-        uses: actions/setup-node@v4
++        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+         with:
+           node-version-file: '.node-version'
+ 
+@@ -40,7 +40,7 @@ jobs:
+         run: yarn docs
+ 
+       - name: Deploy
+-        uses: peaceiris/actions-gh-pages@v3
++        uses: peaceiris/actions-gh-pages@373f7f263a76c20808c831209c920827a82a2847 # v3
+         with:
+           github_token: ${{ secrets.DOCS_GITHUB_SECRET }}
+           publish_dir: ./docs
+diff --git a/.github/workflows/public-api-check.yml b/.github/workflows/public-api-check.yml
+index 63492f5..e54f481 100644
+--- a/.github/workflows/public-api-check.yml
++++ b/.github/workflows/public-api-check.yml
+@@ -19,10 +19,10 @@ jobs:
+       contents: read
+     steps:
+       - name: Checkout
+-        uses: actions/checkout@v4
++        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+ 
+       - name: Setup Node.js
+-        uses: actions/setup-node@v4
++        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+         with:
+           node-version-file: '.node-version'
+ 
+@@ -31,7 +31,7 @@ jobs:
+         run: echo "dir=$(yarn cache dir)" >> "$GITHUB_OUTPUT"
+ 
+       - name: Cache yarn
+-        uses: actions/cache@v4
++        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+         with:
+           path: ${{ steps.yarn-cache-dir.outputs.dir }}
+           key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+diff --git a/.github/workflows/update-podfile-lock.yml b/.github/workflows/update-podfile-lock.yml
+index 005929a..d96b17f 100644
+--- a/.github/workflows/update-podfile-lock.yml
++++ b/.github/workflows/update-podfile-lock.yml
+@@ -17,7 +17,7 @@ jobs:
+       pull-requests: write
+ 
+     steps:
+-      - uses: actions/checkout@v7
++      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+         with:
+           # Always run against master. For release events the tag is already
+           # cut, so updating master keeps it current for the next release.
+@@ -25,7 +25,7 @@ jobs:
+           token: ${{ secrets.NATIVE_SDK_BUMP_TOKEN }}
+ 
+       - name: Setup Node.js
+-        uses: actions/setup-node@v6
++        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+         with:
+           node-version-file: '.node-version'
+ 
+diff --git a/.gitignore b/.gitignore
+index c4444b4..2284aa4 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -72,6 +72,10 @@ docs/api-reference/
+ # Local stripe-android dependency
+ example/android/stripe-android
+ 
++# Proprietary Samsung Pay SDK used by the Android example
++example/android/libs/*.jar
++!example/android/libs/README.md
++
+ # e2e tests
+ e2e-artifacts/
+ 
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 03769da..41e129a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,10 @@
+ # CHANGELOG
+ 
++## 0.75.0 - 2026-08-18
++**Features**
++* [Added] Android: Added Crypto Onramp Samsung Pay configuration, availability checks, payment collection, and example integration.
++* [Added] Added typed Crypto Onramp error coverage for wallet ownership verification failures.
++
+ ## 0.74.0 - 2026-08-11
+ **Features**
+ * [Added] iOS: Added `supportedNetworks` to the Apple Pay params, which restricts the card networks offered in the Apple Pay sheet.
+diff --git a/android/gradle.properties b/android/gradle.properties
+index be15890..aab026f 100644
+--- a/android/gradle.properties
++++ b/android/gradle.properties
+@@ -3,4 +3,4 @@ StripeSdk_compileSdkVersion=36
+ StripeSdk_targetSdkVersion=36
+ StripeSdk_minSdkVersion=23
+ # Keep StripeSdk_stripeVersion in sync with https://github.com/stripe/stripe-identity-react-native/blob/main/android/gradle.properties
+-StripeSdk_stripeVersion=23.15.0
++StripeSdk_stripeVersion=23.16.0
+diff --git a/android/proguard-rules.txt b/android/proguard-rules.txt
+index 94181e2..4c37bf5 100644
+--- a/android/proguard-rules.txt
++++ b/android/proguard-rules.txt
+@@ -9,3 +9,6 @@
+ # play-services-tapandpay is a private Google SDK that must be provided by the app.
+ # Suppress R8 warnings when it is absent (e.g. in the example app build).
+ -dontwarn com.google.android.gms.tapandpay.**
++-dontwarn com.samsung.android.sdk.samsungpay.**
++-keep class com.samsung.android.sdk.** { *; }
++-keep interface com.samsung.android.sdk.** { *; }
+diff --git a/android/src/oldarch/java/com/reactnativestripesdk/NativeOnrampSdkModuleSpec.java b/android/src/oldarch/java/com/reactnativestripesdk/NativeOnrampSdkModuleSpec.java
+index 2f46418..c2e61bd 100644
+--- a/android/src/oldarch/java/com/reactnativestripesdk/NativeOnrampSdkModuleSpec.java
++++ b/android/src/oldarch/java/com/reactnativestripesdk/NativeOnrampSdkModuleSpec.java
+@@ -43,6 +43,10 @@ public abstract class NativeOnrampSdkModuleSpec extends ReactContextBaseJavaModu
+   @DoNotStrip
+   public abstract void configureOnramp(ReadableMap config, Promise promise);
+ 
++  @ReactMethod
++  @DoNotStrip
++  public abstract void isSamsungPaySupported(Promise promise);
++
+   @ReactMethod
+   @DoNotStrip
+   public abstract void hasLinkAccount(String email, Promise promise);
+diff --git a/android/src/onramp/java/com/reactnativestripesdk/OnrampErrors.kt b/android/src/onramp/java/com/reactnativestripesdk/OnrampErrors.kt
+index ee4472a..ef7430e 100644
+--- a/android/src/onramp/java/com/reactnativestripesdk/OnrampErrors.kt
++++ b/android/src/onramp/java/com/reactnativestripesdk/OnrampErrors.kt
+@@ -86,10 +86,17 @@ private fun createOnrampMessageError(
+   createOnrampErrorMap(code = code, message = message)
+ 
+ private fun CryptoOnrampApiException.toOnrampErrorType(): String =
+-  if (code == "link_failed_to_attest_request") {
+-    "AppAttestationError"
+-  } else {
+-    "UncategorizedApiError"
++  when (code) {
++    "link_failed_to_attest_request" -> "AppAttestationError"
++    "crypto_onramp_invalid_wallet_ownership_signature" ->
++      "InvalidWalletOwnershipSignatureError"
++    "crypto_onramp_wallet_ownership_challenge_expired" ->
++      "WalletOwnershipChallengeExpiredError"
++    "crypto_onramp_invalid_wallet_ownership_challenge" ->
++      "InvalidWalletOwnershipChallengeError"
++    "crypto_onramp_wallet_not_found" -> "WalletNotFoundError"
++    "crypto_onramp_unsupported_network" -> "UnsupportedNetworkError"
++    else -> "UncategorizedApiError"
+   }
+ 
+ private fun StripeCryptoOnrampError.toOnrampErrorType(): String? =
+diff --git a/android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt b/android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt
+index 025e83e..54c0e73 100644
+--- a/android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt
++++ b/android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt
+@@ -8,6 +8,8 @@ import com.facebook.react.bridge.Arguments
+ import com.facebook.react.bridge.ReadableArray
+ import com.facebook.react.bridge.ReadableMap
+ import com.facebook.react.bridge.WritableArray
++import com.reactnativestripesdk.utils.getIntegerList
++import com.reactnativestripesdk.utils.mapToPreferredNetworks
+ import com.stripe.android.core.model.CountryCode
+ import com.stripe.android.crypto.onramp.ExperimentalCryptoOnramp
+ import com.stripe.android.link.LinkControllerPreview
+@@ -17,6 +19,7 @@ import com.stripe.android.crypto.onramp.exception.SDKVersion
+ import com.stripe.android.crypto.onramp.model.KycInfo
+ import com.stripe.android.crypto.onramp.model.OnrampConfiguration
+ import com.stripe.android.crypto.onramp.model.PaymentMethodDisplayData
++import com.stripe.android.crypto.onramp.model.PaymentMethodSelection
+ import com.stripe.android.crypto.onramp.model.WalletOwnershipChallenge
+ import com.stripe.android.crypto.onramp.model.compliance.ComplianceIdentifier
+ import com.stripe.android.crypto.onramp.model.compliance.ComplianceIdentifierAlternativeGroup
+@@ -51,6 +54,7 @@ internal fun mapConfig(
+   val displayName = configMap.getString("merchantDisplayName") ?: ""
+   val cryptoCustomerId = configMap.getString("cryptoCustomerId")
+   val googlePayConfig = mapGooglePayConfig(configMap.getMap("googlePay"))
++  val samsungPayConfig = mapSamsungPayConfig(configMap.getMap("samsungPay"))
+ 
+   return OnrampConfiguration()
+     .merchantDisplayName(displayName)
+@@ -58,6 +62,7 @@ internal fun mapConfig(
+     .appearance(appearance)
+     .cryptoCustomerId(cryptoCustomerId)
+     .apply { googlePayConfig?.let { googlePayConfig(it) } }
++    .apply { samsungPayConfig?.let { samsungPayConfig(it) } }
+     .apply {
+       if (additionalSdkVersions.isNotEmpty()) {
+         this.additionalSdkVersions(additionalSdkVersions)
+@@ -65,6 +70,72 @@ internal fun mapConfig(
+     }
+ }
+ 
++@SuppressLint("RestrictedApi")
++internal fun mapSamsungPayConfig(params: ReadableMap?): OnrampConfiguration.SamsungPayConfig? {
++  if (params == null) return null
++
++  val serviceId = params.getString("serviceId")?.takeIf { it.isNotBlank() } ?: return null
++  val merchantId = params.getString("merchantId")
++  val merchantName = params.getString("merchantName")
++  val allowedCardBrands = params.getIntegerList("allowedCardBrands")
++
++  return if (allowedCardBrands.isNullOrEmpty()) {
++    OnrampConfiguration.SamsungPayConfig(
++      serviceId = serviceId,
++      merchantId = merchantId,
++      merchantName = merchantName,
++    )
++  } else {
++    OnrampConfiguration.SamsungPayConfig(
++      serviceId = serviceId,
++      merchantId = merchantId,
++      merchantName = merchantName,
++      allowedCardBrands = mapToPreferredNetworks(allowedCardBrands),
++    )
++  }
++}
++
++@SuppressLint("RestrictedApi")
++internal fun mapOnrampPaymentMethodSelection(
++  paymentMethod: String,
++  platformPayParams: ReadableMap,
++): PaymentMethodSelection =
++  when (paymentMethod) {
++    "Card" -> PaymentMethodSelection.Card()
++    "BankAccount" -> PaymentMethodSelection.BankAccount()
++    "CardAndBankAccount" -> PaymentMethodSelection.CardAndBankAccount()
++    "PlatformPay" -> {
++      val googlePayParams =
++        platformPayParams.getMap("googlePay")
++          ?: throw IllegalArgumentException("Missing googlePay params in platformPayParams")
++
++      PaymentMethodSelection.GooglePay(
++        currencyCode = googlePayParams.getString("currencyCode") ?: "",
++        amount = googlePayParams.getDouble("amount").toLong(),
++        transactionId = googlePayParams.getString("transactionId"),
++        label = googlePayParams.getString("label"),
++      )
++    }
++    "SamsungPay" -> {
++      val samsungPayParams =
++        platformPayParams.getMap("samsungPay")
++          ?: throw IllegalArgumentException("Missing samsungPay params in platformPayParams")
++      val currencyCode =
++        samsungPayParams.getString("currencyCode")?.takeIf { it.isNotBlank() }
++          ?: throw IllegalArgumentException("Missing currencyCode in samsungPay params")
++      val orderNumber =
++        samsungPayParams.getString("orderNumber")?.takeIf { it.isNotBlank() }
++          ?: throw IllegalArgumentException("Missing orderNumber in samsungPay params")
++
++      PaymentMethodSelection.SamsungPay(
++        currencyCode = currencyCode,
++        amount = samsungPayParams.getDouble("amount").toLong(),
++        orderNumber = orderNumber,
++      )
++    }
++    else -> throw IllegalArgumentException("Unsupported payment method: $paymentMethod")
++  }
++
+ @SuppressLint("RestrictedApi")
+ internal fun mapGooglePayConfig(params: ReadableMap?): GooglePayPaymentMethodLauncher.Config? {
+   if (params == null) return null
+diff --git a/android/src/onramp/java/com/reactnativestripesdk/OnrampSdkModule.kt b/android/src/onramp/java/com/reactnativestripesdk/OnrampSdkModule.kt
+index 3014d38..56577d7 100644
+--- a/android/src/onramp/java/com/reactnativestripesdk/OnrampSdkModule.kt
++++ b/android/src/onramp/java/com/reactnativestripesdk/OnrampSdkModule.kt
+@@ -52,7 +52,6 @@ import com.stripe.android.crypto.onramp.model.OnrampTokenAuthenticationResult
+ import com.stripe.android.crypto.onramp.model.OnrampUpdatePhoneNumberResult
+ import com.stripe.android.crypto.onramp.model.OnrampVerifyIdentityResult
+ import com.stripe.android.crypto.onramp.model.OnrampVerifyKycInfoResult
+-import com.stripe.android.crypto.onramp.model.PaymentMethodSelection
+ import com.stripe.android.link.LinkController.PaymentMethodPreview
+ import com.stripe.android.link.LinkControllerPreview
+ import com.stripe.android.link.PaymentMethodPreviewDetails
+@@ -66,6 +65,7 @@ import kotlinx.coroutines.cancel
+ import kotlinx.coroutines.launch
+ import kotlinx.coroutines.withContext
+ import kotlinx.coroutines.withTimeout
++import kotlinx.coroutines.withTimeoutOrNull
+ 
+ @SuppressLint("RestrictedApi")
+ @OptIn(ExperimentalCryptoOnramp::class, LinkControllerPreview::class)
+@@ -88,6 +88,7 @@ class OnrampSdkModule(
+   private var checkoutPromise: Promise? = null
+   private var verifyKycPromise: Promise? = null
+   private var userAttestationPromise: Promise? = null
++  private var samsungPayAvailability = CompletableDeferred(false)
+ 
+   private var checkoutClientSecretDeferred: CompletableDeferred<String>? = null
+   private val rnScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+@@ -136,6 +137,13 @@ class OnrampSdkModule(
+       return
+     }
+ 
++    samsungPayAvailability =
++      if (mapSamsungPayConfig(config.getMap("samsungPay")) == null) {
++        CompletableDeferred(false)
++      } else {
++        CompletableDeferred()
++      }
++
+     val application =
+       reactApplicationContext.currentActivity?.application ?: (reactApplicationContext.applicationContext as? Application)
+     if (application == null) {
+@@ -159,6 +167,8 @@ class OnrampSdkModule(
+           userAttestationPromise?.let {
+             handleUserAttestationResult(result, it)
+           }
++        }.samsungPayIsReadyCallback { isReady, _ ->
++          samsungPayAvailability.complete(isReady)
+         }.onrampSessionClientSecretProvider { sessionId ->
+           checkoutClientSecretDeferred = CompletableDeferred()
+ 
+@@ -193,6 +203,17 @@ class OnrampSdkModule(
+     }
+   }
+ 
++  @ReactMethod
++  override fun isSamsungPaySupported(promise: Promise) {
++    rnScope.launch {
++      val isSupported =
++        withTimeoutOrNull(15_000L) {
++          samsungPayAvailability.await()
++        } ?: false
++      promise.resolve(isSupported)
++    }
++  }
++
+   @ReactMethod
+   private fun createOnrampPresenter(promise: Promise) {
+     val activity = getCurrentActivityOrResolveWithError(promise) as? ComponentActivity
+@@ -557,42 +578,11 @@ class OnrampSdkModule(
+       }
+ 
+     val method =
+-      when (paymentMethod) {
+-        "Card" -> PaymentMethodSelection.Card()
+-        "BankAccount" -> PaymentMethodSelection.BankAccount()
+-        "CardAndBankAccount" -> PaymentMethodSelection.CardAndBankAccount()
+-        "PlatformPay" -> {
+-          val googlePayParams =
+-            platformPayParams.getMap("googlePay")
+-              ?: run {
+-                promise.resolve(
+-                  createOnrampFailedError(
+-                    IllegalArgumentException("Missing googlePay params in platformPayParams"),
+-                  ),
+-                )
+-                return
+-              }
+-          val currencyCode = googlePayParams.getString("currencyCode") ?: ""
+-          val amount = googlePayParams.getDouble("amount").toLong()
+-
+-          val transactionId = googlePayParams.getString("transactionId")
+-          val label = googlePayParams.getString("label")
+-
+-          PaymentMethodSelection.GooglePay(
+-            currencyCode = currencyCode,
+-            amount = amount,
+-            transactionId = transactionId,
+-            label = label,
+-          )
+-        }
+-        else -> {
+-          promise.resolve(
+-            createOnrampFailedError(
+-              IllegalArgumentException("Unsupported payment method: $paymentMethod"),
+-            ),
+-          )
+-          return
+-        }
++      try {
++        mapOnrampPaymentMethodSelection(paymentMethod, platformPayParams)
++      } catch (error: IllegalArgumentException) {
++        promise.resolve(createOnrampFailedError(error))
++        return
+       }
+ 
+     collectPaymentPromise = promise
+diff --git a/android/src/test/java/com/reactnativestripesdk/OnrampErrorsTest.kt b/android/src/test/java/com/reactnativestripesdk/OnrampErrorsTest.kt
+index fad8eeb..98e4625 100644
+--- a/android/src/test/java/com/reactnativestripesdk/OnrampErrorsTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/OnrampErrorsTest.kt
+@@ -98,6 +98,47 @@ class OnrampErrorsTest {
+     assertTrue(details.getString("developerMessage")!!.contains("Code: consumer_session_expired"))
+   }
+ 
++  @Test
++  fun createOnrampFailedError_withWalletOwnershipApiError_mapsSpecificErrorType() {
++    val testCases =
++      mapOf(
++        "crypto_onramp_invalid_wallet_ownership_signature" to
++          "InvalidWalletOwnershipSignatureError",
++        "crypto_onramp_wallet_ownership_challenge_expired" to
++          "WalletOwnershipChallengeExpiredError",
++        "crypto_onramp_invalid_wallet_ownership_challenge" to
++          "InvalidWalletOwnershipChallengeError",
++        "crypto_onramp_wallet_not_found" to "WalletNotFoundError",
++        "crypto_onramp_unsupported_network" to "UnsupportedNetworkError",
++      )
++
++    testCases.forEach { (apiErrorCode, expectedType) ->
++      val error =
++        createApiOnrampException(
++          className = "com.stripe.android.crypto.onramp.exception.UncategorizedException",
++          reason = "wallet_verification_failed",
++          operation = "submitWalletOwnershipSignature",
++          appPackageName = "com.example.app",
++          mode = "test",
++          sdkVersions = listOf(SDKVersion(name = "stripe-android", version = "23.15.0")),
++          userMessage = "Wallet ownership verification failed.",
++          apiErrorCode = apiErrorCode,
++          apiErrorType = "invalid_request_error",
++          apiErrorMessage = "Wallet ownership verification failed.",
++          apiUserMessage = "Please try again.",
++          requestId = "req_wallet_verification",
++        )
++
++      val details = createOnrampFailedError(error).getMap("error")
++
++      assertNotNull(apiErrorCode, details)
++      assertEquals(apiErrorCode, expectedType, details!!.getString("onrampErrorType"))
++      assertEquals(apiErrorCode, apiErrorCode, details.getString("apiErrorCode"))
++      assertEquals(apiErrorCode, "wallet_verification_failed", details.getString("reason"))
++      assertEquals(apiErrorCode, "req_wallet_verification", details.getString("requestId"))
++    }
++  }
++
+   @Test
+   fun createOnrampFailedError_withAppAttestationUnavailableException_preservesSdkErrorFields() {
+     val underlyingError = IllegalStateException("Native Link is not available")
+@@ -148,7 +189,7 @@ class OnrampErrorsTest {
+     apiErrorType: String,
+     apiErrorMessage: String,
+     apiUserMessage: String,
+-    docUrl: String,
++    docUrl: String? = null,
+     requestId: String,
+   ): Exception {
+     val stripeError =
+diff --git a/android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt b/android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt
+index ffbac51..1d1381d 100644
+--- a/android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt
+@@ -12,7 +12,9 @@ import com.reactnativestripesdk.mapFromCryptoConsumerWallet
+ import com.reactnativestripesdk.mapFromKycInfo
+ import com.reactnativestripesdk.mapFromWalletOwnershipChallenge
+ import com.reactnativestripesdk.mapGooglePayConfig
++import com.reactnativestripesdk.mapOnrampPaymentMethodSelection
+ import com.reactnativestripesdk.mapPaymentDetailsType
++import com.reactnativestripesdk.mapSamsungPayConfig
+ import com.reactnativestripesdk.mapToComplianceIdentifiers
+ import com.reactnativestripesdk.utils.readableArrayOf
+ import com.reactnativestripesdk.utils.readableMapOf
+@@ -21,10 +23,12 @@ import com.stripe.android.crypto.onramp.ExperimentalCryptoOnramp
+ import com.stripe.android.crypto.onramp.model.CryptoNetwork
+ import com.stripe.android.crypto.onramp.model.KycInfo
+ import com.stripe.android.crypto.onramp.model.PaymentMethodDisplayData
++import com.stripe.android.crypto.onramp.model.PaymentMethodSelection
+ import com.stripe.android.googlepaylauncher.GooglePayEnvironment
+ import com.stripe.android.googlepaylauncher.GooglePayPaymentMethodLauncher
+ import com.stripe.android.link.LinkAppearance.Style
+ import com.stripe.android.link.LinkControllerPreview
++import com.stripe.android.model.CardBrand
+ import com.stripe.android.model.DateOfBirth
+ import com.stripe.android.paymentsheet.PaymentSheet
+ import org.junit.Assert.assertEquals
+@@ -217,6 +221,83 @@ class OnrampMappersTest {
+     assertTrue(result!!.billingAddressConfig.isPhoneNumberRequired)
+   }
+ 
++  @Test
++  fun mapSamsungPayConfig_NullMap_ReturnsNull() {
++    assertNull(mapSamsungPayConfig(null))
++  }
++
++  @Test
++  fun mapSamsungPayConfig_MissingServiceId_ReturnsNull() {
++    assertNull(mapSamsungPayConfig(readableMapOf("merchantName" to "Test Merchant")))
++  }
++
++  @Test
++  fun mapSamsungPayConfig_DefaultsCardBrands() {
++    val result =
++      mapSamsungPayConfig(
++        readableMapOf(
++          "serviceId" to "service-id",
++          "merchantId" to "merchant-id",
++          "merchantName" to "Test Merchant",
++        ),
++    )
++
++    assertNotNull(result)
++    assertEquals("service-id", result!!.privateField("serviceId"))
++    assertEquals("merchant-id", result.privateField("merchantId"))
++    assertEquals("Test Merchant", result.privateField("merchantName"))
++    assertEquals(
++      listOf(CardBrand.Visa, CardBrand.MasterCard, CardBrand.AmericanExpress, CardBrand.Discover),
++      result.privateField("allowedCardBrands"),
++    )
++  }
++
++  @Test
++  fun mapSamsungPayConfig_EmptyAllowedCardBrands_DefaultsCardBrands() {
++    val result =
++      mapSamsungPayConfig(
++        readableMapOf(
++          "serviceId" to "service-id",
++          "allowedCardBrands" to readableArrayOf(),
++        ),
++      )
++
++    assertEquals(
++      listOf(CardBrand.Visa, CardBrand.MasterCard, CardBrand.AmericanExpress, CardBrand.Discover),
++      result!!.privateField("allowedCardBrands"),
++    )
++  }
++
++  @Test
++  fun mapSamsungPayConfig_MapsAllowedCardBrands() {
++    val result =
++      mapSamsungPayConfig(
++        readableMapOf(
++          "serviceId" to "service-id",
++          "allowedCardBrands" to readableArrayOf(7, 5),
++        ),
++      )
++
++    assertEquals(
++      listOf(CardBrand.Visa, CardBrand.MasterCard),
++      result!!.privateField("allowedCardBrands"),
++    )
++  }
++
++  @Test
++  fun mapConfig_WithSamsungPayConfig() {
++    val config =
++      readableMapOf(
++        "merchantDisplayName" to "Test",
++        "samsungPay" to readableMapOf("serviceId" to "service-id"),
++      )
++
++    val result = mapConfig(config, "pk_test_123")
++    val samsungPayConfig = result.privateField("samsungPayConfig")!!
++
++    assertEquals("service-id", samsungPayConfig.privateField("serviceId"))
++  }
++
+   @Test
+   fun mapConfig_WithAppearance() {
+     val appearance =
+@@ -455,6 +536,42 @@ class OnrampMappersTest {
+     assertEquals("SamsungPay", mapPaymentDetailsType(PaymentMethodDisplayData.Type.SamsungPay))
+   }
+ 
++  @Test
++  fun mapOnrampPaymentMethodSelection_MapsSamsungPayParams() {
++    val params =
++      readableMapOf(
++        "samsungPay" to
++          readableMapOf(
++            "currencyCode" to "USD",
++            "amount" to 100,
++            "orderNumber" to "order-123",
++          ),
++      )
++
++    val result = mapOnrampPaymentMethodSelection("SamsungPay", params)
++
++    assertTrue(result is PaymentMethodSelection.SamsungPay)
++    assertEquals("USD", result.privateField("currencyCode"))
++    assertEquals(100L, result.privateField("amount"))
++    assertEquals("order-123", result.privateField("orderNumber"))
++  }
++
++  private fun Any.privateField(name: String): Any? =
++    javaClass.getDeclaredField(name).let { field ->
++      field.isAccessible = true
++      field.get(this)
++    }
++
++  @Test
++  fun mapOnrampPaymentMethodSelection_SamsungPayRequiresParams() {
++    val error =
++      assertThrows(IllegalArgumentException::class.java) {
++        mapOnrampPaymentMethodSelection("SamsungPay", readableMapOf())
++      }
++
++    assertEquals("Missing samsungPay params in platformPayParams", error.message)
++  }
++
+   @Test
+   fun mapFromKycInfo_AllFields() {
+     val kycInfo =
+diff --git a/etc/stripe-react-native.api.md b/etc/stripe-react-native.api.md
+index 2f84844..347ad68 100644
+--- a/etc/stripe-react-native.api.md
++++ b/etc/stripe-react-native.api.md
+@@ -1089,6 +1089,7 @@ type Configuration = {
+     appearance: LinkAppearance;
+     cryptoCustomerId?: string;
+     googlePay?: GooglePayConfig;
++    samsungPay?: SamsungPayConfig;
+ };
+ 
+ // @public
+@@ -1477,7 +1478,7 @@ type CryptoOnrampError = (StripeError<OnrampErrorStatus> & {
+     onrampErrorType?: never;
+     developerMessage?: never;
+     userMessage?: never;
+-}) | AppAttestationError | UncategorizedApiError | AppAttestationUnavailableError;
++}) | AppAttestationError | InvalidWalletOwnershipSignatureError | WalletOwnershipChallengeExpiredError | InvalidWalletOwnershipChallengeError | WalletNotFoundError | UnsupportedNetworkError | UncategorizedApiError | AppAttestationUnavailableError;
+ 
+ // @public
+ type CryptoPaymentToken = {
+@@ -2282,6 +2283,16 @@ enum InvalidShippingField {
+     SubLocality = "subLocality"
+ }
+ 
++// @public
++type InvalidWalletOwnershipChallengeError = OnrampApiError & {
++    onrampErrorType: 'InvalidWalletOwnershipChallengeError';
++};
++
++// @public
++type InvalidWalletOwnershipSignatureError = OnrampApiError & {
++    onrampErrorType: 'InvalidWalletOwnershipSignatureError';
++};
++
+ // @public (undocumented)
+ interface IOSNavigationBarProps {
+     // (undocumented)
+@@ -2667,7 +2678,9 @@ declare namespace Onramp {
+         Configuration,
+         GooglePayConfig,
+         GooglePayBillingAddressConfig,
++        SamsungPayConfig,
+         OnrampGooglePayParams,
++        OnrampSamsungPayParams,
+         OnrampPlatformPayParams,
+         LinkUserInfo,
+         CryptoNetwork,
+@@ -2686,6 +2699,11 @@ declare namespace Onramp {
+         OnrampSdkError,
+         OnrampApiError,
+         AppAttestationError,
++        InvalidWalletOwnershipSignatureError,
++        WalletOwnershipChallengeExpiredError,
++        InvalidWalletOwnershipChallengeError,
++        WalletNotFoundError,
++        UnsupportedNetworkError,
+         UncategorizedApiError,
+         AppAttestationUnavailableError,
+         CryptoOnrampError,
+@@ -2720,7 +2738,7 @@ type OnrampApiError = OnrampSdkError & {
+ };
+ 
+ // @public
+-type OnrampApiErrorType = 'AppAttestationError' | 'UncategorizedApiError';
++type OnrampApiErrorType = 'AppAttestationError' | 'InvalidWalletOwnershipSignatureError' | 'WalletOwnershipChallengeExpiredError' | 'InvalidWalletOwnershipChallengeError' | 'WalletNotFoundError' | 'UnsupportedNetworkError' | 'UncategorizedApiError';
+ 
+ // @public
+ enum OnrampErrorStatus {
+@@ -2746,9 +2764,17 @@ type OnrampGooglePayParams = {
+ // @public
+ type OnrampPlatformPayParams = {
+     googlePay?: OnrampGooglePayParams;
++    samsungPay?: OnrampSamsungPayParams;
+     applePay?: ApplePayBaseParams & ApplePayPaymentMethodParams;
+ };
+ 
++// @public
++type OnrampSamsungPayParams = {
++    currencyCode: string;
++    amount: number;
++    orderNumber: string;
++};
++
+ // @public
+ type OnrampSdkError = StripeError<OnrampErrorStatus> & {
+     onrampErrorType: OnrampErrorType;
+@@ -2922,7 +2948,7 @@ type PaymentMethodDisplayData = {
+     icon: string;
+     label: string;
+     sublabel?: string;
+-    type: 'Card' | 'BankAccount' | 'ApplePay' | 'GooglePay';
++    type: 'Card' | 'BankAccount' | 'ApplePay' | 'GooglePay' | 'SamsungPay';
+ };
+ 
+ // @public (undocumented)
+@@ -3591,6 +3617,14 @@ export enum RowStyle {
+     FloatingButton = "floatingButton"
+ }
+ 
++// @public
++type SamsungPayConfig = {
++    serviceId: string;
++    merchantId?: string;
++    merchantName?: string;
++    allowedCardBrands?: CardBrand[];
++};
++
+ // @public (undocumented)
+ interface SepaDebitResult {
+     // (undocumented)
+@@ -4075,6 +4109,11 @@ type UncategorizedApiError = OnrampApiError & {
+     onrampErrorType: 'UncategorizedApiError';
+ };
+ 
++// @public
++type UnsupportedNetworkError = OnrampApiError & {
++    onrampErrorType: 'UnsupportedNetworkError';
++};
++
+ // @public
+ export const updatePlatformPaySheet: (params: {
+     applePay: {
+@@ -4180,6 +4219,7 @@ export function useOnramp(): {
+     configure: (config: Onramp.Configuration) => Promise<{
+         error?: Onramp.CryptoOnrampError;
+     }>;
++    isSamsungPaySupported: () => Promise<boolean>;
+     hasLinkAccount: (email: string) => Promise<Onramp.HasLinkAccountResult>;
+     registerLinkUser: (info: Onramp.LinkUserInfo) => Promise<Onramp.RegisterLinkUserResult>;
+     registerWalletAddress: (walletAddress: string, network: Onramp.CryptoNetwork) => Promise<{
+@@ -4206,6 +4246,7 @@ export function useOnramp(): {
+     collectPaymentMethod: {
+         (paymentMethod: "Card" | "BankAccount" | "CardAndBankAccount", platformPayParams?: undefined): Promise<Onramp.CollectPaymentMethodResult>;
+         (paymentMethod: "PlatformPay", platformPayParams: Onramp.OnrampPlatformPayParams): Promise<Onramp.CollectPaymentMethodResult>;
++        (paymentMethod: "SamsungPay", platformPayParams: Onramp.OnrampPlatformPayParams): Promise<Onramp.CollectPaymentMethodResult>;
+     };
+     createCryptoPaymentToken: () => Promise<Onramp.CreateCryptoPaymentTokenResult>;
+     performCheckout: (onrampSessionId: string, provideCheckoutClientSecret: () => Promise<string | null>) => Promise<{
+@@ -4377,6 +4418,11 @@ type VoidResult = {
+     error?: CryptoOnrampError;
+ };
+ 
++// @public
++type WalletNotFoundError = OnrampApiError & {
++    onrampErrorType: 'WalletNotFoundError';
++};
++
+ // @public
+ type WalletOwnershipChallenge = {
+     challengeId: string;
+@@ -4386,6 +4432,11 @@ type WalletOwnershipChallenge = {
+     expiresAt: string;
+ };
+ 
++// @public
++type WalletOwnershipChallengeExpiredError = OnrampApiError & {
++    onrampErrorType: 'WalletOwnershipChallengeExpiredError';
++};
++
+ // @public (undocumented)
+ interface WeChatPayParams {
+     // (undocumented)
+diff --git a/example/android/build.gradle b/example/android/build.gradle
+index ee6bf5d..42dae62 100644
+--- a/example/android/build.gradle
++++ b/example/android/build.gradle
+@@ -62,6 +62,18 @@ subprojects { subproject ->
+                 if (manifestFile.exists()) {
+                     def manifest = manifestFile.text
+ 
++                    // Samsung Pay status checks require package visibility on Android 11+.
++                    if (!manifest.contains('com.samsung.android.spay')) {
++                        manifest = manifest.replace(
++                            '<application',
++                            '''<queries>
++        <package android:name="com.samsung.android.spay" />
++        <package android:name="com.samsung.android.samsungpay.gear" />
++    </queries>
++    <application'''
++                        )
++                    }
++
+                     // Add launchMode="singleTask"
+                     manifest = manifest.replace(
+                         '<activity android:name="com.microsoft.reacttestapp.MainActivity" android:exported="true">',
+diff --git a/example/android/libs/README.md b/example/android/libs/README.md
+new file mode 100644
+index 0000000..1a94bea
+--- /dev/null
++++ b/example/android/libs/README.md
+@@ -0,0 +1,9 @@
++# Samsung Pay SDK
++
++To exercise Samsung Pay in the Crypto Onramp example:
++
++1. Download Samsung Pay SDK 2.22.00 from the Samsung Pay developer portal.
++2. Copy its Java library here as `samsungpay_2.22.00.jar`.
++3. Build and run the example on a supported Samsung device with Samsung Wallet configured.
++
++The SDK is proprietary and is intentionally not committed to this repository. The example continues to build without it; its Samsung Pay button remains disabled when the SDK, service configuration, or device support is unavailable.
+diff --git a/example/app.json b/example/app.json
+index 7603dfd..3b97c4d 100644
+--- a/example/app.json
++++ b/example/app.json
+@@ -24,7 +24,9 @@
+   "ios": {
+     "bundleIdentifier": "com.stripe.react.native",
+     "codeSignEntitlements": {
+-      "com.apple.developer.in-app-payments": ["merchant.com.stripe.react.native"]
++      "com.apple.developer.in-app-payments": [
++        "merchant.com.stripe.react.native"
++      ]
+     },
+     "urlTypes": [
+       {
+@@ -34,17 +36,23 @@
+   },
+   "android": {
+     "package": "com.stripe.react.native",
+-    "versionCode": 4, 
++    "versionCode": 4,
+     "permissions": [
+       {
+         "android:name": "android.permission.CAMERA",
+         "android:maxSdkVersion": "34"
+       }
+     ],
+-    "metaData": [{
+-      "android:name": "com.google.android.gms.wallet.api.enabled",
+-      "android:value": "true"
+-    }],
++    "metaData": [
++      {
++        "android:name": "com.google.android.gms.wallet.api.enabled",
++        "android:value": "true"
++      },
++      {
++        "android:name": "spay_sdk_api_level",
++        "android:value": "2.22"
++      }
++    ],
+     "signingConfigs": {
+       "debug": {
+         "keyAlias": "androiddebugkey",
+diff --git a/example/ios/Podfile.lock b/example/ios/Podfile.lock
+index f6abde9..ca1906d 100644
+--- a/example/ios/Podfile.lock
++++ b/example/ios/Podfile.lock
+@@ -1820,14 +1820,14 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - Stripe (26.6.0):
+-    - StripeApplePay (= 26.6.0)
+-    - StripeCore (= 26.6.0)
+-    - StripeIssuing (= 26.6.0)
+-    - StripePayments (= 26.6.0)
+-    - StripePaymentsUI (= 26.6.0)
+-    - StripeUICore (= 26.6.0)
+-  - stripe-react-native (0.74.0):
++  - Stripe (26.7.0):
++    - StripeApplePay (= 26.7.0)
++    - StripeCore (= 26.7.0)
++    - StripeIssuing (= 26.7.0)
++    - StripePayments (= 26.7.0)
++    - StripePaymentsUI (= 26.7.0)
++    - StripeUICore (= 26.7.0)
++  - stripe-react-native (0.75.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1848,10 +1848,10 @@ PODS:
+     - ReactCommon/turbomodule/bridging
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+-    - stripe-react-native/Core (= 0.74.0)
+-    - stripe-react-native/NewArch (= 0.74.0)
++    - stripe-react-native/Core (= 0.75.0)
++    - stripe-react-native/NewArch (= 0.75.0)
+     - Yoga
+-  - stripe-react-native/Core (0.74.0):
++  - stripe-react-native/Core (0.75.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1872,14 +1872,14 @@ PODS:
+     - ReactCommon/turbomodule/bridging
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+-    - Stripe (= 26.6.0)
+-    - StripeApplePay (= 26.6.0)
+-    - StripeFinancialConnections (= 26.6.0)
+-    - StripePayments (= 26.6.0)
+-    - StripePaymentSheet (= 26.6.0)
+-    - StripePaymentsUI (= 26.6.0)
++    - Stripe (= 26.7.0)
++    - StripeApplePay (= 26.7.0)
++    - StripeFinancialConnections (= 26.7.0)
++    - StripePayments (= 26.7.0)
++    - StripePaymentSheet (= 26.7.0)
++    - StripePaymentsUI (= 26.7.0)
+     - Yoga
+-  - stripe-react-native/NewArch (0.74.0):
++  - stripe-react-native/NewArch (0.75.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1901,7 +1901,7 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - stripe-react-native/Onramp (0.74.0):
++  - stripe-react-native/Onramp (0.75.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1923,9 +1923,9 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - stripe-react-native/Core
+-    - StripeCryptoOnramp (= 26.6.0)
++    - StripeCryptoOnramp (= 26.7.0)
+     - Yoga
+-  - stripe-react-native/Tests (0.74.0):
++  - stripe-react-native/Tests (0.75.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1947,46 +1947,49 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - StripeApplePay (26.6.0):
+-    - StripeCore (= 26.6.0)
+-  - StripeCameraCore (26.6.0):
+-    - StripeCore (= 26.6.0)
+-  - StripeCore (26.6.0)
+-  - StripeCryptoOnramp (26.6.0):
+-    - StripeApplePay (= 26.6.0)
+-    - StripeCore (= 26.6.0)
+-    - StripeIdentity (= 26.6.0)
+-    - StripePayments (= 26.6.0)
+-    - StripePaymentSheet (= 26.6.0)
+-    - StripePaymentsUI (= 26.6.0)
+-    - StripeUICore (= 26.6.0)
+-  - StripeFinancialConnections (26.6.0):
+-    - StripeCore (= 26.6.0)
+-    - StripeUICore (= 26.6.0)
+-  - StripeIdentity (26.6.0):
+-    - StripeCameraCore (= 26.6.0)
+-    - StripeCore (= 26.6.0)
+-    - StripeUICore (= 26.6.0)
+-  - StripeIssuing (26.6.0):
+-    - StripeCore (= 26.6.0)
+-    - StripePayments (= 26.6.0)
+-    - StripePaymentsUI (= 26.6.0)
+-  - StripePayments (26.6.0):
+-    - StripeCore (= 26.6.0)
+-    - StripePayments/Stripe3DS2 (= 26.6.0)
+-  - StripePayments/Stripe3DS2 (26.6.0):
+-    - StripeCore (= 26.6.0)
+-  - StripePaymentSheet (26.6.0):
+-    - StripeApplePay (= 26.6.0)
+-    - StripeCore (= 26.6.0)
+-    - StripePayments (= 26.6.0)
+-    - StripePaymentsUI (= 26.6.0)
+-  - StripePaymentsUI (26.6.0):
+-    - StripeCore (= 26.6.0)
+-    - StripePayments (= 26.6.0)
+-    - StripeUICore (= 26.6.0)
+-  - StripeUICore (26.6.0):
+-    - StripeCore (= 26.6.0)
++  - StripeApplePay (26.7.0):
++    - StripeCore (= 26.7.0)
++  - StripeCameraCore (26.7.0):
++    - StripeCore (= 26.7.0)
++  - StripeCore (26.7.0)
++  - StripeCryptoOnramp (26.7.0):
++    - StripeApplePay (= 26.7.0)
++    - StripeCore (= 26.7.0)
++    - StripeIdentity (= 26.7.0)
++    - StripePayments (= 26.7.0)
++    - StripePaymentSheet (= 26.7.0)
++    - StripePaymentsUI (= 26.7.0)
++    - StripeUICore (= 26.7.0)
++  - StripeFinancialConnections (26.7.0):
++    - StripeCore (= 26.7.0)
++    - StripeUICore (= 26.7.0)
++  - StripeFinancialConnectionsLite (26.7.0):
++    - StripeCore (= 26.7.0)
++  - StripeIdentity (26.7.0):
++    - StripeCameraCore (= 26.7.0)
++    - StripeCore (= 26.7.0)
++    - StripeUICore (= 26.7.0)
++  - StripeIssuing (26.7.0):
++    - StripeCore (= 26.7.0)
++    - StripePayments (= 26.7.0)
++    - StripePaymentsUI (= 26.7.0)
++  - StripePayments (26.7.0):
++    - StripeCore (= 26.7.0)
++    - StripePayments/Stripe3DS2 (= 26.7.0)
++  - StripePayments/Stripe3DS2 (26.7.0):
++    - StripeCore (= 26.7.0)
++  - StripePaymentSheet (26.7.0):
++    - StripeApplePay (= 26.7.0)
++    - StripeCore (= 26.7.0)
++    - StripeFinancialConnectionsLite (= 26.7.0)
++    - StripePayments (= 26.7.0)
++    - StripePaymentsUI (= 26.7.0)
++  - StripePaymentsUI (26.7.0):
++    - StripeCore (= 26.7.0)
++    - StripePayments (= 26.7.0)
++    - StripeUICore (= 26.7.0)
++  - StripeUICore (26.7.0):
++    - StripeCore (= 26.7.0)
+   - Yoga (0.0.0)
+ 
+ DEPENDENCIES:
+@@ -2077,6 +2080,7 @@ SPEC REPOS:
+     - StripeCore
+     - StripeCryptoOnramp
+     - StripeFinancialConnections
++    - StripeFinancialConnectionsLite
+     - StripeIdentity
+     - StripeIssuing
+     - StripePayments
+@@ -2311,19 +2315,20 @@ SPEC CHECKSUMS:
+   RNCAsyncStorage: 3a4f5e2777dae1688b781a487923a08569e27fe4
+   RNCPicker: c8a3584b74133464ee926224463fcc54dfdaebca
+   RNScreens: 61c18865ab074f4d995ac8d7cf5060522a649d05
+-  Stripe: 2aa937a5b3dc1db7b42392a70cd4d4534dd2e77b
+-  stripe-react-native: b75bf2cb4c4714876b2efd808532d34fa924eae2
+-  StripeApplePay: 73d55b6586e0acf7c5897100bf3dc7924488cf2d
+-  StripeCameraCore: d3a281318aae77233616ce0336572afe7000db7c
+-  StripeCore: 06bafa6087c3fa240460d9feb6729543d1634961
+-  StripeCryptoOnramp: 8953cc4ac938ffeedf524f3f9c6bc9d0ecaa9d79
+-  StripeFinancialConnections: 648b3cba2b42198fce9c1f3e5f997543031a76f4
+-  StripeIdentity: 0ea131379bb6d78c50dfa57861d1ff1d3472d74f
+-  StripeIssuing: dfd966fd0c32dc2d38c5cea8f18d88969967eaaf
+-  StripePayments: c20f9058b588fb4f677822d6d415d8d59ae21fc3
+-  StripePaymentSheet: 87e00057a5867f6a594bd1285494b6efe43639a9
+-  StripePaymentsUI: 8af6ccdeea136ef2c8b942b27e6a33c4ff84e877
+-  StripeUICore: 500ec9fd1c7c733a33f28c6a4b75423b87496ee4
++  Stripe: 62f19d63a53ed29f6d068f840346a0026dbe23d9
++  stripe-react-native: 59b3adcee6bcb78b187ba840f434b1485bf9d712
++  StripeApplePay: 0226102f6b161d5c6159c4ff22f1c3d0c47d1d05
++  StripeCameraCore: c686801a2e257b47953272e56856da9ba18a1aa2
++  StripeCore: 87da160bc7e185cf17d4fe3b06f8c939ee220ded
++  StripeCryptoOnramp: 8694642ee5b7d28d00ad87c026ebab3730968afd
++  StripeFinancialConnections: 1b4a2c7c5657302d1ee5566773b877e2ec22f9a2
++  StripeFinancialConnectionsLite: 8a3bc78c5706950c1e2e0c629f7fd3fe7bb8495c
++  StripeIdentity: 99ab625e2f9ac00efc2fb729d920d0f440d44853
++  StripeIssuing: 7e3d1caa14f1c28b377dbc26c9f59163e1221f95
++  StripePayments: 83e5961152ca742a67eb7fe28b777a579892a231
++  StripePaymentSheet: a3e15549e052d8cfcd479e9054e0c79a60709813
++  StripePaymentsUI: 06e878345ca13e12662bec3839e54e1320b98a4e
++  StripeUICore: 28ec9064839fcf23e9e40bba3f4651ac9123eab3
+   Yoga: 5934998fbeaef7845dbf698f698518695ab4cd1a
+ 
+ PODFILE CHECKSUM: 605f3cad878b7c0eee93ebb4a78a8141d34cd328
+diff --git a/example/rnt-package/android/build.gradle b/example/rnt-package/android/build.gradle
+index 0028a7b..4c65459 100644
+--- a/example/rnt-package/android/build.gradle
++++ b/example/rnt-package/android/build.gradle
+@@ -43,4 +43,11 @@ dependencies {
+   implementation 'com.facebook.react:react-native:+'
+   implementation 'com.stripe:stripe-android-issuing-push-provisioning:1.3.0'
+   implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:6.7.0'
++
++  // Samsung Pay is distributed directly by Samsung and cannot be pulled from Maven.
++  // The Onramp example detects it at runtime, so ordinary builds still work without it.
++  def samsungPaySdkJar = rootProject.file('libs/samsungpay_2.22.00.jar')
++  if (samsungPaySdkJar.exists()) {
++    implementation files(samsungPaySdkJar)
++  }
+ }
+diff --git a/example/src/Config.ts b/example/src/Config.ts
+index 00868f2..ddcbc9e 100644
+--- a/example/src/Config.ts
++++ b/example/src/Config.ts
+@@ -2,6 +2,11 @@
+ export const API_URL =
+   'https://rigorous-heartbreaking-cephalopod.stripedemos.com';
+ 
++// To test Samsung Pay in the Crypto Onramp example, register the Android app
++// with Samsung Pay and replace this value with the assigned in-app service ID.
++// Samsung Pay SDK 2.22.00 must also be installed in example/android/libs.
++export const SAMSUNG_PAY_SERVICE_ID = 'a38b24ecbba94a3c8bfbfe';
++
+ /*
+ 🛠️ To use Custom Backend:
+ 
+diff --git a/example/src/screens/HomeScreen.tsx b/example/src/screens/HomeScreen.tsx
+index 135aab1..c0f505e 100644
+--- a/example/src/screens/HomeScreen.tsx
++++ b/example/src/screens/HomeScreen.tsx
+@@ -19,6 +19,7 @@ import { colors } from '../colors';
+ import Button from '../components/Button';
+ import { Collapse } from '../components/Collapse';
+ import { Onramp } from '@stripe/stripe-react-native';
++import { SAMSUNG_PAY_SERVICE_ID } from '../Config';
+ 
+ export default function HomeScreen() {
+   const navigation = useNavigation();
+@@ -88,6 +89,14 @@ export default function HomeScreen() {
+           isPhoneNumberRequired: false,
+         },
+       },
++      ...(Platform.OS === 'android' && SAMSUNG_PAY_SERVICE_ID
++        ? {
++            samsungPay: {
++              serviceId: SAMSUNG_PAY_SERVICE_ID,
++              merchantName: 'Onramp Example',
++            },
++          }
++        : {}),
+     };
+ 
+     configure(config)
+diff --git a/example/src/screens/Onramp/CryptoOnrampFlow.tsx b/example/src/screens/Onramp/CryptoOnrampFlow.tsx
+index 5d255ed..afdb2b4 100644
+--- a/example/src/screens/Onramp/CryptoOnrampFlow.tsx
++++ b/example/src/screens/Onramp/CryptoOnrampFlow.tsx
+@@ -103,6 +103,7 @@ export default function CryptoOnrampFlow() {
+     getCryptoTokenDisplayData,
+     logOut,
+     isAuthError,
++    isSamsungPaySupported,
+     authenticateUserWithToken,
+   } = useOnramp();
+   const { isPlatformPaySupported } = useStripe();
+@@ -148,13 +149,19 @@ export default function CryptoOnrampFlow() {
+   );
+ 
+   const [isPlatformPayAvailable, setIsPlatformPayAvailable] = useState(false);
++  const [isSamsungPayAvailable, setIsSamsungPayAvailable] = useState(false);
+   const [authInProgress, setAuthInProgress] = useState<
+     null | 'login' | 'signup'
+   >(null);
+ 
+   // Payment method state used to help determine ACH settlement speed segmented control visibility (only available for bank account payments).
+   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
+-    'Card' | 'BankAccount' | 'CardAndBankAccount' | 'PlatformPay' | null
++    | 'Card'
++    | 'BankAccount'
++    | 'CardAndBankAccount'
++    | 'PlatformPay'
++    | 'SamsungPay'
++    | null
+   >(null);
+ 
+   // ACH settlement speed state
+@@ -686,16 +693,24 @@ export default function CryptoOnrampFlow() {
+     | { type: 'Card' }
+     | { type: 'BankAccount' }
+     | { type: 'CardAndBankAccount' }
+-    | { type: 'PlatformPay'; params: Onramp.OnrampPlatformPayParams };
++    | { type: 'PlatformPay'; params: Onramp.OnrampPlatformPayParams }
++    | { type: 'SamsungPay'; params: Onramp.OnrampPlatformPayParams };
+ 
+   const handleCollectPaymentMethod = useCallback(
+     async (request: CollectPaymentRequest) => {
+-      const result = await withReauth(
+-        () =>
+-          request.type === 'PlatformPay'
+-            ? collectPaymentMethod(request.type, request.params)
+-            : collectPaymentMethod(request.type),
+-        () => authorize(linkAuthIntentId)
++      const collectPayment = () => {
++        switch (request.type) {
++          case 'PlatformPay':
++            return collectPaymentMethod('PlatformPay', request.params);
++          case 'SamsungPay':
++            return collectPaymentMethod('SamsungPay', request.params);
++          default:
++            return collectPaymentMethod(request.type);
++        }
++      };
++
++      const result = await withReauth(collectPayment, () =>
++        authorize(linkAuthIntentId)
+       );
+ 
+       if (result?.error) {
+@@ -777,6 +792,21 @@ export default function CryptoOnrampFlow() {
+     });
+   }, [handleCollectPaymentMethod, sourceCurrency]);
+ 
++  const handleCollectSamsungPayPayment = useCallback(async () => {
++    const samsungPayParams: Onramp.OnrampPlatformPayParams = {
++      samsungPay: {
++        currencyCode: sourceCurrency.toUpperCase(),
++        amount: 100,
++        orderNumber: `rn-onramp-${Date.now()}`,
++      },
++    };
++
++    handleCollectPaymentMethod({
++      type: 'SamsungPay',
++      params: samsungPayParams,
++    });
++  }, [handleCollectPaymentMethod, sourceCurrency]);
++
+   const validateOnrampSessionParams = useCallback((): {
+     isValid: boolean;
+     message?: string;
+@@ -955,7 +985,8 @@ export default function CryptoOnrampFlow() {
+ 
+   useEffect(() => {
+     let mounted = true;
+-    (async () => {
++
++    const checkPlatformPaySupport = async () => {
+       try {
+         const params =
+           Platform.OS === 'android'
+@@ -966,11 +997,26 @@ export default function CryptoOnrampFlow() {
+       } catch {
+         if (mounted) setIsPlatformPayAvailable(false);
+       }
+-    })();
++    };
++
++    const checkSamsungPaySupport = async () => {
++      if (Platform.OS !== 'android') return;
++
++      try {
++        const supported = await isSamsungPaySupported();
++        if (mounted) setIsSamsungPayAvailable(supported);
++      } catch {
++        if (mounted) setIsSamsungPayAvailable(false);
++      }
++    };
++
++    checkPlatformPaySupport();
++    checkSamsungPaySupport();
++
+     return () => {
+       mounted = false;
+     };
+-  }, [isPlatformPaySupported]);
++  }, [isPlatformPaySupported, isSamsungPaySupported]);
+ 
+   // Load persisted demo auth for seamless sign-in
+   useEffect(() => {
+@@ -1178,6 +1224,7 @@ export default function CryptoOnrampFlow() {
+           />
+           <PaymentCollectionSection
+             isPlatformPaySupported={isPlatformPayAvailable}
++            isSamsungPaySupported={isSamsungPayAvailable}
+             sourceCurrency={sourceCurrency}
+             onSourceCurrencyChange={handleSourceCurrencyChange}
+             handleCollectPlatformPayPayment={
+@@ -1185,6 +1232,7 @@ export default function CryptoOnrampFlow() {
+                 ? handleCollectApplePayPayment
+                 : handleCollectGooglePayPayment
+             }
++            handleCollectSamsungPayPayment={handleCollectSamsungPayPayment}
+             handleCollectCardPayment={handleCollectCardPayment}
+             handleCollectBankAccountPayment={handleCollectBankAccountPayment}
+             handleCollectCardAndBankAccountPayment={
+diff --git a/example/src/screens/Onramp/sections/PaymentCollectionSection.tsx b/example/src/screens/Onramp/sections/PaymentCollectionSection.tsx
+index cec5f49..7965a7d 100644
+--- a/example/src/screens/Onramp/sections/PaymentCollectionSection.tsx
++++ b/example/src/screens/Onramp/sections/PaymentCollectionSection.tsx
+@@ -1,7 +1,7 @@
+ import React from 'react';
+ import { Collapse } from '../../../components/Collapse';
+ import Button from '../../../components/Button';
+-import { StyleSheet, Text, View } from 'react-native';
++import { Platform, StyleSheet, Text, View } from 'react-native';
+ import { PlatformPayButton } from '@stripe/stripe-react-native';
+ import { colors } from '../../../colors';
+ import { SegmentedControl } from '../../../components/SegmentedControl';
+@@ -10,9 +10,11 @@ export type SourceCurrency = 'usd' | 'eur';
+ 
+ interface PaymentCollectionSectionProps {
+   isPlatformPaySupported: boolean;
++  isSamsungPaySupported: boolean;
+   sourceCurrency: SourceCurrency;
+   onSourceCurrencyChange: (currency: SourceCurrency) => void;
+   handleCollectPlatformPayPayment: () => void;
++  handleCollectSamsungPayPayment: () => void;
+   handleCollectCardPayment: () => void;
+   handleCollectBankAccountPayment: () => void;
+   handleCollectCardAndBankAccountPayment: () => void;
+@@ -20,9 +22,11 @@ interface PaymentCollectionSectionProps {
+ 
+ export function PaymentCollectionSection({
+   isPlatformPaySupported,
++  isSamsungPaySupported,
+   sourceCurrency,
+   onSourceCurrencyChange,
+   handleCollectPlatformPayPayment,
++  handleCollectSamsungPayPayment,
+   handleCollectCardPayment,
+   handleCollectBankAccountPayment,
+   handleCollectCardAndBankAccountPayment,
+@@ -48,6 +52,23 @@ export function PaymentCollectionSection({
+           />
+         </View>
+       )}
++      {Platform.OS === 'android' && (
++        <View style={styles.samsungPayContainer}>
++          <Button
++            title="Pay with Samsung Pay"
++            onPress={handleCollectSamsungPayPayment}
++            variant="primary"
++            disabled={!isSamsungPaySupported}
++            accessibilityLabel="Pay with Samsung Pay"
++          />
++          {!isSamsungPaySupported && (
++            <Text style={styles.walletUnavailableText}>
++              Samsung Pay requires a supported Samsung device, a configured
++              service ID, and Samsung Pay SDK 2.22.00.
++            </Text>
++          )}
++        </View>
++      )}
+       <Button
+         title="Collect Card Payment"
+         onPress={handleCollectCardPayment}
+@@ -78,4 +99,13 @@ const styles = StyleSheet.create({
+   sourceCurrencyOptions: {
+     marginBottom: 12,
+   },
++  samsungPayContainer: {
++    marginBottom: 8,
++  },
++  walletUnavailableText: {
++    color: colors.slate,
++    fontSize: 12,
++    marginBottom: 8,
++    opacity: 0.7,
++  },
+ });
+diff --git a/ios/OnrampErrors.swift b/ios/OnrampErrors.swift
+index f732e7c..63e034f 100644
+--- a/ios/OnrampErrors.swift
++++ b/ios/OnrampErrors.swift
+@@ -91,11 +91,22 @@ enum OnrampErrors {
+     }
+ 
+     private static func onrampErrorType(for error: StripeCryptoOnrampAPIError) -> String {
+-        if error.code == "link_failed_to_attest_request" {
++        switch error.code {
++        case "link_failed_to_attest_request":
+             return "AppAttestationError"
++        case "crypto_onramp_invalid_wallet_ownership_signature":
++            return "InvalidWalletOwnershipSignatureError"
++        case "crypto_onramp_wallet_ownership_challenge_expired":
++            return "WalletOwnershipChallengeExpiredError"
++        case "crypto_onramp_invalid_wallet_ownership_challenge":
++            return "InvalidWalletOwnershipChallengeError"
++        case "crypto_onramp_wallet_not_found":
++            return "WalletNotFoundError"
++        case "crypto_onramp_unsupported_network":
++            return "UnsupportedNetworkError"
++        default:
++            return "UncategorizedApiError"
+         }
+-
+-        return "UncategorizedApiError"
+     }
+ 
+     private static func onrampErrorType(for error: StripeCryptoOnrampError) -> String? {
+diff --git a/ios/StripeOnrampSdk.mm b/ios/StripeOnrampSdk.mm
+index 09226f5..e9e36dc 100644
+--- a/ios/StripeOnrampSdk.mm
++++ b/ios/StripeOnrampSdk.mm
+@@ -29,6 +29,12 @@ RCT_EXPORT_METHOD(configureOnramp:(nonnull NSDictionary *)config
+   [StripeSdkImpl.shared configureOnramp:config resolver:resolve rejecter:reject];
+ }
+ 
++RCT_EXPORT_METHOD(isSamsungPaySupported:(nonnull RCTPromiseResolveBlock)resolve
++                                reject:(nonnull RCTPromiseRejectBlock)reject)
++{
++  resolve(@NO);
++}
++
+ RCT_EXPORT_METHOD(hasLinkAccount:(nonnull NSString *)email
+                          resolve:(nonnull RCTPromiseResolveBlock)resolve
+                           reject:(nonnull RCTPromiseRejectBlock)reject)
+diff --git a/ios/Tests/OnrampErrorsTests.swift b/ios/Tests/OnrampErrorsTests.swift
+index 1ee6b7e..28f3730 100644
+--- a/ios/Tests/OnrampErrorsTests.swift
++++ b/ios/Tests/OnrampErrorsTests.swift
+@@ -76,6 +76,52 @@ class OnrampErrorsTests: XCTestCase {
+         XCTAssertEqual(details["docUrl"] as? String, error.docURL?.absoluteString)
+     }
+ 
++    func test_createFailedError_withWalletOwnershipAPIError_mapsSpecificErrorType() throws {
++        let testCases = [
++            (
++                code: "crypto_onramp_invalid_wallet_ownership_signature",
++                expectedType: "InvalidWalletOwnershipSignatureError"
++            ),
++            (
++                code: "crypto_onramp_wallet_ownership_challenge_expired",
++                expectedType: "WalletOwnershipChallengeExpiredError"
++            ),
++            (
++                code: "crypto_onramp_invalid_wallet_ownership_challenge",
++                expectedType: "InvalidWalletOwnershipChallengeError"
++            ),
++            (
++                code: "crypto_onramp_wallet_not_found",
++                expectedType: "WalletNotFoundError"
++            ),
++            (
++                code: "crypto_onramp_unsupported_network",
++                expectedType: "UnsupportedNetworkError"
++            ),
++        ]
++
++        for testCase in testCases {
++            let error = TestStripeCryptoOnrampAPIError(
++                code: testCase.code,
++                userMessage: "Wallet ownership verification failed.",
++                developerMessage: "Developer message.",
++                docURL: nil,
++                reason: "wallet_verification_failed",
++                type: "invalid_request_error",
++                requestID: "req_wallet_verification",
++                apiMessage: "Wallet ownership verification failed.",
++                apiUserMessage: "Please try again."
++            )
++
++            let details = try errorDetails(from: OnrampErrors.createFailedError(error))
++
++            XCTAssertEqual(details["onrampErrorType"] as? String, testCase.expectedType, testCase.code)
++            XCTAssertEqual(details["apiErrorCode"] as? String, testCase.code, testCase.code)
++            XCTAssertEqual(details["reason"] as? String, error.reason, testCase.code)
++            XCTAssertEqual(details["requestId"] as? String, error.requestID, testCase.code)
++        }
++    }
++
+     func test_createFailedError_withAppAttestationUnavailableError_preservesSdkErrorFields() throws {
+         let error = TestStripeCryptoOnrampError(
+             code: "app_attestation_unavailable",
+diff --git a/package.json b/package.json
+index 54e752c..aa1735b 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@stripe/stripe-react-native",
+-  "version": "0.74.0",
++  "version": "0.75.0",
+   "author": "Stripe",
+   "description": "Stripe SDK for React Native",
+   "main": "lib/commonjs/index",
+diff --git a/src/hooks/useOnramp.tsx b/src/hooks/useOnramp.tsx
+index 944de62..58178dc 100644
+--- a/src/hooks/useOnramp.tsx
++++ b/src/hooks/useOnramp.tsx
+@@ -44,6 +44,10 @@ export function useOnramp() {
+     []
+   );
+ 
++  const _isSamsungPaySupported = useCallback(async (): Promise<boolean> => {
++    return requireOnrampModule().isSamsungPaySupported();
++  }, []);
++
+   const _registerLinkUser = useCallback(
+     async (
+       info: Onramp.LinkUserInfo
+@@ -155,12 +159,14 @@ export function useOnramp() {
+    * The set of payment methods supported by crypto onramp collection.
+    * - 'Card', 'BankAccount', 'CardAndBankAccount' present Link for collection.
+    * - 'PlatformPay' presents Apple Pay / Google Pay using provided params.
++   * - 'SamsungPay' presents Samsung Pay using provided params on Android.
+    */
+   type OnrampPaymentMethod =
+     | 'Card'
+     | 'BankAccount'
+     | 'CardAndBankAccount'
+-    | 'PlatformPay';
++    | 'PlatformPay'
++    | 'SamsungPay';
+ 
+   // Overloads for stronger type-safety at call-sites
+   const _collectPaymentMethod: {
+@@ -172,6 +178,10 @@ export function useOnramp() {
+       paymentMethod: 'PlatformPay',
+       platformPayParams: Onramp.OnrampPlatformPayParams
+     ): Promise<Onramp.CollectPaymentMethodResult>;
++    (
++      paymentMethod: 'SamsungPay',
++      platformPayParams: Onramp.OnrampPlatformPayParams
++    ): Promise<Onramp.CollectPaymentMethodResult>;
+   } = useCallback(
+     async (
+       paymentMethod: OnrampPaymentMethod,
+@@ -259,6 +269,13 @@ export function useOnramp() {
+      */
+     configure: _configure,
+ 
++    /**
++     * Checks whether Samsung Pay is ready for Onramp payment collection.
++     * Returns false on non-Android platforms, when Samsung Pay is not configured,
++     * or when Samsung Pay SDK 2.22.00 is unavailable on the device.
++     */
++    isSamsungPaySupported: _isSamsungPaySupported,
++
+     /**
+      * Whether or not the provided email is associated with an existing Link consumer.
+      *
+@@ -380,9 +397,11 @@ export function useOnramp() {
+      * @param paymentMethod The payment method type to collect.
+      *  - 'Card' and 'BankAccount' present Link for collection.
+      *  - 'PlatformPay' presents Apple Pay / Google Pay using the provided parameters.
+-     * @param platformPayParams Platform-specific parameters (required when `paymentMethod` is 'PlatformPay').
++     *  - 'SamsungPay' presents Samsung Pay on Android.
++     * @param platformPayParams Platform-specific parameters (required when `paymentMethod` is 'PlatformPay' or 'SamsungPay').
+      *  - iOS: provide `applePay` params
+      *  - Android: provide `googlePay` params
++     *  - Samsung Pay: provide `samsungPay` params
+      *  - To receive Apple Pay billing details back as `kycInfo`, request `.name` and/or `.postalAddress`
+      *    in `applePay.requiredBillingContactFields`
+      *  - To receive Google Pay billing details back as `kycInfo`, ensure that the `GooglePayConfig`
+diff --git a/src/specs/NativeOnrampSdkModule.ts b/src/specs/NativeOnrampSdkModule.ts
+index bbc7d2a..81f2d97 100644
+--- a/src/specs/NativeOnrampSdkModule.ts
++++ b/src/specs/NativeOnrampSdkModule.ts
+@@ -8,6 +8,7 @@ export interface Spec extends TurboModule {
+   configureOnramp(
+     config: UnsafeObject<Onramp.Configuration>
+   ): Promise<Onramp.VoidResult>;
++  isSamsungPaySupported(): Promise<boolean>;
+   hasLinkAccount(email: string): Promise<Onramp.HasLinkAccountResult>;
+   registerLinkUser(
+     info: UnsafeObject<Onramp.LinkUserInfo>
+diff --git a/src/types/Onramp.ts b/src/types/Onramp.ts
+index b87d1be..e0b30e7 100644
+--- a/src/types/Onramp.ts
++++ b/src/types/Onramp.ts
+@@ -1,4 +1,4 @@
+-import type { Address } from './Common';
++import type { Address, CardBrand } from './Common';
+ import type { StripeError } from './Errors';
+ import type {
+   ApplePayBaseParams,
+@@ -37,6 +37,8 @@ export type Configuration = {
+   cryptoCustomerId?: string;
+   /** Google Pay configuration. Required on Android to enable Google Pay as a payment method. */
+   googlePay?: GooglePayConfig;
++  /** Samsung Pay configuration. Required on Android to enable Samsung Pay as a payment method. */
++  samsungPay?: SamsungPayConfig;
+ };
+ 
+ /**
+@@ -71,6 +73,26 @@ export type GooglePayBillingAddressConfig = {
+   isPhoneNumberRequired?: boolean;
+ };
+ 
++/**
++ * Configuration for Samsung Pay within the onramp flow.
++ *
++ * The Android application must include Samsung Pay SDK 2.22.00 at runtime.
++ * Stripe Android does not package the Samsung Pay SDK transitively.
++ */
++export type SamsungPayConfig = {
++  /** Samsung Pay in-app service ID assigned to the merchant. */
++  serviceId: string;
++  /** Optional merchant identifier supplied to Samsung Pay. */
++  merchantId?: string;
++  /** Optional merchant name supplied to Samsung Pay. */
++  merchantName?: string;
++  /**
++   * Card brands customers may select in Samsung Pay.
++   * Omitting this or passing an empty array uses the SDK defaults.
++   */
++  allowedCardBrands?: CardBrand[];
++};
++
+ /**
+  * Google Pay parameters for the onramp collectPaymentMethod call.
+  * Only includes the fields passed to GooglePayPaymentMethodLauncher.present().
+@@ -88,6 +110,18 @@ export type OnrampGooglePayParams = {
+   transactionId?: string;
+ };
+ 
++/**
++ * Samsung Pay parameters for the onramp collectPaymentMethod call.
++ */
++export type OnrampSamsungPayParams = {
++  /** ISO 4217 alphabetic currency code (e.g. "USD"). */
++  currencyCode: string;
++  /** Amount in the currency's smallest unit. */
++  amount: number;
++  /** Unique order number for this transaction. */
++  orderNumber: string;
++};
++
+ /**
+  * Platform Pay parameters for the onramp collectPaymentMethod call.
+  */
+@@ -96,6 +130,10 @@ export type OnrampPlatformPayParams = {
+    * Google Pay parameters. Android only.
+    */
+   googlePay?: OnrampGooglePayParams;
++  /**
++   * Samsung Pay parameters. Android only.
++   */
++  samsungPay?: OnrampSamsungPayParams;
+   /**
+    * Apple Pay parameters. iOS only.
+    * To receive `kycInfo` back from `collectPaymentMethod`, request Apple Pay billing
+@@ -269,6 +307,11 @@ export type ComplianceIdentifierRequirements = {
+  */
+ export type OnrampApiErrorType =
+   | 'AppAttestationError'
++  | 'InvalidWalletOwnershipSignatureError'
++  | 'WalletOwnershipChallengeExpiredError'
++  | 'InvalidWalletOwnershipChallengeError'
++  | 'WalletNotFoundError'
++  | 'UnsupportedNetworkError'
+   | 'UncategorizedApiError';
+ 
+ /**
+@@ -308,6 +351,41 @@ export type AppAttestationError = OnrampApiError & {
+   onrampErrorType: 'AppAttestationError';
+ };
+ 
++/**
++ * A typed Crypto Onramp API error for an invalid wallet ownership signature.
++ */
++export type InvalidWalletOwnershipSignatureError = OnrampApiError & {
++  onrampErrorType: 'InvalidWalletOwnershipSignatureError';
++};
++
++/**
++ * A typed Crypto Onramp API error for an expired wallet ownership challenge.
++ */
++export type WalletOwnershipChallengeExpiredError = OnrampApiError & {
++  onrampErrorType: 'WalletOwnershipChallengeExpiredError';
++};
++
++/**
++ * A typed Crypto Onramp API error for an invalid wallet ownership challenge.
++ */
++export type InvalidWalletOwnershipChallengeError = OnrampApiError & {
++  onrampErrorType: 'InvalidWalletOwnershipChallengeError';
++};
++
++/**
++ * A typed Crypto Onramp API error when the requested wallet cannot be found.
++ */
++export type WalletNotFoundError = OnrampApiError & {
++  onrampErrorType: 'WalletNotFoundError';
++};
++
++/**
++ * A typed Crypto Onramp API error for a network unsupported by the operation.
++ */
++export type UnsupportedNetworkError = OnrampApiError & {
++  onrampErrorType: 'UnsupportedNetworkError';
++};
++
+ /**
+  * A typed Crypto Onramp API error that did not map to a narrower category.
+  */
+@@ -336,6 +414,11 @@ export type CryptoOnrampError =
+       userMessage?: never;
+     })
+   | AppAttestationError
++  | InvalidWalletOwnershipSignatureError
++  | WalletOwnershipChallengeExpiredError
++  | InvalidWalletOwnershipChallengeError
++  | WalletNotFoundError
++  | UnsupportedNetworkError
+   | UncategorizedApiError
+   | AppAttestationUnavailableError;
+ 
+@@ -526,7 +609,7 @@ export type PaymentMethodDisplayData = {
+   /** Details about the underlying payment method, e.g., "Visa Credit •••• 4242". */
+   sublabel?: string;
+   /** The type of payment method */
+-  type: 'Card' | 'BankAccount' | 'ApplePay' | 'GooglePay';
++  type: 'Card' | 'BankAccount' | 'ApplePay' | 'GooglePay' | 'SamsungPay';
+ };
+ 
+ /**
+diff --git a/stripe-react-native.podspec b/stripe-react-native.podspec
+index c5bb313..c14bc76 100644
+--- a/stripe-react-native.podspec
++++ b/stripe-react-native.podspec
+@@ -2,7 +2,7 @@ require 'json'
+ 
+ package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
+ # Keep stripe_version in sync with https://github.com/stripe/stripe-identity-react-native/blob/main/stripe-identity-react-native.podspec
+-stripe_version = '26.6.0'
++stripe_version = '26.7.0'
+ 
+ fabric_enabled = ENV['RCT_NEW_ARCH_ENABLED'] == '1'
+ 

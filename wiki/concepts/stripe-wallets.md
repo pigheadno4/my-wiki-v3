@@ -120,6 +120,8 @@ Wallets with full subscription support: Amazon Pay, Apple Pay, Cash App Pay, Goo
 
 **Cartes Bancaires via Apple Pay**: EUR only. iOS: `StripeAPI.additionalEnabledApplePayNetworks = [.cartesBancaires]` (one line). Web: automatic via Payment Element, Express Checkout Element, Checkout, Payment Request Button. Connect: verify `on_behalf_of` account supports Cartes Bancaires.
 
+**React Native network restriction**: `@stripe/stripe-react-native@0.74.0` adds `applePay.supportedNetworks` on iOS. Unlike `additionalEnabledNetworks`, it restricts the Apple Pay sheet to the supplied `PKPaymentNetwork` raw values and overrides the default and additionally enabled network set for that payment request.
+
 **Apple Pay recurring — DPAN vs MPAN**: DPAN is device-tied (deactivates on device switch); MPAN (merchant token) persists across devices. Each generates a one-time expiring cryptogram — **must consume via CIT (SetupIntent 0 USD validation) immediately**; if CIT fails, all subsequent MITs also fail. Apple Pay terms **forbid** using saved payment method for on_session payments. Tokens API deprecated for recurring — use PaymentIntents/SetupIntents.
 
 **MPAN request types** (iOS 16+): `recurringPaymentRequest` (subscriptions), `automaticReloadPaymentRequest` (store card top-ups), `deferredPaymentRequest` (hotels/reservations, iOS 16.4+). Pass as `applePay` param to Express Checkout Element or Payment Element. Checkout auto-handles. Fallback to DPAN if issuer doesn't support MPAN. Sigma `charges.card_token_type = 'mpan'` for auth rate monitoring.
@@ -385,6 +387,7 @@ See [[stripe-link]] for full coverage (two integration paths, eligibility criter
 - [[source-stripe-pmd-registration]] — Domain registration guide: 6 PMs requiring it (Apple Pay required, + Amazon Pay/Google Pay/Klarna/Link/PayPal), PaymentMethodDomain API, iframe origin rules, Connect charge-type routing
 - [[source-stripe-apple-pay-best-practices]] — Apple Pay best practices: certificate renewal (25 mo, new CSR, dual certs in transition), express checkout, default to Apple Pay
 - [[source-stripe-apple-pay-cartes-bancaires]] — Cartes Bancaires + Apple Pay: EUR only, iOS one-line config, web automatic, Connect on_behalf_of caveat
+- [[source-github-stripe-react-native]] — React Native `0.74.0` evidence for per-request Apple Pay `supportedNetworks` restriction semantics
 - [[source-stripe-apple-pay-recurring]] — Apple Pay recurring: DPAN/MPAN cryptogram expiry, consume via SetupIntent CIT immediately, on_session forbidden, Tokens deprecated
 - [[source-stripe-apple-pay-merchant-tokens]] — Apple Pay MPAN types: recurring/auto-reload/deferred, Express Checkout Element config, Sigma card_token_type monitoring
 - [[source-stripe-apple-pay-disputes-refunds]] — Apple Pay disputes/refunds: liability shift (Visa iOS 16.2+ global, Europe below 16.2), same as card disputes

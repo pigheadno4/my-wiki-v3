@@ -6,6 +6,24 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-09-05] ingest | stripe/stripe-react-native `@stripe/stripe-react-native@0.75.0`
+
+- Delta-ingested `github-295368ae3c6235174ae0` from `0.74.0` to exact SHA `e0a845f40749703480146c9d70721b9007d0516d` using the 19-path packet.
+- Added Android Samsung Pay for Crypto Onramp, five wallet-verification error discriminants, and native pins Stripe Android `23.16.0`/Stripe iOS `26.7.0`.
+- Updated existing concepts, cumulative source, separate changelog, company and provider index. Preserved previous history, app-supplied Samsung SDK requirements, sample pricing limitations, and comparison-only Android implementation evidence. Source count is unchanged.
+
+## [2026-09-01] ingest | stripe/stripe-react-native `@stripe/stripe-react-native@0.74.0`
+
+- Delta-ingested work item `github-8c278ff4d85ab465db92` from `0.73.0` to exact SHA `a628bc062f7018946d306e9e41b6ed5d75560cbc` after serial review of all 21 required evidence and context paths.
+- Added per-request iOS Apple Pay `supportedNetworks` restriction and native dependency updates to Stripe Android `23.15.0` and Stripe iOS `26.6.0`.
+- Recorded the exact-SHA experimental Connect notification-banner implementation while preserving its non-root-exported, non-GA boundary.
+
+## [2026-09-01] ingest | stripe/stripe-react-native `@stripe/stripe-react-native@0.73.0`
+
+- Delta-ingested work item `github-0d48eb279179bbd22a39` from `0.72.0` to exact SHA `8b1bc1370bd493baee8e692dbff54c973e311db2` after serial review of all 20 required evidence and context paths.
+- Added private-preview Link billing collection and appearance controls, Crypto Onramp Tempo typing, and native dependency updates to Stripe Android `23.14.0` and Stripe iOS `26.5.0`.
+- Recorded the implementation-backed iOS correction that reads deferred-intent `captureMethod` from `intentConfiguration.mode`, while preserving preview, eligibility, and delegated-native-runtime boundaries.
+
 ## [2026-09-01] ingest | stripe/react-stripe-js `@stripe/react-stripe-js@6.8.2`
 
 - Delta-ingested work item `github-63d1c788da3330896fd0` from `6.8.1` to exact SHA `c48d6515c48da2fa5e2eefc9c8168b95e3026ef2` after serial review of all 11 required evidence and context paths.

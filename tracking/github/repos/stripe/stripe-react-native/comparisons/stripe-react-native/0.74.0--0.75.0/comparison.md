@@ -1,0 +1,81 @@
+# GitHub package comparison
+
+- Repository: `stripe/stripe-react-native`
+- Package: `@stripe/stripe-react-native`
+- From: `0.74.0` (`a628bc062f7018946d306e9e41b6ed5d75560cbc`)
+- To: `0.75.0` (`e0a845f40749703480146c9d70721b9007d0516d`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `.github/workflows/bump-native-sdks.yml`
+- `.github/workflows/changelog-check.yml`
+- `.github/workflows/close-resolved-issues.yml`
+- `.github/workflows/generate-docs.yml`
+- `.github/workflows/public-api-check.yml`
+- `.github/workflows/update-podfile-lock.yml`
+- `.gitignore`
+- `CHANGELOG.md`
+- `android/gradle.properties`
+- `android/proguard-rules.txt`
+- `android/src/oldarch/java/com/reactnativestripesdk/NativeOnrampSdkModuleSpec.java`
+- `android/src/onramp/java/com/reactnativestripesdk/OnrampErrors.kt`
+- `android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt`
+- `android/src/onramp/java/com/reactnativestripesdk/OnrampSdkModule.kt`
+- `android/src/test/java/com/reactnativestripesdk/OnrampErrorsTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt`
+- `etc/stripe-react-native.api.md`
+- `example/android/build.gradle`
+- `example/android/libs/README.md`
+- `example/app.json`
+- `example/ios/Podfile.lock`
+- `example/rnt-package/android/build.gradle`
+- `example/src/Config.ts`
+- `example/src/screens/HomeScreen.tsx`
+- `example/src/screens/Onramp/CryptoOnrampFlow.tsx`
+- `example/src/screens/Onramp/sections/PaymentCollectionSection.tsx`
+- `ios/OnrampErrors.swift`
+- `ios/StripeOnrampSdk.mm`
+- `ios/Tests/OnrampErrorsTests.swift`
+- `package.json`
+- `src/hooks/useOnramp.tsx`
+- `src/specs/NativeOnrampSdkModule.ts`
+- `src/types/Onramp.ts`
+- `stripe-react-native.podspec`
+
+## Upstream changes
+
+- `modified`: `.github/workflows/bump-native-sdks.yml`
+- `modified`: `.github/workflows/changelog-check.yml`
+- `modified`: `.github/workflows/close-resolved-issues.yml`
+- `modified`: `.github/workflows/generate-docs.yml`
+- `modified`: `.github/workflows/public-api-check.yml`
+- `modified`: `.github/workflows/update-podfile-lock.yml`
+- `modified`: `.gitignore`
+- `modified`: `CHANGELOG.md`
+- `modified`: `android/gradle.properties`
+- `modified`: `android/proguard-rules.txt`
+- `modified`: `android/src/oldarch/java/com/reactnativestripesdk/NativeOnrampSdkModuleSpec.java`
+- `modified`: `android/src/onramp/java/com/reactnativestripesdk/OnrampErrors.kt`
+- `modified`: `android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt`
+- `modified`: `android/src/onramp/java/com/reactnativestripesdk/OnrampSdkModule.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/OnrampErrorsTest.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt`
+- `modified`: `etc/stripe-react-native.api.md`
+- `modified`: `example/android/build.gradle`
+- `added`: `example/android/libs/README.md`
+- `modified`: `example/app.json`
+- `modified`: `example/ios/Podfile.lock`
+- `modified`: `example/rnt-package/android/build.gradle`
+- `modified`: `example/src/Config.ts`
+- `modified`: `example/src/screens/HomeScreen.tsx`
+- `modified`: `example/src/screens/Onramp/CryptoOnrampFlow.tsx`
+- `modified`: `example/src/screens/Onramp/sections/PaymentCollectionSection.tsx`
+- `modified`: `ios/OnrampErrors.swift`
+- `modified`: `ios/StripeOnrampSdk.mm`
+- `modified`: `ios/Tests/OnrampErrorsTests.swift`
+- `modified`: `package.json`
+- `modified`: `src/hooks/useOnramp.tsx`
+- `modified`: `src/specs/NativeOnrampSdkModule.ts`
+- `modified`: `src/types/Onramp.ts`
+- `modified`: `stripe-react-native.podspec`
