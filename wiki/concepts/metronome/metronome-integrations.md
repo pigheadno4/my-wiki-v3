@@ -60,6 +60,8 @@ For Stripe-delivered invoices using Avalara, AvaTax integrates through Stripe's 
 
 ## Anrok tax-app boundary
 
+Bearer-authenticated `POST /v1/upsertAnrokApiToken` associates a submitted Anrok API token with billing-provider `delivery_method_ids` obtained from `/listConfiguredBillingProviders`, mapping the credential to the appropriate billing entities. The documentation limits these tokens to Threshold Billing workflows at this snapshot. Its JSON object schema requires `delivery_method_ids` and `anrok_api_token`, while the enclosing `requestBody` is not marked required; HTTP `200` reports only a single `data.success` boolean rather than per-ID outcomes. [[source-metronome-api-reference-settings-upsert-anrok-api-token]]
+
 For the primary Anrok path, Metronome creates the Stripe invoice and supplies linked-customer and mapped-product context, Stripe hosts the installed Anrok app and automatic-tax provider selection, and Anrok calculates tax and handles compliance instead of Stripe's native tax engine. Stripe customer addresses determine jurisdiction; each Metronome Product carries `stripe_product_id`, mapped from `ContractProduct.stripe_product_id` to `invoiceitem.price.product`. The Product-versus-`ContractProduct` terminology is unresolved in this guide as it is in the native Stripe Tax guide. Arrears tax calculates inline without requiring invoices to remain drafts; prepaid-balance and spend thresholds use `tax_type: "STRIPE"` and `payment_type: "INVOICE"`, where `STRIPE` is the documented `tax_type` value for this Anrok-through-Stripe threshold configuration, while the guide does not define the enum's general semantics. The literal is not reliable evidence of calculator identity because the documented active provider in this mode is Anrok. The guide separately permits Stripe Tax to calculate while Anrok consumes Stripe transaction data for compliance, filing, and reporting; it does not define transfer timing, completeness, reconciliation, correction, filing cadence, or failure handling for that hybrid mode.
 
 ## Threshold payment-gate boundary
@@ -147,6 +149,8 @@ Metronome's native Salesforce integration uses Census as an ETL layer to push Me
 
 
 ## Sources
+
+- [[source-metronome-api-reference-settings-upsert-anrok-api-token]] — Anrok credential-to-billing-entity mapping for Threshold Billing, request/response locators, and success-scope boundaries
 
 - [[source-metronome-api-reference-customers-set-billing-provider-configurations-for-a-customer]] - customer-level provider configuration creation, delivery routes, identifier layers, open provider schema, and downstream authority boundaries
 

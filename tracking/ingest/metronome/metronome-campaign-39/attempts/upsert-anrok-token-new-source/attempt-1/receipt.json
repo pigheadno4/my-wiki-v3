@@ -1,0 +1,64 @@
+{
+  "job_id": "upsert-anrok-token-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Upsert Anrok API token\"\ntype: source\ndate_ingested: 2026-09-08\ncanonical_url: \"https://docs.metronome.com/api-reference/settings/upsert-anrok-api-token\"\noriginal_format: webpage\nraw_files:\n  - \"metronome/api-reference/settings/upsert-anrok-api-token-2026-07-13.md\"\ntags: [metronome, anrok, tax, threshold-billing, api]\n---\n\n## Overview\n\nBearer-authenticated `POST /v1/upsertAnrokApiToken` associates an Anrok API token with submitted billing-provider `delivery_method_ids`. The operation maps the credential to the appropriate billing entity and is documented as serving Threshold Billing workflows only at the time of this snapshot.\n\n## Key takeaways\n\n- The delivery-method identifiers come from `/listConfiguredBillingProviders`; this upsert page does not enumerate or create those configurations.\n- Inside the JSON payload schema, both `delivery_method_ids` and `anrok_api_token` are required properties. The enclosing OpenAPI `requestBody` is not itself marked required, so this page does not establish omitted-body behavior.\n- HTTP `200` requires `data.success`, a boolean describing whether the update succeeded. The page exposes no per-delivery-method result shape.\n- The explicit Threshold Billing qualification is consequential: this endpoint is not evidence of a complete, general-purpose Anrok tax integration.\n\n## Raw detail map\n\n- Operation and authentication: OpenAPI `post /v1/upsertAnrokApiToken`, document-level `security`, and `components.securitySchemes.bearerAuth`.\n- Payload fields and example: `paths./v1/upsertAnrokApiToken.post.requestBody.content.application/json.schema` and sibling `example`.\n- Success and errors: `responses.200`, `responses.400`, `responses.404`, `components.schemas.Error`, and `components.responses.NotFound`.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-integrations]]\n- Delivery-method discovery context: [[source-metronome-api-reference-settings-list-account-level-billing-providers]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/settings/upsert-anrok-api-token-2026-07-13|2026-07-13 snapshot - Anrok token upsert for Threshold Billing]]\n",
+  "quotes": [
+    {
+      "text": "Set the Anrok API token for some specified delivery_method_ids, which can be found in the `/listConfiguredBillingProviders` response. This maps the Anrok key to the appropriate billing entity. These API tokens are only used for Threshold Billing workflows today.",
+      "location": "Lines 9-11, page title and introductory purpose statement"
+    },
+    {
+      "text": "security:\n  - bearerAuth: []",
+      "location": "Lines 26-27, OpenAPI document security"
+    },
+    {
+      "text": "required:\n                - delivery_method_ids\n                - anrok_api_token",
+      "location": "Lines 105-107, request JSON object schema"
+    },
+    {
+      "text": "data:\n                    type: object\n                    required:\n                      - success\n                    properties:\n                      success:\n                        type: boolean\n                        description: Whether the update was successful.",
+      "location": "Lines 135-142, HTTP 200 response data schema"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "upsert-anrok-token-integrations-fact",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Anrok tax-app boundary",
+        "proposed_markdown": "Bearer-authenticated `POST /v1/upsertAnrokApiToken` associates a submitted Anrok API token with billing-provider `delivery_method_ids` obtained from `/listConfiguredBillingProviders`, mapping the credential to the appropriate billing entities. The documentation limits these tokens to Threshold Billing workflows at this snapshot. Its JSON object schema requires `delivery_method_ids` and `anrok_api_token`, while the enclosing `requestBody` is not marked required; HTTP `200` reports only a single `data.success` boolean rather than per-ID outcomes. [[source-metronome-api-reference-settings-upsert-anrok-api-token]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not generalize this Threshold Billing credential upsert into proof of a complete Anrok tax integration or downstream tax outcome.",
+          "Required payload properties do not establish that the enclosing OpenAPI requestBody is required."
+        ]
+      },
+      {
+        "update_id": "upsert-anrok-token-integrations-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-settings-upsert-anrok-api-token]] \u2014 Anrok credential-to-billing-entity mapping for Threshold Billing, request/response locators, and success-scope boundaries",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/settings/upsert-anrok-api-token-2026-07-13.md",
+  "raw_sha256": "0bb422f32f0f0445867ee8d6165631a6fa1724e06a47fb4aabc1c5eb3ff5356a",
+  "status": "candidate_ready"
+}

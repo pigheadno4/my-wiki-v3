@@ -1,0 +1,53 @@
+{
+  "job_id": "fetch-billing-configurations-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Fetch Billing Provider Configurations for a Customer\"\ntype: source\ndate_ingested: 2026-09-08\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/customers/fetch-billing-provider-configurations-for-a-customer\"\nraw_files:\n  - \"metronome/api-reference/customers/fetch-billing-provider-configurations-for-a-customer-2026-08-28.md\"\ntags: [metronome, api-reference, customers, billing-providers, contract-provisioning]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `POST /v1/getCustomerBillingProviderConfigurations`, which retrieves billing-provider configurations previously set for one Metronome customer. Its central provisioning use is to obtain the configuration `id` that can be supplied as `billing_provider_configuration_id` when creating a contract.\n\n## Retrieval boundary\n\nA supplied JSON object requires UUID `customer_id` and may set `include_archived`; the OpenAPI `requestBody` itself is not marked required, and no default is documented for `include_archived`. A successful `200` response places an array of `CustomerBillingProviderConfiguration` objects directly under required top-level `data`. Each returned object requires its configuration ID, provider, customer ID, provider-specific configuration, delivery method and delivery configuration, nullable `archived_at`, and delivery-method ID.\n\n> [!warning] Do not treat every returned configuration as a currently usable route\n> Inspect `archived_at` and choose the intended configuration before contract provisioning; this page does not define the default archived-record scope or prove that any contract currently selects the configuration. A returned configuration can also carry Beta, Stripe-only `unbillable_invoices_configuration` rules that stop matching invoices from being sent; when that field is omitted, the page says every invoice is sent to the billing provider.\n\n## Raw detail locators\n\n- Method, path, operation ID, bearer authentication, request media type, required `customer_id`, optional `include_archived`, and the request example: OpenAPI `security` and `paths./v1/getCustomerBillingProviderConfigurations.post`.\n- Success envelope, complete example, and generic `400` error: `paths./v1/getCustomerBillingProviderConfigurations.post.responses`.\n- Returned configuration identity, provider-specific open configuration, delivery routing, archive timestamp, and all required response fields: `components.schemas.CustomerBillingProviderConfiguration`.\n- Provider and delivery-method values: `components.schemas.BillingProviderType` and `components.schemas.BillingProviderDeliveryMethodType`.\n- Beta Stripe-only invoice-suppression behavior, precedence, specificity failure, invoice types, currency selector, and amount threshold: `components.schemas.CustomerBillingProviderConfiguration.properties.unbillable_invoices_configuration` and `components.schemas.UnbillableInvoiceRule`.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-customers-and-contracts]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/customers/fetch-billing-provider-configurations-for-a-customer-2026-08-28|2026-08-28 snapshot - customer billing-provider configuration lookup, contract selector identity, response schema, and Stripe suppression-rule details]]\n",
+  "quotes": [
+    {
+      "text": "Returns all billing configurations previously set for the customer. Use during the contract provisioning process to fetch the `billing_provider_configuration_id` needed to set the contract billing configuration.",
+      "location": "line 11, page summary"
+    },
+    {
+      "text": "security:\n  - bearerAuth: []",
+      "location": "lines 26-27, OpenAPI top-level security"
+    },
+    {
+      "text": "  /v1/getCustomerBillingProviderConfigurations:\n    post:\n      tags:\n        - Customers\n      summary: Fetch billing provider configurations for a customer\n      description: >\n        Returns all billing configurations previously set for the customer. Use\n        during the contract provisioning process to fetch the\n        `billing_provider_configuration_id` needed to set the contract billing\n        configuration.\n      operationId: getCustomerBillingProviderConfigurations-v1\n      requestBody:\n        description: The customer id for which to fetch billing provider configurations\n        content:\n          application/json:\n            schema:\n              type: object\n              required:\n                - customer_id",
+      "location": "lines 88-106, paths operation and request schema"
+    },
+    {
+      "text": "                  data:\n                    type: array\n                    items:\n                      $ref: >-\n                        #/components/schemas/CustomerBillingProviderConfiguration",
+      "location": "lines 125-129, 200 response immediate-parent data schema"
+    },
+    {
+      "text": "            Rules that stop matching invoices from being sent to the billing\n            provider. Only supported for Stripe billing provider configurations.\n            When omitted, every invoice is sent to the billing provider.",
+      "location": "lines 211-214, CustomerBillingProviderConfiguration.unbillable_invoices_configuration description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c39-fetch-billing-configurations-customers-contracts-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-customers-fetch-billing-provider-configurations-for-a-customer]] - customer-scoped billing-provider configuration lookup, contract selector identity, archive-state visibility, and exact provider, delivery, and invoice-suppression schema routes",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "The request offers include_archived but documents no default; do not state that the response always includes or excludes archived configurations.",
+          "This read endpoint does not prove that a returned configuration is currently selected by a contract or that downstream invoice delivery occurred."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/customers/fetch-billing-provider-configurations-for-a-customer-2026-08-28.md",
+  "raw_sha256": "5be1de80d4c14255cfb8c1a468a4e07ef1790b5daeac246accbdbf46ea15b00d",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,65 @@
+{
+  "job_id": "list-plan-charges-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: List Plan Charges\"\ntype: source\ndate_ingested: 2026-09-08\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/plans/list-plan-charges\"\nraw_files:\n  - \"metronome/api-reference/plans/list-plan-charges-2026-07-13.md\"\ntags: [metronome, api-reference, plans, charges, pagination, deprecated]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `GET /v1/planDetails/{plan_id}/charges`, which lists charge configurations for one legacy Plan. The page is useful for locating the deprecated Plan-charge response shape; Metronome directs new clients to Contracts but does not identify a replacement Contract operation or mapping here.\n\n## Retrieval boundary\n\n> [!warning] Deprecated Plans surface\n> This endpoint belongs to the deprecated Plans API. New implementations should use Contracts; this page does not establish that a Contract response has the same charge model or fields.\n\nThe required path parameter `plan_id` is UUID-formatted. Optional query parameters provide a `limit` from 1 through 100 and a `next_page` cursor. A documented `200` JSON response requires a `data` array of `PlanCharge` objects and a nullable sibling `next_page`.\n\n## Raw detail locators\n\n- Method, path, operation ID, bearer authentication, and deprecation notice: OpenAPI `security` and `paths./planDetails/{plan_id}/charges.get`.\n- Required Plan identifier and query pagination controls: `components.parameters.PlanId`, `PageLimit`, and `NextPage`.\n- Success envelope and worked example: `paths./planDetails/{plan_id}/charges.get.responses.200`.\n- Required and optional charge fields, charge-type values, credit-type identity, price tiers, ramp timing, tier-reset behavior, quantity conversion and rounding, and custom fields: `components.schemas.PlanCharge`, `ChargeType`, `CreditType`, and `CustomField`.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-products-and-rate-cards]]\n- Migration context: [[metronome-customers-and-contracts]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/plans/list-plan-charges-2026-07-13|2026-07-13 snapshot - deprecated Plan charge listing, pagination, response envelope, and schemas]]\n",
+  "quotes": [
+    {
+      "text": "Fetches a list of charges of a specific plan. This is a Plans (deprecated) endpoint. New clients should implement using Contracts.",
+      "location": "line 11, page description"
+    },
+    {
+      "text": "security:\n  - bearerAuth: []",
+      "location": "lines 26-27, OpenAPI global security"
+    },
+    {
+      "text": "/planDetails/{plan_id}/charges:\n    get:",
+      "location": "lines 92-93, OpenAPI path and method"
+    },
+    {
+      "text": "        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                  - next_page\n                properties:\n                  data:\n                    type: array\n                    items:\n                      $ref: '#/components/schemas/PlanCharge'\n                  next_page:\n                    type: string\n                    nullable: true",
+      "location": "lines 106-122, successful response envelope"
+    },
+    {
+      "text": "    PageLimit:\n      name: limit\n      in: query\n      description: Max number of results that should be returned\n      required: false\n      schema:\n        type: integer\n        minimum: 1\n        maximum: 100\n    NextPage:\n      name: next_page\n      in: query\n      description: Cursor that indicates where the next page of results should start.\n      required: false\n      schema:\n        type: string",
+      "location": "lines 151-166, pagination parameter definitions"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "list-plan-charges-products-rate-cards-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-plans-list-plan-charges]] - deprecated Plan charge-configuration listing, cursor pagination, exact charge-schema navigation, and Contracts migration boundary",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "Use this as legacy Plan charge evidence, not as current Contract pricing or migration-schema authority."
+        ]
+      },
+      {
+        "update_id": "list-plan-charges-customers-contracts-source-link",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-plans-list-plan-charges]] - deprecated Plan-specific charge listing and explicit direction for new clients to use Contracts, without a replacement-operation mapping",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": [
+          "The raw page does not establish equivalence between the legacy PlanCharge schema and current Contracts."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/plans/list-plan-charges-2026-07-13.md",
+  "raw_sha256": "4b501015aa4eb47d47de3bc913bb07c71115927458f23cc388fcc95359c9601a",
+  "status": "candidate_ready"
+}

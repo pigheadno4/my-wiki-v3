@@ -274,6 +274,8 @@ Metronome's go-live checklist asks teams to understand the draft-to-grace-period
 
 ## Sources
 
+- [[source-metronome-api-reference-contracts-update-the-contract-end-date]] - early-end effects on draft usage statements and upcoming scheduled invoices, later-end non-extension boundary, and finalized-invoice qualification
+
 - [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]] - manual balance-ledger correction versus upstream contract, rate, and invoice-recalculation routes, with downstream financial-state boundaries
 
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - customer spend dashboards through invoice windows, useful separate-negative-line illustration, missing required line-item `type` and applied-balance object in worked responses, embedded invoice-history scope, and non-copy-ready region and chart transformations

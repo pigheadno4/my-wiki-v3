@@ -6,6 +6,16 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-09-08 — Metronome Campaign 39 retrieval-source confirmation
+
+- Promoted five sources: commit discounting, customer billing-provider configuration lookup, legacy Plan charge listing, contract end-date mutation, and Anrok token configuration.
+- Review: 4/5 first-pass approvals; all five approved after five full initial reviews and one bounded worker correction with one targeted review. No full rereview or coordinator semantic repair.
+- The bounded correction preserved raw's can-versus-must qualification in source/concept wording and fixed the request-example locator. It did not expand source coverage.
+- Shared updates: eight reciprocal navigation entries and two reviewed factual additions across six existing concepts. Index-led review retained exact raw routes and intended reciprocal links without repeating unrelated concept synthesis.
+- Coverage: 197 total source summaries, 191 official-documentation sources, 95 raw snapshots without source summaries, and 35 remaining canonical identities in the frozen never-ingested inventory.
+- Outcome: 10/10 final retrieval questions passed. Operational closure took 1,750 seconds (29 minutes 10 seconds); the retrospective separates overlapping worker/review/audit windows, the 3m53s bounded correction loop, and coordinator verification overhead.
+- Query-audit outcome and phase timings: [quality audit](../tracking/ingest/metronome/metronome-campaign-39/quality-audit.md), [retrospective](../tracking/ingest/metronome/metronome-campaign-39/retrospective.md), and [monitor](../tracking/ingest/metronome/metronome-campaign-39/monitor.md).
+
 ## 2026-09-08 — Metronome Campaign 38 retrieval-source confirmation
 
 - Promoted five retrieval-oriented sources covering contract lifecycle, offset-notification lookup, rate-card listing, contract usage filters, and credit/commit targeting.

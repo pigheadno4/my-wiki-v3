@@ -51,6 +51,8 @@ The lifecycle page labels one operation as create-contract guidance while linkin
 
 ## Sources
 
+- [[source-metronome-api-reference-contracts-update-the-contract-end-date]] - contract end-date mutation and the explicit boundary that a later end does not extend in-advance subscriptions
+
 - [[source-metronome-api-reference-credits-and-commits-add-a-manual-balance-entry]] - conditional per-seat manual balance allocation for individually configured seat-managed credits or commits and its sum and validation boundaries
 
 - [[source-metronome-api-reference-contracts-get-subscription-seats-history]] - contract-scoped seat-assignment and total-capacity schedule history, covering-date and range selection, ordered pagination, and future-state and snapshot-completeness unknowns

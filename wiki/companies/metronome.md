@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 192
+source_count: 197
 ---
 
 ## Overview
@@ -151,10 +151,16 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 226
-- Official documentation source summaries: 186
-- Raw snapshots without source summaries: 100
+- Official documentation source summaries: 191
+- Raw snapshots without source summaries: 95
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-discounting-on-commits]] — Offer discounts on commits
+- [[source-metronome-api-reference-customers-fetch-billing-provider-configurations-for-a-customer]] — Metronome API: Fetch Billing Provider Configurations for a Customer
+- [[source-metronome-api-reference-plans-list-plan-charges]] — Metronome API: List Plan Charges
+- [[source-metronome-api-reference-contracts-update-the-contract-end-date]] — Metronome API Reference: Update the Contract End Date
+- [[source-metronome-api-reference-settings-upsert-anrok-api-token]] — Upsert Anrok API token
 
 - [[source-metronome-guides-customers-billing-manage-customers-manage-customer-lifecycle]] - worked enterprise-contract lifecycle route covering existing-contract edits, linked successor renewals, early contract conclusion, and merchant-owned webhook-driven product-access enforcement
 - [[source-metronome-api-reference-notifications-get-an-offset-lifecycle-event-notification-configuration]] - targeted lookup of one offset-notification configuration by ID, with lifecycle-event policy type and signed ISO 8601 offset navigation

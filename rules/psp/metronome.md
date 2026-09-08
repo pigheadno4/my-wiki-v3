@@ -1,5 +1,16 @@
 # Provider: Metronome - collection profile
 
+## Campaign 39 retrieval-source confirmation
+
+The exact five-job Campaign 39 manifest was approved on 2026-09-08.
+For those jobs only, reuse the Campaign 38 retrieval-source exception through
+`tracking/ingest/metronome/metronome-campaign-39/dispatch-contract.md` and all
+its referenced worker/reviewer instructions. Keep independent initial review,
+targeted bounded corrections, coordinator-only writes, index-led concept review,
+one ten-question audit, and existing close checks. Record stage timings in the
+existing retrospective using event timestamps and bounded coordinator notes;
+do not add runtime fields or monitoring infrastructure.
+
 ## Campaign 38 retrieval-source confirmation
 
 After approval of its exact five-job manifest, Campaign 38 reuses the

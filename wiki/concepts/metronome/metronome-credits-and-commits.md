@@ -11,6 +11,8 @@ Metronome commitments represent contractually agreed spend and can be prepaid or
 
 ## Enterprise commitment structure
 
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-discounting-on-commits]] - choosing among prepaid cost-basis discounts, commit-specific contract overrides, and reusable rate-card commit rates, including selection limits and missing-product fallback behavior
+
 - Access schedules determine when commitment balance becomes usable.
 - Invoice schedules determine when prepaid commitment charges are billed.
 - `rollover_fraction` can preserve a defined portion of unused balance when transition logic is applied at renewal.

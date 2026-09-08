@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 226 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 192 |
-| Raw snapshots without source summaries | 100 |
+| Source summaries ingested | 197 |
+| Raw snapshots without source summaries | 95 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -22,6 +22,12 @@ Operational evidence:
 - [2026-07-13 collection manifest](../tracking/collections/metronome/runs/2026-07-13T100930-manifest.md)
 
 ## Sources
+
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-discounting-on-commits]] — Offer discounts on commits
+- [[source-metronome-api-reference-customers-fetch-billing-provider-configurations-for-a-customer]] — Metronome API: Fetch Billing Provider Configurations for a Customer
+- [[source-metronome-api-reference-plans-list-plan-charges]] — Metronome API: List Plan Charges
+- [[source-metronome-api-reference-contracts-update-the-contract-end-date]] — Metronome API Reference: Update the Contract End Date
+- [[source-metronome-api-reference-settings-upsert-anrok-api-token]] — Upsert Anrok API token
 
 - [[source-metronome-guides-customers-billing-manage-customers-manage-customer-lifecycle]] - worked enterprise-contract lifecycle route covering existing-contract edits, linked successor renewals, early contract conclusion, and merchant-owned webhook-driven product-access enforcement
 - [[source-metronome-api-reference-notifications-get-an-offset-lifecycle-event-notification-configuration]] - targeted lookup of one offset-notification configuration by ID, with lifecycle-event policy type and signed ISO 8601 offset navigation
@@ -238,13 +244,13 @@ Operational evidence:
 - [[metronome-usage-based-billing]] — pay as you go, enterprise commitments, subscriptions with usage, and prepaid credits
 - [[metronome-token-billing]] — private-preview managed LLM token-cost-plus-markup workflow
 - [[metronome-invoicing]] — native Stripe, marketplace, and ERP invoicing paths
-- [[metronome-integrations]] — external-system integration boundaries and workflows
-- [[metronome-credits-and-commits]] — commitment access and invoice schedules, usage targeting, rollover, and lifecycle boundaries
+- [[metronome-integrations]] — external-system integration boundaries, Anrok credential configuration, and workflows
+- [[metronome-credits-and-commits]] — commitment discounts, access and invoice schedules, usage targeting, rollover, and lifecycle boundaries
 - [[metronome-event-ingestion]] — usage-event fields, limits, idempotency, design choices, and matching boundary
 - [[metronome-billable-metrics]] — filters, aggregation operations, contextual grouping, and creation-time behavior
-- [[metronome-products-and-rate-cards]] — product presentation, quantity conversion, and effective rates
+- [[metronome-products-and-rate-cards]] — product presentation, quantity conversion, effective rates, and legacy Plan charge configuration
 - [[metronome-packages-and-aliases]] — package cohorts, effective-dated alias transitions, and migration boundaries
-- [[metronome-customers-and-contracts]] — ingest aliases, commercial terms, draft-invoice activation, and contract lifecycle changes, renewals, and ending
+- [[metronome-customers-and-contracts]] — ingest aliases, billing-provider configuration lookup, commercial terms, draft-invoice activation, and contract lifecycle changes, renewals, and ending
 - [[metronome-reporting-and-analytics]] — exported table families, row grains, and nullability/version cautions
 - [[metronome-webhooks]] — notification delivery, deduplication, API verification, and HMAC authenticity
 - [[metronome-security-principles]] — explicit access grants, authenticated communication, and credential lifetime
