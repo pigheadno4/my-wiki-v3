@@ -1,0 +1,54 @@
+{
+  "job_id": "list-plan-customers-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: List Customers on a Plan\"\ntype: source\ndate_ingested: 2026-09-08\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/plans/list-customers-on-a-plan\"\nraw_files:\n  - \"metronome/api-reference/plans/list-customers-on-a-plan-2026-07-13.md\"\ntags: [metronome, api-reference, plans, customers, contracts, pagination, deprecated]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `GET /v1/planDetails/{plan_id}/customers`, which lists customers associated with one legacy Plan. Its optional `status` filter defaults to `active`, meaning current customers of the Plan; the page is primarily a retrieval route for the deprecated Plans surface and its customer-and-plan response shape.\n\n## Retrieval boundary\n\n> [!warning] Deprecated Plans surface\n> Metronome marks this endpoint as deprecated and directs new clients to Contracts. This page does not identify a replacement Contracts operation, establish Plan-to-Contract identity or field mapping, provide a migration procedure, or state a removal date.\n\nThe required `plan_id` path parameter is UUID-formatted. Optional query parameters include `limit` from 1 through 100, a `next_page` cursor, and `status`. Status accepts `all`, `active`, `ended`, or `upcoming`; comma-separated values are ORed, but the page says `ended,upcoming` is not yet supported.\n\nA documented `200` JSON response requires a `data` array and nullable sibling `next_page`. Each array item requires both `customer_details` and `plan_details`; use the component schemas for field-level requiredness and configuration-dependent fields.\n\n## Raw detail locators\n\n- Production server, bearer authentication, method, path, operation ID, and deprecation wording: OpenAPI `servers`, top-level `security`, and `paths./planDetails/{plan_id}/customers.get`.\n- Required Plan identifier and optional pagination controls: `components.parameters.PlanId`, `PageLimit`, and `NextPage`.\n- Status default, values, comma-OR behavior, and unsupported combination: `components.parameters.CustomerPlanStatus`.\n- Success envelope, immediate-parent placement, and worked example: `paths./planDetails/{plan_id}/customers.get.responses.200`.\n- Customer/Plan pairing and detailed identity, aliases, timestamps, configuration-dependent billable status, Plan assignment dates, custom fields, and Salesforce configuration: `components.schemas.CustomerAndPlanDetail`, `CustomerDetail`, `CustomerPlanDetail`, `CustomerConfig`, `CustomField`, and `BillableStatus`.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-customers-and-contracts]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/plans/list-customers-on-a-plan-2026-07-13|2026-07-13 snapshot - deprecated Plan customer listing, active-status default, pagination, response envelope, and schemas]]\n",
+  "quotes": [
+    {
+      "text": "Fetches a list of customers on a specific plan (by default, only currently active plans are included). This is a Plans (deprecated) endpoint. New clients should implement using Contracts.",
+      "location": "Line 11, introductory blockquote beneath `# List customers on a plan`"
+    },
+    {
+      "text": "  /planDetails/{plan_id}/customers:\n    get:\n      tags:\n        - Plans\n      summary: List customers on a plan",
+      "location": "OpenAPI `paths./planDetails/{plan_id}/customers.get`, lines 92-96"
+    },
+    {
+      "text": "Status of customers on a given plan. Defaults to `active`.",
+      "location": "OpenAPI `components.parameters.CustomerPlanStatus.description`, line 178"
+    },
+    {
+      "text": "Multiple statuses can be OR'd together using commas, e.g.\n        `active,ended`.\n\n        **Note:** `ended,upcoming` combination is not yet supported.",
+      "location": "OpenAPI `components.parameters.CustomerPlanStatus.description`, lines 190-193"
+    },
+    {
+      "text": "CustomerAndPlanDetail:\n      required:\n        - customer_details\n        - plan_details",
+      "location": "OpenAPI `components.schemas.CustomerAndPlanDetail.required`, lines 204-207"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "plans-list-customers-deprecated-boundary",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "durable_fact",
+        "anchor": "### Deprecated Plans listing boundary",
+        "proposed_markdown": "Bearer-authenticated `GET /v1/planDetails/{plan_id}/customers` lists customer-and-Plan detail pairs for one UUID-identified legacy Plan. Optional `status` defaults to `active`, supports `all`, `active`, `ended`, and `upcoming`, permits comma-separated OR selections, and does not yet support `ended,upcoming`; optional cursor pagination accompanies required top-level `data` plus nullable `next_page`. Metronome marks the endpoint as deprecated and directs new clients to Contracts, but this page names no replacement Contracts operation or Plan-to-Contract identity or field mapping. [[source-metronome-api-reference-plans-list-customers-on-a-plan]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw page directs new clients to Contracts but does not identify an equivalent Contracts route or migration mapping."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/plans/list-customers-on-a-plan-2026-07-13.md",
+  "raw_sha256": "b388cc3964fbdbd9aed215e58e176b0fc133e452d3803797375124c387e1fe0c",
+  "status": "candidate_ready"
+}

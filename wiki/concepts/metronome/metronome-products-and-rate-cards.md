@@ -145,6 +145,8 @@ The customer-credit create payload requires a UUID `product_id` even when eligib
 
 ## Sources
 
+- [[source-metronome-api-reference-rate-cards-get-rates]] - bearer-authenticated rate-card schedule retrieval at an inclusive timestamp, OR selector filtering, response-schema navigation, and the customer-contract override boundary
+
 - [[source-metronome-api-reference-plans-list-plan-charges]] - deprecated Plan charge-configuration listing, cursor pagination, exact charge-schema navigation, and Contracts migration boundary
 
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-discounting-on-commits]] - reusable rate-card commit pricing, same-unit and list-rate requirements, tier continuity, contract-level discounting, and missing-product fallback

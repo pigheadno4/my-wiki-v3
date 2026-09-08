@@ -12,8 +12,8 @@
 | --- | ---: |
 | English canonical documentation pages collected | 226 |
 | OpenAPI artifacts collected | 2 |
-| Source summaries ingested | 197 |
-| Raw snapshots without source summaries | 95 |
+| Source summaries ingested | 202 |
+| Raw snapshots without source summaries | 90 |
 | Collection failures | 0 |
 
 Operational evidence:
@@ -22,6 +22,12 @@ Operational evidence:
 - [2026-07-13 collection manifest](../tracking/collections/metronome/runs/2026-07-13T100930-manifest.md)
 
 ## Sources
+
+- [[source-metronome-api-reference-rate-cards-get-rates]] — rate-card schedule retrieval, timestamp and selector navigation, and customer-contract override boundary
+- [[source-metronome-api-reference-credits-and-commits-archive-a-commit]] — commit archival, finalized usage and commit-payment invoice prerequisites, historical preservation, and full deactivation
+- [[source-metronome-guides-customers-billing-set-up-notifications-threshold-notifications]] — balance, spend/usage and invoice threshold comparison, seat-credit exclusion, setup and webhook-action boundary
+- [[source-metronome-api-reference-plans-list-customers-on-a-plan]] — deprecated Plan customer listing, active-status default, status description/schema conflict, and response navigation
+- [[source-metronome-api-reference-settings-upsert-avalara-credentials]] — PLG Invoicing Avalara credential mapping, billing entities and delivery-method identifiers
 
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-discounting-on-commits]] — Offer discounts on commits
 - [[source-metronome-api-reference-customers-fetch-billing-provider-configurations-for-a-customer]] — Metronome API: Fetch Billing Provider Configurations for a Customer
@@ -244,19 +250,19 @@ Operational evidence:
 - [[metronome-usage-based-billing]] — pay as you go, enterprise commitments, subscriptions with usage, and prepaid credits
 - [[metronome-token-billing]] — private-preview managed LLM token-cost-plus-markup workflow
 - [[metronome-invoicing]] — native Stripe, marketplace, and ERP invoicing paths
-- [[metronome-integrations]] — external-system integration boundaries, Anrok credential configuration, and workflows
+- [[metronome-integrations]] — external-system integration boundaries, Anrok and Avalara credential configuration, and workflows
 - [[metronome-credits-and-commits]] — commitment discounts, access and invoice schedules, usage targeting, rollover, and lifecycle boundaries
 - [[metronome-event-ingestion]] — usage-event fields, limits, idempotency, design choices, and matching boundary
 - [[metronome-billable-metrics]] — filters, aggregation operations, contextual grouping, and creation-time behavior
-- [[metronome-products-and-rate-cards]] — product presentation, quantity conversion, effective rates, and legacy Plan charge configuration
+- [[metronome-products-and-rate-cards]] — product presentation, quantity conversion, timestamped rate-card schedule retrieval, and legacy Plan charge configuration
 - [[metronome-packages-and-aliases]] — package cohorts, effective-dated alias transitions, and migration boundaries
-- [[metronome-customers-and-contracts]] — ingest aliases, billing-provider configuration lookup, commercial terms, draft-invoice activation, and contract lifecycle changes, renewals, and ending
+- [[metronome-customers-and-contracts]] — ingest aliases, billing-provider configuration lookup, legacy Plan customer listing, commercial terms, draft-invoice activation, and contract lifecycle changes, renewals, and ending
 - [[metronome-reporting-and-analytics]] — exported table families, row grains, and nullability/version cautions
 - [[metronome-webhooks]] — notification delivery, deduplication, API verification, and HMAC authenticity
 - [[metronome-security-principles]] — explicit access grants, authenticated communication, and credential lifetime
 - [[metronome-api-idempotency]] — key selection, conflict behavior, retention windows, and cached-error handling
 - [[metronome-subscriptions]] — subscription pricing, contract configuration, transitions, and cancellation
-- [[metronome-alerts-and-notifications]] — alert definitions, trial-balance triggers, offset-notification configuration lookup, and merchant action boundary
+- [[metronome-alerts-and-notifications]] — balance, spend/usage and invoice threshold comparison, seat-credit exclusions, offset-notification configuration lookup, and merchant action boundary
 - [[metronome-spend-trackers]] — public-beta commit-purchase accumulators, threshold-discount integration, retrieval, and billing-state unknowns
 - [[metronome-spend-threshold-billing]] — contract-level incremental collection with optional commit-release payment gating, distinct from product-access enforcement and a customer-wide cross-contract cap
 - [[metronome-currencies-and-custom-pricing-units]] — supported fiat currencies, Metronome-specific API denomination, custom-unit rates, balance drawdown, and invoice conversion

@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 197
+source_count: 202
 ---
 
 ## Overview
@@ -151,10 +151,16 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 226
-- Official documentation source summaries: 191
-- Raw snapshots without source summaries: 95
+- Official documentation source summaries: 196
+- Raw snapshots without source summaries: 90
 
 ## Sources
+
+- [[source-metronome-api-reference-rate-cards-get-rates]] — rate-card schedule retrieval, timestamp and selector navigation, and customer-contract override boundary
+- [[source-metronome-api-reference-credits-and-commits-archive-a-commit]] — commit archival, finalized usage and commit-payment invoice prerequisites, historical preservation, and full deactivation
+- [[source-metronome-guides-customers-billing-set-up-notifications-threshold-notifications]] — balance, spend/usage and invoice threshold comparison, seat-credit exclusion, setup and webhook-action boundary
+- [[source-metronome-api-reference-plans-list-customers-on-a-plan]] — deprecated Plan customer listing, active-status default, status description/schema conflict, and response navigation
+- [[source-metronome-api-reference-settings-upsert-avalara-credentials]] — PLG Invoicing Avalara credential mapping, billing entities and delivery-method identifiers
 
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-discounting-on-commits]] — Offer discounts on commits
 - [[source-metronome-api-reference-customers-fetch-billing-provider-configurations-for-a-customer]] — Metronome API: Fetch Billing Provider Configurations for a Customer

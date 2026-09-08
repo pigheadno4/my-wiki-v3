@@ -1,0 +1,20 @@
+{
+  "job_id": "list-plan-customers-new-source",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The candidate accurately preserves the endpoint identity, deprecated legacy-Plans scope, default active-customer scope, pagination controls, response envelope, raw provenance, and purpose-fit customers-and-contracts route. However, its retained comma-separated status claim is unqualified even though the same CustomerPlanStatus definition declares a scalar string enum containing only the four single values. The prose example `active,ended` therefore conflicts with the published schema and must remain visible as a short warning rather than being presented as an internally consistent contract.",
+  "required_changes": [
+    "In both candidate.md and the proposed concept update, qualify the status behavior: the CustomerPlanStatus description documents comma-separated OR values such as `active,ended` and says `ended,upcoming` is unsupported, while its scalar string enum lists only `all`, `active`, `ended`, and `upcoming`, so combined strings do not conform to the published enum. Keep the exact CustomerPlanStatus description/schema locator. This is material for the concrete query `Can a schema-validated client send active,ended?`: the current candidate would answer yes without exposing the validator-facing conflict, and following only its raw-detail category does not prevent that misleading retained answer before the raw is opened."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "plans-list-customers-deprecated-boundary",
+      "verdict": "rejected",
+      "reason": "The update repeats the unqualified comma-separated status claim; approve after it explicitly preserves the narrative-versus-enum conflict and keeps the existing deprecation/migration boundary unchanged."
+    }
+  ],
+  "reviewer_identity": "c40_r_plans",
+  "reviewer_model": "gpt-5.6-sol-high"
+}

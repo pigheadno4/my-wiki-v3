@@ -1,0 +1,66 @@
+{
+  "job_id": "get-rates-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: Get Rates\"\ntype: source\ndate_ingested: 2026-09-08\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/rate-cards/get-rates\"\nraw_files:\n  - \"metronome/api-reference/rate-cards/get-rates-2026-07-13.md\"\ntags: [metronome, api-reference, rate-cards, pricing-catalog, rate-schedules]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `POST /v1/contract-pricing/rate-cards/getRates`, which retrieves a rate card's rate schedule at a supplied timestamp. It is the rate-card pricing read for product experiences and other catalog lookups, with optional selectors and cursor pagination.\n\n## Retrieval scope\n\nThe supplied JSON payload schema requires UUID `rate_card_id` and date-time `at`; `at` is described as the inclusive starting point for the schedule. The enclosing OpenAPI `requestBody` is not marked required, so omitted-body behavior is not established. Optional `selectors` use OR semantics across selector objects, while supplying no selectors returns all rates. Selector fields can narrow by product ID, product tags, billing frequency, exact pricing-group values, or partial pricing-group values; use the raw schemas for each field's matching rule and enum.\n\nOptional query `limit` accepts 1 through 100 results, and `next_page` supplies a cursor. HTTP `200` requires top-level `data`, an array of `RateSchedule` entries, and may include nullable `next_page`. Each schedule entry requires product identity and metadata, `starting_at`, `entitled`, and `rate`; optional fields include `ending_before`, pricing-group values, `commit_rate`, and billing frequency.\n\n> [!warning] Rate-card rates are not customer-contract rates\n> This operation reads the rate schedule on a rate card. For a specific customer's contract, including contract-level overrides, the page directs callers to `getContractRateSchedule`. This source does not establish contract-override precedence, final invoice amounts, result ordering, cursor lifetime, cross-page snapshot consistency, or rate-change freshness.\n\n## Raw detail locators\n\n- Method, path, operation ID, bearer authentication, and request media type: OpenAPI fence and `paths./v1/contract-pricing/rate-cards/getRates.post`, plus top-level `security`.\n- Payload-property requiredness, timestamp meaning, request example, and selector presence: `paths./v1/contract-pricing/rate-cards/getRates.post.requestBody` and `components.schemas.GetRatesPayload`.\n- Selector filters, matching semantics, string-map shapes, and billing-frequency variants: `components.schemas.RateSelectorWithProductTags`.\n- Query pagination controls: `components.parameters.PageLimit` and `components.parameters.NextPage`.\n- Success envelope and immediate placement of `data` and `next_page`: `paths./v1/contract-pricing/rate-cards/getRates.post.responses.200`.\n- Schedule-entry fields and requiredness, list and commit rate forms, rate-type enums, tiers, minimum configuration, pricing-group maps, and credit-type identity: `components.schemas.RateSchedule`, `Rate`, `CommitRate`, `Tier`, `MinimumConfig`, and `CreditType`.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-products-and-rate-cards]]\n- Supporting concept: [[metronome-customers-and-contracts]]\n- Contract-specific route: [[source-metronome-api-reference-contracts-get-the-rate-schedule-for-a-contract]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/rate-cards/get-rates-2026-07-13|2026-07-13 snapshot - rate-card rate-schedule retrieval, selector matching, pagination, and response schemas]]\n\n## Related raw API references\n\n- [[raw/metronome/api-reference/contracts/get-the-rate-schedule-for-a-contract-2026-07-13|Contract rate-schedule reference]] - navigation only for customer-contract rates and overrides; not used as factual evidence for this source.\n",
+  "quotes": [
+    {
+      "text": "> Understand the rate schedule at a given timestamp, optionally filtering the list of rates returned based on properties such as `product_id` and `pricing_group_values`. For example, you may want to display the current price for a given product in your product experience - use this endpoint to fetch that information from its source of truth in Metronome. \n\nIf you want to understand the rates for a specific customer's contract, inclusive of contract-level overrides, use the `getContractRateSchedule` endpoint.",
+      "location": "Introduction immediately below `# Get rates`"
+    },
+    {
+      "text": "````yaml /openapi.json post /v1/contract-pricing/rate-cards/getRates",
+      "location": "`## OpenAPI` fenced-block declaration"
+    },
+    {
+      "text": "security:\n  - bearerAuth: []",
+      "location": "OpenAPI top-level `security`"
+    },
+    {
+      "text": "    GetRatesPayload:\n      type: object\n      required:\n        - rate_card_id\n        - at\n      properties:\n        rate_card_id:\n          type: string\n          format: uuid\n          description: ID of the rate card to get the schedule for\n        at:\n          type: string\n          format: date-time\n          description: inclusive starting point for the rates schedule\n        selectors:\n          description: >-\n            List of rate selectors, rates matching ANY of the selector will be\n            included in the response Passing no selectors will result in all\n            rates being returned.",
+      "location": "OpenAPI `components.schemas.GetRatesPayload`"
+    },
+    {
+      "text": "        '200':\n          description: Success\n          content:\n            application/json:\n              schema:\n                type: object\n                required:\n                  - data\n                properties:\n                  next_page:\n                    type: string\n                    nullable: true\n                  data:\n                    type: array\n                    items:\n                      $ref: '#/components/schemas/RateSchedule'",
+      "location": "OpenAPI `paths./v1/contract-pricing/rate-cards/getRates.post.responses.200`"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "get-rates-products-rate-cards-reciprocal",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-rate-cards-get-rates]] - bearer-authenticated rate-card schedule retrieval at an inclusive timestamp, OR selector filtering, response-schema navigation, and the customer-contract override boundary",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this distinct from the existing single-card metadata read and the contract-specific rate-schedule read."
+        ]
+      },
+      {
+        "update_id": "get-rates-customers-contracts-reciprocal",
+        "target_path": "wiki/concepts/metronome/metronome-customers-and-contracts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-rate-cards-get-rates]] - rate-card schedule retrieval and explicit routing to the contract rate-schedule endpoint when customer-level overrides must be included",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": [
+          "This source distinguishes the two retrieval scopes but does not define contract-override precedence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/rate-cards/get-rates-2026-07-13.md",
+  "raw_sha256": "671370310f26605f6daabc770a111a24461738b9efe9dee54eee46d05c7900b2",
+  "status": "candidate_ready"
+}

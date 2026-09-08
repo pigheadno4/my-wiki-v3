@@ -1,0 +1,67 @@
+{
+  "job_id": "upsert-avalara-credentials-new-source",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Metronome API: Upsert Avalara Credentials\"\ntype: source\ndate_ingested: 2026-09-08\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/settings/upsert-avalara-credentials\"\nraw_files:\n  - \"metronome/api-reference/settings/upsert-avalara-credentials-2026-07-13.md\"\ntags: [metronome, avalara, plg-invoicing, billing-integrations]\n---\n\n## Overview\n\nThis Metronome Settings API reference documents the bearer-authenticated `POST /v1/upsertAvalaraCredentials` operation. It maps Avalara account credentials to billing-provider delivery methods and limits their documented use to PLG Invoicing.\n\n## Key takeaways\n\n- Supply `delivery_method_ids` obtained from `/listConfiguredBillingProviders`; Metronome uses the selected delivery methods to map the credentials to the appropriate billing entity.\n- The JSON object schema requires `delivery_method_ids`, `avalara_environment`, `avalara_username`, and `avalara_password`. `avalara_environment` accepts `PRODUCTION` or `SANDBOX`.\n- `commit_transactions` is an optional boolean in this endpoint schema; its description routes readers to whether Metronome tax calculations are committed for reporting and tax filings.\n- The endpoint is documented only for PLG Invoicing at this snapshot. This page does not establish that the credential flow is the same as the separate Stripe-hosted Avalara tax-app workflow.\n\n## API navigation\n\n- Operation and authentication: `## OpenAPI` \u2192 document-level `security` \u2192 `bearerAuth`, then `paths` \u2192 `/v1/upsertAvalaraCredentials` \u2192 `post`.\n- Required payload properties and environment values: `requestBody` \u2192 `content` \u2192 `application/json` \u2192 `schema` \u2192 `required` and `properties`. The enclosing `requestBody` is not marked `required`; that is distinct from the four required properties inside the JSON object schema.\n- Delivery-method mapping detail: `properties` \u2192 `delivery_method_ids`; the description points back to `/listConfiguredBillingProviders`.\n- Reporting and filing option: `properties` \u2192 `commit_transactions`.\n- Result and errors: `responses` documents an empty-object `200`; the `400` response uses `$ref: '#/components/schemas/Error'`, whose body schema is defined at `components` \u2192 `schemas` \u2192 `Error`; and `404` uses the `NotFound` response reference.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-integrations]]\n- Supporting route: [[metronome-invoicing]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/settings/upsert-avalara-credentials-2026-07-13|Upsert Avalara credentials]] \u2014 complete API reference and embedded OpenAPI operation\n",
+  "quotes": [
+    {
+      "text": "Set the Avalara credentials for some specified `delivery_method_ids`, which can be found in the `/listConfiguredBillingProviders` response. This maps the Avalara credentials to the appropriate billing entity. These credentials are only used for PLG Invoicing today.",
+      "location": "Introduction, line 11"
+    },
+    {
+      "text": "security:\n  - bearerAuth: []",
+      "location": "OpenAPI document-level security, lines 26-27"
+    },
+    {
+      "text": "  /v1/upsertAvalaraCredentials:\n    post:",
+      "location": "OpenAPI paths operation, lines 88-89"
+    },
+    {
+      "text": "              required:\n                - delivery_method_ids\n                - avalara_environment\n                - avalara_username\n                - avalara_password",
+      "location": "OpenAPI requestBody application/json schema required properties, lines 105-109"
+    },
+    {
+      "text": "                commit_transactions:\n                  type: boolean\n                  description: >-\n                    Commit transactions if you want Metronome tax calculations\n                    used for reporting and tax filings.",
+      "location": "OpenAPI requestBody application/json schema properties.commit_transactions, lines 132-136"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "avalara-plg-invoicing-credentials-integrations-fact",
+        "target_path": "wiki/concepts/metronome/metronome-integrations.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Avalara tax-app boundary",
+        "proposed_markdown": "Separately from the Stripe-hosted Avalara tax-app path, bearer-authenticated `POST /v1/upsertAvalaraCredentials` maps Avalara credentials to billing-provider `delivery_method_ids` returned by `/listConfiguredBillingProviders`, associating them with the appropriate billing entities. The endpoint limits these credentials to PLG Invoicing at this snapshot. Its JSON object schema requires the delivery-method IDs, Avalara environment (`PRODUCTION` or `SANDBOX`), username, and password; optional `commit_transactions` controls whether Metronome tax calculations are committed for reporting and tax filings. The enclosing `requestBody` is not marked required, and the empty-object `200` response does not expose per-delivery-method outcomes. [[source-metronome-api-reference-settings-upsert-avalara-credentials]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this PLG Invoicing credential path separate from the existing Stripe-hosted Avalara guide and do not import Anrok Threshold Billing scope."
+        ]
+      },
+      {
+        "update_id": "avalara-plg-invoicing-invoicing-route",
+        "target_path": "wiki/concepts/metronome/metronome-invoicing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-settings-upsert-avalara-credentials]] \u2014 PLG Invoicing Avalara credential mapping by billing-provider delivery method, with payload and response-schema locators",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/settings/upsert-avalara-credentials-2026-07-13.md",
+  "raw_sha256": "400805dc8d8871a19269105fadd281165b9002454e10a3c31eb5fa642d796fb6",
+  "status": "candidate_ready"
+}

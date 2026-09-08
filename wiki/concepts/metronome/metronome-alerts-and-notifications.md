@@ -90,6 +90,8 @@ For `low_remaining_contract_credit_and_commit_balance_reached`, the default cust
 
 ## Sources
 
+- [[source-metronome-guides-customers-billing-set-up-notifications-threshold-notifications]] — side-by-side route across commit and credit balance, spend and usage, and invoice-total thresholds, including seat-credit exclusions, calculation timing, payload examples, setup paths, evaluation triggers, and the merchant-action boundary
+
 - [[source-metronome-api-reference-notifications-get-an-offset-lifecycle-event-notification-configuration]] - targeted lookup of one offset-notification configuration by ID, with lifecycle-event policy type and signed ISO 8601 offset navigation
 
 - [[source-metronome-api-reference-notifications-list-offset-lifecycle-event-notification-configurations]] - offset-notification configuration inventory, lifecycle-relative policy identity, archive filtering, endpoint-specific cursor placement, and scheduling and delivery boundaries

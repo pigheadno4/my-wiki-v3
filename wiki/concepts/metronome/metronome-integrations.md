@@ -56,6 +56,8 @@ Metronome creates and maps the Stripe invoice, while Stripe Tax calculates and a
 
 ## Avalara tax-app boundary
 
+Separately from the Stripe-hosted Avalara tax-app path, bearer-authenticated `POST /v1/upsertAvalaraCredentials` maps Avalara credentials to billing-provider `delivery_method_ids` returned by `/listConfiguredBillingProviders`, associating them with the appropriate billing entities. The endpoint limits these credentials to PLG Invoicing at this snapshot. Its JSON object schema requires the delivery-method IDs, Avalara environment (`PRODUCTION` or `SANDBOX`), username, and password; optional `commit_transactions` controls whether Metronome tax calculations are committed for reporting and tax filings. The enclosing `requestBody` is not marked required, and the empty-object `200` response does not expose per-delivery-method outcomes. [[source-metronome-api-reference-settings-upsert-avalara-credentials]]
+
 For Stripe-delivered invoices using Avalara, AvaTax integrates through Stripe's Marketplace app and third-party tax-app framework rather than directly with Metronome. The guide creates the case-sensitive `TaxCode` custom field on Metronome `Product`, while its mapping row sends `ContractProduct.TaxCode` to `invoiceitem.metadata.TaxCode`; Stripe hosts the draft invoice and integration settings; Avalara calculates tax from the customer address and line-item code and owns unresolved rate-accuracy questions. The guide requires **Leave invoices as drafts** to remain on so Avalara can calculate and apply tax before finalization, but it does not define finalization ownership, processing time, retries, or safeguards against finalizing without tax.
 
 ## Anrok tax-app boundary

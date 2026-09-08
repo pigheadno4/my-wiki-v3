@@ -1,0 +1,55 @@
+{
+  "job_id": "threshold-notifications-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome Guide: Threshold Notifications\"\ntype: source\ndate_ingested: 2026-09-08\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/customers-billing/set-up-notifications/threshold-notifications\"\nraw_files:\n  - \"metronome/guides/customers-billing/set-up-notifications/threshold-notifications-2026-07-13.md\"\ntags: [metronome, alerts, notifications, usage-based-billing]\n---\n\n## Overview\n\nThis guide compares Metronome threshold notifications for commit and credit balances, billing-period spend or usage, and invoice totals. It also routes readers to the notification-type catalog, webhook payload examples, UI and API setup, and evaluation triggers.\n\n## Key takeaways\n\n- Commit and credit notifications monitor remaining balances at customer or contract level. The guide explicitly excludes individual seat-scoped credits from those calculations; its separate seat-balance type uses `seat_filter` to scope a seat-based subscription and can optionally narrow to one seat.\n- Spend thresholds evaluate usage-based spend before commit and credit drawdown, and exclude commit purchases. Billable-metric usage thresholds compare current-billing-period usage, while invoice thresholds evaluate each active invoice separately after credits, commits, and other adjustments, in the specified currency.\n- Notifications can be configured in the UI or through `POST /v1/alerts/create`. The guide says usage ingestion and specified metadata changes trigger evaluation, and that notifications are sent to configured webhooks within minutes after the condition is met.\n\n> [!warning] Action boundary\n> The guide presents customer messages and upgrade workflows as possible uses of threshold signals. It documents webhook notification, not automatic spend enforcement, product upgrades, customer access changes, or other merchant action.\n\n## Detail navigation\n\n- `Threshold notification types` contains the alert-type identifiers, aggregation rules, custom-field and grouping filters, pricing-unit cautions, and the current-billing-period definition.\n- `Webhook payload examples` shows example property placement for balance, spend, commit, usage, and invoice-total events; treat the shown values as examples, not guarantees for every alert type.\n- `Creating and managing threshold notifications` gives the UI steps plus the `/v1/alerts/create` and `/v1/customer-alerts/get` routes, and cautions against scraping the status endpoint in place of webhook consumption.\n- `Threshold notification evaluation triggers` names usage ingestion and customer metadata changes as evaluation triggers and gives the guide's source-scoped delivery timing statement.\n\n## Related\n\n- Company: [[metronome]]\n- Concepts: [[metronome-alerts-and-notifications]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/customers-billing/set-up-notifications/threshold-notifications-2026-07-13|Threshold notifications (2026-07-13)]] \u2014 complete guide with category definitions, alert-type details, payload examples, setup routes, and evaluation triggers\n",
+  "quotes": [
+    {
+      "text": "Threshold notifications fall into three main categories:",
+      "location": "Threshold notifications, line 13"
+    },
+    {
+      "text": "Commit and credit threshold notifications alert on the balance of both customer and contract level commits and credits. [Individual seat-scoped credits](https://docs.metronome.com/guides/pricing-packaging/subscription/provision-your-customer#individual-seat-credit) are not included in the threshold calculation for these notifications.",
+      "location": "Threshold notifications > INFO, line 20"
+    },
+    {
+      "text": "Triggers if the customer's usage-based spend prior to commit and credit drawdown for their current billing period reaches or goes beyond the set threshold. This notification evaluates against the sum of all usage-based charges for a particular customer, including usage drawdowns on credits and commits.",
+      "location": "Threshold notification types > Spend & Usage Notifications > Spend threshold, line 84"
+    },
+    {
+      "text": "Triggers if any of the customer's active invoices reaches or exceeds the configured threshold. This notification evaluates against the net invoice total after any credits, commits, or other adjustments have been applied. Each active invoice for the customer is evaluated separately. Additionally, only invoices in the specified currency are evaluated.",
+      "location": "Threshold notification types > Invoice Notifications > Invoice total, line 108"
+    },
+    {
+      "text": "Metronome will begin evaluating the selected customers against the defined threshold and will trigger a notification to your configured webhooks when the customer crosses the threshold",
+      "location": "Creating and managing threshold notifications > In the UI, step 8, line 219"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "threshold-notifications-alerts-reciprocal-route",
+        "target_path": "wiki/concepts/metronome/metronome-alerts-and-notifications.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-customers-billing-set-up-notifications-threshold-notifications]] \u2014 side-by-side route across commit and credit balance, spend and usage, and invoice-total thresholds, including seat-credit exclusions, calculation timing, payload examples, setup paths, evaluation triggers, and the merchant-action boundary",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not imply that customer or contract balance alerts include individual seat-scoped credits; the guide excludes them from those calculations and documents a separate seat-balance type.",
+          "Do not turn example messages, upgrades, or proactive actions into automatic Metronome enforcement or merchant action."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/customers-billing/set-up-notifications/threshold-notifications-2026-07-13.md",
+  "raw_sha256": "23b06ecf3425aa23644658a81d5f2e5fc258777842ccbc44f5586b760c265102",
+  "status": "candidate_ready"
+}

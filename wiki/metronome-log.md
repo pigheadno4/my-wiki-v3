@@ -6,6 +6,16 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-09-08 — Metronome Campaign 40 compact-instruction confirmation
+
+- Promoted five previously uncovered sources: rate-card rates, commit archival, threshold notifications, legacy Plan customer listing, and Avalara credential configuration.
+- Review: 3/5 first-pass approvals; five full initial reviews and two bounded corrections with two targeted reviews. No full rereview or coordinator semantic repair.
+- Corrections preserve the Plan status description-versus-enum conflict and fix the Avalara Error-schema reference locator. Both remain within the approved retrieval-source scope.
+- Shared updates: six reciprocal navigation entries and three reviewed factual additions across six existing concepts; exact source/raw provenance and purpose-fit reciprocal routes retained.
+- Coverage: 202 total source summaries, 196 official-documentation sources, 90 raw snapshots without source summaries, and 30 remaining canonical identities in the frozen never-ingested inventory.
+- Outcome: 10/10 final retrieval questions passed after correcting an auditor's credit-versus-commit object-selection error in two questions. Operational closure took 1,931 seconds (32m11s); first-pass target was missed, and no speed improvement over C39 is established.
+- Final retrieval outcomes and stage timings: [quality audit](../tracking/ingest/metronome/metronome-campaign-40/quality-audit.md), [retrospective](../tracking/ingest/metronome/metronome-campaign-40/retrospective.md), and [monitor](../tracking/ingest/metronome/metronome-campaign-40/monitor.md).
+
 ## 2026-09-08 — Metronome Campaign 39 retrieval-source confirmation
 
 - Promoted five sources: commit discounting, customer billing-provider configuration lookup, legacy Plan charge listing, contract end-date mutation, and Anrok token configuration.

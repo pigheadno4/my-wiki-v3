@@ -89,6 +89,8 @@ A provisioned contract is the primary invoice-generation mechanism and produces 
 
 ### Deprecated Plans listing boundary
 
+Bearer-authenticated `GET /v1/planDetails/{plan_id}/customers` lists customer-and-Plan detail pairs for one UUID-identified legacy Plan. Optional `status` defaults to `active`; its description documents `all`, `active`, `ended`, and `upcoming`, permits comma-separated OR selections such as `active,ended`, and says `ended,upcoming` is not yet supported. However, the same parameter's scalar string enum lists only the four single values, so combined strings do not conform to the published enum. Optional cursor pagination accompanies required top-level `data` plus nullable `next_page`. Metronome marks the endpoint as deprecated and directs new clients to Contracts, but this page names no replacement Contracts operation or Plan-to-Contract identity or field mapping. [[source-metronome-api-reference-plans-list-customers-on-a-plan]]
+
 Bearer-authenticated `POST /v1/credits/createGrant` is a deprecated Plans mutation for one `customer_id`; it directs new clients to Contracts without naming a replacement. Current authority independently documents customer-level `POST /v1/contracts/customerCredits/create`, while recommending `POST /v1/contracts/create` or `POST /v2/contracts/edit` for most credits. The current endpoints use their own payload, applicability, ordering, and lifecycle semantics. None of these sources establishes that one current operation is a one-to-one replacement for the legacy grant, or supplies a grant-to-credit or grant-to-contract identity mapping, field mapping, migration procedure, compatibility period, or removal date. [[source-metronome-api-reference-credit-grants-create-a-credit-grant]] [[source-metronome-api-reference-credits-and-commits-create-a-credit]] [[source-metronome-api-reference-contracts-create-a-contract]] [[source-metronome-api-reference-contracts-edit-a-contract]]
 
 
@@ -251,6 +253,8 @@ The Metronome dashboard quickstart creates a customer, optionally assigns ingest
 `POST /v1/contracts/getSubscriptionSeatsHistory` scopes a seat-schedule read with required UUID `customer_id`, `contract_id`, and `subscription_id` properties inside a supplied payload. HTTP `200` places the required schedule array at top-level `data` and required nullable continuation cursor at sibling `next_page`; each array item, rather than a nested wrapper, carries its effective period, total capacity, and assigned seat IDs. The endpoint lists not-found errors for all three resource types plus `InvalidArgument`, but does not define identifier-relationship mismatch behavior, current-contract authority, archived or ended resource visibility, read-after-edit timing, snapshot consistency, or reconciliation with contract, balance, credit, invoice, and ledger state. [[source-metronome-api-reference-contracts-get-subscription-seats-history]]
 
 ## Sources
+
+- [[source-metronome-api-reference-rate-cards-get-rates]] - rate-card schedule retrieval and explicit routing to the contract rate-schedule endpoint when customer-level overrides must be included
 
 - [[source-metronome-api-reference-customers-fetch-billing-provider-configurations-for-a-customer]] - customer-scoped billing-provider configuration lookup, contract selector identity, archive-state visibility, and exact provider, delivery, and invoice-suppression schema routes
 
