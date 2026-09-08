@@ -1,0 +1,68 @@
+{
+  "job_id": "target-credit-and-commits-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome: Target usage with credits and commits\"\ntype: source\ndate_ingested: 2026-09-08\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/guides/pricing-packaging/apply-credits-and-commits/target-credit-and-commits\"\nraw_files:\n  - \"metronome/guides/pricing-packaging/apply-credits-and-commits/target-credit-and-commits-2026-07-13.md\"\ntags: [metronome, credits, commits, usage-targeting]\n---\n\n## Overview\n\nThis guide explains how to restrict a Metronome credit or commit to selected customer usage. It distinguishes simple product-based selectors from `specifiers`, which support pricing or presentation dimensions and more complex boolean matching.\n\n## Key takeaways\n\n- Use `applicable_product_ids` or `applicable_product_tags` when filtering only by product ID or product family without complex AND/OR logic. Usage matching any listed product ID or tag is eligible to consume the credit or commit.\n- Use `specifiers` for pricing-group values, presentation-group values, or advanced boolean logic. Fields within one specifier are ANDed; separate specifier objects are ORed because a line item is eligible when any specifier matches.\n- When a specifier tests pricing or presentation group values, a product without the corresponding group key cannot match. Subscriptions and composite products do not have those group values and therefore do not draw down the credit or commit under such a specifier.\n\n## Raw-detail navigation\n\n- Selector choice and direct product-selector matching: see `Target with applicable_product_ids and applicable_product_tags` (raw lines 13-22).\n- Specifier structure, boolean matching, and the missing-group-key boundary: see `Target with specifiers` (raw lines 24-30).\n- Worked contract-create and contract-edit payloads for pricing-group, presentation-group, and product-tag examples remain in the raw under the three `Example` headings (raw lines 32-176); consult the current dedicated API references before treating those example payloads as complete request contracts.\n\n## Related\n\n- Company: [[metronome]]\n- Concept: [[metronome-credits-and-commits]]\n\n## Raw Sources\n\n- [[raw/metronome/guides/pricing-packaging/apply-credits-and-commits/target-credit-and-commits-2026-07-13|Target usage with credits and commits]] \u2014 complete collected guide with matching rules and worked payloads\n",
+  "quotes": [
+    {
+      "text": "You can grant credits and create commitments that are only applicable to a subset of a customer\u2019s usage. Choose to target the usage of specific products, product families, pricing dimensions, and even dimensions not used for pricing.",
+      "location": "raw line 11, introductory purpose paragraph"
+    },
+    {
+      "text": "Target with `applicable_product_ids` and `applicable_product_tags` if you want to filter only on product ID or product family, and don\u2019t require complex AND/OR logic",
+      "location": "raw line 15, targeting-options list"
+    },
+    {
+      "text": "Usage that matches *any* of the listed product IDs and product tags is eligible to consume the credit or commit.",
+      "location": "raw line 22, direct-selector matching rule"
+    },
+    {
+      "text": "The `specifiers` field takes in an array of objects, where each object is called a specifier. Within each specifier all fields are ANDed together. If the conditions of any specifier in the array are met, the line item is eligible to consume the commit or credit.",
+      "location": "raw line 28, specifier boolean-matching rule"
+    },
+    {
+      "text": "Note that if you use pricing group values and/or presentation group values in a specifier, only usage of products with the corresponding pricing and presentation group values will match that specifier. For example, if you create a credit that applies when pricing group value `region` = `us-east-1`, products that do not have the pricing group key `region` will never draw down the credit. Subscriptions and composite products never have pricing or presentation group values, so would not draw down the commit.",
+      "location": "raw line 30, group-key matching boundary"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "target-credit-and-commits-matching-fact",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Drawdown and invoice attribution",
+        "proposed_markdown": "Credits and commits can restrict eligible usage with direct product IDs or tags for simple product or product-family filtering, or with `specifiers` for pricing-group values, presentation-group values, and advanced boolean logic. Direct selectors match when usage matches any listed product ID or tag; within a specifier fields are ANDed, while separate specifier objects are ORed. A pricing- or presentation-group condition cannot match a product missing the corresponding group key, and subscriptions and composite products do not carry those group values. [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-target-credit-and-commits]]",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the missing-group-key and subscription/composite-product exclusion scoped to specifiers that use pricing or presentation group values."
+        ]
+      },
+      {
+        "update_id": "target-credit-and-commits-reciprocal-source",
+        "target_path": "wiki/concepts/metronome/metronome-credits-and-commits.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-target-credit-and-commits]] \u2014 product and product-family selectors, specifier boolean matching, pricing and presentation dimensions, and missing-group-key exclusions",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/guides/pricing-packaging/apply-credits-and-commits/target-credit-and-commits-2026-07-13.md",
+  "raw_sha256": "38f90445d14b019ac19bbb80c0e2813d5db14476271266ff4d82786d5f0967c6",
+  "status": "candidate_ready"
+}

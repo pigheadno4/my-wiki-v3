@@ -1,0 +1,50 @@
+{
+  "job_id": "list-rate-cards-new-source",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Metronome API: List Rate Cards\"\ntype: source\ndate_ingested: 2026-09-08\noriginal_format: webpage\ncanonical_url: \"https://docs.metronome.com/api-reference/rate-cards/list-rate-cards\"\nraw_files:\n  - \"metronome/api-reference/rate-cards/list-rate-cards-2026-07-13.md\"\ntags: [metronome, api-reference, rate-cards, pricing-catalog, pagination]\n---\n\n## Overview\n\nThis API reference documents bearer-authenticated `POST /v1/contract-pricing/rate-cards/list`, which lists rate-card catalog metadata such as IDs, names, descriptions, aliases, and other details. It is the discovery route for finding rate cards before using the separate rate or rate-schedule operations to inspect their actual rates.\n\n## Retrieval boundary\n\n> [!warning] This operation does not return the rates on each card\n> The page directs actual-rate inspection to the separate `getRates` or `getRateSchedule` endpoints. Their contents were not used as evidence for this source.\n\nThe optional query parameter `limit` accepts 1 through 100 results, and optional `next_page` supplies the cursor where the next page should start. A successful `200` response requires top-level `data` and `next_page` fields: `data` is an array of `RateCard` objects, while `next_page` is a nullable string.\n\n## Raw detail locators\n\n- Method, path, operation ID, bearer authentication, request media type, and empty request example: OpenAPI `security` and `paths./v1/contract-pricing/rate-cards/list.post`.\n- Query pagination controls: `components.parameters.PageLimit` and `components.parameters.NextPage`.\n- Success envelope and response example: `paths./v1/contract-pricing/rate-cards/list.post.responses.200`.\n- Required rate-card metadata and optional descriptions, credit types and conversions, aliases, and custom fields: `components.schemas.RateCard`, `CreditType`, `CreditTypeConversion`, `RateCardAlias`, and `CustomField`.\n\n## Related\n\n- Company: [[metronome]]\n- Main concept: [[metronome-products-and-rate-cards]]\n\n## Raw Sources\n\n- [[raw/metronome/api-reference/rate-cards/list-rate-cards-2026-07-13|2026-07-13 snapshot - rate-card catalog listing, pagination, response envelope, and schemas]]\n",
+  "quotes": [
+    {
+      "text": "> List all rate cards. Returns rate card IDs, names, descriptions, aliases, and other details. To view the rates associated with a given rate card, use the getRates or getRateSchedule endpoints.",
+      "location": "Lines 9-11, page title and introductory purpose/boundary"
+    },
+    {
+      "text": "paths:\n  /v1/contract-pricing/rate-cards/list:\n    post:",
+      "location": "Lines 87-89, OpenAPI operation path and method"
+    },
+    {
+      "text": "security:\n  - bearerAuth: []",
+      "location": "Lines 26-27, OpenAPI bearer authentication declaration"
+    },
+    {
+      "text": "PageLimit:\n      name: limit\n      in: query\n      description: Max number of results that should be returned\n      required: false\n      schema:\n        type: integer\n        minimum: 1\n        maximum: 100\n    NextPage:\n      name: next_page\n      in: query\n      description: Cursor that indicates where the next page of results should start.\n      required: false\n      schema:\n        type: string",
+      "location": "Lines 142-157, optional query pagination parameters and limit range"
+    },
+    {
+      "text": "schema:\n                type: object\n                required:\n                  - data\n                  - next_page\n                properties:\n                  data:\n                    type: array\n                    items:\n                      $ref: '#/components/schemas/RateCard'\n                  next_page:\n                    type: string\n                    nullable: true",
+      "location": "Lines 113-125, HTTP 200 response envelope and immediate field placement"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "list-rate-cards-main-concept-reciprocal-link",
+        "target_path": "wiki/concepts/metronome/metronome-products-and-rate-cards.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-metronome-api-reference-rate-cards-list-rate-cards]] - paginated rate-card catalog discovery, explicit no-rates boundary, and exact response-envelope and schema routes",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/metronome/api-reference/rate-cards/list-rate-cards-2026-07-13.md",
+  "raw_sha256": "3401fee5fb695665fb637805497f443dab90282c293c26f2fe7c5055a93ca818",
+  "status": "candidate_ready"
+}

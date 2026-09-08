@@ -145,6 +145,8 @@ The customer-credit create payload requires a UUID `product_id` even when eligib
 
 ## Sources
 
+- [[source-metronome-api-reference-rate-cards-list-rate-cards]] - paginated rate-card catalog discovery, explicit no-rates boundary, and exact response-envelope and schema routes
+
 - [[source-metronome-api-reference-rate-cards-get-a-rate-card]] - single-card metadata retrieval, explicit no-rates boundary, and exact request, response, alias, conversion, and custom-field schema routes
 
 - [[source-metronome-api-reference-billable-metrics-update-a-billable-metric]] - name-only metric mutation and streaming-metric replacement through a scheduled Product reference, with migration, effective-time, atomicity, and historical-outcome boundaries

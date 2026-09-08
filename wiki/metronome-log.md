@@ -6,6 +6,16 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-09-08 — Metronome Campaign 38 retrieval-source confirmation
+
+- Promoted five retrieval-oriented sources covering contract lifecycle, offset-notification lookup, rate-card listing, contract usage filters, and credit/commit targeting.
+- Review: 5/5 first-pass approvals after five independent full initial reviews; no worker retry, targeted rereview, full rereview, or coordinator semantic repair.
+- Shared updates: five reciprocal navigation entries across four main concepts, plus one reviewed matching-logic paragraph in credits and commits.
+- Final review uses index-led concept/source/raw navigation and reciprocal-link checks. The ten predetermined questions are divided between two disjoint groups within one audit, with no duplicated full-content audit.
+- Coverage: 192 total source summaries, 186 official-documentation sources, and 100 raw snapshots without source summaries. Of the frozen never-ingested planning inventory, 40 canonical identities remain uncovered.
+- Outcome: 10/10 final query tasks passed without extra searches or route repairs; operational closure took 1,379 seconds (22 minutes 59 seconds), excluding retrospective writing and commit. Three index descriptions gained query-oriented keywords without expanding concept synthesis.
+- Results and elapsed time: [quality audit](../tracking/ingest/metronome/metronome-campaign-38/quality-audit.md), [retrospective](../tracking/ingest/metronome/metronome-campaign-38/retrospective.md), and [monitor](../tracking/ingest/metronome/metronome-campaign-38/monitor.md).
+
 ## 2026-09-07 — Metronome Campaign 37 retrieval-source pilot
 
 - Promoted five retrieval-oriented sources: credit listing, hybrid business models, customer provisioning, credit archival, and rate-card metadata retrieval.

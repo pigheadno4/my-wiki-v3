@@ -1,5 +1,15 @@
 # Provider: Metronome - collection profile
 
+## Campaign 38 retrieval-source confirmation
+
+After approval of its exact five-job manifest, Campaign 38 reuses the
+Campaign 37 semantic exception through
+`tracking/ingest/metronome/metronome-campaign-38/dispatch-contract.md`.
+Attach that contract and its referenced instructions to every dispatch.
+The same initial independent review, bounded targeted corrections, navigation
+updates, ten-question single audit, mechanical close checks and ownership
+apply. Its five-page scope does not authorize a general rollout.
+
 ## Campaign 37 retrieval-source pilot precedence
 
 Only after approval of its exact five-job manifest, Campaign 37 uses

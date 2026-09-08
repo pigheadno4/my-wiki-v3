@@ -2,7 +2,7 @@
 title: "Metronome"
 type: company
 tags: [metronome, stripe, usage-based-billing]
-source_count: 187
+source_count: 192
 ---
 
 ## Overview
@@ -151,10 +151,16 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 ## Knowledge status
 
 - Collected documentation pages: 226
-- Official documentation source summaries: 181
-- Raw snapshots without source summaries: 105
+- Official documentation source summaries: 186
+- Raw snapshots without source summaries: 100
 
 ## Sources
+
+- [[source-metronome-guides-customers-billing-manage-customers-manage-customer-lifecycle]] - worked enterprise-contract lifecycle route covering existing-contract edits, linked successor renewals, early contract conclusion, and merchant-owned webhook-driven product-access enforcement
+- [[source-metronome-api-reference-notifications-get-an-offset-lifecycle-event-notification-configuration]] - targeted lookup of one offset-notification configuration by ID, with lifecycle-event policy type and signed ISO 8601 offset navigation
+- [[source-metronome-api-reference-rate-cards-list-rate-cards]] - paginated rate-card catalog discovery, explicit no-rates boundary, and exact response-envelope and schema routes
+- [[source-metronome-api-reference-contracts-set-a-contract-usage-filter]] — contract-specific usage routing for overlapping rates, the billable-metric group-key prerequisite, and exact group-value schema navigation
+- [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-target-credit-and-commits]] — product and product-family selectors, specifier boolean matching, pricing and presentation dimensions, and missing-group-key exclusions
 
 - [[source-metronome-api-reference-credits-and-commits-list-credits]] - customer-credit list route, optional schedule, ledger and balance expansion, response pagination, detailed schema locators, and credit-versus-commit wording cautions
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-hybrid-business-models]] — hybrid seat subscription with pooled recurring credits, configuration-driven seat proration, merchant-controlled cutoff signals, and payment-gated top-ups
